@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import type { Store } from "@/lib/mock/types";
 import { brl } from "@/lib/format";
 
@@ -16,12 +17,13 @@ const statusStyles = {
   },
 } as const;
 
-export function StoreCard({ store, onClick }: { store: Store; onClick: () => void }) {
+export function StoreCard({ store }: { store: Store }) {
   const s = statusStyles[store.status];
   return (
-    <button
-      onClick={onClick}
-      className="group text-left rounded-xl border bg-card p-4 transition-all duration-150 hover:border-white/12 hover:bg-[var(--surface-3)]"
+    <Link
+      to="/lojas/$storeId"
+      params={{ storeId: store.id }}
+      className="group block rounded-xl border bg-card p-4 transition-all duration-150 hover:border-white/12 hover:bg-[var(--surface-3)]"
     >
       <div className="flex items-start justify-between gap-2">
         <div className="text-[14px] font-semibold text-foreground">{store.name}</div>
@@ -36,6 +38,6 @@ export function StoreCard({ store, onClick }: { store: Store; onClick: () => voi
         {brl(store.dailyEntry)}
       </div>
       <div className="mt-2 text-[11px] text-muted-foreground">{store.note}</div>
-    </button>
+    </Link>
   );
 }
