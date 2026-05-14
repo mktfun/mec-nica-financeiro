@@ -43,10 +43,10 @@ export function AppSidebar() {
               key={item.to}
               to={item.to}
               className={[
-                "group flex items-center gap-3 rounded-md px-3 py-2 text-[13px] font-medium transition-colors duration-150",
+                "group flex items-center gap-3 rounded-md px-3 py-2 text-[13px] font-medium transition-colors duration-150 border-l-2 min-h-[40px]",
                 active
-                  ? "bg-primary/15 text-foreground"
-                  : "text-muted-foreground hover:bg-[var(--surface-2)] hover:text-foreground",
+                  ? "bg-primary/15 text-foreground border-primary"
+                  : "text-muted-foreground hover:bg-[var(--surface-2)] hover:text-foreground border-transparent",
               ].join(" ")}
             >
               <Icon
