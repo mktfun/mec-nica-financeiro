@@ -16,6 +16,7 @@ import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as ConciliacaoRouteImport } from './routes/conciliacao'
 import { Route as AlertasRouteImport } from './routes/alertas'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LojasStoreIdRouteImport } from './routes/lojas.$storeId'
 
 const RecebiveisRoute = RecebiveisRouteImport.update({
   id: '/recebiveis',
@@ -52,24 +53,31 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LojasStoreIdRoute = LojasStoreIdRouteImport.update({
+  id: '/$storeId',
+  path: '/$storeId',
+  getParentRoute: () => LojasRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/alertas': typeof AlertasRoute
   '/conciliacao': typeof ConciliacaoRoute
   '/configuracoes': typeof ConfiguracoesRoute
-  '/lojas': typeof LojasRoute
+  '/lojas': typeof LojasRouteWithChildren
   '/patio': typeof PatioRoute
   '/recebiveis': typeof RecebiveisRoute
+  '/lojas/$storeId': typeof LojasStoreIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/alertas': typeof AlertasRoute
   '/conciliacao': typeof ConciliacaoRoute
   '/configuracoes': typeof ConfiguracoesRoute
-  '/lojas': typeof LojasRoute
+  '/lojas': typeof LojasRouteWithChildren
   '/patio': typeof PatioRoute
   '/recebiveis': typeof RecebiveisRoute
+  '/lojas/$storeId': typeof LojasStoreIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -77,9 +85,10 @@ export interface FileRoutesById {
   '/alertas': typeof AlertasRoute
   '/conciliacao': typeof ConciliacaoRoute
   '/configuracoes': typeof ConfiguracoesRoute
-  '/lojas': typeof LojasRoute
+  '/lojas': typeof LojasRouteWithChildren
   '/patio': typeof PatioRoute
   '/recebiveis': typeof RecebiveisRoute
+  '/lojas/$storeId': typeof LojasStoreIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/lojas'
     | '/patio'
     | '/recebiveis'
+    | '/lojas/$storeId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/lojas'
     | '/patio'
     | '/recebiveis'
+    | '/lojas/$storeId'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/lojas'
     | '/patio'
     | '/recebiveis'
+    | '/lojas/$storeId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -116,7 +128,7 @@ export interface RootRouteChildren {
   AlertasRoute: typeof AlertasRoute
   ConciliacaoRoute: typeof ConciliacaoRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
-  LojasRoute: typeof LojasRoute
+  LojasRoute: typeof LojasRouteWithChildren
   PatioRoute: typeof PatioRoute
   RecebiveisRoute: typeof RecebiveisRoute
 }
@@ -172,18 +184,45 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lojas/$storeId': {
+      id: '/lojas/$storeId'
+      path: '/$storeId'
+      fullPath: '/lojas/$storeId'
+      preLoaderRoute: typeof LojasStoreIdRouteImport
+      parentRoute: typeof LojasRoute
+    }
   }
 }
+
+interface LojasRouteChildren {
+  LojasStoreIdRoute: typeof LojasStoreIdRoute
+}
+
+const LojasRouteChildren: LojasRouteChildren = {
+  LojasStoreIdRoute: LojasStoreIdRoute,
+}
+
+const LojasRouteWithChildren = LojasRoute._addFileChildren(LojasRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AlertasRoute: AlertasRoute,
   ConciliacaoRoute: ConciliacaoRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
-  LojasRoute: LojasRoute,
+  LojasRoute: LojasRouteWithChildren,
   PatioRoute: PatioRoute,
   RecebiveisRoute: RecebiveisRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
