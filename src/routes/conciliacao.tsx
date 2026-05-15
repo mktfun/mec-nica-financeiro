@@ -213,10 +213,10 @@ function ConciliacaoPage() {
       <div className="space-y-6 max-w-[1400px] mx-auto">
         <header className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h1 className="text-[24px] font-semibold tracking-tight text-foreground">
+            <h1 className="text-[26px] font-bold tracking-tight text-foreground">
               Conciliação Diária
             </h1>
-            <p className="mt-1 text-[13px] text-muted-foreground">
+            <p className="mt-1 text-[12px] font-medium text-muted-foreground">
               Resultado consolidado e detecção automática de divergências.
             </p>
           </div>
@@ -225,7 +225,7 @@ function ConciliacaoPage() {
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
-                  className="h-9 rounded-md border bg-[var(--surface-1)] text-[13px] font-normal"
+                  className="h-9 rounded-lg glass-elevated text-[13px] font-normal"
                 >
                   <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />
                   {format(date, "dd 'de' MMMM, yyyy", { locale: ptBR })}
@@ -244,7 +244,7 @@ function ConciliacaoPage() {
             </Popover>
             <Button
               variant="outline"
-              className="h-9 rounded-md border bg-[var(--surface-1)] text-[13px]"
+              className="h-9 rounded-lg glass-elevated text-[13px]"
               onClick={() =>
                 toast("Exportando planilha…", { description: "Aguarde alguns segundos." })
               }
@@ -256,10 +256,10 @@ function ConciliacaoPage() {
         </header>
 
         {/* Result summary card */}
-        <section className="rounded-xl border bg-card">
-          <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-4 border-b">
+        <section className="rounded-2xl glass-panel overflow-hidden">
+          <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-4 border-b border-[oklch(1_0_0_/_5%)]">
             <div>
-              <h2 className="text-[16px] font-semibold text-foreground">
+              <h2 className="text-[16px] font-bold text-foreground">
                 Resumo de {format(date, "dd/MM/yyyy")}
               </h2>
               <p className="text-[12px] text-muted-foreground">
@@ -273,7 +273,7 @@ function ConciliacaoPage() {
                 </div>
                 <div
                   className={cn(
-                    "text-[22px] font-semibold tabular tracking-tight",
+                    "text-[24px] font-extrabold tabular tracking-tighter",
                     result.status === "approved"
                       ? "text-[color:var(--success)]"
                       : "text-destructive",
@@ -305,7 +305,7 @@ function ConciliacaoPage() {
         </section>
 
         <Tabs defaultValue="por-loja">
-          <TabsList className="bg-[var(--surface-1)] border">
+          <TabsList className="glass-elevated">
             <TabsTrigger value="por-loja">Por Loja</TabsTrigger>
             <TabsTrigger value="erros">
               Erros Detectados
@@ -327,7 +327,7 @@ function ConciliacaoPage() {
                 <article
                   key={e.id}
                   className={cn(
-                    "rounded-xl border bg-card p-4 transition-opacity",
+                    "rounded-2xl glass-elevated p-4 transition-opacity",
                     isJ && "opacity-60",
                   )}
                 >
@@ -414,7 +414,7 @@ function ConciliacaoPage() {
               onChange={(e) => setReason(e.target.value)}
               rows={3}
               placeholder="Ex.: cliente pagou diferença em dinheiro, lançamento manual já efetuado…"
-              className="w-full rounded-md border bg-[var(--surface-1)] px-3 py-2 text-[13px] text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+              className="w-full rounded-lg glass-elevated px-3 py-2 text-[13px] text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:shadow-[0_0_12px_oklch(0.62_0.19_259_/_15%)]"
             />
           </div>
           <DialogFooter>
@@ -474,9 +474,9 @@ function SortHeader({ children }: { children: React.ReactNode }) {
 
 function StoreTable({ rows }: { rows: StoreRow[] }) {
   return (
-    <div className="overflow-hidden rounded-xl border bg-card">
+    <div className="overflow-hidden rounded-2xl glass-panel">
       <table className="w-full text-[13px]">
-        <thead className="bg-[var(--surface-1)]">
+        <thead className="bg-[oklch(0.14_0.02_264_/_80%)]">
           <tr>
             <th className="px-4 py-3 text-left">
               <SortHeader>Loja</SortHeader>
@@ -504,7 +504,7 @@ function StoreTable({ rows }: { rows: StoreRow[] }) {
               key={r.loja}
               className={cn(
                 "border-t transition-colors hover:bg-[var(--surface-3)]",
-                i % 2 === 1 && "bg-[var(--surface-1)]/30",
+                i % 2 === 1 && "bg-[oklch(1_1_1_/_2%)]",
               )}
             >
               <td className="px-4 py-3 font-medium text-foreground">{r.loja}</td>
@@ -541,9 +541,9 @@ function StoreTable({ rows }: { rows: StoreRow[] }) {
 
 function HistoryTable({ rows }: { rows: HistoryRow[] }) {
   return (
-    <div className="overflow-hidden rounded-xl border bg-card">
+    <div className="overflow-hidden rounded-2xl glass-panel">
       <table className="w-full text-[13px]">
-        <thead className="bg-[var(--surface-1)]">
+        <thead className="bg-[oklch(0.14_0.02_264_/_80%)]">
           <tr>
             <th className="px-4 py-3 text-left">
               <SortHeader>Data</SortHeader>
@@ -568,7 +568,7 @@ function HistoryTable({ rows }: { rows: HistoryRow[] }) {
               key={r.date}
               className={cn(
                 "border-t transition-colors hover:bg-[var(--surface-3)]",
-                i % 2 === 1 && "bg-[var(--surface-1)]/30",
+                i % 2 === 1 && "bg-[oklch(1_1_1_/_2%)]",
               )}
             >
               <td className="px-4 py-3 tabular text-foreground">{r.date}</td>

@@ -32,11 +32,11 @@ function DashboardPage() {
     <AppShell crumbs={["Financeiro", "Painel Geral"]}>
       <div className="space-y-6 max-w-[1400px] mx-auto">
         <header>
-          <h1 className="text-[24px] font-semibold tracking-tight text-foreground">
+          <h1 className="text-[26px] font-bold tracking-tight text-foreground">
             Painel Geral
           </h1>
-          <p className="mt-1 text-[13px] text-muted-foreground">
-            Atualizado hoje às 07:32 · Dados de 13/05/2026
+          <p className="mt-1 text-[12px] font-medium text-muted-foreground">
+            Atualizado hoje às 07:32 · Dados de 15/05/2026
           </p>
         </header>
 

@@ -1,6 +1,5 @@
 import type { LucideIcon } from "lucide-react";
 import { CountUp } from "@/components/ui/count-up";
-import { motion } from "framer-motion";
 import { LineChart, Line, ResponsiveContainer } from "recharts";
 
 interface KpiCardProps {
@@ -11,61 +10,71 @@ interface KpiCardProps {
   icon: LucideIcon;
   tone: "success" | "destructive" | "neutral" | "warning";
   data?: { value: number }[];
-  index?: number;
 }
 
-const toneMap = {
-  success: "text-[color:var(--success)] bg-[color:var(--success)]/12 shadow-[0_0_15px_rgba(34,197,94,0.2)]",
-  destructive: "text-destructive bg-destructive/12 shadow-[0_0_15px_rgba(239,68,68,0.2)]",
-  neutral: "text-muted-foreground bg-[var(--surface-3)]",
-  warning: "text-[color:var(--warning)] bg-[color:var(--warning)]/12 shadow-[0_0_15px_rgba(245,158,11,0.2)]",
+const toneConfig = {
+  success: {
+    icon: "bg-[color:var(--success)]/15 text-[color:var(--success)] shadow-[0_0_12px_oklch(0.72_0.18_145_/_25%)]",
+    gradient: "from-[color:var(--success)]/8 via-transparent to-transparent",
+    stroke: "var(--success)",
+  },
+  destructive: {
+    icon: "bg-destructive/15 text-destructive shadow-[0_0_12px_oklch(0.64_0.22_25_/_25%)]",
+    gradient: "from-destructive/8 via-transparent to-transparent",
+    stroke: "var(--destructive)",
+  },
+  neutral: {
+    icon: "bg-[var(--surface-3)] text-muted-foreground",
+    gradient: "from-primary/5 via-transparent to-transparent",
+    stroke: "var(--primary)",
+  },
+  warning: {
+    icon: "bg-[color:var(--warning)]/15 text-[color:var(--warning)] shadow-[0_0_12px_oklch(0.77_0.17_70_/_25%)]",
+    gradient: "from-[color:var(--warning)]/8 via-transparent to-transparent",
+    stroke: "var(--warning)",
+  },
 };
 
-const strokeMap = {
-  success: "var(--success)",
-  destructive: "var(--destructive)",
-  neutral: "var(--muted-foreground)",
-  warning: "var(--warning)",
-};
+export function KpiCard({ label, value, format, sub, icon: Icon, tone, data }: KpiCardProps) {
+  const cfg = toneConfig[tone];
 
-export function KpiCard({ label, value, format, sub, icon: Icon, tone, data, index = 0 }: KpiCardProps) {
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.1, ease: "easeOut" }}
-      whileHover={{ y: -4, transition: { duration: 0.2 } }}
-      className="relative overflow-hidden rounded-xl border border-white/10 bg-card p-4 sm:p-5 glass-panel transition-all duration-300 hover:border-white/20 hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)]"
-    >
-      <div className="flex items-start justify-between relative z-10">
-        <span className="text-[13px] font-medium text-muted-foreground">{label}</span>
-        <div className={`grid h-8 w-8 place-items-center rounded-md ${toneMap[tone]}`}>
-          <Icon className="h-4 w-4" />
+    <div className="relative overflow-hidden rounded-2xl glass-elevated p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_oklch(0_0_0_/_30%)] group">
+      {/* Gradient overlay */}
+      <div className={`absolute inset-0 bg-gradient-to-br ${cfg.gradient} pointer-events-none`} />
+
+      <div className="relative z-10">
+        <div className="flex items-start justify-between">
+          <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">{label}</span>
+          <div className={`grid h-10 w-10 place-items-center rounded-xl ${cfg.icon}`}>
+            <Icon className="h-5 w-5" />
+          </div>
         </div>
+        <CountUp
+          value={value}
+          format={format}
+          className="mt-2 block text-[28px] font-extrabold text-foreground tabular tracking-tighter"
+        />
+        {sub && <div className="mt-1 text-[11px] font-medium text-muted-foreground">{sub}</div>}
       </div>
-      <CountUp
-        value={value}
-        format={format}
-        className="mt-3 block text-[22px] sm:text-[24px] font-bold text-foreground tabular tracking-tight text-glow"
-      />
-      {sub && <div className="mt-1 text-[12px] text-muted-foreground relative z-10">{sub}</div>}
-      
+
+      {/* Sparkline */}
       {data && data.length > 0 && (
-        <div className="absolute bottom-0 left-0 right-0 h-12 opacity-30 pointer-events-none">
+        <div className="absolute bottom-0 left-0 right-0 h-16 opacity-30 pointer-events-none">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data}>
-              <Line 
-                type="monotone" 
-                dataKey="value" 
-                stroke={strokeMap[tone]} 
-                strokeWidth={2} 
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke={cfg.stroke}
+                strokeWidth={2}
                 dot={false}
-                isAnimationActive={true}
+                isAnimationActive={false}
               />
             </LineChart>
           </ResponsiveContainer>
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }

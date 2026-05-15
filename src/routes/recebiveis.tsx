@@ -112,10 +112,10 @@ function RecebiveisPage() {
       <div className="space-y-6 max-w-[1400px] mx-auto">
         <header className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h1 className="text-[24px] font-semibold tracking-tight text-foreground">
+            <h1 className="text-[26px] font-bold tracking-tight text-foreground">
               Recebíveis
             </h1>
-            <p className="mt-1 text-[13px] text-muted-foreground">
+            <p className="mt-1 text-[12px] font-medium text-muted-foreground">
               Valores a receber em aberto
             </p>
           </div>
@@ -145,7 +145,7 @@ function RecebiveisPage() {
           />
         </div>
 
-        <div className="flex flex-wrap gap-1 border-b">
+        <div className="flex flex-wrap gap-1 border-b border-[oklch(1_0_0_/_5%)]">
           {FILTERS.map((f) => (
             <button
               key={f.id}
@@ -166,9 +166,9 @@ function RecebiveisPage() {
         </div>
 
         {/* Desktop table */}
-        <div className="hidden md:block overflow-hidden rounded-xl border bg-card">
+        <div className="hidden md:block overflow-hidden rounded-2xl glass-panel">
           <table className="w-full text-[13px]">
-            <thead className="bg-[var(--surface-1)] text-[11px] uppercase tracking-wide text-muted-foreground">
+            <thead className="bg-[oklch(0.14_0.02_264_/_80%)] text-[11px] uppercase tracking-wide text-muted-foreground">
               <tr>
                 <th className="px-4 py-3 text-left font-semibold">OS #</th>
                 <th className="px-4 py-3 text-left font-semibold">Loja</th>
@@ -184,7 +184,7 @@ function RecebiveisPage() {
                   key={r.os}
                   className={cn(
                     "border-t transition-colors hover:bg-[var(--surface-3)]",
-                    i % 2 === 1 && "bg-[var(--surface-1)]/30",
+                    i % 2 === 1 && "bg-[oklch(1_1_1_/_2%)]",
                   )}
                 >
                   <td className="px-4 py-3 font-medium tabular text-foreground">{r.os}</td>
@@ -215,7 +215,7 @@ function RecebiveisPage() {
           {filtered.map((r) => (
             <article
               key={r.os}
-              className="rounded-xl border bg-card p-4 space-y-2"
+              className="rounded-2xl glass-elevated p-4 space-y-2"
             >
               <div className="flex items-center justify-between gap-2">
                 <div>
@@ -287,7 +287,7 @@ function RecCard({
     destructive: "text-destructive bg-destructive/12",
   };
   return (
-    <div className="rounded-xl border bg-card p-4">
+    <div className="rounded-2xl glass-elevated p-4">
       <div className="flex items-center justify-between">
         <span className="text-[12px] font-medium text-muted-foreground">{label}</span>
         <div className={cn("grid h-7 w-7 place-items-center rounded-md", map[tone])}>

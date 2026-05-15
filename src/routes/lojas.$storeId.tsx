@@ -88,12 +88,12 @@ function StoreDetailPage() {
             <ArrowLeft className="h-3.5 w-3.5" /> Voltar ao Painel
           </Link>
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-[24px] font-semibold tracking-tight text-foreground">
+            <h1 className="text-[26px] font-bold tracking-tight text-foreground">
               {storeName}
             </h1>
             {statusBadge()}
           </div>
-          <p className="mt-1 text-[13px] text-muted-foreground">
+          <p className="mt-1 text-[12px] font-medium text-muted-foreground">
             Resumo da unidade · 13/05/2026
           </p>
         </div>
@@ -105,16 +105,16 @@ function StoreDetailPage() {
           <KpiBox label="Resultado" value={resultado} tone="neutral" icon={FileText} />
         </div>
 
-        <section className="rounded-xl border bg-card">
-          <div className="px-5 py-4 border-b">
-            <h2 className="text-[16px] font-semibold text-foreground">Últimos 7 dias</h2>
+        <section className="rounded-2xl glass-panel overflow-hidden">
+          <div className="px-5 py-4 border-b border-[oklch(1_0_0_/_5%)]">
+            <h2 className="text-[16px] font-bold text-foreground">Últimos 7 dias</h2>
             <p className="text-[12px] text-muted-foreground">
               Resultado diário desta unidade
             </p>
           </div>
           <div className="overflow-hidden">
             <table className="w-full text-[13px]">
-              <thead className="bg-[var(--surface-1)] text-[11px] uppercase tracking-wide text-muted-foreground">
+              <thead className="bg-[oklch(0.14_0.02_264_/_80%)] text-[11px] uppercase tracking-wide text-muted-foreground">
                 <tr>
                   <th className="px-5 py-2.5 text-left font-semibold">Data</th>
                   <th className="px-5 py-2.5 text-right font-semibold">Resultado</th>
@@ -127,7 +127,7 @@ function StoreDetailPage() {
                     key={d.date}
                     className={cn(
                       "border-t",
-                      i % 2 === 1 && "bg-[var(--surface-1)]/30",
+                      i % 2 === 1 && "bg-[oklch(1_1_1_/_2%)]",
                     )}
                   >
                     <td className="px-5 py-2.5 tabular text-foreground">{d.date}</td>
@@ -159,10 +159,10 @@ function StoreDetailPage() {
         </section>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <section className="rounded-xl border bg-card">
-            <div className="flex items-center justify-between px-5 py-4 border-b">
+          <section className="rounded-2xl glass-panel overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-[oklch(1_0_0_/_5%)]">
               <div>
-                <h2 className="text-[16px] font-semibold text-foreground">OS em aberto</h2>
+                <h2 className="text-[16px] font-bold text-foreground">OS em aberto</h2>
                 <p className="text-[12px] text-muted-foreground">
                   Carros aguardando pagamento ou retirada
                 </p>
@@ -199,9 +199,9 @@ function StoreDetailPage() {
             </div>
           </section>
 
-          <section className="rounded-xl border bg-card">
-            <div className="px-5 py-4 border-b">
-              <h2 className="text-[16px] font-semibold text-foreground">Alertas ativos</h2>
+          <section className="rounded-2xl glass-panel overflow-hidden">
+            <div className="px-5 py-4 border-b border-[oklch(1_0_0_/_5%)]">
+              <h2 className="text-[16px] font-bold text-foreground">Alertas ativos</h2>
               <p className="text-[12px] text-muted-foreground">
                 Ocorrências detectadas para esta loja
               </p>
@@ -272,7 +272,7 @@ function KpiBox({
     neutral: "text-muted-foreground bg-[var(--surface-3)]",
   };
   return (
-    <div className="rounded-xl border bg-card p-4">
+    <div className="rounded-2xl glass-elevated p-4">
       <div className="flex items-start justify-between">
         <span className="text-[12px] font-medium text-muted-foreground">{label}</span>
         <div className={cn("grid h-7 w-7 place-items-center rounded-md", map[tone])}>

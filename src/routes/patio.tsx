@@ -155,10 +155,10 @@ function PatioPage() {
         <header className="flex flex-wrap items-end justify-between gap-3">
           <div className="flex items-center gap-3">
             <div>
-              <h1 className="text-[24px] font-semibold tracking-tight text-foreground">
+              <h1 className="text-[26px] font-bold tracking-tight text-foreground">
                 Carros no Pátio
               </h1>
-              <p className="mt-1 text-[13px] text-muted-foreground">
+              <p className="mt-1 text-[12px] font-medium text-muted-foreground">
                 Ordens de serviço abertas e pagamentos pendentes.
               </p>
             </div>
@@ -167,7 +167,7 @@ function PatioPage() {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 rounded-md border bg-[var(--surface-1)] px-3 py-1.5 text-[12px] w-64">
+            <div className="flex items-center gap-2 rounded-lg glass-elevated px-3 py-1.5 text-[12px] w-64">
               <Search className="h-3.5 w-3.5 text-muted-foreground" />
               <input
                 value={search}
@@ -177,7 +177,7 @@ function PatioPage() {
               />
             </div>
             <Select value={storeFilter} onValueChange={setStoreFilter}>
-              <SelectTrigger className="h-9 w-[180px] bg-[var(--surface-1)] text-[13px]">
+              <SelectTrigger className="h-9 w-[180px] glass-elevated text-[13px]">
                 <SelectValue placeholder="Filtrar loja" />
               </SelectTrigger>
               <SelectContent>
@@ -206,7 +206,7 @@ function PatioPage() {
         </section>
 
         {/* Filter tabs */}
-        <div className="flex flex-wrap gap-1 border-b">
+        <div className="flex flex-wrap gap-1 border-b border-[oklch(1_0_0_/_5%)]">
           {FILTERS.map((f) => (
             <button
               key={f.id}
@@ -227,9 +227,9 @@ function PatioPage() {
         </div>
 
         {/* Table */}
-        <div className="overflow-hidden rounded-xl border bg-card">
+        <div className="overflow-hidden rounded-2xl glass-panel">
           <table className="w-full text-[13px]">
-            <thead className="bg-[var(--surface-1)]">
+            <thead className="bg-[oklch(0.14_0.02_264_/_80%)]">
               <tr className="text-[11px] uppercase tracking-wide text-muted-foreground">
                 <th className="px-4 py-3 text-left font-semibold">OS #</th>
                 <th className="px-4 py-3 text-left font-semibold">Loja</th>
@@ -291,7 +291,7 @@ function SummaryStat({
     destructive: "bg-destructive",
   }[tone];
   return (
-    <div className="rounded-xl border bg-card px-4 py-3">
+    <div className="rounded-2xl glass-elevated px-4 py-3">
       <div className="flex items-center gap-2">
         <span className={cn("h-1.5 w-1.5 rounded-full", dot)} />
         <span className="text-[11px] uppercase tracking-wide text-muted-foreground">{label}</span>
@@ -339,7 +339,7 @@ function RowGroup({
         onClick={onToggle}
         className={cn(
           "border-t cursor-pointer transition-colors hover:bg-[var(--surface-3)]",
-          striped && "bg-[var(--surface-1)]/30",
+          striped && "bg-[oklch(1_1_1_/_2%)]",
           open && "bg-[var(--surface-3)]",
         )}
       >
@@ -370,7 +370,7 @@ function RowGroup({
           />
         </td>
       </tr>
-      <tr className={cn(!open && "hidden", "bg-[var(--surface-1)]")}>
+      <tr className={cn(!open && "hidden", "bg-[oklch(1_1_1_/_1%)]")}>
         <td colSpan={9} className="px-0">
           <div
             className="grid transition-all duration-200"

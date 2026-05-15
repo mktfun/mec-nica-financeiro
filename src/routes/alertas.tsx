@@ -157,10 +157,10 @@ function AlertasPage() {
         <header className="flex flex-wrap items-end justify-between gap-3">
           <div className="flex items-center gap-3">
             <div>
-              <h1 className="text-[24px] font-semibold tracking-tight text-foreground">
+              <h1 className="text-[26px] font-bold tracking-tight text-foreground">
                 Central de Alertas
               </h1>
-              <p className="mt-1 text-[13px] text-muted-foreground">
+              <p className="mt-1 text-[12px] font-medium text-muted-foreground">
                 Ocorrências detectadas pelo motor de regras nas últimas 24h
               </p>
             </div>
@@ -170,7 +170,7 @@ function AlertasPage() {
           </div>
         </header>
 
-        <div className="flex flex-wrap gap-1 border-b">
+        <div className="flex flex-wrap gap-1 border-b border-[oklch(1_0_0_/_5%)]">
           {TABS.map((t) => (
             <button
               key={t.id}
@@ -198,7 +198,7 @@ function AlertasPage() {
             <AlertCard key={a.id} alert={a} onResolve={resolve} onReopen={reopen} />
           ))}
           {filtered.length === 0 && (
-            <div className="rounded-xl border bg-card py-12 text-center">
+            <div className="rounded-2xl glass-panel py-12 text-center">
               <div className="mx-auto grid h-10 w-10 place-items-center rounded-full bg-[color:var(--success)]/15 text-[color:var(--success)]">
                 <CheckCircle2 className="h-5 w-5" />
               </div>
@@ -244,7 +244,7 @@ function AlertCard({
   return (
     <article
       className={cn(
-        "rounded-xl border bg-card p-4 transition-all",
+        "rounded-2xl glass-elevated p-4 transition-all",
         alert.sev === "resolved" && "opacity-70",
       )}
     >

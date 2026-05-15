@@ -24,14 +24,14 @@ export function ConciliationDetailsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg glass-panel border-[oklch(1_0_0_/_5%)]">
         <DialogHeader>
           <DialogTitle>Conciliação · 13/05/2026</DialogTitle>
           <DialogDescription>
             Resumo automático aprovado pelo motor de regras.
           </DialogDescription>
         </DialogHeader>
-        <div className="mt-2 divide-y divide-[color:var(--border)] rounded-md border bg-[var(--surface-1)]">
+        <div className="mt-2 divide-y divide-[oklch(1_0_0_/_5%)] rounded-xl glass-elevated border-[oklch(1_0_0_/_5%)]">
           {rows.map((r) => (
             <div key={r.label} className="flex items-center justify-between px-4 py-3 text-[13px]">
               <span className="text-muted-foreground">{r.label}</span>

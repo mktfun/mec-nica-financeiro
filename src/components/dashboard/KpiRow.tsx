@@ -4,11 +4,10 @@ import { brl } from "@/lib/format";
 
 const intFmt = (n: number) => Math.round(n).toLocaleString("pt-BR");
 
-// Mock sparkline data
-const dataIncome = [{value: 50}, {value: 65}, {value: 55}, {value: 80}, {value: 70}, {value: 90}];
-const dataExpense = [{value: 40}, {value: 30}, {value: 45}, {value: 20}, {value: 35}, {value: 50}];
-const dataBalance = [{value: 10}, {value: 35}, {value: 10}, {value: 60}, {value: 35}, {value: 40}];
-const dataPatio = [{value: 15}, {value: 18}, {value: 20}, {value: 17}, {value: 22}, {value: 23}];
+const sparkIncome = [{ value: 50 }, { value: 65 }, { value: 55 }, { value: 80 }, { value: 70 }, { value: 84 }, { value: 90 }];
+const sparkExpense = [{ value: 40 }, { value: 55 }, { value: 45 }, { value: 60 }, { value: 50 }, { value: 70 }, { value: 80 }];
+const sparkBalance = [{ value: 10 }, { value: 10 }, { value: 10 }, { value: 20 }, { value: 20 }, { value: 14 }, { value: 4 }];
+const sparkPatio = [{ value: 15 }, { value: 18 }, { value: 20 }, { value: 17 }, { value: 22 }, { value: 19 }, { value: 23 }];
 
 export function KpiRow() {
   return (
@@ -20,8 +19,7 @@ export function KpiRow() {
         sub="10 lojas consolidadas"
         icon={TrendingUp}
         tone="success"
-        data={dataIncome}
-        index={0}
+        data={sparkIncome}
       />
       <KpiCard
         label="Contas a Pagar"
@@ -30,8 +28,7 @@ export function KpiRow() {
         sub="Vencimentos de hoje"
         icon={TrendingDown}
         tone="destructive"
-        data={dataExpense}
-        index={1}
+        data={sparkExpense}
       />
       <KpiCard
         label="Saldo Consolidado"
@@ -40,8 +37,7 @@ export function KpiRow() {
         sub="Entradas − Saídas"
         icon={Wallet}
         tone="neutral"
-        data={dataBalance}
-        index={2}
+        data={sparkBalance}
       />
       <KpiCard
         label="Carros no Pátio"
@@ -50,8 +46,7 @@ export function KpiRow() {
         sub="abertas há +24h"
         icon={Clock}
         tone="warning"
-        data={dataPatio}
-        index={3}
+        data={sparkPatio}
       />
     </div>
   );
