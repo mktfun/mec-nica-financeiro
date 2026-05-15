@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { LayoutDashboard, Store, FileText, AlertTriangle, Settings, Menu, Car, Plus, HelpCircle, Receipt } from "lucide-react";
 import { AppSidebar } from "./AppSidebar";
 import { Topbar } from "./Topbar";
@@ -128,12 +129,18 @@ export function AppShell({
           <Topbar crumbs={crumbs} />
         </div>
 
-        <main
-          key={pathname}
-          className="px-4 md:px-8 py-6 pb-24 md:pb-10 animate-in fade-in duration-150"
-        >
-          {children}
-        </main>
+        <AnimatePresence mode="wait">
+          <motion.main
+            key={pathname}
+            initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="px-4 md:px-8 py-6 pb-24 md:pb-10"
+          >
+            {children}
+          </motion.main>
+        </AnimatePresence>
       </div>
 
       {/* Mobile bottom nav */}

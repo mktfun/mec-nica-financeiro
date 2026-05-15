@@ -109,3 +109,15 @@
     font-feature-settings: "tnum";
   }
 }
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-background/60 backdrop-blur-2xl border border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.1)];
+  }
+  .glass-panel-accent {
+    @apply bg-primary/10 backdrop-blur-2xl border border-primary/20 shadow-[0_4px_30px_rgba(0,0,0,0.1)];
+  }
+  .text-glow {
+    text-shadow: 0 0 10px var(--color-primary);
+  }
+}
