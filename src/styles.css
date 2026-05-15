@@ -126,15 +126,22 @@
     letter-spacing: -0.02em;
   }
 
-  /* Glassmorphism utilities */
+  /* Glassmorphism utilities - Premium Dark Cards */
   .glass-panel {
-    background-color: rgba(244, 244, 244, 0.6);
+    background-color: rgba(16, 18, 20, 0.85); /* Quase preto, alta legibilidade */
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid var(--border-subtle);
-  }
-
-  .dark .glass-panel {
-    background-color: rgba(22, 24, 26, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    
+    /* Força as variáveis de cores para o modo escuro dentro do card */
+    --bg-surface: var(--color-surface-deep);
+    --bg-surface-elevated: var(--color-surface-elevated);
+    --text-primary: var(--color-on-dark);
+    --text-secondary: var(--color-on-dark-mute);
+    --text-tertiary: var(--color-stone);
+    --border-subtle: var(--color-divider-soft);
+    --border-strong: var(--color-hairline-dark);
+    
+    color: var(--text-primary);
   }
 }
