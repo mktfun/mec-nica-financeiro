@@ -22,6 +22,14 @@ interface CostConfig {
   whatsappLabel: string;
   whatsappMensal: number;
   prazo: number;
+  tempoEconomizadoValue: string;
+  tempoEconomizadoSub: string;
+  divergenciasValue: string;
+  divergenciasSub: string;
+  economiaMensalValue: number;
+  economiaMensalSub: string;
+  roiValue: string;
+  roiSub: string;
 }
 
 const defaultConfig: CostConfig = {
@@ -35,6 +43,14 @@ const defaultConfig: CostConfig = {
   whatsappLabel: 'WhatsApp API (Notificações)',
   whatsappMensal: 50,
   prazo: 30,
+  tempoEconomizadoValue: '85 min/dia',
+  tempoEconomizadoSub: 'de 90min para 5min',
+  divergenciasValue: '100%',
+  divergenciasSub: 'vs ~30% manual',
+  economiaMensalValue: 4200,
+  economiaMensalSub: 'em perdas evitadas',
+  roiValue: '< 3 meses',
+  roiSub: 'retorno do investimento',
 };
 
 function PropostaPage() {
@@ -83,10 +99,10 @@ function PropostaPage() {
         {/* Impacto */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { label: 'Tempo Economizado', value: '85 min/dia', sub: 'de 90min para 5min' },
-            { label: 'Divergências Detectadas', value: '100%', sub: 'vs ~30% manual' },
-            { label: 'Economia Mensal', value: 'R$ 4.200', sub: 'em perdas evitadas' },
-            { label: 'ROI', value: '< 3 meses', sub: 'retorno do investimento' },
+            { label: 'Tempo Economizado', value: config.tempoEconomizadoValue, sub: config.tempoEconomizadoSub, isCurrency: false },
+            { label: 'Divergências Detectadas', value: config.divergenciasValue, sub: config.divergenciasSub, isCurrency: false },
+            { label: 'Economia Mensal', value: config.economiaMensalValue, sub: config.economiaMensalSub, isCurrency: true },
+            { label: 'ROI', value: config.roiValue, sub: config.roiSub, isCurrency: false },
           ].map((item, i) => (
             <motion.div
               key={i}
@@ -96,7 +112,9 @@ function PropostaPage() {
             >
               <Card className="text-center h-full flex flex-col justify-center">
                 <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-2">{item.label}</p>
-                <p className="font-display font-bold text-2xl text-[var(--color-primary)]">{item.value}</p>
+                <p className="font-display font-bold text-2xl text-[var(--color-primary)]">
+                  {item.isCurrency ? `R$ ${Number(item.value).toLocaleString('pt-BR')}` : item.value}
+                </p>
                 <p className="text-xs text-[var(--text-tertiary)] mt-1">{item.sub}</p>
               </Card>
             </motion.div>
@@ -205,8 +223,8 @@ function PropostaPage() {
                 <div>
                   <p className="text-sm font-medium text-[var(--color-accent-teal)]">Economia vs. Custo</p>
                   <p className="text-sm text-[var(--text-secondary)] mt-1">
-                    O sistema economiza ~R$ 4.200/mês em divergências não detectadas + tempo da equipe.
-                    Com custo de R$ {custoMensal}/mês, o <span className="font-semibold text-[var(--text-primary)]">retorno líquido é de R$ {(4200 - custoMensal).toLocaleString('pt-BR')}/mês</span>.
+                    O sistema economiza ~R$ {config.economiaMensalValue.toLocaleString('pt-BR')}/mês em divergências não detectadas + tempo da equipe.
+                    Com custo de R$ {custoMensal}/mês, o <span className="font-semibold text-[var(--text-primary)]">retorno líquido é de R$ {(config.economiaMensalValue - custoMensal).toLocaleString('pt-BR')}/mês</span>.
                   </p>
                 </div>
               </div>
@@ -283,6 +301,20 @@ function PropostaPage() {
 
                 <div className="space-y-4">
                   <EditField label="Prazo (dias)" value={draft.prazo} onChange={v => setDraft({ ...draft, prazo: v })} />
+                  
+                  <div className="border-t border-[var(--border-subtle)] pt-4">
+                    <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-3">Impacto (Cards)</p>
+                    <div className="space-y-3">
+                      <EditStringField label="Tempo Economizado (Valor)" value={draft.tempoEconomizadoValue} onChange={v => setDraft({ ...draft, tempoEconomizadoValue: v })} />
+                      <EditStringField label="Tempo Economizado (Sub)" value={draft.tempoEconomizadoSub} onChange={v => setDraft({ ...draft, tempoEconomizadoSub: v })} />
+                      <EditStringField label="Divergências (Valor)" value={draft.divergenciasValue} onChange={v => setDraft({ ...draft, divergenciasValue: v })} />
+                      <EditStringField label="Divergências (Sub)" value={draft.divergenciasSub} onChange={v => setDraft({ ...draft, divergenciasSub: v })} />
+                      <EditField label="Economia Mensal (R$)" value={draft.economiaMensalValue} onChange={v => setDraft({ ...draft, economiaMensalValue: v })} />
+                      <EditStringField label="Economia Mensal (Sub)" value={draft.economiaMensalSub} onChange={v => setDraft({ ...draft, economiaMensalSub: v })} />
+                      <EditStringField label="ROI (Valor)" value={draft.roiValue} onChange={v => setDraft({ ...draft, roiValue: v })} />
+                      <EditStringField label="ROI (Sub)" value={draft.roiSub} onChange={v => setDraft({ ...draft, roiSub: v })} />
+                    </div>
+                  </div>
                   <div className="border-t border-[var(--border-subtle)] pt-4">
                     <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-3">Custos Mensais</p>
                     <div className="space-y-3">
@@ -345,6 +377,20 @@ function EditField({ label, value, onChange }: { label: string; value: number; o
         value={value}
         onChange={e => onChange(Number(e.target.value))}
         className="w-24 text-right bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-[var(--radius-sm)] px-3 py-2 text-sm font-display font-semibold focus:outline-none focus:border-[var(--color-primary)]"
+      />
+    </div>
+  );
+}
+
+function EditStringField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <label className="text-sm text-[var(--text-secondary)] flex-1 min-w-0 truncate">{label}</label>
+      <input
+        type="text"
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        className="w-32 text-right bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-[var(--radius-sm)] px-3 py-2 text-sm font-display font-semibold focus:outline-none focus:border-[var(--color-primary)]"
       />
     </div>
   );
