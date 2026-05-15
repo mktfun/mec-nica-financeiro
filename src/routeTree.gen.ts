@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RecebiveisRouteImport } from './routes/recebiveis'
+import { Route as PropostaRouteImport } from './routes/proposta'
 import { Route as PatioRouteImport } from './routes/patio'
 import { Route as LojasRouteImport } from './routes/lojas'
 import { Route as HistoricoRouteImport } from './routes/historico'
@@ -22,6 +23,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const RecebiveisRoute = RecebiveisRouteImport.update({
   id: '/recebiveis',
   path: '/recebiveis',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PropostaRoute = PropostaRouteImport.update({
+  id: '/proposta',
+  path: '/proposta',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PatioRoute = PatioRouteImport.update({
@@ -74,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/historico': typeof HistoricoRoute
   '/lojas': typeof LojasRoute
   '/patio': typeof PatioRoute
+  '/proposta': typeof PropostaRoute
   '/recebiveis': typeof RecebiveisRoute
 }
 export interface FileRoutesByTo {
@@ -85,6 +92,7 @@ export interface FileRoutesByTo {
   '/historico': typeof HistoricoRoute
   '/lojas': typeof LojasRoute
   '/patio': typeof PatioRoute
+  '/proposta': typeof PropostaRoute
   '/recebiveis': typeof RecebiveisRoute
 }
 export interface FileRoutesById {
@@ -97,6 +105,7 @@ export interface FileRoutesById {
   '/historico': typeof HistoricoRoute
   '/lojas': typeof LojasRoute
   '/patio': typeof PatioRoute
+  '/proposta': typeof PropostaRoute
   '/recebiveis': typeof RecebiveisRoute
 }
 export interface FileRouteTypes {
@@ -110,6 +119,7 @@ export interface FileRouteTypes {
     | '/historico'
     | '/lojas'
     | '/patio'
+    | '/proposta'
     | '/recebiveis'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/historico'
     | '/lojas'
     | '/patio'
+    | '/proposta'
     | '/recebiveis'
   id:
     | '__root__'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/historico'
     | '/lojas'
     | '/patio'
+    | '/proposta'
     | '/recebiveis'
   fileRoutesById: FileRoutesById
 }
@@ -144,6 +156,7 @@ export interface RootRouteChildren {
   HistoricoRoute: typeof HistoricoRoute
   LojasRoute: typeof LojasRoute
   PatioRoute: typeof PatioRoute
+  PropostaRoute: typeof PropostaRoute
   RecebiveisRoute: typeof RecebiveisRoute
 }
 
@@ -154,6 +167,13 @@ declare module '@tanstack/react-router' {
       path: '/recebiveis'
       fullPath: '/recebiveis'
       preLoaderRoute: typeof RecebiveisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/proposta': {
+      id: '/proposta'
+      path: '/proposta'
+      fullPath: '/proposta'
+      preLoaderRoute: typeof PropostaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/patio': {
@@ -224,6 +244,7 @@ const rootRouteChildren: RootRouteChildren = {
   HistoricoRoute: HistoricoRoute,
   LojasRoute: LojasRoute,
   PatioRoute: PatioRoute,
+  PropostaRoute: PropostaRoute,
   RecebiveisRoute: RecebiveisRoute,
 }
 export const routeTree = rootRouteImport

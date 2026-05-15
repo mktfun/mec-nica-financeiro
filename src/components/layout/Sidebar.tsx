@@ -1,6 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Home, PieChart, Store, AlertTriangle, Settings, Car, DollarSign } from "lucide-react";
+import { Home, PieChart, Store, AlertTriangle, Settings, Car, DollarSign, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -54,7 +54,17 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="mt-auto">
+      <div className="mt-auto space-y-2">
+        <Link
+          to="/proposta"
+          className={cn(
+            "flex items-center gap-3 px-4 py-3.5 rounded-[var(--radius-full)] font-medium text-sm transition-colors w-full",
+            location.pathname === "/proposta" ? "text-[var(--text-primary)] bg-[var(--bg-surface-elevated)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)]"
+          )}
+        >
+          <FileText size={20} className={cn("transition-colors", location.pathname === "/proposta" && "text-[var(--color-primary)]")} />
+          Proposta
+        </Link>
         <Link
           to="/configuracoes"
           className={cn(
