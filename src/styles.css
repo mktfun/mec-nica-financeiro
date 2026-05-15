@@ -128,13 +128,13 @@
 
   /* Glassmorphism utilities */
   .glass-panel {
-    background-color: rgba(22, 24, 26, 0.6);
+    background-color: rgba(244, 244, 244, 0.6);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid var(--border-subtle);
   }
 
-  .light .glass-panel {
-    background-color: rgba(244, 244, 244, 0.6);
+  .dark .glass-panel {
+    background-color: rgba(22, 24, 26, 0.6);
   }
 }
