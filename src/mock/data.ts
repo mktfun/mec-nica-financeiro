@@ -12,6 +12,10 @@ export interface MockStore {
   osCount: number;
   topError?: string;
   avatarUrl: string;
+  manager: string;
+  mechanics: string[];
+  address: string;
+  phone: string;
 }
 
 export interface MockAlert {
@@ -52,6 +56,10 @@ export const mockStores: MockStore[] = [
     dailyCash: 1250.0,
     osCount: 34,
     avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=LC&backgroundColor=000000',
+    manager: 'Roberto Almeida',
+    mechanics: ['Carlos Silva', 'Fernando Souza', 'André Lima'],
+    address: 'Av. Paulista, 1000 - Bela Vista',
+    phone: '(11) 98765-4321',
   },
   {
     id: 'st-02',
@@ -64,6 +72,10 @@ export const mockStores: MockStore[] = [
     osCount: 22,
     topError: 'Pix não identificado',
     avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=OS&backgroundColor=16181a',
+    manager: 'Carla Dias',
+    mechanics: ['Marcelo Silva', 'Tiago Ramos'],
+    address: 'Av. Ibirapuera, 3000 - Moema',
+    phone: '(11) 91234-5678',
   },
   {
     id: 'st-03',
@@ -75,6 +87,10 @@ export const mockStores: MockStore[] = [
     dailyCash: 420.0,
     osCount: 19,
     avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=MN&backgroundColor=000000',
+    manager: 'Eduardo Martins',
+    mechanics: ['Luís Ferreira', 'Marcos Paulo', 'Rafael Costa'],
+    address: 'Rua Voluntários da Pátria, 1500 - Santana',
+    phone: '(11) 94567-8901',
   },
   {
     id: 'st-04',
@@ -86,6 +102,10 @@ export const mockStores: MockStore[] = [
     dailyCash: 0,
     osCount: 12,
     avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=EL&backgroundColor=000000',
+    manager: 'Fernanda Oliveira',
+    mechanics: ['Vitor Pereira', 'Ricardo Gomes'],
+    address: 'Av. Radial Leste, 5000 - Tatuapé',
+    phone: '(11) 93456-7890',
   },
   {
     id: 'st-05',
@@ -98,6 +118,10 @@ export const mockStores: MockStore[] = [
     osCount: 45,
     topError: 'Sobra de Caixa Múltipla',
     avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=SA&backgroundColor=16181a',
+    manager: 'Amanda Santos',
+    mechanics: ['José Carlos', 'Matheus Oliveira', 'Bruno Silva', 'Igor Santos'],
+    address: 'Av. das Nações Unidas, 22540 - Jurubatuba',
+    phone: '(11) 92345-6789',
   },
 ];
 
@@ -151,4 +175,24 @@ export const summaryData = {
   totalOut: 125400.0,
   totalDivergences: mockStores.reduce((acc, s) => acc + Math.abs(s.divergence), 0),
   motorStatus: 'processing' as const,
+};
+
+export interface MockConciliationReport {
+  date: string;
+  totalProcessedOs: number;
+  totalApprovedAmount: number;
+  divergenceCount: number;
+  topDivergences: string[];
+  processedStores: number;
+  pendingStores: number;
+}
+
+export const mockConciliationReport: MockConciliationReport = {
+  date: new Date().toLocaleDateString('pt-BR'),
+  totalProcessedOs: 132,
+  totalApprovedAmount: 173200.00,
+  divergenceCount: 2,
+  topDivergences: ['Pix não identificado na Oficina Sul', 'Sobra de Caixa no Shopping Auto'],
+  processedStores: 10,
+  pendingStores: 0,
 };

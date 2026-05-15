@@ -1,5 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion, useSpring, useTransform } from "framer-motion";
+
+let isFirstLoad = true;
+if (typeof window !== "undefined") {
+  isFirstLoad = !sessionStorage.getItem("animated_number_init");
+}
 
 interface AnimatedNumberProps {
   value: number;
@@ -8,13 +13,19 @@ interface AnimatedNumberProps {
 }
 
 export function AnimatedNumber({ value, format = "currency", className }: AnimatedNumberProps) {
-  const springValue = useSpring(0, {
+  const [initialValue] = useState(() => (isFirstLoad ? 0 : value));
+
+  const springValue = useSpring(initialValue, {
     stiffness: 100,
     damping: 30,
     restDelta: 0.001,
   });
 
   useEffect(() => {
+    if (isFirstLoad) {
+      sessionStorage.setItem("animated_number_init", "true");
+      isFirstLoad = false;
+    }
     springValue.set(value);
   }, [value, springValue]);
 

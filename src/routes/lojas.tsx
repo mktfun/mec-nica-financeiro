@@ -5,14 +5,17 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { ChevronRight, Search } from 'lucide-react';
-import { Input } from '@/components/ui/Input';
 import { motion } from 'framer-motion';
+import { StoreDetailsSheet } from '@/components/dashboard/StoreDetailsSheet';
+import { useState } from 'react';
+import { MockStore } from '@/mock/data';
 
 export const Route = createFileRoute('/lojas')({
   component: LojasPage,
 });
-
 function LojasPage() {
+  const [selectedStore, setSelectedStore] = useState<MockStore | null>(null);
+
   return (
     <AppShell>
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-4xl mx-auto">
@@ -35,9 +38,12 @@ function LojasPage() {
               key={store.id}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
             >
-              <Card variant="glass" className="p-4 hover:border-[var(--border-strong)] transition-colors cursor-pointer group flex items-center justify-between">
+              <Card 
+                variant="glass" 
+                className="p-4 hover:border-[var(--border-strong)] transition-colors cursor-pointer group flex items-center justify-between"
+                onClick={() => setSelectedStore(store)}
+              >
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full overflow-hidden bg-[var(--bg-canvas)]">
                     <img src={store.avatarUrl} alt={store.name} className="w-full h-full object-cover" />
@@ -74,6 +80,11 @@ function LojasPage() {
             </motion.div>
           ))}
         </div>
+
+        <StoreDetailsSheet 
+          store={selectedStore} 
+          onClose={() => setSelectedStore(null)} 
+        />
       </div>
     </AppShell>
   );

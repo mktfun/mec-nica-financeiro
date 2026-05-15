@@ -3,6 +3,7 @@ import { HeroBalance } from '@/components/dashboard/HeroBalance';
 import { QuickActions } from '@/components/dashboard/QuickActions';
 import { MotorStatus } from '@/components/dashboard/MotorStatus';
 import { RecentActivity } from '@/components/dashboard/RecentActivity';
+import { CashFlowChart } from '@/components/dashboard/CashFlowChart';
 import { AppShell } from '@/components/layout/AppShell';
 
 export const Route = createFileRoute('/')({
@@ -27,8 +28,8 @@ function DashboardPage() {
               <h3 className="font-display font-semibold mb-4 text-sm text-[var(--text-secondary)] uppercase tracking-wider">
                 Resumo da Semana
               </h3>
-              <div className="h-48 flex items-center justify-center border border-dashed border-[var(--border-strong)] rounded-[var(--radius-md)]">
-                <span className="text-[var(--text-tertiary)] text-sm">Gráfico de Fluxo de Caixa</span>
+              <div className="h-48 flex items-center justify-center">
+                <CashFlowChart />
               </div>
             </div>
           </div>

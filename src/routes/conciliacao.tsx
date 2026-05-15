@@ -5,12 +5,16 @@ import { summaryData } from '@/mock/data';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Button } from '@/components/ui/Button';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import { ConciliationReportDialog } from '@/components/dashboard/ConciliationReportDialog';
 
 export const Route = createFileRoute('/conciliacao')({
   component: ConciliacaoPage,
 });
 
 function ConciliacaoPage() {
+  const [reportOpen, setReportOpen] = useState(false);
+
   return (
     <AppShell>
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-4xl mx-auto">
@@ -43,10 +47,15 @@ function ConciliacaoPage() {
           <p className="text-[var(--text-secondary)] max-w-md mx-auto mb-6">
             O motor de conciliação processou 132 transações hoje. {summaryData.totalDivergences > 0 ? "Foram encontradas divergências que precisam de atenção." : "Todas as transações bateram perfeitamente."}
           </p>
-          <Button variant="primary" className="gap-2 rounded-full">
+          <Button variant="primary" className="gap-2 rounded-full" onClick={() => setReportOpen(true)}>
             Ver Relatório Detalhado <ArrowRight size={18} />
           </Button>
         </Card>
+
+        <ConciliationReportDialog 
+          isOpen={reportOpen} 
+          onClose={() => setReportOpen(false)} 
+        />
       </div>
     </AppShell>
   );

@@ -7,12 +7,22 @@ import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { AlertTriangle, Clock, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
+import { AlertResolveDialog } from '@/components/dashboard/AlertResolveDialog';
+import { useState } from 'react';
+import { MockAlert } from '@/mock/data';
 
 export const Route = createFileRoute('/alertas')({
   component: AlertasPage,
 });
 
 function AlertasPage() {
+  const [selectedAlert, setSelectedAlert] = useState<MockAlert | null>(null);
+  const [alerts, setAlerts] = useState(mockAlerts);
+
+  const handleResolved = (id: string) => {
+    setAlerts(alerts.filter(a => a.id !== id));
+  };
+
   return (
     <AppShell>
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-4xl mx-auto">
@@ -37,7 +47,7 @@ function AlertasPage() {
         </div>
 
         <div className="flex flex-col gap-4">
-          {mockAlerts.map((alert, i) => (
+          {alerts.map((alert, i) => (
             <motion.div
               key={alert.id}
               initial={{ opacity: 0, scale: 0.98 }}
@@ -82,7 +92,7 @@ function AlertasPage() {
                       </div>
                     )}
                     {alert.severity !== 'info' && (
-                      <Button size="sm" variant={alert.severity === 'critical' ? 'primary' : 'outline'} className="rounded-full">
+                      <Button size="sm" variant={alert.severity === 'critical' ? 'primary' : 'outline'} className="rounded-full" onClick={() => setSelectedAlert(alert)}>
                         Resolver
                       </Button>
                     )}
@@ -92,6 +102,12 @@ function AlertasPage() {
             </motion.div>
           ))}
         </div>
+        
+        <AlertResolveDialog 
+          alert={selectedAlert} 
+          onClose={() => setSelectedAlert(null)} 
+          onResolved={handleResolved} 
+        />
       </div>
     </AppShell>
   );

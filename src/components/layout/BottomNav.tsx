@@ -1,6 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Home, PieChart, Store, AlertTriangle } from "lucide-react";
+import { Home, PieChart, Store, AlertTriangle, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -8,6 +8,7 @@ const navItems = [
   { id: "/conciliacao", label: "Contas", icon: PieChart },
   { id: "/lojas", label: "Lojas", icon: Store },
   { id: "/alertas", label: "Alertas", icon: AlertTriangle },
+  { id: "/configuracoes", label: "Ajustes", icon: Settings },
 ];
 
 export function BottomNav() {

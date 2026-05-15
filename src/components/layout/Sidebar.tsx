@@ -53,10 +53,16 @@ export function Sidebar() {
       </nav>
 
       <div className="mt-auto">
-        <button className="flex items-center gap-3 px-4 py-3.5 rounded-[var(--radius-full)] font-medium text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)] w-full transition-colors">
-          <Settings size={20} />
+        <Link 
+          to="/configuracoes"
+          className={cn(
+            "flex items-center gap-3 px-4 py-3.5 rounded-[var(--radius-full)] font-medium text-sm transition-colors w-full",
+            location.pathname === "/configuracoes" ? "text-[var(--text-primary)] bg-[var(--bg-surface-elevated)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)]"
+          )}
+        >
+          <Settings size={20} className={cn("transition-colors", location.pathname === "/configuracoes" && "text-[var(--color-primary)]")} />
           Configurações
-        </button>
+        </Link>
       </div>
     </aside>
   );
