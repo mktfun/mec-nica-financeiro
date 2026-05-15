@@ -88,6 +88,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Mecânica Popular · Financeiro" },
+      { name: "description", content: "A web application for financial reconciliation and monitoring of auto repair shop operations." },
+      { property: "og:description", content: "A web application for financial reconciliation and monitoring of auto repair shop operations." },
+      { name: "twitter:description", content: "A web application for financial reconciliation and monitoring of auto repair shop operations." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/32227659-72d8-41c4-8aca-71e70af7b638/id-preview-ae557f90--a6076718-b49b-4fb9-b0c9-b79959dcdc83.lovable.app-1778857112589.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/32227659-72d8-41c4-8aca-71e70af7b638/id-preview-ae557f90--a6076718-b49b-4fb9-b0c9-b79959dcdc83.lovable.app-1778857112589.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
