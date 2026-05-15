@@ -9,20 +9,44 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RecebiveisRouteImport } from './routes/recebiveis'
+import { Route as PatioRouteImport } from './routes/patio'
 import { Route as LojasRouteImport } from './routes/lojas'
+import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
+import { Route as ConciliacaoDetalhesRouteImport } from './routes/conciliacao-detalhes'
 import { Route as ConciliacaoRouteImport } from './routes/conciliacao'
 import { Route as AlertasRouteImport } from './routes/alertas'
 import { Route as IndexRouteImport } from './routes/index'
 
+const RecebiveisRoute = RecebiveisRouteImport.update({
+  id: '/recebiveis',
+  path: '/recebiveis',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PatioRoute = PatioRouteImport.update({
+  id: '/patio',
+  path: '/patio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LojasRoute = LojasRouteImport.update({
   id: '/lojas',
   path: '/lojas',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HistoricoRoute = HistoricoRouteImport.update({
+  id: '/historico',
+  path: '/historico',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
   id: '/configuracoes',
   path: '/configuracoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConciliacaoDetalhesRoute = ConciliacaoDetalhesRouteImport.update({
+  id: '/conciliacao-detalhes',
+  path: '/conciliacao-detalhes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConciliacaoRoute = ConciliacaoRouteImport.update({
@@ -45,48 +69,100 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/alertas': typeof AlertasRoute
   '/conciliacao': typeof ConciliacaoRoute
+  '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/historico': typeof HistoricoRoute
   '/lojas': typeof LojasRoute
+  '/patio': typeof PatioRoute
+  '/recebiveis': typeof RecebiveisRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/alertas': typeof AlertasRoute
   '/conciliacao': typeof ConciliacaoRoute
+  '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/historico': typeof HistoricoRoute
   '/lojas': typeof LojasRoute
+  '/patio': typeof PatioRoute
+  '/recebiveis': typeof RecebiveisRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/alertas': typeof AlertasRoute
   '/conciliacao': typeof ConciliacaoRoute
+  '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/historico': typeof HistoricoRoute
   '/lojas': typeof LojasRoute
+  '/patio': typeof PatioRoute
+  '/recebiveis': typeof RecebiveisRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/alertas' | '/conciliacao' | '/configuracoes' | '/lojas'
+  fullPaths:
+    | '/'
+    | '/alertas'
+    | '/conciliacao'
+    | '/conciliacao-detalhes'
+    | '/configuracoes'
+    | '/historico'
+    | '/lojas'
+    | '/patio'
+    | '/recebiveis'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/alertas' | '/conciliacao' | '/configuracoes' | '/lojas'
+  to:
+    | '/'
+    | '/alertas'
+    | '/conciliacao'
+    | '/conciliacao-detalhes'
+    | '/configuracoes'
+    | '/historico'
+    | '/lojas'
+    | '/patio'
+    | '/recebiveis'
   id:
     | '__root__'
     | '/'
     | '/alertas'
     | '/conciliacao'
+    | '/conciliacao-detalhes'
     | '/configuracoes'
+    | '/historico'
     | '/lojas'
+    | '/patio'
+    | '/recebiveis'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AlertasRoute: typeof AlertasRoute
   ConciliacaoRoute: typeof ConciliacaoRoute
+  ConciliacaoDetalhesRoute: typeof ConciliacaoDetalhesRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
+  HistoricoRoute: typeof HistoricoRoute
   LojasRoute: typeof LojasRoute
+  PatioRoute: typeof PatioRoute
+  RecebiveisRoute: typeof RecebiveisRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/recebiveis': {
+      id: '/recebiveis'
+      path: '/recebiveis'
+      fullPath: '/recebiveis'
+      preLoaderRoute: typeof RecebiveisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/patio': {
+      id: '/patio'
+      path: '/patio'
+      fullPath: '/patio'
+      preLoaderRoute: typeof PatioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lojas': {
       id: '/lojas'
       path: '/lojas'
@@ -94,11 +170,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LojasRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/historico': {
+      id: '/historico'
+      path: '/historico'
+      fullPath: '/historico'
+      preLoaderRoute: typeof HistoricoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/configuracoes': {
       id: '/configuracoes'
       path: '/configuracoes'
       fullPath: '/configuracoes'
       preLoaderRoute: typeof ConfiguracoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conciliacao-detalhes': {
+      id: '/conciliacao-detalhes'
+      path: '/conciliacao-detalhes'
+      fullPath: '/conciliacao-detalhes'
+      preLoaderRoute: typeof ConciliacaoDetalhesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/conciliacao': {
@@ -129,9 +219,23 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AlertasRoute: AlertasRoute,
   ConciliacaoRoute: ConciliacaoRoute,
+  ConciliacaoDetalhesRoute: ConciliacaoDetalhesRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
+  HistoricoRoute: HistoricoRoute,
   LojasRoute: LojasRoute,
+  PatioRoute: PatioRoute,
+  RecebiveisRoute: RecebiveisRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

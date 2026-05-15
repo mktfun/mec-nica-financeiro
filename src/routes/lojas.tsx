@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { ChevronRight, Search } from 'lucide-react';
+import { Input } from '@/components/ui/Input';
 import { motion } from 'framer-motion';
 import { StoreDetailsSheet } from '@/components/dashboard/StoreDetailsSheet';
 import { useState } from 'react';

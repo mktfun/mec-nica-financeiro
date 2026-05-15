@@ -1,12 +1,14 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Home, PieChart, Store, AlertTriangle, Settings } from "lucide-react";
+import { Home, PieChart, Store, AlertTriangle, Settings, Car, DollarSign } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { id: "/", label: "Visão Geral", icon: Home },
   { id: "/conciliacao", label: "Conciliação", icon: PieChart },
   { id: "/lojas", label: "Lojas", icon: Store },
+  { id: "/patio", label: "Pátio", icon: Car },
+  { id: "/recebiveis", label: "Recebíveis", icon: DollarSign },
   { id: "/alertas", label: "Alertas", icon: AlertTriangle },
 ];
 
@@ -26,7 +28,7 @@ export function Sidebar() {
 
       <nav className="flex-1 space-y-2">
         {navItems.map((item) => {
-          const isActive = location.pathname === item.id;
+          const isActive = location.pathname === item.id || (item.id !== '/' && location.pathname.startsWith(item.id));
           const Icon = item.icon;
 
           return (
@@ -53,7 +55,7 @@ export function Sidebar() {
       </nav>
 
       <div className="mt-auto">
-        <Link 
+        <Link
           to="/configuracoes"
           className={cn(
             "flex items-center gap-3 px-4 py-3.5 rounded-[var(--radius-full)] font-medium text-sm transition-colors w-full",

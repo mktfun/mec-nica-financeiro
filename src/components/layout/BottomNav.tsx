@@ -17,7 +17,7 @@ export function BottomNav() {
   return (
     <nav className="flex items-center justify-between px-6 pb-6 pt-3 bg-[var(--bg-surface)]/80 backdrop-blur-xl border-t border-[var(--border-subtle)] safe-area-bottom">
       {navItems.map((item) => {
-        const isActive = location.pathname === item.id;
+        const isActive = location.pathname === item.id || (item.id !== '/' && location.pathname.startsWith(item.id));
         const Icon = item.icon;
 
         return (
@@ -34,12 +34,12 @@ export function BottomNav() {
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
               )}
-              <Icon 
-                size={22} 
+              <Icon
+                size={22}
                 className={cn(
-                  "transition-colors", 
+                  "transition-colors",
                   isActive ? "text-[var(--color-primary)]" : "text-[var(--text-tertiary)]"
-                )} 
+                )}
               />
             </div>
             <span className={cn(
