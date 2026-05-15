@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { AppShell } from '@/components/layout/AppShell';
+import { Link } from '@tanstack/react-router';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
@@ -62,7 +62,7 @@ function PropostaPage() {
   ];
 
   return (
-    <AppShell>
+    <div className="min-h-screen bg-[var(--bg-canvas)] text-[var(--text-primary)] font-body p-4 md:p-8">
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-10 max-w-4xl mx-auto pb-20">
 
         {/* Hero */}
@@ -94,7 +94,7 @@ function PropostaPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 + i * 0.05 }}
             >
-              <Card className="text-center">
+              <Card className="text-center h-full flex flex-col justify-center">
                 <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-2">{item.label}</p>
                 <p className="font-display font-bold text-2xl text-[var(--color-primary)]">{item.value}</p>
                 <p className="text-xs text-[var(--text-tertiary)] mt-1">{item.sub}</p>
@@ -317,7 +317,7 @@ function PropostaPage() {
           )}
         </AnimatePresence>
       </div>
-    </AppShell>
+    </div>
   );
 }
 
