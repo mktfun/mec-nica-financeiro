@@ -147,7 +147,7 @@ export function StoreFormDialog({ isOpen, onClose, storeToEdit }: StoreFormDialo
           )}
         </div>
 
-        <div className="pt-4 flex justify-end gap-3 sticky bottom-0 bg-[var(--bg-surface)] py-2 border-t border-white/5 mt-4">
+        <div className="pt-6 flex justify-end gap-3 mt-4">
           <Button type="button" variant="ghost" onClick={onClose}>
             Cancelar
           </Button>
