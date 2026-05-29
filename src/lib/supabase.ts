@@ -1,10 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+// Fallback para strings vazias para não quebrar o build (SSR) do Lovable se as variáveis não estiverem injetadas no momento do build
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY env vars');
+if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+  console.warn('⚠️ VITE_SUPABASE_URL ou VITE_SUPABASE_ANON_KEY ausentes! O cliente Supabase usará valores falsos e as chamadas falharão. Verifique as configurações do Lovable.');
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
