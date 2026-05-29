@@ -1,8 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase, AlertRow } from '@/lib/supabase';
+import { getDefaultDate } from '@/lib/utils';
 
 export function useAlerts(date?: string) {
-  const targetDate = date ?? new Date().toISOString().split('T')[0];
+  const targetDate = date ?? getDefaultDate();
   return useQuery({
     queryKey: ['alerts', targetDate],
     queryFn: async () => {

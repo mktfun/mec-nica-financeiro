@@ -1,8 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase, ReconciliationRow } from '@/lib/supabase';
+import { getDefaultDate } from '@/lib/utils';
 
 export function useConciliacaoDetalhes(date?: string) {
-  const targetDate = date ?? new Date().toISOString().split('T')[0];
+  const targetDate = date ?? getDefaultDate();
   return useQuery({
     queryKey: ['reconciliations', 'details', targetDate],
     queryFn: async () => {
@@ -18,7 +19,7 @@ export function useConciliacaoDetalhes(date?: string) {
 }
 
 export function useConciliacaoResumo(date?: string) {
-  const targetDate = date ?? new Date().toISOString().split('T')[0];
+  const targetDate = date ?? getDefaultDate();
   return useQuery({
     queryKey: ['reconciliations', 'resumo', targetDate],
     queryFn: async () => {
@@ -45,7 +46,7 @@ export function useSaveDailyCash() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ storeId, value, date }: { storeId: string; value: number; date?: string }) => {
-      const targetDate = date ?? new Date().toISOString().split('T')[0];
+      const targetDate = date ?? getDefaultDate();
       const { error } = await supabase
         .from('reconciliations')
         .upsert({ store_id: storeId, date: targetDate, daily_cash: value }, { onConflict: 'store_id,date' });

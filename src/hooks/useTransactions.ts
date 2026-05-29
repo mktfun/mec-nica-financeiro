@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase, TransactionRow } from '@/lib/supabase';
+import { getDefaultDate } from '@/lib/utils';
 
 export function useTransactions(limit = 20) {
   return useQuery({
@@ -37,7 +38,7 @@ export function useDashboardSummary() {
   return useQuery({
     queryKey: ['dashboard', 'summary'],
     queryFn: async () => {
-      const today = new Date().toISOString().split('T')[0];
+      const today = getDefaultDate();
       const { data: rec, error: recErr } = await supabase
         .from('reconciliations')
         .select('financial_total, divergence, status')
