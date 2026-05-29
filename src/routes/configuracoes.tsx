@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { useBotRuns } from '@/hooks/useBotRuns';
+import { useBotRunHistory } from '@/hooks/useBotRuns';
 import { useStores } from '@/hooks/useStores';
 
 export const Route = createFileRoute('/configuracoes')({
@@ -10,7 +10,7 @@ export const Route = createFileRoute('/configuracoes')({
 });
 
 function ConfiguracoesPage() {
-  const { data: botRuns = [], isLoading: loadingBots } = useBotRuns();
+  const { data: botRuns = [], isLoading: loadingBots } = useBotRunHistory();
   const { data: stores = [], isLoading: loadingStores } = useStores();
 
   const lastRun = botRuns[0];
