@@ -1,9 +1,40 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { Sidebar } from "./Sidebar";
 import { BottomNav } from "./BottomNav";
 import { TopBar } from "./TopBar";
+import { useSession } from "@/hooks/useAuth";
+import { useNavigate } from "@tanstack/react-router";
 
 export function AppShell({ children }: { children: ReactNode }) {
+  const session = useSession();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // session === undefined means "loading"
+    // session === null means "not authenticated"
+    if (session === null) {
+      navigate({ to: '/login' });
+    }
+  }, [session, navigate]);
+
+  // Loading state while session resolves
+  if (session === undefined) {
+    return (
+      <div className="min-h-screen bg-[var(--bg-canvas)] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <svg className="animate-spin w-8 h-8 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="none">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+          </svg>
+          <p className="text-sm text-[var(--text-tertiary)]">Verificando sessão...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Not authenticated → redirect happening, show nothing
+  if (session === null) return null;
+
   return (
     <div className="min-h-screen bg-[var(--bg-canvas)] text-[var(--text-primary)] font-body selection:bg-[var(--color-primary)] selection:text-white flex overflow-hidden">
       {/* Desktop Sidebar */}

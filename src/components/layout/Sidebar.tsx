@@ -1,7 +1,8 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Home, PieChart, Store, AlertTriangle, Settings, Car, DollarSign, FileText } from "lucide-react";
+import { Home, PieChart, Store, AlertTriangle, Settings, Car, DollarSign, FileText, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLogout } from "@/hooks/useAuth";
 
 const navItems = [
   { id: "/", label: "Visão Geral", icon: Home },
@@ -14,6 +15,7 @@ const navItems = [
 
 export function Sidebar() {
   const location = useLocation();
+  const { logout } = useLogout();
 
   return (
     <aside className="h-full flex flex-col py-8 px-4">
@@ -75,6 +77,13 @@ export function Sidebar() {
           <Settings size={20} className={cn("transition-colors", location.pathname === "/configuracoes" && "text-[var(--color-primary)]")} />
           Configurações
         </Link>
+        <button
+          onClick={logout}
+          className="flex items-center gap-3 px-4 py-3.5 rounded-[var(--radius-full)] font-medium text-sm transition-colors w-full text-[var(--color-accent-danger)]/70 hover:text-[var(--color-accent-danger)] hover:bg-[var(--color-accent-danger)]/5"
+        >
+          <LogOut size={20} />
+          Sair
+        </button>
       </div>
     </aside>
   );

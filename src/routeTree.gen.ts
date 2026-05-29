@@ -13,6 +13,7 @@ import { Route as RecebiveisRouteImport } from './routes/recebiveis'
 import { Route as PropostaRouteImport } from './routes/proposta'
 import { Route as PatioRouteImport } from './routes/patio'
 import { Route as LojasRouteImport } from './routes/lojas'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as ConciliacaoDetalhesRouteImport } from './routes/conciliacao-detalhes'
@@ -38,6 +39,11 @@ const PatioRoute = PatioRouteImport.update({
 const LojasRoute = LojasRouteImport.update({
   id: '/lojas',
   path: '/lojas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HistoricoRoute = HistoricoRouteImport.update({
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/historico': typeof HistoricoRoute
+  '/login': typeof LoginRoute
   '/lojas': typeof LojasRoute
   '/patio': typeof PatioRoute
   '/proposta': typeof PropostaRoute
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/historico': typeof HistoricoRoute
+  '/login': typeof LoginRoute
   '/lojas': typeof LojasRoute
   '/patio': typeof PatioRoute
   '/proposta': typeof PropostaRoute
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/historico': typeof HistoricoRoute
+  '/login': typeof LoginRoute
   '/lojas': typeof LojasRoute
   '/patio': typeof PatioRoute
   '/proposta': typeof PropostaRoute
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/conciliacao-detalhes'
     | '/configuracoes'
     | '/historico'
+    | '/login'
     | '/lojas'
     | '/patio'
     | '/proposta'
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | '/conciliacao-detalhes'
     | '/configuracoes'
     | '/historico'
+    | '/login'
     | '/lojas'
     | '/patio'
     | '/proposta'
@@ -141,6 +152,7 @@ export interface FileRouteTypes {
     | '/conciliacao-detalhes'
     | '/configuracoes'
     | '/historico'
+    | '/login'
     | '/lojas'
     | '/patio'
     | '/proposta'
@@ -154,6 +166,7 @@ export interface RootRouteChildren {
   ConciliacaoDetalhesRoute: typeof ConciliacaoDetalhesRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
   HistoricoRoute: typeof HistoricoRoute
+  LoginRoute: typeof LoginRoute
   LojasRoute: typeof LojasRoute
   PatioRoute: typeof PatioRoute
   PropostaRoute: typeof PropostaRoute
@@ -188,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/lojas'
       fullPath: '/lojas'
       preLoaderRoute: typeof LojasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/historico': {
@@ -242,6 +262,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConciliacaoDetalhesRoute: ConciliacaoDetalhesRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
   HistoricoRoute: HistoricoRoute,
+  LoginRoute: LoginRoute,
   LojasRoute: LojasRoute,
   PatioRoute: PatioRoute,
   PropostaRoute: PropostaRoute,
