@@ -1,12 +1,18 @@
 import { motion } from "framer-motion";
-import { summaryData } from "@/mock/data";
+import { useDashboardSummary } from "@/hooks/useTransactions";
 import { Card } from "../ui/Card";
 import { CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import { AnimatedNumber } from "../ui/AnimatedNumber";
 
 export function MotorStatus() {
-  const isProcessing = summaryData.motorStatus === "processing";
-  const hasDivergences = summaryData.totalDivergences > 0;
+  const { data: summaryData, isLoading } = useDashboardSummary();
+
+  const isProcessing = summaryData?.motorStatus === "processing";
+  const hasDivergences = (summaryData?.totalDivergences || 0) > 0;
+
+  if (isLoading) {
+    return <Card variant="glass" className="mb-8 p-5 md:p-6 h-24 animate-pulse bg-[var(--bg-surface-hover)]" />;
+  }
 
   return (
     <Card variant="glass" className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 md:p-6">
@@ -38,7 +44,7 @@ export function MotorStatus() {
         <div className="text-sm text-[var(--text-secondary)]">Divergências encontradas</div>
         <div className={`font-display font-bold text-xl ${hasDivergences ? "text-[var(--color-accent-warning)]" : "text-[var(--color-accent-teal)]"}`}>
           {hasDivergences ? (
-            <span>-<AnimatedNumber value={summaryData.totalDivergences} format="currency" /></span>
+            <span>-<AnimatedNumber value={summaryData?.totalDivergences || 0} format="currency" /></span>
           ) : (
             "Nenhuma"
           )}

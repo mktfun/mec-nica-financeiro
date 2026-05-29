@@ -1,6 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
-import { mockAlerts } from '@/mock/data';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
@@ -9,18 +8,37 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { AlertResolveDialog } from '@/components/dashboard/AlertResolveDialog';
 import { useState } from 'react';
-import { MockAlert } from '@/mock/data';
+import { useAlerts } from '@/hooks/useAlerts';
+import { AlertRow } from '@/lib/supabase';
 
 export const Route = createFileRoute('/alertas')({
   component: AlertasPage,
 });
 
+type FilterType = 'all' | 'critical' | 'warning' | 'resolved';
+
 function AlertasPage() {
-  const [selectedAlert, setSelectedAlert] = useState<MockAlert | null>(null);
-  const [alerts, setAlerts] = useState(mockAlerts);
+  const [selectedAlert, setSelectedAlert] = useState<AlertRow | null>(null);
+  const [filter, setFilter] = useState<FilterType>('all');
+  
+  const { data: allAlerts = [], isLoading } = useAlerts();
 
   const handleResolved = (id: string) => {
-    setAlerts(alerts.filter(a => a.id !== id));
+    // The hook will auto-refetch, but we clear the selection
+    setSelectedAlert(null);
+  };
+
+  const filteredAlerts = allAlerts.filter(alert => {
+    if (filter === 'resolved') return alert.status === 'resolved';
+    if (alert.status === 'resolved') return false; // Hide resolved from other tabs
+    if (filter === 'critical') return alert.severity === 'critical';
+    if (filter === 'warning') return alert.severity === 'warning';
+    return true; // all active
+  });
+
+  const counts = {
+    critical: allAlerts.filter(a => a.severity === 'critical' && a.status !== 'resolved').length,
+    warning: allAlerts.filter(a => a.severity === 'warning' && a.status !== 'resolved').length,
   };
 
   return (
@@ -32,76 +50,116 @@ function AlertasPage() {
         </div>
 
         <div className="flex gap-4 mb-8 overflow-x-auto pb-2 scrollbar-none">
-          <Button variant="secondary" size="sm" className="bg-[var(--bg-surface-elevated)]">
-            Todos
+          <Button 
+            variant={filter === 'all' ? 'secondary' : 'ghost'} 
+            size="sm" 
+            className={filter === 'all' ? 'bg-[var(--bg-surface-elevated)]' : 'text-[var(--text-secondary)]'}
+            onClick={() => setFilter('all')}
+          >
+            Todos Ativos
           </Button>
-          <Button variant="ghost" size="sm" className="text-[var(--color-accent-danger)]">
-            Críticos (1)
+          <Button 
+            variant={filter === 'critical' ? 'secondary' : 'ghost'} 
+            size="sm" 
+            className={filter === 'critical' ? 'bg-[var(--bg-surface-elevated)] text-[var(--color-accent-danger)]' : 'text-[var(--color-accent-danger)] opacity-70'}
+            onClick={() => setFilter('critical')}
+          >
+            Críticos ({counts.critical})
           </Button>
-          <Button variant="ghost" size="sm" className="text-[var(--color-accent-warning)]">
-            Avisos (1)
+          <Button 
+            variant={filter === 'warning' ? 'secondary' : 'ghost'} 
+            size="sm" 
+            className={filter === 'warning' ? 'bg-[var(--bg-surface-elevated)] text-[var(--color-accent-warning)]' : 'text-[var(--color-accent-warning)] opacity-70'}
+            onClick={() => setFilter('warning')}
+          >
+            Avisos ({counts.warning})
           </Button>
-          <Button variant="ghost" size="sm" className="text-[var(--text-secondary)]">
+          <Button 
+            variant={filter === 'resolved' ? 'secondary' : 'ghost'} 
+            size="sm" 
+            className={filter === 'resolved' ? 'bg-[var(--bg-surface-elevated)] text-[var(--text-primary)]' : 'text-[var(--text-secondary)] opacity-70'}
+            onClick={() => setFilter('resolved')}
+          >
             Resolvidos
           </Button>
         </div>
 
-        <div className="flex flex-col gap-4">
-          {alerts.map((alert, i) => (
-            <motion.div
-              key={alert.id}
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.1 }}
-            >
-              <Card 
-                variant="glass" 
-                className={`p-5 border-l-4 ${
-                  alert.severity === 'critical' ? 'border-l-[var(--color-accent-danger)]' : 
-                  alert.severity === 'warning' ? 'border-l-[var(--color-accent-warning)]' : 
-                  'border-l-[var(--color-accent-teal)]'
-                }`}
+        {isLoading ? (
+          <div className="flex justify-center p-12">
+            <svg className="animate-spin w-8 h-8 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+            </svg>
+          </div>
+        ) : filteredAlerts.length === 0 ? (
+          <div className="text-center p-12 bg-[var(--bg-surface)] rounded-[var(--radius-lg)] border border-[var(--border-subtle)]">
+            <CheckCircle2 size={32} className="mx-auto text-[var(--color-accent-success)] mb-3 opacity-50" />
+            <p className="text-[var(--text-secondary)]">Nenhum alerta {filter === 'resolved' ? 'resolvido' : 'ativo'} nesta categoria.</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {filteredAlerts.map((alert, i) => (
+              <motion.div
+                key={alert.id}
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.05 }}
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div className="flex items-start gap-4">
-                    <div className={`mt-1 ${
-                      alert.severity === 'critical' ? 'text-[var(--color-accent-danger)]' : 
-                      alert.severity === 'warning' ? 'text-[var(--color-accent-warning)]' : 
-                      'text-[var(--color-accent-teal)]'
-                    }`}>
-                      {alert.severity === 'info' ? <CheckCircle2 /> : <AlertTriangle />}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <Badge variant="neutral">{alert.storeName}</Badge>
-                        <span className="text-xs text-[var(--text-tertiary)] flex items-center gap-1">
-                          <Clock size={12} /> {alert.time}
-                        </span>
-                      </div>
-                      <h3 className="font-semibold text-lg text-[var(--text-primary)]">{alert.title}</h3>
-                      <p className="text-[var(--text-secondary)] text-sm mt-1">{alert.description}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center mt-4 sm:mt-0 gap-4">
-                    {alert.amount && (
-                      <div className={`font-display font-bold text-xl ${
-                        alert.severity === 'critical' ? 'text-[var(--color-accent-danger)]' : 'text-[var(--color-accent-warning)]'
+                <Card 
+                  variant="glass" 
+                  className={`p-5 border-l-4 ${
+                    alert.status === 'resolved' ? 'border-l-[var(--border-strong)] opacity-60' :
+                    alert.severity === 'critical' ? 'border-l-[var(--color-accent-danger)]' : 
+                    alert.severity === 'warning' ? 'border-l-[var(--color-accent-warning)]' : 
+                    'border-l-[var(--color-accent-teal)]'
+                  }`}
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-start gap-4">
+                      <div className={`mt-1 ${
+                        alert.status === 'resolved' ? 'text-[var(--text-tertiary)]' :
+                        alert.severity === 'critical' ? 'text-[var(--color-accent-danger)]' : 
+                        alert.severity === 'warning' ? 'text-[var(--color-accent-warning)]' : 
+                        'text-[var(--color-accent-teal)]'
                       }`}>
-                        <AnimatedNumber value={alert.amount} format="currency" />
+                        {alert.status === 'resolved' || alert.severity === 'info' ? <CheckCircle2 /> : <AlertTriangle />}
                       </div>
-                    )}
-                    {alert.severity !== 'info' && (
-                      <Button size="sm" variant={alert.severity === 'critical' ? 'primary' : 'outline'} className="rounded-full" onClick={() => setSelectedAlert(alert)}>
-                        Resolver
-                      </Button>
-                    )}
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <Badge variant="neutral">{alert.store_name}</Badge>
+                          <span className="text-xs text-[var(--text-tertiary)] flex items-center gap-1">
+                            <Clock size={12} /> {alert.time || new Date(alert.created_at).toLocaleTimeString()}
+                          </span>
+                          {alert.status === 'resolved' && (
+                            <Badge variant="success" className="text-[10px]">Resolvido</Badge>
+                          )}
+                        </div>
+                        <h3 className="font-semibold text-lg text-[var(--text-primary)]">{alert.title}</h3>
+                        <p className="text-[var(--text-secondary)] text-sm mt-1">{alert.description}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center mt-4 sm:mt-0 gap-4">
+                      {alert.amount !== null && alert.amount !== undefined && (
+                        <div className={`font-display font-bold text-xl ${
+                          alert.status === 'resolved' ? 'text-[var(--text-secondary)]' :
+                          alert.severity === 'critical' ? 'text-[var(--color-accent-danger)]' : 'text-[var(--color-accent-warning)]'
+                        }`}>
+                          <AnimatedNumber value={Number(alert.amount)} format="currency" />
+                        </div>
+                      )}
+                      {alert.status !== 'resolved' && alert.severity !== 'info' && (
+                        <Button size="sm" variant={alert.severity === 'critical' ? 'primary' : 'outline'} className="rounded-full" onClick={() => setSelectedAlert(alert)}>
+                          Resolver
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        )}
         
         <AlertResolveDialog 
           alert={selectedAlert} 

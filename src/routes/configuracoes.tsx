@@ -2,21 +2,29 @@ import { createFileRoute } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { useBotRuns } from '@/hooks/useBotRuns';
+import { useStores } from '@/hooks/useStores';
 
 export const Route = createFileRoute('/configuracoes')({
   component: ConfiguracoesPage,
 });
 
 function ConfiguracoesPage() {
+  const { data: botRuns = [], isLoading: loadingBots } = useBotRuns();
+  const { data: stores = [], isLoading: loadingStores } = useStores();
+
+  const lastRun = botRuns[0];
+
   return (
     <AppShell>
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-2xl mx-auto">
         <div className="mb-8">
           <h1 className="font-display font-bold text-3xl mb-2">Configurações</h1>
-          <p className="text-[var(--text-secondary)] text-sm">Gerencie o comportamento do motor de conciliação autônomo.</p>
+          <p className="text-[var(--text-secondary)] text-sm">Gerencie o comportamento do motor de conciliação autônomo e lojas.</p>
         </div>
 
         <div className="space-y-6">
+          {/* Motor de Conciliação */}
           <Card variant="glass" className="p-6">
             <h3 className="font-display font-semibold text-lg mb-4">Motor de Conciliação</h3>
             <div className="space-y-4">
@@ -41,12 +49,53 @@ function ConfiguracoesPage() {
                   <div className="w-11 h-6 bg-[var(--bg-surface-elevated)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--color-primary)]"></div>
                 </label>
               </div>
+
+              {lastRun && (
+                <div className="mt-4 p-3 bg-[var(--bg-canvas)] rounded-[var(--radius-md)] border border-[var(--border-subtle)]">
+                  <p className="text-sm font-medium">Última Execução do Bot</p>
+                  <div className="flex items-center justify-between mt-2 text-xs text-[var(--text-secondary)]">
+                    <span>{new Date(lastRun.created_at).toLocaleString()}</span>
+                    <span className={lastRun.status === 'success' ? 'text-[var(--color-accent-success)]' : 'text-[var(--color-accent-danger)]'}>
+                      {lastRun.status.toUpperCase()}
+                    </span>
+                  </div>
+                  {lastRun.logs && <p className="text-xs mt-1 font-mono text-[var(--text-tertiary)]">{lastRun.logs}</p>}
+                </div>
+              )}
             </div>
             <div className="mt-6 border-t border-[var(--border-subtle)] pt-4">
-              <Button variant="primary" className="w-full sm:w-auto">Forçar Execução do Motor Agora</Button>
+              <Button variant="primary" className="w-full sm:w-auto" disabled={loadingBots}>
+                Forçar Execução do Motor Agora
+              </Button>
             </div>
           </Card>
 
+          {/* Gerenciamento de Lojas */}
+          <Card variant="glass" className="p-6">
+            <h3 className="font-display font-semibold text-lg mb-4">Gerenciamento de Lojas</h3>
+            {loadingStores ? (
+               <div className="flex justify-center p-4">
+               <svg className="animate-spin w-5 h-5 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="none">
+                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+               </svg>
+             </div>
+            ) : (
+              <div className="space-y-3">
+                {stores.map(store => (
+                  <div key={store.id} className="flex items-center justify-between p-3 rounded-[var(--radius-md)] border border-[var(--border-subtle)]">
+                    <div>
+                      <p className="font-medium text-[var(--text-primary)] text-sm">{store.name}</p>
+                      <p className="text-xs text-[var(--text-tertiary)] mt-0.5">Gerente: {store.manager || 'Não definido'}</p>
+                    </div>
+                    <Button variant="outline" size="sm">Editar</Button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+
+          {/* IA */}
           <Card variant="glass" className="p-6">
             <h3 className="font-display font-semibold text-lg mb-4">Inteligência Artificial (LLM)</h3>
             <div className="space-y-4">
