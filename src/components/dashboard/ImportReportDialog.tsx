@@ -35,58 +35,36 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
         let totalOs = 0;
         let totalPaid = 0;
         const payments: Record<string, number> = {};
-        
-        const targetDateStr = getDefaultDate(); // "YYYY-MM-DD"
-        
-        // Helper to convert Excel serial date to YYYY-MM-DD
-        const excelDateToJSDateStr = (serial: number) => {
-          // Excel leap year bug: 1900 is treated as a leap year
-          // 25569 days between 1899-12-30 and 1970-01-01
-          const utc_days  = Math.floor(serial - 25569);
-          const utc_value = utc_days * 86400;                                        
-          const date_info = new Date(utc_value * 1000);
-          
-          // Use UTC methods to avoid timezone shifts
-          const year = date_info.getUTCFullYear();
-          const month = String(date_info.getUTCMonth() + 1).padStart(2, '0');
-          const day = String(date_info.getUTCDate()).padStart(2, '0');
-          return `${year}-${month}-${day}`;
-        };
 
-        // Start reading after headers, typically at row 3 or 4
+        // Sum all rows with status "Finalizada"
+        // The spreadsheet is already generated for the correct period
         data.forEach(row => {
           if (row["__EMPTY_5"] === "Finalizada") { 
-            // '__EMPTY_6' is "Finalizada em" and '__EMPTY_7' is "Data do Faturamento"
-            // Let's use Finalizada em (__EMPTY_6) or Faturamento (__EMPTY_7)
-            // Usually, closure/billing date is the one that matters for conciliation.
-            const serialDate = parseFloat(row["__EMPTY_6"]) || parseFloat(row["__EMPTY_7"]);
-            
-            if (serialDate) {
-              const rowDateStr = excelDateToJSDateStr(serialDate);
-              
-              if (rowDateStr === targetDateStr) {
-                const osValue = parseFloat(row["__EMPTY_10"]) || 0;
-                const paidValue = parseFloat(row["__EMPTY_11"]) || 0;
-                totalOs += osValue;
-                totalPaid += paidValue;
+            const osValue = parseFloat(row["__EMPTY_10"]) || 0;
+            const paidValue = parseFloat(row["__EMPTY_11"]) || 0;
+            totalOs += osValue;
+            totalPaid += paidValue;
 
-                // Extract payment methods from __EMPTY_14
-                const paymentStr = row["__EMPTY_14"];
-                if (typeof paymentStr === 'string') {
-                  const parts = paymentStr.split(';');
-                  parts.forEach(part => {
-                    const [method, valStr] = part.split(':');
-                    if (method && valStr) {
-                      const methodTrim = method.trim();
-                      const val = parseFloat(valStr.trim()) || 0;
-                      payments[methodTrim] = (payments[methodTrim] || 0) + val;
-                    }
-                  });
+            // Extract payment methods from __EMPTY_14
+            // Example: "Credito: 2799.90; PIX: 2000.00; "
+            const paymentStr = row["__EMPTY_14"];
+            if (typeof paymentStr === 'string') {
+              const parts = paymentStr.split(';');
+              parts.forEach(part => {
+                const [method, valStr] = part.split(':');
+                if (method && valStr) {
+                  const methodTrim = method.trim();
+                  const val = parseFloat(valStr.trim()) || 0;
+                  payments[methodTrim] = (payments[methodTrim] || 0) + val;
                 }
-              }
+              });
             }
           }
         });
+
+        // Round to 2 decimal places to avoid floating point display issues
+        totalOs = Math.round(totalOs * 100) / 100;
+        totalPaid = Math.round(totalPaid * 100) / 100;
 
         setParsedData({ totalOs, totalPaid, payments });
       } catch (err) {
