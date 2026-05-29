@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Modal } from "../ui/Modal";
 import { Button } from "../ui/Button";
 import { useStores } from "@/hooks/useStores";
+import { useSaveDailyCash } from "@/hooks/useConciliacao";
+import { getDefaultDate } from "@/lib/utils";
+import * as xlsx from "xlsx";
 
 interface ImportReportDialogProps {
   isOpen: boolean;
@@ -10,24 +13,87 @@ interface ImportReportDialogProps {
 
 export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps) {
   const [loading, setLoading] = useState(false);
-  const [selectedStore, setSelectedStore] = useState("");
+  const [storeId, setStoreId] = useState("");
+  const [parsedData, setParsedData] = useState<{ totalOs: number; totalPaid: number } | null>(null);
+  
   const { data: stores = [] } = useStores();
+  const saveDailyCash = useSaveDailyCash();
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const bstr = evt.target?.result;
+        const wb = xlsx.read(bstr, { type: 'binary' });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        const data = xlsx.utils.sheet_to_json<any>(ws);
+
+        let totalOs = 0;
+        let totalPaid = 0;
+        const payments: Record<string, number> = {};
+
+        // Start reading after headers, typically at row 3 or 4
+        data.forEach(row => {
+          if (row["__EMPTY_5"] === "Finalizada") { 
+            const osValue = parseFloat(row["__EMPTY_10"]) || 0;
+            const paidValue = parseFloat(row["__EMPTY_11"]) || 0;
+            totalOs += osValue;
+            totalPaid += paidValue;
+
+            // Extract payment methods from __EMPTY_14
+            // Example: "Credito: 2799.90; PIX: 2000.00; "
+            const paymentStr = row["__EMPTY_14"];
+            if (typeof paymentStr === 'string') {
+              const parts = paymentStr.split(';');
+              parts.forEach(part => {
+                const [method, valStr] = part.split(':');
+                if (method && valStr) {
+                  const methodTrim = method.trim();
+                  const val = parseFloat(valStr.trim()) || 0;
+                  payments[methodTrim] = (payments[methodTrim] || 0) + val;
+                }
+              });
+            }
+          }
+        });
+
+        setParsedData({ totalOs, totalPaid, payments });
+      } catch (err) {
+        console.error("Erro ao ler planilha", err);
+        alert("Erro ao ler planilha. O formato está correto?");
+      }
+    };
+    reader.readAsBinaryString(file);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!parsedData || !storeId) return;
+    
     setLoading(true);
-    // TODO: Implement file upload to Supabase Storage and create reconciliation record
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await saveDailyCash.mutateAsync({
+        storeId,
+        value: parsedData.totalPaid, // Salvando o total pago liquidado
+        date: getDefaultDate()
+      });
       onClose();
-    }, 1000);
+    } catch (err) {
+      console.error("Erro ao salvar", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Importar Relatório">
+    <Modal isOpen={isOpen} onClose={() => { setParsedData(null); onClose(); }} title="Importar Relatório">
       <form onSubmit={handleSubmit} className="space-y-4 mt-4">
         <p className="text-sm text-[var(--text-tertiary)] mb-4">
-          Faça o upload do documento de fechamento da unidade para importar os dados de conciliação.
+          Faça o upload da planilha (OS x Financeiro) da unidade para o dia atual.
         </p>
 
         <div>
@@ -35,35 +101,67 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
             Loja
           </label>
           <select 
+            value={storeId}
+            onChange={(e) => setStoreId(e.target.value)}
             required
-            value={selectedStore}
-            onChange={(e) => setSelectedStore(e.target.value)}
             className="w-full bg-white/5 border border-white/10 rounded-[var(--radius-md)] px-4 py-2 text-sm text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors"
           >
             <option value="">Selecione a loja</option>
-            {stores.map(s => (
-              <option key={s.id} value={s.id}>{s.name}</option>
+            {stores.map(store => (
+              <option key={store.id} value={store.id}>{store.name}</option>
             ))}
           </select>
         </div>
 
         <div>
           <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1 uppercase tracking-wider">
-            Documento (PDF, Imagem, Excel)
+            Documento (.xls, .xlsx)
           </label>
           <input
             type="file"
+            accept=".xls,.xlsx"
+            onChange={handleFileUpload}
             required
             className="w-full bg-white/5 border border-white/10 rounded-[var(--radius-md)] px-4 py-2 text-sm text-[var(--text-secondary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-[var(--color-primary)] file:text-white hover:file:bg-[var(--color-primary-bright)]"
           />
         </div>
 
+        {parsedData && (
+          <div className="bg-[var(--bg-surface-elevated)] p-4 rounded-[var(--radius-md)] border border-[var(--color-primary)]/30 mt-4 space-y-4 animate-in fade-in zoom-in-95">
+            <div>
+              <h4 className="text-sm font-semibold text-[var(--color-primary)] mb-2">Resumo Encontrado</h4>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-[var(--text-secondary)]">Total Faturado (OS):</span>
+                <span className="font-medium text-white">R$ {parsedData.totalOs.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+              </div>
+              <div className="flex justify-between items-center text-sm border-t border-white/10 pt-2 mt-2">
+                <span className="text-[var(--text-secondary)]">Total Pago na OS (Liquidado):</span>
+                <span className="font-bold text-[var(--color-success)] text-lg">R$ {parsedData.totalPaid.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+              </div>
+            </div>
+
+            {Object.keys(parsedData.payments).length > 0 && (
+              <div className="bg-white/5 rounded-md p-3 border border-white/10">
+                <p className="text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-2">Formas de Pagamento Extraídas</p>
+                <div className="space-y-1">
+                  {Object.entries(parsedData.payments).map(([method, amount]) => (
+                    <div key={method} className="flex justify-between text-xs">
+                      <span className="text-[var(--text-secondary)]">{method}</span>
+                      <span className="font-medium text-white">R$ {amount.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="pt-4 flex justify-end gap-3">
           <Button type="button" variant="ghost" onClick={onClose}>
             Cancelar
           </Button>
-          <Button type="submit" variant="primary" disabled={loading}>
-            {loading ? "Importando..." : "Importar"}
+          <Button type="submit" variant="primary" disabled={loading || !parsedData}>
+            {loading ? "Salvando..." : "Confirmar e Salvar"}
           </Button>
         </div>
       </form>
