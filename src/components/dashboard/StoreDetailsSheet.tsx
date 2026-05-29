@@ -1,13 +1,16 @@
 import { Modal } from "../ui/Modal";
+import { Button } from "../ui/Button";
 import { StoreRow, ReconciliationRow } from "@/lib/supabase";
 
 interface StoreDetailsSheetProps {
   store: StoreRow | null;
   reconciliation: ReconciliationRow | null;
   onClose: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
 }
 
-export function StoreDetailsSheet({ store, reconciliation, onClose }: StoreDetailsSheetProps) {
+export function StoreDetailsSheet({ store, reconciliation, onClose, onEdit, onDelete }: StoreDetailsSheetProps) {
   if (!store) return null;
 
   return (
@@ -71,6 +74,15 @@ export function StoreDetailsSheet({ store, reconciliation, onClose }: StoreDetai
               </div>
             </div>
           </div>
+        </div>
+
+        <div className="pt-8 flex gap-3">
+          <Button variant="secondary" className="flex-1" onClick={onEdit}>
+            Editar Loja
+          </Button>
+          <Button variant="ghost" className="text-red-400 hover:bg-red-400/10 hover:text-red-300" onClick={onDelete}>
+            Excluir Loja
+          </Button>
         </div>
       </div>
     </Modal>

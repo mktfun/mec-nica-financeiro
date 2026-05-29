@@ -3,14 +3,16 @@ import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { ChevronRight, Search } from 'lucide-react';
+import { ChevronRight, Search, Plus } from 'lucide-react';
 import { Input } from '@/components/ui/Input';
 import { motion } from 'framer-motion';
 import { StoreDetailsSheet } from '@/components/dashboard/StoreDetailsSheet';
+import { StoreFormDialog } from '@/components/dashboard/StoreFormDialog';
 import { useState, useMemo } from 'react';
 import { StoreRow, ReconciliationRow } from '@/lib/supabase';
-import { useStores } from '@/hooks/useStores';
+import { useStores, useDeleteStore } from '@/hooks/useStores';
 import { useConciliacaoDetalhes } from '@/hooks/useConciliacao';
+import { Button } from '@/components/ui/Button';
 
 export const Route = createFileRoute('/lojas')({
   component: LojasPage,
@@ -18,10 +20,13 @@ export const Route = createFileRoute('/lojas')({
 
 function LojasPage() {
   const [selectedStore, setSelectedStore] = useState<{ store: StoreRow; reconciliation: ReconciliationRow | null } | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [storeToEdit, setStoreToEdit] = useState<StoreRow | undefined>();
   const [search, setSearch] = useState('');
 
   const { data: stores = [], isLoading: loadingStores } = useStores();
   const { data: conciliations = [], isLoading: loadingConciliations } = useConciliacaoDetalhes();
+  const deleteMutation = useDeleteStore();
 
   const filteredStores = useMemo(() => {
     return stores.filter(s => 
@@ -32,12 +37,30 @@ function LojasPage() {
 
   const isLoading = loadingStores || loadingConciliations;
 
+  const handleEdit = (store: StoreRow) => {
+    setStoreToEdit(store);
+    setIsFormOpen(true);
+    setSelectedStore(null); // Close the details sheet
+  };
+
+  const handleDelete = async (store: StoreRow) => {
+    if (confirm(`Tem certeza que deseja excluir a loja ${store.name}?`)) {
+      await deleteMutation.mutateAsync(store.id);
+      setSelectedStore(null);
+    }
+  };
+
   return (
     <AppShell>
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="font-display font-bold text-3xl mb-2">Lojas da Rede</h1>
-          <p className="text-[var(--text-secondary)] text-sm">Visão consolidada do fluxo de caixa e conciliação por unidade.</p>
+        <div className="mb-8 flex justify-between items-end">
+          <div>
+            <h1 className="font-display font-bold text-3xl mb-2">Lojas da Rede</h1>
+            <p className="text-[var(--text-secondary)] text-sm">Visão consolidada do fluxo de caixa e conciliação por unidade.</p>
+          </div>
+          <Button variant="primary" onClick={() => { setStoreToEdit(undefined); setIsFormOpen(true); }} className="gap-2">
+            <Plus size={16} /> Nova Loja
+          </Button>
         </div>
 
         <div className="relative mb-6">
@@ -123,6 +146,14 @@ function LojasPage() {
           store={selectedStore?.store || null} 
           reconciliation={selectedStore?.reconciliation || null}
           onClose={() => setSelectedStore(null)} 
+          onEdit={() => selectedStore && handleEdit(selectedStore.store)}
+          onDelete={() => selectedStore && handleDelete(selectedStore.store)}
+        />
+
+        <StoreFormDialog 
+          isOpen={isFormOpen}
+          onClose={() => setIsFormOpen(false)}
+          storeToEdit={storeToEdit}
         />
       </div>
     </AppShell>

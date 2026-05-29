@@ -51,3 +51,38 @@ export function useUpdateStore() {
     },
   });
 }
+
+export function useCreateStore() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (newStore: Omit<StoreRow, 'id' | 'created_at' | 'updated_at'>) => {
+      const { data, error } = await supabase
+        .from('stores')
+        .insert([{ ...newStore, active: true }])
+        .select()
+        .single();
+      if (error) throw error;
+      return data as StoreRow;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['stores'] });
+    },
+  });
+}
+
+export function useDeleteStore() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from('stores')
+        .delete()
+        .eq('id', id);
+      if (error) throw error;
+      return id;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['stores'] });
+    },
+  });
+}

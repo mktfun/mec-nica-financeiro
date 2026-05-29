@@ -1,11 +1,19 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { mockCashFlow } from "../../mock/data";
+import { useCashFlow } from "@/hooks/useTransactions";
 
 export function CashFlowChart() {
+  const { data: cashFlow, isLoading } = useCashFlow(7);
+
+  if (isLoading) {
+    return <div className="w-full h-full min-h-[200px] animate-pulse bg-[var(--bg-surface-hover)] rounded-md"></div>;
+  }
+
+  const chartData = cashFlow || [];
+
   return (
     <div className="w-full h-full min-h-[200px]">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={mockCashFlow.slice(-7)} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+        <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
           <XAxis 
             dataKey="date" 
             axisLine={false}
