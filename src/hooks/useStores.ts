@@ -58,7 +58,7 @@ export function useCreateStore() {
     mutationFn: async (newStore: Omit<StoreRow, 'id' | 'created_at' | 'updated_at'>) => {
       const { data, error } = await supabase
         .from('stores')
-        .insert([{ ...newStore, active: true }])
+        .insert([{ ...newStore, active: true, id: crypto.randomUUID() }])
         .select()
         .single();
       if (error) throw error;
