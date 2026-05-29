@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Session } from '@supabase/supabase-js';
-import { useNavigate } from '@tanstack/react-router';
 import { supabase } from '@/lib/supabase';
 
 // ─── Session Hook ────────────────────────────────────────────────────────────
@@ -28,9 +27,8 @@ export function useSession() {
 export function useLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
 
-  const login = async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string) => {
     setLoading(true);
     setError(null);
 
@@ -42,9 +40,10 @@ export function useLogin() {
       return false;
     }
 
-    navigate({ to: '/' });
+    // Supabase onAuthStateChange vai disparar → AppShell detecta sessão → navega
+    setLoading(false);
     return true;
-  };
+  }, []);
 
   return { login, loading, error };
 }
@@ -52,12 +51,10 @@ export function useLogin() {
 // ─── Logout Hook ─────────────────────────────────────────────────────────────
 
 export function useLogout() {
-  const navigate = useNavigate();
-
-  const logout = async () => {
+  const logout = useCallback(async () => {
     await supabase.auth.signOut();
-    navigate({ to: '/login' });
-  };
+    // onAuthStateChange dispara → AppShell detecta null → redireciona para /login
+  }, []);
 
   return { logout };
 }
