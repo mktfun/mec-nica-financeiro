@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Modal } from "../ui/Modal";
 import { Button } from "../ui/Button";
-import { Input } from "../ui/Input";
+import { useStores } from "@/hooks/useStores";
 
 interface ImportReportDialogProps {
   isOpen: boolean;
@@ -10,6 +10,8 @@ interface ImportReportDialogProps {
 
 export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps) {
   const [loading, setLoading] = useState(false);
+  const [selectedStore, setSelectedStore] = useState("");
+  const { data: stores = [] } = useStores();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,9 +34,16 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
           <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1 uppercase tracking-wider">
             Loja
           </label>
-          <select className="w-full bg-white/5 border border-white/10 rounded-[var(--radius-md)] px-4 py-2 text-sm text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors">
+          <select 
+            required
+            value={selectedStore}
+            onChange={(e) => setSelectedStore(e.target.value)}
+            className="w-full bg-white/5 border border-white/10 rounded-[var(--radius-md)] px-4 py-2 text-sm text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors"
+          >
             <option value="">Selecione a loja</option>
-            {/* TODO: fetch stores */}
+            {stores.map(s => (
+              <option key={s.id} value={s.id}>{s.name}</option>
+            ))}
           </select>
         </div>
 
