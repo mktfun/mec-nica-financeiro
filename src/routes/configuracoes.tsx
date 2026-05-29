@@ -3,7 +3,10 @@ import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { useBotRunHistory } from '@/hooks/useBotRuns';
-import { useStores } from '@/hooks/useStores';
+import { useStores, useDeleteStore } from '@/hooks/useStores';
+import { StoreFormDialog } from '@/components/dashboard/StoreFormDialog';
+import { useState } from 'react';
+import { StoreRow } from '@/lib/supabase';
 
 export const Route = createFileRoute('/configuracoes')({
   component: ConfiguracoesPage,
@@ -12,6 +15,21 @@ export const Route = createFileRoute('/configuracoes')({
 function ConfiguracoesPage() {
   const { data: botRuns = [], isLoading: loadingBots } = useBotRunHistory();
   const { data: stores = [], isLoading: loadingStores } = useStores();
+  const deleteStore = useDeleteStore();
+
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [storeToEdit, setStoreToEdit] = useState<StoreRow | undefined>();
+
+  const handleEditStore = (store: StoreRow) => {
+    setStoreToEdit(store);
+    setIsFormOpen(true);
+  };
+
+  const handleDeleteStore = async (store: StoreRow) => {
+    if (confirm(`Tem certeza que deseja excluir a loja ${store.name}?`)) {
+      await deleteStore.mutateAsync(store.id);
+    }
+  };
 
   const lastRun = botRuns[0];
 
@@ -72,7 +90,12 @@ function ConfiguracoesPage() {
 
           {/* Gerenciamento de Lojas */}
           <Card variant="glass" className="p-6">
-            <h3 className="font-display font-semibold text-lg mb-4">Gerenciamento de Lojas</h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-display font-semibold text-lg">Gerenciamento de Lojas</h3>
+              <Button variant="outline" size="sm" onClick={() => { setStoreToEdit(undefined); setIsFormOpen(true); }}>
+                Nova Loja
+              </Button>
+            </div>
             {loadingStores ? (
                <div className="flex justify-center p-4">
                <svg className="animate-spin w-5 h-5 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="none">
@@ -88,7 +111,10 @@ function ConfiguracoesPage() {
                       <p className="font-medium text-[var(--text-primary)] text-sm">{store.name}</p>
                       <p className="text-xs text-[var(--text-tertiary)] mt-0.5">Gerente: {store.manager || 'Não definido'}</p>
                     </div>
-                    <Button variant="outline" size="sm">Editar</Button>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" onClick={() => handleEditStore(store)}>Editar</Button>
+                      <Button variant="outline" size="sm" className="text-red-400 hover:bg-red-500/10 hover:text-red-300 hover:border-red-500/30" onClick={() => handleDeleteStore(store)}>Excluir</Button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -110,6 +136,12 @@ function ConfiguracoesPage() {
           </Card>
         </div>
       </div>
+
+      <StoreFormDialog 
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        storeToEdit={storeToEdit}
+      />
     </AppShell>
   );
 }
