@@ -151,7 +151,7 @@ export function useStoreHistory(storeId: string | null, limit = 10) {
       const { data, error } = await supabase
         .from('reconciliations')
         .select('*')
-        .eq('store_id', storeId)
+        .eq('store_id', storeId!)
         .order('date', { ascending: false })
         .limit(limit);
       if (error) throw error;

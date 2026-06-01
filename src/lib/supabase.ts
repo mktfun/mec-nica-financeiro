@@ -1,22 +1,9 @@
-import { createClient } from '@supabase/supabase-js';
+// Re-export the official Supabase client (with real credentials) and shared row types.
+// All app code should import from here OR from "@/integrations/supabase/client" directly.
 
-// Fallback para strings vazias para não quebrar o build (SSR) do Lovable se as variáveis não estiverem injetadas no momento do build
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key';
+export { supabase } from '@/integrations/supabase/client';
 
-if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-  console.warn('⚠️ VITE_SUPABASE_URL ou VITE_SUPABASE_ANON_KEY ausentes! O cliente Supabase usará valores falsos e as chamadas falharão. Verifique as configurações do Lovable.');
-}
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
-  },
-});
-
-// ─── Database Types ──────────────────────────────────────────────────────────
+// ─── Database Row Types ──────────────────────────────────────────────────────
 
 export type StoreRow = {
   id: string;

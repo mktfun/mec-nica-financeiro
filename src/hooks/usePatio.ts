@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase, PatioOSRow } from '@/lib/supabase';
+import { supabase, type PatioOSRow } from '@/lib/supabase';
+export type { PatioOSRow };
 
 export function usePatioOS(filters?: { status?: PatioOSRow['status']; storeId?: string; startDate?: string; endDate?: string }) {
   return useQuery({
