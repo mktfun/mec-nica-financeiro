@@ -49,7 +49,7 @@ function HistoricoPage() {
           <div className="flex flex-col">
             {transactions.map((tx, i) => {
               // Decide icon based on type and category
-              const iconKey = tx.type === 'in' ? 'in' : tx.category === 'divergence' ? 'alert' : 'out';
+              const iconKey = tx.type === 'in' ? 'in' : tx.icon_type === 'alert' ? 'alert' : 'out';
               const Icon = iconMap[iconKey];
               const isExpanded = expandedId === tx.id;
               
