@@ -3,9 +3,11 @@ import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
+import { Modal } from '@/components/ui/Modal';
+import { Button } from '@/components/ui/Button';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { usePatioOS } from '@/hooks/usePatio';
+import { usePatioOS, PatioRow } from '@/hooks/usePatio';
 import { useStores } from '@/hooks/useStores';
 
 export const Route = createFileRoute('/patio')({
@@ -18,6 +20,7 @@ function PatioPage() {
   const [activeTab, setActiveTab] = useState<FilterTab>('todas');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStore, setSelectedStore] = useState<string>('todas');
+  const [selectedOs, setSelectedOs] = useState<PatioRow | null>(null);
   
   const { data: patioData = [], isLoading: loadingPatio } = usePatioOS();
   const { data: stores = [], isLoading: loadingStores } = useStores();
@@ -199,6 +202,7 @@ function PatioPage() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: i * 0.02 }}
+                      onClick={() => setSelectedOs(os)}
                       className="border-b border-[var(--border-subtle)] hover:bg-[var(--bg-surface-hover)] transition-colors group cursor-pointer"
                     >
                       <td className="py-3 px-4 font-medium">{os.os_number}</td>
@@ -233,6 +237,74 @@ function PatioPage() {
           </>
         )}
       </div>
+
+      <Modal isOpen={!!selectedOs} onClose={() => setSelectedOs(null)} title={`Detalhes da OS #${selectedOs?.os_number}`}>
+        {selectedOs && (
+          <div className="space-y-6 mt-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-white/5 p-3 rounded-lg border border-white/10">
+                <span className="text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] block mb-1">Loja</span>
+                <span className="font-medium text-white">{selectedOs.store_name}</span>
+              </div>
+              <div className="bg-white/5 p-3 rounded-lg border border-white/10">
+                <span className="text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] block mb-1">Placa</span>
+                <span className="font-mono text-white">{selectedOs.plate || 'Não informada'}</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <span className="text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] block mb-1">Data de Abertura</span>
+                <span className="text-sm text-[var(--text-secondary)]">
+                  {selectedOs.opened_at ? new Date(selectedOs.opened_at).toLocaleDateString('pt-BR') : '-'}
+                </span>
+              </div>
+              {selectedOs.closed_at && (
+                <div>
+                  <span className="text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] block mb-1">Data de Fechamento</span>
+                  <span className="text-sm text-[var(--text-secondary)]">
+                    {new Date(selectedOs.closed_at).toLocaleDateString('pt-BR')}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <div className="bg-[var(--bg-surface-elevated)] p-4 rounded-lg border border-white/10">
+              <h4 className="text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-3">Financeiro</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-[var(--text-secondary)]">Valor Total da OS:</span>
+                  <span className="font-bold text-white">R$ {Number(selectedOs.total_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-[var(--text-secondary)]">Valor Pago (Liquidado):</span>
+                  <span className="font-bold text-[var(--color-primary-bright)]">R$ {Number(selectedOs.paid_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                </div>
+                {Number(selectedOs.total_value) - Number(selectedOs.paid_value) > 0 && (
+                  <div className="flex justify-between items-center text-sm pt-2 border-t border-white/10 mt-2">
+                    <span className="text-[var(--text-secondary)]">Saldo em Aberto (A Pagar):</span>
+                    <span className="font-bold text-[var(--color-accent-danger)]">R$ {(Number(selectedOs.total_value) - Number(selectedOs.paid_value)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {selectedOs.payment_method && (
+              <div className="bg-[var(--bg-surface-elevated)] p-4 rounded-lg border border-white/10">
+                <h4 className="text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-3">Formas de Pagamento Extratadas</h4>
+                {renderPaymentMethods(selectedOs.payment_method)}
+              </div>
+            )}
+
+            <div className="pt-2 flex justify-end gap-3">
+              <Button type="button" variant="ghost" onClick={() => setSelectedOs(null)}>
+                Fechar
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
     </AppShell>
   );
 }

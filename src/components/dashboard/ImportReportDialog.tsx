@@ -14,6 +14,7 @@ interface ImportReportDialogProps {
 export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps) {
   const [loading, setLoading] = useState(false);
   const [storeId, setStoreId] = useState("");
+  const [targetDate, setTargetDate] = useState(getDefaultDate());
   const [parsedData, setParsedData] = useState<{ 
     totalOs: number; 
     totalPaid: number; 
@@ -63,16 +64,17 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
             const paidValue = parseFloat(row["__EMPTY_11"]) || 0;
             const statusStr = row["__EMPTY_5"];
             
-            if (statusStr === "Finalizada") { 
-              totalOs += osValue;
-              totalPaid += paidValue;
-            }
-
             const opened_at = excelDateToJSDateStr(parseFloat(row["__EMPTY_1"])) || getDefaultDate();
             let closed_at = undefined;
             
             if (statusStr && statusStr.toLowerCase() === 'finalizada') {
               closed_at = excelDateToJSDateStr(parseFloat(row["__EMPTY_2"]));
+              
+              // Only sum to daily totals if the OS was closed TODAY (the target date of the import)
+              if (closed_at === targetDate) {
+                totalOs += osValue;
+                totalPaid += paidValue;
+              }
             }
             
             // Calculate days open
@@ -168,7 +170,7 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
       await processImportedData.mutateAsync({
         storeId,
         storeName: selectedStore?.name || '',
-        targetDate: getDefaultDate(),
+        targetDate: targetDate,
         osArray: parsedData.osArray,
         receivablesArray: parsedData.receivablesArray,
         totalOs: parsedData.totalOs,
@@ -205,6 +207,22 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
               <option key={store.id} value={store.id} className="bg-[#1A1A1A] text-white">{store.name}</option>
             ))}
           </select>
+        </div>
+
+        <div>
+          <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1 uppercase tracking-wider">
+            Data de Referência (Fechamento)
+          </label>
+          <input 
+            type="date"
+            value={targetDate}
+            onChange={(e) => {
+              setTargetDate(e.target.value);
+              setParsedData(null); // Reset parsed data so they re-upload with the new date
+            }}
+            required
+            className="w-full bg-[#1A1A1A] border border-white/10 rounded-[var(--radius-md)] px-4 py-2 text-sm text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors appearance-none"
+          />
         </div>
 
         <div>
