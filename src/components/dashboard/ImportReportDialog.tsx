@@ -56,13 +56,14 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
             return `${year}-${month}-${day}`;
           }
           if (typeof val === 'string') {
-            const parts = val.split('/');
+            const dateStr = val.trim().split(' ')[0]; // Remove time portion if present
+            const parts = dateStr.split('/');
             if (parts.length === 3) {
               const [d, m, y] = parts;
               const fullYear = y.length === 2 ? `20${y}` : y;
               return `${fullYear}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
             }
-            if (val.includes('-')) return val.split('T')[0];
+            if (dateStr.includes('-')) return dateStr.split('T')[0];
           }
           return null;
         };
@@ -71,7 +72,8 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
           const osNumber = String(row["__EMPTY"] || '').trim();
           const hasValidDate = parseExcelDate(row["__EMPTY_1"]) !== null;
 
-          if (osNumber && hasValidDate && osNumber.toLowerCase() !== 'os') {
+          // Prevent importing header rows by checking if osNumber is actually an OS number (usually numeric or a short string, not a long title)
+          if (osNumber && hasValidDate && osNumber.toLowerCase() !== 'os' && osNumber.length < 20) {
             const osValue = parseFloat(row["__EMPTY_10"]) || 0;
             const paidValue = parseFloat(row["__EMPTY_11"]) || 0;
             const statusStr = row["__EMPTY_5"];
@@ -80,7 +82,7 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
             let closed_at = undefined;
             
             if (statusStr && statusStr.toLowerCase() === 'finalizada') {
-              closed_at = parseExcelDate(row["__EMPTY_2"]);
+              closed_at = parseExcelDate(row["__EMPTY_2"]) || parseExcelDate(row["__EMPTY_6"]) || parseExcelDate(row["__EMPTY_7"]);
               
               // Only sum to daily totals if the OS was closed TODAY (the target date of the import)
               if (closed_at === targetDate) {
