@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { useConciliacaoResumo, useConciliacaoDetalhes, useHistorico } from '@/hooks/useConciliacao';
 import { useStores } from '@/hooks/useStores';
 import { ReconciliationRow, StoreRow } from '@/lib/supabase';
+import { getDefaultDate } from '@/lib/utils';
 
 export const Route = createFileRoute('/conciliacao-detalhes')({
   component: ConciliacaoDetalhesPage,
@@ -27,7 +28,10 @@ function ConciliacaoDetalhesPage() {
   const isLoading = isLoadingResumo || isLoadingDetalhes || isLoadingStores;
 
   const erros = detalhes.filter(d => d.status === 'divergence');
-  const today = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+  
+  // Use getDefaultDate to respect the D-1 standard
+  const targetDateStr = getDefaultDate();
+  const today = new Date(`${targetDateStr}T12:00:00`).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
 
   return (
     <AppShell>

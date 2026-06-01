@@ -141,3 +141,20 @@ export function useHistorico(limit = 30) {
     },
   });
 }
+
+export function useStoreHistory(storeId: string | null, limit = 10) {
+  return useQuery({
+    queryKey: ['reconciliations', 'history', storeId, limit],
+    enabled: !!storeId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('reconciliations')
+        .select('*')
+        .eq('store_id', storeId)
+        .order('date', { ascending: false })
+        .limit(limit);
+      if (error) throw error;
+      return data as ReconciliationRow[];
+    },
+  });
+}

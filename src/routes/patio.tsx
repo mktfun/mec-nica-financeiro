@@ -14,13 +14,19 @@ export const Route = createFileRoute('/patio')({
   component: PatioPage,
 });
 
-type FilterTab = 'todas' | 'em_aberto' | 'pago_parcial' | 'finalizadas_hoje';
+type FilterTab = 'todas' | 'em_aberto' | 'pago_parcial' | 'finalizadas_periodo';
 
 function PatioPage() {
   const [activeTab, setActiveTab] = useState<FilterTab>('todas');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStore, setSelectedStore] = useState<string>('todas');
   const [selectedOs, setSelectedOs] = useState<PatioRow | null>(null);
+  
+  const now = new Date();
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
+  const [startDate, setStartDate] = useState(firstDay);
+  const [endDate, setEndDate] = useState(lastDay);
   
   const { data: patioData = [], isLoading: loadingPatio } = usePatioOS();
   const { data: stores = [], isLoading: loadingStores } = useStores();
@@ -34,15 +40,14 @@ function PatioPage() {
   const noPayment = patioData.filter(os => os.status === 'em_aberto').length;
   const partialPayment = patioData.filter(os => os.status === 'pago_parcial').length;
 
-  const todayStr = new Date().toISOString().split('T')[0];
-
   const filtered = patioData.filter(os => {
     // Tab filter
     if (activeTab === 'em_aberto' && os.status !== 'em_aberto') return false;
     if (activeTab === 'pago_parcial' && os.status !== 'pago_parcial') return false;
-    if (activeTab === 'finalizadas_hoje') {
+    if (activeTab === 'finalizadas_periodo') {
       if (os.status !== 'finalizado') return false;
-      if (!os.closed_at?.startsWith(todayStr) && !os.updated_at.startsWith(todayStr)) return false;
+      const closed = os.closed_at || os.updated_at.split('T')[0];
+      if (closed < startDate || closed > endDate) return false;
     }
 
     // Store filter
@@ -169,15 +174,36 @@ function PatioPage() {
             </div>
 
             {/* Tabs */}
-            <div className="flex items-center gap-1 border-b border-[var(--border-subtle)] overflow-x-auto pb-px">
-              <TabBtn active={activeTab === 'todas'} onClick={() => setActiveTab('todas')}>Todas</TabBtn>
-              <TabBtn active={activeTab === 'em_aberto'} onClick={() => setActiveTab('em_aberto')}>Em Aberto</TabBtn>
-              <TabBtn active={activeTab === 'pago_parcial'} onClick={() => setActiveTab('pago_parcial')}>Pagas Parcial</TabBtn>
-              <TabBtn active={activeTab === 'finalizadas_hoje'} onClick={() => setActiveTab('finalizadas_hoje')}>Finalizadas Hoje</TabBtn>
+            <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-px flex-wrap gap-4">
+              <div className="flex items-center gap-1 overflow-x-auto">
+                <TabBtn active={activeTab === 'todas'} onClick={() => setActiveTab('todas')}>Todas</TabBtn>
+                <TabBtn active={activeTab === 'em_aberto'} onClick={() => setActiveTab('em_aberto')}>Em Aberto</TabBtn>
+                <TabBtn active={activeTab === 'pago_parcial'} onClick={() => setActiveTab('pago_parcial')}>Pagas Parcial</TabBtn>
+                <TabBtn active={activeTab === 'finalizadas_periodo'} onClick={() => setActiveTab('finalizadas_periodo')}>Finalizadas (Período)</TabBtn>
+              </div>
+              
+              {activeTab === 'finalizadas_periodo' && (
+                <div className="flex items-center gap-2 mb-2 lg:mb-0">
+                  <span className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider">Período:</span>
+                  <input 
+                    type="date" 
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="bg-[#1A1A1A] border border-white/10 rounded px-2 py-1 text-sm text-white focus:outline-none focus:border-[var(--color-primary)]"
+                  />
+                  <span className="text-[var(--text-tertiary)]">até</span>
+                  <input 
+                    type="date" 
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className="bg-[#1A1A1A] border border-white/10 rounded px-2 py-1 text-sm text-white focus:outline-none focus:border-[var(--color-primary)]"
+                  />
+                </div>
+              )}
             </div>
 
             {/* Table */}
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto mt-4">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="text-[var(--text-tertiary)] text-xs uppercase tracking-wider border-b border-[var(--border-subtle)]">

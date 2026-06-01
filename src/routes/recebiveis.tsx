@@ -3,6 +3,8 @@ import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
+import { useReceivables } from '@/hooks/useReceivables';
+import { getDefaultDate } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { DollarSign, Clock, AlertTriangle, CheckCircle2 } from 'lucide-react';
@@ -30,7 +32,7 @@ function RecebiveisPage() {
   const totalReceber = pendentes.reduce((a, r) => a + Number(r.value || 0), 0);
   const totalVencidos = vencidos.reduce((a, r) => a + Number(r.value || 0), 0);
   
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = getDefaultDate();
   
   const totalRecebidoHoje = recebidos
     .filter(r => r.created_at.startsWith(todayStr))

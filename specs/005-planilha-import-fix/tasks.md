@@ -9,5 +9,5 @@
   - [x] Atualizar o loop principal para ignorar linhas acima do cabeçalho.
   - [x] Ler valores baseados nos índices de `colMap` em vez de chaves mágicas `"__EMPTY_X"`.
   - [x] Sanear os valores (ex: remover R$ de colunas financeiras caso existam como string, converter datas corretamente garantindo isolamento da string).
-- [ ] **4. Build & Test**
-  - [ ] Fazer build da aplicação, testar compilação e subir as alterações.
+- [x] **4. Build & Test**
+  - [x] Fazer build da aplicação, testar compilação e subir as alterações.

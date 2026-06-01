@@ -34,7 +34,10 @@ function ConciliacaoPage() {
   
   const alertasCriticos = alertas.filter(a => a.severity !== 'info');
   const carrosNoPatio = patio.filter(p => p.status === 'em_aberto').length;
-  const today = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+  
+  // Use getDefaultDate to respect the D-1 standard
+  const targetDateStr = getDefaultDate();
+  const today = new Date(`${targetDateStr}T12:00:00`).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
 
   const handleSaveCash = () => {
     Object.entries(cashValues).forEach(([storeId, value]) => {
