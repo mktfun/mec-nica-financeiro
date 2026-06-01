@@ -45,30 +45,42 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
         const osArray: ParsedOS[] = [];
         const receivablesArray: ParsedReceivable[] = [];
 
-        const excelDateToJSDateStr = (serial: number) => {
-          if (!serial) return null;
-          const utc_days  = Math.floor(serial - 25569);
-          const date_info = new Date(utc_days * 86400 * 1000);
-          const year = date_info.getUTCFullYear();
-          const month = String(date_info.getUTCMonth() + 1).padStart(2, '0');
-          const day = String(date_info.getUTCDate()).padStart(2, '0');
-          return `${year}-${month}-${day}`;
+        const parseExcelDate = (val: any) => {
+          if (!val) return null;
+          if (typeof val === 'number') {
+            const utc_days  = Math.floor(val - 25569);
+            const date_info = new Date(utc_days * 86400 * 1000);
+            const year = date_info.getUTCFullYear();
+            const month = String(date_info.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(date_info.getUTCDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+          }
+          if (typeof val === 'string') {
+            const parts = val.split('/');
+            if (parts.length === 3) {
+              const [d, m, y] = parts;
+              const fullYear = y.length === 2 ? `20${y}` : y;
+              return `${fullYear}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+            }
+            if (val.includes('-')) return val.split('T')[0];
+          }
+          return null;
         };
 
         data.forEach(row => {
           const osNumber = String(row["__EMPTY"] || '').trim();
-          const hasValidDate = !isNaN(parseFloat(row["__EMPTY_1"]));
+          const hasValidDate = parseExcelDate(row["__EMPTY_1"]) !== null;
 
           if (osNumber && hasValidDate && osNumber.toLowerCase() !== 'os') {
             const osValue = parseFloat(row["__EMPTY_10"]) || 0;
             const paidValue = parseFloat(row["__EMPTY_11"]) || 0;
             const statusStr = row["__EMPTY_5"];
             
-            const opened_at = excelDateToJSDateStr(parseFloat(row["__EMPTY_1"])) || getDefaultDate();
+            const opened_at = parseExcelDate(row["__EMPTY_1"]) || getDefaultDate();
             let closed_at = undefined;
             
             if (statusStr && statusStr.toLowerCase() === 'finalizada') {
-              closed_at = excelDateToJSDateStr(parseFloat(row["__EMPTY_2"]));
+              closed_at = parseExcelDate(row["__EMPTY_2"]);
               
               // Only sum to daily totals if the OS was closed TODAY (the target date of the import)
               if (closed_at === targetDate) {
@@ -107,7 +119,7 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
                   const methodTrim = method.trim();
                   const val = parseFloat(valStr.trim()) || 0;
                   
-                  if (statusStr === "Finalizada") {
+                  if (statusStr && statusStr.toLowerCase() === "finalizada" && closed_at === targetDate) {
                     payments[methodTrim] = (payments[methodTrim] || 0) + val;
                   }
 
