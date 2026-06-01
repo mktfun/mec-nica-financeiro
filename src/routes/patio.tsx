@@ -1,9 +1,8 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { Search } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { usePatioOS } from '@/hooks/usePatio';
@@ -13,80 +12,118 @@ export const Route = createFileRoute('/patio')({
   component: PatioPage,
 });
 
-type FilterTab = 'todas' | 'em_aberto' | 'pago_parcial' | 'finalizado';
+type FilterTab = 'todas' | 'em_aberto' | 'pago_parcial' | 'finalizadas_hoje';
 
 function PatioPage() {
   const [activeTab, setActiveTab] = useState<FilterTab>('todas');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStore, setSelectedStore] = useState<string>('todas');
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-
-  const { data: patioData = [], isLoading: isLoadingPatio } = usePatioOS();
-  const { data: stores = [], isLoading: isLoadingStores } = useStores();
-
-  const isLoading = isLoadingPatio || isLoadingStores;
-
-  const emAberto = patioData.filter(os => os.status === 'em_aberto');
-  const pagoParcial = patioData.filter(os => os.status === 'pago_parcial');
   
-  const totalEmAberto = emAberto.reduce((a, os) => a + Number(os.total_value || 0) - Number(os.paid_value || 0), 0);
-  const maiorOS = patioData.length > 0 ? Math.max(...patioData.map(os => Number(os.total_value || 0))) : 0;
-  const maiorOSRecord = patioData.find(os => Number(os.total_value || 0) === maiorOS);
-  const maiorOSStoreName = stores.find(s => s.id === maiorOSRecord?.store_id)?.name || '';
+  const { data: patioData = [], isLoading: loadingPatio } = usePatioOS();
+  const { data: stores = [], isLoading: loadingStores } = useStores();
 
-  const filtered = patioData
-    .filter(os => activeTab === 'todas' || os.status === activeTab)
-    .filter(os => selectedStore === 'todas' || os.store_id === selectedStore)
-    .filter(os => {
-      if (searchQuery === '') return true;
+  const isLoading = loadingPatio || loadingStores;
+
+  const totalAberto = patioData.reduce((a, os) => a + (Number(os.total_value) - Number(os.paid_value)), 0);
+  
+  const openOs = patioData.filter(os => os.status === 'em_aberto' || os.status === 'pago_parcial');
+  const maxOsValue = openOs.length > 0 ? Math.max(...openOs.map(os => Number(os.total_value))) : 0;
+  const noPayment = patioData.filter(os => os.status === 'em_aberto').length;
+  const partialPayment = patioData.filter(os => os.status === 'pago_parcial').length;
+
+  const todayStr = new Date().toISOString().split('T')[0];
+
+  const filtered = patioData.filter(os => {
+    // Tab filter
+    if (activeTab === 'em_aberto' && os.status !== 'em_aberto') return false;
+    if (activeTab === 'pago_parcial' && os.status !== 'pago_parcial') return false;
+    if (activeTab === 'finalizadas_hoje') {
+      if (os.status !== 'finalizado') return false;
+      if (!os.closed_at?.startsWith(todayStr) && !os.updated_at.startsWith(todayStr)) return false;
+    }
+
+    // Store filter
+    if (selectedStore !== 'todas' && os.store_id !== selectedStore) return false;
+
+    // Search query
+    if (searchQuery) {
       const q = searchQuery.toLowerCase();
-      const storeName = stores.find(s => s.id === os.store_id)?.name.toLowerCase() || '';
-      return (os.os_number?.toLowerCase().includes(q)) || 
-             (os.plate?.toLowerCase().includes(q)) ||
-             storeName.includes(q);
-    });
+      const matchesOs = String(os.os_number).toLowerCase().includes(q);
+      const matchesPlate = String(os.plate || '').toLowerCase().includes(q);
+      const matchesStore = String(os.store_name || '').toLowerCase().includes(q);
+      if (!matchesOs && !matchesPlate && !matchesStore) return false;
+    }
+
+    return true;
+  });
+
+  const renderPaymentMethods = (str: string | null) => {
+    if (!str || str.trim() === '') return <span className="text-[var(--text-tertiary)]">-</span>;
+    const parts = str.split(';').filter(p => p.trim());
+    return (
+      <div className="flex flex-wrap gap-1">
+        {parts.map((p, i) => {
+          const [method, val] = p.split(':');
+          return (
+            <span key={i} className="inline-flex items-center gap-1 bg-white/5 border border-white/10 px-2 py-0.5 rounded text-[10px]">
+              <span className="font-medium text-[var(--text-secondary)]">{method?.trim()}</span>
+              {val && <span className="text-white">R$ {parseFloat(val).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>}
+            </span>
+          );
+        })}
+      </div>
+    );
+  };
 
   return (
     <AppShell>
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-[var(--text-tertiary)]">
-          <Link to="/conciliacao" className="hover:text-[var(--text-primary)] transition-colors">Financeiro</Link>
+          <span className="hover:text-[var(--text-primary)] cursor-pointer transition-colors">Financeiro</span>
           <span>›</span>
           <span className="text-[var(--text-primary)] font-medium">Carros no Pátio</span>
         </div>
 
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <h1 className="font-display font-bold text-3xl">Carros no Pátio</h1>
-            <Badge variant="success" className="text-xs">{emAberto.length} OS em aberto</Badge>
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-3">
+              <h1 className="font-display font-bold text-3xl">Carros no Pátio</h1>
+              <Badge variant="success" className="uppercase tracking-wider">{openOs.length} OS em aberto</Badge>
+            </div>
+            <p className="text-sm text-[var(--text-secondary)] mt-1">Ordens de serviço abertas e pagamentos pendentes lidos diretamente do Supabase.</p>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" size={16} />
+          
+          <div className="flex items-center gap-3 w-full lg:w-auto">
+            <div className="relative flex-1 lg:w-64">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg className="h-4 w-4 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
               <input
                 type="text"
                 placeholder="Buscar OS, placa, loja..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 pr-4 py-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-[var(--radius-md)] text-sm focus:outline-none focus:border-[var(--color-primary)] w-56"
+                className="w-full bg-[#1A1A1A] border border-white/10 rounded-[var(--radius-md)] pl-9 pr-4 py-2 text-sm text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors placeholder:text-[var(--text-tertiary)]"
               />
             </div>
-            <select 
-              className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-[var(--radius-md)] text-sm px-3 py-2 focus:outline-none focus:border-[var(--color-primary)] max-w-[200px] truncate"
+            
+            <select
               value={selectedStore}
               onChange={(e) => setSelectedStore(e.target.value)}
+              className="bg-[#1A1A1A] border border-white/10 rounded-[var(--radius-md)] px-4 py-2 text-sm text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors appearance-none cursor-pointer"
+              style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right .7rem top 50%', backgroundSize: '.65rem auto', paddingRight: '2.5rem' }}
             >
               <option value="todas">Todas as lojas</option>
-              {stores.map(store => (
-                <option key={store.id} value={store.id}>{store.name}</option>
+              {stores.map(s => (
+                <option key={s.id} value={s.id}>{s.name}</option>
               ))}
             </select>
           </div>
         </div>
-
-        <p className="text-sm text-[var(--text-secondary)]">Ordens de serviço abertas e pagamentos pendentes lidos diretamente do Supabase.</p>
 
         {isLoading ? (
           <div className="flex justify-center p-12">
@@ -100,34 +137,40 @@ function PatioPage() {
             {/* Summary Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <Card className="border-l-4 border-l-[var(--color-accent-danger)]">
-                <span className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">● Total em Aberto</span>
-                <div className="font-display text-2xl font-bold mt-1">
-                  <AnimatedNumber value={totalEmAberto} format="currency" />
-                </div>
+                <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Total em Aberto</p>
+                <p className="font-display font-bold text-2xl text-[var(--color-accent-danger)]">
+                  <AnimatedNumber value={totalAberto} format="currency" />
+                </p>
               </Card>
-              <Card className="border-l-4 border-l-[var(--color-accent-danger)]">
-                <span className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">● Maior OS</span>
-                <div className="font-display text-2xl font-bold mt-1">
-                  <AnimatedNumber value={maiorOS} format="currency" />
-                </div>
-                <p className="text-xs text-[var(--text-tertiary)] mt-0.5">{maiorOSStoreName}</p>
+
+              <Card className="border-l-4 border-l-[var(--color-accent-warning)]">
+                <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Maior OS</p>
+                <p className="font-display font-bold text-2xl">
+                  <AnimatedNumber value={maxOsValue} format="currency" />
+                </p>
               </Card>
-              <Card className="border-l-4 border-l-[var(--color-accent-danger)]">
-                <span className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">● Sem Pagamento</span>
-                <div className="font-display text-2xl font-bold mt-1">{emAberto.length} OS</div>
+
+              <Card className="border-l-4 border-l-white/20">
+                <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Sem Pagamento</p>
+                <p className="font-display font-bold text-2xl text-white">
+                  {noPayment} <span className="text-sm font-normal text-[var(--text-tertiary)]">OS</span>
+                </p>
               </Card>
-              <Card className="border-l-4 border-l-[var(--color-accent-danger)]">
-                <span className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">● Pagas Parcialmente</span>
-                <div className="font-display text-2xl font-bold mt-1">{pagoParcial.length} OS</div>
+
+              <Card className="border-l-4 border-l-[var(--color-accent-teal)]">
+                <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Pagas Parcialmente</p>
+                <p className="font-display font-bold text-2xl text-white">
+                  {partialPayment} <span className="text-sm font-normal text-[var(--text-tertiary)]">OS</span>
+                </p>
               </Card>
             </div>
 
             {/* Tabs */}
-            <div className="flex items-center gap-1 border-b border-[var(--border-subtle)]">
+            <div className="flex items-center gap-1 border-b border-[var(--border-subtle)] overflow-x-auto pb-px">
               <TabBtn active={activeTab === 'todas'} onClick={() => setActiveTab('todas')}>Todas</TabBtn>
               <TabBtn active={activeTab === 'em_aberto'} onClick={() => setActiveTab('em_aberto')}>Em Aberto</TabBtn>
               <TabBtn active={activeTab === 'pago_parcial'} onClick={() => setActiveTab('pago_parcial')}>Pagas Parcial</TabBtn>
-              <TabBtn active={activeTab === 'finalizado'} onClick={() => setActiveTab('finalizado')}>Finalizadas Hoje</TabBtn>
+              <TabBtn active={activeTab === 'finalizadas_hoje'} onClick={() => setActiveTab('finalizadas_hoje')}>Finalizadas Hoje</TabBtn>
             </div>
 
             {/* Table */}
@@ -138,11 +181,11 @@ function PatioPage() {
                     <th className="text-left py-3 px-4 font-medium">OS #</th>
                     <th className="text-left py-3 px-4 font-medium">Loja</th>
                     <th className="text-left py-3 px-4 font-medium">Placa</th>
-                    <th className="text-right py-3 px-4 font-medium">Valor Total ↕</th>
+                    <th className="text-right py-3 px-4 font-medium flex items-center justify-end gap-1">Valor Total <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" /></svg></th>
                     <th className="text-right py-3 px-4 font-medium">Valor Pago</th>
                     <th className="text-left py-3 px-4 font-medium">Forma Pgto</th>
                     <th className="text-left py-3 px-4 font-medium">Status</th>
-                    <th className="text-right py-3 px-4 font-medium">Dias</th>
+                    <th className="text-left py-3 px-4 font-medium">Dias</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -150,45 +193,40 @@ function PatioPage() {
                     <tr>
                       <td colSpan={8} className="py-8 text-center text-[var(--text-tertiary)]">Nenhuma ordem de serviço encontrada.</td>
                     </tr>
-                  ) : filtered.map((os, i) => {
-                    const storeName = stores.find(s => s.id === os.store_id)?.name || os.store_id;
-                    const totalVal = Number(os.total_value || 0);
-                    const paidVal = Number(os.paid_value || 0);
-                    
-                    return (
-                      <motion.tr
-                        key={os.id}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: i * 0.02 }}
-                        className="border-b border-[var(--border-subtle)] hover:bg-[var(--bg-surface-hover)] transition-colors cursor-pointer"
-                        onClick={() => setExpandedId(expandedId === os.id ? null : os.id)}
-                      >
-                        <td className="py-3.5 px-4 font-medium">{os.os_number}</td>
-                        <td className="py-3.5 px-4">{storeName}</td>
-                        <td className="py-3.5 px-4 font-mono text-xs">{os.plate}</td>
-                        <td className="py-3.5 px-4 text-right font-display font-semibold">
-                          <AnimatedNumber value={totalVal} format="currency" />
-                        </td>
-                        <td className={`py-3.5 px-4 text-right font-display ${paidVal > 0 ? 'text-[var(--color-primary)]' : 'text-[var(--text-tertiary)]'}`}>
-                          {paidVal > 0 ? <AnimatedNumber value={paidVal} format="currency" /> : 'R$ 0,00'}
-                        </td>
-                        <td className="py-3.5 px-4 text-[var(--text-secondary)]">{os.payment_method || '-'}</td>
-                        <td className="py-3.5 px-4">
-                          <Badge
-                            variant={
-                              os.status === 'finalizado' ? 'success' :
-                              os.status === 'pago_parcial' ? 'warning' : 'danger'
-                            }
-                          >
-                            {os.status === 'finalizado' ? 'Finalizado' :
-                            os.status === 'pago_parcial' ? 'Pago parcial' : 'Em aberto'}
-                          </Badge>
-                        </td>
-                        <td className="py-3.5 px-4 text-right text-[var(--text-tertiary)]">{os.days_open || 0}d</td>
-                      </motion.tr>
-                    );
-                  })}
+                  ) : filtered.map((os, i) => (
+                    <motion.tr
+                      key={os.id}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: i * 0.02 }}
+                      className="border-b border-[var(--border-subtle)] hover:bg-[var(--bg-surface-hover)] transition-colors group cursor-pointer"
+                    >
+                      <td className="py-3 px-4 font-medium">{os.os_number}</td>
+                      <td className="py-3 px-4 text-[var(--text-secondary)] font-medium">
+                        {os.store_name?.replace('Loja ', '')}
+                      </td>
+                      <td className="py-3 px-4 text-[var(--text-secondary)] text-xs uppercase tracking-widest">{os.plate || '-'}</td>
+                      <td className="py-3 px-4 text-right font-display font-bold">
+                        R$ {Number(os.total_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="py-3 px-4 text-right font-display font-medium text-[var(--color-primary-bright)]">
+                        R$ {Number(os.paid_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="py-3 px-4">{renderPaymentMethods(os.payment_method)}</td>
+                      <td className="py-3 px-4">
+                        <Badge 
+                          variant={
+                            os.status === 'finalizado' ? 'success' : 
+                            os.status === 'pago_parcial' ? 'warning' : 'danger'
+                          } 
+                          className="text-[10px]"
+                        >
+                          {os.status.replace('_', ' ')}
+                        </Badge>
+                      </td>
+                      <td className="py-3 px-4 text-[var(--text-tertiary)]">{os.days_open || 0}d</td>
+                    </motion.tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -203,7 +241,7 @@ function TabBtn({ children, active, onClick }: { children: React.ReactNode; acti
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+      className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
         active
           ? 'border-[var(--text-primary)] text-[var(--text-primary)]'
           : 'border-transparent text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'

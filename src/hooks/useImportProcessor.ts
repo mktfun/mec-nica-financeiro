@@ -12,6 +12,7 @@ export interface ParsedOS {
   paid_value: number;
   payment_method: string | null;
   status: 'em_aberto' | 'pago_parcial' | 'finalizado';
+  days_open: number;
 }
 
 export interface ParsedReceivable {
@@ -69,6 +70,7 @@ export function useProcessImportedData() {
             status: os.status,
             opened_at: os.opened_at,
             closed_at: os.closed_at,
+            days_open: os.days_open,
             updated_at: new Date().toISOString()
           };
 

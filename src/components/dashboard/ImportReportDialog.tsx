@@ -55,8 +55,10 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
         };
 
         data.forEach(row => {
-          const osNumber = row["__EMPTY"];
-          if (osNumber) {
+          const osNumber = String(row["__EMPTY"] || '').trim();
+          const hasValidDate = !isNaN(parseFloat(row["__EMPTY_1"]));
+
+          if (osNumber && hasValidDate && osNumber.toLowerCase() !== 'os') {
             const osValue = parseFloat(row["__EMPTY_10"]) || 0;
             const paidValue = parseFloat(row["__EMPTY_11"]) || 0;
             const statusStr = row["__EMPTY_5"];
@@ -66,12 +68,21 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
               totalPaid += paidValue;
             }
 
+            const opened_at = excelDateToJSDateStr(parseFloat(row["__EMPTY_1"])) || getDefaultDate();
+            let closed_at = undefined;
+            
+            if (statusStr && statusStr.toLowerCase() === 'finalizada') {
+              closed_at = excelDateToJSDateStr(parseFloat(row["__EMPTY_2"]));
+            }
+            
+            // Calculate days open
+            const start = new Date(opened_at);
+            const end = closed_at ? new Date(closed_at) : new Date();
+            const days_open = Math.max(0, Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
+
             let status: 'em_aberto' | 'pago_parcial' | 'finalizado' = 'em_aberto';
             if (statusStr === 'Finalizada') status = 'finalizado';
             else if (paidValue > 0 && paidValue < osValue) status = 'pago_parcial';
-
-            const opened_at = excelDateToJSDateStr(parseFloat(row["__EMPTY_1"])) || getDefaultDate();
-            const closed_at = excelDateToJSDateStr(parseFloat(row["__EMPTY_6"]) || parseFloat(row["__EMPTY_7"]));
 
             osArray.push({
               os_number: String(osNumber),
@@ -81,7 +92,8 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
               total_value: osValue,
               paid_value: paidValue,
               payment_method: row["__EMPTY_14"] || '',
-              status
+              status,
+              days_open
             });
 
             const paymentStr = row["__EMPTY_14"];
