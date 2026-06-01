@@ -36,6 +36,7 @@ export function useProcessImportedData() {
       receivablesArray,
       totalOs,
       totalPaid,
+      totalDinheiro,
     }: {
       storeId: string;
       storeName: string;
@@ -44,6 +45,7 @@ export function useProcessImportedData() {
       receivablesArray: ParsedReceivable[];
       totalOs: number;
       totalPaid: number;
+      totalDinheiro: number;
     }) => {
       // 1. Process Patio OS
       if (osArray.length > 0) {
@@ -130,7 +132,7 @@ export function useProcessImportedData() {
         storeId,
         date: targetDate,
         osTotal: totalOs,
-        financialTotal: totalPaid,
+        financialTotal: totalDinheiro, // Usando o total filtrado apenas para dinheiro
       });
     },
     onSuccess: () => {

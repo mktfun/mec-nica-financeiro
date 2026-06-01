@@ -10,6 +10,7 @@ import { useStores } from '@/hooks/useStores';
 import { useConciliacaoResumo, useConciliacaoDetalhes, useSaveDailyCash } from '@/hooks/useConciliacao';
 import { useAlerts } from '@/hooks/useAlerts';
 import { usePatioOS } from '@/hooks/usePatio';
+import { getDefaultDate } from '@/lib/utils';
 
 export const Route = createFileRoute('/conciliacao')({
   component: ConciliacaoPage,
@@ -98,7 +99,7 @@ function ConciliacaoPage() {
                 <div className="font-display text-2xl font-bold">
                   <AnimatedNumber value={resumo?.totalIn || 0} format="currency" />
                 </div>
-                <p className="text-xs text-[var(--text-tertiary)] mt-1">{resumo?.rows.length || 0} lojas processadas</p>
+                <p className="text-xs text-[var(--text-tertiary)] mt-1">{resumo?.rows?.length || 0} lojas processadas</p>
               </Card>
 
               <Card className="relative overflow-hidden">

@@ -72,8 +72,10 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
           if (!val) return 0;
           if (typeof val === 'number') return val;
           if (typeof val === 'string') {
-            // "R$ 3.613,98" -> "3613.98"
-            const cleaned = val.replace(/R\$/g, '').replace(/\./g, '').replace(/,/g, '.').trim();
+            let cleaned = val.replace(/R\$/g, '').trim();
+            if (cleaned.includes(',')) {
+              cleaned = cleaned.replace(/\./g, '').replace(/,/g, '.');
+            }
             const parsed = parseFloat(cleaned);
             return isNaN(parsed) ? 0 : parsed;
           }
@@ -234,6 +236,11 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
     setLoading(true);
     try {
       const selectedStore = stores.find(s => s.id === storeId);
+      
+      const totalDinheiro = Object.entries(parsedData.payments)
+        .filter(([key]) => key.toLowerCase().includes('dinheiro') || key.toLowerCase().includes('espécie'))
+        .reduce((sum, [, val]) => sum + val, 0);
+
       await processImportedData.mutateAsync({
         storeId,
         storeName: selectedStore?.name || '',
@@ -242,6 +249,7 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
         receivablesArray: parsedData.receivablesArray,
         totalOs: parsedData.totalOs,
         totalPaid: parsedData.totalPaid,
+        totalDinheiro: totalDinheiro,
       });
       onClose();
     } catch (err) {

@@ -3,7 +3,6 @@ import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { useReceivables } from '@/hooks/useReceivables';
 import { getDefaultDate } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { useState } from 'react';

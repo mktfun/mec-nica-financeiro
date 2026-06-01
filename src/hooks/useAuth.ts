@@ -32,17 +32,23 @@ export function useLogin() {
     setLoading(true);
     setError(null);
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (error) {
-      setError('E-mail ou senha incorretos. Tente novamente.');
-      setLoading(false);
+      if (error) {
+        setError('E-mail ou senha incorretos. Tente novamente.');
+        return false;
+      }
+
+      // Supabase onAuthStateChange vai disparar → AppShell detecta sessão → navega
+      return true;
+    } catch (err: any) {
+      console.error("Login error:", err);
+      setError(err?.message || 'Erro de conexão. Tente novamente.');
       return false;
+    } finally {
+      setLoading(false);
     }
-
-    // Supabase onAuthStateChange vai disparar → AppShell detecta sessão → navega
-    setLoading(false);
-    return true;
   }, []);
 
   return { login, loading, error };

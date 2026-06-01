@@ -98,9 +98,9 @@ function ConciliacaoDetalhesPage() {
                 </div>
                 {/* Coluna Direita */}
                 <div className="space-y-2">
-                  <Row label="OSs Lidas" value={resumo?.rows.reduce((s, r) => s + (r.os_count || 0), 0) || 0} count />
-                  <Row label="Total Apurado OS" value={resumo?.rows.reduce((s, r) => s + (r.os_total || 0), 0) || 0} />
-                  <Row label="Total Dinheiro Caixa" value={resumo?.rows.reduce((s, r) => s + (r.daily_cash || 0), 0) || 0} />
+                  <Row label="OSs Lidas" value={resumo?.rows?.reduce((s, r) => s + (r.os_count || 0), 0) || 0} count />
+                  <Row label="Total Apurado OS" value={resumo?.rows?.reduce((s, r) => s + (r.os_total || 0), 0) || 0} />
+                  <Row label="Total Dinheiro Caixa" value={resumo?.rows?.reduce((s, r) => s + (r.daily_cash || 0), 0) || 0} />
                 </div>
               </div>
             </Card>

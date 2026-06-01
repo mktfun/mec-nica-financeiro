@@ -30,7 +30,8 @@ export function useConciliacaoResumo(date?: string) {
       if (error) throw error;
 
       const rows = data as ReconciliationRow[];
-      const totalIn = rows.reduce((s, r) => s + (r.financial_total ?? 0), 0);
+      // Entradas do Dia (Dashboard) agora usa os_total para mostrar todo o faturamento da OS
+      const totalIn = rows.reduce((s, r) => s + (r.os_total ?? 0), 0);
       const totalDivergence = rows.reduce((s, r) => s + Math.abs(r.divergence ?? 0), 0);
       const resultado = rows.reduce((s, r) => s + (r.divergence ?? 0), 0);
       const approved = rows.filter(r => r.status === 'approved').length;
