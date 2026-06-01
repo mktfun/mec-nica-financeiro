@@ -188,7 +188,7 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
     <Modal isOpen={isOpen} onClose={() => { setParsedData(null); onClose(); }} title="Importar Relatório">
       <form onSubmit={handleSubmit} className="space-y-4 mt-4">
         <p className="text-sm text-[var(--text-tertiary)] mb-4">
-          Faça o upload da planilha (OS x Financeiro) da unidade para o dia atual.
+          Faça o upload da planilha (OS x Financeiro) da unidade referente ao dia do fechamento (por padrão, dia útil anterior).
         </p>
 
         <div>
