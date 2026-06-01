@@ -37,7 +37,7 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
         const wb = xlsx.read(bstr, { type: 'binary' });
         const wsname = wb.SheetNames[0];
         const ws = wb.Sheets[wsname];
-        const data = xlsx.utils.sheet_to_json<any>(ws);
+        const data = xlsx.utils.sheet_to_json<any[]>(ws, { header: 1 });
 
         let totalOs = 0;
         let totalPaid = 0;
@@ -56,7 +56,7 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
             return `${year}-${month}-${day}`;
           }
           if (typeof val === 'string') {
-            const dateStr = val.trim().split(' ')[0]; // Remove time portion if present
+            const dateStr = val.trim().split(' ')[0];
             const parts = dateStr.split('/');
             if (parts.length === 3) {
               const [d, m, y] = parts;
@@ -68,107 +68,160 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
           return null;
         };
 
-        data.forEach(row => {
-          const osNumber = String(row["__EMPTY"] || '').trim();
-          const hasValidDate = parseExcelDate(row["__EMPTY_1"]) !== null;
+        const parseValue = (val: any) => {
+          if (!val) return 0;
+          if (typeof val === 'number') return val;
+          if (typeof val === 'string') {
+            // "R$ 3.613,98" -> "3613.98"
+            const cleaned = val.replace(/R\$/g, '').replace(/\./g, '').replace(/,/g, '.').trim();
+            const parsed = parseFloat(cleaned);
+            return isNaN(parsed) ? 0 : parsed;
+          }
+          return 0;
+        };
 
-          // Prevent importing header rows by checking if osNumber is actually an OS number (usually numeric or a short string, not a long title)
-          if (osNumber && hasValidDate && osNumber.toLowerCase() !== 'os' && osNumber.length < 20) {
-            const osValue = parseFloat(row["__EMPTY_10"]) || 0;
-            const paidValue = parseFloat(row["__EMPTY_11"]) || 0;
-            const statusStr = row["__EMPTY_5"];
-            
-            const opened_at = parseExcelDate(row["__EMPTY_1"]) || getDefaultDate();
-            let closed_at = undefined;
-            
-            if (statusStr && statusStr.toLowerCase() === 'finalizada') {
-              closed_at = parseExcelDate(row["__EMPTY_2"]) || parseExcelDate(row["__EMPTY_6"]) || parseExcelDate(row["__EMPTY_7"]);
-              
-              // Only sum to daily totals if the OS was closed TODAY (the target date of the import)
-              if (closed_at === targetDate) {
-                totalOs += osValue;
-                totalPaid += paidValue;
-              }
-            }
-            
-            // Calculate days open
-            const start = new Date(opened_at);
-            const end = closed_at ? new Date(closed_at) : new Date();
-            const days_open = Math.max(0, Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
+        // 1. Encontrar o cabeçalho
+        let headerRowIndex = -1;
+        let colMap: Record<string, number> = {};
 
-            let status: 'em_aberto' | 'pago_parcial' | 'finalizado' = 'em_aberto';
-            if (statusStr === 'Finalizada') status = 'finalizado';
-            else if (paidValue > 0 && paidValue < osValue) status = 'pago_parcial';
-
-            osArray.push({
-              os_number: String(osNumber),
-              plate: String(row["__EMPTY_3"] || ''),
-              opened_at,
-              closed_at,
-              total_value: osValue,
-              paid_value: paidValue,
-              payment_method: row["__EMPTY_14"] || '',
-              status,
-              days_open
-            });
-
-            const paymentStr = row["__EMPTY_14"];
-            if (typeof paymentStr === 'string') {
-              const parts = paymentStr.split(';');
-              parts.forEach(part => {
-                const [method, valStr] = part.split(':');
-                if (method && valStr) {
-                  const methodTrim = method.trim();
-                  const val = parseFloat(valStr.trim()) || 0;
-                  
-                  if (statusStr && statusStr.toLowerCase() === "finalizada" && closed_at === targetDate) {
-                    payments[methodTrim] = (payments[methodTrim] || 0) + val;
-                  }
-
-                  let type: 'Cartão Crédito' | 'Cartão Débito' | 'PIX' | 'Boleto' | null = null;
-                  let daysToAdd = 0;
-                  const lowerMethod = methodTrim.toLowerCase();
-                  if (lowerMethod.includes('credito') || lowerMethod.includes('crédito')) {
-                    type = 'Cartão Crédito';
-                    daysToAdd = 30;
-                  } else if (lowerMethod.includes('debito') || lowerMethod.includes('débito')) {
-                    type = 'Cartão Débito';
-                    daysToAdd = 1;
-                  } else if (lowerMethod.includes('pix')) {
-                    type = 'PIX';
-                    daysToAdd = 0;
-                  } else if (lowerMethod.includes('boleto')) {
-                    type = 'Boleto';
-                    daysToAdd = 1;
-                  }
-
-                  if (type && val > 0) {
-                    const baseDate = closed_at || opened_at;
-                    const dueDateObj = new Date(baseDate);
-                    dueDateObj.setUTCDate(dueDateObj.getUTCDate() + daysToAdd);
-                    const due_date = `${dueDateObj.getUTCFullYear()}-${String(dueDateObj.getUTCMonth() + 1).padStart(2, '0')}-${String(dueDateObj.getUTCDate()).padStart(2, '0')}`;
-
-                    receivablesArray.push({
-                      type,
-                      value: val,
-                      date: baseDate,
-                      due_date,
-                      status: daysToAdd === 0 ? 'recebido' : 'pendente'
-                    });
-                  }
-                }
+        for (let i = 0; i < Math.min(20, data.length); i++) {
+          const row = data[i];
+          if (Array.isArray(row)) {
+            const rowStr = row.map(c => String(c || '').toLowerCase().trim());
+            // Procura linha que tenha OS e Status (mínimo necessário)
+            if ((rowStr.includes('os') || rowStr.includes('nº os')) && rowStr.includes('status')) {
+              headerRowIndex = i;
+              rowStr.forEach((colName, idx) => {
+                if (colName === 'os' || colName === 'nº os') colMap.os = idx;
+                if (colName === 'data' || colName.includes('data entrada') || colName.includes('data abertura')) colMap.openedAt = idx;
+                if (colName === 'placa') colMap.plate = idx;
+                if (colName === 'status') colMap.status = idx;
+                if (colName === 'finalizada em' || colName === 'data fim' || colName.includes('fechamento')) colMap.closedAt = idx;
+                if (colName === 'r$ total da os' || colName === 'valor total' || colName === 'total') colMap.totalValue = idx;
+                if (colName === 'total pagto na os' || colName.includes('liquidado') || colName.includes('pago')) colMap.paidValue = idx;
+                if (colName.includes('forma') && colName.includes('pagamento')) colMap.paymentMethod = idx;
               });
+              break;
             }
           }
-        });
+        }
+
+        if (headerRowIndex === -1 || colMap.os === undefined) {
+          throw new Error("Cabeçalho não encontrado. Certifique-se que as colunas 'OS' e 'Status' existem.");
+        }
+
+        // 2. Extrair os dados
+        for (let i = headerRowIndex + 1; i < data.length; i++) {
+          const row = data[i];
+          if (!Array.isArray(row) || row.length === 0) continue;
+
+          const rawOs = row[colMap.os];
+          const osNumber = String(rawOs || '').trim();
+          
+          // Pular linhas vazias, lixo ou rodapé (ex: totais no final da planilha)
+          if (!osNumber || osNumber.toLowerCase() === 'os' || osNumber.length > 20 || isNaN(parseFloat(osNumber))) {
+            continue;
+          }
+
+          const hasValidDate = parseExcelDate(row[colMap.openedAt]) !== null;
+          if (!hasValidDate) continue;
+
+          const osValue = parseValue(row[colMap.totalValue]);
+          const paidValue = parseValue(row[colMap.paidValue]);
+          const statusStr = String(row[colMap.status] || '').trim();
+          
+          const opened_at = parseExcelDate(row[colMap.openedAt]) || getDefaultDate();
+          let closed_at = undefined;
+          
+          if (statusStr.toLowerCase() === 'finalizada') {
+            closed_at = parseExcelDate(row[colMap.closedAt]);
+            
+            // Faturamento apenas da data alvo
+            if (closed_at === targetDate) {
+              totalOs += osValue;
+              totalPaid += paidValue;
+            }
+          }
+          
+          const start = new Date(opened_at);
+          const end = closed_at ? new Date(closed_at) : new Date();
+          const days_open = Math.max(0, Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
+
+          let statusEnum: 'em_aberto' | 'pago_parcial' | 'finalizado' = 'em_aberto';
+          if (statusStr.toLowerCase() === 'finalizada') statusEnum = 'finalizado';
+          else if (paidValue > 0 && paidValue < osValue) statusEnum = 'pago_parcial';
+
+          const paymentMethod = String(row[colMap.paymentMethod] || '').trim();
+
+          osArray.push({
+            os_number: osNumber,
+            plate: String(row[colMap.plate] || ''),
+            opened_at,
+            closed_at,
+            total_value: osValue,
+            paid_value: paidValue,
+            payment_method: paymentMethod,
+            status: statusEnum,
+            days_open
+          });
+
+          if (paymentMethod) {
+            const parts = paymentMethod.split(';');
+            parts.forEach(part => {
+              const [method, valStr] = part.split(':');
+              if (method && valStr) {
+                const methodTrim = method.trim();
+                const val = parseValue(valStr);
+                
+                // Extrair formas de pagamento APENAS do dia do alvo para bater com o resumo!
+                if (statusStr.toLowerCase() === "finalizada" && closed_at === targetDate) {
+                  payments[methodTrim] = (payments[methodTrim] || 0) + val;
+                }
+
+                let type: 'Cartão Crédito' | 'Cartão Débito' | 'PIX' | 'Boleto' | null = null;
+                let daysToAdd = 0;
+                const lowerMethod = methodTrim.toLowerCase();
+                
+                if (lowerMethod.includes('credito') || lowerMethod.includes('crédito')) {
+                  type = 'Cartão Crédito';
+                  daysToAdd = 30;
+                } else if (lowerMethod.includes('debito') || lowerMethod.includes('débito')) {
+                  type = 'Cartão Débito';
+                  daysToAdd = 1;
+                } else if (lowerMethod.includes('pix')) {
+                  type = 'PIX';
+                  daysToAdd = 0;
+                } else if (lowerMethod.includes('boleto')) {
+                  type = 'Boleto';
+                  daysToAdd = 1;
+                }
+
+                if (type && val > 0) {
+                  const baseDate = closed_at || opened_at;
+                  const dueDateObj = new Date(baseDate);
+                  dueDateObj.setUTCDate(dueDateObj.getUTCDate() + daysToAdd);
+                  const due_date = `${dueDateObj.getUTCFullYear()}-${String(dueDateObj.getUTCMonth() + 1).padStart(2, '0')}-${String(dueDateObj.getUTCDate()).padStart(2, '0')}`;
+
+                  receivablesArray.push({
+                    type,
+                    value: val,
+                    date: baseDate,
+                    due_date,
+                    status: daysToAdd === 0 ? 'recebido' : 'pendente'
+                  });
+                }
+              }
+            });
+          }
+        }
 
         totalOs = Math.round(totalOs * 100) / 100;
         totalPaid = Math.round(totalPaid * 100) / 100;
 
         setParsedData({ totalOs, totalPaid, payments, osArray, receivablesArray });
-      } catch (err) {
+      } catch (err: any) {
         console.error("Erro ao ler planilha", err);
-        alert("Erro ao ler planilha. O formato está correto?");
+        alert("Erro ao ler planilha: " + err.message);
       }
     };
     reader.readAsBinaryString(file);
