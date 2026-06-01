@@ -133,7 +133,7 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
           const statusStr = String(row[colMap.status] || '').trim();
           
           const opened_at = parseExcelDate(row[colMap.openedAt]) || getDefaultDate();
-          let closed_at = undefined;
+          let closed_at: string | null = null;
           
           if (statusStr.toLowerCase() === 'finalizada') {
             closed_at = parseExcelDate(row[colMap.closedAt]);
