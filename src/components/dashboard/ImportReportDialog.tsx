@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Modal } from "../ui/Modal";
 import { Button } from "../ui/Button";
 import { useStores } from "@/hooks/useStores";
-import { useSaveDailyCash } from "@/hooks/useConciliacao";
+import { useSaveImportedReport } from "@/hooks/useConciliacao";
 import { getDefaultDate } from "@/lib/utils";
 import * as xlsx from "xlsx";
 
@@ -17,7 +17,7 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
   const [parsedData, setParsedData] = useState<{ totalOs: number; totalPaid: number } | null>(null);
   
   const { data: stores = [] } = useStores();
-  const saveDailyCash = useSaveDailyCash();
+  const saveImportedReport = useSaveImportedReport();
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -81,9 +81,10 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
     
     setLoading(true);
     try {
-      await saveDailyCash.mutateAsync({
+      await saveImportedReport.mutateAsync({
         storeId,
-        value: parsedData.totalPaid, // Salvando o total pago liquidado
+        osTotal: parsedData.totalOs,
+        financialTotal: parsedData.totalPaid,
         date: getDefaultDate()
       });
       onClose();
