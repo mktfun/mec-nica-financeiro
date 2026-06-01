@@ -37,7 +37,7 @@ export function RecentActivity() {
         {transactions.length === 0 ? (
           <p className="text-[var(--text-tertiary)] text-sm py-4">Nenhuma atividade recente.</p>
         ) : transactions.map((tx, i) => {
-          const iconKey = tx.type === 'in' ? 'in' : tx.category === 'divergence' ? 'alert' : 'out';
+          const iconKey = tx.type === 'in' ? 'in' : tx.icon_type === 'alert' ? 'alert' : 'out';
           const Icon = iconMap[iconKey];
           const isExpanded = expandedId === tx.id;
           const storeName = stores.find(s => s.id === tx.store_id)?.name || tx.store_id;
