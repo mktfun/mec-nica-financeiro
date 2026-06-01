@@ -36,6 +36,7 @@ export function useProcessImportedData() {
       receivablesArray,
       totalOs,
       totalPaid,
+      totalPaidAll,
       totalDinheiro,
     }: {
       storeId: string;
@@ -45,6 +46,7 @@ export function useProcessImportedData() {
       receivablesArray: ParsedReceivable[];
       totalOs: number;
       totalPaid: number;
+      totalPaidAll: number;
       totalDinheiro: number;
     }) => {
       // 1. Process Patio OS
@@ -92,7 +94,7 @@ export function useProcessImportedData() {
         }
       }
 
-      // 2. Process Receivables (Soft Idempotency matching date, type and value)
+      // 2. Process Receivables (Idempotency by store_id + type + date + value rounded)
       if (receivablesArray.length > 0) {
         const { data: existingRecs } = await supabase
           .from('receivables')
@@ -100,11 +102,17 @@ export function useProcessImportedData() {
           .eq('store_id', storeId);
 
         const toInsertRecs: any[] = [];
+        // Track local set to prevent intra-file duplicates
+        const localSeen = new Set<string>();
 
         for (const rec of receivablesArray) {
-          // Check if there is already a receivable with same type, date and value (approx)
+          const key = `${rec.type}__${rec.date}__${Math.round(rec.value * 100)}`;
+          if (localSeen.has(key)) continue;
+          localSeen.add(key);
+
           const isDuplicate = existingRecs?.some(
-            (er) => er.type === rec.type && er.date === rec.date && Math.abs(er.value - rec.value) < 0.01
+            (er) => er.type === rec.type && er.date === rec.date &&
+                    Math.round(Number(er.value) * 100) === Math.round(rec.value * 100)
           );
 
           if (!isDuplicate) {
@@ -117,8 +125,6 @@ export function useProcessImportedData() {
               date: rec.date,
               due_date: rec.due_date,
             });
-            // Add to existingRecs locally so we don't insert duplicates of the same file
-            existingRecs?.push({ id: 'temp', type: rec.type, value: rec.value, date: rec.date });
           }
         }
 
@@ -127,17 +133,31 @@ export function useProcessImportedData() {
         }
       }
 
-      // 3. Save the Reconciliations Totals
+      // 3. Save the Reconciliations Totals (UPSERT to avoid duplicates)
       await saveImportedReport.mutateAsync({
         storeId,
         date: targetDate,
         osTotal: totalOs,
-        financialTotal: totalDinheiro, // Usando o total filtrado apenas para dinheiro
+        financialTotal: totalDinheiro,
       });
+
+      // 4. Save import log
+      await supabase.from('import_logs').upsert({
+        store_id: storeId,
+        store_name: storeName,
+        target_date: targetDate,
+        total_os: totalOs,
+        total_paid_all: totalPaidAll,
+        total_dinheiro: totalDinheiro,
+        os_count: osArray.filter(o => o.status === 'finalizado').length,
+        receivables_count: receivablesArray.length,
+      }, { onConflict: 'store_id,target_date' });
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['patio_os'] });
       qc.invalidateQueries({ queryKey: ['receivables'] });
+      qc.invalidateQueries({ queryKey: ['import_logs'] });
+      qc.invalidateQueries({ queryKey: ['dashboard'] });
     },
   });
 }

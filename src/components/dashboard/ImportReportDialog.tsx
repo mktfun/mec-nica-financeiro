@@ -237,6 +237,10 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
     try {
       const selectedStore = stores.find(s => s.id === storeId);
       
+      // Total de TODOS os pagamentos (faturamento bruto)
+      const totalPaidAll = Object.values(parsedData.payments).reduce((sum, val) => sum + val, 0);
+      
+      // Total apenas de Dinheiro físico (para conciliação do caixa)
       const totalDinheiro = Object.entries(parsedData.payments)
         .filter(([key]) => key.toLowerCase().includes('dinheiro') || key.toLowerCase().includes('espécie'))
         .reduce((sum, [, val]) => sum + val, 0);
@@ -249,7 +253,8 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
         receivablesArray: parsedData.receivablesArray,
         totalOs: parsedData.totalOs,
         totalPaid: parsedData.totalPaid,
-        totalDinheiro: totalDinheiro,
+        totalPaidAll,
+        totalDinheiro,
       });
       onClose();
     } catch (err) {

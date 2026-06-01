@@ -41,12 +41,13 @@ export function useDashboardSummary() {
       const today = getDefaultDate();
       const { data: rec, error: recErr } = await supabase
         .from('reconciliations')
-        .select('financial_total, divergence, status')
+        .select('os_total, financial_total, divergence, status')
         .eq('date', today);
       if (recErr) throw recErr;
 
       const rows = rec ?? [];
-      const totalIn = rows.reduce((s, r) => s + (r.financial_total ?? 0), 0);
+      // os_total = faturamento bruto das OSs (todos pagamentos)
+      const totalIn = rows.reduce((s, r) => s + (r.os_total ?? 0), 0);
       const totalDivergences = rows.reduce((s, r) => s + Math.abs(r.divergence ?? 0), 0);
       const hasDivergence = rows.some(r => r.status === 'divergence');
 
