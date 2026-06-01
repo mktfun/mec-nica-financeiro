@@ -7,7 +7,7 @@ import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { usePatioOS, PatioRow } from '@/hooks/usePatio';
+import { usePatioOS, PatioOSRow } from '@/hooks/usePatio';
 import { useStores } from '@/hooks/useStores';
 
 export const Route = createFileRoute('/patio')({
@@ -20,7 +20,7 @@ function PatioPage() {
   const [activeTab, setActiveTab] = useState<FilterTab>('todas');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStore, setSelectedStore] = useState<string>('todas');
-  const [selectedOs, setSelectedOs] = useState<PatioRow | null>(null);
+  const [selectedOs, setSelectedOs] = useState<PatioOSRow | null>(null);
   
   const now = new Date();
   const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];

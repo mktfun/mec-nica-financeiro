@@ -37,7 +37,7 @@ export function RecentActivity() {
         {transactions.length === 0 ? (
           <p className="text-[var(--text-tertiary)] text-sm py-4">Nenhuma atividade recente.</p>
         ) : transactions.map((tx, i) => {
-          const iconKey = tx.type === 'in' ? 'in' : tx.category === 'divergence' ? 'alert' : 'out';
+          const iconKey = tx.type === 'in' ? 'in' : tx.icon_type === 'alert' ? 'alert' : 'out';
           const Icon = iconMap[iconKey];
           const isExpanded = expandedId === tx.id;
           const storeName = stores.find(s => s.id === tx.store_id)?.name || tx.store_id;
@@ -60,8 +60,8 @@ export function RecentActivity() {
                     <Icon size={20} />
                   </div>
                   <div>
-                    <h4 className="font-medium text-[var(--text-primary)]">{tx.description}</h4>
-                    <p className="text-sm text-[var(--text-tertiary)]">{tx.category} • {new Date(tx.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                    <h4 className="font-medium text-[var(--text-primary)]">{tx.title}</h4>
+                    <p className="text-sm text-[var(--text-tertiary)]">{tx.subtitle || tx.store_name || ''} • {new Date(tx.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">

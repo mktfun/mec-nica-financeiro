@@ -29,16 +29,16 @@ function AlertasPage() {
   };
 
   const filteredAlerts = allAlerts.filter(alert => {
-    if (filter === 'resolved') return alert.status === 'resolved';
-    if (alert.status === 'resolved') return false; // Hide resolved from other tabs
+    if (filter === 'resolved') return alert.resolved;
+    if (alert.resolved) return false; // Hide resolved from other tabs
     if (filter === 'critical') return alert.severity === 'critical';
     if (filter === 'warning') return alert.severity === 'warning';
     return true; // all active
   });
 
   const counts = {
-    critical: allAlerts.filter(a => a.severity === 'critical' && a.status !== 'resolved').length,
-    warning: allAlerts.filter(a => a.severity === 'warning' && a.status !== 'resolved').length,
+    critical: allAlerts.filter(a => a.severity === 'critical' && !a.resolved).length,
+    warning: allAlerts.filter(a => a.severity === 'warning' && !a.resolved).length,
   };
 
   return (
@@ -108,7 +108,7 @@ function AlertasPage() {
                 <Card 
                   variant="glass" 
                   className={`p-5 border-l-4 ${
-                    alert.status === 'resolved' ? 'border-l-[var(--border-strong)] opacity-60' :
+                    alert.resolved ? 'border-l-[var(--border-strong)] opacity-60' :
                     alert.severity === 'critical' ? 'border-l-[var(--color-accent-danger)]' : 
                     alert.severity === 'warning' ? 'border-l-[var(--color-accent-warning)]' : 
                     'border-l-[var(--color-accent-teal)]'
@@ -117,12 +117,12 @@ function AlertasPage() {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="flex items-start gap-4">
                       <div className={`mt-1 ${
-                        alert.status === 'resolved' ? 'text-[var(--text-tertiary)]' :
+                        alert.resolved ? 'text-[var(--text-tertiary)]' :
                         alert.severity === 'critical' ? 'text-[var(--color-accent-danger)]' : 
                         alert.severity === 'warning' ? 'text-[var(--color-accent-warning)]' : 
                         'text-[var(--color-accent-teal)]'
                       }`}>
-                        {alert.status === 'resolved' || alert.severity === 'info' ? <CheckCircle2 /> : <AlertTriangle />}
+                        {alert.resolved || alert.severity === 'info' ? <CheckCircle2 /> : <AlertTriangle />}
                       </div>
                       <div>
                         <div className="flex items-center gap-2 mb-1">
@@ -130,7 +130,7 @@ function AlertasPage() {
                           <span className="text-xs text-[var(--text-tertiary)] flex items-center gap-1">
                             <Clock size={12} /> {alert.time || new Date(alert.created_at).toLocaleTimeString()}
                           </span>
-                          {alert.status === 'resolved' && (
+                          {alert.resolved && (
                             <Badge variant="success" className="text-[10px]">Resolvido</Badge>
                           )}
                         </div>
@@ -142,13 +142,13 @@ function AlertasPage() {
                     <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center mt-4 sm:mt-0 gap-4">
                       {alert.amount !== null && alert.amount !== undefined && (
                         <div className={`font-display font-bold text-xl ${
-                          alert.status === 'resolved' ? 'text-[var(--text-secondary)]' :
+                          alert.resolved ? 'text-[var(--text-secondary)]' :
                           alert.severity === 'critical' ? 'text-[var(--color-accent-danger)]' : 'text-[var(--color-accent-warning)]'
                         }`}>
                           <AnimatedNumber value={Number(alert.amount)} format="currency" />
                         </div>
                       )}
-                      {alert.status !== 'resolved' && alert.severity !== 'info' && (
+                      {!alert.resolved && alert.severity !== 'info' && (
                         <Button size="sm" variant={alert.severity === 'critical' ? 'primary' : 'outline'} className="rounded-full" onClick={() => setSelectedAlert(alert)}>
                           Resolver
                         </Button>

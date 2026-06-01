@@ -49,7 +49,7 @@ function HistoricoPage() {
           <div className="flex flex-col">
             {transactions.map((tx, i) => {
               // Decide icon based on type and category
-              const iconKey = tx.type === 'in' ? 'in' : tx.category === 'divergence' ? 'alert' : 'out';
+              const iconKey = tx.type === 'in' ? 'in' : tx.icon_type === 'alert' ? 'alert' : 'out';
               const Icon = iconMap[iconKey];
               const isExpanded = expandedId === tx.id;
               
@@ -75,9 +75,9 @@ function HistoricoPage() {
                         <Icon size={20} />
                       </div>
                       <div>
-                        <h4 className="font-medium text-[var(--text-primary)]">{tx.description}</h4>
+                        <h4 className="font-medium text-[var(--text-primary)]">{tx.title}</h4>
                         <p className="text-sm text-[var(--text-tertiary)]">
-                          {tx.category} • {new Date(tx.created_at).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}
+                          {tx.subtitle || tx.store_name || ''} • {new Date(tx.created_at).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}
                         </p>
                       </div>
                     </div>

@@ -72,12 +72,12 @@ function ConfiguracoesPage() {
                 <div className="mt-4 p-3 bg-[var(--bg-canvas)] rounded-[var(--radius-md)] border border-[var(--border-subtle)]">
                   <p className="text-sm font-medium">Última Execução do Bot</p>
                   <div className="flex items-center justify-between mt-2 text-xs text-[var(--text-secondary)]">
-                    <span>{new Date(lastRun.created_at).toLocaleString()}</span>
+                    <span>{new Date(lastRun.started_at).toLocaleString()}</span>
                     <span className={lastRun.status === 'success' ? 'text-[var(--color-accent-success)]' : 'text-[var(--color-accent-danger)]'}>
                       {lastRun.status.toUpperCase()}
                     </span>
                   </div>
-                  {lastRun.logs && <p className="text-xs mt-1 font-mono text-[var(--text-tertiary)]">{lastRun.logs}</p>}
+                  {lastRun.log_text && <p className="text-xs mt-1 font-mono text-[var(--text-tertiary)]">{lastRun.log_text}</p>}
                 </div>
               )}
             </div>

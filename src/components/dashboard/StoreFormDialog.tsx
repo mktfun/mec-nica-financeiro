@@ -65,7 +65,8 @@ export function StoreFormDialog({ isOpen, onClose, storeToEdit }: StoreFormDialo
           phone,
           address,
           mechanics,
-          active: true
+          active: true,
+          avatar_url: null,
         });
       }
       onClose();
