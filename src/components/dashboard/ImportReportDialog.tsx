@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Modal } from "../ui/Modal";
 import { Button } from "../ui/Button";
 import { useStores } from "@/hooks/useStores";
-import { useSaveImportedReport } from "@/hooks/useConciliacao";
 import { getDefaultDate } from "@/lib/utils";
 import * as xlsx from "xlsx";
+import { useProcessImportedData, ParsedOS, ParsedReceivable } from "@/hooks/useImportProcessor";
 
 interface ImportReportDialogProps {
   isOpen: boolean;
@@ -14,10 +14,16 @@ interface ImportReportDialogProps {
 export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps) {
   const [loading, setLoading] = useState(false);
   const [storeId, setStoreId] = useState("");
-  const [parsedData, setParsedData] = useState<{ totalOs: number; totalPaid: number } | null>(null);
+  const [parsedData, setParsedData] = useState<{ 
+    totalOs: number; 
+    totalPaid: number; 
+    payments: Record<string, number>;
+    osArray: ParsedOS[];
+    receivablesArray: ParsedReceivable[];
+  } | null>(null);
   
   const { data: stores = [] } = useStores();
-  const saveImportedReport = useSaveImportedReport();
+  const processImportedData = useProcessImportedData();
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -35,18 +41,49 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
         let totalOs = 0;
         let totalPaid = 0;
         const payments: Record<string, number> = {};
+        const osArray: ParsedOS[] = [];
+        const receivablesArray: ParsedReceivable[] = [];
 
-        // Sum all rows with status "Finalizada"
-        // The spreadsheet is already generated for the correct period
+        const excelDateToJSDateStr = (serial: number) => {
+          if (!serial) return null;
+          const utc_days  = Math.floor(serial - 25569);
+          const date_info = new Date(utc_days * 86400 * 1000);
+          const year = date_info.getUTCFullYear();
+          const month = String(date_info.getUTCMonth() + 1).padStart(2, '0');
+          const day = String(date_info.getUTCDate()).padStart(2, '0');
+          return `${year}-${month}-${day}`;
+        };
+
         data.forEach(row => {
-          if (row["__EMPTY_5"] === "Finalizada") { 
+          const osNumber = row["__EMPTY"];
+          if (osNumber) {
             const osValue = parseFloat(row["__EMPTY_10"]) || 0;
             const paidValue = parseFloat(row["__EMPTY_11"]) || 0;
-            totalOs += osValue;
-            totalPaid += paidValue;
+            const statusStr = row["__EMPTY_5"];
+            
+            if (statusStr === "Finalizada") { 
+              totalOs += osValue;
+              totalPaid += paidValue;
+            }
 
-            // Extract payment methods from __EMPTY_14
-            // Example: "Credito: 2799.90; PIX: 2000.00; "
+            let status: 'em_aberto' | 'pago_parcial' | 'finalizado' = 'em_aberto';
+            if (statusStr === 'Finalizada') status = 'finalizado';
+            else if (paidValue > 0 && paidValue < osValue) status = 'pago_parcial';
+
+            const opened_at = excelDateToJSDateStr(parseFloat(row["__EMPTY_1"])) || getDefaultDate();
+            const closed_at = excelDateToJSDateStr(parseFloat(row["__EMPTY_6"]) || parseFloat(row["__EMPTY_7"]));
+
+            osArray.push({
+              os_number: String(osNumber),
+              plate: String(row["__EMPTY_3"] || ''),
+              opened_at,
+              closed_at,
+              total_value: osValue,
+              paid_value: paidValue,
+              payment_method: row["__EMPTY_14"] || '',
+              status
+            });
+
             const paymentStr = row["__EMPTY_14"];
             if (typeof paymentStr === 'string') {
               const parts = paymentStr.split(';');
@@ -55,18 +92,52 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
                 if (method && valStr) {
                   const methodTrim = method.trim();
                   const val = parseFloat(valStr.trim()) || 0;
-                  payments[methodTrim] = (payments[methodTrim] || 0) + val;
+                  
+                  if (statusStr === "Finalizada") {
+                    payments[methodTrim] = (payments[methodTrim] || 0) + val;
+                  }
+
+                  let type: 'Cartão Crédito' | 'Cartão Débito' | 'PIX' | 'Boleto' | null = null;
+                  let daysToAdd = 0;
+                  const lowerMethod = methodTrim.toLowerCase();
+                  if (lowerMethod.includes('credito') || lowerMethod.includes('crédito')) {
+                    type = 'Cartão Crédito';
+                    daysToAdd = 30;
+                  } else if (lowerMethod.includes('debito') || lowerMethod.includes('débito')) {
+                    type = 'Cartão Débito';
+                    daysToAdd = 1;
+                  } else if (lowerMethod.includes('pix')) {
+                    type = 'PIX';
+                    daysToAdd = 0;
+                  } else if (lowerMethod.includes('boleto')) {
+                    type = 'Boleto';
+                    daysToAdd = 1;
+                  }
+
+                  if (type && val > 0) {
+                    const baseDate = closed_at || opened_at;
+                    const dueDateObj = new Date(baseDate);
+                    dueDateObj.setUTCDate(dueDateObj.getUTCDate() + daysToAdd);
+                    const due_date = `${dueDateObj.getUTCFullYear()}-${String(dueDateObj.getUTCMonth() + 1).padStart(2, '0')}-${String(dueDateObj.getUTCDate()).padStart(2, '0')}`;
+
+                    receivablesArray.push({
+                      type,
+                      value: val,
+                      date: baseDate,
+                      due_date,
+                      status: daysToAdd === 0 ? 'recebido' : 'pendente'
+                    });
+                  }
                 }
               });
             }
           }
         });
 
-        // Round to 2 decimal places to avoid floating point display issues
         totalOs = Math.round(totalOs * 100) / 100;
         totalPaid = Math.round(totalPaid * 100) / 100;
 
-        setParsedData({ totalOs, totalPaid, payments });
+        setParsedData({ totalOs, totalPaid, payments, osArray, receivablesArray });
       } catch (err) {
         console.error("Erro ao ler planilha", err);
         alert("Erro ao ler planilha. O formato está correto?");
@@ -81,11 +152,15 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
     
     setLoading(true);
     try {
-      await saveImportedReport.mutateAsync({
+      const selectedStore = stores.find(s => s.id === storeId);
+      await processImportedData.mutateAsync({
         storeId,
-        osTotal: parsedData.totalOs,
-        financialTotal: parsedData.totalPaid,
-        date: getDefaultDate()
+        storeName: selectedStore?.name || '',
+        targetDate: getDefaultDate(),
+        osArray: parsedData.osArray,
+        receivablesArray: parsedData.receivablesArray,
+        totalOs: parsedData.totalOs,
+        totalPaid: parsedData.totalPaid,
       });
       onClose();
     } catch (err) {

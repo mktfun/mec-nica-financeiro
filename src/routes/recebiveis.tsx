@@ -151,7 +151,7 @@ function RecebiveisPage() {
                       >
                         <td className="py-3.5 px-4 text-[var(--text-secondary)]">{dateStr}</td>
                         <td className="py-3.5 px-4 font-medium">{storeName}</td>
-                        <td className="py-3.5 px-4 text-[var(--text-secondary)] uppercase">{r.payment_type}</td>
+                        <td className="py-3.5 px-4 text-[var(--text-secondary)] uppercase">{r.type}</td>
                         <td className="py-3.5 px-4 text-right font-display font-semibold">
                           <AnimatedNumber value={Number(r.value || 0)} format="currency" />
                         </td>
