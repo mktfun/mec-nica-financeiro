@@ -49,30 +49,43 @@ export function useDashboardSummary(monthStr?: string) {
       const end = new Date(Number(year), Number(month), 0);
       const endOfMonth = `${year}-${month}-${String(end.getDate()).padStart(2, '0')}`;
 
-      const { data: txs, error: txErr } = await supabase
+      // 1. Query para as Entradas/Saídas/Divergências do Mês
+      const { data: txsMonth, error: txMonthErr } = await supabase
         .from('transactions')
         .select('amount, type')
         .gte('occurred_at', startOfMonth)
         .lte('occurred_at', endOfMonth);
 
-      if (txErr) throw txErr;
+      if (txMonthErr) throw txMonthErr;
 
-      const { data: recs, error: recErr } = await supabase
+      const { data: recsMonth, error: recMonthErr } = await supabase
         .from('reconciliations')
         .select('divergence')
         .gte('date', startOfMonth)
         .lte('date', endOfMonth);
-      if (recErr) throw recErr;
+      if (recMonthErr) throw recMonthErr;
 
-      const rows = txs ?? [];
-      const totalIn = rows.filter(r => r.type === 'in').reduce((s, r) => s + (r.amount ?? 0), 0);
-      const totalOut = rows.filter(r => r.type === 'out').reduce((s, r) => s + (r.amount ?? 0), 0);
-      const totalDivergences = (recs ?? []).reduce((s, r) => s + Math.abs(r.divergence ?? 0), 0);
+      // 2. Query para o Saldo Consolidado Real (Todos os Tempos)
+      const { data: txsAllTime, error: txAllErr } = await supabase
+        .from('transactions')
+        .select('amount, type');
+        
+      if (txAllErr) throw txAllErr;
+
+      const rowsMonth = txsMonth ?? [];
+      const totalIn = rowsMonth.filter(r => r.type === 'in').reduce((s, r) => s + (r.amount ?? 0), 0);
+      const totalOut = rowsMonth.filter(r => r.type === 'out').reduce((s, r) => s + (r.amount ?? 0), 0);
+      const totalDivergences = (recsMonth ?? []).reduce((s, r) => s + Math.abs(r.divergence ?? 0), 0);
+
+      const rowsAll = txsAllTime ?? [];
+      const globalIn = rowsAll.filter(r => r.type === 'in').reduce((s, r) => s + (r.amount ?? 0), 0);
+      const globalOut = rowsAll.filter(r => r.type === 'out').reduce((s, r) => s + (r.amount ?? 0), 0);
+      const globalBalance = globalIn - globalOut;
 
       return {
         totalIn,
         totalOut,
-        balance: totalIn - totalOut,
+        balance: globalBalance,
         totalDivergences,
         motorStatus: 'completed' as 'completed' | 'processing',
       };

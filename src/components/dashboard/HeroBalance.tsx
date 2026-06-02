@@ -20,8 +20,12 @@ export function HeroBalance({ monthStr }: { monthStr?: string }) {
         animate={{ opacity: 1, y: 0 }}
         className="text-[var(--text-secondary)] font-medium mb-2 uppercase tracking-widest text-xs"
       >
-        Visão Geral / Saldo Líquido
+        Saldo Consolidado Global
       </motion.span>
+      
+      <p className="text-[10px] text-[var(--text-tertiary)] mb-2 mt-[-4px] tracking-wide">
+        (Soma total de todas as contas)
+      </p>
       
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}
@@ -38,12 +42,12 @@ export function HeroBalance({ monthStr }: { monthStr?: string }) {
         transition={{ delay: 0.3 }}
         className="mt-4 flex items-center gap-2 text-sm font-medium"
       >
-        <span className="text-[var(--color-accent-teal)] bg-[var(--color-accent-teal)]/10 px-2 py-0.5 rounded-md">
-          +<AnimatedNumber value={totalIn} format="compact" /> in
+        <span className="text-[var(--color-accent-teal)] bg-[var(--color-accent-teal)]/10 px-2 py-0.5 rounded-md flex items-center gap-1">
+          +<AnimatedNumber value={totalIn} format="compact" /> <span className="text-[10px] uppercase font-bold tracking-wider opacity-60">no mês</span>
         </span>
         <span className="text-[var(--text-tertiary)]">•</span>
-        <span className="text-[var(--text-secondary)]">
-          -<AnimatedNumber value={totalOut} format="compact" /> out
+        <span className="text-[var(--color-accent-danger)] bg-[var(--color-accent-danger)]/10 px-2 py-0.5 rounded-md flex items-center gap-1">
+          -<AnimatedNumber value={totalOut} format="compact" /> <span className="text-[10px] uppercase font-bold tracking-wider opacity-60">no mês</span>
         </span>
       </motion.div>
     </div>
