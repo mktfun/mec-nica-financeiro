@@ -14,13 +14,13 @@ interface ImportReportDialogProps {
 export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps) {
   const [loading, setLoading] = useState(false);
   const [storeId, setStoreId] = useState("");
-  const [targetDate, setTargetDate] = useState(getDefaultDate());
   const [parsedData, setParsedData] = useState<{ 
     totalOs: number; 
     totalPaid: number; 
     payments: Record<string, number>;
     osArray: ParsedOS[];
     receivablesArray: ParsedReceivable[];
+    osCount: number;
   } | null>(null);
   
   const { data: stores = [] } = useStores();
@@ -90,7 +90,6 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
           const row = data[i];
           if (Array.isArray(row)) {
             const rowStr = row.map(c => String(c || '').toLowerCase().trim());
-            // Procura linha que tenha OS e Status (mínimo necessário)
             if ((rowStr.includes('os') || rowStr.includes('nº os')) && rowStr.includes('status')) {
               headerRowIndex = i;
               rowStr.forEach((colName, idx) => {
@@ -112,6 +111,8 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
           throw new Error("Cabeçalho não encontrado. Certifique-se que as colunas 'OS' e 'Status' existem.");
         }
 
+        let osCount = 0;
+
         // 2. Extrair os dados
         for (let i = headerRowIndex + 1; i < data.length; i++) {
           const row = data[i];
@@ -120,7 +121,6 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
           const rawOs = row[colMap.os];
           const osNumber = String(rawOs || '').trim();
           
-          // Pular linhas vazias, lixo ou rodapé (ex: totais no final da planilha)
           if (!osNumber || osNumber.toLowerCase() === 'os' || osNumber.length > 20 || isNaN(parseFloat(osNumber))) {
             continue;
           }
@@ -135,23 +135,22 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
           const opened_at = parseExcelDate(row[colMap.openedAt]) || getDefaultDate();
           let closed_at: string | null = null;
           
+          let statusEnum: 'em_aberto' | 'pago_parcial' | 'finalizado' = 'em_aberto';
           if (statusStr.toLowerCase() === 'finalizada') {
+            statusEnum = 'finalizado';
             closed_at = parseExcelDate(row[colMap.closedAt]);
             
-            // Faturamento apenas da data alvo
-            if (closed_at === targetDate) {
-              totalOs += osValue;
-              totalPaid += paidValue;
-            }
+            // Soma os totais gerias do lote inteiro (apenas OS finalizadas)
+            totalOs += osValue;
+            totalPaid += paidValue;
+            osCount++;
+          } else if (paidValue > 0 && paidValue < osValue) {
+            statusEnum = 'pago_parcial';
           }
           
           const start = new Date(opened_at);
           const end = closed_at ? new Date(closed_at) : new Date();
           const days_open = Math.max(0, Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
-
-          let statusEnum: 'em_aberto' | 'pago_parcial' | 'finalizado' = 'em_aberto';
-          if (statusStr.toLowerCase() === 'finalizada') statusEnum = 'finalizado';
-          else if (paidValue > 0 && paidValue < osValue) statusEnum = 'pago_parcial';
 
           const paymentMethod = String(row[colMap.paymentMethod] || '').trim();
 
@@ -167,7 +166,7 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
             days_open
           });
 
-          if (paymentMethod) {
+          if (paymentMethod && statusEnum === 'finalizado') {
             const parts = paymentMethod.split(';');
             parts.forEach(part => {
               const [method, valStr] = part.split(':');
@@ -175,10 +174,7 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
                 const methodTrim = method.trim();
                 const val = parseValue(valStr);
                 
-                // Extrair formas de pagamento APENAS do dia do alvo para bater com o resumo!
-                if (statusStr.toLowerCase() === "finalizada" && closed_at === targetDate) {
-                  payments[methodTrim] = (payments[methodTrim] || 0) + val;
-                }
+                payments[methodTrim] = (payments[methodTrim] || 0) + val;
 
                 let type: 'Cartão Crédito' | 'Cartão Débito' | 'PIX' | 'Boleto' | null = null;
                 let daysToAdd = 0;
@@ -186,20 +182,21 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
                 
                 if (lowerMethod.includes('credito') || lowerMethod.includes('crédito')) {
                   type = 'Cartão Crédito';
-                  daysToAdd = 30;
+                  daysToAdd = 1; // Ajustado para D+1 conforme alinhamento
                 } else if (lowerMethod.includes('debito') || lowerMethod.includes('débito')) {
                   type = 'Cartão Débito';
-                  daysToAdd = 1;
-                } else if (lowerMethod.includes('pix')) {
-                  type = 'PIX';
+                  daysToAdd = 1; // D+1
+                } else if (lowerMethod.includes('pix') || lowerMethod.includes('conta') || lowerMethod.includes('dinheiro') || lowerMethod.includes('espécie')) {
+                  type = 'PIX'; // PIX represents D+0 operations conceptually
                   daysToAdd = 0;
                 } else if (lowerMethod.includes('boleto')) {
                   type = 'Boleto';
                   daysToAdd = 1;
                 }
 
-                if (type && val > 0) {
-                  const baseDate = closed_at || opened_at;
+                // Se houver valor e for uma OS finalizada, criamos o recebível
+                if (type && val > 0 && closed_at) {
+                  const baseDate = closed_at;
                   const dueDateObj = new Date(baseDate);
                   dueDateObj.setUTCDate(dueDateObj.getUTCDate() + daysToAdd);
                   const due_date = `${dueDateObj.getUTCFullYear()}-${String(dueDateObj.getUTCMonth() + 1).padStart(2, '0')}-${String(dueDateObj.getUTCDate()).padStart(2, '0')}`;
@@ -220,7 +217,7 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
         totalOs = Math.round(totalOs * 100) / 100;
         totalPaid = Math.round(totalPaid * 100) / 100;
 
-        setParsedData({ totalOs, totalPaid, payments, osArray, receivablesArray });
+        setParsedData({ totalOs, totalPaid, payments, osArray, receivablesArray, osCount });
       } catch (err: any) {
         console.error("Erro ao ler planilha", err);
         alert("Erro ao ler planilha: " + err.message);
@@ -237,24 +234,11 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
     try {
       const selectedStore = stores.find(s => s.id === storeId);
       
-      // Total de TODOS os pagamentos (faturamento bruto)
-      const totalPaidAll = Object.values(parsedData.payments).reduce((sum, val) => sum + val, 0);
-      
-      // Total apenas de Dinheiro físico (para conciliação do caixa)
-      const totalDinheiro = Object.entries(parsedData.payments)
-        .filter(([key]) => key.toLowerCase().includes('dinheiro') || key.toLowerCase().includes('espécie'))
-        .reduce((sum, [, val]) => sum + val, 0);
-
       await processImportedData.mutateAsync({
         storeId,
         storeName: selectedStore?.name || '',
-        targetDate: targetDate,
         osArray: parsedData.osArray,
         receivablesArray: parsedData.receivablesArray,
-        totalOs: parsedData.totalOs,
-        totalPaid: parsedData.totalPaid,
-        totalPaidAll,
-        totalDinheiro,
       });
       onClose();
     } catch (err) {
@@ -268,7 +252,7 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
     <Modal isOpen={isOpen} onClose={() => { setParsedData(null); onClose(); }} title="Importar Relatório">
       <form onSubmit={handleSubmit} className="space-y-4 mt-4">
         <p className="text-sm text-[var(--text-tertiary)] mb-4">
-          Faça o upload da planilha (OS x Financeiro) da unidade referente ao dia do fechamento (por padrão, dia útil anterior).
+          Faça o upload da planilha (OS x Financeiro). O sistema lerá todas as datas e dividirá os fechamentos dia a dia automaticamente.
         </p>
 
         <div>
@@ -291,22 +275,6 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
 
         <div>
           <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1 uppercase tracking-wider">
-            Data de Referência (Fechamento)
-          </label>
-          <input 
-            type="date"
-            value={targetDate}
-            onChange={(e) => {
-              setTargetDate(e.target.value);
-              setParsedData(null); // Reset parsed data so they re-upload with the new date
-            }}
-            required
-            className="w-full bg-[#1A1A1A] border border-white/10 rounded-[var(--radius-md)] px-4 py-2 text-sm text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors appearance-none"
-          />
-        </div>
-
-        <div>
-          <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1 uppercase tracking-wider">
             Documento (.xls, .xlsx)
           </label>
           <input
@@ -321,20 +289,20 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
         {parsedData && (
           <div className="bg-[var(--bg-surface-elevated)] p-4 rounded-[var(--radius-md)] border border-[var(--color-primary)]/30 mt-4 space-y-4 animate-in fade-in zoom-in-95">
             <div>
-              <h4 className="text-sm font-semibold text-[var(--color-primary)] mb-2">Resumo Encontrado</h4>
+              <h4 className="text-sm font-semibold text-[var(--color-primary)] mb-2">Resumo do Lote ({parsedData.osCount} OSs finalizadas)</h4>
               <div className="flex justify-between items-center text-sm">
-                <span className="text-[var(--text-secondary)]">Total Faturado (OS):</span>
+                <span className="text-[var(--text-secondary)]">Total Faturado no Lote:</span>
                 <span className="font-medium text-white">R$ {parsedData.totalOs.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
               </div>
               <div className="flex justify-between items-center text-sm border-t border-white/10 pt-2 mt-2">
-                <span className="text-[var(--text-secondary)]">Total Pago na OS (Liquidado):</span>
+                <span className="text-[var(--text-secondary)]">Total Pago no Lote:</span>
                 <span className="font-bold text-[var(--color-success)] text-lg">R$ {parsedData.totalPaid.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
               </div>
             </div>
 
             {Object.keys(parsedData.payments).length > 0 && (
-              <div className="bg-white/5 rounded-md p-3 border border-white/10">
-                <p className="text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-2">Formas de Pagamento Extraídas</p>
+              <div className="bg-white/5 rounded-md p-3 border border-white/10 max-h-40 overflow-y-auto">
+                <p className="text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-2">Formas de Pagamento Consolidadas</p>
                 <div className="space-y-1">
                   {Object.entries(parsedData.payments).map(([method, amount]) => (
                     <div key={method} className="flex justify-between text-xs">

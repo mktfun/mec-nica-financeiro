@@ -34,7 +34,7 @@ function RecebiveisPage() {
   const todayStr = getDefaultDate();
   
   const totalRecebidoHoje = recebidos
-    .filter(r => r.created_at.startsWith(todayStr))
+    .filter(r => r.due_date === todayStr)
     .reduce((a, r) => a + Number(r.value || 0), 0);
     
   const totalAVencerHoje = pendentes

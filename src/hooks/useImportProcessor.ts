@@ -31,27 +31,16 @@ export function useProcessImportedData() {
     mutationFn: async ({
       storeId,
       storeName,
-      targetDate,
       osArray,
       receivablesArray,
-      totalOs,
-      totalPaid,
-      totalPaidAll,
-      totalDinheiro,
     }: {
       storeId: string;
       storeName: string;
-      targetDate: string;
       osArray: ParsedOS[];
       receivablesArray: ParsedReceivable[];
-      totalOs: number;
-      totalPaid: number;
-      totalPaidAll: number;
-      totalDinheiro: number;
     }) => {
       // 1. Process Patio OS
       if (osArray.length > 0) {
-        // Fetch existing OSs for this store to prevent duplicates
         const { data: existingOs } = await supabase
           .from('patio_os')
           .select('id, os_number')
@@ -102,7 +91,6 @@ export function useProcessImportedData() {
           .eq('store_id', storeId);
 
         const toInsertRecs: any[] = [];
-        // Track local set to prevent intra-file duplicates
         const localSeen = new Set<string>();
 
         for (const rec of receivablesArray) {
@@ -133,31 +121,111 @@ export function useProcessImportedData() {
         }
       }
 
-      // 3. Save the Reconciliations Totals (UPSERT to avoid duplicates)
-      await saveImportedReport.mutateAsync({
-        storeId,
-        date: targetDate,
-        osTotal: totalOs,
-        financialTotal: totalDinheiro,
-      });
+      // 3. Agrupar OSs por data de fechamento para processar Transações, Conciliações e Logs
+      const dailySummaries = new Map<string, {
+        totalOs: number;
+        totalPaidAll: number; // Sum of all paid
+        totalDinheiro: number;
+        osCount: number;
+        oss: ParsedOS[];
+      }>();
 
-      // 4. Save import log
-      await supabase.from('import_logs').upsert({
-        store_id: storeId,
-        store_name: storeName,
-        target_date: targetDate,
-        total_os: totalOs,
-        total_paid_all: totalPaidAll,
-        total_dinheiro: totalDinheiro,
-        os_count: osArray.filter(o => o.status === 'finalizado').length,
-        receivables_count: receivablesArray.length,
-      }, { onConflict: 'store_id,target_date' });
+      for (const os of osArray) {
+        if (os.status === 'finalizado' && os.closed_at) {
+          const date = os.closed_at;
+          if (!dailySummaries.has(date)) {
+            dailySummaries.set(date, { totalOs: 0, totalPaidAll: 0, totalDinheiro: 0, osCount: 0, oss: [] });
+          }
+          const summary = dailySummaries.get(date)!;
+          summary.totalOs += os.total_value;
+          summary.totalPaidAll += os.paid_value;
+          summary.osCount++;
+          summary.oss.push(os);
+          
+          // Calcular dinheiro apenas (PIX / Dinheiro) - uma estimativa caso venha Payment_method
+          let dinheiroVal = 0;
+          if (os.payment_method) {
+             const parts = os.payment_method.split(';');
+             parts.forEach(part => {
+                const [method, valStr] = part.split(':');
+                if (method && valStr) {
+                  const m = method.toLowerCase();
+                  if (m.includes('dinheiro') || m.includes('espécie')) {
+                    const parsed = parseFloat(valStr.trim());
+                    if (!isNaN(parsed)) dinheiroVal += parsed;
+                  }
+                }
+             });
+          }
+          summary.totalDinheiro += dinheiroVal;
+        }
+      }
+
+      // Para cada dia encontrado, salvar Totals, Logs e Transações
+      for (const [date, summary] of Array.from(dailySummaries.entries())) {
+        
+        // A) Save Reconciliations
+        await saveImportedReport.mutateAsync({
+          storeId,
+          date,
+          osTotal: summary.totalOs,
+          financialTotal: summary.totalDinheiro,
+        });
+
+        // B) Save Import Log
+        const recCountForDate = receivablesArray.filter(r => r.date === date).length;
+        await supabase.from('import_logs').upsert({
+          store_id: storeId,
+          store_name: storeName,
+          target_date: date,
+          total_os: summary.totalOs,
+          total_paid_all: summary.totalPaidAll,
+          total_dinheiro: summary.totalDinheiro,
+          os_count: summary.osCount,
+          receivables_count: recCountForDate,
+        }, { onConflict: 'store_id,target_date' });
+
+        // C) Inserir transações para o extrato (somente novos)
+        // Precisamos evitar duplicar transações da mesma OS
+        const { data: existingTransactions } = await supabase
+          .from('transactions')
+          .select('id, title')
+          .eq('store_id', storeId)
+          .eq('occurred_at', date)
+          .eq('type', 'in');
+
+        const txToInsert: any[] = [];
+        
+        for (const os of summary.oss) {
+          const desc = `OS #${os.os_number} - ${os.plate || 'Sem placa'}`;
+          const isDuplicateTx = existingTransactions?.some(t => t.title === desc);
+          
+          if (!isDuplicateTx && os.paid_value > 0) {
+            txToInsert.push({
+              store_id: storeId,
+              store_name: storeName,
+              type: 'in',
+              amount: os.paid_value,
+              occurred_at: date,
+              title: desc,
+              os_number: os.os_number,
+              payment_method: os.payment_method || 'Não especificado'
+            });
+          }
+        }
+
+        if (txToInsert.length > 0) {
+          await supabase.from('transactions').insert(txToInsert);
+        }
+      }
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['patio_os'] });
       qc.invalidateQueries({ queryKey: ['receivables'] });
       qc.invalidateQueries({ queryKey: ['import_logs'] });
       qc.invalidateQueries({ queryKey: ['dashboard'] });
+      qc.invalidateQueries({ queryKey: ['transactions'] });
+      qc.invalidateQueries({ queryKey: ['extrato'] });
     },
   });
 }

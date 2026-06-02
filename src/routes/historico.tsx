@@ -1,20 +1,30 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import {
-  FileSpreadsheet, ChevronDown, ChevronUp, Building2,
-  Calendar, Package, DollarSign, Banknote, Filter
+  FileSpreadsheet, Filter, ArrowUpRight, ArrowDownRight, 
+  Wallet, Calendar, CreditCard, Banknote, Landmark, QrCode
 } from 'lucide-react';
-import { useImportLogs, useImportLogDetail, ImportLogFilters } from '@/hooks/useImportLogs';
 import { useStores } from '@/hooks/useStores';
+import { useExtrato } from '@/hooks/useTransactions';
 
 export const Route = createFileRoute('/historico')({
   component: HistoricoPage,
 });
+
+function getDefaultPeriod() {
+  const now = new Date();
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  
+  return {
+    start: firstDay.toISOString().split('T')[0],
+    end: lastDay.toISOString().split('T')[0]
+  };
+}
 
 function formatDate(dateStr: string) {
   if (!dateStr) return '';
@@ -22,99 +32,36 @@ function formatDate(dateStr: string) {
   return `${d}/${m}/${y}`;
 }
 
-function timeAgo(isoStr: string) {
-  const diff = Date.now() - new Date(isoStr).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 60) return `há ${mins}min`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `há ${hrs}h`;
-  const days = Math.floor(hrs / 24);
-  return `há ${days}d`;
-}
-
-function ImportLogDetail({ storeId, targetDate }: { storeId: string; targetDate: string }) {
-  const { data: os = [], isLoading } = useImportLogDetail(storeId, targetDate);
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center p-4">
-        <svg className="animate-spin w-5 h-5 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="none">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-        </svg>
-      </div>
-    );
-  }
-
-  if (!os.length) {
-    return (
-      <p className="text-sm text-[var(--text-tertiary)] text-center py-4">
-        Nenhuma OS finalizada encontrada para este período.
-      </p>
-    );
-  }
-
-  return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="text-[var(--text-tertiary)] text-xs uppercase tracking-wider border-b border-[var(--border-subtle)]">
-            <th className="text-left pb-2 pr-4">OS</th>
-            <th className="text-left pb-2 pr-4">Placa</th>
-            <th className="text-right pb-2 pr-4">Total OS</th>
-            <th className="text-right pb-2 pr-4">Pago</th>
-            <th className="text-left pb-2">Pagamento</th>
-          </tr>
-        </thead>
-        <tbody>
-          {os.map((o: any) => (
-            <tr key={o.id} className="border-b border-[var(--border-subtle)]/50 last:border-0">
-              <td className="py-2 pr-4 font-mono font-medium">{o.os_number}</td>
-              <td className="py-2 pr-4 text-[var(--text-secondary)]">{o.plate || '—'}</td>
-              <td className="py-2 pr-4 text-right">
-                <AnimatedNumber value={Number(o.total_value || 0)} format="currency" />
-              </td>
-              <td className="py-2 pr-4 text-right text-[var(--color-accent-teal)]">
-                <AnimatedNumber value={Number(o.paid_value || 0)} format="currency" />
-              </td>
-              <td className="py-2 text-[var(--text-tertiary)] text-xs">
-                {o.payment_method || '—'}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+function getIconForMethod(method: string) {
+  const m = method.toLowerCase();
+  if (m.includes('pix')) return <QrCode size={16} />;
+  if (m.includes('dinheiro') || m.includes('espécie')) return <Banknote size={16} />;
+  if (m.includes('credito') || m.includes('crédito') || m.includes('debito') || m.includes('débito')) return <CreditCard size={16} />;
+  return <Landmark size={16} />;
 }
 
 function HistoricoPage() {
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [filters, setFilters] = useState<ImportLogFilters>({});
+  const period = getDefaultPeriod();
+  const [startDate, setStartDate] = useState(period.start);
+  const [endDate, setEndDate] = useState(period.end);
   const [storeFilter, setStoreFilter] = useState('');
   const [showFilters, setShowFilters] = useState(false);
 
   const { data: stores = [] } = useStores();
-  const { data: logs = [], isLoading } = useImportLogs(
-    storeFilter ? { storeId: storeFilter } : {}
-  );
-
-  const toggleExpand = (id: string) => {
-    setExpandedId(prev => prev === id ? null : id);
-  };
+  const { data: extrato, isLoading } = useExtrato(storeFilter, startDate, endDate);
 
   return (
     <AppShell>
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6 max-w-4xl mx-auto">
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6 max-w-5xl mx-auto">
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
             <h1 className="font-display font-bold text-3xl flex items-center gap-3">
-              <FileSpreadsheet size={28} className="text-[var(--color-primary)]" />
-              Histórico de Importações
+              <Wallet size={28} className="text-[var(--color-primary)]" />
+              Extrato Bancário
             </h1>
             <p className="text-sm text-[var(--text-secondary)] mt-1">
-              Registro de todas as planilhas importadas por loja e data.
+              Consolidação de entradas, saídas e saldo por período.
             </p>
           </div>
           <button
@@ -134,13 +81,13 @@ function HistoricoPage() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
             >
-              <Card className="flex flex-wrap gap-4 items-end">
+              <Card className="flex flex-wrap gap-4 items-end bg-[var(--bg-surface-elevated)] border-[var(--color-primary)]/20">
                 <div>
                   <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1 uppercase tracking-wider">Loja</label>
                   <select
                     value={storeFilter}
                     onChange={e => setStoreFilter(e.target.value)}
-                    className="bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-[var(--radius-md)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
+                    className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-[var(--radius-md)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
                   >
                     <option value="">Todas as lojas</option>
                     {stores.map(s => (
@@ -148,117 +95,148 @@ function HistoricoPage() {
                     ))}
                   </select>
                 </div>
-                {storeFilter && (
-                  <button
-                    onClick={() => setStoreFilter('')}
-                    className="text-xs text-[var(--color-accent-danger)] hover:underline"
-                  >
-                    Limpar filtro
-                  </button>
-                )}
+                <div>
+                  <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1 uppercase tracking-wider">De</label>
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={e => setStartDate(e.target.value)}
+                    className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-[var(--radius-md)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1 uppercase tracking-wider">Até</label>
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={e => setEndDate(e.target.value)}
+                    className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-[var(--radius-md)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
+                  />
+                </div>
               </Card>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Content */}
-        {isLoading ? (
-          <div className="flex justify-center p-12">
-            <svg className="animate-spin w-8 h-8 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-            </svg>
-          </div>
-        ) : logs.length === 0 ? (
-          <Card className="text-center py-16">
-            <FileSpreadsheet size={40} className="mx-auto mb-4 text-[var(--text-tertiary)] opacity-40" />
-            <p className="text-[var(--text-tertiary)] font-medium">Nenhuma importação registrada.</p>
-            <p className="text-sm text-[var(--text-tertiary)] mt-1 opacity-70">
-              Importe a planilha de uma loja pelo Dashboard para começar.
-            </p>
+        {/* Overview Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card className="flex flex-col justify-center border-l-4 border-l-[var(--color-success)]">
+            <span className="text-sm font-medium text-[var(--text-tertiary)] uppercase tracking-wider flex items-center gap-2">
+              <ArrowUpRight size={16} className="text-[var(--color-success)]" />
+              Entradas no Período
+            </span>
+            <div className="mt-2 text-2xl font-bold text-[var(--text-primary)]">
+              <AnimatedNumber value={extrato?.totalIn || 0} format="currency" />
+            </div>
           </Card>
-        ) : (
-          <div className="space-y-3">
-            {logs.map((log, i) => {
-              const isExpanded = expandedId === log.id;
-              return (
-                <motion.div
-                  key={log.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.04 }}
-                >
-                  <Card className="overflow-hidden">
-                    {/* Header Row */}
-                    <div
-                      className="flex items-center justify-between cursor-pointer group"
-                      onClick={() => toggleExpand(log.id)}
-                    >
-                      <div className="flex items-center gap-4 flex-1 min-w-0">
-                        <div className="w-10 h-10 rounded-[var(--radius-md)] bg-[var(--color-primary)]/10 flex items-center justify-center shrink-0">
-                          <FileSpreadsheet size={18} className="text-[var(--color-primary)]" />
-                        </div>
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <h3 className="font-semibold text-[var(--text-primary)] truncate">
-                              {log.store_name}
-                            </h3>
-                            <Badge variant="neutral" className="shrink-0">
-                              {formatDate(log.target_date)}
-                            </Badge>
-                          </div>
-                          <div className="flex items-center gap-3 mt-1 text-xs text-[var(--text-tertiary)] flex-wrap">
-                            <span className="flex items-center gap-1">
-                              <Package size={11} />
-                              {log.os_count} OSs
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <DollarSign size={11} />
-                              Fat.: <AnimatedNumber value={Number(log.total_os || 0)} format="currency" />
-                            </span>
-                            {Number(log.total_dinheiro) > 0 && (
-                              <span className="flex items-center gap-1 text-[var(--color-accent-teal)]">
-                                <Banknote size={11} />
-                                Dinheiro: <AnimatedNumber value={Number(log.total_dinheiro || 0)} format="currency" />
-                              </span>
-                            )}
-                            <span className="flex items-center gap-1 text-[var(--text-tertiary)]/60">
-                              <Calendar size={11} />
-                              {timeAgo(log.created_at)}
-                            </span>
-                          </div>
-                        </div>
+          
+          <Card className="flex flex-col justify-center border-l-4 border-l-[var(--color-accent-danger)]">
+            <span className="text-sm font-medium text-[var(--text-tertiary)] uppercase tracking-wider flex items-center gap-2">
+              <ArrowDownRight size={16} className="text-[var(--color-accent-danger)]" />
+              Saídas no Período
+            </span>
+            <div className="mt-2 text-2xl font-bold text-[var(--text-primary)]">
+              <AnimatedNumber value={extrato?.totalOut || 0} format="currency" />
+            </div>
+          </Card>
+
+          <Card className="flex flex-col justify-center border-l-4 border-l-[var(--color-primary)] bg-[var(--color-primary)]/5">
+            <span className="text-sm font-medium text-[var(--text-tertiary)] uppercase tracking-wider flex items-center gap-2">
+              <Wallet size={16} className="text-[var(--color-primary)]" />
+              Saldo Consolidado
+            </span>
+            <div className="mt-2 text-3xl font-display font-bold text-[var(--text-primary)]">
+              <AnimatedNumber value={extrato?.balance || 0} format="currency" />
+            </div>
+          </Card>
+        </div>
+
+        {/* Timeline */}
+        <Card className="overflow-hidden p-0">
+          <div className="p-4 border-b border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)]">
+            <h3 className="font-semibold text-[var(--text-primary)]">Lançamentos do Período</h3>
+          </div>
+          
+          {isLoading ? (
+            <div className="flex justify-center p-12">
+              <svg className="animate-spin w-8 h-8 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="none">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+              </svg>
+            </div>
+          ) : extrato?.transactions.length === 0 ? (
+            <div className="text-center py-16">
+              <FileSpreadsheet size={40} className="mx-auto mb-4 text-[var(--text-tertiary)] opacity-40" />
+              <p className="text-[var(--text-tertiary)] font-medium">Nenhum lançamento encontrado.</p>
+              <p className="text-sm text-[var(--text-tertiary)] mt-1 opacity-70">
+                Importe planilhas ou adicione transações para ver o histórico.
+              </p>
+            </div>
+          ) : (
+            <div className="divide-y divide-[var(--border-subtle)]">
+              {extrato?.transactions.map((tx: any, i: number) => {
+                const isIn = tx.type === 'in';
+                const Icon = isIn ? ArrowUpRight : ArrowDownRight;
+                
+                return (
+                  <motion.div
+                    key={tx.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.02 }}
+                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 hover:bg-[var(--bg-surface-elevated)] transition-colors group"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className={`mt-1 sm:mt-0 w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                        isIn ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' : 'bg-[var(--color-accent-danger)]/10 text-[var(--color-accent-danger)]'
+                      }`}>
+                        <Icon size={20} />
                       </div>
-                      <div className="flex items-center gap-2 ml-4 shrink-0">
-                        <span className="text-xs text-[var(--text-tertiary)] hidden sm:block">
-                          {isExpanded ? 'Fechar OSs' : 'Ver OSs'}
-                        </span>
-                        {isExpanded
-                          ? <ChevronUp size={16} className="text-[var(--text-tertiary)]" />
-                          : <ChevronDown size={16} className="text-[var(--text-tertiary)]" />
-                        }
+                      
+                      <div>
+                        <h4 className="font-medium text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
+                          {tx.title}
+                        </h4>
+                        <div className="flex flex-wrap items-center gap-3 mt-1 text-xs text-[var(--text-tertiary)]">
+                          <span className="flex items-center gap-1 bg-[var(--bg-surface)] px-2 py-0.5 rounded-full border border-[var(--border-subtle)]">
+                            <Calendar size={12} />
+                            {formatDate(tx.occurred_at)}
+                          </span>
+                          
+                          {tx.store_name && (
+                            <span className="flex items-center gap-1">
+                              • Loja: {tx.store_name}
+                            </span>
+                          )}
+
+                          {tx.payment_method && (
+                            <span className="flex items-center gap-1 text-[var(--text-secondary)]">
+                              • {getIconForMethod(tx.payment_method)}
+                              {tx.payment_method}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
-
-                    {/* Expanded OS detail */}
-                    <AnimatePresence>
-                      {isExpanded && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="border-t border-[var(--border-subtle)] mt-4 pt-4"
-                        >
-                          <ImportLogDetail storeId={log.store_id} targetDate={log.target_date} />
-                        </motion.div>
+                    
+                    <div className="mt-3 sm:mt-0 ml-14 sm:ml-0 text-right">
+                      <div className={`font-mono font-semibold text-lg ${
+                        isIn ? 'text-[var(--color-success)]' : 'text-[var(--color-accent-danger)]'
+                      }`}>
+                        {isIn ? '+' : '-'} <AnimatedNumber value={Number(tx.amount || 0)} format="currency" />
+                      </div>
+                      {tx.os_number && (
+                        <div className="text-xs text-[var(--text-tertiary)] mt-1">
+                          OS: {tx.os_number}
+                        </div>
                       )}
-                    </AnimatePresence>
-                  </Card>
-                </motion.div>
-              );
-            })}
-          </div>
-        )}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          )}
+        </Card>
       </div>
     </AppShell>
   );

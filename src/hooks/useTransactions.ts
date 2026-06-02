@@ -111,3 +111,41 @@ export function useCashFlow(days = 7) {
     },
   });
 }
+
+export function useExtrato(storeId: string, startDate: string, endDate: string) {
+  return useQuery({
+    queryKey: ['extrato', storeId, startDate, endDate],
+    queryFn: async () => {
+      let query = supabase
+        .from('transactions')
+        .select('*')
+        .order('occurred_at', { ascending: false })
+        .order('created_at', { ascending: false });
+
+      if (storeId) {
+        query = query.eq('store_id', storeId);
+      }
+      if (startDate) {
+        query = query.gte('occurred_at', startDate);
+      }
+      if (endDate) {
+        query = query.lte('occurred_at', endDate);
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+      
+      const rows = data as TransactionRow[];
+      
+      const totalIn = rows.filter(r => r.type === 'in').reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
+      const totalOut = rows.filter(r => r.type === 'out').reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
+      
+      return {
+        transactions: rows,
+        totalIn,
+        totalOut,
+        balance: totalIn - totalOut
+      };
+    },
+  });
+}
