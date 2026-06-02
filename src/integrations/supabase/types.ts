@@ -109,10 +109,94 @@ export type Database = {
         }
         Relationships: []
       }
+      cash_registers: {
+        Row: {
+          created_at: string | null
+          date: string
+          declared_amount: number | null
+          divergence: number | null
+          expected_amount: number
+          id: string
+          status: string
+          store_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          date: string
+          declared_amount?: number | null
+          divergence?: number | null
+          expected_amount?: number
+          id?: string
+          status?: string
+          store_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          date?: string
+          declared_amount?: number | null
+          divergence?: number | null
+          expected_amount?: number
+          id?: string
+          status?: string
+          store_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cash_registers_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      import_logs: {
+        Row: {
+          created_at: string | null
+          id: string
+          os_count: number | null
+          receivables_count: number | null
+          store_id: string
+          store_name: string
+          target_date: string
+          total_dinheiro: number | null
+          total_os: number | null
+          total_paid_all: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          os_count?: number | null
+          receivables_count?: number | null
+          store_id: string
+          store_name: string
+          target_date: string
+          total_dinheiro?: number | null
+          total_os?: number | null
+          total_paid_all?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          os_count?: number | null
+          receivables_count?: number | null
+          store_id?: string
+          store_name?: string
+          target_date?: string
+          total_dinheiro?: number | null
+          total_os?: number | null
+          total_paid_all?: number | null
+        }
+        Relationships: []
+      }
       patio_os: {
         Row: {
           closed_at: string | null
           days_open: number | null
+          history_log: Json | null
           id: string
           opened_at: string
           os_number: string
@@ -128,6 +212,7 @@ export type Database = {
         Insert: {
           closed_at?: string | null
           days_open?: number | null
+          history_log?: Json | null
           id?: string
           opened_at?: string
           os_number: string
@@ -143,6 +228,7 @@ export type Database = {
         Update: {
           closed_at?: string | null
           days_open?: number | null
+          history_log?: Json | null
           id?: string
           opened_at?: string
           os_number?: string
