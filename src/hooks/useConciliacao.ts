@@ -7,13 +7,35 @@ export function useConciliacaoDetalhes(date?: string) {
   return useQuery({
     queryKey: ['reconciliations', 'details', targetDate],
     queryFn: async () => {
+      const [year, month] = targetDate.split('-');
+      const startOfMonth = `${year}-${month}-01`;
+      const endOfMonth = `${year}-${month}-31`;
+
       const { data, error } = await supabase
         .from('reconciliations')
         .select('*')
-        .eq('date', targetDate)
+        .gte('date', startOfMonth)
+        .lte('date', endOfMonth)
         .order('store_id');
       if (error) throw error;
-      return data as ReconciliationRow[];
+      
+      const rows = data as ReconciliationRow[];
+      
+      // Agrupar por store_id para retornar soma mensal
+      const aggregated = rows.reduce((acc, row) => {
+        if (!acc[row.store_id]) {
+          acc[row.store_id] = { ...row, os_total: 0, financial_total: 0, divergence: 0, status: 'approved' };
+        }
+        acc[row.store_id].os_total = (acc[row.store_id].os_total || 0) + (row.os_total || 0);
+        acc[row.store_id].financial_total = (acc[row.store_id].financial_total || 0) + (row.financial_total || 0);
+        acc[row.store_id].divergence = (acc[row.store_id].divergence || 0) + (row.divergence || 0);
+        
+        if (row.status === 'divergence') acc[row.store_id].status = 'divergence';
+        else if (row.status === 'pending' && acc[row.store_id].status !== 'divergence') acc[row.store_id].status = 'pending';
+        return acc;
+      }, {} as Record<string, ReconciliationRow>);
+
+      return Object.values(aggregated);
     },
   });
 }
@@ -39,9 +61,26 @@ export function useConciliacaoResumo(date?: string) {
       const totalIn = rows.reduce((s, r) => s + (r.os_total ?? 0), 0);
       const totalDivergence = rows.reduce((s, r) => s + Math.abs(r.divergence ?? 0), 0);
       const resultado = rows.reduce((s, r) => s + (r.divergence ?? 0), 0);
-      const approved = rows.filter(r => r.status === 'approved').length;
-      const divergence = rows.filter(r => r.status === 'divergence').length;
-      const pending = rows.filter(r => r.status === 'pending').length;
+      
+      // Contar status únicos por loja
+      const storeStatus = rows.reduce((acc, row) => {
+        if (!acc[row.store_id]) {
+          acc[row.store_id] = 'approved';
+        }
+        if (row.status === 'divergence') acc[row.store_id] = 'divergence';
+        else if (row.status === 'pending' && acc[row.store_id] !== 'divergence') acc[row.store_id] = 'pending';
+        return acc;
+      }, {} as Record<string, string>);
+
+      const statusArray = Object.values(storeStatus);
+      const approved = statusArray.filter(s => s === 'approved').length;
+      const divergence = statusArray.filter(s => s === 'divergence').length;
+      
+      // pendentes: podemos dizer que se a loja não teve fechamento ou está pending, é pendente.
+      // O Dashboard sabe o total de lojas cadastradas (stores.length). 
+      // Então pending será (Total de Lojas - approved - divergence) lá no UI, 
+      // Aqui só devolvemos o 'approved' e 'divergence' das que tiveram movimento, e 'pending' das que tem movimento mas tão pending
+      const pending = statusArray.filter(s => s === 'pending').length;
 
       return { totalIn, totalDivergence, resultado, approved, divergence, pending, rows };
     },

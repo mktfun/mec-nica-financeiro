@@ -3,7 +3,7 @@ import { HeroBalance } from '@/components/dashboard/HeroBalance';
 import { QuickActions } from '@/components/dashboard/QuickActions';
 import { MotorStatus } from '@/components/dashboard/MotorStatus';
 import { RecentActivity } from '@/components/dashboard/RecentActivity';
-import { CashFlowChart } from '@/components/dashboard/CashFlowChart';
+import { StoreRankingChart } from '@/components/dashboard/StoreRankingChart';
 import { AppShell } from '@/components/layout/AppShell';
 
 export const Route = createFileRoute('/')({
@@ -22,16 +22,8 @@ function DashboardPage() {
           <div className="lg:col-span-2">
             <RecentActivity />
           </div>
-          <div className="lg:col-span-1">
-            {/* Espaço reservado para o Chart ou Mini-Relatório */}
-            <div className="bg-[var(--bg-surface-elevated)] rounded-[var(--radius-lg)] p-6 border border-[var(--border-subtle)]">
-              <h3 className="font-display font-semibold mb-4 text-sm text-[var(--text-secondary)] uppercase tracking-wider">
-                Resumo da Semana
-              </h3>
-              <div className="h-48 flex items-center justify-center">
-                <CashFlowChart />
-              </div>
-            </div>
+          <div className="lg:col-span-1 min-h-[400px]">
+            <StoreRankingChart />
           </div>
         </div>
       </div>

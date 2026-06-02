@@ -43,6 +43,11 @@ function getIconForMethod(method: string) {
   return <Landmark size={16} />;
 }
 
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+
+// Definindo cores para o gráfico
+const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899'];
+
 function LojaDashboardPage() {
   const { lojaId } = useParams({ from: '/loja/$lojaId' });
   const { data: stores = [] } = useStores();
@@ -53,6 +58,9 @@ function LojaDashboardPage() {
   const period = getDefaultPeriod();
   const [startDate, setStartDate] = useState(period.start);
   const [endDate, setEndDate] = useState(period.end);
+  const [tab, setTab] = useState<'all' | 'in' | 'out'>('all');
+  const [page, setPage] = useState(1);
+  const pageSize = 8;
 
   const { data: extrato, isLoading: loadingExtrato } = useExtrato(lojaId, startDate, endDate);
 
@@ -69,6 +77,32 @@ function LojaDashboardPage() {
       </AppShell>
     );
   }
+
+  // Prepara dados para o gráfico de pizza
+  const paymentStats = extrato?.transactions.reduce((acc, tx: any) => {
+    if (tx.type === 'in' && tx.payment_method) {
+      const method = tx.payment_method;
+      acc[method] = (acc[method] || 0) + Number(tx.amount || 0);
+    }
+    return acc;
+  }, {} as Record<string, number>);
+
+  const pieData = paymentStats 
+    ? Object.entries(paymentStats)
+        .map(([name, value]) => ({ name, value }))
+        .sort((a, b) => b.value - a.value)
+    : [];
+
+  // Filtra as transações
+  const filteredTransactions = (extrato?.transactions || []).filter((tx: any) => {
+    if (tab === 'in' && tx.type !== 'in') return false;
+    if (tab === 'out' && tx.type !== 'out') return false;
+    return true;
+  });
+
+  // Paginação
+  const totalPages = Math.ceil(filteredTransactions.length / pageSize);
+  const paginatedTransactions = filteredTransactions.slice((page - 1) * pageSize, page * pageSize);
 
   return (
     <AppShell>
@@ -94,7 +128,7 @@ function LojaDashboardPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Coluna Esquerda: Resumo de Conciliação */}
+          {/* Coluna Esquerda: Resumo de Conciliação e Gráfico */}
           <div className="lg:col-span-1 space-y-6">
             <div>
               <h3 className="font-display font-semibold text-lg mb-4 flex items-center gap-2">
@@ -131,6 +165,50 @@ function LojaDashboardPage() {
                 </Card>
               )}
             </div>
+
+            {pieData.length > 0 && (
+              <div>
+                <h3 className="font-display font-semibold text-lg mb-4">Formas de Pagamento</h3>
+                <Card variant="glass" className="p-4">
+                  <div className="h-[200px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={pieData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={80}
+                          paddingAngle={5}
+                          dataKey="value"
+                          stroke="none"
+                        >
+                          {pieData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip 
+                          formatter={(value: number) => `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+                          contentStyle={{ backgroundColor: '#1A1A1A', borderColor: '#333', borderRadius: '8px', color: '#fff' }}
+                          itemStyle={{ color: '#fff' }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="mt-4 space-y-2">
+                    {pieData.map((entry, index) => (
+                      <div key={entry.name} className="flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
+                          <span className="text-[var(--text-secondary)]">{entry.name}</span>
+                        </div>
+                        <span className="font-medium">R$ {entry.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              </div>
+            )}
 
             <div>
               <h3 className="font-display font-semibold text-lg mb-4">Histórico de Fechamentos</h3>
@@ -209,12 +287,34 @@ function LojaDashboardPage() {
               <Card className="flex flex-col justify-center border-l-2 border-l-[var(--color-accent-danger)] py-4">
                 <span className="text-[11px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider flex items-center gap-1.5">
                   <ArrowDownRight size={14} className="text-[var(--color-accent-danger)]" />
-                  Saídas
+                  Saídas (Despesas)
                 </span>
                 <div className="mt-1 text-xl font-bold text-[var(--text-primary)]">
                   <AnimatedNumber value={extrato?.totalOut || 0} format="currency" />
                 </div>
               </Card>
+            </div>
+
+            {/* Abas e Filtros */}
+            <div className="flex border-b border-[var(--border-subtle)] mb-4">
+              <button
+                onClick={() => { setTab('all'); setPage(1); }}
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${tab === 'all' ? 'border-[var(--color-primary)] text-[var(--color-primary)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
+              >
+                Todas as Transações
+              </button>
+              <button
+                onClick={() => { setTab('in'); setPage(1); }}
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${tab === 'in' ? 'border-[var(--color-success)] text-[var(--color-success)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
+              >
+                Apenas Entradas
+              </button>
+              <button
+                onClick={() => { setTab('out'); setPage(1); }}
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${tab === 'out' ? 'border-[var(--color-accent-danger)] text-[var(--color-accent-danger)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
+              >
+                Apenas Saídas
+              </button>
             </div>
 
             <Card className="p-0 overflow-hidden min-h-[400px]">
@@ -225,14 +325,14 @@ function LojaDashboardPage() {
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                   </svg>
                 </div>
-              ) : extrato?.transactions.length === 0 ? (
+              ) : paginatedTransactions.length === 0 ? (
                 <div className="text-center py-20">
                   <Wallet size={48} className="mx-auto mb-4 text-[var(--text-tertiary)] opacity-30" />
-                  <p className="text-[var(--text-secondary)] font-medium">Nenhum lançamento no período.</p>
+                  <p className="text-[var(--text-secondary)] font-medium">Nenhum lançamento encontrado nesta aba.</p>
                 </div>
               ) : (
                 <div className="divide-y divide-[var(--border-subtle)]">
-                  {extrato?.transactions.map((tx: any, i: number) => {
+                  {paginatedTransactions.map((tx: any, i: number) => {
                     const isIn = tx.type === 'in';
                     const Icon = isIn ? ArrowUpRight : ArrowDownRight;
                     
@@ -286,6 +386,31 @@ function LojaDashboardPage() {
                       </motion.div>
                     );
                   })}
+                  
+                  {/* Controles de Paginação */}
+                  {totalPages > 1 && (
+                    <div className="p-4 flex items-center justify-between border-t border-[var(--border-subtle)] bg-[var(--bg-canvas)]">
+                      <span className="text-xs text-[var(--text-secondary)]">
+                        Página {page} de {totalPages}
+                      </span>
+                      <div className="flex gap-2">
+                        <button 
+                          onClick={() => setPage(p => Math.max(1, p - 1))}
+                          disabled={page === 1}
+                          className="px-3 py-1 text-xs font-medium bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded hover:bg-[var(--bg-surface-hover)] disabled:opacity-50 transition-colors"
+                        >
+                          Anterior
+                        </button>
+                        <button 
+                          onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                          disabled={page === totalPages}
+                          className="px-3 py-1 text-xs font-medium bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded hover:bg-[var(--bg-surface-hover)] disabled:opacity-50 transition-colors"
+                        >
+                          Próxima
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </Card>
@@ -295,3 +420,4 @@ function LojaDashboardPage() {
     </AppShell>
   );
 }
+
