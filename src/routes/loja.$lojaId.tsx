@@ -220,11 +220,11 @@ function LojaDashboardPage() {
             </div>
             <div className="font-display text-2xl font-bold">
               <AnimatedNumber 
-                value={(extrato?.transactions || []).reduce((acc: number, tx: any) => acc + (tx.type === 'in' ? Number(tx.amount) : -Number(tx.amount)), 0)} 
+                value={extrato?.globalBalance || 0} 
                 format="currency" 
               />
             </div>
-            <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Acumulado do período</p>
+            <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Acumulado de todos os tempos</p>
           </Card>
           
           <Card className="border-l-4 border-l-[var(--color-success)] p-5">
@@ -248,11 +248,11 @@ function LojaDashboardPage() {
             </div>
             <div className="font-display text-2xl font-bold text-[var(--color-accent-teal)]">
               <AnimatedNumber 
-                value={(extrato?.transactions || []).reduce((acc: number, tx: any) => acc + (tx.type === 'in' ? Number(tx.amount) : -Number(tx.amount)), 0)} 
+                value={extrato?.globalBalance || 0} 
                 format="currency" 
               />
             </div>
-            <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Livre para contas</p>
+            <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Livre para contas (Real)</p>
           </Card>
           
           <Card className="border-l-4 border-l-[var(--color-accent-danger)] p-5">

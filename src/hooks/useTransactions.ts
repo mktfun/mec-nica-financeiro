@@ -173,11 +173,29 @@ export function useExtrato(storeId: string, startDate: string, endDate: string) 
       const totalIn = rows.filter(r => r.type === 'in').reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
       const totalOut = rows.filter(r => r.type === 'out').reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
       
+      // Query adicional para Saldo Global da Loja
+      let globalQuery = supabase
+        .from('transactions')
+        .select('amount, type');
+        
+      if (storeId) {
+        globalQuery = globalQuery.eq('store_id', storeId);
+      }
+      
+      const { data: globalData, error: globalError } = await globalQuery;
+      if (globalError) throw globalError;
+      
+      const globalRows = globalData as { amount: number, type: string }[];
+      const globalIn = globalRows.filter(r => r.type === 'in').reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
+      const globalOut = globalRows.filter(r => r.type === 'out').reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
+      const globalBalance = globalIn - globalOut;
+
       return {
         transactions: rows,
         totalIn,
         totalOut,
-        balance: totalIn - totalOut
+        balance: totalIn - totalOut, // Mantém compatibilidade
+        globalBalance
       };
     },
   });
