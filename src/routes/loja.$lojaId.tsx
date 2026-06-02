@@ -6,7 +6,8 @@ import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, Wallet, ArrowUpRight, ArrowDownRight, 
-  Calendar, QrCode, Banknote, CreditCard, Landmark, Store 
+  Calendar, QrCode, Banknote, CreditCard, Landmark, Store,
+  AlertTriangle, Search, CheckCircle2
 } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
 import { useStoreHistory } from '@/hooks/useConciliacao';
@@ -84,7 +85,9 @@ function LojaDashboardPage() {
     const result: Record<string, number> = {};
     if (!raw) return result;
     
-    const parts = raw.split(';');
+    // Remove qualquer sufixo de [Juros ...] antes de parsear
+    const cleanRaw = raw.replace(/\s*\[.*?\]/g, '');
+    const parts = cleanRaw.split(';');
     for (const part of parts) {
       const trimmed = part.trim();
       if (!trimmed) continue;
@@ -107,6 +110,39 @@ function LojaDashboardPage() {
     }
     return result;
   };
+
+  // Helper para formatar forma de pagamento como badges
+  const formatPaymentBadges = (raw: string) => {
+    if (!raw) return null;
+    const parsed = parsePaymentMethods(raw);
+    const entries = Object.entries(parsed).filter(([, v]) => v > 0);
+    if (entries.length === 0) {
+      // Fallback: se não conseguir parsear, mostra o texto limpo
+      const clean = raw.replace(/\s*\[.*?\]/g, '').replace(/;\s*$/g, '').trim();
+      if (!clean) return null;
+      return <span className="text-[var(--text-secondary)] text-[11px]">{clean}</span>;
+    }
+    return (
+      <div className="flex flex-wrap items-center gap-1.5">
+        {entries.map(([method, amount]) => (
+          <span key={method} className="inline-flex items-center gap-1 bg-[var(--bg-surface)] px-2 py-0.5 rounded-full border border-[var(--border-subtle)] text-[11px] text-[var(--text-secondary)]">
+            {getIconForMethod(method)}
+            <span className="font-medium">{method}</span>
+            <span className="text-[var(--text-tertiary)]">R$ {amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+          </span>
+        ))}
+      </div>
+    );
+  };
+
+  // Detectar divergências acionáveis
+  const totalEntradas = extrato?.totalIn || 0;
+  const totalSaidas = extrato?.totalOut || 0;
+  const transactions = extrato?.transactions || [];
+  const txSemOS = transactions.filter((tx: any) => tx.type === 'in' && !tx.os_number);
+  const txComOS = transactions.filter((tx: any) => tx.type === 'in' && tx.os_number);
+  const totalSemOS = txSemOS.reduce((acc: number, tx: any) => acc + Number(tx.amount || 0), 0);
+  const hasDivergence = totalSemOS > 0 || (totalEntradas > 0 && totalSaidas > 0 && Math.abs(totalEntradas - totalSaidas) > 1);
 
   // Prepara dados para o gráfico de pizza
   const paymentStats = extrato?.transactions.reduce((acc, tx: any) => {
@@ -232,48 +268,71 @@ function LojaDashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Coluna Esquerda: Resumo de Conciliação e Gráfico */}
           <div className="lg:col-span-1 space-y-6">
-            <div>
-              <h3 className="font-display font-semibold text-lg mb-4 flex items-center gap-2">
-                Último Fechamento
-              </h3>
-              
-              {latestReconciliation ? (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-3">
-                    <Card variant="glass" className="p-4 flex flex-col justify-between">
-                      <p className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider mb-1">Apurado Sistema</p>
-                      <p className="font-display text-lg font-semibold text-[var(--text-primary)]">R$ {(latestReconciliation.os_total || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-                      <p className="text-[9px] text-[var(--text-tertiary)] mt-1 leading-tight">Total faturado em OSs neste dia</p>
-                    </Card>
-                    <Card variant="glass" className="p-4 flex flex-col justify-between">
-                      <p className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider mb-1">Liquidado Conta</p>
-                      <p className="font-display text-lg font-semibold text-[var(--text-primary)]">R$ {(latestReconciliation.financial_total || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-                      <p className="text-[9px] text-[var(--text-tertiary)] mt-1 leading-tight">Entradas bancárias conciliadas</p>
-                    </Card>
-                  </div>
-                  
-                  {latestReconciliation.financial_total === 0 && (
-                    <div className="px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-md">
-                      <p className="text-xs text-[var(--text-secondary)]">ℹ️ O valor Liquidado está zerado pois ainda não há transações bancárias conciliadas para este dia.</p>
-                    </div>
-                  )}
-                  {latestReconciliation.divergence !== 0 && (
-                    <div className="p-4 bg-red-500/10 rounded-[var(--radius-md)] border border-red-500/20">
-                      <p className="text-xs text-red-500 uppercase tracking-wider mb-1">Divergência Encontrada</p>
-                      <p className="font-display text-xl text-red-500 font-bold">
-                        R$ {Math.abs(latestReconciliation.divergence).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+            {/* Divergências Acionáveis */}
+            {hasDivergence ? (
+              <div>
+                <h3 className="font-display font-semibold text-lg mb-4 flex items-center gap-2 text-[var(--color-accent-danger)]">
+                  <AlertTriangle size={20} />
+                  Divergências
+                </h3>
+                <Card className="p-0 overflow-hidden border-l-4 border-l-[var(--color-accent-danger)]">
+                  {/* Entradas sem OS */}
+                  {txSemOS.length > 0 && (
+                    <div className="p-4 border-b border-[var(--border-subtle)]">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs text-[var(--color-accent-danger)] uppercase tracking-wider font-semibold">Entradas sem OS vinculada</span>
+                        <Badge variant="danger" className="text-[10px]">{txSemOS.length} registro{txSemOS.length > 1 ? 's' : ''}</Badge>
+                      </div>
+                      <p className="font-display text-xl font-bold text-[var(--color-accent-danger)] mb-3">
+                        R$ {totalSemOS.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </p>
+                      <div className="space-y-2 max-h-[150px] overflow-y-auto">
+                        {txSemOS.map((tx: any) => (
+                          <div key={tx.id} className="flex items-center justify-between text-xs bg-[var(--bg-surface)] rounded-md px-3 py-2">
+                            <div>
+                              <span className="text-[var(--text-primary)] font-medium">{tx.title}</span>
+                              <span className="text-[var(--text-tertiary)] ml-2">{formatDate(tx.occurred_at)}</span>
+                            </div>
+                            <span className="font-mono font-semibold text-[var(--color-accent-danger)]">
+                              R$ {Number(tx.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-[11px] text-[var(--text-tertiary)] mt-3 leading-relaxed">
+                        💡 <strong>Solução:</strong> Vincule essas entradas a uma OS existente, ou crie uma OS de ajuste para zerar a divergência.
                       </p>
                     </div>
                   )}
                   
-                  <p className="text-xs text-[var(--text-tertiary)]">Referência: {formatDate(latestReconciliation.date)}</p>
-                </div>
-              ) : (
-                <Card variant="glass" className="p-6 text-center text-[var(--text-tertiary)] text-sm">
-                  Nenhum fechamento importado para esta loja ainda.
+                  {/* Resumo da divergência */}
+                  <div className="p-4 bg-[var(--bg-surface)]">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-[var(--text-secondary)]">Total Entradas (Extrato)</span>
+                      <span className="font-mono font-medium">R$ {totalEntradas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs mt-1">
+                      <span className="text-[var(--text-secondary)]">Total OSs Vinculadas</span>
+                      <span className="font-mono font-medium">R$ {txComOS.reduce((acc: number, tx: any) => acc + Number(tx.amount || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs mt-2 pt-2 border-t border-[var(--border-subtle)]">
+                      <span className="text-[var(--color-accent-danger)] font-semibold">Diferença</span>
+                      <span className="font-mono font-bold text-[var(--color-accent-danger)]">R$ {totalSemOS.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                    </div>
+                  </div>
                 </Card>
-              )}
-            </div>
+              </div>
+            ) : totalEntradas > 0 ? (
+              <Card className="p-4 border-l-4 border-l-[var(--color-success)]">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 size={20} className="text-[var(--color-success)]" />
+                  <div>
+                    <p className="text-sm font-semibold text-[var(--color-success)]">Sem Divergências</p>
+                    <p className="text-[11px] text-[var(--text-tertiary)]">Todas as entradas estão vinculadas a OSs.</p>
+                  </div>
+                </div>
+              </Card>
+            ) : null}
 
             {pieData.length > 0 && (
               <div>
@@ -467,12 +526,7 @@ function LojaDashboardPage() {
                                 {formatDate(tx.occurred_at)}
                               </span>
 
-                              {tx.payment_method && (
-                                <span className="flex items-center gap-1 text-[var(--text-secondary)]">
-                                  {getIconForMethod(tx.payment_method)}
-                                  {tx.payment_method}
-                                </span>
-                              )}
+                              {tx.payment_method && formatPaymentBadges(tx.payment_method)}
                             </div>
                           </div>
                         </div>
