@@ -1,6 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Home, PieChart, Store, AlertTriangle, Settings, Car, DollarSign, FileText, LogOut } from "lucide-react";
+import { Home, PieChart, Store, AlertTriangle, Settings, Car, DollarSign, FileText, LogOut, FileSpreadsheet } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLogout } from "@/hooks/useAuth";
 
