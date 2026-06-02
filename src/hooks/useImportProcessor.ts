@@ -120,10 +120,10 @@ export function useProcessImportedData() {
       if (osArray.length > 0) {
         const { data: existingOs } = await supabase
           .from('patio_os')
-          .select('id, os_number')
+          .select('id, os_number, total_value, paid_value, status, history_log')
           .eq('store_id', storeId);
 
-        const existingMap = new Map((existingOs || []).map(o => [String(o.os_number), o.id]));
+        const existingMap = new Map((existingOs || []).map(o => [String(o.os_number), o]));
 
         const toInsert: any[] = [];
         const toUpdate: any[] = [];
@@ -155,11 +155,33 @@ export function useProcessImportedData() {
             updated_at: new Date().toISOString()
           };
 
-          const existingId = existingMap.get(String(os.os_number));
-          if (existingId) {
-            toUpdate.push({ id: existingId, ...payload });
+          const existingObj = existingMap.get(String(os.os_number));
+          if (existingObj) {
+            const oldTotal = Number(existingObj.total_value);
+            const newTotal = Number(payload.total_value);
+            const oldPaid = Number(existingObj.paid_value);
+            const newPaid = Number(payload.paid_value);
+            const oldStatus = existingObj.status;
+            const newStatus = payload.status;
+            
+            const changes = [];
+            if (oldTotal !== newTotal) changes.push({ field: 'total_value', from: oldTotal, to: newTotal });
+            if (oldPaid !== newPaid) changes.push({ field: 'paid_value', from: oldPaid, to: newPaid });
+            if (oldStatus !== newStatus) changes.push({ field: 'status', from: oldStatus, to: newStatus });
+            
+            let currentHistory = existingObj.history_log || [];
+            if (!Array.isArray(currentHistory)) currentHistory = [];
+            
+            if (changes.length > 0) {
+               currentHistory.push({
+                 date: new Date().toISOString(),
+                 changes
+               });
+            }
+            
+            toUpdate.push({ id: existingObj.id, history_log: currentHistory, ...payload });
           } else {
-            toInsert.push(payload);
+            toInsert.push({ history_log: [], ...payload });
           }
         }
 
@@ -175,10 +197,11 @@ export function useProcessImportedData() {
       if (receivablesArray.length > 0) {
         const { data: existingRecs } = await supabase
           .from('receivables')
-          .select('id, type, value, date')
+          .select('id, type, value, date, status')
           .eq('store_id', storeId);
 
         const toInsertRecs: any[] = [];
+        const toUpdateRecs: { id: string; status: string }[] = [];
         const localSeen = new Set<string>();
 
         for (const rec of receivablesArray) {
@@ -186,12 +209,12 @@ export function useProcessImportedData() {
           if (localSeen.has(key)) continue;
           localSeen.add(key);
 
-          const isDuplicate = existingRecs?.some(
+          const existingMatch = existingRecs?.find(
             (er) => er.type === rec.type && er.date === rec.date &&
                     Math.round(Number(er.value) * 100) === Math.round(rec.value * 100)
           );
 
-          if (!isDuplicate) {
+          if (!existingMatch) {
             toInsertRecs.push({
               store_id: storeId,
               store_name: storeName,
@@ -201,11 +224,19 @@ export function useProcessImportedData() {
               date: rec.date,
               due_date: rec.due_date,
             });
+          } else if (existingMatch.status === 'pendente' && rec.status === 'recebido') {
+            toUpdateRecs.push({
+              id: existingMatch.id,
+              status: 'recebido'
+            });
           }
         }
 
         if (toInsertRecs.length > 0) {
           await supabase.from('receivables').insert(toInsertRecs);
+        }
+        for (const up of toUpdateRecs) {
+          await supabase.from('receivables').update({ status: up.status }).eq('id', up.id);
         }
       }
 

@@ -192,16 +192,34 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
 
                 if (type && val > 0 && closed_at) {
                   const baseDate = closed_at;
-                  const dueDateObj = new Date(baseDate);
-                  dueDateObj.setUTCDate(dueDateObj.getUTCDate() + daysToAdd);
+                  let dueDateObj = new Date(baseDate);
+                  
+                  let addedDays = 0;
+                  while (addedDays < daysToAdd) {
+                    dueDateObj.setUTCDate(dueDateObj.getUTCDate() + 1);
+                    const dayOfWeek = dueDateObj.getUTCDay();
+                    // 0 é Domingo, 6 é Sábado
+                    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                      addedDays++;
+                    }
+                  }
+
                   const due_date = `${dueDateObj.getUTCFullYear()}-${String(dueDateObj.getUTCMonth() + 1).padStart(2, '0')}-${String(dueDateObj.getUTCDate()).padStart(2, '0')}`;
+
+                  // Verifica se já deve constar como recebido comparando com a data de hoje
+                  const todayStr = new Date().toISOString().split('T')[0];
+                  let status: 'recebido' | 'pendente' = 'pendente';
+                  
+                  if (daysToAdd === 0 || due_date <= todayStr) {
+                    status = 'recebido';
+                  }
 
                   receivablesArray.push({
                     type,
                     value: val,
                     date: baseDate,
                     due_date,
-                    status: daysToAdd === 0 ? 'recebido' : 'pendente'
+                    status
                   });
                 }
               }

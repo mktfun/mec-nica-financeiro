@@ -93,6 +93,7 @@ export type PatioOSRow = {
   opened_at: string;
   closed_at: string | null;
   updated_at: string;
+  history_log: any;
 };
 
 export type ReceivableRow = {

@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { usePatioOS, PatioOSRow } from '@/hooks/usePatio';
 import { useStores } from '@/hooks/useStores';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { Clock, TrendingUp, RefreshCw, Info } from 'lucide-react';
 
 export const Route = createFileRoute('/patio')({
   component: PatioPage,
@@ -373,6 +374,52 @@ function PatioPage() {
               <div className="bg-[var(--bg-surface-elevated)] p-4 rounded-lg border border-white/10">
                 <h4 className="text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-3">Formas de Pagamento Extratadas</h4>
                 {renderPaymentMethods(selectedOs.payment_method)}
+              </div>
+            )}
+
+            {selectedOs.history_log && Array.isArray(selectedOs.history_log) && selectedOs.history_log.length > 0 && (
+              <div className="bg-[var(--bg-surface-elevated)] p-4 rounded-lg border border-white/10 overflow-hidden relative">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-primary)] opacity-5 blur-3xl rounded-full pointer-events-none" />
+                <h4 className="text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-4 flex items-center gap-2">
+                  <Clock size={14} /> Histórico de Alterações
+                </h4>
+                <div className="space-y-4 relative before:absolute before:inset-0 before:ml-2 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-white/10 before:to-transparent">
+                  {selectedOs.history_log.map((log: any, idx: number) => (
+                    <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                      <div className="flex items-center justify-center w-4 h-4 rounded-full border border-white/20 bg-[var(--bg-surface)] shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                        <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary-bright)]" />
+                      </div>
+                      <div className="w-[calc(100%-2.5rem)] md:w-[calc(50%-1.5rem)] bg-white/5 backdrop-blur-sm p-3 rounded-lg border border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.1)]">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-[10px] text-[var(--text-tertiary)] font-mono">
+                            {new Date(log.date).toLocaleString('pt-BR')}
+                          </span>
+                        </div>
+                        <div className="space-y-2">
+                          {log.changes.map((change: any, cIdx: number) => {
+                            const isValue = change.field === 'total_value' || change.field === 'paid_value';
+                            const formatVal = (v: any) => isValue ? `R$ ${Number(v).toLocaleString('pt-BR', {minimumFractionDigits: 2})}` : String(v).replace('_', ' ');
+                            const increased = isValue && Number(change.to) > Number(change.from);
+                            
+                            return (
+                              <div key={cIdx} className="text-xs flex flex-col gap-1">
+                                <span className="text-[var(--text-secondary)] uppercase tracking-wider text-[9px]">{change.field.replace('_', ' ')}</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="line-through text-[var(--text-tertiary)]">{formatVal(change.from)}</span>
+                                  <span className="text-[var(--text-tertiary)]">→</span>
+                                  <span className={`font-medium flex items-center gap-1 ${increased ? 'text-[var(--color-accent-warning)]' : 'text-white'}`}>
+                                    {formatVal(change.to)}
+                                    {increased && <TrendingUp size={12} />}
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
