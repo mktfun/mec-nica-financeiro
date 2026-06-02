@@ -52,15 +52,24 @@ export function useDashboardSummary() {
 
       if (txErr) throw txErr;
 
+      const { data: recs, error: recErr } = await supabase
+        .from('reconciliations')
+        .select('divergence')
+        .gte('date', startOfMonth)
+        .lte('date', endOfMonth);
+      if (recErr) throw recErr;
+
       const rows = txs ?? [];
       const totalIn = rows.filter(r => r.type === 'in').reduce((s, r) => s + (r.amount ?? 0), 0);
       const totalOut = rows.filter(r => r.type === 'out').reduce((s, r) => s + (r.amount ?? 0), 0);
+      const totalDivergences = (recs ?? []).reduce((s, r) => s + Math.abs(r.divergence ?? 0), 0);
 
       return {
         totalIn,
         totalOut,
         balance: totalIn - totalOut,
-        motorStatus: 'completed' as const,
+        totalDivergences,
+        motorStatus: 'completed' as 'completed' | 'processing',
       };
     },
   });
