@@ -21,6 +21,8 @@ function PatioPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStore, setSelectedStore] = useState<string>('todas');
   const [selectedOs, setSelectedOs] = useState<PatioOSRow | null>(null);
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
   
   const now = new Date();
   const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
@@ -41,7 +43,6 @@ function PatioPage() {
   const partialPayment = patioData.filter(os => os.status === 'pago_parcial').length;
 
   const filtered = patioData.filter(os => {
-    // Tab filter
     if (activeTab === 'em_aberto' && os.status !== 'em_aberto') return false;
     if (activeTab === 'pago_parcial' && os.status !== 'pago_parcial') return false;
     if (activeTab === 'finalizadas_periodo') {
@@ -50,10 +51,8 @@ function PatioPage() {
       if (closed < startDate || closed > endDate) return false;
     }
 
-    // Store filter
     if (selectedStore !== 'todas' && os.store_id !== selectedStore) return false;
 
-    // Search query
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       const matchesOs = String(os.os_number).toLowerCase().includes(q);
@@ -65,17 +64,24 @@ function PatioPage() {
     return true;
   });
 
+  const totalPages = Math.ceil(filtered.length / pageSize);
+  const paginatedData = filtered.slice((page - 1) * pageSize, page * pageSize);
+
+  const handleTabChange = (t: FilterTab) => { setActiveTab(t); setPage(1); };
+  const handleSearchChange = (val: string) => { setSearchQuery(val); setPage(1); };
+  const handleStoreChange = (val: string) => { setSelectedStore(val); setPage(1); };
+
   const renderPaymentMethods = (str: string | null) => {
     if (!str || str.trim() === '') return <span className="text-[var(--text-tertiary)]">-</span>;
     const parts = str.split(';').filter(p => p.trim());
     return (
-      <div className="flex flex-wrap gap-1">
+      <div className="flex flex-wrap gap-1 mt-2">
         {parts.map((p, i) => {
           const [method, val] = p.split(':');
           return (
-            <span key={i} className="inline-flex items-center gap-1 bg-white/5 border border-white/10 px-2 py-0.5 rounded text-[10px]">
+            <span key={i} className="inline-flex items-center gap-1 bg-[var(--bg-surface)] border border-[var(--border-subtle)] px-2 py-0.5 rounded text-[10px]">
               <span className="font-medium text-[var(--text-secondary)]">{method?.trim()}</span>
-              {val && <span className="text-white">R$ {parseFloat(val).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>}
+              {val && <span className="text-[var(--text-primary)]">R$ {parseFloat(val).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>}
             </span>
           );
         })}
@@ -114,14 +120,14 @@ function PatioPage() {
                 type="text"
                 placeholder="Buscar OS, placa, loja..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => handleSearchChange(e.target.value)}
                 className="w-full bg-[#1A1A1A] border border-white/10 rounded-[var(--radius-md)] pl-9 pr-4 py-2 text-sm text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors placeholder:text-[var(--text-tertiary)]"
               />
             </div>
             
             <select
               value={selectedStore}
-              onChange={(e) => setSelectedStore(e.target.value)}
+              onChange={(e) => handleStoreChange(e.target.value)}
               className="bg-[#1A1A1A] border border-white/10 rounded-[var(--radius-md)] px-4 py-2 text-sm text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors appearance-none cursor-pointer"
               style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right .7rem top 50%', backgroundSize: '.65rem auto', paddingRight: '2.5rem' }}
             >
@@ -158,16 +164,16 @@ function PatioPage() {
                 </p>
               </Card>
 
-              <Card className="border-l-4 border-l-white/20">
+              <Card className="border-l-4 border-l-[var(--border-subtle)]">
                 <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Sem Pagamento</p>
-                <p className="font-display font-bold text-2xl text-white">
+                <p className="font-display font-bold text-2xl text-[var(--text-primary)]">
                   {noPayment} <span className="text-sm font-normal text-[var(--text-tertiary)]">OS</span>
                 </p>
               </Card>
 
               <Card className="border-l-4 border-l-[var(--color-accent-teal)]">
                 <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Pagas Parcialmente</p>
-                <p className="font-display font-bold text-2xl text-white">
+                <p className="font-display font-bold text-2xl text-[var(--text-primary)]">
                   {partialPayment} <span className="text-sm font-normal text-[var(--text-tertiary)]">OS</span>
                 </p>
               </Card>
@@ -176,10 +182,10 @@ function PatioPage() {
             {/* Tabs */}
             <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-px flex-wrap gap-4">
               <div className="flex items-center gap-1 overflow-x-auto">
-                <TabBtn active={activeTab === 'todas'} onClick={() => setActiveTab('todas')}>Todas</TabBtn>
-                <TabBtn active={activeTab === 'em_aberto'} onClick={() => setActiveTab('em_aberto')}>Em Aberto</TabBtn>
-                <TabBtn active={activeTab === 'pago_parcial'} onClick={() => setActiveTab('pago_parcial')}>Pagas Parcial</TabBtn>
-                <TabBtn active={activeTab === 'finalizadas_periodo'} onClick={() => setActiveTab('finalizadas_periodo')}>Finalizadas (Período)</TabBtn>
+                <TabBtn active={activeTab === 'todas'} onClick={() => handleTabChange('todas')}>Todas</TabBtn>
+                <TabBtn active={activeTab === 'em_aberto'} onClick={() => handleTabChange('em_aberto')}>Em Aberto</TabBtn>
+                <TabBtn active={activeTab === 'pago_parcial'} onClick={() => handleTabChange('pago_parcial')}>Pagas Parcial</TabBtn>
+                <TabBtn active={activeTab === 'finalizadas_periodo'} onClick={() => handleTabChange('finalizadas_periodo')}>Finalizadas (Período)</TabBtn>
               </div>
               
               {activeTab === 'finalizadas_periodo' && (
@@ -188,78 +194,128 @@ function PatioPage() {
                   <input 
                     type="date" 
                     value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
+                    onChange={(e) => { setStartDate(e.target.value); setPage(1); }}
                     className="bg-[#1A1A1A] border border-white/10 rounded px-2 py-1 text-sm text-white focus:outline-none focus:border-[var(--color-primary)]"
                   />
                   <span className="text-[var(--text-tertiary)]">até</span>
                   <input 
                     type="date" 
                     value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
+                    onChange={(e) => { setEndDate(e.target.value); setPage(1); }}
                     className="bg-[#1A1A1A] border border-white/10 rounded px-2 py-1 text-sm text-white focus:outline-none focus:border-[var(--color-primary)]"
                   />
                 </div>
               )}
             </div>
 
-            {/* Table */}
-            <div className="overflow-x-auto mt-4">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-[var(--text-tertiary)] text-xs uppercase tracking-wider border-b border-[var(--border-subtle)]">
-                    <th className="text-left py-3 px-4 font-medium">OS #</th>
-                    <th className="text-left py-3 px-4 font-medium">Loja</th>
-                    <th className="text-left py-3 px-4 font-medium">Placa</th>
-                    <th className="text-right py-3 px-4 font-medium flex items-center justify-end gap-1">Valor Total <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" /></svg></th>
-                    <th className="text-right py-3 px-4 font-medium">Valor Pago</th>
-                    <th className="text-left py-3 px-4 font-medium">Forma Pgto</th>
-                    <th className="text-left py-3 px-4 font-medium">Status</th>
-                    <th className="text-left py-3 px-4 font-medium">Dias</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filtered.length === 0 ? (
-                    <tr>
-                      <td colSpan={8} className="py-8 text-center text-[var(--text-tertiary)]">Nenhuma ordem de serviço encontrada.</td>
-                    </tr>
-                  ) : filtered.map((os, i) => (
-                    <motion.tr
-                      key={os.id}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: i * 0.02 }}
-                      onClick={() => setSelectedOs(os)}
-                      className="border-b border-[var(--border-subtle)] hover:bg-[var(--bg-surface-hover)] transition-colors group cursor-pointer"
+            {/* Timeline List */}
+            <Card className="p-0 overflow-hidden min-h-[400px] mt-4">
+              {paginatedData.length === 0 ? (
+                <div className="text-center py-20">
+                  <p className="text-[var(--text-secondary)] font-medium">Nenhuma ordem de serviço encontrada.</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-[var(--border-subtle)]">
+                  {paginatedData.map((os, i) => {
+                    const isAberto = os.status === 'em_aberto';
+                    const isParcial = os.status === 'pago_parcial';
+                    const isFinalizado = os.status === 'finalizado';
+                    
+                    return (
+                      <motion.div
+                        key={os.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.02 }}
+                        onClick={() => setSelectedOs(os)}
+                        className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 hover:bg-[var(--bg-surface-elevated)] transition-colors group cursor-pointer"
+                      >
+                        <div className="flex items-start gap-4">
+                          <div className={`mt-1 sm:mt-0 w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                            isFinalizado ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' :
+                            isParcial ? 'bg-[var(--color-accent-warning)]/10 text-[var(--color-accent-warning)]' :
+                            'bg-[var(--color-accent-danger)]/10 text-[var(--color-accent-danger)]'
+                          }`}>
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                          </div>
+                          
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-medium text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors text-sm">
+                                OS #{os.os_number}
+                              </h4>
+                              <Badge 
+                                variant={
+                                  isFinalizado ? 'success' : 
+                                  isParcial ? 'warning' : 'danger'
+                                } 
+                                className="text-[10px]"
+                              >
+                                {os.status.replace('_', ' ')}
+                              </Badge>
+                              {os.days_open > 0 && !isFinalizado && (
+                                <Badge variant="default" className="text-[10px] bg-[var(--bg-surface-hover)]">
+                                  {os.days_open} dias aberta
+                                </Badge>
+                              )}
+                            </div>
+                            
+                            <div className="flex flex-wrap items-center gap-3 mt-1.5 text-[11px] text-[var(--text-tertiary)]">
+                              <span className="flex items-center gap-1 bg-[var(--bg-surface)] px-2 py-0.5 rounded-full border border-[var(--border-subtle)] uppercase">
+                                {os.plate || 'SEM PLACA'}
+                              </span>
+                              <span className="flex items-center gap-1 text-[var(--text-secondary)]">
+                                Loja: {os.store_name?.replace('Loja ', '')}
+                              </span>
+                            </div>
+                            
+                            {os.payment_method && renderPaymentMethods(os.payment_method)}
+                          </div>
+                        </div>
+                        
+                        <div className="mt-3 sm:mt-0 ml-14 sm:ml-0 text-right">
+                          <div className="flex flex-col gap-1 items-end">
+                            <div className="text-xs text-[var(--text-secondary)]">
+                              Total: <span className="font-display font-medium text-[var(--text-primary)]">R$ {Number(os.total_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                            </div>
+                            <div className="text-sm font-display font-bold text-[var(--color-primary-bright)]">
+                              Pago: R$ {Number(os.paid_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              )}
+              
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="p-4 flex items-center justify-between border-t border-[var(--border-subtle)] bg-[var(--bg-canvas)]">
+                  <span className="text-xs text-[var(--text-secondary)]">
+                    Página {page} de {totalPages}
+                  </span>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => setPage(p => Math.max(1, p - 1))}
+                      disabled={page === 1}
+                      className="px-3 py-1 text-xs font-medium bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded hover:bg-[var(--bg-surface-hover)] disabled:opacity-50 transition-colors"
                     >
-                      <td className="py-3 px-4 font-medium">{os.os_number}</td>
-                      <td className="py-3 px-4 text-[var(--text-secondary)] font-medium">
-                        {os.store_name?.replace('Loja ', '')}
-                      </td>
-                      <td className="py-3 px-4 text-[var(--text-secondary)] text-xs uppercase tracking-widest">{os.plate || '-'}</td>
-                      <td className="py-3 px-4 text-right font-display font-bold">
-                        R$ {Number(os.total_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                      </td>
-                      <td className="py-3 px-4 text-right font-display font-medium text-[var(--color-primary-bright)]">
-                        R$ {Number(os.paid_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                      </td>
-                      <td className="py-3 px-4">{renderPaymentMethods(os.payment_method)}</td>
-                      <td className="py-3 px-4">
-                        <Badge 
-                          variant={
-                            os.status === 'finalizado' ? 'success' : 
-                            os.status === 'pago_parcial' ? 'warning' : 'danger'
-                          } 
-                          className="text-[10px]"
-                        >
-                          {os.status.replace('_', ' ')}
-                        </Badge>
-                      </td>
-                      <td className="py-3 px-4 text-[var(--text-tertiary)]">{os.days_open || 0}d</td>
-                    </motion.tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                      Anterior
+                    </button>
+                    <button 
+                      onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                      disabled={page === totalPages}
+                      className="px-3 py-1 text-xs font-medium bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded hover:bg-[var(--bg-surface-hover)] disabled:opacity-50 transition-colors"
+                    >
+                      Próxima
+                    </button>
+                  </div>
+                </div>
+              )}
+            </Card>
           </>
         )}
       </div>

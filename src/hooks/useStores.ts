@@ -1,6 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase, StoreRow } from '@/lib/supabase';
 
+const sanitizeStore = (store: StoreRow): StoreRow => {
+  if (!store.name) return store;
+  return {
+    ...store,
+    name: store.name.replace(/\uFFFD/g, 'ó').replace(/M.dulo/g, 'Módulo').replace(/Mdulo/g, 'Módulo')
+  };
+};
+
 export function useStores() {
   return useQuery({
     queryKey: ['stores'],
@@ -11,7 +19,7 @@ export function useStores() {
         .eq('active', true)
         .order('name');
       if (error) throw error;
-      return data as StoreRow[];
+      return (data as StoreRow[]).map(sanitizeStore);
     },
     staleTime: 5 * 60 * 1000, // 5 min cache
   });

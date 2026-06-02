@@ -113,16 +113,48 @@ function ConciliacaoDetalhesPage() {
             </div>
 
             {/* Tab Content */}
-            <motion.div key={activeTab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
-              {activeTab === 'lojas' && <LojaTable data={detalhes} stores={stores} />}
-              {activeTab === 'erros' && <LojaTable data={erros} stores={stores} />}
-              {activeTab === 'historico' && (
-                <Card variant="glass" className="p-8 text-center">
-                  <p className="text-[var(--text-secondary)]">Histórico de conciliações disponível nas tabelas do Supabase.</p>
-                  <p className="text-xs text-[var(--text-tertiary)] mt-2">O motor registra cada execução diária para auditoria.</p>
+            <div className="flex gap-4 border-b border-[var(--border-subtle)] pb-4 mb-4 overflow-x-auto">
+              <TabButton active={tab === 'all'} onClick={() => setTab('all')}>Todas</TabButton>
+              <TabButton active={tab === 'pending'} onClick={() => setTab('pending')} badge={resumo?.pending || 0}>Pendentes</TabButton>
+              <TabButton active={tab === 'divergence'} onClick={() => setTab('divergence')} badge={resumo?.divergence || 0}>Divergências</TabButton>
+              <TabButton active={tab === 'approved'} onClick={() => setTab('approved')}>Conciliadas</TabButton>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              <div className="lg:col-span-3">
+                <Card className="p-0 overflow-hidden bg-[var(--bg-surface-elevated)] border-[var(--border-subtle)]">
+                  <LojaTable data={filteredData} stores={stores} />
                 </Card>
-              )}
-            </motion.div>
+              </div>
+              
+              <div className="space-y-4">
+                <Card className="bg-[var(--bg-surface-elevated)] border-[var(--border-subtle)] p-5">
+                  <h3 className="font-semibold text-sm uppercase tracking-wider text-[var(--text-secondary)] mb-4">Métricas do Período</h3>
+                  <div className="space-y-3">
+                    <Row label="Total Apurado OS" value={resumo?.totalIn || 0} isCurrency />
+                    <Row label="Total Dinheiro Caixa" value={resumo?.rows?.reduce((s, r) => s + (r.daily_cash || 0), 0) || 0} isCurrency />
+                    <div className="h-px bg-[var(--border-subtle)] my-2"></div>
+                    <Row label="Divergências" value={resumo?.totalDivergence || 0} isCurrency color="danger" />
+                  </div>
+                </Card>
+                
+                <Card className="bg-gradient-to-br from-[var(--color-primary)]/10 to-transparent border-[var(--color-primary)]/20 p-5">
+                  <h3 className="font-semibold text-sm uppercase tracking-wider text-[var(--color-primary)] mb-4 flex items-center gap-2">
+                    <AlertCircle size={16} /> Status Geral
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-[var(--text-secondary)]">Lojas com erros:</span>
+                      <span className="font-display font-bold text-lg text-[var(--color-accent-danger)]">{resumo?.divergence || 0}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-[var(--text-secondary)]">Lojas pendentes:</span>
+                      <span className="font-display font-bold text-lg text-[var(--text-primary)]">{resumo?.pending || 0}</span>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            </div>
           </>
         )}
       </div>
@@ -130,22 +162,28 @@ function ConciliacaoDetalhesPage() {
   );
 }
 
-function Row({ label, value, bold, count }: { label: string; value: number; bold?: boolean; count?: boolean }) {
+function Row({ label, value, isCurrency, color = 'default', count }: { label: string, value: number, isCurrency?: boolean, color?: 'default'|'danger'|'success', count?: boolean }) {
+  const colors = {
+    default: 'text-[var(--text-primary)]',
+    danger: 'text-[var(--color-accent-danger)]',
+    success: 'text-[var(--color-accent-teal)]',
+  };
+  
   return (
-    <div className={`flex items-center justify-between py-1.5 ${bold ? 'font-semibold border-t border-[var(--border-subtle)] pt-3' : ''}`}>
-      <span className="text-[var(--text-secondary)]">{label}</span>
-      <span className="font-display">
-        {count ? value : <AnimatedNumber value={value} format="currency" />}
+    <div className="flex justify-between items-center">
+      <span className="text-sm text-[var(--text-secondary)]">{label}</span>
+      <span className={`font-display font-semibold ${colors[color]}`}>
+        {isCurrency ? <AnimatedNumber value={value} format="currency" /> : count ? value : value}
       </span>
     </div>
   );
 }
 
-function TabButton({ children, active, onClick, badge }: { children: React.ReactNode; active: boolean; onClick: () => void; badge?: number }) {
+function TabButton({ active, onClick, children, badge }: { active: boolean, onClick: () => void, children: React.ReactNode, badge?: number }) {
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
+      className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap ${
         active
           ? 'border-[var(--text-primary)] text-[var(--text-primary)]'
           : 'border-transparent text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
@@ -163,7 +201,7 @@ function TabButton({ children, active, onClick, badge }: { children: React.React
 
 function LojaTable({ data, stores }: { data: ReconciliationRow[], stores: StoreRow[] }) {
   if (data.length === 0) {
-    return <div className="p-8 text-center text-[var(--text-tertiary)]">Nenhum dado encontrado para o dia atual.</div>;
+    return <div className="p-8 text-center text-[var(--text-tertiary)]">Nenhum dado encontrado para o filtro selecionado.</div>;
   }
 
   return (
@@ -173,8 +211,8 @@ function LojaTable({ data, stores }: { data: ReconciliationRow[], stores: StoreR
           <tr className="text-[var(--text-tertiary)] text-xs uppercase tracking-wider border-b border-[var(--border-subtle)]">
             <th className="text-left py-3 px-4 font-medium">Loja</th>
             <th className="text-right py-3 px-4 font-medium">OS Total ↕</th>
-            <th className="text-right py-3 px-4 font-medium">Financeiro ↕</th>
-            <th className="text-right py-3 px-4 font-medium">Dinheiro ↕</th>
+            <th className="text-right py-3 px-4 font-medium" title="Soma das transações em Dinheiro importadas do Excel">Dinheiro (Excel) ↕</th>
+            <th className="text-right py-3 px-4 font-medium" title="Soma do dinheiro informado em Caixa Físico">Caixa Físico ↕</th>
             <th className="text-right py-3 px-4 font-medium">Resultado ↕</th>
             <th className="text-right py-3 px-4 font-medium">Status</th>
           </tr>
