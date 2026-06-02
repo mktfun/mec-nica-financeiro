@@ -245,3 +245,49 @@ export function useTransactionsPorDataELoja(date: string, storeId: string) {
     enabled: !!storeId && !!date,
   });
 }
+
+export function useWeeklyRevenueTrend() {
+  return useQuery({
+    queryKey: ['weeklyRevenueTrend'],
+    queryFn: async () => {
+      const today = new Date();
+      const pastWeek = new Date(today);
+      pastWeek.setDate(today.getDate() - 14); // 14 dias para uma curva melhor
+      
+      const startDateStr = pastWeek.toISOString().split('T')[0] + 'T00:00:00.000Z';
+      
+      const { data, error } = await supabase
+        .from('transactions')
+        .select('created_at, amount, type')
+        .gte('created_at', startDateStr)
+        .eq('type', 'in');
+        
+      if (error) throw error;
+      
+      const rows = data as { created_at: string, amount: number }[];
+      
+      // Agrupar por dia
+      const dailyMap: Record<string, number> = {};
+      
+      for (let i = 0; i <= 14; i++) {
+        const d = new Date(pastWeek);
+        d.setDate(pastWeek.getDate() + i);
+        dailyMap[d.toISOString().split('T')[0]] = 0;
+      }
+      
+      rows.forEach(row => {
+        const dateKey = row.created_at.split('T')[0];
+        if (dailyMap[dateKey] !== undefined) {
+          dailyMap[dateKey] += Number(row.amount);
+        }
+      });
+      
+      const chartData = Object.keys(dailyMap).sort().map(date => ({
+        date,
+        value: dailyMap[date]
+      }));
+      
+      return chartData;
+    }
+  });
+}

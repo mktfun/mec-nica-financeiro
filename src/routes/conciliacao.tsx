@@ -1,16 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { CheckCircle2, ArrowRight, TrendingUp, CalendarDays, Wallet, AlertCircle, ArrowDownLeft, ArrowUpRight } from 'lucide-react';
+import { CheckCircle2, AlertCircle, X, ChevronRight, Store, CircleDashed } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { useStores } from '@/hooks/useStores';
 import { useConciliacaoDiaria, useSaveDailyCash } from '@/hooks/useConciliacao';
-import { useTransactionsPorDataELoja } from '@/hooks/useTransactions';
+import { useTransactionsPorDataELoja, useWeeklyRevenueTrend } from '@/hooks/useTransactions';
 import { getDefaultDate } from '@/lib/utils';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { LineChart, Line, ResponsiveContainer } from 'recharts';
 
 export const Route = createFileRoute('/conciliacao')({
   component: ConciliacaoPage,
@@ -22,104 +22,176 @@ function ConciliacaoPage() {
 
   const { data: stores = [], isLoading: loadingStores } = useStores();
   const { data: conciliacaoData = {}, isLoading: loadingDiaria } = useConciliacaoDiaria(selectedDate);
+  const { data: trendData = [] } = useWeeklyRevenueTrend();
   
   const isLoading = loadingStores || loadingDiaria;
   
-  // Set first store as selected if none is selected
-  if (!isLoading && stores.length > 0 && !selectedStoreId) {
-    setSelectedStoreId(stores[0].id);
-  }
+  const totalFaturadoHoje = stores.reduce((acc, store) => {
+    return acc + (conciliacaoData[store.id]?.financial_total || 0);
+  }, 0);
 
   const selectedStore = stores.find(s => s.id === selectedStoreId);
   const storeData = selectedStoreId ? conciliacaoData[selectedStoreId] : null;
 
   return (
     <AppShell>
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6 flex flex-col h-[calc(100vh-80px)]">
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6 flex flex-col h-[calc(100vh-80px)] overflow-hidden">
         
-        {/* Header - Date Picker */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0">
-          <div>
-            <h1 className="font-display font-bold text-3xl text-white">Fechamento de Caixa</h1>
-            <p className="text-sm text-[var(--text-tertiary)] mt-1">Valide as transações e o físico loja a loja.</p>
-          </div>
-          <div className="flex items-center gap-2 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] px-3 py-2 rounded-lg shadow-sm">
-            <CalendarDays size={18} className="text-[var(--color-primary)]" />
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              className="bg-transparent text-sm text-white focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert"
-            />
-          </div>
+        {/* Revolut Hero Section */}
+        <div className="relative w-full rounded-[32px] bg-[#0A0A0A] overflow-hidden border border-white/5 shrink-0 flex flex-col justify-between pt-8 h-[280px]">
+           {/* Date Picker no canto direito absoluto */}
+           <div className="absolute top-6 right-6 z-20">
+             <div className="flex items-center gap-2 bg-[#1A1A1A] border border-white/10 px-4 py-2 rounded-full shadow-sm hover:bg-[#222] transition-colors">
+               <input
+                 type="date"
+                 value={selectedDate}
+                 onChange={(e) => setSelectedDate(e.target.value)}
+                 className="bg-transparent text-sm text-white font-medium focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert"
+               />
+             </div>
+           </div>
+
+           <div className="px-8 z-10">
+             <p className="text-white/50 text-sm font-medium tracking-wide uppercase">Faturado Hoje</p>
+             <h1 className="text-5xl md:text-6xl font-bold text-white mt-1 font-display tracking-tight">
+               <AnimatedNumber value={totalFaturadoHoje} format="currency" />
+             </h1>
+             <div className="mt-6 flex gap-3">
+                <button className="bg-[#CCFF00] hover:bg-[#b8e600] text-black font-semibold rounded-full px-6 py-2.5 text-sm transition-colors shadow-[0_0_15px_rgba(204,255,0,0.3)]">
+                  Ver Relatório
+                </button>
+                <button className="bg-[#1A1A1A] hover:bg-[#222] text-white border border-white/10 font-medium rounded-full px-6 py-2.5 text-sm transition-colors">
+                  Exportar
+                </button>
+             </div>
+           </div>
+
+           {/* Seamless Line Chart Background */}
+           <div className="absolute bottom-0 left-0 right-0 h-[120px] opacity-70 pointer-events-none">
+             <ResponsiveContainer width="100%" height="100%">
+               <LineChart data={trendData}>
+                 <defs>
+                    <linearGradient id="colorTrend" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#CCFF00" stopOpacity={0.3} />
+                      <stop offset="50%" stopColor="#CCFF00" stopOpacity={1} />
+                      <stop offset="100%" stopColor="#CCFF00" stopOpacity={0.3} />
+                    </linearGradient>
+                 </defs>
+                 <Line 
+                   type="monotone" 
+                   dataKey="value" 
+                   stroke="url(#colorTrend)" 
+                   strokeWidth={3} 
+                   dot={false}
+                   isAnimationActive={true}
+                 />
+               </LineChart>
+             </ResponsiveContainer>
+           </div>
         </div>
 
-        {isLoading ? (
-          <div className="flex-1 flex justify-center items-center">
-            <LoadingSpinner size="md" text="Carregando dados das lojas..." />
+        {/* Lista de Unidades Estilo Feed */}
+        <div className="flex-1 min-h-0 overflow-y-auto pb-8 scrollbar-hide">
+          <div className="flex justify-between items-end mb-4 px-2">
+            <h2 className="text-xl font-bold text-white tracking-tight">Unidades</h2>
+            <span className="text-white/50 text-sm">{stores.length} ativas</span>
           </div>
-        ) : (
-          <div className="flex-1 flex flex-col lg:flex-row gap-6 min-h-0">
-            {/* Lado Esquerdo - Master (Lista de Lojas) */}
-            <div className="lg:w-1/3 flex flex-col gap-3 overflow-y-auto pr-2 pb-8">
-              <h2 className="font-semibold text-[var(--text-secondary)] text-sm uppercase tracking-wider mb-2">Unidades ({stores.length})</h2>
+          
+          {isLoading ? (
+            <div className="flex justify-center items-center h-32">
+              <LoadingSpinner size="md" text="Sincronizando..." />
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
               {stores.map((store) => {
                 const data = conciliacaoData[store.id];
                 const status = data?.status || 'pending';
-                const isActive = selectedStoreId === store.id;
-
+                const faturado = data?.financial_total || 0;
+                const expectsCash = data?.expects_cash;
+                
                 return (
                   <motion.div
                     key={store.id}
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.005 }}
+                    whileTap={{ scale: 0.99 }}
                     onClick={() => setSelectedStoreId(store.id)}
-                    className={`cursor-pointer rounded-xl p-4 transition-all duration-300 border relative overflow-hidden ${
-                      isActive 
-                        ? 'bg-[var(--bg-surface-elevated)] border-[var(--color-primary)] shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.15)]' 
-                        : 'bg-[var(--bg-surface)] border-[var(--border-subtle)] hover:border-[var(--color-primary)]/40 hover:bg-[var(--bg-surface-hover)]'
-                    }`}
+                    className="flex items-center justify-between bg-[#111] hover:bg-[#1A1A1A] rounded-[24px] p-4 cursor-pointer transition-colors border border-transparent hover:border-white/5"
                   >
-                    {isActive && (
-                      <div className="absolute inset-y-0 left-0 w-1 bg-[var(--color-primary)] shadow-[0_0_10px_var(--color-primary)]" />
-                    )}
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className={`font-semibold ${isActive ? 'text-white' : 'text-[var(--text-primary)]'}`}>{store.name}</h3>
-                        <div className="text-xs text-[var(--text-tertiary)] mt-1 flex items-center gap-1.5">
-                           Faturado: <AnimatedNumber value={data?.financial_total || 0} format="currency" />
-                        </div>
-                      </div>
-                      <div>
-                        {status === 'approved' && <Badge variant="success" className="text-[10px]">✓ OK</Badge>}
-                        {status === 'divergence' && <Badge variant="danger" className="text-[10px]">⚠ Divergência</Badge>}
-                        {status === 'pending' && <Badge variant="warning" className="text-[10px]">• Pendente</Badge>}
-                      </div>
+                    <div className="flex items-center gap-4">
+                       <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 
+                          ${status === 'approved' ? 'bg-[#CCFF00]/10 text-[#CCFF00]' : 
+                            status === 'divergence' ? 'bg-red-500/10 text-red-500' : 
+                            'bg-white/5 text-white/50'}`}>
+                         {status === 'approved' ? <CheckCircle2 size={24} /> : 
+                          status === 'divergence' ? <AlertCircle size={24} /> : 
+                          <CircleDashed size={24} />}
+                       </div>
+                       <div>
+                         <h3 className="font-semibold text-lg text-white">{store.name}</h3>
+                         <p className="text-white/50 text-xs">Atualizado hoje</p>
+                       </div>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                       <div className="flex flex-col items-end">
+                         <span className="font-mono text-base font-medium text-white">
+                           {faturado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                         </span>
+                         {expectsCash && (
+                            <span className="flex items-center gap-1.5 text-[#CCFF00] text-[10px] uppercase font-bold tracking-wider mt-0.5">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#CCFF00] animate-pulse shadow-[0_0_5px_#CCFF00]" />
+                              Requer Ação
+                            </span>
+                         )}
+                       </div>
+                       <ChevronRight size={20} className="text-white/20" />
                     </div>
                   </motion.div>
                 );
               })}
             </div>
+          )}
+        </div>
 
-            {/* Lado Direito - Detail (Transações e Caixa) */}
-            <div className="lg:w-2/3 flex flex-col h-full overflow-y-auto pb-8">
-              {selectedStore && storeData && (
-                <StoreDetailPane 
+        {/* Drawer Lateral (Revolut Style) */}
+        <AnimatePresence>
+          {selectedStoreId && selectedStore && storeData && (
+            <>
+              {/* Overlay Escuro */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setSelectedStoreId(null)}
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+              />
+              
+              {/* Painel Drawer */}
+              <motion.div
+                initial={{ x: '100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '100%' }}
+                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                className="fixed inset-y-0 right-0 w-full max-w-md bg-[#0A0A0A] z-50 flex flex-col shadow-2xl rounded-l-[32px] md:rounded-l-[40px] overflow-hidden border-l border-white/10"
+              >
+                <RevolutDrawerContent 
                   store={selectedStore} 
                   storeData={storeData} 
                   date={selectedDate} 
+                  onClose={() => setSelectedStoreId(null)} 
                 />
-              )}
-            </div>
-          </div>
-        )}
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+
       </div>
     </AppShell>
   );
 }
 
-// StoreDetailPane component to handle the Right Side (Details)
-function StoreDetailPane({ store, storeData, date }: { store: any, storeData: any, date: string }) {
+// Drawer Content Refatorado
+function RevolutDrawerContent({ store, storeData, date, onClose }: { store: any, storeData: any, date: string, onClose: () => void }) {
   const { data: transactions = [], isLoading: loadingTx } = useTransactionsPorDataELoja(date, store.id);
   const { mutate: saveDailyCash } = useSaveDailyCash();
   const [cashValue, setCashValue] = useState(storeData.daily_cash ? storeData.daily_cash.toString() : '');
@@ -131,9 +203,7 @@ function StoreDetailPane({ store, storeData, date }: { store: any, storeData: an
       setIsSaving(true);
       saveDailyCash(
         { storeId: store.id, value: numValue, date },
-        { 
-          onSettled: () => setIsSaving(false)
-        }
+        { onSettled: () => setIsSaving(false) }
       );
     }
   };
@@ -141,136 +211,83 @@ function StoreDetailPane({ store, storeData, date }: { store: any, storeData: an
   const hasCashExpected = storeData.expects_cash === true;
   
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={store.id}
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -20 }}
-        transition={{ duration: 0.3 }}
-        className="flex flex-col gap-6"
-      >
-        <Card variant="glass" className="p-6 border-[var(--border-strong)] relative overflow-hidden">
-           {/* Liquid glass effect background element */}
-           <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-primary)]/5 rounded-full blur-3xl pointer-events-none transform translate-x-1/3 -translate-y-1/3" />
-           
-           <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-             <div>
-               <h2 className="text-2xl font-display font-bold text-white">{store.name}</h2>
-               <div className="flex items-center gap-3 mt-2 text-sm text-[var(--text-secondary)]">
-                 <span className="flex items-center gap-1"><CalendarDays size={14}/> {new Date(date + 'T12:00:00').toLocaleDateString('pt-BR')}</span>
-                 <span>•</span>
-                 <span>{transactions.length} transações</span>
-               </div>
-             </div>
-             
-             <div className="flex flex-col items-end">
-                <span className="text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-1">Faturado Hoje</span>
-                <span className="text-2xl font-mono font-bold text-[var(--color-primary)]">
-                  <AnimatedNumber value={storeData.financial_total || 0} format="currency" />
-                </span>
-             </div>
-           </div>
-        </Card>
+    <div className="flex flex-col h-full relative">
+       {/* Hero do Drawer */}
+       <div className="bg-[#CCFF00] p-6 pb-8 text-black shrink-0 relative">
+          <button onClick={onClose} className="absolute top-6 left-6 p-2 bg-black/5 hover:bg-black/10 rounded-full transition-colors">
+             <X size={20} />
+          </button>
+          
+          <div className="mt-12">
+            <p className="text-black/60 text-sm font-semibold uppercase tracking-wider mb-1">{store.name}</p>
+            <h2 className="text-4xl font-bold font-display tracking-tight">
+               <AnimatedNumber value={storeData.financial_total || 0} format="currency" />
+            </h2>
+          </div>
+       </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Coluna 1: Transações */}
-          <div className="flex flex-col gap-3">
-             <h3 className="font-semibold text-[var(--text-secondary)] text-sm uppercase tracking-wider mb-1 flex items-center gap-2">
-               <TrendingUp size={16} /> Movimentação do Dia
-             </h3>
-             
-             {loadingTx ? (
-               <div className="h-32 animate-pulse bg-[var(--bg-surface-elevated)] rounded-xl" />
-             ) : transactions.length === 0 ? (
-               <div className="text-center p-8 text-[var(--text-tertiary)] border border-dashed border-[var(--border-subtle)] rounded-xl text-sm">
-                 Nenhuma transação registrada nesta data.
-               </div>
-             ) : (
-               <div className="space-y-2">
-                 {transactions.map(tx => (
-                   <div key={tx.id} className="bg-[var(--bg-surface)] p-3 rounded-lg border border-[var(--border-subtle)] flex items-center justify-between">
-                     <div className="flex items-center gap-3">
-                       <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${tx.type === 'in' ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' : 'bg-[var(--color-accent-danger)]/10 text-[var(--color-accent-danger)]'}`}>
-                         {tx.type === 'in' ? <ArrowDownLeft size={16}/> : <ArrowUpRight size={16}/>}
+       {/* Corpo: Transações */}
+       <div className="flex-1 overflow-y-auto p-6 bg-[#0A0A0A] -mt-4 rounded-t-[32px] relative z-10">
+          <h3 className="text-white/80 font-bold text-lg mb-4">Movimentações</h3>
+          
+          {loadingTx ? (
+            <div className="flex justify-center py-8"><LoadingSpinner size="md" /></div>
+          ) : transactions.length === 0 ? (
+            <div className="text-center py-8 text-white/40 text-sm">Nenhuma transação encontrada.</div>
+          ) : (
+            <div className="space-y-1 pb-32">
+               {transactions.map((tx: any) => (
+                 <div key={tx.id} className="flex items-center justify-between p-3 rounded-2xl hover:bg-white/5 transition-colors">
+                    <div className="flex items-center gap-4">
+                       <div className="w-10 h-10 rounded-full bg-[#1A1A1A] flex items-center justify-center">
+                         <Store size={18} className={tx.type === 'in' ? 'text-white' : 'text-white/50'} />
                        </div>
                        <div>
-                         <p className="text-xs font-medium text-[var(--text-primary)] line-clamp-1">{tx.title}</p>
-                         <p className="text-[10px] text-[var(--text-tertiary)] uppercase mt-0.5">{tx.payment_method || 'N/A'}</p>
+                         <p className="text-sm font-medium text-white line-clamp-1">{tx.title}</p>
+                         <p className="text-xs text-white/50">{tx.payment_method || 'N/A'}</p>
                        </div>
-                     </div>
-                     <span className={`font-mono font-bold text-sm ${tx.type === 'in' ? 'text-[var(--color-success)]' : 'text-[var(--color-accent-danger)]'}`}>
+                    </div>
+                    <span className={`font-mono text-sm font-medium ${tx.type === 'in' ? 'text-white' : 'text-white/60'}`}>
                        {tx.type === 'in' ? '+' : '-'} R$ {Number(tx.amount || 0).toFixed(2).replace('.', ',')}
-                     </span>
-                   </div>
-                 ))}
+                    </span>
+                 </div>
+               ))}
+            </div>
+          )}
+       </div>
+
+       {/* Smart Cash Footer (Sticky Liquid Glass) */}
+       {hasCashExpected && (
+         <div className="absolute bottom-0 left-0 right-0 p-6 pt-12 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/90 to-transparent pointer-events-none z-20">
+            <div className="bg-[#1A1A1A]/80 backdrop-blur-xl border border-white/10 p-5 rounded-[32px] pointer-events-auto shadow-2xl">
+               <div className="flex justify-between items-center mb-3">
+                 <span className="text-white font-medium">Caixa Físico</span>
+                 {storeData.status === 'divergence' && <span className="text-red-500 text-xs font-bold bg-red-500/10 px-2 py-1 rounded-full">Divergência</span>}
+                 {storeData.status === 'approved' && <span className="text-[#CCFF00] text-xs font-bold bg-[#CCFF00]/10 px-2 py-1 rounded-full">Batido</span>}
                </div>
-             )}
-          </div>
-
-          {/* Coluna 2: Dinheiro em Caixa e Resumo */}
-          <div className="flex flex-col gap-4">
-             <h3 className="font-semibold text-[var(--text-secondary)] text-sm uppercase tracking-wider mb-1 flex items-center gap-2">
-               <Wallet size={16} /> Fechamento de Gaveta
-             </h3>
-
-             {hasCashExpected ? (
-                <Card className="bg-[var(--bg-surface-elevated)] border-[var(--color-primary)]/30 shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.05)]">
-                  <div className="mb-4">
-                    <h4 className="font-medium text-white text-sm">Dinheiro Físico</h4>
-                    <p className="text-xs text-[var(--text-tertiary)] mt-1">Houve movimentação ou há pendências em espécie para hoje nesta loja. Informe o valor contado na gaveta.</p>
-                  </div>
-                  
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="text-[var(--text-secondary)] font-mono text-lg">R$</span>
-                    <input
-                      type="text"
-                      placeholder="0,00"
-                      value={cashValue}
-                      onChange={(e) => setCashValue(e.target.value)}
-                      className="flex-1 bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg px-4 py-2 text-lg text-white font-mono focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all"
-                    />
-                  </div>
-
-                  <button 
-                    onClick={handleSaveCash}
-                    disabled={isSaving}
-                    className="w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-medium py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
-                  >
-                    {isSaving ? <LoadingSpinner size="sm" text="Salvando..." /> : 'Gravar Físico'}
-                  </button>
-
-                  {storeData.status === 'divergence' && (
-                    <div className="mt-4 p-3 bg-[var(--color-accent-danger)]/10 border border-[var(--color-accent-danger)]/20 rounded-lg flex items-start gap-2">
-                      <AlertCircle size={16} className="text-[var(--color-accent-danger)] mt-0.5 shrink-0" />
-                      <div className="text-xs text-[var(--color-accent-danger)]">
-                        <strong>Divergência detectada!</strong> O valor físico difere do financeiro no sistema em R$ {Math.abs(storeData.divergence).toFixed(2).replace('.', ',')}.
-                      </div>
-                    </div>
-                  )}
-                  {storeData.status === 'approved' && (
-                    <div className="mt-4 p-3 bg-[var(--color-accent-teal)]/10 border border-[var(--color-accent-teal)]/20 rounded-lg flex items-center gap-2">
-                      <CheckCircle2 size={16} className="text-[var(--color-accent-teal)] shrink-0" />
-                      <div className="text-xs text-[var(--color-accent-teal)]">
-                        <strong>Caixa batido!</strong> O físico bate perfeitamente com o financeiro.
-                      </div>
-                    </div>
-                  )}
-                </Card>
-             ) : (
-                <Card className="bg-[var(--bg-canvas)] border-dashed border-[var(--border-subtle)] flex flex-col items-center justify-center p-8 text-center">
-                   <div className="w-12 h-12 rounded-full bg-[var(--bg-surface-elevated)] flex items-center justify-center mb-3 text-[var(--text-tertiary)]">
-                     <Wallet size={20} />
-                   </div>
-                   <h4 className="font-medium text-white text-sm mb-1">Sem Operações em Dinheiro</h4>
-                   <p className="text-xs text-[var(--text-tertiary)] max-w-[200px] mx-auto">
-                     O sistema não detectou OS abertas aguardando espécie ou recebimentos em dinheiro hoje. O input de gaveta está oculto.
-                   </p>
-                </Card>
-             )}
-          </div>
-        </div>
-      </motion.div>
-    </AnimatePresence>
+               
+               <div className="flex items-center gap-2">
+                 <div className="flex-1 bg-black/50 border border-white/10 rounded-full px-5 py-3 flex items-center gap-2">
+                   <span className="text-white/50 font-mono">R$</span>
+                   <input
+                     type="text"
+                     placeholder="0,00"
+                     value={cashValue}
+                     onChange={(e) => setCashValue(e.target.value)}
+                     className="bg-transparent text-white font-mono font-medium text-lg focus:outline-none w-full"
+                   />
+                 </div>
+                 <button 
+                   onClick={handleSaveCash}
+                   disabled={isSaving}
+                   className="bg-[#CCFF00] hover:bg-[#b8e600] text-black w-14 h-14 rounded-full flex items-center justify-center shrink-0 transition-colors disabled:opacity-50"
+                 >
+                   {isSaving ? <LoadingSpinner size="sm" /> : <ChevronRight size={24} />}
+                 </button>
+               </div>
+            </div>
+         </div>
+       )}
+    </div>
   );
 }
