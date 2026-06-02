@@ -1,7 +1,6 @@
--- Tabela de Fechamento de Caixa Físico (Dinheiro)
 CREATE TABLE IF NOT EXISTS public.cash_registers (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    store_id UUID REFERENCES public.stores(id) ON DELETE CASCADE,
+    store_id TEXT REFERENCES public.stores(id) ON DELETE CASCADE,
     date DATE NOT NULL,
     expected_amount NUMERIC NOT NULL DEFAULT 0,
     declared_amount NUMERIC,
