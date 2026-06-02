@@ -39,22 +39,27 @@ export function useDashboardSummary() {
     queryKey: ['dashboard', 'summary'],
     queryFn: async () => {
       const today = getDefaultDate();
-      const { data: rec, error: recErr } = await supabase
-        .from('reconciliations')
-        .select('os_total, financial_total, divergence, status')
-        .eq('date', today);
-      if (recErr) throw recErr;
+      const [year, month] = today.split('-');
+      const startOfMonth = `${year}-${month}-01`;
+      const endOfMonth = `${year}-${month}-31`;
 
-      const rows = rec ?? [];
-      // os_total = faturamento bruto das OSs (todos pagamentos)
-      const totalIn = rows.reduce((s, r) => s + (r.os_total ?? 0), 0);
-      const totalDivergences = rows.reduce((s, r) => s + Math.abs(r.divergence ?? 0), 0);
-      const hasDivergence = rows.some(r => r.status === 'divergence');
+      const { data: txs, error: txErr } = await supabase
+        .from('transactions')
+        .select('amount, type')
+        .gte('occurred_at', startOfMonth)
+        .lte('occurred_at', endOfMonth);
+
+      if (txErr) throw txErr;
+
+      const rows = txs ?? [];
+      const totalIn = rows.filter(r => r.type === 'in').reduce((s, r) => s + (r.amount ?? 0), 0);
+      const totalOut = rows.filter(r => r.type === 'out').reduce((s, r) => s + (r.amount ?? 0), 0);
 
       return {
         totalIn,
-        totalDivergences,
-        motorStatus: hasDivergence ? 'divergence' : 'completed' as const,
+        totalOut,
+        balance: totalIn - totalOut,
+        motorStatus: 'completed' as const,
       };
     },
   });

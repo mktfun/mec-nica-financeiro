@@ -23,10 +23,15 @@ export function useConciliacaoResumo(date?: string) {
   return useQuery({
     queryKey: ['reconciliations', 'resumo', targetDate],
     queryFn: async () => {
+      const [year, month] = targetDate.split('-');
+      const startOfMonth = `${year}-${month}-01`;
+      const endOfMonth = `${year}-${month}-31`;
+
       const { data, error } = await supabase
         .from('reconciliations')
         .select('*')
-        .eq('date', targetDate);
+        .gte('date', startOfMonth)
+        .lte('date', endOfMonth);
       if (error) throw error;
 
       const rows = data as ReconciliationRow[];
@@ -71,7 +76,7 @@ export function useSaveDailyCash() {
         .select('*')
         .eq('store_id', storeId)
         .eq('date', targetDate)
-        .single();
+        .maybeSingle();
         
       const financialTotal = existing?.financial_total || 0;
       const { divergence, status } = calculateReconciliationStatus(financialTotal, value);
@@ -105,7 +110,7 @@ export function useSaveImportedReport() {
         .select('*')
         .eq('store_id', storeId)
         .eq('date', targetDate)
-        .single();
+        .maybeSingle();
         
       const dailyCash = existing?.daily_cash || 0;
       const { divergence, status } = calculateReconciliationStatus(financialTotal, dailyCash);

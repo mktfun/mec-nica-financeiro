@@ -93,13 +93,13 @@ function ConciliacaoPage() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <Card className="relative overflow-hidden">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">Entradas do Dia</span>
+                  <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">Entradas do Mês</span>
                   <TrendingUp size={18} className="text-[var(--color-accent-teal)]" />
                 </div>
                 <div className="font-display text-2xl font-bold">
                   <AnimatedNumber value={resumo?.totalIn || 0} format="currency" />
                 </div>
-                <p className="text-xs text-[var(--text-tertiary)] mt-1">{resumo?.rows?.length || 0} lojas processadas</p>
+                <p className="text-xs text-[var(--text-tertiary)] mt-1">{resumo?.rows?.length || 0} fechamentos no mês</p>
               </Card>
 
               <Card className="relative overflow-hidden">
@@ -155,7 +155,7 @@ function ConciliacaoPage() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.03 }}
                     >
-                      <Link to="/lojas">
+                      <Link to={`/loja/${store.id}`}>
                         <Card
                           variant="glass"
                           className={`p-4 cursor-pointer hover:border-[var(--border-strong)] transition-colors ${

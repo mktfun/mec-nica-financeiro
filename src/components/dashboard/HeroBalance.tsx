@@ -6,8 +6,8 @@ export function HeroBalance() {
   const { data: summaryData, isLoading } = useDashboardSummary();
 
   const totalIn = summaryData?.totalIn || 0;
-  // In a real app we'd also get totalOut from the DB, for now let's just use totalIn as the net since we're focusing on receivables
-  const totalOut = 0; 
+  const totalOut = summaryData?.totalOut || 0;
+  const balance = summaryData?.balance || 0;
 
   if (isLoading) {
     return <div className="py-8 md:py-12 flex justify-center"><div className="animate-pulse w-48 h-16 bg-[var(--bg-surface-hover)] rounded-md"></div></div>;
@@ -20,7 +20,7 @@ export function HeroBalance() {
         animate={{ opacity: 1, y: 0 }}
         className="text-[var(--text-secondary)] font-medium mb-2 uppercase tracking-widest text-xs"
       >
-        Saldo Líquido do Dia
+        Visão Geral / Saldo Líquido
       </motion.span>
       
       <motion.div 
@@ -29,7 +29,7 @@ export function HeroBalance() {
         transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.1 }}
         className="text-5xl md:text-7xl font-display font-bold tracking-tighter text-[var(--text-primary)]"
       >
-        <AnimatedNumber value={totalIn - totalOut} format="currency" />
+        <AnimatedNumber value={balance} format="currency" />
       </motion.div>
       
       <motion.div 

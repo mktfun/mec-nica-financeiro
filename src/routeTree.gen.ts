@@ -20,6 +20,7 @@ import { Route as ConciliacaoDetalhesRouteImport } from './routes/conciliacao-de
 import { Route as ConciliacaoRouteImport } from './routes/conciliacao'
 import { Route as AlertasRouteImport } from './routes/alertas'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LojaLojaIdRouteImport } from './routes/loja.$lojaId'
 
 const RecebiveisRoute = RecebiveisRouteImport.update({
   id: '/recebiveis',
@@ -76,6 +77,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LojaLojaIdRoute = LojaLojaIdRouteImport.update({
+  id: '/loja/$lojaId',
+  path: '/loja/$lojaId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -89,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/patio': typeof PatioRoute
   '/proposta': typeof PropostaRoute
   '/recebiveis': typeof RecebiveisRoute
+  '/loja/$lojaId': typeof LojaLojaIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -102,6 +109,7 @@ export interface FileRoutesByTo {
   '/patio': typeof PatioRoute
   '/proposta': typeof PropostaRoute
   '/recebiveis': typeof RecebiveisRoute
+  '/loja/$lojaId': typeof LojaLojaIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -116,6 +124,7 @@ export interface FileRoutesById {
   '/patio': typeof PatioRoute
   '/proposta': typeof PropostaRoute
   '/recebiveis': typeof RecebiveisRoute
+  '/loja/$lojaId': typeof LojaLojaIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -131,6 +140,7 @@ export interface FileRouteTypes {
     | '/patio'
     | '/proposta'
     | '/recebiveis'
+    | '/loja/$lojaId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -144,6 +154,7 @@ export interface FileRouteTypes {
     | '/patio'
     | '/proposta'
     | '/recebiveis'
+    | '/loja/$lojaId'
   id:
     | '__root__'
     | '/'
@@ -157,6 +168,7 @@ export interface FileRouteTypes {
     | '/patio'
     | '/proposta'
     | '/recebiveis'
+    | '/loja/$lojaId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -171,6 +183,7 @@ export interface RootRouteChildren {
   PatioRoute: typeof PatioRoute
   PropostaRoute: typeof PropostaRoute
   RecebiveisRoute: typeof RecebiveisRoute
+  LojaLojaIdRoute: typeof LojaLojaIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -252,6 +265,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/loja/$lojaId': {
+      id: '/loja/$lojaId'
+      path: '/loja/$lojaId'
+      fullPath: '/loja/$lojaId'
+      preLoaderRoute: typeof LojaLojaIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -267,6 +287,7 @@ const rootRouteChildren: RootRouteChildren = {
   PatioRoute: PatioRoute,
   PropostaRoute: PropostaRoute,
   RecebiveisRoute: RecebiveisRoute,
+  LojaLojaIdRoute: LojaLojaIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
