@@ -3,6 +3,7 @@
 Histórico de atualizações e especificações implementadas no sistema.
 
 ## [2026-06-02]
+- **[021, 022, 023-conciliacao-revamp]** Revamp completo da tela de Conciliação Diária no estilo Revolut UI implementado e arquivado. Foi adicionado Gráfico "Hero" de tendência de faturamento, feed de lojas minimalista, e Gaveta (Slide-over) inteligente para lançamento de Físico em Espécie.
 - **[002-saldo-consolidado]** Refatoração da inteligência temporal do Saldo Líquido Consolidado implementada e arquivada. O Saldo Líquido Global agora representa o valor All-Time de todas as contas, enquanto as métricas de receita/despesa se mantêm vinculadas ao filtro mensal.
 - **[001-ui-ux-refinements]** Refinamentos visuais aplicados e arquivados. Adição do Month Picker, reorganização do layout de Lojas, fim da altura estática e aprimoramento estético geral (Liquid Glass).
 - **[020-import-management]** Interface de Gerenciamento de Importações e Deleção em Cascata implementadas. Adicionada tela para listar planilhas importadas e função para desfazer importações com segurança (limpando o extrato, conciliação, recebíveis e pátio associados à data). Bug de data "31" que causava loop infinito de carregamento no PostgreSQL corrigido.
