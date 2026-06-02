@@ -22,8 +22,18 @@ function RecebiveisPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
   const pageSize = 10;
+  
+  // Padrão: início do mês atual até fim do mês atual
+  const [startDate, setStartDate] = useState(() => {
+    const d = new Date();
+    return new Date(d.getFullYear(), d.getMonth(), 1).toISOString().split('T')[0];
+  });
+  const [endDate, setEndDate] = useState(() => {
+    const d = new Date();
+    return new Date(d.getFullYear(), d.getMonth() + 1, 0).toISOString().split('T')[0];
+  });
 
-  const { data: recebiveis = [], isLoading: loadingRec } = useRecebiveis();
+  const { data: recebiveis = [], isLoading: loadingRec } = useRecebiveis({ startDate, endDate });
   const { data: stores = [], isLoading: loadingStores } = useStores();
 
   const isLoading = loadingRec || loadingStores;
@@ -81,19 +91,38 @@ function RecebiveisPage() {
             <p className="text-sm text-[var(--text-secondary)] mt-1">Valores a receber por forma de pagamento e vencimento.</p>
           </div>
           
-          <div className="w-full lg:w-64 relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg className="h-4 w-4 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
+            <div className="flex items-center gap-2 bg-[#1A1A1A] border border-white/10 rounded-[var(--radius-md)] px-3 py-1.5 text-sm w-full sm:w-auto">
+              <span className="text-[var(--text-tertiary)]">De:</span>
+              <input 
+                type="date" 
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="bg-transparent text-white focus:outline-none [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert"
+              />
+              <span className="text-[var(--text-tertiary)] ml-2">Até:</span>
+              <input 
+                type="date" 
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="bg-transparent text-white focus:outline-none [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert"
+              />
             </div>
-            <input
-              type="text"
-              placeholder="Buscar loja, tipo..."
-              value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="w-full bg-[#1A1A1A] border border-white/10 rounded-[var(--radius-md)] pl-9 pr-4 py-2 text-sm text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors placeholder:text-[var(--text-tertiary)]"
-            />
+
+            <div className="w-full sm:w-64 relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg className="h-4 w-4 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                placeholder="Buscar loja, tipo..."
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                className="w-full bg-[#1A1A1A] border border-white/10 rounded-[var(--radius-md)] pl-9 pr-4 py-1.5 text-sm text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors placeholder:text-[var(--text-tertiary)]"
+              />
+            </div>
           </div>
         </div>
 
