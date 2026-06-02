@@ -2,25 +2,24 @@ import { useMemo } from 'react';
 import { Card } from '../ui/Card';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { useStores } from '@/hooks/useStores';
-import { useConciliacaoDetalhes } from '@/hooks/useConciliacao';
-import { TrendingUp } from 'lucide-react';
+import { useAllStoresBalances } from '@/hooks/useTransactions';
+import { TrendingUp, Wallet } from 'lucide-react';
 
 export function StoreRankingChart() {
   const { data: stores = [] } = useStores();
-  const { data: detalhes = [], isLoading } = useConciliacaoDetalhes();
+  const { data: allBalances = {}, isLoading } = useAllStoresBalances();
 
   const data = useMemo(() => {
     return stores.map(store => {
-      const rec = detalhes.find(d => d.store_id === store.id);
       return {
         name: store.name.replace('Rei do ', 'R. '), // Shorten names for the chart
         fullName: store.name,
-        faturamento: rec?.os_total || 0,
+        saldo: allBalances[store.id] || 0,
       };
     }).sort((a, b) => {
-      return b.faturamento - a.faturamento;
+      return b.saldo - a.saldo;
     }).slice(0, 5); // Top 5
-  }, [stores, detalhes]);
+  }, [stores, allBalances]);
 
   const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899'];
 
@@ -37,10 +36,10 @@ export function StoreRankingChart() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
           <h3 className="font-display font-semibold text-lg flex items-center gap-2">
-            <TrendingUp size={18} className="text-[var(--color-primary)]" />
-            Ranking das Lojas
+            <Wallet size={18} className="text-[var(--color-primary)]" />
+            Saldos Globais
           </h3>
-          <p className="text-xs text-[var(--text-tertiary)] mt-1">Top 5 faturamento no mês</p>
+          <p className="text-xs text-[var(--text-tertiary)] mt-1">Top 5 maiores caixas</p>
         </div>
       </div>
 
@@ -61,14 +60,14 @@ export function StoreRankingChart() {
               contentStyle={{ backgroundColor: '#1A1A1A', borderColor: '#333', borderRadius: '8px', color: '#fff' }}
               itemStyle={{ color: '#fff' }}
               formatter={(value: number) => {
-                return [`R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 'Faturamento'];
+                return [`R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 'Saldo em Caixa'];
               }}
               labelFormatter={(label) => {
                 const item = data.find(d => d.name === label);
                 return item?.fullName || label;
               }}
             />
-            <Bar dataKey="faturamento" radius={[0, 4, 4, 0]} barSize={32}>
+            <Bar dataKey="saldo" radius={[0, 4, 4, 0]} barSize={32}>
               {data.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
