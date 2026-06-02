@@ -13,6 +13,7 @@ import { StoreRow, ReconciliationRow } from '@/lib/supabase';
 import { useStores, useDeleteStore } from '@/hooks/useStores';
 import { useConciliacaoDetalhes } from '@/hooks/useConciliacao';
 import { Button } from '@/components/ui/Button';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 export const Route = createFileRoute('/lojas')({
   component: LojasPage,
@@ -76,10 +77,7 @@ function LojasPage() {
         <div className="flex flex-col gap-3">
           {isLoading ? (
             <div className="flex justify-center p-8">
-              <svg className="animate-spin w-8 h-8 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="none">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-              </svg>
+              <LoadingSpinner size="sm" text="" />
             </div>
           ) : filteredStores.length === 0 ? (
             <div className="text-center p-8 text-[var(--text-tertiary)]">Nenhuma loja encontrada.</div>
