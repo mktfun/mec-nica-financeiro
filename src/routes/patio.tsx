@@ -255,7 +255,7 @@ function PatioPage() {
                                 {os.status.replace('_', ' ')}
                               </Badge>
                               {os.days_open > 0 && !isFinalizado && (
-                                <Badge variant="default" className="text-[10px] bg-[var(--bg-surface-hover)]">
+                                <Badge variant="neutral" className="text-[10px] bg-[var(--bg-surface-hover)]">
                                   {os.days_open} dias aberta
                                 </Badge>
                               )}
