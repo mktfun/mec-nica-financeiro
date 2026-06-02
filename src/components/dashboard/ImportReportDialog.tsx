@@ -14,6 +14,8 @@ interface ImportReportDialogProps {
 export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps) {
   const [loading, setLoading] = useState(false);
   const [storeId, setStoreId] = useState("");
+  const [creditCardD1, setCreditCardD1] = useState(true);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [parsedData, setParsedData] = useState<{ 
     totalOs: number; 
     totalPaid: number; 
@@ -26,10 +28,7 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
   const { data: stores = [] } = useStores();
   const processImportedData = useProcessImportedData();
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+  const parseFile = (file: File, isD1: boolean) => {
     const reader = new FileReader();
     reader.onload = (evt) => {
       try {
@@ -82,7 +81,6 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
           return 0;
         };
 
-        // 1. Encontrar o cabeçalho
         let headerRowIndex = -1;
         let colMap: Record<string, number> = {};
 
@@ -113,7 +111,6 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
 
         let osCount = 0;
 
-        // 2. Extrair os dados
         for (let i = headerRowIndex + 1; i < data.length; i++) {
           const row = data[i];
           if (!Array.isArray(row) || row.length === 0) continue;
@@ -140,7 +137,6 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
             statusEnum = 'finalizado';
             closed_at = parseExcelDate(row[colMap.closedAt]);
             
-            // Soma os totais gerias do lote inteiro (apenas OS finalizadas)
             totalOs += osValue;
             totalPaid += paidValue;
             osCount++;
@@ -182,19 +178,18 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
                 
                 if (lowerMethod.includes('credito') || lowerMethod.includes('crédito')) {
                   type = 'Cartão Crédito';
-                  daysToAdd = 1; // Ajustado para D+1 conforme alinhamento
+                  daysToAdd = isD1 ? 1 : 0; 
                 } else if (lowerMethod.includes('debito') || lowerMethod.includes('débito')) {
                   type = 'Cartão Débito';
-                  daysToAdd = 1; // D+1
+                  daysToAdd = isD1 ? 1 : 0;
                 } else if (lowerMethod.includes('pix') || lowerMethod.includes('conta') || lowerMethod.includes('dinheiro') || lowerMethod.includes('espécie')) {
-                  type = 'PIX'; // PIX represents D+0 operations conceptually
+                  type = 'PIX'; 
                   daysToAdd = 0;
                 } else if (lowerMethod.includes('boleto')) {
                   type = 'Boleto';
                   daysToAdd = 1;
                 }
 
-                // Se houver valor e for uma OS finalizada, criamos o recebível
                 if (type && val > 0 && closed_at) {
                   const baseDate = closed_at;
                   const dueDateObj = new Date(baseDate);
@@ -224,6 +219,21 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
       }
     };
     reader.readAsBinaryString(file);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setSelectedFile(file);
+    parseFile(file, creditCardD1);
+  };
+
+  const handleToggleD1 = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = e.target.checked;
+    setCreditCardD1(isChecked);
+    if (selectedFile) {
+      parseFile(selectedFile, isChecked);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -284,6 +294,19 @@ export function ImportReportDialog({ isOpen, onClose }: ImportReportDialogProps)
             required
             className="w-full bg-white/5 border border-white/10 rounded-[var(--radius-md)] px-4 py-2 text-sm text-[var(--text-secondary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-[var(--color-primary)] file:text-white hover:file:bg-[var(--color-primary-bright)]"
           />
+        </div>
+
+        <div className="flex items-center gap-3 bg-[var(--bg-surface)] p-3 rounded-[var(--radius-md)] border border-white/5">
+          <input 
+            type="checkbox" 
+            id="creditCardD1"
+            checked={creditCardD1}
+            onChange={handleToggleD1}
+            className="w-4 h-4 rounded border-white/20 bg-white/5 text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+          />
+          <label htmlFor="creditCardD1" className="text-sm text-[var(--text-secondary)] select-none cursor-pointer">
+            Considerar Cartão para o <strong className="text-white">próximo dia útil (D+1)</strong>
+          </label>
         </div>
 
         {parsedData && (
