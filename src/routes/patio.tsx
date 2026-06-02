@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { usePatioOS, PatioOSRow } from '@/hooks/usePatio';
 import { useStores } from '@/hooks/useStores';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { Clock, TrendingUp, RefreshCw, Info } from 'lucide-react';
+import { Clock, TrendingUp, RefreshCw, Info, CheckCircle2 } from 'lucide-react';
 
 export const Route = createFileRoute('/patio')({
   component: PatioPage,
@@ -423,7 +423,7 @@ function PatioPage() {
                             </span>
                           </div>
                           <div className="space-y-2">
-                            {log.changes.map((change: any, cIdx: number) => {
+                            {Array.isArray(log.changes) && log.changes.map((change: any, cIdx: number) => {
                               const isValue = change.field === 'total_value' || change.field === 'paid_value';
                               const formatVal = (v: any) => isValue ? `R$ ${Number(v).toLocaleString('pt-BR', {minimumFractionDigits: 2})}` : String(v).replace('_', ' ');
                               const increased = isValue && Number(change.to) > Number(change.from);
