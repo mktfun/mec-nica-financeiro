@@ -12,6 +12,7 @@ import {
 import { useStores } from '@/hooks/useStores';
 import { useStoreHistory } from '@/hooks/useConciliacao';
 import { useExtrato } from '@/hooks/useTransactions';
+import { useCashRegisters, useCloseCashRegister } from '@/hooks/useCashRegisters';
 import { getDefaultDate } from '@/lib/utils';
 import { useState } from 'react';
 
@@ -60,11 +61,15 @@ function LojaDashboardPage() {
   const period = getDefaultPeriod();
   const [startDate, setStartDate] = useState(period.start);
   const [endDate, setEndDate] = useState(period.end);
-  const [tab, setTab] = useState<'all' | 'in' | 'out'>('all');
+  const [tab, setTab] = useState<'all' | 'in' | 'out' | 'caixa'>('all');
   const [page, setPage] = useState(1);
   const pageSize = 8;
 
   const { data: extrato, isLoading: loadingExtrato } = useExtrato(lojaId, startDate, endDate);
+  const { data: cashRegisters = [], isLoading: loadingCash } = useCashRegisters(lojaId);
+  const closeCashRegister = useCloseCashRegister();
+  
+  const [declaredAmounts, setDeclaredAmounts] = useState<Record<string, string>>({});
 
   const latestReconciliation = history.length > 0 ? history[0] : null;
 
@@ -464,29 +469,123 @@ function LojaDashboardPage() {
             </div>
 
             {/* Abas e Filtros */}
-            <div className="flex border-b border-[var(--border-subtle)] mb-4">
+            <div className="flex border-b border-[var(--border-subtle)] mb-4 overflow-x-auto">
               <button
                 onClick={() => { setTab('all'); setPage(1); }}
-                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${tab === 'all' ? 'border-[var(--color-primary)] text-[var(--color-primary)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'all' ? 'border-[var(--color-primary)] text-[var(--color-primary)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
               >
                 Todas as Transações
               </button>
               <button
                 onClick={() => { setTab('in'); setPage(1); }}
-                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${tab === 'in' ? 'border-[var(--color-success)] text-[var(--color-success)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'in' ? 'border-[var(--color-success)] text-[var(--color-success)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
               >
                 Apenas Entradas
               </button>
               <button
                 onClick={() => { setTab('out'); setPage(1); }}
-                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${tab === 'out' ? 'border-[var(--color-accent-danger)] text-[var(--color-accent-danger)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'out' ? 'border-[var(--color-accent-danger)] text-[var(--color-accent-danger)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
               >
                 Apenas Saídas
+              </button>
+              <button
+                onClick={() => { setTab('caixa'); setPage(1); }}
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'caixa' ? 'border-[var(--color-warning)] text-[var(--color-warning)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
+              >
+                Caixa Físico {cashRegisters.filter(c => c.status === 'pending').length > 0 && <span className="ml-1 bg-[var(--color-warning)] text-black text-[10px] px-1.5 py-0.5 rounded-full">{cashRegisters.filter(c => c.status === 'pending').length}</span>}
               </button>
             </div>
 
             <Card className="p-0 overflow-hidden min-h-[400px]">
-              {loadingExtrato ? (
+              {tab === 'caixa' ? (
+                loadingCash ? (
+                  <div className="flex justify-center p-12"><LoadingSpinner size="sm" text="Carregando caixas..." /></div>
+                ) : cashRegisters.length === 0 ? (
+                  <div className="text-center py-20">
+                    <Banknote size={48} className="mx-auto mb-4 text-[var(--text-tertiary)] opacity-30" />
+                    <p className="text-[var(--text-secondary)] font-medium">Nenhum registro de dinheiro em espécie.</p>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-[var(--border-subtle)]">
+                    {cashRegisters.map(cr => {
+                      const isPending = cr.status === 'pending';
+                      const declaredVal = declaredAmounts[cr.id] || '';
+                      
+                      const handleClose = () => {
+                        const parsed = parseFloat(declaredVal);
+                        if (isNaN(parsed)) return;
+                        closeCashRegister.mutate({
+                          id: cr.id,
+                          expectedAmount: cr.expected_amount,
+                          declaredAmount: parsed
+                        });
+                      };
+
+                      return (
+                        <div key={cr.id} className="p-6">
+                          <div className="flex items-center justify-between mb-4">
+                            <div>
+                              <h4 className="font-display font-semibold text-lg text-[var(--text-primary)]">Caixa de {formatDate(cr.date)}</h4>
+                              <p className="text-sm text-[var(--text-secondary)]">Fechamento do dinheiro físico da loja.</p>
+                            </div>
+                            <Badge variant={isPending ? 'warning' : 'success'}>
+                              {isPending ? 'Pendente de Conferência' : 'Caixa Fechado'}
+                            </Badge>
+                          </div>
+                          
+                          <div className="bg-[var(--bg-canvas)] rounded-[var(--radius-lg)] p-5 border border-[var(--border-subtle)]">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                              <div>
+                                <p className="text-xs text-[var(--text-secondary)] uppercase tracking-wider mb-1">Apurado (OSs)</p>
+                                <p className="text-xl font-mono font-medium">R$ {Number(cr.expected_amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                              </div>
+                              
+                              <div>
+                                <p className="text-xs text-[var(--text-secondary)] uppercase tracking-wider mb-1">Valor Contado</p>
+                                {isPending ? (
+                                  <div className="flex items-center gap-2">
+                                    <div className="relative">
+                                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] text-sm">R$</span>
+                                      <input 
+                                        type="number" 
+                                        step="0.01"
+                                        value={declaredVal}
+                                        onChange={(e) => setDeclaredAmounts(prev => ({ ...prev, [cr.id]: e.target.value }))}
+                                        placeholder="0.00"
+                                        className="w-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-md pl-8 pr-3 py-1.5 text-sm font-mono focus:outline-none focus:border-[var(--color-warning)] transition-colors"
+                                      />
+                                    </div>
+                                    <button 
+                                      onClick={handleClose}
+                                      disabled={!declaredVal || closeCashRegister.isPending}
+                                      className="bg-[var(--color-warning)] text-black px-3 py-1.5 rounded-md text-sm font-medium hover:bg-[var(--color-warning)]/90 disabled:opacity-50 transition-colors"
+                                    >
+                                      Fechar Caixa
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <p className="text-xl font-mono font-medium">R$ {Number(cr.declared_amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                                )}
+                              </div>
+
+                              <div>
+                                <p className="text-xs text-[var(--text-secondary)] uppercase tracking-wider mb-1">Divergência</p>
+                                {isPending ? (
+                                  <p className="text-[var(--text-tertiary)] text-sm mt-2 italic">Aguardando contagem...</p>
+                                ) : (
+                                  <p className={`text-xl font-mono font-bold ${cr.divergence === 0 ? 'text-[var(--color-success)]' : 'text-[var(--color-accent-danger)]'}`}>
+                                    {cr.divergence === 0 ? 'Exato' : `${cr.divergence! > 0 ? '+' : ''} R$ ${cr.divergence?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )
+              ) : loadingExtrato ? (
                 <div className="flex justify-center p-12">
                   <LoadingSpinner size="sm" text="" />
                 </div>

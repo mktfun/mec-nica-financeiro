@@ -239,7 +239,7 @@ export function useProcessImportedData() {
           summary.oss.push(os);
           
           // Calcular dinheiro apenas (PIX / Dinheiro)
-          let dinheiroVal = 0;
+          let dinheiroValForOs = 0;
           if (os.payment_method) {
              const parts = os.payment_method.split(';');
              parts.forEach(part => {
@@ -248,12 +248,15 @@ export function useProcessImportedData() {
                   const m = method.toLowerCase();
                   if (m.includes('dinheiro') || m.includes('espécie')) {
                     const parsed = parseFloat(valStr.trim());
-                    if (!isNaN(parsed)) dinheiroVal += parsed;
+                    if (!isNaN(parsed)) dinheiroValForOs += parsed;
                   }
                 }
              });
           }
-          summary.totalDinheiro += dinheiroVal;
+          summary.totalDinheiro += dinheiroValForOs;
+          
+          // Anexar o valor em dinheiro na OS para não precisarmos recalcular na hora das transações
+          (os as any).dinheiroVal = dinheiroValForOs;
         }
       }
 
@@ -281,6 +284,36 @@ export function useProcessImportedData() {
           receivables_count: recCountForDate,
         }, { onConflict: 'store_id,target_date' });
 
+        // C) Atualizar Caixa Físico (cash_registers)
+        if (summary.totalDinheiro > 0) {
+          // Busca para ver se já existe para não sobreescrever um declarado, 
+          // ou usamos upsert se quisermos forçar a atualização do expected_amount
+          const { data: existingCash } = await supabase
+            .from('cash_registers')
+            .select('id, declared_amount')
+            .eq('store_id', storeId)
+            .eq('date', date)
+            .single();
+
+          if (existingCash) {
+            // Só atualiza o expected_amount, recalcula divergência se já tiver declared
+            const div = existingCash.declared_amount !== null 
+                ? existingCash.declared_amount - summary.totalDinheiro 
+                : null;
+            await supabase.from('cash_registers').update({
+              expected_amount: summary.totalDinheiro,
+              divergence: div
+            }).eq('id', existingCash.id);
+          } else {
+            await supabase.from('cash_registers').insert({
+              store_id: storeId,
+              date: date,
+              expected_amount: summary.totalDinheiro,
+              status: 'pending'
+            });
+          }
+        }
+
         // C) Inserir transações para o extrato (IDEMPOTENTE por os_number)
         // Busca TODAS as transações existentes para esta loja (não apenas do dia),
         // evitando que a mesma OS importada em dois dias gere duplicatas.
@@ -301,7 +334,9 @@ export function useProcessImportedData() {
           // Se essa OS já está no extrato (de qualquer dia), não insere novamente.
           if (existingOsNumbers.has(os.os_number)) continue;
           
-          if (os.paid_value > 0) {
+          const bankAmount = os.paid_value - ((os as any).dinheiroVal || 0);
+          
+          if (bankAmount > 0) {
             const { adjustedTotal, interestType } = detectInterestOrDiscount(
               os.total_value,
               os.paid_value,
@@ -313,7 +348,7 @@ export function useProcessImportedData() {
               store_id: storeId,
               store_name: storeName,
               type: 'in',
-              amount: os.paid_value,
+              amount: bankAmount, // Apenas o valor bancário
               occurred_at: date,
               title: desc,
               os_number: os.os_number,

@@ -59,11 +59,24 @@ export type TransactionRow = {
   subtitle: string | null;
   amount: number;
   type: 'in' | 'out';
-  icon_type: 'card' | 'bank' | 'cash' | 'alert' | null;
+  status: 'pending' | 'completed' | 'failed';
   payment_method: string | null;
   os_number: string | null;
   occurred_at: string;
   created_at: string;
+  icon_type: 'card' | 'bank' | 'cash' | 'alert' | null;
+};
+
+export type CashRegisterRow = {
+  id: string;
+  store_id: string;
+  date: string;
+  expected_amount: number;
+  declared_amount: number | null;
+  divergence: number | null;
+  status: 'pending' | 'closed';
+  created_at: string;
+  updated_at: string;
 };
 
 export type PatioOSRow = {
