@@ -30,15 +30,22 @@ function ImportacoesPage() {
   const paginatedImports = imports.slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
   const handleDelete = async (log: GroupedImportLog) => {
-    if (confirmDeleteId === log.id) {
-      await deleteImport.mutateAsync({
-        storeId: log.store_id,
-        targetDates: log.target_dates,
-        logIds: log.raw_logs.map(r => r.id),
-      });
-      setConfirmDeleteId(null);
-    } else {
-      setConfirmDeleteId(log.id);
+    try {
+      if (confirmDeleteId === log.id) {
+        console.log('Sending delete mutation for log:', log);
+        await deleteImport.mutateAsync({
+          storeId: log.store_id,
+          targetDates: log.target_dates,
+          logIds: log.raw_logs.map(r => r.id),
+        });
+        console.log('Delete successful');
+        setConfirmDeleteId(null);
+      } else {
+        setConfirmDeleteId(log.id);
+      }
+    } catch (err) {
+      console.error('Failed to delete import log:', err);
+      alert('Erro ao excluir importação: ' + ((err as any).message || JSON.stringify(err)));
     }
   };
 

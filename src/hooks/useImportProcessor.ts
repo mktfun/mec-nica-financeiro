@@ -507,10 +507,13 @@ export function useDeleteImport() {
       if (err4) throw err4;
         
       // 5. Apagar os próprios logs
-      const { error: err5 } = await supabase
+      const { data: d5, error: err5 } = await supabase
         .from('import_logs')
         .delete()
-        .in('id', logIds);
+        .in('id', logIds)
+        .select();
+      
+      console.log('Delete logs result:', { d5, err5, logIds });
       if (err5) throw err5;
     },
     onSuccess: () => {
