@@ -14,6 +14,7 @@ import { Route as PropostaRouteImport } from './routes/proposta'
 import { Route as PatioRouteImport } from './routes/patio'
 import { Route as LojasRouteImport } from './routes/lojas'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ImportacoesRouteImport } from './routes/importacoes'
 import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as ConciliacaoDetalhesRouteImport } from './routes/conciliacao-detalhes'
@@ -45,6 +46,11 @@ const LojasRoute = LojasRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImportacoesRoute = ImportacoesRouteImport.update({
+  id: '/importacoes',
+  path: '/importacoes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HistoricoRoute = HistoricoRouteImport.update({
@@ -90,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/historico': typeof HistoricoRoute
+  '/importacoes': typeof ImportacoesRoute
   '/login': typeof LoginRoute
   '/lojas': typeof LojasRoute
   '/patio': typeof PatioRoute
@@ -104,6 +111,7 @@ export interface FileRoutesByTo {
   '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/historico': typeof HistoricoRoute
+  '/importacoes': typeof ImportacoesRoute
   '/login': typeof LoginRoute
   '/lojas': typeof LojasRoute
   '/patio': typeof PatioRoute
@@ -119,6 +127,7 @@ export interface FileRoutesById {
   '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/historico': typeof HistoricoRoute
+  '/importacoes': typeof ImportacoesRoute
   '/login': typeof LoginRoute
   '/lojas': typeof LojasRoute
   '/patio': typeof PatioRoute
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
     | '/conciliacao-detalhes'
     | '/configuracoes'
     | '/historico'
+    | '/importacoes'
     | '/login'
     | '/lojas'
     | '/patio'
@@ -149,6 +159,7 @@ export interface FileRouteTypes {
     | '/conciliacao-detalhes'
     | '/configuracoes'
     | '/historico'
+    | '/importacoes'
     | '/login'
     | '/lojas'
     | '/patio'
@@ -163,6 +174,7 @@ export interface FileRouteTypes {
     | '/conciliacao-detalhes'
     | '/configuracoes'
     | '/historico'
+    | '/importacoes'
     | '/login'
     | '/lojas'
     | '/patio'
@@ -178,6 +190,7 @@ export interface RootRouteChildren {
   ConciliacaoDetalhesRoute: typeof ConciliacaoDetalhesRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
   HistoricoRoute: typeof HistoricoRoute
+  ImportacoesRoute: typeof ImportacoesRoute
   LoginRoute: typeof LoginRoute
   LojasRoute: typeof LojasRoute
   PatioRoute: typeof PatioRoute
@@ -221,6 +234,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/importacoes': {
+      id: '/importacoes'
+      path: '/importacoes'
+      fullPath: '/importacoes'
+      preLoaderRoute: typeof ImportacoesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/historico': {
@@ -282,6 +302,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConciliacaoDetalhesRoute: ConciliacaoDetalhesRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
   HistoricoRoute: HistoricoRoute,
+  ImportacoesRoute: ImportacoesRoute,
   LoginRoute: LoginRoute,
   LojasRoute: LojasRoute,
   PatioRoute: PatioRoute,
@@ -292,13 +313,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
