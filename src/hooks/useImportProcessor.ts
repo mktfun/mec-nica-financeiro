@@ -408,17 +408,61 @@ export function useProcessImportedData() {
   });
 }
 
-export function useImportsHistory(limit = 50) {
+export interface GroupedImportLog {
+  id: string;
+  store_id: string;
+  store_name: string;
+  created_at: string;
+  target_dates: string[];
+  os_count: number;
+  receivables_count: number;
+  total_os: number;
+  raw_logs: any[];
+}
+
+export function useImportsHistory() {
   return useQuery({
-    queryKey: ['import_logs', 'history', limit],
+    queryKey: ['import_logs', 'history', 'grouped'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('import_logs')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(limit);
+        .limit(1000);
       if (error) throw error;
-      return data;
+      
+      const groups = new Map<string, GroupedImportLog>();
+      
+      data.forEach(log => {
+        // Agrupar por minuto para juntar uploads da mesma planilha
+        const minuteKey = log.created_at.substring(0, 16);
+        const key = `${log.store_id}_${minuteKey}`;
+        
+        if (!groups.has(key)) {
+          groups.set(key, {
+            id: log.id,
+            store_id: log.store_id,
+            store_name: log.store_name,
+            created_at: log.created_at,
+            target_dates: [log.target_date],
+            os_count: log.os_count || 0,
+            receivables_count: log.receivables_count || 0,
+            total_os: Number(log.total_os || 0),
+            raw_logs: [log]
+          });
+        } else {
+          const g = groups.get(key)!;
+          if (!g.target_dates.includes(log.target_date)) {
+            g.target_dates.push(log.target_date);
+          }
+          g.os_count += (log.os_count || 0);
+          g.receivables_count += (log.receivables_count || 0);
+          g.total_os += Number(log.total_os || 0);
+          g.raw_logs.push(log);
+        }
+      });
+      
+      return Array.from(groups.values());
     },
   });
 }
@@ -427,41 +471,47 @@ export function useDeleteImport() {
   const qc = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ id, storeId, targetDate }: { id: string; storeId: string; targetDate: string }) => {
+    mutationFn: async ({ storeId, targetDates, logIds }: { storeId: string; targetDates: string[]; logIds: string[] }) => {
       // 1. Apagar as transações financeiras oriundas de OS (extrato)
-      await supabase
+      const { error: err1 } = await supabase
         .from('transactions')
         .delete()
         .eq('store_id', storeId)
-        .eq('occurred_at', targetDate)
+        .in('occurred_at', targetDates)
         .like('title', 'OS #%');
+      if (err1) throw err1;
         
-      // 2. Apagar recebíveis pendentes/recebidos atrelados a essa data (futuros criados por ela)
-      await supabase
+      // 2. Apagar recebíveis pendentes/recebidos atrelados a essa data
+      const { error: err2 } = await supabase
         .from('receivables')
         .delete()
         .eq('store_id', storeId)
-        .eq('date', targetDate);
+        .in('date', targetDates);
+      if (err2) throw err2;
         
       // 3. Apagar conciliação daquela data
-      await supabase
+      const { error: err3 } = await supabase
         .from('reconciliations')
         .delete()
         .eq('store_id', storeId)
-        .eq('date', targetDate);
+        .in('date', targetDates);
+      if (err3) throw err3;
         
-      // 4. Limpar o Pátio (carros fechados neste dia, e os 'em_aberto')
-      await supabase
+      // 4. Limpar o Pátio (carros fechados nestes dias, e os 'em_aberto')
+      const orQuery = `closed_at.in.(${targetDates.join(',')}),status.eq.em_aberto`;
+      const { error: err4 } = await supabase
         .from('patio_os')
         .delete()
         .eq('store_id', storeId)
-        .or(`closed_at.eq.${targetDate},status.eq.em_aberto`);
+        .or(orQuery);
+      if (err4) throw err4;
         
-      // 5. Apagar o próprio log
-      await supabase
+      // 5. Apagar os próprios logs
+      const { error: err5 } = await supabase
         .from('import_logs')
         .delete()
-        .eq('id', id);
+        .in('id', logIds);
+      if (err5) throw err5;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['import_logs'] });
