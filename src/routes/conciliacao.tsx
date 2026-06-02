@@ -1,15 +1,14 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { CheckCircle2, ArrowRight, TrendingUp, CreditCard, Car, Receipt, CalendarDays } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { CheckCircle2, ArrowRight, TrendingUp, CalendarDays, Wallet, AlertCircle, ArrowDownLeft, ArrowUpRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { useStores } from '@/hooks/useStores';
-import { useConciliacaoResumo, useConciliacaoDetalhes, useSaveDailyCash } from '@/hooks/useConciliacao';
-import { useAlerts } from '@/hooks/useAlerts';
-import { usePatioOS } from '@/hooks/usePatio';
+import { useConciliacaoDiaria, useSaveDailyCash } from '@/hooks/useConciliacao';
+import { useTransactionsPorDataELoja } from '@/hooks/useTransactions';
 import { getDefaultDate } from '@/lib/utils';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
@@ -18,276 +17,260 @@ export const Route = createFileRoute('/conciliacao')({
 });
 
 function ConciliacaoPage() {
-  const [selectedMonth, setSelectedMonth] = useState(() => {
-    const today = getDefaultDate();
-    const [year, month] = today.split('-');
-    return `${year}-${month}`;
-  });
+  const [selectedDate, setSelectedDate] = useState(() => getDefaultDate());
+  const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
 
   const { data: stores = [], isLoading: loadingStores } = useStores();
-  const { data: resumo, isLoading: loadingResumo } = useConciliacaoResumo(selectedMonth);
-  const { data: detalhes = [], isLoading: loadingDetalhes } = useConciliacaoDetalhes(selectedMonth);
-  const { data: alertas = [], isLoading: loadingAlertas } = useAlerts();
-  const { data: patio = [], isLoading: loadingPatio } = usePatioOS({ status: 'em_aberto' });
+  const { data: conciliacaoData = {}, isLoading: loadingDiaria } = useConciliacaoDiaria(selectedDate);
   
-  const { mutate: saveDailyCash } = useSaveDailyCash();
+  const isLoading = loadingStores || loadingDiaria;
   
-  const [cashValues, setCashValues] = useState<Record<string, string>>({});
-  const [showAllStores, setShowAllStores] = useState(false);
+  // Set first store as selected if none is selected
+  if (!isLoading && stores.length > 0 && !selectedStoreId) {
+    setSelectedStoreId(stores[0].id);
+  }
 
-  const isLoading = loadingStores || loadingResumo || loadingDetalhes || loadingAlertas || loadingPatio;
-
-  const resultado = resumo?.totalDivergence || 0;
-  const isApproved = resultado === 0 && (resumo?.approved || 0) > 0;
-  
-  const alertasCriticos = alertas.filter(a => a.severity !== 'info');
-  const carrosNoPatio = patio.length;
-  
-  const [year, month] = selectedMonth.split('-');
-  const today = new Date(Number(year), Number(month) - 1, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-
-  const handleSaveCash = () => {
-    Object.entries(cashValues).forEach(([storeId, value]) => {
-      const numValue = parseFloat(value.replace(',', '.'));
-      if (!isNaN(numValue) && numValue > 0) {
-        saveDailyCash({ storeId, value: numValue });
-      }
-    });
-    alert('Valores de caixa atualizados com sucesso!');
-  };
+  const selectedStore = stores.find(s => s.id === selectedStoreId);
+  const storeData = selectedStoreId ? conciliacaoData[selectedStoreId] : null;
 
   return (
     <AppShell>
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-8">
-        {/* Timestamp and Month Picker */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider">
-            Financeiro · Dados de <span className="font-semibold text-[var(--text-secondary)]">{today}</span>
-          </p>
-          <div className="flex items-center gap-2 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] px-3 py-1.5 rounded-lg shadow-sm">
-            <CalendarDays size={16} className="text-[var(--color-primary)]" />
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6 flex flex-col h-[calc(100vh-80px)]">
+        
+        {/* Header - Date Picker */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0">
+          <div>
+            <h1 className="font-display font-bold text-3xl text-white">Fechamento de Caixa</h1>
+            <p className="text-sm text-[var(--text-tertiary)] mt-1">Valide as transações e o físico loja a loja.</p>
+          </div>
+          <div className="flex items-center gap-2 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] px-3 py-2 rounded-lg shadow-sm">
+            <CalendarDays size={18} className="text-[var(--color-primary)]" />
             <input
-              type="month"
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
               className="bg-transparent text-sm text-white focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert"
             />
           </div>
         </div>
 
         {isLoading ? (
-          <div className="flex justify-center p-12">
-            <LoadingSpinner size="sm" text="" />
+          <div className="flex-1 flex justify-center items-center">
+            <LoadingSpinner size="md" text="Carregando dados das lojas..." />
           </div>
         ) : (
-          <>
-            {/* Status Banner */}
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`p-4 rounded-[var(--radius-lg)] border flex items-center justify-between ${
-                isApproved
-                  ? 'bg-[var(--color-accent-teal)]/5 border-[var(--color-accent-teal)]/20'
-                  : 'bg-[var(--color-accent-danger)]/5 border-[var(--color-accent-danger)]/20'
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <CheckCircle2 size={20} className={isApproved ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'} />
-                <span className="font-medium text-sm">
-                  {isApproved 
-                    ? 'Conciliação do dia aprovada automaticamente' 
-                    : 'Conciliação do dia com divergências'
-                  } — Divergência Total: R$ {resultado.toFixed(2).replace('.', ',')}
-                </span>
-              </div>
-              <Link to="/conciliacao-detalhes" className="text-[var(--color-primary)] text-sm font-medium flex items-center gap-1 hover:underline">
-                Ver detalhes <ArrowRight size={14} />
-              </Link>
-            </motion.div>
+          <div className="flex-1 flex flex-col lg:flex-row gap-6 min-h-0">
+            {/* Lado Esquerdo - Master (Lista de Lojas) */}
+            <div className="lg:w-1/3 flex flex-col gap-3 overflow-y-auto pr-2 pb-8">
+              <h2 className="font-semibold text-[var(--text-secondary)] text-sm uppercase tracking-wider mb-2">Unidades ({stores.length})</h2>
+              {stores.map((store) => {
+                const data = conciliacaoData[store.id];
+                const status = data?.status || 'pending';
+                const isActive = selectedStoreId === store.id;
 
-            {/* Summary Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <Card className="relative overflow-hidden">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">Entradas do Mês</span>
-                  <TrendingUp size={18} className="text-[var(--color-accent-teal)]" />
-                </div>
-                <div className="font-display text-2xl font-bold">
-                  <AnimatedNumber value={resumo?.totalIn || 0} format="currency" />
-                </div>
-                <p className="text-xs text-[var(--text-tertiary)] mt-1">{resumo?.rows?.length || 0} fechamentos no mês</p>
-              </Card>
-
-              <Card className="relative overflow-hidden">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">Lojas Conciliadas</span>
-                  <CheckCircle2 size={18} className="text-[var(--color-accent-success)]" />
-                </div>
-                <div className="font-display text-2xl font-bold">
-                  {resumo?.approved || 0} <span className="text-base font-normal text-[var(--text-secondary)]">/ {stores.length}</span>
-                </div>
-                <p className="text-xs text-[var(--text-tertiary)] mt-1">status OK</p>
-              </Card>
-
-              <Card className="relative overflow-hidden">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">Saldo Líquido</span>
-                  <Receipt size={18} className="text-[var(--color-primary)]" />
-                </div>
-                <div className="font-display text-2xl font-bold">
-                  <AnimatedNumber value={resumo?.resultado || 0} format="currency" />
-                </div>
-                <p className="text-xs text-[var(--text-tertiary)] mt-1">Soma de todas as lojas</p>
-              </Card>
-
-              <Link to="/patio">
-                <Card className="relative overflow-hidden hover:border-[var(--border-strong)] transition-colors cursor-pointer h-full">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">Carros no Pátio</span>
-                    <Car size={18} className="text-[var(--color-accent-danger)]" />
-                  </div>
-                  <div className="font-display text-2xl font-bold">
-                    {carrosNoPatio} <span className="text-base font-normal text-[var(--text-secondary)]">OS</span>
-                  </div>
-                  <p className="text-xs text-[var(--text-tertiary)] mt-1">em aberto</p>
-                </Card>
-              </Link>
-            </div>
-
-            {/* Lojas Grid */}
-            <div>
-              <h2 className="font-display font-semibold text-xl mb-2">{stores.length} Lojas</h2>
-              <p className="text-sm text-[var(--text-tertiary)] mb-4">Status de conciliação por unidade — clique para ver detalhes</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {stores.map((store, i) => {
-                  const rec = detalhes.find(d => d.store_id === store.id);
-                  const status = rec?.status || 'pending';
-                  const financialTotal = rec?.financial_total || 0;
-
-                  return (
-                    <motion.div
-                      key={store.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.03 }}
-                    >
-                      <Link to={`/loja/${store.id}`}>
-                        <Card
-                          variant="glass"
-                          className={`p-4 cursor-pointer hover:border-[var(--border-strong)] transition-colors ${
-                            status === 'divergence' ? 'border-[var(--color-accent-danger)]/30' : ''
-                          }`}
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <h3 className="font-semibold text-sm truncate">{store.name}</h3>
-                            {status === 'approved' && <Badge variant="success" className="text-[10px]">✓ OK</Badge>}
-                            {status === 'divergence' && <Badge variant="danger" className="text-[10px]">⚠ Divergência</Badge>}
-                            {status === 'pending' && <Badge variant="warning" className="text-[10px]">• Pendente</Badge>}
-                          </div>
-                          <div className="mt-2 bg-white/5 rounded-md p-2 space-y-1.5 border border-white/5">
-                            <div className="flex justify-between items-center text-xs">
-                              <span className="text-[var(--text-secondary)]">Faturado:</span>
-                              <span className="font-medium text-[var(--text-primary)]">
-                                <AnimatedNumber value={financialTotal} format="currency" />
-                              </span>
-                            </div>
-                            <div className="flex justify-between items-center text-xs border-t border-white/5 pt-1.5">
-                              <span className="text-[var(--text-secondary)]">Físico:</span>
-                              <span className="font-medium text-[var(--text-primary)]">
-                                <AnimatedNumber value={rec?.daily_cash || 0} format="currency" />
-                              </span>
-                            </div>
-                          </div>
-                          {status === 'divergence' && (
-                            <p className="text-xs text-[var(--color-accent-danger)] mt-2 font-medium">
-                              Falta R$ {Math.abs(rec?.divergence || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
-                            </p>
-                          )}
-                        </Card>
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Alertas ativos + Dinheiro em Caixa side by side */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Alertas Ativos */}
-              <Card variant="glass" className="p-6">
-                <h3 className="font-display font-semibold mb-1">Alertas ativos</h3>
-                <p className="text-xs text-[var(--text-tertiary)] mb-4">{alertasCriticos.length} ocorrências detectadas hoje</p>
-                <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2">
-                  {alertasCriticos.length === 0 ? (
-                    <p className="text-sm text-[var(--text-secondary)]">Nenhum alerta crítico ativo.</p>
-                  ) : (
-                    alertasCriticos.map(alert => (
-                      <div key={alert.id} className="flex items-start gap-3 text-sm border-b border-white/5 pb-3">
-                        <span className={`mt-1 w-2 h-2 rounded-full shrink-0 ${alert.severity === 'critical' ? 'bg-[var(--color-accent-danger)]' : 'bg-[var(--color-accent-warning)]'}`} />
-                        <div className="flex-1 min-w-0">
-                          <span className="font-semibold">{alert.store_name}</span>{' '}
-                          <span className="text-[var(--text-tertiary)]">{alert.os_number || ''}</span>
-                          <p className="text-[var(--text-secondary)] text-xs mt-0.5">{alert.title} - {alert.description}</p>
-                        </div>
-                        <span className="text-xs text-[var(--text-tertiary)] shrink-0">{alert.time || new Date(alert.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                      </div>
-                    ))
-                  )}
-                </div>
-                <Link to="/alertas" className="text-[var(--color-primary)] text-sm font-medium mt-4 inline-flex items-center gap-1 hover:underline">
-                  Ver todos os alertas <ArrowRight size={14} />
-                </Link>
-              </Card>
-
-              {/* Dinheiro em Caixa */}
-              <Card variant="glass" className="p-6 flex flex-col h-full">
-                <h3 className="font-display font-semibold mb-1">Dinheiro em Caixa · Hoje</h3>
-                <p className="text-xs text-[var(--text-tertiary)] mb-4">Informe o valor físico contado por loja</p>
-                <div className="space-y-3 flex-1 overflow-y-auto pr-2">
-                  {(showAllStores ? stores : stores.slice(0, 4)).map(store => {
-                    const rec = detalhes.find(d => d.store_id === store.id);
-                    const savedCash = rec?.daily_cash || 0;
-
-                    return (
-                      <div key={store.id} className="flex items-center justify-between border-b border-white/5 pb-2">
-                        <span className="text-sm">{store.name}</span>
-                        <div className="flex items-center gap-2 text-sm">
-                          <span className="text-[var(--text-tertiary)]">R$</span>
-                          <input
-                            type="text"
-                            placeholder={savedCash.toFixed(2).replace('.', ',')}
-                            value={cashValues[store.id] || ''}
-                            onChange={(e) => setCashValues(prev => ({ ...prev, [store.id]: e.target.value }))}
-                            className="w-24 text-right bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-[var(--radius-sm)] px-2 py-1 text-sm focus:outline-none focus:border-[var(--color-primary)]"
-                          />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-                {stores.length > 4 && !showAllStores && (
-                  <button onClick={() => setShowAllStores(true)} className="text-[var(--color-primary)] text-sm font-medium mt-3 hover:underline text-left">
-                    + Ver todas as lojas
-                  </button>
-                )}
-                {showAllStores && (
-                  <button onClick={() => setShowAllStores(false)} className="text-[var(--color-primary)] text-sm font-medium mt-3 hover:underline text-left">
-                    - Ocultar lojas
-                  </button>
-                )}
-                <div className="mt-4 pt-2">
-                  <button 
-                    onClick={handleSaveCash}
-                    className="w-full py-3 bg-[var(--color-primary)] text-white rounded-[var(--radius-full)] font-medium text-sm hover:opacity-90 transition-opacity"
+                return (
+                  <motion.div
+                    key={store.id}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setSelectedStoreId(store.id)}
+                    className={`cursor-pointer rounded-xl p-4 transition-all duration-300 border relative overflow-hidden ${
+                      isActive 
+                        ? 'bg-[var(--bg-surface-elevated)] border-[var(--color-primary)] shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.15)]' 
+                        : 'bg-[var(--bg-surface)] border-[var(--border-subtle)] hover:border-[var(--color-primary)]/40 hover:bg-[var(--bg-surface-hover)]'
+                    }`}
                   >
-                    Salvar valores
-                  </button>
-                </div>
-              </Card>
+                    {isActive && (
+                      <div className="absolute inset-y-0 left-0 w-1 bg-[var(--color-primary)] shadow-[0_0_10px_var(--color-primary)]" />
+                    )}
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className={`font-semibold ${isActive ? 'text-white' : 'text-[var(--text-primary)]'}`}>{store.name}</h3>
+                        <div className="text-xs text-[var(--text-tertiary)] mt-1 flex items-center gap-1.5">
+                           Faturado: <AnimatedNumber value={data?.financial_total || 0} format="currency" />
+                        </div>
+                      </div>
+                      <div>
+                        {status === 'approved' && <Badge variant="success" className="text-[10px]">✓ OK</Badge>}
+                        {status === 'divergence' && <Badge variant="danger" className="text-[10px]">⚠ Divergência</Badge>}
+                        {status === 'pending' && <Badge variant="warning" className="text-[10px]">• Pendente</Badge>}
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
-          </>
+
+            {/* Lado Direito - Detail (Transações e Caixa) */}
+            <div className="lg:w-2/3 flex flex-col h-full overflow-y-auto pb-8">
+              {selectedStore && storeData && (
+                <StoreDetailPane 
+                  store={selectedStore} 
+                  storeData={storeData} 
+                  date={selectedDate} 
+                />
+              )}
+            </div>
+          </div>
         )}
       </div>
     </AppShell>
+  );
+}
+
+// StoreDetailPane component to handle the Right Side (Details)
+function StoreDetailPane({ store, storeData, date }: { store: any, storeData: any, date: string }) {
+  const { data: transactions = [], isLoading: loadingTx } = useTransactionsPorDataELoja(date, store.id);
+  const { mutate: saveDailyCash } = useSaveDailyCash();
+  const [cashValue, setCashValue] = useState(storeData.daily_cash ? storeData.daily_cash.toString() : '');
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSaveCash = () => {
+    const numValue = parseFloat(cashValue.replace(',', '.'));
+    if (!isNaN(numValue) && numValue >= 0) {
+      setIsSaving(true);
+      saveDailyCash(
+        { storeId: store.id, value: numValue, date },
+        { 
+          onSettled: () => setIsSaving(false)
+        }
+      );
+    }
+  };
+
+  const hasCashExpected = storeData.expects_cash === true;
+  
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={store.id}
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -20 }}
+        transition={{ duration: 0.3 }}
+        className="flex flex-col gap-6"
+      >
+        <Card variant="glass" className="p-6 border-[var(--border-strong)] relative overflow-hidden">
+           {/* Liquid glass effect background element */}
+           <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-primary)]/5 rounded-full blur-3xl pointer-events-none transform translate-x-1/3 -translate-y-1/3" />
+           
+           <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+             <div>
+               <h2 className="text-2xl font-display font-bold text-white">{store.name}</h2>
+               <div className="flex items-center gap-3 mt-2 text-sm text-[var(--text-secondary)]">
+                 <span className="flex items-center gap-1"><CalendarDays size={14}/> {new Date(date + 'T12:00:00').toLocaleDateString('pt-BR')}</span>
+                 <span>•</span>
+                 <span>{transactions.length} transações</span>
+               </div>
+             </div>
+             
+             <div className="flex flex-col items-end">
+                <span className="text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-1">Faturado Hoje</span>
+                <span className="text-2xl font-mono font-bold text-[var(--color-primary)]">
+                  <AnimatedNumber value={storeData.financial_total || 0} format="currency" />
+                </span>
+             </div>
+           </div>
+        </Card>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Coluna 1: Transações */}
+          <div className="flex flex-col gap-3">
+             <h3 className="font-semibold text-[var(--text-secondary)] text-sm uppercase tracking-wider mb-1 flex items-center gap-2">
+               <TrendingUp size={16} /> Movimentação do Dia
+             </h3>
+             
+             {loadingTx ? (
+               <div className="h-32 animate-pulse bg-[var(--bg-surface-elevated)] rounded-xl" />
+             ) : transactions.length === 0 ? (
+               <div className="text-center p-8 text-[var(--text-tertiary)] border border-dashed border-[var(--border-subtle)] rounded-xl text-sm">
+                 Nenhuma transação registrada nesta data.
+               </div>
+             ) : (
+               <div className="space-y-2">
+                 {transactions.map(tx => (
+                   <div key={tx.id} className="bg-[var(--bg-surface)] p-3 rounded-lg border border-[var(--border-subtle)] flex items-center justify-between">
+                     <div className="flex items-center gap-3">
+                       <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${tx.type === 'in' ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' : 'bg-[var(--color-accent-danger)]/10 text-[var(--color-accent-danger)]'}`}>
+                         {tx.type === 'in' ? <ArrowDownLeft size={16}/> : <ArrowUpRight size={16}/>}
+                       </div>
+                       <div>
+                         <p className="text-xs font-medium text-[var(--text-primary)] line-clamp-1">{tx.title}</p>
+                         <p className="text-[10px] text-[var(--text-tertiary)] uppercase mt-0.5">{tx.payment_method || 'N/A'}</p>
+                       </div>
+                     </div>
+                     <span className={`font-mono font-bold text-sm ${tx.type === 'in' ? 'text-[var(--color-success)]' : 'text-[var(--color-accent-danger)]'}`}>
+                       {tx.type === 'in' ? '+' : '-'} R$ {Number(tx.amount || 0).toFixed(2).replace('.', ',')}
+                     </span>
+                   </div>
+                 ))}
+               </div>
+             )}
+          </div>
+
+          {/* Coluna 2: Dinheiro em Caixa e Resumo */}
+          <div className="flex flex-col gap-4">
+             <h3 className="font-semibold text-[var(--text-secondary)] text-sm uppercase tracking-wider mb-1 flex items-center gap-2">
+               <Wallet size={16} /> Fechamento de Gaveta
+             </h3>
+
+             {hasCashExpected ? (
+                <Card className="bg-[var(--bg-surface-elevated)] border-[var(--color-primary)]/30 shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.05)]">
+                  <div className="mb-4">
+                    <h4 className="font-medium text-white text-sm">Dinheiro Físico</h4>
+                    <p className="text-xs text-[var(--text-tertiary)] mt-1">Houve movimentação ou há pendências em espécie para hoje nesta loja. Informe o valor contado na gaveta.</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="text-[var(--text-secondary)] font-mono text-lg">R$</span>
+                    <input
+                      type="text"
+                      placeholder="0,00"
+                      value={cashValue}
+                      onChange={(e) => setCashValue(e.target.value)}
+                      className="flex-1 bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg px-4 py-2 text-lg text-white font-mono focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all"
+                    />
+                  </div>
+
+                  <button 
+                    onClick={handleSaveCash}
+                    disabled={isSaving}
+                    className="w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-medium py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    {isSaving ? <LoadingSpinner size="sm" text="Salvando..." /> : 'Gravar Físico'}
+                  </button>
+
+                  {storeData.status === 'divergence' && (
+                    <div className="mt-4 p-3 bg-[var(--color-accent-danger)]/10 border border-[var(--color-accent-danger)]/20 rounded-lg flex items-start gap-2">
+                      <AlertCircle size={16} className="text-[var(--color-accent-danger)] mt-0.5 shrink-0" />
+                      <div className="text-xs text-[var(--color-accent-danger)]">
+                        <strong>Divergência detectada!</strong> O valor físico difere do financeiro no sistema em R$ {Math.abs(storeData.divergence).toFixed(2).replace('.', ',')}.
+                      </div>
+                    </div>
+                  )}
+                  {storeData.status === 'approved' && (
+                    <div className="mt-4 p-3 bg-[var(--color-accent-teal)]/10 border border-[var(--color-accent-teal)]/20 rounded-lg flex items-center gap-2">
+                      <CheckCircle2 size={16} className="text-[var(--color-accent-teal)] shrink-0" />
+                      <div className="text-xs text-[var(--color-accent-teal)]">
+                        <strong>Caixa batido!</strong> O físico bate perfeitamente com o financeiro.
+                      </div>
+                    </div>
+                  )}
+                </Card>
+             ) : (
+                <Card className="bg-[var(--bg-canvas)] border-dashed border-[var(--border-subtle)] flex flex-col items-center justify-center p-8 text-center">
+                   <div className="w-12 h-12 rounded-full bg-[var(--bg-surface-elevated)] flex items-center justify-center mb-3 text-[var(--text-tertiary)]">
+                     <Wallet size={20} />
+                   </div>
+                   <h4 className="font-medium text-white text-sm mb-1">Sem Operações em Dinheiro</h4>
+                   <p className="text-xs text-[var(--text-tertiary)] max-w-[200px] mx-auto">
+                     O sistema não detectou OS abertas aguardando espécie ou recebimentos em dinheiro hoje. O input de gaveta está oculto.
+                   </p>
+                </Card>
+             )}
+          </div>
+        </div>
+      </motion.div>
+    </AnimatePresence>
   );
 }

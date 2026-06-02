@@ -205,3 +205,70 @@ export function useStoreHistory(storeId: string | null, limit = 10) {
     },
   });
 }
+export function useConciliacaoDiaria(date: string) {
+  return useQuery({
+    queryKey: ['reconciliations', 'diaria', date],
+    queryFn: async () => {
+      // 1. Fetch reconciliations for the exact date
+      const { data: recData, error: recError } = await supabase
+        .from('reconciliations')
+        .select('*')
+        .eq('date', date);
+      if (recError) throw recError;
+      const reconciliations = recData as ReconciliationRow[];
+
+      // 2. Fetch transactions for the exact date (to check for cash)
+      // Since transactions might use created_at as timestamp, we need to filter between start and end of day.
+      const startOfDay = `${date}T00:00:00.000Z`;
+      const endOfDay = `${date}T23:59:59.999Z`;
+      const { data: txData, error: txError } = await supabase
+        .from('transactions')
+        .select('store_id, payment_method, amount, type')
+        .gte('created_at', startOfDay)
+        .lte('created_at', endOfDay);
+      if (txError) throw txError;
+
+      // 3. Fetch open OSs from patio
+      const { data: osData, error: osError } = await supabase
+        .from('patio_os')
+        .select('store_id, status, payment_method')
+        .in('status', ['em_aberto', 'pago_parcial']);
+      if (osError) throw osError;
+
+      // Process results per store
+      const storeMap: Record<string, any> = {};
+      
+      // Initialize with reconciliations
+      reconciliations.forEach(rec => {
+        storeMap[rec.store_id] = {
+          ...rec,
+          expects_cash: false,
+          has_transactions: false
+        };
+      });
+
+      // Check transactions for cash
+      txData?.forEach(tx => {
+        if (!storeMap[tx.store_id]) {
+          storeMap[tx.store_id] = { store_id: tx.store_id, expects_cash: false, has_transactions: true, status: 'pending', os_total: 0, financial_total: 0, divergence: 0, daily_cash: 0 };
+        }
+        storeMap[tx.store_id].has_transactions = true;
+        if (tx.payment_method?.toLowerCase() === 'dinheiro' || tx.payment_method?.toLowerCase() === 'espécie') {
+          storeMap[tx.store_id].expects_cash = true;
+        }
+      });
+
+      // Check open OSs for cash
+      osData?.forEach(os => {
+        if (!storeMap[os.store_id]) {
+          storeMap[os.store_id] = { store_id: os.store_id, expects_cash: false, has_transactions: false, status: 'pending', os_total: 0, financial_total: 0, divergence: 0, daily_cash: 0 };
+        }
+        // If it's open, maybe they will pay in cash today. So we expect cash input just in case.
+        // The user said: "apenas pras lojsa que tem os aberta ou ate msm fechada ou pga parcial, que tem dinheiro em reais na os"
+        storeMap[os.store_id].expects_cash = true;
+      });
+
+      return storeMap;
+    }
+  });
+}

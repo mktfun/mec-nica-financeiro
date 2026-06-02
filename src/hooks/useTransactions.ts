@@ -225,3 +225,23 @@ export function useAllStoresBalances() {
     }
   });
 }
+
+export function useTransactionsPorDataELoja(date: string, storeId: string) {
+  return useQuery({
+    queryKey: ['transactions', 'store', storeId, 'date', date],
+    queryFn: async () => {
+      const startOfDay = `${date}T00:00:00.000Z`;
+      const endOfDay = `${date}T23:59:59.999Z`;
+      const { data, error } = await supabase
+        .from('transactions')
+        .select('*')
+        .eq('store_id', storeId)
+        .gte('created_at', startOfDay)
+        .lte('created_at', endOfDay)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data as TransactionRow[];
+    },
+    enabled: !!storeId && !!date,
+  });
+}
