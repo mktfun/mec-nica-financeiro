@@ -59,5 +59,16 @@ A planilha exportada pelo Oficina Inteligente (`RelatorioOS... .xlsx`) tem cabe�
 ## 6. Lógica de Navegação e Autenticação
 O `src/hooks/useAuth.ts` se conecta via Sessão local com o Supabase. Rotas protegidas exigem que um token JWT exista. Telas como `/login` ficam fora da árvore de AppShell.
 
+## 7. Acesso da Inteligência Artificial (Para a Próxima IA)
+**⚠️ ATENÇÃO PRÓXIMA IA:** As credenciais sensíveis (Senhas, Tokens de Acesso, Chaves de Serviço) **NÃO ESTÃO NESTE ARQUIVO** e não devem ser comitadas no GitHub.
+
+Para obter acesso administrativo ao Supabase e demais recursos, **LEIA o arquivo `.env.local` na raiz do projeto.** Lá você encontrará:
+- `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` (Acesso do Cliente/Frontend).
+- `SUPABASE_SERVICE_ROLE_KEY` (Para scripts backend com superpoderes que ignoram RLS).
+- `SUPABASE_ACCESS_TOKEN` (Para usar ferramentas via terminal como `npx supabase db query` ou gerenciar projetos na nuvem via REST API).
+- `SUPABASE_PROJECT_REF` (O ID do projeto no Supabase).
+
+O Git já está autenticado no terminal via `git clone` https seguro (credential helper) ou chave SSH do sistema, então basta executar `git push`, `git commit`, etc, diretamente através da ferramenta `run_command`.
+
 ## Próximos Passos (Histórico para próxima AI)
 A partir daqui o sistema está 100% funcional focado no "Fechamento Diário Inteligente". O usuário não definiu qual é o próximo passo exato após o Caixa Físico, mas a base do código está pronta para receber gráficos de DRE, Metas de Franquias, ou Integrações API direto com adquirentes de cartão para bater conciliação nível HARD (O.S. vs Banco).
