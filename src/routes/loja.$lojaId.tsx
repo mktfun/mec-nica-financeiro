@@ -168,6 +168,65 @@ function LojaDashboardPage() {
             </div>
           </div>
         </div>
+        
+        {/* Painel Financeiro Consolidado */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="border-l-4 border-l-[var(--color-primary)] p-5">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Saldo da Loja</span>
+              <Landmark size={16} className="text-[var(--color-primary)]" />
+            </div>
+            <div className="font-display text-2xl font-bold">
+              <AnimatedNumber 
+                value={(extrato?.transactions || []).reduce((acc: number, tx: any) => acc + (tx.type === 'in' ? Number(tx.amount) : -Number(tx.amount)), 0)} 
+                format="currency" 
+              />
+            </div>
+            <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Acumulado do período</p>
+          </Card>
+          
+          <Card className="border-l-4 border-l-[var(--color-success)] p-5">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Faturamento (Entradas)</span>
+              <ArrowUpRight size={16} className="text-[var(--color-success)]" />
+            </div>
+            <div className="font-display text-2xl font-bold text-[var(--color-success)]">
+              <AnimatedNumber 
+                value={(extrato?.transactions || []).reduce((acc: number, tx: any) => acc + (tx.type === 'in' ? Number(tx.amount) : 0), 0)} 
+                format="currency" 
+              />
+            </div>
+            <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Total de valores que entraram</p>
+          </Card>
+          
+          <Card className="border-l-4 border-l-[var(--color-accent-teal)] p-5">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Valor Disponível</span>
+              <Wallet size={16} className="text-[var(--color-accent-teal)]" />
+            </div>
+            <div className="font-display text-2xl font-bold text-[var(--color-accent-teal)]">
+              <AnimatedNumber 
+                value={(extrato?.transactions || []).reduce((acc: number, tx: any) => acc + (tx.type === 'in' ? Number(tx.amount) : -Number(tx.amount)), 0)} 
+                format="currency" 
+              />
+            </div>
+            <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Livre para contas</p>
+          </Card>
+          
+          <Card className="border-l-4 border-l-[var(--color-accent-danger)] p-5">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Contas (Saídas)</span>
+              <ArrowDownRight size={16} className="text-[var(--color-accent-danger)]" />
+            </div>
+            <div className="font-display text-2xl font-bold text-[var(--color-accent-danger)]">
+              <AnimatedNumber 
+                value={(extrato?.transactions || []).reduce((acc: number, tx: any) => acc + (tx.type === 'out' ? Number(tx.amount) : 0), 0)} 
+                format="currency" 
+              />
+            </div>
+            <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Total de saídas registradas</p>
+          </Card>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Coluna Esquerda: Resumo de Conciliação e Gráfico */}
