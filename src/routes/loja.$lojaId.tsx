@@ -78,11 +78,53 @@ function LojaDashboardPage() {
     );
   }
 
+  // Helper para extrair strings como "Credito: 10000.00; PIX: 200.00;"
+  const parsePaymentMethods = (raw: string): Record<string, number> => {
+    const result: Record<string, number> = {};
+    if (!raw) return result;
+    
+    const parts = raw.split(';');
+    for (const part of parts) {
+      const trimmed = part.trim();
+      if (!trimmed) continue;
+      
+      const [methodName, amountStr] = trimmed.split(':');
+      if (methodName && amountStr) {
+        const name = methodName.trim().toUpperCase();
+        const amount = parseFloat(amountStr.trim());
+        if (!isNaN(amount)) {
+          let cleanName = name;
+          if (name.includes('CREDITO') || name.includes('CRÉDITO') || name.includes('CRED')) cleanName = 'Crédito';
+          else if (name.includes('DEBITO') || name.includes('DÉBITO') || name.includes('DEB')) cleanName = 'Débito';
+          else if (name.includes('PIX')) cleanName = 'PIX';
+          else if (name.includes('DINHEIRO') || name.includes('ESPÉCIE')) cleanName = 'Dinheiro';
+          else if (name.includes('CONTA') || name.includes('TRANSFER') || name.includes('PAGAMENTO')) cleanName = 'Depósito/Transf.';
+          
+          result[cleanName] = (result[cleanName] || 0) + amount;
+        }
+      }
+    }
+    return result;
+  };
+
   // Prepara dados para o gráfico de pizza
   const paymentStats = extrato?.transactions.reduce((acc, tx: any) => {
     if (tx.type === 'in' && tx.payment_method) {
-      const method = tx.payment_method;
-      acc[method] = (acc[method] || 0) + Number(tx.amount || 0);
+      const parsed = parsePaymentMethods(tx.payment_method);
+      let foundAny = false;
+      
+      for (const [method, amount] of Object.entries(parsed)) {
+        if (amount > 0) {
+          acc[method] = (acc[method] || 0) + amount;
+          foundAny = true;
+        }
+      }
+      
+      if (!foundAny) {
+        // Fallback: se não tiver o padrão "Nome: 10.00;" usa o método inteiro
+        const method = tx.payment_method;
+        acc[method] = (acc[method] || 0) + Number(tx.amount || 0);
+      }
     }
     return acc;
   }, {} as Record<string, number>);
@@ -138,16 +180,23 @@ function LojaDashboardPage() {
               {latestReconciliation ? (
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-3">
-                    <Card variant="glass" className="p-4">
+                    <Card variant="glass" className="p-4 flex flex-col justify-between">
                       <p className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider mb-1">Apurado Sistema</p>
-                      <p className="font-display text-lg font-semibold">R$ {(latestReconciliation.os_total || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                      <p className="font-display text-lg font-semibold text-[var(--text-primary)]">R$ {(latestReconciliation.os_total || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                      <p className="text-[9px] text-[var(--text-tertiary)] mt-1 leading-tight">Total faturado em OSs neste dia</p>
                     </Card>
-                    <Card variant="glass" className="p-4">
+                    <Card variant="glass" className="p-4 flex flex-col justify-between">
                       <p className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider mb-1">Liquidado Conta</p>
-                      <p className="font-display text-lg font-semibold">R$ {(latestReconciliation.financial_total || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                      <p className="font-display text-lg font-semibold text-[var(--text-primary)]">R$ {(latestReconciliation.financial_total || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                      <p className="text-[9px] text-[var(--text-tertiary)] mt-1 leading-tight">Entradas bancárias conciliadas</p>
                     </Card>
                   </div>
                   
+                  {latestReconciliation.financial_total === 0 && (
+                    <div className="px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-md">
+                      <p className="text-xs text-[var(--text-secondary)]">ℹ️ O valor Liquidado está zerado pois ainda não há transações bancárias conciliadas para este dia.</p>
+                    </div>
+                  )}
                   {latestReconciliation.divergence !== 0 && (
                     <div className="p-4 bg-red-500/10 rounded-[var(--radius-md)] border border-red-500/20">
                       <p className="text-xs text-red-500 uppercase tracking-wider mb-1">Divergência Encontrada</p>
