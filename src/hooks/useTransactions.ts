@@ -41,7 +41,8 @@ export function useDashboardSummary() {
       const today = getDefaultDate();
       const [year, month] = today.split('-');
       const startOfMonth = `${year}-${month}-01`;
-      const endOfMonth = `${year}-${month}-31`;
+      const end = new Date(Number(year), Number(month), 0);
+      const endOfMonth = `${year}-${month}-${String(end.getDate()).padStart(2, '0')}`;
 
       const { data: txs, error: txErr } = await supabase
         .from('transactions')

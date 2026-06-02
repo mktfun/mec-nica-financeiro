@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { getDefaultDate } from '@/lib/utils';
 import { useSaveImportedReport } from './useConciliacao';
@@ -405,5 +405,73 @@ export function useProcessImportedData() {
       qc.invalidateQueries({ queryKey: ['transactions'] });
       qc.invalidateQueries({ queryKey: ['extrato'] });
     },
+  });
+}
+
+export function useImportsHistory(limit = 50) {
+  return useQuery({
+    queryKey: ['import_logs', 'history', limit],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('import_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(limit);
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+export function useDeleteImport() {
+  const qc = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ id, storeId, targetDate }: { id: string; storeId: string; targetDate: string }) => {
+      // 1. Apagar as transações financeiras oriundas de OS (extrato)
+      await supabase
+        .from('transactions')
+        .delete()
+        .eq('store_id', storeId)
+        .eq('occurred_at', targetDate)
+        .like('title', 'OS #%');
+        
+      // 2. Apagar recebíveis pendentes/recebidos atrelados a essa data (futuros criados por ela)
+      await supabase
+        .from('receivables')
+        .delete()
+        .eq('store_id', storeId)
+        .eq('date', targetDate);
+        
+      // 3. Apagar conciliação daquela data
+      await supabase
+        .from('reconciliations')
+        .delete()
+        .eq('store_id', storeId)
+        .eq('date', targetDate);
+        
+      // 4. Limpar o Pátio (carros fechados neste dia, e os 'em_aberto')
+      await supabase
+        .from('patio_os')
+        .delete()
+        .eq('store_id', storeId)
+        .or(`closed_at.eq.${targetDate},status.eq.em_aberto`);
+        
+      // 5. Apagar o próprio log
+      await supabase
+        .from('import_logs')
+        .delete()
+        .eq('id', id);
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['import_logs'] });
+      qc.invalidateQueries({ queryKey: ['transactions'] });
+      qc.invalidateQueries({ queryKey: ['extrato'] });
+      qc.invalidateQueries({ queryKey: ['receivables'] });
+      qc.invalidateQueries({ queryKey: ['reconciliations'] });
+      qc.invalidateQueries({ queryKey: ['dashboard'] });
+      qc.invalidateQueries({ queryKey: ['patio'] });
+      qc.invalidateQueries({ queryKey: ['patio_os'] });
+    }
   });
 }

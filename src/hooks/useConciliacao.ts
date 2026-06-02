@@ -9,7 +9,8 @@ export function useConciliacaoDetalhes(date?: string) {
     queryFn: async () => {
       const [year, month] = targetDate.split('-');
       const startOfMonth = `${year}-${month}-01`;
-      const endOfMonth = `${year}-${month}-31`;
+      const end = new Date(Number(year), Number(month), 0);
+      const endOfMonth = `${year}-${month}-${String(end.getDate()).padStart(2, '0')}`;
 
       const { data, error } = await supabase
         .from('reconciliations')
@@ -47,7 +48,8 @@ export function useConciliacaoResumo(date?: string) {
     queryFn: async () => {
       const [year, month] = targetDate.split('-');
       const startOfMonth = `${year}-${month}-01`;
-      const endOfMonth = `${year}-${month}-31`;
+      const end = new Date(Number(year), Number(month), 0);
+      const endOfMonth = `${year}-${month}-${String(end.getDate()).padStart(2, '0')}`;
 
       const { data, error } = await supabase
         .from('reconciliations')

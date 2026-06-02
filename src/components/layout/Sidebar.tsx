@@ -11,6 +11,7 @@ const navItems = [
   { id: "/patio", label: "Pátio", icon: Car },
   { id: "/recebiveis", label: "Recebíveis", icon: DollarSign },
   { id: "/alertas", label: "Alertas", icon: AlertTriangle },
+  { id: "/importacoes", label: "Importações", icon: FileSpreadsheet },
 ];
 
 export function Sidebar() {

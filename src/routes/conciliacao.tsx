@@ -22,7 +22,7 @@ function ConciliacaoPage() {
   const { data: resumo, isLoading: loadingResumo } = useConciliacaoResumo();
   const { data: detalhes = [], isLoading: loadingDetalhes } = useConciliacaoDetalhes();
   const { data: alertas = [], isLoading: loadingAlertas } = useAlerts();
-  const { data: patio = [], isLoading: loadingPatio } = usePatioOS();
+  const { data: patio = [], isLoading: loadingPatio } = usePatioOS({ status: 'em_aberto' });
   
   const { mutate: saveDailyCash } = useSaveDailyCash();
   
@@ -35,7 +35,7 @@ function ConciliacaoPage() {
   const isApproved = resultado === 0 && (resumo?.approved || 0) > 0;
   
   const alertasCriticos = alertas.filter(a => a.severity !== 'info');
-  const carrosNoPatio = patio.filter(p => p.status === 'em_aberto').length;
+  const carrosNoPatio = patio.length;
   
   // Use getDefaultDate to respect the D-1 standard
   const targetDateStr = getDefaultDate();
