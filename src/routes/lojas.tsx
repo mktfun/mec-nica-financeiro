@@ -12,6 +12,7 @@ import { useState, useMemo } from 'react';
 import { StoreRow, ReconciliationRow } from '@/lib/supabase';
 import { useStores, useDeleteStore } from '@/hooks/useStores';
 import { useConciliacaoDetalhes } from '@/hooks/useConciliacao';
+import { useAllStoresBalances } from '@/hooks/useTransactions';
 import { Button } from '@/components/ui/Button';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
@@ -27,6 +28,7 @@ function LojasPage() {
 
   const { data: stores = [], isLoading: loadingStores } = useStores();
   const { data: conciliations = [], isLoading: loadingConciliations } = useConciliacaoDetalhes();
+  const { data: allBalances = {}, isLoading: loadingBalances } = useAllStoresBalances();
   const deleteMutation = useDeleteStore();
 
   const filteredStores = useMemo(() => {
@@ -36,7 +38,7 @@ function LojasPage() {
     );
   }, [stores, search]);
 
-  const isLoading = loadingStores || loadingConciliations;
+  const isLoading = loadingStores || loadingConciliations || loadingBalances;
 
   const handleEdit = (store: StoreRow) => {
     setStoreToEdit(store);
@@ -116,8 +118,8 @@ function LojasPage() {
 
                     <div className="flex items-center gap-6">
                       <div className="hidden sm:block text-right">
-                        <p className="text-sm text-[var(--text-secondary)]">Fechamento</p>
-                        <p className="font-display font-semibold"><AnimatedNumber value={financialTotal} format="currency" /></p>
+                        <p className="text-sm text-[var(--text-secondary)]">Saldo Real</p>
+                        <p className="font-display font-semibold"><AnimatedNumber value={allBalances[store.id] || 0} format="currency" /></p>
                       </div>
                       <div className="text-right">
                         <p className="text-sm text-[var(--text-secondary)]">Status Caixa</p>
@@ -157,3 +159,4 @@ function LojasPage() {
     </AppShell>
   );
 }
+

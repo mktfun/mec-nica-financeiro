@@ -200,3 +200,28 @@ export function useExtrato(storeId: string, startDate: string, endDate: string) 
     },
   });
 }
+
+export function useAllStoresBalances() {
+  return useQuery({
+    queryKey: ['all-stores-balances'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('transactions')
+        .select('store_id, amount, type');
+        
+      if (error) throw error;
+      
+      const rows = data as { store_id: string, amount: number, type: string }[];
+      
+      const balances: Record<string, number> = {};
+      
+      for (const row of rows) {
+        if (!balances[row.store_id]) balances[row.store_id] = 0;
+        const amount = Number(row.amount || 0);
+        balances[row.store_id] += row.type === 'in' ? amount : -amount;
+      }
+      
+      return balances;
+    }
+  });
+}
