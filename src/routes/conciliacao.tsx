@@ -46,8 +46,9 @@ function ConciliacaoPage() {
   const alertasCriticos = alertas.filter(a => a.severity !== 'info');
   const carrosNoPatio = patio.length;
   
-  const [year, month] = selectedMonth.split('-');
-  const today = new Date(Number(year), Number(month) - 1, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+  const [y, m, d] = selectedDate.split('-');
+  const todayStr = new Date(Number(y), Number(m) - 1, Number(d));
+  const today = todayStr.toLocaleDateString('pt-BR', { dateStyle: 'long' });
 
   const handleSaveCash = () => {
     Object.entries(cashValues).forEach(([storeId, value]) => {
