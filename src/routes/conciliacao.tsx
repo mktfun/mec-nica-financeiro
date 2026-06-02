@@ -3,7 +3,7 @@ import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { CheckCircle2, ArrowRight, TrendingUp, CreditCard, Car, Receipt } from 'lucide-react';
+import { CheckCircle2, ArrowRight, TrendingUp, CreditCard, Car, Receipt, CalendarDays } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useStores } from '@/hooks/useStores';
@@ -18,9 +18,15 @@ export const Route = createFileRoute('/conciliacao')({
 });
 
 function ConciliacaoPage() {
+  const [selectedMonth, setSelectedMonth] = useState(() => {
+    const today = getDefaultDate();
+    const [year, month] = today.split('-');
+    return `${year}-${month}`;
+  });
+
   const { data: stores = [], isLoading: loadingStores } = useStores();
-  const { data: resumo, isLoading: loadingResumo } = useConciliacaoResumo();
-  const { data: detalhes = [], isLoading: loadingDetalhes } = useConciliacaoDetalhes();
+  const { data: resumo, isLoading: loadingResumo } = useConciliacaoResumo(selectedMonth);
+  const { data: detalhes = [], isLoading: loadingDetalhes } = useConciliacaoDetalhes(selectedMonth);
   const { data: alertas = [], isLoading: loadingAlertas } = useAlerts();
   const { data: patio = [], isLoading: loadingPatio } = usePatioOS({ status: 'em_aberto' });
   
@@ -37,9 +43,8 @@ function ConciliacaoPage() {
   const alertasCriticos = alertas.filter(a => a.severity !== 'info');
   const carrosNoPatio = patio.length;
   
-  // Use getDefaultDate to respect the D-1 standard
-  const targetDateStr = getDefaultDate();
-  const today = new Date(`${targetDateStr}T12:00:00`).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+  const [year, month] = selectedMonth.split('-');
+  const today = new Date(Number(year), Number(month) - 1, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
 
   const handleSaveCash = () => {
     Object.entries(cashValues).forEach(([storeId, value]) => {
@@ -54,8 +59,21 @@ function ConciliacaoPage() {
   return (
     <AppShell>
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-8">
-        {/* Timestamp */}
-        <p className="text-xs text-[var(--text-tertiary)]">Atualizado agora · Dados de {today}</p>
+        {/* Timestamp and Month Picker */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider">
+            Financeiro · Dados de <span className="font-semibold text-[var(--text-secondary)]">{today}</span>
+          </p>
+          <div className="flex items-center gap-2 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] px-3 py-1.5 rounded-lg shadow-sm">
+            <CalendarDays size={16} className="text-[var(--color-primary)]" />
+            <input
+              type="month"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              className="bg-transparent text-sm text-white focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert"
+            />
+          </div>
+        </div>
 
         {isLoading ? (
           <div className="flex justify-center p-12">

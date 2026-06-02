@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 import { AnimatedNumber } from "../ui/AnimatedNumber";
 import { useDashboardSummary } from "@/hooks/useTransactions";
 
-export function HeroBalance() {
-  const { data: summaryData, isLoading } = useDashboardSummary();
+export function HeroBalance({ monthStr }: { monthStr?: string }) {
+  const { data: summaryData, isLoading } = useDashboardSummary(monthStr);
 
   const totalIn = summaryData?.totalIn || 0;
   const totalOut = summaryData?.totalOut || 0;

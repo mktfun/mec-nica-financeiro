@@ -155,7 +155,7 @@ function RecebiveisPage() {
             </div>
 
             {/* Timeline List */}
-            <Card className="p-0 overflow-hidden min-h-[400px] mt-4">
+            <Card className="p-0 overflow-hidden mt-4">
               {paginatedData.length === 0 ? (
                 <div className="text-center py-20">
                   <p className="text-[var(--text-secondary)] font-medium">Nenhum recebível encontrado.</p>

@@ -34,12 +34,17 @@ export function useTransactionsByStore(storeId: string) {
   });
 }
 
-export function useDashboardSummary() {
+export function useDashboardSummary(monthStr?: string) {
   return useQuery({
-    queryKey: ['dashboard', 'summary'],
+    queryKey: ['dashboard', 'summary', monthStr],
     queryFn: async () => {
-      const today = getDefaultDate();
-      const [year, month] = today.split('-');
+      let year, month;
+      if (monthStr) {
+        [year, month] = monthStr.split('-');
+      } else {
+        const today = getDefaultDate();
+        [year, month] = today.split('-');
+      }
       const startOfMonth = `${year}-${month}-01`;
       const end = new Date(Number(year), Number(month), 0);
       const endOfMonth = `${year}-${month}-${String(end.getDate()).padStart(2, '0')}`;

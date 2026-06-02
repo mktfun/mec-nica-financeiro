@@ -327,16 +327,6 @@ function LojaDashboardPage() {
                   </div>
                 </Card>
               </div>
-            ) : totalEntradas > 0 ? (
-              <Card className="p-4 border-l-4 border-l-[var(--color-success)]">
-                <div className="flex items-center gap-3">
-                  <CheckCircle2 size={20} className="text-[var(--color-success)]" />
-                  <div>
-                    <p className="text-sm font-semibold text-[var(--color-success)]">Sem Divergências</p>
-                    <p className="text-[11px] text-[var(--text-tertiary)]">Todas as entradas estão vinculadas a OSs.</p>
-                  </div>
-                </div>
-              </Card>
             ) : null}
 
             {pieData.length > 0 && (
@@ -418,6 +408,18 @@ function LojaDashboardPage() {
 
           {/* Coluna Direita: Extrato / Transações */}
           <div className="lg:col-span-2">
+            {!hasDivergence && totalEntradas > 0 && (
+              <Card className="mb-6 p-4 border-l-4 border-l-[var(--color-success)] bg-[var(--color-success)]/5">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 size={20} className="text-[var(--color-success)]" />
+                  <div>
+                    <p className="text-sm font-semibold text-[var(--color-success)]">Sem Divergências</p>
+                    <p className="text-[11px] text-[var(--text-tertiary)]">Todas as entradas deste período estão perfeitamente vinculadas a OSs.</p>
+                  </div>
+                </div>
+              </Card>
+            )}
+
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
               <h3 className="font-display font-semibold text-xl flex items-center gap-2">
                 <Wallet size={20} className="text-[var(--color-primary)]" />
@@ -496,7 +498,7 @@ function LojaDashboardPage() {
               </button>
             </div>
 
-            <Card className="p-0 overflow-hidden min-h-[400px]">
+            <Card className="p-0 overflow-hidden">
               {tab === 'caixa' ? (
                 loadingCash ? (
                   <div className="flex justify-center p-12"><LoadingSpinner size="sm" text="Carregando caixas..." /></div>
