@@ -17,6 +17,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ImportacoesRouteImport } from './routes/importacoes'
 import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
+import { Route as ConciliacaoDetalhesRouteImport } from './routes/conciliacao-detalhes'
 import { Route as ConciliacaoRouteImport } from './routes/conciliacao'
 import { Route as AlertasRouteImport } from './routes/alertas'
 import { Route as IndexRouteImport } from './routes/index'
@@ -62,6 +63,11 @@ const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
   path: '/configuracoes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConciliacaoDetalhesRoute = ConciliacaoDetalhesRouteImport.update({
+  id: '/conciliacao-detalhes',
+  path: '/conciliacao-detalhes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConciliacaoRoute = ConciliacaoRouteImport.update({
   id: '/conciliacao',
   path: '/conciliacao',
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/alertas': typeof AlertasRoute
   '/conciliacao': typeof ConciliacaoRoute
+  '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/historico': typeof HistoricoRoute
   '/importacoes': typeof ImportacoesRoute
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/alertas': typeof AlertasRoute
   '/conciliacao': typeof ConciliacaoRoute
+  '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/historico': typeof HistoricoRoute
   '/importacoes': typeof ImportacoesRoute
@@ -116,6 +124,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/alertas': typeof AlertasRoute
   '/conciliacao': typeof ConciliacaoRoute
+  '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/historico': typeof HistoricoRoute
   '/importacoes': typeof ImportacoesRoute
@@ -132,6 +141,7 @@ export interface FileRouteTypes {
     | '/'
     | '/alertas'
     | '/conciliacao'
+    | '/conciliacao-detalhes'
     | '/configuracoes'
     | '/historico'
     | '/importacoes'
@@ -146,6 +156,7 @@ export interface FileRouteTypes {
     | '/'
     | '/alertas'
     | '/conciliacao'
+    | '/conciliacao-detalhes'
     | '/configuracoes'
     | '/historico'
     | '/importacoes'
@@ -160,6 +171,7 @@ export interface FileRouteTypes {
     | '/'
     | '/alertas'
     | '/conciliacao'
+    | '/conciliacao-detalhes'
     | '/configuracoes'
     | '/historico'
     | '/importacoes'
@@ -175,6 +187,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AlertasRoute: typeof AlertasRoute
   ConciliacaoRoute: typeof ConciliacaoRoute
+  ConciliacaoDetalhesRoute: typeof ConciliacaoDetalhesRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
   HistoricoRoute: typeof HistoricoRoute
   ImportacoesRoute: typeof ImportacoesRoute
@@ -244,6 +257,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConfiguracoesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/conciliacao-detalhes': {
+      id: '/conciliacao-detalhes'
+      path: '/conciliacao-detalhes'
+      fullPath: '/conciliacao-detalhes'
+      preLoaderRoute: typeof ConciliacaoDetalhesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/conciliacao': {
       id: '/conciliacao'
       path: '/conciliacao'
@@ -279,6 +299,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AlertasRoute: AlertasRoute,
   ConciliacaoRoute: ConciliacaoRoute,
+  ConciliacaoDetalhesRoute: ConciliacaoDetalhesRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
   HistoricoRoute: HistoricoRoute,
   ImportacoesRoute: ImportacoesRoute,

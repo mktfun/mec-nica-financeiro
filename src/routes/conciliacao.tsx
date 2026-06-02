@@ -1,293 +1,298 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { CheckCircle2, AlertCircle, X, ChevronRight, Store, CircleDashed } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle2, ArrowRight, TrendingUp, CreditCard, Car, Receipt, CalendarDays } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useStores } from '@/hooks/useStores';
-import { useConciliacaoDiaria, useSaveDailyCash } from '@/hooks/useConciliacao';
-import { useTransactionsPorDataELoja, useWeeklyRevenueTrend } from '@/hooks/useTransactions';
+import { useConciliacaoResumo, useConciliacaoDetalhes, useConciliacaoDiaria, useSaveDailyCash } from '@/hooks/useConciliacao';
+import { useWeeklyRevenueTrend } from '@/hooks/useTransactions';
+import { useAlerts } from '@/hooks/useAlerts';
+import { usePatioOS } from '@/hooks/usePatio';
 import { getDefaultDate } from '@/lib/utils';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 export const Route = createFileRoute('/conciliacao')({
   component: ConciliacaoPage,
 });
 
 function ConciliacaoPage() {
-  const [selectedDate, setSelectedDate] = useState(() => getDefaultDate());
-  const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const today = getDefaultDate();
+    return today;
+  });
 
   const { data: stores = [], isLoading: loadingStores } = useStores();
-  const { data: conciliacaoData = {}, isLoading: loadingDiaria } = useConciliacaoDiaria(selectedDate);
-  const { data: trendData = [] } = useWeeklyRevenueTrend();
+  const { data: resumo, isLoading: loadingResumo } = useConciliacaoResumo(selectedDate);
+  const { data: detalhes = [], isLoading: loadingDetalhes } = useConciliacaoDetalhes(selectedDate);
+  const { data: alertas = [], isLoading: loadingAlertas } = useAlerts();
+  const { data: diaria = {} } = useConciliacaoDiaria(selectedDate);
+  const { data: trendData = [] } = useWeeklyRevenueTrend(selectedDate);
+  const { data: patio = [], isLoading: loadingPatio } = usePatioOS({ status: 'em_aberto' });
   
-  const isLoading = loadingStores || loadingDiaria;
+  const { mutate: saveDailyCash } = useSaveDailyCash();
   
-  const totalFaturadoHoje = stores.reduce((acc, store) => {
-    return acc + (conciliacaoData[store.id]?.financial_total || 0);
-  }, 0);
+  const [cashValues, setCashValues] = useState<Record<string, string>>({});
+  const [showAllStores, setShowAllStores] = useState(false);
 
-  const selectedStore = stores.find(s => s.id === selectedStoreId);
-  const storeData = selectedStoreId ? conciliacaoData[selectedStoreId] : null;
+  const isLoading = loadingStores || loadingResumo || loadingDetalhes || loadingAlertas || loadingPatio;
+
+  const resultado = resumo?.totalDivergence || 0;
+  const isApproved = resultado === 0 && (resumo?.approved || 0) > 0;
+  
+  const alertasCriticos = alertas.filter(a => a.severity !== 'info');
+  const carrosNoPatio = patio.length;
+  
+  const [year, month] = selectedMonth.split('-');
+  const today = new Date(Number(year), Number(month) - 1, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+
+  const handleSaveCash = () => {
+    Object.entries(cashValues).forEach(([storeId, value]) => {
+      const numValue = parseFloat(value.replace(',', '.'));
+      if (!isNaN(numValue) && numValue > 0) {
+        saveDailyCash({ storeId, value: numValue });
+      }
+    });
+    alert('Valores de caixa atualizados com sucesso!');
+  };
 
   return (
     <AppShell>
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6 flex flex-col h-[calc(100vh-80px)] overflow-hidden">
-        
-        {/* Revolut Hero Section */}
-        <div className="relative w-full rounded-[32px] bg-[#0A0A0A] overflow-hidden border border-white/5 shrink-0 flex flex-col justify-between pt-8 h-[280px]">
-           {/* Date Picker no canto direito absoluto */}
-           <div className="absolute top-6 right-6 z-20">
-             <div className="flex items-center gap-2 bg-[#1A1A1A] border border-white/10 px-4 py-2 rounded-full shadow-sm hover:bg-[#222] transition-colors">
-               <input
-                 type="date"
-                 value={selectedDate}
-                 onChange={(e) => setSelectedDate(e.target.value)}
-                 className="bg-transparent text-sm text-white font-medium focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert"
-               />
-             </div>
-           </div>
-
-           <div className="px-8 z-10">
-             <p className="text-white/50 text-sm font-medium tracking-wide uppercase">Faturado Hoje</p>
-             <h1 className="text-5xl md:text-6xl font-bold text-white mt-1 font-display tracking-tight">
-               <AnimatedNumber value={totalFaturadoHoje} format="currency" />
-             </h1>
-             <div className="mt-6 flex gap-3">
-                <button className="bg-[#CCFF00] hover:bg-[#b8e600] text-black font-semibold rounded-full px-6 py-2.5 text-sm transition-colors shadow-[0_0_15px_rgba(204,255,0,0.3)]">
-                  Ver Relatório
-                </button>
-                <button className="bg-[#1A1A1A] hover:bg-[#222] text-white border border-white/10 font-medium rounded-full px-6 py-2.5 text-sm transition-colors">
-                  Exportar
-                </button>
-             </div>
-           </div>
-
-           {/* Seamless Line Chart Background */}
-           <div className="absolute bottom-0 left-0 right-0 h-[120px] opacity-70 pointer-events-none">
-             <ResponsiveContainer width="100%" height="100%">
-               <LineChart data={trendData}>
-                 <defs>
-                    <linearGradient id="colorTrend" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#CCFF00" stopOpacity={0.3} />
-                      <stop offset="50%" stopColor="#CCFF00" stopOpacity={1} />
-                      <stop offset="100%" stopColor="#CCFF00" stopOpacity={0.3} />
-                    </linearGradient>
-                 </defs>
-                 <Line 
-                   type="monotone" 
-                   dataKey="value" 
-                   stroke="url(#colorTrend)" 
-                   strokeWidth={3} 
-                   dot={false}
-                   isAnimationActive={true}
-                 />
-               </LineChart>
-             </ResponsiveContainer>
-           </div>
-        </div>
-
-        {/* Lista de Unidades Estilo Feed */}
-        <div className="flex-1 min-h-0 overflow-y-auto pb-8 scrollbar-hide">
-          <div className="flex justify-between items-end mb-4 px-2">
-            <h2 className="text-xl font-bold text-white tracking-tight">Unidades</h2>
-            <span className="text-white/50 text-sm">{stores.length} ativas</span>
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-8">
+        {/* Timestamp and Month Picker */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider">
+            Financeiro Â· Dados de <span className="font-semibold text-[var(--text-secondary)]">{todayStr.toLocaleDateString('pt-BR', { dateStyle: 'long' })}</span>
+          </p>
+          <div className="flex items-center gap-2 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] px-3 py-1.5 rounded-lg shadow-sm">
+            <CalendarDays size={16} className="text-[var(--color-primary)]" />
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="bg-transparent text-sm text-white focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert"
+            />
           </div>
-          
-          {isLoading ? (
-            <div className="flex justify-center items-center h-32">
-              <LoadingSpinner size="md" text="Sincronizando..." />
-            </div>
-          ) : (
-            <div className="flex flex-col gap-2">
-              {stores.map((store) => {
-                const data = conciliacaoData[store.id];
-                const status = data?.status || 'pending';
-                const faturado = data?.financial_total || 0;
-                const expectsCash = data?.expects_cash;
-                
-                return (
-                  <motion.div
-                    key={store.id}
-                    whileHover={{ scale: 1.005 }}
-                    whileTap={{ scale: 0.99 }}
-                    onClick={() => setSelectedStoreId(store.id)}
-                    className="flex items-center justify-between bg-[#111] hover:bg-[#1A1A1A] rounded-[24px] p-4 cursor-pointer transition-colors border border-transparent hover:border-white/5"
-                  >
-                    <div className="flex items-center gap-4">
-                       <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 
-                          ${status === 'approved' ? 'bg-[#CCFF00]/10 text-[#CCFF00]' : 
-                            status === 'divergence' ? 'bg-red-500/10 text-red-500' : 
-                            'bg-white/5 text-white/50'}`}>
-                         {status === 'approved' ? <CheckCircle2 size={24} /> : 
-                          status === 'divergence' ? <AlertCircle size={24} /> : 
-                          <CircleDashed size={24} />}
-                       </div>
-                       <div>
-                         <h3 className="font-semibold text-lg text-white">{store.name}</h3>
-                         <p className="text-white/50 text-xs">Atualizado hoje</p>
-                       </div>
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                       <div className="flex flex-col items-end">
-                         <span className="font-mono text-base font-medium text-white">
-                           {faturado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                         </span>
-                         {expectsCash && (
-                            <span className="flex items-center gap-1.5 text-[#CCFF00] text-[10px] uppercase font-bold tracking-wider mt-0.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#CCFF00] animate-pulse shadow-[0_0_5px_#CCFF00]" />
-                              Requer Ação
-                            </span>
-                         )}
-                       </div>
-                       <ChevronRight size={20} className="text-white/20" />
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          )}
         </div>
 
-        {/* Drawer Lateral (Revolut Style) */}
-        <AnimatePresence>
-          {selectedStoreId && selectedStore && storeData && (
-            <>
-              {/* Overlay Escuro */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setSelectedStoreId(null)}
-                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
-              />
-              
-              {/* Painel Drawer */}
-              <motion.div
-                initial={{ x: '100%' }}
-                animate={{ x: 0 }}
-                exit={{ x: '100%' }}
-                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className="fixed inset-y-0 right-0 w-full max-w-md bg-[#0A0A0A] z-50 flex flex-col shadow-2xl rounded-l-[32px] md:rounded-l-[40px] overflow-hidden border-l border-white/10"
-              >
-                <RevolutDrawerContent 
-                  store={selectedStore} 
-                  storeData={storeData} 
-                  date={selectedDate} 
-                  onClose={() => setSelectedStoreId(null)} 
-                />
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
+        {isLoading ? (
+          <div className="flex justify-center p-12">
+            <LoadingSpinner size="sm" text="" />
+          </div>
+        ) : (
+          <>
+            {/* Status Banner */}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`p-4 rounded-[var(--radius-lg)] border flex items-center justify-between ${
+                isApproved
+                  ? 'bg-[var(--color-accent-teal)]/5 border-[var(--color-accent-teal)]/20'
+                  : 'bg-[var(--color-accent-danger)]/5 border-[var(--color-accent-danger)]/20'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <CheckCircle2 size={20} className={isApproved ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'} />
+                <span className="font-medium text-sm">
+                  {isApproved 
+                    ? 'ConciliaÃ§Ã£o do dia aprovada automaticamente' 
+                    : 'ConciliaÃ§Ã£o do dia com divergÃªncias'
+                  } â€” DivergÃªncia Total: R$ {resultado.toFixed(2).replace('.', ',')}
+                </span>
+              </div>
+              <Link to="/conciliacao-detalhes" className="text-[var(--color-primary)] text-sm font-medium flex items-center gap-1 hover:underline">
+                Ver detalhes <ArrowRight size={14} />
+              </Link>
+            </motion.div>
 
+            {/* Summary Cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <Card className="relative overflow-hidden group">
+                <div className="absolute inset-0 pointer-events-none opacity-20 group-hover:opacity-30 transition-opacity">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={trendData}>
+                      <Line type="monotone" dataKey="value" stroke="var(--color-accent-teal)" strokeWidth={2} dot={false} isAnimationActive={false} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="relative z-10 flex items-center justify-between mb-2">
+                  <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">Entradas do Dia</span>
+                  <TrendingUp size={18} className="text-[var(--color-accent-teal)]" />
+                </div>
+                <div className="relative z-10 font-display text-2xl font-bold">
+                  <AnimatedNumber value={resumo?.totalIn || 0} format="currency" />
+                </div>
+                <p className="relative z-10 text-xs text-[var(--text-tertiary)] mt-1">{resumo?.rows?.length || 0} fechamentos no dia</p>
+              </Card>
+
+              <Card className="relative overflow-hidden">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">Lojas Conciliadas</span>
+                  <CheckCircle2 size={18} className="text-[var(--color-accent-success)]" />
+                </div>
+                <div className="font-display text-2xl font-bold">
+                  {resumo?.approved || 0} <span className="text-base font-normal text-[var(--text-secondary)]">/ {stores.length}</span>
+                </div>
+                <p className="text-xs text-[var(--text-tertiary)] mt-1">status OK</p>
+              </Card>
+
+              <Card className="relative overflow-hidden">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">Saldo LÃ­quido</span>
+                  <Receipt size={18} className="text-[var(--color-primary)]" />
+                </div>
+                <div className="font-display text-2xl font-bold">
+                  <AnimatedNumber value={resumo?.resultado || 0} format="currency" />
+                </div>
+                <p className="text-xs text-[var(--text-tertiary)] mt-1">Soma de todas as lojas</p>
+              </Card>
+
+              <Link to="/patio">
+                <Card className="relative overflow-hidden hover:border-[var(--border-strong)] transition-colors cursor-pointer h-full">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">Carros no PÃ¡tio</span>
+                    <Car size={18} className="text-[var(--color-accent-danger)]" />
+                  </div>
+                  <div className="font-display text-2xl font-bold">
+                    {carrosNoPatio} <span className="text-base font-normal text-[var(--text-secondary)]">OS</span>
+                  </div>
+                  <p className="text-xs text-[var(--text-tertiary)] mt-1">em aberto</p>
+                </Card>
+              </Link>
+            </div>
+
+            {/* Lojas Grid */}
+            <div>
+              <h2 className="font-display font-semibold text-xl mb-2">{stores.length} Lojas</h2>
+              <p className="text-sm text-[var(--text-tertiary)] mb-4">Status de conciliaÃ§Ã£o por unidade â€” clique para ver detalhes</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {stores.map((store, i) => {
+                  const rec = detalhes.find(d => d.store_id === store.id);
+                  const status = rec?.status || 'pending';
+                  const financialTotal = rec?.financial_total || 0;
+
+                  return (
+                    <motion.div
+                      key={store.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.03 }}
+                    >
+                      <Link to={`/loja/${store.id}`}>
+                        <Card
+                          variant="glass"
+                          className={`p-4 cursor-pointer hover:border-[var(--border-strong)] transition-colors ${
+                            status === 'divergence' ? 'border-[var(--color-accent-danger)]/30' : ''
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <h3 className="font-semibold text-sm truncate">{store.name}</h3>
+                            {status === 'approved' && <Badge variant="success" className="text-[10px]">âœ“ OK</Badge>}
+                            {status === 'divergence' && <Badge variant="danger" className="text-[10px]">âš  DivergÃªncia</Badge>}
+                            {status === 'pending' && <Badge variant="warning" className="text-[10px]">â€¢ Pendente</Badge>}
+                          </div>
+                          <div className="mt-2 bg-white/5 rounded-md p-2 space-y-1.5 border border-white/5">
+                            <div className="flex justify-between items-center text-xs">
+                              <span className="text-[var(--text-secondary)]">Faturado:</span>
+                              <span className="font-medium text-[var(--text-primary)]">
+                                <AnimatedNumber value={financialTotal} format="currency" />
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-center text-xs border-t border-white/5 pt-1.5">
+                              <span className="text-[var(--text-secondary)]">FÃ­sico:</span>
+                              <span className="font-medium text-[var(--text-primary)]">
+                                <AnimatedNumber value={rec?.daily_cash || 0} format="currency" />
+                              </span>
+                            </div>
+                          </div>
+                          {status === 'divergence' && (
+                            <p className="text-xs text-[var(--color-accent-danger)] mt-2 font-medium">
+                              Falta R$ {Math.abs(rec?.divergence || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                            </p>
+                          )}
+                        </Card>
+                      </Link>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Alertas ativos + Dinheiro em Caixa side by side */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Alertas Ativos */}
+              <Card variant="glass" className="p-6">
+                <h3 className="font-display font-semibold mb-1">Alertas ativos</h3>
+                <p className="text-xs text-[var(--text-tertiary)] mb-4">{alertasCriticos.length} ocorrÃªncias detectadas hoje</p>
+                <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2">
+                  {alertasCriticos.length === 0 ? (
+                    <p className="text-sm text-[var(--text-secondary)]">Nenhum alerta crÃ­tico ativo.</p>
+                  ) : (
+                    alertasCriticos.map(alert => (
+                      <div key={alert.id} className="flex items-start gap-3 text-sm border-b border-white/5 pb-3">
+                        <span className={`mt-1 w-2 h-2 rounded-full shrink-0 ${alert.severity === 'critical' ? 'bg-[var(--color-accent-danger)]' : 'bg-[var(--color-accent-warning)]'}`} />
+                        <div className="flex-1 min-w-0">
+                          <span className="font-semibold">{alert.store_name}</span>{' '}
+                          <span className="text-[var(--text-tertiary)]">{alert.os_number || ''}</span>
+                          <p className="text-[var(--text-secondary)] text-xs mt-0.5">{alert.title} - {alert.description}</p>
+                        </div>
+                        <span className="text-xs text-[var(--text-tertiary)] shrink-0">{alert.time || new Date(alert.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                      </div>
+                    ))
+                  )}
+                </div>
+                <Link to="/alertas" className="text-[var(--color-primary)] text-sm font-medium mt-4 inline-flex items-center gap-1 hover:underline">
+                  Ver todos os alertas <ArrowRight size={14} />
+                </Link>
+              </Card>
+
+              {/* Dinheiro em Caixa */}
+              <Card variant="glass" className="p-6 flex flex-col h-full">
+                <h3 className="font-display font-semibold mb-1">Dinheiro em Caixa Â· Hoje</h3>
+                <p className="text-xs text-[var(--text-tertiary)] mb-4">Informe o valor fÃ­sico contado por loja (Apenas lojas com espécie)</p>
+                <div className="space-y-3 flex-1 overflow-y-auto pr-2">
+                  {stores.filter(s => diaria[s.id]?.expects_cash).length === 0 ? (
+                    <p className="text-sm text-[var(--text-secondary)] text-center mt-8">Nenhum recebimento em espécie hoje.</p>
+                  ) : (
+                    stores.filter(s => diaria[s.id]?.expects_cash).map(store => {
+                      const rec = detalhes.find(d => d.store_id === store.id);
+                      const savedCash = rec?.daily_cash || 0;
+
+                      return (
+                        <div key={store.id} className="flex items-center justify-between border-b border-white/5 pb-2">
+                          <span className="text-sm">{store.name}</span>
+                          <div className="flex items-center gap-2 text-sm">
+                            <span className="text-[var(--text-tertiary)]">R$</span>
+                            <input
+                              type="text"
+                              placeholder={savedCash.toFixed(2).replace('.', ',')}
+                              value={cashValues[store.id] || ''}
+                              onChange={(e) => setCashValues(prev => ({ ...prev, [store.id]: e.target.value }))}
+                              className="w-24 text-right bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-[var(--radius-sm)] px-2 py-1 text-sm focus:outline-none focus:border-[var(--color-primary)]"
+                            />
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+                <div className="mt-4 pt-2">
+                  <button 
+                    onClick={handleSaveCash}
+                    className="w-full py-3 bg-[var(--color-primary)] text-white rounded-[var(--radius-full)] font-medium text-sm hover:opacity-90 transition-opacity"
+                  >
+                    Salvar valores
+                  </button>
+                </div>
+              </Card>
+            </div>
+          </>
+        )}
       </div>
     </AppShell>
   );
 }
 
-// Drawer Content Refatorado
-function RevolutDrawerContent({ store, storeData, date, onClose }: { store: any, storeData: any, date: string, onClose: () => void }) {
-  const { data: transactions = [], isLoading: loadingTx } = useTransactionsPorDataELoja(date, store.id);
-  const { mutate: saveDailyCash } = useSaveDailyCash();
-  const [cashValue, setCashValue] = useState(storeData.daily_cash ? storeData.daily_cash.toString() : '');
-  const [isSaving, setIsSaving] = useState(false);
-
-  const handleSaveCash = () => {
-    const numValue = parseFloat(cashValue.replace(',', '.'));
-    if (!isNaN(numValue) && numValue >= 0) {
-      setIsSaving(true);
-      saveDailyCash(
-        { storeId: store.id, value: numValue, date },
-        { onSettled: () => setIsSaving(false) }
-      );
-    }
-  };
-
-  const hasCashExpected = storeData.expects_cash === true;
-  
-  return (
-    <div className="flex flex-col h-full relative">
-       {/* Hero do Drawer */}
-       <div className="bg-[#CCFF00] p-6 pb-8 text-black shrink-0 relative">
-          <button onClick={onClose} className="absolute top-6 left-6 p-2 bg-black/5 hover:bg-black/10 rounded-full transition-colors">
-             <X size={20} />
-          </button>
-          
-          <div className="mt-12">
-            <p className="text-black/60 text-sm font-semibold uppercase tracking-wider mb-1">{store.name}</p>
-            <h2 className="text-4xl font-bold font-display tracking-tight">
-               <AnimatedNumber value={storeData.financial_total || 0} format="currency" />
-            </h2>
-          </div>
-       </div>
-
-       {/* Corpo: Transações */}
-       <div className="flex-1 overflow-y-auto p-6 bg-[#0A0A0A] -mt-4 rounded-t-[32px] relative z-10">
-          <h3 className="text-white/80 font-bold text-lg mb-4">Movimentações</h3>
-          
-          {loadingTx ? (
-            <div className="flex justify-center py-8"><LoadingSpinner size="md" /></div>
-          ) : transactions.length === 0 ? (
-            <div className="text-center py-8 text-white/40 text-sm">Nenhuma transação encontrada.</div>
-          ) : (
-            <div className="space-y-1 pb-32">
-               {transactions.map((tx: any) => (
-                 <div key={tx.id} className="flex items-center justify-between p-3 rounded-2xl hover:bg-white/5 transition-colors">
-                    <div className="flex items-center gap-4">
-                       <div className="w-10 h-10 rounded-full bg-[#1A1A1A] flex items-center justify-center">
-                         <Store size={18} className={tx.type === 'in' ? 'text-white' : 'text-white/50'} />
-                       </div>
-                       <div>
-                         <p className="text-sm font-medium text-white line-clamp-1">{tx.title}</p>
-                         <p className="text-xs text-white/50">{tx.payment_method || 'N/A'}</p>
-                       </div>
-                    </div>
-                    <span className={`font-mono text-sm font-medium ${tx.type === 'in' ? 'text-white' : 'text-white/60'}`}>
-                       {tx.type === 'in' ? '+' : '-'} R$ {Number(tx.amount || 0).toFixed(2).replace('.', ',')}
-                    </span>
-                 </div>
-               ))}
-            </div>
-          )}
-       </div>
-
-       {/* Smart Cash Footer (Sticky Liquid Glass) */}
-       {hasCashExpected && (
-         <div className="absolute bottom-0 left-0 right-0 p-6 pt-12 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/90 to-transparent pointer-events-none z-20">
-            <div className="bg-[#1A1A1A]/80 backdrop-blur-xl border border-white/10 p-5 rounded-[32px] pointer-events-auto shadow-2xl">
-               <div className="flex justify-between items-center mb-3">
-                 <span className="text-white font-medium">Caixa Físico</span>
-                 {storeData.status === 'divergence' && <span className="text-red-500 text-xs font-bold bg-red-500/10 px-2 py-1 rounded-full">Divergência</span>}
-                 {storeData.status === 'approved' && <span className="text-[#CCFF00] text-xs font-bold bg-[#CCFF00]/10 px-2 py-1 rounded-full">Batido</span>}
-               </div>
-               
-               <div className="flex items-center gap-2">
-                 <div className="flex-1 bg-black/50 border border-white/10 rounded-full px-5 py-3 flex items-center gap-2">
-                   <span className="text-white/50 font-mono">R$</span>
-                   <input
-                     type="text"
-                     placeholder="0,00"
-                     value={cashValue}
-                     onChange={(e) => setCashValue(e.target.value)}
-                     className="bg-transparent text-white font-mono font-medium text-lg focus:outline-none w-full"
-                   />
-                 </div>
-                 <button 
-                   onClick={handleSaveCash}
-                   disabled={isSaving}
-                   className="bg-[#CCFF00] hover:bg-[#b8e600] text-black w-14 h-14 rounded-full flex items-center justify-center shrink-0 transition-colors disabled:opacity-50"
-                 >
-                   {isSaving ? <LoadingSpinner size="sm" /> : <ChevronRight size={24} />}
-                 </button>
-               </div>
-            </div>
-         </div>
-       )}
-    </div>
-  );
-}

@@ -246,20 +246,26 @@ export function useTransactionsPorDataELoja(date: string, storeId: string) {
   });
 }
 
-export function useWeeklyRevenueTrend() {
+export function useWeeklyRevenueTrend(anchorDate?: string) {
+  const targetDate = anchorDate ?? getDefaultDate();
   return useQuery({
-    queryKey: ['weeklyRevenueTrend'],
+    queryKey: ['weeklyRevenueTrend', targetDate],
     queryFn: async () => {
-      const today = new Date();
-      const pastWeek = new Date(today);
-      pastWeek.setDate(today.getDate() - 14); // 14 dias para uma curva melhor
+      // Usar a data fornecida como âncora, ou a data de hoje
+      const anchor = new Date(targetDate);
+      
+      const pastWeek = new Date(anchor);
+      pastWeek.setDate(anchor.getDate() - 14); // 14 dias para trás da âncora
       
       const startDateStr = pastWeek.toISOString().split('T')[0] + 'T00:00:00.000Z';
+      // Ajuste: também precisamos de um limite superior (end date) para não trazer dados do futuro em relação à âncora
+      const endDateStr = anchor.toISOString().split('T')[0] + 'T23:59:59.999Z';
       
       const { data, error } = await supabase
         .from('transactions')
         .select('created_at, amount, type')
         .gte('created_at', startDateStr)
+        .lte('created_at', endDateStr)
         .eq('type', 'in');
         
       if (error) throw error;

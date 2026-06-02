@@ -3,6 +3,7 @@
 Histórico de atualizações e especificações implementadas no sistema.
 
 ## [2026-06-02]
+- **[024-conciliacao-rollback]** Rollback da UI de Conciliação e Refinamentos Reais implementados e arquivados. A interface macro retornou ao grid amigável e foi conectada à rota detalhada de lojas; o filtro Mensal virou um Date Picker rigorosamente Diário; o input de Dinheiro em Caixa agora filtra de forma inteligente apenas as Lojas que tiveram vendas em Espécie ou OS em aberto na data corrente; e o minigráfico evolutivo exibe 14 dias anteriores em relação à data pesquisada.
 - **[021, 022, 023-conciliacao-revamp]** Revamp completo da tela de Conciliação Diária no estilo Revolut UI implementado e arquivado. Foi adicionado Gráfico "Hero" de tendência de faturamento, feed de lojas minimalista, e Gaveta (Slide-over) inteligente para lançamento de Físico em Espécie.
 - **[002-saldo-consolidado]** Refatoração da inteligência temporal do Saldo Líquido Consolidado implementada e arquivada. O Saldo Líquido Global agora representa o valor All-Time de todas as contas, enquanto as métricas de receita/despesa se mantêm vinculadas ao filtro mensal.
 - **[001-ui-ux-refinements]** Refinamentos visuais aplicados e arquivados. Adição do Month Picker, reorganização do layout de Lojas, fim da altura estática e aprimoramento estético geral (Liquid Glass).
