@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Button } from '@/components/ui/Button';
-import { Calendar, Download, ChevronLeft } from 'lucide-react';
+import { Calendar, Download, ChevronLeft, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useConciliacaoResumo, useConciliacaoDetalhes, useHistorico } from '@/hooks/useConciliacao';
@@ -18,9 +18,11 @@ export const Route = createFileRoute('/conciliacao-detalhes')({
 });
 
 type Tab = 'lojas' | 'erros' | 'historico';
+type StatusTab = 'all' | 'pending' | 'divergence' | 'approved';
 
 function ConciliacaoDetalhesPage() {
   const [activeTab, setActiveTab] = useState<Tab>('lojas');
+  const [tab, setTab] = useState<StatusTab>('all');
   
   const { data: resumo, isLoading: isLoadingResumo } = useConciliacaoResumo();
   const { data: detalhes = [], isLoading: isLoadingDetalhes } = useConciliacaoDetalhes();
@@ -29,6 +31,7 @@ function ConciliacaoDetalhesPage() {
   const isLoading = isLoadingResumo || isLoadingDetalhes || isLoadingStores;
 
   const erros = detalhes.filter(d => d.status === 'divergence');
+  const filteredData = detalhes.filter(d => tab === 'all' ? true : d.status === tab);
   
   // Use getDefaultDate to respect the D-1 standard
   const targetDateStr = getDefaultDate();
@@ -160,7 +163,7 @@ function ConciliacaoDetalhesPage() {
   );
 }
 
-function Row({ label, value, isCurrency, color = 'default', count }: { label: string, value: number, isCurrency?: boolean, color?: 'default'|'danger'|'success', count?: boolean }) {
+function Row({ label, value, isCurrency, color = 'default', count, bold }: { label: string, value: number, isCurrency?: boolean, color?: 'default'|'danger'|'success', count?: boolean, bold?: boolean }) {
   const colors = {
     default: 'text-[var(--text-primary)]',
     danger: 'text-[var(--color-accent-danger)]',
@@ -170,7 +173,7 @@ function Row({ label, value, isCurrency, color = 'default', count }: { label: st
   return (
     <div className="flex justify-between items-center">
       <span className="text-sm text-[var(--text-secondary)]">{label}</span>
-      <span className={`font-display font-semibold ${colors[color]}`}>
+      <span className={`font-display ${bold ? 'font-bold' : 'font-semibold'} ${colors[color]}`}>
         {isCurrency ? <AnimatedNumber value={value} format="currency" /> : count ? value : value}
       </span>
     </div>
