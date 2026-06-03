@@ -66,7 +66,7 @@ function ConciliacaoPage() {
         {/* Timestamp and Month Picker */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider">
-            Financeiro Â· Dados de <span className="font-semibold text-[var(--text-secondary)]">{todayStr.toLocaleDateString('pt-BR', { dateStyle: 'long' })}</span>
+            Financeiro · Dados de <span className="font-semibold text-[var(--text-secondary)]">{todayStr.toLocaleDateString('pt-BR', { dateStyle: 'long' })}</span>
           </p>
           <div className="flex items-center gap-2 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] px-3 py-1.5 rounded-lg shadow-sm">
             <CalendarDays size={16} className="text-[var(--color-primary)]" />
@@ -99,9 +99,9 @@ function ConciliacaoPage() {
                 <CheckCircle2 size={20} className={isApproved ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'} />
                 <span className="font-medium text-sm">
                   {isApproved 
-                    ? 'ConciliaÃ§Ã£o do dia aprovada automaticamente' 
-                    : 'ConciliaÃ§Ã£o do dia com divergÃªncias'
-                  } â€” DivergÃªncia Total: R$ {resultado.toFixed(2).replace('.', ',')}
+                    ? 'Conciliação do dia aprovada automaticamente' 
+                    : 'Conciliação do dia com divergências'
+                  } — Divergência Total: R$ {resultado.toFixed(2).replace('.', ',')}
                 </span>
               </div>
               <Link to="/conciliacao-detalhes" className="text-[var(--color-primary)] text-sm font-medium flex items-center gap-1 hover:underline">
@@ -142,7 +142,7 @@ function ConciliacaoPage() {
 
               <Card className="relative overflow-hidden">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">Saldo LÃ­quido</span>
+                  <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">Saldo Líquido</span>
                   <Receipt size={18} className="text-[var(--color-primary)]" />
                 </div>
                 <div className="font-display text-2xl font-bold">
@@ -154,7 +154,7 @@ function ConciliacaoPage() {
               <Link to="/patio">
                 <Card className="relative overflow-hidden hover:border-[var(--border-strong)] transition-colors cursor-pointer h-full">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">Carros no PÃ¡tio</span>
+                    <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">Carros no Pátio</span>
                     <Car size={18} className="text-[var(--color-accent-danger)]" />
                   </div>
                   <div className="font-display text-2xl font-bold">
@@ -168,7 +168,7 @@ function ConciliacaoPage() {
             {/* Lojas Grid */}
             <div>
               <h2 className="font-display font-semibold text-xl mb-2">{stores.length} Lojas</h2>
-              <p className="text-sm text-[var(--text-tertiary)] mb-4">Status de conciliaÃ§Ã£o por unidade â€” clique para ver detalhes</p>
+              <p className="text-sm text-[var(--text-tertiary)] mb-4">Status de conciliação por unidade — clique para ver detalhes</p>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {stores.map((store, i) => {
                   const rec = detalhes.find(d => d.store_id === store.id);
@@ -191,9 +191,9 @@ function ConciliacaoPage() {
                         >
                           <div className="flex items-center justify-between mb-2">
                             <h3 className="font-semibold text-sm truncate">{store.name}</h3>
-                            {status === 'approved' && <Badge variant="success" className="text-[10px]">âœ“ OK</Badge>}
-                            {status === 'divergence' && <Badge variant="danger" className="text-[10px]">âš  DivergÃªncia</Badge>}
-                            {status === 'pending' && <Badge variant="warning" className="text-[10px]">â€¢ Pendente</Badge>}
+                            {status === 'approved' && <Badge variant="success" className="text-[10px]">✓ OK</Badge>}
+                            {status === 'divergence' && <Badge variant="danger" className="text-[10px]">⚠ Divergência</Badge>}
+                            {status === 'pending' && <Badge variant="warning" className="text-[10px]">• Pendente</Badge>}
                           </div>
                           <div className="mt-2 bg-white/5 rounded-md p-2 space-y-1.5 border border-white/5">
                             <div className="flex justify-between items-center text-xs">
@@ -203,7 +203,7 @@ function ConciliacaoPage() {
                               </span>
                             </div>
                             <div className="flex justify-between items-center text-xs border-t border-white/5 pt-1.5">
-                              <span className="text-[var(--text-secondary)]">FÃ­sico:</span>
+                              <span className="text-[var(--text-secondary)]">Físico:</span>
                               <span className="font-medium text-[var(--text-primary)]">
                                 <AnimatedNumber value={rec?.daily_cash || 0} format="currency" />
                               </span>
@@ -227,10 +227,10 @@ function ConciliacaoPage() {
               {/* Alertas Ativos */}
               <Card variant="glass" className="p-6">
                 <h3 className="font-display font-semibold mb-1">Alertas ativos</h3>
-                <p className="text-xs text-[var(--text-tertiary)] mb-4">{alertasCriticos.length} ocorrÃªncias detectadas hoje</p>
+                <p className="text-xs text-[var(--text-tertiary)] mb-4">{alertasCriticos.length} ocorrências detectadas hoje</p>
                 <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2">
                   {alertasCriticos.length === 0 ? (
-                    <p className="text-sm text-[var(--text-secondary)]">Nenhum alerta crÃ­tico ativo.</p>
+                    <p className="text-sm text-[var(--text-secondary)]">Nenhum alerta crítico ativo.</p>
                   ) : (
                     alertasCriticos.map(alert => (
                       <div key={alert.id} className="flex items-start gap-3 text-sm border-b border-white/5 pb-3">
@@ -252,8 +252,8 @@ function ConciliacaoPage() {
 
               {/* Dinheiro em Caixa */}
               <Card variant="glass" className="p-6 flex flex-col h-full">
-                <h3 className="font-display font-semibold mb-1">Dinheiro em Caixa Â· Hoje</h3>
-                <p className="text-xs text-[var(--text-tertiary)] mb-4">Informe o valor fÃ­sico contado por loja (Apenas lojas com espécie)</p>
+                <h3 className="font-display font-semibold mb-1">Dinheiro em Caixa · Hoje</h3>
+                <p className="text-xs text-[var(--text-tertiary)] mb-4">Informe o valor físico contado por loja (Apenas lojas com espécie)</p>
                 <div className="space-y-3 flex-1 overflow-y-auto pr-2">
                   {stores.filter(s => diaria[s.id]?.expects_cash).length === 0 ? (
                     <p className="text-sm text-[var(--text-secondary)] text-center mt-8">Nenhum recebimento em espécie hoje.</p>
