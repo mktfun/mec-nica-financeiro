@@ -65,8 +65,8 @@ function ImportarOsWizard() {
     const results = await processOsFiles(acceptedFiles);
     setImportResults(prev => [...prev, ...results]);
     
-    // Identificar nomes de arquivos como lojas virtuais
-    const aliases = Array.from(new Set(results.filter(r => r.success).map(r => r.fileName)));
+    // Identificar nomes de arquivos/lojas como lojas virtuais
+    const aliases = Array.from(new Set(results.filter(r => r.success).map(r => r.storeAlias)));
     const unmapped = aliases.filter(alias => !mapping[alias]);
     
     setIsProcessing(false);
@@ -93,8 +93,8 @@ function ImportarOsWizard() {
     try {
       setIsProcessing(true);
       for (const res of importResults.filter(r => r.success)) {
-        const storeId = mapping[res.fileName];
-        if (!storeId) throw new Error(`Arquivo ${res.fileName} não está mapeado!`);
+        const storeId = mapping[res.storeAlias];
+        if (!storeId) throw new Error(`Arquivo ${res.fileName} (Loja detectada: ${res.storeAlias}) não está mapeado!`);
         const storeName = stores.find(s => s.id === storeId)?.name || 'Desconhecida';
         
         await processData.mutateAsync({

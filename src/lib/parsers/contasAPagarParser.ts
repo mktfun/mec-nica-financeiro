@@ -39,6 +39,7 @@ export function parseContasAPagar(workbook: XLSX.WorkBook): ParsedExpense[] {
 
   const empIndex = headers.findIndex(h => h && h.toLowerCase() === 'emp');
   const descIndex = headers.findIndex(h => h && h.toLowerCase() === 'descrição');
+  const catIndex = headers.findIndex(h => h && (h.toLowerCase().includes('categoria') || h.toLowerCase().includes('classificação') || h.toLowerCase().includes('plano de contas') || h.toLowerCase() === 'centro de custo'));
   const vlPagoIndex = headers.findIndex(h => h && (h.toLowerCase() === 'vl. pago' || h.toLowerCase() === 'vl pago'));
   const vlPagarIndex = headers.findIndex(h => h && (h.toLowerCase() === 'vl. a pagar' || h.toLowerCase() === 'vl a pagar'));
   const statusIndex = headers.findIndex(h => h && h.toLowerCase() === 'status');
@@ -72,6 +73,14 @@ export function parseContasAPagar(workbook: XLSX.WorkBook): ParsedExpense[] {
     const description = descIndex !== -1 && row[descIndex] ? String(row[descIndex]) : 'Conta a Pagar Importada';
     const originalStatus = statusIndex !== -1 && row[statusIndex] ? String(row[statusIndex]) : 'PAG';
     
+    let category = 'Outras Despesas';
+    if (catIndex !== -1 && row[catIndex]) {
+      category = String(row[catIndex]).trim();
+    } else if (description !== 'Conta a Pagar Importada') {
+      // Se não tem categoria, agrupa pela própria descrição ou fornecedor
+      category = description.split('-')[0].split('|')[0].trim();
+    }
+    
     // Pega dtPgto, se não houver, assume hoje
     let occurredAt = new Date().toISOString().split('T')[0];
     if (dtPgtoIndex !== -1 && row[dtPgtoIndex]) {
@@ -91,7 +100,7 @@ export function parseContasAPagar(workbook: XLSX.WorkBook): ParsedExpense[] {
       amount,
       description,
       occurredAt,
-      category: 'contas_pagar',
+      category,
       originalStatus
     });
   }

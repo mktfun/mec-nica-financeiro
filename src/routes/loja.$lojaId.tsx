@@ -332,7 +332,7 @@ function LojaDashboardPage() {
           {/* Coluna Esquerda: Resumo de Conciliação e Gráfico */}
           <div className="lg:col-span-1 space-y-6">
             {/* Divergências Acionáveis */}
-            {hasDivergence ? (
+            {!store.is_matriz && hasDivergence ? (
               <div>
                 <h3 className="font-display font-semibold text-lg mb-4 flex items-center gap-2 text-[var(--color-accent-danger)]">
                   <AlertTriangle size={20} />
@@ -433,42 +433,44 @@ function LojaDashboardPage() {
               </div>
             )}
 
-            <div>
-              <h3 className="font-display font-semibold text-lg mb-4">Histórico de Fechamentos</h3>
-              <Card variant="glass" className="p-0 overflow-hidden">
-                {loadingHistory ? (
-                  <div className="p-8 text-center text-sm text-[var(--text-tertiary)]">Carregando histórico...</div>
-                ) : history.length === 0 ? (
-                  <div className="p-8 text-center text-sm text-[var(--text-tertiary)]">Sem registros anteriores.</div>
-                ) : (
-                  <div className="divide-y divide-[var(--border-subtle)] max-h-[400px] overflow-y-auto">
-                    {history.map((rec, i) => (
-                      <div key={i} className="p-4 hover:bg-[var(--bg-surface-elevated)] transition-colors flex items-center justify-between">
-                        <div>
-                          <p className="font-medium text-sm">{formatDate(rec.date)}</p>
-                          <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">
-                            Apurado: R$ {Number(rec.os_total || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                          </p>
+            {!store.is_matriz && (
+              <div>
+                <h3 className="font-display font-semibold text-lg mb-4">Histórico de Fechamentos</h3>
+                <Card variant="glass" className="p-0 overflow-hidden">
+                  {loadingHistory ? (
+                    <div className="p-8 text-center text-sm text-[var(--text-tertiary)]">Carregando histórico...</div>
+                  ) : history.length === 0 ? (
+                    <div className="p-8 text-center text-sm text-[var(--text-tertiary)]">Sem registros anteriores.</div>
+                  ) : (
+                    <div className="divide-y divide-[var(--border-subtle)] max-h-[400px] overflow-y-auto">
+                      {history.map((rec, i) => (
+                        <div key={i} className="p-4 hover:bg-[var(--bg-surface-elevated)] transition-colors flex items-center justify-between">
+                          <div>
+                            <p className="font-medium text-sm">{formatDate(rec.date)}</p>
+                            <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">
+                              Apurado: R$ {Number(rec.os_total || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-display font-bold text-sm">
+                              R$ {Number(rec.financial_total || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                            </p>
+                            <Badge variant={rec.status === 'approved' ? 'success' : rec.status === 'divergence' ? 'danger' : 'warning'} className="text-[9px] mt-1 px-1.5 py-0">
+                              {rec.status === 'approved' ? 'Conciliado' : rec.status === 'divergence' ? 'Divergência' : 'Pendente'}
+                            </Badge>
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <p className="font-display font-bold text-sm">
-                            R$ {Number(rec.financial_total || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                          </p>
-                          <Badge variant={rec.status === 'approved' ? 'success' : rec.status === 'divergence' ? 'danger' : 'warning'} className="text-[9px] mt-1 px-1.5 py-0">
-                            {rec.status === 'approved' ? 'Conciliado' : rec.status === 'divergence' ? 'Divergência' : 'Pendente'}
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </Card>
-            </div>
+                      ))}
+                    </div>
+                  )}
+                </Card>
+              </div>
+            )}
           </div>
 
           {/* Coluna Direita: Extrato / Transações */}
           <div className="lg:col-span-2">
-            {!hasDivergence && totalEntradas > 0 && (
+            {!store.is_matriz && !hasDivergence && totalEntradas > 0 && (
               <Card className="mb-6 p-4 border-l-4 border-l-[var(--color-success)] bg-[var(--color-success)]/5">
                 <div className="flex items-center gap-3">
                   <CheckCircle2 size={20} className="text-[var(--color-success)]" />
@@ -550,12 +552,14 @@ function LojaDashboardPage() {
               >
                 Apenas Saídas
               </button>
-              <button
-                onClick={() => { setTab('caixa'); setPage(1); }}
-                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'caixa' ? 'border-[var(--color-warning)] text-[var(--color-warning)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
-              >
-                Caixa Físico {cashRegisters.filter(c => c.status === 'pending').length > 0 && <span className="ml-1 bg-[var(--color-warning)] text-black text-[10px] px-1.5 py-0.5 rounded-full">{cashRegisters.filter(c => c.status === 'pending').length}</span>}
-              </button>
+              {!store.is_matriz && (
+                <button
+                  onClick={() => { setTab('caixa'); setPage(1); }}
+                  className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'caixa' ? 'border-[var(--color-warning)] text-[var(--color-warning)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
+                >
+                  Caixa Físico {cashRegisters.filter(c => c.status === 'pending').length > 0 && <span className="ml-1 bg-[var(--color-warning)] text-black text-[10px] px-1.5 py-0.5 rounded-full">{cashRegisters.filter(c => c.status === 'pending').length}</span>}
+                </button>
+              )}
             </div>
 
             <Card className="p-0 overflow-hidden">
@@ -698,7 +702,7 @@ function LojaDashboardPage() {
                           }`}>
                             {isIn ? '+' : '-'} <AnimatedNumber value={Number(tx.amount || 0)} format="currency" />
                           </div>
-                          {tx.os_number && (
+                          {tx.os_number && !store.is_matriz && (
                             <div className="text-[10px] text-[var(--text-tertiary)] mt-1">
                               OS: {tx.os_number}
                             </div>

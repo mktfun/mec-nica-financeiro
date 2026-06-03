@@ -4,6 +4,7 @@ import { getDefaultDate } from '@/lib/utils';
 
 export type OsImportResult = {
   fileName: string;
+  storeAlias: string;
   success: boolean;
   osArray: ParsedOS[];
   receivablesArray: ParsedReceivable[];
@@ -24,6 +25,20 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
 
       const osArray: ParsedOS[] = [];
       const receivablesArray: ParsedReceivable[] = [];
+
+      let storeAlias = file.name.replace(/^\d+_/, '').replace(/\.[^/.]+$/, '').replace(/ConferenciaOSxFinanceiro/i, '').replace(/_/g, ' ').trim() || file.name;
+
+      for (let i = 0; i < Math.min(10, data.length); i++) {
+        const row = data[i];
+        if (Array.isArray(row)) {
+          const rowText = row.map(c => String(c || '')).join(' ');
+          const match = rowText.match(/(?:LOJA|UNIDADE)\s+([A-Za-zÀ-ÿ0-9\s]+)/i);
+          if (match && match[1]) {
+            storeAlias = match[1].trim();
+            break;
+          }
+        }
+      }
 
       const parseExcelDate = (val: any) => {
         if (!val) return null;
@@ -144,6 +159,7 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
 
       results.push({
         fileName: file.name,
+        storeAlias,
         success: true,
         osArray,
         receivablesArray,
@@ -153,6 +169,7 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
     } catch (error: any) {
       results.push({
         fileName: file.name,
+        storeAlias: file.name,
         success: false,
         osArray: [],
         receivablesArray: [],

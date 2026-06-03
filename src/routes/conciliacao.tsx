@@ -165,63 +165,6 @@ function ConciliacaoPage() {
               </Link>
             </div>
 
-            {/* Lojas Grid */}
-            <div>
-              <h2 className="font-display font-semibold text-xl mb-2">{stores.length} Lojas</h2>
-              <p className="text-sm text-[var(--text-tertiary)] mb-4">Status de conciliação por unidade — clique para ver detalhes</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {stores.map((store, i) => {
-                  const rec = detalhes.find(d => d.store_id === store.id);
-                  const status = rec?.status || 'pending';
-                  const financialTotal = rec?.financial_total || 0;
-
-                  return (
-                    <motion.div
-                      key={store.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.03 }}
-                    >
-                      <Link to={`/loja/${store.id}`}>
-                        <Card
-                          variant="glass"
-                          className={`p-4 cursor-pointer hover:border-[var(--border-strong)] transition-colors ${
-                            status === 'divergence' ? 'border-[var(--color-accent-danger)]/30' : ''
-                          }`}
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <h3 className="font-semibold text-sm truncate">{store.name}</h3>
-                            {status === 'approved' && <Badge variant="success" className="text-[10px]">✓ OK</Badge>}
-                            {status === 'divergence' && <Badge variant="danger" className="text-[10px]">⚠ Divergência</Badge>}
-                            {status === 'pending' && <Badge variant="warning" className="text-[10px]">• Pendente</Badge>}
-                          </div>
-                          <div className="mt-2 bg-white/5 rounded-md p-2 space-y-1.5 border border-white/5">
-                            <div className="flex justify-between items-center text-xs">
-                              <span className="text-[var(--text-secondary)]">Faturado:</span>
-                              <span className="font-medium text-[var(--text-primary)]">
-                                <AnimatedNumber value={financialTotal} format="currency" />
-                              </span>
-                            </div>
-                            <div className="flex justify-between items-center text-xs border-t border-white/5 pt-1.5">
-                              <span className="text-[var(--text-secondary)]">Físico:</span>
-                              <span className="font-medium text-[var(--text-primary)]">
-                                <AnimatedNumber value={rec?.daily_cash || 0} format="currency" />
-                              </span>
-                            </div>
-                          </div>
-                          {status === 'divergence' && (
-                            <p className="text-xs text-[var(--color-accent-danger)] mt-2 font-medium">
-                              Falta R$ {Math.abs(rec?.divergence || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
-                            </p>
-                          )}
-                        </Card>
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </div>
-
             {/* Alertas ativos + Dinheiro em Caixa side by side */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Alertas Ativos */}
