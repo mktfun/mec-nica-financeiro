@@ -103,9 +103,11 @@ function ImportacoesDespesasWizard() {
           store_id: storeId === 'GLOBAL' ? null : storeId,
           type: 'out' as const,
           amount: exp.amount,
-          date: exp.occurredAt,
-          description: exp.description,
-          category: exp.category,
+          occurred_at: exp.occurredAt,
+          title: exp.description,
+          subtitle: exp.category,
+          status: 'completed' as const,
+          icon_type: 'bank' as const,
         };
       });
 
