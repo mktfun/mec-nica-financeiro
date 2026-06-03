@@ -30,7 +30,7 @@ function useOsStoreMapping() {
       return next;
     });
   };
-  return { mapping, updateMapping };
+  return { mapping, updateMapping, setMapping };
 }
 
 function StepIndicator({ current, step, title }: { current: number; step: number; title: string }) {
@@ -53,7 +53,7 @@ function ImportarOsWizard() {
   const [unmappedStores, setUnmappedStores] = useState<string[]>([]);
   
   const { data: stores = [] } = useStores();
-  const { mapping, updateMapping } = useOsStoreMapping();
+  const { mapping, updateMapping, setMapping } = useOsStoreMapping();
   const processData = useProcessImportedData();
   const navigate = useNavigate();
 
@@ -65,9 +65,26 @@ function ImportarOsWizard() {
     const results = await processOsFiles(acceptedFiles);
     setImportResults(prev => [...prev, ...results]);
     
-    // Identificar nomes de arquivos/lojas como lojas virtuais
+    // Auto-mapear lojas pelo nome (case insensitive e sem acentos)
+    const normalizeString = (str: string) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+    
+    let currentMapping = { ...mapping };
     const aliases = Array.from(new Set(results.filter(r => r.success).map(r => r.storeAlias)));
-    const unmapped = aliases.filter(alias => !mapping[alias]);
+    
+    aliases.forEach(alias => {
+      if (!currentMapping[alias]) {
+        const normalizedAlias = normalizeString(alias);
+        const match = stores.find(s => normalizeString(s.name) === normalizedAlias);
+        if (match) {
+          currentMapping[alias] = match.id;
+        }
+      }
+    });
+
+    setMapping(currentMapping);
+    localStorage.setItem('@mecanica/os-store-mappings', JSON.stringify(currentMapping));
+
+    const unmapped = aliases.filter(alias => !currentMapping[alias]);
     
     setIsProcessing(false);
     
@@ -77,7 +94,7 @@ function ImportarOsWizard() {
     } else if (results.some(r => r.success)) {
       setStep(3);
     }
-  }, [mapping]);
+  }, [mapping, stores, setMapping]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,

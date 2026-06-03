@@ -32,9 +32,9 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
         const row = data[i];
         if (Array.isArray(row)) {
           const rowText = row.map(c => String(c || '')).join(' ');
-          const match = rowText.match(/(?:LOJA|UNIDADE)\s+([A-Za-zÀ-ÿ0-9\s]+)/i);
-          if (match && match[1]) {
-            storeAlias = match[1].trim();
+          const match = rowText.match(/(?:LOJA|UNIDADE)\s+([A-Za-zÀ-ÿ0-9\s]+)|(.+?)\s+-\s+Por Data da OS/i);
+          if (match) {
+            storeAlias = (match[1] || match[2]).trim();
             break;
           }
         }
