@@ -516,8 +516,8 @@ export function useDeleteImport() {
           .in('date', targetDates);
         if (err3) throw err3;
           
-        // 4. Limpar o Pátio (carros fechados nestes dias, e os 'em_aberto')
-        const orQuery = `closed_at.in.(${targetDates.join(',')}),status.eq.em_aberto`;
+        // 4. Limpar o Pátio (carros fechados nestes dias, e os 'em_aberto', 'pago_parcial')
+        const orQuery = `closed_at.in.(${targetDates.join(',')}),status.in.(em_aberto,pago_parcial)`;
         const { error: err4 } = await supabase
           .from('patio_os')
           .delete()
