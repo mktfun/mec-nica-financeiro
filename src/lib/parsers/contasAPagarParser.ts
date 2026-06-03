@@ -37,12 +37,12 @@ export function parseContasAPagar(workbook: XLSX.WorkBook): ParsedExpense[] {
     throw new Error('Formato inválido: Não foi possível localizar as colunas "Emp" e "Vl. a Pagar" no arquivo.');
   }
 
-  const empIndex = headers.findIndex(h => h.toLowerCase() === 'emp');
-  const descIndex = headers.findIndex(h => h.toLowerCase() === 'descrição');
-  const vlPagoIndex = headers.findIndex(h => h.toLowerCase() === 'vl. pago' || h.toLowerCase() === 'vl pago');
-  const vlPagarIndex = headers.findIndex(h => h.toLowerCase() === 'vl. a pagar' || h.toLowerCase() === 'vl a pagar');
-  const statusIndex = headers.findIndex(h => h.toLowerCase() === 'status');
-  const dtPgtoIndex = headers.findIndex(h => h.toLowerCase() === 'dt. pgto' || h.toLowerCase() === 'dt pgto');
+  const empIndex = headers.findIndex(h => h && h.toLowerCase() === 'emp');
+  const descIndex = headers.findIndex(h => h && h.toLowerCase() === 'descrição');
+  const vlPagoIndex = headers.findIndex(h => h && (h.toLowerCase() === 'vl. pago' || h.toLowerCase() === 'vl pago'));
+  const vlPagarIndex = headers.findIndex(h => h && (h.toLowerCase() === 'vl. a pagar' || h.toLowerCase() === 'vl a pagar'));
+  const statusIndex = headers.findIndex(h => h && h.toLowerCase() === 'status');
+  const dtPgtoIndex = headers.findIndex(h => h && (h.toLowerCase() === 'dt. pgto' || h.toLowerCase() === 'dt pgto'));
 
   if (empIndex === -1 || (vlPagoIndex === -1 && vlPagarIndex === -1)) {
     throw new Error('Formato inválido: Faltam colunas essenciais ("Emp" ou "Vl. Pago").');
