@@ -39,7 +39,7 @@ function useStoreMapping() {
     });
   };
 
-  return { mapping, updateMapping };
+  return { mapping, updateMapping, setMapping };
 }
 
 function ImportacoesDespesasWizard() {
@@ -51,7 +51,7 @@ function ImportacoesDespesasWizard() {
   const [unmappedStores, setUnmappedStores] = useState<string[]>([]);
   
   const { data: stores = [] } = useStores();
-  const { mapping, updateMapping } = useStoreMapping();
+  const { mapping, updateMapping, setMapping } = useStoreMapping();
   const bulkInsert = useBulkInsertTransactions(); // We will create this
   const navigate = useNavigate();
 
@@ -68,9 +68,26 @@ function ImportacoesDespesasWizard() {
     results.forEach(r => { if (r.success) allExp.push(...r.expenses) });
     setAllExpenses(allExp);
 
-    // Identificar lojas não mapeadas
+    // Auto-mapear lojas pelo nome (case insensitive e sem acentos)
+    const normalizeString = (str: string) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+    
+    let currentMapping = { ...mapping };
+    
     const aliases = Array.from(new Set(allExp.map(e => e.storeName)));
-    const unmapped = aliases.filter(alias => !mapping[alias]);
+    aliases.forEach(alias => {
+      if (!currentMapping[alias]) {
+        const normalizedAlias = normalizeString(alias);
+        const match = stores.find(s => normalizeString(s.name) === normalizedAlias);
+        if (match) {
+          currentMapping[alias] = match.id;
+        }
+      }
+    });
+
+    setMapping(currentMapping);
+    localStorage.setItem('@mecanica/store-mappings', JSON.stringify(currentMapping));
+
+    const unmapped = aliases.filter(alias => !currentMapping[alias]);
     
     setIsProcessing(false);
     
@@ -80,7 +97,7 @@ function ImportacoesDespesasWizard() {
     } else if (allExp.length > 0) {
       setStep(3);
     }
-  }, [mapping]);
+  }, [mapping, stores, setMapping]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
