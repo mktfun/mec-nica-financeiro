@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useParams } from '@tanstack/react-router';
+import { useQueryClient } from '@tanstack/react-query';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
@@ -14,6 +15,7 @@ import { useStoreHistory } from '@/hooks/useConciliacao';
 import { useExtrato, useBulkInsertTransactions } from '@/hooks/useTransactions';
 import { useCashRegisters, useCloseCashRegister } from '@/hooks/useCashRegisters';
 import { getDefaultDate } from '@/lib/utils';
+import { supabase } from '@/lib/supabase';
 import { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
@@ -76,6 +78,8 @@ function LojaDashboardPage() {
   const [declaredAmounts, setDeclaredAmounts] = useState<Record<string, string>>({});
   const [isBalanceModalOpen, setIsBalanceModalOpen] = useState(false);
   const [balanceInput, setBalanceInput] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const qc = useQueryClient();
 
   const latestReconciliation = history.length > 0 ? history[0] : null;
 
@@ -173,6 +177,31 @@ function LojaDashboardPage() {
       setBalanceInput('');
     } catch (e: any) {
       alert('Erro ao ajustar saldo: ' + e.message);
+    }
+  };
+
+  const handleResetBalance = async () => {
+    if (!confirm('Deseja realmente zerar todos os ajustes manuais de saldo desta loja?')) return;
+    try {
+      setIsProcessing(true);
+      const { error } = await supabase
+        .from('transactions')
+        .delete()
+        .eq('store_id', store.id)
+        .eq('subtitle', 'Ajuste de Saldo Inicial');
+        
+      if (error) throw error;
+      
+      qc.invalidateQueries({ queryKey: ['transactions'] });
+      qc.invalidateQueries({ queryKey: ['extrato'] });
+      qc.invalidateQueries({ queryKey: ['dashboard'] });
+      
+      alert('Ajustes de saldo zerados com sucesso!');
+      setIsBalanceModalOpen(false);
+    } catch (e: any) {
+      alert('Erro ao resetar saldo: ' + e.message);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -763,11 +792,16 @@ function LojaDashboardPage() {
                   className="text-xl h-14"
                 />
               </div>
-              <div className="flex justify-end gap-3 pt-4 border-t border-[var(--border-subtle)]">
-                <Button variant="ghost" onClick={() => setIsBalanceModalOpen(false)}>Cancelar</Button>
-                <Button onClick={handleSetInitialBalance} disabled={bulkInsert.isPending || !balanceInput}>
-                  {bulkInsert.isPending ? 'Ajustando...' : 'Confirmar Ajuste'}
+              <div className="flex justify-between items-center pt-4 border-t border-[var(--border-subtle)]">
+                <Button variant="danger" size="sm" onClick={handleResetBalance} disabled={isProcessing} className="bg-transparent border border-[var(--color-accent-danger)] text-[var(--color-accent-danger)] hover:bg-[var(--color-accent-danger)] hover:text-white transition-colors">
+                  Zerar Ajustes
                 </Button>
+                <div className="flex gap-3">
+                  <Button variant="ghost" onClick={() => setIsBalanceModalOpen(false)}>Cancelar</Button>
+                  <Button onClick={handleSetInitialBalance} disabled={bulkInsert.isPending || !balanceInput || isProcessing}>
+                    {bulkInsert.isPending ? 'Ajustando...' : 'Confirmar Ajuste'}
+                  </Button>
+                </div>
               </div>
             </div>
           </Modal>

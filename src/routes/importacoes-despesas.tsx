@@ -10,8 +10,9 @@ import { Button } from '@/components/ui/Button';
 import { useStores } from '@/hooks/useStores';
 import { processExpenseFiles, ExpenseImportResult } from '@/hooks/useExpenseImportProcessor';
 import { ParsedExpense } from '@/lib/parsers/contasAPagarParser';
-import { useBulkInsertTransactions } from '@/hooks/useTransactions'; // to be created
+import { useBulkInsertTransactions } from '@/hooks/useTransactions'; 
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { supabase } from '@/lib/supabase';
 
 export const Route = createFileRoute('/importacoes-despesas')({
   component: ImportacoesDespesasWizard,
@@ -95,25 +96,56 @@ function ImportacoesDespesasWizard() {
 
   const handleConfirmImport = async () => {
     try {
+      setIsProcessing(true);
+      const batchCreatedAt = new Date().toISOString();
+      const logsToInsert: any[] = [];
+      const storeDates = new Set<string>();
+      
       // Montar os dados para o Supabase
       const payload = allExpenses.map(exp => {
         const storeId = mapping[exp.storeName];
         if (!storeId) throw new Error(`Loja ${exp.storeName} não está mapeada!`);
+        
+        const date = exp.occurredAt.split('T')[0];
+        const sId = storeId === 'GLOBAL' ? null : storeId;
+        const key = `${sId}_${date}`;
+        
+        if (!storeDates.has(key)) {
+          storeDates.add(key);
+          const storeName = stores.find(s => s.id === storeId)?.name || 'Master';
+          logsToInsert.push({
+            store_id: sId,
+            store_name: storeName,
+            target_date: date,
+            os_count: 0,
+            receivables_count: 0,
+            total_os: 0,
+            created_at: batchCreatedAt
+          });
+        }
+        
         return {
-          store_id: storeId === 'GLOBAL' ? null : storeId,
+          store_id: sId,
           type: 'out' as const,
           amount: exp.amount,
           occurred_at: exp.occurredAt,
           title: exp.description,
           subtitle: exp.category,
+          created_at: batchCreatedAt
         };
       });
 
+      if (logsToInsert.length > 0) {
+        await supabase.from('import_logs').insert(logsToInsert);
+      }
+      
       await bulkInsert.mutateAsync(payload);
       alert('Despesas importadas com sucesso!');
-      navigate({ to: '/dashboard' });
+      navigate({ to: '/importacoes' });
     } catch (err: any) {
       alert('Erro ao importar: ' + err.message);
+    } finally {
+      setIsProcessing(false);
     }
   };
 

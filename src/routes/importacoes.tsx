@@ -38,6 +38,7 @@ function ImportacoesPage() {
           storeId: log.store_id,
           targetDates: log.target_dates,
           logIds: log.raw_logs.map(r => r.id),
+          rawLogs: log.raw_logs
         });
         console.log('Delete successful');
         setConfirmDeleteId(null);
