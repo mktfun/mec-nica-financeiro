@@ -100,7 +100,7 @@ function ImportacoesDespesasWizard() {
         const storeId = mapping[exp.storeName];
         if (!storeId) throw new Error(`Loja ${exp.storeName} não está mapeada!`);
         return {
-          store_id: storeId,
+          store_id: storeId === 'GLOBAL' ? null : storeId,
           type: 'out' as const,
           amount: exp.amount,
           date: exp.occurredAt,
@@ -233,6 +233,7 @@ function ImportacoesDespesasWizard() {
                         onChange={(e) => updateMapping(storeName, e.target.value)}
                       >
                         <option value="" disabled>Selecione uma loja...</option>
+                        <option value="GLOBAL" className="text-[var(--color-accent-teal)] font-semibold">Independente (Centro de Custos Geral)</option>
                         {stores.map(s => (
                           <option key={s.id} value={s.id}>{s.name} {s.is_matriz ? '(Master)' : ''}</option>
                         ))}
@@ -285,7 +286,7 @@ function ImportacoesDespesasWizard() {
                  {Array.from(new Set(allExpenses.map(e => e.storeName))).map(alias => {
                    const storeExps = allExpenses.filter(e => e.storeName === alias);
                    const storeTotal = storeExps.reduce((a, c) => a + c.amount, 0);
-                   const mappedStoreName = stores.find(s => s.id === mapping[alias])?.name || alias;
+                   const mappedStoreName = mapping[alias] === 'GLOBAL' ? 'Centro de Custos Geral' : (stores.find(s => s.id === mapping[alias])?.name || alias);
                    
                    return (
                      <div key={alias} className="flex justify-between items-center text-sm p-2 hover:bg-white/5 rounded border border-transparent hover:border-white/10">
