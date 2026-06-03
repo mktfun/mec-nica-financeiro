@@ -4,9 +4,10 @@ import { Card } from '@/components/ui/Card';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { FileSpreadsheet, Trash2, AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { FileSpreadsheet, Trash2, AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight, Database } from 'lucide-react';
 import { useImportsHistory, useDeleteImport, GroupedImportLog } from '@/hooks/useImportProcessor';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { Link } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/importacoes')({
   component: ImportacoesPage,
@@ -62,6 +63,12 @@ function ImportacoesPage() {
             <p className="text-sm text-[var(--text-secondary)] mt-1">
               Histórico de planilhas importadas agrupadas por lote de envio.
             </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Link to="/importacoes-despesas" className="bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] hover:border-[var(--color-primary)] text-sm font-medium px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors">
+              <Database size={18} className="text-[var(--color-primary)]" />
+              Importar Despesas
+            </Link>
           </div>
         </div>
 

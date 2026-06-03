@@ -3,7 +3,7 @@ import { motion, type Variants } from "framer-motion";
 import { FileUp, ArrowUpRight, RefreshCw } from "lucide-react";
 import { Button } from "../ui/Button";
 import { ImportReportDialog } from "./ImportReportDialog";
-import { NewTransactionDialog } from "./NewTransactionDialog";
+import { useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 
 const container: Variants = {
@@ -21,7 +21,7 @@ const item: Variants = {
 
 export function QuickActions() {
   const [isImportOpen, setIsImportOpen] = useState(false);
-  const [isTransactionOpen, setIsTransactionOpen] = useState(false);
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   return (
@@ -39,9 +39,9 @@ export function QuickActions() {
           </Button>
         </motion.div>
         <motion.div variants={item}>
-          <Button variant="secondary" size="lg" className="gap-2 px-6" onClick={() => setIsTransactionOpen(true)}>
+          <Button variant="secondary" size="lg" className="gap-2 px-6" onClick={() => navigate({ to: '/importacoes-despesas' })}>
             <ArrowUpRight size={20} />
-            Lançar Saída
+            Importar Despesas
           </Button>
         </motion.div>
         <motion.div variants={item} className="hidden sm:block">
@@ -54,11 +54,6 @@ export function QuickActions() {
       <ImportReportDialog 
         isOpen={isImportOpen} 
         onClose={() => setIsImportOpen(false)} 
-      />
-      
-      <NewTransactionDialog 
-        isOpen={isTransactionOpen} 
-        onClose={() => setIsTransactionOpen(false)} 
       />
     </>
   );

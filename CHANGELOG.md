@@ -2,6 +2,9 @@
 
 Histórico de atualizações e especificações implementadas no sistema.
 
+## [2026-06-03]
+- **[025-importacao-despesas]** Implementado o Importador Universal de Despesas e Juros Rede arquivado. Interface robusta baseada em Wizard com 3 passos (Upload, Mapeamento Inteligente, Revisão). Suporta formatos antigos (`.xls`) e novos (`.xlsx`), com parser client-side otimizado e inserção via batch (`useBulkInsertTransactions`) como `type: out`, refletindo o Saldo Negativo na Loja Master globalmente. O botão "Lançar Saída" foi atualizado para apontar para o novo Wizard.
+
 ## [2026-06-02]
 - **[024-conciliacao-rollback]** Rollback da UI de Conciliação e Refinamentos Reais implementados e arquivados. A interface macro retornou ao grid amigável e foi conectada à rota detalhada de lojas; o filtro Mensal virou um Date Picker rigorosamente Diário; o input de Dinheiro em Caixa agora filtra de forma inteligente apenas as Lojas que tiveram vendas em Espécie ou OS em aberto na data corrente; e o minigráfico evolutivo exibe 14 dias anteriores em relação à data pesquisada.
 - **[021, 022, 023-conciliacao-revamp]** Revamp completo da tela de Conciliação Diária no estilo Revolut UI implementado e arquivado. Foi adicionado Gráfico "Hero" de tendência de faturamento, feed de lojas minimalista, e Gaveta (Slide-over) inteligente para lançamento de Físico em Espécie.

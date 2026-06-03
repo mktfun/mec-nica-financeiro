@@ -297,3 +297,26 @@ export function useWeeklyRevenueTrend(anchorDate?: string) {
     }
   });
 }
+
+export function useBulkInsertTransactions() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (transactions: any[]) => {
+      // Chunking if necessary, but for now Supabase can handle a reasonable array
+      const { data, error } = await supabase
+        .from('transactions')
+        .insert(transactions);
+        
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['cashFlow'] });
+      queryClient.invalidateQueries({ queryKey: ['extrato'] });
+      queryClient.invalidateQueries({ queryKey: ['all-stores-balances'] });
+    }
+  });
+}
