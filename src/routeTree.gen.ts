@@ -14,6 +14,7 @@ import { Route as PropostaRouteImport } from './routes/proposta'
 import { Route as PatioRouteImport } from './routes/patio'
 import { Route as LojasRouteImport } from './routes/lojas'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ImportarOsRouteImport } from './routes/importar-os'
 import { Route as ImportacoesDespesasRouteImport } from './routes/importacoes-despesas'
 import { Route as ImportacoesRouteImport } from './routes/importacoes'
 import { Route as HistoricoRouteImport } from './routes/historico'
@@ -47,6 +48,11 @@ const LojasRoute = LojasRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImportarOsRoute = ImportarOsRouteImport.update({
+  id: '/importar-os',
+  path: '/importar-os',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ImportacoesDespesasRoute = ImportacoesDespesasRouteImport.update({
@@ -104,6 +110,7 @@ export interface FileRoutesByFullPath {
   '/historico': typeof HistoricoRoute
   '/importacoes': typeof ImportacoesRoute
   '/importacoes-despesas': typeof ImportacoesDespesasRoute
+  '/importar-os': typeof ImportarOsRoute
   '/login': typeof LoginRoute
   '/lojas': typeof LojasRoute
   '/patio': typeof PatioRoute
@@ -120,6 +127,7 @@ export interface FileRoutesByTo {
   '/historico': typeof HistoricoRoute
   '/importacoes': typeof ImportacoesRoute
   '/importacoes-despesas': typeof ImportacoesDespesasRoute
+  '/importar-os': typeof ImportarOsRoute
   '/login': typeof LoginRoute
   '/lojas': typeof LojasRoute
   '/patio': typeof PatioRoute
@@ -137,6 +145,7 @@ export interface FileRoutesById {
   '/historico': typeof HistoricoRoute
   '/importacoes': typeof ImportacoesRoute
   '/importacoes-despesas': typeof ImportacoesDespesasRoute
+  '/importar-os': typeof ImportarOsRoute
   '/login': typeof LoginRoute
   '/lojas': typeof LojasRoute
   '/patio': typeof PatioRoute
@@ -155,6 +164,7 @@ export interface FileRouteTypes {
     | '/historico'
     | '/importacoes'
     | '/importacoes-despesas'
+    | '/importar-os'
     | '/login'
     | '/lojas'
     | '/patio'
@@ -171,6 +181,7 @@ export interface FileRouteTypes {
     | '/historico'
     | '/importacoes'
     | '/importacoes-despesas'
+    | '/importar-os'
     | '/login'
     | '/lojas'
     | '/patio'
@@ -187,6 +198,7 @@ export interface FileRouteTypes {
     | '/historico'
     | '/importacoes'
     | '/importacoes-despesas'
+    | '/importar-os'
     | '/login'
     | '/lojas'
     | '/patio'
@@ -204,6 +216,7 @@ export interface RootRouteChildren {
   HistoricoRoute: typeof HistoricoRoute
   ImportacoesRoute: typeof ImportacoesRoute
   ImportacoesDespesasRoute: typeof ImportacoesDespesasRoute
+  ImportarOsRoute: typeof ImportarOsRoute
   LoginRoute: typeof LoginRoute
   LojasRoute: typeof LojasRoute
   PatioRoute: typeof PatioRoute
@@ -247,6 +260,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/importar-os': {
+      id: '/importar-os'
+      path: '/importar-os'
+      fullPath: '/importar-os'
+      preLoaderRoute: typeof ImportarOsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/importacoes-despesas': {
@@ -324,6 +344,7 @@ const rootRouteChildren: RootRouteChildren = {
   HistoricoRoute: HistoricoRoute,
   ImportacoesRoute: ImportacoesRoute,
   ImportacoesDespesasRoute: ImportacoesDespesasRoute,
+  ImportarOsRoute: ImportarOsRoute,
   LoginRoute: LoginRoute,
   LojasRoute: LojasRoute,
   PatioRoute: PatioRoute,

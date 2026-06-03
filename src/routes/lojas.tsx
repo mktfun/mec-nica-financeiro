@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
@@ -6,7 +6,7 @@ import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { ChevronRight, Search, Plus } from 'lucide-react';
 import { Input } from '@/components/ui/Input';
 import { motion } from 'framer-motion';
-import { StoreDetailsSheet } from '@/components/dashboard/StoreDetailsSheet';
+
 import { StoreFormDialog } from '@/components/dashboard/StoreFormDialog';
 import { useState, useMemo } from 'react';
 import { StoreRow, ReconciliationRow } from '@/lib/supabase';
@@ -21,7 +21,7 @@ export const Route = createFileRoute('/lojas')({
 });
 
 function LojasPage() {
-  const [selectedStore, setSelectedStore] = useState<{ store: StoreRow; reconciliation: ReconciliationRow | null } | null>(null);
+  const navigate = useNavigate();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [storeToEdit, setStoreToEdit] = useState<StoreRow | undefined>();
   const [search, setSearch] = useState('');
@@ -43,13 +43,11 @@ function LojasPage() {
   const handleEdit = (store: StoreRow) => {
     setStoreToEdit(store);
     setIsFormOpen(true);
-    setSelectedStore(null); // Close the details sheet
   };
 
   const handleDelete = async (store: StoreRow) => {
     if (confirm(`Tem certeza que deseja excluir a loja ${store.name}?`)) {
       await deleteMutation.mutateAsync(store.id);
-      setSelectedStore(null);
     }
   };
 
@@ -99,7 +97,7 @@ function LojasPage() {
                   <Card 
                     variant="glass" 
                     className="p-4 hover:border-[var(--border-strong)] transition-colors cursor-pointer group flex items-center justify-between"
-                    onClick={() => setSelectedStore({ store, reconciliation: rec })}
+                    onClick={() => navigate({ to: '/loja/$lojaId', params: { lojaId: store.id } })}
                   >
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-full overflow-hidden bg-[var(--bg-canvas)]">
@@ -142,13 +140,7 @@ function LojasPage() {
           )}
         </div>
 
-        <StoreDetailsSheet 
-          store={selectedStore?.store || null} 
-          reconciliation={selectedStore?.reconciliation || null}
-          onClose={() => setSelectedStore(null)} 
-          onEdit={() => selectedStore && handleEdit(selectedStore.store)}
-          onDelete={() => selectedStore && handleDelete(selectedStore.store)}
-        />
+
 
         <StoreFormDialog 
           isOpen={isFormOpen}

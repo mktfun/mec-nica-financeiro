@@ -2,7 +2,6 @@ import { useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import { FileUp, ArrowUpRight, RefreshCw } from "lucide-react";
 import { Button } from "../ui/Button";
-import { ImportReportDialog } from "./ImportReportDialog";
 import { useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -20,7 +19,6 @@ const item: Variants = {
 };
 
 export function QuickActions() {
-  const [isImportOpen, setIsImportOpen] = useState(false);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -33,7 +31,7 @@ export function QuickActions() {
         className="flex flex-wrap justify-center gap-4 mb-12"
       >
         <motion.div variants={item}>
-          <Button variant="primary" size="lg" className="gap-2 px-6" onClick={() => setIsImportOpen(true)}>
+          <Button variant="primary" size="lg" className="gap-2 px-6" onClick={() => navigate({ to: '/importar-os' })}>
             <FileUp size={20} />
             Importar Relatório
           </Button>
@@ -51,10 +49,7 @@ export function QuickActions() {
         </motion.div>
       </motion.div>
 
-      <ImportReportDialog 
-        isOpen={isImportOpen} 
-        onClose={() => setIsImportOpen(false)} 
-      />
+
     </>
   );
 }

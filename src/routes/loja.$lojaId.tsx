@@ -11,10 +11,13 @@ import {
 } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
 import { useStoreHistory } from '@/hooks/useConciliacao';
-import { useExtrato } from '@/hooks/useTransactions';
+import { useExtrato, useBulkInsertTransactions } from '@/hooks/useTransactions';
 import { useCashRegisters, useCloseCashRegister } from '@/hooks/useCashRegisters';
 import { getDefaultDate } from '@/lib/utils';
 import { useState } from 'react';
+import { Modal } from '@/components/ui/Modal';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 
 export const Route = createFileRoute('/loja/$lojaId')({
   component: LojaDashboardPage,
@@ -68,8 +71,11 @@ function LojaDashboardPage() {
   const { data: extrato, isLoading: loadingExtrato } = useExtrato(lojaId, startDate, endDate);
   const { data: cashRegisters = [], isLoading: loadingCash } = useCashRegisters(lojaId);
   const closeCashRegister = useCloseCashRegister();
+  const bulkInsert = useBulkInsertTransactions();
   
   const [declaredAmounts, setDeclaredAmounts] = useState<Record<string, string>>({});
+  const [isBalanceModalOpen, setIsBalanceModalOpen] = useState(false);
+  const [balanceInput, setBalanceInput] = useState('');
 
   const latestReconciliation = history.length > 0 ? history[0] : null;
 
@@ -140,6 +146,36 @@ function LojaDashboardPage() {
     );
   };
 
+  const handleSetInitialBalance = async () => {
+    const val = parseFloat(balanceInput.replace(',', '.'));
+    if (isNaN(val)) return alert('Valor inválido');
+    
+    // Calcula a diferença necessária para atingir o saldo desejado
+    const currentBalance = extrato?.globalBalance || 0;
+    const diff = val - currentBalance;
+    
+    if (diff === 0) {
+      alert('O saldo já é exatamente este valor.');
+      return setIsBalanceModalOpen(false);
+    }
+
+    try {
+      await bulkInsert.mutateAsync([{
+        store_id: store.id,
+        type: diff > 0 ? 'in' : 'out',
+        amount: Math.abs(diff),
+        title: 'Ajuste de Saldo em Conta',
+        subtitle: 'Ajuste de Saldo Inicial',
+        occurred_at: new Date().toISOString()
+      }]);
+      alert('Saldo ajustado com sucesso!');
+      setIsBalanceModalOpen(false);
+      setBalanceInput('');
+    } catch (e: any) {
+      alert('Erro ao ajustar saldo: ' + e.message);
+    }
+  };
+
   // Detectar divergências acionáveis
   const totalEntradas = extrato?.totalIn || 0;
   const totalSaidas = extrato?.totalOut || 0;
@@ -150,32 +186,46 @@ function LojaDashboardPage() {
   const hasDivergence = totalSemOS > 0 || (totalEntradas > 0 && totalSaidas > 0 && Math.abs(totalEntradas - totalSaidas) > 1);
 
   // Prepara dados para o gráfico de pizza
-  const paymentStats = extrato?.transactions.reduce((acc, tx: any) => {
-    if (tx.type === 'in' && tx.payment_method) {
-      const parsed = parsePaymentMethods(tx.payment_method);
-      let foundAny = false;
-      
-      for (const [method, amount] of Object.entries(parsed)) {
-        if (amount > 0) {
-          acc[method] = (acc[method] || 0) + amount;
-          foundAny = true;
+  const chartStats = extrato?.transactions.reduce((acc, tx: any) => {
+    if (tab === 'in' && tx.type === 'in') {
+      if (tx.payment_method) {
+        const parsed = parsePaymentMethods(tx.payment_method);
+        let foundAny = false;
+        for (const [method, amount] of Object.entries(parsed)) {
+          if (amount > 0) {
+            acc[method] = (acc[method] || 0) + amount;
+            foundAny = true;
+          }
+        }
+        if (!foundAny) {
+          const method = tx.payment_method;
+          acc[method] = (acc[method] || 0) + Number(tx.amount || 0);
         }
       }
-      
-      if (!foundAny) {
-        // Fallback: se não tiver o padrão "Nome: 10.00;" usa o método inteiro
-        const method = tx.payment_method;
-        acc[method] = (acc[method] || 0) + Number(tx.amount || 0);
-      }
+    } else if (tab === 'out' && tx.type === 'out') {
+      const category = tx.subtitle || 'Outras Despesas';
+      acc[category] = (acc[category] || 0) + Number(tx.amount || 0);
     }
     return acc;
   }, {} as Record<string, number>);
 
-  const pieData = paymentStats 
-    ? Object.entries(paymentStats)
+  let pieData = chartStats 
+    ? Object.entries(chartStats)
         .map(([name, value]) => ({ name, value }))
         .sort((a, b) => b.value - a.value)
     : [];
+
+  if (tab === 'all') {
+    pieData = [
+      { name: 'Receitas (Entradas)', value: totalEntradas || 0 },
+      { name: 'Despesas (Saídas)', value: totalSaidas || 0 }
+    ].filter(d => d.value > 0);
+  }
+
+  let currentColors = COLORS;
+  if (tab === 'out') currentColors = ['#ef4444', '#f97316', '#f59e0b', '#eab308', '#ec4899'];
+  else if (tab === 'in') currentColors = ['#10b981', '#3b82f6', '#06b6d4', '#6366f1', '#8b5cf6'];
+  else if (tab === 'all') currentColors = ['#10b981', '#ef4444'];
 
   // Filtra as transações
   const filteredTransactions = (extrato?.transactions || []).filter((tx: any) => {
@@ -224,7 +274,15 @@ function LojaDashboardPage() {
                 format="currency" 
               />
             </div>
-            <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Acumulado de todos os tempos</p>
+            <div className="flex items-center justify-between mt-3">
+              <p className="text-[10px] text-[var(--text-tertiary)]">Acumulado real do sistema</p>
+              <button 
+                onClick={() => setIsBalanceModalOpen(true)}
+                className="text-[10px] text-[var(--color-primary)] hover:underline flex items-center gap-1 bg-[var(--color-primary)]/10 px-2 py-1 rounded"
+              >
+                Ajustar Saldo
+              </button>
+            </div>
           </Card>
           
           <Card className="border-l-4 border-l-[var(--color-success)] p-5">
@@ -331,7 +389,9 @@ function LojaDashboardPage() {
 
             {pieData.length > 0 && (
               <div>
-                <h3 className="font-display font-semibold text-lg mb-4">Formas de Pagamento</h3>
+                <h3 className="font-display font-semibold text-lg mb-4">
+                  {tab === 'in' ? 'Formas de Pagamento' : tab === 'out' ? 'Distribuição de Despesas' : 'Visão Geral'}
+                </h3>
                 <Card variant="glass" className="p-4">
                   <div className="h-[200px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
@@ -347,7 +407,7 @@ function LojaDashboardPage() {
                           stroke="none"
                         >
                           {pieData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            <Cell key={`cell-${index}`} fill={currentColors[index % currentColors.length]} />
                           ))}
                         </Pie>
                         <Tooltip 
@@ -362,7 +422,7 @@ function LojaDashboardPage() {
                     {pieData.map((entry, index) => (
                       <div key={entry.name} className="flex items-center justify-between text-xs">
                         <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
+                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: currentColors[index % currentColors.length] }} />
                           <span className="text-[var(--text-secondary)]">{entry.name}</span>
                         </div>
                         <span className="font-medium">R$ {entry.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
@@ -676,6 +736,38 @@ function LojaDashboardPage() {
               )}
             </Card>
           </div>
+
+          <Modal 
+            isOpen={isBalanceModalOpen} 
+            onClose={() => setIsBalanceModalOpen(false)}
+            title="Ajustar Saldo Real da Conta"
+          >
+            <div className="space-y-4 pt-4">
+              <p className="text-sm text-[var(--text-secondary)]">
+                Informe o saldo atual real desta loja na conta bancária. O sistema criará uma transação de ajuste invisível às DREs para que o saldo exibido passe a bater com a realidade.
+              </p>
+              <div>
+                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1 uppercase tracking-wider">
+                  Saldo Real Atual (R$)
+                </label>
+                <Input 
+                  type="number" 
+                  step="0.01" 
+                  value={balanceInput}
+                  onChange={e => setBalanceInput(e.target.value)}
+                  placeholder="Ex: 5000.00" 
+                  className="text-xl h-14"
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-4 border-t border-[var(--border-subtle)]">
+                <Button variant="ghost" onClick={() => setIsBalanceModalOpen(false)}>Cancelar</Button>
+                <Button onClick={handleSetInitialBalance} disabled={bulkInsert.isPending || !balanceInput}>
+                  {bulkInsert.isPending ? 'Ajustando...' : 'Confirmar Ajuste'}
+                </Button>
+              </div>
+            </div>
+          </Modal>
+
         </div>
       </div>
     </AppShell>

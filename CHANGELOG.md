@@ -3,6 +3,7 @@
 Histórico de atualizações e especificações implementadas no sistema.
 
 ## [2026-06-03]
+- **[003-refatoracao-dashboard-loja]** Refatoração do Dashboard de Lojas e Criação da Importação Inteligente de Receitas em Massa arquivada. O StoreDetailsSheet foi descontinuado, introduzindo rotas diretas `/loja/$lojaId`. O gráfico "Formas de Pagamento" agora é modular e responde ao filtro de abas (Entradas/Saídas/Visão Geral). Foi implementado o sistema de Ajuste de Saldo Inicial via ledger invisível (`bulkInsert`). O uploader antigo de OS foi recriado na rota `/importar-os` suportando envio multi-arquivo drag-and-drop e Mapeamento Inteligente, unificando a experiência de Receitas e Despesas.
 - **[025-importacao-despesas]** Implementado o Importador Universal de Despesas e Juros Rede arquivado. Interface robusta baseada em Wizard com 3 passos (Upload, Mapeamento Inteligente, Revisão). Suporta formatos antigos (`.xls`) e novos (`.xlsx`), com parser client-side otimizado e inserção via batch (`useBulkInsertTransactions`) como `type: out`, refletindo o Saldo Negativo na Loja Master globalmente. O botão "Lançar Saída" foi atualizado para apontar para o novo Wizard.
 
 ## [2026-06-02]
