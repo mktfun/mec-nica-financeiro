@@ -26,18 +26,22 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
       const osArray: ParsedOS[] = [];
       const receivablesArray: ParsedReceivable[] = [];
 
-      let storeAlias = file.name.replace(/^\d+_/, '').replace(/\.[^/.]+$/, '').replace(/ConferenciaOSxFinanceiro/i, '').replace(/_/g, ' ').trim() || file.name;
+      let storeAlias = "";
 
-      for (let i = 0; i < Math.min(10, data.length); i++) {
+      for (let i = 0; i < Math.min(200, data.length); i++) {
         const row = data[i];
         if (Array.isArray(row)) {
           const rowText = row.map(c => String(c || '')).join(' ');
-          const match = rowText.match(/(?:LOJA|UNIDADE)\s+([A-Za-zÀ-ÿ0-9\s]+)|(.+?)\s+-\s+Por Data da OS/i);
+          const match = rowText.match(/(?:LOJA|UNIDADE)\s+([A-Za-zÀ-ÿ0-9\s]+)|([A-Za-z0-9À-ÿ\s]+?)\s*[-–—]\s*Por Data d[ae] OS/i);
           if (match) {
             storeAlias = (match[1] || match[2]).trim();
             break;
           }
         }
+      }
+
+      if (!storeAlias) {
+         storeAlias = file.name.replace(/^\d+_/, '').replace(/\.[^/.]+$/, '').replace(/ConferenciaOSxFinanceiro/i, '').replace(/_/g, ' ').trim() || file.name.replace(/\.[^/.]+$/, '');
       }
 
       const parseExcelDate = (val: any) => {
