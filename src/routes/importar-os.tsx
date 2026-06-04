@@ -109,7 +109,7 @@ function ImportarOsWizard() {
   const handleConfirmImport = async () => {
     try {
       setIsProcessing(true);
-      for (const res of importResults.filter(r => r.success)) {
+      for (const res of importResults.filter(r => r.success && mapping[r.storeAlias] !== 'IGNORE')) {
         const storeId = mapping[res.storeAlias];
         if (!storeId) throw new Error(`Arquivo ${res.fileName} (Loja detectada: ${res.storeAlias}) não está mapeado!`);
         const storeName = stores.find(s => s.id === storeId)?.name || 'Desconhecida';
@@ -130,7 +130,9 @@ function ImportarOsWizard() {
     }
   };
 
-  const totalOs = importResults.reduce((acc, curr) => acc + (curr.osCount || 0), 0);
+  const totalOs = importResults
+    .filter(r => r.success && mapping[r.storeAlias] !== 'IGNORE')
+    .reduce((acc, curr) => acc + (curr.osCount || 0), 0);
 
   return (
     <AppShell>
@@ -239,6 +241,7 @@ function ImportarOsWizard() {
                         onChange={(e) => updateMapping(storeName, e.target.value)}
                       >
                         <option value="" disabled>Selecione uma loja...</option>
+                        <option value="IGNORE" className="text-[var(--color-accent-danger)] font-semibold">⛔ Ignorar Arquivo (Não Importar)</option>
                         {stores.map(s => (
                           <option key={s.id} value={s.id}>{s.name} {s.is_matriz ? '(Master)' : ''}</option>
                         ))}
@@ -269,7 +272,7 @@ function ImportarOsWizard() {
               </div>
               <h3 className="font-display font-semibold text-2xl mb-2">Tudo Pronto para Importar</h3>
               <p className="text-[var(--text-secondary)] mb-8">
-                Serão processados {importResults.filter(r => r.success).length} arquivos contendo um total de <strong>{totalOs} Ordens de Serviço</strong>.
+                Serão processados {importResults.filter(r => r.success && mapping[r.storeAlias] !== 'IGNORE').length} arquivos contendo um total de <strong>{totalOs} Ordens de Serviço</strong>.
               </p>
               
               <div className="flex justify-center gap-4">
