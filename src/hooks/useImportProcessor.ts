@@ -473,73 +473,20 @@ export function useDeleteImport() {
   return useMutation({
     mutationFn: async ({ storeId, targetDates, logIds, rawLogs }: { storeId: string; targetDates: string[]; logIds: string[]; rawLogs?: any[] }) => {
       
-      const isExpenseImport = rawLogs?.some(l => l.os_count === 0 && l.total_os === 0);
-      
-      if (isExpenseImport) {
-        // Para despesas, usamos a data exata de criação do lote para remover exatamente aquelas transações inseridas
-        const batchCreatedAts = rawLogs?.filter(l => l.os_count === 0 && l.total_os === 0).map(l => l.created_at) || [];
-        
-        let q = supabase.from('transactions').delete().in('created_at', batchCreatedAts);
-        if (storeId === null || storeId === 'GLOBAL') {
-          q = q.is('store_id', null);
-        } else {
-          q = q.eq('store_id', storeId);
-        }
-        const { error: err1 } = await q;
-        if (err1) throw err1;
-        
-      } else {
-        // 1. Apagar as transações financeiras oriundas de OS (extrato)
-        const { error: err1 } = await supabase
-          .from('transactions')
-          .delete()
-          .eq('store_id', storeId)
-          .in('occurred_at', targetDates)
-          .like('title', 'OS #%');
-        if (err1) throw err1;
-      }
-        
-      if (!isExpenseImport) {
-        // 2. Apagar recebíveis pendentes/recebidos atrelados a essa data
-        const { error: err2 } = await supabase
-          .from('receivables')
-          .delete()
-          .eq('store_id', storeId)
-          .in('date', targetDates);
-        if (err2) throw err2;
-          
-        // 3. Apagar conciliação daquela data
-        const { error: err3 } = await supabase
-          .from('reconciliations')
-          .delete()
-          .eq('store_id', storeId)
-          .in('date', targetDates);
-        if (err3) throw err3;
-          
-        // 4. Limpar o Pátio (carros fechados nestes dias, e os 'em_aberto', 'pago_parcial')
-        let orQuery = 'status.in.("em_aberto","pago_parcial")';
-        if (targetDates && targetDates.length > 0) {
-          const quotedDates = targetDates.map(d => `"${d}"`).join(',');
-          orQuery = `closed_at.in.(${quotedDates}),${orQuery}`;
-        }
-        
-        const { error: err4 } = await supabase
-          .from('patio_os')
-          .delete()
-          .eq('store_id', storeId)
-          .or(orQuery);
-        if (err4) throw err4;
-      }
-        
-      // 5. Apagar os próprios logs
-      const { data: d5, error: err5 } = await supabase
-        .from('import_logs')
-        .delete()
-        .in('id', logIds)
-        .select();
-      
-      console.log('Delete logs result:', { d5, err5, logIds });
-      if (err5) throw err5;
+      const isExpenseImport = rawLogs?.some(l => l.os_count === 0 && l.total_os === 0) || false;
+      const batchCreatedAts = isExpenseImport 
+        ? (rawLogs?.filter(l => l.os_count === 0 && l.total_os === 0).map(l => l.created_at) || [])
+        : [];
+
+      const { error } = await supabase.rpc('delete_import_batch', {
+        p_store_id: storeId === 'GLOBAL' ? null : storeId,
+        p_target_dates: targetDates,
+        p_is_expense: isExpenseImport,
+        p_log_ids: logIds,
+        p_batch_created_ats: batchCreatedAts
+      });
+
+      if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['import_logs'] });
