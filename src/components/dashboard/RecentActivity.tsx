@@ -17,9 +17,10 @@ export function RecentActivity({ monthStr }: { monthStr: string }) {
     const [year, month] = monthStr.split('-');
     
     // Filtrar as do mês selecionado (para maiores OSs)
+    // Filtrar as do mês selecionado (para maiores OSs)
     const osDoMes = allOs.filter(os => {
-      if (!os.created_at) return false;
-      const osDate = new Date(os.created_at);
+      if (!os.opened_at) return false;
+      const osDate = new Date(os.opened_at);
       return osDate.getFullYear() === parseInt(year) && (osDate.getMonth() + 1) === parseInt(month);
     });
 
@@ -33,8 +34,8 @@ export function RecentActivity({ monthStr }: { monthStr: string }) {
     const topAtrasadas = allOs
       .filter(os => os.status === 'em_aberto' || os.status === 'pago_parcial')
       .sort((a, b) => {
-        // Ordenar pela data de criação mais antiga (mais tempo parado)
-        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        // Ordenar pela data de abertura mais antiga (mais tempo parado) ou por days_open
+        return (b.days_open || 0) - (a.days_open || 0);
       })
       .slice(0, 3);
 
@@ -47,7 +48,7 @@ export function RecentActivity({ monthStr }: { monthStr: string }) {
 
   const renderOsItem = (os: any, idx: number, type: 'maior' | 'atrasada') => {
     const storeName = stores.find(s => s.id === os.store_id)?.name || os.store_id;
-    const date = new Date(os.created_at).toLocaleDateString('pt-BR');
+    const date = new Date(os.opened_at || new Date()).toLocaleDateString('pt-BR');
     const isMaior = type === 'maior';
 
     return (
@@ -81,7 +82,7 @@ export function RecentActivity({ monthStr }: { monthStr: string }) {
             </div>
             {!isMaior && (
               <div className="text-[10px] text-[var(--color-accent-danger)] mt-1 opacity-80">
-                Parada há {Math.floor((new Date().getTime() - new Date(os.created_at).getTime()) / (1000 * 3600 * 24))} dias
+                Parada há {os.days_open || 0} dias
               </div>
             )}
           </div>
