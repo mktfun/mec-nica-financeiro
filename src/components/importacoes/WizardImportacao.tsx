@@ -10,6 +10,7 @@ import * as XLSX from 'xlsx';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { extractNumber } from '@/lib/parsers/numberUtils';
 import { useBulkInsertTransactions } from '@/hooks/useTransactions';
+import { supabase } from '@/lib/supabase';
 
 interface WizardImportacaoProps {
   category: string;
@@ -75,6 +76,31 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
         };
       });
       await insertTxs(txsToInsert);
+
+      // Create import_logs entries for traceability in UI
+      const storesSet = Array.from(new Set(txsToInsert.map(tx => tx.store_id)));
+      const logsToInsert = storesSet.map(storeId => {
+        const txsForStore = txsToInsert.filter(tx => tx.store_id === storeId);
+        const storeName = txsForStore[0].store_name;
+        const totalAmt = txsForStore.reduce((acc, t) => acc + t.amount, 0);
+        // Usar um sufixo no store_name para ajudar a diferenciar visualmente
+        const displayName = isOfx ? `[OFX] ${storeName}` : `[Maquininha] ${storeName}`;
+        
+        return {
+          store_id: storeId,
+          store_name: displayName,
+          target_date: new Date().toISOString().split('T')[0],
+          total_os: isOfx ? 0 : totalAmt, // Hackzinho visual se necessário
+          os_count: isOfx ? 1 : 1, // Impede que caia como "Lote Despesas" no filtro
+          total_paid_all: totalAmt,
+          receivables_count: 0
+        };
+      });
+
+      if (logsToInsert.length > 0) {
+         await supabase.from('import_logs').upsert(logsToInsert, { onConflict: 'store_id,target_date' });
+      }
+
       onSuccess();
     } catch(e) {
       console.error(e);
