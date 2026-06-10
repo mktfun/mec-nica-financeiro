@@ -175,10 +175,21 @@ function ImportacoesPage() {
                           
                           <div className="mt-4 md:mt-0 ml-14 md:ml-0 flex items-center gap-6">
                             <div className="text-right hidden sm:block">
-                              <div className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5">Lote OS</div>
-                              <div className="font-mono font-semibold text-lg text-[var(--text-primary)]">
-                                <AnimatedNumber value={Number(log.total_os || 0)} format="currency" />
-                              </div>
+                              {log.os_count === 0 && Number(log.total_os || 0) > 0 ? (
+                                <>
+                                  <div className="text-xs text-[var(--color-accent-danger)] uppercase tracking-wider mb-0.5 font-bold">Lote Despesas</div>
+                                  <div className="font-mono font-semibold text-lg text-[var(--color-accent-danger)]">
+                                    -<AnimatedNumber value={Number(log.total_os || 0)} format="currency" />
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <div className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5">Lote OS</div>
+                                  <div className="font-mono font-semibold text-lg text-[var(--text-primary)]">
+                                    <AnimatedNumber value={Number(log.total_os || 0)} format="currency" />
+                                  </div>
+                                </>
+                              )}
                             </div>
 
                             {isConfirming ? (

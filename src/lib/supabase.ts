@@ -35,6 +35,7 @@ export type ReconciliationRow = {
   ofx_imported?: boolean;
   bank_divergence?: number;
   machine_fees?: number;
+  bank_total?: number;
 };
 
 export type AlertRow = {

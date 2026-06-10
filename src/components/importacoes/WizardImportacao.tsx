@@ -8,6 +8,7 @@ import { UploadCloud, CheckCircle2, X, FileType2, Link as LinkIcon, ArrowRight, 
 import { useStores } from '@/hooks/useStores';
 import * as XLSX from 'xlsx';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { extractNumber } from '@/lib/parsers/numberUtils';
 
 interface WizardImportacaoProps {
   category: string;
@@ -99,8 +100,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
       
       const status = statusIndex !== -1 ? String(row[statusIndex] || '').toLowerCase() : 'aprovada';
       if (status === 'aprovada' || status === 'pago') {
-        const valStr = String(row[valueIndex] || '0');
-        const val = parseFloat(valStr.replace(',', '.'));
+        const val = extractNumber(row[valueIndex]);
         const estab = estabIndex !== -1 ? String(row[estabIndex] || 'DESCONHECIDO') : 'DESCONHECIDO';
         const cnpj = cnpjIndex !== -1 ? String(row[cnpjIndex] || '') : '';
         

@@ -6,7 +6,7 @@ import { CheckCircle2, CalendarDays, Store, AlertTriangle, ChevronRight, CreditC
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef } from 'react';
 import { useStores } from '@/hooks/useStores';
-import { useConciliacaoResumo, useConciliacaoDetalhes, useSaveDailyCash } from '@/hooks/useConciliacao';
+import { useConciliacaoResumo, useConciliacaoDetalhes } from '@/hooks/useConciliacao';
 import { getDefaultDate } from '@/lib/utils';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
@@ -21,28 +21,10 @@ function ConciliacaoPage() {
   const { data: resumo, isLoading: loadingResumo, refetch: refetchResumo } = useConciliacaoResumo(selectedDate);
   const { data: detalhes = [], isLoading: loadingDetalhes, refetch: refetchDetalhes } = useConciliacaoDetalhes(selectedDate);
 
-  const { mutate: saveDailyCash } = useSaveDailyCash();
-  
-  const [cashValues, setCashValues] = useState<Record<string, string>>({});
-
   const isLoading = loadingStores || loadingResumo || loadingDetalhes;
 
   const resultado = resumo?.totalDivergence || 0;
   const isApproved = resultado === 0 && (resumo?.approved || 0) > 0;
-  
-  const handleSaveCash = (storeId: string) => {
-    const valueStr = cashValues[storeId];
-    if (!valueStr) return;
-    const numValue = parseFloat(valueStr.replace(',', '.'));
-    if (!isNaN(numValue) && numValue >= 0) {
-      saveDailyCash({ storeId, value: numValue, date: selectedDate });
-      setCashValues(prev => {
-        const next = { ...prev };
-        delete next[storeId];
-        return next;
-      });
-    }
-  };
 
   const handleDayChange = (offset: number) => {
     const d = new Date(selectedDate + 'T12:00:00');
@@ -50,10 +32,9 @@ function ConciliacaoPage() {
     setSelectedDate(d.toISOString().substring(0, 10));
   };
 
-  const totalFisico = detalhes.reduce((acc, r) => acc + (r.daily_cash || 0), 0);
-  const totalMaquininha = detalhes.reduce((acc, r) => acc + (r.machine_total || 0), 0);
   const totalSistema = detalhes.reduce((acc, r) => acc + (r.financial_total || 0), 0);
-  const divergenciaGlobal = totalSistema - (totalFisico + totalMaquininha);
+  const totalBancario = detalhes.reduce((acc, r) => acc + ((r as any).bank_total || 0), 0);
+  const divergenciaGlobal = totalSistema - totalBancario;
 
   return (
     <AppShell>
@@ -134,12 +115,8 @@ function ConciliacaoPage() {
                   <p className="text-xl font-display font-bold"><AnimatedNumber value={totalSistema} format="currency" /></p>
                 </div>
                 <div>
-                  <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Declarado Físico</p>
-                  <p className="text-xl font-display font-bold"><AnimatedNumber value={totalFisico} format="currency" /></p>
-                </div>
-                <div>
-                  <p className="text-xs text-[var(--color-primary)] uppercase tracking-wider mb-1">Total Maquininhas</p>
-                  <p className="text-xl font-display font-bold text-[var(--color-primary)]"><AnimatedNumber value={totalMaquininha} format="currency" /></p>
+                  <p className="text-xs text-[var(--color-primary)] uppercase tracking-wider mb-1">Extrato Bancário</p>
+                  <p className="text-xl font-display font-bold text-[var(--color-primary)]"><AnimatedNumber value={totalBancario} format="currency" /></p>
                 </div>
               </div>
             </motion.div>
@@ -155,11 +132,10 @@ function ConciliacaoPage() {
                 {stores.map(store => {
                   const rec = detalhes.find(r => r.store_id === store.id);
                   const sys = rec?.financial_total || 0;
-                  const fis = rec?.daily_cash || 0;
-                  const maq = rec?.machine_total || 0;
-                  const div = sys - (fis + maq);
+                  const bank = (rec as any)?.bank_total || 0;
+                  const div = sys - bank;
                   
-                  const hasDeclarations = (rec?.daily_cash !== undefined && rec?.daily_cash !== null) || (rec?.machine_total !== undefined && rec?.machine_total !== null);
+                  const hasDeclarations = ((rec as any)?.bank_total !== undefined && (rec as any)?.bank_total !== null);
                   const isStoreOk = hasDeclarations && Math.abs(div) < 0.01;
                   const isStoreDivergent = hasDeclarations && Math.abs(div) >= 0.01;
 
@@ -180,31 +156,8 @@ function ConciliacaoPage() {
                         </div>
                         
                         <div className="min-w-[130px]">
-                          <p className="text-[10px] text-[var(--color-primary)] opacity-80 uppercase tracking-wider mb-1">Apurado Maquininha</p>
-                          <p className="font-display font-medium text-white"><AnimatedNumber value={maq} format="currency" /></p>
-                        </div>
-
-                        <div className="min-w-[140px]">
-                          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Declarado Físico (R$)</p>
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="number"
-                              min="0"
-                              step="0.01"
-                              placeholder={fis.toFixed(2)}
-                              value={cashValues[store.id] !== undefined ? cashValues[store.id] : ''}
-                              onChange={(e) => setCashValues({ ...cashValues, [store.id]: e.target.value })}
-                              className="w-24 bg-[var(--bg-surface-elevated)] border border-[var(--border-strong)] rounded px-2 py-1 text-sm text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors"
-                            />
-                            {cashValues[store.id] !== undefined && cashValues[store.id] !== '' && (
-                              <button 
-                                onClick={() => handleSaveCash(store.id)}
-                                className="text-xs bg-[var(--color-primary)] text-white px-2 py-1 rounded hover:opacity-90 font-medium"
-                              >
-                                Salvar
-                              </button>
-                            )}
-                          </div>
+                          <p className="text-[10px] text-[var(--color-primary)] opacity-80 uppercase tracking-wider mb-1">Extrato Bancário</p>
+                          <p className="font-display font-medium text-white"><AnimatedNumber value={bank} format="currency" /></p>
                         </div>
 
                         <div className="min-w-[120px] text-right">

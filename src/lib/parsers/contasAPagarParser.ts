@@ -1,5 +1,5 @@
 import * as XLSX from 'xlsx';
-
+import { extractNumber } from '@/lib/parsers/numberUtils';
 export interface ParsedExpense {
   storeName: string;
   amount: number;
@@ -52,23 +52,28 @@ export function parseContasAPagar(workbook: XLSX.WorkBook): ParsedExpense[] {
   // Iterar pelas linhas de dados
   for (let i = headerRowIndex + 1; i < data.length; i++) {
     const row = data[i] || [];
-    const storeName = row[empIndex];
-    if (!storeName || String(storeName).trim() === '') continue; // linha vazia
-    if (String(storeName).toUpperCase() === 'TOTAL') continue; // linha de total
+    const rawStoreName = row[empIndex];
+    if (!rawStoreName || String(rawStoreName).trim() === '') continue; // linha vazia
+
+    const storeStr = String(rawStoreName).trim().toUpperCase();
+    const descStr = descIndex !== -1 && row[descIndex] ? String(row[descIndex]).toUpperCase() : '';
+
+    if (
+      storeStr.includes('TOTAL') || storeStr.includes('SOMA') || storeStr.includes('GERAL') ||
+      descStr.includes('TOTAL') || descStr.includes('SOMA') || descStr.includes('GERAL')
+    ) {
+      continue;
+    }
+
+    const storeName = String(rawStoreName).trim();
 
     // Se tiver valor pago usa ele, senao valor a pagar
     const rawVal = vlPagoIndex !== -1 ? row[vlPagoIndex] : row[vlPagarIndex];
     if (!rawVal) continue;
     
-    // Converte de "1.573,33" para float se for string
-    let amount = 0;
-    if (typeof rawVal === 'number') {
-      amount = rawVal;
-    } else {
-      amount = parseFloat(String(rawVal).replace(/\./g, '').replace(',', '.'));
-    }
+    const amount = extractNumber(rawVal);
 
-    if (isNaN(amount) || amount <= 0) continue;
+    if (amount <= 0) continue;
 
     const description = descIndex !== -1 && row[descIndex] ? String(row[descIndex]) : 'Conta a Pagar Importada';
     const originalStatus = statusIndex !== -1 && row[statusIndex] ? String(row[statusIndex]) : 'PAG';
