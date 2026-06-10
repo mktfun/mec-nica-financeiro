@@ -6,10 +6,9 @@ import { CheckCircle2, CalendarDays, Store, AlertTriangle, ChevronRight, CreditC
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef } from 'react';
 import { useStores } from '@/hooks/useStores';
-import { useConciliacaoResumo, useConciliacaoDetalhes, useSaveDailyCash, useSaveMachineTotal, useSystemTransactions } from '@/hooks/useConciliacao';
+import { useConciliacaoResumo, useConciliacaoDetalhes, useSaveDailyCash } from '@/hooks/useConciliacao';
 import { getDefaultDate } from '@/lib/utils';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { BankReconciliationDashboard } from '@/components/dashboard/BankReconciliationDashboard';
 
 export const Route = createFileRoute('/conciliacao')({
   component: ConciliacaoPage,
@@ -21,7 +20,7 @@ function ConciliacaoPage() {
   const { data: stores = [], isLoading: loadingStores } = useStores();
   const { data: resumo, isLoading: loadingResumo, refetch: refetchResumo } = useConciliacaoResumo(selectedDate);
   const { data: detalhes = [], isLoading: loadingDetalhes, refetch: refetchDetalhes } = useConciliacaoDetalhes(selectedDate);
-  const { data: systemTransactions = [] } = useSystemTransactions(selectedDate);
+
   const { mutate: saveDailyCash } = useSaveDailyCash();
   
   const [cashValues, setCashValues] = useState<Record<string, string>>({});
@@ -223,16 +222,7 @@ function ConciliacaoPage() {
           </>
         )}
 
-        <BankReconciliationDashboard 
-          selectedDate={selectedDate} 
-          stores={stores} 
-          systemTransactions={systemTransactions} 
-          onSuccess={() => {
-            refetchResumo();
-            refetchDetalhes();
-          }} 
-        />
-
+        {/* Removed BankReconciliationDashboard from here as per Spec 032 */}
       </div>
     </AppShell>
   );
