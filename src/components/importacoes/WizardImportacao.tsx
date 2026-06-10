@@ -82,7 +82,9 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
       const logsToInsert = storesSet.map(storeId => {
         const txsForStore = txsToInsert.filter(tx => tx.store_id === storeId);
         const storeName = txsForStore[0].store_name;
-        const totalAmt = txsForStore.reduce((acc, t) => acc + t.amount, 0);
+        const totalIn = txsForStore.filter(t => t.type === 'in' || t.type === 'OFX' || !t.type).reduce((acc, t) => acc + t.amount, 0);
+        const totalOut = txsForStore.filter(t => t.type === 'out').reduce((acc, t) => acc + t.amount, 0);
+        const totalAmt = totalIn - totalOut;
         // Usar um sufixo no store_name para ajudar a diferenciar visualmente
         const displayName = isOfx ? `[OFX] ${storeName}` : `[Maquininha] ${storeName}`;
         

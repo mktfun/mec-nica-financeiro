@@ -182,6 +182,20 @@ function ImportacoesPage() {
                                     -<AnimatedNumber value={Number(log.total_os || 0)} format="currency" />
                                   </div>
                                 </>
+                              ) : log.store_name?.includes('[OFX]') ? (
+                                <>
+                                  <div className="text-xs text-[var(--color-primary)] uppercase tracking-wider mb-0.5 font-bold">Extrato Bancário</div>
+                                  <div className="font-mono font-semibold text-lg text-[var(--color-primary)]">
+                                    <AnimatedNumber value={Number(log.total_paid_all || 0)} format="currency" />
+                                  </div>
+                                </>
+                              ) : log.store_name?.includes('[Maquininha]') ? (
+                                <>
+                                  <div className="text-xs text-[var(--color-accent-teal)] uppercase tracking-wider mb-0.5 font-bold">Lote Maquininha</div>
+                                  <div className="font-mono font-semibold text-lg text-[var(--color-accent-teal)]">
+                                    <AnimatedNumber value={Number(log.total_paid_all || 0)} format="currency" />
+                                  </div>
+                                </>
                               ) : (
                                 <>
                                   <div className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5">Lote OS</div>
