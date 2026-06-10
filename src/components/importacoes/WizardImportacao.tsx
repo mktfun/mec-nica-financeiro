@@ -70,7 +70,6 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
           subtitle: item.storeName,
           amount: item.amount || 0,
           type: item.type === 'in' || item.type === 'out' ? item.type : 'in',
-          status: 'completed',
           occurred_at: item.date || new Date().toISOString(),
           icon_type: isOfx ? 'bank' : 'card',
           source: 'ofx'
