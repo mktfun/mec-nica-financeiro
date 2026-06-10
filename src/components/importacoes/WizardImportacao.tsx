@@ -112,6 +112,22 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
     return items;
   };
 
+  const processOFX = async (file: File) => {
+    const text = await file.text();
+    // Tenta achar a tag ORG (Banco) e ACCTID (Conta)
+    const orgMatch = text.match(/<ORG>(.+?)(?:\r?\n|<)/);
+    const acctMatch = text.match(/<ACCTID>(.+?)(?:\r?\n|<)/);
+    
+    const banco = orgMatch ? orgMatch[1].trim() : 'BANCO DESCONHECIDO';
+    const conta = acctMatch ? acctMatch[1].trim() : 'CONTA DESCONHECIDA';
+    
+    // O alias gerado será "BANCO - CONTA"
+    const alias = `${banco} - ${conta}`;
+    
+    // OFX normal não tem "valor total", mas vamos simular 1 item
+    return [{ storeName: alias, amount: 0, type: 'OFX' }];
+  };
+
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
     setFiles(prev => [...prev, ...acceptedFiles]);
@@ -126,8 +142,12 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
           const items = await processMaquininha(file);
           allItems.push(...items);
           results.push({ fileName: file.name, success: true, count: items.length });
+        } else if (category === 'OFX') {
+          const items = await processOFX(file);
+          allItems.push(...items);
+          results.push({ fileName: file.name, success: true, count: 1 });
         } else {
-          // Placeholder para outras lógicas, para o MVP vamos apenas ler e fingir que achamos a loja no nome do arquivo
+          // Placeholder para outras lógicas (Pátio, etc)
           const guessStoreName = file.name.split('.')[0].toUpperCase();
           allItems.push({ storeName: guessStoreName, amount: 100 });
           results.push({ fileName: file.name, success: true, count: 1 });
