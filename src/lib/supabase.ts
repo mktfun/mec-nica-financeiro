@@ -32,6 +32,9 @@ export type ReconciliationRow = {
   bot_run_id: string | null;
   processed_at: string | null;
   created_at: string;
+  ofx_imported?: boolean;
+  bank_divergence?: number;
+  machine_fees?: number;
 };
 
 export type AlertRow = {

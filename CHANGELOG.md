@@ -2,6 +2,10 @@
 
 Histórico de atualizações e especificações implementadas no sistema.
 
+## [2026-06-10]
+- **[030-conciliacao-bancaria]** Implementação do Match Engine Bancário arquivada. O sistema agora suporta importação de extratos `.ofx` e planilhas de juros de cartão (ex: `JUROS REDE.xlsx`), consolidando transações via `ofxParser` com tolerância paramétrica (R$ 10,00). O Painel Central de Conciliação reflete `machine_fees` e divergências reais contra o saldo líquido das lojas.
+- **[029-import-maquininha]** Leitura Inteligente de Planilhas de Maquininhas arquivada. Adicionada lógica de extração client-side via `xlsx`, mapeamento semi-supervisionado por CNPJ da loja (salvo em cache local) e inclusão da nova coluna na reconciliação diária (`Divergência = Apurado Sistema - (Físico + Maquininha)`).
+
 ## [2026-06-03]
 - **[028-patio-import-store-name]** Extração Inteligente de Loja e Auto-Match nas importações de Pátio arquivados. O parser de OS agora detecta e lê a loja de forma inteligente diretamente pelo cabeçalho `[Nome] - Por Data da OS:` inserido nos arquivos do sistema, substituindo a leitura suja do nome do arquivo. E após isso, executa um cruzamento normalizado, mapeando automaticamente o arquivo para a loja sem pedir clique do usuário se for 100% compativel.
 - **[027-import-history-fix]** Reconstrução do Histórico Retroativo de Lotes e Mapeamento Automático de Despesas arquivados. Foi introduzida a migration resolvendo `UNIQUE NULLS NOT DISTINCT` com permissões RLS fixadas, permitindo a exibição de lotes de Despesas (`Lote Desconhecido`) onde o `store_id` é global. Adicionado algoritmo inteligente (`str.normalize`) na importação de despesas para reconhecer arquivos nomeados pela loja e pular direto para a tela de conclusão. Além disso, incluída a deleção em cascata total cobrindo o status de "Pago Parcial" do Pátio.

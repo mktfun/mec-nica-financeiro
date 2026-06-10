@@ -60,7 +60,7 @@ export function useDashboardSummary(monthStr?: string) {
 
       const { data: recsMonth, error: recMonthErr } = await supabase
         .from('reconciliations')
-        .select('divergence')
+        .select('divergence, machine_fees')
         .gte('date', startOfMonth)
         .lte('date', endOfMonth);
       if (recMonthErr) throw recMonthErr;
@@ -80,7 +80,14 @@ export function useDashboardSummary(monthStr?: string) {
       const rowsAll = txsAllTime ?? [];
       const globalIn = rowsAll.filter(r => r.type === 'in').reduce((s, r) => s + (r.amount ?? 0), 0);
       const globalOut = rowsAll.filter(r => r.type === 'out').reduce((s, r) => s + (r.amount ?? 0), 0);
-      const globalBalance = globalIn - globalOut;
+      
+      const { data: recsAll, error: recsAllErr } = await supabase
+        .from('reconciliations')
+        .select('machine_fees');
+      if (recsAllErr) throw recsAllErr;
+      
+      const totalMachineFees = (recsAll ?? []).reduce((s, r) => s + (r.machine_fees ?? 0), 0);
+      const globalBalance = globalIn - globalOut - totalMachineFees;
 
       return {
         totalIn,
@@ -188,7 +195,13 @@ export function useExtrato(storeId: string, startDate: string, endDate: string) 
       const globalRows = globalData as { amount: number, type: string }[];
       const globalIn = globalRows.filter(r => r.type === 'in').reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
       const globalOut = globalRows.filter(r => r.type === 'out').reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
-      const globalBalance = globalIn - globalOut;
+      
+      let recsQuery = supabase.from('reconciliations').select('machine_fees');
+      if (storeId) recsQuery = recsQuery.eq('store_id', storeId);
+      const { data: recsData } = await recsQuery;
+      const totalMachineFees = (recsData || []).reduce((acc, curr) => acc + Number(curr.machine_fees || 0), 0);
+
+      const globalBalance = globalIn - globalOut - totalMachineFees;
 
       return {
         transactions: rows,

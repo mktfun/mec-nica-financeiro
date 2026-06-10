@@ -262,3 +262,65 @@ export function useConciliacaoDiaria(date: string) {
     }
   });
 }
+
+export function useSaveBankReconciliation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ storeId, date, bankDivergence, machineFees, ofxImported }: { storeId: string; date: string; bankDivergence: number; machineFees: number; ofxImported: boolean }) => {
+      const { data: existing } = await supabase
+        .from('reconciliations')
+        .select('*')
+        .eq('store_id', storeId)
+        .eq('date', date)
+        .maybeSingle();
+        
+      // Recalculate status if necessary, or preserve existing logic
+      const financialTotal = existing?.financial_total || 0;
+      const dailyCash = existing?.daily_cash || 0;
+      const machineTotal = existing?.machine_total || 0;
+      const { divergence, status } = calculateReconciliationStatus(financialTotal, dailyCash, machineTotal);
+
+      const { error } = await supabase
+        .from('reconciliations')
+        .upsert({ 
+          store_id: storeId, 
+          date: date, 
+          bank_divergence: bankDivergence,
+          machine_fees: machineFees,
+          ofx_imported: ofxImported,
+          // Preserve existing necessary fields
+          divergence,
+          status
+        }, { onConflict: 'store_id,date' });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['reconciliations'] });
+    },
+  });
+}
+
+export function useSystemTransactions(date: string) {
+  return useQuery({
+    queryKey: ['system-transactions', date],
+    queryFn: async () => {
+      const startOfDay = `${date}T00:00:00.000Z`;
+      const endOfDay = `${date}T23:59:59.999Z`;
+      const { data, error } = await supabase
+        .from('transactions')
+        .select('*')
+        .gte('created_at', startOfDay)
+        .lte('created_at', endOfDay);
+      if (error) throw error;
+      
+      // Map to SystemTransaction interface
+      return (data || []).map(t => ({
+        id: t.id,
+        amount: t.amount,
+        date: new Date(t.created_at),
+        description: t.description,
+        store_id: t.store_id
+      }));
+    }
+  });
+}
