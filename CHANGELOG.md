@@ -3,6 +3,7 @@
 Histórico de atualizações e especificações implementadas no sistema.
 
 ## [2026-06-10]
+- **[031-unified-mass-import]** Central de Fechamento Massivo (Universal Dropzone) implementada e arquivada. A tela de Conciliação Diária teve seus inputs dispersos unificados em um único componente Drag-and-Drop inteligente usando estilo Apple Liquid Glass. O FileRouter agora classifica automaticamente arquivos `.ofx` e `.xlsx` (detectando se é Maquininha ou Juros pelas colunas) e permite o reconciliamento em massa de todas as lojas simultaneamente com apenas um botão.
 - **[030-conciliacao-bancaria]** Implementação do Match Engine Bancário arquivada. O sistema agora suporta importação de extratos `.ofx` e planilhas de juros de cartão (ex: `JUROS REDE.xlsx`), consolidando transações via `ofxParser` com tolerância paramétrica (R$ 10,00). O Painel Central de Conciliação reflete `machine_fees` e divergências reais contra o saldo líquido das lojas.
 - **[029-import-maquininha]** Leitura Inteligente de Planilhas de Maquininhas arquivada. Adicionada lógica de extração client-side via `xlsx`, mapeamento semi-supervisionado por CNPJ da loja (salvo em cache local) e inclusão da nova coluna na reconciliação diária (`Divergência = Apurado Sistema - (Físico + Maquininha)`).
 

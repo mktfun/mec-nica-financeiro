@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Card } from '@/components/ui/Card';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { CheckCircle2, AlertTriangle, Store, FileText, Upload, Save } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, FileText, Save, Store } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSaveBankReconciliation } from '@/hooks/useConciliacao';
+import { useSaveBankReconciliation, useSaveMachineTotal } from '@/hooks/useConciliacao';
 import { parseOFX, matchTransactions, OFXTransaction, MatchResult, SystemTransaction } from '@/lib/ofxParser';
 import { parseJurosRede } from '@/lib/parsers/jurosRedeParser';
 import * as XLSX from 'xlsx';
+import { UniversalDropzone, ClassifiedFile, FileTypeCategory } from '@/components/ui/UniversalDropzone';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 export function BankReconciliationDashboard({ 
   selectedDate, 
@@ -19,82 +21,159 @@ export function BankReconciliationDashboard({
   systemTransactions: SystemTransaction[]; 
   onSuccess: () => void; 
 }) {
-  const [ofxFile, setOfxFile] = useState<File | null>(null);
-  const [xlsxFile, setXlsxFile] = useState<File | null>(null);
+  const [classifiedFiles, setClassifiedFiles] = useState<ClassifiedFile[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [matchResult, setMatchResult] = useState<MatchResult | null>(null);
+  const [storeMatchResults, setStoreMatchResults] = useState<Record<string, MatchResult>>({});
   const [juros, setJuros] = useState<any[]>([]);
+  const [machineTotals, setMachineTotals] = useState<Record<string, number>>({});
   const [isSaved, setIsSaved] = useState(false);
 
   const [mappingModalOpen, setMappingModalOpen] = useState(false);
   const [selectedStoreId, setSelectedStoreId] = useState('');
-  const [ofxStoreId, setOfxStoreId] = useState<string | null>(null);
+  
+  const [unmappedFiles, setUnmappedFiles] = useState<ClassifiedFile[]>([]);
+  const [fileStoreMappings, setFileStoreMappings] = useState<Record<string, string>>({});
 
   const { mutateAsync: saveBankReconciliation } = useSaveBankReconciliation();
+  const { mutateAsync: saveMachineTotal } = useSaveMachineTotal();
+
+  const handleFilesAccepted = (files: ClassifiedFile[]) => {
+    setClassifiedFiles(prev => [...prev, ...files]);
+  };
 
   const handleProcessClick = () => {
-    if (!ofxFile) return;
+    if (classifiedFiles.length === 0) return;
     
-    // Tentar auto-mapear pelo nome do arquivo
-    const fileName = ofxFile.name.toUpperCase();
-    let matchedStoreId: string | null = null;
+    const unmapped: ClassifiedFile[] = [];
+    const mappings: Record<string, string> = {};
     
-    // 1. Tentar por nome da loja
-    const storeByName = stores.find(s => fileName.includes(s.name.toUpperCase()));
-    if (storeByName) {
-      matchedStoreId = storeByName.id;
-    } else {
-      // 2. Tentar por mapping salvo
-      const savedMapping = localStorage.getItem('ofx_filename_mapping');
-      if (savedMapping) {
-        const parsed = JSON.parse(savedMapping);
-        if (parsed[fileName]) {
-          matchedStoreId = parsed[fileName];
+    classifiedFiles.forEach(cf => {
+      if (cf.category === 'JUROS' || cf.category === 'UNKNOWN') return; // Juros doesn't need upfront mapping, it searches internally
+      
+      const fileName = cf.file.name.toUpperCase();
+      let matchedStoreId: string | null = null;
+      
+      const storeByName = stores.find(s => fileName.includes(s.name.toUpperCase()));
+      if (storeByName) {
+        matchedStoreId = storeByName.id;
+      } else {
+        const savedMapping = localStorage.getItem('file_store_mapping');
+        if (savedMapping) {
+          const parsed = JSON.parse(savedMapping);
+          if (parsed[fileName]) {
+            matchedStoreId = parsed[fileName];
+          }
         }
       }
-    }
+
+      if (matchedStoreId) {
+        mappings[cf.file.name] = matchedStoreId;
+      } else {
+        unmapped.push(cf);
+      }
+    });
     
-    if (matchedStoreId) {
-      setOfxStoreId(matchedStoreId);
-      processFiles(matchedStoreId);
-    } else {
+    setFileStoreMappings(mappings);
+    
+    if (unmapped.length > 0) {
+      setUnmappedFiles(unmapped);
       setMappingModalOpen(true);
+    } else {
+      processFiles(mappings);
     }
   };
 
   const confirmMapping = () => {
-    if (!selectedStoreId || !ofxFile) return;
+    if (!selectedStoreId || unmappedFiles.length === 0) return;
     
-    const fileName = ofxFile.name.toUpperCase();
-    const savedMapping = localStorage.getItem('ofx_filename_mapping');
+    const currentFile = unmappedFiles[0];
+    const fileName = currentFile.file.name.toUpperCase();
+    const savedMapping = localStorage.getItem('file_store_mapping');
     const parsed = savedMapping ? JSON.parse(savedMapping) : {};
     parsed[fileName] = selectedStoreId;
-    localStorage.setItem('ofx_filename_mapping', JSON.stringify(parsed));
+    localStorage.setItem('file_store_mapping', JSON.stringify(parsed));
     
-    setOfxStoreId(selectedStoreId);
-    setMappingModalOpen(false);
-    processFiles(selectedStoreId);
+    const newMappings = { ...fileStoreMappings, [currentFile.file.name]: selectedStoreId };
+    setFileStoreMappings(newMappings);
+    
+    const remainingUnmapped = unmappedFiles.slice(1);
+    setUnmappedFiles(remainingUnmapped);
+    setSelectedStoreId('');
+    
+    if (remainingUnmapped.length === 0) {
+      setMappingModalOpen(false);
+      processFiles(newMappings);
+    }
   };
 
-  const processFiles = async (storeId: string) => {
-    if (!ofxFile) return;
+  const processFiles = async (mappings: Record<string, string>) => {
     setIsProcessing(true);
     try {
-      // 1. OFX
-      const ofxText = await ofxFile.text();
-      const ofxTransactions = parseOFX(ofxText);
-      
-      const storeSysTxs = systemTransactions.filter(t => t.store_id === storeId);
-      const matched = matchTransactions(ofxTransactions, storeSysTxs, 10);
-      setMatchResult(matched);
+      const results: Record<string, MatchResult> = {};
+      const storeOfxMap: Record<string, OFXTransaction[]> = {};
+      let allJuros: any[] = [];
+      const mTotals: Record<string, number> = {};
 
-      // 2. XLSX Juros
-      if (xlsxFile) {
-        const buffer = await xlsxFile.arrayBuffer();
-        const workbook = XLSX.read(buffer, { type: 'buffer' });
-        const expenses = parseJurosRede(workbook);
-        setJuros(expenses);
+      for (const cf of classifiedFiles) {
+        const file = cf.file;
+        const storeId = mappings[file.name];
+
+        if (cf.category === 'OFX' && storeId) {
+          const ofxText = await file.text();
+          const ofxTransactions = parseOFX(ofxText);
+          if (!storeOfxMap[storeId]) storeOfxMap[storeId] = [];
+          storeOfxMap[storeId].push(...ofxTransactions);
+        } else if (cf.category === 'JUROS') {
+          const buffer = await file.arrayBuffer();
+          const workbook = XLSX.read(buffer, { type: 'buffer' });
+          const expenses = parseJurosRede(workbook);
+          allJuros = [...allJuros, ...expenses];
+        } else if (cf.category === 'MAQUININHA' && storeId) {
+          const buffer = await file.arrayBuffer();
+          const workbook = XLSX.read(buffer, { type: 'buffer' });
+          const sheetName = workbook.SheetNames[0];
+          const sheet = workbook.Sheets[sheetName];
+          const json = XLSX.utils.sheet_to_json<any[]>(sheet, { header: 1 });
+          
+          let headerRowIndex = 0;
+          for (let i = 0; i < Math.min(10, json.length); i++) {
+            const row = json[i];
+            if (row && row.includes('CNPJ') && row.includes('nome do estabelecimento')) {
+              headerRowIndex = i;
+              break;
+            }
+          }
+
+          const headers = json[headerRowIndex] || [];
+          const statusIndex = headers.findIndex((h: string) => typeof h === 'string' && h.toLowerCase().trim() === 'status da venda');
+          const valueIndex = headers.findIndex((h: string) => typeof h === 'string' && h.toLowerCase().trim() === 'valor da venda original');
+
+          let total = 0;
+          if (statusIndex !== -1 && valueIndex !== -1) {
+            for (let i = headerRowIndex + 1; i < json.length; i++) {
+              const row = json[i];
+              if (!row || row.length === 0) continue;
+              const status = String(row[statusIndex] || '').toLowerCase();
+              if (status === 'aprovada' || status === 'pago') {
+                const val = parseFloat(String(row[valueIndex]).replace(',', '.'));
+                if (!isNaN(val)) total += val;
+              }
+            }
+          }
+          if (!mTotals[storeId]) mTotals[storeId] = 0;
+          mTotals[storeId] += total;
+        }
       }
+      
+      for (const storeId of Object.keys(storeOfxMap)) {
+         const storeSysTxs = systemTransactions.filter(t => t.store_id === storeId);
+         const matched = matchTransactions(storeOfxMap[storeId], storeSysTxs, 10);
+         results[storeId] = matched;
+      }
+      
+      setStoreMatchResults(results);
+      setJuros(allJuros);
+      setMachineTotals(mTotals);
     } catch (e) {
       console.error(e);
       alert('Erro ao processar arquivos.');
@@ -104,36 +183,51 @@ export function BankReconciliationDashboard({
   };
 
   const handleSave = async () => {
-    if (!matchResult || !ofxStoreId) return;
     setIsProcessing(true);
     try {
-      const store = stores.find(s => s.id === ofxStoreId);
-      if (!store) throw new Error('Loja não encontrada');
-
-      const storeJuros = juros.filter(j => j.storeName.toUpperCase().includes(store.name.toUpperCase()) || store.name.toUpperCase().includes(j.storeName.toUpperCase()));
-      const fees = storeJuros.reduce((sum, j) => sum + j.amount, 0);
-
-      const storeSysTxs = systemTransactions.filter(t => t.store_id === store.id);
-      const sysTotal = storeSysTxs.reduce((sum, t) => sum + t.amount, 0);
+      const storeIds = new Set([...Object.keys(storeMatchResults), ...Object.keys(machineTotals)]);
       
-      const storeMatched = matchResult.matched.filter(m => m.system.store_id === store.id);
-      const ofxTotal = storeMatched.reduce((sum, m) => sum + m.ofx.amount, 0);
-      
-      const divergence = sysTotal - ofxTotal;
+      for (const storeId of storeIds) {
+        const store = stores.find(s => s.id === storeId);
+        if (!store) continue;
 
-      await saveBankReconciliation({
-        storeId: store.id,
-        date: selectedDate,
-        bankDivergence: divergence,
-        machineFees: fees,
-        ofxImported: true
-      });
+        // Maquininha Save
+        if (machineTotals[storeId]) {
+          await saveMachineTotal({
+            storeId: store.id,
+            machineTotal: machineTotals[storeId],
+            date: selectedDate
+          });
+        }
+
+        // Bank Reconciliation Save (if OFX was present)
+        if (storeMatchResults[storeId]) {
+          const storeJuros = juros.filter(j => j.storeName.toUpperCase().includes(store.name.toUpperCase()) || store.name.toUpperCase().includes(j.storeName.toUpperCase()));
+          const fees = storeJuros.reduce((sum, j) => sum + j.amount, 0);
+
+          const storeSysTxs = systemTransactions.filter(t => t.store_id === store.id);
+          const sysTotal = storeSysTxs.reduce((sum, t) => sum + t.amount, 0);
+          
+          const matchResult = storeMatchResults[storeId];
+          const ofxTotal = matchResult.matched.reduce((sum, m) => sum + m.ofx.amount, 0);
+          
+          const divergence = sysTotal - ofxTotal;
+
+          await saveBankReconciliation({
+            storeId: store.id,
+            date: selectedDate,
+            bankDivergence: divergence,
+            machineFees: fees,
+            ofxImported: true
+          });
+        }
+      }
 
       setIsSaved(true);
       onSuccess();
     } catch (e) {
       console.error(e);
-      alert('Erro ao salvar conciliação bancária.');
+      alert('Erro ao salvar conciliação bancária massiva.');
     } finally {
       setIsProcessing(false);
     }
@@ -146,119 +240,105 @@ export function BankReconciliationDashboard({
         className="bg-[var(--color-accent-teal)]/20 border border-[var(--color-accent-teal)] p-8 rounded-2xl flex flex-col items-center justify-center text-center shadow-[0_0_50px_-10px_var(--color-accent-teal)] mt-8"
       >
         <CheckCircle2 size={64} className="text-[var(--color-accent-teal)] mb-4" />
-        <h2 className="text-2xl font-bold text-white mb-2">Conciliação Bancária Salva!</h2>
-        <p className="text-[var(--text-secondary)]">Os dados de OFX e Custos foram integrados com sucesso no fluxo financeiro.</p>
+        <h2 className="text-2xl font-bold text-white mb-2">Conciliação Massiva Concluída!</h2>
+        <p className="text-[var(--text-secondary)]">Todos os dados de Extratos, Maquininhas e Custos foram integrados com sucesso no fluxo financeiro.</p>
       </motion.div>
     );
   }
 
+  const hasResults = Object.keys(storeMatchResults).length > 0 || Object.keys(machineTotals).length > 0 || juros.length > 0;
+
   return (
-    <Card className="p-6 mt-8 border-t-4 border-t-[var(--color-primary)] bg-[var(--bg-surface-elevated)] backdrop-blur-xl shadow-2xl">
+    <Card className="p-6 mt-8 border-t-4 border-t-[var(--color-primary)] bg-[var(--bg-surface-elevated)] backdrop-blur-xl shadow-2xl transition-all">
       <div className="flex items-center gap-3 mb-6">
         <FileText className="text-[var(--color-primary)]" size={24} />
-        <h2 className="text-xl font-display font-bold text-white">Fechamento Bancário (OFX) e Custos (XLSX)</h2>
+        <h2 className="text-xl font-display font-bold text-white">Central de Fechamento Massivo</h2>
       </div>
 
-      {!matchResult ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div className="border-2 border-dashed border-white/20 rounded-xl p-6 flex flex-col items-center justify-center text-center hover:border-[var(--color-primary)] transition-colors bg-black/20">
-            <input type="file" accept=".ofx" id="ofx-upload" hidden onChange={e => setOfxFile(e.target.files?.[0] || null)} />
-            <label htmlFor="ofx-upload" className="cursor-pointer flex flex-col items-center">
-              <Upload size={32} className="text-[var(--text-tertiary)] mb-3" />
-              <p className="font-semibold text-white mb-1">Extrato Bancário (.OFX)</p>
-              <p className="text-xs text-[var(--text-secondary)] mb-3">Arraste ou clique para selecionar</p>
-              {ofxFile && <span className="text-[var(--color-accent-teal)] text-sm font-medium">{ofxFile.name}</span>}
-            </label>
-          </div>
-
-          <div className="border-2 border-dashed border-white/20 rounded-xl p-6 flex flex-col items-center justify-center text-center hover:border-[var(--color-primary)] transition-colors bg-black/20">
-            <input type="file" accept=".xlsx" id="xlsx-upload" hidden onChange={e => setXlsxFile(e.target.files?.[0] || null)} />
-            <label htmlFor="xlsx-upload" className="cursor-pointer flex flex-col items-center">
-              <Upload size={32} className="text-[var(--text-tertiary)] mb-3" />
-              <p className="font-semibold text-white mb-1">Custos / Juros Rede (.XLSX)</p>
-              <p className="text-xs text-[var(--text-secondary)] mb-3">Opcional para cálculo de lucro</p>
-              {xlsxFile && <span className="text-[var(--color-accent-teal)] text-sm font-medium">{xlsxFile.name}</span>}
-            </label>
-          </div>
+      {!hasResults ? (
+        <div className="mb-6">
+          <UniversalDropzone onFilesAccepted={handleFilesAccepted} isProcessing={isProcessing} />
+          {classifiedFiles.length > 0 && (
+             <div className="mt-4 bg-black/30 p-4 rounded-xl border border-white/10">
+               <h4 className="text-sm font-semibold mb-2">Arquivos na fila:</h4>
+               <ul className="text-xs space-y-1 text-[var(--text-secondary)]">
+                 {classifiedFiles.map((cf, i) => (
+                   <li key={i} className="flex items-center justify-between">
+                     <span>{cf.file.name}</span>
+                     <span className="bg-white/10 px-2 py-0.5 rounded text-[10px]">{cf.category}</span>
+                   </li>
+                 ))}
+               </ul>
+             </div>
+          )}
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-black/30 p-4 rounded-xl border border-white/10">
-              <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Total OFX Lido</p>
-              <p className="text-xl font-bold"><AnimatedNumber value={matchResult.matched.reduce((s,m) => s + m.ofx.amount, 0) + matchResult.unmatchedOfx.reduce((s,o) => s + o.amount, 0)} format="currency" /></p>
+              <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Maquininhas Importadas</p>
+              <p className="text-xl font-bold text-orange-400">
+                <AnimatedNumber value={Object.values(machineTotals).reduce((a,b) => a+b, 0)} format="currency" />
+              </p>
             </div>
             <div className="bg-[var(--color-accent-teal)]/10 p-4 rounded-xl border border-[var(--color-accent-teal)]/30">
-              <p className="text-xs text-[var(--color-accent-teal)] uppercase tracking-wider mb-1">Match Sucesso</p>
-              <p className="text-xl font-bold text-[var(--color-accent-teal)]">{matchResult.matched.length} transações</p>
+              <p className="text-xs text-[var(--color-accent-teal)] uppercase tracking-wider mb-1">Match OFX Sucesso</p>
+              <p className="text-xl font-bold text-[var(--color-accent-teal)]">
+                {Object.values(storeMatchResults).reduce((sum, mr) => sum + mr.matched.length, 0)} transações
+              </p>
             </div>
             <div className="bg-[var(--color-accent-danger)]/10 p-4 rounded-xl border border-[var(--color-accent-danger)]/30">
-              <p className="text-xs text-[var(--color-accent-danger)] uppercase tracking-wider mb-1">Incongruências</p>
-              <p className="text-xl font-bold text-[var(--color-accent-danger)]">{matchResult.unmatchedOfx.length + matchResult.unmatchedSystem.length} alertas</p>
+              <p className="text-xs text-[var(--color-accent-danger)] uppercase tracking-wider mb-1">Incongruências OFX</p>
+              <p className="text-xl font-bold text-[var(--color-accent-danger)]">
+                {Object.values(storeMatchResults).reduce((sum, mr) => sum + mr.unmatchedOfx.length + mr.unmatchedSystem.length, 0)} alertas
+              </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <h3 className="font-semibold text-[var(--color-accent-teal)] flex items-center gap-2">
-                <CheckCircle2 size={18} /> Transações Encontradas com Sucesso
-              </h3>
-              <div className="bg-black/40 rounded-xl border border-white/10 max-h-64 overflow-y-auto p-2 space-y-2">
-                {matchResult.matched.map((m, i) => (
-                  <div key={i} className="bg-white/5 p-3 rounded-lg flex justify-between items-center text-sm">
-                    <div>
-                      <p className="font-medium text-white">{m.system.description || m.ofx.memo}</p>
-                      <p className="text-xs text-[var(--text-tertiary)]">{m.ofx.date.toLocaleDateString()}</p>
-                    </div>
-                    <span className="font-bold text-[var(--color-accent-teal)]">
-                      <AnimatedNumber value={m.ofx.amount} format="currency" />
-                    </span>
-                  </div>
-                ))}
-                {matchResult.matched.length === 0 && <p className="text-sm text-center text-white/50 p-4">Nenhum match encontrado</p>}
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <h3 className="font-semibold text-[var(--color-accent-danger)] flex items-center gap-2">
-                <AlertTriangle size={18} /> Incongruências / Anomalias
-              </h3>
-              <div className="bg-[var(--color-accent-danger)]/5 rounded-xl border border-[var(--color-accent-danger)]/20 max-h-64 overflow-y-auto p-2 space-y-2">
-                {matchResult.unmatchedOfx.map((o, i) => (
-                  <div key={`ofx-${i}`} className="bg-black/40 p-3 rounded-lg flex justify-between items-center text-sm border-l-2 border-[var(--color-accent-danger)]">
-                    <div>
-                      <p className="font-medium text-white">Extrato: {o.memo}</p>
-                      <p className="text-xs text-[var(--color-accent-danger)]">Não consta no sistema</p>
-                    </div>
-                    <span className="font-bold"><AnimatedNumber value={o.amount} format="currency" /></span>
-                  </div>
-                ))}
-                {matchResult.unmatchedSystem.map((s, i) => (
-                  <div key={`sys-${i}`} className="bg-black/40 p-3 rounded-lg flex justify-between items-center text-sm border-l-2 border-orange-500">
-                    <div>
-                      <p className="font-medium text-white">Sistema: {s.description || 'Venda'}</p>
-                      <p className="text-xs text-orange-500">Não consta no extrato</p>
-                    </div>
-                    <span className="font-bold"><AnimatedNumber value={s.amount} format="currency" /></span>
-                  </div>
-                ))}
-                {(matchResult.unmatchedOfx.length === 0 && matchResult.unmatchedSystem.length === 0) && 
-                  <p className="text-sm text-center text-white/50 p-4">Nenhuma anomalia encontrada</p>
-                }
-              </div>
-            </div>
-          </div>
+          {/* Renderizar Incongruencias Globalmente */}
+          {Object.values(storeMatchResults).some(mr => mr.unmatchedOfx.length > 0 || mr.unmatchedSystem.length > 0) && (
+             <div className="space-y-4 mt-6">
+               <h3 className="font-semibold text-[var(--color-accent-danger)] flex items-center gap-2">
+                 <AlertTriangle size={18} /> Incongruências / Anomalias Bancárias
+               </h3>
+               <div className="bg-[var(--color-accent-danger)]/5 rounded-xl border border-[var(--color-accent-danger)]/20 max-h-64 overflow-y-auto p-2 space-y-2">
+                 {Object.entries(storeMatchResults).map(([storeId, mr]) => (
+                   <React.Fragment key={storeId}>
+                     {mr.unmatchedOfx.map((o, i) => (
+                       <div key={`ofx-${storeId}-${i}`} className="bg-black/40 p-3 rounded-lg flex justify-between items-center text-sm border-l-2 border-[var(--color-accent-danger)]">
+                         <div>
+                           <p className="font-medium text-white">Extrato: {o.memo}</p>
+                           <p className="text-xs text-[var(--color-accent-danger)]">Não consta no sistema ({stores.find(s=>s.id===storeId)?.name})</p>
+                         </div>
+                         <span className="font-bold"><AnimatedNumber value={o.amount} format="currency" /></span>
+                       </div>
+                     ))}
+                     {mr.unmatchedSystem.map((s, i) => (
+                       <div key={`sys-${storeId}-${i}`} className="bg-black/40 p-3 rounded-lg flex justify-between items-center text-sm border-l-2 border-orange-500">
+                         <div>
+                           <p className="font-medium text-white">Sistema: {s.description || 'Venda'}</p>
+                           <p className="text-xs text-orange-500">Não consta no extrato ({stores.find(s=>s.id===storeId)?.name})</p>
+                         </div>
+                         <span className="font-bold"><AnimatedNumber value={s.amount} format="currency" /></span>
+                       </div>
+                     ))}
+                   </React.Fragment>
+                 ))}
+               </div>
+             </div>
+          )}
         </div>
       )}
 
       <div className="mt-6 flex justify-end gap-4">
-        {!matchResult ? (
+        {!hasResults ? (
           <button 
             onClick={handleProcessClick}
-            disabled={!ofxFile || isProcessing}
-            className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:brightness-110 transition-all disabled:opacity-50"
+            disabled={classifiedFiles.length === 0 || isProcessing}
+            className="bg-[var(--color-primary)] text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 hover:brightness-110 transition-all shadow-[0_0_20px_-5px_var(--color-primary)] disabled:opacity-50"
           >
-            {isProcessing ? 'Processando...' : 'Processar OFX e Custos'}
+            {isProcessing ? <LoadingSpinner size="sm" /> : null}
+            {isProcessing ? 'Processando...' : 'Processar Arquivos'}
           </button>
         ) : (
           <button 
@@ -266,14 +346,14 @@ export function BankReconciliationDashboard({
             disabled={isProcessing}
             className="bg-[var(--color-accent-teal)] text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 hover:brightness-110 transition-all shadow-[0_0_20px_-5px_var(--color-accent-teal)] disabled:opacity-50"
           >
-            <Save size={20} />
-            {isProcessing ? 'Salvando...' : 'Salvar Conciliação'}
+            {isProcessing ? <LoadingSpinner size="sm" /> : <Save size={20} />}
+            {isProcessing ? 'Salvando...' : 'Salvar Conciliação Massiva'}
           </button>
         )}
       </div>
 
       <AnimatePresence>
-        {mappingModalOpen && ofxFile && (
+        {mappingModalOpen && unmappedFiles.length > 0 && (
           <motion.div 
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
@@ -283,11 +363,11 @@ export function BankReconciliationDashboard({
               className="bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] p-6 rounded-2xl shadow-2xl max-w-md w-full"
             >
               <div className="flex items-center gap-3 mb-4 text-[var(--color-primary)]">
-                <AlertTriangle size={24} />
-                <h3 className="text-xl font-bold text-white">Loja Desconhecida no Banco</h3>
+                <Store size={24} />
+                <h3 className="text-xl font-bold text-white">Loja Desconhecida no Arquivo</h3>
               </div>
               <p className="text-sm text-[var(--text-secondary)] mb-6">
-                O arquivo <strong className="text-white">{ofxFile.name}</strong> não foi mapeado automaticamente para nenhuma loja. Por favor, selecione a qual loja este extrato pertence.
+                O arquivo <strong className="text-white">{unmappedFiles[0].file.name}</strong> não foi mapeado automaticamente para nenhuma loja. Por favor, selecione a qual loja este extrato pertence.
               </p>
               <div className="mb-6">
                 <label className="block text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-2">Selecione a Loja</label>
@@ -305,7 +385,7 @@ export function BankReconciliationDashboard({
               <div className="flex gap-3 justify-end">
                 <button onClick={() => setMappingModalOpen(false)} className="px-4 py-2 text-sm text-[var(--text-secondary)] hover:text-white transition-colors">Cancelar</button>
                 <button onClick={confirmMapping} disabled={!selectedStoreId} className="px-4 py-2 text-sm bg-[var(--color-primary)] text-white font-medium rounded-lg disabled:opacity-50">
-                  Confirmar e Processar
+                  Confirmar e Continuar
                 </button>
               </div>
             </motion.div>

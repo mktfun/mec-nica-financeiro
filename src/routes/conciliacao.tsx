@@ -9,7 +9,6 @@ import { useStores } from '@/hooks/useStores';
 import { useConciliacaoResumo, useConciliacaoDetalhes, useSaveDailyCash, useSaveMachineTotal, useSystemTransactions } from '@/hooks/useConciliacao';
 import { getDefaultDate } from '@/lib/utils';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import * as XLSX from 'xlsx';
 import { BankReconciliationDashboard } from '@/components/dashboard/BankReconciliationDashboard';
 
 export const Route = createFileRoute('/conciliacao')({
@@ -24,17 +23,8 @@ function ConciliacaoPage() {
   const { data: detalhes = [], isLoading: loadingDetalhes, refetch: refetchDetalhes } = useConciliacaoDetalhes(selectedDate);
   const { data: systemTransactions = [] } = useSystemTransactions(selectedDate);
   const { mutate: saveDailyCash } = useSaveDailyCash();
-  const { mutateAsync: saveMachineTotal } = useSaveMachineTotal();
   
   const [cashValues, setCashValues] = useState<Record<string, string>>({});
-  
-  // Maquininha states
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [mappingModalOpen, setMappingModalOpen] = useState(false);
-  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
-  const [pendingImport, setPendingImport] = useState<{ cnpj: string; name: string; total: number; matchedStoreId: string | null } | null>(null);
-  const [selectedStoreId, setSelectedStoreId] = useState('');
 
   const isLoading = loadingStores || loadingResumo || loadingDetalhes;
 
@@ -61,131 +51,6 @@ function ConciliacaoPage() {
     setSelectedDate(d.toISOString().substring(0, 10));
   };
 
-  // Processamento do Arquivo Excel da Maquininha
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsProcessing(true);
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      try {
-        const data = evt.target?.result;
-        const workbook = XLSX.read(data, { type: 'binary' });
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-        const json = XLSX.utils.sheet_to_json<any[]>(sheet, { header: 1 });
-
-        // Achar a linha de cabeçalho
-        let headerRowIndex = 0;
-        for (let i = 0; i < Math.min(10, json.length); i++) {
-          const row = json[i];
-          if (row && row.includes('CNPJ') && row.includes('nome do estabelecimento')) {
-            headerRowIndex = i;
-            break;
-          }
-        }
-
-        const headers = json[headerRowIndex] || [];
-        const cnpjIndex = headers.findIndex((h: string) => typeof h === 'string' && h.toLowerCase().trim() === 'cnpj');
-        const nameIndex = headers.findIndex((h: string) => typeof h === 'string' && h.toLowerCase().trim() === 'nome do estabelecimento');
-        const statusIndex = headers.findIndex((h: string) => typeof h === 'string' && h.toLowerCase().trim() === 'status da venda');
-        const valueIndex = headers.findIndex((h: string) => typeof h === 'string' && h.toLowerCase().trim() === 'valor da venda original');
-
-        if (cnpjIndex === -1 || nameIndex === -1 || valueIndex === -1) {
-          alert('Arquivo não reconhecido. Certifique-se de que é um export válido da Rede.');
-          setIsProcessing(false);
-          return;
-        }
-
-        let total = 0;
-        let fileCnpj = '';
-        let fileName = '';
-
-        for (let i = headerRowIndex + 1; i < json.length; i++) {
-          const row = json[i];
-          if (!row || row.length === 0) continue;
-          
-          if (!fileCnpj && row[cnpjIndex]) fileCnpj = String(row[cnpjIndex]).trim();
-          if (!fileName && row[nameIndex]) fileName = String(row[nameIndex]).trim();
-
-          const status = String(row[statusIndex] || '').toLowerCase();
-          if (status === 'aprovada' || status === 'pago') {
-            const val = parseFloat(String(row[valueIndex]).replace(',', '.'));
-            if (!isNaN(val)) total += val;
-          }
-        }
-
-        // Tenta achar a loja pelo CNPJ (Tira caracteres especiais)
-        const cleanCnpj = fileCnpj.replace(/[^\d]/g, '');
-        let matchedStoreId: string | null = null;
-
-        const storeByCnpj = stores.find(s => s.cnpj && s.cnpj.replace(/[^\d]/g, '') === cleanCnpj);
-        if (storeByCnpj) {
-          matchedStoreId = storeByCnpj.id;
-        } else {
-          // Busca no localStorage
-          const savedMapping = localStorage.getItem('maquininha_cnpj_mapping');
-          if (savedMapping) {
-            const parsedMapping = JSON.parse(savedMapping);
-            if (parsedMapping[cleanCnpj]) {
-              matchedStoreId = parsedMapping[cleanCnpj];
-            }
-          }
-        }
-
-        setPendingImport({ cnpj: cleanCnpj, name: fileName || fileCnpj, total, matchedStoreId });
-
-        if (matchedStoreId) {
-          setConfirmModalOpen(true);
-        } else {
-          setMappingModalOpen(true);
-        }
-
-      } catch (err) {
-        console.error(err);
-        alert('Erro ao processar arquivo.');
-      } finally {
-        setIsProcessing(false);
-        if (fileInputRef.current) fileInputRef.current.value = '';
-      }
-    };
-    reader.readAsBinaryString(file);
-  };
-
-  const confirmMapping = () => {
-    if (!selectedStoreId || !pendingImport) return;
-    
-    const savedMapping = localStorage.getItem('maquininha_cnpj_mapping');
-    const parsedMapping = savedMapping ? JSON.parse(savedMapping) : {};
-    parsedMapping[pendingImport.cnpj] = selectedStoreId;
-    localStorage.setItem('maquininha_cnpj_mapping', JSON.stringify(parsedMapping));
-    
-    setPendingImport(prev => prev ? ({ ...prev, matchedStoreId: selectedStoreId }) : null);
-    setMappingModalOpen(false);
-    setConfirmModalOpen(true);
-  };
-
-  const confirmImport = async () => {
-    if (!pendingImport || !pendingImport.matchedStoreId) return;
-    
-    setIsProcessing(true);
-    try {
-      await saveMachineTotal({
-        storeId: pendingImport.matchedStoreId,
-        machineTotal: pendingImport.total,
-        date: selectedDate
-      });
-      setConfirmModalOpen(false);
-      setPendingImport(null);
-    } catch (err) {
-      console.error(err);
-      alert('Erro ao salvar total da maquininha.');
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
   const totalFisico = detalhes.reduce((acc, r) => acc + (r.daily_cash || 0), 0);
   const totalMaquininha = detalhes.reduce((acc, r) => acc + (r.machine_total || 0), 0);
   const totalSistema = detalhes.reduce((acc, r) => acc + (r.financial_total || 0), 0);
@@ -204,17 +69,6 @@ function ConciliacaoPage() {
             </p>
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-4">
-            
-            <button 
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isProcessing}
-              className="flex items-center gap-2 bg-[var(--color-primary)]/10 text-[var(--color-primary)] hover:bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/30 px-4 py-2 rounded-xl transition-colors font-medium text-sm"
-            >
-              {isProcessing ? <LoadingSpinner size="sm" /> : <CreditCard size={18} />}
-              Importar Maquininha
-            </button>
-            <input type="file" accept=".xlsx,.xls" hidden ref={fileInputRef} onChange={handleFileSelect} />
-
             <div className="flex items-center gap-2">
               <button 
                 onClick={() => handleDayChange(-1)}
@@ -378,77 +232,6 @@ function ConciliacaoPage() {
             refetchDetalhes();
           }} 
         />
-
-        {/* Modals */}
-        <AnimatePresence>
-          {mappingModalOpen && pendingImport && (
-            <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-            >
-              <motion.div 
-                initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }}
-                className="bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] p-6 rounded-2xl shadow-2xl max-w-md w-full"
-              >
-                <div className="flex items-center gap-3 mb-4 text-[var(--color-primary)]">
-                  <AlertTriangle size={24} />
-                  <h3 className="text-xl font-bold text-white">Loja Não Reconhecida</h3>
-                </div>
-                <p className="text-sm text-[var(--text-secondary)] mb-6">
-                  Lemos o arquivo da maquininha e encontramos o estabelecimento <strong className="text-white">{pendingImport.name}</strong> com CNPJ <strong className="text-white">{pendingImport.cnpj}</strong>, mas não sabemos a qual loja ele pertence.
-                </p>
-                <div className="mb-6">
-                  <label className="block text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-2">Selecione a Loja</label>
-                  <select 
-                    value={selectedStoreId}
-                    onChange={(e) => setSelectedStoreId(e.target.value)}
-                    className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[var(--color-primary)]"
-                  >
-                    <option value="">Selecione...</option>
-                    {stores.map(s => (
-                      <option key={s.id} value={s.id}>{s.name} ({s.id})</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="flex gap-3 justify-end">
-                  <button onClick={() => setMappingModalOpen(false)} className="px-4 py-2 text-sm text-[var(--text-secondary)] hover:text-white transition-colors">Cancelar</button>
-                  <button onClick={confirmMapping} disabled={!selectedStoreId} className="px-4 py-2 text-sm bg-[var(--color-primary)] text-white font-medium rounded-lg disabled:opacity-50">
-                    Salvar e Continuar
-                  </button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-
-          {confirmModalOpen && pendingImport && (
-            <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-            >
-              <motion.div 
-                initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }}
-                className="bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] p-6 rounded-2xl shadow-2xl max-w-sm w-full text-center"
-              >
-                <div className="w-16 h-16 bg-[var(--color-primary)]/20 rounded-full flex items-center justify-center mx-auto mb-4 text-[var(--color-primary)]">
-                  <CreditCard size={32} />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-2">Confirmar Importação</h3>
-                <p className="text-sm text-[var(--text-secondary)] mb-6">
-                  Loja: <strong className="text-white">{stores.find(s => s.id === pendingImport.matchedStoreId)?.name}</strong><br/>
-                  Data de Conciliação: <strong className="text-white">{selectedDate}</strong><br/>
-                  Total Maquininha: <strong className="text-[var(--color-primary)] text-lg block mt-2">R$ {pendingImport.total.toFixed(2).replace('.', ',')}</strong>
-                </p>
-                <div className="flex gap-3 justify-center">
-                  <button onClick={() => setConfirmModalOpen(false)} className="px-4 py-2 text-sm text-[var(--text-secondary)] hover:text-white transition-colors">Cancelar</button>
-                  <button onClick={confirmImport} disabled={isProcessing} className="px-6 py-2 text-sm bg-[var(--color-primary)] text-white font-medium rounded-lg disabled:opacity-50 flex items-center gap-2">
-                    {isProcessing ? <LoadingSpinner size="sm" /> : <Upload size={16} />}
-                    Confirmar
-                  </button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
       </div>
     </AppShell>
