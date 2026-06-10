@@ -9,6 +9,7 @@ import { useStores } from '@/hooks/useStores';
 import * as XLSX from 'xlsx';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { extractNumber } from '@/lib/parsers/numberUtils';
+import { parseOFXFile } from '@/lib/parsers/ofxParser';
 import { useBulkInsertTransactions } from '@/hooks/useTransactions';
 import { supabase } from '@/lib/supabase';
 
@@ -65,12 +66,12 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
         return {
           store_id,
           store_name: item.storeName,
-          title: isOfx ? 'Importação OFX' : 'Importação Maquininha',
+          title: item.title || (isOfx ? 'Importação OFX' : 'Importação Maquininha'),
           subtitle: item.storeName,
           amount: item.amount || 0,
-          type: item.type === 'OFX' ? 'in' : 'in',
+          type: item.type === 'OFX' ? 'in' : 'in', // No futuro, podemos mapear type de acordo com o TRNAMT do OFX (positivo/negativo)
           status: 'completed',
-          occurred_at: new Date().toISOString(),
+          occurred_at: item.date || new Date().toISOString(),
           icon_type: isOfx ? 'bank' : 'card',
           source: 'ofx'
         };
@@ -172,19 +173,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
   };
 
   const processOFX = async (file: File) => {
-    const text = await file.text();
-    // Tenta achar a tag ORG (Banco) e ACCTID (Conta)
-    const orgMatch = text.match(/<ORG>(.+?)(?:\r?\n|<)/);
-    const acctMatch = text.match(/<ACCTID>(.+?)(?:\r?\n|<)/);
-    
-    const banco = orgMatch ? orgMatch[1].trim() : 'BANCO DESCONHECIDO';
-    const conta = acctMatch ? acctMatch[1].trim() : 'CONTA DESCONHECIDA';
-    
-    // O alias gerado será "BANCO - CONTA"
-    const alias = `${banco} - ${conta}`;
-    
-    // OFX normal não tem "valor total", mas vamos simular 1 item
-    return [{ storeName: alias, amount: 0, type: 'OFX' }];
+    return await parseOFXFile(file);
   };
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
@@ -206,7 +195,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
           const items = await processOFX(file);
           const itemsWithFile = items.map(i => ({ ...i, fileName: file.name }));
           allItems.push(...itemsWithFile);
-          results.push({ fileName: file.name, success: true, count: 1 });
+          results.push({ fileName: file.name, success: true, count: items.length });
         } else {
           // Placeholder para outras lógicas (Pátio, etc)
           const guessStoreName = file.name.split('.')[0].toUpperCase();
