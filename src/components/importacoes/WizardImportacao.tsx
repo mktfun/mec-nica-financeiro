@@ -140,11 +140,13 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
       for (const file of acceptedFiles) {
         if (category === 'MAQUININHA') {
           const items = await processMaquininha(file);
-          allItems.push(...items);
+          const itemsWithFile = items.map(i => ({ ...i, fileName: file.name }));
+          allItems.push(...itemsWithFile);
           results.push({ fileName: file.name, success: true, count: items.length });
         } else if (category === 'OFX') {
           const items = await processOFX(file);
-          allItems.push(...items);
+          const itemsWithFile = items.map(i => ({ ...i, fileName: file.name }));
+          allItems.push(...itemsWithFile);
           results.push({ fileName: file.name, success: true, count: 1 });
         } else {
           // Placeholder para outras lógicas (Pátio, etc)
@@ -264,7 +266,9 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
             </div>
 
             <div className="space-y-4">
-              {unmappedStores.map((storeName) => (
+              {unmappedStores.map((storeName) => {
+                const fileSource = extractedItems.find(e => e.storeName === storeName)?.fileName;
+                return (
                 <div key={storeName} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-white/5 hover:border-white/10 transition-colors">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
@@ -272,6 +276,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
                       <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase">Identificado no Arquivo</span>
                     </div>
                     <span className="font-mono text-lg font-semibold bg-white/5 px-2 py-0.5 rounded text-[var(--text-primary)]">{storeName}</span>
+                    {fileSource && <div className="text-[11px] text-[var(--text-tertiary)] mt-1.5 font-mono truncate max-w-[200px]" title={fileSource}>Origem: {fileSource}</div>}
                   </div>
                   
                   <LinkIcon className="text-[var(--color-primary)]/50 shrink-0" size={24} />
@@ -296,7 +301,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
                     </select>
                   </div>
                 </div>
-              ))}
+              )})}
             </div>
 
             <div className="mt-8 flex justify-end">
