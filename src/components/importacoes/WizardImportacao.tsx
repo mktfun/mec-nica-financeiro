@@ -69,7 +69,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
           title: item.title || (isOfx ? 'Importação OFX' : 'Importação Maquininha'),
           subtitle: item.storeName,
           amount: item.amount || 0,
-          type: item.type === 'OFX' ? 'in' : 'in', // No futuro, podemos mapear type de acordo com o TRNAMT do OFX (positivo/negativo)
+          type: item.type === 'in' || item.type === 'out' ? item.type : 'in',
           status: 'completed',
           occurred_at: item.date || new Date().toISOString(),
           icon_type: isOfx ? 'bank' : 'card',
@@ -99,13 +99,14 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
       });
 
       if (logsToInsert.length > 0) {
-         await supabase.from('import_logs').upsert(logsToInsert, { onConflict: 'store_id,target_date' });
+         const { error: upsertErr } = await supabase.from('import_logs').upsert(logsToInsert, { onConflict: 'store_id,target_date' });
+         if (upsertErr) console.warn("Erro ao registrar import log", upsertErr);
       }
 
       onSuccess();
-    } catch(e) {
+    } catch(e: any) {
       console.error(e);
-      alert('Erro ao confirmar importação.');
+      alert('Erro ao confirmar importação: ' + (e.message || 'Falha no banco de dados.'));
     } finally {
       setIsProcessing(false);
     }
@@ -245,7 +246,9 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
     accept: getAcceptedFormats()
   });
 
-  const totalValue = extractedItems.reduce((acc, curr) => acc + (curr.amount || 0), 0);
+  const totalEntradas = extractedItems.filter(i => i.type === 'in' || i.type === 'OFX' || !i.type).reduce((acc, curr) => acc + (curr.amount || 0), 0);
+  const totalSaidas = extractedItems.filter(i => i.type === 'out').reduce((acc, curr) => acc + (curr.amount || 0), 0);
+  const totalValue = totalEntradas - totalSaidas;
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -376,16 +379,22 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
                Resumo Pronto para Importação
              </h3>
 
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-               <div className="p-4 rounded-[var(--radius-md)] bg-white/5 border border-white/10">
-                 <p className="text-sm text-[var(--text-tertiary)] mb-1">Total Processado</p>
-                 <p className="text-3xl font-display font-bold text-white">
-                   <AnimatedNumber value={totalValue} format="currency" />
+             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+               <div className="p-4 rounded-[var(--radius-md)] bg-[var(--color-success)]/10 border border-[var(--color-success)]/20">
+                 <p className="text-sm text-[var(--color-success)] mb-1">Entradas (+)</p>
+                 <p className="text-2xl font-display font-bold text-[var(--color-success)]">
+                   <AnimatedNumber value={totalEntradas} format="currency" />
+                 </p>
+               </div>
+               <div className="p-4 rounded-[var(--radius-md)] bg-[var(--color-accent-danger)]/10 border border-[var(--color-accent-danger)]/20">
+                 <p className="text-sm text-[var(--color-accent-danger)] mb-1">Saídas (-)</p>
+                 <p className="text-2xl font-display font-bold text-[var(--color-accent-danger)]">
+                   <AnimatedNumber value={totalSaidas} format="currency" />
                  </p>
                </div>
                <div className="p-4 rounded-[var(--radius-md)] bg-white/5 border border-white/10">
                  <p className="text-sm text-[var(--text-tertiary)] mb-1">Itens Identificados</p>
-                 <p className="text-3xl font-display font-bold">{extractedItems.length}</p>
+                 <p className="text-2xl font-display font-bold text-white">{extractedItems.length} itens</p>
                </div>
              </div>
 

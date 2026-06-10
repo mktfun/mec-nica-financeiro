@@ -1,7 +1,7 @@
 export interface OfxTransaction {
   storeName: string;
   amount: number;
-  type: 'OFX';
+  type: 'in' | 'out';
   date: string;
   title: string;
 }
@@ -59,10 +59,20 @@ export async function parseOFXFile(file: File): Promise<OfxTransaction[]> {
     const memoMatch = trnBlock.match(/<MEMO>([^\r\n<]+)/);
     const title = memoMatch ? memoMatch[1].trim() : 'Transação Bancária';
     
+    // Extract TRNTYPE
+    const typeMatch = trnBlock.match(/<TRNTYPE>([A-Z]+)/);
+    const trnType = typeMatch ? typeMatch[1].trim() : '';
+    let parsedType: 'in' | 'out' = amount >= 0 ? 'in' : 'out';
+    if (trnType === 'DEBIT' || trnType === 'SRVCHG' || trnType === 'PAYMENT') {
+      parsedType = 'out';
+    } else if (trnType === 'CREDIT' || trnType === 'DEP') {
+      parsedType = 'in';
+    }
+    
     transactions.push({
       storeName: alias,
-      amount: Math.abs(amount), // Guardaremos o valor absoluto
-      type: 'OFX',
+      amount: Math.abs(amount),
+      type: parsedType,
       date: dateStr,
       title: title
     });
