@@ -209,7 +209,7 @@ function LojaDashboardPage() {
   const totalEntradas = extrato?.totalIn || 0;
   const totalSaidas = extrato?.totalOut || 0;
   const transactions = extrato?.transactions || [];
-  const txSemOS = transactions.filter((tx: any) => tx.type === 'in' && !tx.os_number);
+  const txSemOS = transactions.filter((tx: any) => tx.type === 'in' && !tx.os_number && tx.subtitle !== 'Ajuste de Saldo Inicial');
   const txComOS = transactions.filter((tx: any) => tx.type === 'in' && tx.os_number);
   const totalSemOS = txSemOS.reduce((acc: number, tx: any) => acc + Number(tx.amount || 0), 0);
   const hasDivergence = totalSemOS > 0 || (totalEntradas > 0 && totalSaidas > 0 && Math.abs(totalEntradas - totalSaidas) > 1);

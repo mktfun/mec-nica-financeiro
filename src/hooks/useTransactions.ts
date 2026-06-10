@@ -54,7 +54,8 @@ export function useDashboardSummary(monthStr?: string) {
         .from('transactions')
         .select('amount, type')
         .gte('occurred_at', startOfMonth)
-        .lte('occurred_at', endOfMonth);
+        .lte('occurred_at', endOfMonth)
+        .eq('source', 'system');
 
       if (txMonthErr) throw txMonthErr;
 
@@ -68,7 +69,8 @@ export function useDashboardSummary(monthStr?: string) {
       // 2. Query para o Saldo Consolidado Real (Todos os Tempos)
       const { data: txsAllTime, error: txAllErr } = await supabase
         .from('transactions')
-        .select('amount, type');
+        .select('amount, type')
+        .eq('source', 'system');
         
       if (txAllErr) throw txAllErr;
 
@@ -120,7 +122,8 @@ export function useCashFlow(days = 7) {
       const { data: txs, error: txErr } = await supabase
         .from('transactions')
         .select('occurred_at, amount, type')
-        .eq('type', 'out');
+        .eq('type', 'out')
+        .eq('source', 'system');
       if (txErr) throw txErr;
 
       // Group reconciliations (Entradas) by date
@@ -183,7 +186,8 @@ export function useExtrato(storeId: string, startDate: string, endDate: string) 
       // Query adicional para Saldo Global da Loja
       let globalQuery = supabase
         .from('transactions')
-        .select('amount, type');
+        .select('amount, type')
+        .eq('source', 'system');
         
       if (storeId) {
         globalQuery = globalQuery.eq('store_id', storeId);
@@ -220,7 +224,8 @@ export function useAllStoresBalances() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('transactions')
-        .select('store_id, amount, type');
+        .select('store_id, amount, type')
+        .eq('source', 'system');
         
       if (error) throw error;
       
@@ -279,7 +284,8 @@ export function useWeeklyRevenueTrend(anchorDate?: string) {
         .select('created_at, amount, type')
         .gte('created_at', startDateStr)
         .lte('created_at', endDateStr)
-        .eq('type', 'in');
+        .eq('type', 'in')
+        .eq('source', 'system');
         
       if (error) throw error;
       

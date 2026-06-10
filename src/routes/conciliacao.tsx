@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
@@ -107,6 +107,13 @@ function ConciliacaoPage() {
                       ? 'O total arrecadado no sistema não confere com a soma de (Físico + Maquininha).'
                       : 'Todos os valores declarados e importados batem com as transações registradas.'}
                   </p>
+                  {divergenciaGlobal !== 0 && (
+                    <div className="mt-3">
+                      <Link to="/alertas" className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--color-accent-danger)] hover:text-white bg-[var(--color-accent-danger)]/10 hover:bg-[var(--color-accent-danger)]/30 px-3 py-1.5 rounded-full transition-colors border border-[var(--color-accent-danger)]/20">
+                        <AlertTriangle size={14} /> Ver Detalhes em Alertas
+                      </Link>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="flex gap-6 text-right flex-wrap md:flex-nowrap">

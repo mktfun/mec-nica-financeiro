@@ -9,6 +9,7 @@ import { useStores } from '@/hooks/useStores';
 import * as XLSX from 'xlsx';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { extractNumber } from '@/lib/parsers/numberUtils';
+import { useBulkInsertTransactions } from '@/hooks/useTransactions';
 
 interface WizardImportacaoProps {
   category: string;
@@ -50,6 +51,38 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
   
   const { data: stores = [] } = useStores();
   const { mapping, updateMapping, setMapping } = useStoreMapping();
+  const { mutateAsync: insertTxs } = useBulkInsertTransactions();
+
+  const handleConfirm = async () => {
+    setIsProcessing(true);
+    try {
+      const isOfx = category === 'OFX';
+      const txsToInsert = extractedItems.map(item => {
+        let store_id = mapping[item.storeName];
+        if (store_id === 'GLOBAL') store_id = null;
+        
+        return {
+          store_id,
+          store_name: item.storeName,
+          title: isOfx ? 'Importação OFX' : 'Importação Maquininha',
+          subtitle: item.storeName,
+          amount: item.amount || 0,
+          type: item.type === 'OFX' ? 'in' : 'in',
+          status: 'completed',
+          occurred_at: new Date().toISOString(),
+          icon_type: isOfx ? 'bank' : 'card',
+          source: 'ofx'
+        };
+      });
+      await insertTxs(txsToInsert);
+      onSuccess();
+    } catch(e) {
+      console.error(e);
+      alert('Erro ao confirmar importação.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   const getAcceptedFormats = (): Record<string, string[]> => {
     if (category === 'OFX') return { 'application/x-ofx': ['.ofx'], 'text/plain': ['.ofx'] };
@@ -342,10 +375,11 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
              </div>
 
              <Button 
-               onClick={onSuccess}
+               onClick={handleConfirm}
+               disabled={isProcessing}
                className="w-full py-6 text-lg font-semibold rounded-[var(--radius-full)] shadow-[0_8px_30px_rgba(var(--color-primary-rgb),0.4)]"
              >
-               Confirmar Importação
+               {isProcessing ? 'Processando...' : 'Confirmar Importação'}
              </Button>
            </Card>
         </motion.div>
