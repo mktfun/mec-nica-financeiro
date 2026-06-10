@@ -1,0 +1,1 @@
+ALTER TABLE reconciliations ADD COLUMN IF NOT EXISTS machine_total NUMERIC DEFAULT 0;

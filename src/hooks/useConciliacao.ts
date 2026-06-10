@@ -46,11 +46,11 @@ export function useConciliacaoResumo(date?: string) {
 }
 
 // Auxiliary function to calculate reconciliation status
-const calculateReconciliationStatus = (financialTotal: number, dailyCash: number) => {
-  const divergence = financialTotal - dailyCash;
+const calculateReconciliationStatus = (financialTotal: number, dailyCash: number, machineTotal: number = 0) => {
+  const divergence = financialTotal - (dailyCash + machineTotal);
   let status: 'approved' | 'divergence' | 'pending' = 'pending';
   
-  if (financialTotal > 0 && dailyCash >= 0) {
+  if (financialTotal > 0 && (dailyCash >= 0 || machineTotal >= 0)) {
     if (Math.abs(divergence) < 0.01) {
       status = 'approved';
     } else {
@@ -76,7 +76,8 @@ export function useSaveDailyCash() {
         .maybeSingle();
         
       const financialTotal = existing?.financial_total || 0;
-      const { divergence, status } = calculateReconciliationStatus(financialTotal, value);
+      const machineTotal = existing?.machine_total || 0;
+      const { divergence, status } = calculateReconciliationStatus(financialTotal, value, machineTotal);
 
       const { error } = await supabase
         .from('reconciliations')
@@ -110,7 +111,8 @@ export function useSaveImportedReport() {
         .maybeSingle();
         
       const dailyCash = existing?.daily_cash || 0;
-      const { divergence, status } = calculateReconciliationStatus(financialTotal, dailyCash);
+      const machineTotal = existing?.machine_total || 0;
+      const { divergence, status } = calculateReconciliationStatus(financialTotal, dailyCash, machineTotal);
 
       const { error } = await supabase
         .from('reconciliations')
@@ -158,6 +160,38 @@ export function useStoreHistory(storeId: string | null, limit = 10) {
         .limit(limit);
       if (error) throw error;
       return data as ReconciliationRow[];
+    },
+  });
+}
+
+export function useSaveMachineTotal() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ storeId, machineTotal, date }: { storeId: string; machineTotal: number; date: string }) => {
+      const { data: existing } = await supabase
+        .from('reconciliations')
+        .select('*')
+        .eq('store_id', storeId)
+        .eq('date', date)
+        .maybeSingle();
+        
+      const financialTotal = existing?.financial_total || 0;
+      const dailyCash = existing?.daily_cash || 0;
+      const { divergence, status } = calculateReconciliationStatus(financialTotal, dailyCash, machineTotal);
+
+      const { error } = await supabase
+        .from('reconciliations')
+        .upsert({ 
+          store_id: storeId, 
+          date: date, 
+          machine_total: machineTotal,
+          divergence,
+          status
+        }, { onConflict: 'store_id,date' });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['reconciliations'] });
     },
   });
 }
