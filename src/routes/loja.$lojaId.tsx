@@ -81,6 +81,29 @@ function LojaDashboardPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const qc = useQueryClient();
 
+  // Conciliação: OFX (banco) vs Sistema (pátio + maquininha - despesas)
+  // DEVE ficar antes de qualquer return condicional (Rules of Hooks)
+  const [concBanco, setConcBanco] = useState(0);
+  const [concSistema, setConcSistema] = useState(0);
+  const [concDespesas, setConcDespesas] = useState(0);
+  const [loadingConc, setLoadingConc] = useState(false);
+
+  useEffect(() => {
+    if (!lojaId || !startDate || !endDate) return;
+    setLoadingConc(true);
+    (async () => {
+      const [ofxRes, sysRes, despRes] = await Promise.all([
+        supabase.from('transactions').select('amount').eq('store_id', lojaId).eq('source', 'ofx').eq('type', 'in').gte('occurred_at', startDate).lte('occurred_at', endDate),
+        supabase.from('transactions').select('amount').eq('store_id', lojaId).in('source', ['patio', 'maquininha']).eq('type', 'in').gte('occurred_at', startDate).lte('occurred_at', endDate),
+        supabase.from('transactions').select('amount').eq('store_id', lojaId).eq('source', 'despesa').gte('occurred_at', startDate).lte('occurred_at', endDate),
+      ]);
+      setConcBanco((ofxRes.data || []).reduce((s, r) => s + Number(r.amount), 0));
+      setConcSistema((sysRes.data || []).reduce((s, r) => s + Number(r.amount), 0));
+      setConcDespesas((despRes.data || []).reduce((s, r) => s + Number(r.amount), 0));
+      setLoadingConc(false);
+    })();
+  }, [lojaId, startDate, endDate]);
+
   const latestReconciliation = history.length > 0 ? history[0] : null;
 
   if (!store) {
@@ -204,28 +227,6 @@ function LojaDashboardPage() {
       setIsProcessing(false);
     }
   };
-
-  // Conciliação: OFX (banco) vs Sistema (pátio + maquininha - despesas)
-  const [concBanco, setConcBanco] = useState(0);
-  const [concSistema, setConcSistema] = useState(0);
-  const [concDespesas, setConcDespesas] = useState(0);
-  const [loadingConc, setLoadingConc] = useState(false);
-
-  useEffect(() => {
-    if (!lojaId || !startDate || !endDate) return;
-    setLoadingConc(true);
-    (async () => {
-      const [ofxRes, sysRes, despRes] = await Promise.all([
-        supabase.from('transactions').select('amount').eq('store_id', lojaId).eq('source', 'ofx').eq('type', 'in').gte('occurred_at', startDate).lte('occurred_at', endDate),
-        supabase.from('transactions').select('amount').eq('store_id', lojaId).in('source', ['patio', 'maquininha']).eq('type', 'in').gte('occurred_at', startDate).lte('occurred_at', endDate),
-        supabase.from('transactions').select('amount').eq('store_id', lojaId).eq('source', 'despesa').gte('occurred_at', startDate).lte('occurred_at', endDate),
-      ]);
-      setConcBanco((ofxRes.data || []).reduce((s, r) => s + Number(r.amount), 0));
-      setConcSistema((sysRes.data || []).reduce((s, r) => s + Number(r.amount), 0));
-      setConcDespesas((despRes.data || []).reduce((s, r) => s + Number(r.amount), 0));
-      setLoadingConc(false);
-    })();
-  }, [lojaId, startDate, endDate]);
 
   const apuradoSistema = concSistema - concDespesas;
   const diferencaConc = concBanco - apuradoSistema;
