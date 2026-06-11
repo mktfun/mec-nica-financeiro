@@ -99,7 +99,7 @@ export function useSaveDailyCash() {
 export function useSaveImportedReport() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ storeId, date, osTotal, financialTotal }: { storeId: string; date?: string; osTotal: number; financialTotal: number }) => {
+    mutationFn: async ({ storeId, date, osTotal, financialTotal, bankTotal }: { storeId: string; date?: string; osTotal: number; financialTotal: number; bankTotal?: number }) => {
       const targetDate = date ?? getDefaultDate();
       
       // Fetch existing row to preserve daily_cash and calculate divergence
@@ -114,16 +114,22 @@ export function useSaveImportedReport() {
       const machineTotal = existing?.machine_total || 0;
       const { divergence, status } = calculateReconciliationStatus(financialTotal, dailyCash, machineTotal);
 
+      const upsertData: any = { 
+        store_id: storeId, 
+        date: targetDate, 
+        os_total: osTotal,
+        financial_total: financialTotal,
+        divergence,
+        status
+      };
+
+      if (bankTotal !== undefined) {
+        upsertData.bank_total = bankTotal;
+      }
+
       const { error } = await supabase
         .from('reconciliations')
-        .upsert({ 
-          store_id: storeId, 
-          date: targetDate, 
-          os_total: osTotal,
-          financial_total: financialTotal,
-          divergence,
-          status
-        }, { onConflict: 'store_id,date' });
+        .upsert(upsertData, { onConflict: 'store_id,date' });
       if (error) throw error;
     },
     onSuccess: () => {

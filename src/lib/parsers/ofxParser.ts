@@ -9,6 +9,7 @@ export interface OfxTransaction {
 export interface OfxParseResult {
   alias: string;
   transactions: OfxTransaction[];
+  bankBalance?: number;
 }
 
 export async function parseOFXFile(file: File): Promise<OfxParseResult> {
@@ -87,5 +88,15 @@ export async function parseOFXFile(file: File): Promise<OfxParseResult> {
     });
   }
   
-  return { alias, transactions };
+  let bankBalance: number | undefined;
+  const ledgerMatch = text.match(/<LEDGERBAL>[\s\S]*?<BALAMT>([^\r\n<]+)/);
+  if (ledgerMatch) {
+    const balStr = ledgerMatch[1].trim();
+    const balNum = parseFloat(balStr.replace(',', '.'));
+    if (!isNaN(balNum)) {
+      bankBalance = balNum;
+    }
+  }
+
+  return { alias, transactions, bankBalance };
 }

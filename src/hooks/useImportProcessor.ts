@@ -111,12 +111,14 @@ export function useProcessImportedData() {
       osArray,
       receivablesArray,
       targetDate,
+      ofxBankBalance,
     }: {
       storeId: string;
       storeName: string;
       osArray: ParsedOS[];
       receivablesArray: ParsedReceivable[];
       targetDate?: string;
+      ofxBankBalance?: number;
     }) => {
       // 1. Process Patio OS (upsert by os_number — idempotent)
       if (osArray.length > 0) {
@@ -307,6 +309,7 @@ export function useProcessImportedData() {
           date,
           osTotal: summary.totalOs,
           financialTotal: summary.totalDinheiro,
+          bankTotal: ofxBankBalance,
         });
 
         // B) Save Import Log (upsert por store_id + target_date — substitui)

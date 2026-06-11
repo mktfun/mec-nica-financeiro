@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { UploadCloud, CheckCircle2, X, FileType2, Link as LinkIcon, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
@@ -51,12 +52,13 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
   const [unmappedStores, setUnmappedStores] = useState<string[]>([]);
   const [extractedItems, setExtractedItems] = useState<any[]>([]);
   const [targetDate, setTargetDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [extractedBankBalance, setExtractedBankBalance] = useState<number | null>(null);
   
   const { data: stores = [] } = useStores();
   // Para OFX usamos uma chave separada de mapeamento (conta bancária → loja)
   const lsKey = category === 'OFX' ? '@mecanica/ofx-store-mappings' : '@mecanica/store-mappings';
   const { mapping, updateMapping, setMapping } = useStoreMapping(lsKey);
-  const { mutateAsync: insertTxs } = useBulkInsertTransactions();
+  const { mutateAsync: processImport } = useBulkInsertTransactions();
 
   const handleConfirm = async () => {
     setIsProcessing(true);
@@ -79,7 +81,10 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
           source: category === 'OFX' ? 'ofx' : (category === 'MAQUININHA' ? 'maquininha' : 'sistema')
         };
       });
-      await insertTxs(txsToInsert);
+      await processImport({
+        transactions: txsToInsert,
+        ofxBankBalance: extractedBankBalance ?? undefined
+      } as any);
 
       // Create import_logs entries for traceability in UI
       const storesSet = Array.from(new Set(txsToInsert.map(tx => tx.store_id)));
@@ -201,7 +206,10 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
         } else if (category === 'OFX') {
           // Novo formato: { alias, transactions }
           const result = await processOFX(file);
-          const { alias, transactions } = result as any;
+          const { alias, transactions, bankBalance } = result as any;
+          if (bankBalance !== undefined) {
+             setExtractedBankBalance(bankBalance);
+          }
           const itemsWithFile = transactions.map((i: any) => ({
             ...i,
             // storeName é o alias da conta bancária (ex: "SICREDI - 3385988047")
@@ -391,6 +399,14 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
                <CheckCircle2 className="text-[var(--color-accent-teal)]" size={28} />
                Resumo Pronto para Importação
              </h3>
+
+             {extractedBankBalance !== null && (
+               <div className="mb-6">
+                 <Badge className="text-green-600 bg-green-50 border border-green-200">
+                   Saldo Final: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(extractedBankBalance)}
+                 </Badge>
+               </div>
+             )}
 
              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                <div className="p-4 rounded-[var(--radius-md)] bg-[var(--color-success)]/10 border border-[var(--color-success)]/20">
