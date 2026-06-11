@@ -131,6 +131,11 @@ export function useProcessImportedData() {
         const toUpdate: any[] = [];
 
         for (const os of osArray) {
+          const existingObjForDelta = existingMap.get(String(os.os_number));
+          const velho_valor_pago = existingObjForDelta ? Number(existingObjForDelta.paid_value) : 0;
+          const delta_paid = os.paid_value - velho_valor_pago;
+          (os as any).delta_paid = delta_paid;
+
           // ─── Aplicar Motor de Juros ───────────────────────
           const { adjustedTotal, interestType } = detectInterestOrDiscount(
             os.total_value,
@@ -252,22 +257,19 @@ export function useProcessImportedData() {
       }>();
 
       for (const os of osArray) {
-        if (os.status === 'finalizado' && os.closed_at) {
-          const date = targetDate || os.closed_at;
+        const deltaPaid = (os as any).delta_paid || 0;
+        if (deltaPaid > 0) {
+          const date = targetDate || getDefaultDate();
           if (!dailySummaries.has(date)) {
             dailySummaries.set(date, { totalOs: 0, totalPaidAll: 0, totalDinheiro: 0, osCount: 0, oss: [] });
           }
           const summary = dailySummaries.get(date)!;
 
-          // Aplica o motor de juros no acumulado diário
-          const { adjustedTotal } = detectInterestOrDiscount(
-            os.total_value,
-            os.paid_value,
-            os.payment_method
-          );
+          // O total processado para transações é exatamente o delta_paid
+          const adjustedDelta = deltaPaid;
 
-          summary.totalOs += adjustedTotal;
-          summary.totalPaidAll += os.paid_value;
+          summary.totalOs += adjustedDelta;
+          summary.totalPaidAll += deltaPaid;
           summary.osCount++;
           summary.oss.push(os);
           
@@ -286,10 +288,13 @@ export function useProcessImportedData() {
                 }
              });
           }
-          summary.totalDinheiro += dinheiroValForOs;
+          
+          // Ajustar o dinheiro para não exceder o delta da transação atual
+          const dinheiroParaODelta = Math.min(dinheiroValForOs, deltaPaid);
+          summary.totalDinheiro += dinheiroParaODelta;
           
           // Anexar o valor em dinheiro na OS para não precisarmos recalcular na hora das transações
-          (os as any).dinheiroVal = dinheiroValForOs;
+          (os as any).dinheiroVal = dinheiroParaODelta;
         }
       }
 
@@ -347,30 +352,16 @@ export function useProcessImportedData() {
           }
         }
 
-        // C) Inserir transações para o extrato (IDEMPOTENTE por os_number)
-        // Busca TODAS as transações existentes para esta loja (não apenas do dia),
-        // evitando que a mesma OS importada em dois dias gere duplicatas.
-        const { data: existingTransactions } = await supabase
-          .from('transactions')
-          .select('id, title, os_number')
-          .eq('store_id', storeId)
-          .eq('type', 'in');
-
-        const existingOsNumbers = new Set(
-          (existingTransactions || []).map(t => t.os_number).filter(Boolean)
-        );
-
+        // C) Inserir transações para o extrato
+        // Removida a trava de idempotência por os_number para permitir transações de deltas
         const txToInsert: any[] = [];
         
         for (const os of summary.oss) {
-          // ─── Chave de Idempotência: os_number ───────────────
-          // Se essa OS já está no extrato (de qualquer dia), não insere novamente.
-          if (existingOsNumbers.has(os.os_number)) continue;
-          
-          const bankAmount = os.paid_value - ((os as any).dinheiroVal || 0);
+          const deltaPaid = (os as any).delta_paid || 0;
+          const bankAmount = deltaPaid - ((os as any).dinheiroVal || 0);
           
           if (bankAmount > 0) {
-            const { adjustedTotal, interestType } = detectInterestOrDiscount(
+            const { interestType } = detectInterestOrDiscount(
               os.total_value,
               os.paid_value,
               os.payment_method
@@ -381,7 +372,7 @@ export function useProcessImportedData() {
               store_id: storeId,
               store_name: storeName,
               type: 'in',
-              amount: bankAmount, // Apenas o valor bancário
+              amount: bankAmount, // Apenas o valor bancário do delta
               occurred_at: date,
               title: desc,
               os_number: os.os_number,

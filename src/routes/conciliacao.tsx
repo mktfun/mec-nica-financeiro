@@ -106,7 +106,7 @@ function ConciliacaoPage() {
                   </h2>
                   <p className="text-sm text-[var(--text-secondary)]">
                     {divergenciaGlobal !== 0 
-                      ? 'O total arrecadado no sistema não confere com a soma de (Físico + Maquininha).'
+                      ? 'O Saldo Líquido do Sistema (Entradas - Saídas) não confere com o Extrato Bancário.'
                       : 'Todos os valores declarados e importados batem com as transações registradas.'}
                   </p>
                   {divergenciaGlobal !== 0 && (
@@ -120,11 +120,11 @@ function ConciliacaoPage() {
               </div>
               <div className="flex gap-6 text-right flex-wrap md:flex-nowrap">
                 <div>
-                  <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Apurado Sistema</p>
+                  <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Apurado Sistema (Fechamento do Dia)</p>
                   <p className="text-xl font-display font-bold"><AnimatedNumber value={totalSistema} format="currency" /></p>
                 </div>
                 <div>
-                  <p className="text-xs text-[var(--color-primary)] uppercase tracking-wider mb-1">Extrato Bancário</p>
+                  <p className="text-xs text-[var(--color-primary)] uppercase tracking-wider mb-1">Extrato Bancário (Fechamento do Dia)</p>
                   <p className="text-xl font-display font-bold text-[var(--color-primary)]"><AnimatedNumber value={totalBancario} format="currency" /></p>
                 </div>
               </div>
@@ -161,17 +161,17 @@ function ConciliacaoPage() {
 
                         <div className="flex flex-wrap items-center gap-6 bg-black/20 p-4 rounded-xl border border-white/5 flex-1 xl:flex-none justify-between xl:justify-start">
                           <div className="min-w-[120px]">
-                            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Sistema (Cartão+Din)</p>
+                            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Sistema (Fechamento do Dia)</p>
                             <p className="font-display font-medium text-[var(--text-secondary)]"><AnimatedNumber value={sys} format="currency" /></p>
                           </div>
                           
                           <div className="min-w-[130px]">
-                            <p className="text-[10px] text-[var(--color-primary)] opacity-80 uppercase tracking-wider mb-1">Extrato Bancário</p>
+                            <p className="text-[10px] text-[var(--color-primary)] opacity-80 uppercase tracking-wider mb-1">Extrato Bancário (Fechamento do Dia)</p>
                             <p className="font-display font-medium text-white"><AnimatedNumber value={bank} format="currency" /></p>
                           </div>
 
                           <div className="min-w-[120px] text-right">
-                            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Divergência</p>
+                            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Divergência (Fechamento do Dia)</p>
                             <p className={`font-display font-bold ${!hasDeclarations ? 'text-white/30' : isStoreOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
                               {!hasDeclarations ? '-' : <AnimatedNumber value={div} format="currency" />}
                             </p>
