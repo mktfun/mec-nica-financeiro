@@ -34,7 +34,7 @@ function ConciliacaoPage() {
     setSelectedDate(d.toISOString().substring(0, 10));
   };
 
-  const totalSistema = detalhes.reduce((acc, r) => acc + (r.financial_total || 0), 0);
+  const totalSistema = Object.values(dailyBalances || {}).reduce((acc, val) => acc + Number(val), 0);
   const totalBancario = detalhes.reduce((acc, r) => acc + ((r as any).bank_total || 0), 0);
   const divergenciaGlobal = totalSistema - totalBancario;
 

@@ -72,6 +72,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
           amount: item.amount || 0,
           type: item.type === 'in' || item.type === 'out' ? item.type : 'in',
           occurred_at: category === 'MAQUININHA' ? `${targetDate}T12:00:00Z` : (item.date || new Date().toISOString()),
+          target_date: targetDate,
           icon_type: isOfx ? 'bank' : 'card',
           source: 'ofx'
         };

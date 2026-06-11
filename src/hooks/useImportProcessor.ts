@@ -373,7 +373,8 @@ export function useProcessImportedData() {
               store_name: storeName,
               type: 'in',
               amount: bankAmount, // Apenas o valor bancário do delta
-              occurred_at: date,
+              occurred_at: new Date().toISOString(),
+              target_date: date,
               title: desc,
               os_number: os.os_number,
               payment_method: os.payment_method

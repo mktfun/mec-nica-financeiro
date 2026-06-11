@@ -67,6 +67,7 @@ export type TransactionRow = {
   payment_method: string | null;
   os_number: string | null;
   occurred_at: string;
+  target_date?: string;
   created_at: string;
   icon_type: 'card' | 'bank' | 'cash' | 'alert' | null;
 };

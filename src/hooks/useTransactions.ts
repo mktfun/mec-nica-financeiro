@@ -347,8 +347,7 @@ export function useDailySystemBalance(targetDate: string) {
       const { data, error } = await supabase
         .from('transactions')
         .select('*')
-        .gte('occurred_at', `${targetDate}T00:00:00`)
-        .lte('occurred_at', `${targetDate}T23:59:59`);
+        .eq('target_date', targetDate);
         
       if (error) throw error;
       
