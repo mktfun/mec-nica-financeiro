@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { createFileRoute, Link, useParams } from '@tanstack/react-router';
 import { useQueryClient } from '@tanstack/react-query';
 import { AppShell } from '@/components/layout/AppShell';
@@ -16,7 +17,6 @@ import { useExtrato, useBulkInsertTransactions } from '@/hooks/useTransactions';
 import { useCashRegisters, useCloseCashRegister } from '@/hooks/useCashRegisters';
 import { getDefaultDate } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
-import { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
