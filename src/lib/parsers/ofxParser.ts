@@ -6,7 +6,12 @@ export interface OfxTransaction {
   title: string;
 }
 
-export async function parseOFXFile(file: File): Promise<OfxTransaction[]> {
+export interface OfxParseResult {
+  alias: string;
+  transactions: OfxTransaction[];
+}
+
+export async function parseOFXFile(file: File): Promise<OfxParseResult> {
   const text = await file.text();
   
   // Tenta achar a tag ORG (Banco) e ACCTID (Conta)
@@ -59,6 +64,10 @@ export async function parseOFXFile(file: File): Promise<OfxTransaction[]> {
     const memoMatch = trnBlock.match(/<MEMO>([^\r\n<]+)/);
     const title = memoMatch ? memoMatch[1].trim() : 'Transação Bancária';
     
+    // Filter junk/balance entries
+    const JUNK = ['SALDO ANTERIOR', 'SALDO TOTAL', 'SALDO DISPONIVEL', 'SALDO DISPONÍVEL', 'SALDO INICIAL', 'DISPONÍVEL DIA'];
+    if (JUNK.some(k => title.toUpperCase().includes(k.toUpperCase()))) continue;
+    
     // Extract TRNTYPE
     const typeMatch = trnBlock.match(/<TRNTYPE>([A-Z]+)/);
     const trnType = typeMatch ? typeMatch[1].trim() : '';
@@ -78,5 +87,5 @@ export async function parseOFXFile(file: File): Promise<OfxTransaction[]> {
     });
   }
   
-  return transactions;
+  return { alias, transactions };
 }

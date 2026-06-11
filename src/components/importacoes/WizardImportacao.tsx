@@ -20,22 +20,22 @@ interface WizardImportacaoProps {
 }
 
 // Hook local para gerenciar persistência de de-para de lojas
-function useStoreMapping() {
+function useStoreMapping(localStorageKey = '@mecanica/store-mappings') {
   const [mapping, setMapping] = useState<Record<string, string>>({});
   
   useEffect(() => {
-    const saved = localStorage.getItem('@mecanica/store-mappings');
+    const saved = localStorage.getItem(localStorageKey);
     if (saved) {
       try {
         setMapping(JSON.parse(saved));
       } catch (e) {}
     }
-  }, []);
+  }, [localStorageKey]);
 
   const updateMapping = (alias: string, storeId: string) => {
     setMapping(prev => {
       const next = { ...prev, [alias]: storeId };
-      localStorage.setItem('@mecanica/store-mappings', JSON.stringify(next));
+      localStorage.setItem(localStorageKey, JSON.stringify(next));
       return next;
     });
   };
@@ -53,7 +53,9 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
   const [targetDate, setTargetDate] = useState<string>(new Date().toISOString().split('T')[0]);
   
   const { data: stores = [] } = useStores();
-  const { mapping, updateMapping, setMapping } = useStoreMapping();
+  // Para OFX usamos uma chave separada de mapeamento (conta bancária → loja)
+  const lsKey = category === 'OFX' ? '@mecanica/ofx-store-mappings' : '@mecanica/store-mappings';
+  const { mapping, updateMapping, setMapping } = useStoreMapping(lsKey);
   const { mutateAsync: insertTxs } = useBulkInsertTransactions();
 
   const handleConfirm = async () => {
@@ -177,6 +179,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
   };
 
   const processOFX = async (file: File) => {
+    // parseOFXFile agora retorna { alias, transactions } — não um array direto
     return await parseOFXFile(file);
   };
 
@@ -196,10 +199,17 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
           allItems.push(...itemsWithFile);
           results.push({ fileName: file.name, success: true, count: items.length });
         } else if (category === 'OFX') {
-          const items = await processOFX(file);
-          const itemsWithFile = items.map(i => ({ ...i, fileName: file.name }));
+          // Novo formato: { alias, transactions }
+          const result = await processOFX(file);
+          const { alias, transactions } = result as any;
+          const itemsWithFile = transactions.map((i: any) => ({
+            ...i,
+            // storeName é o alias da conta bancária (ex: "SICREDI - 3385988047")
+            storeName: alias,
+            fileName: file.name
+          }));
           allItems.push(...itemsWithFile);
-          results.push({ fileName: file.name, success: true, count: items.length });
+          results.push({ fileName: file.name, success: true, count: transactions.length });
         } else {
           // Placeholder para outras lógicas (Pátio, etc)
           const guessStoreName = file.name.split('.')[0].toUpperCase();

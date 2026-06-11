@@ -205,56 +205,41 @@ function LojaDashboardPage() {
     }
   };
 
-  // Detectar divergências acionáveis
-  const totalEntradas = extrato?.totalIn || 0;
-  const totalSaidas = extrato?.totalOut || 0;
-  const transactions = extrato?.transactions || [];
-  const txSemOS = transactions.filter((tx: any) => tx.type === 'in' && !tx.os_number && tx.subtitle !== 'Ajuste de Saldo Inicial');
-  const txComOS = transactions.filter((tx: any) => tx.type === 'in' && tx.os_number);
-  const totalSemOS = txSemOS.reduce((acc: number, tx: any) => acc + Number(tx.amount || 0), 0);
-  const hasDivergence = totalSemOS > 0 || (totalEntradas > 0 && totalSaidas > 0 && Math.abs(totalEntradas - totalSaidas) > 1);
+  // Conciliação: OFX (banco) vs Sistema (pátio + maquininha - despesas)
+  const [concBanco, setConcBanco] = useState(0);
+  const [concSistema, setConcSistema] = useState(0);
+  const [concDespesas, setConcDespesas] = useState(0);
+  const [loadingConc, setLoadingConc] = useState(false);
 
-  // Prepara dados para o gráfico de pizza
-  const chartStats = extrato?.transactions.reduce((acc, tx: any) => {
-    if (tab === 'in' && tx.type === 'in') {
-      if (tx.payment_method) {
-        const parsed = parsePaymentMethods(tx.payment_method);
-        let foundAny = false;
-        for (const [method, amount] of Object.entries(parsed)) {
-          if (amount > 0) {
-            acc[method] = (acc[method] || 0) + amount;
-            foundAny = true;
-          }
-        }
-        if (!foundAny) {
-          const method = tx.payment_method;
-          acc[method] = (acc[method] || 0) + Number(tx.amount || 0);
-        }
-      }
-    } else if (tab === 'out' && tx.type === 'out') {
-      const category = tx.subtitle || 'Outras Despesas';
-      acc[category] = (acc[category] || 0) + Number(tx.amount || 0);
-    }
-    return acc;
-  }, {} as Record<string, number>);
+  useEffect(() => {
+    if (!lojaId || !startDate || !endDate) return;
+    setLoadingConc(true);
+    (async () => {
+      const [ofxRes, sysRes, despRes] = await Promise.all([
+        supabase.from('transactions').select('amount').eq('store_id', lojaId).eq('source', 'ofx').eq('type', 'in').gte('occurred_at', startDate).lte('occurred_at', endDate),
+        supabase.from('transactions').select('amount').eq('store_id', lojaId).in('source', ['patio', 'maquininha']).eq('type', 'in').gte('occurred_at', startDate).lte('occurred_at', endDate),
+        supabase.from('transactions').select('amount').eq('store_id', lojaId).eq('source', 'despesa').gte('occurred_at', startDate).lte('occurred_at', endDate),
+      ]);
+      setConcBanco((ofxRes.data || []).reduce((s, r) => s + Number(r.amount), 0));
+      setConcSistema((sysRes.data || []).reduce((s, r) => s + Number(r.amount), 0));
+      setConcDespesas((despRes.data || []).reduce((s, r) => s + Number(r.amount), 0));
+      setLoadingConc(false);
+    })();
+  }, [lojaId, startDate, endDate]);
 
-  let pieData = chartStats 
-    ? Object.entries(chartStats)
-        .map(([name, value]) => ({ name, value }))
-        .sort((a, b) => b.value - a.value)
-    : [];
+  const apuradoSistema = concSistema - concDespesas;
+  const diferencaConc = concBanco - apuradoSistema;
 
-  if (tab === 'all') {
-    pieData = [
-      { name: 'Receitas (Entradas)', value: totalEntradas || 0 },
-      { name: 'Despesas (Saídas)', value: totalSaidas || 0 }
-    ].filter(d => d.value > 0);
-  }
-
-  let currentColors = COLORS;
-  if (tab === 'out') currentColors = ['#ef4444', '#f97316', '#f59e0b', '#eab308', '#ec4899'];
-  else if (tab === 'in') currentColors = ['#10b981', '#3b82f6', '#06b6d4', '#6366f1', '#8b5cf6'];
-  else if (tab === 'all') currentColors = ['#10b981', '#ef4444'];
+  // Prepara dados para o gráfico de pizza de despesas por categoria
+  const despesaChartData = (() => {
+    const txsDespesa = (extrato?.transactions || []).filter((tx: any) => tx.source === 'despesa' || tx.type === 'out');
+    const grouped: Record<string, number> = {};
+    txsDespesa.forEach((tx: any) => {
+      const cat = tx.subtitle || 'Outras';
+      grouped[cat] = (grouped[cat] || 0) + Number(tx.amount || 0);
+    });
+    return Object.entries(grouped).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
+  })();
 
   // Filtra as transações
   const filteredTransactions = (extrato?.transactions || []).filter((tx: any) => {
@@ -360,73 +345,49 @@ function LojaDashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Coluna Esquerda: Resumo de Conciliação e Gráfico */}
           <div className="lg:col-span-1 space-y-6">
-            {/* Divergências Acionáveis */}
-            {!store.is_matriz && hasDivergence ? (
+            {/* Conciliação do Período: Banco vs Sistema */}
+            {!store.is_matriz && (
               <div>
-                <h3 className="font-display font-semibold text-lg mb-4 flex items-center gap-2 text-[var(--color-accent-danger)]">
-                  <AlertTriangle size={20} />
-                  Divergências
+                <h3 className="font-display font-semibold text-lg mb-4 flex items-center gap-2">
+                  <CheckCircle2 size={20} className="text-[var(--color-accent-teal)]" />
+                  Conciliação do Período
                 </h3>
-                <Card className="p-0 overflow-hidden border-l-4 border-l-[var(--color-accent-danger)]">
-                  {/* Entradas sem OS */}
-                  {txSemOS.length > 0 && (
-                    <div className="p-4 border-b border-[var(--border-subtle)]">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs text-[var(--color-accent-danger)] uppercase tracking-wider font-semibold">Entradas sem OS vinculada</span>
-                        <Badge variant="danger" className="text-[10px]">{txSemOS.length} registro{txSemOS.length > 1 ? 's' : ''}</Badge>
-                      </div>
-                      <p className="font-display text-xl font-bold text-[var(--color-accent-danger)] mb-3">
-                        R$ {totalSemOS.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                      </p>
-                      <div className="space-y-2 max-h-[150px] overflow-y-auto">
-                        {txSemOS.map((tx: any) => (
-                          <div key={tx.id} className="flex items-center justify-between text-xs bg-[var(--bg-surface)] rounded-md px-3 py-2">
-                            <div>
-                              <span className="text-[var(--text-primary)] font-medium">{tx.title}</span>
-                              <span className="text-[var(--text-tertiary)] ml-2">{formatDate(tx.occurred_at)}</span>
-                            </div>
-                            <span className="font-mono font-semibold text-[var(--color-accent-danger)]">
-                              R$ {Number(tx.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                      <p className="text-[11px] text-[var(--text-tertiary)] mt-3 leading-relaxed">
-                        💡 <strong>Solução:</strong> Vincule essas entradas a uma OS existente, ou crie uma OS de ajuste para zerar a divergência.
-                      </p>
-                    </div>
-                  )}
-                  
-                  {/* Resumo da divergência */}
-                  <div className="p-4 bg-[var(--bg-surface)]">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-[var(--text-secondary)]">Total Entradas (Extrato)</span>
-                      <span className="font-mono font-medium">R$ {totalEntradas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-xs mt-1">
-                      <span className="text-[var(--text-secondary)]">Total OSs Vinculadas</span>
-                      <span className="font-mono font-medium">R$ {txComOS.reduce((acc: number, tx: any) => acc + Number(tx.amount || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-xs mt-2 pt-2 border-t border-[var(--border-subtle)]">
-                      <span className="text-[var(--color-accent-danger)] font-semibold">Diferença</span>
-                      <span className="font-mono font-bold text-[var(--color-accent-danger)]">R$ {totalSemOS.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-                    </div>
-                  </div>
-                </Card>
+                <div className="space-y-3">
+                  <Card className="p-4 border-l-4 border-l-blue-500">
+                    <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">🏦 Extrato Banco (OFX)</p>
+                    <p className="font-display text-xl font-bold text-blue-400">
+                      {loadingConc ? '...' : `R$ ${concBanco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+                    </p>
+                  </Card>
+                  <Card className="p-4 border-l-4 border-l-purple-500">
+                    <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">⚙️ Apurado Sistema</p>
+                    <p className="font-display text-xl font-bold text-purple-400">
+                      {loadingConc ? '...' : `R$ ${apuradoSistema.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+                    </p>
+                    <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Pátio + Maq. − Despesas</p>
+                  </Card>
+                  <Card className={`p-4 border-l-4 ${diferencaConc === 0 ? 'border-l-green-500' : diferencaConc > 0 ? 'border-l-red-500' : 'border-l-yellow-500'}`}>
+                    <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">📊 Diferença</p>
+                    <p className={`font-display text-xl font-bold ${diferencaConc === 0 ? 'text-green-400' : diferencaConc > 0 ? 'text-red-400' : 'text-yellow-400'}`}>
+                      {loadingConc ? '...' : `R$ ${diferencaConc.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+                    </p>
+                    <p className="text-[10px] text-[var(--text-tertiary)] mt-1">
+                      {diferencaConc > 0 ? 'Banco maior que sistema' : diferencaConc < 0 ? 'Sistema maior que banco' : '✅ Equilibrado'}
+                    </p>
+                  </Card>
+                </div>
               </div>
-            ) : null}
+            )}
 
-            {pieData.length > 0 && (
+            {despesaChartData.length > 0 && (
               <div>
-                <h3 className="font-display font-semibold text-lg mb-4">
-                  {tab === 'in' ? 'Formas de Pagamento' : tab === 'out' ? 'Distribuição de Despesas' : 'Visão Geral'}
-                </h3>
+                <h3 className="font-display font-semibold text-lg mb-4">Distribuição de Despesas</h3>
                 <Card variant="glass" className="p-4">
                   <div className="h-[200px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
-                          data={pieData}
+                          data={despesaChartData}
                           cx="50%"
                           cy="50%"
                           innerRadius={60}
@@ -435,8 +396,8 @@ function LojaDashboardPage() {
                           dataKey="value"
                           stroke="none"
                         >
-                          {pieData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={currentColors[index % currentColors.length]} />
+                          {despesaChartData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={['#ef4444', '#f97316', '#f59e0b', '#eab308', '#ec4899'][index % 5]} />
                           ))}
                         </Pie>
                         <Tooltip 
@@ -448,11 +409,11 @@ function LojaDashboardPage() {
                     </ResponsiveContainer>
                   </div>
                   <div className="mt-4 space-y-2">
-                    {pieData.map((entry, index) => (
+                    {despesaChartData.slice(0, 5).map((entry, index) => (
                       <div key={entry.name} className="flex items-center justify-between text-xs">
                         <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: currentColors[index % currentColors.length] }} />
-                          <span className="text-[var(--text-secondary)]">{entry.name}</span>
+                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: ['#ef4444', '#f97316', '#f59e0b', '#eab308', '#ec4899'][index % 5] }} />
+                          <span className="text-[var(--text-secondary)] truncate max-w-[120px]">{entry.name}</span>
                         </div>
                         <span className="font-medium">R$ {entry.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                       </div>
