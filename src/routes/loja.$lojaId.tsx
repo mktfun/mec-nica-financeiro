@@ -231,16 +231,47 @@ function LojaDashboardPage() {
   const apuradoSistema = concSistema - concDespesas;
   const diferencaConc = concBanco - apuradoSistema;
 
-  // Prepara dados para o gráfico de pizza de despesas por categoria
-  const despesaChartData = (() => {
-    const txsDespesa = (extrato?.transactions || []).filter((tx: any) => tx.source === 'despesa' || tx.type === 'out');
-    const grouped: Record<string, number> = {};
-    txsDespesa.forEach((tx: any) => {
-      const cat = tx.subtitle || 'Outras';
-      grouped[cat] = (grouped[cat] || 0) + Number(tx.amount || 0);
-    });
-    return Object.entries(grouped).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
-  })();
+  // Prepara dados para o gráfico de pizza
+  const chartStats = extrato?.transactions.reduce((acc, tx: any) => {
+    if (tab === 'in' && tx.type === 'in') {
+      if (tx.payment_method) {
+        const parsed = parsePaymentMethods(tx.payment_method);
+        let foundAny = false;
+        for (const [method, amount] of Object.entries(parsed)) {
+          if (amount > 0) {
+            acc[method] = (acc[method] || 0) + amount;
+            foundAny = true;
+          }
+        }
+        if (!foundAny) {
+          const method = tx.payment_method;
+          acc[method] = (acc[method] || 0) + Number(tx.amount || 0);
+        }
+      }
+    } else if (tab === 'out' && tx.type === 'out') {
+      const category = tx.subtitle || 'Outras Despesas';
+      acc[category] = (acc[category] || 0) + Number(tx.amount || 0);
+    }
+    return acc;
+  }, {} as Record<string, number>);
+
+  let pieData = chartStats 
+    ? Object.entries(chartStats)
+        .map(([name, value]) => ({ name, value }))
+        .sort((a, b) => b.value - a.value)
+    : [];
+
+  if (tab === 'all') {
+    pieData = [
+      { name: 'Receitas (Entradas)', value: extrato?.totalIn || 0 },
+      { name: 'Despesas (Saídas)', value: extrato?.totalOut || 0 }
+    ].filter(d => d.value > 0);
+  }
+
+  let currentColors = COLORS;
+  if (tab === 'out') currentColors = ['#ef4444', '#f97316', '#f59e0b', '#eab308', '#ec4899'];
+  else if (tab === 'in') currentColors = ['#10b981', '#3b82f6', '#06b6d4', '#6366f1', '#8b5cf6'];
+  else if (tab === 'all') currentColors = ['#10b981', '#ef4444'];
 
   // Filtra as transações
   const filteredTransactions = (extrato?.transactions || []).filter((tx: any) => {
@@ -353,42 +384,40 @@ function LojaDashboardPage() {
                   <CheckCircle2 size={20} className="text-[var(--color-accent-teal)]" />
                   Conciliação do Período
                 </h3>
-                <div className="space-y-3">
-                  <Card className="p-4 border-l-4 border-l-blue-500">
-                    <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">🏦 Extrato Banco (OFX)</p>
-                    <p className="font-display text-xl font-bold text-blue-400">
-                      {loadingConc ? '...' : `R$ ${concBanco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-                    </p>
-                  </Card>
-                  <Card className="p-4 border-l-4 border-l-purple-500">
-                    <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">⚙️ Apurado Sistema</p>
-                    <p className="font-display text-xl font-bold text-purple-400">
-                      {loadingConc ? '...' : `R$ ${apuradoSistema.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-                    </p>
-                    <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Pátio + Maq. − Despesas</p>
-                  </Card>
-                  <Card className={`p-4 border-l-4 ${diferencaConc === 0 ? 'border-l-green-500' : diferencaConc > 0 ? 'border-l-red-500' : 'border-l-yellow-500'}`}>
-                    <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">📊 Diferença</p>
-                    <p className={`font-display text-xl font-bold ${diferencaConc === 0 ? 'text-green-400' : diferencaConc > 0 ? 'text-red-400' : 'text-yellow-400'}`}>
-                      {loadingConc ? '...' : `R$ ${diferencaConc.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-                    </p>
-                    <p className="text-[10px] text-[var(--text-tertiary)] mt-1">
-                      {diferencaConc > 0 ? 'Banco maior que sistema' : diferencaConc < 0 ? 'Sistema maior que banco' : '✅ Equilibrado'}
-                    </p>
-                  </Card>
-                </div>
+                <Card className="p-0 overflow-hidden shadow-sm">
+                  <div className="p-3 border-l-4 border-l-blue-500 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-elevated)] transition-colors">
+                    <div className="flex items-center justify-between">
+                      <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider font-semibold">🏦 Extrato Banco</p>
+                      <p className="font-mono font-medium text-blue-400">{loadingConc ? '...' : `R$ ${concBanco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}</p>
+                    </div>
+                  </div>
+                  <div className="p-3 border-l-4 border-l-purple-500 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-elevated)] transition-colors">
+                    <div className="flex items-center justify-between">
+                      <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider font-semibold" title="Pátio + Maquininha - Despesas">⚙️ Sistema Líquido</p>
+                      <p className="font-mono font-medium text-purple-400">{loadingConc ? '...' : `R$ ${apuradoSistema.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}</p>
+                    </div>
+                  </div>
+                  <div className={`p-3 border-l-4 ${diferencaConc === 0 ? 'border-l-green-500' : 'border-l-yellow-500'} bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-elevated)] transition-colors`}>
+                    <div className="flex items-center justify-between">
+                      <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider font-semibold">📊 Diferença</p>
+                      <p className={`font-mono font-bold ${diferencaConc === 0 ? 'text-green-400' : 'text-yellow-400'}`}>{loadingConc ? '...' : `R$ ${diferencaConc.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}</p>
+                    </div>
+                  </div>
+                </Card>
               </div>
             )}
 
-            {despesaChartData.length > 0 && (
+            {pieData.length > 0 && (
               <div>
-                <h3 className="font-display font-semibold text-lg mb-4">Distribuição de Despesas</h3>
-                <Card variant="glass" className="p-4">
+                <h3 className="font-display font-semibold text-lg mb-4">
+                  {tab === 'in' ? 'Formas de Pagamento' : tab === 'out' ? 'Distribuição de Despesas' : 'Visão Geral'}
+                </h3>
+                <Card variant="glass" className="p-4 shadow-sm">
                   <div className="h-[200px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
-                          data={despesaChartData}
+                          data={pieData}
                           cx="50%"
                           cy="50%"
                           innerRadius={60}
@@ -397,8 +426,8 @@ function LojaDashboardPage() {
                           dataKey="value"
                           stroke="none"
                         >
-                          {despesaChartData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={['#ef4444', '#f97316', '#f59e0b', '#eab308', '#ec4899'][index % 5]} />
+                          {pieData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={currentColors[index % currentColors.length]} />
                           ))}
                         </Pie>
                         <Tooltip 
@@ -410,50 +439,16 @@ function LojaDashboardPage() {
                     </ResponsiveContainer>
                   </div>
                   <div className="mt-4 space-y-2">
-                    {despesaChartData.slice(0, 5).map((entry, index) => (
+                    {pieData.map((entry, index) => (
                       <div key={entry.name} className="flex items-center justify-between text-xs">
                         <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: ['#ef4444', '#f97316', '#f59e0b', '#eab308', '#ec4899'][index % 5] }} />
-                          <span className="text-[var(--text-secondary)] truncate max-w-[120px]">{entry.name}</span>
+                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: currentColors[index % currentColors.length] }} />
+                          <span className="text-[var(--text-secondary)]">{entry.name}</span>
                         </div>
                         <span className="font-medium">R$ {entry.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                       </div>
                     ))}
                   </div>
-                </Card>
-              </div>
-            )}
-
-            {!store.is_matriz && (
-              <div>
-                <h3 className="font-display font-semibold text-lg mb-4">Histórico de Fechamentos</h3>
-                <Card variant="glass" className="p-0 overflow-hidden">
-                  {loadingHistory ? (
-                    <div className="p-8 text-center text-sm text-[var(--text-tertiary)]">Carregando histórico...</div>
-                  ) : history.length === 0 ? (
-                    <div className="p-8 text-center text-sm text-[var(--text-tertiary)]">Sem registros anteriores.</div>
-                  ) : (
-                    <div className="divide-y divide-[var(--border-subtle)] max-h-[400px] overflow-y-auto">
-                      {history.map((rec, i) => (
-                        <div key={i} className="p-4 hover:bg-[var(--bg-surface-elevated)] transition-colors flex items-center justify-between">
-                          <div>
-                            <p className="font-medium text-sm">{formatDate(rec.date)}</p>
-                            <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">
-                              Apurado: R$ {Number(rec.os_total || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <p className="font-display font-bold text-sm">
-                              R$ {Number(rec.financial_total || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                            </p>
-                            <Badge variant={rec.status === 'approved' ? 'success' : rec.status === 'divergence' ? 'danger' : 'warning'} className="text-[9px] mt-1 px-1.5 py-0">
-                              {rec.status === 'approved' ? 'Conciliado' : rec.status === 'divergence' ? 'Divergência' : 'Pendente'}
-                            </Badge>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
                 </Card>
               </div>
             )}
