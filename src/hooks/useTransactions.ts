@@ -316,13 +316,41 @@ export function useBulkInsertTransactions() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async (transactions: any[]) => {
-      // Chunking if necessary, but for now Supabase can handle a reasonable array
+    mutationFn: async (payload: any[] | { transactions: any[], ofxBankBalance?: number }) => {
+      // Separar as transações do possível ofxBankBalance
+      const txs = Array.isArray(payload) ? payload : payload.transactions;
+      const bankBalance = Array.isArray(payload) ? undefined : payload.ofxBankBalance;
+      
+      // 1. Inserir as transações primeiro
       const { data, error } = await supabase
         .from('transactions')
-        .insert(transactions);
+        .insert(txs);
         
       if (error) throw error;
+      
+      // 2. Se houver um saldo bancário e houver transações (para pegar a loja e a data)
+      if (bankBalance !== undefined && txs.length > 0) {
+        // Pega os stores únicos (normalmente vem tudo para a mesma loja/data num lote OFX)
+        const storeDates = new Map<string, string>();
+        txs.forEach(t => {
+          if (t.store_id && t.target_date) {
+            storeDates.set(t.store_id, t.target_date);
+          }
+        });
+        
+        // Fazer upsert para cada store+date com o saldo real do extrato
+        for (const [storeId, targetDate] of storeDates.entries()) {
+          await supabase
+            .from('reconciliations')
+            .upsert({
+              store_id: storeId,
+              date: targetDate,
+              bank_total: bankBalance,
+              status: 'pending' // status default
+            }, { onConflict: 'store_id, date' });
+        }
+      }
+      
       return data;
     },
     onSuccess: () => {
