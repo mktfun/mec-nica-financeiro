@@ -52,7 +52,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
   const [unmappedStores, setUnmappedStores] = useState<string[]>([]);
   const [extractedItems, setExtractedItems] = useState<any[]>([]);
   const [targetDate, setTargetDate] = useState<string>(new Date().toISOString().split('T')[0]);
-  const [extractedBankBalance, setExtractedBankBalance] = useState<number | null>(null);
+  const [extractedBankBalances, setExtractedBankBalances] = useState<Record<string, number>>({});
   
   const { data: stores = [] } = useStores();
   // Para OFX usamos uma chave separada de mapeamento (conta bancária → loja)
@@ -81,9 +81,17 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
           source: category === 'OFX' ? 'ofx' : (category === 'MAQUININHA' ? 'maquininha' : 'sistema')
         };
       });
+      const storeBankBalances: Record<string, number> = {};
+      Object.entries(extractedBankBalances).forEach(([alias, balance]) => {
+        const sid = mapping[alias];
+        if (sid && sid !== 'GLOBAL') {
+          storeBankBalances[sid] = balance;
+        }
+      });
+
       await processImport({
         transactions: txsToInsert,
-        ofxBankBalance: extractedBankBalance ?? undefined
+        storeBankBalances
       } as any);
 
       // Create import_logs entries for traceability in UI
@@ -208,7 +216,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
           const result = await processOFX(file);
           const { alias, transactions, bankBalance } = result as any;
           if (bankBalance !== undefined) {
-             setExtractedBankBalance(bankBalance);
+             setExtractedBankBalances(prev => ({ ...prev, [alias]: bankBalance }));
           }
           const itemsWithFile = transactions.map((i: any) => ({
             ...i,
@@ -400,13 +408,15 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
                Resumo Pronto para Importação
              </h3>
 
-             {extractedBankBalance !== null && (
-               <div className="mb-6">
-                 <Badge className="text-green-600 bg-green-50 border border-green-200">
-                   Saldo Final: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(extractedBankBalance)}
-                 </Badge>
-               </div>
-             )}
+             {Object.keys(extractedBankBalances).length > 0 && (
+              <div className="mb-6 flex flex-wrap gap-2">
+                {Object.entries(extractedBankBalances).map(([alias, balance]) => (
+                  <Badge key={alias} className="text-green-600 bg-green-50 border border-green-200">
+                    {alias}: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(balance)}
+                  </Badge>
+                ))}
+              </div>
+            )}
 
              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                <div className="p-4 rounded-[var(--radius-md)] bg-[var(--color-success)]/10 border border-[var(--color-success)]/20">
