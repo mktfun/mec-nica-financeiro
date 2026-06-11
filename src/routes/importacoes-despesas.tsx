@@ -149,6 +149,7 @@ function ImportacoesDespesasWizard() {
           occurred_at: exp.occurredAt,
           title: exp.description,
           subtitle: exp.category,
+          source: 'despesa',
           created_at: batchCreatedAt
         };
       });

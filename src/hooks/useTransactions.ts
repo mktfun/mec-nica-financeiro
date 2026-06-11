@@ -55,7 +55,7 @@ export function useDashboardSummary(monthStr?: string) {
         .select('amount, type')
         .gte('occurred_at', startOfMonth)
         .lte('occurred_at', endOfMonth)
-        .eq('source', 'system');
+        .eq('source', 'ofx');
 
       if (txMonthErr) throw txMonthErr;
 
@@ -70,7 +70,7 @@ export function useDashboardSummary(monthStr?: string) {
       const { data: txsAllTime, error: txAllErr } = await supabase
         .from('transactions')
         .select('amount, type')
-        .eq('source', 'system');
+        .eq('source', 'ofx');
         
       if (txAllErr) throw txAllErr;
 
@@ -113,31 +113,30 @@ export function useCashFlow(days = 7) {
         return d.toISOString().split('T')[0];
       });
 
-      const { data: recs, error: recErr } = await supabase
-        .from('reconciliations')
-        .select('date, financial_total')
-        .in('date', dates);
-      if (recErr) throw recErr;
-
       const { data: txs, error: txErr } = await supabase
         .from('transactions')
         .select('occurred_at, amount, type')
-        .eq('type', 'out')
-        .eq('source', 'system');
+        .eq('source', 'ofx');
       if (txErr) throw txErr;
 
-      // Group reconciliations (Entradas) by date
-      const entriesByDate = (recs || []).reduce((acc: any, curr) => {
-        const d = curr.date;
-        acc[d] = (acc[d] || 0) + (curr.financial_total || 0);
+      // Group transactions (Entradas) by date
+      const entriesByDate = (txs || []).reduce((acc: any, curr) => {
+        if (curr.type === 'in') {
+          const d = curr.occurred_at?.split('T')[0];
+          if (d) {
+            acc[d] = (acc[d] || 0) + (curr.amount || 0);
+          }
+        }
         return acc;
       }, {});
 
       // Group transactions (Saídas) by date
       const exitsByDate = (txs || []).reduce((acc: any, curr) => {
-        const d = curr.occurred_at?.split('T')[0];
-        if (d) {
-          acc[d] = (acc[d] || 0) + (curr.amount || 0);
+        if (curr.type === 'out') {
+          const d = curr.occurred_at?.split('T')[0];
+          if (d) {
+            acc[d] = (acc[d] || 0) + (curr.amount || 0);
+          }
         }
         return acc;
       }, {});
@@ -165,6 +164,8 @@ export function useExtrato(storeId: string, startDate: string, endDate: string) 
         .order('occurred_at', { ascending: false })
         .order('created_at', { ascending: false });
 
+      query = query.eq('source', 'ofx');
+
       if (storeId) {
         query = query.eq('store_id', storeId);
       }
@@ -187,7 +188,7 @@ export function useExtrato(storeId: string, startDate: string, endDate: string) 
       let globalQuery = supabase
         .from('transactions')
         .select('amount, type')
-        .eq('source', 'system');
+        .eq('source', 'ofx');
         
       if (storeId) {
         globalQuery = globalQuery.eq('store_id', storeId);
@@ -225,7 +226,7 @@ export function useAllStoresBalances() {
       const { data, error } = await supabase
         .from('transactions')
         .select('store_id, amount, type')
-        .eq('source', 'system');
+        .eq('source', 'ofx');
         
       if (error) throw error;
       
@@ -285,7 +286,7 @@ export function useWeeklyRevenueTrend(anchorDate?: string) {
         .gte('created_at', startDateStr)
         .lte('created_at', endDateStr)
         .eq('type', 'in')
-        .eq('source', 'system');
+        .eq('source', 'ofx');
         
       if (error) throw error;
       

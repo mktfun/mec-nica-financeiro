@@ -74,7 +74,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
           occurred_at: category === 'MAQUININHA' ? `${targetDate}T12:00:00Z` : (item.date || new Date().toISOString()),
           target_date: targetDate,
           icon_type: isOfx ? 'bank' : 'card',
-          source: 'ofx'
+          source: category === 'OFX' ? 'ofx' : (category === 'MAQUININHA' ? 'maquininha' : 'sistema')
         };
       });
       await insertTxs(txsToInsert);
