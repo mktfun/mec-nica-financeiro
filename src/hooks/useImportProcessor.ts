@@ -110,11 +110,13 @@ export function useProcessImportedData() {
       storeName,
       osArray,
       receivablesArray,
+      targetDate,
     }: {
       storeId: string;
       storeName: string;
       osArray: ParsedOS[];
       receivablesArray: ParsedReceivable[];
+      targetDate?: string;
     }) => {
       // 1. Process Patio OS (upsert by os_number — idempotent)
       if (osArray.length > 0) {
@@ -251,7 +253,7 @@ export function useProcessImportedData() {
 
       for (const os of osArray) {
         if (os.status === 'finalizado' && os.closed_at) {
-          const date = os.closed_at;
+          const date = targetDate || os.closed_at;
           if (!dailySummaries.has(date)) {
             dailySummaries.set(date, { totalOs: 0, totalPaidAll: 0, totalDinheiro: 0, osCount: 0, oss: [] });
           }

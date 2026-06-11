@@ -51,6 +51,7 @@ function ImportarOsWizard() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [importResults, setImportResults] = useState<OsImportResult[]>([]);
   const [unmappedStores, setUnmappedStores] = useState<string[]>([]);
+  const [targetDate, setTargetDate] = useState<string>('');
   
   const { data: stores = [] } = useStores();
   const { mapping, updateMapping, setMapping } = useOsStoreMapping();
@@ -118,7 +119,8 @@ function ImportarOsWizard() {
           storeId,
           storeName,
           osArray: res.osArray,
-          receivablesArray: res.receivablesArray
+          receivablesArray: res.receivablesArray,
+          targetDate
         });
       }
       setIsProcessing(false);
@@ -275,6 +277,19 @@ function ImportarOsWizard() {
                 Serão processados {importResults.filter(r => r.success && mapping[r.storeAlias] !== 'IGNORE').length} arquivos contendo um total de <strong>{totalOs} Ordens de Serviço</strong>.
               </p>
               
+              <div className="mb-8 p-4 bg-[var(--bg-surface-elevated)] border border-white/10 rounded-xl max-w-md mx-auto text-left">
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2 uppercase tracking-wide">Data de Competência (Opcional)</label>
+                <input 
+                  type="date" 
+                  value={targetDate} 
+                  onChange={e => setTargetDate(e.target.value)} 
+                  className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors"
+                />
+                <p className="text-xs text-[var(--text-tertiary)] mt-2">
+                  Se preenchida, força todas as OS e recebíveis a serem agrupados nesta data para a conciliação e histórico.
+                </p>
+              </div>
+
               <div className="flex justify-center gap-4">
                 <Button variant="ghost" onClick={() => setStep(1)} disabled={isProcessing}>
                   Voltar e Adicionar Mais

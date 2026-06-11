@@ -49,6 +49,7 @@ function ImportacoesDespesasWizard() {
   const [importResults, setImportResults] = useState<ExpenseImportResult[]>([]);
   const [allExpenses, setAllExpenses] = useState<ParsedExpense[]>([]);
   const [unmappedStores, setUnmappedStores] = useState<string[]>([]);
+  const [targetDate, setTargetDate] = useState<string>(new Date().toISOString().split('T')[0]);
   
   const { data: stores = [] } = useStores();
   const { mapping, updateMapping, setMapping } = useStoreMapping();
@@ -123,7 +124,7 @@ function ImportacoesDespesasWizard() {
         const storeId = mapping[exp.storeName];
         if (!storeId) throw new Error(`Loja ${exp.storeName} não está mapeada!`);
         
-        const date = exp.occurredAt.split('T')[0];
+        const date = targetDate;
         const sId = storeId === 'GLOBAL' ? null : storeId;
         const key = `${sId}_${date}`;
         
@@ -328,6 +329,17 @@ function ImportacoesDespesasWizard() {
                    <p className="text-sm text-[var(--text-tertiary)] mb-1">Lançamentos Identificados</p>
                    <p className="text-3xl font-display font-bold">{allExpenses.length}</p>
                  </div>
+               </div>
+
+               <div className="mb-8 p-4 bg-[var(--bg-surface-elevated)] border border-white/10 rounded-xl">
+                 <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2 uppercase tracking-wide">Data de Competência</label>
+                 <input 
+                   type="date" 
+                   value={targetDate} 
+                   onChange={e => setTargetDate(e.target.value)} 
+                   className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors"
+                 />
+                 <p className="text-xs text-[var(--text-tertiary)] mt-2">Esta data será usada para agrupar o lote de importação no histórico.</p>
                </div>
 
                <div className="space-y-2 max-h-[300px] overflow-y-auto mb-8 pr-2">

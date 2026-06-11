@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { FileSpreadsheet, Trash2, AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight, Database } from 'lucide-react';
 import { useImportsHistory, useDeleteImport, GroupedImportLog } from '@/hooks/useImportProcessor';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { CategorySelector } from '@/components/importacoes/CategorySelector';
 import { WizardImportacao } from '@/components/importacoes/WizardImportacao';
 
@@ -24,6 +24,7 @@ function formatDate(dateStr: string) {
 function ImportacoesPage() {
   const { data: imports = [], isLoading } = useImportsHistory();
   const deleteImport = useDeleteImport();
+  const navigate = useNavigate();
   
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
@@ -53,6 +54,17 @@ function ImportacoesPage() {
       alert('Erro ao excluir importação: ' + ((err as any).message || JSON.stringify(err)));
     }
   };
+
+  const handleSelectCategory = (id: string) => {
+    if (id === 'DESPESAS' || id === 'JUROS') {
+      navigate({ to: '/importacoes-despesas' });
+    } else if (id === 'PATIO') {
+      navigate({ to: '/importar-os' });
+    } else {
+      setSelectedCategory(id);
+    }
+  };
+
 
   return (
     <AppShell>
@@ -90,7 +102,7 @@ function ImportacoesPage() {
             {/* Category Selector */}
             <div>
               <h2 className="text-xl font-bold mb-4">Selecione uma Categoria</h2>
-              <CategorySelector onSelect={setSelectedCategory} />
+              <CategorySelector onSelect={handleSelectCategory} />
             </div>
 
             {/* Info Banner */}

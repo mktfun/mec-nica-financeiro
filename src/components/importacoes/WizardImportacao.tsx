@@ -50,6 +50,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
   const [importResults, setImportResults] = useState<any[]>([]);
   const [unmappedStores, setUnmappedStores] = useState<string[]>([]);
   const [extractedItems, setExtractedItems] = useState<any[]>([]);
+  const [targetDate, setTargetDate] = useState<string>(new Date().toISOString().split('T')[0]);
   
   const { data: stores = [] } = useStores();
   const { mapping, updateMapping, setMapping } = useStoreMapping();
@@ -70,7 +71,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
           subtitle: item.storeName,
           amount: item.amount || 0,
           type: item.type === 'in' || item.type === 'out' ? item.type : 'in',
-          occurred_at: item.date || new Date().toISOString(),
+          occurred_at: category === 'MAQUININHA' ? `${targetDate}T12:00:00Z` : (item.date || new Date().toISOString()),
           icon_type: isOfx ? 'bank' : 'card',
           source: 'ofx'
         };
@@ -91,7 +92,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
         return {
           store_id: storeId,
           store_name: displayName,
-          target_date: new Date().toISOString().split('T')[0],
+          target_date: targetDate,
           total_os: isOfx ? 0 : totalAmt, // Hackzinho visual se necessário
           os_count: isOfx ? 1 : 1, // Impede que caia como "Lote Despesas" no filtro
           total_paid_all: totalAmt,
@@ -397,6 +398,17 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
                  <p className="text-sm text-[var(--text-tertiary)] mb-1">Itens Identificados</p>
                  <p className="text-2xl font-display font-bold text-white">{extractedItems.length} itens</p>
                </div>
+             </div>
+
+             <div className="mb-8 p-4 bg-[var(--bg-surface-elevated)] border border-white/10 rounded-xl">
+               <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2 uppercase tracking-wide">Data de Competência</label>
+               <input 
+                 type="date" 
+                 value={targetDate} 
+                 onChange={e => setTargetDate(e.target.value)} 
+                 className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors"
+               />
+               <p className="text-xs text-[var(--text-tertiary)] mt-2">Esta data será usada para agrupar o lote de importação. Se for Maquininha, também será a data das transações.</p>
              </div>
 
              <Button 
