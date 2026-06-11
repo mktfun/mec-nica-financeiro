@@ -339,3 +339,39 @@ export function useBulkInsertTransactions() {
     }
   });
 }
+
+export function useDailySystemBalance(targetDate: string) {
+  return useQuery({
+    queryKey: ['daily-system-balance', targetDate],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('transactions')
+        .select('*')
+        .gte('occurred_at', `${targetDate}T00:00:00`)
+        .lte('occurred_at', `${targetDate}T23:59:59`);
+        
+      if (error) throw error;
+      
+      const rows = data as TransactionRow[];
+      
+      return rows.reduce((acc: Record<string, number>, row) => {
+        if (row.source === 'ofx' || (row.title && row.title.includes('Extrato Bancário'))) {
+          return acc;
+        }
+        
+        const storeId = row.store_id || 'unknown';
+        if (!acc[storeId]) acc[storeId] = 0;
+        
+        const amount = Number(row.amount || 0);
+        if (row.type === 'in') {
+          acc[storeId] += amount;
+        } else if (row.type === 'out') {
+          acc[storeId] -= amount;
+        }
+        
+        return acc;
+      }, {});
+    },
+    enabled: !!targetDate,
+  });
+}

@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef } from 'react';
 import { useStores } from '@/hooks/useStores';
 import { useConciliacaoResumo, useConciliacaoDetalhes } from '@/hooks/useConciliacao';
+import { useDailySystemBalance } from '@/hooks/useTransactions';
 import { getDefaultDate } from '@/lib/utils';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
@@ -20,8 +21,9 @@ function ConciliacaoPage() {
   const { data: stores = [], isLoading: loadingStores } = useStores();
   const { data: resumo, isLoading: loadingResumo, refetch: refetchResumo } = useConciliacaoResumo(selectedDate);
   const { data: detalhes = [], isLoading: loadingDetalhes, refetch: refetchDetalhes } = useConciliacaoDetalhes(selectedDate);
+  const { data: dailyBalances, isLoading: loadingBalances } = useDailySystemBalance(selectedDate);
 
-  const isLoading = loadingStores || loadingResumo || loadingDetalhes;
+  const isLoading = loadingStores || loadingResumo || loadingDetalhes || loadingBalances;
 
   const resultado = resumo?.totalDivergence || 0;
   const isApproved = resultado === 0 && (resumo?.approved || 0) > 0;
@@ -138,7 +140,7 @@ function ConciliacaoPage() {
               <div className="grid grid-cols-1 gap-4">
                 {stores.map(store => {
                   const rec = detalhes.find(r => r.store_id === store.id);
-                  const sys = rec?.financial_total || 0;
+                  const sys = dailyBalances?.[store.id] || 0;
                   const bank = (rec as any)?.bank_total || 0;
                   const div = sys - bank;
                   
@@ -147,34 +149,36 @@ function ConciliacaoPage() {
                   const isStoreDivergent = hasDeclarations && Math.abs(div) >= 0.01;
 
                   return (
-                    <Card key={store.id} className="p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-6 hover:border-white/20 transition-colors">
-                      <div className="flex-1 flex items-center gap-4">
-                        <div className={`w-2 h-12 rounded-full ${isStoreOk ? 'bg-[var(--color-accent-teal)]' : isStoreDivergent ? 'bg-[var(--color-accent-danger)]' : 'bg-white/10'}`} />
-                        <div>
-                          <p className="font-semibold text-lg">{store.name}</p>
-                          <p className="text-xs text-[var(--text-tertiary)]">ID: {store.id}</p>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-wrap items-center gap-6 bg-black/20 p-4 rounded-xl border border-white/5 flex-1 xl:flex-none justify-between xl:justify-start">
-                        <div className="min-w-[120px]">
-                          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Sistema (Cartão+Din)</p>
-                          <p className="font-display font-medium text-[var(--text-secondary)]"><AnimatedNumber value={sys} format="currency" /></p>
-                        </div>
-                        
-                        <div className="min-w-[130px]">
-                          <p className="text-[10px] text-[var(--color-primary)] opacity-80 uppercase tracking-wider mb-1">Extrato Bancário</p>
-                          <p className="font-display font-medium text-white"><AnimatedNumber value={bank} format="currency" /></p>
+                    <Link to={"/loja/" + store.id} key={store.id} className="block">
+                      <Card className="p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-6 transition-all hover:scale-[1.01] hover:bg-white/10 hover:border-white/20 cursor-pointer shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] border border-white/5 backdrop-blur-md">
+                        <div className="flex-1 flex items-center gap-4">
+                          <div className={`w-2 h-12 rounded-full ${isStoreOk ? 'bg-[var(--color-accent-teal)]' : isStoreDivergent ? 'bg-[var(--color-accent-danger)]' : 'bg-white/10'}`} />
+                          <div>
+                            <p className="font-semibold text-lg">{store.name}</p>
+                            <p className="text-xs text-[var(--text-tertiary)]">ID: {store.id}</p>
+                          </div>
                         </div>
 
-                        <div className="min-w-[120px] text-right">
-                          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Divergência</p>
-                          <p className={`font-display font-bold ${!hasDeclarations ? 'text-white/30' : isStoreOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
-                            {!hasDeclarations ? '-' : <AnimatedNumber value={div} format="currency" />}
-                          </p>
+                        <div className="flex flex-wrap items-center gap-6 bg-black/20 p-4 rounded-xl border border-white/5 flex-1 xl:flex-none justify-between xl:justify-start">
+                          <div className="min-w-[120px]">
+                            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Sistema (Cartão+Din)</p>
+                            <p className="font-display font-medium text-[var(--text-secondary)]"><AnimatedNumber value={sys} format="currency" /></p>
+                          </div>
+                          
+                          <div className="min-w-[130px]">
+                            <p className="text-[10px] text-[var(--color-primary)] opacity-80 uppercase tracking-wider mb-1">Extrato Bancário</p>
+                            <p className="font-display font-medium text-white"><AnimatedNumber value={bank} format="currency" /></p>
+                          </div>
+
+                          <div className="min-w-[120px] text-right">
+                            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Divergência</p>
+                            <p className={`font-display font-bold ${!hasDeclarations ? 'text-white/30' : isStoreOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
+                              {!hasDeclarations ? '-' : <AnimatedNumber value={div} format="currency" />}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </Card>
+                      </Card>
+                    </Link>
                   );
                 })}
               </div>

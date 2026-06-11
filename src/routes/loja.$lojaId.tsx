@@ -89,7 +89,7 @@ function LojaDashboardPage() {
         <div className="flex flex-col items-center justify-center py-20 text-[var(--text-tertiary)]">
           <Store size={48} className="mb-4 opacity-20" />
           <h2 className="text-xl font-display">Loja não encontrada</h2>
-          <Link to="/conciliacao" className="mt-4 text-[var(--color-primary)] hover:underline">Voltar para a conciliação</Link>
+          <Link to="/lojas" className="mt-4 text-[var(--color-primary)] hover:underline">Voltar para a conciliação</Link>
         </div>
       </AppShell>
     );
@@ -272,7 +272,7 @@ function LojaDashboardPage() {
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-8 max-w-6xl mx-auto">
         {/* Header com Navegação */}
         <div>
-          <Link to="/conciliacao" className="inline-flex items-center gap-2 text-sm text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors mb-4">
+          <Link to="/lojas" className="inline-flex items-center gap-2 text-sm text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors mb-4">
             <ArrowLeft size={16} /> Voltar
           </Link>
           <div className="flex items-center gap-4">
