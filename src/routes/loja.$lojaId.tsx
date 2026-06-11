@@ -461,17 +461,7 @@ function LojaDashboardPage() {
 
           {/* Coluna Direita: Extrato / Transações */}
           <div className="lg:col-span-2">
-            {!store.is_matriz && !hasDivergence && totalEntradas > 0 && (
-              <Card className="mb-6 p-4 border-l-4 border-l-[var(--color-success)] bg-[var(--color-success)]/5">
-                <div className="flex items-center gap-3">
-                  <CheckCircle2 size={20} className="text-[var(--color-success)]" />
-                  <div>
-                    <p className="text-sm font-semibold text-[var(--color-success)]">Sem Divergências</p>
-                    <p className="text-[11px] text-[var(--text-tertiary)]">Todas as entradas deste período estão perfeitamente vinculadas a OSs.</p>
-                  </div>
-                </div>
-              </Card>
-            )}
+
 
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
               <h3 className="font-display font-semibold text-xl flex items-center gap-2">
