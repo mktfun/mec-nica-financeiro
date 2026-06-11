@@ -93,11 +93,11 @@ function LojaDashboardPage() {
     setLoadingConc(true);
     (async () => {
       const [ofxRes, sysRes, despRes] = await Promise.all([
-        supabase.from('transactions').select('amount').eq('store_id', lojaId).eq('source', 'ofx').eq('type', 'in').gte('occurred_at', startDate).lte('occurred_at', endDate),
+        supabase.from('transactions').select('amount, type').eq('store_id', lojaId).eq('source', 'ofx').gte('occurred_at', startDate).lte('occurred_at', endDate),
         supabase.from('transactions').select('amount').eq('store_id', lojaId).in('source', ['patio', 'maquininha']).eq('type', 'in').gte('occurred_at', startDate).lte('occurred_at', endDate),
         supabase.from('transactions').select('amount').eq('store_id', lojaId).eq('source', 'despesa').gte('occurred_at', startDate).lte('occurred_at', endDate),
       ]);
-      setConcBanco((ofxRes.data || []).reduce((s, r) => s + Number(r.amount), 0));
+      setConcBanco((ofxRes.data || []).reduce((s, r) => s + (r.type === 'in' ? Number(r.amount) : -Number(r.amount)), 0));
       setConcSistema((sysRes.data || []).reduce((s, r) => s + Number(r.amount), 0));
       setConcDespesas((despRes.data || []).reduce((s, r) => s + Number(r.amount), 0));
       setLoadingConc(false);
@@ -321,7 +321,7 @@ function LojaDashboardPage() {
               />
             </div>
             <div className="flex items-center justify-between mt-3">
-              <p className="text-[10px] text-[var(--text-tertiary)]">Acumulado real do sistema</p>
+              <p className="text-[10px] text-[var(--text-tertiary)]">Último saldo reportado pelo banco</p>
               <button 
                 onClick={() => setIsBalanceModalOpen(true)}
                 className="text-[10px] text-[var(--color-primary)] hover:underline flex items-center gap-1 bg-[var(--color-primary)]/10 px-2 py-1 rounded"
@@ -387,7 +387,7 @@ function LojaDashboardPage() {
                 <Card className="p-0 overflow-hidden shadow-sm">
                   <div className="p-3 border-l-4 border-l-blue-500 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-elevated)] transition-colors">
                     <div className="flex items-center justify-between">
-                      <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider font-semibold">🏦 Extrato Banco</p>
+                      <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider font-semibold">🏦 Extrato Banco (Líquido)</p>
                       <p className="font-mono font-medium text-blue-400">{loadingConc ? '...' : `R$ ${concBanco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}</p>
                     </div>
                   </div>

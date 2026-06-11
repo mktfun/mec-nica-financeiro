@@ -185,28 +185,22 @@ export function useExtrato(storeId: string, startDate: string, endDate: string) 
       const totalOut = rows.filter(r => r.type === 'out').reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
       
       // Query adicional para Saldo Global da Loja
-      let globalQuery = supabase
-        .from('transactions')
-        .select('amount, type')
-        .eq('source', 'ofx');
-        
+      let globalBalance = 0;
+      
       if (storeId) {
-        globalQuery = globalQuery.eq('store_id', storeId);
+        const { data: recData, error: recError } = await supabase
+          .from('reconciliations')
+          .select('bank_total')
+          .eq('store_id', storeId)
+          .order('date', { ascending: false })
+          .limit(1);
+          
+        if (recError) throw recError;
+        
+        if (recData && recData.length > 0) {
+          globalBalance = Number(recData[0].bank_total || 0);
+        }
       }
-      
-      const { data: globalData, error: globalError } = await globalQuery;
-      if (globalError) throw globalError;
-      
-      const globalRows = globalData as { amount: number, type: string }[];
-      const globalIn = globalRows.filter(r => r.type === 'in').reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
-      const globalOut = globalRows.filter(r => r.type === 'out').reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
-      
-      let recsQuery = supabase.from('reconciliations').select('machine_fees');
-      if (storeId) recsQuery = recsQuery.eq('store_id', storeId);
-      const { data: recsData } = await recsQuery;
-      const totalMachineFees = (recsData || []).reduce((acc, curr) => acc + Number(curr.machine_fees || 0), 0);
-
-      const globalBalance = globalIn - globalOut - totalMachineFees;
 
       return {
         transactions: rows,
