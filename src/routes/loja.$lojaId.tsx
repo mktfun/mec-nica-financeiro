@@ -74,6 +74,7 @@ function LojaDashboardPage() {
   const { data: cashRegisters = [], isLoading: loadingCash } = useCashRegisters(lojaId);
   const closeCashRegister = useCloseCashRegister();
   const bulkInsert = useBulkInsertTransactions();
+  const { data: extrato } = useExtrato(lojaId, startDate, endDate);
   
   const [declaredAmounts, setDeclaredAmounts] = useState<Record<string, string>>({});
   const [isBalanceModalOpen, setIsBalanceModalOpen] = useState(false);
