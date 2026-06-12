@@ -67,7 +67,7 @@ function LojaDashboardPage() {
   const period = getDefaultPeriod();
   const [startDate, setStartDate] = useState(period.start);
   const [endDate, setEndDate] = useState(period.end);
-  const [tab, setTab] = useState<'caixa'>('caixa');
+  const [tab, setTab] = useState<'caixa' | 'entradas' | 'saidas'>('caixa');
   const [page, setPage] = useState(1);
   const pageSize = 8;
 
@@ -484,6 +484,18 @@ function LojaDashboardPage() {
                   Caixa Físico {cashRegisters.filter(c => c.status === 'pending').length > 0 && <span className="ml-1 bg-[var(--color-warning)] text-black text-[10px] px-1.5 py-0.5 rounded-full">{cashRegisters.filter(c => c.status === 'pending').length}</span>}
                 </button>
               )}
+              <button
+                onClick={() => { setTab('entradas'); setPage(1); }}
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'entradas' ? 'border-[var(--color-success)] text-[var(--color-success)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
+              >
+                Entradas
+              </button>
+              <button
+                onClick={() => { setTab('saidas'); setPage(1); }}
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'saidas' ? 'border-[var(--color-accent-danger)] text-[var(--color-accent-danger)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
+              >
+                Saídas
+              </button>
             </div>
 
             <Card className="p-0 overflow-hidden">
@@ -575,6 +587,78 @@ function LojaDashboardPage() {
                     })}
                   </div>
                 )
+              ) : tab === 'entradas' ? (
+                <div className="divide-y divide-[var(--border-subtle)]">
+                  {(extrato?.transactions || []).filter((tx: any) => tx.type === 'in').length === 0 ? (
+                    <div className="text-center py-20">
+                      <p className="text-[var(--text-secondary)] font-medium">Nenhuma entrada encontrada neste período.</p>
+                    </div>
+                  ) : (
+                    (extrato?.transactions || []).filter((tx: any) => tx.type === 'in').map((tx: any, i: number) => (
+                      <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.05 }}
+                        key={tx.id || i} 
+                        className="p-4 flex items-center justify-between hover:bg-[var(--bg-surface)] transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-[var(--color-success)]/10 flex items-center justify-center text-[var(--color-success)]">
+                            <ArrowUpRight size={18} />
+                          </div>
+                          <div>
+                            <p className="font-medium text-sm text-[var(--text-primary)]">{tx.title || 'Entrada'}</p>
+                            <p className="text-xs text-[var(--text-secondary)] flex items-center gap-1">
+                              <Calendar size={12} /> {formatDate(tx.occurred_at || tx.created_at)}
+                              {tx.subtitle && <span className="ml-2 px-1.5 py-0.5 bg-[var(--bg-canvas)] rounded border border-[var(--border-subtle)] text-[10px]">{tx.subtitle}</span>}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-mono font-bold text-[var(--color-success)]">
+                            + R$ {Number(tx.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </p>
+                        </div>
+                      </motion.div>
+                    ))
+                  )}
+                </div>
+              ) : tab === 'saidas' ? (
+                <div className="divide-y divide-[var(--border-subtle)]">
+                  {(extrato?.transactions || []).filter((tx: any) => tx.type === 'out').length === 0 ? (
+                    <div className="text-center py-20">
+                      <p className="text-[var(--text-secondary)] font-medium">Nenhuma saída encontrada neste período.</p>
+                    </div>
+                  ) : (
+                    (extrato?.transactions || []).filter((tx: any) => tx.type === 'out').map((tx: any, i: number) => (
+                      <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.05 }}
+                        key={tx.id || i} 
+                        className="p-4 flex items-center justify-between hover:bg-[var(--bg-surface)] transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-[var(--color-accent-danger)]/10 flex items-center justify-center text-[var(--color-accent-danger)]">
+                            <ArrowDownRight size={18} />
+                          </div>
+                          <div>
+                            <p className="font-medium text-sm text-[var(--text-primary)]">{tx.title || 'Saída'}</p>
+                            <p className="text-xs text-[var(--text-secondary)] flex items-center gap-1">
+                              <Calendar size={12} /> {formatDate(tx.occurred_at || tx.created_at)}
+                              {tx.subtitle && <span className="ml-2 px-1.5 py-0.5 bg-[var(--bg-canvas)] rounded border border-[var(--border-subtle)] text-[10px]">{tx.subtitle}</span>}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-mono font-bold text-[var(--color-accent-danger)]">
+                            - R$ {Number(tx.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </p>
+                        </div>
+                      </motion.div>
+                    ))
+                  )}
+                </div>
               ) : null}
             </Card>
           </div>
