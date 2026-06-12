@@ -2,6 +2,9 @@
 
 Histórico de atualizações e especificações implementadas no sistema.
 
+## [2026-06-12]
+- **[049-conciliacao-refinamento]** Refinamento da Tela de Conciliação arquivado. O Dashboard da Loja foi limpado, movendo as lógicas de Extrato Bancário Diário e Triple Match (Linha a Linha) para uma rota dedicada `conciliacao.$lojaId.tsx`. O saldo gerencial totalizador agora usa deltas puros (Entradas - Saídas do dia) em vez de somar o acumulado absoluto da conta, evitando anomalias estatísticas de saldos anteriores na reconciliação diária.
+
 ## [2026-06-10]
 - **[034-conciliacao-diagnostico-profundo]** Motor de Match OFX e Proteção de Saldo implementados e arquivados. O sistema agora persiste arquivos `.ofx` importados usando a marcação `source='ofx'` de forma isolada, protegendo o Saldo Geral de ser inflado duas vezes. Foi codificada a engine SQL `match_bank_transactions` que avalia D+1 e 10 reais de tolerância, reportando automaticamente "Divergência de Banco x Sistema" na Central de Alertas. O Alerta falso de 60 mil gerado por Ajustes Manuais de Saldo também foi corrigido.
 - **[033-conciliacao-extrato-bancario]** Refatoração da Tela de Conciliação e Antivírus de Importação implementados e arquivados. O sistema agora compara o saldo Apurado Sistema vs Extrato Bancário diretamente, removendo as divisões desnecessárias de Caixa Físico e Maquininha da interface primária. O motor de extração numérica agora interpreta padrões brasileiros (`24.000,00`) e americanos de forma imune a formatação corrompida. Adicionado filtro Anti-Lixo para proteger a tabela de transações contra linhas duplicadas de "Total" no final do Excel. Histórico agora pinta Lotes de Despesas para diferenciação limpa.

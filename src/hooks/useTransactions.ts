@@ -404,3 +404,39 @@ export function useDailySystemBalance(targetDate: string) {
     enabled: !!targetDate,
   });
 }
+
+export function useDailyBankBalance(targetDate: string) {
+  return useQuery({
+    queryKey: ['daily-bank-balance', targetDate],
+    queryFn: async () => {
+      const startOfDay = `${targetDate}T00:00:00.000Z`;
+      const endOfDay = `${targetDate}T23:59:59.999Z`;
+
+      const { data, error } = await supabase
+        .from('transactions')
+        .select('*')
+        .eq('source', 'ofx')
+        .gte('occurred_at', startOfDay)
+        .lte('occurred_at', endOfDay);
+        
+      if (error) throw error;
+      
+      const rows = data as TransactionRow[];
+      
+      return rows.reduce((acc: Record<string, number>, row) => {
+        const storeId = row.store_id || 'unknown';
+        if (!acc[storeId]) acc[storeId] = 0;
+        
+        const amount = Number(row.amount || 0);
+        if (row.type === 'in') {
+          acc[storeId] += amount;
+        } else if (row.type === 'out') {
+          acc[storeId] -= amount;
+        }
+        
+        return acc;
+      }, {});
+    },
+    enabled: !!targetDate,
+  });
+}

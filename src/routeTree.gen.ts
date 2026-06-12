@@ -24,6 +24,7 @@ import { Route as ConciliacaoRouteImport } from './routes/conciliacao'
 import { Route as AlertasRouteImport } from './routes/alertas'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LojaLojaIdRouteImport } from './routes/loja.$lojaId'
+import { Route as ConciliacaoLojaIdRouteImport } from './routes/conciliacao.$lojaId'
 
 const RecebiveisRoute = RecebiveisRouteImport.update({
   id: '/recebiveis',
@@ -100,11 +101,16 @@ const LojaLojaIdRoute = LojaLojaIdRouteImport.update({
   path: '/loja/$lojaId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConciliacaoLojaIdRoute = ConciliacaoLojaIdRouteImport.update({
+  id: '/$lojaId',
+  path: '/$lojaId',
+  getParentRoute: () => ConciliacaoRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/alertas': typeof AlertasRoute
-  '/conciliacao': typeof ConciliacaoRoute
+  '/conciliacao': typeof ConciliacaoRouteWithChildren
   '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/historico': typeof HistoricoRoute
@@ -116,12 +122,13 @@ export interface FileRoutesByFullPath {
   '/patio': typeof PatioRoute
   '/proposta': typeof PropostaRoute
   '/recebiveis': typeof RecebiveisRoute
+  '/conciliacao/$lojaId': typeof ConciliacaoLojaIdRoute
   '/loja/$lojaId': typeof LojaLojaIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/alertas': typeof AlertasRoute
-  '/conciliacao': typeof ConciliacaoRoute
+  '/conciliacao': typeof ConciliacaoRouteWithChildren
   '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/historico': typeof HistoricoRoute
@@ -133,13 +140,14 @@ export interface FileRoutesByTo {
   '/patio': typeof PatioRoute
   '/proposta': typeof PropostaRoute
   '/recebiveis': typeof RecebiveisRoute
+  '/conciliacao/$lojaId': typeof ConciliacaoLojaIdRoute
   '/loja/$lojaId': typeof LojaLojaIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/alertas': typeof AlertasRoute
-  '/conciliacao': typeof ConciliacaoRoute
+  '/conciliacao': typeof ConciliacaoRouteWithChildren
   '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/historico': typeof HistoricoRoute
@@ -151,6 +159,7 @@ export interface FileRoutesById {
   '/patio': typeof PatioRoute
   '/proposta': typeof PropostaRoute
   '/recebiveis': typeof RecebiveisRoute
+  '/conciliacao/$lojaId': typeof ConciliacaoLojaIdRoute
   '/loja/$lojaId': typeof LojaLojaIdRoute
 }
 export interface FileRouteTypes {
@@ -170,6 +179,7 @@ export interface FileRouteTypes {
     | '/patio'
     | '/proposta'
     | '/recebiveis'
+    | '/conciliacao/$lojaId'
     | '/loja/$lojaId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -187,6 +197,7 @@ export interface FileRouteTypes {
     | '/patio'
     | '/proposta'
     | '/recebiveis'
+    | '/conciliacao/$lojaId'
     | '/loja/$lojaId'
   id:
     | '__root__'
@@ -204,13 +215,14 @@ export interface FileRouteTypes {
     | '/patio'
     | '/proposta'
     | '/recebiveis'
+    | '/conciliacao/$lojaId'
     | '/loja/$lojaId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AlertasRoute: typeof AlertasRoute
-  ConciliacaoRoute: typeof ConciliacaoRoute
+  ConciliacaoRoute: typeof ConciliacaoRouteWithChildren
   ConciliacaoDetalhesRoute: typeof ConciliacaoDetalhesRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
   HistoricoRoute: typeof HistoricoRoute
@@ -332,13 +344,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LojaLojaIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/conciliacao/$lojaId': {
+      id: '/conciliacao/$lojaId'
+      path: '/$lojaId'
+      fullPath: '/conciliacao/$lojaId'
+      preLoaderRoute: typeof ConciliacaoLojaIdRouteImport
+      parentRoute: typeof ConciliacaoRoute
+    }
   }
 }
+
+interface ConciliacaoRouteChildren {
+  ConciliacaoLojaIdRoute: typeof ConciliacaoLojaIdRoute
+}
+
+const ConciliacaoRouteChildren: ConciliacaoRouteChildren = {
+  ConciliacaoLojaIdRoute: ConciliacaoLojaIdRoute,
+}
+
+const ConciliacaoRouteWithChildren = ConciliacaoRoute._addFileChildren(
+  ConciliacaoRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AlertasRoute: AlertasRoute,
-  ConciliacaoRoute: ConciliacaoRoute,
+  ConciliacaoRoute: ConciliacaoRouteWithChildren,
   ConciliacaoDetalhesRoute: ConciliacaoDetalhesRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
   HistoricoRoute: HistoricoRoute,

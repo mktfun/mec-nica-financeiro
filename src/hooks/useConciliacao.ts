@@ -330,3 +330,40 @@ export function useSystemTransactions(date: string) {
     }
   });
 }
+
+export function useDailyReconciliationDelta(targetDate: string) {
+  return useQuery({
+    queryKey: ['reconciliation-delta', targetDate],
+    queryFn: async () => {
+      const startOfDay = `${targetDate}T00:00:00.000Z`;
+      const endOfDay = `${targetDate}T23:59:59.999Z`;
+
+      const { data, error } = await supabase
+        .from('transactions')
+        .select('store_id, amount, type, source')
+        .gte('occurred_at', startOfDay)
+        .lte('occurred_at', endOfDay);
+
+      if (error) throw error;
+
+      const deltas: Record<string, { bancoDelta: number; sistemaDelta: number }> = {};
+
+      for (const tx of data || []) {
+        const sid = tx.store_id;
+        if (!sid) continue;
+        if (!deltas[sid]) {
+          deltas[sid] = { bancoDelta: 0, sistemaDelta: 0 };
+        }
+        const val = tx.type === 'in' ? Number(tx.amount) : -Number(tx.amount);
+        // ofx is strictly 'ofx', everything else is considered 'sistema' (patio, despesa, maquininha)
+        if (tx.source === 'ofx') {
+          deltas[sid].bancoDelta += val;
+        } else {
+          deltas[sid].sistemaDelta += val;
+        }
+      }
+
+      return deltas;
+    }
+  });
+}

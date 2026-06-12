@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef } from 'react';
 import { useStores } from '@/hooks/useStores';
 import { useConciliacaoResumo, useConciliacaoDetalhes } from '@/hooks/useConciliacao';
-import { useDailySystemBalance } from '@/hooks/useTransactions';
+import { useDailySystemBalance, useDailyBankBalance } from '@/hooks/useTransactions';
 import { getDefaultDate } from '@/lib/utils';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
@@ -22,8 +22,9 @@ function ConciliacaoPage() {
   const { data: resumo, isLoading: loadingResumo, refetch: refetchResumo } = useConciliacaoResumo(selectedDate);
   const { data: detalhes = [], isLoading: loadingDetalhes, refetch: refetchDetalhes } = useConciliacaoDetalhes(selectedDate);
   const { data: dailyBalances, isLoading: loadingBalances } = useDailySystemBalance(selectedDate);
+  const { data: bankBalances, isLoading: loadingBankBalances } = useDailyBankBalance(selectedDate);
 
-  const isLoading = loadingStores || loadingResumo || loadingDetalhes || loadingBalances;
+  const isLoading = loadingStores || loadingResumo || loadingDetalhes || loadingBalances || loadingBankBalances;
 
   const resultado = resumo?.totalDivergence || 0;
   const isApproved = resultado === 0 && (resumo?.approved || 0) > 0;
@@ -35,7 +36,7 @@ function ConciliacaoPage() {
   };
 
   const totalSistema = Object.values(dailyBalances || {}).reduce((acc, val) => acc + Number(val), 0);
-  const totalBancario = detalhes.reduce((acc, r) => acc + ((r as any).bank_total || 0), 0);
+  const totalBancario = Object.values(bankBalances || {}).reduce((acc, val) => acc + Number(val), 0);
   const divergenciaGlobal = totalSistema - totalBancario;
 
   return (
@@ -141,15 +142,15 @@ function ConciliacaoPage() {
                 {stores.map(store => {
                   const rec = detalhes.find(r => r.store_id === store.id);
                   const sys = dailyBalances?.[store.id] || 0;
-                  const bank = (rec as any)?.bank_total || 0;
+                  const bank = bankBalances?.[store.id] || 0;
                   const div = sys - bank;
                   
-                  const hasDeclarations = ((rec as any)?.bank_total !== undefined && (rec as any)?.bank_total !== null);
+                  const hasDeclarations = true; // Sempre exibe delta
                   const isStoreOk = hasDeclarations && Math.abs(div) < 0.01;
                   const isStoreDivergent = hasDeclarations && Math.abs(div) >= 0.01;
 
                   return (
-                    <Link to={"/loja/" + store.id} key={store.id} className="block">
+                    <Link to={"/conciliacao/" + store.id} search={{ date: selectedDate }} key={store.id} className="block">
                       <Card className="p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-6 transition-all hover:scale-[1.01] hover:bg-white/10 hover:border-white/20 cursor-pointer shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] border border-white/5 backdrop-blur-md">
                         <div className="flex-1 flex items-center gap-4">
                           <div className={`w-2 h-12 rounded-full ${isStoreOk ? 'bg-[var(--color-accent-teal)]' : isStoreDivergent ? 'bg-[var(--color-accent-danger)]' : 'bg-white/10'}`} />
