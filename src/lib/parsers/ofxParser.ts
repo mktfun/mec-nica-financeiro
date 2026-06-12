@@ -92,7 +92,12 @@ export async function parseOFXFile(file: File): Promise<OfxParseResult> {
   const ledgerMatch = text.match(/<LEDGERBAL>[\s\S]*?<BALAMT>([^\r\n<]+)/);
   if (ledgerMatch) {
     const balStr = ledgerMatch[1].trim();
-    const balNum = parseFloat(balStr.replace(',', '.'));
+    let balNum: number;
+    if (!balStr.includes('.') && !balStr.includes(',')) {
+      balNum = parseInt(balStr, 10) / 100;
+    } else {
+      balNum = parseFloat(balStr.replace(',', '.'));
+    }
     if (!isNaN(balNum)) {
       bankBalance = balNum;
     }

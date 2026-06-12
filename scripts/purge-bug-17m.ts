@@ -20,11 +20,11 @@ if (!supabaseUrl || !supabaseKey) {
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function run() {
-  console.log('Deleting from reconciliations where bank_total = 1751833...');
+  console.log('Deleting from reconciliations where date >= 2026-06-08...');
   const { data, error } = await supabase
     .from('reconciliations')
     .delete()
-    .eq('bank_total', 1751833);
+    .gte('date', '2026-06-08');
 
   if (error) {
     console.error('Error deleting data:', error);
