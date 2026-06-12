@@ -370,10 +370,14 @@ export function useDailySystemBalance(targetDate: string) {
   return useQuery({
     queryKey: ['daily-system-balance', targetDate],
     queryFn: async () => {
+      const startOfDay = `${targetDate}T00:00:00.000Z`;
+      const endOfDay = `${targetDate}T23:59:59.999Z`;
+
       const { data, error } = await supabase
         .from('transactions')
         .select('*')
-        .eq('target_date', targetDate);
+        .gte('occurred_at', startOfDay)
+        .lte('occurred_at', endOfDay);
         
       if (error) throw error;
       
