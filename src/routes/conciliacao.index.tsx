@@ -11,7 +11,7 @@ import { useDailySystemBalance, useDailyBankBalance } from '@/hooks/useTransacti
 import { getDefaultDate } from '@/lib/utils';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
-export const Route = createFileRoute('/conciliacao')({
+export const Route = createFileRoute('/conciliacao/')({
   component: ConciliacaoPage,
 });
 
@@ -150,7 +150,7 @@ function ConciliacaoPage() {
                   const isStoreDivergent = hasDeclarations && Math.abs(div) >= 0.01;
 
                   return (
-                    <Link to={"/conciliacao/" + store.id} search={{ date: selectedDate }} key={store.id} className="block">
+                    <Link to="/conciliacao/$lojaId" params={{ lojaId: store.id }} search={{ date: selectedDate }} key={store.id} className="block">
                       <Card className="p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-6 transition-all hover:scale-[1.01] hover:bg-white/10 hover:border-white/20 cursor-pointer shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] border border-white/5 backdrop-blur-md">
                         <div className="flex-1 flex items-center gap-4">
                           <div className={`w-2 h-12 rounded-full ${isStoreOk ? 'bg-[var(--color-accent-teal)]' : isStoreDivergent ? 'bg-[var(--color-accent-danger)]' : 'bg-white/10'}`} />
