@@ -132,3 +132,10 @@ export type ProfileRow = {
   role: 'admin' | 'viewer';
   created_at: string;
 };
+
+export type InterestRateRow = {
+  id: string;
+  payment_method: string;
+  rate_percentage: number;
+  created_at?: string;
+};

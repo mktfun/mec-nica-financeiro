@@ -15,6 +15,7 @@ import { useStores } from '@/hooks/useStores';
 import { useStoreHistory } from '@/hooks/useConciliacao';
 import { useExtrato, useBulkInsertTransactions } from '@/hooks/useTransactions';
 import { useCashRegisters, useCloseCashRegister } from '@/hooks/useCashRegisters';
+import { useTripleMatch } from '@/hooks/useTripleMatch';
 import { getDefaultDate } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 import { Modal } from '@/components/ui/Modal';
@@ -66,7 +67,7 @@ function LojaDashboardPage() {
   const period = getDefaultPeriod();
   const [startDate, setStartDate] = useState(period.start);
   const [endDate, setEndDate] = useState(period.end);
-  const [tab, setTab] = useState<'all' | 'in' | 'out' | 'caixa'>('all');
+  const [tab, setTab] = useState<'all' | 'in' | 'out' | 'caixa' | 'triple-match'>('triple-match');
   const [page, setPage] = useState(1);
   const pageSize = 8;
 
@@ -80,6 +81,8 @@ function LojaDashboardPage() {
   const [balanceInput, setBalanceInput] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const qc = useQueryClient();
+
+  const { data: tripleMatchData = [], isLoading: loadingTripleMatch } = useTripleMatch(lojaId, startDate, endDate);
 
   // Conciliação: OFX (banco) vs Sistema (pátio + maquininha - despesas)
   // DEVE ficar antes de qualquer return condicional (Rules of Hooks)
@@ -529,12 +532,20 @@ function LojaDashboardPage() {
                 Apenas Saídas
               </button>
               {!store.is_matriz && (
-                <button
-                  onClick={() => { setTab('caixa'); setPage(1); }}
-                  className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'caixa' ? 'border-[var(--color-warning)] text-[var(--color-warning)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
-                >
-                  Caixa Físico {cashRegisters.filter(c => c.status === 'pending').length > 0 && <span className="ml-1 bg-[var(--color-warning)] text-black text-[10px] px-1.5 py-0.5 rounded-full">{cashRegisters.filter(c => c.status === 'pending').length}</span>}
-                </button>
+                <>
+                  <button
+                    onClick={() => { setTab('triple-match'); setPage(1); }}
+                    className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'triple-match' ? 'border-[var(--color-primary)] text-[var(--color-primary)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
+                  >
+                    Conciliação 3-WAY
+                  </button>
+                  <button
+                    onClick={() => { setTab('caixa'); setPage(1); }}
+                    className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'caixa' ? 'border-[var(--color-warning)] text-[var(--color-warning)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
+                  >
+                    Caixa Físico {cashRegisters.filter(c => c.status === 'pending').length > 0 && <span className="ml-1 bg-[var(--color-warning)] text-black text-[10px] px-1.5 py-0.5 rounded-full">{cashRegisters.filter(c => c.status === 'pending').length}</span>}
+                  </button>
+                </>
               )}
             </div>
 
@@ -625,6 +636,59 @@ function LojaDashboardPage() {
                         </div>
                       );
                     })}
+                  </div>
+                )
+              ) : tab === 'triple-match' ? (
+                loadingTripleMatch ? (
+                  <div className="flex justify-center p-12"><LoadingSpinner size="sm" text="Carregando Conciliação 3-WAY..." /></div>
+                ) : tripleMatchData.length === 0 ? (
+                  <div className="text-center py-20">
+                    <CheckCircle2 size={48} className="mx-auto mb-4 text-[var(--text-tertiary)] opacity-30" />
+                    <p className="text-[var(--text-secondary)] font-medium">Nenhum dado de conciliação neste período.</p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-[var(--bg-surface-elevated)] border-b border-[var(--border-subtle)]">
+                          <th className="py-3 px-4 text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Data</th>
+                          <th className="py-3 px-4 text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Origem (OS) + Juros</th>
+                          <th className="py-3 px-4 text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Maquininha (D+1)</th>
+                          <th className="py-3 px-4 text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Extrato (OFX)</th>
+                          <th className="py-3 px-4 text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider text-center">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-[var(--border-subtle)]">
+                        {tripleMatchData.map((row) => (
+                          <tr key={row.date} className="hover:bg-[var(--bg-surface-hover)] transition-colors">
+                            <td className="py-4 px-4 whitespace-nowrap">
+                              <span className="text-sm font-medium text-[var(--text-primary)]">{formatDate(row.date)}</span>
+                            </td>
+                            <td className="py-4 px-4 whitespace-nowrap">
+                              <div className="flex flex-col">
+                                <span className="text-sm font-mono text-[var(--text-primary)]">R$ {row.osEstimatedAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                                {row.osAmount > row.osEstimatedAmount && (
+                                  <span className="text-[10px] text-[var(--text-tertiary)]">Bruto: R$ {row.osAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="py-4 px-4 whitespace-nowrap">
+                              <span className="text-sm font-mono text-[var(--text-primary)]">R$ {row.machineAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                            </td>
+                            <td className="py-4 px-4 whitespace-nowrap">
+                              <span className="text-sm font-mono text-[var(--text-primary)]">R$ {row.ofxAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                            </td>
+                            <td className="py-4 px-4 whitespace-nowrap text-center">
+                              {row.status === 'approved' ? (
+                                <Badge variant="success">Bateu</Badge>
+                              ) : (
+                                <Badge variant="danger">Divergente</Badge>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 )
               ) : loadingExtrato ? (

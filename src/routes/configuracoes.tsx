@@ -8,6 +8,7 @@ import { StoreFormDialog } from '@/components/dashboard/StoreFormDialog';
 import { useState } from 'react';
 import { StoreRow } from '@/lib/supabase';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { InterestRatesConfig } from '@/components/configuracoes/InterestRatesConfig';
 
 export const Route = createFileRoute('/configuracoes')({
   component: ConfiguracoesPage,
@@ -118,6 +119,9 @@ function ConfiguracoesPage() {
               </div>
             )}
           </Card>
+
+          {/* Políticas de Taxas */}
+          <InterestRatesConfig />
 
           {/* IA */}
           <Card variant="glass" className="p-6">
