@@ -218,20 +218,20 @@ export function useAllStoresBalances() {
     queryKey: ['all-stores-balances'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('transactions')
-        .select('store_id, amount, type')
-        .eq('source', 'ofx');
+        .from('reconciliations')
+        .select('store_id, bank_total, date')
+        .order('date', { ascending: false });
         
       if (error) throw error;
       
-      const rows = data as { store_id: string, amount: number, type: string }[];
+      const rows = data as { store_id: string, bank_total: number, date: string }[];
       
       const balances: Record<string, number> = {};
       
       for (const row of rows) {
-        if (!balances[row.store_id]) balances[row.store_id] = 0;
-        const amount = Number(row.amount || 0);
-        balances[row.store_id] += row.type === 'in' ? amount : -amount;
+        if (balances[row.store_id] === undefined) {
+          balances[row.store_id] = Number(row.bank_total || 0);
+        }
       }
       
       return balances;
