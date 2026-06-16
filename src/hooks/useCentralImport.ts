@@ -61,8 +61,22 @@ export function useCentralImport() {
         const val = extractNumber(row[valueIndex]);
         const estab = estabIndex !== -1 ? String(row[estabIndex] || 'DESCONHECIDO') : 'DESCONHECIDO';
         
-        const dateVenda = dateVendaIndex !== -1 ? String(row[dateVendaIndex] || '') : undefined;
-        const dateCredito = dateCreditoIndex !== -1 ? String(row[dateCreditoIndex] || '') : undefined;
+        let dateVenda = dateVendaIndex !== -1 ? row[dateVendaIndex] : undefined;
+        let dateCredito = dateCreditoIndex !== -1 ? row[dateCreditoIndex] : undefined;
+        
+        // Converte números de data do Excel para dd/mm/yyyy
+        const parseExcelDate = (val: any) => {
+           if (!val) return undefined;
+           if (typeof val === 'number') {
+             // 25569 = Dias de 01/01/1900 a 01/01/1970
+             const date = new Date(Math.round((val - 25569) * 86400 * 1000) + (new Date().getTimezoneOffset() * 60000));
+             return date.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+           }
+           return String(val);
+        };
+
+        dateVenda = parseExcelDate(dateVenda);
+        dateCredito = parseExcelDate(dateCredito);
 
         if (!isNaN(val) && val > 0) {
           items.push({ fileName: file.name, storeName: estab, amount: val, dateVenda, dateCredito });

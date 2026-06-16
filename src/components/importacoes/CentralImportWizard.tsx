@@ -165,6 +165,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         }
 
         ofx.transactions.forEach(tx => {
+          const txDate = tx.date ? tx.date.split('T')[0] : targetDate;
           txsToInsert.push({
             store_id,
             store_name: ofx.alias,
@@ -173,7 +174,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             amount: tx.amount || 0,
             type: tx.type,
             occurred_at: tx.date || new Date().toISOString(),
-            target_date: targetDate,
+            target_date: txDate, // Aloca pro dia real do banco
             icon_type: 'bank',
             source: 'ofx'
           });
@@ -287,8 +288,9 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
      return acc;
   }, 0);
 
-  const totalOfxIn = results.ofxResults.reduce((acc, curr) => acc + curr.transactions.filter(t => t.type === 'in').reduce((a,b) => a + b.amount, 0), 0);
-  const totalOfxOut = results.ofxResults.reduce((acc, curr) => acc + curr.transactions.filter(t => t.type === 'out').reduce((a,b) => a + b.amount, 0), 0);
+  const targetOfx = results.ofxResults.flatMap(r => r.transactions).filter(tx => tx.date && tx.date.startsWith(targetDate));
+  const totalOfxIn = targetOfx.filter(t => t.type === 'in').reduce((a,b) => a + b.amount, 0);
+  const totalOfxOut = targetOfx.filter(t => t.type === 'out').reduce((a,b) => a + b.amount, 0);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
