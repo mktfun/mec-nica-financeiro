@@ -109,10 +109,115 @@ export type Database = {
         }
         Relationships: []
       }
+      cash_registers: {
+        Row: {
+          created_at: string | null
+          date: string
+          declared_amount: number | null
+          divergence: number | null
+          expected_amount: number
+          id: string
+          status: string
+          store_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          date: string
+          declared_amount?: number | null
+          divergence?: number | null
+          expected_amount?: number
+          id?: string
+          status?: string
+          store_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          date?: string
+          declared_amount?: number | null
+          divergence?: number | null
+          expected_amount?: number
+          id?: string
+          status?: string
+          store_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cash_registers_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      import_logs: {
+        Row: {
+          created_at: string | null
+          id: string
+          os_count: number | null
+          receivables_count: number | null
+          store_id: string | null
+          store_name: string
+          target_date: string
+          total_dinheiro: number | null
+          total_os: number | null
+          total_paid_all: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          os_count?: number | null
+          receivables_count?: number | null
+          store_id?: string | null
+          store_name: string
+          target_date: string
+          total_dinheiro?: number | null
+          total_os?: number | null
+          total_paid_all?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          os_count?: number | null
+          receivables_count?: number | null
+          store_id?: string | null
+          store_name?: string
+          target_date?: string
+          total_dinheiro?: number | null
+          total_os?: number | null
+          total_paid_all?: number | null
+        }
+        Relationships: []
+      }
+      interest_rates: {
+        Row: {
+          created_at: string
+          id: string
+          payment_method: string
+          rate_percentage: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          payment_method: string
+          rate_percentage?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          payment_method?: string
+          rate_percentage?: number
+        }
+        Relationships: []
+      }
       patio_os: {
         Row: {
           closed_at: string | null
           days_open: number | null
+          history_log: Json | null
           id: string
           opened_at: string
           os_number: string
@@ -128,6 +233,7 @@ export type Database = {
         Insert: {
           closed_at?: string | null
           days_open?: number | null
+          history_log?: Json | null
           id?: string
           opened_at?: string
           os_number: string
@@ -143,6 +249,7 @@ export type Database = {
         Update: {
           closed_at?: string | null
           days_open?: number | null
+          history_log?: Json | null
           id?: string
           opened_at?: string
           os_number?: string
@@ -235,6 +342,8 @@ export type Database = {
       }
       reconciliations: {
         Row: {
+          bank_divergence: number | null
+          bank_total: number | null
           bot_run_id: string | null
           created_at: string
           daily_cash: number | null
@@ -242,19 +351,19 @@ export type Database = {
           divergence: number | null
           financial_total: number | null
           id: string
+          machine_fees: number | null
+          machine_total: number | null
+          ofx_imported: boolean | null
           os_count: number | null
           os_total: number | null
           processed_at: string | null
           status: string
           store_id: string | null
           top_error: string | null
-          bank_total: number | null
-          bank_divergence: number | null
-          machine_fees: number | null
-          ofx_imported: boolean | null
-          machine_total: number | null
         }
         Insert: {
+          bank_divergence?: number | null
+          bank_total?: number | null
           bot_run_id?: string | null
           created_at?: string
           daily_cash?: number | null
@@ -262,19 +371,19 @@ export type Database = {
           divergence?: number | null
           financial_total?: number | null
           id?: string
+          machine_fees?: number | null
+          machine_total?: number | null
+          ofx_imported?: boolean | null
           os_count?: number | null
           os_total?: number | null
           processed_at?: string | null
           status?: string
           store_id?: string | null
           top_error?: string | null
-          bank_total?: number | null
-          bank_divergence?: number | null
-          machine_fees?: number | null
-          ofx_imported?: boolean | null
-          machine_total?: number | null
         }
         Update: {
+          bank_divergence?: number | null
+          bank_total?: number | null
           bot_run_id?: string | null
           created_at?: string
           daily_cash?: number | null
@@ -282,17 +391,15 @@ export type Database = {
           divergence?: number | null
           financial_total?: number | null
           id?: string
+          machine_fees?: number | null
+          machine_total?: number | null
+          ofx_imported?: boolean | null
           os_count?: number | null
           os_total?: number | null
           processed_at?: string | null
           status?: string
           store_id?: string | null
           top_error?: string | null
-          bank_total?: number | null
-          bank_divergence?: number | null
-          machine_fees?: number | null
-          ofx_imported?: boolean | null
-          machine_total?: number | null
         }
         Relationships: [
           {
@@ -352,9 +459,11 @@ export type Database = {
           occurred_at: string
           os_number: string | null
           payment_method: string | null
+          source: string | null
           store_id: string | null
           store_name: string | null
           subtitle: string | null
+          target_date: string | null
           title: string
           type: string
         }
@@ -366,9 +475,11 @@ export type Database = {
           occurred_at?: string
           os_number?: string | null
           payment_method?: string | null
+          source?: string | null
           store_id?: string | null
           store_name?: string | null
           subtitle?: string | null
+          target_date?: string | null
           title: string
           type: string
         }
@@ -380,9 +491,11 @@ export type Database = {
           occurred_at?: string
           os_number?: string | null
           payment_method?: string | null
+          source?: string | null
           store_id?: string | null
           store_name?: string | null
           subtitle?: string | null
+          target_date?: string | null
           title?: string
           type?: string
         }
@@ -401,7 +514,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      delete_import_batch: {
+        Args: {
+          p_batch_created_ats?: string[]
+          p_is_expense: boolean
+          p_log_ids: string[]
+          p_store_id: string
+          p_target_dates: string[]
+        }
+        Returns: undefined
+      }
+      match_bank_transactions: {
+        Args: { p_date: string; p_store_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
