@@ -1,26 +1,34 @@
 ---
-description: Conclui o fluxo da Spec, consolidando a memória, testando o build e enviando para produção.
+description: Conclui o fluxo da Spec, consolidando a memória em políticas semânticas, testando o build e enviando para produção de forma segura.
 ---
 
 <!-- VIBEARCHIVE:START -->
 
 **Objetivo**
-Garantir que a I.A não sofra amnésia. Este workflow transforma o trabalho temporário em memória permanente e entrega o código seguro no Github.
-
-**Skills a utilizar**
-- Invoque `obsidian` para persistir a memória.
-- Invoque a skill `github` para lidar com todos os comandos de controle de versão (commit, push, branches).
+Garantir a I.A não sofra amnésia e organize seu aprendizado estruturalmente (Memory Continuum). Transforma o trabalho em memória persistente segmentada e entrega o código seguro no Github via fallbacks resilientes.
 
 **Steps**
 
-1. **Consolidação de Memória**: Extraia tudo que você aprendeu com o usuário nesta spec (estilos preferidos, erros cometidos, padrões de DB adotados) e ATUALIZE o arquivo `.agent/memory.md` (ou via Obsidian).
-2. **Quality Gate (Build)**: Execute o comando de build via cmd (`cmd.exe /c "npm run build"`) para evitar erros de Execution Policy e assegurar que nada quebrou na master.
-3. **Commit Automático**: 
-   - Tente rodar `git add .`
-   - Se o comando `git` falhar (não reconhecido), substitua `git` pelo caminho absoluto: `C:\Users\admin\.gemini\antigravity\scratch\mingit\cmd\git.exe add .`
-   - Crie um commit semântico explicando a feature inteira usando o mesmo executável de fallback se necessário.
-4. **Push Automático**: Execute `git push origin` ou `C:\Users\admin\.gemini\antigravity\scratch\mingit\cmd\git.exe push origin` para enviar a branch.
-5. Mova a pasta `specs/<id>` para `specs/archive/<id>`.
-6. Avise o usuário que a Spec foi finalizada e arquivada, e que a Memória Global foi expandida.
+1. **Memória Semântica Contínua**: 
+   - NÃO faça um "dump" genérico em um único arquivo. Analise os aprendizados da iteração (ex: regras de UI/UX Premium, design tokens HSL, prevenção de Hook Loops do React, etc).
+   - Registre as decisões em políticas específicas dentro de `.agent/policies/` (ex: `ui-rules.md`, `backend-rules.md`, `mcp-guidelines.md`).
+   - Use `write_to_file` ou `replace_file_content` para consolidar esses documentos.
+
+2. **Quality Gate (Build e Resiliência)**: 
+   - Execute o comando de build via CMD (`cmd.exe /c "npm run build"`) para evadir do PowerShell Execution Policy e atestar integridade.
+   
+3. **Commit Controlado & Seguro**: 
+   - Tente `git add .`
+   - Se `git` não for reconhecido, puxe o fallback absoluto: `C:\Users\admin\.gemini\antigravity\scratch\mingit\cmd\git.exe add .`
+   - Use HEREDOCs no bash para fazer o commit de explicações complexas, garantindo que o log acompanhe o SDD. 
+   - Lembre-se do Git Identity Override (configurar user/email) se houver falhas. JAMAIAS use `push --force`.
+
+4. **Push Automático**: 
+   - `git push origin` ou o fallback MinGit.
+
+5. **Clean Up**:
+   - Mova a pasta `specs/<id>` para `specs/archive/<id>` usando a ferramenta `run_command`.
+
+6. Avise o usuário que a Spec foi finalizada e que as políticas semânticas no `Memory Continuum` foram expandidas com sucesso.
 
 <!-- VIBEARCHIVE:END -->

@@ -1,43 +1,36 @@
 ---
-description: Transformação de requisitos em uma Especificação Guiada por Cenário (SDD) estrita, garantindo reuso de componentes, planejamento rigoroso e continuidade de memória.
+description: Transformação de requisitos em uma Especificação Guiada por Cenário (SDD) estrita, garantindo Deep Research obrigatória, planejamento rigoroso com checklist de estado, e continuidade de memória.
 ---
 
 <!-- OPENSPEC:START -->
 
 **Guardrails**
 
-- **NÃO ESCREVA CÓDIGO** nesta fase em nenhuma circunstância. Seu objetivo é estruturar o projeto logicamente.
-- Você DEVE seguir estritamente o pipeline de 4 fases do SDD (Specification-Driven Development).
-- Nenhuma feature pode ser proposta sem antes mapear componentes existentes em `spec/global/features.md`.
+- **RACIOCÍNIO EXPLÍCITO:** Nenhuma ação inicia sem um Thought Block (<think>).
+- **DEEP RESEARCH ANTES DE AGIR:** Antes de propor algo, invoque ferramentas de listagem e busca (`list_dir`, `grep_search`) para varrer o projeto inteiro. ZERO SUPOSIÇÕES sobre os arquivos que não estão abertos.
+- **NÃO ESCREVA CÓDIGO** nesta fase em nenhuma circunstância. Seu objetivo é estruturar o projeto logicamente em arquivos `.md`.
 
-**Skills a utilizar**
-- **obrigatório**: invoque a skill `sdd-global-init` para assegurar que a fundação global (`spec/global`) existe.
-- **obrigatório**: invoque a skill `obsidian` para ler o contexto passado e integrar com as especificações.
-- **obrigatório**: invoque `adaptive-reasoning` e `deciqai-bayesian-reasoning` na fase de Análise para mensurar riscos.
-- **obrigatório**: certifique-se de que o fluxo respeitará as bases do `sdd-dev-workflow`, `sdd-executing-plans`, e `sdd`.
+**Steps (Pipeline SDD Estrito - IA Sênior)**
 
-**Steps (Pipeline SDD Estrito)**
+**Phase 1: Deep Research & Global Initialization**
+1. **Varredura Paralela:** Use ferramentas simultâneas (`grep_search` + `list_dir`) para auditar a codebase baseada no pedido do usuário e descobrir artefatos ocultos.
+2. Invoque `sdd-global-init` para criar/validar `spec/global/` (`overview.md`, `architecture.md`, `features.md`, `constraints.md`).
+3. **Reuso Absoluto:** Mapeie o que já existe em `features.md` ou na codebase. Bloqueie duplicações.
 
-**Phase 1: Global State & Architecture Initialization (`sdd-global-init`)**
-1. Verifique se o diretório `spec/global/` existe. Se não, determine a criação do diretório global (`overview.md`, `architecture.md`, `features.md`, `constraints.md`).
-2. **Reuso Obrigatório:** Leia `spec/global/features.md`. Mapeie a nova requisição. Se houver componentes ou estruturas semelhantes já documentadas, bloqueie a criação de novos componentes e determine o uso do existente.
+**Phase 2: The Deterministic Pipeline (`sdd-dev-workflow`)**
+4. **Constitution Review:** Valide o pedido contra `spec/global/constraints.md` e as regras globais (`.agent/rules/ia.md`).
+5. **Specify:** Limites da API, contratos e mutações (`specs/<id>/proposal.md` e `specs/<id>/design.md`).
+6. **Clarify (Zero Ambiguity):** PAUSE e solicite esclarecimentos se houver risco (ex: limites de Copyright do Claude Fable 5, fallbacks Windows).
+7. **Plan & Tasks:** Desenhe a arquitetura técnica exata e quebre-a em atômicas.
 
-**Phase 2: The Deterministic 7-Step Pipeline (`sdd-dev-workflow`)**
-3. **Constitution Review:** Valide o pedido do usuário contra as regras rígidas em `spec/global/constraints.md` ou na constituição do projeto.
-4. **Specify:** Defina os limites da API, contratos de dados, mutações de estado e arquitetura da interface (`specs/<id>/proposal.md` e `specs/<id>/design.md`).
-5. **Clarify:** O sistema deve PAUSAR e solicitar esclarecimentos se houver ambiguidades nos requisitos ou fluxo de dados (Zero Suposições).
-6. **Plan:** Modele a arquitetura técnica exata da funcionalidade.
-7. **Tasks:** Quebre o plano em tarefas atômicas e sequenciais.
-8. **Analyze:** Utilize `bayesian-reasoning` e `adaptive-reasoning` para fazer um "dry-run" mental da lógica para garantir que não haja efeitos colaterais.
-9. **Implement:** A implementação do código final só é destravada via `/vibe-apply` após os itens acima estarem 100% corretos e documentados.
+**Phase 3: Automated Plan Execution & State Save (`sdd-executing-plans`)**
+8. Todo o resultado da fase "Tasks" DEVE ser documentado num checklist estrito em `specs/<id>/spec-plan.md`.
+9. O arquivo usará transições de estado estritas: `- [ ] Pending`, `- [/] In Progress`, `- [x] Completed`. Isso âncora a Memória Contínua.
+10. Defina a integração com MCPs (`search_mcp_registry`) no plano se necessário, mas não execute mock interfaces.
+11. Se as tasks envolverem artefatos dinâmicos de Frontend, aponte o uso da API `window.storage` em vez de `localStorage`.
 
-**Phase 3: Automated Plan Execution & Memory Continuity (`sdd-executing-plans`)**
-10. Todo o resultado da fase "Tasks" (passo 7) deve ser documentado obrigatoriamente num checklist rígido em `specs/<id>/spec-plan.md`.
-11. Este `spec-plan.md` guiará a próxima fase com checkpoints do tipo `- [ ]`. Ele será a âncora de continuidade de estado (Save-State).
-
-**Phase 4: Scenario-Driven Logic Verification (`sdd`)**
-12. Prepare na documentação de design os cenários que deverão ser testados no ciclo `SCAN -> INFER -> VERIFY -> FIX`. Foco na precisão lógica (ex: transições de estado, tokens UI), não apenas em evitar crashs sistêmicos.
-
-13. Valide a coerência do plano final e peça a aprovação do usuário explícita antes que o `/vibe-apply` comece a escrever código e alterar o `spec-plan.md`.
+**Phase 4: Verification & Sign-off (`sdd`)**
+12. Design de cenários para `SCAN -> INFER -> VERIFY -> FIX`.
+13. Submeta o plano (`spec-plan.md`) para aprovação do usuário explícita antes que o `/vibe-apply` modifique a primeira linha de código real.
 
 <!-- OPENSPEC:END -->
