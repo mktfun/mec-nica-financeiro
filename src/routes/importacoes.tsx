@@ -9,7 +9,8 @@ import { useImportsHistory, useDeleteImport, GroupedImportLog } from '@/hooks/us
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { CategorySelector } from '@/components/importacoes/CategorySelector';
-import { WizardImportacao } from '@/components/importacoes/WizardImportacao';
+import { CentralImportWizard } from '@/components/importacoes/CentralImportWizard';
+import { UploadCloud } from 'lucide-react';
 
 export const Route = createFileRoute('/importacoes')({
   component: ImportacoesPage,
@@ -26,7 +27,7 @@ function ImportacoesPage() {
   const deleteImport = useDeleteImport();
   const navigate = useNavigate();
   
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [showWizard, setShowWizard] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const itemsPerPage = 10;
@@ -61,7 +62,7 @@ function ImportacoesPage() {
     } else if (id === 'PATIO') {
       navigate({ to: '/importar-os' });
     } else {
-      setSelectedCategory(id);
+      setShowWizard(true);
     }
   };
 
@@ -81,6 +82,10 @@ function ImportacoesPage() {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <button onClick={() => setShowWizard(true)} className="bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 text-sm font-medium px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors">
+              <UploadCloud size={18} />
+              Central de Importação
+            </button>
             <Link to="/importacoes-despesas" className="bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] hover:border-[var(--color-primary)] text-sm font-medium px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors">
               <Database size={18} className="text-[var(--color-primary)]" />
               Importar Despesas
@@ -88,14 +93,9 @@ function ImportacoesPage() {
           </div>
         </div>
 
-        {selectedCategory ? (
-          <WizardImportacao 
-            category={selectedCategory} 
-            onCancel={() => setSelectedCategory(null)} 
-            onSuccess={() => {
-              alert('Importação Concluída!');
-              setSelectedCategory(null);
-            }} 
+        {showWizard ? (
+          <CentralImportWizard 
+            onCancel={() => setShowWizard(false)} 
           />
         ) : (
           <div className="space-y-10">

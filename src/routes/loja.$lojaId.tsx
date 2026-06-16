@@ -67,7 +67,7 @@ function LojaDashboardPage() {
   const period = getDefaultPeriod();
   const [startDate, setStartDate] = useState(period.start);
   const [endDate, setEndDate] = useState(period.end);
-  const [tab, setTab] = useState<'caixa' | 'entradas' | 'saidas'>('caixa');
+  const [tab, setTab] = useState<'extrato' | 'saidas' | 'entradas' | 'caixa'>('extrato');
   const [page, setPage] = useState(1);
   const pageSize = 8;
 
@@ -230,24 +230,30 @@ function LojaDashboardPage() {
   const apuradoSistema = concSistema - concDespesas;
   const diferencaConc = concBanco - apuradoSistema;
 
-  const chartStats = extrato?.transactions.reduce((acc, tx: any) => {
-    const category = tx.subtitle || 'Outras Despesas';
-    acc[category] = (acc[category] || 0) + Number(tx.amount || 0);
-    return acc;
-  }, {} as Record<string, number>);
+  let pieData: { name: string; value: number }[] = [];
+  let currentColors = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#ef4444', '#14b8a6', '#f43f5e'];
 
-  let pieData = chartStats 
-    ? Object.entries(chartStats)
-        .map(([name, value]) => ({ name, value }))
-        .sort((a, b) => b.value - a.value)
-    : [];
-
-  pieData = [
-    { name: 'Receitas (Entradas)', value: extrato?.totalIn || 0 },
-    { name: 'Despesas (Saídas)', value: extrato?.totalOut || 0 }
-  ].filter(d => d.value > 0);
-
-  let currentColors = ['#10b981', '#ef4444'];
+  if (tab === 'extrato' || tab === 'caixa') {
+    pieData = [
+      { name: 'Receitas (Entradas)', value: extrato?.totalIn || 0 },
+      { name: 'Despesas (Saídas)', value: extrato?.totalOut || 0 }
+    ].filter(d => d.value > 0);
+    currentColors = ['#10b981', '#ef4444'];
+  } else if (tab === 'saidas') {
+    const saidasStats = (extrato?.transactions || []).filter((tx: any) => tx.type === 'out').reduce((acc: any, tx: any) => {
+      const cat = tx.subtitle || 'Outras Saídas';
+      acc[cat] = (acc[cat] || 0) + Number(tx.amount);
+      return acc;
+    }, {});
+    pieData = Object.entries(saidasStats).map(([name, value]) => ({ name, value: value as number })).sort((a, b) => b.value - a.value);
+  } else if (tab === 'entradas') {
+    const entradasStats = (extrato?.transactions || []).filter((tx: any) => tx.type === 'in').reduce((acc: any, tx: any) => {
+      const method = tx.subtitle || 'Outras Entradas';
+      acc[method] = (acc[method] || 0) + Number(tx.amount);
+      return acc;
+    }, {});
+    pieData = Object.entries(entradasStats).map(([name, value]) => ({ name, value: value as number })).sort((a, b) => b.value - a.value);
+  }
 
   // Remove extrato transaction listing variables
 
@@ -476,26 +482,32 @@ function LojaDashboardPage() {
             </div>
 
             <div className="flex border-b border-[var(--border-subtle)] mb-4 overflow-x-auto">
+              <button
+                onClick={() => { setTab('extrato'); setPage(1); }}
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'extrato' ? 'border-[var(--color-primary)] text-[var(--color-primary)]' : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+              >
+                Extrato Bancário
+              </button>
+              <button
+                onClick={() => { setTab('saidas'); setPage(1); }}
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'saidas' ? 'border-[var(--color-accent-danger)] text-[var(--color-accent-danger)]' : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+              >
+                Saídas
+              </button>
+              <button
+                onClick={() => { setTab('entradas'); setPage(1); }}
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'entradas' ? 'border-[var(--color-success)] text-[var(--color-success)]' : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+              >
+                Entradas
+              </button>
               {!store.is_matriz && (
                 <button
                   onClick={() => { setTab('caixa'); setPage(1); }}
-                  className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'caixa' ? 'border-[var(--color-warning)] text-[var(--color-warning)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
+                  className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'caixa' ? 'border-[var(--color-warning)] text-[var(--color-warning)]' : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
                 >
                   Caixa Físico {cashRegisters.filter(c => c.status === 'pending').length > 0 && <span className="ml-1 bg-[var(--color-warning)] text-black text-[10px] px-1.5 py-0.5 rounded-full">{cashRegisters.filter(c => c.status === 'pending').length}</span>}
                 </button>
               )}
-              <button
-                onClick={() => { setTab('entradas'); setPage(1); }}
-                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'entradas' ? 'border-[var(--color-success)] text-[var(--color-success)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
-              >
-                Entradas
-              </button>
-              <button
-                onClick={() => { setTab('saidas'); setPage(1); }}
-                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'saidas' ? 'border-[var(--color-accent-danger)] text-[var(--color-accent-danger)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
-              >
-                Saídas
-              </button>
             </div>
 
             <Card className="p-0 overflow-hidden">
@@ -653,6 +665,42 @@ function LojaDashboardPage() {
                         <div className="text-right">
                           <p className="font-mono font-bold text-[var(--color-accent-danger)]">
                             - R$ {Number(tx.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </p>
+                        </div>
+                      </motion.div>
+                    ))
+                  )}
+                </div>
+              ) : tab === 'extrato' ? (
+                <div className="divide-y divide-[var(--border-subtle)]">
+                  {(extrato?.transactions || []).length === 0 ? (
+                    <div className="text-center py-20">
+                      <p className="text-[var(--text-secondary)] font-medium">Nenhuma transação encontrada neste período.</p>
+                    </div>
+                  ) : (
+                    (extrato?.transactions || []).map((tx: any, i: number) => (
+                      <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.02 }}
+                        key={tx.id || i} 
+                        className="p-4 flex items-center justify-between hover:bg-[var(--bg-surface)] transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${tx.type === 'in' ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' : 'bg-[var(--color-accent-danger)]/10 text-[var(--color-accent-danger)]'}`}>
+                            {tx.type === 'in' ? <ArrowUpRight size={18} /> : <ArrowDownRight size={18} />}
+                          </div>
+                          <div>
+                            <p className="font-medium text-sm text-[var(--text-primary)]">{tx.title || (tx.type === 'in' ? 'Entrada' : 'Saída')}</p>
+                            <p className="text-xs text-[var(--text-secondary)] flex items-center gap-1">
+                              <Calendar size={12} /> {formatDate(tx.occurred_at || tx.created_at)}
+                              {tx.subtitle && <span className="ml-2 px-1.5 py-0.5 bg-[var(--bg-canvas)] rounded border border-[var(--border-subtle)] text-[10px]">{tx.subtitle}</span>}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className={`font-mono font-bold ${tx.type === 'in' ? 'text-[var(--color-success)]' : 'text-[var(--color-accent-danger)]'}`}>
+                            {tx.type === 'in' ? '+' : '-'} R$ {Number(tx.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                           </p>
                         </div>
                       </motion.div>
