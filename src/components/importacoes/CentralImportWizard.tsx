@@ -261,9 +261,32 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
     }
   };
 
-  // Totais
-  const totalOs = results.osFiles.reduce((acc, curr) => acc + curr.osArray.reduce((a,b) => a + b.paid_value, 0), 0);
-  const totalMaq = results.maquininhaItems.reduce((acc, curr) => acc + curr.amount, 0);
+  // Totais (Com Filtro Estrito D+1 para Preview)
+  let filteredOsCount = 0;
+  const totalOs = results.osFiles.reduce((acc, curr) => {
+     let sum = 0;
+     curr.osArray.forEach(os => {
+        const osDate = os.closed_at || os.opened_at;
+        const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
+        if (osDate && osDate.startsWith(targetDate) && delta > 0) {
+           sum += delta;
+           filteredOsCount++;
+        }
+     });
+     return acc + sum;
+  }, 0);
+
+  const totalMaq = results.maquininhaItems.reduce((acc, item) => {
+     let formattedVenda = item.dateVenda;
+     if (formattedVenda && formattedVenda.includes('/')) {
+        formattedVenda = formattedVenda.split('/').reverse().join('-');
+     }
+     if (formattedVenda === targetDate || !formattedVenda) {
+        return acc + item.amount;
+     }
+     return acc;
+  }, 0);
+
   const totalOfxIn = results.ofxResults.reduce((acc, curr) => acc + curr.transactions.filter(t => t.type === 'in').reduce((a,b) => a + b.amount, 0), 0);
   const totalOfxOut = results.ofxResults.reduce((acc, curr) => acc + curr.transactions.filter(t => t.type === 'out').reduce((a,b) => a + b.amount, 0), 0);
 
@@ -401,7 +424,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                  <div className="text-3xl font-display font-bold text-white mb-2">
                    <AnimatedNumber value={totalOs} format="currency" />
                  </div>
-                 <p className="text-xs text-[var(--text-tertiary)]">{results.osFiles.reduce((a,b)=>a+b.osCount,0)} OS Finalizadas</p>
+                 <p className="text-xs text-[var(--text-tertiary)]">{filteredOsCount} OS Finalizadas</p>
                </div>
 
                {/* Coluna 2: Maquininha (D+1) */}
