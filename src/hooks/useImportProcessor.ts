@@ -100,6 +100,142 @@ export function detectInterestOrDiscount(
 }
 
 
+export async function savePatioOsAndReceivables(
+  storeId: string, 
+  storeName: string, 
+  osArray: ParsedOS[], 
+  receivablesArray: ParsedReceivable[]
+) {
+  // 1. Process Patio OS (upsert by os_number — idempotent)
+  if (osArray.length > 0) {
+    const { data: existingOs } = await supabase
+      .from('patio_os')
+      .select('id, os_number, total_value, paid_value, status, history_log')
+      .eq('store_id', storeId);
+
+    const existingMap = new Map((existingOs || []).map(o => [String(o.os_number), o]));
+
+    const toInsert: any[] = [];
+    const toUpdate: any[] = [];
+
+    for (const os of osArray) {
+      const existingObjForDelta = existingMap.get(String(os.os_number));
+      const velho_valor_pago = existingObjForDelta ? Number(existingObjForDelta.paid_value) : 0;
+      const delta_paid = os.paid_value - velho_valor_pago;
+      (os as any).delta_paid = delta_paid;
+
+      // ─── Aplicar Motor de Juros ───────────────────────
+      const { adjustedTotal, interestType } = detectInterestOrDiscount(
+        os.total_value,
+        os.paid_value,
+        os.payment_method
+      );
+
+      const payload = {
+        store_id: storeId,
+        store_name: storeName,
+        os_number: String(os.os_number),
+        plate: os.plate,
+        total_value: adjustedTotal, // Usa o valor ajustado (com juros incluso)
+        paid_value: os.paid_value,
+        payment_method: os.payment_method
+          ? (interestType
+              ? `${os.payment_method} [${interestType}]`
+              : os.payment_method)
+          : os.payment_method,
+        status: os.status,
+        opened_at: os.opened_at,
+        closed_at: os.closed_at,
+        days_open: os.days_open,
+        updated_at: new Date().toISOString()
+      };
+
+      const existingObj = existingMap.get(String(os.os_number));
+      if (existingObj) {
+        const oldTotal = Number(existingObj.total_value);
+        const newTotal = Number(payload.total_value);
+        const oldPaid = Number(existingObj.paid_value);
+        const newPaid = Number(payload.paid_value);
+        const oldStatus = existingObj.status;
+        const newStatus = payload.status;
+        
+        const changes = [];
+        if (oldTotal !== newTotal) changes.push({ field: 'total_value', from: oldTotal, to: newTotal });
+        if (oldPaid !== newPaid) changes.push({ field: 'paid_value', from: oldPaid, to: newPaid });
+        if (oldStatus !== newStatus) changes.push({ field: 'status', from: oldStatus, to: newStatus });
+        
+        let currentHistory = existingObj.history_log || [];
+        if (!Array.isArray(currentHistory)) currentHistory = [];
+        
+        if (changes.length > 0) {
+           currentHistory.push({
+             date: new Date().toISOString(),
+             changes
+           });
+        }
+        
+        toUpdate.push({ id: existingObj.id, history_log: currentHistory, ...payload });
+      } else {
+        toInsert.push({ history_log: [], ...payload });
+      }
+    }
+
+    if (toInsert.length > 0) {
+      await supabase.from('patio_os').insert(toInsert);
+    }
+    for (const update of toUpdate) {
+      await supabase.from('patio_os').update(update).eq('id', update.id);
+    }
+  }
+
+  // 2. Process Receivables (Idempotency by store_id + type + date + value rounded)
+  if (receivablesArray.length > 0) {
+    const { data: existingRecs } = await supabase
+      .from('receivables')
+      .select('id, type, value, date, status')
+      .eq('store_id', storeId);
+
+    const toInsertRecs: any[] = [];
+    const toUpdateRecs: { id: string; status: string }[] = [];
+    const localSeen = new Set<string>();
+
+    for (const rec of receivablesArray) {
+      const key = `${rec.type}__${rec.date}__${Math.round(rec.value * 100)}`;
+      if (localSeen.has(key)) continue;
+      localSeen.add(key);
+
+      const existingMatch = existingRecs?.find(
+        (er) => er.type === rec.type && er.date === rec.date &&
+                Math.round(Number(er.value) * 100) === Math.round(rec.value * 100)
+      );
+
+      if (!existingMatch) {
+        toInsertRecs.push({
+          store_id: storeId,
+          store_name: storeName,
+          type: rec.type,
+          value: rec.value,
+          status: rec.status,
+          date: rec.date,
+          due_date: rec.due_date,
+        });
+      } else if (existingMatch.status === 'pendente' && rec.status === 'recebido') {
+        toUpdateRecs.push({
+          id: existingMatch.id,
+          status: 'recebido'
+        });
+      }
+    }
+
+    if (toInsertRecs.length > 0) {
+      await supabase.from('receivables').insert(toInsertRecs);
+    }
+    for (const up of toUpdateRecs) {
+      await supabase.from('receivables').update({ status: up.status }).eq('id', up.id);
+    }
+  }
+}
+
 export function useProcessImportedData() {
   const qc = useQueryClient();
   const saveImportedReport = useSaveImportedReport();
@@ -120,134 +256,8 @@ export function useProcessImportedData() {
       targetDate?: string;
       ofxBankBalance?: number;
     }) => {
-      // 1. Process Patio OS (upsert by os_number — idempotent)
-      if (osArray.length > 0) {
-        const { data: existingOs } = await supabase
-          .from('patio_os')
-          .select('id, os_number, total_value, paid_value, status, history_log')
-          .eq('store_id', storeId);
+      await savePatioOsAndReceivables(storeId, storeName, osArray, receivablesArray);
 
-        const existingMap = new Map((existingOs || []).map(o => [String(o.os_number), o]));
-
-        const toInsert: any[] = [];
-        const toUpdate: any[] = [];
-
-        for (const os of osArray) {
-          const existingObjForDelta = existingMap.get(String(os.os_number));
-          const velho_valor_pago = existingObjForDelta ? Number(existingObjForDelta.paid_value) : 0;
-          const delta_paid = os.paid_value - velho_valor_pago;
-          (os as any).delta_paid = delta_paid;
-
-          // ─── Aplicar Motor de Juros ───────────────────────
-          const { adjustedTotal, interestType } = detectInterestOrDiscount(
-            os.total_value,
-            os.paid_value,
-            os.payment_method
-          );
-
-          const payload = {
-            store_id: storeId,
-            store_name: storeName,
-            os_number: String(os.os_number),
-            plate: os.plate,
-            total_value: adjustedTotal, // Usa o valor ajustado (com juros incluso)
-            paid_value: os.paid_value,
-            payment_method: os.payment_method
-              ? (interestType
-                  ? `${os.payment_method} [${interestType}]`
-                  : os.payment_method)
-              : os.payment_method,
-            status: os.status,
-            opened_at: os.opened_at,
-            closed_at: os.closed_at,
-            days_open: os.days_open,
-            updated_at: new Date().toISOString()
-          };
-
-          const existingObj = existingMap.get(String(os.os_number));
-          if (existingObj) {
-            const oldTotal = Number(existingObj.total_value);
-            const newTotal = Number(payload.total_value);
-            const oldPaid = Number(existingObj.paid_value);
-            const newPaid = Number(payload.paid_value);
-            const oldStatus = existingObj.status;
-            const newStatus = payload.status;
-            
-            const changes = [];
-            if (oldTotal !== newTotal) changes.push({ field: 'total_value', from: oldTotal, to: newTotal });
-            if (oldPaid !== newPaid) changes.push({ field: 'paid_value', from: oldPaid, to: newPaid });
-            if (oldStatus !== newStatus) changes.push({ field: 'status', from: oldStatus, to: newStatus });
-            
-            let currentHistory = existingObj.history_log || [];
-            if (!Array.isArray(currentHistory)) currentHistory = [];
-            
-            if (changes.length > 0) {
-               currentHistory.push({
-                 date: new Date().toISOString(),
-                 changes
-               });
-            }
-            
-            toUpdate.push({ id: existingObj.id, history_log: currentHistory, ...payload });
-          } else {
-            toInsert.push({ history_log: [], ...payload });
-          }
-        }
-
-        if (toInsert.length > 0) {
-          await supabase.from('patio_os').insert(toInsert);
-        }
-        for (const update of toUpdate) {
-          await supabase.from('patio_os').update(update).eq('id', update.id);
-        }
-      }
-
-      // 2. Process Receivables (Idempotency by store_id + type + date + value rounded)
-      if (receivablesArray.length > 0) {
-        const { data: existingRecs } = await supabase
-          .from('receivables')
-          .select('id, type, value, date, status')
-          .eq('store_id', storeId);
-
-        const toInsertRecs: any[] = [];
-        const toUpdateRecs: { id: string; status: string }[] = [];
-        const localSeen = new Set<string>();
-
-        for (const rec of receivablesArray) {
-          const key = `${rec.type}__${rec.date}__${Math.round(rec.value * 100)}`;
-          if (localSeen.has(key)) continue;
-          localSeen.add(key);
-
-          const existingMatch = existingRecs?.find(
-            (er) => er.type === rec.type && er.date === rec.date &&
-                    Math.round(Number(er.value) * 100) === Math.round(rec.value * 100)
-          );
-
-          if (!existingMatch) {
-            toInsertRecs.push({
-              store_id: storeId,
-              store_name: storeName,
-              type: rec.type,
-              value: rec.value,
-              status: rec.status,
-              date: rec.date,
-              due_date: rec.due_date,
-            });
-          } else if (existingMatch.status === 'pendente' && rec.status === 'recebido') {
-            toUpdateRecs.push({
-              id: existingMatch.id,
-              status: 'recebido'
-            });
-          }
-        }
-
-        if (toInsertRecs.length > 0) {
-          await supabase.from('receivables').insert(toInsertRecs);
-        }
-        for (const up of toUpdateRecs) {
-          await supabase.from('receivables').update({ status: up.status }).eq('id', up.id);
-        }
-      }
 
       // 3. Agrupar OSs por data de fechamento para processar Transações, Conciliações e Logs
       const dailySummaries = new Map<string, {

@@ -12,6 +12,7 @@
 - **Transparência de UI:** Sempre exibir divergências ativamente (ex: se o valor pago em D+1 é menor que o valor aprovado da máquina, ou se a máquina recebeu menos que as OSs finalizadas). Gráficos de pizza (Donut) devem ser responsivos à aba/contexto que o usuário está visualizando.
 - **Contexto em Mapeamentos:** Nunca exibir identificadores abstratos (como números de conta bancária de OFX) para o usuário sem contexto. Sempre parear com metadados como Nome do Arquivo de Origem e uma amostra do conteúdo (ex: 2 transações do extrato) para facilitar a cognição humana no mapeamento de entidades.
 - **Princípio de Fluxo Único:** Evitar concorrência visual entre rotas novas e legadas. Se um fluxo central substitui fluxos antigos, os componentes obsoletos devem ser sumariamente removidos para evitar redundância na tela.
+- **Dualidade na Importação de Dados:** Dados importados via planilhas brutas (OS/Maquininha) devem alimentar duas vias distintas. A via 1 (Histórico) salva incondicionalmente a totalidade dos dados brutos nas tabelas de origem (`patio_os`, `receivables`) para garantir o funcionamento das views analíticas. A via 2 (Conciliação Diária) aplica um filtro temporal restrito (`targetDate`), selecionando APENAS as operações fechadas naquele exato dia para popular as transações (`transactions`) que formarão o Apurado, impedindo inflações artificiais de caixa decorrentes de uploads massivos.
 ## Persona do Usuário
 - Focado em entregas de qualidade e headless workflows.
 - Exige planejamento via Especificações antes da implementação.

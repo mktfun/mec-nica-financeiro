@@ -12,6 +12,7 @@ import { useCentralImport, UnifiedImportResult } from '@/hooks/useCentralImport'
 import { useBulkInsertTransactions } from '@/hooks/useTransactions';
 import { supabase } from '@/lib/supabase';
 import { useNavigate } from '@tanstack/react-router';
+import { savePatioOsAndReceivables, ParsedReceivable } from '@/hooks/useImportProcessor';
 
 // Hook para gerenciar mapeamento de lojas
 function useUnifiedStoreMapping() {
@@ -122,9 +123,42 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       const txsToInsert: any[] = [];
       const storeBankBalances: Record<string, number> = {};
 
-      // Inserir OFX
+      // 1. Inserir nas Tabelas de Origem (Pátio e Recebíveis) para histórico
+      for (const osResult of results.osFiles.filter(r => r.success)) {
+        let store_id: string | null = mapping[osResult.storeAlias];
+        if (store_id === 'GLOBAL') store_id = null;
+        if (store_id) {
+          await savePatioOsAndReceivables(store_id, osResult.storeAlias, osResult.osArray, osResult.receivablesArray || []);
+        }
+      }
+
+      const maqByStore: Record<string, any[]> = {};
+      results.maquininhaItems.forEach(item => {
+        let sid: string | null = mapping[item.storeName];
+        if (sid === 'GLOBAL') sid = null;
+        if (sid) {
+          if (!maqByStore[sid]) maqByStore[sid] = [];
+          maqByStore[sid].push(item);
+        }
+      });
+
+      for (const [sid, items] of Object.entries(maqByStore)) {
+        const storeName = items[0].storeName;
+        const parsedRecs: ParsedReceivable[] = items.map(item => ({
+          type: 'Cartão Crédito',
+          value: item.amount,
+          date: item.dateVenda || targetDate,
+          due_date: item.dateCredito || targetDate,
+          status: 'recebido'
+        }));
+        await savePatioOsAndReceivables(sid, storeName, [], parsedRecs);
+      }
+
+      // 2. Extrair APENAS itens do targetDate para a Tabela Transactions (Conciliação D+1)
+      
+      // OFX
       results.ofxResults.forEach(ofx => {
-        let store_id = mapping[ofx.alias];
+        let store_id: string | null = mapping[ofx.alias];
         if (store_id === 'GLOBAL') store_id = null;
         if (ofx.bankBalance !== undefined && store_id) {
           storeBankBalances[store_id] = ofx.bankBalance;
@@ -146,42 +180,52 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         });
       });
 
-      // Maquininha (D+1 Bridge)
+      // Maquininha (D+1 Bridge - Filtro por Venda == targetDate)
       results.maquininhaItems.forEach(item => {
-        let store_id = mapping[item.storeName];
+        let store_id: string | null = mapping[item.storeName];
         if (store_id === 'GLOBAL') store_id = null;
-        txsToInsert.push({
-            store_id,
-            store_name: item.storeName,
-            title: `Recebimento Rede (${item.dateVenda || targetDate})`,
-            subtitle: item.storeName,
-            amount: item.amount || 0,
-            type: 'in',
-            occurred_at: item.dateCredito ? new Date(item.dateCredito.split('/').reverse().join('-')).toISOString() : `${targetDate}T12:00:00Z`,
-            target_date: targetDate,
-            icon_type: 'card',
-            source: 'maquininha'
-        });
+        
+        let formattedVenda = item.dateVenda;
+        if (formattedVenda && formattedVenda.includes('/')) {
+           formattedVenda = formattedVenda.split('/').reverse().join('-');
+        }
+        
+        // Só entra na conciliação atual se a data da venda for o targetDate
+        if (formattedVenda === targetDate || !formattedVenda) {
+          txsToInsert.push({
+              store_id,
+              store_name: item.storeName,
+              title: `Recebimento Rede (${item.dateVenda || targetDate})`,
+              subtitle: item.storeName,
+              amount: item.amount || 0,
+              type: 'in',
+              occurred_at: item.dateCredito ? new Date(item.dateCredito.split('/').reverse().join('-')).toISOString() : `${targetDate}T12:00:00Z`,
+              target_date: targetDate,
+              icon_type: 'card',
+              source: 'maquininha'
+          });
+        }
       });
 
-      // OSs são tratadas separadamente?
-      // O useTripleConciliation original processa as OS. 
-      // Vamos inserir os Recebíveis da OS tbm:
+      // OSs (Filtro por Fechamento == targetDate)
       results.osFiles.filter(r => r.success).forEach(osResult => {
-         let store_id = mapping[osResult.storeAlias];
+         let store_id: string | null = mapping[osResult.storeAlias];
          if (store_id === 'GLOBAL') store_id = null;
          
-         // Aqui inseriria as OS no supabase. Para simplificar, vou inserir como transactions.
          osResult.osArray.forEach(os => {
-            if (os.paid_value > 0) {
+            const osDate = os.closed_at || os.opened_at;
+            const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
+            
+            // Só entra na conciliação se a OS foi fechada neste dia e o valor pago é maior que 0
+            if (osDate && osDate.startsWith(targetDate) && delta > 0) {
               txsToInsert.push({
                   store_id,
                   store_name: osResult.storeAlias,
                   title: `OS ${os.os_number} (${os.plate})`,
                   subtitle: os.payment_method || 'Sistema',
-                  amount: os.paid_value,
+                  amount: delta,
                   type: 'in',
-                  occurred_at: `${targetDate}T10:00:00Z`, // OS não tem hora, usaremos o targetDate.
+                  occurred_at: `${targetDate}T10:00:00Z`,
                   target_date: targetDate,
                   icon_type: 'system',
                   source: 'sistema',
@@ -199,9 +243,9 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           store_name: 'Conciliação Tripla D+1',
           target_date: targetDate,
           total_os: txsToInsert.filter(t => t.source === 'sistema').reduce((a,b) => a + b.amount, 0),
-          os_count: results.osFiles.reduce((a,b) => a + b.osCount, 0),
+          os_count: txsToInsert.filter(t => t.source === 'sistema').length,
           total_paid_all: txsToInsert.reduce((a,b) => a + (b.type === 'in' ? b.amount : -b.amount), 0),
-          receivables_count: results.maquininhaItems.length
+          receivables_count: txsToInsert.filter(t => t.source === 'maquininha').length
       }];
 
       const { error: upsertErr } = await supabase.from('import_logs').upsert(logsToInsert, { onConflict: 'store_id,target_date' });
