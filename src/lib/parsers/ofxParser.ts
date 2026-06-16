@@ -10,6 +10,7 @@ export interface OfxParseResult {
   alias: string;
   transactions: OfxTransaction[];
   bankBalance?: number;
+  fileName?: string;
 }
 
 export async function parseOFXFile(file: File): Promise<OfxParseResult> {
@@ -103,5 +104,5 @@ export async function parseOFXFile(file: File): Promise<OfxParseResult> {
     }
   }
 
-  return { alias, transactions, bankBalance };
+  return { alias, transactions, bankBalance, fileName: file.name };
 }

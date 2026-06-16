@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { UploadCloud, CheckCircle2, FileType2, Link as LinkIcon, ArrowRight, ArrowLeft, Database, Search } from 'lucide-react';
+import { UploadCloud, CheckCircle2, FileType2, Link as LinkIcon, ArrowRight, ArrowLeft, Database, Search, X } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useCentralImport, UnifiedImportResult } from '@/hooks/useCentralImport';
@@ -288,29 +288,48 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             <h3 className="font-display text-xl font-semibold mb-6">Mapeamento de Entidades</h3>
             
             <div className="space-y-4">
-              {unmappedAliases.map((alias) => (
-                <div key={alias} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-white/5">
-                  <div className="flex-1">
-                    <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase">Identificado no Arquivo</span><br/>
-                    <span className="font-mono text-lg font-semibold text-[var(--text-primary)]">{alias}</span>
+              {unmappedAliases.map((alias) => {
+                const ofx = results.ofxResults.find(o => o.alias === alias);
+                const maq = results.maquininhaItems.find(m => m.storeName === alias);
+                const fileName = ofx?.fileName || maq?.fileName;
+                const sample = ofx 
+                  ? ofx.transactions.slice(0, 2).map(t => `${t.title} (R$ ${t.amount})`).join(', ')
+                  : maq ? `Exemplo de valor: R$ ${maq.amount}` : null;
+
+                return (
+                  <div key={alias} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-white/5">
+                    <div className="flex-1">
+                      <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase">Identificado no Arquivo</span><br/>
+                      <span className="font-mono text-lg font-semibold text-[var(--text-primary)]">{alias}</span>
+                      {fileName && (
+                        <div className="mt-1 text-xs text-[var(--text-secondary)]">
+                          <span className="font-semibold text-[var(--color-primary)]">Origem:</span> {fileName}
+                        </div>
+                      )}
+                      {sample && (
+                        <div className="text-xs text-[var(--text-tertiary)] mt-0.5 truncate max-w-sm">
+                          <span className="font-semibold">Amostra:</span> {sample}
+                        </div>
+                      )}
+                    </div>
+                    <LinkIcon className="text-[var(--color-primary)]/50 shrink-0" size={24} />
+                    <div className="flex-1">
+                      <select 
+                        className={`w-full bg-[var(--bg-surface-elevated)] border rounded p-3 text-sm focus:outline-none 
+                          ${mapping[alias] ? 'border-[var(--color-accent-teal)] text-white' : 'border-[var(--color-accent-warning)] text-[var(--text-secondary)] animate-pulse'}`}
+                        value={mapping[alias] || ''}
+                        onChange={(e) => updateMapping(alias, e.target.value)}
+                      >
+                        <option value="" disabled>Selecione uma loja...</option>
+                        <option value="GLOBAL" className="text-[var(--color-accent-teal)]">Independente (Geral)</option>
+                        {stores.map((s: any) => (
+                          <option key={s.id} value={s.id}>{s.name}</option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
-                  <LinkIcon className="text-[var(--color-primary)]/50 shrink-0" size={24} />
-                  <div className="flex-1">
-                    <select 
-                      className={`w-full bg-[var(--bg-surface-elevated)] border rounded p-3 text-sm focus:outline-none 
-                        ${mapping[alias] ? 'border-[var(--color-accent-teal)] text-white' : 'border-[var(--color-accent-warning)] text-[var(--text-secondary)] animate-pulse'}`}
-                      value={mapping[alias] || ''}
-                      onChange={(e) => updateMapping(alias, e.target.value)}
-                    >
-                      <option value="" disabled>Selecione uma loja...</option>
-                      <option value="GLOBAL" className="text-[var(--color-accent-teal)]">Independente (Geral)</option>
-                      {stores.map((s: any) => (
-                        <option key={s.id} value={s.id}>{s.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="mt-8 flex justify-end">

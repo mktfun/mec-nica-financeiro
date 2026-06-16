@@ -8,7 +8,6 @@ import { FileSpreadsheet, Trash2, AlertTriangle, CheckCircle2, ChevronLeft, Chev
 import { useImportsHistory, useDeleteImport, GroupedImportLog } from '@/hooks/useImportProcessor';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { CategorySelector } from '@/components/importacoes/CategorySelector';
 import { CentralImportWizard } from '@/components/importacoes/CentralImportWizard';
 import { UploadCloud } from 'lucide-react';
 
@@ -56,15 +55,6 @@ function ImportacoesPage() {
     }
   };
 
-  const handleSelectCategory = (id: string) => {
-    if (id === 'DESPESAS' || id === 'JUROS') {
-      navigate({ to: '/importacoes-despesas' });
-    } else if (id === 'PATIO') {
-      navigate({ to: '/importar-os' });
-    } else {
-      setShowWizard(true);
-    }
-  };
 
 
   return (
@@ -82,14 +72,10 @@ function ImportacoesPage() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <button onClick={() => setShowWizard(true)} className="bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 text-sm font-medium px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors">
+            <button onClick={() => setShowWizard(true)} className="bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 text-sm font-medium px-4 py-2.5 rounded-lg flex items-center gap-2 shadow-[0_4px_15px_rgba(var(--color-primary-rgb),0.3)] transition-all transform hover:scale-105">
               <UploadCloud size={18} />
               Central de Importação
             </button>
-            <Link to="/importacoes-despesas" className="bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] hover:border-[var(--color-primary)] text-sm font-medium px-4 py-2.5 rounded-lg flex items-center gap-2 transition-colors">
-              <Database size={18} className="text-[var(--color-primary)]" />
-              Importar Despesas
-            </Link>
           </div>
         </div>
 
@@ -99,12 +85,6 @@ function ImportacoesPage() {
           />
         ) : (
           <div className="space-y-10">
-            {/* Category Selector */}
-            <div>
-              <h2 className="text-xl font-bold mb-4">Selecione uma Categoria</h2>
-              <CategorySelector onSelect={handleSelectCategory} />
-            </div>
-
             {/* Info Banner */}
             <div className="bg-[var(--color-accent-warning)]/10 border border-[var(--color-accent-warning)]/20 p-4 rounded-[var(--radius-lg)] flex items-start gap-3">
               <AlertTriangle className="text-[var(--color-accent-warning)] shrink-0 mt-0.5" size={20} />
