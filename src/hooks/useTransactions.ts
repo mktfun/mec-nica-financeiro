@@ -243,14 +243,11 @@ export function useTransactionsPorDataELoja(date: string, storeId: string) {
   return useQuery({
     queryKey: ['transactions', 'store', storeId, 'date', date],
     queryFn: async () => {
-      const startOfDay = `${date}T00:00:00.000Z`;
-      const endOfDay = `${date}T23:59:59.999Z`;
       const { data, error } = await supabase
         .from('transactions')
         .select('*')
         .eq('store_id', storeId)
-        .gte('created_at', startOfDay)
-        .lte('created_at', endOfDay)
+        .eq('target_date', date)
         .order('created_at', { ascending: false });
       if (error) throw error;
       return data as TransactionRow[];
@@ -370,14 +367,10 @@ export function useDailySystemBalance(targetDate: string) {
   return useQuery({
     queryKey: ['daily-system-balance', targetDate],
     queryFn: async () => {
-      const startOfDay = `${targetDate}T00:00:00.000Z`;
-      const endOfDay = `${targetDate}T23:59:59.999Z`;
-
       const { data, error } = await supabase
         .from('transactions')
         .select('*')
-        .gte('occurred_at', startOfDay)
-        .lte('occurred_at', endOfDay);
+        .eq('target_date', targetDate);
         
       if (error) throw error;
       
@@ -409,15 +402,11 @@ export function useDailyBankBalance(targetDate: string) {
   return useQuery({
     queryKey: ['daily-bank-balance', targetDate],
     queryFn: async () => {
-      const startOfDay = `${targetDate}T00:00:00.000Z`;
-      const endOfDay = `${targetDate}T23:59:59.999Z`;
-
       const { data, error } = await supabase
         .from('transactions')
         .select('*')
         .eq('source', 'ofx')
-        .gte('occurred_at', startOfDay)
-        .lte('occurred_at', endOfDay);
+        .eq('target_date', targetDate);
         
       if (error) throw error;
       

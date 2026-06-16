@@ -213,15 +213,11 @@ export function useConciliacaoDiaria(date: string) {
       if (recError) throw recError;
       const reconciliations = recData as ReconciliationRow[];
 
-      // 2. Fetch transactions for the exact date (to check for cash)
-      // Since transactions might use created_at as timestamp, we need to filter between start and end of day.
-      const startOfDay = `${date}T00:00:00.000Z`;
-      const endOfDay = `${date}T23:59:59.999Z`;
+      // 2. Fetch transactions for the exact target date (to check for cash)
       const { data: txData, error: txError } = await supabase
         .from('transactions')
         .select('store_id, payment_method, amount, type')
-        .gte('created_at', startOfDay)
-        .lte('created_at', endOfDay);
+        .eq('target_date', date);
       if (txError) throw txError;
 
       // 3. Fetch open OSs from patio
