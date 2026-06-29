@@ -40,9 +40,10 @@ Toda iteração passa exclusivamente por estes comandos:
 
 1. `/setup`: Configura o repositório base.
 2. `/config-antigravity`: Injeta as regras e políticas de nível Sênior no projeto (A Bíblia da Engenharia).
-3. `/vibe-proposal "Feature name"`: Deep Research, SDD Checklist e modelagem arquitetural.
-4. `/vibe-apply <id>`: Execução do código baseada nos estados rigorosos do Checklist `[ ]` -> `[x]`.
-5. `/vibe-archive <id>`: Consolida memórias semânticas, cria *git commit* e *push*.
+3. `/vibe-council "Ideia"`: (Passo Crítico Opcional) Invoca o Conselho de 8 personas para fazer o stress-test e achar blockers lógicos.
+4. `/vibe-proposal "Feature name"`: Deep Research, SDD Checklist e modelagem arquitetural.
+5. `/vibe-apply <id>`: Execução do código baseada nos estados rigorosos do Checklist `[ ]` -> `[x]`.
+6. `/vibe-archive <id>`: Consolida memórias semânticas, cria *git commit* e *push*.
 
 ## 6. Skills Integradas (ClawHub)
 Você opera sob a jurisdição de 8 skills fundamentais (Bayesian Reasoning, Frontend-Design-Pro, Supabase, etc). Aplique-as sempre em harmonia com estas regras globais.
