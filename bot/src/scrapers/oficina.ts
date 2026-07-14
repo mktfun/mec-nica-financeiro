@@ -26,10 +26,6 @@ async function withRetry<T>(fn: () => Promise<T>, retries = 3, label = 'action')
   throw new Error(`[OI] ${label} falhou após ${retries} tentativas`);
 }
 
-/**
- * Faz login no Oficina Inteligente e retorna o contexto autenticado.
- * Reutiliza sessão se disponível.
- */
 export async function loginOI(
   context: BrowserContext,
   credentials: OICredentials
@@ -41,27 +37,26 @@ export async function loginOI(
     timeout: 30_000,
   });
 
-  // Se já está logado (sessão injetada), retorna direto
-  if (!page.url().includes('login') && !page.url().includes('entrar')) {
-    console.log('[OI] Sessão ativa — pulando login.');
-    return page;
-  }
-
-  console.log('[OI] Fazendo login...');
+  console.log('[OI] Verificando tela de login...');
 
   await withRetry(async () => {
-    // Preenche credenciais
-    await page.waitForSelector('input[type="email"], input[name="email"], input[name="login"]', {
-      timeout: 15_000,
-    });
-    await page.fill('input[type="email"], input[name="email"], input[name="login"]', credentials.username);
-    await page.fill('input[type="password"]', credentials.password);
-    await page.click('button[type="submit"], input[type="submit"]');
-    // Aguarda redirecionamento para área autenticada
-    await page.waitForURL((url) => !url.toString().includes('login'), { timeout: 15_000 });
+    // Tenta encontrar o input de email. Se não achar em 5 segundos, assumimos que já logou
+    try {
+      await page.waitForSelector('input[name="Login1$UserName"], input[id="Login1_UserName"]', {
+        timeout: 5_000,
+      });
+      console.log('[OI] Formulário encontrado. Inserindo credenciais...');
+      await page.fill('input[name="Login1$UserName"], input[id="Login1_UserName"]', credentials.username);
+      await page.fill('input[name="Login1$Password"], input[id="Login1_Password"]', credentials.password);
+      await page.click('input[name="Login1$btnEntrar"], input[id="Login1_btnEntrar"]');
+      // Aguarda redirecionamento para área autenticada
+      await page.waitForURL((url) => !url.toString().includes('Entrar.aspx') && !url.toString().includes('login'), { timeout: 15_000 });
+    } catch (e) {
+      console.log('[OI] Formulário de login não encontrado. Assumindo que a sessão está ativa.');
+    }
   }, 3, 'login OI');
 
-  console.log('[OI] Login realizado com sucesso. URL:', page.url());
+  console.log('[OI] URL atual:', page.url());
   return page;
 }
 

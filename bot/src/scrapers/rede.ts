@@ -46,10 +46,6 @@ async function withRetry<T>(fn: () => Promise<T>, retries = 3, label = 'action')
   throw new Error(`[Rede] ${label} falhou após ${retries} tentativas`);
 }
 
-/**
- * Faz login no portal Rede (meu.userede.com.br).
- * Após login, a página mostra uma lista de estabelecimentos.
- */
 export async function loginRede(
   context: BrowserContext,
   credentials: RedeCredentials
@@ -61,26 +57,25 @@ export async function loginRede(
     timeout: 30_000,
   });
 
-  // Verifica se sessão já está ativa
-  if (!page.url().includes('login')) {
-    console.log('[Rede] Sessão ativa — pulando login.');
-    return page;
-  }
-
-  console.log('[Rede] Fazendo login no portal Rede...');
+  console.log('[Rede] Verificando tela de login...');
 
   await withRetry(async () => {
-    await page.waitForSelector('input[type="email"], input[name="username"], input[id*="email"]', {
-      timeout: 15_000,
-    });
-    await page.fill('input[type="email"], input[name="username"], input[id*="email"]', credentials.username);
-    await page.fill('input[type="password"]', credentials.password);
-    await page.click('button[type="submit"]');
-    // Aguarda tela de seleção de estabelecimento
-    await page.waitForURL((url) => !url.toString().includes('login'), { timeout: 20_000 });
+    try {
+      await page.waitForSelector('input[type="email"], input[name="username"], input[id*="email"], input[name="document"]', {
+        timeout: 5_000,
+      });
+      console.log('[Rede] Formulário encontrado. Inserindo credenciais...');
+      await page.fill('input[type="email"], input[name="username"], input[id*="email"], input[name="document"]', credentials.username);
+      await page.fill('input[type="password"]', credentials.password);
+      await page.click('button[type="submit"]');
+      // Aguarda tela de seleção de estabelecimento
+      await page.waitForURL((url) => !url.toString().includes('login'), { timeout: 20_000 });
+    } catch (e) {
+      console.log('[Rede] Formulário de login não encontrado. Assumindo que a sessão está ativa.');
+    }
   }, 3, 'login Rede');
 
-  console.log('[Rede] Login realizado. URL:', page.url());
+  console.log('[Rede] URL atual:', page.url());
   return page;
 }
 

@@ -12,6 +12,7 @@ import { useDailySnapshot, usePreviousDaySnapshot, useSaveDailySnapshot } from '
 import { useRecebiveis } from '@/hooks/useRecebiveis';
 import { usePatioOS } from '@/hooks/usePatio';
 import { useDailyBankBalance } from '@/hooks/useTransactions';
+import { useMonthlyGoal } from '@/hooks/useGoals';
 import { supabase } from '@/lib/supabase';
 import { TransactionRow } from '@/lib/supabase';
 import { formatCurrency } from '@/lib/utils';
@@ -70,6 +71,7 @@ export function ResumoDiaPanel({ date }: ResumoDiaPanelProps) {
   const { data: recebiveis = [] } = useRecebiveis();
   const { data: patioData = [] } = usePatioOS();
   const { data: bankBalances } = useDailyBankBalance(date);
+  const { data: monthlyGoal } = useMonthlyGoal('GLOBAL');
   const saveSnapshot = useSaveDailySnapshot();
 
   // Fetch anomalies for the day
@@ -104,6 +106,9 @@ export function ResumoDiaPanel({ date }: ResumoDiaPanelProps) {
 
   const faturamentoAtual = currentSnapshot?.faturamento ?? 0;
   const faturamentoAnterior = previousSnapshot?.faturamento ?? 0;
+  const metaAtual = monthlyGoal?.current_amount ?? 0;
+  const metaAlvo = monthlyGoal?.target_amount ?? 0;
+  const progressoMeta = metaAlvo > 0 ? (metaAtual / metaAlvo) * 100 : 0;
 
   const jurosRede = 0; // virá do bot quando integrado
 
@@ -201,20 +206,20 @@ export function ResumoDiaPanel({ date }: ResumoDiaPanelProps) {
             <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent my-4" />
 
             {/* Faturamento + Juros */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <SummaryCard
                 label="Faturamento Atual"
                 value={faturamentoAtual}
                 icon={Target}
                 color="green"
-                description="Mapa de Metas (Oficina Inteligente)"
+                description="Hoje"
               />
               <SummaryCard
                 label="Faturamento Anterior"
                 value={faturamentoAnterior}
                 icon={Target}
                 color="default"
-                description="Última conciliação fechada"
+                description="Ontem (Último Fechamento)"
               />
               <SummaryCard
                 label="Juros da Rede"
@@ -223,6 +228,31 @@ export function ResumoDiaPanel({ date }: ResumoDiaPanelProps) {
                 color="default"
                 description="Dados processados pelo bot"
               />
+              <div className="p-4 rounded-xl border text-[var(--color-primary)] bg-[var(--color-primary)]/10 border-[var(--color-primary)]/20 shadow-[0_0_15px_-5px_var(--color-primary)] flex flex-col gap-1 backdrop-blur-md relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="flex items-center justify-between z-10">
+                  <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest opacity-80 mb-1">
+                    <Target size={14} />
+                    Progresso da Meta
+                  </div>
+                  <span className="text-xs font-bold">{progressoMeta.toFixed(1)}%</span>
+                </div>
+                
+                <div className="font-display font-bold text-2xl tracking-tight z-10">
+                  <AnimatedNumber value={metaAtual} format="currency" />
+                </div>
+                
+                <div className="w-full bg-black/40 h-2 rounded-full mt-2 overflow-hidden z-10 border border-white/5">
+                  <div 
+                    className="h-full bg-[var(--color-primary)] transition-all duration-1000" 
+                    style={{ width: `${Math.min(progressoMeta, 100)}%` }} 
+                  />
+                </div>
+                
+                <p className="text-[10px] opacity-60 leading-relaxed mt-1 font-medium z-10">
+                  Alvo: {formatCurrency(metaAlvo)}
+                </p>
+              </div>
             </div>
 
             {/* OBS Críticas Automatizadas */}
