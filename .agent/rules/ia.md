@@ -2,48 +2,36 @@
 trigger: always_on
 ---
 
-# 🪐 Antigravity Vibe Coding Orchestration Rules v4 (ClawHub Edition - AI Engineering)
+# 🪐 Antigravity Vibe Coding Orchestration Rules v3 (ClawHub Edition)
 
-## 1. Arquitetura Cognitiva e Orquestração (Core Principles)
+## 1. Core Principles
 
-- **Raciocínio Oculto Obrigatório (Thought Blocks):** Antes de invocar QUALQUER ferramenta que modifique estado (ex: criar arquivo, rodar comando), você deve estruturar seu raciocínio mental. Jamais codifique sem antes desenhar a *Decision Tree*.
-- **Paralelismo de Ferramentas (Maximum Concurrency):** NUNCA execute leituras ou buscas sequenciais. Se precisar ler 3 arquivos ou buscar 2 referências, invoque as ferramentas (`view_file`, `grep_search`, `list_dir`) todas em uma mesma iteração.
-- **Leitura Mandatória de Skills (Skill-First):** É EXPRESSAMENTE PROIBIDO iniciar a codificação de uma feature sem antes utilizar `view_file` nos arquivos `SKILL.md` (no ambiente de plugins) relevantes para capturar quirks de renderização e limites do sistema.
-- **Desconfie do Vibe Coding Puro:** Nenhuma feature grande deve ser iniciada sem o workflow `/vibe-proposal`. A Especificação é o coração da operação.
+- **Desconfie do Vibe Coding Puro**: Nenhuma feature grande deve ser iniciada escrevendo código direto. Toda mudança estrutural precisa de uma Especificação (Proposal) detalhada antes.
+- **Memória Contínua**: O agente deve aprender. Nenhuma tarefa deve ser iniciada sem ler as preferências e o histórico no arquivo `.agent/memory.md` (via skill `obsidian`). O que for aprendido em `/vibe-apply` deve ser consolidado em `/vibe-archive`.
+- **Headless CLI Enforcement**: JAMAIAS use comandos interativos que exijam browser ou input no terminal. Para autenticação no Github ou Supabase, use SOMENTE e EXCLUSIVAMENTE variáveis de ambiente (`GH_TOKEN` e `SUPABASE_ACCESS_TOKEN`).
+- **CLI Fallback Obrigatório**: Se o comando `git` não for encontrado no `PATH`, NÃO peça para o usuário fazer o commit manualmente. Você deve tentar executar `git` usando o caminho absoluto do MinGit: `C:\Users\admin\.gemini\antigravity\scratch\mingit\cmd\git.exe`.
+- **Regras Estritas de PowerShell**: NUNCA utilize o operador `&` para encadear comandos no PowerShell. Use `;` ou execute os comandos um por vez. Se houver erro de Execution Policy com scripts `.ps1` (como `npm.ps1`), envolva o comando em um subshell CMD: `cmd.exe /c "seu comando aqui"`.
+- **Git Identity Override**: Caso ocorra o erro "Author identity unknown" no momento do commit, configure imediatamente as propriedades locais antes de commitar: `git config user.email "ai@clawhub.com"` e `git config user.name "ClawHub Agent"`.
 
-## 2. Padrões Estritos de UI/UX e Frontend (Aesthetics Overhaul)
-
-- **Dogma do Design Premium:** Toda UI gerada deve ter estética "Premium". Isso exige *micro-animações*, *glassmorphism* (quando aplicável) e paletas baseadas em HSL.
-- **Semantic Design Tokens:** É PROIBIDO o uso de classes de cores "hardcoded" (ex: `text-red-500`, `bg-[#fff]`). O código Tailwind DEVE utilizar design tokens semânticos (ex: `text-foreground`, `bg-background`).
-- **Engenharia React (Gemini Rules):** 
-  - Imports devem estar no topo do arquivo. É proibido destructuring de imports grandes.
-  - Prevenção rigorosa de Infinite Loops em `useEffect` (dependências de `useCallback` devem ser controladas).
-- **Proibição de Browser Storage:** Em aplicações web reais (artefatos interativos), NUNCA use `localStorage`. Em artefatos dinâmicos criados no chat, prefira a API nativa `window.storage` para consistência e persistência hierárquica.
-
-## 3. Segurança de Sistema, Limitações e Memória
-
-- **Memória Semântica:** A memória do agente deixou de ser um dump genérico. Consulte e armazene informações segmentadas (ex: `.agent/policies/ui-rules.md`).
-- **Defesas de Sistema Operacional (Windows CLI Fallback):** 
-  - Se houver erro de Execution Policy com scripts `.ps1` (como `npm.ps1`), envolva o comando OBRIGATORIAMENTE em um subshell CMD: `cmd.exe /c "seu comando aqui"`.
-  - NUNCA utilize o operador `&` para encadear comandos no PowerShell. Use `;`.
-  - NUNCA execute `git push --force`. O commit só ocorre com permissão. Use HEREDOCs para mensagens longas.
-- **Headless & MCP Constraints:** Comandos devem ser puramente CLI (variáveis de ambiente `GH_TOKEN`). Se for usar Integrações de MCP (Model Context Protocol), SEMPRE verifique o registro antes (`search_mcp_registry`) e sugira proativamente. NUNCA alucine *mock interfaces*.
-
-## 4. ⛔ Regra Anti-Alucinação e Pesquisa Profunda (Deep Research)
+## 2. ⛔ Regra Anti-Alucinação e Repetição
 
 **ANTES de criar qualquer coisa nova, você DEVE pesquisar o que já existe E ler a Memória.**
-- **A Regra:** Use `list_dir` e `grep_search` agressivamente na fase de mapeamento (`/vibe-proposal`) para assegurar que componentes base não estão sendo duplicados. Zero suposições.
 
-## 5. Workflows Oficiais
+- **No Frontend**: Consulte `memory.md` para padrões de UI. Use `frontend-design-pro` e `afrexai-nextjs-production`.
+- **No Backend**: Consulte `memory.md` para padrões de dados. Use `supabase` (com RLS) e `backend`.
+- **Geral**: Se já existe → USE. Crie um wrapper se precisar, NÃO duplique. NUNCA crie tabela, RPC, ou política sem verificar o que existe no banco e na memória.
+
+## 3. Workflows Oficiais
 
 Toda iteração passa exclusivamente por estes comandos:
 
-1. `/setup`: Configura o repositório base.
-2. `/config-antigravity`: Injeta as regras e políticas de nível Sênior no projeto (A Bíblia da Engenharia).
-3. `/vibe-council "Ideia"`: (Passo Crítico Opcional) Invoca o Conselho de 8 personas para fazer o stress-test e achar blockers lógicos.
-4. `/vibe-proposal "Feature name"`: Deep Research, SDD Checklist e modelagem arquitetural.
-5. `/vibe-apply <id>`: Execução do código baseada nos estados rigorosos do Checklist `[ ]` -> `[x]`.
-6. `/vibe-archive <id>`: Consolida memórias semânticas, cria *git commit* e *push*.
+1. `/setup`: Cria as pastas locais, memory.md e inicializa as integrações com ClawHub no projeto atual.
+2. `/vibe-proposal "Feature name"`: Planejamento guiado. Lê a memória com `obsidian`, raciocina com `bayesian-reasoning` e `adaptive-reasoning`.
+3. `/vibe-apply <id>`: Implementação hardcore baseada na Proposal e nos checklists. Usa as skills especialistas (React, Supabase, etc).
+4. `/vibe-archive <id>`: Atualiza a memória, roda o build e faz `git commit` + `push`.
 
-## 6. Skills Integradas (ClawHub)
-Você opera sob a jurisdição de 8 skills fundamentais (Bayesian Reasoning, Frontend-Design-Pro, Supabase, etc). Aplique-as sempre em harmonia com estas regras globais.
+## 4. Skills Integradas (ClawHub)
+Você opera sob a jurisdição de 8 skills fundamentais. Elas não precisam ser ativadas via bundles porque os workflows já invocam as combinações exatas no momento certo:
+- Raciocínio: `deciqai-bayesian-reasoning`, `adaptive-reasoning`
+- Engenharia: `frontend-design-pro`, `frontend-design-3`, `afrexai-nextjs-production`, `backend`, `supabase`
+- Memória e DevOps: `obsidian`, `github`

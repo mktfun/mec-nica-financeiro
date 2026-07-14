@@ -13,6 +13,7 @@ import { useStores } from '@/hooks/useStores';
 import { useTripleMatch } from '@/hooks/useTripleMatch';
 import { useExtrato } from '@/hooks/useTransactions';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { RedeVsExtratoTable } from '@/components/conciliacao/RedeVsExtratoTable';
 
 export const Route = createFileRoute('/conciliacao/$lojaId')({
   component: ConciliacaoLojaPage,
@@ -41,7 +42,7 @@ function ConciliacaoLojaPage() {
   const { data: extrato, isLoading: loadingExtrato } = useExtrato(lojaId, targetDate, targetDate);
   const { data: tripleMatchData = [], isLoading: loadingTripleMatch } = useTripleMatch(lojaId, targetDate, targetDate);
 
-  const [tab, setTab] = useState<'triple-match' | 'extrato'>('triple-match');
+  const [tab, setTab] = useState<'triple-match' | 'rede-extrato' | 'extrato'>('triple-match');
 
   if (!store) {
     return (
@@ -85,6 +86,12 @@ function ConciliacaoLojaPage() {
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'triple-match' ? 'border-[var(--color-primary)] text-[var(--color-primary)]' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
           >
             Triple Match (Pátio x Maquininha x Banco)
+          </button>
+          <button
+            onClick={() => setTab('rede-extrato')}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'rede-extrato' ? 'border-amber-400 text-amber-400' : 'border-transparent text-[var(--text-secondary)] hover:text-white'}`}
+          >
+            Rede × Extrato (OS-por-OS)
           </button>
           <button
             onClick={() => setTab('extrato')}
@@ -148,6 +155,8 @@ function ConciliacaoLojaPage() {
                 </table>
               </div>
             )
+          ) : tab === 'rede-extrato' ? (
+            <RedeVsExtratoTable storeId={lojaId} date={targetDate} />
           ) : (
             loadingExtrato ? (
               <div className="flex justify-center p-12">

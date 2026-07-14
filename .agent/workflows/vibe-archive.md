@@ -1,34 +1,30 @@
 ---
-description: Conclui o fluxo da Spec, consolidando a memória em políticas semânticas, testando o build e enviando para produção de forma segura.
+description: Conclui o fluxo da Spec, testando o build, atualizando o Grafo e realizando o commit do progresso.
 ---
 
 <!-- VIBEARCHIVE:START -->
 
 **Objetivo**
-Garantir a I.A não sofra amnésia e organize seu aprendizado estruturalmente (Memory Continuum). Transforma o trabalho em memória persistente segmentada e entrega o código seguro no Github via fallbacks resilientes.
+Garantir que a entrega não quebrou o build, atualizar a fonte de verdade (Graphify) e fazer o commit do código no repositório.
 
-**Steps**
+**Steps de Encerramento**
 
-1. **Memória Semântica Contínua**: 
-   - NÃO faça um "dump" genérico em um único arquivo. Analise os aprendizados da iteração (ex: regras de UI/UX Premium, design tokens HSL, prevenção de Hook Loops do React, etc).
-   - Registre as decisões em políticas específicas dentro de `.agent/policies/` (ex: `ui-rules.md`, `backend-rules.md`, `mcp-guidelines.md`).
-   - Use `write_to_file` ou `replace_file_content` para consolidar esses documentos.
-
-2. **Quality Gate (Build e Resiliência)**: 
-   - Execute o comando de build via CMD (`cmd.exe /c "npm run build"`) para evadir do PowerShell Execution Policy e atestar integridade.
+1. **Quality Gate (Build)**: 
+   - Execute o build da aplicação (ex: `cmd.exe /c "npm run build"`) para atestar que não há quebras sistêmicas geradas pela task atual.
    
-3. **Commit Controlado & Seguro**: 
-   - Tente `git add .`
-   - Se `git` não for reconhecido, puxe o fallback absoluto: `C:\Users\admin\.gemini\antigravity\scratch\mingit\cmd\git.exe add .`
-   - Use HEREDOCs no bash para fazer o commit de explicações complexas, garantindo que o log acompanhe o SDD. 
-   - Lembre-se do Git Identity Override (configurar user/email) se houver falhas. JAMAIAS use `push --force`.
+2. **Atualização da Fonte de Verdade (Graphify)**:
+   - Rode o comando `graphify hook install` e `/graphify . --update` para re-extrair arquivos modificados para o `graph.json`.
 
-4. **Push Automático**: 
-   - `git push origin` ou o fallback MinGit.
+3. **Commit & Push Controlado**: 
+   - Adicione todos os arquivos modificados: `git add .` (incluindo as saídas novas em `graphify-out/`).
+   - Use HEREDOCs no bash para gerar um commit claro (`git commit -m ...`), listando brevemente o que foi resolvido na tarefa.
+   - Faça o push: `git push origin main`.
+   - *Fallback:* Se o Git global falhar no ambiente do Windows, use a versão portable em `C:\Users\admin\.gemini\antigravity\scratch\mingit\cmd\git.exe`. Jamais use `push --force`.
 
-5. **Clean Up**:
-   - Mova a pasta `specs/<id>` para `specs/archive/<id>` usando a ferramenta `run_command`.
+4. **Clean Up**:
+   - Mova a pasta `specs/<id>` (se houver spec gerada) para `specs/archive/<id>` usando a ferramenta de linha de comando.
 
-6. Avise o usuário que a Spec foi finalizada e que as políticas semânticas no `Memory Continuum` foram expandidas com sucesso.
+5. **Notificação Final**:
+   - Avise o usuário que a task foi finalizada com sucesso e salva no histórico do repositório.
 
 <!-- VIBEARCHIVE:END -->

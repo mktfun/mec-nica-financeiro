@@ -9,6 +9,8 @@ import { useState } from 'react';
 import { StoreRow } from '@/lib/supabase';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { InterestRatesConfig } from '@/components/configuracoes/InterestRatesConfig';
+import { useBotCredentials, useUpdateBotCredential } from '@/hooks/useBotCredentials';
+import { Bot, Eye, EyeOff, CheckCircle2, XCircle, Clock, ExternalLink } from 'lucide-react';
 
 export const Route = createFileRoute('/configuracoes')({
   component: ConfiguracoesPage,
@@ -17,10 +19,16 @@ export const Route = createFileRoute('/configuracoes')({
 function ConfiguracoesPage() {
   const { data: botRuns = [], isLoading: loadingBots } = useBotRunHistory();
   const { data: stores = [], isLoading: loadingStores } = useStores();
+  const { data: botCreds = [], isLoading: loadingCreds } = useBotCredentials();
+  const updateCred = useUpdateBotCredential();
   const deleteStore = useDeleteStore();
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [storeToEdit, setStoreToEdit] = useState<StoreRow | undefined>();
+  // credEdit: { [portal]: { username, password, showPw } }
+  const [credEdit, setCredEdit] = useState<Record<string, { username: string; password: string; showPw: boolean }>>({});
+  const [savingCred, setSavingCred] = useState<string | null>(null);
+  const [savedCred, setSavedCred] = useState<string | null>(null);
 
   const handleEditStore = (store: StoreRow) => {
     setStoreToEdit(store);
@@ -116,6 +124,129 @@ function ConfiguracoesPage() {
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+          </Card>
+
+          {/* Bot de Automação — Credenciais */}
+          <Card variant="glass" className="p-6">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-9 h-9 rounded-full bg-amber-400/15 flex items-center justify-center">
+                <Bot size={17} className="text-amber-400" />
+              </div>
+              <div>
+                <h3 className="font-display font-semibold text-lg">Bot de Automação</h3>
+                <p className="text-xs text-[var(--text-tertiary)]">Credenciais para coleta automática de dados via Playwright.</p>
+              </div>
+            </div>
+
+            {loadingCreds ? (
+              <div className="flex justify-center p-4"><LoadingSpinner size="sm" text="" /></div>
+            ) : (
+              <div className="space-y-4">
+                {botCreds.map((cred) => {
+                  const edit = credEdit[cred.portal];
+                  const username = edit?.username ?? cred.username;
+                  const password = edit?.password ?? cred.password;
+                  const showPw = edit?.showPw ?? false;
+                  const isSaving = savingCred === cred.portal;
+                  const isSaved = savedCred === cred.portal;
+
+                  return (
+                    <div key={cred.portal} className="border border-[var(--border-subtle)] rounded-xl p-4 space-y-3">
+                      {/* Portal Header */}
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium text-sm">{cred.portal_label}</p>
+                          <a
+                            href={cred.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[10px] text-[var(--color-primary)] flex items-center gap-1 hover:underline"
+                          >
+                            {cred.url} <ExternalLink size={9} />
+                          </a>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          {cred.is_valid ? (
+                            <span className="flex items-center gap-1 text-[10px] text-[var(--color-accent-teal)] bg-[var(--color-accent-teal)]/10 px-2 py-1 rounded-full border border-[var(--color-accent-teal)]/20">
+                              <CheckCircle2 size={10} /> Válida
+                            </span>
+                          ) : cred.last_validated_at ? (
+                            <span className="flex items-center gap-1 text-[10px] text-[var(--color-accent-danger)] bg-[var(--color-accent-danger)]/10 px-2 py-1 rounded-full border border-[var(--color-accent-danger)]/20">
+                              <XCircle size={10} /> Inválida
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-1 text-[10px] text-[var(--text-tertiary)] bg-white/5 px-2 py-1 rounded-full border border-white/10">
+                              <Clock size={10} /> Não validada
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Username */}
+                      <div>
+                        <label className="text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] mb-1 block">Usuário / E-mail</label>
+                        <input
+                          type="text"
+                          value={username}
+                          onChange={(e) => setCredEdit((prev) => ({ ...prev, [cred.portal]: { username: e.target.value, password: prev[cred.portal]?.password ?? cred.password, showPw: prev[cred.portal]?.showPw ?? false } }))}
+                          className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--color-primary)]/50 transition-colors"
+                        />
+                      </div>
+
+                      {/* Password */}
+                      <div>
+                        <label className="text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] mb-1 block">Senha</label>
+                        <div className="relative">
+                          <input
+                            type={showPw ? 'text' : 'password'}
+                            value={password}
+                            onChange={(e) => setCredEdit((prev) => ({ ...prev, [cred.portal]: { username: prev[cred.portal]?.username ?? cred.username, password: e.target.value, showPw: prev[cred.portal]?.showPw ?? false } }))}
+                            className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 pr-10 text-sm text-white focus:outline-none focus:border-[var(--color-primary)]/50 transition-colors font-mono"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setCredEdit((prev) => ({ ...prev, [cred.portal]: { username: prev[cred.portal]?.username ?? cred.username, password: prev[cred.portal]?.password ?? cred.password, showPw: !showPw } }))}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] hover:text-white transition-colors"
+                          >
+                            {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Error message */}
+                      {cred.validation_error && (
+                        <p className="text-[10px] text-[var(--color-accent-danger)] bg-[var(--color-accent-danger)]/10 px-3 py-2 rounded-lg">
+                          Último erro: {cred.validation_error}
+                        </p>
+                      )}
+
+                      {/* Actions */}
+                      <div className="flex items-center gap-2 pt-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={isSaving}
+                          onClick={async () => {
+                            setSavingCred(cred.portal);
+                            await updateCred.mutateAsync({ portal: cred.portal, username, password });
+                            setSavingCred(null);
+                            setSavedCred(cred.portal);
+                            setTimeout(() => setSavedCred(null), 3000);
+                          }}
+                        >
+                          {isSaved ? '✓ Salvo!' : isSaving ? 'Salvando...' : 'Salvar'}
+                        </Button>
+                        {cred.last_validated_at && (
+                          <p className="text-[10px] text-[var(--text-tertiary)]">
+                            Validado em: {new Date(cred.last_validated_at).toLocaleString('pt-BR')}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </Card>

@@ -1,23 +1,27 @@
 ---
-description: Executa a implementação técnica baseada nas tasks.md, utilizando as skills especialistas.
+description: Executa a implementação baseada no plano, com separação explícita entre edições LITE e HEAVY.
 ---
 
 <!-- VIBEAPPLY:START -->
 
-**Objetivo**
-Executar o checklist definido no `tasks.md` da spec atual com extrema precisão, usando o máximo das capacidades técnicas injetadas via ClawHub.
+**Regra Dourada:** A governança nunca deve impedir uma edição local simples.
+Antes de escrever qualquer código, responda brevemente ao usuário: *"Entendi que preciso mudar X, Y e Z."*
 
-**Skills ativas obrigatórias**
-- **Frontend**: Invoque as skills `frontend-design-pro`, `frontend-design-3` e `afrexai-nextjs-production` para ditar o padrão de UI, qualidade do React, Tailwind e regras de arquitetura frontend.
-- **Backend**: Invoque as skills `backend` e `supabase` para gerenciar as rotas, Edge Functions, RPCs e Migrations com segurança (RLS obrigatório).
-- **Memória Em Tempo Real**: Mantenha no "scratchpad" (sua memória temporária) qualquer erro bizarro ou preferência do usuário dita no meio do percurso, para ser consolidada no `/vibe-archive`.
+**Modo de Operação (Defina baseado na complexidade da task)**
 
-**Steps**
+### MODO LITE (Gatilho: Bugfix, refactor local, < 3 arquivos alterados, typo)
+- **Microplano:** Antes de agir, liste em até 3 linhas: arquivos alvo, mudança mínima e validação esperada.
+- **Execução:** Faça a edição direta. Cumpra a Hierarquia Mestra (Resolva a task, não quebre nada, altere o mínimo possível). 
+- **Sem Burocracia:** Não execute ferramentas pesadas de QA Visual (Playwright) nem varreduras extensas de Graphify. Vá direto ao ponto.
+- **Exemplo de Edição Correta:** Ao editar um componente React, preserve a API pública, não renomeie props sem necessidade explícita, não recrie um componente que já existe, e altere o mínimo possível no arquivo alvo.
 
-1. Abra o arquivo `specs/<id>/tasks.md`.
-2. Para cada task, decida se é frontend ou backend e ative as skills correspondentes mentalmente e em suas ferramentas.
-3. Escreva o código seguindo ESTRITAMENTE as melhores práticas das skills do ClawHub e da memória do projeto lida anteriormente.
-4. Se houver mudanças nos requisitos durante o percurso, anote-as para não esquecer.
-5. Avise o usuário quando a spec terminar de ser implementada, instruindo-o a revisar e depois rodar `/vibe-archive <id>`.
+### MODO HEAVY (Gatilho: Nova feature, mudança em > 3 arquivos, migração DB, Auth, Infra, amplo impacto UI)
+- **Check de Precedência (Graphify):** Execute `graphify explain "<Modulo>"` antes de criar para garantir que não vai duplicar código.
+- **Qualidade UI/UX (ClawHub):** Para frontend, invoque e siga as skills de design. Componentes novos devem ser isolados e bem espaçados.
+- **Multimodal Visual QA (Playwright):** Se impactou visualmente, é proibido dizer "não tenho olhos". Rode `npx playwright screenshot <url> tela.png`. Leia a imagem gerada (via VLM) para conferir se a UI quebrou.
+- **Infra:** Se tocar em backend/deploy, avalie o impacto (ex: instâncias Supabase self-hosted, rotas DNS Cloudflare) lendo `.antigravity/state.json`.
+
+**Auto-healing & Proteção (Para ambos os modos):**
+Se durante a implementação ocorrerem erros de build ou testes, você tem **EXATAMENTE 3 tentativas** de correção. Na 3ª falha, PARE e rode `git reset --hard` para reverter as mudanças ao estado seguro. Avise o usuário e não tente uma 4ª vez na mesma execução.
 
 <!-- VIBEAPPLY:END -->

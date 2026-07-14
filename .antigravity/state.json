@@ -1,0 +1,15 @@
+{
+  "frontend_provider": "lovable",
+  "dns_provider": "cloudflare",
+  "backend_provider": "supabase_self_hosted",
+  "infra": {
+    "vps_host": "env:VPS_HOST",
+    "vps_user": "env:VPS_USER"
+  },
+  "cloudflare": {
+    "api_token": "env:CLOUDFLARE_API_TOKEN"
+  },
+  "supabase": {
+    "project_id": "cnwzsvowkfymtdiryhqc"
+  }
+}

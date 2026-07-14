@@ -363,3 +363,94 @@ export function useDailyReconciliationDelta(targetDate: string) {
     }
   });
 }
+
+// ─── Rede vs Extrato: cruzamento OS-por-OS ────────────────────────────────────
+export function useRedeVsExtrato(storeId: string, date: string) {
+  return useQuery({
+    queryKey: ['rede-vs-extrato', storeId, date],
+    enabled: !!storeId && !!date,
+    queryFn: async () => {
+      // 1. Transações da Rede (source = 'rede' ou 'maquininha')
+      const { data: redeTxs, error: redeErr } = await supabase
+        .from('transactions')
+        .select('id, os_number, amount, payment_method, type, title')
+        .eq('store_id', storeId)
+        .eq('target_date', date)
+        .in('source', ['rede', 'maquininha', 'sistema']);
+      if (redeErr) throw redeErr;
+
+      // 2. Transações do Extrato bancário (source = 'ofx')
+      const { data: ofxTxs, error: ofxErr } = await supabase
+        .from('transactions')
+        .select('id, os_number, amount, payment_method, type, title')
+        .eq('store_id', storeId)
+        .eq('target_date', date)
+        .eq('source', 'ofx');
+      if (ofxErr) throw ofxErr;
+
+      const matched: Array<{
+        id: string;
+        os_number: string | null;
+        rede_ref: string;
+        extrato_ref: string;
+        rede_amount: number;
+        extrato_amount: number;
+        delta: number;
+        payment_method: string | null;
+      }> = [];
+
+      const unmatchedRede: typeof redeTxs = [];
+      const unmatchedExtrato: typeof ofxTxs = [];
+
+      const ofxUsed = new Set<string>();
+
+      // Tenta parear por nº OS primeiro, depois por valor
+      for (const rede of (redeTxs || [])) {
+        const redeAmount = Number(rede.amount);
+
+        // Tenta match por OS number
+        let partner = rede.os_number
+          ? ofxTxs?.find(
+              (o) =>
+                !ofxUsed.has(o.id) &&
+                o.os_number === rede.os_number
+            )
+          : null;
+
+        // Fallback: match por valor aproximado (±R$5 de tolerância para taxas)
+        if (!partner) {
+          partner = ofxTxs?.find(
+            (o) =>
+              !ofxUsed.has(o.id) &&
+              Math.abs(Number(o.amount) - redeAmount) <= 5
+          ) ?? null;
+        }
+
+        if (partner) {
+          ofxUsed.add(partner.id);
+          matched.push({
+            id: rede.id,
+            os_number: rede.os_number || partner.os_number,
+            rede_ref: rede.id,
+            extrato_ref: partner.id,
+            rede_amount: redeAmount,
+            extrato_amount: Number(partner.amount),
+            delta: redeAmount - Number(partner.amount),
+            payment_method: rede.payment_method || partner.payment_method,
+          });
+        } else {
+          unmatchedRede.push(rede);
+        }
+      }
+
+      // Extrato sem par
+      for (const ofx of (ofxTxs || [])) {
+        if (!ofxUsed.has(ofx.id)) {
+          unmatchedExtrato.push(ofx);
+        }
+      }
+
+      return { matched, unmatchedRede, unmatchedExtrato };
+    },
+  });
+}
