@@ -8,7 +8,6 @@ import { StoreFormDialog } from '@/components/dashboard/StoreFormDialog';
 import { useState } from 'react';
 import { StoreRow } from '@/lib/supabase';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { InterestRatesConfig } from '@/components/configuracoes/InterestRatesConfig';
 import { useBotCredentials, useUpdateBotCredential } from '@/hooks/useBotCredentials';
 import { Bot, Eye, EyeOff, CheckCircle2, XCircle, Clock, ExternalLink } from 'lucide-react';
 
@@ -251,8 +250,7 @@ function ConfiguracoesPage() {
             )}
           </Card>
 
-          {/* Políticas de Taxas */}
-          <InterestRatesConfig />
+          {/* Políticas de Taxas removidas */}
 
           {/* IA */}
           <Card variant="glass" className="p-6">

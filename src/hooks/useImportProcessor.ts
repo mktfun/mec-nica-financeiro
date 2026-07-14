@@ -23,81 +23,6 @@ export interface ParsedReceivable {
   status: 'pendente' | 'recebido';
 }
 
-// ─── Tabela de Juros Progressivo ────────────────────────────────────────
-// Baseado no "Gráfico Progressivo de Juros" oficial da loja.
-// Parcelas → Taxa de acréscimo (%)
-const INTEREST_TABLE: Record<number, number> = {
-  1: 0, 2: 0, 3: 0, 4: 0,          // Excelente p/ Cliente
-  5: 10.5, 6: 11, 7: 11.5, 8: 12,  // Ruim p/ Cliente
-  9: 12.5, 10: 13, 11: 13.5,
-  12: 14, 13: 14.5, 14: 15,         // Bom p/ Cliente
-  15: 15.5, 16: 16, 17: 17.5, 18: 18, // Ótimo p/ Cliente (para a loja)
-};
-
-// Descontos para pagamento à vista
-const DISCOUNT_PIX = 6;    // 6% de desconto
-const DISCOUNT_DEBITO = 3; // 3% de desconto
-
-/**
- * Detecta se a diferença entre o valor da OS e o valor pago corresponde
- * a uma taxa de juros conhecida (parcelamento no cartão) ou desconto (PIX/Débito).
- * 
- * O gerente NÃO PODE lançar os juros no sistema fonte, então a OS vem com
- * o valor original. O cliente paga mais, mas o sistema recebe apenas o valor base.
- * Essa função identifica e retorna o valor "real" ajustado.
- */
-export function detectInterestOrDiscount(
-  osValue: number,
-  paidValue: number,
-  paymentMethod: string | null
-): { adjustedTotal: number; interestType: string | null; rate: number } {
-  if (osValue <= 0 || paidValue <= 0) {
-    return { adjustedTotal: osValue, interestType: null, rate: 0 };
-  }
-
-  const ratio = paidValue / osValue;
-  const TOLERANCE = 0.008; // ~0.8% tolerance for rounding
-
-  // 1. Check for interest (paid > os value → parcelamento no cartão)
-  if (ratio > 1.05) {
-    for (const [parcelas, taxa] of Object.entries(INTEREST_TABLE)) {
-      if (taxa === 0) continue;
-      const expectedRatio = 1 + taxa / 100;
-      if (Math.abs(ratio - expectedRatio) <= TOLERANCE) {
-        return {
-          adjustedTotal: paidValue,
-          interestType: `Juros ${parcelas}x (${taxa}%)`,
-          rate: taxa,
-        };
-      }
-    }
-  }
-
-  // 2. Check for PIX discount (paid < os value by ~6%)
-  if (ratio < 1 && ratio > 0.9) {
-    const pixExpected = 1 - DISCOUNT_PIX / 100; // 0.94
-    if (Math.abs(ratio - pixExpected) <= TOLERANCE) {
-      return {
-        adjustedTotal: paidValue,
-        interestType: `Desconto PIX (${DISCOUNT_PIX}%)`,
-        rate: -DISCOUNT_PIX,
-      };
-    }
-
-    // 3. Check for Débito discount (~3%)
-    const debitoExpected = 1 - DISCOUNT_DEBITO / 100; // 0.97
-    if (Math.abs(ratio - debitoExpected) <= TOLERANCE) {
-      return {
-        adjustedTotal: paidValue,
-        interestType: `Desconto Débito (${DISCOUNT_DEBITO}%)`,
-        rate: -DISCOUNT_DEBITO,
-      };
-    }
-  }
-
-  // No match — keep original values
-  return { adjustedTotal: osValue, interestType: null, rate: 0 };
-}
 
 
 export async function savePatioOsAndReceivables(
@@ -124,25 +49,14 @@ export async function savePatioOsAndReceivables(
       const delta_paid = os.paid_value - velho_valor_pago;
       (os as any).delta_paid = delta_paid;
 
-      // ─── Aplicar Motor de Juros ───────────────────────
-      const { adjustedTotal, interestType } = detectInterestOrDiscount(
-        os.total_value,
-        os.paid_value,
-        os.payment_method
-      );
-
       const payload = {
         store_id: storeId,
         store_name: storeName,
         os_number: String(os.os_number),
         plate: os.plate,
-        total_value: adjustedTotal, // Usa o valor ajustado (com juros incluso)
+        total_value: os.total_value,
         paid_value: os.paid_value,
-        payment_method: os.payment_method
-          ? (interestType
-              ? `${os.payment_method} [${interestType}]`
-              : os.payment_method)
-          : os.payment_method,
+        payment_method: os.payment_method,
         status: os.status,
         opened_at: os.opened_at,
         closed_at: os.closed_at,
@@ -374,12 +288,6 @@ export function useProcessImportedData() {
           const bankAmount = deltaPaid - ((os as any).dinheiroVal || 0);
           
           if (bankAmount > 0) {
-            const { interestType } = detectInterestOrDiscount(
-              os.total_value,
-              os.paid_value,
-              os.payment_method
-            );
-
             const desc = `OS #${os.os_number} - ${os.plate || 'Sem placa'}`;
             txToInsert.push({
               store_id: storeId,
@@ -390,11 +298,7 @@ export function useProcessImportedData() {
               target_date: date,
               title: desc,
               os_number: os.os_number,
-              payment_method: os.payment_method
-                ? (interestType
-                    ? `${os.payment_method} [${interestType}]`
-                    : os.payment_method)
-                : 'Não especificado'
+              payment_method: os.payment_method || 'Não especificado'
             });
           }
         }

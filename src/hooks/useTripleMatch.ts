@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
-import { useInterestRates } from './useInterestRates';
 
 export type TripleMatchRow = {
   date: string;
@@ -12,11 +11,10 @@ export type TripleMatchRow = {
 };
 
 export function useTripleMatch(storeId: string | undefined, startDate: string, endDate: string) {
-  const { data: rates = [], isLoading: isLoadingRates } = useInterestRates();
 
   return useQuery({
-    queryKey: ['triple-match', storeId, startDate, endDate, rates],
-    enabled: !!storeId && !isLoadingRates,
+    queryKey: ['triple-match', storeId, startDate, endDate],
+    enabled: !!storeId,
     queryFn: async () => {
       // Pega transações no período (por occurred_at) da loja, que são de 'patio', 'maquininha' ou 'ofx' (do tipo IN)
       const { data: txs, error } = await supabase
@@ -32,17 +30,6 @@ export function useTripleMatch(storeId: string | undefined, startDate: string, e
 
       // Map to compute daily triple match
       const dailyMap: Record<string, TripleMatchRow> = {};
-
-      const getRateForMethod = (method: string | null) => {
-        if (!method) return 0;
-        const normalized = method.toLowerCase();
-        for (const rate of rates) {
-          if (normalized.includes(rate.payment_method.toLowerCase())) {
-            return rate.rate_percentage;
-          }
-        }
-        return 0;
-      };
 
       (txs || []).forEach(tx => {
         const dateKey = tx.occurred_at?.split('T')[0];
@@ -63,9 +50,7 @@ export function useTripleMatch(storeId: string | undefined, startDate: string, e
 
         if (tx.source === 'patio') {
           dailyMap[dateKey].osAmount += amt;
-          const rate = getRateForMethod(tx.payment_method);
-          const estimatedAmt = amt * (1 - (rate / 100));
-          dailyMap[dateKey].osEstimatedAmount += estimatedAmt;
+          dailyMap[dateKey].osEstimatedAmount += amt; // Same as osAmount now
         } else if (tx.source === 'maquininha') {
           dailyMap[dateKey].machineAmount += amt;
         } else if (tx.source === 'ofx') {

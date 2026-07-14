@@ -1,4 +1,4 @@
-﻿export type Json =
+export type Json =
   | string
   | number
   | boolean
@@ -217,27 +217,7 @@ export type Database = {
         }
         Relationships: []
       }
-      interest_rates: {
-        Row: {
-          created_at: string
-          id: string
-          payment_method: string
-          rate_percentage: number
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          payment_method: string
-          rate_percentage?: number
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          payment_method?: string
-          rate_percentage?: number
-        }
-        Relationships: []
-      }
+
       patio_os: {
         Row: {
           closed_at: string | null
