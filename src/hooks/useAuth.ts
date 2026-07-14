@@ -4,20 +4,40 @@ import { supabase } from '@/lib/supabase';
 
 // ─── Session Hook ────────────────────────────────────────────────────────────
 
+// Cache global para evitar flickering na mudança de rotas (remontagem do AppShell)
+let globalSession: Session | null | undefined = undefined;
+let isInitializing = false;
+const listeners = new Set<(s: Session | null | undefined) => void>();
+
 export function useSession() {
-  const [session, setSession] = useState<Session | null | undefined>(undefined);
+  const [session, setSession] = useState<Session | null | undefined>(globalSession);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-    });
+    const listener = (s: Session | null | undefined) => setSession(s);
+    listeners.add(listener);
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
+    if (globalSession === undefined && !isInitializing) {
+      isInitializing = true;
+      supabase.auth.getSession().then(({ data }) => {
+        globalSession = data.session;
+        listeners.forEach(l => l(globalSession));
+      });
 
-    return () => subscription.unsubscribe();
-  }, []);
+      supabase.auth.onAuthStateChange((_event, session) => {
+        globalSession = session;
+        listeners.forEach(l => l(globalSession));
+      });
+    }
+
+    // Define valor inicial caso a sessão global tenha sido atualizada antes do useEffect
+    if (session !== globalSession) {
+      setSession(globalSession);
+    }
+
+    return () => {
+      listeners.delete(listener);
+    };
+  }, [session]);
 
   return session;
 }

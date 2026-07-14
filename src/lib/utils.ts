@@ -14,3 +14,10 @@ export function getDefaultDate() {
   }
   return d.toISOString().split('T')[0];
 }
+
+export function formatCurrency(value: number) {
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(value);
+}

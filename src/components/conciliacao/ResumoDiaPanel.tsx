@@ -1,16 +1,20 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Button } from '@/components/ui/Button';
 import {
   Wallet, Car, ReceiptText,
   Target, Percent, AlertOctagon,
-  Save, ChevronDown, ChevronUp
+  Save, ChevronDown, ChevronUp,
+  AlertTriangle, CheckCircle2
 } from 'lucide-react';
 import { useDailySnapshot, usePreviousDaySnapshot, useSaveDailySnapshot } from '@/hooks/useDailySnapshot';
 import { useRecebiveis } from '@/hooks/useRecebiveis';
 import { usePatioOS } from '@/hooks/usePatio';
 import { useDailyBankBalance } from '@/hooks/useTransactions';
+import { supabase } from '@/lib/supabase';
+import { TransactionRow } from '@/lib/supabase';
+import { formatCurrency } from '@/lib/utils';
 
 interface ResumoDiaPanelProps {
   date: string;
@@ -40,25 +44,26 @@ function SummaryCard({
   };
 
   return (
-    <div className={`p-4 rounded-xl border ${colorMap[color]} flex flex-col gap-1 backdrop-blur-md transition-all hover:scale-[1.02] hover:brightness-110`}>
-      <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest opacity-80">
+    <div className={`p-4 rounded-xl border ${colorMap[color]} flex flex-col gap-1 backdrop-blur-md transition-all hover:scale-[1.02] hover:brightness-110 relative overflow-hidden group`}>
+      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest opacity-80 mb-1 z-10">
         <Icon size={14} />
         {label}
       </div>
-      <div className="font-display font-bold text-2xl tracking-tight">
+      <div className="font-display font-bold text-2xl tracking-tight z-10">
         {isCurrency ? <AnimatedNumber value={value} format="currency" /> : value}
       </div>
       {description && (
-        <p className="text-[10px] opacity-60 leading-relaxed mt-1 font-medium">{description}</p>
+        <p className="text-[10px] opacity-60 leading-relaxed mt-1 font-medium z-10">{description}</p>
       )}
     </div>
   );
 }
 
 export function ResumoDiaPanel({ date }: ResumoDiaPanelProps) {
-  const [notes, setNotes] = useState('');
   const [isExpanded, setIsExpanded] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
+  const [anomalies, setAnomalies] = useState<TransactionRow[]>([]);
 
   const { data: currentSnapshot } = useDailySnapshot(date);
   const { data: previousSnapshot } = usePreviousDaySnapshot(date);
@@ -66,6 +71,23 @@ export function ResumoDiaPanel({ date }: ResumoDiaPanelProps) {
   const { data: patioData = [] } = usePatioOS();
   const { data: bankBalances } = useDailyBankBalance(date);
   const saveSnapshot = useSaveDailySnapshot();
+
+  // Fetch anomalies for the day
+  useEffect(() => {
+    const fetchAnomalies = async () => {
+      const { data } = await supabase
+        .from('transactions')
+        .select('*')
+        .eq('target_date', date)
+        .neq('source', 'ofx')
+        .is('os_number', null);
+
+      if (data) {
+        setAnomalies(data as TransactionRow[]);
+      }
+    };
+    fetchAnomalies();
+  }, [date]);
 
   // ─── Cálculos ────────────────────────────────────────────────────────────────
   const saldoBancario = Object.values(bankBalances || {}).reduce(
@@ -86,13 +108,17 @@ export function ResumoDiaPanel({ date }: ResumoDiaPanelProps) {
   const jurosRede = 0; // virá do bot quando integrado
 
   const handleSave = async () => {
+    const notesStr = anomalies.length > 0 
+      ? `Anomalias Automáticas: ${anomalies.map(a => `${a.title} (${a.amount})`).join(', ')}`
+      : 'Sem observações.';
+
     await saveSnapshot.mutateAsync({
       date,
       faturamento: faturamentoAtual,
       total_recebiveis: totalRecebiveis,
       total_patio: totalPatio,
       saldo_bancario: saldoBancario,
-      notes,
+      notes: notesStr,
     });
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 3000);
@@ -102,34 +128,34 @@ export function ResumoDiaPanel({ date }: ResumoDiaPanelProps) {
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-[var(--bg-surface-elevated)]/80 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl relative mb-8"
+      className="bg-black/40 backdrop-blur-3xl border border-white/10 rounded-2xl overflow-hidden shadow-[0_8px_32px_-12px_rgba(0,0,0,0.5)] relative mb-8"
     >
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-accent-teal)] to-[var(--color-primary)] opacity-50" />
+      <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-accent-teal)] to-[var(--color-primary)] opacity-70" />
       
       {/* Header colapsável */}
       <button
         onClick={() => setIsExpanded((v) => !v)}
-        className="w-full flex items-center justify-between p-6 hover:bg-white/5 transition-colors group"
+        className="w-full flex items-center justify-between p-6 hover:bg-white/5 transition-colors group cursor-pointer"
       >
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary)]/30 flex items-center justify-center shadow-lg shadow-[var(--color-primary)]/20">
-            <Target size={20} className="text-white" />
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--color-primary)]/20 to-transparent border border-[var(--color-primary)]/30 flex items-center justify-center shadow-lg shadow-[var(--color-primary)]/10">
+            <Target size={24} className="text-[var(--color-primary)]" />
           </div>
           <div className="text-left">
-            <h2 className="font-display font-bold text-xl text-white tracking-tight group-hover:text-[var(--color-primary)] transition-colors">Resumo do Dia</h2>
-            <p className="text-xs text-[var(--text-tertiary)] font-medium mt-0.5">
-              Posição Bancária · Recebíveis · Faturamento
+            <h2 className="font-display font-bold text-2xl text-white tracking-tight group-hover:text-[var(--color-primary)] transition-colors">Fechamento do Dia</h2>
+            <p className="text-[11px] text-[var(--text-tertiary)] font-medium mt-1 uppercase tracking-widest">
+              Visão Consolidada da Rede
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="text-right hidden sm:block">
-            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-widest font-semibold mb-0.5">Saldo Bancário do Dia</p>
-            <span className={`text-lg font-display font-bold ${saldoBancario >= 0 ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
+        <div className="flex items-center gap-6">
+          <div className="text-right hidden sm:block bg-black/20 px-4 py-2 rounded-lg border border-white/5">
+            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-widest font-semibold mb-1">Saldo Bancário do Dia</p>
+            <span className={`text-xl font-display font-bold drop-shadow-md ${saldoBancario >= 0 ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
               <AnimatedNumber value={saldoBancario} format="currency" />
             </span>
           </div>
-          <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
+          <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors border border-white/5">
             {isExpanded ? (
               <ChevronUp size={16} className="text-white/70" />
             ) : (
@@ -139,90 +165,118 @@ export function ResumoDiaPanel({ date }: ResumoDiaPanelProps) {
         </div>
       </button>
 
-      {isExpanded && (
-        <div className="px-6 pb-6 space-y-6">
-          {/* Grid de Cards Principais */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <SummaryCard
-              label="Saldo Bancário"
-              value={saldoBancario}
-              icon={Wallet}
-              color={saldoBancario >= 0 ? 'blue' : 'red'}
-              description="Soma de todos os extratos OFX"
-            />
-            <SummaryCard
-              label="A Receber (Boletos)"
-              value={totalRecebiveis}
-              icon={ReceiptText}
-              color="blue"
-              description="Pendências e boletos"
-            />
-            <SummaryCard
-              label="Pátio (Aberto)"
-              value={totalPatio}
-              icon={Car}
-              color="yellow"
-              description="OS abertas / pagas parcialmente"
-            />
-          </div>
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div 
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="px-6 pb-6 space-y-6"
+          >
+            {/* Grid de Cards Principais */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              <SummaryCard
+                label="Saldo Bancário"
+                value={saldoBancario}
+                icon={Wallet}
+                color={saldoBancario >= 0 ? 'blue' : 'red'}
+                description="Soma de todos os extratos OFX"
+              />
+              <SummaryCard
+                label="A Receber (Boletos)"
+                value={totalRecebiveis}
+                icon={ReceiptText}
+                color="blue"
+                description="Pendências e boletos"
+              />
+              <SummaryCard
+                label="Pátio (Aberto)"
+                value={totalPatio}
+                icon={Car}
+                color="yellow"
+                description="OS abertas / pagas parcialmente"
+              />
+            </div>
 
-          <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent my-2" />
+            <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent my-4" />
 
-          {/* Faturamento + Juros */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <SummaryCard
-              label="Faturamento Atual"
-              value={faturamentoAtual}
-              icon={Target}
-              color="green"
-              description="Mapa de Metas (Oficina Inteligente)"
-            />
-            <SummaryCard
-              label="Faturamento Anterior"
-              value={faturamentoAnterior}
-              icon={Target}
-              color="default"
-              description="Última conciliação fechada"
-            />
-            <SummaryCard
-              label="Juros da Rede"
-              value={jurosRede}
-              icon={Percent}
-              color="default"
-              description="Dados processados pelo bot"
-            />
-          </div>
+            {/* Faturamento + Juros */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <SummaryCard
+                label="Faturamento Atual"
+                value={faturamentoAtual}
+                icon={Target}
+                color="green"
+                description="Mapa de Metas (Oficina Inteligente)"
+              />
+              <SummaryCard
+                label="Faturamento Anterior"
+                value={faturamentoAnterior}
+                icon={Target}
+                color="default"
+                description="Última conciliação fechada"
+              />
+              <SummaryCard
+                label="Juros da Rede"
+                value={jurosRede}
+                icon={Percent}
+                color="default"
+                description="Dados processados pelo bot"
+              />
+            </div>
 
-          {/* OBS Críticas */}
-          <div className="bg-[var(--color-accent-danger)]/5 border border-[var(--color-accent-danger)]/15 rounded-xl p-5 backdrop-blur-sm relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-1 h-full bg-[var(--color-accent-danger)]" />
-            <label className="text-[11px] font-bold text-[var(--color-accent-danger)] uppercase tracking-widest flex items-center gap-2 mb-3">
-              <AlertOctagon size={14} />
-              Observações Críticas — Casos sem OS vinculada
-            </label>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={3}
-              className="w-full bg-black/40 border border-white/5 rounded-lg px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-white/20 focus:outline-none focus:border-[var(--color-accent-danger)]/50 focus:ring-1 focus:ring-[var(--color-accent-danger)]/50 transition-all resize-none font-mono"
-              placeholder="Ex: Pix de R$165 de óleo usado sem OS vinculada (Jabaquara). Aporte de sócio de R$60k (Jorge Beretta) — contabilizar com OBS..."
-            />
-          </div>
+            {/* OBS Críticas Automatizadas */}
+            <div className="bg-[var(--color-accent-danger)]/5 border border-[var(--color-accent-danger)]/15 rounded-xl p-5 backdrop-blur-sm relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-1 h-full bg-[var(--color-accent-danger)] shadow-[0_0_10px_var(--color-accent-danger)]" />
+              <label className="text-[11px] font-bold text-[var(--color-accent-danger)] uppercase tracking-widest flex items-center gap-2 mb-4">
+                <AlertOctagon size={14} />
+                Observações Críticas (Automático) — Casos sem OS vinculada
+              </label>
+              
+              <div className="space-y-2 max-h-[150px] overflow-y-auto custom-scrollbar pr-2">
+                {anomalies.length === 0 ? (
+                  <div className="text-sm text-[var(--text-tertiary)] flex items-center gap-2 italic py-2">
+                    <CheckCircle2 size={14} className="text-[var(--color-accent-teal)]" />
+                    Nenhuma anomalia crítica detectada neste dia.
+                  </div>
+                ) : (
+                  anomalies.map((anom) => (
+                    <div key={anom.id} className="flex items-center justify-between bg-black/30 border border-white/5 rounded-lg p-3 text-sm hover:border-[var(--color-accent-danger)]/30 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <AlertTriangle size={14} className="text-[var(--color-accent-danger)] flex-shrink-0" />
+                        <span className="text-[var(--text-primary)] font-medium">
+                          {anom.title || 'Transação sem título'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <span className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider bg-white/5 px-2 py-1 rounded">
+                          {anom.store_id}
+                        </span>
+                        <span className={`font-mono font-bold ${anom.type === 'in' ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
+                          {anom.type === 'in' ? '+' : '-'}{formatCurrency(anom.amount || 0)}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
 
-          {/* Ação */}
-          <div className="flex justify-end pt-2">
-            <Button
-              variant="primary"
-              onClick={handleSave}
-              className="gap-2 px-6 shadow-lg shadow-[var(--color-primary)]/20 hover:shadow-[var(--color-primary)]/40 transition-shadow"
-              disabled={saveSnapshot.isPending}
-            >
-              <Save size={16} />
-              {isSaved ? '✓ Snapshot Salvo!' : 'Gravar Fechamento Diário'}
-            </Button>
-          </div>
-        </div>
-      )}
+            {/* Ação */}
+            <div className="flex justify-end pt-4">
+              <Button
+                variant="primary"
+                onClick={handleSave}
+                className="gap-2 px-8 py-2.5 shadow-lg shadow-[var(--color-primary)]/20 hover:shadow-[var(--color-primary)]/40 transition-shadow text-sm tracking-wide font-semibold"
+                disabled={saveSnapshot.isPending}
+              >
+                <Save size={18} />
+                {isSaved ? '✓ Snapshot Salvo!' : 'Gravar Fechamento Diário'}
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
