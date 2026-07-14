@@ -198,29 +198,6 @@ export function useProcessImportedData() {
           summary.totalPaidAll += deltaPaid;
           summary.osCount++;
           summary.oss.push(os);
-          
-          // Calcular dinheiro apenas (PIX / Dinheiro)
-          let dinheiroValForOs = 0;
-          if (os.payment_method) {
-             const parts = os.payment_method.split(';');
-             parts.forEach(part => {
-                const [method, valStr] = part.split(':');
-                if (method && valStr) {
-                  const m = method.toLowerCase();
-                  if (m.includes('dinheiro') || m.includes('espécie')) {
-                    const parsed = parseFloat(valStr.trim());
-                    if (!isNaN(parsed)) dinheiroValForOs += parsed;
-                  }
-                }
-             });
-          }
-          
-          // Ajustar o dinheiro para não exceder o delta da transação atual
-          const dinheiroParaODelta = Math.min(dinheiroValForOs, deltaPaid);
-          summary.totalDinheiro += dinheiroParaODelta;
-          
-          // Anexar o valor em dinheiro na OS para não precisarmos recalcular na hora das transações
-          (os as any).dinheiroVal = dinheiroParaODelta;
         }
       }
 
@@ -232,7 +209,7 @@ export function useProcessImportedData() {
           storeId,
           date,
           osTotal: summary.totalOs,
-          financialTotal: summary.totalDinheiro,
+          financialTotal: 0,
           bankTotal: ofxBankBalance,
         });
 
@@ -244,40 +221,11 @@ export function useProcessImportedData() {
           target_date: date,
           total_os: summary.totalOs,
           total_paid_all: summary.totalPaidAll,
-          total_dinheiro: summary.totalDinheiro,
           os_count: summary.osCount,
           receivables_count: recCountForDate,
         }, { onConflict: 'store_id,target_date' });
 
-        // C) Atualizar Caixa Físico (cash_registers)
-        if (summary.totalDinheiro > 0) {
-          // Busca para ver se já existe para não sobreescrever um declarado, 
-          // ou usamos upsert se quisermos forçar a atualização do expected_amount
-          const { data: existingCash } = await supabase
-            .from('cash_registers')
-            .select('id, declared_amount')
-            .eq('store_id', storeId)
-            .eq('date', date)
-            .single();
-
-          if (existingCash) {
-            // Só atualiza o expected_amount, recalcula divergência se já tiver declared
-            const div = existingCash.declared_amount !== null 
-                ? existingCash.declared_amount - summary.totalDinheiro 
-                : null;
-            await supabase.from('cash_registers').update({
-              expected_amount: summary.totalDinheiro,
-              divergence: div
-            }).eq('id', existingCash.id);
-          } else {
-            await supabase.from('cash_registers').insert({
-              store_id: storeId,
-              date: date,
-              expected_amount: summary.totalDinheiro,
-              status: 'pending'
-            });
-          }
-        }
+        // C) Atualizar Caixa Físico (Removido)
 
         // C) Inserir transações para o extrato
         // Removida a trava de idempotência por os_number para permitir transações de deltas
@@ -285,7 +233,7 @@ export function useProcessImportedData() {
         
         for (const os of summary.oss) {
           const deltaPaid = (os as any).delta_paid || 0;
-          const bankAmount = deltaPaid - ((os as any).dinheiroVal || 0);
+          const bankAmount = deltaPaid;
           
           if (bankAmount > 0) {
             const desc = `OS #${os.os_number} - ${os.plate || 'Sem placa'}`;

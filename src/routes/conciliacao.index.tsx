@@ -2,12 +2,13 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { CheckCircle2, CalendarDays, Store, AlertTriangle, ChevronRight } from 'lucide-react';
+import { CheckCircle2, CalendarDays, Store, AlertTriangle, ChevronRight, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useStores } from '@/hooks/useStores';
 import { useConciliacaoResumo, useConciliacaoDetalhes } from '@/hooks/useConciliacao';
 import { useDailySystemBalance, useDailyBankBalance } from '@/hooks/useTransactions';
+import { useDeleteImport } from '@/hooks/useImportProcessor';
 import { getDefaultDate } from '@/lib/utils';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { ResumoDiaPanel } from '@/components/conciliacao/ResumoDiaPanel';
@@ -24,6 +25,13 @@ function ConciliacaoPage() {
   const { data: detalhes = [], isLoading: loadingDetalhes, refetch: refetchDetalhes } = useConciliacaoDetalhes(selectedDate);
   const { data: dailyBalances, isLoading: loadingBalances } = useDailySystemBalance(selectedDate);
   const { data: bankBalances, isLoading: loadingBankBalances } = useDailyBankBalance(selectedDate);
+  const deleteImport = useDeleteImport();
+
+  const handleClearDay = async () => {
+    if (confirm(`Tem certeza que deseja apagar todos os dados importados do dia ${selectedDate.split('-').reverse().join('/')}?`)) {
+      await deleteImport.mutateAsync({ storeId: 'GLOBAL', targetDates: [selectedDate], logIds: [] });
+    }
+  };
 
   const isLoading = loadingStores || loadingResumo || loadingDetalhes || loadingBalances || loadingBankBalances;
 
@@ -77,6 +85,15 @@ function ConciliacaoPage() {
                 <ChevronRight size={20} />
               </button>
             </div>
+            
+            <button
+              onClick={handleClearDay}
+              disabled={deleteImport.isPending}
+              className="flex items-center gap-2 px-3 py-2 bg-[var(--color-accent-danger)]/10 text-[var(--color-accent-danger)] hover:bg-[var(--color-accent-danger)]/20 border border-[var(--color-accent-danger)]/20 rounded-xl text-sm font-medium transition-all"
+            >
+              <Trash2 size={16} />
+              {deleteImport.isPending ? 'Limpando...' : 'Limpar Dia'}
+            </button>
           </div>
         </div>
 
@@ -132,6 +149,9 @@ function ConciliacaoPage() {
               </div>
             </motion.div>
 
+            {/* ─── Resumo do Dia Movido para o Topo ──────────────────────── */}
+            <ResumoDiaPanel date={selectedDate} />
+
             {/* Lista de Lojas */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold flex items-center gap-2 mb-2">
@@ -185,9 +205,6 @@ function ConciliacaoPage() {
                 })}
               </div>
             </div>
-
-            {/* ─── Resumo do Dia (Passos 6 e 7) ────────────────────────────── */}
-            <ResumoDiaPanel date={selectedDate} />
           </>
         )}
 
