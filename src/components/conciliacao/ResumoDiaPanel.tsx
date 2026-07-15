@@ -116,15 +116,15 @@ export function ResumoDiaPanel({
           ? 'bg-[var(--color-accent-teal)]/5 border-[var(--color-accent-teal)]/20'
           : statusDanger
           ? 'bg-[var(--color-accent-danger)]/5 border-[var(--color-accent-danger)]/20'
-          : 'bg-[var(--bg-surface-elevated)] border-white/5'
+          : 'bg-[var(--bg-surface-elevated)] border-[var(--border-subtle)]'
       }`}
     >
       {/* Top Header Section */}
-      <div className="p-6 border-b border-white/5 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+      <div className="p-6 border-b border-[var(--border-subtle)] flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
         
         {/* Title & Status */}
         <div className="flex items-start gap-4">
-          <div className={`p-3 rounded-full mt-1 ${statusSuccess ? 'bg-[var(--color-accent-teal)]/10 text-[var(--color-accent-teal)]' : statusDanger ? 'bg-[var(--color-accent-danger)]/10 text-[var(--color-accent-danger)]' : 'bg-white/5 text-[var(--text-tertiary)]'}`}>
+          <div className={`p-3 rounded-full mt-1 ${statusSuccess ? 'bg-[var(--color-accent-teal)]/10 text-[var(--color-accent-teal)]' : statusDanger ? 'bg-[var(--color-accent-danger)]/10 text-[var(--color-accent-danger)]' : 'bg-[var(--bg-surface-elevated)] text-[var(--text-tertiary)]'}`}>
             {statusSuccess ? <CheckCircle2 size={24} /> : statusDanger ? <AlertTriangle size={24} /> : <CheckCircle2 size={24} />}
           </div>
           <div>
@@ -150,8 +150,8 @@ export function ResumoDiaPanel({
         {/* Date & Core Totals */}
         <div className="flex flex-col items-end gap-4 w-full lg:w-auto">
           {/* Date Picker */}
-          <div className="flex items-center gap-1 bg-black/20 rounded-lg p-1 border border-white/5">
-            <button onClick={() => onDayChange(-1)} className="p-2 hover:bg-white/5 rounded-md text-[var(--text-secondary)]">
+          <div className="flex items-center gap-1 bg-[var(--bg-canvas)] rounded-lg p-1 border border-[var(--border-subtle)]">
+            <button onClick={() => onDayChange(-1)} className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)]">
               <ChevronRight size={16} className="rotate-180" />
             </button>
             <div className="flex items-center gap-2 px-2">
@@ -166,7 +166,7 @@ export function ResumoDiaPanel({
             <button 
               onClick={() => onDayChange(1)} 
               disabled={selectedDate === getDefaultDate()}
-              className="p-2 hover:bg-white/5 rounded-md text-[var(--text-secondary)] disabled:opacity-30"
+              className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)] disabled:opacity-30"
             >
               <ChevronRight size={16} />
             </button>
@@ -197,7 +197,7 @@ export function ResumoDiaPanel({
             <span className="font-display font-bold text-xl text-[var(--text-primary)]">
               {progressoMeta.toFixed(1)}%
             </span>
-            <div className="w-full bg-black/20 h-1.5 rounded-full mt-1 overflow-hidden border border-white/5">
+            <div className="w-full bg-[var(--bg-canvas)] h-1.5 rounded-full mt-1 overflow-hidden border border-[var(--border-subtle)]">
               <div className="h-full bg-[var(--color-primary)] transition-all duration-1000" style={{ width: `${Math.min(progressoMeta, 100)}%` }} />
             </div>
           </div>
@@ -211,7 +211,7 @@ export function ResumoDiaPanel({
             </label>
             <div className="space-y-2 max-h-[120px] overflow-y-auto custom-scrollbar pr-2">
               {anomalies.map((anom) => (
-                <div key={anom.id} className="flex items-center justify-between bg-black/20 rounded p-2 text-sm border border-white/5">
+                <div key={anom.id} className="flex items-center justify-between bg-[var(--bg-canvas)] rounded p-2 text-sm border border-[var(--border-subtle)]">
                   <div className="flex items-center gap-2">
                     <AlertTriangle size={14} className="text-[var(--color-accent-danger)]" />
                     <span className="text-[var(--text-secondary)] font-medium text-xs">{anom.title || 'Transação'}</span>
@@ -225,7 +225,7 @@ export function ResumoDiaPanel({
           </div>
         )}
 
-        <div className="flex justify-end border-t border-white/5 pt-4">
+        <div className="flex justify-end border-t border-[var(--border-subtle)] pt-4">
           <Button
             variant="primary"
             onClick={handleSave}

@@ -59,8 +59,8 @@ export function RedeVsExtratoTable({ storeId, date }: RedeVsExtratoTableProps) {
             Pareados
           </p>
         </div>
-        <div className="bg-amber-400/10 border border-amber-400/20 rounded-lg p-3 text-center">
-          <p className="text-xl font-display font-bold text-amber-400">
+        <div className="bg-[var(--color-accent-warning)]/10 border border-[var(--color-accent-warning)]/20 rounded-lg p-3 text-center">
+          <p className="text-xl font-display font-bold text-[var(--color-accent-warning)]">
             {summary.divergentes}
           </p>
           <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mt-0.5">
@@ -135,7 +135,7 @@ export function RedeVsExtratoTable({ storeId, date }: RedeVsExtratoTableProps) {
                           hasDelta ? (
                             <AlertTriangle
                               size={14}
-                              className="text-amber-400 shrink-0"
+                              className="text-[var(--color-accent-warning)] shrink-0"
                             />
                           ) : (
                             <CheckCircle2
@@ -179,7 +179,7 @@ export function RedeVsExtratoTable({ storeId, date }: RedeVsExtratoTableProps) {
                         <span
                           className={
                             hasDelta
-                              ? 'text-amber-400 font-semibold'
+                              ? 'text-[var(--color-accent-warning)] font-semibold'
                               : 'text-[var(--color-accent-teal)]'
                           }
                         >
@@ -195,7 +195,7 @@ export function RedeVsExtratoTable({ storeId, date }: RedeVsExtratoTableProps) {
                       )}
                     </td>
                     <td className="py-3.5 px-4 text-right">
-                      <span className="text-xs text-[var(--text-secondary)] bg-white/5 px-2 py-0.5 rounded-full">
+                      <span className="text-xs text-[var(--text-secondary)] bg-[var(--bg-surface-elevated)] px-2 py-0.5 rounded-full">
                         {row.payment_method || '—'}
                       </span>
                     </td>
