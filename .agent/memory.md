@@ -35,4 +35,5 @@
 - [x] **Alvo 18:** Components Layout (`components/layout`) - Certificado limpo, sem intervenções.
 - [x] **Alvo 19:** Components Dashboard (`components/dashboard`) - Concluído.
 - [x] **Alvo 20:** Components Conciliação (`components/conciliacao`) - Concluído.
+- [x] **Alvo 21:** Components Importações (`components/importacoes`) - Concluído.
 - Próximos Alvos: (A definir pelo usuário)

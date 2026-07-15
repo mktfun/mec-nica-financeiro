@@ -25,7 +25,7 @@ export function CategorySelector({ onSelect }: CategorySelectorProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
             onClick={() => onSelect(cat.id)}
-            className="group relative cursor-pointer overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl transition-all duration-500 hover:border-white/30 hover:bg-white/10"
+            className="group relative cursor-pointer overflow-hidden rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] p-6 backdrop-blur-xl transition-all duration-500 hover:border-[var(--border-strong)] hover:bg-[var(--bg-surface-hover)]"
             style={{
               boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.05)',
             }}
@@ -43,7 +43,7 @@ export function CategorySelector({ onSelect }: CategorySelectorProps) {
                 <Icon size={32} style={{ color: cat.color }} />
               </div>
               
-              <h3 className="mb-2 font-display text-2xl font-bold text-white tracking-tight">
+              <h3 className="mb-2 font-display text-2xl font-bold text-[var(--text-primary)] tracking-tight">
                 {cat.title}
               </h3>
               
@@ -51,7 +51,7 @@ export function CategorySelector({ onSelect }: CategorySelectorProps) {
                 {cat.desc}
               </p>
               
-              <div className="mt-auto flex items-center gap-2 text-sm font-semibold text-white/80 transition-colors group-hover:text-white">
+              <div className="mt-auto flex items-center gap-2 text-sm font-semibold text-[var(--text-secondary)] transition-colors group-hover:text-[var(--text-primary)]">
                 <span style={{ color: cat.color }}>Iniciar Importação</span>
                 <ChevronRight size={16} style={{ color: cat.color }} />
               </div>

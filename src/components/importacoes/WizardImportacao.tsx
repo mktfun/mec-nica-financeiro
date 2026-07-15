@@ -282,20 +282,20 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex items-center gap-4 mb-8">
-        <button onClick={onCancel} className="p-2 hover:bg-white/10 rounded-full transition-colors text-[var(--text-secondary)]">
+        <button onClick={onCancel} className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-full transition-colors text-[var(--text-secondary)]">
           <ArrowLeft size={20} />
         </button>
         <div>
-          <h2 className="text-2xl font-display font-bold text-white">{getTitle()}</h2>
+          <h2 className="text-2xl font-display font-bold text-[var(--text-primary)]">{getTitle()}</h2>
           <p className="text-sm text-[var(--text-secondary)]">Siga os passos para processar seus arquivos.</p>
         </div>
       </div>
 
       <div className="flex items-center mb-8 space-x-4 max-w-2xl mx-auto">
         <StepIndicator current={step} step={1} title="Upload" />
-        <div className={`h-px flex-1 ${step > 1 ? 'bg-[var(--color-primary)]' : 'bg-white/10'}`} />
+        <div className={`h-px flex-1 ${step > 1 ? 'bg-[var(--color-primary)]' : 'bg-[var(--border-subtle)]'}`} />
         <StepIndicator current={step} step={2} title="Mapeamento" />
-        <div className={`h-px flex-1 ${step > 2 ? 'bg-[var(--color-primary)]' : 'bg-white/10'}`} />
+        <div className={`h-px flex-1 ${step > 2 ? 'bg-[var(--color-primary)]' : 'bg-[var(--border-subtle)]'}`} />
         <StepIndicator current={step} step={3} title="Revisão" />
       </div>
 
@@ -306,12 +306,12 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
             className={`border-2 border-dashed rounded-3xl p-16 flex flex-col items-center justify-center cursor-pointer transition-all duration-300
               ${isDragActive 
                 ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/5 scale-[1.02]' 
-                : 'border-[var(--border-strong)] hover:border-[var(--color-primary)]/50 hover:bg-white/[0.02]'
+                : 'border-[var(--border-strong)] hover:border-[var(--color-primary)]/50 hover:bg-[var(--bg-surface-hover)]'
               }
             `}
           >
             <input {...getInputProps()} />
-            <div className="bg-[var(--bg-surface-elevated)] p-4 rounded-full mb-4 shadow-xl border border-white/5">
+            <div className="bg-[var(--bg-surface-elevated)] p-4 rounded-full mb-4 shadow-xl border border-[var(--border-subtle)]">
               <UploadCloud size={40} className="text-[var(--color-primary)]" />
             </div>
             <h3 className="font-display font-semibold text-xl mb-2 text-center">
@@ -349,13 +349,13 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
               {unmappedStores.map((storeName) => {
                 const fileSource = extractedItems.find(e => e.storeName === storeName)?.fileName;
                 return (
-                <div key={storeName} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-white/5 hover:border-white/10 transition-colors">
+                <div key={storeName} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-[var(--border-strong)] transition-colors">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <FileType2 size={16} className="text-[var(--text-tertiary)]" />
                       <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase">Identificado no Arquivo</span>
                     </div>
-                    <span className="font-mono text-lg font-semibold bg-white/5 px-2 py-0.5 rounded text-[var(--text-primary)]">{storeName}</span>
+                    <span className="font-mono text-lg font-semibold bg-[var(--bg-surface-elevated)] px-2 py-0.5 rounded text-[var(--text-primary)]">{storeName}</span>
                     {fileSource && <div className="text-[11px] text-[var(--text-tertiary)] mt-1.5 font-mono truncate max-w-[200px]" title={fileSource}>Origem: {fileSource}</div>}
                   </div>
                   
@@ -366,7 +366,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
                     <select 
                       className={`w-full bg-[var(--bg-surface-elevated)] border rounded-[var(--radius-sm)] p-3 text-sm focus:outline-none transition-all duration-300
                         ${mapping[storeName] 
-                          ? 'border-[var(--color-accent-teal)]/50 text-white shadow-[0_0_15px_rgba(50,215,171,0.1)]' 
+                          ? 'border-[var(--color-accent-teal)]/50 text-[var(--text-primary)] shadow-[0_0_15px_rgba(50,215,171,0.1)]' 
                           : 'border-[var(--color-accent-warning)]/50 text-[var(--text-secondary)] animate-pulse'
                         }
                       `}
@@ -431,19 +431,19 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
                    <AnimatedNumber value={totalSaidas} format="currency" />
                  </p>
                </div>
-               <div className="p-4 rounded-[var(--radius-md)] bg-white/5 border border-white/10">
+               <div className="p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)]">
                  <p className="text-sm text-[var(--text-tertiary)] mb-1">Itens Identificados</p>
-                 <p className="text-2xl font-display font-bold text-white">{extractedItems.length} itens</p>
+                 <p className="text-2xl font-display font-bold text-[var(--text-primary)]">{extractedItems.length} itens</p>
                </div>
              </div>
 
-             <div className="mb-8 p-4 bg-[var(--bg-surface-elevated)] border border-white/10 rounded-xl">
+             <div className="mb-8 p-4 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl">
                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2 uppercase tracking-wide">Data de Competência</label>
                <input 
                  type="date" 
                  value={targetDate} 
                  onChange={e => setTargetDate(e.target.value)} 
-                 className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors"
+                 className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
                />
                <p className="text-xs text-[var(--text-tertiary)] mt-2">Esta data será usada para agrupar o lote de importação. Se for Maquininha, também será a data das transações.</p>
              </div>

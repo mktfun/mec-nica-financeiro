@@ -344,20 +344,20 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex items-center gap-4 mb-8">
-        <button onClick={onCancel} className="p-2 hover:bg-white/10 rounded-full transition-colors text-[var(--text-secondary)]">
+        <button onClick={onCancel} className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-full transition-colors text-[var(--text-secondary)]">
           <ArrowLeft size={20} />
         </button>
         <div>
-          <h2 className="text-2xl font-display font-bold text-white">Conciliação Centralizada</h2>
+          <h2 className="text-2xl font-display font-bold text-[var(--text-primary)]">Conciliação Centralizada</h2>
           <p className="text-sm text-[var(--text-secondary)]">Solte OS (Excel), Maquininha (Rede) e OFX para fazer a conciliação tripla.</p>
         </div>
       </div>
 
       <div className="flex items-center mb-8 space-x-4 max-w-2xl mx-auto">
         <StepIndicator current={step} step={1} title="Upload Unificado" />
-        <div className={`h-px flex-1 ${step > 1 ? 'bg-[var(--color-primary)]' : 'bg-white/10'}`} />
+        <div className={`h-px flex-1 ${step > 1 ? 'bg-[var(--color-primary)]' : 'bg-[var(--border-subtle)]'}`} />
         <StepIndicator current={step} step={2} title="Mapeamento" />
-        <div className={`h-px flex-1 ${step > 2 ? 'bg-[var(--color-primary)]' : 'bg-white/10'}`} />
+        <div className={`h-px flex-1 ${step > 2 ? 'bg-[var(--color-primary)]' : 'bg-[var(--border-subtle)]'}`} />
         <StepIndicator current={step} step={3} title="Conciliação Tripla" />
       </div>
 
@@ -368,16 +368,16 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             className={`border-2 border-dashed rounded-3xl p-16 flex flex-col items-center justify-center cursor-pointer transition-all duration-300
               ${isDragActive 
                 ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/5 scale-[1.02]' 
-                : 'border-[var(--border-strong)] hover:border-[var(--color-primary)]/50 hover:bg-white/[0.02]'
+                : 'border-[var(--border-strong)] hover:border-[var(--color-primary)]/50 hover:bg-[var(--bg-surface-hover)]'
               }
             `}
           >
             <input {...getInputProps()} />
             <div className="flex gap-4 mb-6">
-               <div className="bg-[var(--color-primary)]/20 p-4 rounded-full shadow-xl border border-white/5 text-[var(--color-primary)]">
+               <div className="bg-[var(--color-primary)]/20 p-4 rounded-full shadow-xl border border-[var(--border-subtle)] text-[var(--color-primary)]">
                  <Database size={32} />
                </div>
-               <div className="bg-[var(--color-accent-teal)]/20 p-4 rounded-full shadow-xl border border-white/5 text-[var(--color-accent-teal)]">
+               <div className="bg-[var(--color-accent-teal)]/20 p-4 rounded-full shadow-xl border border-[var(--border-subtle)] text-[var(--color-accent-teal)]">
                  <UploadCloud size={32} />
                </div>
             </div>
@@ -420,7 +420,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                   : redeSample ? `Rede: ${redeSample}` : maq ? `Exemplo de valor: R$ ${maq.amount}` : null;
 
                 return (
-                  <div key={alias} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-white/5">
+                  <div key={alias} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
                     <div className="flex-1">
                       <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase">Identificado no Arquivo</span><br/>
                       <span className="font-mono text-lg font-semibold text-[var(--text-primary)]">{alias}</span>
@@ -439,7 +439,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                     <div className="flex-1">
                       <select 
                         className={`w-full bg-[var(--bg-surface-elevated)] border rounded p-3 text-sm focus:outline-none 
-                          ${mapping[alias] ? 'border-[var(--color-accent-teal)] text-white' : 'border-[var(--color-accent-warning)] text-[var(--text-secondary)] animate-pulse'}`}
+                          ${mapping[alias] ? 'border-[var(--color-accent-teal)] text-[var(--text-primary)]' : 'border-[var(--color-accent-warning)] text-[var(--text-secondary)] animate-pulse'}`}
                         value={mapping[alias] || ''}
                         onChange={(e) => updateMapping(alias, e.target.value)}
                       >
@@ -482,9 +482,9 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                {/* Coluna 1: OS (Dia X) */}
-               <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col items-center">
+               <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] flex flex-col items-center">
                  <p className="text-sm text-[var(--text-secondary)] mb-2 font-medium">1. Sistema (Ordens de Serviço)</p>
-                 <div className="text-3xl font-display font-bold text-white mb-2">
+                 <div className="text-3xl font-display font-bold text-[var(--text-primary)] mb-2">
                    <AnimatedNumber value={totalOs} format="currency" />
                  </div>
                  <p className="text-xs text-[var(--text-tertiary)]">{filteredOsCount} OS Finalizadas</p>
@@ -516,7 +516,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
              </div>
 
              {/* Análise de Divergência */}
-             <div className="mb-8 p-6 bg-[var(--bg-surface-elevated)] border border-white/10 rounded-xl">
+             <div className="mb-8 p-6 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl">
                <h4 className="font-semibold text-[var(--text-primary)] mb-4">Status da Conciliação (Triplo Match de Valores)</h4>
                
                {/* Comparamos o BRUTO da Rede com o OS, mas mostramos o líquido pra conciliar com o Banco */}
@@ -541,13 +541,13 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                ) : null}
              </div>
 
-             <div className="mb-8 p-4 bg-black/20 border border-white/10 rounded-xl">
+             <div className="mb-8 p-4 bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl">
                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2 uppercase tracking-wide">Data de Competência (D)</label>
                <input 
                  type="date" 
                  value={targetDate} 
                  onChange={e => setTargetDate(e.target.value)} 
-                 className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors"
+                 className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
                />
                <p className="text-xs text-[var(--text-tertiary)] mt-2">Os lançamentos de D serão cruzados (Valor OS == Valor Bruto Rede | Valor Líquido Rede == Valor OFX D+1).</p>
              </div>
