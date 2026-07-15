@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Upload, FileType, AlertTriangle, File } from 'lucide-react';
+import { Upload, File } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export type FileTypeCategory = 'OFX' | 'MAQUININHA' | 'JUROS' | 'UNKNOWN';
@@ -64,7 +64,7 @@ export function UniversalDropzone({ onFilesAccepted, isProcessing }: UniversalDr
       className={`relative rounded-3xl p-10 flex flex-col items-center justify-center text-center transition-all duration-300 border-2 border-dashed ${
         isDragActive 
           ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/10 shadow-[0_0_40px_-10px_var(--color-primary)]' 
-          : 'border-white/20 bg-white/5 hover:border-[var(--color-primary)]/50 hover:bg-white/10'
+          : 'border-[var(--border-strong)] bg-[var(--bg-surface)]/50 hover:border-[var(--color-primary)]/50 hover:bg-[var(--bg-surface-elevated)]'
       }`}
       style={{
         backdropFilter: 'blur(20px)',
@@ -94,19 +94,19 @@ export function UniversalDropzone({ onFilesAccepted, isProcessing }: UniversalDr
           <Upload size={36} className="text-white" />
         </motion.div>
         
-        <h3 className="text-2xl font-display font-bold text-white mb-2 tracking-tight">Central de Importação Massiva</h3>
+        <h3 className="text-2xl font-display font-bold text-[var(--text-primary)] mb-2 tracking-tight">Central de Importação Massiva</h3>
         <p className="text-[var(--text-secondary)] mb-6 max-w-md">
           Arraste e solte arquivos <strong>.OFX</strong>, <strong>Maquininha (.XLSX)</strong> ou <strong>Juros Rede (.XLSX)</strong>. O sistema classificará e processará todos automaticamente.
         </p>
 
         <div className="flex gap-4 items-center justify-center flex-wrap">
-          <div className="flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-full border border-white/10 text-xs text-[var(--text-secondary)] font-medium">
+          <div className="flex items-center gap-2 bg-[var(--bg-surface-elevated)] px-3 py-1.5 rounded-full border border-[var(--border-subtle)] text-xs text-[var(--text-secondary)] font-medium">
             <div className="w-2 h-2 rounded-full bg-[var(--color-accent-teal)]"></div> Extratos OFX
           </div>
-          <div className="flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-full border border-white/10 text-xs text-[var(--text-secondary)] font-medium">
-            <div className="w-2 h-2 rounded-full bg-orange-400"></div> Maquininhas (XLSX)
+          <div className="flex items-center gap-2 bg-[var(--bg-surface-elevated)] px-3 py-1.5 rounded-full border border-[var(--border-subtle)] text-xs text-[var(--text-secondary)] font-medium">
+            <div className="w-2 h-2 rounded-full bg-[var(--color-accent-warning)]"></div> Maquininhas (XLSX)
           </div>
-          <div className="flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-full border border-white/10 text-xs text-[var(--text-secondary)] font-medium">
+          <div className="flex items-center gap-2 bg-[var(--bg-surface-elevated)] px-3 py-1.5 rounded-full border border-[var(--border-subtle)] text-xs text-[var(--text-secondary)] font-medium">
             <div className="w-2 h-2 rounded-full bg-[var(--color-accent-danger)]"></div> Custos e Juros (XLSX)
           </div>
         </div>

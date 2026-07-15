@@ -22,7 +22,7 @@ export function LoadingSpinner({ text = 'Carregando...', size = 'md' }: LoadingS
           <motion.div
             key={index}
             style={{ width: dotSize, height: dotSize }}
-            className="rounded-full bg-[var(--color-primary)]/80 backdrop-blur-md shadow-[0_0_12px_rgba(var(--color-primary),0.5)] border border-white/10"
+            className="rounded-full bg-[var(--color-primary)]/80 backdrop-blur-md shadow-[0_0_12px_rgba(var(--color-primary),0.5)] border border-[var(--border-subtle)]"
             animate={{ 
               scale: [1, 1.4, 1],
               opacity: [0.4, 1, 0.4] 

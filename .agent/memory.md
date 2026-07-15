@@ -31,4 +31,5 @@
 - [x] **Alvo 14:** Pátio (`patio.tsx`) - Concluído.
 - [x] **Alvo 15:** Proposta (`proposta.tsx`) - Concluído.
 - [x] **Alvo 16:** Recebíveis (`recebiveis.tsx`) - Concluído.
+- [x] **Alvo 17:** Components UI (`components/ui`) - Concluído.
 - Próximos Alvos: (A definir pelo usuário)

@@ -24,7 +24,7 @@ export function Modal({ isOpen, onClose, title, children, footer, position = "ce
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             onClick={onClose}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto"
+            className="absolute inset-0 bg-[var(--bg-canvas)]/80 backdrop-blur-sm pointer-events-auto"
           />
 
           {/* Modal Container */}
@@ -44,7 +44,7 @@ export function Modal({ isOpen, onClose, title, children, footer, position = "ce
               <h2 className="font-display font-semibold text-lg">{title}</h2>
               <button
                 onClick={onClose}
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[var(--bg-surface-hover)] transition-colors text-[var(--text-tertiary)] hover:text-white"
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[var(--bg-surface-hover)] transition-colors text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
               >
                 ✕
               </button>
