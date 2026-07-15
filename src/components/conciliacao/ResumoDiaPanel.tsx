@@ -4,12 +4,11 @@ import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Button } from '@/components/ui/Button';
 import { Link } from '@tanstack/react-router';
 import {
-  Wallet, Car, ReceiptText,
-  Target, Percent, AlertOctagon,
+  AlertOctagon,
   Save, AlertTriangle, CheckCircle2,
   CalendarDays, ChevronRight
 } from 'lucide-react';
-import { useDailySnapshot, usePreviousDaySnapshot, useSaveDailySnapshot } from '@/hooks/useDailySnapshot';
+import { useDailySnapshot, useSaveDailySnapshot } from '@/hooks/useDailySnapshot';
 import { useRecebiveis } from '@/hooks/useRecebiveis';
 import { usePatioOS } from '@/hooks/usePatio';
 import { useMonthlyGoal } from '@/hooks/useGoals';
@@ -54,7 +53,6 @@ export function ResumoDiaPanel({
   const [anomalies, setAnomalies] = useState<TransactionRow[]>([]);
 
   const { data: currentSnapshot } = useDailySnapshot(selectedDate);
-  const { data: previousSnapshot } = usePreviousDaySnapshot(selectedDate);
   const { data: recebiveis = [] } = useRecebiveis();
   const { data: patioData = [] } = usePatioOS();
   const { data: monthlyGoal } = useMonthlyGoal('GLOBAL');
@@ -85,11 +83,9 @@ export function ResumoDiaPanel({
     .reduce((acc, os) => acc + (Number(os.total_value) - Number(os.paid_value)), 0);
 
   const faturamentoAtual = currentSnapshot?.faturamento ?? 0;
-  const faturamentoAnterior = previousSnapshot?.faturamento ?? 0;
   const metaAtual = monthlyGoal?.current_amount ?? 0;
   const metaAlvo = monthlyGoal?.target_amount ?? 0;
   const progressoMeta = metaAlvo > 0 ? (metaAtual / metaAlvo) * 100 : 0;
-  const jurosRede = 0; 
 
   const handleSave = async () => {
     const notesStr = anomalies.length > 0 
