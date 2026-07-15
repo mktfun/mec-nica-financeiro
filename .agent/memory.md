@@ -28,4 +28,5 @@
 - [x] **Alvo 11:** Login (`login.tsx`) - Certificado limpo, sem intervenções.
 - [x] **Alvo 12:** Loja Dashboard (`loja.$lojaId.tsx`) - Concluído.
 - [x] **Alvo 13:** Lojas (`lojas.tsx`) - Certificado limpo, sem intervenções.
+- [x] **Alvo 14:** Pátio (`patio.tsx`) - Concluído.
 - Próximos Alvos: (A definir pelo usuário)
