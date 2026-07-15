@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { useDashboardSummary } from "@/hooks/useTransactions";
 import { Card } from "../ui/Card";
 import { CheckCircle2, Loader2, AlertCircle } from "lucide-react";

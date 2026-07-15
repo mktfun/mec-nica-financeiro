@@ -13,3 +13,7 @@
 - O usuário utiliza Windows com PowerShell.
 - Desenvolve utilizando "vibe coding" (fluxo automatizado com agente IA Antigravity).
 - Valoriza soluções headless (CLI sem interação manual) e robustez no design.
+
+## Audit Pipeline (QA e Padronização)
+- [x] **Alvo 1:** Dashboard (`index.tsx` e `components/dashboard/*`) - Concluído.
+- Próximos Alvos: (A definir pelo usuário)

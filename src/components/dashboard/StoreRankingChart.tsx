@@ -3,7 +3,7 @@ import { Card } from '../ui/Card';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { useStores } from '@/hooks/useStores';
 import { useAllStoresBalances } from '@/hooks/useTransactions';
-import { TrendingUp, Wallet } from 'lucide-react';
+import { Wallet } from 'lucide-react';
 
 export function StoreRankingChart() {
   const { data: stores = [] } = useStores();

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import { FileUp, ArrowUpRight, RefreshCw } from "lucide-react";
 import { Button } from "../ui/Button";
