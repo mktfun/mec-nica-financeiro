@@ -30,4 +30,5 @@
 - [x] **Alvo 13:** Lojas (`lojas.tsx`) - Certificado limpo, sem intervenções.
 - [x] **Alvo 14:** Pátio (`patio.tsx`) - Concluído.
 - [x] **Alvo 15:** Proposta (`proposta.tsx`) - Concluído.
+- [x] **Alvo 16:** Recebíveis (`recebiveis.tsx`) - Concluído.
 - Próximos Alvos: (A definir pelo usuário)

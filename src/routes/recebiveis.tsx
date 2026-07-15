@@ -92,7 +92,7 @@ function RecebiveisPage() {
           </div>
           
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
-            <div className="flex items-center gap-2 bg-[#1A1A1A] border border-white/10 rounded-[var(--radius-md)] px-3 py-1.5 text-sm w-full sm:w-auto">
+            <div className="flex items-center gap-2 bg-[var(--bg-surface)] border border-white/10 rounded-[var(--radius-md)] px-3 py-1.5 text-sm w-full sm:w-auto">
               <span className="text-[var(--text-tertiary)]">De:</span>
               <input 
                 type="date" 
@@ -120,7 +120,7 @@ function RecebiveisPage() {
                 placeholder="Buscar loja, tipo..."
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="w-full bg-[#1A1A1A] border border-white/10 rounded-[var(--radius-md)] pl-9 pr-4 py-1.5 text-sm text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors placeholder:text-[var(--text-tertiary)]"
+                className="w-full bg-[var(--bg-surface)] border border-white/10 rounded-[var(--radius-md)] pl-9 pr-4 py-1.5 text-sm text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors placeholder:text-[var(--text-tertiary)]"
               />
             </div>
           </div>
