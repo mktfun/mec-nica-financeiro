@@ -4,10 +4,10 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Button } from '@/components/ui/Button';
-import { Calendar, Download, ChevronLeft, AlertCircle } from 'lucide-react';
+import { Calendar, Download, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { useConciliacaoResumo, useConciliacaoDetalhes, useHistorico } from '@/hooks/useConciliacao';
+import { useConciliacaoResumo, useConciliacaoDetalhes } from '@/hooks/useConciliacao';
 import { useStores } from '@/hooks/useStores';
 import { ReconciliationRow, StoreRow } from '@/lib/supabase';
 import { getDefaultDate } from '@/lib/utils';
@@ -174,7 +174,7 @@ function Row({ label, value, isCurrency, color = 'default', count, bold }: { lab
     <div className="flex justify-between items-center">
       <span className="text-sm text-[var(--text-secondary)]">{label}</span>
       <span className={`font-display ${bold ? 'font-bold' : 'font-semibold'} ${colors[color]}`}>
-        {isCurrency ? <AnimatedNumber value={value} format="currency" /> : count ? value : value}
+        {isCurrency ? <AnimatedNumber value={value} format="currency" /> : value}
       </span>
     </div>
   );

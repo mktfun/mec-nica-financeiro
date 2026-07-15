@@ -19,4 +19,5 @@
 - [x] **Alvo 2:** Alertas (`alertas.tsx` e `AlertResolveDialog.tsx`) - Concluído.
 - [x] **Alvo 3:** Conciliação (`conciliacao.index.tsx` e `ResumoDiaPanel.tsx`) - Concluído.
 - [x] **Alvo 4:** Conciliação por Loja (`conciliacao.$lojaId.tsx`) - Concluído.
+- [x] **Alvo 5:** Detalhes Conciliação (`conciliacao-detalhes.tsx`) - Concluído.
 - Próximos Alvos: (A definir pelo usuário)
