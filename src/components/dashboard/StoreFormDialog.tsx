@@ -131,10 +131,10 @@ export function StoreFormDialog({ isOpen, onClose, storeToEdit }: StoreFormDialo
           </div>
           
           {mechanics.length > 0 && (
-            <div className="flex flex-col gap-2 mt-2 bg-[var(--bg-canvas)] p-3 rounded-[var(--radius-md)] border border-white/5">
+            <div className="flex flex-col gap-2 mt-2 bg-[var(--bg-canvas)] p-3 rounded-[var(--radius-md)] border border-[var(--border-subtle)]">
               {mechanics.map((mech, index) => (
                 <div key={index} className="flex items-center justify-between bg-[var(--bg-surface-elevated)] px-3 py-2 rounded-md">
-                  <span className="text-sm text-white">{mech}</span>
+                  <span className="text-sm text-[var(--text-primary)]">{mech}</span>
                   <button 
                     type="button" 
                     onClick={() => handleRemoveMechanic(index)}

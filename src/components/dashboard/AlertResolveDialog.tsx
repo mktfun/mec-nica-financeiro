@@ -60,15 +60,15 @@ export function AlertResolveDialog({ alert, onClose, onResolved }: AlertResolveD
           <h4 className="text-sm font-medium mb-3">Selecione a ação corretiva</h4>
           <div className="space-y-2">
             <label className="flex items-center gap-3 p-3 rounded-[var(--radius-md)] border border-[var(--border-subtle)] hover:bg-[var(--bg-surface-hover)] cursor-pointer transition-colors">
-              <input type="radio" name="action" className="w-4 h-4 accent-white" defaultChecked />
+              <input type="radio" name="action" className="w-4 h-4 accent-[var(--color-primary)]" defaultChecked />
               <span className="text-sm">Vincular a OS Existente sem pagamento</span>
             </label>
             <label className="flex items-center gap-3 p-3 rounded-[var(--radius-md)] border border-[var(--border-subtle)] hover:bg-[var(--bg-surface-hover)] cursor-pointer transition-colors">
-              <input type="radio" name="action" className="w-4 h-4 accent-white" />
+              <input type="radio" name="action" className="w-4 h-4 accent-[var(--color-primary)]" />
               <span className="text-sm">Justificar Quebra de Caixa (Aprovação Múltipla)</span>
             </label>
             <label className="flex items-center gap-3 p-3 rounded-[var(--radius-md)] border border-[var(--border-subtle)] hover:bg-[var(--bg-surface-hover)] cursor-pointer transition-colors">
-              <input type="radio" name="action" className="w-4 h-4 accent-white" />
+              <input type="radio" name="action" className="w-4 h-4 accent-[var(--color-primary)]" />
               <span className="text-sm">Ajustar Manualmente o Lançamento</span>
             </label>
           </div>

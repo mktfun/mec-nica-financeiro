@@ -259,13 +259,13 @@ export function BankReconciliationDashboard({
         <div className="mb-6">
           <UniversalDropzone onFilesAccepted={handleFilesAccepted} isProcessing={isProcessing} />
           {classifiedFiles.length > 0 && (
-             <div className="mt-4 bg-black/30 p-4 rounded-xl border border-white/10">
+             <div className="mt-4 bg-[var(--bg-surface-elevated)] p-4 rounded-xl border border-[var(--border-subtle)]">
                <h4 className="text-sm font-semibold mb-2">Arquivos na fila:</h4>
                <ul className="text-xs space-y-1 text-[var(--text-secondary)]">
                  {classifiedFiles.map((cf, i) => (
                    <li key={i} className="flex items-center justify-between">
                      <span>{cf.file.name}</span>
-                     <span className="bg-white/10 px-2 py-0.5 rounded text-[10px]">{cf.category}</span>
+                     <span className="bg-[var(--bg-surface-hover)] px-2 py-0.5 rounded text-[10px]">{cf.category}</span>
                    </li>
                  ))}
                </ul>
@@ -275,9 +275,9 @@ export function BankReconciliationDashboard({
       ) : (
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-black/30 p-4 rounded-xl border border-white/10">
+            <div className="bg-[var(--bg-surface-elevated)] p-4 rounded-xl border border-[var(--border-subtle)]">
               <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Maquininhas Importadas</p>
-              <p className="text-xl font-bold text-orange-400">
+              <p className="text-xl font-bold text-[var(--color-accent-warning)]">
                 <AnimatedNumber value={Object.values(machineTotals).reduce((a,b) => a+b, 0)} format="currency" />
               </p>
             </div>
@@ -305,19 +305,19 @@ export function BankReconciliationDashboard({
                  {Object.entries(storeMatchResults).map(([storeId, mr]) => (
                    <React.Fragment key={storeId}>
                      {mr.unmatchedOfx.map((o, i) => (
-                       <div key={`ofx-${storeId}-${i}`} className="bg-black/40 p-3 rounded-lg flex justify-between items-center text-sm border-l-2 border-[var(--color-accent-danger)]">
+                       <div key={`ofx-${storeId}-${i}`} className="bg-[var(--bg-surface-elevated)] p-3 rounded-lg flex justify-between items-center text-sm border-l-2 border-[var(--color-accent-danger)]">
                          <div>
-                           <p className="font-medium text-white">Extrato: {o.memo}</p>
+                           <p className="font-medium text-[var(--text-primary)]">Extrato: {o.memo}</p>
                            <p className="text-xs text-[var(--color-accent-danger)]">Não consta no sistema ({stores.find(s=>s.id===storeId)?.name})</p>
                          </div>
                          <span className="font-bold"><AnimatedNumber value={o.amount} format="currency" /></span>
                        </div>
                      ))}
                      {mr.unmatchedSystem.map((s, i) => (
-                       <div key={`sys-${storeId}-${i}`} className="bg-black/40 p-3 rounded-lg flex justify-between items-center text-sm border-l-2 border-orange-500">
+                       <div key={`sys-${storeId}-${i}`} className="bg-[var(--bg-surface-elevated)] p-3 rounded-lg flex justify-between items-center text-sm border-l-2 border-[var(--color-accent-warning)]">
                          <div>
-                           <p className="font-medium text-white">Sistema: {s.description || 'Venda'}</p>
-                           <p className="text-xs text-orange-500">Não consta no extrato ({stores.find(s=>s.id===storeId)?.name})</p>
+                           <p className="font-medium text-[var(--text-primary)]">Sistema: {s.description || 'Venda'}</p>
+                           <p className="text-xs text-[var(--color-accent-warning)]">Não consta no extrato ({stores.find(s=>s.id===storeId)?.name})</p>
                          </div>
                          <span className="font-bold"><AnimatedNumber value={s.amount} format="currency" /></span>
                        </div>
@@ -356,7 +356,7 @@ export function BankReconciliationDashboard({
         {mappingModalOpen && unmappedFiles.length > 0 && (
           <motion.div 
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--bg-canvas)]/80 backdrop-blur-sm"
           >
             <motion.div 
               initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }}
@@ -364,17 +364,17 @@ export function BankReconciliationDashboard({
             >
               <div className="flex items-center gap-3 mb-4 text-[var(--color-primary)]">
                 <Store size={24} />
-                <h3 className="text-xl font-bold text-white">Loja Desconhecida no Arquivo</h3>
+                <h3 className="text-xl font-bold text-[var(--text-primary)]">Loja Desconhecida no Arquivo</h3>
               </div>
               <p className="text-sm text-[var(--text-secondary)] mb-6">
-                O arquivo <strong className="text-white">{unmappedFiles[0].file.name}</strong> não foi mapeado automaticamente para nenhuma loja. Por favor, selecione a qual loja este extrato pertence.
+                O arquivo <strong className="text-[var(--text-primary)]">{unmappedFiles[0].file.name}</strong> não foi mapeado automaticamente para nenhuma loja. Por favor, selecione a qual loja este extrato pertence.
               </p>
               <div className="mb-6">
                 <label className="block text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-2">Selecione a Loja</label>
                 <select 
                   value={selectedStoreId}
                   onChange={(e) => setSelectedStoreId(e.target.value)}
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[var(--color-primary)]"
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
                 >
                   <option value="">Selecione...</option>
                   {stores.map(s => (
@@ -383,7 +383,7 @@ export function BankReconciliationDashboard({
                 </select>
               </div>
               <div className="flex gap-3 justify-end">
-                <button onClick={() => setMappingModalOpen(false)} className="px-4 py-2 text-sm text-[var(--text-secondary)] hover:text-white transition-colors">Cancelar</button>
+                <button onClick={() => setMappingModalOpen(false)} className="px-4 py-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">Cancelar</button>
                 <button onClick={confirmMapping} disabled={!selectedStoreId} className="px-4 py-2 text-sm bg-[var(--color-primary)] text-white font-medium rounded-lg disabled:opacity-50">
                   Confirmar e Continuar
                 </button>
