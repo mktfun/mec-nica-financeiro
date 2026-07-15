@@ -22,7 +22,6 @@ function formatDate(dateStr: string) {
 function ImportacoesPage() {
   const { data: imports = [], isLoading } = useImportsHistory();
   const deleteImport = useDeleteImport();
-  const navigate = useNavigate();
   
   const [showWizard, setShowWizard] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
