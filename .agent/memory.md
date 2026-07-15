@@ -23,4 +23,5 @@
 - [x] **Alvo 6:** Configurações (`configuracoes.tsx`) - Concluído.
 - [x] **Alvo 7:** Histórico (`historico.tsx`) - Concluído.
 - [x] **Alvo 8:** Importações (`importacoes.tsx`) - Concluído.
+- [x] **Alvo 9:** Importações Despesas (`importacoes-despesas.tsx`) - Concluído.
 - Próximos Alvos: (A definir pelo usuário)

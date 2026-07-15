@@ -1,8 +1,8 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useState, useCallback, useEffect } from 'react';
 import { FileSpreadsheet, AlertTriangle, ArrowRight, UploadCloud, FileType2, Database, Link as LinkIcon, CheckCircle2, X } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
@@ -53,7 +53,7 @@ function ImportacoesDespesasWizard() {
   
   const { data: stores = [] } = useStores();
   const { mapping, updateMapping, setMapping } = useStoreMapping();
-  const bulkInsert = useBulkInsertTransactions(); // We will create this
+  const bulkInsert = useBulkInsertTransactions();
   const navigate = useNavigate();
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
@@ -116,7 +116,7 @@ function ImportacoesDespesasWizard() {
     try {
       setIsProcessing(true);
       const batchCreatedAt = new Date().toISOString();
-      const logsToInsert: any[] = [];
+      const logsToInsert: { store_id: string | null; store_name: string; target_date: string; os_count: number; receivables_count: number; total_os: number; created_at: string }[] = [];
       const storeDates = new Set<string>();
       
       // Montar os dados para o Supabase
