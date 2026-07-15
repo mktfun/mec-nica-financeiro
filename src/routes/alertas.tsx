@@ -24,7 +24,7 @@ function AlertasPage() {
   
   const { data: allAlerts = [], isLoading } = useAlerts();
 
-  const handleResolved = (id: string) => {
+  const handleResolved = () => {
     // The hook will auto-refetch, but we clear the selection
     setSelectedAlert(null);
   };

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Modal } from "../ui/Modal";
 import { Button } from "../ui/Button";
 import { AlertRow } from "@/lib/supabase";
@@ -7,7 +6,7 @@ import { useResolveAlert } from "@/hooks/useAlerts";
 interface AlertResolveDialogProps {
   alert: AlertRow | null;
   onClose: () => void;
-  onResolved: (id: string) => void;
+  onResolved: () => void;
 }
 
 export function AlertResolveDialog({ alert, onClose, onResolved }: AlertResolveDialogProps) {
@@ -18,7 +17,7 @@ export function AlertResolveDialog({ alert, onClose, onResolved }: AlertResolveD
   const handleResolve = () => {
     resolveAlert(alert.id, {
       onSuccess: () => {
-        onResolved(alert.id);
+        onResolved();
         onClose();
       }
     });

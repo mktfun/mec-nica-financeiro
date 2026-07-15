@@ -16,4 +16,5 @@
 
 ## Audit Pipeline (QA e Padronização)
 - [x] **Alvo 1:** Dashboard (`index.tsx` e `components/dashboard/*`) - Concluído.
+- [x] **Alvo 2:** Alertas (`alertas.tsx` e `AlertResolveDialog.tsx`) - Concluído.
 - Próximos Alvos: (A definir pelo usuário)
