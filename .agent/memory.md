@@ -20,4 +20,5 @@
 - [x] **Alvo 3:** Conciliação (`conciliacao.index.tsx` e `ResumoDiaPanel.tsx`) - Concluído.
 - [x] **Alvo 4:** Conciliação por Loja (`conciliacao.$lojaId.tsx`) - Concluído.
 - [x] **Alvo 5:** Detalhes Conciliação (`conciliacao-detalhes.tsx`) - Concluído.
+- [x] **Alvo 6:** Configurações (`configuracoes.tsx`) - Concluído.
 - Próximos Alvos: (A definir pelo usuário)

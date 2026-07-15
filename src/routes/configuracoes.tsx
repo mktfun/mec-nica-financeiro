@@ -301,7 +301,6 @@ function ConfiguracoesPage() {
             )}
           </Card>
 
-          {/* Políticas de Taxas removidas */}
 
           {/* IA */}
           <Card variant="glass" className="p-6">
@@ -310,7 +309,7 @@ function ConfiguracoesPage() {
               <div className="flex items-center justify-between p-3 rounded-[var(--radius-md)] border border-[var(--border-subtle)]">
                 <div>
                   <p className="font-medium text-[var(--text-primary)]">Modelo Atual</p>
-                  <p className="text-sm text-[#00a87e] mt-1">Gemini 2.0 Flash (Crédito Google Ativo)</p>
+                  <p className="text-sm text-[var(--color-accent-teal)] mt-1">Gemini 2.0 Flash (Crédito Google Ativo)</p>
                 </div>
                 <Button variant="outline" size="sm">Alterar Provedor</Button>
               </div>
