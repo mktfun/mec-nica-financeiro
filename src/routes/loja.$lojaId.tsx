@@ -6,21 +6,22 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { motion } from 'framer-motion';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { 
   ArrowLeft, Wallet, ArrowUpRight, ArrowDownRight, 
   Calendar, QrCode, Banknote, CreditCard, Landmark, Store,
-  AlertTriangle, Search, CheckCircle2
+  AlertTriangle, CheckCircle2
 } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
 import { useStoreHistory } from '@/hooks/useConciliacao';
 import { useExtrato, useBulkInsertTransactions } from '@/hooks/useTransactions';
 import { useCashRegisters, useCloseCashRegister } from '@/hooks/useCashRegisters';
 import { useTripleMatch } from '@/hooks/useTripleMatch';
-import { getDefaultDate } from '@/lib/utils';
-import { supabase } from '@/lib/supabase';
+import { supabase, TransactionRow } from '@/lib/supabase';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 export const Route = createFileRoute('/loja/$lojaId')({
   component: LojaDashboardPage,
@@ -51,11 +52,7 @@ function getIconForMethod(method: string) {
   return <Landmark size={16} />;
 }
 
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
-// Definindo cores para o gráfico
-const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899'];
 
 function LojaDashboardPage() {
   const { lojaId } = useParams({ from: '/loja/$lojaId' });
@@ -240,14 +237,14 @@ function LojaDashboardPage() {
     ].filter(d => d.value > 0);
     currentColors = ['#10b981', '#ef4444'];
   } else if (tab === 'saidas') {
-    const saidasStats = (extrato?.transactions || []).filter((tx: any) => tx.type === 'out').reduce((acc: any, tx: any) => {
+    const saidasStats = (extrato?.transactions || []).filter((tx: TransactionRow) => tx.type === 'out').reduce((acc: Record<string, number>, tx: TransactionRow) => {
       const cat = tx.subtitle || 'Outras Saídas';
       acc[cat] = (acc[cat] || 0) + Number(tx.amount);
       return acc;
     }, {});
     pieData = Object.entries(saidasStats).map(([name, value]) => ({ name, value: value as number })).sort((a, b) => b.value - a.value);
   } else if (tab === 'entradas') {
-    const entradasStats = (extrato?.transactions || []).filter((tx: any) => tx.type === 'in').reduce((acc: any, tx: any) => {
+    const entradasStats = (extrato?.transactions || []).filter((tx: TransactionRow) => tx.type === 'in').reduce((acc: Record<string, number>, tx: TransactionRow) => {
       const method = tx.subtitle || 'Outras Entradas';
       acc[method] = (acc[method] || 0) + Number(tx.amount);
       return acc;
@@ -255,7 +252,6 @@ function LojaDashboardPage() {
     pieData = Object.entries(entradasStats).map(([name, value]) => ({ name, value: value as number })).sort((a, b) => b.value - a.value);
   }
 
-  // Remove extrato transaction listing variables
 
   return (
     <AppShell>
@@ -311,7 +307,7 @@ function LojaDashboardPage() {
             </div>
             <div className="font-display text-2xl font-bold text-[var(--color-success)]">
               <AnimatedNumber 
-                value={(extrato?.transactions || []).reduce((acc: number, tx: any) => acc + (tx.type === 'in' ? Number(tx.amount) : 0), 0)} 
+                value={(extrato?.transactions || []).reduce((acc: number, tx: TransactionRow) => acc + (tx.type === 'in' ? Number(tx.amount) : 0), 0)} 
                 format="currency" 
               />
             </div>
@@ -339,7 +335,7 @@ function LojaDashboardPage() {
             </div>
             <div className="font-display text-2xl font-bold text-[var(--color-accent-danger)]">
               <AnimatedNumber 
-                value={(extrato?.transactions || []).reduce((acc: number, tx: any) => acc + (tx.type === 'out' ? Number(tx.amount) : 0), 0)} 
+                value={(extrato?.transactions || []).reduce((acc: number, tx: TransactionRow) => acc + (tx.type === 'out' ? Number(tx.amount) : 0), 0)} 
                 format="currency" 
               />
             </div>
@@ -601,12 +597,12 @@ function LojaDashboardPage() {
                 )
               ) : tab === 'entradas' ? (
                 <div className="divide-y divide-[var(--border-subtle)]">
-                  {(extrato?.transactions || []).filter((tx: any) => tx.type === 'in').length === 0 ? (
+                  {(extrato?.transactions || []).filter((tx: TransactionRow) => tx.type === 'in').length === 0 ? (
                     <div className="text-center py-20">
                       <p className="text-[var(--text-secondary)] font-medium">Nenhuma entrada encontrada neste período.</p>
                     </div>
                   ) : (
-                    (extrato?.transactions || []).filter((tx: any) => tx.type === 'in').map((tx: any, i: number) => (
+                    (extrato?.transactions || []).filter((tx: TransactionRow) => tx.type === 'in').map((tx: TransactionRow, i: number) => (
                       <motion.div 
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -637,12 +633,12 @@ function LojaDashboardPage() {
                 </div>
               ) : tab === 'saidas' ? (
                 <div className="divide-y divide-[var(--border-subtle)]">
-                  {(extrato?.transactions || []).filter((tx: any) => tx.type === 'out').length === 0 ? (
+                  {(extrato?.transactions || []).filter((tx: TransactionRow) => tx.type === 'out').length === 0 ? (
                     <div className="text-center py-20">
                       <p className="text-[var(--text-secondary)] font-medium">Nenhuma saída encontrada neste período.</p>
                     </div>
                   ) : (
-                    (extrato?.transactions || []).filter((tx: any) => tx.type === 'out').map((tx: any, i: number) => (
+                    (extrato?.transactions || []).filter((tx: TransactionRow) => tx.type === 'out').map((tx: TransactionRow, i: number) => (
                       <motion.div 
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -678,7 +674,7 @@ function LojaDashboardPage() {
                       <p className="text-[var(--text-secondary)] font-medium">Nenhuma transação encontrada neste período.</p>
                     </div>
                   ) : (
-                    (extrato?.transactions || []).map((tx: any, i: number) => (
+                    (extrato?.transactions || []).map((tx: TransactionRow, i: number) => (
                       <motion.div 
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
