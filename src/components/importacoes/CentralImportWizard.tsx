@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { UploadCloud, CheckCircle2, FileType2, Link as LinkIcon, ArrowRight, ArrowLeft, Database, Search, X } from 'lucide-react';
+import { UploadCloud, CheckCircle2, FileType2, Link as LinkIcon, ArrowRight, ArrowLeft, Database, Search, X, TrendingDown, TrendingUp } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useCentralImport, UnifiedImportResult } from '@/hooks/useCentralImport';
@@ -76,13 +76,16 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
   useEffect(() => {
     if (isProcessing) return;
-    if (results.osFiles.length === 0 && results.maquininhaItems.length === 0 && results.ofxResults.length === 0) return;
+    if (results.osFiles.length === 0 && results.maquininhaItems.length === 0 && results.ofxResults.length === 0 && results.redeResults.length === 0 && results.mapaMetasResults.length === 0) return;
 
     // Coletar todos os aliases únicos
     const aliases = new Set<string>();
     results.osFiles.filter(r => r.success).forEach(r => aliases.add(r.storeAlias));
     results.maquininhaItems.forEach(i => aliases.add(i.storeName));
     results.ofxResults.forEach(o => aliases.add(o.alias));
+    results.redeResults.filter(r => r.success).forEach(r => {
+      r.transactions.forEach(t => aliases.add(t.storeName));
+    });
 
     const aliasArray = Array.from(aliases);
     const normalizeString = (str: string) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
@@ -113,7 +116,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       'application/x-ofx': ['.ofx'],
       'text/plain': ['.ofx'],
       'application/vnd.ms-excel': ['.xls'],
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx']
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+      'application/pdf': ['.pdf']
     }
   });
 
@@ -132,6 +136,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         }
       }
 
+      // Maquininha (antigo fallback)
       const maqByStore: Record<string, any[]> = {};
       results.maquininhaItems.forEach(item => {
         let sid: string | null = mapping[item.storeName];
@@ -141,7 +146,6 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           maqByStore[sid].push(item);
         }
       });
-
       for (const [sid, items] of Object.entries(maqByStore)) {
         const storeName = items[0].storeName;
         const parsedRecs: ParsedReceivable[] = items.map(item => ({
@@ -149,6 +153,30 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           value: item.amount,
           date: item.dateVenda || targetDate,
           due_date: item.dateCredito || targetDate,
+          status: 'recebido'
+        }));
+        await savePatioOsAndReceivables(sid, storeName, [], parsedRecs);
+      }
+
+      // Rede (novo formato)
+      const redeByStore: Record<string, any[]> = {};
+      results.redeResults.filter(r => r.success).forEach(r => {
+        r.transactions.forEach(t => {
+          let sid: string | null = mapping[t.storeName];
+          if (sid === 'GLOBAL') sid = null;
+          if (sid) {
+            if (!redeByStore[sid]) redeByStore[sid] = [];
+            redeByStore[sid].push(t);
+          }
+        });
+      });
+      for (const [sid, items] of Object.entries(redeByStore)) {
+        const storeName = items[0].storeName;
+        const parsedRecs: ParsedReceivable[] = items.map(item => ({
+          type: item.method,
+          value: item.netAmount,
+          date: item.date || targetDate,
+          due_date: item.date || targetDate,
           status: 'recebido'
         }));
         await savePatioOsAndReceivables(sid, storeName, [], parsedRecs);
@@ -181,22 +209,17 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         });
       });
 
-      // Maquininha (D+1 Bridge - Filtro por Venda == targetDate)
+      // Maquininha (fallback)
       results.maquininhaItems.forEach(item => {
         let store_id: string | null = mapping[item.storeName];
         if (store_id === 'GLOBAL') store_id = null;
-        
         let formattedVenda = item.dateVenda;
-        if (formattedVenda && formattedVenda.includes('/')) {
-           formattedVenda = formattedVenda.split('/').reverse().join('-');
-        }
-        
-        // Só entra na conciliação atual se a data da venda for o targetDate
+        if (formattedVenda && formattedVenda.includes('/')) formattedVenda = formattedVenda.split('/').reverse().join('-');
         if (formattedVenda === targetDate || !formattedVenda) {
           txsToInsert.push({
               store_id,
               store_name: item.storeName,
-              title: `Recebimento Rede (${item.dateVenda || targetDate})`,
+              title: `Recebimento Adquirente (${item.dateVenda || targetDate})`,
               subtitle: item.storeName,
               amount: item.amount || 0,
               type: 'in',
@@ -206,6 +229,28 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
               source: 'maquininha'
           });
         }
+      });
+
+      // Rede (novo) - Insere o valor líquido
+      results.redeResults.filter(r => r.success).forEach(r => {
+        r.transactions.forEach(t => {
+          let store_id: string | null = mapping[t.storeName];
+          if (store_id === 'GLOBAL') store_id = null;
+          if (t.date === targetDate || !t.date) {
+            txsToInsert.push({
+                store_id,
+                store_name: t.storeName,
+                title: `Rede - ${t.method} (Bruto: R$ ${t.grossAmount.toFixed(2)})`,
+                subtitle: `Juros cobrados: R$ ${t.interest.toFixed(2)}`,
+                amount: t.netAmount, // Usa o VALOR LÍQUIDO da Rede
+                type: 'in',
+                occurred_at: `${targetDate}T11:00:00Z`,
+                target_date: targetDate,
+                icon_type: 'card',
+                source: 'rede'
+            });
+          }
+        });
       });
 
       // OSs (Filtro por Fechamento == targetDate)
@@ -246,7 +291,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           total_os: txsToInsert.filter(t => t.source === 'sistema').reduce((a,b) => a + b.amount, 0),
           os_count: txsToInsert.filter(t => t.source === 'sistema').length,
           total_paid_all: txsToInsert.reduce((a,b) => a + (b.type === 'in' ? b.amount : -b.amount), 0),
-          receivables_count: txsToInsert.filter(t => t.source === 'maquininha').length
+          receivables_count: txsToInsert.filter(t => t.source === 'maquininha' || t.source === 'rede').length
       }];
 
       const { error: upsertErr } = await supabase.from('import_logs').upsert(logsToInsert, { onConflict: 'store_id,target_date' });
@@ -277,16 +322,20 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
      return acc + sum;
   }, 0);
 
-  const totalMaq = results.maquininhaItems.reduce((acc, item) => {
+  const totalMaqFallback = results.maquininhaItems.reduce((acc, item) => {
      let formattedVenda = item.dateVenda;
-     if (formattedVenda && formattedVenda.includes('/')) {
-        formattedVenda = formattedVenda.split('/').reverse().join('-');
-     }
-     if (formattedVenda === targetDate || !formattedVenda) {
-        return acc + item.amount;
-     }
+     if (formattedVenda && formattedVenda.includes('/')) formattedVenda = formattedVenda.split('/').reverse().join('-');
+     if (formattedVenda === targetDate || !formattedVenda) return acc + item.amount;
      return acc;
   }, 0);
+
+  const totalRedeGross = results.redeResults.filter(r => r.success).reduce((acc, curr) => acc + curr.totalGross, 0);
+  const totalRedeNet = results.redeResults.filter(r => r.success).reduce((acc, curr) => acc + curr.totalNet, 0);
+  const totalRedeInterest = results.redeResults.filter(r => r.success).reduce((acc, curr) => acc + curr.totalInterest, 0);
+
+  const totalMaq = totalMaqFallback + totalRedeNet; // Usando valor líquido
+
+  const totalMapaMetas = results.mapaMetasResults.filter(r => r.success).reduce((acc, curr) => acc + curr.totalFaturamento, 0);
 
   const targetOfx = results.ofxResults.flatMap(r => r.transactions).filter(tx => tx.date && tx.date.startsWith(targetDate));
   const totalOfxIn = targetOfx.filter(t => t.type === 'in').reduce((a,b) => a + b.amount, 0);
@@ -300,7 +349,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         </button>
         <div>
           <h2 className="text-2xl font-display font-bold text-white">Conciliação Centralizada</h2>
-          <p className="text-sm text-[var(--text-secondary)]">Solte OS, Maquininha e OFX para fazer a conciliação tripla.</p>
+          <p className="text-sm text-[var(--text-secondary)]">Solte OS (Excel), Maquininha (Rede) e OFX para fazer a conciliação tripla.</p>
         </div>
       </div>
 
@@ -333,10 +382,10 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                </div>
             </div>
             <h3 className="font-display font-semibold text-xl mb-2 text-center">
-              {isDragActive ? 'Solte os arquivos aqui' : 'Arraste Planilhas OS, Maquininha e OFX'}
+              {isDragActive ? 'Solte os arquivos aqui' : 'Arraste Planilhas OS, Rede, OFX e Mapa de Metas'}
             </h3>
             <p className="text-[var(--text-tertiary)] text-sm text-center max-w-sm">
-              O sistema detectará automaticamente o tipo de cada arquivo (.xls, .xlsx, .ofx).
+              O sistema detectará automaticamente o tipo de cada arquivo (.xls, .xlsx, .ofx, .pdf).
             </p>
           </div>
           
@@ -360,10 +409,15 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
               {unmappedAliases.map((alias) => {
                 const ofx = results.ofxResults.find(o => o.alias === alias);
                 const maq = results.maquininhaItems.find(m => m.storeName === alias);
+                let redeSample: string | null = null;
+                results.redeResults.forEach(r => {
+                   const t = r.transactions.find(tx => tx.storeName === alias);
+                   if (t) redeSample = `${t.method}: R$ ${t.netAmount} (Bruto: R$ ${t.grossAmount})`;
+                });
                 const fileName = ofx?.fileName || maq?.fileName;
                 const sample = ofx 
                   ? ofx.transactions.slice(0, 2).map(t => `${t.title} (R$ ${t.amount})`).join(', ')
-                  : maq ? `Exemplo de valor: R$ ${maq.amount}` : null;
+                  : redeSample ? `Rede: ${redeSample}` : maq ? `Exemplo de valor: R$ ${maq.amount}` : null;
 
                 return (
                   <div key={alias} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-white/5">
@@ -414,10 +468,17 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
            <Card className="p-8 border-[var(--color-primary)]/30 relative overflow-hidden">
              
-             <h3 className="font-display text-2xl font-bold mb-6 flex items-center gap-3">
-               <Search className="text-[var(--color-primary)]" size={28} />
-               Visualização da Conciliação Tripla
-             </h3>
+             <div className="flex items-center justify-between mb-6">
+                <h3 className="font-display text-2xl font-bold flex items-center gap-3">
+                  <Search className="text-[var(--color-primary)]" size={28} />
+                  Visualização da Conciliação Tripla
+                </h3>
+                {totalMapaMetas > 0 && (
+                  <Badge variant="outline" className="bg-[var(--color-accent-purple)]/10 text-[var(--color-accent-purple)] border-[var(--color-accent-purple)]/30 px-3 py-1">
+                    Faturamento PDF: R$ {totalMapaMetas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </Badge>
+                )}
+             </div>
 
              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                {/* Coluna 1: OS (Dia X) */}
@@ -432,11 +493,15 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                {/* Coluna 2: Maquininha (D+1) */}
                <div className="p-4 rounded-xl bg-[var(--color-warning)]/10 border border-[var(--color-warning)]/20 flex flex-col items-center relative">
                  <ArrowRight className="absolute -left-6 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] hidden md:block" />
-                 <p className="text-sm text-[var(--color-warning)] mb-2 font-medium">2. Adquirente (Maquininha)</p>
+                 <p className="text-sm text-[var(--color-warning)] mb-2 font-medium">2. Adquirente (Rede LÍQUIDO)</p>
                  <div className="text-3xl font-display font-bold text-[var(--color-warning)] mb-2">
                    <AnimatedNumber value={totalMaq} format="currency" />
                  </div>
-                 <p className="text-xs text-[var(--color-warning)] opacity-70">Valores em Trânsito</p>
+                 {totalRedeInterest > 0 && (
+                   <p className="text-xs text-[var(--color-accent-danger)] flex items-center gap-1 font-medium mt-1">
+                     <TrendingDown size={14} /> Juros Retidos: R$ {totalRedeInterest.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                   </p>
+                 )}
                  <ArrowRight className="absolute -right-6 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] hidden md:block" />
                </div>
 
@@ -452,20 +517,28 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
              {/* Análise de Divergência */}
              <div className="mb-8 p-6 bg-[var(--bg-surface-elevated)] border border-white/10 rounded-xl">
-               <h4 className="font-semibold text-[var(--text-primary)] mb-4">Status da Conciliação</h4>
-               {Math.abs(totalOs - totalMaq) > 1 ? (
-                 <div className="text-[var(--color-accent-danger)] text-sm flex items-center gap-2 bg-[var(--color-accent-danger)]/10 p-3 rounded">
-                   <X size={16} /> <strong>Divergência Crítica:</strong> Valor do Sistema diverge da Maquininha. Verifique juros/descontos não lançados.
+               <h4 className="font-semibold text-[var(--text-primary)] mb-4">Status da Conciliação (Triplo Match de Valores)</h4>
+               
+               {/* Comparamos o BRUTO da Rede com o OS, mas mostramos o líquido pra conciliar com o Banco */}
+               {Math.abs(totalOs - (totalRedeGross || totalMaqFallback)) > 1 && totalOs > 0 && (totalRedeGross > 0 || totalMaqFallback > 0) ? (
+                 <div className="text-[var(--color-accent-danger)] text-sm flex items-center gap-2 bg-[var(--color-accent-danger)]/10 p-3 rounded mb-2 border border-[var(--color-accent-danger)]/20">
+                   <X size={16} /> <strong>Divergência Crítica Bruta:</strong> O Valor Bruto da Maquininha (R$ {totalRedeGross}) diverge das OSs geradas (R$ {totalOs}).
                  </div>
-               ) : Math.abs(totalMaq - totalOfxIn) > 1 && totalMaq > 0 ? (
-                 <div className="text-[var(--color-warning)] text-sm flex items-center gap-2 bg-[var(--color-warning)]/10 p-3 rounded mt-2">
-                   <CheckCircle2 size={16} /> <strong>Divergência D+1:</strong> Banco difere da Maquininha. Verifique se o lote do banco contém crédito de D-1 ou taxas bancárias descontadas.
+               ) : (totalRedeGross > 0) ? (
+                 <div className="text-[var(--color-success)] text-sm flex items-center gap-2 bg-[var(--color-success)]/10 p-3 rounded mb-2">
+                   <CheckCircle2 size={16} /> <strong>OS vs Maquininha Bateu!</strong> Valor Bruto conciliado com sucesso.
                  </div>
-               ) : (
-                 <div className="text-[var(--color-success)] text-sm flex items-center gap-2 bg-[var(--color-success)]/10 p-3 rounded">
-                   <CheckCircle2 size={16} /> <strong>Conciliação Perfeita:</strong> Valores batem no Match Triplo!
+               ) : null}
+
+               {Math.abs(totalMaq - totalOfxIn) > 1 && totalMaq > 0 && totalOfxIn > 0 ? (
+                 <div className="text-[var(--color-warning)] text-sm flex items-center gap-2 bg-[var(--color-warning)]/10 p-3 rounded mt-2 border border-[var(--color-warning)]/20">
+                   <CheckCircle2 size={16} /> <strong>Divergência de Depósito:</strong> O valor que entrou no banco (R$ {totalOfxIn}) difere do valor líquido da Rede (R$ {totalMaq}).
                  </div>
-               )}
+               ) : (totalMaq > 0 && totalOfxIn > 0) ? (
+                 <div className="text-[var(--color-success)] text-sm flex items-center gap-2 bg-[var(--color-success)]/10 p-3 rounded mt-2">
+                   <CheckCircle2 size={16} /> <strong>Maquininha vs Banco Bateu!</strong> Valor líquido depositado com sucesso.
+                 </div>
+               ) : null}
              </div>
 
              <div className="mb-8 p-4 bg-black/20 border border-white/10 rounded-xl">
@@ -476,7 +549,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                  onChange={e => setTargetDate(e.target.value)} 
                  className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors"
                />
-               <p className="text-xs text-[var(--text-tertiary)] mt-2">Os dados da Maquininha atuarão como ponte para entradas do Banco em D+1.</p>
+               <p className="text-xs text-[var(--text-tertiary)] mt-2">Os lançamentos de D serão cruzados (Valor OS == Valor Bruto Rede | Valor Líquido Rede == Valor OFX D+1).</p>
              </div>
 
              <Button 
@@ -484,7 +557,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                disabled={isSaving}
                className="w-full py-6 text-lg font-semibold rounded-[var(--radius-full)] shadow-[0_8px_30px_rgba(var(--color-primary-rgb),0.4)]"
              >
-               {isSaving ? 'Salvando Match Triplo...' : 'Confirmar Importação Tripla'}
+               {isSaving ? 'Salvando Match Triplo...' : 'Confirmar Lançamentos Validados'}
              </Button>
            </Card>
         </motion.div>

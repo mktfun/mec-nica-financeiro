@@ -3,11 +3,15 @@ import * as XLSX from 'xlsx';
 import { parseOFXFile, OfxParseResult } from '@/lib/parsers/ofxParser';
 import { processOsFiles, OsImportResult } from '@/hooks/useOsImportProcessor';
 import { extractNumber } from '@/lib/parsers/numberUtils';
+import { parseRedeFile, RedeResult } from '@/lib/parsers/redeParser';
+import { parseMapaMetasPDF, MapaMetasResult } from '@/lib/parsers/mapaMetasParser';
 
 export type UnifiedImportResult = {
   osFiles: OsImportResult[];
   maquininhaItems: MaquininhaItem[];
+  redeResults: RedeResult[];
   ofxResults: OfxParseResult[];
+  mapaMetasResults: MapaMetasResult[];
 };
 
 export type MaquininhaItem = {
@@ -23,7 +27,9 @@ export function useCentralImport() {
   const [results, setResults] = useState<UnifiedImportResult>({
     osFiles: [],
     maquininhaItems: [],
-    ofxResults: []
+    redeResults: [],
+    ofxResults: [],
+    mapaMetasResults: []
   });
 
   const processMaquininha = async (file: File): Promise<MaquininhaItem[]> => {
@@ -88,39 +94,58 @@ export function useCentralImport() {
 
   const processFiles = useCallback(async (files: File[]) => {
     setIsProcessing(true);
-    const newResults: UnifiedImportResult = { osFiles: [], maquininhaItems: [], ofxResults: [] };
+    const newResults: UnifiedImportResult = { osFiles: [], maquininhaItems: [], redeResults: [], ofxResults: [], mapaMetasResults: [] };
 
     try {
-      // 1. Separar arquivos OFX
+      // 1. Separar arquivos por extensão
       const ofxFiles = files.filter(f => f.name.toLowerCase().endsWith('.ofx'));
-      const excelFiles = files.filter(f => !f.name.toLowerCase().endsWith('.ofx'));
+      const pdfFiles = files.filter(f => f.name.toLowerCase().endsWith('.pdf'));
+      const excelFiles = files.filter(f => f.name.toLowerCase().endsWith('.xls') || f.name.toLowerCase().endsWith('.xlsx'));
 
       // Processa OFX
       for (const file of ofxFiles) {
         const result = await parseOFXFile(file);
         newResults.ofxResults.push(result);
       }
+      
+      // Processa PDF
+      for (const file of pdfFiles) {
+        const result = await parseMapaMetasPDF(file);
+        newResults.mapaMetasResults.push(result);
+      }
 
-      // 2. Processa os Excel (tenta OS, se falhar, tenta Maquininha)
+      // 2. Processa os Excel (tenta Rede -> OS -> Maquininha Genérica)
       if (excelFiles.length > 0) {
+        // Testa parse OS em lote
         const osResults = await processOsFiles(excelFiles);
         
         for (let i = 0; i < excelFiles.length; i++) {
-          const osRes = osResults.find(r => r.fileName === excelFiles[i].name);
-          if (osRes && osRes.success) {
+          const file = excelFiles[i];
+          
+          // Primeiro, testa se é do formato Rede
+          const redeRes = await parseRedeFile(file);
+          if (redeRes.success && redeRes.transactions.length > 0) {
+             newResults.redeResults.push(redeRes);
+             continue; // Sucesso como Rede
+          }
+          
+          // Depois, testa se é OS
+          const osRes = osResults.find(r => r.fileName === file.name);
+          if (osRes && osRes.success && osRes.osCount > 0) {
             newResults.osFiles.push(osRes);
-          } else {
-            // Falhou como OS, tentar como Maquininha
-            try {
-              const maqItems = await processMaquininha(excelFiles[i]);
-              if (maqItems.length > 0) {
-                newResults.maquininhaItems.push(...maqItems);
-              } else {
-                console.warn(`Arquivo ${excelFiles[i].name} ignorado: Não é OS nem Maquininha reconhecida.`);
-              }
-            } catch (err) {
-              console.error(`Erro processando ${excelFiles[i].name} como maquininha:`, err);
+            continue; // Sucesso como OS
+          }
+          
+          // Falhou como Rede e OS, tenta Maquininha Genérica
+          try {
+            const maqItems = await processMaquininha(file);
+            if (maqItems.length > 0) {
+              newResults.maquininhaItems.push(...maqItems);
+            } else {
+              console.warn(`Arquivo ${file.name} ignorado: Não é OS, Rede nem Maquininha reconhecida.`);
             }
+          } catch (err) {
+            console.error(`Erro processando ${file.name} como maquininha genérica:`, err);
           }
         }
       }
@@ -128,7 +153,9 @@ export function useCentralImport() {
       setResults(prev => ({
         osFiles: [...prev.osFiles, ...newResults.osFiles],
         maquininhaItems: [...prev.maquininhaItems, ...newResults.maquininhaItems],
-        ofxResults: [...prev.ofxResults, ...newResults.ofxResults]
+        redeResults: [...prev.redeResults, ...newResults.redeResults],
+        ofxResults: [...prev.ofxResults, ...newResults.ofxResults],
+        mapaMetasResults: [...prev.mapaMetasResults, ...newResults.mapaMetasResults]
       }));
 
     } catch (e) {
