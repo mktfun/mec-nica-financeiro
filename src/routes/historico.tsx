@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
 import { useExtrato } from '@/hooks/useTransactions';
+import { TransactionRow } from '@/lib/supabase';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 export const Route = createFileRoute('/historico')({
@@ -172,7 +173,7 @@ function HistoricoPage() {
             </div>
           ) : (
             <div className="divide-y divide-[var(--border-subtle)]">
-              {extrato?.transactions.map((tx: any, i: number) => {
+              {extrato?.transactions.map((tx: TransactionRow, i: number) => {
                 const isIn = tx.type === 'in';
                 const Icon = isIn ? ArrowUpRight : ArrowDownRight;
                 
