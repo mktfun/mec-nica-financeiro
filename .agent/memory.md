@@ -32,4 +32,5 @@
 - [x] **Alvo 15:** Proposta (`proposta.tsx`) - Concluído.
 - [x] **Alvo 16:** Recebíveis (`recebiveis.tsx`) - Concluído.
 - [x] **Alvo 17:** Components UI (`components/ui`) - Concluído.
+- [x] **Alvo 18:** Components Layout (`components/layout`) - Certificado limpo, sem intervenções.
 - Próximos Alvos: (A definir pelo usuário)
