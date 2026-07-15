@@ -1,9 +1,9 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { motion } from 'framer-motion';
 import { useState, useCallback, useEffect } from 'react';
-import { FileUp, AlertTriangle, ArrowRight, UploadCloud, FileType2, Database, Link as LinkIcon, CheckCircle2, X } from 'lucide-react';
+import { FileUp, ArrowRight, UploadCloud, FileType2, Link as LinkIcon, CheckCircle2, X } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
 import { Button } from '@/components/ui/Button';
 import { useStores } from '@/hooks/useStores';
