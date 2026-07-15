@@ -1,11 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { Link } from '@tanstack/react-router';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
-import { Calendar, Server, Bot, Cpu, Zap, Clock, CheckCircle2, ArrowRight, Settings2, X, Save } from 'lucide-react';
+import { Calendar, Server, Bot, Cpu, Zap, Clock, CheckCircle2, Settings2, X, Save } from 'lucide-react';
 
 export const Route = createFileRoute('/proposta')({
   component: PropostaPage,
