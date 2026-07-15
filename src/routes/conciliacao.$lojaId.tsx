@@ -12,6 +12,7 @@ import {
 import { useStores } from '@/hooks/useStores';
 import { useTripleMatch } from '@/hooks/useTripleMatch';
 import { useExtrato } from '@/hooks/useTransactions';
+import { TransactionRow } from '@/lib/supabase';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { RedeVsExtratoTable } from '@/components/conciliacao/RedeVsExtratoTable';
 
@@ -169,7 +170,7 @@ function ConciliacaoLojaPage() {
               </div>
             ) : (
               <div className="divide-y divide-[var(--border-subtle)]">
-                {transactions.map((tx: any, i: number) => {
+                {transactions.map((tx: TransactionRow, i: number) => {
                   const isIn = tx.type === 'in';
                   const Icon = isIn ? ArrowUpRight : ArrowDownRight;
                   
