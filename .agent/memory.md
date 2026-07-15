@@ -22,4 +22,5 @@
 - [x] **Alvo 5:** Detalhes Conciliação (`conciliacao-detalhes.tsx`) - Concluído.
 - [x] **Alvo 6:** Configurações (`configuracoes.tsx`) - Concluído.
 - [x] **Alvo 7:** Histórico (`historico.tsx`) - Concluído.
+- [x] **Alvo 8:** Importações (`importacoes.tsx`) - Concluído.
 - Próximos Alvos: (A definir pelo usuário)

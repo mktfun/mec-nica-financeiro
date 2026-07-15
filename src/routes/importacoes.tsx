@@ -4,12 +4,10 @@ import { Card } from '@/components/ui/Card';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { FileSpreadsheet, Trash2, AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight, Database } from 'lucide-react';
+import { FileSpreadsheet, Trash2, AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight, UploadCloud } from 'lucide-react';
 import { useImportsHistory, useDeleteImport, GroupedImportLog } from '@/hooks/useImportProcessor';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { Link, useNavigate } from '@tanstack/react-router';
 import { CentralImportWizard } from '@/components/importacoes/CentralImportWizard';
-import { UploadCloud } from 'lucide-react';
 
 export const Route = createFileRoute('/importacoes')({
   component: ImportacoesPage,
@@ -37,14 +35,12 @@ function ImportacoesPage() {
   const handleDelete = async (log: GroupedImportLog) => {
     try {
       if (confirmDeleteId === log.id) {
-        console.log('Sending delete mutation for log:', log);
         await deleteImport.mutateAsync({
           storeId: log.store_id,
           targetDates: log.target_dates,
           logIds: log.raw_logs.map(r => r.id),
           rawLogs: log.raw_logs
         });
-        console.log('Delete successful');
         setConfirmDeleteId(null);
       } else {
         setConfirmDeleteId(log.id);
