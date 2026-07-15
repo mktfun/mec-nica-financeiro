@@ -25,4 +25,5 @@
 - [x] **Alvo 8:** Importações (`importacoes.tsx`) - Concluído.
 - [x] **Alvo 9:** Importações Despesas (`importacoes-despesas.tsx`) - Concluído.
 - [x] **Alvo 10:** Importar OS (`importar-os.tsx`) - Concluído.
+- [x] **Alvo 11:** Login (`login.tsx`) - Certificado limpo, sem intervenções.
 - Próximos Alvos: (A definir pelo usuário)
