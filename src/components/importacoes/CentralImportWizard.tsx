@@ -532,12 +532,12 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
              {/* Análise de Divergência */}
              <div className="mb-8 p-6 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl">
-               <h4 className="font-semibold text-[var(--text-primary)] mb-4">Status da Conciliação (Triplo Match de Valores)</h4>
+               <h4 className="font-semibold text-[var(--text-primary)] mb-4">Status da Conciliação Global</h4>
                
                {/* Comparamos o BRUTO da Rede com o OS, mas mostramos o líquido pra conciliar com o Banco */}
                {Math.abs(totalOs - (totalRedeGross || totalMaqFallback)) > 1 && totalOs > 0 && (totalRedeGross > 0 || totalMaqFallback > 0) ? (
                  <div className="text-[var(--color-accent-danger)] text-sm flex items-center gap-2 bg-[var(--color-accent-danger)]/10 p-3 rounded mb-2 border border-[var(--color-accent-danger)]/20">
-                   <X size={16} /> <strong>Divergência Crítica Bruta:</strong> O Valor Bruto da Maquininha (R$ {totalRedeGross}) diverge das OSs geradas (R$ {totalOs}).
+                   <X size={16} /> <strong>Divergência Crítica Bruta:</strong> O Valor Bruto da Maquininha ({totalRedeGross.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) diverge das OSs geradas ({totalOs.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}).
                  </div>
                ) : (totalRedeGross > 0) ? (
                  <div className="text-[var(--color-success)] text-sm flex items-center gap-2 bg-[var(--color-success)]/10 p-3 rounded mb-2">
@@ -547,13 +547,81 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
                {Math.abs(totalMaq - totalOfxIn) > 1 && totalMaq > 0 && totalOfxIn > 0 ? (
                  <div className="text-[var(--color-warning)] text-sm flex items-center gap-2 bg-[var(--color-warning)]/10 p-3 rounded mt-2 border border-[var(--color-warning)]/20">
-                   <CheckCircle2 size={16} /> <strong>Divergência de Depósito:</strong> O valor que entrou no banco (R$ {totalOfxIn}) difere do valor líquido da Rede (R$ {totalMaq}).
+                   <CheckCircle2 size={16} /> <strong>Divergência de Depósito:</strong> O valor que entrou no banco ({totalOfxIn.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) difere do valor líquido da Rede ({totalMaq.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}).
                  </div>
                ) : (totalMaq > 0 && totalOfxIn > 0) ? (
                  <div className="text-[var(--color-success)] text-sm flex items-center gap-2 bg-[var(--color-success)]/10 p-3 rounded mt-2">
                    <CheckCircle2 size={16} /> <strong>Maquininha vs Banco Bateu!</strong> Valor líquido depositado com sucesso.
                  </div>
                ) : null}
+             </div>
+
+             {/* Análise por Loja */}
+             <div className="mb-8 p-6 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl">
+               <h4 className="font-semibold text-[var(--text-primary)] mb-4">Detalhamento por Loja</h4>
+               <div className="space-y-3">
+                 {Array.from(new Set(Object.values(mapping).filter(id => id && id !== 'GLOBAL'))).map(storeId => {
+                   const store = stores.find((s: any) => s.id === storeId);
+                   if (!store) return null;
+
+                   // Totais Locais
+                   const storeOs = results.osFiles.filter(r => r.success && mapping[r.storeAlias] === storeId).reduce((acc, curr) => {
+                     let sum = 0;
+                     curr.osArray.forEach(os => {
+                       const osDate = os.closed_at || os.opened_at;
+                       const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
+                       if (osDate && osDate.startsWith(targetDate) && delta > 0) sum += delta;
+                     });
+                     return acc + sum;
+                   }, 0);
+
+                   const storeRedeGross = results.redeResults.filter(r => r.success).reduce((acc, r) => {
+                     const txs = r.transactions.filter(tx => mapping[tx.storeName] === storeId);
+                     return acc + txs.reduce((sum, tx) => sum + tx.grossAmount, 0);
+                   }, 0);
+
+                   const storeRedeNet = results.redeResults.filter(r => r.success).reduce((acc, r) => {
+                     const txs = r.transactions.filter(tx => mapping[tx.storeName] === storeId);
+                     return acc + txs.reduce((sum, tx) => sum + tx.netAmount, 0);
+                   }, 0);
+
+                   const storeOfxIn = results.ofxResults.filter(r => r.success && mapping[r.alias] === storeId).reduce((acc, r) => {
+                     const txs = r.transactions.filter(tx => tx.date && tx.date.startsWith(targetDate) && tx.type === 'in');
+                     return acc + txs.reduce((sum, tx) => sum + tx.amount, 0);
+                   }, 0);
+
+                   // Alertas
+                   let storeStatus = null;
+                   if (storeRedeGross > 0 && storeOfxIn === 0) {
+                     storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><TrendingDown size={14} /> ⚠️ Banco OFX zerado para esta loja</span>;
+                   } else if (Math.abs(storeRedeNet - storeOfxIn) > 1 && storeRedeNet > 0 && storeOfxIn > 0) {
+                     storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Divergência Maq x Banco</span>;
+                   } else if (Math.abs(storeOs - storeRedeGross) > 1 && storeOs > 0 && storeRedeGross > 0) {
+                     storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Divergência OS x Maq</span>;
+                   } else if (storeOs === 0 && storeRedeGross === 0 && storeOfxIn === 0) {
+                     storeStatus = <span className="text-[var(--text-tertiary)] text-xs flex items-center gap-1">Nenhum movimento mapeado</span>;
+                   } else {
+                     storeStatus = <span className="text-[var(--color-success)] text-xs flex items-center gap-1"><CheckCircle2 size={14} /> Tudo Certo!</span>;
+                   }
+
+                   return (
+                     <div key={storeId} className="flex flex-col md:flex-row md:items-center justify-between p-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-canvas)]">
+                       <div className="font-semibold text-sm mb-2 md:mb-0">{store.name}</div>
+                       <div className="flex flex-wrap gap-4 text-sm text-[var(--text-secondary)]">
+                         <div>OS: <span className="font-mono text-[var(--text-primary)]">{storeOs.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>
+                         <div>Maquininha (Líq): <span className="font-mono text-[var(--color-warning)]">{storeRedeNet.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>
+                         <div>Banco (Entrada): <span className="font-mono text-[var(--color-success)]">{storeOfxIn.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>
+                       </div>
+                       <div className="mt-2 md:mt-0 font-medium">
+                         {storeStatus}
+                       </div>
+                     </div>
+                   );
+                 })}
+                 {Array.from(new Set(Object.values(mapping).filter(id => id && id !== 'GLOBAL'))).length === 0 && (
+                   <div className="text-sm text-[var(--text-tertiary)] italic p-4 text-center">Nenhuma loja específica mapeada.</div>
+                 )}
+               </div>
              </div>
 
              <div className="mb-8 p-4 bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl">
