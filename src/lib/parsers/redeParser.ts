@@ -71,14 +71,6 @@ export async function parseRedeFile(file: File): Promise<RedeResult> {
 
       if (grossAmount === 0 && netAmount === 0) continue;
 
-      // A Rede costuma exportar 5000 para R$ 50,00. 
-      // Se não houver vírgula na string original e for muito alto, vamos assumir que são centavos.
-      // O extractNumber já lida com strings "R$ 50,00", mas se vier o número bruto 5000:
-      if (typeof grossRaw === 'number' && grossRaw > 100 && !grossRaw.toString().includes('.')) {
-         grossAmount = grossAmount / 100;
-         netAmount = netAmount / 100;
-      }
-
       let method: 'Cartão Crédito' | 'Cartão Débito' | 'PIX' | 'Outros' = 'Outros';
       if (methodRaw.includes('crédito') || methodRaw.includes('credito')) method = 'Cartão Crédito';
       else if (methodRaw.includes('débito') || methodRaw.includes('debito')) method = 'Cartão Débito';
