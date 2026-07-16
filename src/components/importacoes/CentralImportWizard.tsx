@@ -594,12 +594,12 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                      return acc + txs.reduce((sum, tx) => sum + tx.netAmount, 0);
                    }, 0);
 
-                   const storeOfxIn = results.ofxResults.filter(r => r.success && mapping[r.alias] === storeId).reduce((acc, r) => {
+                   const storeOfxIn = results.ofxResults.filter(r => mapping[r.alias] === storeId).reduce((acc, r) => {
                      const txs = r.transactions.filter(tx => tx.date && tx.date.startsWith(targetDate) && tx.type === 'in');
                      return acc + txs.reduce((sum, tx) => sum + tx.amount, 0);
                    }, 0);
 
-                   const storeOfxOut = results.ofxResults.filter(r => r.success && mapping[r.alias] === storeId).reduce((acc, r) => {
+                   const storeOfxOut = results.ofxResults.filter(r => mapping[r.alias] === storeId).reduce((acc, r) => {
                      const txs = r.transactions.filter(tx => tx.date && tx.date.startsWith(targetDate) && tx.type === 'out');
                      return acc + txs.reduce((sum, tx) => sum + tx.amount, 0);
                    }, 0);

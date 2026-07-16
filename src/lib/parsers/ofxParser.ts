@@ -93,12 +93,9 @@ export async function parseOFXFile(file: File): Promise<OfxParseResult> {
   const ledgerMatch = text.match(/<LEDGERBAL>[\s\S]*?<BALAMT>([^\r\n<]+)/);
   if (ledgerMatch) {
     const balStr = ledgerMatch[1].trim();
-    let balNum: number;
-    if (!balStr.includes('.') && !balStr.includes(',')) {
-      balNum = parseInt(balStr, 10) / 100;
-    } else {
-      balNum = parseFloat(balStr.replace(',', '.'));
-    }
+    // Brazilian OFX uses decimal point or comma — never assume centavos for integers
+    let balNum = parseFloat(balStr.replace(',', '.'));
+    if (isNaN(balNum)) balNum = parseInt(balStr, 10);
     if (!isNaN(balNum)) {
       bankBalance = balNum;
     }

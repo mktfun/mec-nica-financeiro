@@ -91,13 +91,13 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
           if ((rowStr.includes('os') || rowStr.includes('nº os')) && rowStr.includes('status')) {
             headerRowIndex = i;
             rowStr.forEach((colName, idx) => {
-              if (colName === 'os' || colName === 'nº os') colMap.os = idx;
-              if (colName === 'data' || colName.includes('data entrada') || colName.includes('data abertura')) colMap.openedAt = idx;
+              if (colName === 'os' || colName === 'nº os' || colName === 'nº da os' || colName === 'numero os') colMap.os = idx;
+              if (colName === 'data' || colName.includes('data entrada') || colName.includes('data abertura') || (colName.includes('data') && colMap.openedAt === undefined)) colMap.openedAt = idx;
               if (colName === 'placa') colMap.plate = idx;
               if (colName === 'status') colMap.status = idx;
-              if (colName === 'finalizada em' || colName === 'data fim' || colName.includes('fechamento')) colMap.closedAt = idx;
-              if (colName === 'r$ total da os' || colName === 'valor total' || colName === 'total') colMap.totalValue = idx;
-              if (colName === 'total pagto na os' || colName.includes('liquidado') || colName.includes('pago')) colMap.paidValue = idx;
+              if (colName === 'finalizada em' || colName === 'data fim' || colName.includes('fechamento') || colName.includes('finalizada em') || colName.includes('data saida') || colName.includes('data saída')) colMap.closedAt = idx;
+              if (colName.includes('total da os') || colName.includes('valor total') || colName === 'total' || colName.includes('r$ total') || colName.includes('vlr total') || colName.includes('vl total')) colMap.totalValue = idx;
+              if (colName.includes('pagto') || colName.includes('liquidado') || colName.includes('total pago') || colName.includes('valor pago') || colName.includes('recebid') || colName === 'pago' || colName.includes('pago na')) colMap.paidValue = idx;
               if (colName.includes('forma') && colName.includes('pagamento')) colMap.paymentMethod = idx;
             });
             break;

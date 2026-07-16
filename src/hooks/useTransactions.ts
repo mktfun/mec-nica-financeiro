@@ -398,34 +398,27 @@ export function useDailySystemBalance(targetDate: string) {
   });
 }
 
+
 export function useDailyBankBalance(targetDate: string) {
   return useQuery({
     queryKey: ['daily-bank-balance', targetDate],
     queryFn: async () => {
+      // Reads the actual LEDGERBAL stored during import, not net transaction flow
       const { data, error } = await supabase
-        .from('transactions')
-        .select('*')
-        .eq('source', 'ofx')
-        .eq('target_date', targetDate);
+        .from('reconciliations')
+        .select('store_id, bank_total')
+        .eq('date', targetDate);
         
       if (error) throw error;
       
-      const rows = data as TransactionRow[];
-      
-      return rows.reduce((acc: Record<string, number>, row) => {
-        const storeId = row.store_id || 'unknown';
-        if (!acc[storeId]) acc[storeId] = 0;
-        
-        const amount = Number(row.amount || 0);
-        if (row.type === 'in') {
-          acc[storeId] += amount;
-        } else if (row.type === 'out') {
-          acc[storeId] -= amount;
+      return (data || []).reduce((acc: Record<string, number>, row: any) => {
+        if (row.store_id) {
+          acc[row.store_id] = Number(row.bank_total || 0);
         }
-        
         return acc;
       }, {});
     },
     enabled: !!targetDate,
   });
 }
+
