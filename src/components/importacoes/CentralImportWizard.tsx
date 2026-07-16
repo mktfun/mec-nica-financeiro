@@ -249,6 +249,21 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                 icon_type: 'card',
                 source: 'rede'
             });
+
+            if (t.interest > 0) {
+              txsToInsert.push({
+                  store_id,
+                  store_name: t.storeName,
+                  title: `Taxa Maquininha - ${t.method}`,
+                  subtitle: `Juros Antecipação / MDR (Rede)`,
+                  amount: t.interest,
+                  type: 'out',
+                  occurred_at: `${targetDate}T11:00:00Z`,
+                  target_date: targetDate,
+                  icon_type: 'card',
+                  source: 'rede_taxa'
+              });
+            }
           }
         });
       });
