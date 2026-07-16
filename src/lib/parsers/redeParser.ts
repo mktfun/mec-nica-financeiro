@@ -64,10 +64,12 @@ export async function parseRedeFile(file: File): Promise<RedeResult> {
       const storeName = String(row[9] || 'DESCONHECIDA').trim();
 
       // Se a linha não tiver valor de venda numérico, ignora
-      if (grossRaw === undefined || grossRaw === null || grossRaw === '' || isNaN(Number(grossRaw))) continue;
+      if (grossRaw === undefined || grossRaw === null || grossRaw === '') continue;
 
       let grossAmount = extractNumber(grossRaw);
       let netAmount = extractNumber(netRaw);
+
+      if (grossAmount === 0 && netAmount === 0) continue;
 
       // A Rede costuma exportar 5000 para R$ 50,00. 
       // Se não houver vírgula na string original e for muito alto, vamos assumir que são centavos.
