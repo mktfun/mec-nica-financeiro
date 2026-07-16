@@ -58,6 +58,7 @@ function ConciliacaoLojaPage() {
   }
 
   const transactions = extrato?.transactions || [];
+  const totalJuros = transactions.filter(t => t.source === 'rede_taxa').reduce((acc, t) => acc + Number(t.amount || 0), 0);
 
   return (
     <AppShell>
@@ -76,7 +77,14 @@ function ConciliacaoLojaPage() {
             )}
             <div>
               <h1 className="font-display font-bold text-3xl">Conciliação: {store.name}</h1>
-              <p className="text-[var(--text-secondary)]">Data alvo: {formatDate(targetDate)}</p>
+              <div className="flex items-center gap-4 mt-1">
+                <p className="text-[var(--text-secondary)]">Data alvo: {formatDate(targetDate)}</p>
+                {totalJuros > 0 && (
+                  <Badge variant="danger" className="flex items-center gap-1 font-medium bg-[var(--color-accent-danger)]/10 text-[var(--color-accent-danger)] border-[var(--color-accent-danger)]/30">
+                    Juros/MDR: R$ {totalJuros.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
         </div>
