@@ -70,6 +70,10 @@ export type TransactionRow = {
   target_date?: string;
   created_at: string;
   icon_type: 'card' | 'bank' | 'cash' | 'alert' | null;
+  fitid?: string | null;
+  cnpj_cpf?: string | null;
+  counterpart_name?: string | null;
+  previous_balance?: number | null;
 };
 
 export type CashRegisterRow = {

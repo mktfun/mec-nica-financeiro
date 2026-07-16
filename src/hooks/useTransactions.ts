@@ -318,10 +318,28 @@ export function useBulkInsertTransactions() {
       const txs = Array.isArray(payload) ? payload : payload.transactions;
       const storeBankBalances = Array.isArray(payload) ? undefined : payload.storeBankBalances;
       
-      // 1. Inserir as transações primeiro
-      const { data, error } = await supabase
-        .from('transactions')
-        .insert(txs);
+      // 1. Separar OFX (com fitid) de outras transações
+      const ofxTxs = txs.filter((t: any) => t.fitid);
+      const otherTxs = txs.filter((t: any) => !t.fitid);
+
+      let data: any = null;
+      let error: any = null;
+
+      // OFX: upsert idempotente por fitid (reimportar não duplica)
+      if (ofxTxs.length > 0) {
+        const { data: d1, error: e1 } = await supabase
+          .from('transactions')
+          .upsert(ofxTxs, { onConflict: 'fitid', ignoreDuplicates: false });
+        if (e1) { error = e1; } else { data = d1; }
+      }
+
+      // Outras transações (OS, Rede): insert normal
+      if (!error && otherTxs.length > 0) {
+        const { data: d2, error: e2 } = await supabase
+          .from('transactions')
+          .insert(otherTxs);
+        if (e2) { error = e2; } else { data = data || d2; }
+      }
         
       if (error) throw error;
       

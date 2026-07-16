@@ -4,13 +4,34 @@ export interface OfxTransaction {
   type: 'in' | 'out';
   date: string;
   title: string;
+  fitid?: string;
+  cnpj_cpf?: string;
+  counterpart_name?: string;
 }
 
 export interface OfxParseResult {
   alias: string;
   transactions: OfxTransaction[];
   bankBalance?: number;
+  previousBalance?: number;
   fileName?: string;
+}
+
+// Extracts CPF (000.000.000-00) or CNPJ (00.000.000/0000-00) from the end of a MEMO string
+function extractDocument(memo: string): { doc: string | undefined; name: string | undefined } {
+  const cnpjMatch = memo.match(/(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\s*$/);
+  if (cnpjMatch) {
+    const doc = cnpjMatch[1];
+    const name = memo.replace(cnpjMatch[0], '').trim().replace(/\s+/g, ' ');
+    return { doc, name: name || undefined };
+  }
+  const cpfMatch = memo.match(/(\d{3}\.\d{3}\.\d{3}-\d{2})\s*$/);
+  if (cpfMatch) {
+    const doc = cpfMatch[1];
+    const name = memo.replace(cpfMatch[0], '').trim().replace(/\s+/g, ' ');
+    return { doc, name: name || undefined };
+  }
+  return { doc: undefined, name: undefined };
 }
 
 export async function parseOFXFile(file: File): Promise<OfxParseResult> {
@@ -27,6 +48,7 @@ export async function parseOFXFile(file: File): Promise<OfxParseResult> {
   const alias = `${banco} - ${conta}`;
   
   const transactions: OfxTransaction[] = [];
+  let previousBalance: number | undefined;
   
   // Regex to match each STMTTRN block
   const stmtTrnRegex = /<STMTTRN>([\s\S]*?)<\/STMTTRN>/g;
@@ -42,21 +64,26 @@ export async function parseOFXFile(file: File): Promise<OfxParseResult> {
     
     if (isNaN(amount)) continue;
     
+    // Extract FITID (unique transaction ID from bank)
+    const fitidMatch = trnBlock.match(/<FITID>([^\r\n<]+)/);
+    const fitid = fitidMatch ? fitidMatch[1].trim() : undefined;
+    
     // Extract DTPOSTED
     const dtMatch = trnBlock.match(/<DTPOSTED>([^\r\n<]+)/);
     let dateStr = new Date().toISOString();
     if (dtMatch) {
       const rawDate = dtMatch[1].trim();
-      // Format usually YYYYMMDDHHMMSS
-      if (rawDate.length >= 8) {
-        const yyyy = rawDate.substring(0, 4);
-        const mm = rawDate.substring(4, 6);
-        const dd = rawDate.substring(6, 8);
+      // Format usually YYYYMMDDHHMMSS or YYYYMMDDHHMMSS[-03:EST]
+      const cleanDate = rawDate.replace(/\[.*\]/, '').trim();
+      if (cleanDate.length >= 8) {
+        const yyyy = cleanDate.substring(0, 4);
+        const mm = cleanDate.substring(4, 6);
+        const dd = cleanDate.substring(6, 8);
         let hh = '00', min = '00', ss = '00';
-        if (rawDate.length >= 14) {
-          hh = rawDate.substring(8, 10);
-          min = rawDate.substring(10, 12);
-          ss = rawDate.substring(12, 14);
+        if (cleanDate.length >= 14) {
+          hh = cleanDate.substring(8, 10);
+          min = cleanDate.substring(10, 12);
+          ss = cleanDate.substring(12, 14);
         }
         dateStr = `${yyyy}-${mm}-${dd}T${hh}:${min}:${ss}Z`;
       }
@@ -64,11 +91,20 @@ export async function parseOFXFile(file: File): Promise<OfxParseResult> {
     
     // Extract MEMO
     const memoMatch = trnBlock.match(/<MEMO>([^\r\n<]+)/);
-    const title = memoMatch ? memoMatch[1].trim() : 'Transação Bancária';
+    const rawMemo = memoMatch ? memoMatch[1].trim() : 'Transação Bancária';
     
-    // Filter junk/balance entries
-    const JUNK = ['SALDO ANTERIOR', 'SALDO TOTAL', 'SALDO DISPONIVEL', 'SALDO DISPONÍVEL', 'SALDO INICIAL', 'DISPONÍVEL DIA'];
-    if (JUNK.some(k => title.toUpperCase().includes(k.toUpperCase()))) continue;
+    // Capture SALDO ANTERIOR before filtering it out
+    if (rawMemo.toUpperCase().includes('SALDO ANTERIOR')) {
+      previousBalance = Math.abs(amount);
+      continue; // Don't add as transaction
+    }
+    
+    // Filter other junk/balance entries
+    const JUNK = ['SALDO TOTAL', 'SALDO DISPONIVEL', 'SALDO DISPONÍVEL', 'SALDO INICIAL', 'DISPONÍVEL DIA'];
+    if (JUNK.some(k => rawMemo.toUpperCase().includes(k.toUpperCase()))) continue;
+    
+    // Extract CPF/CNPJ and counterpart name from memo
+    const { doc, name } = extractDocument(rawMemo);
     
     // Extract TRNTYPE
     const typeMatch = trnBlock.match(/<TRNTYPE>([A-Z]+)/);
@@ -85,10 +121,14 @@ export async function parseOFXFile(file: File): Promise<OfxParseResult> {
       amount: Math.abs(amount),
       type: parsedType,
       date: dateStr,
-      title: title
+      title: rawMemo,
+      fitid,
+      cnpj_cpf: doc,
+      counterpart_name: name,
     });
   }
   
+  // LEDGERBAL = actual account balance
   let bankBalance: number | undefined;
   const ledgerMatch = text.match(/<LEDGERBAL>[\s\S]*?<BALAMT>([^\r\n<]+)/);
   if (ledgerMatch) {
@@ -101,5 +141,5 @@ export async function parseOFXFile(file: File): Promise<OfxParseResult> {
     }
   }
 
-  return { alias, transactions, bankBalance, fileName: file.name };
+  return { alias, transactions, bankBalance, previousBalance, fileName: file.name };
 }

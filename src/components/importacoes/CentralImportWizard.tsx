@@ -207,13 +207,16 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             store_id,
             store_name: ofx.alias,
             title: tx.title || 'Importação OFX',
-            subtitle: ofx.alias,
+            subtitle: tx.counterpart_name || ofx.alias,
             amount: tx.amount || 0,
             type: tx.type,
             occurred_at: tx.date || new Date().toISOString(),
-            target_date: txDate, // Aloca pro dia real do banco
+            target_date: txDate,
             icon_type: 'bank',
-            source: 'ofx'
+            source: 'ofx',
+            fitid: tx.fitid || null,
+            cnpj_cpf: tx.cnpj_cpf || null,
+            counterpart_name: tx.counterpart_name || null,
           });
         });
       });
@@ -364,6 +367,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const targetOfx = results.ofxResults.flatMap(r => r.transactions).filter(tx => tx.date && tx.date.startsWith(targetDate));
   const totalOfxIn = targetOfx.filter(t => t.type === 'in').reduce((a,b) => a + b.amount, 0);
   const totalOfxOut = targetOfx.filter(t => t.type === 'out').reduce((a,b) => a + b.amount, 0);
+  const totalOfxPreviousBalance = results.ofxResults.reduce((acc, r) => acc + (r.previousBalance || 0), 0);
+  const totalOfxLedger = results.ofxResults.reduce((acc, r) => acc + (r.bankBalance || 0), 0);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -536,6 +541,12 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                    <AnimatedNumber value={totalOfxIn} format="currency" />
                  </div>
                  <p className="text-xs text-[var(--color-success)] opacity-70">Saídas (Despesas): {totalOfxOut.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                 {totalOfxPreviousBalance > 0 && (
+                   <p className="text-xs text-[var(--text-tertiary)] mt-1">
+                     Saldo Ant.: {totalOfxPreviousBalance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                     {totalOfxLedger > 0 && <> → Atual: {totalOfxLedger.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</>}
+                   </p>
+                 )}
                </div>
              </div>
 
