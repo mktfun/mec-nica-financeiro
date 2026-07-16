@@ -346,35 +346,7 @@ function LojaDashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Coluna Esquerda: Resumo de Conciliação e Gráfico */}
           <div className="lg:col-span-1 space-y-6">
-            {/* Conciliação do Período: Banco vs Sistema */}
-            {!store.is_matriz && (
-              <div>
-                <h3 className="font-display font-semibold text-lg mb-4 flex items-center gap-2">
-                  <CheckCircle2 size={20} className="text-[var(--color-accent-teal)]" />
-                  Conciliação do Período
-                </h3>
-                <Card className="p-0 overflow-hidden shadow-sm">
-                  <div className="p-3 border-l-4 border-l-blue-500 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-elevated)] transition-colors">
-                    <div className="flex items-center justify-between">
-                      <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider font-semibold">🏦 Extrato Banco (Líquido)</p>
-                      <p className="font-mono font-medium text-blue-400">{loadingConc ? '...' : `R$ ${concBanco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}</p>
-                    </div>
-                  </div>
-                  <div className="p-3 border-l-4 border-l-purple-500 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-elevated)] transition-colors">
-                    <div className="flex items-center justify-between">
-                      <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider font-semibold" title="Pátio + Maquininha - Despesas">⚙️ Sistema Líquido</p>
-                      <p className="font-mono font-medium text-purple-400">{loadingConc ? '...' : `R$ ${apuradoSistema.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}</p>
-                    </div>
-                  </div>
-                  <div className={`p-3 border-l-4 ${diferencaConc === 0 ? 'border-l-green-500' : 'border-l-yellow-500'} bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-elevated)] transition-colors`}>
-                    <div className="flex items-center justify-between">
-                      <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider font-semibold">📊 Diferença</p>
-                      <p className={`font-mono font-bold ${diferencaConc === 0 ? 'text-green-400' : 'text-yellow-400'}`}>{loadingConc ? '...' : `R$ ${diferencaConc.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}</p>
-                    </div>
-                  </div>
-                </Card>
-              </div>
-            )}
+
 
             {pieData.length > 0 && (
               <div>

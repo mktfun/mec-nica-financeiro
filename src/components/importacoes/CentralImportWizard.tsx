@@ -182,7 +182,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         await savePatioOsAndReceivables(sid, storeName, [], parsedRecs);
       }
 
-      // 2. Extrair APENAS itens do targetDate para a Tabela Transactions (Conciliação D+1)
+      // 2. Extrair APENAS itens do targetDate para a Tabela Transactions (Conciliação)
       
       // OFX
       results.ofxResults.forEach(ofx => {
@@ -286,7 +286,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       // Log
       const logsToInsert = [{
           store_id: Object.values(mapping)[0] || 'GLOBAL',
-          store_name: 'Conciliação Tripla D+1',
+          store_name: 'Conciliação Centralizada',
           target_date: targetDate,
           total_os: txsToInsert.filter(t => t.source === 'sistema').reduce((a,b) => a + b.amount, 0),
           os_count: txsToInsert.filter(t => t.source === 'sistema').length,
@@ -307,7 +307,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
     }
   };
 
-  // Totais (Com Filtro Estrito D+1 para Preview)
+  // Totais (Com Filtro Estrito para Preview)
   let filteredOsCount = 0;
   const totalOs = results.osFiles.reduce((acc, curr) => {
      let sum = 0;
@@ -490,7 +490,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                  <p className="text-xs text-[var(--text-tertiary)]">{filteredOsCount} OS Finalizadas</p>
                </div>
 
-               {/* Coluna 2: Maquininha (D+1) */}
+               {/* Coluna 2: Maquininha */}
                <div className="p-4 rounded-xl bg-[var(--color-warning)]/10 border border-[var(--color-warning)]/20 flex flex-col items-center relative">
                  <ArrowRight className="absolute -left-6 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] hidden md:block" />
                  <p className="text-sm text-[var(--color-warning)] mb-2 font-medium">2. Adquirente (Rede LÍQUIDO)</p>
@@ -549,7 +549,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                  onChange={e => setTargetDate(e.target.value)} 
                  className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
                />
-               <p className="text-xs text-[var(--text-tertiary)] mt-2">Os lançamentos de D serão cruzados (Valor OS == Valor Bruto Rede | Valor Líquido Rede == Valor OFX D+1).</p>
+               <p className="text-xs text-[var(--text-tertiary)] mt-2">Os lançamentos serão cruzados (Valor OS == Valor Bruto Rede | Valor Líquido Rede == Valor OFX).</p>
              </div>
 
              <Button 

@@ -118,7 +118,7 @@ function ConciliacaoLojaPage() {
                     <tr className="bg-[var(--bg-surface-elevated)] border-b border-[var(--border-subtle)]">
                       <th className="py-3 px-4 text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Data</th>
                       <th className="py-3 px-4 text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Origem (OS) + Juros</th>
-                      <th className="py-3 px-4 text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Maquininha (D+1)</th>
+                      <th className="py-3 px-4 text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Maquininha</th>
                       <th className="py-3 px-4 text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Extrato (OFX)</th>
                       <th className="py-3 px-4 text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider text-center">Status</th>
                     </tr>

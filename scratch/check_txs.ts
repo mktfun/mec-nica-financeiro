@@ -1,0 +1,1 @@
+import { supabase } from './src/lib/supabase'; async function check() { const { data } = await supabase.from('transactions').select('*').eq('source', 'ofx').order('created_at', { ascending: false }).limit(5); console.log(JSON.stringify(data, null, 2)); } check();  

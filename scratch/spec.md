@@ -1,0 +1,4 @@
+- **Arquivos a modificar:** src/components/importacoes/CentralImportWizard.tsx  
+- **Motivo da mudanca:** Remover a restricao e os textos de D+1, permitindo que a Maquininha de ontem (D-1) seja salva sob a Data de Competencia (D) sem ser filtrada/ignorada.  
+- **Definition of Done (DoD):** Textos atualizados, remocao do filtro de data restrito no \handleConfirm\ para Rede/Maquininha, e amarrar todas essas transacoes ao \	argetDate\.  
+- **Maior Risco:** Se o usuario subir um relatorio da Rede de 30 dias, todos os 30 dias vao cair na mesma data de competencia (o que exige que ele continue importando os relatorios diarios como ja faz hoje). 

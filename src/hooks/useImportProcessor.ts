@@ -333,9 +333,7 @@ export function useDeleteImport() {
     mutationFn: async ({ storeId, targetDates, logIds, rawLogs }: { storeId: string; targetDates: string[]; logIds: string[]; rawLogs?: any[] }) => {
       
       const isExpenseImport = rawLogs?.some(l => l.os_count === 0 && l.total_os === 0) || false;
-      const batchCreatedAts = isExpenseImport 
-        ? (rawLogs?.filter(l => l.os_count === 0 && l.total_os === 0).map(l => l.created_at) || [])
-        : [];
+      const batchCreatedAts = rawLogs?.map(l => l.created_at) || [];
 
       const { error } = await supabase.rpc('delete_import_batch', {
         p_store_id: storeId === 'GLOBAL' ? null : storeId,
