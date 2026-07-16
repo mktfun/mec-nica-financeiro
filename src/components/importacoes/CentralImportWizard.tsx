@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { UploadCloud, CheckCircle2, FileType2, Link as LinkIcon, ArrowRight, ArrowLeft, Database, Search, X, TrendingDown, TrendingUp } from 'lucide-react';
+import { UploadCloud, CheckCircle2, FileType2, Link as LinkIcon, ArrowRight, ArrowLeft, Database, Search, X, TrendingDown, TrendingUp, AlertCircle } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useCentralImport, UnifiedImportResult } from '@/hooks/useCentralImport';
@@ -619,19 +619,44 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                    let storeStatus = null;
                    const hasGlobalOfx = Object.values(mapping).includes('GLOBAL') && results.ofxResults.some(r => mapping[r.alias] === 'GLOBAL');
 
-                   if (storeRedeGross > 0 && storeOfxIn === 0 && !hasGlobalOfx) {
-                     storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><TrendingDown size={14} /> ⚠️ Banco OFX zerado para esta loja</span>;
-                   } else if (Math.abs(storeRedeNet - storeOfxIn) > 1 && storeRedeNet > 0 && storeOfxIn > 0) {
-                     storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Divergência Maq x Banco</span>;
-                   } else if (Math.abs(storeOs - storeRedeGross) > 1 && storeOs > 0 && storeRedeGross > 0) {
-                     storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Divergência OS x Maq</span>;
-                   } else if (storeOs === 0 && storeRedeGross === 0 && (storeOfxIn === 0 || hasGlobalOfx)) {
+                   if (storeOs === 0 && storeRedeGross === 0 && (storeOfxIn === 0 || hasGlobalOfx)) {
                      storeStatus = <span className="text-[var(--text-tertiary)] text-xs flex items-center gap-1">Nenhum movimento mapeado</span>;
+                   } else if (storeOs === 0) {
+                     if (storeOfxIn > 0 && storeRedeNet === 0) {
+                       storeStatus = <span className="text-[var(--color-accent-purple)] text-xs flex items-center gap-1"><AlertCircle size={14} /> Faturamento no Extrato sem OS e s/ Rede</span>;
+                     } else if (storeRedeNet > 0 && storeOfxIn === 0 && !hasGlobalOfx) {
+                       storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><TrendingDown size={14} /> Faturamento na Maq. sem OS (OFX zerado)</span>;
+                     } else if (storeRedeNet > 0 && storeOfxIn > 0) {
+                       if (Math.abs(storeRedeNet - storeOfxIn) > 1) {
+                         storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Faturamento s/ OS e Divergência Maq x Banco</span>;
+                       } else {
+                         storeStatus = <span className="text-[var(--color-accent-purple)] text-xs flex items-center gap-1"><AlertCircle size={14} /> Faturamento na Maq. sem OS mapeada</span>;
+                       }
+                     } else if (storeRedeNet > 0 && storeOfxIn === 0 && hasGlobalOfx) {
+                         storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><AlertCircle size={14} /> Faturamento na Maq. sem OS</span>;
+                     }
                    } else {
-                     if (hasGlobalOfx && storeRedeGross > 0) {
-                        storeStatus = <span className="text-[var(--color-success)] text-xs flex items-center gap-1"><CheckCircle2 size={14} /> OK (OFX Geral)</span>;
-                     } else {
-                        storeStatus = <span className="text-[var(--color-success)] text-xs flex items-center gap-1"><CheckCircle2 size={14} /> Tudo Certo!</span>;
+                     // storeOs > 0
+                     if (storeRedeGross === 0 && storeOfxIn === 0) {
+                       storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><AlertCircle size={14} /> OS faturada, mas Maq e Banco zerados</span>;
+                     } else if (storeRedeGross === 0 && storeOfxIn > 0) {
+                       storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><AlertCircle size={14} /> OS e Banco identificados, sem Rede</span>;
+                     } else if (storeRedeGross > 0 && storeOfxIn === 0 && !hasGlobalOfx) {
+                       storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><TrendingDown size={14} /> OS e Maq faturados, mas Banco zerado</span>;
+                     } else if (storeRedeGross > 0 && storeOfxIn > 0) {
+                       if (Math.abs(storeOs - storeRedeGross) > 1) {
+                         storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Divergência OS x Maq</span>;
+                       } else if (Math.abs(storeRedeNet - storeOfxIn) > 1) {
+                         storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Divergência Maq x Banco</span>;
+                       } else {
+                         storeStatus = <span className="text-[var(--color-success)] text-xs flex items-center gap-1"><CheckCircle2 size={14} /> Tudo Certo!</span>;
+                       }
+                     } else if (hasGlobalOfx && storeRedeGross > 0) {
+                       if (Math.abs(storeOs - storeRedeGross) > 1) {
+                         storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Divergência OS x Maq</span>;
+                       } else {
+                         storeStatus = <span className="text-[var(--color-success)] text-xs flex items-center gap-1"><CheckCircle2 size={14} /> OK (OFX Geral)</span>;
+                       }
                      }
                    }
 
