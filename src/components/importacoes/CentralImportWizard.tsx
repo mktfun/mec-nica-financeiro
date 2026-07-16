@@ -60,6 +60,7 @@ function StepIndicator({ current, step, title }: { current: number, step: number
 export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [targetDate, setTargetDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [targetDateOs, setTargetDateOs] = useState<string>('');
   const [unmappedAliases, setUnmappedAliases] = useState<string[]>([]);
   
   const { data: stores = [] } = useStores();
@@ -73,6 +74,14 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
     if (acceptedFiles.length === 0) return;
     await processFiles(acceptedFiles);
   };
+
+  useEffect(() => {
+    if (targetDate) {
+      const d = new Date(targetDate + 'T12:00:00');
+      d.setDate(d.getDate() - 1);
+      setTargetDateOs(d.toISOString().split('T')[0]);
+    }
+  }, [targetDate]);
 
   useEffect(() => {
     if (isProcessing) return;
@@ -329,7 +338,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
      curr.osArray.forEach(os => {
         const osDate = os.closed_at || os.opened_at;
         const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
-        if (osDate && osDate.startsWith(targetDate) && delta > 0) {
+        if (osDate && osDate.startsWith(targetDateOs || targetDate) && delta > 0) {
            sum += delta;
            filteredOsCount++;
         }
@@ -526,7 +535,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                  <div className="text-3xl font-display font-bold text-[var(--color-success)] mb-2">
                    <AnimatedNumber value={totalOfxIn} format="currency" />
                  </div>
-                 <p className="text-xs text-[var(--color-success)] opacity-70">Saídas (Despesas): R$ {totalOfxOut.toLocaleString('pt-BR')}</p>
+                 <p className="text-xs text-[var(--color-success)] opacity-70">Saídas (Despesas): {totalOfxOut.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
                </div>
              </div>
 
@@ -570,7 +579,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                      curr.osArray.forEach(os => {
                        const osDate = os.closed_at || os.opened_at;
                        const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
-                       if (osDate && osDate.startsWith(targetDate) && delta > 0) sum += delta;
+                       if (osDate && osDate.startsWith(targetDateOs || targetDate) && delta > 0) sum += delta;
                      });
                      return acc + sum;
                    }, 0);
@@ -590,18 +599,29 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                      return acc + txs.reduce((sum, tx) => sum + tx.amount, 0);
                    }, 0);
 
+                   const storeOfxOut = results.ofxResults.filter(r => r.success && mapping[r.alias] === storeId).reduce((acc, r) => {
+                     const txs = r.transactions.filter(tx => tx.date && tx.date.startsWith(targetDate) && tx.type === 'out');
+                     return acc + txs.reduce((sum, tx) => sum + tx.amount, 0);
+                   }, 0);
+
                    // Alertas
                    let storeStatus = null;
-                   if (storeRedeGross > 0 && storeOfxIn === 0) {
+                   const hasGlobalOfx = Object.values(mapping).includes('GLOBAL') && results.ofxResults.some(r => mapping[r.alias] === 'GLOBAL');
+
+                   if (storeRedeGross > 0 && storeOfxIn === 0 && !hasGlobalOfx) {
                      storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><TrendingDown size={14} /> ⚠️ Banco OFX zerado para esta loja</span>;
                    } else if (Math.abs(storeRedeNet - storeOfxIn) > 1 && storeRedeNet > 0 && storeOfxIn > 0) {
                      storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Divergência Maq x Banco</span>;
                    } else if (Math.abs(storeOs - storeRedeGross) > 1 && storeOs > 0 && storeRedeGross > 0) {
                      storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Divergência OS x Maq</span>;
-                   } else if (storeOs === 0 && storeRedeGross === 0 && storeOfxIn === 0) {
+                   } else if (storeOs === 0 && storeRedeGross === 0 && (storeOfxIn === 0 || hasGlobalOfx)) {
                      storeStatus = <span className="text-[var(--text-tertiary)] text-xs flex items-center gap-1">Nenhum movimento mapeado</span>;
                    } else {
-                     storeStatus = <span className="text-[var(--color-success)] text-xs flex items-center gap-1"><CheckCircle2 size={14} /> Tudo Certo!</span>;
+                     if (hasGlobalOfx && storeRedeGross > 0) {
+                        storeStatus = <span className="text-[var(--color-success)] text-xs flex items-center gap-1"><CheckCircle2 size={14} /> OK (OFX Geral)</span>;
+                     } else {
+                        storeStatus = <span className="text-[var(--color-success)] text-xs flex items-center gap-1"><CheckCircle2 size={14} /> Tudo Certo!</span>;
+                     }
                    }
 
                    return (
@@ -611,6 +631,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                          <div>OS: <span className="font-mono text-[var(--text-primary)]">{storeOs.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>
                          <div>Maquininha (Líq): <span className="font-mono text-[var(--color-warning)]">{storeRedeNet.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>
                          <div>Banco (Entrada): <span className="font-mono text-[var(--color-success)]">{storeOfxIn.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>
+                         <div>Banco (Saída): <span className="font-mono text-[var(--color-accent-danger)]">{storeOfxOut.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>
                        </div>
                        <div className="mt-2 md:mt-0 font-medium">
                          {storeStatus}
@@ -625,14 +646,27 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
              </div>
 
              <div className="mb-8 p-4 bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl">
-               <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2 uppercase tracking-wide">Data de Competência (D)</label>
-               <input 
-                 type="date" 
-                 value={targetDate} 
-                 onChange={e => setTargetDate(e.target.value)} 
-                 className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
-               />
-               <p className="text-xs text-[var(--text-tertiary)] mt-2">Os lançamentos serão cruzados (Valor OS == Valor Bruto Rede | Valor Líquido Rede == Valor OFX).</p>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <div>
+                   <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2 uppercase tracking-wide">Data do Depósito (Banco)</label>
+                   <input 
+                     type="date" 
+                     value={targetDate} 
+                     onChange={e => setTargetDate(e.target.value)} 
+                     className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
+                   />
+                 </div>
+                 <div>
+                   <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2 uppercase tracking-wide">Data de Fechamento (OS)</label>
+                   <input 
+                     type="date" 
+                     value={targetDateOs} 
+                     onChange={e => setTargetDateOs(e.target.value)} 
+                     className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
+                   />
+                 </div>
+               </div>
+               <p className="text-xs text-[var(--text-tertiary)] mt-3">O Extrato Bancário e a Maquininha serão lidos na Data do Depósito. As OSs serão lidas na Data de Fechamento.</p>
              </div>
 
              <Button 
