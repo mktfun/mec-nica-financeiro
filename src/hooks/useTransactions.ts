@@ -319,7 +319,15 @@ export function useBulkInsertTransactions() {
       const storeBankBalances = Array.isArray(payload) ? undefined : payload.storeBankBalances;
       
       // 1. Separar OFX (com fitid) de outras transações
-      const ofxTxs = txs.filter((t: any) => t.fitid);
+      const ofxTxsRaw = txs.filter((t: any) => t.fitid);
+      
+      // Deduplicate by fitid in memory before upsert to avoid 'ON CONFLICT cannot affect row a second time'
+      const ofxMap = new Map();
+      ofxTxsRaw.forEach((t: any) => {
+        ofxMap.set(t.fitid, t);
+      });
+      const ofxTxs = Array.from(ofxMap.values());
+      
       const otherTxs = txs.filter((t: any) => !t.fitid);
 
       let data: any = null;
