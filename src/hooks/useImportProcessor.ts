@@ -15,6 +15,7 @@ export interface ParsedOS {
   days_open: number;
   parsed_credit_debit?: number;
   parsed_pix_transfer?: number;
+  is_new_os?: boolean;
 }
 
 export interface ParsedReceivable {

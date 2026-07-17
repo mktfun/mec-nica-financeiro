@@ -130,6 +130,45 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
     }
   });
 
+  const handleContinueToReview = async () => {
+    setIsProcessing(true);
+    try {
+      // For each parsed OS file, query the DB to find existing OSs and compute delta_paid
+      for (const osResult of results.osFiles.filter(r => r.success)) {
+        let store_id = mapping[osResult.storeAlias];
+        if (store_id === 'GLOBAL') store_id = null;
+        if (!store_id) continue;
+
+        // Fetch existing OSs for this store
+        const { data: existingOs } = await supabase
+          .from('patio_os')
+          .select('os_number, paid_value')
+          .eq('store_id', store_id);
+          
+        const existingMap = new Map((existingOs || []).map(o => [String(o.os_number), o]));
+
+        osResult.osArray.forEach(os => {
+          const existingObj = existingMap.get(String(os.os_number));
+          const velho_valor_pago = existingObj ? Number(existingObj.paid_value) : 0;
+          const delta_paid = os.paid_value - velho_valor_pago;
+          
+          (os as any).delta_paid = delta_paid;
+          (os as any).is_new_os = !existingObj;
+
+          // If you want separate deltas for credit/debit or pix, you would need to store them in patio_os too,
+          // but for now, we just rely on delta_paid and allocate proportionally or entirely.
+          // Since the user mainly cares about the total delta paid:
+        });
+      }
+      setStep(3);
+    } catch (e) {
+      console.error(e);
+      alert('Erro ao calcular histórico de OSs.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   const handleConfirm = async () => {
     setIsSaving(true);
     try {
@@ -188,10 +227,10 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           due_date: item.date || targetDate,
           status: 'recebido'
         }));
-        await savePatioOsAndReceivables(sid, storeName, [], parsedRecs);
+        // We will call savePatioOsAndReceivables inside handleConfirm, BUT with the already enriched osArray
       }
 
-      // 2. Extrair APENAS itens do targetDate para a Tabela Transactions (Conciliação)
+      // We do not save transactions here anymore. We just prepare the data for Step 3.
       
       // OFX
       results.ofxResults.forEach(ofx => {
@@ -249,48 +288,25 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           let store_id: string | null = mapping[t.storeName];
           if (store_id === 'GLOBAL') store_id = null;
           if (t.date === targetDate || !t.date) {
-            txsToInsert.push({
-                store_id,
-                store_name: t.storeName,
-                title: `Rede - ${t.method} (Bruto: R$ ${t.grossAmount.toFixed(2)})`,
-                subtitle: `Juros cobrados: R$ ${t.interest.toFixed(2)}`,
-                amount: t.netAmount, // Usa o VALOR LÍQUIDO da Rede
-                type: 'in',
-                occurred_at: `${targetDate}T11:00:00Z`,
-                target_date: targetDate,
-                icon_type: 'card',
-                source: 'rede'
-            });
-
-            if (t.interest > 0) {
-              txsToInsert.push({
-                  store_id,
-                  store_name: t.storeName,
-                  title: `Taxa Maquininha - ${t.method}`,
-                  subtitle: `Juros Antecipação / MDR (Rede)`,
-                  amount: t.interest,
-                  type: 'out',
-                  occurred_at: `${targetDate}T11:00:00Z`,
-                  target_date: targetDate,
-                  icon_type: 'card',
-                  source: 'rede_taxa'
-              });
-            }
+             // Will be pushed during handleConfirm
           }
         });
       });
 
-      // OSs (Filtro por Fechamento == targetDate)
+      // OSs (Filtro por Fechamento == targetDate) will be handled in handleConfirm
+
       results.osFiles.filter(r => r.success).forEach(osResult => {
          let store_id: string | null = mapping[osResult.storeAlias];
          if (store_id === 'GLOBAL') store_id = null;
          
          osResult.osArray.forEach(os => {
             const osDate = os.closed_at || os.opened_at;
+            const is_new_os = (os as any).is_new_os;
             const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
             
-            // Só entra na conciliação se a OS foi fechada neste dia e o valor pago é maior que 0
-            if (osDate && osDate.startsWith(targetDate) && delta > 0) {
+            const isRevenueForToday = (is_new_os && osDate && osDate.startsWith(targetDate)) || (!is_new_os && delta > 0);
+            
+            if (isRevenueForToday && delta > 0) {
               txsToInsert.push({
                   store_id,
                   store_name: osResult.storeAlias,
@@ -343,16 +359,28 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
      let sum = 0;
      curr.osArray.forEach(os => {
         const osDate = os.closed_at || os.opened_at;
-        if (osDate && osDate.startsWith(targetDateOs || targetDate)) {
-           const maqVal = os.parsed_credit_debit || 0;
-           const bancoVal = os.parsed_pix_transfer || 0;
-           const totalPart = maqVal + bancoVal;
-           if (totalPart > 0) {
-              sum += totalPart;
-              totalOsMaqGlobal += maqVal;
-              totalOsBancoGlobal += bancoVal;
-              filteredOsCount++;
-           }
+        const is_new_os = (os as any).is_new_os;
+        const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
+        const isRevenueForToday = (is_new_os && osDate && osDate.startsWith(targetDateOs || targetDate)) || (!is_new_os && delta > 0);
+
+        if (isRevenueForToday && delta > 0) {
+          const totalOsValue = os.paid_value > 0 ? os.paid_value : 1;
+          const creditRatio = (os.parsed_credit_debit || 0) / totalOsValue;
+          const pixRatio = (os.parsed_pix_transfer || 0) / totalOsValue;
+
+          if (creditRatio > 0 || pixRatio > 0) {
+            totalOsMaqGlobal += (delta * creditRatio);
+            totalOsBancoGlobal += (delta * pixRatio);
+          } else {
+            const methodLower = (os.payment_method || '').toLowerCase();
+            if (methodLower.includes('pix') || methodLower.includes('transf') || methodLower.includes('dinheiro')) {
+              totalOsBancoGlobal += delta;
+            } else {
+              totalOsMaqGlobal += delta;
+            }
+          }
+          sum += delta;
+          filteredOsCount++;
         }
      });
      return acc + sum;
@@ -494,7 +522,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             </div>
 
             <div className="mt-8 flex justify-end">
-              <Button onClick={() => setStep(3)} disabled={unmappedAliases.some(u => !mapping[u])}>
+              <Button onClick={handleContinueToReview} disabled={unmappedAliases.some(u => !mapping[u])}>
                 Continuar para Revisão <ArrowRight size={18} className="ml-2" />
               </Button>
             </div>
@@ -597,10 +625,25 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                    const storeOsMaq = results.osFiles.filter(r => r.success && mapping[r.storeAlias] === storeId).reduce((acc, curr) => {
                      let sum = 0;
                      curr.osArray.forEach(os => {
-                       const osDate = os.closed_at || os.opened_at;
-                       if (osDate && osDate.startsWith(targetDateOs || targetDate)) {
-                          sum += os.parsed_credit_debit || 0;
-                       }
+                        const osDate = os.closed_at || os.opened_at;
+                        const is_new_os = (os as any).is_new_os;
+                        const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
+                        const isRevenueForToday = (is_new_os && osDate && osDate.startsWith(targetDate)) || (!is_new_os && delta > 0);
+
+                        if (isRevenueForToday && delta > 0) {
+                          const totalOsValue = os.paid_value > 0 ? os.paid_value : 1;
+                          const creditRatio = (os.parsed_credit_debit || 0) / totalOsValue;
+                          const pixRatio = (os.parsed_pix_transfer || 0) / totalOsValue;
+
+                          if (creditRatio > 0 || pixRatio > 0) {
+                            sum += (delta * creditRatio);
+                          } else {
+                            const methodLower = (os.payment_method || '').toLowerCase();
+                            if (!methodLower.includes('pix') && !methodLower.includes('transf') && !methodLower.includes('dinheiro')) {
+                              sum += delta;
+                            }
+                          }
+                        }
                      });
                      return acc + sum;
                    }, 0);
@@ -608,10 +651,24 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                    const storeOsBanco = results.osFiles.filter(r => r.success && mapping[r.storeAlias] === storeId).reduce((acc, curr) => {
                      let sum = 0;
                      curr.osArray.forEach(os => {
-                       const osDate = os.closed_at || os.opened_at;
-                       if (osDate && osDate.startsWith(targetDateOs || targetDate)) {
-                          sum += os.parsed_pix_transfer || 0;
-                       }
+                        const osDate = os.closed_at || os.opened_at;
+                        const is_new_os = (os as any).is_new_os;
+                        const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
+                        const isRevenueForToday = (is_new_os && osDate && osDate.startsWith(targetDate)) || (!is_new_os && delta > 0);
+
+                        if (isRevenueForToday && delta > 0) {
+                          const totalOsValue = os.paid_value > 0 ? os.paid_value : 1;
+                          const pixRatio = (os.parsed_pix_transfer || 0) / totalOsValue;
+
+                          if (pixRatio > 0 || (os.parsed_credit_debit || 0) > 0) {
+                            sum += (delta * pixRatio);
+                          } else {
+                            const methodLower = (os.payment_method || '').toLowerCase();
+                            if (methodLower.includes('pix') || methodLower.includes('transf') || methodLower.includes('dinheiro')) {
+                              sum += delta;
+                            }
+                          }
+                        }
                      });
                      return acc + sum;
                    }, 0);
