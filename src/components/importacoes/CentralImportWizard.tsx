@@ -585,15 +585,29 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                    if (!store) return null;
 
                    // Totais Locais
-                   const storeOs = results.osFiles.filter(r => r.success && mapping[r.storeAlias] === storeId).reduce((acc, curr) => {
+                   const storeOsMaq = results.osFiles.filter(r => r.success && mapping[r.storeAlias] === storeId).reduce((acc, curr) => {
                      let sum = 0;
                      curr.osArray.forEach(os => {
                        const osDate = os.closed_at || os.opened_at;
-                       const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
-                       if (osDate && osDate.startsWith(targetDateOs || targetDate) && delta > 0) sum += delta;
+                       if (osDate && osDate.startsWith(targetDateOs || targetDate)) {
+                          sum += os.parsed_credit_debit || 0;
+                       }
                      });
                      return acc + sum;
                    }, 0);
+
+                   const storeOsBanco = results.osFiles.filter(r => r.success && mapping[r.storeAlias] === storeId).reduce((acc, curr) => {
+                     let sum = 0;
+                     curr.osArray.forEach(os => {
+                       const osDate = os.closed_at || os.opened_at;
+                       if (osDate && osDate.startsWith(targetDateOs || targetDate)) {
+                          sum += os.parsed_pix_transfer || 0;
+                       }
+                     });
+                     return acc + sum;
+                   }, 0);
+                   
+                   const storeOs = storeOsMaq + storeOsBanco;
 
                    const storeRedeGross = results.redeResults.filter(r => r.success).reduce((acc, r) => {
                      const txs = r.transactions.filter(tx => mapping[tx.storeName] === storeId);
@@ -621,14 +635,14 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
                    if (storeOs === 0 && storeRedeGross === 0 && (storeOfxIn === 0 || hasGlobalOfx)) {
                      storeStatus = <span className="text-[var(--text-tertiary)] text-xs flex items-center gap-1">Nenhum movimento mapeado</span>;
-                   } else if (storeOs === 0) {
+                   } else if (storeOsMaq === 0) {
                      if (storeOfxIn > 0 && storeRedeNet === 0) {
                        storeStatus = <span className="text-[var(--color-accent-purple)] text-xs flex items-center gap-1"><AlertCircle size={14} /> Faturamento no Extrato sem OS e s/ Rede</span>;
                      } else if (storeRedeNet > 0 && storeOfxIn === 0 && !hasGlobalOfx) {
                        storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><TrendingDown size={14} /> Faturamento na Maq. sem OS (OFX zerado)</span>;
                      } else if (storeRedeNet > 0 && storeOfxIn > 0) {
                        if (Math.abs(storeRedeNet - storeOfxIn) > 1) {
-                         storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Faturamento s/ OS e Divergência Maq x Banco</span>;
+                         storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Faturamento s/ OS (Maq) e Divergência Maq x Banco</span>;
                        } else {
                          storeStatus = <span className="text-[var(--color-accent-purple)] text-xs flex items-center gap-1"><AlertCircle size={14} /> Faturamento na Maq. sem OS mapeada</span>;
                        }
@@ -636,7 +650,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                          storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><AlertCircle size={14} /> Faturamento na Maq. sem OS</span>;
                      }
                    } else {
-                     // storeOs > 0
+                     // storeOsMaq > 0 or storeOsBanco > 0
                      if (storeRedeGross === 0 && storeOfxIn === 0) {
                        storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><AlertCircle size={14} /> OS faturada, mas Maq e Banco zerados</span>;
                      } else if (storeRedeGross === 0 && storeOfxIn > 0) {
@@ -644,7 +658,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                      } else if (storeRedeGross > 0 && storeOfxIn === 0 && !hasGlobalOfx) {
                        storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><TrendingDown size={14} /> OS e Maq faturados, mas Banco zerado</span>;
                      } else if (storeRedeGross > 0 && storeOfxIn > 0) {
-                       if (Math.abs(storeOs - storeRedeGross) > 1) {
+                       if (Math.abs(storeOsMaq - storeRedeGross) > 1) {
                          storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Divergência OS x Maq</span>;
                        } else if (Math.abs(storeRedeNet - storeOfxIn) > 1) {
                          storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Divergência Maq x Banco</span>;
@@ -652,7 +666,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                          storeStatus = <span className="text-[var(--color-success)] text-xs flex items-center gap-1"><CheckCircle2 size={14} /> Tudo Certo!</span>;
                        }
                      } else if (hasGlobalOfx && storeRedeGross > 0) {
-                       if (Math.abs(storeOs - storeRedeGross) > 1) {
+                       if (Math.abs(storeOsMaq - storeRedeGross) > 1) {
                          storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Divergência OS x Maq</span>;
                        } else {
                          storeStatus = <span className="text-[var(--color-success)] text-xs flex items-center gap-1"><CheckCircle2 size={14} /> OK (OFX Geral)</span>;

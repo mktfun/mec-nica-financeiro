@@ -145,6 +145,26 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
         const end = closed_at ? new Date(closed_at) : new Date();
         const days_open = Math.max(0, Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
 
+        const payment_method_str = String(row[colMap.paymentMethod] || '').trim();
+        let parsed_credit_debit = 0;
+        let parsed_pix_transfer = 0;
+
+        if (payment_method_str) {
+          const parts = payment_method_str.split(';');
+          parts.forEach(part => {
+            const [method, valStr] = part.split(':').map(s => s.trim());
+            if (method && valStr) {
+              const val = parseFloat(valStr) || 0;
+              const methodUpper = method.toUpperCase();
+              if (methodUpper.includes('CREDITO') || methodUpper.includes('CRÉDITO') || methodUpper.includes('DEBITO') || methodUpper.includes('DÉBITO')) {
+                parsed_credit_debit += val;
+              } else if (methodUpper.includes('PIX') || methodUpper.includes('TRANSF') || methodUpper.includes('DEP')) {
+                parsed_pix_transfer += val;
+              }
+            }
+          });
+        }
+
         osArray.push({
           os_number: osNumber,
           plate: String(row[colMap.plate] || '').trim(),
@@ -152,9 +172,11 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
           closed_at,
           total_value: osValue,
           paid_value: paidValue,
-          payment_method: String(row[colMap.paymentMethod] || '').trim() || null,
+          payment_method: payment_method_str || null,
           status: statusEnum,
-          days_open
+          days_open,
+          parsed_credit_debit,
+          parsed_pix_transfer
         });
       }
 

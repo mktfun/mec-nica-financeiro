@@ -13,6 +13,8 @@ export interface ParsedOS {
   payment_method: string | null;
   status: 'em_aberto' | 'pago_parcial' | 'finalizado';
   days_open: number;
+  parsed_credit_debit?: number;
+  parsed_pix_transfer?: number;
 }
 
 export interface ParsedReceivable {

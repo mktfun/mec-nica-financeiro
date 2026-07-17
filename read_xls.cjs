@@ -1,4 +1,14 @@
-const xlsx = require('xlsx');
-const workbook = xlsx.readFile('C:\\\\Users\\\\User\\\\Downloads\\\\1675_ConferenciaOSxFinanceiro.xls');
-const sheet = workbook.Sheets[workbook.SheetNames[0]];
-console.log(JSON.stringify(xlsx.utils.sheet_to_json(sheet, {header: 1}).slice(0, 10), null, 2));
+const XLSX = require('xlsx');
+
+try {
+  const workbook = XLSX.readFile('C:\\Users\\admin\\Downloads\\cnciliacao\\765_ConferenciaOSxFinanceiro.xls');
+  const sheetName = workbook.SheetNames[0];
+  const sheet = workbook.Sheets[sheetName];
+  const data = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+  
+  if (data.length > 3) {
+    console.log("Rows 3 to 8:", JSON.stringify(data.slice(2, 8), null, 2));
+  }
+} catch (e) {
+  console.error("Error reading file:", e);
+}
