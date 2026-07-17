@@ -336,14 +336,23 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
   // Totais (Com Filtro Estrito para Preview)
   let filteredOsCount = 0;
+  let totalOsMaqGlobal = 0;
+  let totalOsBancoGlobal = 0;
+
   const totalOs = results.osFiles.reduce((acc, curr) => {
      let sum = 0;
      curr.osArray.forEach(os => {
         const osDate = os.closed_at || os.opened_at;
-        const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
-        if (osDate && osDate.startsWith(targetDateOs || targetDate) && delta > 0) {
-           sum += delta;
-           filteredOsCount++;
+        if (osDate && osDate.startsWith(targetDateOs || targetDate)) {
+           const maqVal = os.parsed_credit_debit || 0;
+           const bancoVal = os.parsed_pix_transfer || 0;
+           const totalPart = maqVal + bancoVal;
+           if (totalPart > 0) {
+              sum += totalPart;
+              totalOsMaqGlobal += maqVal;
+              totalOsBancoGlobal += bancoVal;
+              filteredOsCount++;
+           }
         }
      });
      return acc + sum;
@@ -554,12 +563,12 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
              <div className="mb-8 p-6 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl">
                <h4 className="font-semibold text-[var(--text-primary)] mb-4">Status da Conciliação Global</h4>
                
-               {/* Comparamos o BRUTO da Rede com o OS, mas mostramos o líquido pra conciliar com o Banco */}
-               {Math.abs(totalOs - (totalRedeGross || totalMaqFallback)) > 1 && totalOs > 0 && (totalRedeGross > 0 || totalMaqFallback > 0) ? (
+               {/* Comparamos o BRUTO da Rede com o OS (Maq), mas mostramos o líquido pra conciliar com o Banco */}
+               {Math.abs(totalOsMaqGlobal - (totalRedeGross || totalMaqFallback)) > 1 && totalOsMaqGlobal > 0 && (totalRedeGross > 0 || totalMaqFallback > 0) ? (
                  <div className="text-[var(--color-accent-danger)] text-sm flex items-center gap-2 bg-[var(--color-accent-danger)]/10 p-3 rounded mb-2 border border-[var(--color-accent-danger)]/20">
-                   <X size={16} /> <strong>Divergência Crítica Bruta:</strong> O Valor Bruto da Maquininha ({totalRedeGross.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) diverge das OSs geradas ({totalOs.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}).
+                   <X size={16} /> <strong>Divergência Crítica Bruta:</strong> O Valor Bruto da Maquininha ({totalRedeGross.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) diverge das OSs geradas ({totalOsMaqGlobal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}).
                  </div>
-               ) : (totalRedeGross > 0) ? (
+               ) : (totalOsMaqGlobal > 0 && (totalRedeGross > 0 || totalMaqFallback > 0)) ? (
                  <div className="text-[var(--color-success)] text-sm flex items-center gap-2 bg-[var(--color-success)]/10 p-3 rounded mb-2">
                    <CheckCircle2 size={16} /> <strong>OS vs Maquininha Bateu!</strong> Valor Bruto conciliado com sucesso.
                  </div>
