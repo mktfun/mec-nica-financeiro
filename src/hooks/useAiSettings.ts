@@ -22,7 +22,10 @@ export function useAiSettings() {
         .eq('user_id', user.user.id)
         .maybeSingle();
 
-      if (error) throw error;
+      if (error) {
+        console.warn('Failed to fetch ai settings:', error);
+        return { provider: 'google', model: 'gemini-2.0-flash', api_key: '' };
+      }
       
       // Default values if no settings found
       return data || { provider: 'google', model: 'gemini-2.0-flash', api_key: '' };

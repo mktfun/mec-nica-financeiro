@@ -22,7 +22,10 @@ export function useBotCredentials() {
         .from('bot_credentials')
         .select('*')
         .order('portal');
-      if (error) throw error;
+      if (error) {
+        console.warn('Failed to fetch bot credentials:', error);
+        return [] as BotCredentialRow[];
+      }
       return data as BotCredentialRow[];
     },
   });

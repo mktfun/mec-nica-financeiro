@@ -11,7 +11,10 @@ export function useLatestBotRun() {
         .order('started_at', { ascending: false })
         .limit(1)
         .maybeSingle();
-      if (error) throw error;
+      if (error) {
+        console.warn('Failed to fetch latest bot run:', error);
+        return null;
+      }
       return data as BotRunRow | null;
     },
     refetchInterval: 30000, // atualiza a cada 30s
@@ -27,7 +30,10 @@ export function useBotRunHistory(limit = 10) {
         .select('*')
         .order('started_at', { ascending: false })
         .limit(limit);
-      if (error) throw error;
+      if (error) {
+        console.warn('Failed to fetch bot runs:', error);
+        return [] as BotRunRow[];
+      }
       return data as BotRunRow[];
     },
   });
