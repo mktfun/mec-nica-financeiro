@@ -19,9 +19,9 @@ export function MessageList({ messages, isLoading }: { messages: Message[], isLo
       )}
       
       {messages.map(msg => (
-        <div key={msg.id} className={cn("flex flex-col gap-2 max-w-[95%] md:max-w-[85%] animate-in fade-in slide-in-from-bottom-2 duration-300", msg.role === 'user' ? "self-end items-end" : "self-start items-start")}>
+        <div key={msg.id} className={cn("flex flex-col gap-2 max-w-[95%] md:max-w-[85%] animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out", msg.role === 'user' ? "self-end items-end" : "self-start items-start")}>
           
-          <div className={cn("px-5 py-3 rounded-3xl whitespace-pre-wrap text-[15px] leading-relaxed", 
+          <div className={cn("px-5 py-3 rounded-3xl whitespace-pre-wrap text-[15px] leading-relaxed transition-all", 
             msg.role === 'user' 
               ? "bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] rounded-tr-sm shadow-sm" 
               : "bg-transparent text-[var(--text-primary)]"

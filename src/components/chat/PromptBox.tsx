@@ -106,7 +106,7 @@ export const PromptBox = React.forwardRef<HTMLTextAreaElement, PromptBoxProps>(
           <div className="flex items-center gap-2">
             <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
               <PopoverTrigger asChild>
-                <button type="button" className="flex h-9 items-center gap-2 rounded-full px-4 text-xs font-medium border border-[var(--border-subtle)] bg-transparent text-[var(--text-secondary)] transition-colors hover:bg-black/5 hover:text-[var(--text-primary)] focus-visible:outline-none">
+                <button type="button" className="flex h-9 items-center gap-2 rounded-full px-4 text-xs font-medium border border-[var(--border-subtle)] bg-transparent text-[var(--text-secondary)] hover:bg-black/5 hover:text-[var(--text-primary)] hover:scale-[1.02] active:scale-95 transition-all duration-200 focus-visible:outline-none">
                   <span className="flex items-center gap-1.5">
                     {activeTool ? (
                       <>
@@ -121,7 +121,7 @@ export const PromptBox = React.forwardRef<HTMLTextAreaElement, PromptBoxProps>(
                   </span>
                 </button>
               </PopoverTrigger>
-              <PopoverContent side="top" align="start" className="w-56 p-1 rounded-2xl bg-[var(--bg-surface-elevated)] shadow-xl">
+              <PopoverContent side="top" align="start" className="w-56 p-1 rounded-2xl bg-[var(--bg-surface-elevated)] shadow-xl animate-in zoom-in-95 duration-200">
                 <div className="px-2 py-1.5 text-[11px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider">Fontes de Dados (MCP)</div>
                 <div className="flex flex-col gap-0.5">
                   <button onClick={() => { setSelectedTool(null); setIsPopoverOpen(false); }} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-[13px] hover:bg-black/5 text-[var(--text-primary)] transition-colors">
@@ -139,7 +139,7 @@ export const PromptBox = React.forwardRef<HTMLTextAreaElement, PromptBoxProps>(
             </Popover>
             
             {activeTool && (
-              <button onClick={() => setSelectedTool(null)} className="flex h-6 w-6 items-center justify-center rounded-full bg-black/5 text-[var(--text-secondary)] hover:bg-black/10 hover:text-[var(--text-primary)] transition-colors" title="Remover Fonte">
+              <button onClick={() => setSelectedTool(null)} className="flex h-6 w-6 items-center justify-center rounded-full bg-black/5 text-[var(--text-secondary)] hover:bg-black/10 hover:text-[var(--text-primary)] hover:scale-110 active:scale-90 transition-all duration-200" title="Remover Fonte">
                 <XIcon className="h-3.5 w-3.5" />
               </button>
             )}
@@ -149,22 +149,22 @@ export const PromptBox = React.forwardRef<HTMLTextAreaElement, PromptBoxProps>(
             <TooltipProvider delayDuration={100}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button type="button" className="flex h-9 items-center gap-1.5 px-3 rounded-full text-xs font-medium text-[var(--text-secondary)] transition-colors hover:bg-black/5 hover:text-[var(--text-primary)] focus-visible:outline-none">
+                  <button type="button" className="flex h-9 items-center gap-1.5 px-3 rounded-full text-xs font-medium text-[var(--text-secondary)] hover:bg-black/5 hover:text-[var(--text-primary)] hover:scale-105 active:scale-95 transition-all duration-200 focus-visible:outline-none">
                     <PaperclipIcon className="h-4 w-4" />
                     <span className="hidden sm:inline">Attach</span>
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="top" showArrow={true}><p>Anexar arquivo (Mock)</p></TooltipContent>
+                <TooltipContent side="top" showArrow={true} className="animate-in fade-in zoom-in-95"><p>Anexar arquivo (Mock)</p></TooltipContent>
               </Tooltip>
 
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button type="button" className="flex h-9 items-center gap-1.5 px-3 rounded-full text-xs font-medium text-[var(--text-secondary)] transition-colors hover:bg-black/5 hover:text-[var(--text-primary)] focus-visible:outline-none">
+                  <button type="button" className="flex h-9 items-center gap-1.5 px-3 rounded-full text-xs font-medium text-[var(--text-secondary)] hover:bg-black/5 hover:text-[var(--text-primary)] hover:scale-105 active:scale-95 transition-all duration-200 focus-visible:outline-none">
                     <MicIcon className="h-4 w-4" />
                     <span className="hidden sm:inline">Voice</span>
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="top" showArrow={true}><p>Comando de voz (Mock)</p></TooltipContent>
+                <TooltipContent side="top" showArrow={true} className="animate-in fade-in zoom-in-95"><p>Comando de voz (Mock)</p></TooltipContent>
               </Tooltip>
 
               <Tooltip>
@@ -174,9 +174,9 @@ export const PromptBox = React.forwardRef<HTMLTextAreaElement, PromptBoxProps>(
                     onClick={handleSubmit}
                     disabled={!hasValue || isSending} 
                     className={cn(
-                      "flex h-9 items-center gap-1.5 px-4 ml-1 rounded-full text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
+                      "flex h-9 items-center gap-1.5 px-4 ml-1 rounded-full text-sm font-medium focus-visible:outline-none disabled:pointer-events-none hover:scale-[1.02] active:scale-95 transition-all duration-300",
                       hasValue 
-                        ? "bg-[var(--text-primary)] text-[var(--bg-canvas)] hover:bg-[var(--text-secondary)]" 
+                        ? "bg-[var(--text-primary)] text-[var(--bg-canvas)] hover:shadow-lg hover:shadow-black/20" 
                         : "bg-[var(--text-primary)] text-[var(--bg-canvas)] opacity-40"
                     )}
                   >
@@ -184,7 +184,7 @@ export const PromptBox = React.forwardRef<HTMLTextAreaElement, PromptBoxProps>(
                     <SendIcon className="h-4 w-4" />
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="top" showArrow={true}><p>Enviar mensagem</p></TooltipContent>
+                <TooltipContent side="top" showArrow={true} className="animate-in fade-in zoom-in-95"><p>Enviar mensagem</p></TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>

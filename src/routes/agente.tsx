@@ -206,7 +206,7 @@ function AgentePage() {
 
   return (
     <AppShell>
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 h-[calc(100vh-140px)] flex flex-col md:flex-row bg-[var(--bg-surface)] rounded-3xl overflow-hidden shadow-sm border border-[var(--border-subtle)]/50">
+      <div className="-mt-6 -mx-4 md:-mx-8 h-[calc(100vh-73px)] animate-in fade-in slide-in-from-bottom-4 duration-700 flex flex-col md:flex-row bg-[var(--bg-surface)] overflow-hidden relative">
         
         {/* Sidebar Histórico (Minimalista) */}
         <div className="w-full md:w-[260px] bg-transparent border-r border-[var(--border-subtle)] flex flex-col overflow-hidden shrink-0 pt-4">
