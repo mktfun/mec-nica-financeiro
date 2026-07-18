@@ -21,6 +21,7 @@ import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as ConciliacaoDetalhesRouteImport } from './routes/conciliacao-detalhes'
 import { Route as AlertasRouteImport } from './routes/alertas'
+import { Route as AgenteRouteImport } from './routes/agente'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ConciliacaoIndexRouteImport } from './routes/conciliacao.index'
 import { Route as LojaLojaIdRouteImport } from './routes/loja.$lojaId'
@@ -86,6 +87,11 @@ const AlertasRoute = AlertasRouteImport.update({
   path: '/alertas',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AgenteRoute = AgenteRouteImport.update({
+  id: '/agente',
+  path: '/agente',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -109,6 +115,7 @@ const ConciliacaoLojaIdRoute = ConciliacaoLojaIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/agente': typeof AgenteRoute
   '/alertas': typeof AlertasRoute
   '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
@@ -127,6 +134,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/agente': typeof AgenteRoute
   '/alertas': typeof AlertasRoute
   '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
@@ -146,6 +154,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/agente': typeof AgenteRoute
   '/alertas': typeof AlertasRoute
   '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
@@ -166,6 +175,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/agente'
     | '/alertas'
     | '/conciliacao-detalhes'
     | '/configuracoes'
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/agente'
     | '/alertas'
     | '/conciliacao-detalhes'
     | '/configuracoes'
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/agente'
     | '/alertas'
     | '/conciliacao-detalhes'
     | '/configuracoes'
@@ -221,6 +233,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AgenteRoute: typeof AgenteRoute
   AlertasRoute: typeof AlertasRoute
   ConciliacaoDetalhesRoute: typeof ConciliacaoDetalhesRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
@@ -324,6 +337,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AlertasRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/agente': {
+      id: '/agente'
+      path: '/agente'
+      fullPath: '/agente'
+      preLoaderRoute: typeof AgenteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -357,6 +377,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AgenteRoute: AgenteRoute,
   AlertasRoute: AlertasRoute,
   ConciliacaoDetalhesRoute: ConciliacaoDetalhesRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
