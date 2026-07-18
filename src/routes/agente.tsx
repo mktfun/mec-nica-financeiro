@@ -205,16 +205,17 @@ function AgentePage() {
 
   return (
     <AppShell>
-      <div className="h-[calc(100vh-8rem)] md:h-[calc(100vh-10rem)] flex gap-6 overflow-hidden mt-4">
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 h-[calc(100vh-140px)] flex flex-col md:flex-row gap-6">
+        
         {/* Sidebar Histórico */}
-        <div className="w-72 bg-[var(--bg-surface-elevated)]/60 backdrop-blur-md border border-[var(--border-subtle)] rounded-2xl flex flex-col overflow-hidden shadow-sm">
-          <div className="p-4 border-b border-[var(--border-subtle)] flex justify-between items-center bg-black/10">
+        <div className="w-full md:w-72 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-2xl flex flex-col overflow-hidden shadow-sm shrink-0">
+          <div className="p-4 border-b border-[var(--border-subtle)] flex justify-between items-center bg-black/5">
             <h2 className="font-semibold text-[var(--text-primary)] font-display">Conversas</h2>
-            <button onClick={handleNewConversation} className="p-2 bg-[var(--color-primary)]/15 text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)]/25 transition-colors">
+            <button onClick={handleNewConversation} className="p-1.5 bg-[var(--color-primary)]/10 text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)]/20 transition-colors">
               <Plus size={16} />
             </button>
           </div>
-          <div className="flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar">
+          <div className="flex-1 overflow-y-auto p-3 space-y-1 custom-scrollbar">
             {conversations.map(conv => (
               <div 
                 key={conv.id} 
@@ -240,14 +241,28 @@ function AgentePage() {
         </div>
 
         {/* Main Chat Area */}
-        <div className="flex-1 bg-[var(--bg-surface-elevated)]/40 backdrop-blur-sm border border-[var(--border-subtle)] rounded-2xl flex flex-col relative overflow-hidden shadow-sm">
+        <div className="flex-1 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-2xl flex flex-col relative overflow-hidden shadow-sm">
+          
+          <div className="p-4 border-b border-[var(--border-subtle)] flex items-center gap-3 bg-black/5">
+             <div className="w-8 h-8 rounded-full bg-[var(--color-accent-blue)]/20 flex items-center justify-center text-[var(--color-accent-blue)]">
+               <Bot size={18} />
+             </div>
+             <div>
+               <h3 className="font-semibold text-sm">Oficina IA</h3>
+               <p className="text-[10px] text-[var(--text-tertiary)] flex items-center gap-1">
+                 <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent-teal)]"></span>
+                 MCP Integrado
+               </p>
+             </div>
+          </div>
+
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto pb-32 pt-6 px-4 md:px-8 custom-scrollbar relative">
+          <div className="flex-1 overflow-y-auto p-4 md:p-6 custom-scrollbar relative">
              {messages.length === 0 && (
                <div className="h-full flex flex-col items-center justify-center text-[var(--text-tertiary)] opacity-60">
                  <Bot size={48} className="mb-4 text-[var(--color-primary)]" />
-                 <h2 className="text-xl font-display font-medium text-[var(--text-primary)]">Agente MCP</h2>
-                 <p className="mt-2 text-sm text-center max-w-md">Como posso ajudar na conciliação e operações da sua oficina inteligente hoje?</p>
+                 <h2 className="text-xl font-display font-medium text-[var(--text-primary)]">Como posso ajudar?</h2>
+                 <p className="mt-2 text-sm text-center max-w-sm">Conectado aos sistemas locais da sua oficina. Pergunte sobre CMV, Contas a Pagar, ou Ordens de Serviço.</p>
                </div>
              )}
              <MessageList messages={messages} isLoading={isLoading} />
@@ -255,7 +270,7 @@ function AgentePage() {
           </div>
           
           {/* Input Area */}
-          <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-[var(--bg-canvas)] via-[var(--bg-surface-elevated)] to-transparent pt-12 pb-6 px-4">
+          <div className="p-4 border-t border-[var(--border-subtle)] bg-[var(--bg-surface)]">
             <div className="max-w-4xl mx-auto">
               <PromptBox 
                 onSubmitMessage={sendMessage} 
@@ -264,7 +279,9 @@ function AgentePage() {
             </div>
           </div>
         </div>
+
       </div>
     </AppShell>
   );
 }
+

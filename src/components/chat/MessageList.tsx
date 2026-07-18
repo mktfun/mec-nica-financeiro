@@ -11,7 +11,7 @@ export interface Message {
 
 export function MessageList({ messages, isLoading }: { messages: Message[], isLoading?: boolean }) {
   return (
-    <div className="flex flex-col gap-6 p-2 md:p-4">
+    <div className="flex flex-col gap-6 p-0 md:p-2">
       {messages.length === 0 && (
         <div className="hidden">
           {/* placeholder handled in parent now */}
