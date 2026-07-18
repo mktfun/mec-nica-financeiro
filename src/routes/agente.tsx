@@ -142,33 +142,40 @@ function AgentePage() {
     setIsLoading(true);
 
     try {
+      // Call the AI Edge Function instead of mcp-proxy directly
+      const payload = {
+        messages: messages.concat(userMessage).map(m => ({
+          role: m.role,
+          content: m.content
+        }))
+      };
+
+      const { data: aiRes, error: aiError } = await supabase.functions.invoke('ai-chat', {
+        body: payload
+      });
+
+      if (aiError) throw aiError;
+
+      const finalAnswer = aiRes.text || "Sem resposta.";
       let mcpLogsData: any = null;
-      let finalAnswer = "Entendido.";
 
-      // Call MCP via Edge Function if action is selected
-      if (actionId) {
-        // We use default empty params for this simple test phase
-        const params = {}; 
-        
-        const { data: mcpRes, error: mcpError } = await supabase.functions.invoke('mcp-proxy', {
-          body: { action: actionId, params }
+      // Se a IA chamou tools (mcp), a edge function pode nos devolver no payload
+      if (aiRes.toolResults && aiRes.toolResults.length > 0) {
+        mcpLogsData = aiRes.toolResults.map((tr: any) => ({
+          action: tr.toolName,
+          params: tr.args,
+          result: tr.result
+        }));
+
+        // Log everything asynchronously
+        mcpLogsData.forEach((log: any) => {
+          supabase.from('mcp_logs').insert([{
+            conversation_id: currentConvId,
+            action: log.action,
+            params: log.params,
+            result: log.result
+          }]).then();
         });
-
-        if (mcpError) throw mcpError;
-
-        // Save log
-        await supabase.from('mcp_logs').insert([{
-          conversation_id: currentConvId,
-          action: actionId,
-          params: params,
-          result: mcpRes
-        }]);
-
-        mcpLogsData = [{ action: actionId, params }];
-        finalAnswer = `Acessei o MCP (${actionId}) e obtive o retorno. \n\nResultado bruto: \n${JSON.stringify(mcpRes, null, 2).substring(0, 500)}...`;
-      } else {
-        // Just mock a chat response if no MCP action
-        finalAnswer = "Por enquanto, estou focado em testar a integração com o MCP. Clique no ícone de engrenagem nas ferramentas para escolher uma ação do Oficina.";
       }
 
       const assistantMessage: Message = { 
@@ -197,54 +204,67 @@ function AgentePage() {
   };
 
   return (
-    <div className="h-[calc(100vh-2rem)] flex gap-4 overflow-hidden p-2">
-      {/* Sidebar Histórico */}
-      <div className="w-64 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-2xl flex flex-col overflow-hidden">
-        <div className="p-4 border-b border-[var(--border-subtle)] flex justify-between items-center">
-          <h2 className="font-semibold text-[var(--text-primary)]">Conversas</h2>
-          <button onClick={handleNewConversation} className="p-1.5 bg-[var(--color-primary)]/10 text-[var(--color-primary)] rounded-md hover:bg-[var(--color-primary)]/20 transition-colors">
-            <Plus size={16} />
-          </button>
-        </div>
-        <div className="flex-1 overflow-y-auto p-2 space-y-1">
-          {conversations.map(conv => (
-            <div 
-              key={conv.id} 
-              onClick={() => setActiveConversationId(conv.id)}
-              className={`p-3 rounded-xl cursor-pointer flex justify-between items-center group transition-colors ${activeConversationId === conv.id ? 'bg-[var(--color-primary)] text-white' : 'hover:bg-[var(--bg-surface)] text-[var(--text-secondary)]'}`}
-            >
-              <div className="truncate text-sm flex-1 mr-2">{conv.title || 'Nova Conversa'}</div>
-              <button 
-                onClick={(e) => handleDeleteConversation(conv.id, e)} 
-                className={`p-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity ${activeConversationId === conv.id ? 'hover:bg-black/20 text-white' : 'hover:bg-black/5 text-[var(--color-accent-danger)]'}`}
+    <AppShell>
+      <div className="h-[calc(100vh-8rem)] md:h-[calc(100vh-10rem)] flex gap-6 overflow-hidden mt-4">
+        {/* Sidebar Histórico */}
+        <div className="w-72 bg-[var(--bg-surface-elevated)]/60 backdrop-blur-md border border-[var(--border-subtle)] rounded-2xl flex flex-col overflow-hidden shadow-sm">
+          <div className="p-4 border-b border-[var(--border-subtle)] flex justify-between items-center bg-black/10">
+            <h2 className="font-semibold text-[var(--text-primary)] font-display">Conversas</h2>
+            <button onClick={handleNewConversation} className="p-2 bg-[var(--color-primary)]/15 text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)]/25 transition-colors">
+              <Plus size={16} />
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar">
+            {conversations.map(conv => (
+              <div 
+                key={conv.id} 
+                onClick={() => setActiveConversationId(conv.id)}
+                className={`p-3 rounded-xl cursor-pointer flex justify-between items-center group transition-all duration-200 ${activeConversationId === conv.id ? 'bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/30 text-[var(--color-primary)]' : 'hover:bg-white/5 border border-transparent text-[var(--text-secondary)]'}`}
               >
-                <Trash2 size={14} />
-              </button>
-            </div>
-          ))}
-          {conversations.length === 0 && (
-            <div className="text-center p-4 text-xs text-[var(--text-tertiary)]">
-              Nenhuma conversa salva
-            </div>
-          )}
+                <div className="truncate text-sm flex-1 mr-2 font-medium">{conv.title || 'Nova Conversa'}</div>
+                <button 
+                  onClick={(e) => handleDeleteConversation(conv.id, e)} 
+                  className={`p-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity ${activeConversationId === conv.id ? 'hover:bg-[var(--color-primary)]/20 text-[var(--color-primary)]' : 'hover:bg-black/20 text-[var(--color-accent-danger)]'}`}
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            ))}
+            {conversations.length === 0 && (
+              <div className="text-center p-6 text-sm text-[var(--text-tertiary)] flex flex-col items-center gap-2">
+                <Bot size={24} className="opacity-40" />
+                Nenhuma conversa salva
+              </div>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Main Chat Area */}
-      <div className="flex-1 bg-[var(--bg-surface-default)] rounded-2xl flex flex-col relative">
-        <div className="flex-1 overflow-y-auto pb-24 relative">
-           <MessageList messages={messages} isLoading={isLoading} />
-           <div ref={messagesEndRef} />
-        </div>
-        
-        {/* Input Area */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-full max-w-3xl px-4">
-          <PromptBox 
-            onSubmitMessage={sendMessage} 
-            isSending={isLoading}
-          />
+        {/* Main Chat Area */}
+        <div className="flex-1 bg-[var(--bg-surface-elevated)]/40 backdrop-blur-sm border border-[var(--border-subtle)] rounded-2xl flex flex-col relative overflow-hidden shadow-sm">
+          {/* Messages Area */}
+          <div className="flex-1 overflow-y-auto pb-32 pt-6 px-4 md:px-8 custom-scrollbar relative">
+             {messages.length === 0 && (
+               <div className="h-full flex flex-col items-center justify-center text-[var(--text-tertiary)] opacity-60">
+                 <Bot size={48} className="mb-4 text-[var(--color-primary)]" />
+                 <h2 className="text-xl font-display font-medium text-[var(--text-primary)]">Agente MCP</h2>
+                 <p className="mt-2 text-sm text-center max-w-md">Como posso ajudar na conciliação e operações da sua oficina inteligente hoje?</p>
+               </div>
+             )}
+             <MessageList messages={messages} isLoading={isLoading} />
+             <div ref={messagesEndRef} />
+          </div>
+          
+          {/* Input Area */}
+          <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-[var(--bg-canvas)] via-[var(--bg-surface-elevated)] to-transparent pt-12 pb-6 px-4">
+            <div className="max-w-4xl mx-auto">
+              <PromptBox 
+                onSubmitMessage={sendMessage} 
+                isSending={isLoading}
+              />
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </AppShell>
   );
 }

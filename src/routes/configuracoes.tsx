@@ -305,15 +305,7 @@ function ConfiguracoesPage() {
           {/* IA */}
           <Card variant="glass" className="p-6">
             <h3 className="font-display font-semibold text-lg mb-4">Inteligência Artificial (LLM)</h3>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 rounded-[var(--radius-md)] border border-[var(--border-subtle)]">
-                <div>
-                  <p className="font-medium text-[var(--text-primary)]">Modelo Atual</p>
-                  <p className="text-sm text-[var(--color-accent-teal)] mt-1">Gemini 2.0 Flash (Crédito Google Ativo)</p>
-                </div>
-                <Button variant="outline" size="sm">Alterar Provedor</Button>
-              </div>
-            </div>
+            <AiSettingsForm />
           </Card>
         </div>
       </div>
@@ -325,4 +317,90 @@ function ConfiguracoesPage() {
       />
     </AppShell>
   );
+}
+
+import { useAiSettings, useSaveAiSettings } from '@/hooks/useAiSettings';
+
+function AiSettingsForm() {
+  const { data: settings, isLoading } = useAiSettings();
+  const saveSettings = useSaveAiSettings();
+
+  const [provider, setProvider] = useState('google');
+  const [model, setModel] = useState('gemini-2.0-flash');
+  const [apiKey, setApiKey] = useState('');
+
+  // Update local state when query finishes
+  useEffect(() => {
+    if (settings) {
+      setProvider(settings.provider || 'google');
+      setModel(settings.model || 'gemini-2.0-flash');
+      setApiKey(settings.api_key || '');
+    }
+  }, [settings]);
+
+  if (isLoading) {
+    return <div className="p-4 flex justify-center"><LoadingSpinner size="sm" text="" /></div>;
+  }
+
+  const handleSave = () => {
+    saveSettings.mutate({ provider, model, api_key: apiKey });
+  };
+
+  const modelOptions = {
+    'google': ['gemini-2.0-flash', 'gemini-1.5-pro'],
+    'openai': ['gpt-4o', 'gpt-4o-mini'],
+    'anthropic': ['claude-3-5-sonnet-20240620', 'claude-3-haiku-20240307']
+  };
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-1 block">Provedor</label>
+        <select 
+          value={provider} 
+          onChange={(e) => {
+            setProvider(e.target.value);
+            setModel(modelOptions[e.target.value as keyof typeof modelOptions][0]);
+          }}
+          className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--color-primary)]/50 transition-colors"
+        >
+          <option value="google">Google (Gemini)</option>
+          <option value="openai">OpenAI (GPT)</option>
+          <option value="anthropic">Anthropic (Claude)</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-1 block">Modelo</label>
+        <select 
+          value={model} 
+          onChange={(e) => setModel(e.target.value)}
+          className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--color-primary)]/50 transition-colors"
+        >
+          {modelOptions[provider as keyof typeof modelOptions]?.map(m => (
+            <option key={m} value={m}>{m}</option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label className="text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-1 block">API Key</label>
+        <input 
+          type="password" 
+          value={apiKey} 
+          onChange={(e) => setApiKey(e.target.value)}
+          placeholder="Insira sua chave de API..."
+          className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--color-primary)]/50 transition-colors font-mono"
+        />
+        <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Sua chave é armazenada com segurança e usada exclusivamente pela Edge Function.</p>
+      </div>
+
+      <div className="pt-2">
+        <Button onClick={handleSave} disabled={saveSettings.isPending}>
+          {saveSettings.isPending ? 'Salvando...' : 'Salvar Configurações'}
+        </Button>
+      </div>
+    </div>
+  );
+
 }
