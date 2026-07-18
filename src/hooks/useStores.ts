@@ -18,7 +18,10 @@ export function useStores() {
         .select('*')
         .eq('active', true)
         .order('name');
-      if (error) throw error;
+      if (error) {
+        console.warn('Failed to fetch stores:', error);
+        return [];
+      }
       return (data as StoreRow[]).map(sanitizeStore);
     },
     staleTime: 5 * 60 * 1000, // 5 min cache
