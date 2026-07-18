@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import React, { useState, useEffect, useRef } from 'react';
+import { AppShell } from '@/components/layout/AppShell';
 import { supabase } from '@/lib/supabase';
 import { PromptBox } from '@/components/chat/PromptBox';
 import { MessageList, Message } from '@/components/chat/MessageList';
