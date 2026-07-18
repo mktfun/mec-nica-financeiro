@@ -206,77 +206,94 @@ function AgentePage() {
 
   return (
     <AppShell>
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 h-[calc(100vh-140px)] flex flex-col md:flex-row gap-6">
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 h-[calc(100vh-140px)] flex flex-col md:flex-row bg-[var(--bg-surface)] rounded-3xl overflow-hidden shadow-sm border border-[var(--border-subtle)]/50">
         
-        {/* Sidebar Histórico */}
-        <div className="w-full md:w-72 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-2xl flex flex-col overflow-hidden shadow-sm shrink-0">
-          <div className="p-4 border-b border-[var(--border-subtle)] flex justify-between items-center bg-black/5">
-            <h2 className="font-semibold text-[var(--text-primary)] font-display">Conversas</h2>
-            <button onClick={handleNewConversation} className="p-1.5 bg-[var(--color-primary)]/10 text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)]/20 transition-colors">
+        {/* Sidebar Histórico (Minimalista) */}
+        <div className="w-full md:w-[260px] bg-transparent border-r border-[var(--border-subtle)] flex flex-col overflow-hidden shrink-0 pt-4">
+          <div className="px-4 pb-4">
+            <button 
+              onClick={handleNewConversation} 
+              className="w-full bg-[var(--text-primary)] text-[var(--bg-canvas)] rounded-full py-2.5 px-4 flex items-center justify-between font-medium text-sm hover:bg-[var(--text-secondary)] transition-colors shadow-sm"
+            >
+              <span>New Chat</span>
               <Plus size={16} />
             </button>
           </div>
-          <div className="flex-1 overflow-y-auto p-3 space-y-1 custom-scrollbar">
+          
+          <div className="px-4 pb-2">
+            <div className="text-[11px] font-semibold tracking-wider text-[var(--text-tertiary)] uppercase mb-2">History</div>
+          </div>
+          
+          <div className="flex-1 overflow-y-auto px-2 space-y-0.5 custom-scrollbar pb-4">
             {conversations.map(conv => (
               <div 
                 key={conv.id} 
                 onClick={() => setActiveConversationId(conv.id)}
-                className={`p-3 rounded-xl cursor-pointer flex justify-between items-center group transition-all duration-200 ${activeConversationId === conv.id ? 'bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/30 text-[var(--color-primary)]' : 'hover:bg-white/5 border border-transparent text-[var(--text-secondary)]'}`}
+                className={`px-3 py-2.5 rounded-lg cursor-pointer flex justify-between items-center group transition-all duration-200 ${activeConversationId === conv.id ? 'bg-[var(--bg-surface-elevated)] font-medium text-[var(--text-primary)]' : 'hover:bg-black/5 text-[var(--text-secondary)]'}`}
               >
-                <div className="truncate text-sm flex-1 mr-2 font-medium">{conv.title || 'Nova Conversa'}</div>
+                <div className="truncate text-[13px] flex-1 mr-2">{conv.title || 'Nova Conversa'}</div>
                 <button 
                   onClick={(e) => handleDeleteConversation(conv.id, e)} 
-                  className={`p-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity ${activeConversationId === conv.id ? 'hover:bg-[var(--color-primary)]/20 text-[var(--color-primary)]' : 'hover:bg-black/20 text-[var(--color-accent-danger)]'}`}
+                  className={`p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity ${activeConversationId === conv.id ? 'text-[var(--text-secondary)] hover:text-[var(--color-accent-danger)]' : 'text-[var(--text-tertiary)] hover:text-[var(--color-accent-danger)]'}`}
                 >
-                  <Trash2 size={14} />
+                  <Trash2 size={13} />
                 </button>
               </div>
             ))}
             {conversations.length === 0 && (
               <div className="text-center p-6 text-sm text-[var(--text-tertiary)] flex flex-col items-center gap-2">
-                <Bot size={24} className="opacity-40" />
-                Nenhuma conversa salva
+                Nenhuma conversa
               </div>
             )}
           </div>
         </div>
 
         {/* Main Chat Area */}
-        <div className="flex-1 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-2xl flex flex-col relative overflow-hidden shadow-sm">
+        <div className="flex-1 bg-transparent flex flex-col relative overflow-hidden">
           
-          <div className="p-4 border-b border-[var(--border-subtle)] flex items-center gap-3 bg-black/5">
-             <div className="w-8 h-8 rounded-full bg-[var(--color-accent-blue)]/20 flex items-center justify-center text-[var(--color-accent-blue)]">
-               <Bot size={18} />
+          {/* Header Minimalista */}
+          <div className="px-6 py-4 flex justify-between items-center z-10 bg-gradient-to-b from-[var(--bg-surface)] to-transparent">
+             <div className="flex items-center gap-2">
+               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white shadow-sm">
+                 <Bot size={16} />
+               </div>
+               <div>
+                 <h3 className="font-semibold text-sm">Oficina GPT <span className="ml-1 text-[10px] bg-[var(--bg-surface-elevated)] px-1.5 py-0.5 rounded border border-[var(--border-subtle)] text-[var(--text-secondary)]">Plus</span></h3>
+               </div>
              </div>
-             <div>
-               <h3 className="font-semibold text-sm">Oficina IA</h3>
-               <p className="text-[10px] text-[var(--text-tertiary)] flex items-center gap-1">
-                 <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent-teal)]"></span>
-                 MCP Integrado
-               </p>
+             
+             <div className="flex items-center gap-2">
+                <button className="text-[12px] font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] px-3 py-1.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] transition-colors">Configuration ⚙️</button>
+                <button className="text-[12px] font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] px-3 py-1.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] transition-colors">Share ↗</button>
              </div>
           </div>
 
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 md:p-6 custom-scrollbar relative">
+          <div className="flex-1 overflow-y-auto px-4 md:px-16 pt-2 pb-32 custom-scrollbar relative">
              {messages.length === 0 && (
                <div className="h-full flex flex-col items-center justify-center text-[var(--text-tertiary)] opacity-60">
-                 <Bot size={48} className="mb-4 text-[var(--color-primary)]" />
-                 <h2 className="text-xl font-display font-medium text-[var(--text-primary)]">Como posso ajudar?</h2>
-                 <p className="mt-2 text-sm text-center max-w-sm">Conectado aos sistemas locais da sua oficina. Pergunte sobre CMV, Contas a Pagar, ou Ordens de Serviço.</p>
+                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white mb-6 shadow-xl shadow-blue-500/20">
+                    <Bot size={32} />
+                 </div>
+                 <h2 className="text-2xl font-display font-medium text-[var(--text-primary)]">Como posso ajudar?</h2>
+                 <p className="mt-2 text-sm text-center max-w-md">Conectado aos sistemas locais da sua oficina. Pergunte sobre CMV, Contas a Pagar, ou Ordens de Serviço.</p>
                </div>
              )}
              <MessageList messages={messages} isLoading={isLoading} />
              <div ref={messagesEndRef} />
           </div>
           
-          {/* Input Area */}
-          <div className="p-4 border-t border-[var(--border-subtle)] bg-[var(--bg-surface)]">
-            <div className="max-w-4xl mx-auto">
+          {/* Input Area (Flutuante) */}
+          <div className="absolute bottom-6 left-0 right-0 px-4 md:px-16 pointer-events-none">
+            <div className="max-w-3xl mx-auto pointer-events-auto">
               <PromptBox 
                 onSubmitMessage={sendMessage} 
                 isSending={isLoading}
               />
+            </div>
+            {/* Disclaimer */}
+            <div className="text-center mt-3 text-[10px] text-[var(--text-tertiary)]">
+              A IA pode cometer erros. Verifique informações importantes. <span className="underline cursor-pointer">Sua Privacidade & Oficina GPT</span>
             </div>
           </div>
         </div>

@@ -29,10 +29,11 @@ DialogContent.displayName = DialogPrimitive.Content.displayName;
 // Icons
 const PlusIcon = (props: React.SVGProps<SVGSVGElement>) => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}> <path d="M12 5V19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/> <path d="M5 12H19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/> </svg> );
 const Settings2Icon = (props: React.SVGProps<SVGSVGElement>) => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...props}> <path d="M20 7h-9" /> <path d="M14 17H5" /> <circle cx="17" cy="17" r="3" /> <circle cx="7" cy="7" r="3" /> </svg> );
-const SendIcon = (props: React.SVGProps<SVGSVGElement>) => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}> <path d="M12 5.25L12 18.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /> <path d="M18.75 12L12 5.25L5.25 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /> </svg> );
+const SendIcon = (props: React.SVGProps<SVGSVGElement>) => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}> <path d="M12 19V5M12 5L5 12M12 5L19 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/> </svg> ); // changed to arrow-up
 const XIcon = (props: React.SVGProps<SVGSVGElement>) => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}> <line x1="18" y1="6" x2="6" y2="18" /> <line x1="6" y1="6" x2="18" y2="18" /> </svg> );
 const MicIcon = (props: React.SVGProps<SVGSVGElement>) => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...props}> <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path> <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path> <line x1="12" y1="19" x2="12" y2="23"></line> </svg> );
 const WrenchIcon = (props: React.SVGProps<SVGSVGElement>) => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> );
+const PaperclipIcon = (props: React.SVGProps<SVGSVGElement>) => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg> );
 
 const toolsList = [
   { id: 'consulta_os_semana', name: 'Consulta OS', shortName: 'OS', icon: WrenchIcon },
@@ -87,7 +88,7 @@ export const PromptBox = React.forwardRef<HTMLTextAreaElement, PromptBoxProps>(
     };
 
     return (
-      <div className={cn("flex flex-col rounded-[28px] p-2 shadow-md transition-colors bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus-within:border-[var(--color-primary)]/50 cursor-text", className)}>
+      <div className={cn("flex flex-col rounded-[32px] p-2 shadow-2xl transition-all bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus-within:border-[var(--text-secondary)]/50 focus-within:shadow-black/10 cursor-text mx-auto w-full", className)}>
         
         <textarea 
           ref={internalTextareaRef} 
@@ -95,78 +96,98 @@ export const PromptBox = React.forwardRef<HTMLTextAreaElement, PromptBoxProps>(
           value={value} 
           onChange={handleInputChange} 
           onKeyDown={handleKeyDown}
-          placeholder="Pergunte ao Agente MCP..." 
-          className="custom-scrollbar w-full resize-none border-0 bg-transparent p-3 text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:ring-0 focus-visible:outline-none min-h-12" 
+          placeholder="Ask me anything..." 
+          className="custom-scrollbar w-full resize-none border-0 bg-transparent px-4 py-3 text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:ring-0 focus-visible:outline-none min-h-[56px] text-[15px]" 
           disabled={isSending}
           {...props} 
         />
         
-        <div className="mt-0.5 p-1 pt-0">
-          <TooltipProvider delayDuration={100}>
-            <div className="flex items-center gap-2">
-              <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <PopoverTrigger asChild>
-                      <button type="button" className="flex h-8 items-center gap-2 rounded-full p-2 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)] focus-visible:outline-none">
-                        <Settings2Icon className="h-4 w-4" />
-                        {!selectedTool && 'Tools'}
-                      </button>
-                    </PopoverTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" showArrow={true}><p>Selecionar Action MCP</p></TooltipContent>
-                </Tooltip>
-                <PopoverContent side="top" align="start">
-                  <div className="flex flex-col gap-1">
-                    {toolsList.map(tool => ( 
-                      <button key={tool.id} onClick={() => { setSelectedTool(tool.id); setIsPopoverOpen(false); }} className="flex w-full items-center gap-2 rounded-md p-2 text-left text-sm hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)] text-[var(--text-primary)]"> 
-                        <tool.icon className="h-4 w-4" /> 
-                        <span>{tool.name}</span> 
-                      </button> 
-                    ))}
-                  </div>
-                </PopoverContent>
-              </Popover>
-
-              {activeTool && (
-                <>
-                  <div className="h-4 w-px bg-[var(--border-subtle)]" />
-                  <button onClick={() => setSelectedTool(null)} className="flex h-8 items-center gap-2 rounded-full px-3 text-sm bg-[var(--color-primary)]/10 text-[var(--color-primary)] hover:bg-[var(--color-primary)]/20 cursor-pointer transition-colors flex-row">
-                    {ActiveToolIcon && <ActiveToolIcon className="h-4 w-4" />}
-                    {activeTool.shortName}
-                    <XIcon className="h-4 w-4 ml-1" />
+        <div className="mt-1 px-2 pb-1 flex justify-between items-end">
+          <div className="flex items-center gap-2">
+            <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+              <PopoverTrigger asChild>
+                <button type="button" className="flex h-9 items-center gap-2 rounded-full px-4 text-xs font-medium border border-[var(--border-subtle)] bg-transparent text-[var(--text-secondary)] transition-colors hover:bg-black/5 hover:text-[var(--text-primary)] focus-visible:outline-none">
+                  <span className="flex items-center gap-1.5">
+                    {activeTool ? (
+                      <>
+                        <ActiveToolIcon className="h-3.5 w-3.5" />
+                        {activeTool.shortName}
+                      </>
+                    ) : (
+                      <>
+                        Select Source <span className="opacity-50 ml-1">▼</span>
+                      </>
+                    )}
+                  </span>
+                </button>
+              </PopoverTrigger>
+              <PopoverContent side="top" align="start" className="w-56 p-1 rounded-2xl bg-[var(--bg-surface-elevated)] shadow-xl">
+                <div className="px-2 py-1.5 text-[11px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider">Fontes de Dados (MCP)</div>
+                <div className="flex flex-col gap-0.5">
+                  <button onClick={() => { setSelectedTool(null); setIsPopoverOpen(false); }} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-[13px] hover:bg-black/5 text-[var(--text-primary)] transition-colors">
+                    <span className="w-4" /> {/* Spacer */}
+                    Nenhuma fonte (Geral)
                   </button>
-                </>
-              )}
+                  {toolsList.map(tool => ( 
+                    <button key={tool.id} onClick={() => { setSelectedTool(tool.id); setIsPopoverOpen(false); }} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-[13px] hover:bg-black/5 text-[var(--text-primary)] transition-colors"> 
+                      <tool.icon className="h-4 w-4 text-[var(--text-secondary)]" /> 
+                      {tool.name}
+                    </button> 
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+            
+            {activeTool && (
+              <button onClick={() => setSelectedTool(null)} className="flex h-6 w-6 items-center justify-center rounded-full bg-black/5 text-[var(--text-secondary)] hover:bg-black/10 hover:text-[var(--text-primary)] transition-colors" title="Remover Fonte">
+                <XIcon className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
 
-              <div className="ml-auto flex items-center gap-2">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button type="button" className="flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-secondary)] transition-colors hover:bg-[var(--color-primary)]/10 focus-visible:outline-none">
-                      <MicIcon className="h-5 w-5" />
-                      <span className="sr-only">Record voice</span>
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" showArrow={true}><p>Record voice</p></TooltipContent>
-                </Tooltip>
+          <div className="flex items-center gap-1.5">
+            <TooltipProvider delayDuration={100}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button type="button" className="flex h-9 items-center gap-1.5 px-3 rounded-full text-xs font-medium text-[var(--text-secondary)] transition-colors hover:bg-black/5 hover:text-[var(--text-primary)] focus-visible:outline-none">
+                    <PaperclipIcon className="h-4 w-4" />
+                    <span className="hidden sm:inline">Attach</span>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="top" showArrow={true}><p>Anexar arquivo (Mock)</p></TooltipContent>
+              </Tooltip>
 
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button 
-                      type="button" 
-                      onClick={handleSubmit}
-                      disabled={!hasValue || isSending} 
-                      className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] disabled:opacity-50"
-                    >
-                      <SendIcon className="h-4 w-4 text-bold" />
-                      <span className="sr-only">Send message</span>
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" showArrow={true}><p>Send</p></TooltipContent>
-                </Tooltip>
-              </div>
-            </div>
-          </TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button type="button" className="flex h-9 items-center gap-1.5 px-3 rounded-full text-xs font-medium text-[var(--text-secondary)] transition-colors hover:bg-black/5 hover:text-[var(--text-primary)] focus-visible:outline-none">
+                    <MicIcon className="h-4 w-4" />
+                    <span className="hidden sm:inline">Voice</span>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="top" showArrow={true}><p>Comando de voz (Mock)</p></TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button 
+                    type="button" 
+                    onClick={handleSubmit}
+                    disabled={!hasValue || isSending} 
+                    className={cn(
+                      "flex h-9 items-center gap-1.5 px-4 ml-1 rounded-full text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
+                      hasValue 
+                        ? "bg-[var(--text-primary)] text-[var(--bg-canvas)] hover:bg-[var(--text-secondary)]" 
+                        : "bg-[var(--text-primary)] text-[var(--bg-canvas)] opacity-40"
+                    )}
+                  >
+                    <span className="hidden sm:inline mr-1">Send</span>
+                    <SendIcon className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="top" showArrow={true}><p>Enviar mensagem</p></TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </div>
       </div>
     );
