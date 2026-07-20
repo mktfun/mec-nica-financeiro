@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { useBotRunHistory } from '@/hooks/useBotRuns';
 import { useStores, useDeleteStore } from '@/hooks/useStores';
 import { StoreFormDialog } from '@/components/dashboard/StoreFormDialog';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { StoreRow } from '@/lib/supabase';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useBotCredentials, useUpdateBotCredential } from '@/hooks/useBotCredentials';
