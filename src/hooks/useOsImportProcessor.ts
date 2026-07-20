@@ -136,12 +136,15 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
         const statusStr = String(row[colMap.status] || '').trim();
         
         const opened_at = parseExcelDate(row[colMap.openedAt]) || getDefaultDate();
-        let closed_at: string | null = null;
+        let closed_at: string | null = parseExcelDate(row[colMap.closedAt]);
         
         let statusEnum: 'em_aberto' | 'pago_parcial' | 'finalizado' = 'em_aberto';
-        if (statusStr.toLowerCase() === 'finalizada') {
+        
+        // Resilience against typo/custom status
+        const isClosed = statusStr.match(/finalizad[oa]|pag[oa]|entregue|faturad[oa]|fechad[oa]/i) || (paidValue > 0 && paidValue >= osValue);
+        
+        if (isClosed) {
           statusEnum = 'finalizado';
-          closed_at = parseExcelDate(row[colMap.closedAt]);
           osCount++;
         } else if (paidValue > 0 && paidValue < osValue) {
           statusEnum = 'pago_parcial';
@@ -156,19 +159,32 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
         let parsed_pix_transfer = 0;
 
         if (payment_method_str) {
-          const parts = payment_method_str.split(';');
-          parts.forEach(part => {
-            const [method, valStr] = part.split(':').map(s => s.trim());
-            if (method && valStr) {
-              const val = parseFloat(valStr) || 0;
-              const methodUpper = method.toUpperCase();
-              if (methodUpper.includes('CREDITO') || methodUpper.includes('CRÉDITO') || methodUpper.includes('DEBITO') || methodUpper.includes('DÉBITO')) {
-                parsed_credit_debit += val;
-              } else if (methodUpper.includes('PIX') || methodUpper.includes('TRANSF') || methodUpper.includes('DEP')) {
-                parsed_pix_transfer += val;
+          // If the format is generic "Pix", "Cartão", etc.
+          const lowerMethod = payment_method_str.toLowerCase();
+          
+          if (payment_method_str.includes(':')) {
+            // Split pattern: "Pix: 100; Cartão: 50"
+            const parts = payment_method_str.split(';');
+            parts.forEach(part => {
+              const [method, valStr] = part.split(':').map(s => s.trim());
+              if (method && valStr) {
+                const val = parseFloat(valStr) || 0;
+                const methodUpper = method.toUpperCase();
+                if (methodUpper.includes('CREDITO') || methodUpper.includes('CRÉDITO') || methodUpper.includes('DEBITO') || methodUpper.includes('DÉBITO') || methodUpper.includes('CARTAO') || methodUpper.includes('CARTÃO')) {
+                  parsed_credit_debit += val;
+                } else if (methodUpper.includes('PIX') || methodUpper.includes('TRANSF') || methodUpper.includes('DEP') || methodUpper.includes('DINHEIRO')) {
+                  parsed_pix_transfer += val;
+                }
               }
-            }
-          });
+            });
+          } else {
+             // Just text. Assume the full paidValue is tied to this method if matched.
+             if (lowerMethod.includes('credito') || lowerMethod.includes('crédito') || lowerMethod.includes('debito') || lowerMethod.includes('débito') || lowerMethod.includes('cartão') || lowerMethod.includes('cartao')) {
+               parsed_credit_debit = paidValue;
+             } else if (lowerMethod.includes('pix') || lowerMethod.includes('transf') || lowerMethod.includes('dep') || lowerMethod.includes('dinheiro')) {
+               parsed_pix_transfer = paidValue;
+             }
+          }
         }
 
         osArray.push({
@@ -180,6 +196,7 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
           paid_value: paidValue,
           payment_method: payment_method_str || null,
           status: statusEnum,
+          raw_status: statusStr || null,
           days_open,
           parsed_credit_debit,
           parsed_pix_transfer

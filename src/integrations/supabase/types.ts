@@ -205,6 +205,9 @@ export type Database = {
           payment_method: string | null
           plate: string
           status: string
+          raw_status: string | null
+          credit_debit_value: number | null
+          pix_transfer_value: number | null
           store_id: string | null
           store_name: string | null
           total_value: number
@@ -221,6 +224,9 @@ export type Database = {
           payment_method?: string | null
           plate: string
           status?: string
+          raw_status?: string | null
+          credit_debit_value?: number | null
+          pix_transfer_value?: number | null
           store_id?: string | null
           store_name?: string | null
           total_value?: number
@@ -237,6 +243,9 @@ export type Database = {
           payment_method?: string | null
           plate?: string
           status?: string
+          raw_status?: string | null
+          credit_debit_value?: number | null
+          pix_transfer_value?: number | null
           store_id?: string | null
           store_name?: string | null
           total_value?: number
