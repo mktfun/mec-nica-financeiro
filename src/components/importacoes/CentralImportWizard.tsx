@@ -397,27 +397,26 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
      return acc + sum;
   }, 0);
 
-  const totalMaqFallback = results.maquininhaItems.reduce((acc, item) => {
-     let formattedVenda = item.dateVenda;
-     if (formattedVenda && formattedVenda.includes('/')) formattedVenda = formattedVenda.split('/').reverse().join('-');
-     if (formattedVenda === targetDate || !formattedVenda) return acc + item.amount;
-     return acc;
-  }, 0);
-
-  const redeFiltered = results.redeResults.filter(r => r.success).flatMap(r => r.transactions).filter(tx => tx.date === targetDate);
+  const redeFiltered = results.redeResults.filter(r => r.success).flatMap(r => r.transactions);
   const totalRedeGross = redeFiltered.reduce((acc, curr) => acc + curr.grossAmount, 0);
   const totalRedeNet = redeFiltered.reduce((acc, curr) => acc + curr.netAmount, 0);
   const totalRedeInterest = redeFiltered.reduce((acc, curr) => acc + curr.interest, 0);
 
-  // Mostra o valor líquido da Rede, conforme recebido pela adquirente
+  const totalMaqFallback = results.maquininhaItems.reduce((acc, item) => acc + item.amount, 0);
   const totalMaq = totalMaqFallback + totalRedeNet;
 
   const totalMapaMetas = results.mapaMetasResults.filter(r => r.success).reduce((acc, curr) => acc + curr.totalFaturamento, 0);
 
-  // OFX: estritamente filtrado pelo targetDate, somando Entradas (in) e Saídas (out) do dia
-  const allOfxTx = results.ofxResults.flatMap(r => r.transactions).filter(tx => tx.date === targetDate);
+  // OFX: somando tudo (já que o usuário importa o arquivo específico)
+  const allOfxTx = results.ofxResults.flatMap(r => r.transactions);
   const totalOfxOut = allOfxTx.filter(t => t.type === 'out').reduce((a,b) => a + b.amount, 0);
   const totalOfxIn = allOfxTx.filter(t => t.type === 'in').reduce((a,b) => a + b.amount, 0);
+  
+  // Recalcula Global com Match
+  const availableOfxForPixGlobal = Math.max(0, totalOfxIn - totalRedeNet);
+  const matchedTotalOsMaqGlobal = Math.min(totalOsMaqGlobal, totalRedeNet);
+  const matchedTotalOsBancoGlobal = Math.min(totalOsBancoGlobal, availableOfxForPixGlobal);
+  const totalOsGlobalMatched = matchedTotalOsMaqGlobal + matchedTotalOsBancoGlobal;
   
   const totalOfxPreviousBalance = results.ofxResults.reduce((acc, r) => acc + (r.previousBalance || 0), 0);
   const totalOfxLedger = results.ofxResults.reduce((acc, r) => acc + (r.bankBalance || 0), 0);
@@ -562,14 +561,29 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
              </div>
 
              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-               {/* Coluna 1: OS (Dia X) */}
-               <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] flex flex-col items-center">
-                 <p className="text-sm text-[var(--text-secondary)] mb-2 font-medium">1. Sistema (Ordens de Serviço)</p>
-                 <div className="text-3xl font-display font-bold text-[var(--text-primary)] mb-2">
-                   <AnimatedNumber value={totalOs} format="currency" />
-                 </div>
-                 <p className="text-xs text-[var(--text-tertiary)]">{filteredOsCount} OS com Δ pago</p>
-               </div>
+        <Card className="p-6 bg-gradient-to-br from-[var(--bg-canvas)] to-[var(--bg-surface-elevated)] border-[var(--border-subtle)] overflow-hidden relative group">
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-4 text-[var(--text-secondary)]">
+              <div className="p-2 bg-[var(--color-primary)]/10 rounded-lg text-[var(--color-primary)]">
+                <Database size={20} />
+              </div>
+              <h3 className="font-semibold tracking-wide uppercase text-xs">1. Sistema (Ordens de Serviço)</h3>
+            </div>
+            <div className="text-3xl font-black text-[var(--text-primary)] tracking-tight font-mono">
+              <AnimatedNumber value={totalOsGlobalMatched} format="currency" />
+            </div>
+            <div className="mt-2 flex flex-col gap-1">
+              <span className="text-xs text-[var(--text-tertiary)] flex items-center gap-1 font-medium bg-[var(--bg-surface-hover)] p-1.5 rounded w-fit">
+                <FileType2 size={12} className="text-[var(--color-accent-teal)]" />
+                {filteredOsCount} OS com pagamento identificado
+              </span>
+              <span className="text-[10px] text-[var(--text-tertiary)] mt-1 ml-1 opacity-70">
+                (Apenas OSs que deram Match com Rede ou OFX)
+              </span>
+            </div>
+          </div>
+        </Card>
 
                {/* Coluna 2: Maquininha */}
                <div className="p-4 rounded-xl bg-[var(--color-warning)]/10 border border-[var(--color-warning)]/20 flex flex-col items-center relative">
@@ -628,86 +642,75 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
              </div>
 
              {/* Análise por Loja */}
-             <div className="mb-8 p-6 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl">
+      <div className="mb-8 p-6 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl">
                <h4 className="font-semibold text-[var(--text-primary)] mb-4">Detalhamento por Loja</h4>
                <div className="space-y-3">
                  {Array.from(new Set(Object.values(mapping).filter(id => id && id !== 'GLOBAL'))).map(storeId => {
                    const store = stores.find((s: any) => s.id === storeId);
                    if (!store) return null;
 
-                   // Totais Locais
-                   const storeOsMaq = results.osFiles.filter(r => r.success && mapping[r.storeAlias] === storeId).reduce((acc, curr) => {
+                   const rawOsMaq = results.osFiles.filter(r => r.success && mapping[r.storeAlias] === storeId).reduce((acc, curr) => {
                      let sum = 0;
                      curr.osArray.forEach(os => {
-                        const osDate = os.closed_at || os.opened_at;
-                        const is_new_os = (os as any).is_new_os;
-                        const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
-                        const isRevenueForToday = is_new_os || (!is_new_os && delta > 0);
+                         const totalOsValue = os.paid_value > 0 ? os.paid_value : 1;
+                         const creditRatio = (os.parsed_credit_debit || 0) / totalOsValue;
+                         const pixRatio = (os.parsed_pix_transfer || 0) / totalOsValue;
 
-                        if (isRevenueForToday && delta > 0) {
-                          const totalOsValue = os.paid_value > 0 ? os.paid_value : 1;
-                          const creditRatio = (os.parsed_credit_debit || 0) / totalOsValue;
-                          const pixRatio = (os.parsed_pix_transfer || 0) / totalOsValue;
-
-                          if (creditRatio > 0 || pixRatio > 0) {
-                            sum += (delta * creditRatio);
-                          } else {
-                            const methodLower = (os.payment_method || '').toLowerCase();
-                            if (!methodLower.includes('pix') && !methodLower.includes('transf') && !methodLower.includes('dinheiro')) {
-                              sum += delta;
-                            }
-                          }
-                        }
+                         if (creditRatio > 0) {
+                           sum += (os.paid_value * creditRatio);
+                         } else if (pixRatio === 0) {
+                           const methodLower = (os.payment_method || '').toLowerCase();
+                           if (!methodLower.includes('pix') && !methodLower.includes('transf') && !methodLower.includes('dinheiro')) {
+                             sum += os.paid_value;
+                           }
+                         }
                      });
                      return acc + sum;
                    }, 0);
 
-                   const storeOsBanco = results.osFiles.filter(r => r.success && mapping[r.storeAlias] === storeId).reduce((acc, curr) => {
+                   const rawOsPix = results.osFiles.filter(r => r.success && mapping[r.storeAlias] === storeId).reduce((acc, curr) => {
                      let sum = 0;
                      curr.osArray.forEach(os => {
-                        const osDate = os.closed_at || os.opened_at;
-                        const is_new_os = (os as any).is_new_os;
-                        const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
-                        const isRevenueForToday = is_new_os || (!is_new_os && delta > 0);
+                         const totalOsValue = os.paid_value > 0 ? os.paid_value : 1;
+                         const pixRatio = (os.parsed_pix_transfer || 0) / totalOsValue;
 
-                        if (isRevenueForToday && delta > 0) {
-                          const totalOsValue = os.paid_value > 0 ? os.paid_value : 1;
-                          const pixRatio = (os.parsed_pix_transfer || 0) / totalOsValue;
-
-                          if (pixRatio > 0 || (os.parsed_credit_debit || 0) > 0) {
-                            sum += (delta * pixRatio);
-                          } else {
-                            const methodLower = (os.payment_method || '').toLowerCase();
-                            if (methodLower.includes('pix') || methodLower.includes('transf') || methodLower.includes('dinheiro')) {
-                              sum += delta;
-                            }
-                          }
-                        }
+                         if (pixRatio > 0) {
+                           sum += (os.paid_value * pixRatio);
+                         } else {
+                           const methodLower = (os.payment_method || '').toLowerCase();
+                           if (methodLower.includes('pix') || methodLower.includes('transf') || methodLower.includes('dinheiro')) {
+                             sum += os.paid_value;
+                           }
+                         }
                      });
                      return acc + sum;
                    }, 0);
-                   
-                   const storeOs = storeOsMaq + storeOsBanco;
 
                    const storeRedeGross = results.redeResults.filter(r => r.success).reduce((acc, r) => {
-                     const txs = r.transactions.filter(tx => mapping[tx.storeName] === storeId && tx.date === targetDate);
+                     const txs = r.transactions.filter(tx => mapping[tx.storeName] === storeId);
                      return acc + txs.reduce((sum, tx) => sum + tx.grossAmount, 0);
                    }, 0);
 
                    const storeRedeNet = results.redeResults.filter(r => r.success).reduce((acc, r) => {
-                     const txs = r.transactions.filter(tx => mapping[tx.storeName] === storeId && tx.date === targetDate);
+                     const txs = r.transactions.filter(tx => mapping[tx.storeName] === storeId);
                      return acc + txs.reduce((sum, tx) => sum + tx.netAmount, 0);
                    }, 0);
 
                    const storeOfxIn = results.ofxResults.filter(r => mapping[r.alias] === storeId).reduce((acc, r) => {
-                     const txs = r.transactions.filter(tx => tx.type === 'in' && tx.date === targetDate);
+                     const txs = r.transactions.filter(tx => tx.type === 'in');
                      return acc + txs.reduce((sum, tx) => sum + tx.amount, 0);
                    }, 0);
 
                    const storeOfxOut = results.ofxResults.filter(r => mapping[r.alias] === storeId).reduce((acc, r) => {
-                     const txs = r.transactions.filter(tx => tx.type === 'out' && tx.date === targetDate);
+                     const txs = r.transactions.filter(tx => tx.type === 'out');
                      return acc + txs.reduce((sum, tx) => sum + tx.amount, 0);
                    }, 0);
+
+                   const storeOsMaq = Math.min(rawOsMaq, storeRedeNet);
+                   const availableOfxForPix = Math.max(0, storeOfxIn - storeRedeNet);
+                   const storeOsBanco = Math.min(rawOsPix, availableOfxForPix);
+                   
+                   const storeOs = storeOsMaq + storeOsBanco;
 
                    let storeStatus = null;
                    const hasGlobalOfx = Object.values(mapping).includes('GLOBAL') && results.ofxResults.some(r => mapping[r.alias] === 'GLOBAL');
