@@ -60,7 +60,6 @@ function StepIndicator({ current, step, title }: { current: number, step: number
 export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [targetDate, setTargetDate] = useState<string>(new Date().toISOString().split('T')[0]);
-  const [targetDateOs, setTargetDateOs] = useState<string>('');
   const [unmappedAliases, setUnmappedAliases] = useState<string[]>([]);
   
   const { data: stores = [] } = useStores();
@@ -74,14 +73,6 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
     if (acceptedFiles.length === 0) return;
     await processFiles(acceptedFiles);
   };
-
-  useEffect(() => {
-    if (targetDate) {
-      const d = new Date(targetDate + 'T12:00:00');
-      d.setDate(d.getDate() - 1);
-      setTargetDateOs(d.toISOString().split('T')[0]);
-    }
-  }, [targetDate]);
 
   useEffect(() => {
     if (isProcessing) return;
@@ -241,7 +232,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         }
 
         ofx.transactions.forEach(tx => {
-          const txDate = tx.date ? tx.date.split('T')[0] : targetDate;
+          const txDate = targetDate; // Usa sempre a data de conciliação escolhida
           txsToInsert.push({
             store_id,
             store_name: ofx.alias,
@@ -361,7 +352,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         const osDate = os.closed_at || os.opened_at;
         const is_new_os = (os as any).is_new_os;
         const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
-        const isRevenueForToday = (is_new_os && osDate && osDate.startsWith(targetDateOs || targetDate)) || (!is_new_os && delta > 0);
+        const isRevenueForToday = (is_new_os && osDate && osDate.startsWith(targetDate)) || (!is_new_os && delta > 0);
 
         if (isRevenueForToday && delta > 0) {
           const totalOsValue = os.paid_value > 0 ? os.paid_value : 1;
@@ -397,13 +388,15 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const totalRedeNet = results.redeResults.filter(r => r.success).reduce((acc, curr) => acc + curr.totalNet, 0);
   const totalRedeInterest = results.redeResults.filter(r => r.success).reduce((acc, curr) => acc + curr.totalInterest, 0);
 
-  const totalMaq = totalMaqFallback + totalRedeNet; // Usando valor líquido
+  // Mostra o valor líquido da Rede, conforme recebido pela adquirente
+  const totalMaq = totalMaqFallback + totalRedeNet;
 
   const totalMapaMetas = results.mapaMetasResults.filter(r => r.success).reduce((acc, curr) => acc + curr.totalFaturamento, 0);
 
-  const targetOfx = results.ofxResults.flatMap(r => r.transactions).filter(tx => tx.date && tx.date.startsWith(targetDate));
-  const totalOfxIn = targetOfx.filter(t => t.type === 'in').reduce((a,b) => a + b.amount, 0);
-  const totalOfxOut = targetOfx.filter(t => t.type === 'out').reduce((a,b) => a + b.amount, 0);
+  // OFX: todas as transações do arquivo, tageadas com a data de conciliação escolhida
+  const allOfxTx = results.ofxResults.flatMap(r => r.transactions);
+  const totalOfxIn = allOfxTx.filter(t => t.type === 'in').reduce((a,b) => a + b.amount, 0);
+  const totalOfxOut = allOfxTx.filter(t => t.type === 'out').reduce((a,b) => a + b.amount, 0);
   const totalOfxPreviousBalance = results.ofxResults.reduce((acc, r) => acc + (r.previousBalance || 0), 0);
   const totalOfxLedger = results.ofxResults.reduce((acc, r) => acc + (r.bankBalance || 0), 0);
 
@@ -553,7 +546,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                  <div className="text-3xl font-display font-bold text-[var(--text-primary)] mb-2">
                    <AnimatedNumber value={totalOs} format="currency" />
                  </div>
-                 <p className="text-xs text-[var(--text-tertiary)]">{filteredOsCount} OS Finalizadas</p>
+                 <p className="text-xs text-[var(--text-tertiary)]">{filteredOsCount} OS com Δ pago</p>
                </div>
 
                {/* Coluna 2: Maquininha */}
