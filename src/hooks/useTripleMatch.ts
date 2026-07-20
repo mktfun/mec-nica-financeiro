@@ -26,23 +26,23 @@ export function useTripleMatch(storeId: string | undefined, startDate: string, e
     queryKey: ['triple-match', storeId, startDate, endDate],
     enabled: !!storeId,
     queryFn: async () => {
-      // Pega transações no período (por occurred_at) da loja, que são de 'sistema', 'rede', 'maquininha' ou 'ofx' (do tipo IN)
+      // Pega transações no período (por target_date) da loja
       const { data: txs, error } = await supabase
         .from('transactions')
-        .select('amount, type, source, payment_method, occurred_at')
+        .select('amount, type, source, payment_method, target_date')
         .eq('store_id', storeId!)
         .eq('type', 'in')
         .in('source', ['sistema', 'patio', 'rede', 'maquininha', 'ofx'])
-        .gte('occurred_at', `${startDate}T00:00:00.000Z`)
-        .lte('occurred_at', `${endDate}T23:59:59.999Z`);
+        .gte('target_date', startDate)
+        .lte('target_date', endDate);
 
       if (error) throw error;
 
-      // Map to compute daily triple match
+      // Map to compute daily triple match base no target_date
       const dailyMap: Record<string, TripleMatchRow> = {};
 
       (txs || []).forEach(tx => {
-        const dateKey = tx.occurred_at?.split('T')[0];
+        const dateKey = tx.target_date;
         if (!dateKey) return;
         
         if (!dailyMap[dateKey]) {
@@ -70,21 +70,21 @@ export function useTripleMatch(storeId: string | undefined, startDate: string, e
 
       const result = Object.values(dailyMap).sort((a, b) => b.date.localeCompare(a.date));
       
-      // Calculate status
+      // Calculate status inteligente (Desacoplamento do OFX para maquininha)
       result.forEach(row => {
-        // Tolerância de R$ 1.00 ou 1% para aprovar
+        // Tolerância de R$ 2.00 para aprovar
         const diffOsToMachine = Math.abs(row.osEstimatedAmount - row.machineAmount);
-        const diffMachineToOfx = Math.abs(row.machineAmount - row.ofxAmount);
+        const diffOsToOfx = Math.abs(row.osEstimatedAmount - row.ofxAmount);
         
-        if (
-          row.osEstimatedAmount > 0 &&
-          diffOsToMachine < 2.0 && 
-          diffMachineToOfx < 2.0
-        ) {
-          row.status = 'approved';
-        } else if (
-          row.osEstimatedAmount === 0 && row.machineAmount === 0 && row.ofxAmount === 0
-        ) {
+        if (row.osEstimatedAmount > 0) {
+           if (row.machineAmount > 0) {
+             // Se tem registro de maquininha, a OS deve bater com ela (ignora OFX pois cai agrupado)
+             row.status = diffOsToMachine < 2.0 ? 'approved' : 'divergent';
+           } else {
+             // Se não tem maquininha (ex: PIX), a OS deve bater direto no Extrato (OFX)
+             row.status = diffOsToOfx < 2.0 ? 'approved' : 'divergent';
+           }
+        } else if (row.machineAmount === 0 && row.ofxAmount === 0) {
            row.status = 'approved';
         } else {
           row.status = 'divergent';
