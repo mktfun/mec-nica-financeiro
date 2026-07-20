@@ -218,7 +218,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           due_date: item.date || targetDate,
           status: 'recebido'
         }));
-        // We will call savePatioOsAndReceivables inside handleConfirm, BUT with the already enriched osArray
+        await savePatioOsAndReceivables(sid, storeName, [], parsedRecs);
       }
 
       // We do not save transactions here anymore. We just prepare the data for Step 3.
@@ -305,29 +305,29 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         r.transactions.forEach(t => {
           let store_id: string | null = mapping[t.storeName];
           if (store_id === 'GLOBAL') store_id = null;
-          if (t.date === targetDate || !t.date) {
+          
+          txsToInsert.push({
+            store_id,
+            occurred_at: t.date ? `${t.date}T12:00:00.000Z` : getDefaultDate(),
+            amount: t.netAmount,
+            type: 'in',
+            payment_method: t.method,
+            title: `Rede (Líquido) - ${t.storeName}`,
+            target_date: targetDate,
+            source: 'rede'
+          });
+          
+          if (t.interest > 0) {
             txsToInsert.push({
               store_id,
               occurred_at: t.date ? `${t.date}T12:00:00.000Z` : getDefaultDate(),
-              amount: t.netAmount,
-              type: 'in',
-              payment_method: t.method,
-              title: `Rede (Líquido) - ${t.storeName}`,
+              amount: t.interest,
+              type: 'out',
+              payment_method: 'Taxa',
+              title: `Taxa Rede - ${t.storeName}`,
               target_date: targetDate,
-              source: 'rede'
+              source: 'rede_taxa'
             });
-            if (t.interest > 0) {
-              txsToInsert.push({
-                store_id,
-                occurred_at: t.date ? `${t.date}T12:00:00.000Z` : getDefaultDate(),
-                amount: t.interest,
-                type: 'out',
-                payment_method: 'Taxa',
-                title: `Taxa Rede - ${t.storeName}`,
-                target_date: targetDate,
-                source: 'rede_taxa'
-              });
-            }
           }
         });
       });
