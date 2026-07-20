@@ -753,33 +753,17 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                  )}
                  <div className="mb-8 p-4 bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl">
                 <p className="text-xs font-semibold text-[var(--color-primary)] uppercase tracking-widest mb-3">📅 Datas de Referência</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2 uppercase tracking-wide">Data do Extrato Bancário (OFX)</label>
+                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2 uppercase tracking-wide">Data da Conciliação</label>
                     <input 
                       type="date" 
                       value={targetDate} 
                       onChange={e => setTargetDate(e.target.value)} 
                       className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
                     />
-                    <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Data em que o dinheiro entrou na conta</p>
+                    <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Data base para vincular e comparar OS, Extrato e Maquininha</p>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2 uppercase tracking-wide">Data de Fechamento das OSs</label>
-                    <input 
-                      type="date" 
-                      value={targetDateOs} 
-                      onChange={e => setTargetDateOs(e.target.value)} 
-                      className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
-                    />
-                    <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Data em que as OSs foram fechadas (geralmente 1 dia antes)</p>
-                  </div>
-                </div>
-                <div className="mt-3 flex items-start gap-2 bg-[var(--color-primary)]/5 border border-[var(--color-primary)]/20 rounded-lg p-3">
-                  <span className="text-[var(--color-primary)] text-xs font-semibold">ℹ️</span>
-                  <p className="text-xs text-[var(--text-secondary)]">
-                    <strong>Regra:</strong> O extrato do banco reflete os pagamentos do dia anterior. Se você está importando o extrato de <strong>{targetDate}</strong>, as OSs fechadas foram em <strong>{targetDateOs}</strong>.
-                  </p>
                 </div>
               </div>
                </div>
