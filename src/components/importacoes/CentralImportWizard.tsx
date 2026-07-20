@@ -414,19 +414,11 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
   const totalMapaMetas = results.mapaMetasResults.filter(r => r.success).reduce((acc, curr) => acc + curr.totalFaturamento, 0);
 
-  // OFX: usar matemática de saldos se disponível para evitar transferências falsas
-  const allOfxTx = results.ofxResults.flatMap(r => r.transactions);
+  // OFX: estritamente filtrado pelo targetDate, somando Entradas (in) e Saídas (out) do dia
+  const allOfxTx = results.ofxResults.flatMap(r => r.transactions).filter(tx => tx.date === targetDate);
   const totalOfxOut = allOfxTx.filter(t => t.type === 'out').reduce((a,b) => a + b.amount, 0);
+  const totalOfxIn = allOfxTx.filter(t => t.type === 'in').reduce((a,b) => a + b.amount, 0);
   
-  let totalOfxIn = 0;
-  // Se houver saldo inicial e final confiável na leitura do arquivo
-  const ofxWithBalances = results.ofxResults.find(r => r.bankBalance !== undefined && r.previousBalance !== undefined);
-  if (ofxWithBalances) {
-    const netGrowth = ofxWithBalances.bankBalance! - ofxWithBalances.previousBalance!;
-    totalOfxIn = netGrowth + totalOfxOut;
-  } else {
-    totalOfxIn = allOfxTx.filter(t => t.type === 'in').reduce((a,b) => a + b.amount, 0);
-  }
   const totalOfxPreviousBalance = results.ofxResults.reduce((acc, r) => acc + (r.previousBalance || 0), 0);
   const totalOfxLedger = results.ofxResults.reduce((acc, r) => acc + (r.bankBalance || 0), 0);
 
@@ -698,41 +690,48 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                    const storeOs = storeOsMaq + storeOsBanco;
 
                    const storeRedeGross = results.redeResults.filter(r => r.success).reduce((acc, r) => {
-                     const txs = r.transactions.filter(tx => mapping[tx.storeName] === storeId);
+                     const txs = r.transactions.filter(tx => mapping[tx.storeName] === storeId && tx.date === targetDate);
                      return acc + txs.reduce((sum, tx) => sum + tx.grossAmount, 0);
                    }, 0);
 
                    const storeRedeNet = results.redeResults.filter(r => r.success).reduce((acc, r) => {
-                     const txs = r.transactions.filter(tx => mapping[tx.storeName] === storeId);
+                     const txs = r.transactions.filter(tx => mapping[tx.storeName] === storeId && tx.date === targetDate);
                      return acc + txs.reduce((sum, tx) => sum + tx.netAmount, 0);
                    }, 0);
 
                    const storeOfxIn = results.ofxResults.filter(r => mapping[r.alias] === storeId).reduce((acc, r) => {
-                     const txs = r.transactions.filter(tx => tx.type === 'in');
+                     const txs = r.transactions.filter(tx => tx.type === 'in' && tx.date === targetDate);
                      return acc + txs.reduce((sum, tx) => sum + tx.amount, 0);
                    }, 0);
 
                    const storeOfxOut = results.ofxResults.filter(r => mapping[r.alias] === storeId).reduce((acc, r) => {
-                     const txs = r.transactions.filter(tx => tx.type === 'out');
+                     const txs = r.transactions.filter(tx => tx.type === 'out' && tx.date === targetDate);
                      return acc + txs.reduce((sum, tx) => sum + tx.amount, 0);
                    }, 0);
 
-                   // Alertas usando a nova lógica: Esperado no Banco = Rede Líquido + OS Pix
                    let storeStatus = null;
                    const hasGlobalOfx = Object.values(mapping).includes('GLOBAL') && results.ofxResults.some(r => mapping[r.alias] === 'GLOBAL');
                    
                    const storeExpectedBank = storeRedeNet + storeOsBanco;
-                   const diffExpectedVsBanco = Math.abs(storeExpectedBank - storeOfxIn);
-
+                   const diferencaExtrato = storeOfxIn - storeExpectedBank;
+                   
                    if (storeOs === 0 && storeRedeNet === 0 && (storeOfxIn === 0 || hasGlobalOfx)) {
                      storeStatus = <span className="text-[var(--text-tertiary)] text-xs flex items-center gap-1">Nenhum movimento mapeado</span>;
-                   } else if (diffExpectedVsBanco > 1) {
-                     if (storeOfxIn === 0 && !hasGlobalOfx) {
-                       storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><TrendingDown size={14} /> Faturado na Rede/OS, mas OFX zerado</span>;
-                     } else if (hasGlobalOfx) {
-                       storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><AlertCircle size={14} /> Faturado na Rede/OS (Conta Agrupada)</span>;
+                   } else if (Math.abs(diferencaExtrato) > 1) {
+                     if (diferencaExtrato > 1) {
+                        storeStatus = (
+                          <div className="text-yellow-500 text-xs flex flex-col gap-1 bg-yellow-500/10 p-2 rounded">
+                            <span className="flex items-center gap-1 font-semibold"><AlertCircle size={14} /> Sobra no Extrato: {diferencaExtrato.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                            <span>O extrato teve mais entradas do que foi mapeado em Rede e Pix. Ignorar ou contabilizar?</span>
+                          </div>
+                        );
                      } else {
-                       storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Divergência: Esperado (Rede+Pix) difere do Banco</span>;
+                        storeStatus = (
+                          <div className="text-[var(--color-danger)] text-xs flex flex-col gap-1 bg-[var(--color-danger)]/10 p-2 rounded">
+                            <span className="flex items-center gap-1 font-semibold"><AlertCircle size={14} /> Faltou no Extrato: {Math.abs(diferencaExtrato).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                            <span>A soma de Rede + Pix é maior que a entrada do banco! Dinheiro sumiu?</span>
+                          </div>
+                        );
                      }
                    } else {
                      if (hasGlobalOfx) {
@@ -743,16 +742,37 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                    }
 
                    return (
-                     <div key={storeId} className="flex flex-col md:flex-row md:items-center justify-between p-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-canvas)]">
-                       <div className="font-semibold text-sm mb-2 md:mb-0">{store.name}</div>
-                       <div className="flex flex-wrap gap-4 text-sm text-[var(--text-secondary)]">
-                         <div>OS: <span className="font-mono text-[var(--text-primary)]">{storeOs.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>
-                         <div>Maquininha (Líq): <span className="font-mono text-[var(--color-warning)]">{storeRedeNet.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>
-                         <div>Banco (Entrada): <span className="font-mono text-[var(--color-success)]">{storeOfxIn.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>
-                         <div>Banco (Saída): <span className="font-mono text-[var(--color-accent-danger)]">{storeOfxOut.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>
-                       </div>
-                       <div className="mt-2 md:mt-0 font-medium">
+                     <div key={store.id} className="p-4 bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg hover:border-[var(--color-primary)]/50 transition-colors">
+                       <div className="flex justify-between items-center mb-4">
+                         <h5 className="font-semibold text-[var(--text-primary)] flex items-center gap-2">
+                           <div className="w-2 h-2 rounded-full bg-[var(--color-primary)]"></div>
+                           {store.name}
+                         </h5>
                          {storeStatus}
+                       </div>
+                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                         <div>
+                           <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-1">OS (Sistema)</p>
+                           <p className="font-semibold text-[var(--text-primary)]">{storeOs.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                           <p className="text-[10px] text-[var(--text-tertiary)]">Pix: {storeOsBanco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                           <p className="text-[10px] text-[var(--text-tertiary)]">Maq: {storeOsMaq.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                         </div>
+                         <div>
+                           <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Maquininha (Líq)</p>
+                           <p className="font-semibold text-[var(--text-primary)]">{storeRedeNet.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                           <p className="text-[10px] text-[var(--text-tertiary)]">Bruto: {storeRedeGross.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                         </div>
+                         <div className={Math.abs(diferencaExtrato) > 1 ? 'bg-yellow-500/10 p-2 rounded -m-2' : ''}>
+                           <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Banco (Entrada)</p>
+                           <p className="font-semibold text-[var(--text-primary)]">{storeOfxIn.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                           <p className="text-[10px] text-[var(--color-primary)] font-medium mt-1 border-t border-[var(--border-subtle)] pt-1">
+                             Esp. Rede+Pix: {(storeRedeNet + storeOsBanco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                           </p>
+                         </div>
+                         <div>
+                           <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Banco (Saída)</p>
+                           <p className="font-semibold text-[var(--color-danger)]">{storeOfxOut.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                         </div>
                        </div>
                      </div>
                    );

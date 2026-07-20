@@ -5,6 +5,7 @@ import { processOsFiles, OsImportResult } from '@/hooks/useOsImportProcessor';
 import { extractNumber } from '@/lib/parsers/numberUtils';
 import { parseRedeFile, RedeResult } from '@/lib/parsers/redeParser';
 import { parseMapaMetasPDF, MapaMetasResult } from '@/lib/parsers/mapaMetasParser';
+import { supabase } from '@/lib/supabase';
 
 export type UnifiedImportResult = {
   osFiles: OsImportResult[];
@@ -148,6 +149,20 @@ export function useCentralImport() {
             console.error(`Erro processando ${file.name} como maquininha genérica:`, err);
           }
         }
+      }
+
+      // 3. Puxa histórico do banco para calcular o verdadeiro delta_paid para o preview
+      if (newResults.osFiles.length > 0) {
+        const { data: existingOs } = await supabase.from('patio_os').select('os_number, paid_value');
+        const existingMap = new Map((existingOs || []).map(o => [String(o.os_number), Number(o.paid_value)]));
+        
+        newResults.osFiles.forEach(osResult => {
+          osResult.osArray.forEach(os => {
+            const oldValue = existingMap.get(String(os.os_number)) || 0;
+            (os as any).delta_paid = Math.max(0, os.paid_value - oldValue);
+            (os as any).is_new_os = !existingMap.has(String(os.os_number));
+          });
+        });
       }
 
       setResults(prev => ({
