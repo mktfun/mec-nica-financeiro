@@ -279,7 +279,28 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           let store_id: string | null = mapping[t.storeName];
           if (store_id === 'GLOBAL') store_id = null;
           if (t.date === targetDate || !t.date) {
-             // Will be pushed during handleConfirm
+            txsToInsert.push({
+              store_id,
+              occurred_at: t.date ? `${t.date}T12:00:00.000Z` : getDefaultDate(),
+              amount: t.netAmount,
+              type: 'in',
+              payment_method: t.method,
+              title: `Rede (Líquido) - ${t.storeName}`,
+              target_date: targetDate,
+              source: 'rede'
+            });
+            if (t.interest > 0) {
+              txsToInsert.push({
+                store_id,
+                occurred_at: t.date ? `${t.date}T12:00:00.000Z` : getDefaultDate(),
+                amount: t.interest,
+                type: 'out',
+                payment_method: 'Taxa',
+                title: `Taxa Rede - ${t.storeName}`,
+                target_date: targetDate,
+                source: 'rede_taxa'
+              });
+            }
           }
         });
       });
@@ -785,10 +806,10 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   );
 }
 
-import { useTripleMatch } from '@/hooks/useTripleMatch';
+import { useTripleMatchAI } from '@/hooks/useTripleMatch';
 
 function TripleMatchUI({ results, targetDate, mapping }: { results: any, targetDate: string, mapping: any }) {
-  const matcher = useTripleMatch();
+  const matcher = useTripleMatchAI();
 
   const handleRunMatch = () => {
     // Flatten arrays

@@ -170,10 +170,10 @@ export function useExtrato(storeId: string, startDate: string, endDate: string) 
         query = query.eq('store_id', storeId);
       }
       if (startDate) {
-        query = query.gte('occurred_at', startDate);
+        query = query.gte('occurred_at', `${startDate}T00:00:00.000Z`);
       }
       if (endDate) {
-        query = query.lte('occurred_at', endDate);
+        query = query.lte('occurred_at', `${endDate}T23:59:59.999Z`);
       }
 
       const { data, error } = await query;
