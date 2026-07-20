@@ -51,6 +51,7 @@ export function ResumoDiaPanel({
 }: ResumoDiaPanelProps) {
   const [isSaved, setIsSaved] = useState(false);
   const [anomalies, setAnomalies] = useState<TransactionRow[]>([]);
+  const [ofxIncome, setOfxIncome] = useState(0);
 
   const { data: currentSnapshot } = useDailySnapshot(selectedDate);
   const { data: recebiveis = [] } = useRecebiveis();
@@ -59,19 +60,30 @@ export function ResumoDiaPanel({
   const saveSnapshot = useSaveDailySnapshot();
 
   useEffect(() => {
-    const fetchAnomalies = async () => {
-      const { data } = await supabase
+    const fetchData = async () => {
+      // Busca anomalias (transações sem OS)
+      const { data: anomData } = await supabase
         .from('transactions')
         .select('*')
         .eq('target_date', selectedDate)
         .neq('source', 'ofx')
         .is('os_number', null);
 
-      if (data) {
-        setAnomalies(data as TransactionRow[]);
+      if (anomData) setAnomalies(anomData as TransactionRow[]);
+
+      // Busca receitas OFX do dia (apenas entradas)
+      const { data: ofxData } = await supabase
+        .from('transactions')
+        .select('amount')
+        .eq('target_date', selectedDate)
+        .eq('source', 'ofx')
+        .eq('type', 'in');
+
+      if (ofxData) {
+        setOfxIncome(ofxData.reduce((acc, t) => acc + Number(t.amount || 0), 0));
       }
     };
-    fetchAnomalies();
+    fetchData();
   }, [selectedDate]);
 
   const totalRecebiveis = recebiveis
@@ -188,10 +200,11 @@ export function ResumoDiaPanel({
       {/* Internal Details Section (Clean Design) */}
       <div className="p-6">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-y-6 gap-x-4 mb-6">
-          <CleanMetric label="Saldo OFX Total" value={totalBancario} />
-          <CleanMetric label="Pátio (Aberto)" value={totalPatio} />
-          <CleanMetric label="A Receber" value={totalRecebiveis} />
-          <CleanMetric label="Faturamento Hoje" value={faturamentoAtual} />
+          <CleanMetric label="Saldo OFX Total" value={totalBancario} subtext="Líquido OFX do dia" />
+          <CleanMetric label="Faturamento Sistema" value={totalSistema} subtext="OSs importadas do dia" />
+          <CleanMetric label="Pátio em Aberto" value={totalPatio} subtext="OSs não pagas" />
+          <CleanMetric label="A Receber" value={totalRecebiveis} subtext="Recebíveis pendentes" />
+          <CleanMetric label="Receita OFX" value={ofxIncome} subtext="Entradas bancárias" />
           <div className="flex flex-col gap-1">
             <span className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-widest font-semibold">Progresso da Meta</span>
             <span className="font-display font-bold text-xl text-[var(--text-primary)]">
