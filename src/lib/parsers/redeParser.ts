@@ -26,7 +26,7 @@ export async function parseRedeFile(file: File): Promise<RedeResult> {
     const workbook = XLSX.read(buffer, { type: 'buffer' });
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];
-    const json = XLSX.utils.sheet_to_json<any[]>(sheet, { header: 1 });
+    const json = XLSX.utils.sheet_to_json<any[]>(sheet, { header: 1, raw: false });
 
     if (json.length < 3) {
       throw new Error("Arquivo muito pequeno.");
@@ -82,13 +82,25 @@ export async function parseRedeFile(file: File): Promise<RedeResult> {
       totalNet += netAmount;
       totalInterest += interest;
 
+      // Tenta achar a data na linha (formato DD/MM/YYYY ou similar)
+      let rowDate = targetDate;
+      for (const cell of row) {
+        if (typeof cell === 'string') {
+          const m = cell.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+          if (m) {
+             rowDate = `${m[3]}-${m[2]}-${m[1]}`;
+             break;
+          }
+        }
+      }
+
       transactions.push({
         storeName,
         method,
         grossAmount,
         netAmount,
         interest,
-        date: targetDate
+        date: rowDate
       });
     }
 

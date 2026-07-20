@@ -364,18 +364,17 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
   // Totais (Com Filtro Estrito para Preview)
   let filteredOsCount = 0;
+  let allOsCount = 0;
   let totalOsMaqGlobal = 0;
   let totalOsBancoGlobal = 0;
 
   const totalOs = results.osFiles.reduce((acc, curr) => {
      let sum = 0;
      curr.osArray.forEach(os => {
-        const osDate = os.closed_at || os.opened_at;
-        const is_new_os = (os as any).is_new_os;
+        allOsCount++;
         const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
-        const isRevenueForToday = is_new_os || (!is_new_os && delta > 0);
 
-        if (isRevenueForToday && delta > 0) {
+        if (delta > 0) {
           const totalOsValue = os.paid_value > 0 ? os.paid_value : 1;
           const creditRatio = (os.parsed_credit_debit || 0) / totalOsValue;
           const pixRatio = (os.parsed_pix_transfer || 0) / totalOsValue;
@@ -405,19 +404,29 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
      return acc;
   }, 0);
 
-  const totalRedeGross = results.redeResults.filter(r => r.success).reduce((acc, curr) => acc + curr.totalGross, 0);
-  const totalRedeNet = results.redeResults.filter(r => r.success).reduce((acc, curr) => acc + curr.totalNet, 0);
-  const totalRedeInterest = results.redeResults.filter(r => r.success).reduce((acc, curr) => acc + curr.totalInterest, 0);
+  const redeFiltered = results.redeResults.filter(r => r.success).flatMap(r => r.transactions).filter(tx => tx.date === targetDate);
+  const totalRedeGross = redeFiltered.reduce((acc, curr) => acc + curr.grossAmount, 0);
+  const totalRedeNet = redeFiltered.reduce((acc, curr) => acc + curr.netAmount, 0);
+  const totalRedeInterest = redeFiltered.reduce((acc, curr) => acc + curr.interest, 0);
 
   // Mostra o valor líquido da Rede, conforme recebido pela adquirente
   const totalMaq = totalMaqFallback + totalRedeNet;
 
   const totalMapaMetas = results.mapaMetasResults.filter(r => r.success).reduce((acc, curr) => acc + curr.totalFaturamento, 0);
 
-  // OFX: todas as transações do arquivo, tageadas com a data de conciliação escolhida
+  // OFX: usar matemática de saldos se disponível para evitar transferências falsas
   const allOfxTx = results.ofxResults.flatMap(r => r.transactions);
-  const totalOfxIn = allOfxTx.filter(t => t.type === 'in').reduce((a,b) => a + b.amount, 0);
   const totalOfxOut = allOfxTx.filter(t => t.type === 'out').reduce((a,b) => a + b.amount, 0);
+  
+  let totalOfxIn = 0;
+  // Se houver saldo inicial e final confiável na leitura do arquivo
+  const ofxWithBalances = results.ofxResults.find(r => r.bankBalance !== undefined && r.previousBalance !== undefined);
+  if (ofxWithBalances) {
+    const netGrowth = ofxWithBalances.bankBalance! - ofxWithBalances.previousBalance!;
+    totalOfxIn = netGrowth + totalOfxOut;
+  } else {
+    totalOfxIn = allOfxTx.filter(t => t.type === 'in').reduce((a,b) => a + b.amount, 0);
+  }
   const totalOfxPreviousBalance = results.ofxResults.reduce((acc, r) => acc + (r.previousBalance || 0), 0);
   const totalOfxLedger = results.ofxResults.reduce((acc, r) => acc + (r.bankBalance || 0), 0);
 

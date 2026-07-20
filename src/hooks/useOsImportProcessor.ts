@@ -97,9 +97,15 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
               if (colName === 'status') colMap.status = idx;
               if (colName === 'finalizada em' || colName === 'data fim' || colName.includes('fechamento') || colName.includes('finalizada em') || colName.includes('data saida') || colName.includes('data saída')) colMap.closedAt = idx;
               if (colName.includes('total da os') || colName.includes('valor total') || colName === 'total' || colName.includes('r$ total') || colName.includes('vlr total') || colName.includes('vl total')) colMap.totalValue = idx;
-              if (colName.includes('pagto') || colName.includes('liquidado') || colName.includes('total pago') || colName.includes('valor pago') || colName.includes('recebid') || colName === 'pago' || colName.includes('pago na')) colMap.paidValue = idx;
+              if (colName.includes('pagto') || colName.includes('liquidado') || colName.includes('total pago') || colName.includes('valor pago') || colName.includes('recebid') || colName === 'pago' || colName.includes('pago na') || colName.includes('restante') || colName.includes('falta')) colMap.paidValue = idx;
               if (colName.includes('forma') && colName.includes('pagamento')) colMap.paymentMethod = idx;
             });
+            
+            // Fallback for paidValue: If there's a column just called 'recebido' or 'pago'
+            if (colMap.paidValue === undefined) {
+               const idx = headers.findIndex(h => typeof h === 'string' && (h.toLowerCase().trim() === 'recebido' || h.toLowerCase().trim() === 'pago'));
+               if (idx !== -1) colMap.paidValue = idx;
+            }
             break;
           }
         }
