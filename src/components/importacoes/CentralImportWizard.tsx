@@ -316,7 +316,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             const is_new_os = (os as any).is_new_os;
             const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
             
-            const isRevenueForToday = (is_new_os && osDate && osDate.startsWith(targetDate)) || (!is_new_os && delta > 0);
+            const isRevenueForToday = is_new_os || (!is_new_os && delta > 0);
             
             if (isRevenueForToday && delta > 0) {
               txsToInsert.push({
@@ -373,7 +373,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         const osDate = os.closed_at || os.opened_at;
         const is_new_os = (os as any).is_new_os;
         const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
-        const isRevenueForToday = (is_new_os && osDate && osDate.startsWith(targetDate)) || (!is_new_os && delta > 0);
+        const isRevenueForToday = is_new_os || (!is_new_os && delta > 0);
 
         if (isRevenueForToday && delta > 0) {
           const totalOsValue = os.paid_value > 0 ? os.paid_value : 1;
@@ -642,7 +642,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                         const osDate = os.closed_at || os.opened_at;
                         const is_new_os = (os as any).is_new_os;
                         const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
-                        const isRevenueForToday = (is_new_os && osDate && osDate.startsWith(targetDate)) || (!is_new_os && delta > 0);
+                        const isRevenueForToday = is_new_os || (!is_new_os && delta > 0);
 
                         if (isRevenueForToday && delta > 0) {
                           const totalOsValue = os.paid_value > 0 ? os.paid_value : 1;
@@ -668,7 +668,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                         const osDate = os.closed_at || os.opened_at;
                         const is_new_os = (os as any).is_new_os;
                         const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
-                        const isRevenueForToday = (is_new_os && osDate && osDate.startsWith(targetDate)) || (!is_new_os && delta > 0);
+                        const isRevenueForToday = is_new_os || (!is_new_os && delta > 0);
 
                         if (isRevenueForToday && delta > 0) {
                           const totalOsValue = os.paid_value > 0 ? os.paid_value : 1;
@@ -700,12 +700,12 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                    }, 0);
 
                    const storeOfxIn = results.ofxResults.filter(r => mapping[r.alias] === storeId).reduce((acc, r) => {
-                     const txs = r.transactions.filter(tx => tx.date && tx.date.startsWith(targetDate) && tx.type === 'in');
+                     const txs = r.transactions.filter(tx => tx.type === 'in');
                      return acc + txs.reduce((sum, tx) => sum + tx.amount, 0);
                    }, 0);
 
                    const storeOfxOut = results.ofxResults.filter(r => mapping[r.alias] === storeId).reduce((acc, r) => {
-                     const txs = r.transactions.filter(tx => tx.date && tx.date.startsWith(targetDate) && tx.type === 'out');
+                     const txs = r.transactions.filter(tx => tx.type === 'out');
                      return acc + txs.reduce((sum, tx) => sum + tx.amount, 0);
                    }, 0);
 
