@@ -131,7 +131,7 @@ export function useCentralImport() {
           
           // Depois, testa se é OS
           const osRes = osResults.find(r => r.fileName === file.name);
-          if (osRes && osRes.success && osRes.osCount > 0) {
+          if (osRes && osRes.success && osRes.osArray.length > 0) {
             newResults.osFiles.push(osRes);
             continue; // Sucesso como OS
           }

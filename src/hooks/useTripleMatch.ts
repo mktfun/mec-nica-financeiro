@@ -15,7 +15,8 @@ import { supabase } from '@/lib/supabase';
 export type TripleMatchRow = {
   date: string;
   osAmount: number;
-  osEstimatedAmount: number; // com juros descontados
+  osPixAmount?: number;
+  osEstimatedAmount: number; // For backward compat
   machineAmount: number;
   ofxAmount: number;
   status: 'approved' | 'divergent';
@@ -49,6 +50,7 @@ export function useTripleMatch(storeId: string | undefined, startDate: string, e
           dailyMap[dateKey] = {
             date: dateKey,
             osAmount: 0,
+            osPixAmount: 0,
             osEstimatedAmount: 0,
             machineAmount: 0,
             ofxAmount: 0,
@@ -60,6 +62,29 @@ export function useTripleMatch(storeId: string | undefined, startDate: string, e
 
         if (tx.source === 'sistema' || tx.source === 'patio') {
           dailyMap[dateKey].osAmount += amt;
+          
+          const methodLower = (tx.payment_method || '').toLowerCase();
+          let parsedPix = 0;
+          
+          if (methodLower.includes(':')) {
+            const parts = methodLower.split(';');
+            parts.forEach(part => {
+               const [m, v] = part.split(':').map(s => s.trim());
+               if (m && v) {
+                 const val = parseFloat(v) || 0;
+                 if (m.includes('pix') || m.includes('transf') || m.includes('dinheiro')) parsedPix += val;
+               }
+            });
+          } else {
+             if (methodLower.includes('pix') || methodLower.includes('transf') || methodLower.includes('dinheiro') || !methodLower) {
+               // if blank, assume Pix/Dinheiro for safety? Wait, usually if blank it might be anything. But we'll follow previous heuristics.
+               if (methodLower.includes('pix') || methodLower.includes('transf') || methodLower.includes('dinheiro')) {
+                 parsedPix += amt;
+               }
+             }
+          }
+          
+          dailyMap[dateKey].osPixAmount += parsedPix;
           dailyMap[dateKey].osEstimatedAmount += amt; 
         } else if (tx.source === 'rede' || tx.source === 'maquininha') {
           dailyMap[dateKey].machineAmount += amt;
@@ -70,24 +95,15 @@ export function useTripleMatch(storeId: string | undefined, startDate: string, e
 
       const result = Object.values(dailyMap).sort((a, b) => b.date.localeCompare(a.date));
       
-      // Calculate status inteligente (Desacoplamento do OFX para maquininha)
+      // Calculate status inteligente: Rede (Crédito/Débito) + OS (Pix) vs OFX
       result.forEach(row => {
-        // Tolerância de R$ 2.00 para aprovar
-        const diffOsToMachine = Math.abs(row.osEstimatedAmount - row.machineAmount);
-        const diffOsToOfx = Math.abs(row.osEstimatedAmount - row.ofxAmount);
+        const expectedBank = row.machineAmount + (row.osPixAmount || 0);
+        const diff = Math.abs(expectedBank - row.ofxAmount);
         
-        if (row.osEstimatedAmount > 0) {
-           if (row.machineAmount > 0) {
-             // Se tem registro de maquininha, a OS deve bater com ela (ignora OFX pois cai agrupado)
-             row.status = diffOsToMachine < 2.0 ? 'approved' : 'divergent';
-           } else {
-             // Se não tem maquininha (ex: PIX), a OS deve bater direto no Extrato (OFX)
-             row.status = diffOsToOfx < 2.0 ? 'approved' : 'divergent';
-           }
-        } else if (row.machineAmount === 0 && row.ofxAmount === 0) {
-           row.status = 'approved';
+        if (expectedBank > 0 || row.ofxAmount > 0) {
+           row.status = diff < 2.0 ? 'approved' : 'divergent';
         } else {
-          row.status = 'divergent';
+           row.status = 'approved';
         }
       });
 

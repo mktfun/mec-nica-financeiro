@@ -605,26 +605,25 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
              <div className="mb-8 p-6 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl">
                <h4 className="font-semibold text-[var(--text-primary)] mb-4">Status da Conciliação Global</h4>
                
-               {/* Comparamos o BRUTO da Rede com o OS (Maq), mas mostramos o líquido pra conciliar com o Banco */}
-               {Math.abs(totalOsMaqGlobal - (totalRedeGross || totalMaqFallback)) > 1 && totalOsMaqGlobal > 0 && (totalRedeGross > 0 || totalMaqFallback > 0) ? (
-                 <div className="text-[var(--color-accent-danger)] text-sm flex items-center gap-2 bg-[var(--color-accent-danger)]/10 p-3 rounded mb-2 border border-[var(--color-accent-danger)]/20">
-                   <X size={16} /> <strong>Divergência Crítica Bruta:</strong> O Valor Bruto da Maquininha ({totalRedeGross.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) diverge das OSs geradas ({totalOsMaqGlobal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}).
-                 </div>
-               ) : (totalOsMaqGlobal > 0 && (totalRedeGross > 0 || totalMaqFallback > 0)) ? (
-                 <div className="text-[var(--color-success)] text-sm flex items-center gap-2 bg-[var(--color-success)]/10 p-3 rounded mb-2">
-                   <CheckCircle2 size={16} /> <strong>OS vs Maquininha Bateu!</strong> Valor Bruto conciliado com sucesso.
-                 </div>
-               ) : null}
-
-               {Math.abs(totalMaq - totalOfxIn) > 1 && totalMaq > 0 && totalOfxIn > 0 ? (
-                 <div className="text-[var(--color-warning)] text-sm flex items-center gap-2 bg-[var(--color-warning)]/10 p-3 rounded mt-2 border border-[var(--color-warning)]/20">
-                   <CheckCircle2 size={16} /> <strong>Divergência de Depósito:</strong> O valor que entrou no banco ({totalOfxIn.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) difere do valor líquido da Rede ({totalMaq.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}).
-                 </div>
-               ) : (totalMaq > 0 && totalOfxIn > 0) ? (
-                 <div className="text-[var(--color-success)] text-sm flex items-center gap-2 bg-[var(--color-success)]/10 p-3 rounded mt-2">
-                   <CheckCircle2 size={16} /> <strong>Maquininha vs Banco Bateu!</strong> Valor líquido depositado com sucesso.
-                 </div>
-               ) : null}
+               {/* Comparamos Rede Líquido + Pix (OS) contra o Banco (OFX) */}
+               {(() => {
+                 const totalExpectedBank = totalMaq + totalOsBancoGlobal;
+                 const diff = Math.abs(totalExpectedBank - totalOfxIn);
+                 if (diff > 1 && totalExpectedBank > 0 && totalOfxIn > 0) {
+                   return (
+                     <div className="text-[var(--color-accent-danger)] text-sm flex items-center gap-2 bg-[var(--color-accent-danger)]/10 p-3 rounded mb-2 border border-[var(--color-accent-danger)]/20">
+                       <X size={16} /> <strong>Divergência de Depósito:</strong> O valor que entrou no banco ({totalOfxIn.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) difere do esperado (Rede + Pix = {totalExpectedBank.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}).
+                     </div>
+                   );
+                 } else if (totalExpectedBank > 0 && totalOfxIn > 0) {
+                   return (
+                     <div className="text-[var(--color-success)] text-sm flex items-center gap-2 bg-[var(--color-success)]/10 p-3 rounded mb-2">
+                       <CheckCircle2 size={16} /> <strong>Conciliação Perfeita!</strong> O banco recebeu exatamente o valor líquido da Rede somado ao Pix das OSs.
+                     </div>
+                   );
+                 }
+                 return null;
+               })()}
              </div>
 
              {/* Análise por Loja */}
@@ -709,48 +708,28 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                      return acc + txs.reduce((sum, tx) => sum + tx.amount, 0);
                    }, 0);
 
-                   // Alertas
+                   // Alertas usando a nova lógica: Esperado no Banco = Rede Líquido + OS Pix
                    let storeStatus = null;
                    const hasGlobalOfx = Object.values(mapping).includes('GLOBAL') && results.ofxResults.some(r => mapping[r.alias] === 'GLOBAL');
+                   
+                   const storeExpectedBank = storeRedeNet + storeOsBanco;
+                   const diffExpectedVsBanco = Math.abs(storeExpectedBank - storeOfxIn);
 
-                   if (storeOs === 0 && storeRedeGross === 0 && (storeOfxIn === 0 || hasGlobalOfx)) {
+                   if (storeOs === 0 && storeRedeNet === 0 && (storeOfxIn === 0 || hasGlobalOfx)) {
                      storeStatus = <span className="text-[var(--text-tertiary)] text-xs flex items-center gap-1">Nenhum movimento mapeado</span>;
-                   } else if (storeOsMaq === 0) {
-                     if (storeOfxIn > 0 && storeRedeNet === 0) {
-                       storeStatus = <span className="text-[var(--color-accent-purple)] text-xs flex items-center gap-1"><AlertCircle size={14} /> Faturamento no Extrato sem OS e s/ Rede</span>;
-                     } else if (storeRedeNet > 0 && storeOfxIn === 0 && !hasGlobalOfx) {
-                       storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><TrendingDown size={14} /> Faturamento na Maq. sem OS (OFX zerado)</span>;
-                     } else if (storeRedeNet > 0 && storeOfxIn > 0) {
-                       if (Math.abs(storeRedeNet - storeOfxIn) > 1) {
-                         storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Faturamento s/ OS (Maq) e Divergência Maq x Banco</span>;
-                       } else {
-                         storeStatus = <span className="text-[var(--color-accent-purple)] text-xs flex items-center gap-1"><AlertCircle size={14} /> Faturamento na Maq. sem OS mapeada</span>;
-                       }
-                     } else if (storeRedeNet > 0 && storeOfxIn === 0 && hasGlobalOfx) {
-                         storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><AlertCircle size={14} /> Faturamento na Maq. sem OS</span>;
+                   } else if (diffExpectedVsBanco > 1) {
+                     if (storeOfxIn === 0 && !hasGlobalOfx) {
+                       storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><TrendingDown size={14} /> Faturado na Rede/OS, mas OFX zerado</span>;
+                     } else if (hasGlobalOfx) {
+                       storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><AlertCircle size={14} /> Faturado na Rede/OS (Conta Agrupada)</span>;
+                     } else {
+                       storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Divergência: Esperado (Rede+Pix) difere do Banco</span>;
                      }
                    } else {
-                     // storeOsMaq > 0 or storeOsBanco > 0
-                     if (storeRedeGross === 0 && storeOfxIn === 0) {
-                       storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><AlertCircle size={14} /> OS faturada, mas Maq e Banco zerados</span>;
-                     } else if (storeRedeGross === 0 && storeOfxIn > 0) {
-                       storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><AlertCircle size={14} /> OS e Banco identificados, sem Rede</span>;
-                     } else if (storeRedeGross > 0 && storeOfxIn === 0 && !hasGlobalOfx) {
-                       storeStatus = <span className="text-[var(--color-warning)] text-xs flex items-center gap-1"><TrendingDown size={14} /> OS e Maq faturados, mas Banco zerado</span>;
-                     } else if (storeRedeGross > 0 && storeOfxIn > 0) {
-                       if (Math.abs(storeOsMaq - storeRedeGross) > 1) {
-                         storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Divergência OS x Maq</span>;
-                       } else if (Math.abs(storeRedeNet - storeOfxIn) > 1) {
-                         storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Divergência Maq x Banco</span>;
-                       } else {
-                         storeStatus = <span className="text-[var(--color-success)] text-xs flex items-center gap-1"><CheckCircle2 size={14} /> Tudo Certo!</span>;
-                       }
-                     } else if (hasGlobalOfx && storeRedeGross > 0) {
-                       if (Math.abs(storeOsMaq - storeRedeGross) > 1) {
-                         storeStatus = <span className="text-[var(--color-accent-danger)] text-xs flex items-center gap-1"><X size={14} /> Divergência OS x Maq</span>;
-                       } else {
-                         storeStatus = <span className="text-[var(--color-success)] text-xs flex items-center gap-1"><CheckCircle2 size={14} /> OK (OFX Geral)</span>;
-                       }
+                     if (hasGlobalOfx) {
+                       storeStatus = <span className="text-[var(--color-success)] text-xs flex items-center gap-1"><CheckCircle2 size={14} /> OK (OFX Geral)</span>;
+                     } else {
+                       storeStatus = <span className="text-[var(--color-success)] text-xs flex items-center gap-1"><CheckCircle2 size={14} /> Tudo Certo!</span>;
                      }
                    }
 
