@@ -224,12 +224,26 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       // We do not save transactions here anymore. We just prepare the data for Step 3.
       
       const validAmounts = new Set<number>();
+      
+      // Adiciona totais individuais da OS (Total e Pix)
       results.osFiles.filter(r => r.success).forEach(r => r.osArray.forEach(os => {
         if (os.paid_value) validAmounts.add(os.paid_value);
+        if (os.pix_transfer_value) validAmounts.add(os.pix_transfer_value);
       }));
-      results.redeResults.filter(r => r.success).forEach(r => r.transactions.forEach(tx => {
-        if (tx.netAmount) validAmounts.add(tx.netAmount);
-      }));
+      
+      // Agrupa valores líquidos da Rede por loja e injeta a soma geral (o banco recebe 1 depósito)
+      const storeRedeTotals: Record<string, number> = {};
+      results.redeResults.filter(r => r.success).forEach(r => {
+        r.transactions.forEach(tx => {
+          if (tx.netAmount) validAmounts.add(tx.netAmount); // Mantém individual just in case
+          let sid: string | null = mapping[tx.storeName];
+          if (sid) {
+            storeRedeTotals[sid] = (storeRedeTotals[sid] || 0) + tx.netAmount;
+          }
+        });
+      });
+      // Adiciona as somas consolidadas da Rede
+      Object.values(storeRedeTotals).forEach(total => validAmounts.add(total));
 
       // OFX
       results.ofxResults.forEach(ofx => {
