@@ -342,7 +342,8 @@ function AiSettingsForm() {
     return <div className="p-4 flex justify-center"><LoadingSpinner size="sm" text="" /></div>;
   }
 
-  const handleSave = () => {
+  const handleSave = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
     saveSettings.mutate({ provider, model, api_key: apiKey });
   };
 
@@ -387,6 +388,10 @@ function AiSettingsForm() {
         <label className="text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-1 block">API Key</label>
         <input 
           type="password" 
+          autoComplete="new-password"
+          data-lpignore="true"
+          data-1p-ignore="true"
+          spellCheck="false"
           value={apiKey} 
           onChange={(e) => setApiKey(e.target.value)}
           placeholder="Insira sua chave de API..."

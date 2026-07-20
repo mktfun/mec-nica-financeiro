@@ -769,15 +769,75 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                </div>
              </div>
 
+             <TripleMatchUI results={results} targetDate={targetDate} mapping={mapping} />
+
              <Button 
                onClick={handleConfirm}
                disabled={isSaving}
-               className="w-full py-6 text-lg font-semibold rounded-[var(--radius-full)] shadow-[0_8px_30px_rgba(var(--color-primary-rgb),0.4)]"
+               className="w-full py-6 text-lg font-semibold rounded-[var(--radius-full)] shadow-[0_8px_30px_rgba(var(--color-primary-rgb),0.4)] mt-4"
              >
                {isSaving ? 'Salvando Match Triplo...' : 'Confirmar Lançamentos Validados'}
              </Button>
            </Card>
         </motion.div>
+      )}
+    </div>
+  );
+}
+
+import { useTripleMatch } from '@/hooks/useTripleMatch';
+
+function TripleMatchUI({ results, targetDate, mapping }: { results: any, targetDate: string, mapping: any }) {
+  const matcher = useTripleMatch();
+
+  const handleRunMatch = () => {
+    // Flatten arrays
+    const osList = results.osFiles.flatMap((r: any) => r.osArray);
+    const redeList = results.redeResults.flatMap((r: any) => r.transactions);
+    const ofxList = results.ofxResults.flatMap((r: any) => r.transactions);
+    
+    // Executa Match Exato local e devolve os que sobraram
+    const { unmatchedOs, unmatchedRede, unmatchedOfx } = matcher.runExactMatch(osList, redeList, ofxList);
+
+    // Opcional: Aciona a IA pros picadinhos (Pode demorar, o ideal é o usuário clicar para rodar)
+    if (unmatchedOs.length > 0 && (unmatchedRede.length > 0 || unmatchedOfx.length > 0)) {
+      matcher.runAiMatch(unmatchedOs, unmatchedRede, unmatchedOfx);
+    }
+  };
+
+  return (
+    <div className="p-6 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl mt-4 mb-4">
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <h4 className="font-semibold text-[var(--text-primary)] flex items-center gap-2"><CheckCircle2 className="text-[var(--color-accent-teal)]" size={18} /> Conciliação Inteligente (Triple Match)</h4>
+          <p className="text-sm text-[var(--text-tertiary)]">O motor cruza dados e usa Inteligência Artificial para achar os "picadinhos" (OS pagas em 3 cartões ou Pix diferentes).</p>
+        </div>
+        <Button onClick={handleRunMatch} disabled={matcher.isProcessing} variant="outline" className="border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10">
+          {matcher.isProcessing ? 'Calculando Matches...' : 'Analisar Sobras'}
+        </Button>
+      </div>
+
+      {matcher.exactMatches.length > 0 && (
+        <div className="text-sm text-[var(--color-success)] mb-2">✓ {matcher.exactMatches.length} Matches Exatos (Matemática pura) encontrados.</div>
+      )}
+
+      {matcher.aiSuggestions.length > 0 && (
+        <div className="mt-4">
+          <h5 className="text-xs uppercase tracking-widest text-[var(--color-accent-purple)] mb-3 font-semibold">✨ Sugestões da Inteligência Artificial</h5>
+          <div className="space-y-2">
+            {matcher.aiSuggestions.map((sug, i) => (
+              <div key={i} className="p-3 bg-[var(--bg-canvas)] border border-[var(--color-accent-purple)]/30 rounded-lg flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold">OS <span className="text-[var(--color-primary)]">{sug.os_id}</span></p>
+                  <p className="text-xs text-[var(--text-tertiary)]">{sug.reasoning}</p>
+                </div>
+                <Badge variant="outline" className={sug.confidence > 80 ? 'border-green-500/50 text-green-400' : 'border-yellow-500/50 text-yellow-400'}>
+                  {sug.confidence}% Match
+                </Badge>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );
