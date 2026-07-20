@@ -223,15 +223,42 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
       // We do not save transactions here anymore. We just prepare the data for Step 3.
       
+      const validAmounts = new Set<number>();
+      results.osFiles.filter(r => r.success).forEach(r => r.osArray.forEach(os => {
+        if (os.paid_value) validAmounts.add(os.paid_value);
+      }));
+      results.redeResults.filter(r => r.success).forEach(r => r.transactions.forEach(tx => {
+        if (tx.netAmount) validAmounts.add(tx.netAmount);
+      }));
+
       // OFX
       results.ofxResults.forEach(ofx => {
         let store_id: string | null = mapping[ofx.alias];
         if (store_id === 'GLOBAL') store_id = null;
+        
+        // Verifica se o usuário decidiu contabilizar a sobra
+        const isIncluded = window.localStorage.getItem(`includeSobra_${store_id || 'GLOBAL'}`) === 'true';
+
         if (ofx.bankBalance !== undefined && store_id) {
           storeBankBalances[store_id] = ofx.bankBalance;
         }
 
         ofx.transactions.forEach(tx => {
+          if (tx.type === 'in' && !isIncluded) {
+            // Filtro de Sobra: Só mantém a transação se houver um valor aproximado na OS ou Rede
+            let hasMatch = false;
+            for (const val of validAmounts) {
+               if (Math.abs(val - tx.amount) < 0.05) {
+                 hasMatch = true;
+                 break;
+               }
+            }
+            if (!hasMatch) {
+              console.log(`[CentralImportWizard] Ignorando transação órfã (Sobra): R$ ${tx.amount}`);
+              return; // Descarta a transação
+            }
+          }
+
           const txDate = targetDate; // Usa sempre a data de conciliação escolhida
           txsToInsert.push({
             store_id,
@@ -722,10 +749,23 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                      storeStatus = <span className="text-[var(--text-tertiary)] text-xs flex items-center gap-1">Nenhum movimento mapeado</span>;
                    } else if (Math.abs(diferencaExtrato) > 1) {
                      if (diferencaExtrato > 1) {
+                        const isIncluded = window.localStorage.getItem(`includeSobra_${storeId}`) === 'true';
                         storeStatus = (
-                          <div className="text-yellow-500 text-xs flex flex-col gap-1 bg-yellow-500/10 p-2 rounded">
+                          <div className="text-yellow-500 text-xs flex flex-col gap-2 bg-yellow-500/10 p-3 rounded border border-yellow-500/20">
                             <span className="flex items-center gap-1 font-semibold"><AlertCircle size={14} /> Sobra no Extrato: {diferencaExtrato.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-                            <span>O extrato teve mais entradas do que foi mapeado em Rede e Pix. Ignorar ou contabilizar?</span>
+                            <span className="opacity-80">Valores sem OS ou Rede correspondente.</span>
+                            <label className="flex items-center gap-2 mt-1 cursor-pointer bg-black/10 p-2 rounded w-fit">
+                              <input 
+                                type="checkbox" 
+                                className="accent-yellow-600 w-4 h-4"
+                                checked={isIncluded}
+                                onChange={(e) => {
+                                  window.localStorage.setItem(`includeSobra_${storeId}`, e.target.checked ? 'true' : 'false');
+                                  setResults({...results});
+                                }}
+                              />
+                              <span className="font-medium text-[var(--text-primary)]">Contabilizar sobra e salvar no banco?</span>
+                            </label>
                           </div>
                         );
                      } else {
@@ -765,13 +805,15 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                            <p className="font-semibold text-[var(--text-primary)]">{storeRedeNet.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
                            <p className="text-[10px] text-[var(--text-tertiary)]">Bruto: {storeRedeGross.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
                          </div>
-                         <div className={Math.abs(diferencaExtrato) > 1 ? 'bg-yellow-500/10 p-2 rounded -m-2' : ''}>
-                           <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Banco (Entrada)</p>
-                           <p className="font-semibold text-[var(--text-primary)]">{storeOfxIn.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-                           <p className="text-[10px] text-[var(--color-primary)] font-medium mt-1 border-t border-[var(--border-subtle)] pt-1">
-                             Esp. Rede+Pix: {(storeRedeNet + storeOsBanco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                           </p>
-                         </div>
+                          <div className={Math.abs(diferencaExtrato) > 1 ? 'bg-yellow-500/10 p-2 rounded -m-2' : ''}>
+                            <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Banco (Entrada Validada)</p>
+                            <p className="font-semibold text-[var(--text-primary)]">{(storeRedeNet + storeOsBanco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                            {Math.abs(diferencaExtrato) > 1 && (
+                               <p className="text-[10px] text-[var(--color-primary)] font-medium mt-1 border-t border-[var(--border-subtle)] pt-1">
+                                 Total do Extrato Bruto: {storeOfxIn.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                               </p>
+                            )}
+                          </div>
                          <div>
                            <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Banco (Saída)</p>
                            <p className="font-semibold text-[var(--color-danger)]">{storeOfxOut.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
