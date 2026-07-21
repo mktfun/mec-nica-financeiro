@@ -279,7 +279,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             // Se não há valores de OS/Rede mapeados, não filtra (deixa passar tudo)
           }
 
-          const txDate = targetDate; // Usa sempre a data de conciliação escolhida
+          const txDate = tx.date ? tx.date.split('T')[0] : targetDate;
           txsToInsert.push({
             store_id,
             store_name: ofx.alias,
@@ -304,20 +304,21 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         if (store_id === 'GLOBAL') store_id = null;
         let formattedVenda = item.dateVenda;
         if (formattedVenda && formattedVenda.includes('/')) formattedVenda = formattedVenda.split('/').reverse().join('-');
-        if (formattedVenda === targetDate || !formattedVenda) {
-          txsToInsert.push({
-              store_id,
-              store_name: item.storeName,
-              title: `Recebimento Adquirente (${item.dateVenda || targetDate})`,
-              subtitle: item.storeName,
-              amount: item.amount || 0,
-              type: 'in',
-              occurred_at: item.dateCredito ? new Date(item.dateCredito.split('/').reverse().join('-')).toISOString() : `${targetDate}T12:00:00Z`,
-              target_date: targetDate,
-              icon_type: 'card',
-              source: 'maquininha'
-          });
-        }
+        
+        const txDate = formattedVenda ? formattedVenda.split('T')[0] : targetDate;
+        
+        txsToInsert.push({
+            store_id,
+            store_name: item.storeName,
+            title: `Recebimento Adquirente (${item.dateVenda || targetDate})`,
+            subtitle: item.storeName,
+            amount: item.amount || 0,
+            type: 'in',
+            occurred_at: item.dateCredito ? new Date(item.dateCredito.split('/').reverse().join('-')).toISOString() : `${txDate}T12:00:00Z`,
+            target_date: txDate,
+            icon_type: 'card',
+            source: 'maquininha'
+        });
       });
 
       // Rede (novo) - Insere o valor líquido
@@ -326,6 +327,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           let store_id: string | null = mapping[t.storeName];
           if (store_id === 'GLOBAL') store_id = null;
           
+          const txDate = t.date ? t.date.split('T')[0] : targetDate;
+          
           txsToInsert.push({
             store_id,
             occurred_at: t.date ? `${t.date}T12:00:00.000Z` : getDefaultDate(),
@@ -333,7 +336,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             type: 'in',
             payment_method: t.method,
             title: `Rede (Líquido) - ${t.storeName}`,
-            target_date: targetDate,
+            target_date: txDate,
             source: 'rede'
           });
           
@@ -345,7 +348,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
               type: 'out',
               payment_method: 'Taxa',
               title: `Taxa Rede - ${t.storeName}`,
-              target_date: targetDate,
+              target_date: txDate,
               source: 'rede_taxa'
             });
           }
@@ -360,6 +363,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
          
          osResult.osArray.forEach(os => {
             const osDate = os.closed_at || os.opened_at;
+            const txDate = osDate ? osDate.split('T')[0] : targetDate;
             const is_new_os = (os as any).is_new_os;
             const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
             
@@ -373,8 +377,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                   subtitle: os.payment_method || 'Sistema',
                   amount: delta,
                   type: 'in',
-                  occurred_at: `${targetDate}T10:00:00Z`,
-                  target_date: targetDate,
+                  occurred_at: osDate ? osDate : `${txDate}T10:00:00Z`,
+                  target_date: txDate,
                   icon_type: 'system',
                   source: 'sistema',
                   os_number: os.os_number
