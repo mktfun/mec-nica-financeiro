@@ -681,7 +681,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                     {osAliases.map(alias => {
                       const osFile = results.osFiles.find(r => r.storeAlias === alias);
                       const fileName = osFile?.fileName;
-                      const sample = osFile && osFile.items.length > 0 ? `Exemplo: OS ${osFile.items[0].os_number} (R$ ${osFile.items[0].paid_value})` : null;
+                      const sample = osFile && osFile.osArray && osFile.osArray.length > 0 ? `Exemplo: OS ${osFile.osArray[0].os_number} (R$ ${osFile.osArray[0].paid_value})` : null;
                       return (
                         <div key={`os-${alias}`} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
                           <div className="flex-1">
