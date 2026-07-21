@@ -260,25 +260,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         }
 
         ofx.transactions.forEach(tx => {
-          if (tx.type === 'in' && !isIncluded) {
-            // Filtro de Sobra: Só descarta se não houver valor aproximado na OS ou Rede
-            // Margem de R$1,00 para lidar com arredondamentos bancários
-            if (validAmounts.size > 0) {
-              let hasMatch = false;
-              for (const val of validAmounts) {
-                if (Math.abs(val - tx.amount) <= 1.0) {
-                  hasMatch = true;
-                  break;
-                }
-              }
-              if (!hasMatch) {
-                console.log(`[CentralImportWizard] Ignorando transação sem correspondência (Sobra): R$ ${tx.amount}`);
-                return; // Descarta a transação
-              }
-            }
-            // Se não há valores de OS/Rede mapeados, não filtra (deixa passar tudo)
-          }
-
+          // Todas as transações do OFX entram no banco. A conciliação (Triple Match) e identificação de sobras acontece na UI.
           txsToInsert.push({
             store_id,
             store_name: ofx.alias,

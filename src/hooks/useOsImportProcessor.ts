@@ -91,24 +91,33 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
           if ((rowStr.includes('os') || rowStr.includes('nº os')) && rowStr.includes('status')) {
             headerRowIndex = i;
             rowStr.forEach((colName, idx) => {
-              if (colName === 'os' || colName === 'nº os' || colName === 'nº da os' || colName === 'numero os') colMap.os = idx;
-              if (colName === 'data' || colName.includes('data entrada') || colName.includes('data abertura') || (colName.includes('data') && colMap.openedAt === undefined)) colMap.openedAt = idx;
-              if (colName === 'placa') colMap.plate = idx;
-              if (colName === 'status') colMap.status = idx;
-              if (colName === 'finalizada em' || colName === 'data fim' || colName.includes('fechamento') || colName.includes('finalizada em') || colName.includes('data saida') || colName.includes('data saída')) colMap.closedAt = idx;
-              if (colName.includes('total da os') || colName.includes('valor total') || colName === 'total' || colName.includes('r$ total') || colName.includes('vlr total') || colName.includes('vl total') || colName === 'valor' || colName.includes('valor final') || colName.includes('valor os') || colName.includes('total os')) colMap.totalValue = idx;
-              if (colName.includes('pagto') || colName.includes('liquidado') || colName.includes('total pago') || colName.includes('valor pago') || colName.includes('recebid') || colName === 'pago' || colName.includes('pago na') || colName.includes('restante') || colName.includes('falta') || colName.includes('pago (')) colMap.paidValue = idx;
-              if (colName.includes('forma') && colName.includes('pagamento')) colMap.paymentMethod = idx;
+              if (colName === 'os' || colName === 'nº os' || colName === 'nº da os' || colName === 'numero os' || colName === 'código') colMap.os = idx;
+              if (colName === 'data' || colName.includes('data entrada') || colName.includes('abertura') || (colName.includes('data') && colMap.openedAt === undefined)) colMap.openedAt = idx;
+              if (colName === 'placa' || colName === 'veículo' || colName === 'veiculo') colMap.plate = idx;
+              if (colName === 'status' || colName === 'situação' || colName === 'situacao') colMap.status = idx;
+              if (colName === 'finalizada em' || colName === 'data fim' || colName.includes('fechamento') || colName.includes('finalizada') || colName.includes('saida') || colName.includes('saída')) colMap.closedAt = idx;
+              if (colName.includes('total') || colName.includes('valor total') || colName.includes('r$ total') || colName.includes('vlr total') || colName.includes('vl total') || colName === 'valor' || colName.includes('bruto') || colName.includes('valor os') || colName.includes('valor final')) colMap.totalValue = idx;
+              if (colName.includes('pagto') || colName.includes('liquidado') || colName.includes('total pago') || colName.includes('valor pago') || colName.includes('recebid') || colName === 'pago' || colName.includes('restante') || colName.includes('falta') || colName.includes('vlr pago') || colName.includes('vl pago') || colName.includes('valor liquido') || colName.includes('valor líquido')) colMap.paidValue = idx;
+              if (colName.includes('forma') && (colName.includes('pagamento') || colName.includes('pgto'))) colMap.paymentMethod = idx;
             });
             
-            // Fallback for paidValue: If there's a column just called 'recebido' or 'pago'
+            // Fallback for paidValue
             if (colMap.paidValue === undefined) {
-               const idx = rowStr.findIndex(h => h === 'recebido' || h === 'pago');
+               const idx = rowStr.findIndex(h => h.includes('recebido') || h.includes('pago') || h.includes('liquido') || h.includes('líquido'));
                if (idx !== -1) colMap.paidValue = idx;
             }
-            // Fallback for totalValue: se não encontrou "Total", assume o Valor Pago
-            if (colMap.totalValue === undefined && colMap.paidValue !== undefined) {
-               colMap.totalValue = colMap.paidValue;
+            // Fallback for totalValue
+            if (colMap.totalValue === undefined) {
+               if (colMap.paidValue !== undefined) {
+                  colMap.totalValue = colMap.paidValue;
+               } else {
+                  // Último recurso: pega a última coluna que parece ser de valor
+                  const idx = rowStr.findLastIndex(h => h.includes('r$') || h.includes('valor'));
+                  if (idx !== -1) {
+                    colMap.totalValue = idx;
+                    colMap.paidValue = idx;
+                  }
+               }
             }
             break;
           }
