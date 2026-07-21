@@ -370,85 +370,87 @@ export function useRedeVsExtrato(storeId: string, date: string) {
     queryKey: ['rede-vs-extrato', storeId, date],
     enabled: !!storeId && !!date,
     queryFn: async () => {
-      // 1. Transações da Rede (source = 'rede' ou 'maquininha')
+      // 1. Transações da Rede e Taxas
       const { data: redeTxs, error: redeErr } = await supabase
         .from('transactions')
-        .select('id, os_number, amount, payment_method, type, title')
+        .select('id, os_number, amount, payment_method, type, title, source')
         .eq('store_id', storeId)
         .eq('target_date', date)
-        .in('source', ['rede', 'maquininha', 'sistema']);
+        .in('source', ['rede', 'maquininha', 'rede_taxa']);
       if (redeErr) throw redeErr;
 
-      // 2. Transações do Extrato bancário (source = 'ofx')
+      // 2. Transações do Extrato bancário
       const { data: ofxTxs, error: ofxErr } = await supabase
         .from('transactions')
-        .select('id, os_number, amount, payment_method, type, title')
+        .select('id, os_number, amount, payment_method, type, title, source')
         .eq('store_id', storeId)
         .eq('target_date', date)
         .eq('source', 'ofx');
       if (ofxErr) throw ofxErr;
 
-      const matched: Array<{
-        id: string;
-        os_number: string | null;
-        rede_ref: string;
-        extrato_ref: string;
-        rede_amount: number;
-        extrato_amount: number;
-        delta: number;
-        payment_method: string | null;
-      }> = [];
-
-      const unmatchedRede: typeof redeTxs = [];
-      const unmatchedExtrato: typeof ofxTxs = [];
-
-      const ofxUsed = new Set<string>();
-
-      // Tenta parear por nº OS primeiro, depois por valor
-      for (const rede of (redeTxs || [])) {
-        const redeAmount = Number(rede.amount);
-
-        // Tenta match por OS number
-        let partner = rede.os_number
-          ? ofxTxs?.find(
-              (o) =>
-                !ofxUsed.has(o.id) &&
-                o.os_number === rede.os_number
-            )
-          : null;
-
-        // Fallback: match por valor aproximado (±R$5 de tolerância para taxas)
-        if (!partner) {
-          partner = ofxTxs?.find(
-            (o) =>
-              !ofxUsed.has(o.id) &&
-              Math.abs(Number(o.amount) - redeAmount) <= 5
-          ) ?? null;
+      // Agrupa a Rede por OS (para somar líquido e taxa = bruto)
+      const redeGroups: Record<string, { id: string, os: string | null, net: number, gross: number, method: string }> = {};
+      const unmatchedRede: any[] = [];
+      
+      redeTxs?.forEach(tx => {
+        if (!tx.os_number) {
+          unmatchedRede.push({ ...tx, netAmount: tx.source !== 'rede_taxa' ? Number(tx.amount) : 0 });
+          return;
         }
-
-        if (partner) {
-          ofxUsed.add(partner.id);
-          matched.push({
-            id: rede.id,
-            os_number: rede.os_number || partner.os_number,
-            rede_ref: rede.id,
-            extrato_ref: partner.id,
-            rede_amount: redeAmount,
-            extrato_amount: Number(partner.amount),
-            delta: redeAmount - Number(partner.amount),
-            payment_method: rede.payment_method || partner.payment_method,
-          });
+        if (!redeGroups[tx.os_number]) {
+          redeGroups[tx.os_number] = { id: tx.id, os: tx.os_number, net: 0, gross: 0, method: tx.payment_method || '—' };
+        }
+        const amt = Number(tx.amount || 0);
+        if (tx.source === 'rede_taxa') {
+          redeGroups[tx.os_number].gross += amt;
         } else {
-          unmatchedRede.push(rede);
+          redeGroups[tx.os_number].net += amt;
+          redeGroups[tx.os_number].gross += amt;
+          // Prefer non-tax method if available
+          if (tx.payment_method && tx.payment_method !== 'Taxa') {
+            redeGroups[tx.os_number].method = tx.payment_method;
+          }
         }
-      }
+      });
 
-      // Extrato sem par
-      for (const ofx of (ofxTxs || [])) {
-        if (!ofxUsed.has(ofx.id)) {
+      const matched: any[] = [];
+      const unmatchedExtrato: any[] = [];
+
+      // Passa por OFX e cruza com a Rede via os_number
+      ofxTxs?.forEach(ofx => {
+        if (!ofx.os_number || !redeGroups[ofx.os_number]) {
           unmatchedExtrato.push(ofx);
+          return;
         }
-      }
+        
+        const rGroup = redeGroups[ofx.os_number];
+        const ofxAmount = Number(ofx.amount || 0);
+        
+        matched.push({
+          id: rGroup.id,
+          os_number: rGroup.os,
+          rede_amount: rGroup.gross, // UI vai pedir bruto mas o hook pode expor bruto e liquido
+          rede_liquido: rGroup.net,
+          extrato_amount: ofxAmount,
+          delta: rGroup.net - ofxAmount, // Comparação é Líquido x Banco
+          payment_method: rGroup.method
+        });
+        
+        delete redeGroups[ofx.os_number];
+      });
+      
+      // As OSs que sobraram no redeGroups não têm OFX correspondente (ainda não caiu no banco)
+      Object.values(redeGroups).forEach(rGroup => {
+        matched.push({
+          id: rGroup.id,
+          os_number: rGroup.os,
+          rede_amount: rGroup.gross,
+          rede_liquido: rGroup.net,
+          extrato_amount: 0,
+          delta: rGroup.net - 0,
+          payment_method: rGroup.method
+        });
+      });
 
       return { matched, unmatchedRede, unmatchedExtrato };
     },

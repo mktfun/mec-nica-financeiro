@@ -91,12 +91,9 @@ export function RedeVsExtratoTable({ storeId, date }: RedeVsExtratoTableProps) {
           <thead>
             <tr className="text-[var(--text-tertiary)] text-xs uppercase tracking-wider border-b border-[var(--border-subtle)]">
               <th className="text-left py-3 px-4 font-medium">Nº OS / Ref.</th>
-              <th className="text-right py-3 px-4 font-medium">
-                Rede (Bruto)
-              </th>
-              <th className="text-right py-3 px-4 font-medium">
-                Extrato (Líquido)
-              </th>
+              <th className="text-right py-3 px-4 font-medium">Rede (Bruto)</th>
+              <th className="text-right py-3 px-4 font-medium">Rede (Líquido)</th>
+              <th className="text-right py-3 px-4 font-medium">Extrato (OFX)</th>
               <th className="text-right py-3 px-4 font-medium">Delta</th>
               <th className="text-right py-3 px-4 font-medium">Modalidade</th>
               <th className="text-center py-3 px-4 font-medium">Status</th>
@@ -160,6 +157,13 @@ export function RedeVsExtratoTable({ storeId, date }: RedeVsExtratoTableProps) {
                     <td className="py-3.5 px-4 text-right font-mono text-[var(--text-primary)]">
                       {row.rede_amount != null ? (
                         <AnimatedNumber value={row.rede_amount} format="currency" />
+                      ) : (
+                        <span className="text-[var(--text-tertiary)]">—</span>
+                      )}
+                    </td>
+                    <td className="py-3.5 px-4 text-right font-mono text-[var(--text-primary)] opacity-80">
+                      {row.rede_liquido != null ? (
+                        <AnimatedNumber value={row.rede_liquido} format="currency" />
                       ) : (
                         <span className="text-[var(--text-tertiary)]">—</span>
                       )}

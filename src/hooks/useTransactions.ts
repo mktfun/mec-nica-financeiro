@@ -404,6 +404,11 @@ export function useDailySystemBalance(targetDate: string) {
       
       return rows.reduce((acc: Record<string, number>, row) => {
         if (row.source === 'ofx' || (row.title && row.title.includes('Extrato Bancário'))) {
+          return acc; // OFX is handled in useDailyBankBalance
+        }
+        
+        // Pula transações de OS (sistema/patio) antigas se existirem, pois agora o sistema é regido pelas transações reais (Rede)
+        if (row.source === 'sistema' || row.source === 'patio') {
           return acc;
         }
         
@@ -412,26 +417,7 @@ export function useDailySystemBalance(targetDate: string) {
         
         const amount = Number(row.amount || 0);
         if (row.type === 'in') {
-          if (row.source === 'sistema' || row.source === 'patio') {
-             // Extract only Pix for OS
-             const methodLower = (row.payment_method || '').toLowerCase();
-             let pixAmount = 0;
-             if (methodLower.includes(':')) {
-                const parts = methodLower.split(';');
-                parts.forEach(part => {
-                   const [m, v] = part.split(':').map(s => s.trim());
-                   if (m && v) {
-                     const val = parseFloat(v) || 0;
-                     if (m.includes('pix') || m.includes('transf') || m.includes('dinheiro')) pixAmount += val;
-                   }
-                });
-             } else if (methodLower.includes('pix') || methodLower.includes('transf') || methodLower.includes('dinheiro')) {
-                pixAmount += amount;
-             }
-             acc[storeId] += pixAmount;
-          } else {
-             acc[storeId] += amount;
-          }
+          acc[storeId] += amount;
         } else if (row.type === 'out') {
           acc[storeId] -= amount;
         }

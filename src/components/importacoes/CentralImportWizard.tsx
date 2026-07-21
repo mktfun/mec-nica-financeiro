@@ -260,7 +260,22 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         }
 
         ofx.transactions.forEach(tx => {
-          // Todas as transações do OFX entram no banco. A conciliação (Triple Match) e identificação de sobras acontece na UI.
+          // Todas as transações do OFX entram no banco. A conciliação transacional acontece na UI.
+          
+          let matched_os_number = null;
+          if (tx.type === 'in' && store_id && autoMatchMap[store_id]) {
+            // Tenta parear o valor da entrada com o delta_paid ou pix_transfer_value da OS
+            const matchedOs = autoMatchMap[store_id].find(os => {
+               const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
+               const pixVal = os.pix_transfer_value || delta; // se não tem pix específico, tenta o delta total
+               return Math.abs(pixVal - tx.amount) < 1.0;
+            });
+            if (matchedOs) {
+              matched_os_number = matchedOs.os_number;
+              autoMatchMap[store_id] = autoMatchMap[store_id].filter(os => os.os_number !== matchedOs.os_number);
+            }
+          }
+          
           txsToInsert.push({
             store_id,
             store_name: ofx.alias,
@@ -272,6 +287,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             target_date: targetDate,
             icon_type: 'bank',
             source: 'ofx',
+            os_number: matched_os_number,
             fitid: tx.fitid || null,
             cnpj_cpf: tx.cnpj_cpf || null,
             counterpart_name: tx.counterpart_name || null,
@@ -300,11 +316,37 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         });
       });
 
-      // Rede (novo) - Insere o valor líquido
+      // Criação de mapas para auto-match por loja
+      const autoMatchMap: Record<string, any[]> = {};
+      results.osFiles.filter(r => r.success).forEach(osResult => {
+         let store_id = mapping[osResult.storeAlias];
+         if (store_id === 'GLOBAL') store_id = null;
+         if (store_id) {
+           if (!autoMatchMap[store_id]) autoMatchMap[store_id] = [];
+           autoMatchMap[store_id].push(...osResult.osArray);
+         }
+      });
+
+      // Rede (novo) - Insere o valor líquido, mas usa o bruto para auto-match
+
       results.redeResults.filter(r => r.success).forEach(r => {
         r.transactions.forEach(t => {
           let store_id: string | null = mapping[t.storeName];
           if (store_id === 'GLOBAL') store_id = null;
+          
+          let matched_os_number = null;
+          if (store_id && autoMatchMap[store_id]) {
+            // Tenta parear o grossAmount com o delta_paid ou paid_value da OS
+            const matchedOs = autoMatchMap[store_id].find(os => {
+               const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
+               return Math.abs(delta - t.grossAmount) < 1.0;
+            });
+            if (matchedOs) {
+              matched_os_number = matchedOs.os_number;
+              // Remove the OS from available matches to prevent double assignment
+              autoMatchMap[store_id] = autoMatchMap[store_id].filter(os => os.os_number !== matchedOs.os_number);
+            }
+          }
           
           txsToInsert.push({
             store_id,
@@ -314,7 +356,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             payment_method: t.method,
             title: `Rede (Líquido) - ${t.storeName}`,
             target_date: targetDate,
-            source: 'rede'
+            source: 'rede',
+            os_number: matched_os_number
           });
           
           if (t.interest > 0) {
@@ -326,42 +369,16 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
               payment_method: 'Taxa',
               title: `Taxa Rede - ${t.storeName}`,
               target_date: targetDate,
-              source: 'rede_taxa'
+              source: 'rede_taxa',
+              os_number: matched_os_number
             });
           }
         });
       });
 
-      // OSs (Filtro por Fechamento == targetDate) will be handled in handleConfirm
-
-      results.osFiles.filter(r => r.success).forEach(osResult => {
-         let store_id: string | null = mapping[osResult.storeAlias];
-         if (store_id === 'GLOBAL') store_id = null;
-         
-         osResult.osArray.forEach(os => {
-            const osDate = os.closed_at || os.opened_at;
-            const is_new_os = (os as any).is_new_os;
-            const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
-            
-            const isRevenueForToday = is_new_os || (!is_new_os && delta > 0);
-            
-            if (isRevenueForToday && delta > 0) {
-              txsToInsert.push({
-                  store_id,
-                  store_name: osResult.storeAlias,
-                  title: `OS ${os.os_number} (${os.plate})`,
-                  subtitle: os.payment_method || 'Sistema',
-                  amount: delta,
-                  type: 'in',
-                  occurred_at: osDate ? osDate : `${targetDate}T10:00:00Z`,
-                  target_date: targetDate,
-                  icon_type: 'system',
-                  source: 'sistema',
-                  os_number: os.os_number
-              });
-            }
-         });
-      });
+      // Não inserimos mais OSs como transações individuais.
+      // O dinheiro real agora é rastreado unicamente através das transações de Rede e OFX,
+      // as quais recebem o `os_number` atrelado matematicamente.
 
       await saveTransactions({ transactions: txsToInsert, storeBankBalances } as any);
 
@@ -370,8 +387,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           store_id: Object.values(mapping)[0] || 'GLOBAL',
           store_name: 'Conciliação Centralizada',
           target_date: targetDate,
-          total_os: txsToInsert.filter(t => t.source === 'sistema').reduce((a,b) => a + b.amount, 0),
-          os_count: txsToInsert.filter(t => t.source === 'sistema').length,
+          total_os: 0,
+          os_count: 0,
           total_paid_all: txsToInsert.reduce((a,b) => a + (b.type === 'in' ? b.amount : -b.amount), 0),
           receivables_count: txsToInsert.filter(t => t.source === 'maquininha' || t.source === 'rede').length
       }];
@@ -866,83 +883,15 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                </div>
              </div>
 
-             <TripleMatchUI results={results} targetDate={targetDate} mapping={mapping} />
-
              <Button 
                onClick={handleConfirm}
                disabled={isSaving}
                className="w-full py-6 text-lg font-semibold rounded-[var(--radius-full)] shadow-[0_8px_30px_rgba(var(--color-primary-rgb),0.4)] mt-4"
              >
-               {isSaving ? 'Salvando Match Triplo...' : 'Confirmar Lançamentos Validados'}
+               {isSaving ? 'Salvando Lançamentos...' : 'Confirmar Lançamentos'}
              </Button>
            </Card>
         </motion.div>
-      )}
-    </div>
-  );
-}
-
-import { useTripleMatchAI } from '@/hooks/useTripleMatch';
-
-function TripleMatchUI({ results, targetDate, mapping }: { results: any, targetDate: string, mapping: any }) {
-  const matcher = useTripleMatchAI();
-  const hasRun = useRef(false);
-
-  const handleRunMatch = () => {
-    // Flatten arrays
-    const osList = results.osFiles.flatMap((r: any) => r.osArray);
-    const redeList = results.redeResults.flatMap((r: any) => r.transactions);
-    const ofxList = results.ofxResults.flatMap((r: any) => r.transactions);
-    
-    // Executa Match Exato local e devolve os que sobraram
-    const { unmatchedOs, unmatchedRede, unmatchedOfx } = matcher.runExactMatch(osList, redeList, ofxList);
-
-    // Opcional: Aciona a IA pros picadinhos
-    if (unmatchedOs.length > 0 && (unmatchedRede.length > 0 || unmatchedOfx.length > 0)) {
-      matcher.runAiMatch(unmatchedOs, unmatchedRede, unmatchedOfx);
-    }
-  };
-
-  useEffect(() => {
-    if (!hasRun.current && results) {
-      hasRun.current = true;
-      handleRunMatch();
-    }
-  }, [results]);
-
-  return (
-    <div className="p-6 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl mt-4 mb-4">
-      <div className="flex justify-between items-center mb-4">
-        <div>
-          <h4 className="font-semibold text-[var(--text-primary)] flex items-center gap-2"><CheckCircle2 className="text-[var(--color-accent-teal)]" size={18} /> Conciliação Inteligente (Triple Match)</h4>
-          <p className="text-sm text-[var(--text-tertiary)]">O motor cruza dados e usa Inteligência Artificial para achar os "picadinhos" (OS pagas em 3 cartões ou Pix diferentes).</p>
-        </div>
-        <Button onClick={handleRunMatch} disabled={matcher.isProcessing} variant="outline" className="border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10">
-          {matcher.isProcessing ? 'Calculando Matches...' : 'Analisar Sobras'}
-        </Button>
-      </div>
-
-      {matcher.exactMatches.length > 0 && (
-        <div className="text-sm text-[var(--color-success)] mb-2">✓ {matcher.exactMatches.length} Matches Exatos (Matemática pura) encontrados.</div>
-      )}
-
-      {matcher.aiSuggestions.length > 0 && (
-        <div className="mt-4">
-          <h5 className="text-xs uppercase tracking-widest text-[var(--color-accent-purple)] mb-3 font-semibold">✨ Sugestões da Inteligência Artificial</h5>
-          <div className="space-y-2">
-            {matcher.aiSuggestions.map((sug, i) => (
-              <div key={i} className="p-3 bg-[var(--bg-canvas)] border border-[var(--color-accent-purple)]/30 rounded-lg flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold">OS <span className="text-[var(--color-primary)]">{sug.os_id}</span></p>
-                  <p className="text-xs text-[var(--text-tertiary)]">{sug.reasoning}</p>
-                </div>
-                <Badge variant="outline" className={sug.confidence > 80 ? 'border-green-500/50 text-green-400' : 'border-yellow-500/50 text-yellow-400'}>
-                  {sug.confidence}% Match
-                </Badge>
-              </div>
-            ))}
-          </div>
-        </div>
       )}
     </div>
   );
