@@ -394,7 +394,13 @@ export function useRedeVsExtrato(storeId: string, date: string) {
       
       redeTxs?.forEach(tx => {
         if (!tx.os_number) {
-          unmatchedRede.push({ ...tx, netAmount: tx.source !== 'rede_taxa' ? Number(tx.amount) : 0 });
+          unmatchedRede.push({ 
+            ...tx, 
+            rede_amount: tx.source !== 'rede_taxa' ? Number(tx.amount) : Number(tx.amount), 
+            rede_liquido: tx.source !== 'rede_taxa' ? Number(tx.amount) : 0,
+            extrato_amount: null,
+            delta: null
+          });
           return;
         }
         if (!redeGroups[tx.os_number]) {
@@ -419,7 +425,13 @@ export function useRedeVsExtrato(storeId: string, date: string) {
       // Passa por OFX e cruza com a Rede via os_number
       ofxTxs?.forEach(ofx => {
         if (!ofx.os_number || !redeGroups[ofx.os_number]) {
-          unmatchedExtrato.push(ofx);
+          unmatchedExtrato.push({
+            ...ofx,
+            rede_amount: null,
+            rede_liquido: null,
+            extrato_amount: Number(ofx.amount || 0),
+            delta: null
+          });
           return;
         }
         
