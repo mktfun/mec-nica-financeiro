@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Store } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
 import { RedeVsExtratoTable } from '@/components/conciliacao/RedeVsExtratoTable';
-import { TransactionRow } from '@/lib/supabase';
+import { useTransactionsPorDataELoja } from '@/hooks/useTransactions';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 export const Route = createFileRoute('/conciliacao/$lojaId')({
@@ -47,7 +47,7 @@ function ConciliacaoLojaPage() {
     );
   }
 
-  const transactions = extrato?.transactions || [];
+  const { data: transactions = [] } = useTransactionsPorDataELoja(targetDate, lojaId);
   const totalJuros = transactions.filter(t => t.source === 'rede_taxa').reduce((acc, t) => acc + Number(t.amount || 0), 0);
 
   return (

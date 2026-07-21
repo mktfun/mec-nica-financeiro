@@ -443,15 +443,18 @@ export function useDailyBankBalance(targetDate: string) {
         
       if (error) throw error;
       
-      // Soma APENAS entradas OFX por loja (não subtrair saídas — saídas são despesas, não afetam o "quanto entrou")
+      // Soma entradas e subtrai saídas para refletir o saldo real do extrato do dia
       return (data || []).reduce((acc: Record<string, number>, row: any) => {
         const storeId = row.store_id;
         if (!storeId) return acc;
         if (!acc[storeId]) acc[storeId] = 0;
+        
+        const amt = Number(row.amount || 0);
         if (row.type === 'in') {
-          acc[storeId] += Number(row.amount || 0);
+          acc[storeId] += amt;
+        } else if (row.type === 'out') {
+          acc[storeId] -= amt;
         }
-        // Saídas (out) NÃO são descontadas aqui — elas são despesas importadas separadamente
         return acc;
       }, {});
     },
