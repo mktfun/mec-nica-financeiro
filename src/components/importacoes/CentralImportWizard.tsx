@@ -279,7 +279,6 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             // Se não há valores de OS/Rede mapeados, não filtra (deixa passar tudo)
           }
 
-          const txDate = tx.date ? tx.date.split('T')[0] : targetDate;
           txsToInsert.push({
             store_id,
             store_name: ofx.alias,
@@ -288,7 +287,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             amount: tx.amount || 0,
             type: tx.type,
             occurred_at: tx.date || new Date().toISOString(),
-            target_date: txDate,
+            target_date: targetDate,
             icon_type: 'bank',
             source: 'ofx',
             fitid: tx.fitid || null,
@@ -305,8 +304,6 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         let formattedVenda = item.dateVenda;
         if (formattedVenda && formattedVenda.includes('/')) formattedVenda = formattedVenda.split('/').reverse().join('-');
         
-        const txDate = formattedVenda ? formattedVenda.split('T')[0] : targetDate;
-        
         txsToInsert.push({
             store_id,
             store_name: item.storeName,
@@ -314,8 +311,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             subtitle: item.storeName,
             amount: item.amount || 0,
             type: 'in',
-            occurred_at: item.dateCredito ? new Date(item.dateCredito.split('/').reverse().join('-')).toISOString() : `${txDate}T12:00:00Z`,
-            target_date: txDate,
+            occurred_at: item.dateCredito ? new Date(item.dateCredito.split('/').reverse().join('-')).toISOString() : `${targetDate}T12:00:00Z`,
+            target_date: targetDate,
             icon_type: 'card',
             source: 'maquininha'
         });
@@ -327,8 +324,6 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           let store_id: string | null = mapping[t.storeName];
           if (store_id === 'GLOBAL') store_id = null;
           
-          const txDate = t.date ? t.date.split('T')[0] : targetDate;
-          
           txsToInsert.push({
             store_id,
             occurred_at: t.date ? `${t.date}T12:00:00.000Z` : getDefaultDate(),
@@ -336,7 +331,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             type: 'in',
             payment_method: t.method,
             title: `Rede (Líquido) - ${t.storeName}`,
-            target_date: txDate,
+            target_date: targetDate,
             source: 'rede'
           });
           
@@ -348,7 +343,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
               type: 'out',
               payment_method: 'Taxa',
               title: `Taxa Rede - ${t.storeName}`,
-              target_date: txDate,
+              target_date: targetDate,
               source: 'rede_taxa'
             });
           }
@@ -363,7 +358,6 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
          
          osResult.osArray.forEach(os => {
             const osDate = os.closed_at || os.opened_at;
-            const txDate = osDate ? osDate.split('T')[0] : targetDate;
             const is_new_os = (os as any).is_new_os;
             const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
             
@@ -377,8 +371,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                   subtitle: os.payment_method || 'Sistema',
                   amount: delta,
                   type: 'in',
-                  occurred_at: osDate ? osDate : `${txDate}T10:00:00Z`,
-                  target_date: txDate,
+                  occurred_at: osDate ? osDate : `${targetDate}T10:00:00Z`,
+                  target_date: targetDate,
                   icon_type: 'system',
                   source: 'sistema',
                   os_number: os.os_number
