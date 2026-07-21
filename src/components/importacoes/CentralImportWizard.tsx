@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
 import { Card } from '@/components/ui/Card';
@@ -770,21 +770,44 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                    } else if (Math.abs(diferencaExtrato) > 1) {
                      if (diferencaExtrato > 1) {
                         const isIncluded = window.localStorage.getItem(`includeSobra_${storeId}`) === 'true';
+                        // Heuristica para sobras
+                        const allOsVals = new Set(results.osFiles.filter((r: any) => r.success && mapping[r.storeAlias] === storeId).flatMap((r: any) => r.osArray.map((os: any) => os.paid_value)));
+                        const allRedeVals = new Set(results.redeResults.filter((r: any) => r.success).flatMap((r: any) => r.transactions.filter((tx: any) => mapping[tx.storeName] === storeId).map((tx: any) => tx.netAmount)));
+                        const storeOfxInTxs = results.ofxResults.filter((r: any) => mapping[r.alias] === storeId).flatMap((r: any) => r.transactions.filter((tx: any) => tx.type === 'in'));
+                        
+                        const likelySobras = storeOfxInTxs.filter((tx: any) => {
+                          return ![...allOsVals, ...allRedeVals].some(v => Math.abs(v - tx.amount) <= 1.0);
+                        });
+
                         storeStatus = (
-                          <div className="text-yellow-500 text-xs flex flex-col gap-2 bg-yellow-500/10 p-3 rounded border border-yellow-500/20">
-                            <span className="flex items-center gap-1 font-semibold"><AlertCircle size={14} /> Sobra no Extrato: {diferencaExtrato.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-                            <span className="opacity-80">Valores sem OS ou Rede correspondente.</span>
-                            <label className="flex items-center gap-2 mt-1 cursor-pointer bg-black/10 p-2 rounded w-fit">
+                          <div className="text-yellow-600 text-xs flex flex-col gap-3 bg-yellow-500/10 p-4 rounded-lg border border-yellow-500/30 shadow-sm">
+                            <div className="flex items-center justify-between">
+                              <span className="flex items-center gap-1.5 font-bold text-sm"><AlertCircle size={16} /> Sobra no Extrato: {diferencaExtrato.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                            </div>
+                            <span className="opacity-90 font-medium">Entrou no banco, mas não há OS nem Maquininha associada:</span>
+                            
+                            {likelySobras.length > 0 && (
+                              <div className="bg-white/50 dark:bg-black/20 rounded p-2 border border-yellow-500/20 max-h-32 overflow-y-auto space-y-1">
+                                {likelySobras.map((tx: any, idx: number) => (
+                                  <div key={idx} className="flex justify-between items-center text-[10px] font-mono border-b border-black/5 last:border-0 pb-1 last:pb-0">
+                                    <span className="truncate pr-2" title={tx.title}>{tx.title}</span>
+                                    <span className="font-bold text-yellow-700 dark:text-yellow-500">{tx.amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+
+                            <label className="flex items-center gap-2 mt-1 cursor-pointer bg-yellow-500/20 hover:bg-yellow-500/30 transition-colors p-3 rounded-md w-full border border-yellow-500/30">
                               <input 
                                 type="checkbox" 
-                                className="accent-yellow-600 w-4 h-4"
+                                className="accent-yellow-600 w-4 h-4 cursor-pointer"
                                 checked={isIncluded}
                                 onChange={(e) => {
                                   window.localStorage.setItem(`includeSobra_${storeId}`, e.target.checked ? 'true' : 'false');
                                   setResults({...results});
                                 }}
                               />
-                              <span className="font-medium text-[var(--text-primary)]">Contabilizar sobra e salvar no banco?</span>
+                              <span className="font-semibold text-yellow-800 dark:text-yellow-400">Contabilizar Sobra como Receita</span>
                             </label>
                           </div>
                         );
@@ -883,6 +906,7 @@ import { useTripleMatchAI } from '@/hooks/useTripleMatch';
 
 function TripleMatchUI({ results, targetDate, mapping }: { results: any, targetDate: string, mapping: any }) {
   const matcher = useTripleMatchAI();
+  const hasRun = useRef(false);
 
   const handleRunMatch = () => {
     // Flatten arrays
@@ -893,11 +917,18 @@ function TripleMatchUI({ results, targetDate, mapping }: { results: any, targetD
     // Executa Match Exato local e devolve os que sobraram
     const { unmatchedOs, unmatchedRede, unmatchedOfx } = matcher.runExactMatch(osList, redeList, ofxList);
 
-    // Opcional: Aciona a IA pros picadinhos (Pode demorar, o ideal é o usuário clicar para rodar)
+    // Opcional: Aciona a IA pros picadinhos
     if (unmatchedOs.length > 0 && (unmatchedRede.length > 0 || unmatchedOfx.length > 0)) {
       matcher.runAiMatch(unmatchedOs, unmatchedRede, unmatchedOfx);
     }
   };
+
+  useEffect(() => {
+    if (!hasRun.current && results) {
+      hasRun.current = true;
+      handleRunMatch();
+    }
+  }, [results]);
 
   return (
     <div className="p-6 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl mt-4 mb-4">
