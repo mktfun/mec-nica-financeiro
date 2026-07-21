@@ -270,26 +270,46 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           storeBankBalances[store_id] = ofx.bankBalance;
         }
 
+        let globalStoreId: string | null = mapping[ofx.alias] || null;
+        if (globalStoreId === 'GLOBAL') globalStoreId = null;
+
         ofx.transactions.forEach(tx => {
-          // Todas as transações do OFX entram no banco. A conciliação transacional acontece na UI.
-          
+          let matched_store_id = globalStoreId;
           let matched_os_number = null;
-          if (tx.type === 'in' && store_id && autoMatchMap[store_id]) {
-            // Tenta parear o valor da entrada com o delta_paid ou pix_transfer_value da OS
-            const matchedOs = autoMatchMap[store_id].find(os => {
-               const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
-               const pixVal = os.pix_transfer_value || delta; // se não tem pix específico, tenta o delta total
-               return Math.abs(pixVal - tx.amount) < 1.0;
-            });
-            if (matchedOs) {
-              matched_os_number = matchedOs.os_number;
-              autoMatchMap[store_id] = autoMatchMap[store_id].filter(os => os.os_number !== matchedOs.os_number);
+          
+          if (tx.type === 'in') {
+            // Tenta parear o valor
+            if (matched_store_id && autoMatchMap[matched_store_id]) {
+              const matchedOs = autoMatchMap[matched_store_id].find(os => {
+                 const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
+                 const pixVal = os.pix_transfer_value || delta;
+                 return Math.abs(pixVal - tx.amount) < 1.0;
+              });
+              if (matchedOs) {
+                matched_os_number = matchedOs.os_number;
+                autoMatchMap[matched_store_id] = autoMatchMap[matched_store_id].filter(os => os.os_number !== matchedOs.os_number);
+              }
+            } else if (!matched_store_id) {
+              // Se é GLOBAL, tenta parear em TODAS as lojas
+              for (const [s_id, osList] of Object.entries(autoMatchMap)) {
+                const matchedOs = osList.find(os => {
+                   const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
+                   const pixVal = os.pix_transfer_value || delta;
+                   return Math.abs(pixVal - tx.amount) < 1.0;
+                });
+                if (matchedOs) {
+                  matched_store_id = s_id;
+                  matched_os_number = matchedOs.os_number;
+                  autoMatchMap[s_id] = osList.filter(os => os.os_number !== matchedOs.os_number);
+                  break; // found a match, stop searching stores
+                }
+              }
             }
           }
           
           txsToInsert.push({
-            store_id,
-            store_name: ofx.alias,
+            store_id: matched_store_id,
+            store_name: matched_store_id ? matched_store_id : ofx.alias,
             title: tx.title || 'Importação OFX',
             subtitle: tx.counterpart_name || ofx.alias,
             amount: tx.amount || 0,

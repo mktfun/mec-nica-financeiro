@@ -434,29 +434,44 @@ export function useDailyBankBalance(targetDate: string) {
   return useQuery({
     queryKey: ['daily-bank-balance', targetDate],
     queryFn: async () => {
-      // Query OFX transactions for this specific target_date
-      const { data, error } = await supabase
+      // O usuário exigiu que o Saldo OFX seja O SALDO BRUTO DO ARQUIVO (<LEDGERBAL>), sem cálculo matemático de in/out.
+      // O saldo bruto é salvo na tabela reconciliations no campo bank_total durante a importação.
+      const { data: recData, error: recError } = await supabase
+        .from('reconciliations')
+        .select('store_id, bank_total')
+        .eq('date', targetDate);
+        
+      if (recError) throw recError;
+
+      // Query OFX transactions for this specific target_date to get the sum of IN and OUT
+      const { data: txData, error: txError } = await supabase
         .from('transactions')
         .select('store_id, amount, type')
         .eq('target_date', targetDate)
         .eq('source', 'ofx');
         
-      if (error) throw error;
+      if (txError) throw txError;
       
-      // Soma entradas e subtrai saídas para refletir o saldo real do extrato do dia
-      return (data || []).reduce((acc: Record<string, number>, row: any) => {
-        const storeId = row.store_id;
-        if (!storeId) return acc;
-        if (!acc[storeId]) acc[storeId] = 0;
+      const balances: Record<string, { in: number, out: number, rawBalance: number }> = {};
+
+      // Initialize rawBalance from reconciliations
+      (recData || []).forEach((row: any) => {
+        const storeId = row.store_id || 'GLOBAL';
+        if (!balances[storeId]) balances[storeId] = { in: 0, out: 0, rawBalance: 0 };
+        balances[storeId].rawBalance = Number(row.bank_total || 0);
+      });
+
+      // Sum in and out from transactions
+      (txData || []).forEach((row: any) => {
+        const storeId = row.store_id || 'GLOBAL';
+        if (!balances[storeId]) balances[storeId] = { in: 0, out: 0, rawBalance: 0 };
         
         const amt = Number(row.amount || 0);
-        if (row.type === 'in') {
-          acc[storeId] += amt;
-        } else if (row.type === 'out') {
-          acc[storeId] -= amt;
-        }
-        return acc;
-      }, {});
+        if (row.type === 'in') balances[storeId].in += amt;
+        if (row.type === 'out') balances[storeId].out += amt;
+      });
+
+      return balances;
     },
     enabled: !!targetDate,
   });

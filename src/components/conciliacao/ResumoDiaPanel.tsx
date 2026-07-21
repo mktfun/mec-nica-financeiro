@@ -24,7 +24,8 @@ interface ResumoDiaPanelProps {
   isApproved: boolean;
   detalhesCount: number;
   totalSistema: number;
-  totalBancario: number;
+  totalBancarioIn: number;
+  totalBancarioRaw: number;
 }
 
 function CleanMetric({ label, value, isCurrency = true, subtext }: { label: string, value: number, isCurrency?: boolean, subtext?: string }) {
@@ -47,7 +48,8 @@ export function ResumoDiaPanel({
   isApproved,
   detalhesCount,
   totalSistema,
-  totalBancario
+  totalBancarioIn,
+  totalBancarioRaw
 }: ResumoDiaPanelProps) {
   const [isSaved, setIsSaved] = useState(false);
   const [anomalies, setAnomalies] = useState<TransactionRow[]>([]);
@@ -109,7 +111,7 @@ export function ResumoDiaPanel({
       faturamento: faturamentoAtual,
       total_recebiveis: totalRecebiveis,
       total_patio: totalPatio,
-      saldo_bancario: totalBancario,
+      saldo_bancario: totalBancarioIn,
       notes: notesStr,
     });
     setIsSaved(true);
@@ -190,8 +192,8 @@ export function ResumoDiaPanel({
               <p className="text-xl font-display font-bold text-[var(--text-primary)]"><AnimatedNumber value={totalSistema} format="currency" /></p>
             </div>
             <div>
-              <p className="text-[10px] text-[var(--color-primary)] uppercase tracking-wider mb-1">Extrato Bancário (Fechamento do Dia)</p>
-              <p className="text-xl font-display font-bold text-[var(--color-primary)]"><AnimatedNumber value={totalBancario} format="currency" /></p>
+              <p className="text-[10px] text-[var(--color-primary)] uppercase tracking-wider mb-1">Entradas OFX (Fechamento do Dia)</p>
+              <p className="text-xl font-display font-bold text-[var(--color-primary)]"><AnimatedNumber value={totalBancarioIn} format="currency" /></p>
             </div>
           </div>
         </div>
@@ -200,7 +202,7 @@ export function ResumoDiaPanel({
       {/* Internal Details Section (Clean Design) */}
       <div className="p-6">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-y-6 gap-x-4 mb-6">
-          <CleanMetric label="Saldo OFX Total" value={totalBancario} subtext="Líquido OFX do dia" />
+          <CleanMetric label="Saldo OFX Total" value={totalBancarioRaw} subtext="Líquido OFX do dia (Bruto)" />
           <CleanMetric label="Faturamento Sistema" value={totalSistema} subtext="OSs importadas do dia" />
           <CleanMetric label="Pátio em Aberto" value={totalPatio} subtext="OSs não pagas" />
           <CleanMetric label="A Receber" value={totalRecebiveis} subtext="Recebíveis pendentes" />

@@ -36,8 +36,9 @@ function ConciliacaoPage() {
   };
 
   const totalSistema = Object.values(dailyBalances || {}).reduce((acc, val) => acc + Number(val), 0);
-  const totalBancario = Object.values(bankBalances || {}).reduce((acc, val) => acc + Number(val), 0);
-  const divergenciaGlobal = totalSistema - totalBancario;
+  const totalBancarioIn = Object.values(bankBalances || {}).reduce((acc, val) => acc + (val.in || 0), 0);
+  const totalBancarioRaw = Object.values(bankBalances || {}).reduce((acc, val) => acc + (val.rawBalance || 0), 0);
+  const divergenciaGlobal = totalSistema - totalBancarioIn;
 
   return (
     <AppShell>
@@ -58,7 +59,8 @@ function ConciliacaoPage() {
               isApproved={isApproved}
               detalhesCount={detalhes.length}
               totalSistema={totalSistema}
-              totalBancario={totalBancario}
+              totalBancarioIn={totalBancarioIn}
+              totalBancarioRaw={totalBancarioRaw}
             />
 
             {/* Lista de Lojas */}
@@ -71,8 +73,8 @@ function ConciliacaoPage() {
               <div className="grid grid-cols-1 gap-4">
                 {stores.map(store => {
                   const sys = dailyBalances?.[store.id] || 0;
-                  const bank = bankBalances?.[store.id] || 0;
-                  const div = sys - bank;
+                  const bankIn = bankBalances?.[store.id]?.in || 0;
+                  const div = sys - bankIn;
                   
                   const hasDeclarations = true; // Sempre exibe delta
                   const isStoreOk = hasDeclarations && Math.abs(div) < 0.01;
@@ -96,8 +98,8 @@ function ConciliacaoPage() {
                           </div>
                           
                           <div className="min-w-[130px]">
-                            <p className="text-[10px] text-[var(--color-primary)] opacity-80 uppercase tracking-wider mb-1">Extrato Bancário (Fechamento do Dia)</p>
-                            <p className="font-display font-medium text-white"><AnimatedNumber value={bank} format="currency" /></p>
+                            <p className="text-[10px] text-[var(--color-primary)] opacity-80 uppercase tracking-wider mb-1">Entradas OFX (Fechamento)</p>
+                            <p className="font-display font-medium text-white"><AnimatedNumber value={bankIn} format="currency" /></p>
                           </div>
 
                           <div className="min-w-[120px] text-right">
