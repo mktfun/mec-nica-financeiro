@@ -63,6 +63,7 @@ export function useTripleMatch(storeId: string | undefined, startDate: string, e
         if (tx.source === 'sistema' || tx.source === 'patio') {
           dailyMap[dateKey].osAmount += amt;
           
+          // Extrair valor de Pix do payment_method (formato: "pix: 500; cartao: 200")
           const methodLower = (tx.payment_method || '').toLowerCase();
           let parsedPix = 0;
           
@@ -72,20 +73,15 @@ export function useTripleMatch(storeId: string | undefined, startDate: string, e
                const [m, v] = part.split(':').map(s => s.trim());
                if (m && v) {
                  const val = parseFloat(v) || 0;
-                 if (m.includes('pix') || m.includes('transf') || m.includes('dinheiro')) parsedPix += val;
+                 if (m.includes('pix') || m.includes('transf')) parsedPix += val;
                }
             });
-          } else {
-             if (methodLower.includes('pix') || methodLower.includes('transf') || methodLower.includes('dinheiro') || !methodLower) {
-               // if blank, assume Pix/Dinheiro for safety? Wait, usually if blank it might be anything. But we'll follow previous heuristics.
-               if (methodLower.includes('pix') || methodLower.includes('transf') || methodLower.includes('dinheiro')) {
-                 parsedPix += amt;
-               }
-             }
+          } else if (methodLower.includes('pix') || methodLower.includes('transf')) {
+            parsedPix += amt;
           }
           
-          dailyMap[dateKey].osPixAmount += parsedPix;
-          dailyMap[dateKey].osEstimatedAmount += amt; 
+          dailyMap[dateKey].osPixAmount = (dailyMap[dateKey].osPixAmount || 0) + parsedPix;
+          dailyMap[dateKey].osEstimatedAmount += amt;
         } else if (tx.source === 'rede' || tx.source === 'maquininha') {
           dailyMap[dateKey].machineAmount += amt;
         } else if (tx.source === 'ofx') {

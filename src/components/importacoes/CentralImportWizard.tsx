@@ -166,14 +166,13 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       const txsToInsert: any[] = [];
       const storeBankBalances: Record<string, number> = {};
 
-      // 1. Inserir nas Tabelas de Origem (Pátio e Recebíveis) para histórico
-      for (const osResult of results.osFiles.filter(r => r.success)) {
+      // 1. Inserir nas Tabelas de Origem (Pátio e Recebíveis) para histórico — em paralelo
+      const osPromises = results.osFiles.filter(r => r.success).map(osResult => {
         let store_id: string | null = mapping[osResult.storeAlias];
         if (store_id === 'GLOBAL') store_id = null;
-        if (store_id) {
-          await savePatioOsAndReceivables(store_id, osResult.storeAlias, osResult.osArray, osResult.receivablesArray || []);
-        }
-      }
+        if (!store_id) return Promise.resolve();
+        return savePatioOsAndReceivables(store_id, osResult.storeAlias, osResult.osArray, osResult.receivablesArray || []);
+      });
 
       // Maquininha (antigo fallback)
       const maqByStore: Record<string, any[]> = {};
@@ -185,7 +184,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           maqByStore[sid].push(item);
         }
       });
-      for (const [sid, items] of Object.entries(maqByStore)) {
+      const maqPromises = Object.entries(maqByStore).map(([sid, items]) => {
         const storeName = items[0].storeName;
         const parsedRecs: ParsedReceivable[] = items.map(item => ({
           type: 'Cartão Crédito',
@@ -194,8 +193,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           due_date: item.dateCredito || targetDate,
           status: 'recebido'
         }));
-        await savePatioOsAndReceivables(sid, storeName, [], parsedRecs);
-      }
+        return savePatioOsAndReceivables(sid, storeName, [], parsedRecs);
+      });
 
       // Rede (novo formato)
       const redeByStore: Record<string, any[]> = {};
@@ -209,7 +208,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           }
         });
       });
-      for (const [sid, items] of Object.entries(redeByStore)) {
+      const redePromises = Object.entries(redeByStore).map(([sid, items]) => {
         const storeName = items[0].storeName;
         const parsedRecs: ParsedReceivable[] = items.map(item => ({
           type: item.method,
@@ -218,8 +217,11 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           due_date: item.date || targetDate,
           status: 'recebido'
         }));
-        await savePatioOsAndReceivables(sid, storeName, [], parsedRecs);
-      }
+        return savePatioOsAndReceivables(sid, storeName, [], parsedRecs);
+      });
+
+      // Executar tudo em paralelo — muito mais rápido
+      await Promise.all([...osPromises, ...maqPromises, ...redePromises]);
 
       // We do not save transactions here anymore. We just prepare the data for Step 3.
       
@@ -259,18 +261,22 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
         ofx.transactions.forEach(tx => {
           if (tx.type === 'in' && !isIncluded) {
-            // Filtro de Sobra: Só mantém a transação se houver um valor aproximado na OS ou Rede
-            let hasMatch = false;
-            for (const val of validAmounts) {
-               if (Math.abs(val - tx.amount) < 0.05) {
-                 hasMatch = true;
-                 break;
-               }
+            // Filtro de Sobra: Só descarta se não houver valor aproximado na OS ou Rede
+            // Margem de R$1,00 para lidar com arredondamentos bancários
+            if (validAmounts.size > 0) {
+              let hasMatch = false;
+              for (const val of validAmounts) {
+                if (Math.abs(val - tx.amount) <= 1.0) {
+                  hasMatch = true;
+                  break;
+                }
+              }
+              if (!hasMatch) {
+                console.log(`[CentralImportWizard] Ignorando transação sem correspondência (Sobra): R$ ${tx.amount}`);
+                return; // Descarta a transação
+              }
             }
-            if (!hasMatch) {
-              console.log(`[CentralImportWizard] Ignorando transação órfã (Sobra): R$ ${tx.amount}`);
-              return; // Descarta a transação
-            }
+            // Se não há valores de OS/Rede mapeados, não filtra (deixa passar tudo)
           }
 
           const txDate = targetDate; // Usa sempre a data de conciliação escolhida

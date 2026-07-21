@@ -448,7 +448,7 @@ export function useDailyBankBalance(targetDate: string) {
   return useQuery({
     queryKey: ['daily-bank-balance', targetDate],
     queryFn: async () => {
-      // Query OFX transactions for this specific target_date (delta do dia, não LEDGERBAL)
+      // Query OFX transactions for this specific target_date
       const { data, error } = await supabase
         .from('transactions')
         .select('store_id, amount, type')
@@ -457,17 +457,15 @@ export function useDailyBankBalance(targetDate: string) {
         
       if (error) throw error;
       
-      // Soma líquida das OFX do dia por loja (entradas - saídas)
+      // Soma APENAS entradas OFX por loja (não subtrair saídas — saídas são despesas, não afetam o "quanto entrou")
       return (data || []).reduce((acc: Record<string, number>, row: any) => {
         const storeId = row.store_id;
         if (!storeId) return acc;
         if (!acc[storeId]) acc[storeId] = 0;
-        const amount = Number(row.amount || 0);
         if (row.type === 'in') {
-          acc[storeId] += amount;
-        } else if (row.type === 'out') {
-          acc[storeId] -= amount;
+          acc[storeId] += Number(row.amount || 0);
         }
+        // Saídas (out) NÃO são descontadas aqui — elas são despesas importadas separadamente
         return acc;
       }, {});
     },
