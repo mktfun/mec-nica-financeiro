@@ -247,6 +247,17 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       // Adiciona as somas consolidadas da Rede
       Object.values(storeRedeTotals).forEach(total => validAmounts.add(total));
 
+      // Criação de mapas para auto-match por loja
+      const autoMatchMap: Record<string, any[]> = {};
+      results.osFiles.filter(r => r.success).forEach(osResult => {
+         let store_id = mapping[osResult.storeAlias];
+         if (store_id === 'GLOBAL') store_id = null;
+         if (store_id) {
+           if (!autoMatchMap[store_id]) autoMatchMap[store_id] = [];
+           autoMatchMap[store_id].push(...osResult.osArray);
+         }
+      });
+
       // OFX
       results.ofxResults.forEach(ofx => {
         let store_id: string | null = mapping[ofx.alias];
@@ -314,17 +325,6 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             icon_type: 'card',
             source: 'maquininha'
         });
-      });
-
-      // Criação de mapas para auto-match por loja
-      const autoMatchMap: Record<string, any[]> = {};
-      results.osFiles.filter(r => r.success).forEach(osResult => {
-         let store_id = mapping[osResult.storeAlias];
-         if (store_id === 'GLOBAL') store_id = null;
-         if (store_id) {
-           if (!autoMatchMap[store_id]) autoMatchMap[store_id] = [];
-           autoMatchMap[store_id].push(...osResult.osArray);
-         }
       });
 
       // Rede (novo) - Insere o valor líquido, mas usa o bruto para auto-match
