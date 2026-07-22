@@ -5,9 +5,11 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Store } from 'lucide-react';
+import { Store, ArrowLeft } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
-import { RedeVsExtratoTable } from '@/components/conciliacao/RedeVsExtratoTable';
+import { OsVsRedeTable } from '@/components/conciliacao/OsVsRedeTable';
+import { RedeVsOfxTable } from '@/components/conciliacao/RedeVsOfxTable';
+import { OfxSemMatchTable } from '@/components/conciliacao/OfxSemMatchTable';
 import { useTransactionsPorDataELoja } from '@/hooks/useTransactions';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
@@ -79,9 +81,11 @@ function ConciliacaoLojaPage() {
           </div>
         </div>
 
-        <Card className="p-0 overflow-hidden">
-          <RedeVsExtratoTable storeId={lojaId} date={targetDate} />
-        </Card>
+        <div className="flex flex-col gap-8">
+          <OsVsRedeTable storeId={lojaId} date={targetDate} />
+          <RedeVsOfxTable storeId={lojaId} date={targetDate} />
+          <OfxSemMatchTable storeId={lojaId} date={targetDate} />
+        </div>
       </div>
     </AppShell>
   );
