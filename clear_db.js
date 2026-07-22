@@ -6,8 +6,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Read .env.local manually
-const envContent = fs.readFileSync(path.resolve(__dirname, '.env.local'), 'utf-8');
+// Read .env manually
+const envContent = fs.readFileSync(path.resolve(__dirname, '.env'), 'utf-8');
 const envVars = {};
 envContent.split('\n').forEach(line => {
   const [key, ...values] = line.split('=');
@@ -16,8 +16,8 @@ envContent.split('\n').forEach(line => {
   }
 });
 
-const supabaseUrl = envVars['VITE_SUPABASE_URL'];
-const supabaseKey = envVars['VITE_SUPABASE_ANON_KEY'];
+const supabaseUrl = envVars['VITE_SUPABASE_URL']?.replace(/"/g, '');
+const supabaseKey = envVars['VITE_SUPABASE_PUBLISHABLE_KEY']?.replace(/"/g, '');
 
 if (!supabaseUrl || !supabaseKey) {
   console.error('Missing Supabase credentials');
