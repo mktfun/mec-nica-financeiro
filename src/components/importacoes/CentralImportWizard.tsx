@@ -17,8 +17,6 @@ import { savePatioOsAndReceivables, ParsedReceivable } from '@/hooks/useImportPr
 // Hook para gerenciar mapeamento de lojas
 function useUnifiedStoreMapping() {
   const [mapping, setMapping] = useState<Record<string, string>>({});
-  const [isPreparing, setIsPreparing] = useState(false);
-  const [subStep, setSubStep] = useState<1 | 2 | 3>(1);
   const autoMatchMapRef = useRef<Record<string, any[]>>({});
   
   useEffect(() => {
@@ -62,6 +60,8 @@ function StepIndicator({ current, step, title }: { current: number, step: number
 
 export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [subStep, setSubStep] = useState<1 | 2 | 3>(1);
+  const [isPreparing, setIsPreparing] = useState(false);
   const [targetDate, setTargetDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [unmappedAliases, setUnmappedAliases] = useState<string[]>([]);
   
