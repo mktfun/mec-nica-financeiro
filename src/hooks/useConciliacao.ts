@@ -404,53 +404,50 @@ export function useReconciliationViews(storeId: string, date: string) {
         }
       });
 
-      const osVsRede = (patioOs || []).flatMap(os => {
-         const osNum = os.os_number;
-         const data = matchByOs[osNum];
-         const redeTxs = data ? data.redeTxs.filter((t: any) => t.source === 'rede' || t.source === 'maquininha' || t.source === 'rede_taxa') : [];
+      const redeTransactions = txs?.filter(t => t.source === 'rede' || t.source === 'maquininha') || [];
+      const taxaTransactions = txs?.filter(t => t.source === 'rede_taxa') || [];
+
+      // Marcamos as taxas já usadas para não duplicar se houver várias sem OS
+      const usedTaxas = new Set();
+
+      const osVsRede = redeTransactions.map(redeTx => {
+         let taxaTx = null;
+         if (redeTx.os_number) {
+            taxaTx = taxaTransactions.find(taxa => taxa.os_number === redeTx.os_number && !usedTaxas.has(taxa.id));
+         } else {
+            taxaTx = taxaTransactions.find(taxa => !taxa.os_number && !usedTaxas.has(taxa.id) && taxa.occurred_at === redeTx.occurred_at);
+         }
+         if (taxaTx) usedTaxas.add(taxaTx.id);
          
-         const virtualTxs = [];
-         if (os.credit_value > 0) virtualTxs.push({ method: 'Crédito', value: os.credit_value });
-         if (os.debit_value > 0) virtualTxs.push({ method: 'Débito', value: os.debit_value });
-         if (os.pix_transfer_value > 0) virtualTxs.push({ method: 'Pix/Transf', value: os.pix_transfer_value });
-         if (virtualTxs.length === 0 && os.paid_value > 0) virtualTxs.push({ method: 'Não Identificado', value: os.paid_value });
+         const redeBruto = redeTx.amount + (taxaTx ? Math.abs(taxaTx.amount) : 0);
          
-         // For simplistic matching, we just match the first rede tx that matches the value, or just sum them up if not 1-to-1.
-         // A more advanced approach would try to match each virtualTx to a specific redeTx.
-         // For now, let's keep it simple: we list the virtual transactions and show the Rede total for that OS.
-         // But the user requested "bater as formas de pagamento com oq caiu na maquininha na msm modalidade ... o msm valor (bruto)".
-         // We can try to match them:
-         const unmatchedRede = [...redeTxs];
+         let osFaturamento = 0;
+         let osNumber = redeTx.os_number;
          
-         return virtualTxs.map(vTx => {
-             // Find matching rede tx by value (gross)
-             const matchIdx = unmatchedRede.findIndex((rt: any) => {
-                 // The rede tx gross amount is what we compare to. For maquininha it's just amount. For rede it's amount + abs(tax) if we had taxa linked.
-                 // Actually in our new logic, amount is net, and taxa is separate. But wait, `amount` for `maquininha` is gross.
-                 // Let's just use `amount` (which might be net) + taxa if we group them.
-                 // For now, let's just sum all Rede and show it against the first virtual tx to not lose the total, or if we can match exactly.
-                 return Math.abs((rt.grossAmount || rt.amount) - vTx.value) < 1.0; 
-             });
-             
-             let redeBruto = 0;
-             if (matchIdx !== -1) {
-                 const matched = unmatchedRede.splice(matchIdx, 1)[0];
-                 redeBruto = matched.grossAmount || matched.amount; // simplificação
-             } else if (unmatchedRede.length > 0) {
-                 // Fallback: take the first one
-                 const matched = unmatchedRede.splice(0, 1)[0];
-                 redeBruto = matched.grossAmount || matched.amount;
-             }
-             
-             const delta = vTx.value - redeBruto;
-             return {
-                os_number: `${osNum} (${vTx.method})`,
-                os_total: vTx.value,
-                rede_bruto: redeBruto,
-                delta,
-                status: redeBruto === 0 ? 'SEM_PAR' : (Math.abs(delta) < 1.0 ? 'PAREADO' : 'COM_DELTA')
-             };
-         });
+         if (!osNumber) {
+            const match = matches?.find(m => m.rede_transaction_id === redeTx.id);
+            if (match && match.system_os_number) {
+               osNumber = match.system_os_number;
+            }
+         }
+         
+         if (osNumber) {
+            const osInfo = patioOs?.find(o => o.os_number === osNumber);
+            if (osInfo) {
+               osFaturamento = osInfo.paid_value;
+            }
+         }
+         
+         const delta = osFaturamento > 0 ? (osFaturamento - redeBruto) : 0;
+         
+         return {
+            maquininha_title: redeTx.title || 'Transação Maquininha',
+            rede_bruto: redeBruto,
+            os_total: osFaturamento,
+            os_number: osNumber || 'Não Localizada',
+            delta,
+            status: osNumber ? (Math.abs(delta) < 1.0 ? 'PAREADO' : 'COM_DELTA') : 'SEM_PAR'
+         };
       });
 
       const redeTxsForOfx = txs?.filter(t => t.source === 'rede' || t.source === 'maquininha') || [];

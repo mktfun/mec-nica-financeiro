@@ -371,7 +371,16 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       // Rede (novo) - Insere o valor líquido, mas usa o bruto para auto-match
 
       results.redeResults.filter(r => r.success).forEach(r => {
-        r.transactions.forEach(t => {
+        const uniqueRedeTxs = new Map();
+        r.transactions.forEach((t: any) => {
+           // Create a unique key based on store, grossAmount, method and date to avoid identical duplicates
+           const key = `${t.storeName}_${t.grossAmount}_${t.netAmount}_${t.method}_${t.date}`;
+           if (!uniqueRedeTxs.has(key)) {
+             uniqueRedeTxs.set(key, t);
+           }
+        });
+        
+        Array.from(uniqueRedeTxs.values()).forEach((t: any) => {
           let store_id: string | null = mapping[t.storeName];
           if (store_id === 'GLOBAL') store_id = null;
           
