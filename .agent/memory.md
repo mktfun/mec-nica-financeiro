@@ -6,8 +6,9 @@
 - Deploy/DNS: Cloudflare (quando aplicável).
 - Integração Supabase self-hosted em VPS (quando aplicável).
 
-## Erros Passados
-- (Vazio até o momento)
+## Erros Passados e Lições Aprendidas
+- **Duplicação de transações da Rede:** Inserções da planilha da Rede sem um UUID único ou FitID geravam transações duplicadas no painel. Solucionado criando uma chave única (`storeName_grossAmount_netAmount_method_date`) no parser/wizard.
+- **Conciliação Maquininha vs OS:** A lógica de interface sempre deve ter a transação bruta da Maquininha como coluna base (âncora) e buscar a OS que justifica a entrada, e não o inverso.
 
 ## Persona do Usuário
 - O usuário utiliza Windows com PowerShell.

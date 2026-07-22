@@ -11,8 +11,10 @@ Garantir que a entrega não quebrou o build, atualizar a fonte de verdade (Graph
 
 1. **Quality Gate (Build)**: 
    - Execute o build da aplicação (ex: `cmd.exe /c "npm run build"`) para atestar que não há quebras sistêmicas geradas pela task atual.
-   
-2. **Atualização da Fonte de Verdade (Graphify)**:
+2. **Atualização da Memória (.agent/memory.md)**:
+   - Toda e qualquer nova decisão de arquitetura, lição aprendida ou mudança estrutural descoberta durante o `/vibe-apply` deve ser gravada no `.agent/memory.md` antes de commitar, garantindo que o agente evolua a cada tarefa.
+
+3. **Atualização da Fonte de Verdade (Graphify)**:
    - Rode o comando `graphify hook install` e `/graphify . --update` para re-extrair arquivos modificados para o `graph.json`.
 
 3. **Commit & Push Controlado**: 
