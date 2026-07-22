@@ -36,6 +36,7 @@ function ConciliacaoLojaPage() {
   
   const { data: stores = [] } = useStores();
   const store = stores.find(s => s.id === lojaId);
+  const { data: transactions = [] } = useTransactionsPorDataELoja(targetDate, lojaId);
 
   if (!store) {
     return (
@@ -48,8 +49,6 @@ function ConciliacaoLojaPage() {
       </AppShell>
     );
   }
-
-  const { data: transactions = [] } = useTransactionsPorDataELoja(targetDate, lojaId);
   const totalJuros = transactions.filter(t => t.source === 'rede_taxa').reduce((acc, t) => acc + Number(t.amount || 0), 0);
 
   return (
