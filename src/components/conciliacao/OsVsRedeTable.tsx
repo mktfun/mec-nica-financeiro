@@ -20,14 +20,14 @@ export function OsVsRedeTable({ storeId, date }: { storeId: string; date: string
           1. Sistema (OS) <span className="text-[var(--text-tertiary)]">→</span> Maquininha (Rede/Pix)
         </h3>
         <Badge variant="outline" className="text-xs">
-          {rows.length} OS Pareadas
+          {rows.length} OS Processadas
         </Badge>
       </div>
       
       {rows.length === 0 ? (
         <div className="p-8 text-center text-[var(--text-tertiary)] flex flex-col items-center">
           <Info size={32} className="opacity-20 mb-2" />
-          Nenhuma OS pareada encontrada para esta data.
+          Nenhuma OS importada encontrada para esta data.
         </div>
       ) : (
         <div className="overflow-x-auto">
@@ -61,6 +61,11 @@ export function OsVsRedeTable({ storeId, date }: { storeId: string; date: string
                       <Badge variant="success" className="bg-[var(--color-accent-teal)]/10 text-[var(--color-accent-teal)] border-[var(--color-accent-teal)]/30">
                         <CheckCircle2 size={12} className="mr-1" />
                         Pareado
+                      </Badge>
+                    ) : row.status === 'SEM_PAR' ? (
+                      <Badge variant="danger" className="bg-[var(--color-accent-danger)]/10 text-[var(--color-accent-danger)] border-[var(--color-accent-danger)]/30">
+                        <AlertTriangle size={12} className="mr-1" />
+                        Sem Pareamento
                       </Badge>
                     ) : (
                       <Badge variant="warning" className="bg-[var(--color-accent-warning)]/10 text-[var(--color-accent-warning)] border-[var(--color-accent-warning)]/30">

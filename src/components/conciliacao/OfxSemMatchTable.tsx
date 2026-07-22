@@ -34,7 +34,6 @@ export function OfxSemMatchTable({ storeId, date }: { storeId: string; date: str
           <table className="w-full text-sm">
             <thead>
               <tr className="text-[var(--text-tertiary)] text-xs uppercase tracking-wider border-b border-[var(--border-subtle)] bg-[var(--bg-canvas)]">
-                <th className="text-left py-3 px-4 font-medium">Data/Hora</th>
                 <th className="text-left py-3 px-4 font-medium">Descrição (OFX)</th>
                 <th className="text-right py-3 px-4 font-medium">Valor Depositado</th>
                 <th className="text-center py-3 px-4 font-medium">Status</th>
@@ -43,9 +42,6 @@ export function OfxSemMatchTable({ storeId, date }: { storeId: string; date: str
             <tbody className="divide-y divide-[var(--border-subtle)]">
               {rows.map((row: any, i: number) => (
                 <tr key={i} className="hover:bg-[var(--bg-canvas)]/50 transition-colors">
-                  <td className="py-3 px-4 text-[var(--text-secondary)]">
-                    {new Date(row.occurred_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                  </td>
                   <td className="py-3 px-4 font-medium text-[var(--text-primary)]">
                     {row.subtitle || row.title}
                   </td>

@@ -404,15 +404,21 @@ export function useReconciliationViews(storeId: string, date: string) {
         }
       });
 
-      const osVsRede = Object.entries(matchByOs).map(([osNum, data]) => {
-         const osData = patioOs?.find(o => String(o.os_number) === String(osNum));
+      const osVsRede = (patioOs || []).map(os => {
+         const osNum = os.os_number;
+         const deltaPaid = (os as any).delta_paid; 
+         let osTotal = Number(os.paid_value || 0);
+         if (deltaPaid !== undefined && deltaPaid > 0) osTotal = deltaPaid;
          
-         const deltaPaid = (osData as any)?.delta_paid; 
-         let osTotal = osData ? Number(osData.paid_value || 0) : 0;
-         if (deltaPaid !== undefined && deltaPaid > 0) osTotal = deltaPaid; // Try to use delta if tracking diffs
+         const data = matchByOs[osNum];
+         let redeLiquido = 0;
+         let redeTaxas = 0;
          
-         const redeLiquido = data.redeTxs.filter((t: any) => t.source === 'rede' || t.source === 'maquininha').reduce((s: number, t: any) => s + Number(t.amount || 0), 0);
-         const redeTaxas = data.redeTxs.filter((t: any) => t.source === 'rede_taxa').reduce((s: number, t: any) => s + Number(t.amount || 0), 0);
+         if (data) {
+           redeLiquido = data.redeTxs.filter((t: any) => t.source === 'rede' || t.source === 'maquininha').reduce((s: number, t: any) => s + Number(t.amount || 0), 0);
+           redeTaxas = data.redeTxs.filter((t: any) => t.source === 'rede_taxa').reduce((s: number, t: any) => s + Number(t.amount || 0), 0);
+         }
+         
          const redeBruto = redeLiquido + redeTaxas;
          const delta = osTotal - redeBruto;
 
@@ -422,28 +428,20 @@ export function useReconciliationViews(storeId: string, date: string) {
             rede_bruto: redeBruto,
             rede_liquido: redeLiquido,
             delta,
-            status: Math.abs(delta) < 1.0 ? 'PAREADO' : 'COM_DELTA'
+            status: !data ? 'SEM_PAR' : (Math.abs(delta) < 1.0 ? 'PAREADO' : 'COM_DELTA')
          };
       });
 
-      const redeVsOfx = Object.entries(matchByOs)
-        .filter(([_, data]) => data.redeTxs.length > 0 || data.ofxTxs.length > 0)
-        .map(([osNum, data]) => {
-         const redeLiquido = data.redeTxs.filter((t: any) => t.source === 'rede' || t.source === 'maquininha').reduce((s: number, t: any) => s + Number(t.amount || 0), 0);
-         const ofxTotal = data.ofxTxs.reduce((s: number, t: any) => s + Number(t.amount || 0), 0);
-         const delta = redeLiquido - ofxTotal;
-         
-         return {
-           os_number: osNum,
-           rede_liquido: redeLiquido,
-           ofx_total: ofxTotal,
-           delta,
-           status: Math.abs(delta) < 1.0 ? 'PAREADO' : (ofxTotal === 0 ? 'FALTA_NO_BANCO' : 'COM_DELTA')
-         };
-      });
+      const redeTxsForOfx = txs?.filter(t => t.source === 'rede' || t.source === 'maquininha') || [];
+      const ofxTxsForRede = txs?.filter(t => t.source === 'ofx' && t.amount > 0) || [];
+      
+      const redeVsOfx = {
+         rede: redeTxsForOfx.map(t => ({ id: t.id, title: t.title, amount: t.amount, payment_method: t.payment_method })),
+         ofx: ofxTxsForRede.map(t => ({ id: t.id, title: t.title || t.subtitle, amount: t.amount }))
+      };
 
       const matchedOfxIds = new Set(matches?.filter(m => m.ofx_transaction_id).map(m => m.ofx_transaction_id));
-      const ofxSemMatch = txs?.filter(t => t.source === 'ofx' && !matchedOfxIds.has(t.id)).map(t => ({
+      const ofxSemMatch = txs?.filter(t => t.source === 'ofx' && Number(t.amount) > 0 && !matchedOfxIds.has(t.id)).map(t => ({
          id: t.id,
          title: t.title,
          subtitle: t.subtitle,
