@@ -9,7 +9,7 @@ import { UploadCloud, CheckCircle2, FileType2, Link as LinkIcon, ArrowRight, Arr
 import { useStores } from '@/hooks/useStores';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useCentralImport, UnifiedImportResult } from '@/hooks/useCentralImport';
-import { useBulkInsertTransactions, useCreateImportBatch } from '@/hooks/useTransactions';
+import { useBulkInsertTransactions, useCreateImportBatch, useBulkInsertConciliationMatches } from '@/hooks/useTransactions';
 import { supabase } from '@/lib/supabase';
 import { useNavigate } from '@tanstack/react-router';
 import { savePatioOsAndReceivables, ParsedReceivable } from '@/hooks/useImportProcessor';
