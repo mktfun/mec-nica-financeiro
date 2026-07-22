@@ -338,7 +338,7 @@ export function useBulkInsertConciliationMatches() {
 }
 
 export function useBulkInsertTransactions() {
-  const qc = useQueryClient();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (payload: any[] | { transactions: any[], storeBankBalances?: Record<string, number>, import_batch_id?: string }) => {
       // Separar as transações do possível ofxBankBalance
