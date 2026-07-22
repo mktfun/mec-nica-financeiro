@@ -980,46 +980,10 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                      storeStatus = <span className="text-[var(--text-tertiary)] text-xs flex items-center gap-1">Nenhum movimento mapeado</span>;
                    } else if (Math.abs(diferencaExtrato) > 1) {
                      if (diferencaExtrato > 1) {
-                        const isIncluded = window.localStorage.getItem(`includeSobra_${storeId}`) === 'true';
-                        // Heuristica para sobras
-                        const allOsVals = new Set(results.osFiles.filter((r: any) => r.success && mapping[r.storeAlias] === storeId).flatMap((r: any) => r.osArray.map((os: any) => os.paid_value)));
-                        const allRedeVals = new Set(results.redeResults.filter((r: any) => r.success).flatMap((r: any) => r.transactions.filter((tx: any) => mapping[tx.storeName] === storeId).map((tx: any) => tx.netAmount)));
-                        const storeOfxInTxs = results.ofxResults.filter((r: any) => mapping[r.alias] === storeId).flatMap((r: any) => r.transactions.filter((tx: any) => tx.type === 'in'));
-                        
-                        const likelySobras = storeOfxInTxs.filter((tx: any) => {
-                          return ![...allOsVals, ...allRedeVals].some(v => Math.abs(v - tx.amount) <= 1.0);
-                        });
-
                         storeStatus = (
-                          <div className="text-yellow-600 text-xs flex flex-col gap-3 bg-yellow-500/10 p-4 rounded-lg border border-yellow-500/30 shadow-sm">
-                            <div className="flex items-center justify-between">
-                              <span className="flex items-center gap-1.5 font-bold text-sm"><AlertCircle size={16} /> Sobra no Extrato: {diferencaExtrato.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-                            </div>
-                            <span className="opacity-90 font-medium">Entrou no banco, mas não há OS nem Maquininha associada:</span>
-                            
-                            {likelySobras.length > 0 && (
-                              <div className="bg-white/50 dark:bg-black/20 rounded p-2 border border-yellow-500/20 max-h-32 overflow-y-auto space-y-1">
-                                {likelySobras.map((tx: any, idx: number) => (
-                                  <div key={idx} className="flex justify-between items-center text-[10px] font-mono border-b border-black/5 last:border-0 pb-1 last:pb-0">
-                                    <span className="truncate pr-2" title={tx.title}>{tx.title}</span>
-                                    <span className="font-bold text-yellow-700 dark:text-yellow-500">{tx.amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-
-                            <label className="flex items-center gap-2 mt-1 cursor-pointer bg-yellow-500/20 hover:bg-yellow-500/30 transition-colors p-3 rounded-md w-full border border-yellow-500/30">
-                              <input 
-                                type="checkbox" 
-                                className="accent-yellow-600 w-4 h-4 cursor-pointer"
-                                checked={isIncluded}
-                                onChange={(e) => {
-                                  window.localStorage.setItem(`includeSobra_${storeId}`, e.target.checked ? 'true' : 'false');
-                                  setResults({...results});
-                                }}
-                              />
-                              <span className="font-semibold text-yellow-800 dark:text-yellow-400">Contabilizar Sobra como Receita</span>
-                            </label>
+                          <div className="text-yellow-600 text-xs flex items-center gap-1.5 bg-yellow-500/10 p-2.5 rounded-md border border-yellow-500/20">
+                            <AlertCircle size={14} /> 
+                            <span className="font-semibold">Sobra no banco:</span> {diferencaExtrato.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                           </div>
                         );
                      } else {
