@@ -28,7 +28,26 @@ function formatDate(dateStr: string) {
   return `${d}/${m}/${y}`;
 }
 
+type TabType = 'os_rede' | 'rede_ofx' | 'ofx_sem_match';
+
+function TabBtn({ active, onClick, children }: { active: boolean, onClick: () => void, children: React.ReactNode }) {
+  return (
+    <button 
+      onClick={onClick} 
+      className={`px-4 py-3 border-b-2 text-sm font-medium transition-colors ${
+        active 
+          ? 'border-[var(--color-primary)] text-[var(--color-primary)]' 
+          : 'border-transparent text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] hover:border-[var(--border-subtle)]'
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+
 function ConciliacaoLojaPage() {
+  const [activeTab, setActiveTab] = useState<TabType>('os_rede');
   const { lojaId } = useParams({ from: '/conciliacao/$lojaId' });
   const { date } = Route.useSearch();
   
@@ -80,10 +99,22 @@ function ConciliacaoLojaPage() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-8">
-          <OsVsRedeTable storeId={lojaId} date={targetDate} />
-          <RedeVsOfxTable storeId={lojaId} date={targetDate} />
-          <OfxSemMatchTable storeId={lojaId} date={targetDate} />
+        <div className="flex border-b border-[var(--border-subtle)] mb-6 overflow-x-auto hide-scrollbar">
+          <TabBtn active={activeTab === 'os_rede'} onClick={() => setActiveTab('os_rede')}>
+            1. Sistema (OS) → Maquininha
+          </TabBtn>
+          <TabBtn active={activeTab === 'rede_ofx'} onClick={() => setActiveTab('rede_ofx')}>
+            2. Maquininha (Líq) → Banco
+          </TabBtn>
+          <TabBtn active={activeTab === 'ofx_sem_match'} onClick={() => setActiveTab('ofx_sem_match')}>
+            3. Banco (Sem Origem)
+          </TabBtn>
+        </div>
+
+        <div className="min-h-[400px]">
+          {activeTab === 'os_rede' && <OsVsRedeTable storeId={lojaId} date={targetDate} />}
+          {activeTab === 'rede_ofx' && <RedeVsOfxTable storeId={lojaId} date={targetDate} />}
+          {activeTab === 'ofx_sem_match' && <OfxSemMatchTable storeId={lojaId} date={targetDate} />}
         </div>
       </div>
     </AppShell>
