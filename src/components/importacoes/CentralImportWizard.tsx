@@ -370,8 +370,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
       // Rede (novo) - Insere o valor líquido, mas usa o bruto para auto-match
 
+      const uniqueRedeTxs = new Map();
       results.redeResults.filter(r => r.success).forEach(r => {
-        const uniqueRedeTxs = new Map();
         r.transactions.forEach((t: any) => {
            // Create a unique key based on store, grossAmount, method and date to avoid identical duplicates
            const key = `${t.storeName}_${t.grossAmount}_${t.netAmount}_${t.method}_${t.date}`;
@@ -379,22 +379,32 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
              uniqueRedeTxs.set(key, t);
            }
         });
+      });
         
-        Array.from(uniqueRedeTxs.values()).forEach((t: any) => {
+      Array.from(uniqueRedeTxs.values()).forEach((t: any) => {
           let store_id: string | null = mapping[t.storeName];
           if (store_id === 'GLOBAL') store_id = null;
           
           let matched_os_number = null;
           if (store_id && autoMatchMap[store_id]) {
-            // Tenta parear o grossAmount com o delta_paid ou paid_value da OS
+            // Tenta parear o grossAmount com o delta_paid ou paid_value da OS, ou pagamentos parciais
             const matchedOs = autoMatchMap[store_id].find(os => {
                const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
-               return Math.abs(delta - t.grossAmount) < 1.0;
+               if (Math.abs(delta - t.grossAmount) < 1.0) return true;
+               
+               if (os.payment_method) {
+                 const regex = /:\s*([\d.]+)/g;
+                 let match;
+                 while ((match = regex.exec(os.payment_method)) !== null) {
+                   const partialVal = parseFloat(match[1]);
+                   if (Math.abs(partialVal - t.grossAmount) < 1.0) return true;
+                 }
+               }
+               return false;
             });
             if (matchedOs) {
               matched_os_number = matchedOs.os_number;
-              // Remove the OS from available matches to prevent double assignment
-              autoMatchMap[store_id] = autoMatchMap[store_id].filter(os => os.os_number !== matchedOs.os_number);
+              // Não removemos mais a OS do autoMatchMap para que múltiplas parcelas consigam achar a mesma OS
             }
           }
           
@@ -438,7 +448,6 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             });
           }
         });
-      });
 
       // Não inserimos mais OSs como transações individuais.
       // O dinheiro real agora é rastreado unicamente através das transações de Rede e OFX,
