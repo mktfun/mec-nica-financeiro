@@ -13,8 +13,8 @@ export interface ParsedOS {
   payment_method: string | null;
   status: 'em_aberto' | 'pago_parcial' | 'finalizado';
   raw_status?: string | null;
-  days_open: number;
-  parsed_credit_debit?: number;
+  parsed_credit?: number;
+  parsed_debit?: number;
   parsed_pix_transfer?: number;
   is_new_os?: boolean;
 }
@@ -39,7 +39,7 @@ export async function savePatioOsAndReceivables(
   if (osArray.length > 0) {
     const { data: existingOs } = await supabase
       .from('patio_os')
-      .select('id, os_number, total_value, paid_value, status, raw_status, credit_debit_value, pix_transfer_value, history_log')
+      .select('id, os_number, total_value, paid_value, status, raw_status, credit_value, debit_value, pix_transfer_value, history_log')
       .eq('store_id', storeId);
 
     const existingMap = new Map((existingOs || []).map(o => [String(o.os_number), o]));
@@ -61,9 +61,9 @@ export async function savePatioOsAndReceivables(
         total_value: os.total_value,
         paid_value: os.paid_value,
         payment_method: os.payment_method,
-        status: os.status,
         raw_status: os.raw_status || null,
-        credit_debit_value: os.parsed_credit_debit || 0,
+        credit_value: os.parsed_credit || 0,
+        debit_value: os.parsed_debit || 0,
         pix_transfer_value: os.parsed_pix_transfer || 0,
         opened_at: os.opened_at,
         closed_at: os.closed_at,
@@ -78,11 +78,12 @@ export async function savePatioOsAndReceivables(
         const oldPaid = Number(existingObj.paid_value);
         const newPaid = Number(payload.paid_value);
         const oldStatus = existingObj.status;
-        const newStatus = payload.status;
         const oldRawStatus = existingObj.raw_status;
         const newRawStatus = payload.raw_status;
-        const oldCredit = Number(existingObj.credit_debit_value || 0);
-        const newCredit = Number(payload.credit_debit_value);
+        const oldCredit = Number(existingObj.credit_value || 0);
+        const newCredit = Number(payload.credit_value);
+        const oldDebit = Number(existingObj.debit_value || 0);
+        const newDebit = Number(payload.debit_value);
         const oldPix = Number(existingObj.pix_transfer_value || 0);
         const newPix = Number(payload.pix_transfer_value);
         
@@ -91,7 +92,8 @@ export async function savePatioOsAndReceivables(
         if (oldPaid !== newPaid) changes.push({ field: 'paid_value', from: oldPaid, to: newPaid });
         if (oldStatus !== newStatus) changes.push({ field: 'status', from: oldStatus, to: newStatus });
         if (oldRawStatus !== newRawStatus) changes.push({ field: 'raw_status', from: oldRawStatus, to: newRawStatus });
-        if (oldCredit !== newCredit) changes.push({ field: 'credit_debit_value', from: oldCredit, to: newCredit });
+        if (oldCredit !== newCredit) changes.push({ field: 'credit_value', from: oldCredit, to: newCredit });
+        if (oldDebit !== newDebit) changes.push({ field: 'debit_value', from: oldDebit, to: newDebit });
         if (oldPix !== newPix) changes.push({ field: 'pix_transfer_value', from: oldPix, to: newPix });
         
         let currentHistory = existingObj.history_log || [];

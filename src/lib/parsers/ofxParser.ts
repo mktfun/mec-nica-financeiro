@@ -118,7 +118,7 @@ export async function parseOFXFile(file: File): Promise<OfxParseResult> {
     
     transactions.push({
       storeName: alias,
-      amount: Math.abs(amount),
+      amount: amount,
       type: parsedType,
       date: dateStr,
       title: rawMemo,

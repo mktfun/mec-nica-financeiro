@@ -168,7 +168,8 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
         const days_open = Math.max(0, Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
 
         const payment_method_str = String(row[colMap.paymentMethod] || '').trim();
-        let parsed_credit_debit = 0;
+        let parsed_credit = 0;
+        let parsed_debit = 0;
         let parsed_pix_transfer = 0;
 
         if (payment_method_str) {
@@ -183,8 +184,10 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
               if (method && valStr) {
                 const val = parseFloat(valStr) || 0;
                 const methodUpper = method.toUpperCase();
-                if (methodUpper.includes('CREDITO') || methodUpper.includes('CRÉDITO') || methodUpper.includes('DEBITO') || methodUpper.includes('DÉBITO') || methodUpper.includes('CARTAO') || methodUpper.includes('CARTÃO')) {
-                  parsed_credit_debit += val;
+                if (methodUpper.includes('CREDITO') || methodUpper.includes('CRÉDITO') || methodUpper.includes('CARTAO') || methodUpper.includes('CARTÃO')) {
+                  parsed_credit += val;
+                } else if (methodUpper.includes('DEBITO') || methodUpper.includes('DÉBITO')) {
+                  parsed_debit += val;
                 } else if (methodUpper.includes('PIX') || methodUpper.includes('TRANSF') || methodUpper.includes('DEP') || methodUpper.includes('DINHEIRO')) {
                   parsed_pix_transfer += val;
                 }
@@ -192,8 +195,10 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
             });
           } else {
              // Just text. Assume the full paidValue is tied to this method if matched.
-             if (lowerMethod.includes('credito') || lowerMethod.includes('crédito') || lowerMethod.includes('debito') || lowerMethod.includes('débito') || lowerMethod.includes('cartão') || lowerMethod.includes('cartao')) {
-               parsed_credit_debit = paidValue;
+             if (lowerMethod.includes('credito') || lowerMethod.includes('crédito') || lowerMethod.includes('cartão') || lowerMethod.includes('cartao')) {
+               parsed_credit = paidValue;
+             } else if (lowerMethod.includes('debito') || lowerMethod.includes('débito')) {
+               parsed_debit = paidValue;
              } else if (lowerMethod.includes('pix') || lowerMethod.includes('transf') || lowerMethod.includes('dep') || lowerMethod.includes('dinheiro')) {
                parsed_pix_transfer = paidValue;
              }
@@ -211,7 +216,8 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
           status: statusEnum,
           raw_status: statusStr || null,
           days_open,
-          parsed_credit_debit,
+          parsed_credit,
+          parsed_debit,
           parsed_pix_transfer
         });
       }

@@ -416,7 +416,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
               id: crypto.randomUUID(),
               store_id,
               occurred_at: t.date ? `${t.date}T12:00:00.000Z` : getDefaultDate(),
-              amount: t.interest,
+              amount: -t.interest,
               type: 'out',
               payment_method: 'Taxa',
               title: `Taxa Rede - ${t.storeName}`,
@@ -447,7 +447,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           target_date: targetDate,
           total_os: 0,
           os_count: 0,
-          total_paid_all: txsToInsert.reduce((a,b) => a + (b.type === 'in' ? b.amount : -b.amount), 0),
+          total_paid_all: txsToInsert.reduce((a,b) => a + b.amount, 0),
           receivables_count: txsToInsert.filter(t => t.source === 'maquininha' || t.source === 'rede').length
       }];
 
