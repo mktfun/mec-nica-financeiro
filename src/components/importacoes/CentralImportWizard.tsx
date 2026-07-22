@@ -17,6 +17,9 @@ import { savePatioOsAndReceivables, ParsedReceivable } from '@/hooks/useImportPr
 // Hook para gerenciar mapeamento de lojas
 function useUnifiedStoreMapping() {
   const [mapping, setMapping] = useState<Record<string, string>>({});
+  const [isPreparing, setIsPreparing] = useState(false);
+  const [subStep, setSubStep] = useState<1 | 2 | 3>(1);
+  const autoMatchMapRef = useRef<Record<string, any[]>>({});
   
   useEffect(() => {
     const saved = localStorage.getItem('@mecanica/unified-mappings');
@@ -120,7 +123,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   });
 
   const handleContinueToReview = async () => {
-    setIsProcessing(true);
+    setIsPreparing(true);
     try {
       // For each parsed OS file, query the DB to find existing OSs and compute delta_paid
       for (const osResult of results.osFiles.filter(r => r.success)) {
@@ -143,10 +146,6 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           
           (os as any).delta_paid = delta_paid;
           (os as any).is_new_os = !existingObj;
-
-          // If you want separate deltas for credit/debit or pix, you would need to store them in patio_os too,
-          // but for now, we just rely on delta_paid and allocate proportionally or entirely.
-          // Since the user mainly cares about the total delta paid:
         });
       }
       setStep(3);
@@ -154,7 +153,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       console.error(e);
       alert('Erro ao calcular histórico de OSs.');
     } finally {
-      setIsProcessing(false);
+      setIsPreparing(false);
     }
   };
 
@@ -552,185 +551,216 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             <h3 className="font-display text-xl font-semibold mb-6">Mapeamento de Entidades</h3>
             
             {/* BLOCO 1: OFX */}
-            {(() => {
+            {subStep === 1 && (() => {
               const ofxAliases = Array.from(new Set(results.ofxResults.map(o => o.alias)));
-              if (ofxAliases.length === 0) return null;
+              
               return (
-                <div className="mb-8">
+                <div className="mb-8 animate-in fade-in slide-in-from-right-4 duration-300">
                   <h4 className="font-display font-semibold text-[var(--color-primary)] flex items-center gap-2 mb-4">
                     <Database size={20} /> 1. Extratos Bancários (OFX)
                   </h4>
-                  <div className="space-y-4">
-                    {ofxAliases.map(alias => {
-                      const ofx = results.ofxResults.find(o => o.alias === alias);
-                      const fileName = ofx?.fileName;
-                      const sample = ofx ? ofx.transactions.slice(0, 2).map(t => `${t.title} (R$ ${t.amount})`).join(', ') : null;
-                      return (
-                        <div key={`ofx-${alias}`} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
-                          <div className="flex-1">
-                            <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase">Identificado no Arquivo</span><br/>
-                            <span className="font-mono text-lg font-semibold text-[var(--text-primary)]">{alias}</span>
-                            {fileName && (
-                              <div className="mt-1 text-xs text-[var(--text-secondary)]">
-                                <span className="font-semibold text-[var(--color-primary)]">Origem:</span> {fileName}
-                              </div>
-                            )}
-                            {sample && (
-                              <div className="text-xs text-[var(--text-tertiary)] mt-0.5 truncate max-w-sm">
-                                <span className="font-semibold">Amostra:</span> {sample}
-                              </div>
-                            )}
+                  {ofxAliases.length === 0 ? (
+                    <div className="p-6 text-center border border-dashed border-[var(--border-subtle)] rounded-lg text-[var(--text-tertiary)]">
+                      Nenhum arquivo OFX importado.
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {ofxAliases.map(alias => {
+                        const ofx = results.ofxResults.find(o => o.alias === alias);
+                        const fileName = ofx?.fileName;
+                        const sample = ofx ? ofx.transactions.slice(0, 2).map(t => `${t.title} (R$ ${t.amount})`).join(', ') : null;
+                        return (
+                          <div key={`ofx-${alias}`} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
+                            <div className="flex-1">
+                              <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase">Identificado no Arquivo</span><br/>
+                              <span className="font-mono text-lg font-semibold text-[var(--text-primary)]">{alias}</span>
+                              {fileName && (
+                                <div className="mt-1 text-xs text-[var(--text-secondary)]">
+                                  <span className="font-semibold text-[var(--color-primary)]">Origem:</span> {fileName}
+                                </div>
+                              )}
+                              {sample && (
+                                <div className="text-xs text-[var(--text-tertiary)] mt-0.5 truncate max-w-sm">
+                                  <span className="font-semibold">Amostra:</span> {sample}
+                                </div>
+                              )}
+                            </div>
+                            <LinkIcon className="text-[var(--color-primary)]/50 shrink-0" size={24} />
+                            <div className="flex-1">
+                              <select 
+                                className={`w-full bg-[var(--bg-surface-elevated)] border rounded p-3 text-sm focus:outline-none 
+                                  ${mapping[alias] ? 'border-[var(--color-accent-teal)] text-[var(--text-primary)]' : 'border-[var(--color-accent-warning)] text-[var(--text-secondary)] animate-pulse'}`}
+                                value={mapping[alias] || ''}
+                                onChange={(e) => updateMapping(alias, e.target.value)}
+                              >
+                                <option value="" disabled>Selecione uma loja...</option>
+                                <option value="GLOBAL" className="text-[var(--color-accent-teal)]">Independente (Geral)</option>
+                                {stores.map((s: any) => (
+                                  <option key={s.id} value={s.id}>{s.name}</option>
+                                ))}
+                              </select>
+                            </div>
                           </div>
-                          <LinkIcon className="text-[var(--color-primary)]/50 shrink-0" size={24} />
-                          <div className="flex-1">
-                            <select 
-                              className={`w-full bg-[var(--bg-surface-elevated)] border rounded p-3 text-sm focus:outline-none 
-                                ${mapping[alias] ? 'border-[var(--color-accent-teal)] text-[var(--text-primary)]' : 'border-[var(--color-accent-warning)] text-[var(--text-secondary)] animate-pulse'}`}
-                              value={mapping[alias] || ''}
-                              onChange={(e) => updateMapping(alias, e.target.value)}
-                            >
-                              <option value="" disabled>Selecione uma loja...</option>
-                              <option value="GLOBAL" className="text-[var(--color-accent-teal)]">Independente (Geral)</option>
-                              {stores.map((s: any) => (
-                                <option key={s.id} value={s.id}>{s.name}</option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  <div className="mt-8 flex justify-end">
+                    <Button onClick={() => setSubStep(2)} disabled={ofxAliases.some(u => !mapping[u])}>
+                      Próximo: Adquirentes <ArrowRight size={18} className="ml-2" />
+                    </Button>
                   </div>
                 </div>
               );
             })()}
 
             {/* BLOCO 2: REDE / MAQUININHA */}
-            {(() => {
+            {subStep === 2 && (() => {
               const redeAliases = Array.from(new Set([
                 ...results.redeResults.filter(r => r.success).flatMap(r => r.transactions.map(t => t.storeName)),
                 ...results.maquininhaItems.map(i => i.storeName)
               ]));
-              if (redeAliases.length === 0) return null;
+              
               return (
-                <div className="mb-8">
+                <div className="mb-8 animate-in fade-in slide-in-from-right-4 duration-300">
                   <h4 className="font-display font-semibold text-[var(--color-primary)] flex items-center gap-2 mb-4">
                     <CreditCard size={20} /> 2. Adquirentes (Rede/Cartões)
                   </h4>
-                  <div className="space-y-4">
-                    {redeAliases.map(alias => {
-                      const maq = results.maquininhaItems.find(m => m.storeName === alias);
-                      let redeSample: string | null = null;
-                      let fileName = maq?.fileName;
-                      results.redeResults.forEach(r => {
-                        const t = r.transactions.find(tx => tx.storeName === alias);
-                        if (t) {
-                          redeSample = `${t.method}: R$ ${t.netAmount} (Bruto: R$ ${t.grossAmount})`;
-                          if (!fileName && r.success) fileName = r.fileName;
-                        }
-                      });
-                      const sample = redeSample ? `Rede: ${redeSample}` : maq ? `Exemplo de valor: R$ ${maq.amount}` : null;
-                      return (
-                        <div key={`rede-${alias}`} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
-                          <div className="flex-1">
-                            <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase">Identificado no Arquivo</span><br/>
-                            <span className="font-mono text-lg font-semibold text-[var(--text-primary)]">{alias}</span>
-                            {fileName && (
-                              <div className="mt-1 text-xs text-[var(--text-secondary)]">
-                                <span className="font-semibold text-[var(--color-primary)]">Origem:</span> {fileName}
-                              </div>
-                            )}
-                            {sample && (
-                              <div className="text-xs text-[var(--text-tertiary)] mt-0.5 truncate max-w-sm">
-                                <span className="font-semibold">Amostra:</span> {sample}
-                              </div>
-                            )}
+                  {redeAliases.length === 0 ? (
+                    <div className="p-6 text-center border border-dashed border-[var(--border-subtle)] rounded-lg text-[var(--text-tertiary)]">
+                      Nenhum arquivo de Adquirente/Rede importado.
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {redeAliases.map(alias => {
+                        const maq = results.maquininhaItems.find(m => m.storeName === alias);
+                        let redeSample: string | null = null;
+                        let fileName = maq?.fileName;
+                        results.redeResults.forEach(r => {
+                          const t = r.transactions.find(tx => tx.storeName === alias);
+                          if (t) {
+                            redeSample = `${t.method}: R$ ${t.netAmount} (Bruto: R$ ${t.grossAmount})`;
+                            if (!fileName && r.success) fileName = r.fileName;
+                          }
+                        });
+                        const sample = redeSample ? `Rede: ${redeSample}` : maq ? `Exemplo de valor: R$ ${maq.amount}` : null;
+                        return (
+                          <div key={`rede-${alias}`} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
+                            <div className="flex-1">
+                              <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase">Identificado no Arquivo</span><br/>
+                              <span className="font-mono text-lg font-semibold text-[var(--text-primary)]">{alias}</span>
+                              {fileName && (
+                                <div className="mt-1 text-xs text-[var(--text-secondary)]">
+                                  <span className="font-semibold text-[var(--color-primary)]">Origem:</span> {fileName}
+                                </div>
+                              )}
+                              {sample && (
+                                <div className="text-xs text-[var(--text-tertiary)] mt-0.5 truncate max-w-sm">
+                                  <span className="font-semibold">Amostra:</span> {sample}
+                                </div>
+                              )}
+                            </div>
+                            <LinkIcon className="text-[var(--color-primary)]/50 shrink-0" size={24} />
+                            <div className="flex-1">
+                              <select 
+                                className={`w-full bg-[var(--bg-surface-elevated)] border rounded p-3 text-sm focus:outline-none 
+                                  ${mapping[alias] ? 'border-[var(--color-accent-teal)] text-[var(--text-primary)]' : 'border-[var(--color-accent-warning)] text-[var(--text-secondary)] animate-pulse'}`}
+                                value={mapping[alias] || ''}
+                                onChange={(e) => updateMapping(alias, e.target.value)}
+                              >
+                                <option value="" disabled>Selecione uma loja...</option>
+                                <option value="GLOBAL" className="text-[var(--color-accent-teal)]">Independente (Geral)</option>
+                                {stores.map((s: any) => (
+                                  <option key={s.id} value={s.id}>{s.name}</option>
+                                ))}
+                              </select>
+                            </div>
                           </div>
-                          <LinkIcon className="text-[var(--color-primary)]/50 shrink-0" size={24} />
-                          <div className="flex-1">
-                            <select 
-                              className={`w-full bg-[var(--bg-surface-elevated)] border rounded p-3 text-sm focus:outline-none 
-                                ${mapping[alias] ? 'border-[var(--color-accent-teal)] text-[var(--text-primary)]' : 'border-[var(--color-accent-warning)] text-[var(--text-secondary)] animate-pulse'}`}
-                              value={mapping[alias] || ''}
-                              onChange={(e) => updateMapping(alias, e.target.value)}
-                            >
-                              <option value="" disabled>Selecione uma loja...</option>
-                              <option value="GLOBAL" className="text-[var(--color-accent-teal)]">Independente (Geral)</option>
-                              {stores.map((s: any) => (
-                                <option key={s.id} value={s.id}>{s.name}</option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  <div className="mt-8 flex justify-between">
+                    <Button variant="outline" onClick={() => setSubStep(1)}>
+                      <ArrowLeft size={18} className="mr-2" /> Voltar
+                    </Button>
+                    <Button onClick={() => setSubStep(3)} disabled={redeAliases.some(u => !mapping[u])}>
+                      Próximo: OSs <ArrowRight size={18} className="ml-2" />
+                    </Button>
                   </div>
                 </div>
               );
             })()}
 
             {/* BLOCO 3: OSs */}
-            {(() => {
+            {subStep === 3 && (() => {
               const osAliases = Array.from(new Set(results.osFiles.filter(r => r.success).map(r => r.storeAlias)));
-              if (osAliases.length === 0) return null;
+              
               return (
-                <div className="mb-8">
+                <div className="mb-8 animate-in fade-in slide-in-from-right-4 duration-300">
                   <h4 className="font-display font-semibold text-[var(--color-primary)] flex items-center gap-2 mb-4">
                     <FileText size={20} /> 3. Ordens de Serviço (Sistema)
                   </h4>
-                  <div className="space-y-4">
-                    {osAliases.map(alias => {
-                      const osFile = results.osFiles.find(r => r.storeAlias === alias);
-                      const fileName = osFile?.fileName;
-                      const sample = osFile && osFile.osArray && osFile.osArray.length > 0 ? `Exemplo: OS ${osFile.osArray[0].os_number} (R$ ${osFile.osArray[0].paid_value})` : null;
-                      return (
-                        <div key={`os-${alias}`} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
-                          <div className="flex-1">
-                            <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase">Identificado no Arquivo</span><br/>
-                            <span className="font-mono text-lg font-semibold text-[var(--text-primary)]">{alias}</span>
-                            {fileName && (
-                              <div className="mt-1 text-xs text-[var(--text-secondary)]">
-                                <span className="font-semibold text-[var(--color-primary)]">Origem:</span> {fileName}
-                              </div>
-                            )}
-                            {sample && (
-                              <div className="text-xs text-[var(--text-tertiary)] mt-0.5 truncate max-w-sm">
-                                <span className="font-semibold">Amostra:</span> {sample}
-                              </div>
-                            )}
+                  {osAliases.length === 0 ? (
+                    <div className="p-6 text-center border border-dashed border-[var(--border-subtle)] rounded-lg text-[var(--text-tertiary)]">
+                      Nenhum arquivo de Ordem de Serviço importado.
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {osAliases.map(alias => {
+                        const osFile = results.osFiles.find(r => r.storeAlias === alias);
+                        const fileName = osFile?.fileName;
+                        const sample = osFile && osFile.osArray && osFile.osArray.length > 0 ? `Exemplo: OS ${osFile.osArray[0].os_number} (R$ ${osFile.osArray[0].paid_value})` : null;
+                        return (
+                          <div key={`os-${alias}`} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
+                            <div className="flex-1">
+                              <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase">Identificado no Arquivo</span><br/>
+                              <span className="font-mono text-lg font-semibold text-[var(--text-primary)]">{alias}</span>
+                              {fileName && (
+                                <div className="mt-1 text-xs text-[var(--text-secondary)]">
+                                  <span className="font-semibold text-[var(--color-primary)]">Origem:</span> {fileName}
+                                </div>
+                              )}
+                              {sample && (
+                                <div className="text-xs text-[var(--text-tertiary)] mt-0.5 truncate max-w-sm">
+                                  <span className="font-semibold">Amostra:</span> {sample}
+                                </div>
+                              )}
+                            </div>
+                            <LinkIcon className="text-[var(--color-primary)]/50 shrink-0" size={24} />
+                            <div className="flex-1">
+                              <select 
+                                className={`w-full bg-[var(--bg-surface-elevated)] border rounded p-3 text-sm focus:outline-none 
+                                  ${mapping[alias] ? 'border-[var(--color-accent-teal)] text-[var(--text-primary)]' : 'border-[var(--color-accent-warning)] text-[var(--text-secondary)] animate-pulse'}`}
+                                value={mapping[alias] || ''}
+                                onChange={(e) => updateMapping(alias, e.target.value)}
+                              >
+                                <option value="" disabled>Selecione uma loja...</option>
+                                <option value="GLOBAL" className="text-[var(--color-accent-teal)]">Independente (Geral)</option>
+                                {stores.map((s: any) => (
+                                  <option key={s.id} value={s.id}>{s.name}</option>
+                                ))}
+                              </select>
+                            </div>
                           </div>
-                          <LinkIcon className="text-[var(--color-primary)]/50 shrink-0" size={24} />
-                          <div className="flex-1">
-                            <select 
-                              className={`w-full bg-[var(--bg-surface-elevated)] border rounded p-3 text-sm focus:outline-none 
-                                ${mapping[alias] ? 'border-[var(--color-accent-teal)] text-[var(--text-primary)]' : 'border-[var(--color-accent-warning)] text-[var(--text-secondary)] animate-pulse'}`}
-                              value={mapping[alias] || ''}
-                              onChange={(e) => updateMapping(alias, e.target.value)}
-                            >
-                              <option value="" disabled>Selecione uma loja...</option>
-                              <option value="GLOBAL" className="text-[var(--color-accent-teal)]">Independente (Geral)</option>
-                              {stores.map((s: any) => (
-                                <option key={s.id} value={s.id}>{s.name}</option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  <div className="mt-8 flex justify-between">
+                    <Button variant="outline" onClick={() => setSubStep(2)}>
+                      <ArrowLeft size={18} className="mr-2" /> Voltar
+                    </Button>
+                    <Button onClick={handleContinueToReview} disabled={isPreparing || osAliases.some(u => !mapping[u])}>
+                      {isPreparing ? <LoadingSpinner size="sm" text="Preparando Revisão..." /> : <>Revisão Final <ArrowRight size={18} className="ml-2" /></>}
+                    </Button>
                   </div>
                 </div>
               );
             })()}
-
-            <div className="mt-8 flex justify-end">
-              <Button onClick={handleContinueToReview} disabled={Array.from(new Set([
-                ...results.ofxResults.map(o => o.alias),
-                ...results.redeResults.filter(r => r.success).flatMap(r => r.transactions.map(t => t.storeName)),
-                ...results.maquininhaItems.map(i => i.storeName),
-                ...results.osFiles.filter(r => r.success).map(r => r.storeAlias)
-              ])).some(u => !mapping[u])}>
-                Continuar para Revisão <ArrowRight size={18} className="ml-2" />
-              </Button>
-            </div>
           </Card>
         </motion.div>
       )}
