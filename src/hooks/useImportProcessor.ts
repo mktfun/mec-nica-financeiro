@@ -78,6 +78,7 @@ export async function savePatioOsAndReceivables(
         const oldPaid = Number(existingObj.paid_value);
         const newPaid = Number(payload.paid_value);
         const oldStatus = existingObj.status;
+        const newStatus = os.status;
         const oldRawStatus = existingObj.raw_status;
         const newRawStatus = payload.raw_status;
         const oldCredit = Number(existingObj.credit_value || 0);
