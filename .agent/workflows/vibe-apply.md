@@ -16,10 +16,10 @@ Antes de escrever qualquer código, responda brevemente ao usuário: *"Entendi q
 - **Exemplo de Edição Correta:** Ao editar um componente React, preserve a API pública, não renomeie props sem necessidade explícita, não recrie um componente que já existe, e altere o mínimo possível no arquivo alvo.
 
 ### MODO HEAVY (Gatilho: Nova feature, mudança em > 3 arquivos, migração DB, Auth, Infra, amplo impacto UI)
-- **Check de Precedência (Graphify):** Execute `graphify explain "<Modulo>"` antes de criar para garantir que não vai duplicar código.
+- **Check de Precedência (Graphify):** Execute `npx @sentropic/graphify explain "<Modulo>"` antes de criar para garantir que não vai duplicar código.
 - **Qualidade UI/UX (ClawHub):** Para frontend, invoque e siga as skills de design. Componentes novos devem ser isolados e bem espaçados.
 - **Multimodal Visual QA (Playwright):** Se impactou visualmente, é proibido dizer "não tenho olhos". Rode `npx playwright screenshot <url> tela.png`. Leia a imagem gerada (via VLM) para conferir se a UI quebrou.
-- **Infra:** Se tocar em backend/deploy, avalie o impacto (ex: instâncias Supabase self-hosted, rotas DNS Cloudflare) lendo `.antigravity/state.json`.
+- **Infra e Supabase (Amnesia-Proof):** Avalie o impacto lendo `.antigravity/state.json`. Se precisar executar *QUALQUER* comando do Supabase ou CLI similar, carregue silenciosamente as chaves do `.env` na sua sessão (`$env:SUPABASE_ACCESS_TOKEN="<token>"`) ANTES de agir. É EXTREMAMENTE PROIBIDO perder o contexto da chave ou pedir para o usuário fazer login manual.
 
 **Auto-healing & Proteção (Para ambos os modos):**
 Se durante a implementação ocorrerem erros de build ou testes, você tem **EXATAMENTE 3 tentativas** de correção. Na 3ª falha, PARE e rode `git reset --hard` para reverter as mudanças ao estado seguro. Avise o usuário e não tente uma 4ª vez na mesma execução.

@@ -11,8 +11,8 @@ description: Planejamento cirúrgico de tarefas, priorizando planos curtos, pesq
 4. Seguir padrões do projeto APENAS onde impactar a task atual.
 
 **Modo de Pesquisa (Anti-Alucinação)**
-- Não adivinhe código. Use `graphify query "feature"` para listar conexões reais ou ferramentas de busca como `grep_search`.
-- **Exceção Frontend:** Para rastrear componentes (ex: Tailwind), use `graphify path "ComponentePai" "ComponenteFilho"` para mapear a hierarquia sem gastar tokens lendo arquivos complexos inteiros desnecessariamente.
+- Não adivinhe código. Use `npx @sentropic/graphify query "feature"` para listar conexões reais ou ferramentas de busca como `grep_search`.
+- **Exceção Frontend:** Para rastrear componentes (ex: Tailwind), use `npx @sentropic/graphify path "ComponentePai" "ComponenteFilho"` para mapear a hierarquia sem gastar tokens lendo arquivos complexos inteiros desnecessariamente.
 
 **O Plano Curto (Obrigatório antes de codar)**
 Gere o plano da task no seguinte formato estrito, sem abstrações ou burocracias de nomenclatura:
