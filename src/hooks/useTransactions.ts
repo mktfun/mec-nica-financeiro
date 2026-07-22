@@ -321,10 +321,11 @@ export function useBulkInsertTransactions() {
       // 1. Separar OFX (com fitid) de outras transações
       const ofxTxsRaw = txs.filter((t: any) => t.fitid);
       
-      // Deduplicate by fitid in memory before upsert to avoid 'ON CONFLICT cannot affect row a second time'
+      // Deduplicate by store_id + fitid in memory before upsert to avoid 'ON CONFLICT cannot affect row a second time'
       const ofxMap = new Map();
       ofxTxsRaw.forEach((t: any) => {
-        ofxMap.set(t.fitid, t);
+        const key = `${t.store_id || 'null'}_${t.fitid}`;
+        ofxMap.set(key, t);
       });
       const ofxTxs = Array.from(ofxMap.values());
       
@@ -333,11 +334,11 @@ export function useBulkInsertTransactions() {
       let data: any = null;
       let error: any = null;
 
-      // OFX: upsert idempotente por fitid (reimportar não duplica)
+      // OFX: upsert idempotente por store_id, fitid (reimportar não duplica)
       if (ofxTxs.length > 0) {
         const { data: d1, error: e1 } = await supabase
           .from('transactions')
-          .upsert(ofxTxs, { onConflict: 'fitid', ignoreDuplicates: false });
+          .upsert(ofxTxs, { onConflict: 'store_id, fitid', ignoreDuplicates: false });
         if (e1) { error = e1; } else { data = d1; }
       }
 
