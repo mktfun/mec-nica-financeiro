@@ -274,7 +274,10 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         let globalStoreId: string | null = mapping[ofx.alias] || null;
         if (globalStoreId === 'GLOBAL') globalStoreId = null;
 
-        ofx.transactions.forEach(tx => {
+        const uniqueOfxTxs = new Map();
+        ofx.transactions.forEach((tx: any) => uniqueOfxTxs.set(tx.fitid || crypto.randomUUID(), tx));
+        
+        Array.from(uniqueOfxTxs.values()).forEach((tx: any) => {
           let matched_store_id = globalStoreId;
           let matched_os_number = null;
           
