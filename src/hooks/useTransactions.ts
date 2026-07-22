@@ -309,14 +309,47 @@ export function useWeeklyRevenueTrend(anchorDate?: string) {
   });
 }
 
-export function useBulkInsertTransactions() {
-  const queryClient = useQueryClient();
-  
+export function useCreateImportBatch() {
+  const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (payload: any[] | { transactions: any[], storeBankBalances?: Record<string, number> }) => {
+    mutationFn: async ({ target_date }: { target_date: string }) => {
+      const { data, error } = await supabase
+        .from('import_batches')
+        .insert({ target_date })
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    }
+  });
+}
+
+export function useBulkInsertConciliationMatches() {
+  return useMutation({
+    mutationFn: async (matches: any[]) => {
+      if (matches.length === 0) return null;
+      const { data, error } = await supabase
+        .from('conciliation_matches')
+        .insert(matches);
+      if (error) throw error;
+      return data;
+    }
+  });
+}
+
+export function useBulkInsertTransactions() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: any[] | { transactions: any[], storeBankBalances?: Record<string, number>, import_batch_id?: string }) => {
       // Separar as transações do possível ofxBankBalance
       const txs = Array.isArray(payload) ? payload : payload.transactions;
       const storeBankBalances = Array.isArray(payload) ? undefined : payload.storeBankBalances;
+      const import_batch_id = Array.isArray(payload) ? undefined : payload.import_batch_id;
+      
+      // Inject import_batch_id into all transactions
+      if (import_batch_id) {
+        txs.forEach((t: any) => t.import_batch_id = import_batch_id);
+      }
       
       // 1. Separar OFX (com fitid) de outras transações
       const ofxTxsRaw = txs.filter((t: any) => t.fitid);

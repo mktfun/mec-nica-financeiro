@@ -69,6 +69,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const { mapping, updateMapping, setMapping } = useUnifiedStoreMapping();
   const { processFiles, isProcessing, results } = useCentralImport();
   const { mutateAsync: saveTransactions } = useBulkInsertTransactions();
+  const { mutateAsync: createImportBatch } = useCreateImportBatch();
+  const { mutateAsync: insertConciliationMatches } = useBulkInsertConciliationMatches();
   const [isSaving, setIsSaving] = useState(false);
   const navigate = useNavigate();
 
@@ -254,6 +256,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
            autoMatchMap[store_id].push(...osResult.osArray);
          }
       });
+      
+      const matchesToInsert: any[] = [];
 
       // OFX
       results.ofxResults.forEach(ofx => {
@@ -308,7 +312,9 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             }
           }
           
+          const txId = crypto.randomUUID();
           txsToInsert.push({
+            id: txId,
             store_id: matched_store_id,
             store_name: matched_store_id ? matched_store_id : ofx.alias,
             title: tx.title || 'Importação OFX',
@@ -324,6 +330,17 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             cnpj_cpf: tx.cnpj_cpf || null,
             counterpart_name: tx.counterpart_name || null,
           });
+          
+          if (matched_os_number && matched_store_id) {
+            matchesToInsert.push({
+              store_id: matched_store_id,
+              target_date: targetDate,
+              system_os_number: matched_os_number,
+              ofx_transaction_id: txId,
+              status: 'perfect_match',
+              divergence_amount: 0
+            });
+          }
         });
       });
 
@@ -369,7 +386,9 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             }
           }
           
+          const txId = crypto.randomUUID();
           txsToInsert.push({
+            id: txId,
             store_id,
             occurred_at: t.date ? `${t.date}T12:00:00.000Z` : getDefaultDate(),
             amount: t.netAmount,
@@ -381,8 +400,20 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             os_number: matched_os_number
           });
           
+          if (matched_os_number && store_id) {
+            matchesToInsert.push({
+              store_id,
+              target_date: targetDate,
+              system_os_number: matched_os_number,
+              rede_transaction_id: txId,
+              status: 'perfect_match',
+              divergence_amount: 0
+            });
+          }
+          
           if (t.interest > 0) {
             txsToInsert.push({
+              id: crypto.randomUUID(),
               store_id,
               occurred_at: t.date ? `${t.date}T12:00:00.000Z` : getDefaultDate(),
               amount: t.interest,
@@ -401,7 +432,13 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       // O dinheiro real agora é rastreado unicamente através das transações de Rede e OFX,
       // as quais recebem o `os_number` atrelado matematicamente.
 
-      await saveTransactions({ transactions: txsToInsert, storeBankBalances } as any);
+      const batch = await createImportBatch({ target_date: targetDate });
+      
+      await saveTransactions({ transactions: txsToInsert, storeBankBalances, import_batch_id: batch.id } as any);
+      
+      if (matchesToInsert.length > 0) {
+        await insertConciliationMatches(matchesToInsert);
+      }
 
       // Log
       const logsToInsert = [{
