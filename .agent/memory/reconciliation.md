@@ -1,7 +1,13 @@
 # ⚖️ Memória Modular: Conciliação & Matches
 
-## Regras de Pareamento
-- **Regex de Pagamentos Parciais na OS (`/:\s*([\d.]+)/g`):** Quando a célula `Forma(s) de Pagamento` de uma OS tiver múltiplos métodos (ex: `Crédito: 260.00; PIX: 500.00;`), utilize a regex `/:\s*([\d.]+)/g` para extrair os sub-valores e permitir o match fracionado.
-- **Âncora na Maquininha:** A transação da Maquininha é a âncora principal e busca a OS correspondente por valor bruto (+/- R$ 0,05).
-- **Idempotência da Rede:** Evite duplicatas na Rede gerando fingerprint único (`store_id_netAmount_osNumber`).
-- **Conciliação do Líquido da Maquininha por Loja (REDE ↔ OFX):** O valor líquido das vendas da maquininha de cada loja isolada é batido contra o crédito de adquirente (ex: `LQD REDECARD`) que caiu no extrato bancário (OFX) daquela mesma loja no dia, comprovando a liquidação real e o desconto correto das taxas.
+## [2026-07-23] — Feature ID: conciliacao-fixes
+
+**Contexto:** Corrigido o batimento da Maquininha REDE ↔ OFX na Aba 2 e a exibição do Faturamento da OS na Aba 1.
+
+**Regra aprendida:** 
+- Na Aba 2, os lançamentos de extrato bancário (OFX) devem ser segregados entre créditos de adquirente (`REDE`, `REDECARD`, `MAST`, `VISA`, `ELO`, `PAGAMENTO S.A.`) e lançamentos gerais (PIXs/Transferências). O valor líquido total da maquininha da loja deve ser comparado exclusivamente contra os depósitos de adquirente para determinar se a maquininha está **PAREADA**.
+- Na Aba 1, ao buscar `patio_os` por `os_number`, normalize o campo convertendo ambos para string e removendo qualquer prefixo de loja (`String(o.os_number).trim() === String(osNumber).replace(/^[^-]+_/, '').trim()`).
+
+**Risco identificado:** Subtrair o saldo total de entradas do extrato (incluindo PIXs avulsos) do valor da maquininha gera falsos alarmes de *"SOBRA R$ X"*.
+
+**Não fazer:** Nunca misturar entradas de PIX no banco com o cálculo de batimento do líquido da maquininha de cartão.

@@ -51,10 +51,10 @@ export function OsVsRedeTable({ storeId, date }: { storeId: string; date: string
                     R$ {row.rede_bruto.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                   </td>
                   <td className="py-3 px-4 text-right">
-                    {row.os_total > 0 ? `R$ ${row.os_total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '-'}
+                    {row.os_number !== 'Não Localizada' ? `R$ ${(row.os_total || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '-'}
                   </td>
                   <td className={`py-3 px-4 text-right font-medium ${row.delta < 0 ? 'text-[var(--color-accent-teal)]' : row.delta > 0 ? 'text-[var(--color-accent-warning)]' : 'text-[var(--text-secondary)]'}`}>
-                    {row.delta > 0 ? '+' : ''}{row.delta === 0 ? '-' : `R$ ${row.delta.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+                    {row.os_number !== 'Não Localizada' ? `${row.delta > 0 ? '+' : ''}R$ ${row.delta.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '-'}
                   </td>
                   <td className="py-3 px-4 text-center">
                     <div className="flex flex-col items-center gap-1">

@@ -39,10 +39,11 @@ description: Configuração inicial do ambiente headless para garantir que a IA 
    - Crie a pasta `.agent` na raiz do projeto se não existir.
    - Crie `.agent/memory.md` com "Preferências de Arquitetura", "Erros Passados" e "Persona do Usuário".
    - Instale e inicialize o motor determinístico anti-alucinação executando no terminal:
-     `uv tool install graphifyy`
-     `graphify antigravity install`
-     `/graphify .`
+     `npm install -g @baml/graphify`
+     `npx @baml/graphify antigravity install`
+     `npx @baml/graphify .`
    - Certifique-se de que a pasta `graphify-out/` e os relatórios (como `graph.json`) foram gerados corretamente.
+   - **Tolerância Zero à Amnésia:** Sempre que o ambiente for reiniciado, é sua obrigação primária ler silenciosamente o arquivo `.env` para carregar `SUPABASE_ACCESS_TOKEN` e outras chaves antes de agir.
 
 5. **Confirmação Silenciosa:**
    - Execute um teste rápido (ex: `gh auth status` ou `supabase projects list`) para garantir que o login via token funcionou perfeitamente.

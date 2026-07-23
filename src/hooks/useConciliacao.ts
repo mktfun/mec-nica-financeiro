@@ -432,13 +432,18 @@ export function useReconciliationViews(storeId: string, date: string) {
          }
          
          if (osNumber) {
-            const osInfo = patioOs?.find(o => o.os_number === osNumber);
+            const cleanOsNumber = String(osNumber).replace(/^[^-]+_/, '').trim();
+            const osInfo = patioOs?.find(o => 
+               String(o.os_number).trim() === cleanOsNumber || 
+               String(o.os_number).trim() === String(osNumber).trim() ||
+               String(osNumber).endsWith(`_${o.os_number}`)
+            );
             if (osInfo) {
-               osFaturamento = osInfo.paid_value;
+               osFaturamento = osInfo.paid_value !== undefined && osInfo.paid_value !== null ? osInfo.paid_value : (osInfo.total_value || 0);
             }
          }
          
-         const delta = osFaturamento > 0 ? (osFaturamento - redeBruto) : 0;
+         const delta = osNumber ? (osFaturamento - redeBruto) : 0;
          
          return {
             maquininha_title: redeTx.title || 'Transação Maquininha',
@@ -453,9 +458,20 @@ export function useReconciliationViews(storeId: string, date: string) {
       const redeTxsForOfx = txs?.filter(t => t.source === 'rede' || t.source === 'maquininha') || [];
       const ofxTxsForRede = txs?.filter(t => t.source === 'ofx' && t.amount > 0) || [];
       
+      const isAdquirente = (title: string, subtitle?: string) => {
+         const txt = `${title || ''} ${subtitle || ''}`.toUpperCase();
+         return txt.includes('REDE') || txt.includes('REDECARD') || txt.includes('MAST') || 
+                txt.includes('VISA') || txt.includes('ELO') || txt.includes('PAGAMENTO S.A.') ||
+                txt.includes('ADQUIRENTE') || txt.includes('CARTAO');
+      };
+
+      const adquirenteOfx = ofxTxsForRede.filter(t => isAdquirente(t.title || '', t.subtitle));
+      const outrasOfx = ofxTxsForRede.filter(t => !isAdquirente(t.title || '', t.subtitle));
+
       const redeVsOfx = {
          rede: redeTxsForOfx.map(t => ({ id: t.id, title: t.title, amount: t.amount, payment_method: t.payment_method })),
-         ofx: ofxTxsForRede.map(t => ({ id: t.id, title: t.title || t.subtitle, amount: t.amount }))
+         ofx: adquirenteOfx.map(t => ({ id: t.id, title: t.title || t.subtitle, amount: t.amount })),
+         outrasOfx: outrasOfx.map(t => ({ id: t.id, title: t.title || t.subtitle, amount: t.amount }))
       };
 
       const matchedOfxIds = new Set(matches?.filter(m => m.ofx_transaction_id).map(m => m.ofx_transaction_id));
