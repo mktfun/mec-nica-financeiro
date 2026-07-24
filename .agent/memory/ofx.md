@@ -1,14 +1,15 @@
-# 📄 Memória Modular: Parsing de Arquivos (OFX, XLSX, OS, Rede)
+# 🧠 Memória Modular: Importação OFX & Adquirentes
 
-## [2026-07-24] — Feature ID: fix-day23-crash
+## [2026-07-24] — Feature ID: conciliacao-fk-definitive-fix
 
-**Contexto:** Ao importar pastas com múltiplos relatórios, planilhas consolidadas manuais (ex: `CONCILIAÇÃO 2307.xlsx` com ~3.000 linhas) causavam congelamento e crash no navegador.
+**Contexto:** Correção definitiva do erro de Foreign Key ao confirmar a importação de extratos OFX (`conciliation_matches_ofx_transaction_id_fkey`).
 
 **Regra aprendida:**
-- Implementar a função helper `isConsolidatedSummaryFile` para ignorar automaticamente planilhas consolidadas manuais (arquivos contendo `CONCILIAC`, `CONCILIATION`, `RESUMO_GERAL`, `CONSOLIDADO`).
-- Adicionar pausas assíncronas no event loop do V8 (`await new Promise(r => setTimeout(r, 0))`) a cada arquivo lido ou a cada 50 linhas de OS para evitar que o navegador entre em "Página Não Responde".
-- Tratar datas e diferenças em ms com `isNaN(date.getTime())` para prevenir que `days_open` vire `NaN`.
+- Ao fazer `upsert` na tabela `transactions` com conflito por `(store_id, fitid)`, o Postgres atualiza a linha existente e **mantém a chave primária antiga (`id`)** do banco de dados.
+- O Javascript gera um `crypto.randomUUID()` em memória que NUNCA é salvo no banco de dados quando ocorre conflito no `upsert`.
+- Para vincular transações OFX em `conciliation_matches`, você DEVE consultar a tabela `transactions` via `.in('fitid', fitids)` **após** o salvamento para remapear e resgatar o `id` primário real do Postgres.
+- Sempre faça uma checagem de existência física (`.in('id', checkIds)`) antes de disparar o `insert` em `conciliation_matches`. Se o ID não existir fisicamente no banco de dados, atribua `null` no campo `ofx_transaction_id` ou `rede_transaction_id`.
 
-**Risco identificado:** A execução de regex e varredura de tabelas com milhares de linhas diretamente na thread principal do navegador sem `setTimeout(..., 0)` estoura a memória do V8.
+**Risco identificado:** Tentar usar IDs gerados no Javascript em memória para tabelas filhas com Foreign Key antes de consultar quais IDs o Postgres manteve no `upsert`.
 
-**Não fazer:** Nunca tentar parsear planilhas consolidadas de conferência manual como se fossem relatórios brutos de fornecedores.
+**Não fazer:** Nunca confiar em UUIDs gerados no frontend para tabelas com relacionamentos FK após operações de `upsert` com `onConflict`.

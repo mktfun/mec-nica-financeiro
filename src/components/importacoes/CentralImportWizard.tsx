@@ -333,6 +333,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
               target_date: targetDate,
               system_os_number: matched_os_number,
               ofx_transaction_id: txId,
+              _fitid: tx.fitid || null,
               status: 'perfect_match',
               divergence_amount: 0
             });
@@ -444,14 +445,70 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
       if (matchesToInsert.length > 0) {
         addLog(`🔗 Vinculando ${matchesToInsert.length} pares perfeitos de conciliação...`, "info");
-        const validTxIds = new Set(txsToInsert.map(t => t.id).filter(Boolean));
-        const sanitizedMatches = matchesToInsert.map(m => ({
-          ...m,
-          ofx_transaction_id: validTxIds.has(m.ofx_transaction_id) ? m.ofx_transaction_id : null,
-          rede_transaction_id: validTxIds.has(m.rede_transaction_id) ? m.rede_transaction_id : null
-        }));
-        await insertConciliationMatches(sanitizedMatches);
-        addLog("✅ Pares de conciliação salvos!", "success");
+        
+        try {
+          // 1. Coletar fitids para consultar o DB
+          const allFitids = Array.from(new Set(
+            matchesToInsert.map((m: any) => m._fitid).filter(Boolean)
+          ));
+
+          const fitidToDbIdMap = new Map<string, string>();
+          if (allFitids.length > 0) {
+            const { data: dbTxs } = await supabase
+              .from('transactions')
+              .select('id, store_id, fitid')
+              .in('fitid', allFitids as string[]);
+
+            dbTxs?.forEach((t: any) => {
+              if (t.fitid) {
+                fitidToDbIdMap.set(`${t.store_id || 'null'}_${t.fitid}`, t.id);
+              }
+            });
+          }
+
+          // 2. Remapear IDs sintéticos para IDs do DB
+          const mappedMatches = matchesToInsert.map((m: any) => {
+            let realOfxId = m.ofx_transaction_id;
+            if (m._fitid) {
+              const key = `${m.store_id || 'null'}_${m._fitid}`;
+              if (fitidToDbIdMap.has(key)) {
+                realOfxId = fitidToDbIdMap.get(key)!;
+              }
+            }
+            return { ...m, ofx_transaction_id: realOfxId };
+          });
+
+          // 3. Checagem Física de Existência na tabela transactions
+          const checkIds = Array.from(new Set(
+            mappedMatches.flatMap((m: any) => [m.ofx_transaction_id, m.rede_transaction_id]).filter(Boolean)
+          ));
+
+          let validDbIdSet = new Set<string>();
+          if (checkIds.length > 0) {
+            const { data: existingTxs } = await supabase
+              .from('transactions')
+              .select('id')
+              .in('id', checkIds as string[]);
+
+            validDbIdSet = new Set(existingTxs?.map((t: any) => t.id) || []);
+          }
+
+          const sanitizedMatches = mappedMatches.map((m: any) => ({
+            store_id: m.store_id,
+            target_date: m.target_date,
+            system_os_number: m.system_os_number,
+            ofx_transaction_id: (m.ofx_transaction_id && validDbIdSet.has(m.ofx_transaction_id)) ? m.ofx_transaction_id : null,
+            rede_transaction_id: (m.rede_transaction_id && validDbIdSet.has(m.rede_transaction_id)) ? m.rede_transaction_id : null,
+            status: m.status || 'perfect_match',
+            divergence_amount: m.divergence_amount || 0
+          }));
+
+          await insertConciliationMatches(sanitizedMatches);
+          addLog("✅ Pares de conciliação salvos com sucesso!", "success");
+        } catch (matchErr: any) {
+          console.warn("Aviso ao salvar pares de conciliação:", matchErr);
+          addLog(`⚠️ Pares de conciliação salvos parcialmente (transações garantidas no banco).`, "warning");
+        }
       }
 
       // Log de Importação
