@@ -1,0 +1,9 @@
+{
+  "name": "bmf-ia-os-tests",
+  "version": "1.0.0",
+  "description": "BMF IA OS - Suite de testes automatizados de integracao",
+  "private": true,
+  "scripts": {
+    "test": "node --test --test-reporter=spec"
+  }
+}

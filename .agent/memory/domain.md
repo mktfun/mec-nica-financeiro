@@ -1,5 +1,22 @@
 # 🧠 Memória Modular: Domínio & Conciliação
 
+## [2026-07-24] — Feature ID: background-ai-telemetry-engine
+
+**Contexto:** Conciliação 100% silenciosa em segundo plano (Headless Background) e Central de Telemetria & Audit Trail de IA na página de Configurações (`/configuracoes`), conforme padrões de arquitetura de referência (Hermes Agent / BMF IA OS).
+
+**Regra aprendida:**
+- **Zero UI Visível na Conciliação:** A tela de conciliação diária não deve conter botões, modais ou selos visíveis de "IA". O operador navega na interface tradicional e limpa.
+- **Auto-Matching Silencioso:** Vínculos com nota de confiança $\ge 90\%$ identificados pela IA são aplicados automaticamente na tabela `conciliation_matches` do Supabase sem necessidade de aprovação manual.
+- **Central de Telemetria & Logs (`ai_execution_logs`):** Cada chamada à LLM é auditada imutavelmente registrando:
+  - Tokens de Prompt, Completion e Total.
+  - Custo estimado acumulado em dólares ($ USD) e reais (R$ BRL).
+  - Tempo de execução em milissegundos (`execution_time_ms`).
+  - Payload JSON bruto de entrada (Input), Resposta JSON bruta (Output) e Raciocínio (Chain of Thought) passo-a-passo.
+
+**Risco identificado:** A exibição de botões de IA na conciliação interrompe o fluxo de trabalho do operador e despadroniza a interface executiva.
+
+**Não fazer:** Nunca reintroduzir botões visíveis ou modais de confirmação manual de IA na tela de conciliação diária; o processamento por IA deve ser estritamente headless e auditável via `/configuracoes`.
+
 ## [2026-07-24] — Feature ID: conciliacao-fk-fix-ui-harmony
 
 **Contexto:** Correção de Foreign Key no importador/alertas e harmonização da UI com a remoção dos códigos de célula `(G13..G31)` e unificação do Hero Card da conciliação.
