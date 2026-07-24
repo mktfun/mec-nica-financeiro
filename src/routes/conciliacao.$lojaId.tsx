@@ -10,6 +10,8 @@ import { PixVsOfxTable } from '@/components/conciliacao/PixVsOfxTable';
 import { OfxSemMatchTable } from '@/components/conciliacao/OfxSemMatchTable';
 import { ConciliacaoAlertsSection } from '@/components/conciliacao/ConciliacaoAlertsSection';
 import { useTransactionsPorDataELoja } from '@/hooks/useTransactions';
+import { useReconciliationViews } from '@/hooks/useConciliacao';
+import { useBackgroundAiReconciler } from '@/hooks/useBackgroundAiReconciler';
 
 export const Route = createFileRoute('/conciliacao/$lojaId')({
   component: ConciliacaoLojaPage,
@@ -53,6 +55,16 @@ function ConciliacaoLojaPage() {
   const { data: stores = [] } = useStores();
   const store = stores.find(s => s.id === lojaId);
   const { data: transactions = [] } = useTransactionsPorDataELoja(targetDate, lojaId);
+  const { data: reconData } = useReconciliationViews(lojaId, targetDate);
+
+  // Invoca o acionamento automático silencioso em background da IA
+  useBackgroundAiReconciler(
+    lojaId,
+    targetDate,
+    reconData?.pixVsOfx?.osPix || [],
+    reconData?.redeVsOfx?.unassignedRedeTxs || [],
+    reconData?.ofxSemMatch || []
+  );
 
   if (!store) {
     return (
