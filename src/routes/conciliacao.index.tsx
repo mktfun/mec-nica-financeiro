@@ -1,9 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { motion } from 'framer-motion';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { Store, ChevronRight } from 'lucide-react';
+import { Store } from 'lucide-react';
 import { useState } from 'react';
 import { useStores } from '@/hooks/useStores';
 import { useConciliacaoResumo, useConciliacaoDetalhes } from '@/hooks/useConciliacao';
@@ -66,7 +65,7 @@ function ConciliacaoPage() {
           </div>
         ) : (
           <>
-            {/* O Hero Card Unificado com Design Restaurado */}
+            {/* O Hero Card Unificado */}
             <ResumoDiaPanel 
               selectedDate={selectedDate}
               onDayChange={handleDayChange}
@@ -80,111 +79,87 @@ function ConciliacaoPage() {
               storesData={storesState}
             />
 
-            {/* Lista de Lojas com Micro-animações e Hover Lift 3D */}
+            {/* Lista de Lojas Visual Original */}
             <div className="space-y-4 pt-4">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-lg font-bold font-display flex items-center gap-2 text-[var(--text-primary)]">
-                  <Store size={20} className="text-[var(--color-primary)]" />
-                  Fechamento Individual por Loja (Módulo 1)
-                </h3>
-                <span className="text-xs text-[var(--text-tertiary)] font-medium">
-                  {stores.length} Unidades Operacionais
-                </span>
-              </div>
+              <h3 className="text-lg font-semibold flex items-center gap-2 mb-2">
+                <Store size={18} className="text-[var(--color-primary)]" />
+                Fechamento por Loja
+              </h3>
               
               <div className="grid grid-cols-1 gap-4">
-                {stores.map((store, index) => {
+                {stores.map((store) => {
                   const sys = dailyBalances?.[store.id] || 0;
                   const bankIn = bankBalances?.[store.id]?.in || 0;
                   const div = sys - bankIn;
                   const isStoreOk = Math.abs(div) < 0.01;
 
                   return (
-                    <motion.div
-                      key={store.id}
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.35, delay: index * 0.05 }}
-                    >
-                      <Link to="/conciliacao/$lojaId" params={{ lojaId: store.id }} search={{ date: selectedDate }} className="block group">
-                        <Card className="p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-6 transition-all duration-300 hover:scale-[1.012] hover:bg-[var(--bg-surface-elevated)]/90 hover:border-white/25 hover:shadow-[0_12px_40px_rgba(0,0,0,0.35)] cursor-pointer border border-white/10 backdrop-blur-md rounded-2xl relative overflow-hidden">
+                    <Link to="/conciliacao/$lojaId" params={{ lojaId: store.id }} search={{ date: selectedDate }} key={store.id} className="block">
+                      <Card className="p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-6 transition-all hover:scale-[1.01] hover:bg-white/10 hover:border-white/20 cursor-pointer shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] border border-white/5 backdrop-blur-md">
+                        
+                        {/* Nome da Loja & Status Indicator */}
+                        <div className="flex-1 flex items-center gap-4">
+                          <div className={`w-2 h-12 rounded-full ${isStoreOk ? 'bg-[var(--color-accent-teal)]' : 'bg-[var(--color-accent-danger)]'}`} />
+                          <div>
+                            <p className="font-semibold text-lg">{store.name}</p>
+                            <p className="text-xs text-[var(--text-tertiary)]">ID: {store.id}</p>
+                          </div>
+                        </div>
+
+                        {/* Caixa Interna com as 6 Colunas do Módulo 1 */}
+                        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4 bg-black/20 p-4 rounded-xl border border-white/5 flex-1 font-sans tabular-nums text-xs">
                           
-                          {/* Efeito Feixe de Brilho no Hover */}
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.04] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
-
-                          {/* Nome da Loja & Status Indicator Pill */}
-                          <div className="flex items-center gap-4 min-w-[220px] relative z-10">
-                            <div className={`w-2.5 h-12 rounded-full shadow-md transition-transform group-hover:scale-y-110 ${
-                              isStoreOk 
-                                ? 'bg-[var(--color-accent-teal)] shadow-[0_0_12px_rgba(0,168,126,0.5)]' 
-                                : 'bg-[var(--color-accent-danger)] shadow-[0_0_12px_rgba(226,59,74,0.5)]'
-                            }`} />
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <p className="font-semibold text-base text-[var(--text-primary)] font-display group-hover:text-[var(--color-primary-bright)] transition-colors">
-                                  {store.name}
-                                </p>
-                                <ChevronRight size={16} className="text-[var(--color-primary)] opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
-                              </div>
-                              <span className="text-[10px] text-[var(--text-tertiary)] font-mono">ID: {store.id}</span>
-                            </div>
+                          {/* 1. Banco Itaú */}
+                          <div>
+                            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans">Banco Itaú</p>
+                            <p className="font-bold text-[var(--color-accent-light-blue)]">
+                              <AnimatedNumber value={bankIn} format="currency" />
+                            </p>
                           </div>
 
-                          {/* Régua das 6 Colunas do Módulo 1 */}
-                          <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4 bg-[var(--bg-canvas)]/70 p-4 rounded-xl border border-[var(--border-subtle)] flex-1 font-sans tabular-nums text-xs relative z-10 shadow-inner">
-                            
-                            {/* 1. Banco Itaú */}
-                            <div>
-                              <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">Banco Itaú</p>
-                              <p className="font-bold text-[var(--color-accent-light-blue)]">
-                                <AnimatedNumber value={bankIn} format="currency" />
-                              </p>
-                            </div>
-
-                            {/* 2. Dinheiro MP */}
-                            <div>
-                              <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">Dinheiro MP</p>
-                              <p className="font-bold text-[var(--color-accent-teal)]">
-                                <AnimatedNumber value={0} format="currency" />
-                              </p>
-                            </div>
-
-                            {/* 3. A Receber */}
-                            <div>
-                              <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">A Receber</p>
-                              <p className="font-bold text-[var(--color-primary)]">
-                                <AnimatedNumber value={0} format="currency" />
-                              </p>
-                            </div>
-
-                            {/* 4. Na Loja OS */}
-                            <div>
-                              <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">Na Loja OS</p>
-                              <p className="font-bold text-[var(--color-accent-warning)]">
-                                <AnimatedNumber value={0} format="currency" />
-                              </p>
-                            </div>
-
-                            {/* 5. Saldo Total */}
-                            <div>
-                              <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">Saldo Total</p>
-                              <p className="font-bold text-[var(--text-primary)]">
-                                <AnimatedNumber value={sys} format="currency" />
-                              </p>
-                            </div>
-
-                            {/* 6. Resultado Final */}
-                            <div className="text-right border-l border-[var(--border-subtle)] pl-3">
-                              <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans font-bold">Resultado Final</p>
-                              <p className={`font-bold text-sm ${isStoreOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
-                                <AnimatedNumber value={div} format="currency" />
-                              </p>
-                            </div>
-
+                          {/* 2. Dinheiro MP */}
+                          <div>
+                            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans">Dinheiro MP</p>
+                            <p className="font-bold text-[var(--color-accent-teal)]">
+                              <AnimatedNumber value={0} format="currency" />
+                            </p>
                           </div>
-                        </Card>
-                      </Link>
-                    </motion.div>
+
+                          {/* 3. A Receber */}
+                          <div>
+                            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans">A Receber</p>
+                            <p className="font-bold text-[var(--color-primary)]">
+                              <AnimatedNumber value={0} format="currency" />
+                            </p>
+                          </div>
+
+                          {/* 4. Na Loja OS */}
+                          <div>
+                            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans">Na Loja OS</p>
+                            <p className="font-bold text-[var(--color-accent-warning)]">
+                              <AnimatedNumber value={0} format="currency" />
+                            </p>
+                          </div>
+
+                          {/* 5. Saldo Total */}
+                          <div>
+                            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans">Saldo Total</p>
+                            <p className="font-bold text-[var(--text-primary)]">
+                              <AnimatedNumber value={sys} format="currency" />
+                            </p>
+                          </div>
+
+                          {/* 6. Resultado Final */}
+                          <div className="text-right border-l border-white/5 pl-3">
+                            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans font-bold">Resultado Final</p>
+                            <p className={`font-bold ${isStoreOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
+                              <AnimatedNumber value={div} format="currency" />
+                            </p>
+                          </div>
+
+                        </div>
+                      </Card>
+                    </Link>
                   );
                 })}
               </div>

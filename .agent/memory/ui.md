@@ -1,19 +1,17 @@
 # 🎨 Memória Modular: Interface & UX (Frontend)
 
-## [2026-07-24] — Feature ID: conciliacao-visual-restoration
+## [2026-07-24] — Feature ID: conciliacao-exact-layout-restoration
 
-**Contexto:** Restauração total da vida visual, efeitos glassmorphic com brilhos ambiente 3D (`blur-3xl opacity-25`), animações `framer-motion` escalonadas e efeito hover lift 3D com feixe de luz nos cards da conciliação.
+**Contexto:** Restauração exata do layout original sóbrio e limpo da conciliação conforme commit `298246a` / `dbf1ec5`, removendo orbes 3D artificiais.
 
 **Regra aprendida:**
-- Ao unificar dados ou ajustar componentes de cards, PRESERVE sempre a estrutura visual de destaque:
-  - Fundo glassmorphism translúcido `backdrop-blur-3xl` com bordas translúcidas de contraste alto (`border-white/10`).
-  - Orbes de iluminação ambiente radial (`absolute -top-32 -left-32 w-96 h-96 bg-[var(--color-primary)]/15 opacity-25 blur-3xl rounded-full`).
-  - Animação de entrada escalonada por item em listas via `motion.div` com delay progressivo (`delay: index * 0.05`).
-  - Elevação interativa no hover (`hover:scale-[1.012]`) com transição de sombra profunda e feixe de luz reflexivo.
+- O visual preferido da tela de conciliação diária utiliza containers limpos `rounded-2xl border backdrop-blur-3xl shadow-sm` e caixas internas escuras `bg-black/20 p-4 rounded-xl border border-white/5` nos cards de loja.
+- Deve-se evitar adicionar esferas radiais 3D de fundo em dashboards executivos que requerem sobriedade visual.
+- As 6 colunas do Módulo 1 devem ser encaixadas dentro da caixa interna `bg-black/20` utilizando a tipografia **Inter** com numerais `tabular-nums`.
 
-**Risco identificado:** Substituir o container HTML de um card por uma estrutura plana e sem `backdrop-blur` elimina a sensação de dinamismo e profundidade do aplicativo.
+**Risco identificado:** Adicionar luzes ambiente radiais e gradientes brilhantes artificiais degrada a legibilidade e altera a identidade visual sóbria do dashboard preferida pelo usuário.
 
-**Não fazer:** Nunca remover a camada de `motion.div`, os orbes de iluminação ambiente ou os efeitos de hover ao adicionar novos campos de dados a um componente existente.
+**Não fazer:** Nunca reintroduzir esferas de luz radiais 3D de fundo no painel de conciliação.
 
 ## [2026-07-24] — Feature ID: font-standardization-modern
 
