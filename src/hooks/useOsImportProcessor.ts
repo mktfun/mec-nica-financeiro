@@ -149,36 +149,45 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
         let parsed_pix_transfer = 0;
 
         if (payment_method_str) {
-          const lowerMethod = payment_method_str.toLowerCase();
-          
-          if (payment_method_str.includes(':')) {
-            const parts = payment_method_str.split(';');
-            parts.forEach(part => {
-              const [method, valStr] = part.split(':').map(s => s.trim());
-              if (method && valStr) {
-                const val = parseValue(valStr);
-                const methodUpper = method.toUpperCase();
-                if (methodUpper.includes('CREDITO') || methodUpper.includes('CRÉDITO') || methodUpper.includes('CARTAO') || methodUpper.includes('CARTÃO')) {
-                  parsed_credit += val;
-                } else if (methodUpper.includes('DEBITO') || methodUpper.includes('DÉBITO')) {
-                  parsed_debit += val;
-                } else if (methodUpper.includes('PIX') || methodUpper.includes('TRANSF') || methodUpper.includes('DEP') || methodUpper.includes('DINHEIRO')) {
-                  parsed_pix_transfer += val;
-                }
+          const upperMethod = payment_method_str.toUpperCase();
+          let foundPair = false;
+
+          // 1. Tenta extrair pares no formato METODO: VALOR ou METODO VALOR
+          const regex = /(PIX|TRANSF|DEP|DINHEIRO|DÉBITO|DEBITO|CRÉDITO|CREDITO|CARTAO|CARTÃO)\s*[:\-\s]?\s*(?:R\$\s*)?([\d\.,]+)?/gi;
+          let match;
+
+          while ((match = regex.exec(upperMethod)) !== null) {
+            const method = match[1].toUpperCase();
+            const valStr = match[2];
+            const val = valStr ? parseValue(valStr) : (paidValue || osValue);
+
+            if (val > 0 || !valStr) {
+              if (method.includes('CREDITO') || method.includes('CRÉDITO') || method.includes('CARTAO') || method.includes('CARTÃO')) {
+                parsed_credit += val;
+                foundPair = true;
+              } else if (method.includes('DEBITO') || method.includes('DÉBITO')) {
+                parsed_debit += val;
+                foundPair = true;
+              } else if (method.includes('PIX') || method.includes('TRANSF') || method.includes('DEP') || method.includes('DINHEIRO')) {
+                parsed_pix_transfer += val;
+                foundPair = true;
               }
-            });
-          } else {
-             if (lowerMethod.includes('credito') || lowerMethod.includes('crédito') || lowerMethod.includes('cartão') || lowerMethod.includes('cartao')) {
-               parsed_credit = paidValue || osValue;
-             } else if (lowerMethod.includes('debito') || lowerMethod.includes('débito')) {
-               parsed_debit = paidValue || osValue;
-             } else if (lowerMethod.includes('pix') || lowerMethod.includes('transf') || lowerMethod.includes('dep') || lowerMethod.includes('dinheiro')) {
-               parsed_pix_transfer = paidValue || osValue;
-             }
+            }
+          }
+
+          // 2. Se não encontrou valor numérico no par, classifica pela palavra-chave no texto
+          if (!foundPair || (parsed_credit === 0 && parsed_debit === 0 && parsed_pix_transfer === 0)) {
+            if (upperMethod.includes('PIX') || upperMethod.includes('TRANSF') || upperMethod.includes('DEP') || upperMethod.includes('DINHEIRO')) {
+              parsed_pix_transfer = paidValue || osValue;
+            } else if (upperMethod.includes('DEBITO') || upperMethod.includes('DÉBITO')) {
+              parsed_debit = paidValue || osValue;
+            } else if (upperMethod.includes('CREDITO') || upperMethod.includes('CRÉDITO') || upperMethod.includes('CARTÃO') || upperMethod.includes('CARTAO')) {
+              parsed_credit = paidValue || osValue;
+            }
           }
         }
 
-        // Fallback inteligente: Se o valor em cartão continuar 0 mas houver valor pago ou valor total, presume cartão
+        // Fallback apenas se NENHUM método foi identificado no texto
         if (parsed_credit === 0 && parsed_debit === 0 && parsed_pix_transfer === 0) {
           parsed_credit = osValue || paidValue;
         }

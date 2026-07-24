@@ -212,16 +212,17 @@ export function useReconciliationViews(storeId: string, date: string) {
     queryKey: ['reconciliation_views', storeId, date],
     queryFn: async () => {
       const targetDateObj = new Date(date);
-      const d1Obj = new Date(targetDateObj.getTime() - 86400000);
-      const d2Obj = new Date(targetDateObj.getTime() - 86400000 * 2);
-      const d1Str = d1Obj.toISOString().split('T')[0];
-      const d2Str = d2Obj.toISOString().split('T')[0];
+      const searchDates: string[] = [];
+      for (let d = 0; d <= 7; d++) {
+        const dObj = new Date(targetDateObj.getTime() - d * 86400000);
+        searchDates.push(dObj.toISOString().split('T')[0]);
+      }
 
       const { data: txs, error: txsErr } = await supabase
         .from('transactions')
         .select('*')
         .eq('store_id', storeId)
-        .in('target_date', [date, d1Str, d2Str]);
+        .in('target_date', searchDates);
 
       if (txsErr) throw txsErr;
 
@@ -455,11 +456,12 @@ export function useReconciliationViews(storeId: string, date: string) {
       const osPixList: any[] = [];
       patioOs?.forEach(os => {
          const totalVal = os.paid_value !== undefined && os.paid_value !== null ? os.paid_value : (os.total_value || 0);
-         const pixRatio = (os.parsed_pix_transfer || 0) / (totalVal || 1);
+         const realPixVal = os.pix_transfer_value !== undefined && os.pix_transfer_value !== null ? os.pix_transfer_value : (os.parsed_pix_transfer || 0);
+         const pixRatio = realPixVal / (totalVal || 1);
          const isPixMethod = (os.payment_method || '').toLowerCase().includes('pix') || (os.payment_method || '').toLowerCase().includes('transf');
          
-         if (pixRatio > 0 || isPixMethod) {
-            const pixVal = pixRatio > 0 ? (totalVal * pixRatio) : totalVal;
+         if (realPixVal > 0 || isPixMethod || pixRatio > 0) {
+            const pixVal = realPixVal > 0 ? realPixVal : (pixRatio > 0 ? totalVal * pixRatio : totalVal);
             osPixList.push({
                os_number: os.os_number,
                client_name: os.client_name,
