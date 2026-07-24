@@ -110,7 +110,7 @@ function ConciliacaoPage() {
                         </div>
 
                         {/* Régua das 6 Colunas */}
-                        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4 bg-[var(--bg-canvas)] p-4 rounded-xl border border-[var(--border-subtle)] flex-1 font-mono text-xs">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4 bg-[var(--bg-canvas)] p-4 rounded-xl border border-[var(--border-subtle)] flex-1 font-sans tabular-nums text-xs">
                           
                           {/* 1. Banco Itaú */}
                           <div>

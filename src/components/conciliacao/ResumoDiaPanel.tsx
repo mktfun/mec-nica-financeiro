@@ -113,7 +113,7 @@ export function ResumoDiaPanel({
           <div>
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-display font-bold text-[var(--text-primary)] tracking-tight">Conciliação Diária</h1>
-              <span className="bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-[10px] font-bold px-2 py-0.5 rounded border border-[var(--color-primary)]/20 uppercase tracking-wider font-mono">
+              <span className="bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-[10px] font-bold px-2.5 py-0.5 rounded border border-[var(--color-primary)]/20 uppercase tracking-wider font-sans">
                 Aba Saldo
               </span>
             </div>
@@ -158,7 +158,7 @@ export function ResumoDiaPanel({
             </button>
           </div>
 
-          <div className="flex gap-6 text-right font-mono">
+          <div className="flex gap-6 text-right font-sans tabular-nums">
             <div>
               <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">Apurado Sistema (Fechamento)</p>
               <p className="text-xl font-display font-bold text-[var(--text-primary)]"><AnimatedNumber value={totalSistema} format="currency" /></p>
@@ -180,7 +180,7 @@ export function ResumoDiaPanel({
               <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">SALDO BANCO ITAÚ</span>
               <Landmark size={15} className="text-[var(--color-accent-light-blue)]" />
             </div>
-            <p className="text-xl font-bold font-mono text-[var(--color-accent-light-blue)]">
+            <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-light-blue)]">
               <AnimatedNumber value={globalCalculated.saldo_g13} format="currency" />
             </p>
             <span className="text-[10px] text-[var(--text-tertiary)] block">Extrato bancário OFX acumulado</span>
@@ -198,7 +198,7 @@ export function ResumoDiaPanel({
                 placeholder="0,00"
                 value={manualDinheiroMpGlobal !== undefined ? manualDinheiroMpGlobal : (globalCalculated.dinheiro_mp_g14 || '')}
                 onChange={(e) => setManualDinheiroMpGlobal(parseFloat(e.target.value) || 0)}
-                className="w-full text-lg font-bold font-mono bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded px-2 py-0.5 text-[var(--color-accent-teal)] focus:outline-none focus:border-[var(--color-primary)]"
+                className="w-full text-lg font-bold font-sans tabular-nums bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded px-2 py-0.5 text-[var(--color-accent-teal)] focus:outline-none focus:border-[var(--color-primary)]"
               />
             </div>
             <span className="text-[10px] text-[var(--text-tertiary)] block">Lançado manual no sistema</span>
@@ -209,7 +209,7 @@ export function ResumoDiaPanel({
               <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">A RECEBER</span>
               <Receipt size={15} className="text-[var(--color-primary)]" />
             </div>
-            <p className="text-xl font-bold font-mono text-[var(--color-primary)]">
+            <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-primary)]">
               <AnimatedNumber value={globalCalculated.a_receber_g15} format="currency" />
             </p>
             <span className="text-[10px] text-[var(--text-tertiary)] block">Recebíveis pendentes</span>
@@ -220,7 +220,7 @@ export function ResumoDiaPanel({
               <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">NA LOJA OS</span>
               <ShoppingBag size={15} className="text-[var(--color-accent-warning)]" />
             </div>
-            <p className="text-xl font-bold font-mono text-[var(--color-accent-warning)]">
+            <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-warning)]">
               <AnimatedNumber value={globalCalculated.na_loja_g16} format="currency" />
             </p>
             <span className="text-[10px] text-[var(--text-tertiary)] block">OSs do Pátio pendentes</span>
@@ -228,9 +228,9 @@ export function ResumoDiaPanel({
         </div>
 
         {/* Totais de Fechamento */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl font-mono text-xs">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl font-sans tabular-nums text-xs">
           <div>
-            <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold font-sans">SALDO TOTAL</span>
+            <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">SALDO TOTAL</span>
             <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
               <AnimatedNumber value={globalCalculated.saldo_total_g17} format="currency" />
             </span>
@@ -238,7 +238,7 @@ export function ResumoDiaPanel({
           </div>
 
           <div>
-            <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold font-sans">CAIXA ATUAL</span>
+            <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">CAIXA ATUAL</span>
             <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
               <AnimatedNumber value={globalCalculated.caixa_atual_g21} format="currency" />
             </span>
@@ -246,7 +246,7 @@ export function ResumoDiaPanel({
           </div>
 
           <div>
-            <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold font-sans">DISPONÍVEL CONTAS</span>
+            <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">DISPONÍVEL CONTAS</span>
             <span className="text-lg font-bold text-[var(--color-primary-bright)] mt-1 block">
               <AnimatedNumber value={globalCalculated.disponivel_contas_g29} format="currency" />
             </span>
@@ -254,7 +254,7 @@ export function ResumoDiaPanel({
           </div>
 
           <div className="p-3 bg-[var(--color-accent-teal)]/10 rounded-xl border border-[var(--color-accent-teal)]/30">
-            <span className="text-[10px] text-[var(--color-accent-teal)] uppercase block font-bold font-sans">RESULTADO FINAL</span>
+            <span className="text-[10px] text-[var(--color-accent-teal)] uppercase block font-bold">RESULTADO FINAL</span>
             <span className="text-xl font-bold text-[var(--color-accent-teal)] mt-0.5 block">
               <AnimatedNumber value={globalCalculated.resultado_final_g31} format="currency" />
             </span>
@@ -275,7 +275,7 @@ export function ResumoDiaPanel({
                     <AlertTriangle size={14} className="text-[var(--color-accent-danger)]" />
                     <span className="text-[var(--text-secondary)] font-medium text-xs">{anom.title || 'Transação'}</span>
                   </div>
-                  <span className={`font-mono text-xs font-bold ${anom.type === 'in' ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
+                  <span className={`font-sans tabular-nums text-xs font-bold ${anom.type === 'in' ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
                     {anom.type === 'in' ? '+' : '-'}{formatCurrency(anom.amount || 0)}
                   </span>
                 </div>

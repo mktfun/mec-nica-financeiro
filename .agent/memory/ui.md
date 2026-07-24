@@ -1,5 +1,18 @@
 # 🎨 Memória Modular: Interface & UX (Frontend)
 
+## [2026-07-24] — Feature ID: font-standardization-modern
+
+**Contexto:** Padronização tipográfica global em todas as telas com a eliminação da fonte monospace "quadrada/caricata" (Courier/Consolas) e adoção oficial das Google Fonts **Inter** e **DM Sans**.
+
+**Regra aprendida:**
+- Fazer a ponte de variáveis de tema CSS em `styles.css` mapeando `--font-body`, `--font-sans` e `--font-mono` para `"Inter", sans-serif`.
+- Números e valores monetários DEVEM utilizar `tabular-nums` (`font-variant-numeric: tabular-nums`). Isso mantém o alinhamento vertical dos numerais sem precisar aplicar fontes monospaçadas máquina de escrever rústicas.
+- Mantemos a hierarquia visual limpa: **DM Sans** em grandes títulos de exibição (`--font-display`) e **Inter** no corpo, tabelas, inputs e numerais.
+
+**Risco identificado:** A classe `font-mono` do Tailwind usa Courier/Consolas se a variável `--font-mono` não for sobrescrita com a fonte Inter + `tabular-nums`.
+
+**Não fazer:** Nunca deixar classes `font-mono` padrão sem remapear para a fonte de UI principal com `tabular-nums`.
+
 ## [2026-07-23] — Feature ID: delete-and-clean-all
 
 **Contexto:** Adicionado botão de "Limpar Todos os Dados" na tela `/importacoes` com modal de confirmação e fallback JS client para exclusão de lotes.
