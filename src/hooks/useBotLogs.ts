@@ -14,19 +14,25 @@ export function useBotLogs(limit = 50) {
   return useQuery({
     queryKey: ['bot_logs', limit],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('bot_audit_logs')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(limit);
+      try {
+        const { data, error } = await supabase
+          .from('ai_execution_logs')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(limit);
 
-      if (error) {
-        // Ignora erro se a tabela não existir ainda (antes da migration rodar)
-        console.warn('Failed to fetch bot logs (table might not exist yet):', error);
+        if (error) return [] as BotAuditLog[];
+        return (data || []).map((item: any) => ({
+          id: item.id,
+          bot_name: item.provider ? `${item.provider} (${item.model})` : 'AI Engine',
+          status: item.matches_applied_count > 0 ? 'success' : 'warning',
+          message: `Execução ${item.execution_time_ms || 0}ms • ${item.matches_applied_count || 0} matches • ${item.total_tokens || 0} tokens`,
+          payload: item.raw_payload_json,
+          created_at: item.created_at,
+        })) as BotAuditLog[];
+      } catch (e) {
         return [] as BotAuditLog[];
       }
-
-      return data as BotAuditLog[];
     },
   });
 }
