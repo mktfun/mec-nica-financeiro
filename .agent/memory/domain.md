@@ -25,3 +25,18 @@
 **Risco identificado:** Restringir a busca de `patio_os` por data exata fazia o faturamento da OS parecer `R$ 0,00`, gerando deltas falsos negativos.
 
 **Não fazer:** Nunca apresentar tabelas desconectadas de maquininha e banco sem mostrar qual grupo de vendas forma qual depósito.
+
+## [2026-07-24] — Feature ID: conciliacao-layered-matching
+
+**Contexto:** Motor de conciliação em 4 camadas com busca por subconjunto (Subset-Sum / Backtracking) e contextualização temporal D-1/D-2 para eliminar falsas divergências em depósitos bancários com múltiplas vendas de maquininha.
+
+**Regra aprendida:**
+- NUNCA utilize um algoritmo de acúmulo guloso (*greedy*) para agrupar vendas em um depósito bancário. O agrupamento deve testar rigorosamente:
+  1. **Camada 1:** Casamento exato 1:1 (`|rede.amount - ofx.amount| < 0.05`).
+  2. **Camada 2:** Subset-Sum combinatório por backtracking ($N \le 6$) para encontrar a soma exata de $N$ vendas que forma o depósito bancário no mesmo dia.
+  3. **Camada 3:** Extensão temporal para buscar vendas não conciliadas de $D-1$ e $D-2$ que explicam os depósitos de hoje (ex: vendas de fim de semana liquidadas na segunda-feira).
+  4. **Camada 4:** Isolamento de exceções e divergências reais em painel dedicado de alertas (`ConciliacaoAlertsSection.tsx`).
+
+**Risco identificado:** Tentar agrupar todas as vendas no primeiro depósito gera divergências artificiais em todos os outros depósitos. O subset-sum exato garante $R\$ 0,00$ de divergência para pareamentos matematicamente perfeitos.
+
+**Não fazer:** Nunca forçar pareamento parcial ou parcial guloso se a soma não bater 100% exata; lançamentos que não fecham devem cair no painel de exceções/alertas da loja.

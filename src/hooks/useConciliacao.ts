@@ -166,19 +166,66 @@ export function useDailyReconciliationDelta(targetDate: string) {
   });
 }
 
+/**
+ * Função de busca de subconjunto com soma exata (Subset-Sum / Backtracking)
+ * Encontra até maxDepth elementos em candidates cuja soma seja igual a targetAmount (+- TOLERANCE)
+ */
+function findExactSubsetMatch(
+  targetAmount: number,
+  candidates: any[],
+  maxDepth = 6
+): any[] | null {
+  const TOLERANCE = 0.05;
+
+  function backtrack(
+    startIndex: number,
+    currentSum: number,
+    currentSubset: any[]
+  ): any[] | null {
+    if (Math.abs(currentSum - targetAmount) <= TOLERANCE) {
+      return currentSubset;
+    }
+    if (currentSum > targetAmount + TOLERANCE || currentSubset.length >= maxDepth) {
+      return null;
+    }
+
+    for (let i = startIndex; i < candidates.length; i++) {
+      const candidate = candidates[i];
+      const result = backtrack(
+        i + 1,
+        currentSum + candidate.amount,
+        [...currentSubset, candidate]
+      );
+      if (result) return result;
+    }
+
+    return null;
+  }
+
+  return backtrack(0, 0, []);
+}
+
 export function useReconciliationViews(storeId: string, date: string) {
   return useQuery({
     queryKey: ['reconciliation_views', storeId, date],
     queryFn: async () => {
+      // Calcular datas D-1 e D-2 para contextualização temporal
+      const targetDateObj = new Date(date);
+      const d1Obj = new Date(targetDateObj.getTime() - 86400000);
+      const d2Obj = new Date(targetDateObj.getTime() - 86400000 * 2);
+      const d1Str = d1Obj.toISOString().split('T')[0];
+      const d2Str = d2Obj.toISOString().split('T')[0];
+
+      // Buscar transações de D0, D-1 e D-2 para a loja
       const { data: txs, error: txsErr } = await supabase
         .from('transactions')
         .select('*')
         .eq('store_id', storeId)
-        .eq('target_date', date);
+        .in('target_date', [date, d1Str, d2Str]);
 
       if (txsErr) throw txsErr;
 
-      // Buscar TODAS as OSs da loja sem restrição rígida de data única
+      // Buscar TODAS as OSs da loja
       const { data: patioOs, error: patioErr } = await supabase
         .from('patio_os')
         .select('*')
@@ -190,16 +237,18 @@ export function useReconciliationViews(storeId: string, date: string) {
         .from('conciliation_matches')
         .select('*')
         .eq('store_id', storeId)
-        .eq('target_date', date);
+        .in('target_date', [date, d1Str, d2Str]);
 
       if (matchesErr) console.warn("Aviso matches:", matchesErr);
 
-      const redeTransactions = txs?.filter(t => t.source === 'rede' || t.source === 'maquininha') || [];
-      const taxaTransactions = txs?.filter(t => t.source === 'rede_taxa') || [];
+      const allRedeTxs = txs?.filter(t => t.source === 'rede' || t.source === 'maquininha') || [];
+      const d0RedeTxs = allRedeTxs.filter(t => t.target_date === date);
+      const taxaTransactions = txs?.filter(t => t.source === 'rede_taxa' && t.target_date === date) || [];
 
       const usedTaxas = new Set<string>();
 
-      const osVsRede = redeTransactions.map(redeTx => {
+      // ABA 1: OS vs Maquininha (D0)
+      const osVsRede = d0RedeTxs.map(redeTx => {
          let taxaTx = null;
          if (redeTx.os_number) {
             taxaTx = taxaTransactions.find(taxa => taxa.os_number === redeTx.os_number && !usedTaxas.has(taxa.id));
@@ -249,8 +298,8 @@ export function useReconciliationViews(storeId: string, date: string) {
          };
       });
 
-      const redeTxsForOfx = txs?.filter(t => t.source === 'rede' || t.source === 'maquininha') || [];
-      const ofxTxsForRede = txs?.filter(t => t.source === 'ofx' && t.amount > 0) || [];
+      // ABA 2: Maquininha vs Banco OFX (MOTOR MULTICAMADAS COM SUBSET-SUM E D-1)
+      const d0OfxIn = txs?.filter(t => t.source === 'ofx' && t.target_date === date && t.amount > 0) || [];
       
       const isAdquirente = (title: string, subtitle?: string) => {
          const txt = `${title || ''} ${subtitle || ''}`.toUpperCase();
@@ -259,53 +308,137 @@ export function useReconciliationViews(storeId: string, date: string) {
                 txt.includes('ADQUIRENTE') || txt.includes('CARTAO');
       };
 
-      const adquirenteOfx = ofxTxsForRede.filter(t => isAdquirente(t.title || '', t.subtitle));
-      const outrasOfx = ofxTxsForRede.filter(t => !isAdquirente(t.title || '', t.subtitle));
+      const adquirenteOfx = d0OfxIn.filter(t => isAdquirente(t.title || '', t.subtitle));
+      const outrasOfx = d0OfxIn.filter(t => !isAdquirente(t.title || '', t.subtitle));
 
-      // AGRUPAMENTO DE MAQUININHAS POR DEPÓSITO BANCÁRIO OFX
-      const availableRedeTxs = [...redeTxsForOfx];
-      const depositGroups = adquirenteOfx.map(ofxTx => {
-         const targetAmount = ofxTx.amount;
-         const childTxs: any[] = [];
-         let accumulated = 0;
+      const poolRedeTxs = [...allRedeTxs]; // Pool contendo vendas D0, D-1, D-2
+      const depositGroups: any[] = [];
+      const unmatchedAlerts: any[] = [];
 
-         // Tenta encontrar grupo de vendas da maquininha cuja soma seja igual ao depósito OFX
-         for (let i = 0; i < availableRedeTxs.length; i++) {
-            const rTx = availableRedeTxs[i];
-            if (accumulated + rTx.amount <= targetAmount + 0.5) {
-               childTxs.push(rTx);
-               accumulated += rTx.amount;
-               if (Math.abs(accumulated - targetAmount) < 1.0) break;
-            }
+      // PASSAGEM DE PAREAMENTO EM 4 CAMADAS
+      adquirenteOfx.forEach(ofxTx => {
+         const targetVal = ofxTx.amount;
+
+         // --- CAMADA 1: Exact 1:1 Match ---
+         const exactOneIndex = poolRedeTxs.findIndex(r => Math.abs(r.amount - targetVal) <= 0.05);
+         if (exactOneIndex !== -1) {
+            const matchedTx = poolRedeTxs.splice(exactOneIndex, 1)[0];
+            depositGroups.push({
+               ofxDeposit: {
+                  id: ofxTx.id,
+                  title: ofxTx.title || ofxTx.subtitle,
+                  amount: ofxTx.amount,
+                  occurred_at: ofxTx.occurred_at
+               },
+               childRedeTxs: [{ id: matchedTx.id, title: matchedTx.title, amount: matchedTx.amount, payment_method: matchedTx.payment_method, target_date: matchedTx.target_date }],
+               totalChildAmount: matchedTx.amount,
+               isMatched: true,
+               groupDelta: 0,
+               matchType: matchedTx.target_date === date ? '1:1 Exato' : `1:1 Exato (${matchedTx.target_date === d1Str ? 'D-1' : 'D-2'})`,
+               layer: 'CAMADA_1'
+            });
+            return;
          }
 
-         // Remove da lista de disponíveis os itens atribuídos
-         childTxs.forEach(c => {
-            const idx = availableRedeTxs.findIndex(r => r.id === c.id);
-            if (idx !== -1) availableRedeTxs.splice(idx, 1);
-         });
+         // --- CAMADA 2: Subset-Sum Combinatório N:1 (Mesmo dia D0) ---
+         const d0Candidates = poolRedeTxs.filter(r => r.target_date === date);
+         const subsetMatchD0 = findExactSubsetMatch(targetVal, d0Candidates, 6);
 
-         const groupDelta = targetAmount - accumulated;
+         if (subsetMatchD0 && subsetMatchD0.length > 0) {
+            // Remover da pool os selecionados
+            subsetMatchD0.forEach(c => {
+               const idx = poolRedeTxs.findIndex(r => r.id === c.id);
+               if (idx !== -1) poolRedeTxs.splice(idx, 1);
+            });
 
-         return {
+            const totalSum = subsetMatchD0.reduce((acc, item) => acc + item.amount, 0);
+
+            depositGroups.push({
+               ofxDeposit: {
+                  id: ofxTx.id,
+                  title: ofxTx.title || ofxTx.subtitle,
+                  amount: ofxTx.amount,
+                  occurred_at: ofxTx.occurred_at
+               },
+               childRedeTxs: subsetMatchD0.map(t => ({ id: t.id, title: t.title, amount: t.amount, payment_method: t.payment_method, target_date: t.target_date })),
+               totalChildAmount: totalSum,
+               isMatched: true,
+               groupDelta: targetVal - totalSum,
+               matchType: `Combinação Exata (${subsetMatchD0.length} Vendas)`,
+               layer: 'CAMADA_2'
+            });
+            return;
+         }
+
+         // --- CAMADA 3: Busca Temporal Estendida (D-1 / D-2) ---
+         const subsetMatchTemporal = findExactSubsetMatch(targetVal, poolRedeTxs, 6);
+         if (subsetMatchTemporal && subsetMatchTemporal.length > 0) {
+            subsetMatchTemporal.forEach(c => {
+               const idx = poolRedeTxs.findIndex(r => r.id === c.id);
+               if (idx !== -1) poolRedeTxs.splice(idx, 1);
+            });
+
+            const totalSum = subsetMatchTemporal.reduce((acc, item) => acc + item.amount, 0);
+
+            depositGroups.push({
+               ofxDeposit: {
+                  id: ofxTx.id,
+                  title: ofxTx.title || ofxTx.subtitle,
+                  amount: ofxTx.amount,
+                  occurred_at: ofxTx.occurred_at
+               },
+               childRedeTxs: subsetMatchTemporal.map(t => ({ id: t.id, title: t.title, amount: t.amount, payment_method: t.payment_method, target_date: t.target_date })),
+               totalChildAmount: totalSum,
+               isMatched: true,
+               groupDelta: targetVal - totalSum,
+               matchType: 'Combinação Temporal (D-1 / D-2)',
+               layer: 'CAMADA_3'
+            });
+            return;
+         }
+
+         // --- CAMADA 4: Não Pareado (Encaminhado para Alerta de Exceção) ---
+         depositGroups.push({
             ofxDeposit: {
                id: ofxTx.id,
                title: ofxTx.title || ofxTx.subtitle,
                amount: ofxTx.amount,
                occurred_at: ofxTx.occurred_at
             },
-            childRedeTxs: childTxs.map(t => ({ id: t.id, title: t.title, amount: t.amount, payment_method: t.payment_method })),
-            totalChildAmount: accumulated,
-            isMatched: Math.abs(groupDelta) < 1.0,
-            groupDelta
-         };
+            childRedeTxs: [],
+            totalChildAmount: 0,
+            isMatched: false,
+            groupDelta: ofxTx.amount,
+            matchType: 'Pendente de Revisão',
+            layer: 'CAMADA_4_EXCECAO'
+         });
+
+         unmatchedAlerts.push({
+            type: 'DEPOSITO_SEM_VENDA',
+            title: ofxTx.title || ofxTx.subtitle,
+            amount: ofxTx.amount,
+            occurred_at: ofxTx.occurred_at,
+            reason: 'Nenhuma combinação de vendas da maquininha corresponde a este depósito.'
+         });
+      });
+
+      // Adicionar vendas da maquininha D0 que sobraram sem depósito para os Alertas
+      const unassignedD0Rede = poolRedeTxs.filter(r => r.target_date === date);
+      unassignedD0Rede.forEach(r => {
+         unmatchedAlerts.push({
+            type: 'VENDA_SEM_DEPOSITO',
+            title: r.title,
+            amount: r.amount,
+            occurred_at: r.occurred_at,
+            reason: 'Venda de cartão processada na maquininha sem depósito correspondente no extrato bancário.'
+         });
       });
 
       const redeVsOfx = {
-         rede: redeTxsForOfx.map(t => ({ id: t.id, title: t.title, amount: t.amount, payment_method: t.payment_method })),
+         rede: d0RedeTxs.map(t => ({ id: t.id, title: t.title, amount: t.amount, payment_method: t.payment_method })),
          ofx: adquirenteOfx.map(t => ({ id: t.id, title: t.title || t.subtitle, amount: t.amount })),
          depositGroups,
-         unassignedRedeTxs: availableRedeTxs,
+         unassignedRedeTxs: unassignedD0Rede,
          outrasOfx: outrasOfx.map(t => ({ id: t.id, title: t.title || t.subtitle, amount: t.amount }))
       };
 
@@ -337,9 +470,9 @@ export function useReconciliationViews(storeId: string, date: string) {
          occurred_at: t.occurred_at
       }));
 
-      // Agrupamento de PIX por valor/vínculo
+      // Agrupamento de PIX com Subset-Sum / Exact match
       const pixGroups = ofxPixList.map(ofxPix => {
-         const matchedOs = osPixList.find(os => Math.abs(os.amount - ofxPix.amount) < 1.0);
+         const matchedOs = osPixList.find(os => Math.abs(os.amount - ofxPix.amount) < 0.05);
          return {
             ofxPix,
             matchedOs,
@@ -357,9 +490,7 @@ export function useReconciliationViews(storeId: string, date: string) {
       const matchedOfxIds = new Set(matches?.filter(m => m.ofx_transaction_id).map(m => m.ofx_transaction_id));
       const adquirenteIds = new Set(adquirenteOfx.map(t => t.id));
 
-      const ofxSemMatch = txs?.filter(t => 
-         t.source === 'ofx' && 
-         Number(t.amount) > 0 && 
+      const ofxSemMatch = d0OfxIn.filter(t => 
          !matchedOfxIds.has(t.id) &&
          !adquirenteIds.has(t.id)
       ).map(t => ({
@@ -374,7 +505,8 @@ export function useReconciliationViews(storeId: string, date: string) {
         osVsRede,
         redeVsOfx,
         pixVsOfx,
-        ofxSemMatch
+        ofxSemMatch,
+        unmatchedAlerts
       };
     }
   });

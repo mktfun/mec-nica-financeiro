@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
-import { CheckCircle2, AlertTriangle, Info, CreditCard, Landmark, ChevronRight, Layers } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, Info, CreditCard, Landmark, ChevronRight, Layers, Clock, ShieldCheck } from 'lucide-react';
 import { useReconciliationViews } from '@/hooks/useConciliacao';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
@@ -8,7 +8,7 @@ export function RedeVsOfxTable({ storeId, date }: { storeId: string; date: strin
   const { data, isLoading } = useReconciliationViews(storeId, date);
 
   if (isLoading) {
-    return <div className="p-12 flex justify-center"><LoadingSpinner text="Carregando..." /></div>;
+    return <div className="p-12 flex justify-center"><LoadingSpinner text="Carregando conciliação..." /></div>;
   }
 
   const redeTxs = data?.redeVsOfx?.rede || [];
@@ -23,7 +23,7 @@ export function RedeVsOfxTable({ storeId, date }: { storeId: string; date: strin
 
   return (
     <div className="space-y-8">
-      {/* 3 Cards Superiores — usando Card nativo do sistema */}
+      {/* 3 Cards Superiores */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card variant="elevated" className="p-5">
           <div className="flex items-center justify-between mb-2">
@@ -33,7 +33,7 @@ export function RedeVsOfxTable({ storeId, date }: { storeId: string; date: strin
           <p className="text-2xl font-bold text-[var(--text-primary)] font-mono">
             R$ {redeTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </p>
-          <p className="text-xs text-[var(--text-secondary)] mt-1">{redeTxs.length} vendas de cartão processadas</p>
+          <p className="text-xs text-[var(--text-secondary)] mt-1">{redeTxs.length} vendas de cartão processadas hoje</p>
         </Card>
 
         <Card variant="elevated" className="p-5">
@@ -71,7 +71,7 @@ export function RedeVsOfxTable({ storeId, date }: { storeId: string; date: strin
       <div className="flex items-center justify-between pt-2">
         <h3 className="font-display font-bold text-lg text-[var(--text-primary)] flex items-center gap-2">
           <Layers size={20} className="text-[var(--color-primary)]" />
-          Pareamento por Grupos de Depósito Bancário
+          Pareamento em Camadas por Depósito Bancário
         </h3>
         <Badge variant="neutral" className="text-xs font-mono text-[var(--text-secondary)]">
           {depositGroups.length} Depósitos Identificados
@@ -87,7 +87,7 @@ export function RedeVsOfxTable({ storeId, date }: { storeId: string; date: strin
       ) : (
         <div className="space-y-6">
           {depositGroups.map((group: any, idx: number) => {
-            const { ofxDeposit, childRedeTxs, totalChildAmount, isMatched } = group;
+            const { ofxDeposit, childRedeTxs, totalChildAmount, isMatched, matchType, layer } = group;
 
             return (
               <Card key={idx} variant="elevated" className="p-0 overflow-hidden">
@@ -110,13 +110,20 @@ export function RedeVsOfxTable({ storeId, date }: { storeId: string; date: strin
                         R$ {Number(ofxDeposit.amount || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </span>
                     </div>
+
                     {isMatched ? (
-                      <Badge variant="success" className="text-xs px-3 py-1 font-mono">
-                        <CheckCircle2 size={12} className="mr-1.5" /> 100% Pareado
+                      <Badge 
+                        variant={layer === 'CAMADA_1' ? 'success' : layer === 'CAMADA_2' ? 'brand' : 'warning'} 
+                        className="text-xs px-3 py-1 font-mono flex items-center gap-1"
+                      >
+                        {layer === 'CAMADA_1' && <ShieldCheck size={12} />}
+                        {layer === 'CAMADA_2' && <CheckCircle2 size={12} />}
+                        {layer === 'CAMADA_3' && <Clock size={12} />}
+                        {matchType || '100% Pareado'}
                       </Badge>
                     ) : (
-                      <Badge variant="warning" className="text-xs px-3 py-1 font-mono">
-                        <AlertTriangle size={12} className="mr-1.5" /> Divergência R$ {Math.abs(group.groupDelta).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      <Badge variant="danger" className="text-xs px-3 py-1 font-mono">
+                        <AlertTriangle size={12} className="mr-1.5" /> Pendente de Revisão
                       </Badge>
                     )}
                   </div>
@@ -127,14 +134,15 @@ export function RedeVsOfxTable({ storeId, date }: { storeId: string; date: strin
                   <div className="flex items-center justify-between text-xs text-[var(--text-tertiary)] font-semibold uppercase tracking-wider font-mono">
                     <span className="flex items-center gap-1.5">
                       <CreditCard size={14} className="text-[var(--color-accent-teal)]" />
-                      Vendas da Maquininha que Formam esse Depósito ({childRedeTxs.length})
+                      Vendas da Maquininha Filhas ({childRedeTxs.length})
                     </span>
                     <span>Líquido Rede</span>
                   </div>
 
                   {childRedeTxs.length === 0 ? (
-                    <div className="p-4 text-center text-xs text-[var(--text-tertiary)] italic bg-[var(--bg-canvas)] rounded-xl border border-[var(--border-subtle)]">
-                      Nenhuma venda da maquininha pareada individualmente para este depósito.
+                    <div className="p-4 text-center text-xs text-[var(--text-tertiary)] italic bg-[var(--bg-canvas)] rounded-xl border border-[var(--border-subtle)] flex items-center justify-center gap-2">
+                      <AlertTriangle size={14} className="text-[var(--color-accent-danger)]" />
+                      Nenhuma combinação de vendas da maquininha corresponde a este depósito de R$ {Number(ofxDeposit.amount || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}.
                     </div>
                   ) : (
                     <div className="space-y-2">
@@ -148,6 +156,11 @@ export function RedeVsOfxTable({ storeId, date }: { storeId: string; date: strin
                                 {rTx.payment_method}
                               </Badge>
                             )}
+                            {rTx.target_date && rTx.target_date !== date && (
+                              <Badge variant="warning" className="text-[10px] flex items-center gap-1">
+                                <Clock size={10} /> Venda de {rTx.target_date}
+                              </Badge>
+                            )}
                           </div>
                           <span className="font-bold text-[var(--text-primary)]">
                             R$ {Number(rTx.amount || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
@@ -158,18 +171,23 @@ export function RedeVsOfxTable({ storeId, date }: { storeId: string; date: strin
                   )}
 
                   {/* Rodapé com Cálculo Matemático Transparente */}
-                  <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs font-mono">
-                    <span className="text-[var(--text-secondary)]">Soma das Vendas da Maquininha:</span>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-[var(--color-accent-teal)]">
-                        R$ {totalChildAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                      </span>
-                      <span className="text-[var(--text-tertiary)]">=</span>
-                      <span className="font-bold text-[var(--color-accent-light-blue)]">
-                        R$ {Number(ofxDeposit.amount || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} (Banco)
-                      </span>
+                  {childRedeTxs.length > 0 && (
+                    <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs font-mono">
+                      <span className="text-[var(--text-secondary)]">Soma Exata das Vendas:</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-[var(--color-accent-teal)]">
+                          R$ {totalChildAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        </span>
+                        <span className="text-[var(--text-tertiary)]">=</span>
+                        <span className="font-bold text-[var(--color-accent-light-blue)]">
+                          R$ {Number(ofxDeposit.amount || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} (Banco)
+                        </span>
+                        <Badge variant="success" className="text-[10px] ml-2">
+                          0,00 DIVERGÊNCIA
+                        </Badge>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </Card>
             );

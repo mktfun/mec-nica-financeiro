@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { createFileRoute, Link, useParams } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
-import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { Store, ArrowLeft } from 'lucide-react';
+import { Store, ArrowLeft, ShieldAlert } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
 import { OsVsRedeTable } from '@/components/conciliacao/OsVsRedeTable';
 import { RedeVsOfxTable } from '@/components/conciliacao/RedeVsOfxTable';
 import { PixVsOfxTable } from '@/components/conciliacao/PixVsOfxTable';
 import { OfxSemMatchTable } from '@/components/conciliacao/OfxSemMatchTable';
+import { ConciliacaoAlertsSection } from '@/components/conciliacao/ConciliacaoAlertsSection';
 import { useTransactionsPorDataELoja } from '@/hooks/useTransactions';
 
 export const Route = createFileRoute('/conciliacao/$lojaId')({
@@ -26,13 +26,13 @@ function formatDate(dateStr: string) {
   return `${d}/${m}/${y}`;
 }
 
-type TabType = 'os_rede' | 'rede_ofx' | 'pix_ofx' | 'ofx_sem_match';
+type TabType = 'os_rede' | 'rede_ofx' | 'pix_ofx' | 'ofx_sem_match' | 'alerts';
 
 function TabBtn({ active, onClick, children }: { active: boolean, onClick: () => void, children: React.ReactNode }) {
   return (
     <button 
       onClick={onClick} 
-      className={`px-4 py-3 border-b-2 text-sm font-medium transition-colors ${
+      className={`px-4 py-3 border-b-2 text-sm font-medium transition-colors flex items-center gap-2 ${
         active 
           ? 'border-[var(--color-primary)] text-[var(--color-primary)] font-bold' 
           : 'border-transparent text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] hover:border-[var(--border-subtle)]'
@@ -110,6 +110,10 @@ function ConciliacaoLojaPage() {
           <TabBtn active={activeTab === 'ofx_sem_match'} onClick={() => setActiveTab('ofx_sem_match')}>
             4. Banco (Sem Origem)
           </TabBtn>
+          <TabBtn active={activeTab === 'alerts'} onClick={() => setActiveTab('alerts')}>
+            <ShieldAlert size={14} className="text-[var(--color-accent-warning)]" />
+            5. Alertas de Exceções
+          </TabBtn>
         </div>
 
         <div className="min-h-[400px]">
@@ -117,6 +121,7 @@ function ConciliacaoLojaPage() {
           {activeTab === 'rede_ofx' && <RedeVsOfxTable storeId={lojaId} date={targetDate} />}
           {activeTab === 'pix_ofx' && <PixVsOfxTable storeId={lojaId} date={targetDate} />}
           {activeTab === 'ofx_sem_match' && <OfxSemMatchTable storeId={lojaId} date={targetDate} />}
+          {activeTab === 'alerts' && <ConciliacaoAlertsSection storeId={lojaId} date={targetDate} />}
         </div>
       </div>
     </AppShell>
