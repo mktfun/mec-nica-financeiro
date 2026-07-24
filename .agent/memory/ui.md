@@ -11,3 +11,15 @@
 **Risco identificado:** Apenas invalidar queries (`invalidateQueries`) sem executar `qc.clear()` pode manter objetos cacheados na memória do navegador.
 
 **Não fazer:** Nunca confiar exclusivamente em RPCs de deleção sem implementar um fallback JS Client resiliente.
+
+## [2026-07-24] — Feature ID: wizard-and-logs-enhancement
+
+**Contexto:** Reformulação do Wizard de Importação com Terminal de Logs de Processamento em Tempo Real (Step 4) e navegação direta para a tela de Conciliação.
+
+**Regra aprendida:**
+- Wizard de processos pesados deve ter um passo dedicado de Terminal UI Headless (`bg-[#050711]`) para emitir logs de progresso em tempo real enquanto as requisições assíncronas são concluídas.
+- Após o salvamento, apresentar botões de navegação direta (ex: "Ir para a Tela de Conciliação →") para evitar que o usuário precise fechar alertas manuais ou buscar a rota no menu lateral.
+
+**Risco identificado:** Redirecionar o usuário sem dar tempo de visualização do log de término pode gerar incerteza se todos os registros foram gravados.
+
+**Não fazer:** Nunca usar `alert()` síncrono para notificar o sucesso de grandes importações em lote.
