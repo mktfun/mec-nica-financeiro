@@ -2,6 +2,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { StoreSaldoState } from '@/lib/modulo1Calculations';
 
+const isValidUuid = (str?: string | null) => {
+  if (!str) return false;
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+};
+
 export interface ConciliacaoResumo {
   date: string;
   totalSystemOS: number;
@@ -418,6 +423,7 @@ export function useReconciliationViews(storeId: string, date: string) {
          });
 
          unmatchedAlerts.push({
+            id: ofxTx.id,
             type: 'DEPOSITO_SEM_VENDA',
             title: ofxTx.title || ofxTx.subtitle,
             amount: ofxTx.amount,
@@ -429,6 +435,7 @@ export function useReconciliationViews(storeId: string, date: string) {
       const unassignedD0Rede = poolRedeTxs.filter(r => r.target_date === date);
       unassignedD0Rede.forEach(r => {
          unmatchedAlerts.push({
+            id: r.id,
             type: 'VENDA_SEM_DEPOSITO',
             title: r.title,
             amount: r.amount,
@@ -583,9 +590,6 @@ export function useModulo1StoresData(date: string) {
   });
 }
 
-/**
- * Mutation para Baixa Manual Direct de OS (Forçar Status 'ENTROU' ou Reverter)
- */
 export function useUpdateOsStatus() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -629,9 +633,6 @@ export function useUpdateOsStatus() {
   });
 }
 
-/**
- * Mutation para Resolução Manual de Alertas de Exceção (Depósitos ou Vendas sem vínculo)
- */
 export function useResolveUnmatchedAlert() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -641,12 +642,14 @@ export function useResolveUnmatchedAlert() {
       txId: string;
       reason?: string;
     }) => {
+      const safeOfxId = isValidUuid(txId) ? txId : null;
+
       const { data, error } = await supabase
         .from('conciliation_matches')
         .insert([{
           store_id: storeId,
           target_date: targetDate,
-          ofx_transaction_id: txId,
+          ofx_transaction_id: safeOfxId,
           status: 'APPROVED',
           match_type: 'MANUAL_OVERRIDE',
           notes: reason || 'Resolvido manualmente pelo operador'

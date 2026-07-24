@@ -2,7 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { Store } from 'lucide-react';
+import { Store, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import { useStores } from '@/hooks/useStores';
 import { useConciliacaoResumo, useConciliacaoDetalhes, useModulo1StoresData } from '@/hooks/useConciliacao';
@@ -10,7 +10,7 @@ import { useDailySystemBalance, useDailyBankBalance } from '@/hooks/useTransacti
 import { getDefaultDate } from '@/lib/utils';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { ResumoDiaPanel } from '@/components/conciliacao/ResumoDiaPanel';
-import { Modulo1SaldoPanel } from '@/components/conciliacao/Modulo1SaldoPanel';
+import { calculateModulo1Saldo } from '@/lib/modulo1Calculations';
 
 export const Route = createFileRoute('/conciliacao/')({
   component: ConciliacaoPage,
@@ -42,6 +42,8 @@ function ConciliacaoPage() {
   const totalBancarioRaw = Object.values(bankBalances || {}).reduce((acc, val) => acc + (val.rawBalance || 0), 0);
   const divergenciaGlobal = totalSistema - totalBancarioIn;
 
+  const { storesCalculated } = calculateModulo1Saldo(storesModulo1);
+
   return (
     <AppShell>
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-8 max-w-6xl mx-auto pb-20 pt-2">
@@ -52,7 +54,7 @@ function ConciliacaoPage() {
           </div>
         ) : (
           <>
-            {/* O Hero Card Unificado */}
+            {/* O Hero Card Unificado da Conciliação */}
             <ResumoDiaPanel 
               selectedDate={selectedDate}
               onDayChange={handleDayChange}
@@ -63,59 +65,101 @@ function ConciliacaoPage() {
               totalSistema={totalSistema}
               totalBancarioIn={totalBancarioIn}
               totalBancarioRaw={totalBancarioRaw}
-            />
-
-            {/* Painel Módulo 1 — Aba SALDO (Saldos por Loja & Consolidado Planilha 2307) */}
-            <Modulo1SaldoPanel 
               storesData={storesModulo1}
-              selectedDate={selectedDate}
             />
 
-            {/* Lista de Lojas */}
-            <div className="space-y-4 pt-4">
-              <h3 className="text-lg font-semibold flex items-center gap-2 mb-2 text-[var(--text-primary)] font-display">
-                <Store size={18} className="text-[var(--color-primary)]" />
-                Fechamento Individual por Loja
-              </h3>
+            {/* Lista de Fechamento por Loja */}
+            <div className="space-y-4 pt-2">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold flex items-center gap-2 text-[var(--text-primary)] font-display">
+                  <Store size={20} className="text-[var(--color-primary)]" />
+                  Fechamento Individual por Loja
+                </h3>
+                <span className="text-xs text-[var(--text-tertiary)] font-mono">
+                  {stores.length} Lojas Cadastradas
+                </span>
+              </div>
               
               <div className="grid grid-cols-1 gap-4">
                 {stores.map(store => {
-                  const sys = dailyBalances?.[store.id] || 0;
-                  const bankIn = bankBalances?.[store.id]?.in || 0;
-                  const div = sys - bankIn;
-                  
-                  const hasDeclarations = true;
-                  const isStoreOk = hasDeclarations && Math.abs(div) < 0.01;
-                  const isStoreDivergent = hasDeclarations && Math.abs(div) >= 0.01;
+                  const calc = storesCalculated[store.id] || {
+                    saldo_g13: 0,
+                    dinheiro_mp_g14: 0,
+                    a_receber_g15: 0,
+                    na_loja_g16: 0,
+                    saldo_total_g17: 0,
+                    resultado_final_g31: 0
+                  };
 
                   return (
                     <Link to="/conciliacao/$lojaId" params={{ lojaId: store.id }} search={{ date: selectedDate }} key={store.id} className="block">
-                      <Card className="p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-6 transition-all hover:scale-[1.01] hover:bg-white/5 cursor-pointer border border-[var(--border-subtle)] backdrop-blur-md">
-                        <div className="flex-1 flex items-center gap-4">
-                          <div className={`w-2 h-12 rounded-full ${isStoreOk ? 'bg-[var(--color-accent-teal)]' : isStoreDivergent ? 'bg-[var(--color-accent-danger)]' : 'bg-white/10'}`} />
+                      <Card className="p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-6 transition-all hover:bg-[var(--bg-surface-elevated)] cursor-pointer border border-[var(--border-subtle)] backdrop-blur-md shadow-xl group">
+                        
+                        {/* Nome da Loja & Status */}
+                        <div className="flex items-center gap-4 min-w-[220px]">
+                          <div className={`w-2 h-12 rounded-full ${calc.resultado_final_g31 >= 0 ? 'bg-[var(--color-accent-teal)]' : 'bg-[var(--color-accent-danger)]'}`} />
                           <div>
-                            <p className="font-semibold text-lg text-[var(--text-primary)] font-display">{store.name}</p>
-                            <p className="text-xs text-[var(--text-tertiary)] font-mono">ID: {store.id}</p>
+                            <div className="flex items-center gap-2">
+                              <p className="font-semibold text-base text-[var(--text-primary)] font-display group-hover:text-[var(--color-primary)] transition-colors">
+                                {store.name}
+                              </p>
+                              <ChevronRight size={14} className="text-[var(--text-tertiary)] opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </div>
+                            <span className="text-[10px] text-[var(--text-tertiary)] font-mono">ID: {store.id}</span>
                           </div>
                         </div>
 
-                        <div className="flex flex-wrap items-center gap-6 bg-[var(--bg-canvas)] p-4 rounded-xl border border-[var(--border-subtle)] flex-1 xl:flex-none justify-between xl:justify-start">
-                          <div className="min-w-[120px]">
-                            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Sistema (Fechamento do Dia)</p>
-                            <p className="font-display font-medium text-[var(--text-secondary)]"><AnimatedNumber value={sys} format="currency" /></p>
-                          </div>
+                        {/* Régua das 6 Colunas */}
+                        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4 bg-[var(--bg-canvas)] p-4 rounded-xl border border-[var(--border-subtle)] flex-1 font-mono text-xs">
                           
-                          <div className="min-w-[130px]">
-                            <p className="text-[10px] text-[var(--color-primary)] uppercase tracking-wider mb-1">Entradas OFX (Fechamento)</p>
-                            <p className="font-display font-medium text-[var(--text-primary)]"><AnimatedNumber value={bankIn} format="currency" /></p>
-                          </div>
-
-                          <div className="min-w-[120px] text-right">
-                            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Divergência (Fechamento)</p>
-                            <p className={`font-display font-bold ${!hasDeclarations ? 'text-white/30' : isStoreOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
-                              {!hasDeclarations ? '-' : <AnimatedNumber value={div} format="currency" />}
+                          {/* 1. Banco Itaú */}
+                          <div>
+                            <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">Banco Itaú</p>
+                            <p className="font-bold text-[var(--color-accent-light-blue)]">
+                              <AnimatedNumber value={calc.saldo_g13} format="currency" />
                             </p>
                           </div>
+
+                          {/* 2. Dinheiro MP */}
+                          <div>
+                            <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">Dinheiro MP</p>
+                            <p className="font-bold text-[var(--color-accent-teal)]">
+                              <AnimatedNumber value={calc.dinheiro_mp_g14} format="currency" />
+                            </p>
+                          </div>
+
+                          {/* 3. A Receber */}
+                          <div>
+                            <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">A Receber</p>
+                            <p className="font-bold text-[var(--color-primary)]">
+                              <AnimatedNumber value={calc.a_receber_g15} format="currency" />
+                            </p>
+                          </div>
+
+                          {/* 4. Na Loja OS */}
+                          <div>
+                            <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">Na Loja OS</p>
+                            <p className="font-bold text-[var(--color-accent-warning)]">
+                              <AnimatedNumber value={calc.na_loja_g16} format="currency" />
+                            </p>
+                          </div>
+
+                          {/* 5. Saldo Total */}
+                          <div>
+                            <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">Saldo Total</p>
+                            <p className="font-bold text-[var(--text-primary)]">
+                              <AnimatedNumber value={calc.saldo_total_g17} format="currency" />
+                            </p>
+                          </div>
+
+                          {/* 6. Resultado Final */}
+                          <div className="text-right border-l border-[var(--border-subtle)] pl-3">
+                            <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans font-bold">Resultado Final</p>
+                            <p className={`font-bold text-sm ${calc.resultado_final_g31 >= 0 ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
+                              <AnimatedNumber value={calc.resultado_final_g31} format="currency" />
+                            </p>
+                          </div>
+
                         </div>
                       </Card>
                     </Link>

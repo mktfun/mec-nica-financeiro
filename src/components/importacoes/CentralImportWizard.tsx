@@ -444,7 +444,13 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
       if (matchesToInsert.length > 0) {
         addLog(`🔗 Vinculando ${matchesToInsert.length} pares perfeitos de conciliação...`, "info");
-        await insertConciliationMatches(matchesToInsert);
+        const validTxIds = new Set(txsToInsert.map(t => t.id).filter(Boolean));
+        const sanitizedMatches = matchesToInsert.map(m => ({
+          ...m,
+          ofx_transaction_id: validTxIds.has(m.ofx_transaction_id) ? m.ofx_transaction_id : null,
+          rede_transaction_id: validTxIds.has(m.rede_transaction_id) ? m.rede_transaction_id : null
+        }));
+        await insertConciliationMatches(sanitizedMatches);
         addLog("✅ Pares de conciliação salvos!", "success");
       }
 

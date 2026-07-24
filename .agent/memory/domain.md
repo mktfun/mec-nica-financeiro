@@ -1,5 +1,18 @@
 # 🧠 Memória Modular: Domínio & Conciliação
 
+## [2026-07-24] — Feature ID: conciliacao-fk-fix-ui-harmony
+
+**Contexto:** Correção de Foreign Key no importador/alertas e harmonização da UI com a remoção dos códigos de célula `(G13..G31)` e unificação do Hero Card da conciliação.
+
+**Regra aprendida:**
+- Os campos `ofx_transaction_id` e `rede_transaction_id` em `conciliation_matches` possuem restrições rígidas de Chave Estrangeira com a tabela `transactions`. IDs nulos ou sintéticos (ex: `ALERT_xxx`) DEVEM ser convertidos em `null` antes de gravar no banco para não estourar erro de Foreign Key.
+- Nas interfaces públicas do sistema, NUNCA exiba referências brutas de células do Excel (como `(G13)`, `(G14)`, `(G31)`) nas labels. Exiba apenas os nomes limpos dos indicadores: `Banco Itaú`, `Dinheiro MP`, `A Receber`, `Na Loja OS`, `Saldo Total`, `Caixa Atual`, `Disponível Contas` e `Resultado Final`.
+- O topo da página de conciliação (`/conciliacao`) DEVE conter um **Hero Card ÚNICO e unificado**, em vez de cartões duplicados ou empilhados.
+
+**Risco identificado:** Tentar salvar IDs de transações temporários ou sintéticos em `conciliation_matches` abortava o salvamento de toda a importação.
+
+**Não fazer:** Nunca exibir siglas de fórmulas brutas ou empilhar dois painéis de resumo idênticos na mesma tela.
+
 ## [2026-07-24] — Feature ID: conciliacao-tab-redesign
 
 **Contexto:** Correção da lógica de pareamento entre Maquininha, Extrato OFX e OSs do Pátio nas telas de conciliação individual por loja (`conciliacao.$lojaId.tsx`), além da adição de uma aba exclusiva de conciliação de PIX.
