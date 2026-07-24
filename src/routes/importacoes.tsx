@@ -4,10 +4,11 @@ import { Card } from '@/components/ui/Card';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { FileSpreadsheet, Trash2, AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight, UploadCloud } from 'lucide-react';
-import { useImportsHistory, useDeleteImport, GroupedImportLog } from '@/hooks/useImportProcessor';
+import { FileSpreadsheet, Trash2, AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight, UploadCloud, RefreshCw } from 'lucide-react';
+import { useImportsHistory, useDeleteImport, useClearAllData, GroupedImportLog } from '@/hooks/useImportProcessor';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { CentralImportWizard } from '@/components/importacoes/CentralImportWizard';
+import { Modal } from '@/components/ui/Modal';
 
 export const Route = createFileRoute('/importacoes')({
   component: ImportacoesPage,
@@ -22,9 +23,11 @@ function formatDate(dateStr: string) {
 function ImportacoesPage() {
   const { data: imports = [], isLoading } = useImportsHistory();
   const deleteImport = useDeleteImport();
+  const clearAllData = useClearAllData();
   
   const [showWizard, setShowWizard] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [showClearAllModal, setShowClearAllModal] = useState(false);
   const [page, setPage] = useState(1);
   const itemsPerPage = 10;
   
@@ -50,7 +53,14 @@ function ImportacoesPage() {
     }
   };
 
-
+  const handleClearAll = async () => {
+    try {
+      await clearAllData.mutateAsync();
+      setShowClearAllModal(false);
+    } catch (err: any) {
+      alert('Erro ao zerar dados: ' + (err.message || JSON.stringify(err)));
+    }
+  };
 
   return (
     <AppShell>
@@ -67,6 +77,15 @@ function ImportacoesPage() {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <button 
+              onClick={() => setShowClearAllModal(true)} 
+              className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 text-sm font-medium px-3.5 py-2.5 rounded-lg flex items-center gap-2 transition-all"
+              title="Apagar todos os dados do banco de dados"
+            >
+              <Trash2 size={16} />
+              Limpar Todos os Dados
+            </button>
+
             <button onClick={() => setShowWizard(true)} className="bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 text-sm font-medium px-4 py-2.5 rounded-lg flex items-center gap-2 shadow-[0_4px_15px_rgba(var(--color-primary-rgb),0.3)] transition-all transform hover:scale-105">
               <UploadCloud size={18} />
               Central de Importação
@@ -117,132 +136,81 @@ function ImportacoesPage() {
                       const isDeleting = deleteImport.isPending && deleteImport.variables?.logIds?.includes(log.id);
 
                       const sortedDates = [...log.target_dates].sort();
-                      const dateRange = sortedDates.length > 1
-                        ? `${sortedDates[0].split('-').reverse().join('/')} a ${sortedDates[sortedDates.length - 1].split('-').reverse().join('/')}`
-                        : sortedDates[0]?.split('-').reverse().join('/') || 'Sem Data';
+                      const dateRange = sortedDates.length > 1 
+                        ? `${sortedDates[0]} até ${sortedDates[sortedDates.length - 1]}`
+                        : sortedDates[0] || 'Data única';
 
                       return (
-                        <motion.div
-                          key={log.id}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: i * 0.05 }}
-                          className="flex flex-col md:flex-row items-start md:items-center justify-between p-4 hover:bg-[var(--bg-surface-elevated)] transition-colors group"
-                        >
-                          <div className="flex items-start gap-4">
-                            <div className="mt-1 md:mt-0 w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-[var(--color-success)]/10 text-[var(--color-success)]">
-                              <CheckCircle2 size={20} />
-                            </div>
-                            
-                            <div>
-                              <h4 className="font-medium text-[var(--text-primary)]">
+                        <div key={log.id || i} className="p-4 hover:bg-[var(--bg-panel)]/50 transition-colors flex items-center justify-between gap-4">
+                          <div className="space-y-1 min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="font-semibold text-sm text-[var(--text-primary)] truncate">
                                 {log.store_name}
-                              </h4>
-                              <div className="flex flex-wrap items-center gap-3 mt-1 text-xs text-[var(--text-tertiary)]">
-                                <span className="flex items-center gap-1">
-                                  <strong className="text-[var(--text-secondary)]">Período Afetado:</strong> 
-                                  {dateRange} <span className="opacity-70">({log.target_dates.length} dias)</span>
-                                </span>
-                                <span>•</span>
-                                <span className="flex items-center gap-1">
-                                  <strong className="text-[var(--text-secondary)]">Enviado em:</strong> 
-                                  {formatDate(log.created_at)}
-                                </span>
-                              </div>
-                              <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-[var(--text-secondary)]">
-                                <span className="bg-[var(--bg-surface)] px-2 py-1 rounded-md border border-[var(--border-subtle)]">
-                                  {log.os_count} OS Processadas
-                                </span>
-                                <span className="bg-[var(--bg-surface)] px-2 py-1 rounded-md border border-[var(--border-subtle)]">
-                                  {log.receivables_count} Recebíveis
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                          
-                          <div className="mt-4 md:mt-0 ml-14 md:ml-0 flex items-center gap-6">
-                            <div className="text-right hidden sm:block">
-                              {log.os_count === 0 && Number(log.total_os || 0) > 0 ? (
-                                <>
-                                  <div className="text-xs text-[var(--color-accent-danger)] uppercase tracking-wider mb-0.5 font-bold">Lote Despesas</div>
-                                  <div className="font-mono font-semibold text-lg text-[var(--color-accent-danger)]">
-                                    -<AnimatedNumber value={Number(log.total_os || 0)} format="currency" />
-                                  </div>
-                                </>
-                              ) : log.store_name?.includes('[OFX]') ? (
-                                <>
-                                  <div className="text-xs text-[var(--color-primary)] uppercase tracking-wider mb-0.5 font-bold">Extrato Bancário</div>
-                                  <div className="font-mono font-semibold text-lg text-[var(--color-primary)]">
-                                    <AnimatedNumber value={Number(log.total_paid_all || 0)} format="currency" />
-                                  </div>
-                                </>
-                              ) : log.store_name?.includes('[Maquininha]') ? (
-                                <>
-                                  <div className="text-xs text-[var(--color-accent-teal)] uppercase tracking-wider mb-0.5 font-bold">Lote Maquininha</div>
-                                  <div className="font-mono font-semibold text-lg text-[var(--color-accent-teal)]">
-                                    <AnimatedNumber value={Number(log.total_paid_all || 0)} format="currency" />
-                                  </div>
-                                </>
-                              ) : (
-                                <>
-                                  <div className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5">Lote OS</div>
-                                  <div className="font-mono font-semibold text-lg text-[var(--text-primary)]">
-                                    <AnimatedNumber value={Number(log.total_os || 0)} format="currency" />
-                                  </div>
-                                </>
-                              )}
+                              </span>
+                              <span className="text-xs px-2 py-0.5 rounded bg-[var(--bg-surface)] text-[var(--text-secondary)] border border-[var(--border-subtle)]">
+                                {dateRange}
+                              </span>
                             </div>
 
+                            <div className="flex items-center gap-4 text-xs text-[var(--text-tertiary)] flex-wrap">
+                              <span>Importado em: {formatDate(log.created_at)}</span>
+                              {log.os_count > 0 && <span>• {log.os_count} OSs</span>}
+                              {log.receivables_count > 0 && <span>• {log.receivables_count} Lançamentos Maquininha/Banco</span>}
+                              {log.total_os > 0 && <span>• R$ {log.total_os.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 shrink-0">
                             {isConfirming ? (
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-2 animate-in fade-in duration-200">
+                                <span className="text-xs text-[var(--color-accent-danger)] font-medium">Confirmar exclusão?</span>
                                 <button
-                                  onClick={() => setConfirmDeleteId(null)}
                                   disabled={isDeleting}
-                                  className="px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                                  onClick={() => handleDelete(log)}
+                                  className="px-2.5 py-1 text-xs font-semibold bg-[var(--color-accent-danger)] text-white hover:opacity-90 rounded flex items-center gap-1"
                                 >
-                                  Cancelar
+                                  {isDeleting ? <LoadingSpinner size="xs" /> : 'Sim, Excluir'}
                                 </button>
                                 <button
-                                  onClick={() => handleDelete(log)}
                                   disabled={isDeleting}
-                                  className="flex items-center gap-1 px-3 py-1.5 bg-[var(--color-accent-danger)] text-white text-xs font-medium rounded-md hover:bg-[var(--color-accent-danger)]/90 transition-colors disabled:opacity-50"
+                                  onClick={() => setConfirmDeleteId(null)}
+                                  className="px-2.5 py-1 text-xs font-medium bg-[var(--bg-surface)] hover:bg-[var(--border-subtle)] text-[var(--text-secondary)] rounded border border-[var(--border-subtle)]"
                                 >
-                                  {isDeleting ? <LoadingSpinner size="sm" text="" /> : "Confirmar Limpeza"}
+                                  Cancelar
                                 </button>
                               </div>
                             ) : (
                               <button
+                                disabled={isDeleting}
                                 onClick={() => handleDelete(log)}
-                                className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-tertiary)] hover:text-[var(--color-accent-danger)] hover:bg-[var(--color-accent-danger)]/10 transition-colors"
-                                title="Desfazer Lote de Importação"
+                                className="p-2 text-[var(--text-tertiary)] hover:text-[var(--color-accent-danger)] hover:bg-[var(--color-accent-danger)]/10 rounded-lg transition-colors"
+                                title="Desfazer/Excluir esta importação"
                               >
-                                <Trash2 size={16} />
+                                {isDeleting ? <LoadingSpinner size="xs" /> : <Trash2 size={16} />}
                               </button>
                             )}
                           </div>
-                        </motion.div>
+                        </div>
                       );
                     })}
                   </div>
 
-                  {/* Paginação */}
+                  {/* Pagination Footer */}
                   {totalPages > 1 && (
-                    <div className="p-4 border-t border-[var(--border-subtle)] flex items-center justify-between bg-[var(--bg-surface)]">
-                      <div className="text-xs text-[var(--text-tertiary)]">
-                        Página <span className="font-medium text-[var(--text-primary)]">{page}</span> de {totalPages}
-                      </div>
-                      <div className="flex items-center gap-2">
+                    <div className="p-4 border-t border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] flex justify-between items-center text-xs text-[var(--text-tertiary)]">
+                      <span>Página {page} de {totalPages}</span>
+                      <div className="flex gap-1">
                         <button
-                          onClick={() => setPage(p => Math.max(1, p - 1))}
                           disabled={page === 1}
-                          className="p-2 rounded-md hover:bg-[var(--bg-surface-hover)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-[var(--text-secondary)]"
+                          onClick={() => setPage(p => Math.max(1, p - 1))}
+                          className="p-1 rounded hover:bg-[var(--bg-surface)] disabled:opacity-30 border border-[var(--border-subtle)]"
                         >
                           <ChevronLeft size={16} />
                         </button>
                         <button
-                          onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                           disabled={page === totalPages}
-                          className="p-2 rounded-md hover:bg-[var(--bg-surface-hover)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-[var(--text-secondary)]"
+                          onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                          className="p-1 rounded hover:bg-[var(--bg-surface)] disabled:opacity-30 border border-[var(--border-subtle)]"
                         >
                           <ChevronRight size={16} />
                         </button>
@@ -254,6 +222,53 @@ function ImportacoesPage() {
             </Card>
           </div>
         )}
+
+        {/* Modal de Limpeza Geral */}
+        <Modal
+          isOpen={showClearAllModal}
+          onClose={() => setShowClearAllModal(false)}
+          title="⚠️ Limpar Todos os Dados do Sistema"
+        >
+          <div className="space-y-4 text-sm">
+            <div className="bg-red-500/10 border border-red-500/20 p-3 rounded-lg text-red-400">
+              <strong>Atenção: Esta ação é irreversível!</strong>
+              <p className="mt-1 text-xs">
+                Todos os lançamentos do Extrato Bancário, Ordens de Serviço, Vendas da Maquininha, Conciliações e Históricos de Importação serão zerados para todas as lojas.
+              </p>
+            </div>
+
+            <p className="text-[var(--text-secondary)]">
+              Deseja realmente limpar toda a base de dados e reiniciar as importações do zero?
+            </p>
+
+            <div className="flex justify-end gap-3 pt-3 border-t border-[var(--border-subtle)]">
+              <button
+                disabled={clearAllData.isPending}
+                onClick={() => setShowClearAllModal(false)}
+                className="px-4 py-2 text-xs font-medium bg-[var(--bg-surface)] hover:bg-[var(--border-subtle)] text-[var(--text-secondary)] rounded-lg border border-[var(--border-subtle)]"
+              >
+                Cancelar
+              </button>
+              <button
+                disabled={clearAllData.isPending}
+                onClick={handleClearAll}
+                className="px-4 py-2 text-xs font-semibold bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center gap-1.5"
+              >
+                {clearAllData.isPending ? (
+                  <>
+                    <LoadingSpinner size="xs" />
+                    Apagando dados...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 size={14} />
+                    Confirmar Exclusão Total
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </Modal>
       </div>
     </AppShell>
   );
