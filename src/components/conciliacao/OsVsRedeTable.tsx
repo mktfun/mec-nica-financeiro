@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
-import { CheckCircle2, AlertTriangle, Info, ExternalLink, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, Info, ExternalLink } from 'lucide-react';
 import { useReconciliationViews } from '@/hooks/useConciliacao';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { OsDetailModal } from './OsDetailModal';
@@ -18,19 +18,19 @@ export function OsVsRedeTable({ storeId, date }: { storeId: string; date: string
 
   return (
     <div className="space-y-6">
-      <Card className="p-0 overflow-hidden border-[var(--border-subtle)] shadow-xl">
-        <div className="bg-[var(--bg-panel)] p-4 border-b border-[var(--border-subtle)] flex items-center justify-between">
+      <Card className="p-0 overflow-hidden">
+        <div className="bg-[var(--bg-surface)] p-4 border-b border-[var(--border-subtle)] flex items-center justify-between">
           <div>
-            <h3 className="font-display font-semibold text-lg flex items-center gap-2">
+            <h3 className="font-display font-semibold text-lg flex items-center gap-2 text-[var(--text-primary)]">
               1. Cartão <span className="text-[var(--text-tertiary)]">(Sistema OS → Maquininha)</span>
             </h3>
             <p className="text-xs text-[var(--text-secondary)]">Clique no número de qualquer OS para ver a quebra completa de pagamentos.</p>
           </div>
-          <Badge variant="outline" className="text-xs font-mono">
-            {rows.length} Transações Processadas
+          <Badge variant="neutral" className="text-xs font-mono">
+            {rows.length} Transações
           </Badge>
         </div>
-        
+
         {rows.length === 0 ? (
           <div className="p-12 text-center text-[var(--text-tertiary)] flex flex-col items-center">
             <Info size={36} className="opacity-20 mb-3" />
@@ -53,10 +53,10 @@ export function OsVsRedeTable({ storeId, date }: { storeId: string; date: string
                   const hasOs = row.os_number !== 'Não Localizada';
 
                   return (
-                    <tr 
-                      key={i} 
+                    <tr
+                      key={i}
                       onClick={() => row.os_data && setSelectedOsData(row.os_data)}
-                      className={`transition-colors ${hasOs ? 'hover:bg-white/5 cursor-pointer' : ''}`}
+                      className={`transition-colors ${hasOs ? 'hover:bg-[var(--bg-surface)] cursor-pointer' : ''}`}
                     >
                       <td className="py-3.5 px-4 font-medium text-[var(--text-primary)]">
                         {row.maquininha_title}
@@ -64,10 +64,14 @@ export function OsVsRedeTable({ storeId, date }: { storeId: string; date: string
                       <td className="py-3.5 px-4 text-right font-mono text-[var(--text-secondary)]">
                         R$ {row.rede_bruto.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </td>
-                      <td className="py-3.5 px-4 text-right font-mono font-semibold text-white">
+                      <td className="py-3.5 px-4 text-right font-mono font-semibold text-[var(--text-primary)]">
                         {hasOs ? `R$ ${(row.os_total || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '-'}
                       </td>
-                      <td className={`py-3.5 px-4 text-right font-mono font-medium ${row.delta < 0 ? 'text-[var(--color-accent-teal)]' : row.delta > 0 ? 'text-[var(--color-accent-warning)]' : 'text-zinc-400'}`}>
+                      <td className={`py-3.5 px-4 text-right font-mono font-medium ${
+                        row.delta < 0 ? 'text-[var(--color-accent-teal)]' :
+                        row.delta > 0 ? 'text-[var(--color-accent-warning)]' :
+                        'text-[var(--text-tertiary)]'
+                      }`}>
                         {hasOs ? `${row.delta > 0 ? '+' : ''}R$ ${row.delta.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '-'}
                       </td>
                       <td className="py-3.5 px-4 text-center">
@@ -78,19 +82,19 @@ export function OsVsRedeTable({ storeId, date }: { storeId: string; date: string
                               <ExternalLink size={12} />
                             </button>
                           ) : (
-                            <span className="text-xs text-zinc-500 font-mono">Sem OS</span>
+                            <span className="text-xs text-[var(--text-tertiary)] font-mono">Sem OS</span>
                           )}
 
                           {row.status === 'PAREADO' ? (
-                            <Badge variant="success" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[10px] px-2 py-0.5 font-mono">
+                            <Badge variant="success" className="text-[10px] px-2 py-0.5 font-mono">
                               <CheckCircle2 size={10} className="mr-1" /> Pareado
                             </Badge>
                           ) : row.status === 'SEM_PAR' ? (
-                            <Badge variant="danger" className="bg-red-500/10 text-red-400 border-red-500/30 text-[10px] px-2 py-0.5 font-mono">
+                            <Badge variant="danger" className="text-[10px] px-2 py-0.5 font-mono">
                               <AlertTriangle size={10} className="mr-1" /> Sem OS
                             </Badge>
                           ) : (
-                            <Badge variant="warning" className="bg-amber-500/10 text-amber-400 border-amber-500/30 text-[10px] px-2 py-0.5 font-mono">
+                            <Badge variant="warning" className="text-[10px] px-2 py-0.5 font-mono">
                               <AlertTriangle size={10} className="mr-1" /> Delta
                             </Badge>
                           )}
@@ -105,8 +109,7 @@ export function OsVsRedeTable({ storeId, date }: { storeId: string; date: string
         )}
       </Card>
 
-      {/* Modal de Detalhes da OS */}
-      <OsDetailModal 
+      <OsDetailModal
         isOpen={!!selectedOsData}
         onClose={() => setSelectedOsData(null)}
         osData={selectedOsData}
