@@ -164,8 +164,9 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
         }
         
         const start = new Date(opened_at);
-        const end = closed_at ? new Date(closed_at) : new Date();
-        const days_open = Math.max(0, Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
+        const end = closed_at && !isNaN(new Date(closed_at).getTime()) ? new Date(closed_at) : new Date();
+        const diffMs = !isNaN(start.getTime()) && !isNaN(end.getTime()) ? (end.getTime() - start.getTime()) : 0;
+        const days_open = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24))) || 0;
 
         const payment_method_str = String(row[colMap.paymentMethod] || '').trim();
         let parsed_credit = 0;

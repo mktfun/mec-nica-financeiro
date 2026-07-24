@@ -93,26 +93,42 @@ export function useCentralImport() {
     return items;
   };
 
+  const isConsolidatedSummaryFile = (file: File): boolean => {
+    const name = file.name.toUpperCase();
+    return name.includes('CONCILIAC') || name.includes('CONCILIATION') || name.includes('RESUMO_GERAL') || name.includes('CONSOLIDADO');
+  };
+
   const processFiles = useCallback(async (files: File[]) => {
     setIsProcessing(true);
     const newResults: UnifiedImportResult = { osFiles: [], maquininhaItems: [], redeResults: [], ofxResults: [], mapaMetasResults: [] };
 
     try {
+      // 0. Filtrar planilhas consolidadas manuais (ex: CONCILIAÇÃO 2307.xlsx) para evitar travamento
+      const validFiles = files.filter(file => {
+        if (isConsolidatedSummaryFile(file)) {
+          console.warn(`[CentralImport] Arquivo "${file.name}" ignorado automaticamente por ser uma planilha consolidada de conferência.`);
+          return false;
+        }
+        return true;
+      });
+
       // 1. Separar arquivos por extensão
-      const ofxFiles = files.filter(f => f.name.toLowerCase().endsWith('.ofx'));
-      const pdfFiles = files.filter(f => f.name.toLowerCase().endsWith('.pdf'));
-      const excelFiles = files.filter(f => f.name.toLowerCase().endsWith('.xls') || f.name.toLowerCase().endsWith('.xlsx'));
+      const ofxFiles = validFiles.filter(f => f.name.toLowerCase().endsWith('.ofx'));
+      const pdfFiles = validFiles.filter(f => f.name.toLowerCase().endsWith('.pdf'));
+      const excelFiles = validFiles.filter(f => f.name.toLowerCase().endsWith('.xls') || f.name.toLowerCase().endsWith('.xlsx'));
 
       // Processa OFX
       for (const file of ofxFiles) {
         const result = await parseOFXFile(file);
         newResults.ofxResults.push(result);
+        await new Promise(r => setTimeout(r, 0));
       }
       
       // Processa PDF
       for (const file of pdfFiles) {
         const result = await parseMapaMetasPDF(file);
         newResults.mapaMetasResults.push(result);
+        await new Promise(r => setTimeout(r, 0));
       }
 
       // 2. Processa os Excel (tenta Rede -> OS -> Maquininha Genérica)
@@ -122,6 +138,7 @@ export function useCentralImport() {
         
         for (let i = 0; i < excelFiles.length; i++) {
           const file = excelFiles[i];
+          await new Promise(r => setTimeout(r, 0)); // Cede o controle ao navegador
           
           // Primeiro, testa se é do formato Rede
           const redeRes = await parseRedeFile(file);
