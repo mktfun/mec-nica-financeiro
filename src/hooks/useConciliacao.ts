@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
-import { useStores } from './useStores';
 
 export interface ConciliacaoResumo {
   date: string;
@@ -25,8 +24,7 @@ export function useConciliacaoResumo(date: string) {
 
       const { data: patioOs, error: patioErr } = await supabase
         .from('patio_os')
-        .select('*')
-        .eq('entry_date', date);
+        .select('*');
 
       if (patioErr) console.warn("Aviso ao carregar patio_os:", patioErr);
 
@@ -180,11 +178,11 @@ export function useReconciliationViews(storeId: string, date: string) {
 
       if (txsErr) throw txsErr;
 
+      // Buscar TODAS as OSs da loja sem restrição rígida de data única
       const { data: patioOs, error: patioErr } = await supabase
         .from('patio_os')
         .select('*')
-        .eq('store_id', storeId)
-        .eq('entry_date', date);
+        .eq('store_id', storeId);
 
       if (patioErr) console.warn("Aviso patio_os:", patioErr);
 
@@ -214,6 +212,7 @@ export function useReconciliationViews(storeId: string, date: string) {
          
          let osFaturamento = 0;
          let osNumber = redeTx.os_number;
+         let osData: any = null;
          
          if (!osNumber) {
             const match = matches?.find(m => m.rede_transaction_id === redeTx.id);
@@ -224,14 +223,14 @@ export function useReconciliationViews(storeId: string, date: string) {
          
          if (osNumber) {
             const cleanOsNumber = String(osNumber).replace(/^[^-]+_/, '').trim();
-            const osInfo = patioOs?.find(o => 
+            osData = patioOs?.find(o => 
                String(o.os_number).trim() === cleanOsNumber || 
                String(o.os_number).trim() === String(osNumber).trim() ||
                String(osNumber).endsWith(`_${o.os_number}`)
             );
-            if (osInfo) {
-               const totalOsValue = osInfo.paid_value !== undefined && osInfo.paid_value !== null ? osInfo.paid_value : (osInfo.total_value || 0);
-               const creditRatio = (osInfo.parsed_credit_debit || 0) / (totalOsValue || 1);
+            if (osData) {
+               const totalOsValue = osData.paid_value !== undefined && osData.paid_value !== null ? osData.paid_value : (osData.total_value || 0);
+               const creditRatio = (osData.parsed_credit_debit || 0) / (totalOsValue || 1);
                osFaturamento = creditRatio > 0 ? (totalOsValue * creditRatio) : totalOsValue;
             }
          }
@@ -239,10 +238,12 @@ export function useReconciliationViews(storeId: string, date: string) {
          const delta = osNumber ? (osFaturamento - redeBruto) : 0;
          
          return {
+            id: redeTx.id,
             maquininha_title: redeTx.title || 'Transação Maquininha',
             rede_bruto: redeBruto,
             os_total: osFaturamento,
             os_number: osNumber || 'Não Localizada',
+            os_data: osData,
             delta,
             status: osNumber ? (Math.abs(delta) < 1.0 ? 'PAREADO' : 'COM_DELTA') : 'SEM_PAR'
          };
@@ -261,9 +262,50 @@ export function useReconciliationViews(storeId: string, date: string) {
       const adquirenteOfx = ofxTxsForRede.filter(t => isAdquirente(t.title || '', t.subtitle));
       const outrasOfx = ofxTxsForRede.filter(t => !isAdquirente(t.title || '', t.subtitle));
 
+      // AGRUPAMENTO DE MAQUININHAS POR DEPÓSITO BANCÁRIO OFX
+      const availableRedeTxs = [...redeTxsForOfx];
+      const depositGroups = adquirenteOfx.map(ofxTx => {
+         const targetAmount = ofxTx.amount;
+         const childTxs: any[] = [];
+         let accumulated = 0;
+
+         // Tenta encontrar grupo de vendas da maquininha cuja soma seja igual ao depósito OFX
+         for (let i = 0; i < availableRedeTxs.length; i++) {
+            const rTx = availableRedeTxs[i];
+            if (accumulated + rTx.amount <= targetAmount + 0.5) {
+               childTxs.push(rTx);
+               accumulated += rTx.amount;
+               if (Math.abs(accumulated - targetAmount) < 1.0) break;
+            }
+         }
+
+         // Remove da lista de disponíveis os itens atribuídos
+         childTxs.forEach(c => {
+            const idx = availableRedeTxs.findIndex(r => r.id === c.id);
+            if (idx !== -1) availableRedeTxs.splice(idx, 1);
+         });
+
+         const groupDelta = targetAmount - accumulated;
+
+         return {
+            ofxDeposit: {
+               id: ofxTx.id,
+               title: ofxTx.title || ofxTx.subtitle,
+               amount: ofxTx.amount,
+               occurred_at: ofxTx.occurred_at
+            },
+            childRedeTxs: childTxs.map(t => ({ id: t.id, title: t.title, amount: t.amount, payment_method: t.payment_method })),
+            totalChildAmount: accumulated,
+            isMatched: Math.abs(groupDelta) < 1.0,
+            groupDelta
+         };
+      });
+
       const redeVsOfx = {
          rede: redeTxsForOfx.map(t => ({ id: t.id, title: t.title, amount: t.amount, payment_method: t.payment_method })),
          ofx: adquirenteOfx.map(t => ({ id: t.id, title: t.title || t.subtitle, amount: t.amount })),
+         depositGroups,
+         unassignedRedeTxs: availableRedeTxs,
          outrasOfx: outrasOfx.map(t => ({ id: t.id, title: t.title || t.subtitle, amount: t.amount }))
       };
 
@@ -279,7 +321,8 @@ export function useReconciliationViews(storeId: string, date: string) {
             osPixList.push({
                os_number: os.os_number,
                client_name: os.client_name,
-               amount: pixVal
+               amount: pixVal,
+               raw_os: os
             });
          }
       });
@@ -294,12 +337,23 @@ export function useReconciliationViews(storeId: string, date: string) {
          occurred_at: t.occurred_at
       }));
 
+      // Agrupamento de PIX por valor/vínculo
+      const pixGroups = ofxPixList.map(ofxPix => {
+         const matchedOs = osPixList.find(os => Math.abs(os.amount - ofxPix.amount) < 1.0);
+         return {
+            ofxPix,
+            matchedOs,
+            isMatched: !!matchedOs
+         };
+      });
+
       const pixVsOfx = {
          osPix: osPixList,
-         ofxPix: ofxPixList
+         ofxPix: ofxPixList,
+         pixGroups
       };
 
-      // ABA 4: Extrato Sem Match (exclui adquirentes e PIXs já associados)
+      // ABA 4: Extrato Sem Match
       const matchedOfxIds = new Set(matches?.filter(m => m.ofx_transaction_id).map(m => m.ofx_transaction_id));
       const adquirenteIds = new Set(adquirenteOfx.map(t => t.id));
 
