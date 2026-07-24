@@ -98,34 +98,15 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
               if (colName === 'finalizada em' || colName === 'data fim' || colName.includes('fechamento') || colName.includes('finalizada') || colName.includes('saida') || colName.includes('saída')) colMap.closedAt = idx;
               if (colName.includes('total') || colName.includes('valor total') || colName.includes('r$ total') || colName.includes('vlr total') || colName.includes('vl total') || colName === 'valor' || colName.includes('bruto') || colName.includes('valor os') || colName.includes('valor final')) colMap.totalValue = idx;
               if (colName.includes('pagto') || colName.includes('liquidado') || colName.includes('total pago') || colName.includes('valor pago') || colName.includes('recebid') || colName === 'pago' || colName.includes('restante') || colName.includes('falta') || colName.includes('vlr pago') || colName.includes('vl pago') || colName.includes('valor liquido') || colName.includes('valor líquido')) colMap.paidValue = idx;
-              if (colName.includes('forma') && (colName.includes('pagamento') || colName.includes('pgto'))) colMap.paymentMethod = idx;
+              if (colName.includes('forma') || colName.includes('pagamento') || colName.includes('meio')) colMap.paymentMethod = idx;
             });
-            
-            // Fallback for paidValue
-            if (colMap.paidValue === undefined) {
-               const idx = rowStr.findIndex(h => h.includes('recebido') || h.includes('pago') || h.includes('liquido') || h.includes('líquido'));
-               if (idx !== -1) colMap.paidValue = idx;
-            }
-            // Fallback for totalValue
-            if (colMap.totalValue === undefined) {
-               if (colMap.paidValue !== undefined) {
-                  colMap.totalValue = colMap.paidValue;
-               } else {
-                  // Último recurso: pega a última coluna que parece ser de valor
-                  const idx = rowStr.findLastIndex(h => h.includes('r$') || h.includes('valor'));
-                  if (idx !== -1) {
-                    colMap.totalValue = idx;
-                    colMap.paidValue = idx;
-                  }
-               }
-            }
             break;
           }
         }
       }
 
-      if (headerRowIndex === -1 || colMap.os === undefined) {
-        throw new Error("Cabeçalho não encontrado. Certifique-se que as colunas 'OS' e 'Status' existem.");
+      if (headerRowIndex === -1) {
+        throw new Error(`Não foi possível localizar o cabeçalho no arquivo ${file.name}`);
       }
 
       let osCount = 0;
@@ -134,26 +115,20 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
         const row = data[i];
         if (!Array.isArray(row) || row.length === 0) continue;
 
-        const rawOs = row[colMap.os];
-        const osNumber = String(rawOs || '').trim();
-        
-        if (!osNumber || osNumber.toLowerCase() === 'os' || osNumber.length > 20 || isNaN(parseFloat(osNumber))) {
-          continue;
-        }
+        const rawOsNumber = row[colMap.os];
+        if (!rawOsNumber) continue;
+        const osNumber = String(rawOsNumber).trim();
+        if (!osNumber || osNumber.toLowerCase().includes('total')) continue;
 
-        const hasValidDate = parseExcelDate(row[colMap.openedAt]) !== null;
-        if (!hasValidDate) continue;
-
-        const osValue = parseValue(row[colMap.totalValue]);
-        const paidValue = parseValue(row[colMap.paidValue]);
         const statusStr = String(row[colMap.status] || '').trim();
+        const osValue = parseValue(row[colMap.totalValue]);
+        const paidValue = colMap.paidValue !== undefined ? parseValue(row[colMap.paidValue]) : osValue;
         
         const opened_at = parseExcelDate(row[colMap.openedAt]) || getDefaultDate();
         let closed_at: string | null = parseExcelDate(row[colMap.closedAt]);
         
         let statusEnum: 'em_aberto' | 'pago_parcial' | 'finalizado' = 'em_aberto';
         
-        // Resilience against typo/custom status
         const isClosed = statusStr.match(/finalizad[oa]|pag[oa]|entregue|faturad[oa]|fechad[oa]/i) || (paidValue > 0 && paidValue >= osValue);
         
         if (isClosed) {
@@ -174,16 +149,14 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
         let parsed_pix_transfer = 0;
 
         if (payment_method_str) {
-          // If the format is generic "Pix", "Cartão", etc.
           const lowerMethod = payment_method_str.toLowerCase();
           
           if (payment_method_str.includes(':')) {
-            // Split pattern: "Pix: 100; Cartão: 50"
             const parts = payment_method_str.split(';');
             parts.forEach(part => {
               const [method, valStr] = part.split(':').map(s => s.trim());
               if (method && valStr) {
-                const val = parseFloat(valStr) || 0;
+                const val = parseValue(valStr);
                 const methodUpper = method.toUpperCase();
                 if (methodUpper.includes('CREDITO') || methodUpper.includes('CRÉDITO') || methodUpper.includes('CARTAO') || methodUpper.includes('CARTÃO')) {
                   parsed_credit += val;
@@ -195,15 +168,19 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
               }
             });
           } else {
-             // Just text. Assume the full paidValue is tied to this method if matched.
              if (lowerMethod.includes('credito') || lowerMethod.includes('crédito') || lowerMethod.includes('cartão') || lowerMethod.includes('cartao')) {
-               parsed_credit = paidValue;
+               parsed_credit = paidValue || osValue;
              } else if (lowerMethod.includes('debito') || lowerMethod.includes('débito')) {
-               parsed_debit = paidValue;
+               parsed_debit = paidValue || osValue;
              } else if (lowerMethod.includes('pix') || lowerMethod.includes('transf') || lowerMethod.includes('dep') || lowerMethod.includes('dinheiro')) {
-               parsed_pix_transfer = paidValue;
+               parsed_pix_transfer = paidValue || osValue;
              }
           }
+        }
+
+        // Fallback inteligente: Se o valor em cartão continuar 0 mas houver valor pago ou valor total, presume cartão
+        if (parsed_credit === 0 && parsed_debit === 0 && parsed_pix_transfer === 0) {
+          parsed_credit = osValue || paidValue;
         }
 
         osArray.push({
@@ -211,7 +188,7 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
           plate: String(row[colMap.plate] || '').trim(),
           opened_at,
           closed_at,
-          total_value: osValue,
+          total_value: osValue || paidValue, // NUNCA permitir valor bruto zerado se houver paidValue
           paid_value: paidValue,
           payment_method: payment_method_str || null,
           status: statusEnum,
@@ -222,9 +199,6 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
           parsed_pix_transfer
         });
       }
-
-      // Recebíveis (lógica simplificada da extração, se houver)
-      // Como não temos as regras exatas de extrato, deixamos em aberto para adaptação
 
       results.push({
         fileName: file.name,
@@ -238,12 +212,12 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
     } catch (error: any) {
       results.push({
         fileName: file.name,
-        storeAlias: file.name,
+        storeAlias: '',
         success: false,
         osArray: [],
         receivablesArray: [],
         osCount: 0,
-        error: error.message || 'Erro desconhecido ao ler o arquivo'
+        error: error.message || 'Erro ao processar arquivo'
       });
     }
   }

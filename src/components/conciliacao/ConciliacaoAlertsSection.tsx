@@ -1,17 +1,28 @@
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
-import { AlertTriangle, CheckCircle2, Landmark, CreditCard, ShieldAlert } from 'lucide-react';
-import { useReconciliationViews } from '@/hooks/useConciliacao';
+import { Button } from '@/components/ui/Button';
+import { AlertTriangle, CheckCircle2, Landmark, CreditCard, ShieldAlert, Check } from 'lucide-react';
+import { useReconciliationViews, useResolveUnmatchedAlert } from '@/hooks/useConciliacao';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 export function ConciliacaoAlertsSection({ storeId, date }: { storeId: string; date: string }) {
   const { data, isLoading } = useReconciliationViews(storeId, date);
+  const resolveAlert = useResolveUnmatchedAlert();
 
   if (isLoading) {
     return <div className="p-12 flex justify-center"><LoadingSpinner text="Carregando alertas..." /></div>;
   }
 
   const alerts = data?.unmatchedAlerts || [];
+
+  const handleResolveAlert = (alert: any) => {
+    resolveAlert.mutate({
+      storeId,
+      targetDate: date,
+      txId: alert.id || `ALERT_${Date.now()}`,
+      reason: `Baixa manual confirmada pelo operador: ${alert.title}`
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -26,7 +37,7 @@ export function ConciliacaoAlertsSection({ storeId, date }: { storeId: string; d
                 Alertas & Divergências de Fechamento por Loja
               </h3>
               <p className="text-xs text-[var(--text-secondary)]">
-                Lançamentos que não fecharam matematicamente nas 4 camadas automáticas. Apenas exceções reais exigem revisão.
+                Lançamentos que não fecharam automaticamente. Você pode dar baixa manual a qualquer momento.
               </p>
             </div>
           </div>
@@ -41,7 +52,7 @@ export function ConciliacaoAlertsSection({ storeId, date }: { storeId: string; d
             <CheckCircle2 size={40} className="text-[var(--color-accent-teal)] mb-3 opacity-80" />
             <h4 className="font-display font-semibold text-base text-[var(--text-primary)]">Nenhuma Divergência Pendente!</h4>
             <p className="text-xs text-[var(--text-tertiary)] mt-1 max-w-md">
-              Todas as vendas de cartão e depósitos bancários desta data foram pareados com 100% de exatidão pelo motor de conciliação.
+              Todas as vendas de cartão e depósitos bancários desta data foram pareados ou resolvidos manualmente.
             </p>
           </div>
         ) : (
@@ -78,6 +89,17 @@ export function ConciliacaoAlertsSection({ storeId, date }: { storeId: string; d
                         R$ {Number(alert.amount || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </span>
                     </div>
+
+                    <Button
+                      size="sm"
+                      variant="teal"
+                      onClick={() => handleResolveAlert(alert)}
+                      disabled={resolveAlert.isPending}
+                      className="text-xs font-bold gap-1.5 h-8"
+                    >
+                      <Check size={12} />
+                      Resolver Pendência
+                    </Button>
                   </div>
                 </div>
               );

@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
-import { CheckCircle2, AlertTriangle, Info, ExternalLink } from 'lucide-react';
-import { useReconciliationViews } from '@/hooks/useConciliacao';
+import { Button } from '@/components/ui/Button';
+import { CheckCircle2, AlertTriangle, Info, ExternalLink, Check } from 'lucide-react';
+import { useReconciliationViews, useUpdateOsStatus } from '@/hooks/useConciliacao';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { OsDetailModal } from './OsDetailModal';
 
 export function OsVsRedeTable({ storeId, date }: { storeId: string; date: string }) {
   const { data, isLoading } = useReconciliationViews(storeId, date);
+  const updateOsStatus = useUpdateOsStatus();
   const [selectedOsData, setSelectedOsData] = useState<any | null>(null);
 
   if (isLoading) {
@@ -15,6 +17,19 @@ export function OsVsRedeTable({ storeId, date }: { storeId: string; date: string
   }
 
   const rows = data?.osVsRede || [];
+
+  const handleQuickEntrou = (e: React.MouseEvent, osData: any) => {
+    e.stopPropagation();
+    if (!osData?.id) return;
+    const isEntrou = osData.status === 'ENTROU';
+    updateOsStatus.mutate({
+      osId: osData.id,
+      osNumber: osData.os_number,
+      storeId,
+      targetDate: date,
+      newStatus: isEntrou ? 'finalizado' : 'ENTROU'
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -24,7 +39,7 @@ export function OsVsRedeTable({ storeId, date }: { storeId: string; date: string
             <h3 className="font-display font-semibold text-lg flex items-center gap-2 text-[var(--text-primary)]">
               1. Cartão <span className="text-[var(--text-tertiary)]">(Sistema OS → Maquininha)</span>
             </h3>
-            <p className="text-xs text-[var(--text-secondary)]">Clique no número de qualquer OS para ver a quebra completa de pagamentos.</p>
+            <p className="text-xs text-[var(--text-secondary)]">Clique na OS para ver detalhes ou use o botão 'Baixar' para marcar como ENTROU manualmente.</p>
           </div>
           <Badge variant="neutral" className="text-xs font-mono">
             {rows.length} Transações
@@ -46,16 +61,18 @@ export function OsVsRedeTable({ storeId, date }: { storeId: string; date: string
                   <th className="text-right py-3 px-4 font-medium">Faturamento Sistema (OS)</th>
                   <th className="text-right py-3 px-4 font-medium">Delta</th>
                   <th className="text-center py-3 px-4 font-medium">OS Vinculada</th>
+                  <th className="text-center py-3 px-4 font-medium">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border-subtle)]">
                 {rows.map((row: any, i: number) => {
                   const hasOs = row.os_number !== 'Não Localizada';
+                  const isEntrou = row.os_data?.status === 'ENTROU';
 
                   return (
                     <tr
                       key={i}
-                      onClick={() => row.os_data && setSelectedOsData(row.os_data)}
+                      onClick={() => row.os_data && setSelectedOsData({ ...row.os_data, store_id: storeId, target_date: date })}
                       className={`transition-colors ${hasOs ? 'hover:bg-[var(--bg-surface)] cursor-pointer' : ''}`}
                     >
                       <td className="py-3.5 px-4 font-medium text-[var(--text-primary)]">
@@ -85,9 +102,9 @@ export function OsVsRedeTable({ storeId, date }: { storeId: string; date: string
                             <span className="text-xs text-[var(--text-tertiary)] font-mono">Sem OS</span>
                           )}
 
-                          {row.status === 'PAREADO' ? (
+                          {isEntrou || row.status === 'PAREADO' ? (
                             <Badge variant="success" className="text-[10px] px-2 py-0.5 font-mono">
-                              <CheckCircle2 size={10} className="mr-1" /> Pareado
+                              <CheckCircle2 size={10} className="mr-1" /> Pareado / ENTROU
                             </Badge>
                           ) : row.status === 'SEM_PAR' ? (
                             <Badge variant="danger" className="text-[10px] px-2 py-0.5 font-mono">
@@ -99,6 +116,20 @@ export function OsVsRedeTable({ storeId, date }: { storeId: string; date: string
                             </Badge>
                           )}
                         </div>
+                      </td>
+                      <td className="py-3.5 px-4 text-center">
+                        {hasOs && row.os_data?.id && (
+                          <Button
+                            size="sm"
+                            variant={isEntrou ? "outline" : "teal"}
+                            onClick={(e) => handleQuickEntrou(e, row.os_data)}
+                            disabled={updateOsStatus.isPending}
+                            className="text-[10px] h-7 px-2"
+                          >
+                            <Check size={10} className="mr-1" />
+                            {isEntrou ? 'Desfazer' : 'Baixar OS'}
+                          </Button>
+                        )}
                       </td>
                     </tr>
                   );

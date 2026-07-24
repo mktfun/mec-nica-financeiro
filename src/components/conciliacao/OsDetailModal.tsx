@@ -1,12 +1,17 @@
 import { Modal } from '@/components/ui/Modal';
 import { Badge } from '@/components/ui/Badge';
-import { FileText, User, Calendar, CreditCard, QrCode, Banknote, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { FileText, User, Calendar, CreditCard, QrCode, Banknote, CheckCircle2, ShieldCheck, Check, RotateCcw } from 'lucide-react';
+import { useUpdateOsStatus } from '@/hooks/useConciliacao';
 
 export interface OsDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   osData: {
+    id?: string;
     os_number: string;
+    store_id?: string;
+    target_date?: string;
     client_name?: string;
     vehicle?: string;
     entry_date?: string;
@@ -20,7 +25,27 @@ export interface OsDetailModalProps {
 }
 
 export function OsDetailModal({ isOpen, onClose, osData }: OsDetailModalProps) {
+  const updateOsStatus = useUpdateOsStatus();
+
   if (!osData) return null;
+
+  const isEntrou = osData.status === 'ENTROU';
+
+  const handleToggleEntrou = () => {
+    if (!osData.id) return;
+    const newStatus = isEntrou ? 'finalizado' : 'ENTROU';
+    updateOsStatus.mutate({
+      osId: osData.id,
+      osNumber: osData.os_number,
+      storeId: osData.store_id || '',
+      targetDate: osData.target_date || new Date().toISOString().split('T')[0],
+      newStatus
+    }, {
+      onSuccess: () => {
+        onClose();
+      }
+    });
+  };
 
   const totalValue = osData.paid_value !== undefined && osData.paid_value !== null
     ? osData.paid_value
@@ -40,9 +65,15 @@ export function OsDetailModal({ isOpen, onClose, osData }: OsDetailModalProps) {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-display text-lg font-bold text-[var(--text-primary)]">OS #{osData.os_number}</h3>
-                <Badge variant="success" className="text-xs">
-                  <ShieldCheck size={12} className="mr-1" /> No Sistema
-                </Badge>
+                {isEntrou ? (
+                  <Badge variant="success" className="text-xs">
+                    <CheckCircle2 size={12} className="mr-1" /> ENTROU (Manual/Baixado)
+                  </Badge>
+                ) : (
+                  <Badge variant="brand" className="text-xs">
+                    <ShieldCheck size={12} className="mr-1" /> No Sistema
+                  </Badge>
+                )}
               </div>
               {osData.client_name && (
                 <p className="text-xs text-[var(--text-secondary)] flex items-center gap-1.5 mt-0.5">
@@ -128,6 +159,30 @@ export function OsDetailModal({ isOpen, onClose, osData }: OsDetailModalProps) {
           <div className="p-3 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl text-xs text-[var(--text-secondary)]">
             <span className="font-semibold text-[var(--text-primary)]">String Bruta de Pagamento:</span>
             <p className="font-mono text-[11px] text-[var(--text-secondary)] mt-1">{osData.payment_method}</p>
+          </div>
+        )}
+
+        {/* Botão de Ação: Baixa Manual Direct ("Marcar como ENTROU") */}
+        {osData.id && (
+          <div className="pt-2 border-t border-[var(--border-subtle)] flex justify-end">
+            <Button
+              variant={isEntrou ? "outline" : "teal"}
+              onClick={handleToggleEntrou}
+              disabled={updateOsStatus.isPending}
+              className="gap-2 text-xs font-bold"
+            >
+              {isEntrou ? (
+                <>
+                  <RotateCcw size={14} />
+                  Reverter para Pendente
+                </>
+              ) : (
+                <>
+                  <Check size={14} />
+                  Marcar como ENTROU (Baixa Manual)
+                </>
+              )}
+            </Button>
           </div>
         )}
       </div>

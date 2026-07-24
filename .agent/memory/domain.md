@@ -40,3 +40,42 @@
 **Risco identificado:** Tentar agrupar todas as vendas no primeiro depósito gera divergências artificiais em todos os outros depósitos. O subset-sum exato garante $R\$ 0,00$ de divergência para pareamentos matematicamente perfeitos.
 
 **Não fazer:** Nunca forçar pareamento parcial ou parcial guloso se a soma não bater 100% exata; lançamentos que não fecham devem cair no painel de exceções/alertas da loja.
+
+## [2026-07-24] — Feature ID: conciliacao-modulo-saldo-completo
+
+**Contexto:** Overhaul da tela principal de conciliação (`/conciliacao`) com o Painel Financeiro Consolidado da Aba SALDO (Módulo 1 da planilha `CONCILIACAO-2307.xlsx`).
+
+**Regra aprendida:**
+- A cadeia de formulas de G13 a G31 da planilha `CONCILIACAO-2307.xlsx` deve ser replicada de forma rigorosa no frontend:
+  `SALDO (G13)` -> `DINHEIRO MP (G14)` -> `A RECEBER (G15)` -> `NA LOJA (G16)` -> `SALDO TOTAL (G17)` -> `CAIXA ATUAL (G21)` -> `FLUXO CAIXA (G23)` -> `DISPONÍVEL CONTAS (G29)` -> `RESULTADO FINAL (G31)`.
+- O campo `DINHEIRO MP (G14)` suporta preenchimento manual por loja conforme preferência operacional do usuário.
+- O subtotal "NA LOJA (G16)" é alimentado automaticamente pela soma do valor das OSs em aberto (`status != 'ENTROU'`).
+
+**Risco identificado:** Alterar os nomes das variáveis ou inverter a ordem da subtração de Caixa Atual e Limite gera erro na apuração do Saldo Livre Real.
+
+**Não fazer:** Nunca calcular o resultado final sem abater a reserva de Limite de Crédito digitada por loja.
+
+## [2026-07-24] — Feature ID: conciliacao-os-parsing-history-fix
+
+**Contexto:** Correção na leitura de OSs quitadas (Módulo 2), uso do valor bruto em cartão em vez do saldo zerado, e Trava Anti-Duplicação.
+
+**Regra aprendida:**
+- Quando uma OS é quitada ou finalizada na planilha de pátio, seu saldo pendente torna-se `R$ 0,00`. No cruzamento $OS \leftrightarrow Maquininha$, o motor DEVE utilizar o **Valor Bruto em Cartão (`credit_debit_value` / `total_value`)**, NUNCA o saldo em aberto zerado (`0.00`).
+- **Trava Anti-Duplicação:** OSs marcadas com `status = 'ENTROU'` ou que possuem registro prévio em `conciliation_matches` NUNCA podem ser re-pareadas em conciliações de dias posteriores. O depósito de amanhã SÓ pareia se houver uma OS nova pendente dos lotes recentes.
+
+**Risco identificado:** Usar o saldo zerado fazia OSs finalizadas de R$ 3.385,00 parecerem R$ 0,00 no pareamento com a maquininha.
+
+**Não fazer:** Nunca usar o valor de saldo remanescente em aberto como valor de cobrança de cartão.
+
+## [2026-07-24] — Feature ID: conciliacao-baixa-manual-override
+
+**Contexto:** Baixa manual universal e botão "Marcar como ENTROU" para OSs e lançamentos sem vínculo.
+
+**Regra aprendida:**
+- Permitir que o usuário force o status `ENTROU` em qualquer OS ou pendência sem vínculo direto no extrato (ex: dinheiro não depositado ou importações históricas).
+- Gravar a resolução com `match_type = 'MANUAL_OVERRIDE'` em `conciliation_matches` e revalidar os caches instantaneamente (`queryClient.invalidateQueries`).
+- Oferecer opção de "Reverter para Pendente" para permitir desfazimento amigável em caso de erro.
+
+**Risco identificado:** A baixa manual precisa atualizar a Aba SALDO imediatamente, retirando a OS de "NA LOJA (G16)" e migrando para o caixa realizado.
+
+**Não fazer:** Nunca exigir recarregamento manual da página (F5) para refletir a baixa efetuada pelo operador.

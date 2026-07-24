@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
+import { StoreSaldoState } from '@/lib/modulo1Calculations';
 
 export interface ConciliacaoResumo {
   date: string;
@@ -166,10 +167,6 @@ export function useDailyReconciliationDelta(targetDate: string) {
   });
 }
 
-/**
- * Função de busca de subconjunto com soma exata (Subset-Sum / Backtracking)
- * Encontra até maxDepth elementos em candidates cuja soma seja igual a targetAmount (+- TOLERANCE)
- */
 function findExactSubsetMatch(
   targetAmount: number,
   candidates: any[],
@@ -209,14 +206,12 @@ export function useReconciliationViews(storeId: string, date: string) {
   return useQuery({
     queryKey: ['reconciliation_views', storeId, date],
     queryFn: async () => {
-      // Calcular datas D-1 e D-2 para contextualização temporal
       const targetDateObj = new Date(date);
       const d1Obj = new Date(targetDateObj.getTime() - 86400000);
       const d2Obj = new Date(targetDateObj.getTime() - 86400000 * 2);
       const d1Str = d1Obj.toISOString().split('T')[0];
       const d2Str = d2Obj.toISOString().split('T')[0];
 
-      // Buscar transações de D0, D-1 e D-2 para a loja
       const { data: txs, error: txsErr } = await supabase
         .from('transactions')
         .select('*')
@@ -225,7 +220,6 @@ export function useReconciliationViews(storeId: string, date: string) {
 
       if (txsErr) throw txsErr;
 
-      // Buscar TODAS as OSs da loja
       const { data: patioOs, error: patioErr } = await supabase
         .from('patio_os')
         .select('*')
@@ -236,10 +230,17 @@ export function useReconciliationViews(storeId: string, date: string) {
       const { data: matches, error: matchesErr } = await supabase
         .from('conciliation_matches')
         .select('*')
-        .eq('store_id', storeId)
-        .in('target_date', [date, d1Str, d2Str]);
+        .eq('store_id', storeId);
 
       if (matchesErr) console.warn("Aviso matches:", matchesErr);
+
+      const matchedOsNumbers = new Set(
+        (matches || []).map(m => m.system_os_number).filter(Boolean)
+      );
+
+      const candidateOsPool = (patioOs || []).filter(o => 
+        o.status !== 'ENTROU' && !matchedOsNumbers.has(o.os_number)
+      );
 
       const allRedeTxs = txs?.filter(t => t.source === 'rede' || t.source === 'maquininha') || [];
       const d0RedeTxs = allRedeTxs.filter(t => t.target_date === date);
@@ -247,7 +248,6 @@ export function useReconciliationViews(storeId: string, date: string) {
 
       const usedTaxas = new Set<string>();
 
-      // ABA 1: OS vs Maquininha (D0)
       const osVsRede = d0RedeTxs.map(redeTx => {
          let taxaTx = null;
          if (redeTx.os_number) {
@@ -270,18 +270,29 @@ export function useReconciliationViews(storeId: string, date: string) {
             }
          }
          
-         if (osNumber) {
+         if (!osNumber) {
+            const candidateByValue = candidateOsPool.find(o => {
+               const creditVal = Number(o.credit_debit_value || 0) || Number(o.total_value || 0) || Number(o.paid_value || 0);
+               return Math.abs(creditVal - redeBruto) < 1.0;
+            });
+            if (candidateByValue) {
+               osNumber = candidateByValue.os_number;
+               osData = candidateByValue;
+            }
+         }
+
+         if (osNumber && !osData) {
             const cleanOsNumber = String(osNumber).replace(/^[^-]+_/, '').trim();
             osData = patioOs?.find(o => 
                String(o.os_number).trim() === cleanOsNumber || 
                String(o.os_number).trim() === String(osNumber).trim() ||
                String(osNumber).endsWith(`_${o.os_number}`)
             );
-            if (osData) {
-               const totalOsValue = osData.paid_value !== undefined && osData.paid_value !== null ? osData.paid_value : (osData.total_value || 0);
-               const creditRatio = (osData.parsed_credit_debit || 0) / (totalOsValue || 1);
-               osFaturamento = creditRatio > 0 ? (totalOsValue * creditRatio) : totalOsValue;
-            }
+         }
+
+         if (osData) {
+            const creditVal = Number(osData.credit_debit_value || 0) || Number(osData.total_value || 0) || Number(osData.paid_value || 0);
+            osFaturamento = creditVal;
          }
          
          const delta = osNumber ? (osFaturamento - redeBruto) : 0;
@@ -298,7 +309,6 @@ export function useReconciliationViews(storeId: string, date: string) {
          };
       });
 
-      // ABA 2: Maquininha vs Banco OFX (MOTOR MULTICAMADAS COM SUBSET-SUM E D-1)
       const d0OfxIn = txs?.filter(t => t.source === 'ofx' && t.target_date === date && t.amount > 0) || [];
       
       const isAdquirente = (title: string, subtitle?: string) => {
@@ -311,15 +321,13 @@ export function useReconciliationViews(storeId: string, date: string) {
       const adquirenteOfx = d0OfxIn.filter(t => isAdquirente(t.title || '', t.subtitle));
       const outrasOfx = d0OfxIn.filter(t => !isAdquirente(t.title || '', t.subtitle));
 
-      const poolRedeTxs = [...allRedeTxs]; // Pool contendo vendas D0, D-1, D-2
+      const poolRedeTxs = [...allRedeTxs];
       const depositGroups: any[] = [];
       const unmatchedAlerts: any[] = [];
 
-      // PASSAGEM DE PAREAMENTO EM 4 CAMADAS
       adquirenteOfx.forEach(ofxTx => {
          const targetVal = ofxTx.amount;
 
-         // --- CAMADA 1: Exact 1:1 Match ---
          const exactOneIndex = poolRedeTxs.findIndex(r => Math.abs(r.amount - targetVal) <= 0.05);
          if (exactOneIndex !== -1) {
             const matchedTx = poolRedeTxs.splice(exactOneIndex, 1)[0];
@@ -340,12 +348,10 @@ export function useReconciliationViews(storeId: string, date: string) {
             return;
          }
 
-         // --- CAMADA 2: Subset-Sum Combinatório N:1 (Mesmo dia D0) ---
          const d0Candidates = poolRedeTxs.filter(r => r.target_date === date);
          const subsetMatchD0 = findExactSubsetMatch(targetVal, d0Candidates, 6);
 
          if (subsetMatchD0 && subsetMatchD0.length > 0) {
-            // Remover da pool os selecionados
             subsetMatchD0.forEach(c => {
                const idx = poolRedeTxs.findIndex(r => r.id === c.id);
                if (idx !== -1) poolRedeTxs.splice(idx, 1);
@@ -370,7 +376,6 @@ export function useReconciliationViews(storeId: string, date: string) {
             return;
          }
 
-         // --- CAMADA 3: Busca Temporal Estendida (D-1 / D-2) ---
          const subsetMatchTemporal = findExactSubsetMatch(targetVal, poolRedeTxs, 6);
          if (subsetMatchTemporal && subsetMatchTemporal.length > 0) {
             subsetMatchTemporal.forEach(c => {
@@ -397,7 +402,6 @@ export function useReconciliationViews(storeId: string, date: string) {
             return;
          }
 
-         // --- CAMADA 4: Não Pareado (Encaminhado para Alerta de Exceção) ---
          depositGroups.push({
             ofxDeposit: {
                id: ofxTx.id,
@@ -422,7 +426,6 @@ export function useReconciliationViews(storeId: string, date: string) {
          });
       });
 
-      // Adicionar vendas da maquininha D0 que sobraram sem depósito para os Alertas
       const unassignedD0Rede = poolRedeTxs.filter(r => r.target_date === date);
       unassignedD0Rede.forEach(r => {
          unmatchedAlerts.push({
@@ -442,7 +445,6 @@ export function useReconciliationViews(storeId: string, date: string) {
          outrasOfx: outrasOfx.map(t => ({ id: t.id, title: t.title || t.subtitle, amount: t.amount }))
       };
 
-      // ABA 3: PIX (OS -> Banco OFX)
       const osPixList: any[] = [];
       patioOs?.forEach(os => {
          const totalVal = os.paid_value !== undefined && os.paid_value !== null ? os.paid_value : (os.total_value || 0);
@@ -470,7 +472,6 @@ export function useReconciliationViews(storeId: string, date: string) {
          occurred_at: t.occurred_at
       }));
 
-      // Agrupamento de PIX com Subset-Sum / Exact match
       const pixGroups = ofxPixList.map(ofxPix => {
          const matchedOs = osPixList.find(os => Math.abs(os.amount - ofxPix.amount) < 0.05);
          return {
@@ -486,7 +487,6 @@ export function useReconciliationViews(storeId: string, date: string) {
          pixGroups
       };
 
-      // ABA 4: Extrato Sem Match
       const matchedOfxIds = new Set(matches?.filter(m => m.ofx_transaction_id).map(m => m.ofx_transaction_id));
       const adquirenteIds = new Set(adquirenteOfx.map(t => t.id));
 
@@ -508,6 +508,157 @@ export function useReconciliationViews(storeId: string, date: string) {
         ofxSemMatch,
         unmatchedAlerts
       };
+    }
+  });
+}
+
+export function useModulo1StoresData(date: string) {
+  return useQuery({
+    queryKey: ['modulo1_stores_data', date],
+    queryFn: async (): Promise<StoreSaldoState[]> => {
+      const { data: stores, error: storesErr } = await supabase
+        .from('stores')
+        .select('*');
+
+      if (storesErr) throw storesErr;
+
+      const { data: txs } = await supabase
+        .from('transactions')
+        .select('*')
+        .eq('target_date', date);
+
+      const { data: patioOs } = await supabase
+        .from('patio_os')
+        .select('*');
+
+      const { data: receivables } = await supabase
+        .from('receivables')
+        .select('*');
+
+      return (stores || []).map(store => {
+        const storeTxs = txs?.filter(t => t.store_id === store.id) || [];
+        const storeOs = patioOs?.filter(o => o.store_id === store.id) || [];
+        const storeRec = receivables?.filter(r => r.store_id === store.id) || [];
+
+        const saldoBancoItau = storeTxs
+          .filter(t => t.source === 'ofx' && t.type === 'in')
+          .reduce((acc, t) => acc + Number(t.amount || 0), 0);
+
+        const cartaoEntrou = storeTxs
+          .filter(t => t.source === 'rede' && t.type === 'in')
+          .reduce((acc, t) => acc + Number(t.amount || 0), 0);
+
+        const naLojaOs = storeOs
+          .filter(o => o.status !== 'ENTROU')
+          .reduce((acc, o) => {
+            const totalVal = o.paid_value !== undefined && o.paid_value !== null ? o.paid_value : (o.total_value || 0);
+            return acc + Number(totalVal);
+          }, 0);
+
+        const aReceber = storeRec
+          .filter(r => r.status === 'pendente')
+          .reduce((acc, r) => acc + Number(r.value || 0), 0);
+
+        const faturamentoAtual = storeOs.reduce((acc, o) => acc + Number(o.total_value || 0), 0);
+
+        return {
+          store_id: store.id,
+          store_name: store.name,
+          saldo_banco_itau: saldoBancoItau,
+          limite_credito: (store as any).credit_limit || 0,
+          cartao_entrou: cartaoEntrou,
+          cartao_nao_entrou: 0,
+          dinheiro_loja: 0,
+          a_receber: aReceber,
+          na_loja_os: naLojaOs,
+          faturamento_atual: faturamentoAtual,
+          faturamento_anterior: faturamentoAtual * 0.9,
+          seguro_sinistro: 0,
+          juros_atual: 0,
+          caixa_anterior: (store as any).previous_caixa || 0,
+          valor_contas: 0
+        };
+      });
+    }
+  });
+}
+
+/**
+ * Mutation para Baixa Manual Direct de OS (Forçar Status 'ENTROU' ou Reverter)
+ */
+export function useUpdateOsStatus() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ osId, osNumber, storeId, targetDate, newStatus }: {
+      osId: string;
+      osNumber: string;
+      storeId: string;
+      targetDate: string;
+      newStatus: 'ENTROU' | 'finalizado' | 'em_aberto';
+    }) => {
+      const { data, error } = await supabase
+        .from('patio_os')
+        .update({ status: newStatus, updated_at: new Date().toISOString() })
+        .eq('id', osId);
+
+      if (error) throw error;
+
+      if (newStatus === 'ENTROU') {
+        await supabase.from('conciliation_matches').upsert([{
+          store_id: storeId,
+          system_os_number: osNumber,
+          target_date: targetDate,
+          status: 'APPROVED',
+          match_type: 'MANUAL_OVERRIDE'
+        }], { onConflict: 'store_id,system_os_number' });
+      } else {
+        await supabase.from('conciliation_matches')
+          .delete()
+          .eq('store_id', storeId)
+          .eq('system_os_number', osNumber);
+      }
+
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] });
+      queryClient.invalidateQueries({ queryKey: ['modulo1_stores_data'] });
+      queryClient.invalidateQueries({ queryKey: ['patio_os'] });
+      queryClient.invalidateQueries({ queryKey: ['conciliacao_resumo'] });
+    }
+  });
+}
+
+/**
+ * Mutation para Resolução Manual de Alertas de Exceção (Depósitos ou Vendas sem vínculo)
+ */
+export function useResolveUnmatchedAlert() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ storeId, targetDate, txId, reason }: {
+      storeId: string;
+      targetDate: string;
+      txId: string;
+      reason?: string;
+    }) => {
+      const { data, error } = await supabase
+        .from('conciliation_matches')
+        .insert([{
+          store_id: storeId,
+          target_date: targetDate,
+          ofx_transaction_id: txId,
+          status: 'APPROVED',
+          match_type: 'MANUAL_OVERRIDE',
+          notes: reason || 'Resolvido manualmente pelo operador'
+        }]);
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] });
+      queryClient.invalidateQueries({ queryKey: ['modulo1_stores_data'] });
+      queryClient.invalidateQueries({ queryKey: ['conciliacao_resumo'] });
     }
   });
 }
