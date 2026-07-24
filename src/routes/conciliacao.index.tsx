@@ -1,16 +1,17 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
+import { motion } from 'framer-motion';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Store, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import { useStores } from '@/hooks/useStores';
-import { useConciliacaoResumo, useConciliacaoDetalhes, useModulo1StoresData } from '@/hooks/useConciliacao';
+import { useConciliacaoResumo, useConciliacaoDetalhes } from '@/hooks/useConciliacao';
 import { useDailySystemBalance, useDailyBankBalance } from '@/hooks/useTransactions';
 import { getDefaultDate } from '@/lib/utils';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { ResumoDiaPanel } from '@/components/conciliacao/ResumoDiaPanel';
-import { calculateModulo1Saldo } from '@/lib/modulo1Calculations';
+import { StoreSaldoState } from '@/lib/modulo1Calculations';
 
 export const Route = createFileRoute('/conciliacao/')({
   component: ConciliacaoPage,
@@ -24,9 +25,8 @@ function ConciliacaoPage() {
   const { data: detalhes = [], isLoading: loadingDetalhes } = useConciliacaoDetalhes(selectedDate);
   const { data: dailyBalances, isLoading: loadingBalances } = useDailySystemBalance(selectedDate);
   const { data: bankBalances, isLoading: loadingBankBalances } = useDailyBankBalance(selectedDate);
-  const { data: storesModulo1 = [], isLoading: loadingModulo1 } = useModulo1StoresData(selectedDate);
 
-  const isLoading = loadingStores || loadingResumo || loadingDetalhes || loadingBalances || loadingBankBalances || loadingModulo1;
+  const isLoading = loadingStores || loadingResumo || loadingDetalhes || loadingBalances || loadingBankBalances;
 
   const resultado = resumo?.totalDivergence || 0;
   const isApproved = resultado === 0 && (resumo?.approved || 0) > 0;
@@ -42,19 +42,31 @@ function ConciliacaoPage() {
   const totalBancarioRaw = Object.values(bankBalances || {}).reduce((acc, val) => acc + (val.rawBalance || 0), 0);
   const divergenciaGlobal = totalSistema - totalBancarioIn;
 
-  const { storesCalculated } = calculateModulo1Saldo(storesModulo1);
+  const storesState: StoreSaldoState[] = stores.map(s => {
+    const sys = dailyBalances?.[s.id] || 0;
+    const bankIn = bankBalances?.[s.id]?.in || 0;
+    return {
+      store_id: s.id,
+      store_name: s.name,
+      saldo_banco_itau_ofx: bankIn,
+      faturamento_sistema: sys,
+      dinheiro_mp_manual: 0,
+      a_receber_pendente: 0,
+      na_loja_os_patio: 0,
+    };
+  });
 
   return (
     <AppShell>
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-8 max-w-6xl mx-auto pb-20 pt-2">
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-8 max-w-5xl mx-auto pb-20 pt-2">
         
         {isLoading ? (
           <div className="flex justify-center p-12">
-            <LoadingSpinner size="md" text="Carregando resultados da conciliação..." />
+            <LoadingSpinner size="md" text="Carregando resultados do dia..." />
           </div>
         ) : (
           <>
-            {/* O Hero Card Unificado da Conciliação */}
+            {/* O Hero Card Unificado com Design Restaurado */}
             <ResumoDiaPanel 
               selectedDate={selectedDate}
               onDayChange={handleDayChange}
@@ -65,104 +77,114 @@ function ConciliacaoPage() {
               totalSistema={totalSistema}
               totalBancarioIn={totalBancarioIn}
               totalBancarioRaw={totalBancarioRaw}
-              storesData={storesModulo1}
+              storesData={storesState}
             />
 
-            {/* Lista de Fechamento por Loja */}
-            <div className="space-y-4 pt-2">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold flex items-center gap-2 text-[var(--text-primary)] font-display">
+            {/* Lista de Lojas com Micro-animações e Hover Lift 3D */}
+            <div className="space-y-4 pt-4">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-lg font-bold font-display flex items-center gap-2 text-[var(--text-primary)]">
                   <Store size={20} className="text-[var(--color-primary)]" />
-                  Fechamento Individual por Loja
+                  Fechamento Individual por Loja (Módulo 1)
                 </h3>
-                <span className="text-xs text-[var(--text-tertiary)] font-mono">
-                  {stores.length} Lojas Cadastradas
+                <span className="text-xs text-[var(--text-tertiary)] font-medium">
+                  {stores.length} Unidades Operacionais
                 </span>
               </div>
               
               <div className="grid grid-cols-1 gap-4">
-                {stores.map(store => {
-                  const calc = storesCalculated[store.id] || {
-                    saldo_g13: 0,
-                    dinheiro_mp_g14: 0,
-                    a_receber_g15: 0,
-                    na_loja_g16: 0,
-                    saldo_total_g17: 0,
-                    resultado_final_g31: 0
-                  };
+                {stores.map((store, index) => {
+                  const sys = dailyBalances?.[store.id] || 0;
+                  const bankIn = bankBalances?.[store.id]?.in || 0;
+                  const div = sys - bankIn;
+                  const isStoreOk = Math.abs(div) < 0.01;
 
                   return (
-                    <Link to="/conciliacao/$lojaId" params={{ lojaId: store.id }} search={{ date: selectedDate }} key={store.id} className="block">
-                      <Card className="p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-6 transition-all hover:bg-[var(--bg-surface-elevated)] cursor-pointer border border-[var(--border-subtle)] backdrop-blur-md shadow-xl group">
-                        
-                        {/* Nome da Loja & Status */}
-                        <div className="flex items-center gap-4 min-w-[220px]">
-                          <div className={`w-2 h-12 rounded-full ${calc.resultado_final_g31 >= 0 ? 'bg-[var(--color-accent-teal)]' : 'bg-[var(--color-accent-danger)]'}`} />
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <p className="font-semibold text-base text-[var(--text-primary)] font-display group-hover:text-[var(--color-primary)] transition-colors">
-                                {store.name}
-                              </p>
-                              <ChevronRight size={14} className="text-[var(--text-tertiary)] opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </div>
-                            <span className="text-[10px] text-[var(--text-tertiary)] font-mono">ID: {store.id}</span>
-                          </div>
-                        </div>
-
-                        {/* Régua das 6 Colunas */}
-                        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4 bg-[var(--bg-canvas)] p-4 rounded-xl border border-[var(--border-subtle)] flex-1 font-sans tabular-nums text-xs">
+                    <motion.div
+                      key={store.id}
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.35, delay: index * 0.05 }}
+                    >
+                      <Link to="/conciliacao/$lojaId" params={{ lojaId: store.id }} search={{ date: selectedDate }} className="block group">
+                        <Card className="p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-6 transition-all duration-300 hover:scale-[1.012] hover:bg-[var(--bg-surface-elevated)]/90 hover:border-white/25 hover:shadow-[0_12px_40px_rgba(0,0,0,0.35)] cursor-pointer border border-white/10 backdrop-blur-md rounded-2xl relative overflow-hidden">
                           
-                          {/* 1. Banco Itaú */}
-                          <div>
-                            <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">Banco Itaú</p>
-                            <p className="font-bold text-[var(--color-accent-light-blue)]">
-                              <AnimatedNumber value={calc.saldo_g13} format="currency" />
-                            </p>
+                          {/* Efeito Feixe de Brilho no Hover */}
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.04] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
+
+                          {/* Nome da Loja & Status Indicator Pill */}
+                          <div className="flex items-center gap-4 min-w-[220px] relative z-10">
+                            <div className={`w-2.5 h-12 rounded-full shadow-md transition-transform group-hover:scale-y-110 ${
+                              isStoreOk 
+                                ? 'bg-[var(--color-accent-teal)] shadow-[0_0_12px_rgba(0,168,126,0.5)]' 
+                                : 'bg-[var(--color-accent-danger)] shadow-[0_0_12px_rgba(226,59,74,0.5)]'
+                            }`} />
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <p className="font-semibold text-base text-[var(--text-primary)] font-display group-hover:text-[var(--color-primary-bright)] transition-colors">
+                                  {store.name}
+                                </p>
+                                <ChevronRight size={16} className="text-[var(--color-primary)] opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
+                              </div>
+                              <span className="text-[10px] text-[var(--text-tertiary)] font-mono">ID: {store.id}</span>
+                            </div>
                           </div>
 
-                          {/* 2. Dinheiro MP */}
-                          <div>
-                            <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">Dinheiro MP</p>
-                            <p className="font-bold text-[var(--color-accent-teal)]">
-                              <AnimatedNumber value={calc.dinheiro_mp_g14} format="currency" />
-                            </p>
-                          </div>
+                          {/* Régua das 6 Colunas do Módulo 1 */}
+                          <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4 bg-[var(--bg-canvas)]/70 p-4 rounded-xl border border-[var(--border-subtle)] flex-1 font-sans tabular-nums text-xs relative z-10 shadow-inner">
+                            
+                            {/* 1. Banco Itaú */}
+                            <div>
+                              <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">Banco Itaú</p>
+                              <p className="font-bold text-[var(--color-accent-light-blue)]">
+                                <AnimatedNumber value={bankIn} format="currency" />
+                              </p>
+                            </div>
 
-                          {/* 3. A Receber */}
-                          <div>
-                            <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">A Receber</p>
-                            <p className="font-bold text-[var(--color-primary)]">
-                              <AnimatedNumber value={calc.a_receber_g15} format="currency" />
-                            </p>
-                          </div>
+                            {/* 2. Dinheiro MP */}
+                            <div>
+                              <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">Dinheiro MP</p>
+                              <p className="font-bold text-[var(--color-accent-teal)]">
+                                <AnimatedNumber value={0} format="currency" />
+                              </p>
+                            </div>
 
-                          {/* 4. Na Loja OS */}
-                          <div>
-                            <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">Na Loja OS</p>
-                            <p className="font-bold text-[var(--color-accent-warning)]">
-                              <AnimatedNumber value={calc.na_loja_g16} format="currency" />
-                            </p>
-                          </div>
+                            {/* 3. A Receber */}
+                            <div>
+                              <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">A Receber</p>
+                              <p className="font-bold text-[var(--color-primary)]">
+                                <AnimatedNumber value={0} format="currency" />
+                              </p>
+                            </div>
 
-                          {/* 5. Saldo Total */}
-                          <div>
-                            <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">Saldo Total</p>
-                            <p className="font-bold text-[var(--text-primary)]">
-                              <AnimatedNumber value={calc.saldo_total_g17} format="currency" />
-                            </p>
-                          </div>
+                            {/* 4. Na Loja OS */}
+                            <div>
+                              <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">Na Loja OS</p>
+                              <p className="font-bold text-[var(--color-accent-warning)]">
+                                <AnimatedNumber value={0} format="currency" />
+                              </p>
+                            </div>
 
-                          {/* 6. Resultado Final */}
-                          <div className="text-right border-l border-[var(--border-subtle)] pl-3">
-                            <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans font-bold">Resultado Final</p>
-                            <p className={`font-bold text-sm ${calc.resultado_final_g31 >= 0 ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
-                              <AnimatedNumber value={calc.resultado_final_g31} format="currency" />
-                            </p>
-                          </div>
+                            {/* 5. Saldo Total */}
+                            <div>
+                              <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans">Saldo Total</p>
+                              <p className="font-bold text-[var(--text-primary)]">
+                                <AnimatedNumber value={sys} format="currency" />
+                              </p>
+                            </div>
 
-                        </div>
-                      </Card>
-                    </Link>
+                            {/* 6. Resultado Final */}
+                            <div className="text-right border-l border-[var(--border-subtle)] pl-3">
+                              <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-wider mb-0.5 font-sans font-bold">Resultado Final</p>
+                              <p className={`font-bold text-sm ${isStoreOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
+                                <AnimatedNumber value={div} format="currency" />
+                              </p>
+                            </div>
+
+                          </div>
+                        </Card>
+                      </Link>
+                    </motion.div>
                   );
                 })}
               </div>

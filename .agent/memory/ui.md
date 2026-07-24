@@ -1,5 +1,20 @@
 # 🎨 Memória Modular: Interface & UX (Frontend)
 
+## [2026-07-24] — Feature ID: conciliacao-visual-restoration
+
+**Contexto:** Restauração total da vida visual, efeitos glassmorphic com brilhos ambiente 3D (`blur-3xl opacity-25`), animações `framer-motion` escalonadas e efeito hover lift 3D com feixe de luz nos cards da conciliação.
+
+**Regra aprendida:**
+- Ao unificar dados ou ajustar componentes de cards, PRESERVE sempre a estrutura visual de destaque:
+  - Fundo glassmorphism translúcido `backdrop-blur-3xl` com bordas translúcidas de contraste alto (`border-white/10`).
+  - Orbes de iluminação ambiente radial (`absolute -top-32 -left-32 w-96 h-96 bg-[var(--color-primary)]/15 opacity-25 blur-3xl rounded-full`).
+  - Animação de entrada escalonada por item em listas via `motion.div` com delay progressivo (`delay: index * 0.05`).
+  - Elevação interativa no hover (`hover:scale-[1.012]`) com transição de sombra profunda e feixe de luz reflexivo.
+
+**Risco identificado:** Substituir o container HTML de um card por uma estrutura plana e sem `backdrop-blur` elimina a sensação de dinamismo e profundidade do aplicativo.
+
+**Não fazer:** Nunca remover a camada de `motion.div`, os orbes de iluminação ambiente ou os efeitos de hover ao adicionar novos campos de dados a um componente existente.
+
 ## [2026-07-24] — Feature ID: font-standardization-modern
 
 **Contexto:** Padronização tipográfica global em todas as telas com a eliminação da fonte monospace "quadrada/caricata" (Courier/Consolas) e adoção oficial das Google Fonts **Inter** e **DM Sans**.
