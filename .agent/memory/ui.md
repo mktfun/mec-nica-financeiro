@@ -1,5 +1,18 @@
 # 🎨 Memória Modular: Interface & UX (Frontend)
 
+## [2026-07-24] — Feature ID: agente-fullbleed-layout-and-clean-tabs
+
+**Contexto:** Restauração do layout do Chat do Agente em tela cheia (full-bleed) e substituição de emojisunicode por ícones Lucide React limpos em pílulas muted de navegação.
+
+**Regra aprendida:**
+- O Chat do Agente na rota `/agente` deve ser montado em **Tela Cheia Full-Bleed** (`absolute top-16 left-0 right-0 bottom-0 z-30 flex flex-col md:flex-row bg-[var(--bg-canvas)] overflow-hidden`). NUNCA aprisione o chat em caixas minimizadas com altura fixa (ex: `h-[680px]`) ou margens `max-w-7xl`.
+- **Zero Emojis Unicode em Headers/Tabs:** NUNCA utilize emojis (`♂`, `⚙️`, `📊`, `🔍`) em pílulas de navegação ou títulos de página. Use exclusivamente ícones vetoriais **Lucide React** (`Bot`, `Key`, `BarChart3`, `Terminal`, `MessageSquare`).
+- As pílulas de navegação de abas no header devem usar estilos muted e discretos (`bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-tertiary)] hover:text-white`).
+
+**Risco identificado:** Encapsular o Chat do Agente em containers com `max-w-7xl` ou `h-[680px]` quebra o layout responsivo em tela cheia e encurta a área visível das mensagens.
+
+**Não fazer:** Nunca aprisionar o Chat do Agente em mini-telas ou usar emojis unicode em menus/navegações de header.
+
 ## [2026-07-24] — Feature ID: conciliacao-exact-layout-restoration
 
 **Contexto:** Restauração exata do layout original sóbrio e limpo da conciliação conforme commit `298246a` / `dbf1ec5`, removendo orbes 3D artificiais.
