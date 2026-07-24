@@ -3,15 +3,13 @@ import { createFileRoute, Link, useParams } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { motion } from 'framer-motion';
 import { Store, ArrowLeft } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
 import { OsVsRedeTable } from '@/components/conciliacao/OsVsRedeTable';
 import { RedeVsOfxTable } from '@/components/conciliacao/RedeVsOfxTable';
+import { PixVsOfxTable } from '@/components/conciliacao/PixVsOfxTable';
 import { OfxSemMatchTable } from '@/components/conciliacao/OfxSemMatchTable';
 import { useTransactionsPorDataELoja } from '@/hooks/useTransactions';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 export const Route = createFileRoute('/conciliacao/$lojaId')({
   component: ConciliacaoLojaPage,
@@ -28,7 +26,7 @@ function formatDate(dateStr: string) {
   return `${d}/${m}/${y}`;
 }
 
-type TabType = 'os_rede' | 'rede_ofx' | 'ofx_sem_match';
+type TabType = 'os_rede' | 'rede_ofx' | 'pix_ofx' | 'ofx_sem_match';
 
 function TabBtn({ active, onClick, children }: { active: boolean, onClick: () => void, children: React.ReactNode }) {
   return (
@@ -36,7 +34,7 @@ function TabBtn({ active, onClick, children }: { active: boolean, onClick: () =>
       onClick={onClick} 
       className={`px-4 py-3 border-b-2 text-sm font-medium transition-colors ${
         active 
-          ? 'border-[var(--color-primary)] text-[var(--color-primary)]' 
+          ? 'border-[var(--color-primary)] text-[var(--color-primary)] font-bold' 
           : 'border-transparent text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] hover:border-[var(--border-subtle)]'
       }`}
     >
@@ -44,7 +42,6 @@ function TabBtn({ active, onClick, children }: { active: boolean, onClick: () =>
     </button>
   );
 }
-
 
 function ConciliacaoLojaPage() {
   const [activeTab, setActiveTab] = useState<TabType>('os_rede');
@@ -68,6 +65,7 @@ function ConciliacaoLojaPage() {
       </AppShell>
     );
   }
+
   const totalJuros = transactions.filter(t => t.source === 'rede_taxa').reduce((acc, t) => acc + Number(t.amount || 0), 0);
 
   return (
@@ -81,8 +79,8 @@ function ConciliacaoLojaPage() {
             {store.avatar_url ? (
               <img src={store.avatar_url} alt={store.name} className="w-16 h-16 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-canvas)]" />
             ) : (
-              <div className="w-16 h-16 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)] flex items-center justify-center">
-                <Store size={24} />
+              <div className="w-16 h-16 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)] flex items-center justify-center font-bold text-xl">
+                {store.name.substring(0, 2).toUpperCase()}
               </div>
             )}
             <div>
@@ -101,19 +99,23 @@ function ConciliacaoLojaPage() {
 
         <div className="flex border-b border-[var(--border-subtle)] mb-6 overflow-x-auto hide-scrollbar">
           <TabBtn active={activeTab === 'os_rede'} onClick={() => setActiveTab('os_rede')}>
-            1. Sistema (OS) → Maquininha
+            1. Cartão (OS → Maquininha)
           </TabBtn>
           <TabBtn active={activeTab === 'rede_ofx'} onClick={() => setActiveTab('rede_ofx')}>
             2. Maquininha (Líq) → Banco
           </TabBtn>
+          <TabBtn active={activeTab === 'pix_ofx'} onClick={() => setActiveTab('pix_ofx')}>
+            3. PIX (OS → Banco OFX)
+          </TabBtn>
           <TabBtn active={activeTab === 'ofx_sem_match'} onClick={() => setActiveTab('ofx_sem_match')}>
-            3. Banco (Sem Origem)
+            4. Banco (Sem Origem)
           </TabBtn>
         </div>
 
         <div className="min-h-[400px]">
           {activeTab === 'os_rede' && <OsVsRedeTable storeId={lojaId} date={targetDate} />}
           {activeTab === 'rede_ofx' && <RedeVsOfxTable storeId={lojaId} date={targetDate} />}
+          {activeTab === 'pix_ofx' && <PixVsOfxTable storeId={lojaId} date={targetDate} />}
           {activeTab === 'ofx_sem_match' && <OfxSemMatchTable storeId={lojaId} date={targetDate} />}
         </div>
       </div>
