@@ -1,5 +1,17 @@
 # 🧠 Memória Modular: Domínio & Conciliação
 
+## [2026-07-27] — Feature ID: fix-date-bleeding-and-remove-anomalies
+
+**Contexto:** Correção de vazamento de datas no Módulo 1 da conciliação (`useModulo1StoresData`) e remoção da seção "Observações Críticas (Sem OS)".
+
+**Regra aprendida:**
+- As consultas a `patio_os` e `receivables` na função `useModulo1StoresData` DEVEM conter obrigatoriamente a cláusula `.eq('target_date', date)` para que OSs e recebíveis de dias anteriores não sejam somados em datas sem movimentação.
+- A seção "Observações Críticas (Sem OS)" no componente `ResumoDiaPanel.tsx` foi permanentemente removida da interface para manter o painel de fechamento limpo e focado nos sldos consolidados.
+
+**Risco identificado:** Consultar tabelas de apoio sem filtro de data faz acumulados históricos aparecerem em dias vazios do calendário.
+
+**Não fazer:** Nunca consultar `patio_os` ou `receivables` em funções de estado por data sem filtrar pela data selecionada.
+
 ## [2026-07-27] — Feature ID: fix-modulo1-calculation-properties
 
 **Contexto:** Correção de discrepância de nomes de propriedades na montagem do array de estado das lojas (`storesState`) no arquivo `src/routes/conciliacao.index.tsx`.
