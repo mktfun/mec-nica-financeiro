@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useStores } from '@/hooks/useStores';
 import { useConciliacaoResumo, useConciliacaoDetalhes, useModulo1StoresData } from '@/hooks/useConciliacao';
 import { useDailySystemBalance, useDailyBankBalance } from '@/hooks/useTransactions';
+import { useBackgroundAiReconciler } from '@/hooks/useBackgroundAiReconciler';
 import { getDefaultDate } from '@/lib/utils';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { ResumoDiaPanel } from '@/components/conciliacao/ResumoDiaPanel';
@@ -25,6 +26,10 @@ function ConciliacaoPage() {
   const { data: dailyBalances, isLoading: loadingBalances } = useDailySystemBalance(selectedDate);
   const { data: bankBalances, isLoading: loadingBankBalances } = useDailyBankBalance(selectedDate);
   const { data: modulo1StoresData = [], isLoading: loadingModulo1 } = useModulo1StoresData(selectedDate);
+
+  // Ativa o Reconciliador de IA Headless em background para itens não pareados do dia
+  const firstStoreId = stores[0]?.id || '';
+  useBackgroundAiReconciler(firstStoreId, selectedDate, detalhes, [], []);
 
   const isLoading = loadingStores || loadingResumo || loadingDetalhes || loadingBalances || loadingBankBalances || loadingModulo1;
 

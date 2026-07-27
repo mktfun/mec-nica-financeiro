@@ -13,22 +13,30 @@ export function useAiSettings() {
   return useQuery({
     queryKey: ['ai_settings'],
     queryFn: async () => {
-      const { data: user } = await supabase.auth.getUser();
-      if (!user.user) throw new Error('Não autenticado');
+      const defaultKey = (import.meta.env.VITE_GEMINI_API_KEY as string) || (import.meta.env.VITE_AI_API_KEY as string) || '';
 
-      const { data, error } = await supabase
-        .from('ai_settings')
-        .select('provider, model, api_key')
-        .eq('user_id', user.user.id)
-        .maybeSingle();
+      try {
+        const { data: user } = await supabase.auth.getUser();
+        if (user?.user) {
+          const { data, error } = await supabase
+            .from('ai_settings')
+            .select('provider, model, api_key')
+            .eq('user_id', user.user.id)
+            .maybeSingle();
 
-      if (error) {
-        console.warn('Failed to fetch ai settings:', error);
-        return { provider: 'google', model: 'gemini-2.0-flash', api_key: '' };
+          if (!error && data) {
+            return {
+              provider: data.provider || 'google',
+              model: data.model || 'gemini-2.0-flash',
+              api_key: data.api_key || defaultKey,
+            };
+          }
+        }
+      } catch (err) {
+        console.warn('Aviso ao carregar ai_settings do Supabase:', err);
       }
-      
-      // Default values if no settings found
-      return data || { provider: 'google', model: 'gemini-2.0-flash', api_key: '' };
+
+      return { provider: 'google', model: 'gemini-2.0-flash', api_key: defaultKey };
     },
   });
 }
