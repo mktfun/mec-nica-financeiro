@@ -5,7 +5,7 @@ import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Store } from 'lucide-react';
 import { useState } from 'react';
 import { useStores } from '@/hooks/useStores';
-import { useConciliacaoResumo, useConciliacaoDetalhes } from '@/hooks/useConciliacao';
+import { useConciliacaoResumo, useConciliacaoDetalhes, useModulo1StoresData } from '@/hooks/useConciliacao';
 import { useDailySystemBalance, useDailyBankBalance } from '@/hooks/useTransactions';
 import { getDefaultDate } from '@/lib/utils';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
@@ -24,8 +24,9 @@ function ConciliacaoPage() {
   const { data: detalhes = [], isLoading: loadingDetalhes } = useConciliacaoDetalhes(selectedDate);
   const { data: dailyBalances, isLoading: loadingBalances } = useDailySystemBalance(selectedDate);
   const { data: bankBalances, isLoading: loadingBankBalances } = useDailyBankBalance(selectedDate);
+  const { data: modulo1StoresData = [], isLoading: loadingModulo1 } = useModulo1StoresData(selectedDate);
 
-  const isLoading = loadingStores || loadingResumo || loadingDetalhes || loadingBalances || loadingBankBalances;
+  const isLoading = loadingStores || loadingResumo || loadingDetalhes || loadingBalances || loadingBankBalances || loadingModulo1;
 
   const resultado = resumo?.totalDivergence || 0;
   const isApproved = resultado === 0 && (resumo?.approved || 0) > 0;
@@ -44,14 +45,25 @@ function ConciliacaoPage() {
   const storesState: StoreSaldoState[] = stores.map(s => {
     const sys = dailyBalances?.[s.id] || 0;
     const bankIn = bankBalances?.[s.id]?.in || 0;
+    const storeMod1 = modulo1StoresData.find(m => m.store_id === s.id);
+
     return {
       store_id: s.id,
       store_name: s.name,
-      saldo_banco_itau_ofx: bankIn,
-      faturamento_sistema: sys,
-      dinheiro_mp_manual: 0,
-      a_receber_pendente: 0,
-      na_loja_os_patio: 0,
+      saldo_banco_itau: (storeMod1?.saldo_banco_itau || 0) > 0 ? storeMod1!.saldo_banco_itau : bankIn,
+      limite_credito: (s as any).credit_limit || 0,
+      cartao_entrou: storeMod1?.cartao_entrou || 0,
+      cartao_nao_entrou: 0,
+      dinheiro_loja: 0,
+      dinheiro_mp_manual: undefined,
+      a_receber: storeMod1?.a_receber || 0,
+      na_loja_os: storeMod1?.na_loja_os || 0,
+      faturamento_atual: sys || storeMod1?.faturamento_atual || 0,
+      faturamento_anterior: (sys || storeMod1?.faturamento_atual || 0) * 0.9,
+      seguro_sinistro: 0,
+      juros_atual: 0,
+      caixa_anterior: (s as any).previous_caixa || 0,
+      valor_contas: 0
     };
   });
 

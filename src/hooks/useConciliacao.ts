@@ -550,7 +550,7 @@ export function useModulo1StoresData(date: string) {
         const storeRec = receivables?.filter(r => r.store_id === store.id) || [];
 
         const saldoBancoItau = storeTxs
-          .filter(t => t.source === 'ofx' && t.type === 'in')
+          .filter(t => t.source === 'ofx' && (t.type === 'in' || Number(t.amount || 0) > 0))
           .reduce((acc, t) => acc + Number(t.amount || 0), 0);
 
         const cartaoEntrou = storeTxs
