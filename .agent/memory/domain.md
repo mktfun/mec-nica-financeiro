@@ -1,5 +1,18 @@
 # 🧠 Memória Modular: Domínio & Conciliação
 
+## [2026-07-27] — Feature ID: fix-modulo1-calculation-properties
+
+**Contexto:** Correção de discrepância de nomes de propriedades na montagem do array de estado das lojas (`storesState`) no arquivo `src/routes/conciliacao.index.tsx`.
+
+**Regra aprendida:**
+- A interface `StoreSaldoState` em `src/lib/modulo1Calculations.ts` define rigorosamente as chaves: `saldo_banco_itau`, `a_receber`, `na_loja_os`, `faturamento_atual`, `limite_credito` e `caixa_anterior`.
+- Ao montar o estado das lojas para o componente `<ResumoDiaPanel />`, NUNCA utilize sufixos alternativos como `saldo_banco_itau_ofx`, `a_receber_pendente` ou `na_loja_os_patio`. A divergência de nomes faz a função `calculateModulo1Saldo()` ler `undefined` e zerar todos os cartões de Saldo Total, Caixa Atual, Disponível Contas e Resultado Final.
+- Em `useModulo1StoresData`, a busca por saldos de extrato OFX deve filtrar `t.source === 'ofx' && (t.type === 'in' || Number(t.amount || 0) > 0)` para não ignorar lançamentos positivos que não tenham o tipo string explicitamente gravado como `'in'`.
+
+**Risco identificado:** Mudar o nome de propriedades na rota da página faz com que a função de cálculo pura retorne `0.00` em todos os indicadores financeiros do topo da conciliação.
+
+**Não fazer:** Nunca instanciar objetos da interface `StoreSaldoState` sem verificar a correspondência exata de cada chave com o tipo TypeScript exportado.
+
 ## [2026-07-24] — Feature ID: background-ai-telemetry-engine
 
 **Contexto:** Conciliação 100% silenciosa em segundo plano (Headless Background) e Central de Telemetria & Audit Trail de IA na página de Configurações (`/configuracoes`), conforme padrões de arquitetura de referência (Hermes Agent / BMF IA OS).
