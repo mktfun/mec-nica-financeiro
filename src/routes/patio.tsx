@@ -40,12 +40,11 @@ function PatioPage() {
 
   const isLoading = loadingPatio || loadingStores;
 
-  const totalAberto = patioData.reduce((a, os) => a + (Number(os.total_value) - Number(os.paid_value)), 0);
-  
   const openOs = patioData.filter(os => os.status === 'em_aberto' || os.status === 'pago_parcial');
+  const totalAberto = openOs.reduce((a, os) => a + Math.max(0, Number(os.total_value) - Number(os.paid_value)), 0);
   const maxOsValue = openOs.length > 0 ? Math.max(...openOs.map(os => Number(os.total_value))) : 0;
-  const noPayment = patioData.filter(os => os.status === 'em_aberto').length;
-  const partialPayment = patioData.filter(os => os.status === 'pago_parcial').length;
+  const noPayment = patioData.filter(os => os.status === 'em_aberto' && Number(os.paid_value) === 0).length;
+  const partialPayment = patioData.filter(os => os.status === 'pago_parcial' || (os.status === 'em_aberto' && Number(os.paid_value) > 0)).length;
 
   const filtered = patioData.filter(os => {
     if (activeTab === 'em_aberto' && os.status !== 'em_aberto') return false;
@@ -285,6 +284,11 @@ function PatioPage() {
                             <div className="text-sm font-display font-bold text-[var(--color-primary-bright)]">
                               Pago: R$ {Number(os.paid_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                             </div>
+                            {Number(os.total_value) - Number(os.paid_value) > 0.05 && (
+                              <div className="text-xs font-display font-bold text-[var(--color-accent-danger)]">
+                                Aberto: R$ {(Number(os.total_value) - Number(os.paid_value)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                              </div>
+                            )}
                           </div>
                         </div>
                       </motion.div>

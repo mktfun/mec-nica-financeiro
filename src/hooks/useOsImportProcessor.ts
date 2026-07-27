@@ -91,13 +91,18 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
           if ((rowStr.includes('os') || rowStr.includes('nº os')) && rowStr.includes('status')) {
             headerRowIndex = i;
             rowStr.forEach((colName, idx) => {
-              if (colName === 'os' || colName === 'nº os' || colName === 'nº da os' || colName === 'numero os' || colName === 'código') colMap.os = idx;
+              if (colName === 'os' || colName === 'nº os' || colName === 'nº da os' || colName === 'numero os' || colName === 'código' || colName === 'cod') colMap.os = idx;
               if (colName === 'data' || colName.includes('data entrada') || colName.includes('abertura') || (colName.includes('data') && colMap.openedAt === undefined)) colMap.openedAt = idx;
               if (colName === 'placa' || colName === 'veículo' || colName === 'veiculo') colMap.plate = idx;
               if (colName === 'status' || colName === 'situação' || colName === 'situacao') colMap.status = idx;
               if (colName === 'finalizada em' || colName === 'data fim' || colName.includes('fechamento') || colName.includes('finalizada') || colName.includes('saida') || colName.includes('saída')) colMap.closedAt = idx;
-              if (colName.includes('total') || colName.includes('valor total') || colName.includes('r$ total') || colName.includes('vlr total') || colName.includes('vl total') || colName === 'valor' || colName.includes('bruto') || colName.includes('valor os') || colName.includes('valor final')) colMap.totalValue = idx;
-              if (colName.includes('pagto') || colName.includes('liquidado') || colName.includes('total pago') || colName.includes('valor pago') || colName.includes('recebid') || colName === 'pago' || colName.includes('restante') || colName.includes('falta') || colName.includes('vlr pago') || colName.includes('vl pago') || colName.includes('valor liquido') || colName.includes('valor líquido')) colMap.paidValue = idx;
+              
+              if (colName.includes('total') || colName.includes('valor total') || colName.includes('r$ total') || colName.includes('vlr total') || colName.includes('vl total') || colName.includes('bruto') || colName.includes('valor os') || colName.includes('valor final')) colMap.totalValue = idx;
+              
+              if (colName.includes('liquidado') || colName.includes('total pago') || colName.includes('valor pago') || colName.includes('vlr pago') || colName.includes('vl pago') || colName === 'pago' || colName === 'recebido') colMap.paidValue = idx;
+              
+              if (colName.includes('aberto') || colName.includes('restante') || colName.includes('falta') || colName.includes('saldo')) colMap.openValue = idx;
+              
               if (colName.includes('forma') || colName.includes('pagamento') || colName.includes('meio')) colMap.paymentMethod = idx;
             });
             break;
@@ -120,22 +125,51 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
         const osNumber = String(rawOsNumber).trim();
         if (!osNumber || osNumber.toLowerCase().includes('total')) continue;
 
-        const statusStr = String(row[colMap.status] || '').trim();
-        const osValue = parseValue(row[colMap.totalValue]);
-        const paidValue = colMap.paidValue !== undefined ? parseValue(row[colMap.paidValue]) : osValue;
+        // Se o status da coluna não foi mapeado pelo cabeçalho, tenta a coluna D (índice 3)
+        const statusIdx = colMap.status !== undefined ? colMap.status : 3;
+        const statusStr = String(row[statusIdx] || '').trim();
+        
+        const rawTotalValue = colMap.totalValue !== undefined ? parseValue(row[colMap.totalValue]) : 0;
+        const paidValue = colMap.paidValue !== undefined ? parseValue(row[colMap.paidValue]) : 0;
+        const openValue = colMap.openValue !== undefined ? parseValue(row[colMap.openValue]) : 0;
+
+        // O valor total da OS é a soma do que foi pago com o que está em aberto (ou rawTotalValue se for maior)
+        let totalValue = 0;
+        if (paidValue > 0 && openValue > 0) {
+          totalValue = paidValue + openValue;
+        } else if (openValue > 0 && paidValue === 0) {
+          totalValue = openValue;
+        } else if (rawTotalValue > 0) {
+          totalValue = Math.max(rawTotalValue, paidValue + openValue);
+        } else {
+          totalValue = paidValue + openValue;
+        }
         
         const opened_at = parseExcelDate(row[colMap.openedAt]) || getDefaultDate();
         let closed_at: string | null = parseExcelDate(row[colMap.closedAt]);
         
         let statusEnum: 'em_aberto' | 'pago_parcial' | 'finalizado' = 'em_aberto';
         
-        const isClosed = statusStr.match(/finalizad[oa]|pag[oa]|entregue|faturad[oa]|fechad[oa]/i) || (paidValue > 0 && paidValue >= osValue);
+        const isClosedStr = statusStr.match(/finalizad[oa]|pag[oa]|entregue|faturad[oa]|fechad[oa]/i);
+        const isOpenStr = statusStr.match(/em\s*aberto|abert[oa]|pendente/i);
+        const isPartialStr = statusStr.match(/parcial/i);
         
-        if (isClosed) {
+        if (isClosedStr) {
           statusEnum = 'finalizado';
           osCount++;
-        } else if (paidValue > 0 && paidValue < osValue) {
+        } else if (isPartialStr || (isOpenStr && paidValue > 0 && (totalValue - paidValue) > 0.05)) {
           statusEnum = 'pago_parcial';
+        } else if (isOpenStr) {
+          statusEnum = 'em_aberto';
+        } else {
+          if (paidValue >= totalValue && totalValue > 0) {
+            statusEnum = 'finalizado';
+            osCount++;
+          } else if (paidValue > 0 && (totalValue - paidValue) > 0.05) {
+            statusEnum = 'pago_parcial';
+          } else {
+            statusEnum = 'em_aberto';
+          }
         }
         
         const start = new Date(opened_at);
@@ -159,7 +193,7 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
           while ((match = regex.exec(upperMethod)) !== null) {
             const method = match[1].toUpperCase();
             const valStr = match[2];
-            const val = valStr ? parseValue(valStr) : (paidValue || osValue);
+            const val = valStr ? parseValue(valStr) : (paidValue || totalValue);
 
             if (val > 0 || !valStr) {
               if (method.includes('CREDITO') || method.includes('CRÉDITO') || method.includes('CARTAO') || method.includes('CARTÃO')) {
@@ -178,18 +212,18 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
           // 2. Se não encontrou valor numérico no par, classifica pela palavra-chave no texto
           if (!foundPair || (parsed_credit === 0 && parsed_debit === 0 && parsed_pix_transfer === 0)) {
             if (upperMethod.includes('PIX') || upperMethod.includes('TRANSF') || upperMethod.includes('DEP') || upperMethod.includes('DINHEIRO')) {
-              parsed_pix_transfer = paidValue || osValue;
+              parsed_pix_transfer = paidValue || totalValue;
             } else if (upperMethod.includes('DEBITO') || upperMethod.includes('DÉBITO')) {
-              parsed_debit = paidValue || osValue;
+              parsed_debit = paidValue || totalValue;
             } else if (upperMethod.includes('CREDITO') || upperMethod.includes('CRÉDITO') || upperMethod.includes('CARTÃO') || upperMethod.includes('CARTAO')) {
-              parsed_credit = paidValue || osValue;
+              parsed_credit = paidValue || totalValue;
             }
           }
         }
 
         // Fallback apenas se NENHUM método foi identificado no texto
         if (parsed_credit === 0 && parsed_debit === 0 && parsed_pix_transfer === 0) {
-          parsed_credit = osValue || paidValue;
+          parsed_credit = totalValue || paidValue;
         }
 
         osArray.push({
@@ -197,7 +231,7 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
           plate: String(row[colMap.plate] || '').trim(),
           opened_at,
           closed_at,
-          total_value: osValue || paidValue, // NUNCA permitir valor bruto zerado se houver paidValue
+          total_value: totalValue,
           paid_value: paidValue,
           payment_method: payment_method_str || null,
           status: statusEnum,
