@@ -1,5 +1,18 @@
 # 🧠 Memória Modular: Importação OFX & Adquirentes
 
+## [2026-07-27] — Feature ID: fix-os-import-parsing-and-patio-metrics
+
+**Contexto:** Correção na leitura de relatórios de OSs do ERP Excel, cálculo do Valor Total (`total_value = paid_value + open_value`) e exibição de saldos pendentes na tela `/patio`.
+
+**Regra aprendida:**
+- **Separação de Colunas no Excel de OSs:** As colunas "Valor Pago" / "Total Pago" (`paidValue`) NUNCA devem compartilhar expressões com colunas de saldo restante ("Em Aberto", "Restante", "Falta", "Saldo").
+- **Cálculo do Valor Total:** O valor total da OS na oficina mecânica é derivado por `total_value = paid_value + open_value`.
+- **Status do Excel:** A string da coluna Status/D4 (`raw_status`) deve ser preservada e utilizada para determinar a classe do status (`em_aberto` vs `pago_parcial` vs `finalizado`). Nunca force o status `finalizado` para OSs cuja string do Excel informe "Em Aberto" ou "Pendente".
+
+**Risco identificado:** Mapear palavras como "Restante" ou "Falta" para `paidValue` fazia o valor pago zerar o saldo em aberto da OS, distorcendo todos os indicadores financeiros do pátio.
+
+**Não fazer:** Nunca sobrescrever o status de OSs em aberto para finalizado baseado apenas na existência de um pagamento parcial.
+
 ## [2026-07-24] — Feature ID: fix-pix-parsing-and-extended-window
 
 **Contexto:** Correção do bug de extração do PIX (5 vendas declaradas = R$ 0,00) e expansão da janela de busca da conciliação para D-7 (permitindo casar depósitos de dias anteriores como o PIX do Ronildo do dia 17/07 com a conciliação do dia 23/07).
