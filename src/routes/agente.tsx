@@ -4,7 +4,7 @@ import { AppShell } from '@/components/layout/AppShell';
 import { supabase } from '@/lib/supabase';
 import { PromptBox } from '@/components/chat/PromptBox';
 import { MessageList, Message } from '@/components/chat/MessageList';
-import { Bot, Plus, Trash2, Key, BarChart3, Terminal, MessageSquare, RefreshCw } from 'lucide-react';
+import { Bot, Plus, Trash2, Key, BarChart3, Terminal, MessageSquare, RefreshCw, Play } from 'lucide-react';
 import { toast } from 'sonner';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/Badge';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useQuery } from '@tanstack/react-query';
 import { useAiSettings, useSaveAiSettings } from '@/hooks/useAiSettings';
+import { generateTripleMatchSuggestions } from '@/lib/llm-matcher';
 
 export const Route = createFileRoute('/agente')({
   component: AgentePage,
@@ -81,6 +82,39 @@ function AgentePage() {
   const totalTokens = totalPromptTokens + totalCompletionTokens;
   const totalCostUsd = logs.reduce((acc, log) => acc + Number(log.estimated_cost || 0), 0);
   const totalMatches = logs.reduce((acc, log) => acc + (log.matches_applied_count || 0), 0);
+
+  const [isRunningTestAi, setIsRunningTestAi] = useState(false);
+
+  const handleRunTestAi = async () => {
+    if (!aiSettings?.api_key && !(import.meta.env.VITE_GEMINI_API_KEY as string)) {
+      toast.error('Configure a API Key na aba "Provedores & API" primeiro.');
+      return;
+    }
+
+    setIsRunningTestAi(true);
+    toast.info('Executando chamada de teste com a IA...');
+
+    try {
+      const dummyOs = [
+        { os_number: '1763', client_name: 'ReiDoModulo', total_value: 1300, pix_transfer_value: 1300, opened_at: new Date().toISOString() }
+      ];
+      const dummyRede = [
+        { id: 'rede_1', title: 'Adquirente Rede', gross_value: 1300, net_value: 1260, payment_date: new Date().toISOString() }
+      ];
+      const dummyOfx = [
+        { id: 'ofx_1', title: 'PIX QR CODE RECEBIDO REIDOMODULO', amount: 1300, occurred_at: new Date().toISOString() }
+      ];
+
+      const matches = await generateTripleMatchSuggestions(aiSettings, dummyOs, dummyRede, dummyOfx, 'st-01');
+      toast.success(`Teste concluído! ${matches.length} associações sugeridas. Telemetria registrada.`);
+      refetchLogs();
+    } catch (err: any) {
+      console.error(err);
+      toast.error(`Erro ao executar teste de IA: ${err.message}`);
+    } finally {
+      setIsRunningTestAi(false);
+    }
+  };
 
   useEffect(() => {
     loadConversations();
@@ -457,13 +491,18 @@ function AgentePage() {
           {/* ABA TELEMETRIA & CUSTOS */}
           {activeMainTab === 'telemetry' && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2">
                 <h3 className="text-base font-display font-bold text-white flex items-center gap-2">
                   <BarChart3 size={18} /> Telemetria de Consumo & Custos
                 </h3>
-                <Button onClick={() => refetchLogs()} variant="secondary" className="text-xs px-3 py-1.5 gap-1.5">
-                  <RefreshCw size={14} /> Atualizar
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button onClick={handleRunTestAi} disabled={isRunningTestAi} className="text-xs px-3 py-1.5 gap-1.5 bg-[var(--color-primary)]">
+                    {isRunningTestAi ? <LoadingSpinner size="sm" /> : <Play size={14} />} Executar Teste de IA
+                  </Button>
+                  <Button onClick={() => refetchLogs()} variant="secondary" className="text-xs px-3 py-1.5 gap-1.5">
+                    <RefreshCw size={14} /> Atualizar
+                  </Button>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -503,13 +542,18 @@ function AgentePage() {
           {/* ABA INSPECTOR JSON */}
           {activeMainTab === 'inspector' && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2">
                 <h3 className="text-base font-display font-bold text-white flex items-center gap-2">
                   <Terminal size={18} /> DevTools Inspector de Payloads
                 </h3>
-                <Button onClick={() => refetchLogs()} variant="secondary" className="text-xs px-3 py-1.5 gap-1.5">
-                  <RefreshCw size={14} /> Atualizar Logs
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button onClick={handleRunTestAi} disabled={isRunningTestAi} className="text-xs px-3 py-1.5 gap-1.5 bg-[var(--color-primary)]">
+                    {isRunningTestAi ? <LoadingSpinner size="sm" /> : <Play size={14} />} Executar Teste de IA
+                  </Button>
+                  <Button onClick={() => refetchLogs()} variant="secondary" className="text-xs px-3 py-1.5 gap-1.5">
+                    <RefreshCw size={14} /> Atualizar Logs
+                  </Button>
+                </div>
               </div>
 
               {loadingLogs ? (

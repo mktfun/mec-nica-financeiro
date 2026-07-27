@@ -17,11 +17,14 @@ export function useAiSettings() {
 
       try {
         const { data: user } = await supabase.auth.getUser();
-        if (user?.user) {
+        const userId = user?.user?.id;
+
+        // Tenta buscar pelo id do usuário se logado
+        if (userId) {
           const { data, error } = await supabase
             .from('ai_settings')
             .select('provider, model, api_key')
-            .eq('user_id', user.user.id)
+            .eq('user_id', userId)
             .maybeSingle();
 
           if (!error && data) {
@@ -31,6 +34,21 @@ export function useAiSettings() {
               api_key: data.api_key || defaultKey,
             };
           }
+        }
+
+        // Tenta buscar pela configuração GLOBAL
+        const { data: globalData, error: globalErr } = await supabase
+          .from('ai_settings')
+          .select('provider, model, api_key')
+          .eq('user_id', 'GLOBAL')
+          .maybeSingle();
+
+        if (!globalErr && globalData) {
+          return {
+            provider: globalData.provider || 'google',
+            model: globalData.model || 'gemini-2.0-flash',
+            api_key: globalData.api_key || defaultKey,
+          };
         }
       } catch (err) {
         console.warn('Aviso ao carregar ai_settings do Supabase:', err);
@@ -47,15 +65,15 @@ export function useSaveAiSettings() {
   return useMutation({
     mutationFn: async (settings: AiSettings) => {
       const { data: user } = await supabase.auth.getUser();
-      if (!user.user) throw new Error('Não autenticado');
+      const userId = user?.user?.id || 'GLOBAL';
 
       const { error } = await supabase
         .from('ai_settings')
         .upsert({ 
-          user_id: user.user.id,
+          user_id: userId,
           provider: settings.provider,
           model: settings.model,
-          api_key: settings.api_key || null // send null if empty to not overwrite unnecessarily if we handle it
+          api_key: settings.api_key || null
         }, { onConflict: 'user_id' });
 
       if (error) throw error;

@@ -1,5 +1,20 @@
 # 🧠 Memória Modular: Domínio & Conciliação
 
+## [2026-07-27] — Feature ID: redesign-conciliacao-cards-and-daily-summary
+
+**Contexto:** Reestruturação dos cards de "Fechamento por Loja" na tela `/conciliacao` para exibir 6 colunas operacionalmente relevantes, remoção das colunas inúteis "Dinheiro MP" e "A Receber", e correção do saldo OFX que zerava em dias sem importação.
+
+**Regra aprendida:**
+- **6 Colunas dos Cards de Loja:** A grade de métricas por loja deve exibir EXCLUSIVAMENTE: `Faturamento` (total das OSs), `Maquininha` (Rede/cartão), `PIX` (PIX das OSs), `Na Loja OS` (saldo em aberto real), `Faturamento Itaú (OFX)` (saldo real acumulado), `Diferença` (Faturamento − Maquininha − PIX).
+- **Saldo OFX Acumulado Não Zerado:** O hook `useDailyBankBalance(date)` busca `reconciliations.bank_total` com filtro de data, zerando o saldo em dias sem upload OFX. Para exibir o saldo correto, SEMPRE usar `useLatestBankBalance()` que consulta o último registro de `reconciliations.bank_total` por loja **sem restrição de data** (`ORDER BY date DESC LIMIT 1`).
+- **Na Loja OS Correto:** O campo `na_loja_os` em `useModulo1StoresData` deve calcular `∑ max(0, total_value - paid_value)` das OSs com `status IN ('em_aberto', 'pago_parcial')`, e não somar o `paid_value` de todas as OSs como era feito antes.
+- **PIX das OSs por Loja:** Adicionar `pix_os = ∑ patio_os.pix_transfer_value` por loja. O campo `pix_transfer_value` existe na tabela `patio_os` e deve ser somado separadamente do `cartao_entrou` (Rede/cartão).
+- **Diferença:** A divergência por loja é calculada como `Faturamento − (Maquininha + PIX)`. Uma divergência próxima de R$ 0,00 indica fechamento correto; valores negativos ou altos indicam inconsistência de pagamentos.
+
+**Risco identificado:** Usar `bankBalances[store.id].rawBalance` em vez de `latestBankBalance[store.id]` faz o saldo aparecer zerado em qualquer dia do calendário que não tenha OFX importado, dando a falsa impressão de que o banco está a zero.
+
+**Não fazer:** Nunca exibir "Dinheiro MP" e "A Receber" nos cards de loja da conciliação enquanto esses campos ficarem zerados. Preferir exibir apenas as 6 métricas acima que são derivadas de dados reais.
+
 ## [2026-07-27] — Feature ID: fix-date-bleeding-and-remove-anomalies
 
 **Contexto:** Correção de vazamento de datas no Módulo 1 da conciliação (`useModulo1StoresData`) e remoção da seção "Observações Críticas (Sem OS)".
