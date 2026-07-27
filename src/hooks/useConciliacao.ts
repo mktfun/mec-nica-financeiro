@@ -538,11 +538,13 @@ export function useModulo1StoresData(date: string) {
 
       const { data: patioOs } = await supabase
         .from('patio_os')
-        .select('*');
+        .select('*')
+        .eq('target_date', date);
 
       const { data: receivables } = await supabase
         .from('receivables')
-        .select('*');
+        .select('*')
+        .eq('target_date', date);
 
       return (stores || []).map(store => {
         const storeTxs = txs?.filter(t => t.store_id === store.id) || [];

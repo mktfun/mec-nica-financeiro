@@ -39,7 +39,6 @@ export function ResumoDiaPanel({
   storesData = []
 }: ResumoDiaPanelProps) {
   const [isSaved, setIsSaved] = useState(false);
-  const [anomalies, setAnomalies] = useState<TransactionRow[]>([]);
   const [manualDinheiroMpGlobal, setManualDinheiroMpGlobal] = useState<number | undefined>(undefined);
 
   const { data: currentSnapshot } = useDailySnapshot(selectedDate);
@@ -52,32 +51,14 @@ export function ResumoDiaPanel({
 
   const { globalCalculated } = calculateModulo1Saldo(storesWithManual);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data: anomData } = await supabase
-        .from('transactions')
-        .select('*')
-        .eq('target_date', selectedDate)
-        .neq('source', 'ofx')
-        .is('os_number', null);
-
-      if (anomData) setAnomalies(anomData as TransactionRow[]);
-    };
-    fetchData();
-  }, [selectedDate]);
-
   const handleSave = async () => {
-    const notesStr = anomalies.length > 0 
-      ? `Anomalias Automáticas: ${anomalies.map(a => `${a.title} (${a.amount})`).join(', ')}`
-      : 'Sem observações.';
-
     await saveSnapshot.mutateAsync({
       date: selectedDate,
       faturamento: globalCalculated.faturamento_g27,
       total_recebiveis: globalCalculated.a_receber_g15,
       total_patio: globalCalculated.na_loja_g16,
       saldo_bancario: globalCalculated.saldo_g13,
-      notes: notesStr,
+      notes: 'Fechamento salvo.',
     });
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 3000);
@@ -261,27 +242,7 @@ export function ResumoDiaPanel({
           </div>
         </div>
 
-        {/* Anomalias (Apenas se existirem) */}
-        {anomalies.length > 0 && (
-          <div className="mt-6 bg-[var(--color-accent-danger)]/5 border border-[var(--color-accent-danger)]/15 rounded-xl p-4">
-            <label className="text-[11px] font-bold text-[var(--color-accent-danger)] uppercase tracking-widest flex items-center gap-2 mb-3">
-              <AlertOctagon size={14} /> Observações Críticas (Sem OS)
-            </label>
-            <div className="space-y-2 max-h-[120px] overflow-y-auto custom-scrollbar pr-2">
-              {anomalies.map((anom) => (
-                <div key={anom.id} className="flex items-center justify-between bg-[var(--bg-canvas)] rounded p-2 text-sm border border-[var(--border-subtle)]">
-                  <div className="flex items-center gap-2">
-                    <AlertTriangle size={14} className="text-[var(--color-accent-danger)]" />
-                    <span className="text-[var(--text-secondary)] font-medium text-xs">{anom.title || 'Transação'}</span>
-                  </div>
-                  <span className={`font-sans tabular-nums text-xs font-bold ${anom.type === 'in' ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
-                    {anom.type === 'in' ? '+' : '-'}{formatCurrency(anom.amount || 0)}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+
 
         <div className="flex justify-end border-t border-[var(--border-subtle)] pt-4 mt-6">
           <Button
