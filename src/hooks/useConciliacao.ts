@@ -559,12 +559,15 @@ export function useModulo1StoresData(date: string) {
           .filter(t => t.source === 'rede' && t.type === 'in')
           .reduce((acc, t) => acc + Number(t.amount || 0), 0);
 
+        // Saldo em aberto real das OSs ativas (total_value - paid_value)
         const naLojaOs = storeOs
-          .filter(o => o.status !== 'ENTROU')
+          .filter(o => o.status === 'em_aberto' || o.status === 'pago_parcial')
           .reduce((acc, o) => {
-            const totalVal = o.paid_value !== undefined && o.paid_value !== null ? o.paid_value : (o.total_value || 0);
-            return acc + Number(totalVal);
+            return acc + Math.max(0, Number(o.total_value || 0) - Number(o.paid_value || 0));
           }, 0);
+
+        // PIX recebido nas OSs do dia
+        const pixOs = storeOs.reduce((acc, o) => acc + Number((o as any).pix_transfer_value || 0), 0);
 
         const aReceber = storeRec
           .filter(r => r.status === 'pendente')
@@ -582,6 +585,7 @@ export function useModulo1StoresData(date: string) {
           dinheiro_loja: 0,
           a_receber: aReceber,
           na_loja_os: naLojaOs,
+          pix_os: pixOs,
           faturamento_atual: faturamentoAtual,
           faturamento_anterior: faturamentoAtual * 0.9,
           seguro_sinistro: 0,

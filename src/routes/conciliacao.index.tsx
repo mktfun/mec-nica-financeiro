@@ -6,7 +6,7 @@ import { Store } from 'lucide-react';
 import { useState } from 'react';
 import { useStores } from '@/hooks/useStores';
 import { useConciliacaoResumo, useConciliacaoDetalhes, useModulo1StoresData } from '@/hooks/useConciliacao';
-import { useDailySystemBalance, useDailyBankBalance } from '@/hooks/useTransactions';
+import { useDailySystemBalance, useDailyBankBalance, useLatestBankBalance } from '@/hooks/useTransactions';
 import { useBackgroundAiReconciler } from '@/hooks/useBackgroundAiReconciler';
 import { getDefaultDate } from '@/lib/utils';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
@@ -26,6 +26,8 @@ function ConciliacaoPage() {
   const { data: dailyBalances, isLoading: loadingBalances } = useDailySystemBalance(selectedDate);
   const { data: bankBalances, isLoading: loadingBankBalances } = useDailyBankBalance(selectedDate);
   const { data: modulo1StoresData = [], isLoading: loadingModulo1 } = useModulo1StoresData(selectedDate);
+
+  const { data: latestBankBalance = {} } = useLatestBankBalance();
 
   // Ativa o Reconciliador de IA Headless em background para itens não pareados do dia
   const firstStoreId = stores[0]?.id || '';
@@ -110,76 +112,86 @@ function ConciliacaoPage() {
                   const div = sys - bankIn;
                   const isStoreOk = Math.abs(div) < 0.01;
 
-                  return (
-                    <Link to="/conciliacao/$lojaId" params={{ lojaId: store.id }} search={{ date: selectedDate }} key={store.id} className="block">
-                      <Card className="p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-6 transition-all hover:scale-[1.01] hover:bg-white/10 hover:border-white/20 cursor-pointer shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] border border-white/5 backdrop-blur-md">
-                        
-                        {/* Nome da Loja & Status Indicator */}
-                        <div className="flex-1 flex items-center gap-4">
-                          <div className={`w-2 h-12 rounded-full ${isStoreOk ? 'bg-[var(--color-accent-teal)]' : 'bg-[var(--color-accent-danger)]'}`} />
-                          <div>
-                            <p className="font-semibold text-lg">{store.name}</p>
-                            <p className="text-xs text-[var(--text-tertiary)]">ID: {store.id}</p>
-                          </div>
-                        </div>
+                    const storeMod1 = modulo1StoresData.find(m => m.store_id === store.id);
+                    const faturamento = storeMod1?.faturamento_atual || 0;
+                    const maquininha = storeMod1?.cartao_entrou || 0;
+                    const pixOs = storeMod1?.pix_os || 0;
+                    const naLojaOs = storeMod1?.na_loja_os || 0;
+                    // Saldo real: prefere o ultimo rawBalance importado (não zera em dias sem OFX)
+                    const saldoItau = latestBankBalance[store.id] || bankBalances?.[store.id]?.rawBalance || 0;
+                    const diferenca = faturamento - (maquininha + pixOs);
+                    const isDiferencaOk = Math.abs(diferenca) < 1.0;
 
-                        {/* Caixa Interna com as 6 Colunas do Módulo 1 */}
-                        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4 bg-black/20 p-4 rounded-xl border border-white/5 flex-1 font-sans tabular-nums text-xs">
+                    return (
+                      <Link to="/conciliacao/$lojaId" params={{ lojaId: store.id }} search={{ date: selectedDate }} key={store.id} className="block">
+                        <Card className="p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-6 transition-all hover:scale-[1.01] hover:bg-white/10 hover:border-white/20 cursor-pointer shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] border border-white/5 backdrop-blur-md">
                           
-                          {/* 1. Banco Itaú */}
-                          <div>
-                            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans">Banco Itaú</p>
-                            <p className="font-bold text-[var(--color-accent-light-blue)]">
-                              <AnimatedNumber value={bankIn} format="currency" />
-                            </p>
+                          {/* Nome da Loja & Status */}
+                          <div className="flex-1 flex items-center gap-4">
+                            <div className={`w-2 h-12 rounded-full ${isDiferencaOk ? 'bg-[var(--color-accent-teal)]' : 'bg-[var(--color-accent-danger)]'}`} />
+                            <div>
+                              <p className="font-semibold text-lg">{store.name}</p>
+                              <p className="text-xs text-[var(--text-tertiary)]">ID: {store.id}</p>
+                            </div>
                           </div>
 
-                          {/* 2. Dinheiro MP */}
-                          <div>
-                            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans">Dinheiro MP</p>
-                            <p className="font-bold text-[var(--color-accent-teal)]">
-                              <AnimatedNumber value={0} format="currency" />
-                            </p>
-                          </div>
+                          {/* 6 Colunas Métricas */}
+                          <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4 bg-black/20 p-4 rounded-xl border border-white/5 flex-1 font-sans tabular-nums text-xs">
+                            
+                            {/* 1. Faturamento */}
+                            <div>
+                              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans">Faturamento</p>
+                              <p className="font-bold text-[var(--text-primary)]">
+                                <AnimatedNumber value={faturamento} format="currency" />
+                              </p>
+                            </div>
 
-                          {/* 3. A Receber */}
-                          <div>
-                            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans">A Receber</p>
-                            <p className="font-bold text-[var(--color-primary)]">
-                              <AnimatedNumber value={0} format="currency" />
-                            </p>
-                          </div>
+                            {/* 2. Maquininha */}
+                            <div>
+                              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans">Maquininha</p>
+                              <p className="font-bold text-[var(--color-accent-teal)]">
+                                <AnimatedNumber value={maquininha} format="currency" />
+                              </p>
+                            </div>
 
-                          {/* 4. Na Loja OS */}
-                          <div>
-                            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans">Na Loja OS</p>
-                            <p className="font-bold text-[var(--color-accent-warning)]">
-                              <AnimatedNumber value={0} format="currency" />
-                            </p>
-                          </div>
+                            {/* 3. PIX */}
+                            <div>
+                              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans">PIX</p>
+                              <p className="font-bold text-[var(--color-primary)]">
+                                <AnimatedNumber value={pixOs} format="currency" />
+                              </p>
+                            </div>
 
-                          {/* 5. Saldo Total */}
-                          <div>
-                            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans">Saldo Total</p>
-                            <p className="font-bold text-[var(--text-primary)]">
-                              <AnimatedNumber value={sys} format="currency" />
-                            </p>
-                          </div>
+                            {/* 4. Na Loja OS */}
+                            <div>
+                              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans">Na Loja OS</p>
+                              <p className="font-bold text-[var(--color-accent-warning)]">
+                                <AnimatedNumber value={naLojaOs} format="currency" />
+                              </p>
+                            </div>
 
-                          {/* 6. Resultado Final */}
-                          <div className="text-right border-l border-white/5 pl-3">
-                            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans font-bold">Resultado Final</p>
-                            <p className={`font-bold ${isStoreOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
-                              <AnimatedNumber value={div} format="currency" />
-                            </p>
-                          </div>
+                            {/* 5. Faturamento Itaú (Saldo Real OFX) */}
+                            <div>
+                              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans">Faturamento Itaú (OFX)</p>
+                              <p className="font-bold text-[var(--color-accent-light-blue)]">
+                                <AnimatedNumber value={saldoItau} format="currency" />
+                              </p>
+                            </div>
 
-                        </div>
-                      </Card>
-                    </Link>
-                  );
-                })}
-              </div>
+                            {/* 6. Diferença */}
+                            <div className="text-right border-l border-white/5 pl-3">
+                              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans font-bold">Diferença</p>
+                              <p className={`font-bold ${isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
+                                <AnimatedNumber value={diferenca} format="currency" />
+                              </p>
+                            </div>
+
+                          </div>
+                        </Card>
+                      </Link>
+                    );
+                  })}
+                </div>
             </div>
           </>
         )}

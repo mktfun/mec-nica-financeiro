@@ -9,6 +9,7 @@ export interface StoreSaldoState {
   dinheiro_mp_manual?: number; // Preenchimento manual conforme pedido do usuário
   a_receber: number;
   na_loja_os: number;
+  pix_os?: number;             // PIX recebido nas OSs do dia
   faturamento_atual: number;
   faturamento_anterior: number;
   seguro_sinistro: number;

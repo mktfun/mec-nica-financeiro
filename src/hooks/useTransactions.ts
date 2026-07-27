@@ -464,6 +464,38 @@ export function useDailySystemBalance(targetDate: string) {
 }
 
 
+export function useLatestBankBalance() {
+  return useQuery({
+    queryKey: ['latest-bank-balance'],
+    queryFn: async () => {
+      // Busca o último bank_total importado por loja (sem restrição de data)
+      // para evitar saldo zerado em dias sem novo upload de OFX
+      const { data: stores, error: storesErr } = await supabase.from('stores').select('id');
+      if (storesErr) throw storesErr;
+
+      const result: Record<string, number> = {};
+
+      await Promise.all(
+        (stores || []).map(async (store) => {
+          const { data } = await supabase
+            .from('reconciliations')
+            .select('bank_total')
+            .eq('store_id', store.id)
+            .not('bank_total', 'is', null)
+            .order('date', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          if (data?.bank_total) {
+            result[store.id] = Number(data.bank_total);
+          }
+        })
+      );
+
+      return result;
+    },
+  });
+}
+
 export function useDailyBankBalance(targetDate: string) {
   return useQuery({
     queryKey: ['daily-bank-balance', targetDate],
