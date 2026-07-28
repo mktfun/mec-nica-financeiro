@@ -1,12 +1,14 @@
 import express, { Request, Response, NextFunction } from 'express';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+import cors from 'cors';
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
 import { runSync } from './runner';
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 // ── API Key Middleware ─────────────────────────────────────────────────────
