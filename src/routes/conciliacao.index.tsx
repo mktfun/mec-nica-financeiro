@@ -143,13 +143,13 @@ function ConciliacaoPage() {
                           {/* 6 Mini-Cards de Métricas Individuais */}
                           <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 flex-1 font-sans tabular-nums text-xs">
                             
-                            {/* 1. Faturamento */}
+                            {/* 1. Saldo (Extrato Itaú OFX do dia) */}
                             <div className="p-3 bg-black/40 rounded-xl border border-white/10 flex flex-col justify-between min-w-0">
                               <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block truncate">
-                                Faturamento
+                                Saldo
                               </span>
-                              <p className="font-bold text-sm text-[var(--text-primary)] mt-1 font-mono">
-                                <AnimatedNumber value={faturamento} format="currency" />
+                              <p className="font-bold text-sm text-[var(--color-accent-light-blue)] mt-1 font-mono">
+                                <AnimatedNumber value={saldoItau} format="currency" />
                               </p>
                             </div>
 
@@ -183,15 +183,16 @@ function ConciliacaoPage() {
                               </p>
                             </div>
 
-                            {/* 5. Faturamento Itaú (OFX) */}
+                            {/* 5. Faturamento (Receita Bruta Total das OSs) */}
                             <div className="p-3 bg-black/40 rounded-xl border border-white/10 flex flex-col justify-between min-w-0">
                               <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block truncate">
-                                Faturamento Itaú
+                                Faturamento
                               </span>
-                              <p className="font-bold text-sm text-[var(--color-accent-light-blue)] mt-1 font-mono">
-                                <AnimatedNumber value={saldoItau} format="currency" />
+                              <p className="font-bold text-sm text-[var(--text-primary)] mt-1 font-mono">
+                                <AnimatedNumber value={faturamento} format="currency" />
                               </p>
                             </div>
+
 
                             {/* 6. Diferença */}
                             <div className={`p-3 rounded-xl border flex flex-col justify-between min-w-0 ${
