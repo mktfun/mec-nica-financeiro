@@ -1,6 +1,25 @@
 # 🧠 Memória Modular: Domínio & Conciliação
 
+## [2026-07-28] — Feature ID: fix-store-closing-card-labels-and-values
+
+**Contexto:** Correção e renomeação das 6 colunas do bloco "Fechamento por Loja" em `conciliacao.index.tsx` para eliminar duplicidades e alinhar com a linguagem do cliente.
+
+**Regra aprendida:**
+- **Sequência Estrita das 6 Colunas por Loja:** O card de fechamento por loja na rota `/conciliacao` DEVE seguir exatamente a ordem:
+  1. `Saldo`: Extrato bancário OFX do dia (`saldoItau`).
+  2. `Maquininha`: Vendas de cartão de crédito/débito Rede (`maquininha`).
+  3. `PIX`: Recebimentos PIX das OSs do dia (`pixOs`).
+  4. `Na Loja OS`: Saldo pendente em aberto no pátio (`naLojaOs`).
+  5. `Faturamento`: Faturamento/Receita bruta total das OSs (`faturamento`).
+  6. `Diferença`: Apuração `Faturamento - (Maquininha + PIX)` (`diferenca`).
+- **Nomenclatura Única de Faturamento:** NUNCA utilizar a palavra "Faturamento" em dois cards da mesma loja. A 1ª coluna deve chamar-se `Saldo` (extrato/banco) e a 5ª coluna deve chamar-se `Faturamento` (receita bruta/vendas de OS).
+
+**Risco identificado:** Chamar o primeiro card de "Faturamento" confunde o usuário com o quinto card, fazendo parecer que a loja possui duas receitas conflitantes.
+
+**Não fazer:** Nunca duplicar o termo "Faturamento" no mesmo card de loja nem rotular o saldo bancário como faturamento.
+
 ## [2026-07-28] — Feature ID: fix-conciliacao-date-bleeding-and-mini-cards-ui
+
 
 **Contexto:** Correção do vazamento de saldo bancário histórico (`FATURAMENTO ITAÚ (OFX)`) para datas sem conciliação na tela principal `/conciliacao` e redesign dos mini-cards de Fechamento por Loja.
 
