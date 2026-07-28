@@ -13,3 +13,8 @@
 - **Tabela `public.ai_execution_logs`:** Registro imutÃ¡vel de chamadas, tokens, custo estimado, tempo de execuÃ§Ã£o e payloads.
 - **Tabela `public.ai_settings`:** ConfiguraÃ§Ãµes de provedor, modelo e chave de API por usuÃ¡rio ou `GLOBAL`.
 - **ConciliaMec Bot (VPS / Traefik):** ServiÃ§o headless de coleta de relatÃ³rios via Playwright (Oficina Inteligente / Rede), exposto publicamente sob `bot.tork.services` via Cloudflare Tunnel.
+
+- **PromptInput Minimalista (\src/components/chat/PromptInput.tsx\):** Componente avançado com animações framer-motion-like em CSS puro e auto-resize com blur, substituto do PromptBox.
+- **MessageList (\src/components/chat/MessageList.tsx\):** Exibe execuções de MCP logs via um bloco expansível \<details>\ minimalista.
+- **Tool Edge Function (\supabase/functions/ai-chat/index.ts\):** Possui a tool \consulta_detalhes_os\ para buscar informações no Supabase local de forma ultra-rápida, contornando chamadas remotas.
+

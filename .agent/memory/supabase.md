@@ -47,3 +47,14 @@
 **Risco identificado:** Assumir esquemas legados (com `cnpj`) ao gerar scripts de integraÃ§Ã£o backend causa erro de SQL no upload de lotes.
 
 **NÃ£o fazer:** Nunca tentar usar colunas nÃ£o validadas em ferramentas de inserÃ§Ã£o em massa sem antes consultar o type de interface (ex: `StoreRow` em `src/lib/supabase.ts`).
+
+## [2026-07-28] — [Feature ID: chat-ui-minimalist]
+
+**Contexto:** O agente IA falhava ao consultar detalhes de ordens de serviço individuais.
+
+**Regra aprendida:** Em arquiteturas MCP baseadas em Supabase, se o dado necessário (como detalhes de uma OS) já reside nativamente e sincronizado no banco de dados local do Supabase, crie uma \	ool\ direta na Edge Function usando o \supabaseClient.from('tabela')\ em vez de trafegar essa requisição complexa de ida e volta para uma API MCP remota.
+
+**Risco identificado:** A permissão de Select no Edge Function herda o Token do usuário autenticado no App (usando o cabeçalho Authorization). O RLS deve garantir que ele só enxergue as OS de lojas pertencentes à sua tenant/auth.
+
+**Não fazer:** Nunca crie chamadas MCP via proxy HTTP se o dado já estiver na mesma base de dados do usuário da Edge Function.
+

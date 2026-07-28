@@ -37,9 +37,20 @@ export function MessageList({ messages, isLoading }: { messages: Message[], isLo
             </div>
 
             {msg.mcpLogs && msg.mcpLogs.length > 0 && (
-              <div className="flex items-center gap-1.5 px-2 text-[10px] text-[var(--text-tertiary)] bg-black/10 rounded-full py-0.5">
-                <ToolIcon className="w-3 h-3" />
-                <span>{msg.mcpLogs.length} tools utilizadas</span>
+              <div className="flex flex-col gap-1 w-full mt-1 mb-2">
+                {msg.mcpLogs.map((log, i) => (
+                  <details key={i} className="group overflow-hidden rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)]">
+                    <summary className="flex cursor-pointer items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/5 transition-colors list-none select-none">
+                      <ToolIcon className="w-3.5 h-3.5" />
+                      <span className="flex-1 capitalize tracking-wide">{log.action.replace(/_/g, ' ')}</span>
+                      <span className="opacity-50 text-[10px] transition-transform duration-200 group-open:rotate-180">▼</span>
+                    </summary>
+                    <div className="px-3 pb-3 pt-1.5 text-[11px] font-mono text-[var(--text-tertiary)] bg-black/10 overflow-x-auto max-h-[200px] custom-scrollbar border-t border-[var(--border-subtle)]">
+                      <div className="mb-1 text-[#4ade80]">Input: {JSON.stringify(log.params)}</div>
+                      <div className="text-[var(--text-secondary)]">Output: {JSON.stringify(log.result)}</div>
+                    </div>
+                  </details>
+                ))}
               </div>
             )}
           </motion.div>

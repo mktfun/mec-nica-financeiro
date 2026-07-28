@@ -614,5 +614,17 @@
   "612": "router.tsx",
   "613": "Spec Plan: Bot Config UI & MCP Agent Integration (bot-config-ui)",
   "614": "Spec Plan: Refatoração do Bot para API de Consulta MCP (bot-mcp-refactor)",
-  "615": "input-otp"
+  "615": "input-otp",
+  "616": "Design: Correções de Produção (CORS VPS e Schema Cache) (bot-production-fixes)",
+  "617": "Design: Refatoração do Bot para API de Consulta MCP (bot-mcp-refactor)",
+  "618": "Spec Plan: Correção de CORS no Bot Playwright (bot-cors-fix)",
+  "619": "Spec Plan: Refatoração do Bot para API de Consulta MCP (bot-mcp-refactor)",
+  "620": "Spec Plan: Correções de Produção (CORS VPS e Schema Cache) (bot-production-fixes)",
+  "621": "apply_bot_logs_migration.cjs",
+  "622": "Design: Correções de Produção (CORS VPS e Schema Cache) (bot-production-fixes)",
+  "623": "Design: Nova Interface do Chat e Resolução de Ferramentas (chat-ui-minimalist)",
+  "624": "start.ts",
+  "625": "Spec Plan: Correções de Produção (CORS VPS e Schema Cache) (bot-production-fixes)",
+  "626": "Spec Plan: Nova Interface do Chat e Resolução de Ferramentas (chat-ui-minimalist)",
+  "627": "class-variance-authority"
 }

@@ -2804,8 +2804,8 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "package_dependencies_class_variance_authority",
-      "community": 130,
-      "community_name": "proposta.tsx",
+      "community": 28,
+      "community_name": "dependencies",
       "norm_label": "class-variance-authority"
     },
     {
@@ -2815,8 +2815,8 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "class_variance_authority",
-      "community": 130,
-      "community_name": "proposta.tsx",
+      "community": 28,
+      "community_name": "dependencies",
       "norm_label": "class-variance-authority"
     },
     {
@@ -2958,8 +2958,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "package_dependencies_input_otp",
-      "community": 28,
-      "community_name": "dependencies",
+      "community": 615,
+      "community_name": "input-otp",
       "norm_label": "input-otp"
     },
     {
@@ -2969,8 +2969,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "input_otp",
-      "community": 28,
-      "community_name": "dependencies",
+      "community": 615,
+      "community_name": "input-otp",
       "norm_label": "input-otp"
     },
     {
@@ -4049,6 +4049,28 @@
       "id": "run_migration_run",
       "community": 269,
       "community_name": "run_migration.js",
+      "norm_label": "run()"
+    },
+    {
+      "label": "apply_bot_logs_migration.cjs",
+      "file_type": "code",
+      "source_file": "scratch/apply_bot_logs_migration.cjs",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "scratch_apply_bot_logs_migration",
+      "community": 621,
+      "community_name": "apply_bot_logs_migration.cjs",
+      "norm_label": "apply_bot_logs_migration.cjs"
+    },
+    {
+      "label": "run()",
+      "file_type": "code",
+      "source_file": "scratch/apply_bot_logs_migration.cjs",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "scratch_apply_bot_logs_migration_run",
+      "community": 621,
+      "community_name": "apply_bot_logs_migration.cjs",
       "norm_label": "run()"
     },
     {
@@ -11172,8 +11194,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_conciliacaoalertssection",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "conciliacaoalertssection.tsx"
     },
     {
@@ -11183,8 +11205,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_conciliacao_conciliacaoalertssection_conciliacaoalertssection",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "conciliacaoalertssection()"
     },
     {
@@ -11227,8 +11249,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_ofxsemmatchtable",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "ofxsemmatchtable.tsx"
     },
     {
@@ -11238,8 +11260,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_conciliacao_ofxsemmatchtable_ofxsemmatchtable",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "ofxsemmatchtable()"
     },
     {
@@ -11249,8 +11271,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_osdetailmodal",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "osdetailmodal.tsx"
     },
     {
@@ -11260,8 +11282,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_conciliacao_osdetailmodal_osdetailmodalprops",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "osdetailmodalprops"
     },
     {
@@ -11271,8 +11293,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "src_components_conciliacao_osdetailmodal_osdetailmodal",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "osdetailmodal()"
     },
     {
@@ -11282,8 +11304,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_osvsredetable",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "osvsredetable.tsx"
     },
     {
@@ -11293,8 +11315,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_components_conciliacao_osvsredetable_osvsredetable",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "osvsredetable()"
     },
     {
@@ -11304,8 +11326,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_pixvsofxtable",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "pixvsofxtable.tsx"
     },
     {
@@ -11315,8 +11337,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_conciliacao_pixvsofxtable_pixvsofxtable",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "pixvsofxtable()"
     },
     {
@@ -11359,8 +11381,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsofxtable",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "redevsofxtable.tsx"
     },
     {
@@ -11370,8 +11392,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsofxtable_redevsofxtable",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "redevsofxtable()"
     },
     {
@@ -11491,8 +11513,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "herobalance.tsx"
     },
     {
@@ -11502,8 +11524,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance_herobalance",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "herobalance()"
     },
     {
@@ -11513,8 +11535,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "motorstatus.tsx"
     },
     {
@@ -11524,8 +11546,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus_motorstatus",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "motorstatus()"
     },
     {
@@ -11579,8 +11601,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "quickactions.tsx"
     },
     {
@@ -11590,8 +11612,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_container",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "container"
     },
     {
@@ -11601,8 +11623,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_item",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "item"
     },
     {
@@ -11612,8 +11634,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_quickactions",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "quickactions()"
     },
     {
@@ -11623,8 +11645,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_recentactivity",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "recentactivity.tsx"
     },
     {
@@ -11634,8 +11656,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_components_dashboard_recentactivity_recentactivity",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "recentactivity()"
     },
     {
@@ -11678,8 +11700,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_storerankingchart",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "storerankingchart.tsx"
     },
     {
@@ -11689,8 +11711,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_dashboard_storerankingchart_storerankingchart",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "storerankingchart()"
     },
     {
@@ -11821,8 +11843,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_usestoremapping",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "usestoremapping()"
     },
     {
@@ -11832,8 +11854,8 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_wizardimportacao",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "wizardimportacao()"
     },
     {
@@ -11942,8 +11964,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_topbar",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "topbar.tsx"
     },
     {
@@ -11953,8 +11975,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_layout_topbar_topbar",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "topbar()"
     },
     {
@@ -11964,8 +11986,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_animatednumber",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "animatednumber.tsx"
     },
     {
@@ -11975,8 +11997,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumberprops",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "animatednumberprops"
     },
     {
@@ -11986,8 +12008,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumber",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "animatednumber()"
     },
     {
@@ -11997,8 +12019,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_badge",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "badge.tsx"
     },
     {
@@ -12008,8 +12030,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_components_ui_badge_badgeprops",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "badgeprops"
     },
     {
@@ -12019,8 +12041,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_ui_badge_badge",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "badge()"
     },
     {
@@ -12030,8 +12052,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_button",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "button.tsx"
     },
     {
@@ -12041,8 +12063,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_ui_button_buttonprops",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "buttonprops"
     },
     {
@@ -12052,8 +12074,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_ui_button_button",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "button()"
     },
     {
@@ -12063,8 +12085,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_card",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "card.tsx"
     },
     {
@@ -12074,8 +12096,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_ui_card_cardprops",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "cardprops"
     },
     {
@@ -12085,8 +12107,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_ui_card_card",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "card()"
     },
     {
@@ -12129,8 +12151,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_loadingspinner",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "loadingspinner.tsx"
     },
     {
@@ -12140,8 +12162,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_components_ui_loadingspinner_loadingspinnerprops",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "loadingspinnerprops"
     },
     {
@@ -12151,8 +12173,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_ui_loadingspinner_loadingspinner",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "loadingspinner()"
     },
     {
@@ -12195,8 +12217,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_themetoggle",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "themetoggle.tsx"
     },
     {
@@ -12206,8 +12228,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_components_ui_themetoggle_themetoggle",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "themetoggle()"
     },
     {
@@ -12393,8 +12415,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useauth",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 501,
+      "community_name": "useAuth.ts",
       "norm_label": "useauth.ts"
     },
     {
@@ -12404,8 +12426,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_hooks_useauth_listeners",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 501,
+      "community_name": "useAuth.ts",
       "norm_label": "listeners"
     },
     {
@@ -12426,8 +12448,8 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "src_hooks_useauth_uselogin",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 501,
+      "community_name": "useAuth.ts",
       "norm_label": "uselogin()"
     },
     {
@@ -12525,8 +12547,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotlogs",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "usebotlogs.ts"
     },
     {
@@ -12536,8 +12558,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_botauditlog",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "botauditlog"
     },
     {
@@ -12569,8 +12591,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotruns",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "usebotruns.ts"
     },
     {
@@ -12580,8 +12602,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usebotruns_uselatestbotrun",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "uselatestbotrun()"
     },
     {
@@ -12679,8 +12701,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "useconciliacao.ts"
     },
     {
@@ -12690,8 +12712,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_isvaliduuid",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "isvaliduuid()"
     },
     {
@@ -12701,8 +12723,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_conciliacaoresumo",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "conciliacaoresumo"
     },
     {
@@ -12756,8 +12778,8 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesystemtransactions",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "usesystemtransactions()"
     },
     {
@@ -12767,8 +12789,8 @@
       "source_location": "L139",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usedailyreconciliationdelta",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "usedailyreconciliationdelta()"
     },
     {
@@ -12778,8 +12800,8 @@
       "source_location": "L175",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_findexactsubsetmatch",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "findexactsubsetmatch()"
     },
     {
@@ -12789,8 +12811,8 @@
       "source_location": "L210",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usereconciliationviews",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "usereconciliationviews()"
     },
     {
@@ -12811,8 +12833,8 @@
       "source_location": "L601",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useupdateosstatus",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "useupdateosstatus()"
     },
     {
@@ -12822,8 +12844,8 @@
       "source_location": "L644",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useresolveunmatchedalert",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "useresolveunmatchedalert()"
     },
     {
@@ -13141,8 +13163,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usepatio",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "usepatio.ts"
     },
     {
@@ -13152,8 +13174,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_usepatio_usepatioos",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "usepatioos()"
     },
     {
@@ -13163,8 +13185,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_hooks_usepatio_useupdatepatioos",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "useupdatepatioos()"
     },
     {
@@ -13185,8 +13207,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_userecebiveis",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "userecebiveis()"
     },
     {
@@ -13218,8 +13240,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usestores_sanitizestore",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "sanitizestore()"
     },
     {
@@ -13229,8 +13251,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_hooks_usestores_usestores",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "usestores()"
     },
     {
@@ -13317,8 +13339,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedashboardsummary",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "usedashboardsummary()"
     },
     {
@@ -13350,8 +13372,8 @@
       "source_location": "L216",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useallstoresbalances",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "useallstoresbalances()"
     },
     {
@@ -13361,8 +13383,8 @@
       "source_location": "L242",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactionspordataeloja",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "usetransactionspordataeloja()"
     },
     {
@@ -13405,8 +13427,8 @@
       "source_location": "L340",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usebulkinserttransactions",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "usebulkinserttransactions()"
     },
     {
@@ -14516,8 +14538,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_lib_supabase_reconciliationrow",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "reconciliationrow"
     },
     {
@@ -14549,8 +14571,8 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "src_lib_supabase_cashregisterrow",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "cashregisterrow"
     },
     {
@@ -14560,8 +14582,8 @@
       "source_location": "L91",
       "_origin": "ast",
       "id": "src_lib_supabase_patioosrow",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "patioosrow"
     },
     {
@@ -14582,8 +14604,8 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "src_lib_supabase_botrunrow",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "botrunrow"
     },
     {
@@ -14879,8 +14901,8 @@
       "source_location": "L154",
       "_origin": "ast",
       "id": "src_routetree_gen_fileroutesbyid",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 400,
+      "community_name": "__root.tsx",
       "norm_label": "fileroutesbyid"
     },
     {
@@ -14923,8 +14945,8 @@
       "source_location": "L255",
       "_origin": "ast",
       "id": "src_routetree_gen_fileroutesbypath",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "fileroutesbypath"
     },
     {
@@ -14934,8 +14956,8 @@
       "source_location": "L397",
       "_origin": "ast",
       "id": "src_routetree_gen_routetree",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 612,
+      "community_name": "router.tsx",
       "norm_label": "routetree"
     },
     {
@@ -14956,8 +14978,8 @@
       "source_location": "L404",
       "_origin": "ast",
       "id": "src_routetree_gen_register",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 612,
+      "community_name": "router.tsx",
       "norm_label": "register"
     },
     {
@@ -14967,8 +14989,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_router",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 612,
+      "community_name": "router.tsx",
       "norm_label": "router.tsx"
     },
     {
@@ -14978,8 +15000,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_router_getrouter",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 612,
+      "community_name": "router.tsx",
       "norm_label": "getrouter()"
     },
     {
@@ -14989,8 +15011,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_root",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 400,
+      "community_name": "__root.tsx",
       "norm_label": "__root.tsx"
     },
     {
@@ -15000,8 +15022,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_routes_root_notfoundcomponent",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 400,
+      "community_name": "__root.tsx",
       "norm_label": "notfoundcomponent()"
     },
     {
@@ -15011,8 +15033,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "src_routes_root_errorcomponent",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 400,
+      "community_name": "__root.tsx",
       "norm_label": "errorcomponent()"
     },
     {
@@ -15022,8 +15044,8 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "src_routes_root_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 400,
+      "community_name": "__root.tsx",
       "norm_label": "route"
     },
     {
@@ -15033,8 +15055,8 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "src_routes_root_rootshell",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 400,
+      "community_name": "__root.tsx",
       "norm_label": "rootshell()"
     },
     {
@@ -15044,8 +15066,8 @@
       "source_location": "L128",
       "_origin": "ast",
       "id": "src_routes_root_rootcomponent",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 400,
+      "community_name": "__root.tsx",
       "norm_label": "rootcomponent()"
     },
     {
@@ -15055,8 +15077,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_agente",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "agente.tsx"
     },
     {
@@ -15066,8 +15088,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_routes_agente_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "route"
     },
     {
@@ -15099,8 +15121,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_routes_alertas_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "route"
     },
     {
@@ -15132,8 +15154,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "conciliacao-detalhes.tsx"
     },
     {
@@ -15143,8 +15165,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "route"
     },
     {
@@ -15154,8 +15176,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_tab",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "tab"
     },
     {
@@ -15165,8 +15187,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_statustab",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "statustab"
     },
     {
@@ -15187,8 +15209,8 @@
       "source_location": "L166",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_row",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "row()"
     },
     {
@@ -15198,8 +15220,8 @@
       "source_location": "L183",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_tabbutton",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "tabbutton()"
     },
     {
@@ -15209,8 +15231,8 @@
       "source_location": "L203",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_lojatable",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "lojatable()"
     },
     {
@@ -15220,8 +15242,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "conciliacao.$lojaid.tsx"
     },
     {
@@ -15231,8 +15253,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "route"
     },
     {
@@ -15242,8 +15264,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_formatdate",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "formatdate()"
     },
     {
@@ -15253,8 +15275,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_tabtype",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "tabtype"
     },
     {
@@ -15264,8 +15286,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_tabbtn",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "tabbtn()"
     },
     {
@@ -15275,8 +15297,8 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_conciliacaolojapage",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "conciliacaolojapage()"
     },
     {
@@ -15297,8 +15319,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_conciliacao_index_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "route"
     },
     {
@@ -15330,8 +15352,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_routes_configuracoes_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "route"
     },
     {
@@ -15374,8 +15396,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_historico_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "route"
     },
     {
@@ -15429,8 +15451,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "importacoes-despesas.tsx"
     },
     {
@@ -15440,8 +15462,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "route"
     },
     {
@@ -15451,8 +15473,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_usestoremapping",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "usestoremapping()"
     },
     {
@@ -15462,8 +15484,8 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_importacoesdespesaswizard",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "importacoesdespesaswizard()"
     },
     {
@@ -15473,8 +15495,8 @@
       "source_location": "L380",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_stepindicator",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "stepindicator()"
     },
     {
@@ -15495,8 +15517,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_routes_importacoes_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "route"
     },
     {
@@ -15539,8 +15561,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_routes_importar_os_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "route"
     },
     {
@@ -15583,8 +15605,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_index",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "index.tsx"
     },
     {
@@ -15594,8 +15616,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_routes_index_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "route"
     },
     {
@@ -15605,8 +15627,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_index_dashboardpage",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "dashboardpage()"
     },
     {
@@ -15616,8 +15638,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_login",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 501,
+      "community_name": "useAuth.ts",
       "norm_label": "login.tsx"
     },
     {
@@ -15627,8 +15649,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_routes_login_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 501,
+      "community_name": "useAuth.ts",
       "norm_label": "route"
     },
     {
@@ -15638,8 +15660,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_routes_login_loginpage",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 501,
+      "community_name": "useAuth.ts",
       "norm_label": "loginpage()"
     },
     {
@@ -15660,8 +15682,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "route"
     },
     {
@@ -15726,8 +15748,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_routes_lojas_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "route"
     },
     {
@@ -15748,8 +15770,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_patio",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "patio.tsx"
     },
     {
@@ -15759,8 +15781,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_routes_patio_historychange",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "historychange"
     },
     {
@@ -15770,8 +15792,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_patio_historylog",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "historylog"
     },
     {
@@ -15781,8 +15803,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_routes_patio_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "route"
     },
     {
@@ -15792,8 +15814,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_routes_patio_filtertab",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "filtertab"
     },
     {
@@ -15803,8 +15825,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_routes_patio_getoseffectivevalues",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "getoseffectivevalues()"
     },
     {
@@ -15814,8 +15836,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "src_routes_patio_patiopage",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "patiopage()"
     },
     {
@@ -15825,8 +15847,8 @@
       "source_location": "L518",
       "_origin": "ast",
       "id": "src_routes_patio_tabbtn",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "tabbtn()"
     },
     {
@@ -15836,8 +15858,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_proposta",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 215,
+      "community_name": "proposta.tsx",
       "norm_label": "proposta.tsx"
     },
     {
@@ -15847,8 +15869,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_routes_proposta_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 215,
+      "community_name": "proposta.tsx",
       "norm_label": "route"
     },
     {
@@ -15858,8 +15880,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_routes_proposta_costconfig",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 215,
+      "community_name": "proposta.tsx",
       "norm_label": "costconfig"
     },
     {
@@ -15869,8 +15891,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_routes_proposta_defaultconfig",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 215,
+      "community_name": "proposta.tsx",
       "norm_label": "defaultconfig"
     },
     {
@@ -15880,8 +15902,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "src_routes_proposta_propostapage",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 215,
+      "community_name": "proposta.tsx",
       "norm_label": "propostapage()"
     },
     {
@@ -15891,8 +15913,8 @@
       "source_location": "L355",
       "_origin": "ast",
       "id": "src_routes_proposta_costrow",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 215,
+      "community_name": "proposta.tsx",
       "norm_label": "costrow()"
     },
     {
@@ -15902,8 +15924,8 @@
       "source_location": "L370",
       "_origin": "ast",
       "id": "src_routes_proposta_editfield",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 215,
+      "community_name": "proposta.tsx",
       "norm_label": "editfield()"
     },
     {
@@ -15913,8 +15935,8 @@
       "source_location": "L384",
       "_origin": "ast",
       "id": "src_routes_proposta_editstringfield",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 215,
+      "community_name": "proposta.tsx",
       "norm_label": "editstringfield()"
     },
     {
@@ -15924,8 +15946,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_recebiveis",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "recebiveis.tsx"
     },
     {
@@ -15935,8 +15957,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_routes_recebiveis_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "route"
     },
     {
@@ -15946,8 +15968,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_routes_recebiveis_filtertab",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "filtertab"
     },
     {
@@ -15957,8 +15979,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_routes_recebiveis_recebiveispage",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "recebiveispage()"
     },
     {
@@ -15968,8 +15990,8 @@
       "source_location": "L291",
       "_origin": "ast",
       "id": "src_routes_recebiveis_tabbtn",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "tabbtn()"
     },
     {
@@ -16078,8 +16100,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_start_startinstance",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 612,
+      "community_name": "router.tsx",
       "norm_label": "startinstance"
     },
     {
@@ -16952,10 +16974,21 @@
       "norm_label": "\ud83e\udde0 memoria modular: infraestrutura (deploy, vps, dns, redes)"
     },
     {
-      "label": "[2026-07-28] \u2014 Feature ID: bot-traefik-routing",
+      "label": "[2026-07-28] \u2014 Feature ID: bot-cors-fix",
       "file_type": "document",
       "source_file": ".agent/memory/infra.md",
       "source_location": "L3",
+      "_origin": "ast",
+      "id": "agent_memory_infra_2026_07_28_feature_id_bot_cors_fix",
+      "community": 403,
+      "community_name": "\ud83e\udde0 Mem\u00f3ria Modular: Infraestrutura (Deploy, VPS, DNS, Redes)",
+      "norm_label": "[2026-07-28] \u2014 feature id: bot-cors-fix"
+    },
+    {
+      "label": "[2026-07-28] \u2014 Feature ID: bot-traefik-routing",
+      "file_type": "document",
+      "source_file": ".agent/memory/infra.md",
+      "source_location": "L15",
       "_origin": "ast",
       "id": "agent_memory_infra_2026_07_28_feature_id_bot_traefik_routing",
       "community": 403,
@@ -17062,10 +17095,32 @@
       "norm_label": "\ud83e\udde0 memoria modular: supabase & schemas"
     },
     {
-      "label": "[2026-07-27] \u2014 Feature ID: fix-ai-telemetry-logs-and-cost-tracking",
+      "label": "[2026-07-28] \u2014 Feature ID: bot-production-fixes",
       "file_type": "document",
       "source_file": ".agent/memory/supabase.md",
       "source_location": "L3",
+      "_origin": "ast",
+      "id": "agent_memory_supabase_2026_07_28_feature_id_bot_production_fixes",
+      "community": 329,
+      "community_name": "\ud83e\udde0 Mem\u00f3ria Modular: Supabase & Schemas",
+      "norm_label": "[2026-07-28] \u2014 feature id: bot-production-fixes"
+    },
+    {
+      "label": "[2026-07-28] \u2014 Feature ID: bot-mcp-refactor",
+      "file_type": "document",
+      "source_file": ".agent/memory/supabase.md",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "agent_memory_supabase_2026_07_28_feature_id_bot_mcp_refactor",
+      "community": 329,
+      "community_name": "\ud83e\udde0 Mem\u00f3ria Modular: Supabase & Schemas",
+      "norm_label": "[2026-07-28] \u2014 feature id: bot-mcp-refactor"
+    },
+    {
+      "label": "[2026-07-27] \u2014 Feature ID: fix-ai-telemetry-logs-and-cost-tracking",
+      "file_type": "document",
+      "source_file": ".agent/memory/supabase.md",
+      "source_location": "L27",
       "_origin": "ast",
       "id": "agent_memory_supabase_2026_07_27_feature_id_fix_ai_telemetry_logs_and_cost_tracking",
       "community": 329,
@@ -17076,7 +17131,7 @@
       "label": "[2026-07-28] \u2014 Feature ID: bot-traefik-routing",
       "file_type": "document",
       "source_file": ".agent/memory/supabase.md",
-      "source_location": "L16",
+      "source_location": "L40",
       "_origin": "ast",
       "id": "agent_memory_supabase_2026_07_28_feature_id_bot_traefik_routing",
       "community": 329,
@@ -36158,6 +36213,589 @@
       "norm_label": "tasks"
     },
     {
+      "label": "bot-config-ui/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-config-ui/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_config_ui_design",
+      "community": 399,
+      "community_name": "Design: Bot Config UI & MCP Agent Integration (bot-config-ui)",
+      "norm_label": "bot-config-ui/design.md"
+    },
+    {
+      "label": "Design: Bot Config UI & MCP Agent Integration (bot-config-ui)",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-config-ui/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "community": 399,
+      "community_name": "Design: Bot Config UI & MCP Agent Integration (bot-config-ui)",
+      "norm_label": "design: bot config ui & mcp agent integration (bot-config-ui)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-config-ui/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_bot_config_ui_design_arquitetura_t\u00e9cnica",
+      "community": 399,
+      "community_name": "Design: Bot Config UI & MCP Agent Integration (bot-config-ui)",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Interfaces TypeScript",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-config-ui/design.md",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "specs_archive_bot_config_ui_design_interfaces_typescript",
+      "community": 399,
+      "community_name": "Design: Bot Config UI & MCP Agent Integration (bot-config-ui)",
+      "norm_label": "interfaces typescript"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-config-ui/design.md",
+      "source_location": "L41",
+      "_origin": "ast",
+      "id": "specs_archive_bot_config_ui_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 399,
+      "community_name": "Design: Bot Config UI & MCP Agent Integration (bot-config-ui)",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Fluxo de UI",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-config-ui/design.md",
+      "source_location": "L52",
+      "_origin": "ast",
+      "id": "specs_archive_bot_config_ui_design_fluxo_de_ui",
+      "community": 399,
+      "community_name": "Design: Bot Config UI & MCP Agent Integration (bot-config-ui)",
+      "norm_label": "fluxo de ui"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-config-ui/design.md",
+      "source_location": "L59",
+      "_origin": "ast",
+      "id": "specs_archive_bot_config_ui_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 399,
+      "community_name": "Design: Bot Config UI & MCP Agent Integration (bot-config-ui)",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "bot-config-ui/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-config-ui/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_config_ui_proposal",
+      "community": 129,
+      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
+      "norm_label": "bot-config-ui/proposal.md"
+    },
+    {
+      "label": "Proposal: Bot Config UI & MCP Agent Integration (bot-config-ui)",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-config-ui/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "community": 129,
+      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
+      "norm_label": "proposal: bot config ui & mcp agent integration (bot-config-ui)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-config-ui/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_bot_config_ui_proposal_problema",
+      "community": 129,
+      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-config-ui/proposal.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "specs_archive_bot_config_ui_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 129,
+      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-config-ui/proposal.md",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "specs_archive_bot_config_ui_proposal_contratos_de_dados",
+      "community": 129,
+      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-config-ui/proposal.md",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "specs_archive_bot_config_ui_proposal_api_interface",
+      "community": 129,
+      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-config-ui/proposal.md",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "specs_archive_bot_config_ui_proposal_features_existentes_impactadas",
+      "community": 129,
+      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-config-ui/proposal.md",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "specs_archive_bot_config_ui_proposal_risco_principal",
+      "community": 129,
+      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "bot-config-ui/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-config-ui/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_config_ui_spec_plan",
+      "community": 613,
+      "community_name": "Spec Plan: Bot Config UI & MCP Agent Integration (bot-config-ui)",
+      "norm_label": "bot-config-ui/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Bot Config UI & MCP Agent Integration (bot-config-ui)",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-config-ui/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_config_ui_spec_plan_spec_plan_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "community": 613,
+      "community_name": "Spec Plan: Bot Config UI & MCP Agent Integration (bot-config-ui)",
+      "norm_label": "spec plan: bot config ui & mcp agent integration (bot-config-ui)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-config-ui/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_bot_config_ui_spec_plan_tasks",
+      "community": 613,
+      "community_name": "Spec Plan: Bot Config UI & MCP Agent Integration (bot-config-ui)",
+      "norm_label": "tasks"
+    },
+    {
+      "label": "bot-cors-fix/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-cors-fix/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_cors_fix_design",
+      "community": 614,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "norm_label": "bot-cors-fix/design.md"
+    },
+    {
+      "label": "Design: Corre\u00e7\u00e3o de CORS no Bot Playwright (bot-cors-fix)",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-cors-fix/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_cors_fix_design_design_corre\u00e7\u00e3o_de_cors_no_bot_playwright_bot_cors_fix",
+      "community": 614,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "norm_label": "design: correcao de cors no bot playwright (bot-cors-fix)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-cors-fix/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_bot_cors_fix_design_arquitetura_t\u00e9cnica",
+      "community": 614,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Interfaces TypeScript",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-cors-fix/design.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "specs_archive_bot_cors_fix_design_interfaces_typescript",
+      "community": 614,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "norm_label": "interfaces typescript"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-cors-fix/design.md",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "specs_archive_bot_cors_fix_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 614,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Fluxo de UI",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-cors-fix/design.md",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "specs_archive_bot_cors_fix_design_fluxo_de_ui",
+      "community": 614,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "norm_label": "fluxo de ui"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-cors-fix/design.md",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "specs_archive_bot_cors_fix_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 614,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "bot-cors-fix/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-cors-fix/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_cors_fix_proposal",
+      "community": 81,
+      "community_name": "importacoes-despesas.tsx",
+      "norm_label": "bot-cors-fix/proposal.md"
+    },
+    {
+      "label": "Proposal: Corre\u00e7\u00e3o de CORS no Bot Playwright (bot-cors-fix)",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-cors-fix/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_cors_fix_proposal_proposal_corre\u00e7\u00e3o_de_cors_no_bot_playwright_bot_cors_fix",
+      "community": 81,
+      "community_name": "importacoes-despesas.tsx",
+      "norm_label": "proposal: correcao de cors no bot playwright (bot-cors-fix)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-cors-fix/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_bot_cors_fix_proposal_problema",
+      "community": 81,
+      "community_name": "importacoes-despesas.tsx",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-cors-fix/proposal.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "specs_archive_bot_cors_fix_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 81,
+      "community_name": "importacoes-despesas.tsx",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-cors-fix/proposal.md",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "specs_archive_bot_cors_fix_proposal_contratos_de_dados",
+      "community": 81,
+      "community_name": "importacoes-despesas.tsx",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-cors-fix/proposal.md",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "specs_archive_bot_cors_fix_proposal_api_interface",
+      "community": 81,
+      "community_name": "importacoes-despesas.tsx",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-cors-fix/proposal.md",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "specs_archive_bot_cors_fix_proposal_features_existentes_impactadas",
+      "community": 81,
+      "community_name": "importacoes-despesas.tsx",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-cors-fix/proposal.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "specs_archive_bot_cors_fix_proposal_risco_principal",
+      "community": 81,
+      "community_name": "importacoes-despesas.tsx",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "bot-cors-fix/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-cors-fix/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_cors_fix_spec_plan",
+      "community": 618,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o de CORS no Bot Playwright (bot-cors-fix)",
+      "norm_label": "bot-cors-fix/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Corre\u00e7\u00e3o de CORS no Bot Playwright (bot-cors-fix)",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-cors-fix/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_cors_fix_spec_plan_spec_plan_corre\u00e7\u00e3o_de_cors_no_bot_playwright_bot_cors_fix",
+      "community": 618,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o de CORS no Bot Playwright (bot-cors-fix)",
+      "norm_label": "spec plan: correcao de cors no bot playwright (bot-cors-fix)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-cors-fix/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_bot_cors_fix_spec_plan_tasks",
+      "community": 618,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o de CORS no Bot Playwright (bot-cors-fix)",
+      "norm_label": "tasks"
+    },
+    {
+      "label": "bot-mcp-refactor/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-mcp-refactor/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_mcp_refactor_design",
+      "community": 617,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "norm_label": "bot-mcp-refactor/design.md"
+    },
+    {
+      "label": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-mcp-refactor/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_mcp_refactor_design_design_refatora\u00e7\u00e3o_do_bot_para_api_de_consulta_mcp_bot_mcp_refactor",
+      "community": 617,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "norm_label": "design: refatoracao do bot para api de consulta mcp (bot-mcp-refactor)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-mcp-refactor/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_bot_mcp_refactor_design_arquitetura_t\u00e9cnica",
+      "community": 617,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Interfaces TypeScript",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-mcp-refactor/design.md",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "specs_archive_bot_mcp_refactor_design_interfaces_typescript",
+      "community": 617,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "norm_label": "interfaces typescript"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-mcp-refactor/design.md",
+      "source_location": "L42",
+      "_origin": "ast",
+      "id": "specs_archive_bot_mcp_refactor_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 617,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-mcp-refactor/design.md",
+      "source_location": "L47",
+      "_origin": "ast",
+      "id": "specs_archive_bot_mcp_refactor_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 617,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "bot-mcp-refactor/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-mcp-refactor/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_mcp_refactor_proposal",
+      "community": 130,
+      "community_name": "proposta.tsx",
+      "norm_label": "bot-mcp-refactor/proposal.md"
+    },
+    {
+      "label": "Proposal: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-mcp-refactor/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_mcp_refactor_proposal_proposal_refatora\u00e7\u00e3o_do_bot_para_api_de_consulta_mcp_bot_mcp_refactor",
+      "community": 130,
+      "community_name": "proposta.tsx",
+      "norm_label": "proposal: refatoracao do bot para api de consulta mcp (bot-mcp-refactor)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-mcp-refactor/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_bot_mcp_refactor_proposal_problema",
+      "community": 130,
+      "community_name": "proposta.tsx",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-mcp-refactor/proposal.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "specs_archive_bot_mcp_refactor_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 130,
+      "community_name": "proposta.tsx",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-mcp-refactor/proposal.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "specs_archive_bot_mcp_refactor_proposal_contratos_de_dados",
+      "community": 130,
+      "community_name": "proposta.tsx",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-mcp-refactor/proposal.md",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "specs_archive_bot_mcp_refactor_proposal_api_interface",
+      "community": 130,
+      "community_name": "proposta.tsx",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-mcp-refactor/proposal.md",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "specs_archive_bot_mcp_refactor_proposal_features_existentes_impactadas",
+      "community": 130,
+      "community_name": "proposta.tsx",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-mcp-refactor/proposal.md",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "specs_archive_bot_mcp_refactor_proposal_risco_principal",
+      "community": 130,
+      "community_name": "proposta.tsx",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "bot-mcp-refactor/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-mcp-refactor/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_mcp_refactor_spec_plan",
+      "community": 619,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "norm_label": "bot-mcp-refactor/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-mcp-refactor/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_mcp_refactor_spec_plan_spec_plan_refatora\u00e7\u00e3o_do_bot_para_api_de_consulta_mcp_bot_mcp_refactor",
+      "community": 619,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "norm_label": "spec plan: refatoracao do bot para api de consulta mcp (bot-mcp-refactor)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-mcp-refactor/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_bot_mcp_refactor_spec_plan_tasks",
+      "community": 619,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "norm_label": "tasks"
+    },
+    {
       "label": "bot-traefik-routing/design.md",
       "file_type": "document",
       "source_file": "specs/archive/bot-traefik-routing/design.md",
@@ -41933,201 +42571,201 @@
       "norm_label": "tasks"
     },
     {
-      "label": "bot-config-ui/design.md",
+      "label": "bot-production-fixes/design.md",
       "file_type": "document",
-      "source_file": "specs/bot-config-ui/design.md",
+      "source_file": "specs/bot-production-fixes/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_bot_config_ui_design",
-      "community": 81,
-      "community_name": "importacoes-despesas.tsx",
-      "norm_label": "bot-config-ui/design.md"
+      "id": "specs_bot_production_fixes_design",
+      "community": 616,
+      "community_name": "Design: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
+      "norm_label": "bot-production-fixes/design.md"
     },
     {
-      "label": "Design: Bot Config UI & MCP Agent Integration (bot-config-ui)",
+      "label": "Design: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
       "file_type": "document",
-      "source_file": "specs/bot-config-ui/design.md",
+      "source_file": "specs/bot-production-fixes/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
-      "community": 81,
-      "community_name": "importacoes-despesas.tsx",
-      "norm_label": "design: bot config ui & mcp agent integration (bot-config-ui)"
+      "id": "specs_bot_production_fixes_design_design_corre\u00e7\u00f5es_de_produ\u00e7\u00e3o_cors_vps_e_schema_cache_bot_production_fixes",
+      "community": 616,
+      "community_name": "Design: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
+      "norm_label": "design: correcoes de producao (cors vps e schema cache) (bot-production-fixes)"
     },
     {
       "label": "Arquitetura T\u00e9cnica",
       "file_type": "document",
-      "source_file": "specs/bot-config-ui/design.md",
+      "source_file": "specs/bot-production-fixes/design.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_bot_config_ui_design_arquitetura_t\u00e9cnica",
-      "community": 81,
-      "community_name": "importacoes-despesas.tsx",
+      "id": "specs_bot_production_fixes_design_arquitetura_t\u00e9cnica",
+      "community": 616,
+      "community_name": "Design: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
       "norm_label": "arquitetura tecnica"
     },
     {
       "label": "Interfaces TypeScript",
       "file_type": "document",
-      "source_file": "specs/bot-config-ui/design.md",
-      "source_location": "L17",
+      "source_file": "specs/bot-production-fixes/design.md",
+      "source_location": "L6",
       "_origin": "ast",
-      "id": "specs_bot_config_ui_design_interfaces_typescript",
-      "community": 81,
-      "community_name": "importacoes-despesas.tsx",
+      "id": "specs_bot_production_fixes_design_interfaces_typescript",
+      "community": 616,
+      "community_name": "Design: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
       "norm_label": "interfaces typescript"
     },
     {
       "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
       "file_type": "document",
-      "source_file": "specs/bot-config-ui/design.md",
-      "source_location": "L41",
+      "source_file": "specs/bot-production-fixes/design.md",
+      "source_location": "L9",
       "_origin": "ast",
-      "id": "specs_bot_config_ui_design_componentes_hooks_fun\u00e7\u00f5es",
-      "community": 81,
-      "community_name": "importacoes-despesas.tsx",
+      "id": "specs_bot_production_fixes_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 616,
+      "community_name": "Design: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
       "norm_label": "componentes / hooks / funcoes"
     },
     {
-      "label": "Fluxo de UI",
+      "label": "Infra / Deploy",
       "file_type": "document",
-      "source_file": "specs/bot-config-ui/design.md",
-      "source_location": "L52",
+      "source_file": "specs/bot-production-fixes/design.md",
+      "source_location": "L12",
       "_origin": "ast",
-      "id": "specs_bot_config_ui_design_fluxo_de_ui",
-      "community": 81,
-      "community_name": "importacoes-despesas.tsx",
-      "norm_label": "fluxo de ui"
+      "id": "specs_bot_production_fixes_design_infra_deploy",
+      "community": 616,
+      "community_name": "Design: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
+      "norm_label": "infra / deploy"
     },
     {
       "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
       "file_type": "document",
-      "source_file": "specs/bot-config-ui/design.md",
-      "source_location": "L59",
+      "source_file": "specs/bot-production-fixes/design.md",
+      "source_location": "L21",
       "_origin": "ast",
-      "id": "specs_bot_config_ui_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
-      "community": 81,
-      "community_name": "importacoes-despesas.tsx",
+      "id": "specs_bot_production_fixes_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 616,
+      "community_name": "Design: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
       "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
     },
     {
-      "label": "bot-config-ui/proposal.md",
+      "label": "bot-production-fixes/proposal.md",
       "file_type": "document",
-      "source_file": "specs/bot-config-ui/proposal.md",
+      "source_file": "specs/bot-production-fixes/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_bot_config_ui_proposal",
-      "community": 58,
-      "community_name": "src/server.ts",
-      "norm_label": "bot-config-ui/proposal.md"
+      "id": "specs_bot_production_fixes_proposal",
+      "community": 477,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "norm_label": "bot-production-fixes/proposal.md"
     },
     {
-      "label": "Proposal: Bot Config UI & MCP Agent Integration (bot-config-ui)",
+      "label": "Proposal: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
       "file_type": "document",
-      "source_file": "specs/bot-config-ui/proposal.md",
+      "source_file": "specs/bot-production-fixes/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
-      "community": 58,
-      "community_name": "src/server.ts",
-      "norm_label": "proposal: bot config ui & mcp agent integration (bot-config-ui)"
+      "id": "specs_bot_production_fixes_proposal_proposal_corre\u00e7\u00f5es_de_produ\u00e7\u00e3o_cors_vps_e_schema_cache_bot_production_fixes",
+      "community": 477,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "norm_label": "proposal: correcoes de producao (cors vps e schema cache) (bot-production-fixes)"
     },
     {
       "label": "Problema",
       "file_type": "document",
-      "source_file": "specs/bot-config-ui/proposal.md",
+      "source_file": "specs/bot-production-fixes/proposal.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_bot_config_ui_proposal_problema",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "id": "specs_bot_production_fixes_proposal_problema",
+      "community": 477,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
       "norm_label": "problema"
     },
     {
       "label": "Solu\u00e7\u00e3o Proposta",
       "file_type": "document",
-      "source_file": "specs/bot-config-ui/proposal.md",
-      "source_location": "L6",
+      "source_file": "specs/bot-production-fixes/proposal.md",
+      "source_location": "L7",
       "_origin": "ast",
-      "id": "specs_bot_config_ui_proposal_solu\u00e7\u00e3o_proposta",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "id": "specs_bot_production_fixes_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 477,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
       "norm_label": "solucao proposta"
     },
     {
       "label": "Contratos de Dados",
       "file_type": "document",
-      "source_file": "specs/bot-config-ui/proposal.md",
-      "source_location": "L16",
+      "source_file": "specs/bot-production-fixes/proposal.md",
+      "source_location": "L11",
       "_origin": "ast",
-      "id": "specs_bot_config_ui_proposal_contratos_de_dados",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "id": "specs_bot_production_fixes_proposal_contratos_de_dados",
+      "community": 477,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
       "norm_label": "contratos de dados"
     },
     {
       "label": "API / Interface",
       "file_type": "document",
-      "source_file": "specs/bot-config-ui/proposal.md",
-      "source_location": "L22",
+      "source_file": "specs/bot-production-fixes/proposal.md",
+      "source_location": "L14",
       "_origin": "ast",
-      "id": "specs_bot_config_ui_proposal_api_interface",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "id": "specs_bot_production_fixes_proposal_api_interface",
+      "community": 477,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
       "norm_label": "api / interface"
     },
     {
       "label": "Features Existentes Impactadas",
       "file_type": "document",
-      "source_file": "specs/bot-config-ui/proposal.md",
-      "source_location": "L27",
+      "source_file": "specs/bot-production-fixes/proposal.md",
+      "source_location": "L17",
       "_origin": "ast",
-      "id": "specs_bot_config_ui_proposal_features_existentes_impactadas",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "id": "specs_bot_production_fixes_proposal_features_existentes_impactadas",
+      "community": 477,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
       "norm_label": "features existentes impactadas"
     },
     {
       "label": "Risco Principal",
       "file_type": "document",
-      "source_file": "specs/bot-config-ui/proposal.md",
-      "source_location": "L31",
+      "source_file": "specs/bot-production-fixes/proposal.md",
+      "source_location": "L20",
       "_origin": "ast",
-      "id": "specs_bot_config_ui_proposal_risco_principal",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "id": "specs_bot_production_fixes_proposal_risco_principal",
+      "community": 477,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
       "norm_label": "risco principal"
     },
     {
-      "label": "bot-config-ui/spec-plan.md",
+      "label": "bot-production-fixes/spec-plan.md",
       "file_type": "document",
-      "source_file": "specs/bot-config-ui/spec-plan.md",
+      "source_file": "specs/bot-production-fixes/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_bot_config_ui_spec_plan",
-      "community": 129,
-      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
-      "norm_label": "bot-config-ui/spec-plan.md"
+      "id": "specs_bot_production_fixes_spec_plan",
+      "community": 620,
+      "community_name": "Spec Plan: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
+      "norm_label": "bot-production-fixes/spec-plan.md"
     },
     {
-      "label": "Spec Plan: Bot Config UI & MCP Agent Integration (bot-config-ui)",
+      "label": "Spec Plan: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
       "file_type": "document",
-      "source_file": "specs/bot-config-ui/spec-plan.md",
+      "source_file": "specs/bot-production-fixes/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_bot_config_ui_spec_plan_spec_plan_bot_config_ui_mcp_agent_integration_bot_config_ui",
-      "community": 129,
-      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
-      "norm_label": "spec plan: bot config ui & mcp agent integration (bot-config-ui)"
+      "id": "specs_bot_production_fixes_spec_plan_spec_plan_corre\u00e7\u00f5es_de_produ\u00e7\u00e3o_cors_vps_e_schema_cache_bot_production_fixes",
+      "community": 620,
+      "community_name": "Spec Plan: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
+      "norm_label": "spec plan: correcoes de producao (cors vps e schema cache) (bot-production-fixes)"
     },
     {
       "label": "Tasks",
       "file_type": "document",
-      "source_file": "specs/bot-config-ui/spec-plan.md",
+      "source_file": "specs/bot-production-fixes/spec-plan.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_bot_config_ui_spec_plan_tasks",
-      "community": 129,
-      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
+      "id": "specs_bot_production_fixes_spec_plan_tasks",
+      "community": 620,
+      "community_name": "Spec Plan: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
       "norm_label": "tasks"
     },
     {
@@ -47199,6 +47837,17 @@
       "_origin": "ast",
       "source": "run_migration",
       "target": "run_migration_supabase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scratch/apply_bot_logs_migration.cjs",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scratch_apply_bot_logs_migration",
+      "target": "scratch_apply_bot_logs_migration_run",
       "confidence_score": 1.0
     },
     {
@@ -70951,6 +71600,17 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "agent_memory_infra_mem\u00f3ria_modular_infraestrutura_deploy_vps_dns_redes",
+      "target": "agent_memory_infra_2026_07_28_feature_id_bot_cors_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agent/memory/infra.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agent_memory_infra_mem\u00f3ria_modular_infraestrutura_deploy_vps_dns_redes",
       "target": "agent_memory_infra_2026_07_28_feature_id_bot_traefik_routing",
       "confidence_score": 1.0
     },
@@ -71024,7 +71684,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".agent/memory/supabase.md",
-      "source_location": "L3",
+      "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast",
       "source": "agent_memory_supabase_mem\u00f3ria_modular_supabase_schemas",
@@ -71035,7 +71695,29 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".agent/memory/supabase.md",
-      "source_location": "L16",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agent_memory_supabase_mem\u00f3ria_modular_supabase_schemas",
+      "target": "agent_memory_supabase_2026_07_28_feature_id_bot_mcp_refactor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agent/memory/supabase.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agent_memory_supabase_mem\u00f3ria_modular_supabase_schemas",
+      "target": "agent_memory_supabase_2026_07_28_feature_id_bot_production_fixes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agent/memory/supabase.md",
+      "source_location": "L40",
       "weight": 1.0,
       "_origin": "ast",
       "source": "agent_memory_supabase_mem\u00f3ria_modular_supabase_schemas",
@@ -86852,6 +87534,490 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-config-ui/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_config_ui_design",
+      "target": "specs_archive_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-config-ui/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_archive_bot_config_ui_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-config-ui/design.md",
+      "source_location": "L59",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_archive_bot_config_ui_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-config-ui/design.md",
+      "source_location": "L41",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_archive_bot_config_ui_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-config-ui/design.md",
+      "source_location": "L52",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_archive_bot_config_ui_design_fluxo_de_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-config-ui/design.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_archive_bot_config_ui_design_interfaces_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-config-ui/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_config_ui_proposal",
+      "target": "specs_archive_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-config-ui/proposal.md",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_archive_bot_config_ui_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-config-ui/proposal.md",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_archive_bot_config_ui_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-config-ui/proposal.md",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_archive_bot_config_ui_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-config-ui/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_archive_bot_config_ui_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-config-ui/proposal.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_archive_bot_config_ui_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-config-ui/proposal.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_archive_bot_config_ui_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-config-ui/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_config_ui_spec_plan",
+      "target": "specs_archive_bot_config_ui_spec_plan_spec_plan_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-config-ui/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_config_ui_spec_plan_spec_plan_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_archive_bot_config_ui_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-cors-fix/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_cors_fix_design",
+      "target": "specs_archive_bot_cors_fix_design_design_corre\u00e7\u00e3o_de_cors_no_bot_playwright_bot_cors_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-cors-fix/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_cors_fix_design_design_corre\u00e7\u00e3o_de_cors_no_bot_playwright_bot_cors_fix",
+      "target": "specs_archive_bot_cors_fix_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-cors-fix/design.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_cors_fix_design_design_corre\u00e7\u00e3o_de_cors_no_bot_playwright_bot_cors_fix",
+      "target": "specs_archive_bot_cors_fix_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-cors-fix/design.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_cors_fix_design_design_corre\u00e7\u00e3o_de_cors_no_bot_playwright_bot_cors_fix",
+      "target": "specs_archive_bot_cors_fix_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-cors-fix/design.md",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_cors_fix_design_design_corre\u00e7\u00e3o_de_cors_no_bot_playwright_bot_cors_fix",
+      "target": "specs_archive_bot_cors_fix_design_fluxo_de_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-cors-fix/design.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_cors_fix_design_design_corre\u00e7\u00e3o_de_cors_no_bot_playwright_bot_cors_fix",
+      "target": "specs_archive_bot_cors_fix_design_interfaces_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-cors-fix/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_cors_fix_proposal",
+      "target": "specs_archive_bot_cors_fix_proposal_proposal_corre\u00e7\u00e3o_de_cors_no_bot_playwright_bot_cors_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-cors-fix/proposal.md",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_cors_fix_proposal_proposal_corre\u00e7\u00e3o_de_cors_no_bot_playwright_bot_cors_fix",
+      "target": "specs_archive_bot_cors_fix_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-cors-fix/proposal.md",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_cors_fix_proposal_proposal_corre\u00e7\u00e3o_de_cors_no_bot_playwright_bot_cors_fix",
+      "target": "specs_archive_bot_cors_fix_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-cors-fix/proposal.md",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_cors_fix_proposal_proposal_corre\u00e7\u00e3o_de_cors_no_bot_playwright_bot_cors_fix",
+      "target": "specs_archive_bot_cors_fix_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-cors-fix/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_cors_fix_proposal_proposal_corre\u00e7\u00e3o_de_cors_no_bot_playwright_bot_cors_fix",
+      "target": "specs_archive_bot_cors_fix_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-cors-fix/proposal.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_cors_fix_proposal_proposal_corre\u00e7\u00e3o_de_cors_no_bot_playwright_bot_cors_fix",
+      "target": "specs_archive_bot_cors_fix_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-cors-fix/proposal.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_cors_fix_proposal_proposal_corre\u00e7\u00e3o_de_cors_no_bot_playwright_bot_cors_fix",
+      "target": "specs_archive_bot_cors_fix_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-cors-fix/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_cors_fix_spec_plan",
+      "target": "specs_archive_bot_cors_fix_spec_plan_spec_plan_corre\u00e7\u00e3o_de_cors_no_bot_playwright_bot_cors_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-cors-fix/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_cors_fix_spec_plan_spec_plan_corre\u00e7\u00e3o_de_cors_no_bot_playwright_bot_cors_fix",
+      "target": "specs_archive_bot_cors_fix_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-mcp-refactor/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_mcp_refactor_design",
+      "target": "specs_archive_bot_mcp_refactor_design_design_refatora\u00e7\u00e3o_do_bot_para_api_de_consulta_mcp_bot_mcp_refactor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-mcp-refactor/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_mcp_refactor_design_design_refatora\u00e7\u00e3o_do_bot_para_api_de_consulta_mcp_bot_mcp_refactor",
+      "target": "specs_archive_bot_mcp_refactor_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-mcp-refactor/design.md",
+      "source_location": "L47",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_mcp_refactor_design_design_refatora\u00e7\u00e3o_do_bot_para_api_de_consulta_mcp_bot_mcp_refactor",
+      "target": "specs_archive_bot_mcp_refactor_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-mcp-refactor/design.md",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_mcp_refactor_design_design_refatora\u00e7\u00e3o_do_bot_para_api_de_consulta_mcp_bot_mcp_refactor",
+      "target": "specs_archive_bot_mcp_refactor_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-mcp-refactor/design.md",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_mcp_refactor_design_design_refatora\u00e7\u00e3o_do_bot_para_api_de_consulta_mcp_bot_mcp_refactor",
+      "target": "specs_archive_bot_mcp_refactor_design_interfaces_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-mcp-refactor/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_mcp_refactor_proposal",
+      "target": "specs_archive_bot_mcp_refactor_proposal_proposal_refatora\u00e7\u00e3o_do_bot_para_api_de_consulta_mcp_bot_mcp_refactor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-mcp-refactor/proposal.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_mcp_refactor_proposal_proposal_refatora\u00e7\u00e3o_do_bot_para_api_de_consulta_mcp_bot_mcp_refactor",
+      "target": "specs_archive_bot_mcp_refactor_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-mcp-refactor/proposal.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_mcp_refactor_proposal_proposal_refatora\u00e7\u00e3o_do_bot_para_api_de_consulta_mcp_bot_mcp_refactor",
+      "target": "specs_archive_bot_mcp_refactor_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-mcp-refactor/proposal.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_mcp_refactor_proposal_proposal_refatora\u00e7\u00e3o_do_bot_para_api_de_consulta_mcp_bot_mcp_refactor",
+      "target": "specs_archive_bot_mcp_refactor_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-mcp-refactor/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_mcp_refactor_proposal_proposal_refatora\u00e7\u00e3o_do_bot_para_api_de_consulta_mcp_bot_mcp_refactor",
+      "target": "specs_archive_bot_mcp_refactor_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-mcp-refactor/proposal.md",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_mcp_refactor_proposal_proposal_refatora\u00e7\u00e3o_do_bot_para_api_de_consulta_mcp_bot_mcp_refactor",
+      "target": "specs_archive_bot_mcp_refactor_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-mcp-refactor/proposal.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_mcp_refactor_proposal_proposal_refatora\u00e7\u00e3o_do_bot_para_api_de_consulta_mcp_bot_mcp_refactor",
+      "target": "specs_archive_bot_mcp_refactor_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-mcp-refactor/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_mcp_refactor_spec_plan",
+      "target": "specs_archive_bot_mcp_refactor_spec_plan_spec_plan_refatora\u00e7\u00e3o_do_bot_para_api_de_consulta_mcp_bot_mcp_refactor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-mcp-refactor/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_mcp_refactor_spec_plan_spec_plan_refatora\u00e7\u00e3o_do_bot_para_api_de_consulta_mcp_bot_mcp_refactor",
+      "target": "specs_archive_bot_mcp_refactor_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "specs/archive/bot-traefik-routing/design.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -91571,166 +92737,166 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/bot-config-ui/design.md",
+      "source_file": "specs/bot-production-fixes/design.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_bot_config_ui_design",
-      "target": "specs_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "source": "specs_bot_production_fixes_design",
+      "target": "specs_bot_production_fixes_design_design_corre\u00e7\u00f5es_de_produ\u00e7\u00e3o_cors_vps_e_schema_cache_bot_production_fixes",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/bot-config-ui/design.md",
+      "source_file": "specs/bot-production-fixes/design.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
-      "target": "specs_bot_config_ui_design_arquitetura_t\u00e9cnica",
+      "source": "specs_bot_production_fixes_design_design_corre\u00e7\u00f5es_de_produ\u00e7\u00e3o_cors_vps_e_schema_cache_bot_production_fixes",
+      "target": "specs_bot_production_fixes_design_arquitetura_t\u00e9cnica",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/bot-config-ui/design.md",
-      "source_location": "L59",
+      "source_file": "specs/bot-production-fixes/design.md",
+      "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
-      "target": "specs_bot_config_ui_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "source": "specs_bot_production_fixes_design_design_corre\u00e7\u00f5es_de_produ\u00e7\u00e3o_cors_vps_e_schema_cache_bot_production_fixes",
+      "target": "specs_bot_production_fixes_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/bot-config-ui/design.md",
-      "source_location": "L41",
+      "source_file": "specs/bot-production-fixes/design.md",
+      "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
-      "target": "specs_bot_config_ui_design_componentes_hooks_fun\u00e7\u00f5es",
+      "source": "specs_bot_production_fixes_design_design_corre\u00e7\u00f5es_de_produ\u00e7\u00e3o_cors_vps_e_schema_cache_bot_production_fixes",
+      "target": "specs_bot_production_fixes_design_componentes_hooks_fun\u00e7\u00f5es",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/bot-config-ui/design.md",
-      "source_location": "L52",
+      "source_file": "specs/bot-production-fixes/design.md",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
-      "target": "specs_bot_config_ui_design_fluxo_de_ui",
+      "source": "specs_bot_production_fixes_design_design_corre\u00e7\u00f5es_de_produ\u00e7\u00e3o_cors_vps_e_schema_cache_bot_production_fixes",
+      "target": "specs_bot_production_fixes_design_infra_deploy",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/bot-config-ui/design.md",
-      "source_location": "L17",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
-      "target": "specs_bot_config_ui_design_interfaces_typescript",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-config-ui/proposal.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_config_ui_proposal",
-      "target": "specs_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-config-ui/proposal.md",
-      "source_location": "L22",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
-      "target": "specs_bot_config_ui_proposal_api_interface",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-config-ui/proposal.md",
-      "source_location": "L16",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
-      "target": "specs_bot_config_ui_proposal_contratos_de_dados",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-config-ui/proposal.md",
-      "source_location": "L27",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
-      "target": "specs_bot_config_ui_proposal_features_existentes_impactadas",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-config-ui/proposal.md",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
-      "target": "specs_bot_config_ui_proposal_problema",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-config-ui/proposal.md",
-      "source_location": "L31",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
-      "target": "specs_bot_config_ui_proposal_risco_principal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-config-ui/proposal.md",
+      "source_file": "specs/bot-production-fixes/design.md",
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
-      "target": "specs_bot_config_ui_proposal_solu\u00e7\u00e3o_proposta",
+      "source": "specs_bot_production_fixes_design_design_corre\u00e7\u00f5es_de_produ\u00e7\u00e3o_cors_vps_e_schema_cache_bot_production_fixes",
+      "target": "specs_bot_production_fixes_design_interfaces_typescript",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/bot-config-ui/spec-plan.md",
+      "source_file": "specs/bot-production-fixes/proposal.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_bot_config_ui_spec_plan",
-      "target": "specs_bot_config_ui_spec_plan_spec_plan_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "source": "specs_bot_production_fixes_proposal",
+      "target": "specs_bot_production_fixes_proposal_proposal_corre\u00e7\u00f5es_de_produ\u00e7\u00e3o_cors_vps_e_schema_cache_bot_production_fixes",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/bot-config-ui/spec-plan.md",
+      "source_file": "specs/bot-production-fixes/proposal.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_bot_production_fixes_proposal_proposal_corre\u00e7\u00f5es_de_produ\u00e7\u00e3o_cors_vps_e_schema_cache_bot_production_fixes",
+      "target": "specs_bot_production_fixes_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/bot-production-fixes/proposal.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_bot_production_fixes_proposal_proposal_corre\u00e7\u00f5es_de_produ\u00e7\u00e3o_cors_vps_e_schema_cache_bot_production_fixes",
+      "target": "specs_bot_production_fixes_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/bot-production-fixes/proposal.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_bot_production_fixes_proposal_proposal_corre\u00e7\u00f5es_de_produ\u00e7\u00e3o_cors_vps_e_schema_cache_bot_production_fixes",
+      "target": "specs_bot_production_fixes_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/bot-production-fixes/proposal.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_bot_config_ui_spec_plan_spec_plan_bot_config_ui_mcp_agent_integration_bot_config_ui",
-      "target": "specs_bot_config_ui_spec_plan_tasks",
+      "source": "specs_bot_production_fixes_proposal_proposal_corre\u00e7\u00f5es_de_produ\u00e7\u00e3o_cors_vps_e_schema_cache_bot_production_fixes",
+      "target": "specs_bot_production_fixes_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/bot-production-fixes/proposal.md",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_bot_production_fixes_proposal_proposal_corre\u00e7\u00f5es_de_produ\u00e7\u00e3o_cors_vps_e_schema_cache_bot_production_fixes",
+      "target": "specs_bot_production_fixes_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/bot-production-fixes/proposal.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_bot_production_fixes_proposal_proposal_corre\u00e7\u00f5es_de_produ\u00e7\u00e3o_cors_vps_e_schema_cache_bot_production_fixes",
+      "target": "specs_bot_production_fixes_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/bot-production-fixes/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_bot_production_fixes_spec_plan",
+      "target": "specs_bot_production_fixes_spec_plan_spec_plan_corre\u00e7\u00f5es_de_produ\u00e7\u00e3o_cors_vps_e_schema_cache_bot_production_fixes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/bot-production-fixes/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_bot_production_fixes_spec_plan_spec_plan_corre\u00e7\u00f5es_de_produ\u00e7\u00e3o_cors_vps_e_schema_cache_bot_production_fixes",
+      "target": "specs_bot_production_fixes_spec_plan_tasks",
       "confidence_score": 1.0
     },
     {
@@ -92384,5 +93550,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "a024f21af98e58c27a362f1fe4a467ea68755ef7"
+  "built_at_commit": "199858da358e159dd3b6b556931b4e1e50a5cdf8"
 }

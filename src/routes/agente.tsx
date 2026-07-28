@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import React, { useState, useEffect, useRef } from 'react';
 import { AppShell } from '@/components/layout/AppShell';
 import { supabase } from '@/lib/supabase';
-import { PromptBox } from '@/components/chat/PromptBox';
+import { PromptInput } from '@/components/chat/PromptInput';
 import { MessageList, Message } from '@/components/chat/MessageList';
 import { Bot, Plus, Trash2, Key, BarChart3, Terminal, MessageSquare, RefreshCw, Play, Cpu, Zap, CheckCircle2, XCircle, Clock, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
@@ -206,7 +206,7 @@ function AgentePage() {
     }
   };
 
-  const sendMessage = async (text: string, actionId: string | null) => {
+  const sendMessage = async (text: string, meta?: any) => {
     if (!text.trim()) return;
 
     let currentConvId = activeConversationId;
@@ -470,7 +470,7 @@ function AgentePage() {
             {/* Input Area (Flutuante) */}
             <div className="absolute bottom-6 left-0 right-0 px-4 md:px-16 pointer-events-none">
               <div className="max-w-3xl mx-auto pointer-events-auto">
-                <PromptBox onSubmitMessage={sendMessage} isSending={isLoading} />
+                <PromptInput onSubmit={(val, meta) => sendMessage(val, meta)} disabled={isLoading} />
               </div>
             </div>
           </div>

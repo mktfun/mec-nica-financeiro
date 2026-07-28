@@ -109,6 +109,31 @@ Deno.serve(async (req) => {
         execute: async () => {
           return invokeMCP('consulta_contas_pagar_exposicao', {})
         },
+      }),
+      consulta_detalhes_os: tool({
+        description: 'Consulta os detalhes de uma Ordem de Serviço específica pelo seu número (Ex: 1763).',
+        parameters: z.object({
+          osNumber: z.string().describe('O número da OS (ex: 1763)')
+        }),
+        execute: async ({ osNumber }) => {
+          const { data, error } = await supabaseClient
+            .from('os')
+            .select('*')
+            .eq('os_number', osNumber)
+            .single()
+            
+          const result = error ? { error: error.message } : data;
+          
+          // Log manual to mcp_logs so the UI can display it
+          await supabaseClient.from('mcp_logs').insert([{
+            conversation_id: 'auto-mcp-log',
+            action: 'consulta_detalhes_os',
+            params: { osNumber },
+            result
+          }])
+          
+          return result;
+        },
       })
     };
 

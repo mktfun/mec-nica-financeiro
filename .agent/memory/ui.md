@@ -112,3 +112,14 @@
 **Risco identificado:** Hardcodar cores Tailwind cria uma "paleta paralela" que nÃ£o responde ao tema (light/dark mode) e faz novos componentes parecerem de outro sistema visualmente.
 
 **NÃ£o fazer:** NUNCA usar `bg-[#050711]`, `bg-zinc-900`, `border-zinc-800`, `text-emerald-*`, `text-sky-*`, `text-amber-*` em componentes de interface. Sempre referenciar o design system via CSS Custom Properties.
+
+## [2026-07-28] — [Feature ID: chat-ui-minimalist]
+
+**Contexto:** O componente de UI PromptBox foi substituído pelo PromptInput, e o MessageList foi atualizado para exibir execuções MCP/Tools em blocos collapsible/minimalistas.
+
+**Regra aprendida:** Ao exibir logs do MCP (tool calls) nas mensagens, usar um componente HTML <details> minimalista com classe \custom-scrollbar\ otimiza o espaço da interface de chat sem poluir o histórico visual da IA.
+
+**Risco identificado:** A simulação de microfone no \PromptInput\ e o processamento de anexos precisam de um mapeamento estrito na API local caso mudem os payloads do LLM.
+
+**Não fazer:** Nunca injetar styles diretamente com backticks (\\\\\) escapados por barras investidas (\\\\\\\\\) dentro de \dangerouslySetInnerHTML\, sob pena de causar erro de sintaxe TypeScript do Vite.
+
