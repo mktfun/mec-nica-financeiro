@@ -1,6 +1,19 @@
 # 🎨 Memória Modular: Interface & UX (Frontend)
 
+## [2026-07-28] — Feature ID: fix-store-closing-unified-panel-layout
+
+**Contexto:** Restauração do fundo contínuo único para o painel das 6 métricas de loja em `conciliacao.index.tsx` e remoção de pílulas isoladas.
+
+**Regra aprendida:**
+- **Painel Único Contínuo por Loja:** No card de fechamento por loja na rota `/conciliacao`, as 6 colunas (`Saldo`, `Maquininha`, `PIX`, `Na Loja OS`, `Faturamento`, `Diferença`) DEVEM ser envelopadas dentro de um único painel escuro contínuo (`bg-black/25 p-4 sm:p-5 rounded-2xl border border-white/5 flex-1 shadow-inner`).
+- **NÃO usar pílulas/caixas isoladas flutuantes por indicador:** Evitar transformar cada indicador em uma caixa individual com borda e fundo preto próprios. O visual preferido do usuário é uma superfície contínua unificada com espaçamento amplo (`gap-6 xl:gap-8`).
+
+**Risco identificado:** Criar caixas flutuantes divididas para cada métrica descaracteriza o painel executivo e gera poluição visual com excesso de bordas no mesmo card.
+
+**Não fazer:** Nunca dividir as 6 colunas da loja em 6 pílulas flutuantes isoladas com bordas separadas.
+
 ## [2026-07-24] — Feature ID: agente-fullbleed-layout-and-clean-tabs
+
 
 **Contexto:** Restauração do layout do Chat do Agente em tela cheia (full-bleed) e substituição de emojisunicode por ícones Lucide React limpos em pílulas muted de navegação.
 
