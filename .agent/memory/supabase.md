@@ -1,5 +1,17 @@
 # 🧠 Memória Modular: Supabase & Schemas
 
+## [2026-07-28] — Feature ID: bot-mcp-refactor
+
+**Contexto:** Refatoração da integração do Bot Playwright para operar como uma API de Consulta MCP verdadeira (Model Context Protocol) via Vercel AI SDK na Edge Function `ai-chat`, substituindo strings mágicas no frontend.
+
+**Regra aprendida:**
+- **Injeção Dinâmica em Edge Functions:** Em orquestrações de IA onde serviços externos (como Bots/Crawlers headless) são consumidos, as chaves (ex: `bot_url` e `bot_api_key`) devem ser lidas da tabela `ai_settings` do banco e repassadas no *body* das chamadas internas (ex: `supabase.functions.invoke('mcp-proxy', { body: { config: ... } })`).
+- **Tool Calling Nativo:** Nunca usar regex no frontend (ex: `[BOT_SYNC:...]`) para simular tools do LLM se o backend já estiver usando Vercel AI SDK (`ai@3`). Declare a `tool` no backend, execute o proxy e deixe o LLM formular a resposta nativamente baseada no `toolResult`.
+
+**Risco identificado:** A dependência exclusiva de variáveis de ambiente (`Deno.env`) para rotas de proxy engessa a aplicação e impede que cada usuário/tenant conecte seu próprio bot.
+
+**Não fazer:** Nunca interceptar intents do modelo via RegExp no frontend se o ecossistema for compatível com chamadas de função (Function Calling/Tools) do lado do servidor.
+
 ## [2026-07-27] — Feature ID: fix-ai-telemetry-logs-and-cost-tracking
 
 **Contexto:** Provisionamento da tabela `public.ai_execution_logs` e `public.ai_settings` no Supabase com suporte a RLS e salvamento headless.

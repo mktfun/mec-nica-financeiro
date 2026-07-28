@@ -1080,8 +1080,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useAiSettings.ts": {
-    "mtime": 1785163616.051102,
-    "ast_hash": "2377919de7109a6b5459c484039301d0",
+    "mtime": 1785252915.7200432,
+    "ast_hash": "282ea9b0dbb62d7d29c239d79b906368",
     "semantic_hash": ""
   },
   "src/hooks/useAlerts.ts": {
@@ -1105,8 +1105,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useBotLogs.ts": {
-    "mtime": 1784919444.7376351,
-    "ast_hash": "0f88a18dfd993bb615317a4797b73c54",
+    "mtime": 1785252941.9704266,
+    "ast_hash": "6b0504df59291b324d6a05e699b38397",
     "semantic_hash": ""
   },
   "src/hooks/useBotRuns.ts": {
@@ -1315,8 +1315,8 @@
     "semantic_hash": ""
   },
   "src/routes/agente.tsx": {
-    "mtime": 1785241336.5934327,
-    "ast_hash": "b89ec21e962f6026dccd666d5cdbf070",
+    "mtime": 1785253594.112844,
+    "ast_hash": "68d88989d5b61105451679d476da3d38",
     "semantic_hash": ""
   },
   "src/routes/alertas.tsx": {
@@ -1610,8 +1610,8 @@
     "semantic_hash": ""
   },
   ".agent/memory/ui.md": {
-    "mtime": 1785247118.8819492,
-    "ast_hash": "84a1b4eaf83560b13bbcc8e54acd8eb4",
+    "mtime": 1785254183.1220903,
+    "ast_hash": "03bd79a457d365ce8aae722a785b9709",
     "semantic_hash": ""
   },
   ".agent/policies/activation-rules.md": {
@@ -3599,21 +3599,6 @@
     "ast_hash": "e4a4731eddac3699f30d031a4ca79303",
     "semantic_hash": ""
   },
-  "specs/bot-traefik-routing/design.md": {
-    "mtime": 1785250166.760632,
-    "ast_hash": "411350c97983a4ff42e11157e6f21c8f",
-    "semantic_hash": ""
-  },
-  "specs/bot-traefik-routing/proposal.md": {
-    "mtime": 1785250147.4278233,
-    "ast_hash": "d90d3f221f938c714a48fcb7e37810d4",
-    "semantic_hash": ""
-  },
-  "specs/bot-traefik-routing/spec-plan.md": {
-    "mtime": 1785251394.6268818,
-    "ast_hash": "cb10ed63e53c07286dd18600b01e6ea1",
-    "semantic_hash": ""
-  },
   "specs/conciliacao-fixes/design.md": {
     "mtime": 1784840107.9675226,
     "ast_hash": "a54fee9050742b5fec8fc36a5afc85c1",
@@ -3685,8 +3670,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1781615936.9216688,
-    "ast_hash": "4094cbba14ce8ac8b7ad7f57b7cd9619",
+    "mtime": 1785254270.3381882,
+    "ast_hash": "a3af8362132592a60fcc62629723a9c8",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -3697,6 +3682,26 @@
   "specs/archive/038-arquitetura-conciliacao-cruzada/Documentacao-Conciliacao.pdf": {
     "mtime": 1781615936.899326,
     "ast_hash": "2f84dbfc765c72f0e159eb2673d3f16a",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260728000000_add_bot_settings.sql": {
+    "mtime": 1785252470.6860368,
+    "ast_hash": "b6f358b6c78fa4a428927047322ee701",
+    "semantic_hash": ""
+  },
+  "specs/archive/bot-traefik-routing/design.md": {
+    "mtime": 1785250166.760632,
+    "ast_hash": "411350c97983a4ff42e11157e6f21c8f",
+    "semantic_hash": ""
+  },
+  "specs/archive/bot-traefik-routing/proposal.md": {
+    "mtime": 1785250147.4278233,
+    "ast_hash": "d90d3f221f938c714a48fcb7e37810d4",
+    "semantic_hash": ""
+  },
+  "specs/archive/bot-traefik-routing/spec-plan.md": {
+    "mtime": 1785251394.6268818,
+    "ast_hash": "cb10ed63e53c07286dd18600b01e6ea1",
     "semantic_hash": ""
   }
 }

@@ -15,9 +15,9 @@ serve(async (req) => {
   }
 
   try {
-    const { action, params } = await req.json()
-    const mcpUrl = Deno.env.get('MCP_URL')
-    const workerKey = Deno.env.get('WORKER_API_KEY') || 'your_secret_key_here'
+    const { action, params, config } = await req.json()
+    const mcpUrl = config?.mcpUrl || Deno.env.get('MCP_URL')
+    const workerKey = config?.apiKey || Deno.env.get('WORKER_API_KEY') || 'your_secret_key_here'
 
     if (!mcpUrl) {
       throw new Error('MCP_URL secret is not set')

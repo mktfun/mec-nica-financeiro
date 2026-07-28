@@ -1315,8 +1315,8 @@
     "semantic_hash": ""
   },
   "src/routes/agente.tsx": {
-    "mtime": 1785253594.112844,
-    "ast_hash": "68d88989d5b61105451679d476da3d38",
+    "mtime": 1785259851.768933,
+    "ast_hash": "5ecca49b05c5e1c129c1a04c0cdbce73",
     "semantic_hash": ""
   },
   "src/routes/alertas.tsx": {
@@ -1425,8 +1425,8 @@
     "semantic_hash": ""
   },
   "supabase/functions/ai-chat/index.ts": {
-    "mtime": 1784382201.7130466,
-    "ast_hash": "6da70c299e55ae4d4fc68d3232c687d4",
+    "mtime": 1785259826.2954202,
+    "ast_hash": "a52963ee2758a3240edbf8168ff29f28",
     "semantic_hash": ""
   },
   "supabase/functions/mcp-proxy/deno.json": {
@@ -1435,8 +1435,8 @@
     "semantic_hash": ""
   },
   "supabase/functions/mcp-proxy/index.ts": {
-    "mtime": 1784380265.8655436,
-    "ast_hash": "524236bb38b3c323622d40a733fdc92d",
+    "mtime": 1785259817.1371567,
+    "ast_hash": "601491da3dbcac899454c8dce51217a2",
     "semantic_hash": ""
   },
   "supabase/migrations/20260602140022_add_history_log_to_patio_os.sql": {
@@ -1605,8 +1605,8 @@
     "semantic_hash": ""
   },
   ".agent/memory/supabase.md": {
-    "mtime": 1785251513.6441026,
-    "ast_hash": "91f029ffd323d68fc8e5358f5ae0f22a",
+    "mtime": 1785260062.932485,
+    "ast_hash": "80a6d58aa88f34fcf00b433dfd493088",
     "semantic_hash": ""
   },
   ".agent/memory/ui.md": {
@@ -3670,8 +3670,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1785254270.3381882,
-    "ast_hash": "a3af8362132592a60fcc62629723a9c8",
+    "mtime": 1785260135.1134331,
+    "ast_hash": "56cfa106120195a1b102e692e37db444",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -3702,6 +3702,36 @@
   "specs/archive/bot-traefik-routing/spec-plan.md": {
     "mtime": 1785251394.6268818,
     "ast_hash": "cb10ed63e53c07286dd18600b01e6ea1",
+    "semantic_hash": ""
+  },
+  "specs/archive/bot-config-ui/design.md": {
+    "mtime": 1785252339.1484396,
+    "ast_hash": "b44d67f9480c126ca2f931d6191e342e",
+    "semantic_hash": ""
+  },
+  "specs/archive/bot-config-ui/proposal.md": {
+    "mtime": 1785252318.230467,
+    "ast_hash": "015abb1da45d712428afde3dfa7fd603",
+    "semantic_hash": ""
+  },
+  "specs/archive/bot-config-ui/spec-plan.md": {
+    "mtime": 1785253653.7017868,
+    "ast_hash": "788d8407423a956f73e3c059837cc125",
+    "semantic_hash": ""
+  },
+  "specs/bot-mcp-refactor/design.md": {
+    "mtime": 1785259482.75395,
+    "ast_hash": "0ed1c0c7e09c295e9e364c72065c6ef4",
+    "semantic_hash": ""
+  },
+  "specs/bot-mcp-refactor/proposal.md": {
+    "mtime": 1785259468.006705,
+    "ast_hash": "32bf60c5c9f19820350b09177cb1ea51",
+    "semantic_hash": ""
+  },
+  "specs/bot-mcp-refactor/spec-plan.md": {
+    "mtime": 1785259494.6870587,
+    "ast_hash": "376ed5cc70ced6253ca3798d66f91540",
     "semantic_hash": ""
   }
 }

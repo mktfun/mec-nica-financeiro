@@ -259,36 +259,6 @@ function AgentePage() {
       let finalAnswer = aiRes.text || "Sem resposta.";
       let mcpLogsData: any = null;
 
-      // ── MCP: Interceptar tool calls do bot ─────────────────────────────────
-      // O LLM pode retornar comandos como [BOT_SYNC:oficina], [BOT_SYNC:rede] ou [BOT_SYNC:all]
-      const botSyncMatch = finalAnswer.match(/\[BOT_SYNC:(oficina|rede|all)\]/i);
-      if (botSyncMatch && botUrl && botApiKey) {
-        const service = botSyncMatch[1].toLowerCase() as 'oficina' | 'rede' | 'all';
-        const today = new Date();
-        today.setDate(today.getDate() - 1);
-        const targetDate = today.toISOString().split('T')[0];
-        const endpoint = service === 'all' ? '/api/sync' : `/api/sync/${service}`;
-        try {
-          toast.info(`🤖 MCP: acionando bot para "${service}"...`);
-          const botRes = await fetch(`${botUrl}${endpoint}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-Api-Key': botApiKey },
-            body: JSON.stringify({ targetDate }),
-            signal: AbortSignal.timeout(30000)
-          });
-          const botData = botRes.ok ? await botRes.json() : null;
-          const statusMsg = botRes.ok
-            ? `✅ Bot acionado com sucesso para "${service}" (${targetDate}). ${botData?.message || ''}`
-            : `⚠️ Bot retornou erro ${botRes.status}`;
-          finalAnswer = finalAnswer.replace(botSyncMatch[0], `\n\n---\n${statusMsg}`);
-          if (botRes.ok) {
-            toast.success(`Bot sincronizou "${service}" com sucesso!`);
-            setTimeout(() => refetchBotLogs(), 5000);
-          }
-        } catch (e: any) {
-          finalAnswer = finalAnswer.replace(botSyncMatch[0], `\n\n---\n⚠️ Falha ao acionar bot: ${e.message}`);
-        }
-      }
 
       if (aiRes.toolResults && aiRes.toolResults.length > 0) {
         mcpLogsData = aiRes.toolResults.map((tr: any) => ({

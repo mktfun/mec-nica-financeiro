@@ -61,7 +61,14 @@ Deno.serve(async (req) => {
     // MCP Proxy invocation helper
     const invokeMCP = async (action: string, params: any) => {
         const { data, error } = await supabaseClient.functions.invoke('mcp-proxy', {
-            body: { action, params }
+            body: { 
+              action, 
+              params,
+              config: {
+                mcpUrl: settings?.bot_url,
+                apiKey: settings?.bot_api_key
+              }
+            }
         })
         if (error) throw new Error(`MCP Error: ${error.message}`)
         

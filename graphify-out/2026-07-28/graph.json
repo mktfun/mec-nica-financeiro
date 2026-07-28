@@ -2804,8 +2804,8 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "package_dependencies_class_variance_authority",
-      "community": 28,
-      "community_name": "dependencies",
+      "community": 130,
+      "community_name": "proposta.tsx",
       "norm_label": "class-variance-authority"
     },
     {
@@ -2815,8 +2815,8 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "class_variance_authority",
-      "community": 28,
-      "community_name": "dependencies",
+      "community": 130,
+      "community_name": "proposta.tsx",
       "norm_label": "class-variance-authority"
     },
     {
@@ -2958,8 +2958,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "package_dependencies_input_otp",
-      "community": 501,
-      "community_name": "input-otp",
+      "community": 28,
+      "community_name": "dependencies",
       "norm_label": "input-otp"
     },
     {
@@ -2969,8 +2969,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "input_otp",
-      "community": 501,
-      "community_name": "input-otp",
+      "community": 28,
+      "community_name": "dependencies",
       "norm_label": "input-otp"
     },
     {
@@ -10952,8 +10952,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_chat_messagelist",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "messagelist.tsx"
     },
     {
@@ -10963,8 +10963,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_chat_messagelist_message",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "message"
     },
     {
@@ -10974,8 +10974,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_components_chat_messagelist_messagelist",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "messagelist()"
     },
     {
@@ -11326,8 +11326,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsextratotable",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "redevsextratotable.tsx"
     },
     {
@@ -11337,8 +11337,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsextratotable_redevsextratotableprops",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "redevsextratotableprops"
     },
     {
@@ -11348,8 +11348,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsextratotable_redevsextratotable",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "redevsextratotable()"
     },
     {
@@ -11414,8 +11414,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "alertresolvedialog.tsx"
     },
     {
@@ -11425,8 +11425,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog_alertresolvedialogprops",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "alertresolvedialogprops"
     },
     {
@@ -11436,8 +11436,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog_alertresolvedialog",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "alertresolvedialog()"
     },
     {
@@ -11491,8 +11491,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "herobalance.tsx"
     },
     {
@@ -11502,8 +11502,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance_herobalance",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "herobalance()"
     },
     {
@@ -11513,8 +11513,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "motorstatus.tsx"
     },
     {
@@ -11524,8 +11524,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus_motorstatus",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "motorstatus()"
     },
     {
@@ -11535,8 +11535,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "newtransactiondialog.tsx"
     },
     {
@@ -11546,8 +11546,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialogprops",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "newtransactiondialogprops"
     },
     {
@@ -11557,8 +11557,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialog",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "newtransactiondialog()"
     },
     {
@@ -11568,8 +11568,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_rationale_17",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "todo: implement transaction creation"
     },
     {
@@ -11579,8 +11579,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "quickactions.tsx"
     },
     {
@@ -11590,8 +11590,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_container",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "container"
     },
     {
@@ -11601,8 +11601,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_item",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "item"
     },
     {
@@ -11612,8 +11612,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_quickactions",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "quickactions()"
     },
     {
@@ -11678,8 +11678,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_storerankingchart",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "storerankingchart.tsx"
     },
     {
@@ -11689,8 +11689,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_dashboard_storerankingchart_storerankingchart",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "storerankingchart()"
     },
     {
@@ -11799,8 +11799,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao",
-      "community": 81,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "wizardimportacao.tsx"
     },
     {
@@ -11810,8 +11810,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_wizardimportacaoprops",
-      "community": 81,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "wizardimportacaoprops"
     },
     {
@@ -11821,8 +11821,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_usestoremapping",
-      "community": 81,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "usestoremapping()"
     },
     {
@@ -11832,8 +11832,8 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_wizardimportacao",
-      "community": 81,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "wizardimportacao()"
     },
     {
@@ -11843,8 +11843,8 @@
       "source_location": "L465",
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_stepindicator",
-      "community": 81,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "stepindicator()"
     },
     {
@@ -11942,8 +11942,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_topbar",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "topbar.tsx"
     },
     {
@@ -11953,8 +11953,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_layout_topbar_topbar",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "topbar()"
     },
     {
@@ -12030,8 +12030,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_button",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "button.tsx"
     },
     {
@@ -12041,8 +12041,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_ui_button_buttonprops",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "buttonprops"
     },
     {
@@ -12052,8 +12052,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_ui_button_button",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "button()"
     },
     {
@@ -12096,8 +12096,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_input",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "input.tsx"
     },
     {
@@ -12107,8 +12107,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_ui_input_inputprops",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "inputprops"
     },
     {
@@ -12118,8 +12118,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_ui_input_input",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "input"
     },
     {
@@ -12162,8 +12162,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_modal",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "modal.tsx"
     },
     {
@@ -12173,8 +12173,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_ui_modal_modalprops",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "modalprops"
     },
     {
@@ -12184,8 +12184,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_components_ui_modal_modal",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "modal()"
     },
     {
@@ -12195,8 +12195,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_themetoggle",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "themetoggle.tsx"
     },
     {
@@ -12206,8 +12206,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_components_ui_themetoggle_themetoggle",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "themetoggle()"
     },
     {
@@ -12324,7 +12324,7 @@
       "label": "useAiSettings()",
       "file_type": "code",
       "source_file": "src/hooks/useAiSettings.ts",
-      "source_location": "L12",
+      "source_location": "L14",
       "_origin": "ast",
       "id": "src_hooks_useaisettings_useaisettings",
       "community": 15,
@@ -12335,7 +12335,7 @@
       "label": "useSaveAiSettings()",
       "file_type": "code",
       "source_file": "src/hooks/useAiSettings.ts",
-      "source_location": "L62",
+      "source_location": "L68",
       "_origin": "ast",
       "id": "src_hooks_useaisettings_usesaveaisettings",
       "community": 15,
@@ -12349,8 +12349,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usealerts",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "usealerts.ts"
     },
     {
@@ -12360,8 +12360,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_usealerts_usealerts",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "usealerts()"
     },
     {
@@ -12371,8 +12371,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_hooks_usealerts_useallalerts",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "useallalerts()"
     },
     {
@@ -12382,8 +12382,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "src_hooks_usealerts_useresolvealert",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "useresolvealert()"
     },
     {
@@ -12426,8 +12426,8 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "src_hooks_useauth_uselogin",
-      "community": 399,
-      "community_name": "login.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "uselogin()"
     },
     {
@@ -12544,12 +12544,23 @@
       "label": "useBotLogs()",
       "file_type": "code",
       "source_file": "src/hooks/useBotLogs.ts",
-      "source_location": "L13",
+      "source_location": "L14",
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotlogs",
       "community": 2,
       "community_name": "supabase.ts",
       "norm_label": "usebotlogs()"
+    },
+    {
+      "label": "useBotAuditLogs()",
+      "file_type": "code",
+      "source_file": "src/hooks/useBotLogs.ts",
+      "source_location": "L42",
+      "_origin": "ast",
+      "id": "src_hooks_usebotlogs_usebotauditlogs",
+      "community": 15,
+      "community_name": "supabase",
+      "norm_label": "usebotauditlogs()"
     },
     {
       "label": "useBotRuns.ts",
@@ -12558,8 +12569,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotruns",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "usebotruns.ts"
     },
     {
@@ -12569,8 +12580,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usebotruns_uselatestbotrun",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "uselatestbotrun()"
     },
     {
@@ -12943,8 +12954,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "useimportlogs.ts"
     },
     {
@@ -12954,8 +12965,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlog",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "importlog"
     },
     {
@@ -12965,8 +12976,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlogfilters",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "importlogfilters"
     },
     {
@@ -12976,8 +12987,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogs",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "useimportlogs()"
     },
     {
@@ -12987,8 +12998,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogdetail",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "useimportlogdetail()"
     },
     {
@@ -13163,8 +13174,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_userecebiveis",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "userecebiveis.ts"
     },
     {
@@ -13174,8 +13185,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_userecebiveis",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "userecebiveis()"
     },
     {
@@ -13185,8 +13196,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_usemarkreceived",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "usemarkreceived()"
     },
     {
@@ -13207,8 +13218,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usestores_sanitizestore",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "sanitizestore()"
     },
     {
@@ -13218,8 +13229,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_hooks_usestores_usestores",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "usestores()"
     },
     {
@@ -13306,8 +13317,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedashboardsummary",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "usedashboardsummary()"
     },
     {
@@ -13339,8 +13350,8 @@
       "source_location": "L216",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useallstoresbalances",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "useallstoresbalances()"
     },
     {
@@ -13394,8 +13405,8 @@
       "source_location": "L340",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usebulkinserttransactions",
-      "community": 81,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "usebulkinserttransactions()"
     },
     {
@@ -13438,8 +13449,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher",
-      "community": 400,
-      "community_name": "start.ts",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "auth-attacher.ts"
     },
     {
@@ -13449,8 +13460,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher_attachsupabaseauth",
-      "community": 400,
-      "community_name": "start.ts",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "attachsupabaseauth"
     },
     {
@@ -13515,8 +13526,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_integrations_supabase_client",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "client.ts"
     },
     {
@@ -13526,8 +13537,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_integrations_supabase_client_createsupabaseclient",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "createsupabaseclient()"
     },
     {
@@ -13790,8 +13801,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_error_capture",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "error-capture.ts"
     },
     {
@@ -13801,8 +13812,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_lib_error_capture_record",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "record()"
     },
     {
@@ -13812,8 +13823,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_lib_error_capture_consumelastcapturederror",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "consumelastcapturederror()"
     },
     {
@@ -13823,8 +13834,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_error_page",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "error-page.ts"
     },
     {
@@ -13834,8 +13845,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_error_page_rendererrorpage",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "rendererrorpage()"
     },
     {
@@ -14483,8 +14494,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_supabase",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "supabase.ts"
     },
     {
@@ -14505,8 +14516,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_lib_supabase_reconciliationrow",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "reconciliationrow"
     },
     {
@@ -14516,8 +14527,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "src_lib_supabase_alertrow",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "alertrow"
     },
     {
@@ -14560,8 +14571,8 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "src_lib_supabase_receivablerow",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "receivablerow"
     },
     {
@@ -14571,8 +14582,8 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "src_lib_supabase_botrunrow",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "botrunrow"
     },
     {
@@ -14582,8 +14593,8 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "src_lib_supabase_profilerow",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "profilerow"
     },
     {
@@ -14593,8 +14604,8 @@
       "source_location": "L140",
       "_origin": "ast",
       "id": "src_lib_supabase_interestraterow",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "interestraterow"
     },
     {
@@ -14868,8 +14879,8 @@
       "source_location": "L154",
       "_origin": "ast",
       "id": "src_routetree_gen_fileroutesbyid",
-      "community": 215,
-      "community_name": "__root.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "fileroutesbyid"
     },
     {
@@ -14912,8 +14923,8 @@
       "source_location": "L255",
       "_origin": "ast",
       "id": "src_routetree_gen_fileroutesbypath",
-      "community": 38,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "fileroutesbypath"
     },
     {
@@ -14978,8 +14989,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_root",
-      "community": 215,
-      "community_name": "__root.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "__root.tsx"
     },
     {
@@ -14989,8 +15000,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_routes_root_notfoundcomponent",
-      "community": 215,
-      "community_name": "__root.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "notfoundcomponent()"
     },
     {
@@ -15000,8 +15011,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "src_routes_root_errorcomponent",
-      "community": 215,
-      "community_name": "__root.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "errorcomponent()"
     },
     {
@@ -15011,8 +15022,8 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "src_routes_root_route",
-      "community": 215,
-      "community_name": "__root.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15022,8 +15033,8 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "src_routes_root_rootshell",
-      "community": 215,
-      "community_name": "__root.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "rootshell()"
     },
     {
@@ -15033,8 +15044,8 @@
       "source_location": "L128",
       "_origin": "ast",
       "id": "src_routes_root_rootcomponent",
-      "community": 215,
-      "community_name": "__root.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "rootcomponent()"
     },
     {
@@ -15044,26 +15055,26 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_agente",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "agente.tsx"
     },
     {
       "label": "Route",
       "file_type": "code",
       "source_file": "src/routes/agente.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "_origin": "ast",
       "id": "src_routes_agente_route",
-      "community": 38,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
       "label": "AgentePage()",
       "file_type": "code",
       "source_file": "src/routes/agente.tsx",
-      "source_location": "L21",
+      "source_location": "L22",
       "_origin": "ast",
       "id": "src_routes_agente_agentepage",
       "community": 15,
@@ -15077,8 +15088,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_alertas",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "alertas.tsx"
     },
     {
@@ -15088,8 +15099,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_routes_alertas_route",
-      "community": 38,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15099,8 +15110,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_routes_alertas_filtertype",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "filtertype"
     },
     {
@@ -15110,8 +15121,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_routes_alertas_alertaspage",
-      "community": 14,
-      "community_name": "Button.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "alertaspage()"
     },
     {
@@ -15121,8 +15132,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "conciliacao-detalhes.tsx"
     },
     {
@@ -15132,8 +15143,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_route",
-      "community": 38,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15143,8 +15154,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_tab",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "tab"
     },
     {
@@ -15154,8 +15165,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_statustab",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "statustab"
     },
     {
@@ -15176,8 +15187,8 @@
       "source_location": "L166",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_row",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "row()"
     },
     {
@@ -15187,8 +15198,8 @@
       "source_location": "L183",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_tabbutton",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "tabbutton()"
     },
     {
@@ -15198,8 +15209,8 @@
       "source_location": "L203",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_lojatable",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "lojatable()"
     },
     {
@@ -15220,8 +15231,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_route",
-      "community": 38,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15286,8 +15297,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_conciliacao_index_route",
-      "community": 38,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15319,8 +15330,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_routes_configuracoes_route",
-      "community": 38,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15363,8 +15374,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_historico_route",
-      "community": 38,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15418,8 +15429,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas",
-      "community": 81,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "importacoes-despesas.tsx"
     },
     {
@@ -15429,8 +15440,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_route",
-      "community": 38,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15440,8 +15451,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_usestoremapping",
-      "community": 81,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "usestoremapping()"
     },
     {
@@ -15451,8 +15462,8 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_importacoesdespesaswizard",
-      "community": 81,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "importacoesdespesaswizard()"
     },
     {
@@ -15462,8 +15473,8 @@
       "source_location": "L380",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_stepindicator",
-      "community": 81,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "stepindicator()"
     },
     {
@@ -15484,8 +15495,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_routes_importacoes_route",
-      "community": 38,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15528,8 +15539,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_routes_importar_os_route",
-      "community": 38,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15572,8 +15583,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_index",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "index.tsx"
     },
     {
@@ -15583,8 +15594,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_routes_index_route",
-      "community": 38,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15594,8 +15605,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_index_dashboardpage",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "dashboardpage()"
     },
     {
@@ -15605,8 +15616,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_login",
-      "community": 399,
-      "community_name": "login.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "login.tsx"
     },
     {
@@ -15616,8 +15627,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_routes_login_route",
-      "community": 399,
-      "community_name": "login.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15627,8 +15638,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_routes_login_loginpage",
-      "community": 399,
-      "community_name": "login.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "loginpage()"
     },
     {
@@ -15649,8 +15660,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_route",
-      "community": 38,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15715,8 +15726,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_routes_lojas_route",
-      "community": 38,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15770,8 +15781,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_routes_patio_route",
-      "community": 38,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15825,8 +15836,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_proposta",
-      "community": 130,
-      "community_name": "proposta.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "proposta.tsx"
     },
     {
@@ -15836,8 +15847,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_routes_proposta_route",
-      "community": 130,
-      "community_name": "proposta.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15847,8 +15858,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_routes_proposta_costconfig",
-      "community": 130,
-      "community_name": "proposta.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "costconfig"
     },
     {
@@ -15858,8 +15869,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_routes_proposta_defaultconfig",
-      "community": 130,
-      "community_name": "proposta.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "defaultconfig"
     },
     {
@@ -15869,8 +15880,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "src_routes_proposta_propostapage",
-      "community": 130,
-      "community_name": "proposta.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "propostapage()"
     },
     {
@@ -15880,8 +15891,8 @@
       "source_location": "L355",
       "_origin": "ast",
       "id": "src_routes_proposta_costrow",
-      "community": 130,
-      "community_name": "proposta.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "costrow()"
     },
     {
@@ -15891,8 +15902,8 @@
       "source_location": "L370",
       "_origin": "ast",
       "id": "src_routes_proposta_editfield",
-      "community": 130,
-      "community_name": "proposta.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "editfield()"
     },
     {
@@ -15902,8 +15913,8 @@
       "source_location": "L384",
       "_origin": "ast",
       "id": "src_routes_proposta_editstringfield",
-      "community": 130,
-      "community_name": "proposta.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "editstringfield()"
     },
     {
@@ -15924,8 +15935,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_routes_recebiveis_route",
-      "community": 38,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15946,8 +15957,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_routes_recebiveis_recebiveispage",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "recebiveispage()"
     },
     {
@@ -15968,8 +15979,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_server",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "src/server.ts"
     },
     {
@@ -15979,8 +15990,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_server_serverentry",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "serverentry"
     },
     {
@@ -15990,8 +16001,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_server_getserverentry",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "getserverentry()"
     },
     {
@@ -16001,8 +16012,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_server_brandederrorresponse",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "brandederrorresponse()"
     },
     {
@@ -16012,8 +16023,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "src_server_iscatastrophicssrerrorbody",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "iscatastrophicssrerrorbody()"
     },
     {
@@ -16023,8 +16034,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "src_server_normalizecatastrophicssrresponse",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "normalizecatastrophicssrresponse()"
     },
     {
@@ -16034,8 +16045,8 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "src_server_fetch",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "fetch()"
     },
     {
@@ -16045,8 +16056,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_start",
-      "community": 400,
-      "community_name": "start.ts",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "start.ts"
     },
     {
@@ -16056,8 +16067,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_start_errormiddleware",
-      "community": 400,
-      "community_name": "start.ts",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "errormiddleware"
     },
     {
@@ -17095,10 +17106,21 @@
       "norm_label": "\ud83c\udfa8 memoria modular: interface & ux (frontend)"
     },
     {
-      "label": "[2026-07-28] \u2014 Feature ID: fix-store-closing-unified-panel-layout",
+      "label": "[2026-07-28] \u2014 Feature ID: bot-config-ui",
       "file_type": "document",
       "source_file": ".agent/memory/ui.md",
       "source_location": "L3",
+      "_origin": "ast",
+      "id": "agent_memory_ui_2026_07_28_feature_id_bot_config_ui",
+      "community": 82,
+      "community_name": "\ud83c\udfa8 Mem\u00f3ria Modular: Interface & UX (Frontend)",
+      "norm_label": "[2026-07-28] \u2014 feature id: bot-config-ui"
+    },
+    {
+      "label": "[2026-07-28] \u2014 Feature ID: fix-store-closing-unified-panel-layout",
+      "file_type": "document",
+      "source_file": ".agent/memory/ui.md",
+      "source_location": "L15",
       "_origin": "ast",
       "id": "agent_memory_ui_2026_07_28_feature_id_fix_store_closing_unified_panel_layout",
       "community": 82,
@@ -17109,7 +17131,7 @@
       "label": "[2026-07-24] \u2014 Feature ID: agente-fullbleed-layout-and-clean-tabs",
       "file_type": "document",
       "source_file": ".agent/memory/ui.md",
-      "source_location": "L15",
+      "source_location": "L27",
       "_origin": "ast",
       "id": "agent_memory_ui_2026_07_24_feature_id_agente_fullbleed_layout_and_clean_tabs",
       "community": 82,
@@ -17120,7 +17142,7 @@
       "label": "[2026-07-24] \u2014 Feature ID: conciliacao-exact-layout-restoration",
       "file_type": "document",
       "source_file": ".agent/memory/ui.md",
-      "source_location": "L29",
+      "source_location": "L41",
       "_origin": "ast",
       "id": "agent_memory_ui_2026_07_24_feature_id_conciliacao_exact_layout_restoration",
       "community": 82,
@@ -17131,7 +17153,7 @@
       "label": "[2026-07-24] \u2014 Feature ID: font-standardization-modern",
       "file_type": "document",
       "source_file": ".agent/memory/ui.md",
-      "source_location": "L42",
+      "source_location": "L54",
       "_origin": "ast",
       "id": "agent_memory_ui_2026_07_24_feature_id_font_standardization_modern",
       "community": 82,
@@ -17142,7 +17164,7 @@
       "label": "[2026-07-23] \u2014 Feature ID: delete-and-clean-all",
       "file_type": "document",
       "source_file": ".agent/memory/ui.md",
-      "source_location": "L55",
+      "source_location": "L67",
       "_origin": "ast",
       "id": "agent_memory_ui_2026_07_23_feature_id_delete_and_clean_all",
       "community": 82,
@@ -17153,7 +17175,7 @@
       "label": "[2026-07-24] \u2014 Feature ID: wizard-and-logs-enhancement",
       "file_type": "document",
       "source_file": ".agent/memory/ui.md",
-      "source_location": "L67",
+      "source_location": "L79",
       "_origin": "ast",
       "id": "agent_memory_ui_2026_07_24_feature_id_wizard_and_logs_enhancement",
       "community": 82,
@@ -17164,7 +17186,7 @@
       "label": "[2026-07-24] \u2014 Feature ID: conciliacao-design-system-fix",
       "file_type": "document",
       "source_file": ".agent/memory/ui.md",
-      "source_location": "L79",
+      "source_location": "L91",
       "_origin": "ast",
       "id": "agent_memory_ui_2026_07_24_feature_id_conciliacao_design_system_fix",
       "community": 82,
@@ -36136,6 +36158,215 @@
       "norm_label": "tasks"
     },
     {
+      "label": "bot-traefik-routing/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-traefik-routing/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_traefik_routing_design",
+      "community": 14,
+      "community_name": "Button.tsx",
+      "norm_label": "bot-traefik-routing/design.md"
+    },
+    {
+      "label": "Design: bot-traefik-routing",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-traefik-routing/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_traefik_routing_design_design_bot_traefik_routing",
+      "community": 14,
+      "community_name": "Button.tsx",
+      "norm_label": "design: bot-traefik-routing"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-traefik-routing/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_bot_traefik_routing_design_arquitetura_t\u00e9cnica",
+      "community": 14,
+      "community_name": "Button.tsx",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Por que o Traefik consegue rotear",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-traefik-routing/design.md",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "specs_archive_bot_traefik_routing_design_por_que_o_traefik_consegue_rotear",
+      "community": 14,
+      "community_name": "Button.tsx",
+      "norm_label": "por que o traefik consegue rotear"
+    },
+    {
+      "label": "Mudan\u00e7as T\u00e9cnicas",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-traefik-routing/design.md",
+      "source_location": "L33",
+      "_origin": "ast",
+      "id": "specs_archive_bot_traefik_routing_design_mudan\u00e7as_t\u00e9cnicas",
+      "community": 14,
+      "community_name": "Button.tsx",
+      "norm_label": "mudancas tecnicas"
+    },
+    {
+      "label": "1. `bot/docker-compose.yml` \u2014 Rede correta",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-traefik-routing/design.md",
+      "source_location": "L35",
+      "_origin": "ast",
+      "id": "specs_archive_bot_traefik_routing_design_1_bot_docker_compose_yml_rede_correta",
+      "community": 14,
+      "community_name": "Button.tsx",
+      "norm_label": "1. `bot/docker-compose.yml` \u2014 rede correta"
+    },
+    {
+      "label": "2. `cloudflared/config.yml` \u2014 Reverter para Traefik",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-traefik-routing/design.md",
+      "source_location": "L51",
+      "_origin": "ast",
+      "id": "specs_archive_bot_traefik_routing_design_2_cloudflared_config_yml_reverter_para_traefik",
+      "community": 14,
+      "community_name": "Button.tsx",
+      "norm_label": "2. `cloudflared/config.yml` \u2014 reverter para traefik"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-traefik-routing/design.md",
+      "source_location": "L67",
+      "_origin": "ast",
+      "id": "specs_archive_bot_traefik_routing_design_cen\u00e1rios_de_verifica\u00e7\u00e3o",
+      "community": 14,
+      "community_name": "Button.tsx",
+      "norm_label": "cenarios de verificacao"
+    },
+    {
+      "label": "bot-traefik-routing/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-traefik-routing/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_traefik_routing_proposal",
+      "community": 38,
+      "community_name": "FileRoutesByPath",
+      "norm_label": "bot-traefik-routing/proposal.md"
+    },
+    {
+      "label": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-traefik-routing/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_traefik_routing_proposal_proposal_roteamento_bot_tork_services_via_traefik_bot_traefik_routing",
+      "community": 38,
+      "community_name": "FileRoutesByPath",
+      "norm_label": "proposal: roteamento bot.tork.services via traefik (bot-traefik-routing)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-traefik-routing/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_bot_traefik_routing_proposal_problema",
+      "community": 38,
+      "community_name": "FileRoutesByPath",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-traefik-routing/proposal.md",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "specs_archive_bot_traefik_routing_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 38,
+      "community_name": "FileRoutesByPath",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-traefik-routing/proposal.md",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "specs_archive_bot_traefik_routing_proposal_contratos_de_dados",
+      "community": 38,
+      "community_name": "FileRoutesByPath",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-traefik-routing/proposal.md",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "specs_archive_bot_traefik_routing_proposal_api_interface",
+      "community": 38,
+      "community_name": "FileRoutesByPath",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-traefik-routing/proposal.md",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "specs_archive_bot_traefik_routing_proposal_features_existentes_impactadas",
+      "community": 38,
+      "community_name": "FileRoutesByPath",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-traefik-routing/proposal.md",
+      "source_location": "L43",
+      "_origin": "ast",
+      "id": "specs_archive_bot_traefik_routing_proposal_risco_principal",
+      "community": 38,
+      "community_name": "FileRoutesByPath",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "bot-traefik-routing/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-traefik-routing/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_traefik_routing_spec_plan",
+      "community": 128,
+      "community_name": "Design: bot-traefik-routing",
+      "norm_label": "bot-traefik-routing/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: bot-traefik-routing",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-traefik-routing/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_traefik_routing_spec_plan_spec_plan_bot_traefik_routing",
+      "community": 128,
+      "community_name": "Design: bot-traefik-routing",
+      "norm_label": "spec plan: bot-traefik-routing"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-traefik-routing/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_bot_traefik_routing_spec_plan_tasks",
+      "community": 128,
+      "community_name": "Design: bot-traefik-routing",
+      "norm_label": "tasks"
+    },
+    {
       "label": "conciliacao-baixa-manual-override/design.md",
       "file_type": "document",
       "source_file": "specs/archive/conciliacao-baixa-manual-override/design.md",
@@ -41702,212 +41933,201 @@
       "norm_label": "tasks"
     },
     {
-      "label": "bot-traefik-routing/design.md",
+      "label": "bot-config-ui/design.md",
       "file_type": "document",
-      "source_file": "specs/bot-traefik-routing/design.md",
+      "source_file": "specs/bot-config-ui/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_bot_traefik_routing_design",
-      "community": 128,
-      "community_name": "Design: bot-traefik-routing",
-      "norm_label": "bot-traefik-routing/design.md"
+      "id": "specs_bot_config_ui_design",
+      "community": 81,
+      "community_name": "importacoes-despesas.tsx",
+      "norm_label": "bot-config-ui/design.md"
     },
     {
-      "label": "Design: bot-traefik-routing",
+      "label": "Design: Bot Config UI & MCP Agent Integration (bot-config-ui)",
       "file_type": "document",
-      "source_file": "specs/bot-traefik-routing/design.md",
+      "source_file": "specs/bot-config-ui/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_bot_traefik_routing_design_design_bot_traefik_routing",
-      "community": 128,
-      "community_name": "Design: bot-traefik-routing",
-      "norm_label": "design: bot-traefik-routing"
+      "id": "specs_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "community": 81,
+      "community_name": "importacoes-despesas.tsx",
+      "norm_label": "design: bot config ui & mcp agent integration (bot-config-ui)"
     },
     {
       "label": "Arquitetura T\u00e9cnica",
       "file_type": "document",
-      "source_file": "specs/bot-traefik-routing/design.md",
+      "source_file": "specs/bot-config-ui/design.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_bot_traefik_routing_design_arquitetura_t\u00e9cnica",
-      "community": 128,
-      "community_name": "Design: bot-traefik-routing",
+      "id": "specs_bot_config_ui_design_arquitetura_t\u00e9cnica",
+      "community": 81,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "arquitetura tecnica"
     },
     {
-      "label": "Por que o Traefik consegue rotear",
+      "label": "Interfaces TypeScript",
       "file_type": "document",
-      "source_file": "specs/bot-traefik-routing/design.md",
-      "source_location": "L22",
+      "source_file": "specs/bot-config-ui/design.md",
+      "source_location": "L17",
       "_origin": "ast",
-      "id": "specs_bot_traefik_routing_design_por_que_o_traefik_consegue_rotear",
-      "community": 128,
-      "community_name": "Design: bot-traefik-routing",
-      "norm_label": "por que o traefik consegue rotear"
+      "id": "specs_bot_config_ui_design_interfaces_typescript",
+      "community": 81,
+      "community_name": "importacoes-despesas.tsx",
+      "norm_label": "interfaces typescript"
     },
     {
-      "label": "Mudan\u00e7as T\u00e9cnicas",
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
       "file_type": "document",
-      "source_file": "specs/bot-traefik-routing/design.md",
-      "source_location": "L33",
+      "source_file": "specs/bot-config-ui/design.md",
+      "source_location": "L41",
       "_origin": "ast",
-      "id": "specs_bot_traefik_routing_design_mudan\u00e7as_t\u00e9cnicas",
-      "community": 128,
-      "community_name": "Design: bot-traefik-routing",
-      "norm_label": "mudancas tecnicas"
+      "id": "specs_bot_config_ui_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 81,
+      "community_name": "importacoes-despesas.tsx",
+      "norm_label": "componentes / hooks / funcoes"
     },
     {
-      "label": "1. `bot/docker-compose.yml` \u2014 Rede correta",
+      "label": "Fluxo de UI",
       "file_type": "document",
-      "source_file": "specs/bot-traefik-routing/design.md",
-      "source_location": "L35",
+      "source_file": "specs/bot-config-ui/design.md",
+      "source_location": "L52",
       "_origin": "ast",
-      "id": "specs_bot_traefik_routing_design_1_bot_docker_compose_yml_rede_correta",
-      "community": 128,
-      "community_name": "Design: bot-traefik-routing",
-      "norm_label": "1. `bot/docker-compose.yml` \u2014 rede correta"
+      "id": "specs_bot_config_ui_design_fluxo_de_ui",
+      "community": 81,
+      "community_name": "importacoes-despesas.tsx",
+      "norm_label": "fluxo de ui"
     },
     {
-      "label": "2. `cloudflared/config.yml` \u2014 Reverter para Traefik",
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
       "file_type": "document",
-      "source_file": "specs/bot-traefik-routing/design.md",
-      "source_location": "L51",
+      "source_file": "specs/bot-config-ui/design.md",
+      "source_location": "L59",
       "_origin": "ast",
-      "id": "specs_bot_traefik_routing_design_2_cloudflared_config_yml_reverter_para_traefik",
-      "community": 128,
-      "community_name": "Design: bot-traefik-routing",
-      "norm_label": "2. `cloudflared/config.yml` \u2014 reverter para traefik"
+      "id": "specs_bot_config_ui_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 81,
+      "community_name": "importacoes-despesas.tsx",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
     },
     {
-      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o",
+      "label": "bot-config-ui/proposal.md",
       "file_type": "document",
-      "source_file": "specs/bot-traefik-routing/design.md",
-      "source_location": "L67",
-      "_origin": "ast",
-      "id": "specs_bot_traefik_routing_design_cen\u00e1rios_de_verifica\u00e7\u00e3o",
-      "community": 128,
-      "community_name": "Design: bot-traefik-routing",
-      "norm_label": "cenarios de verificacao"
-    },
-    {
-      "label": "bot-traefik-routing/proposal.md",
-      "file_type": "document",
-      "source_file": "specs/bot-traefik-routing/proposal.md",
+      "source_file": "specs/bot-config-ui/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_bot_traefik_routing_proposal",
-      "community": 129,
-      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
-      "norm_label": "bot-traefik-routing/proposal.md"
+      "id": "specs_bot_config_ui_proposal",
+      "community": 58,
+      "community_name": "src/server.ts",
+      "norm_label": "bot-config-ui/proposal.md"
     },
     {
-      "label": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
+      "label": "Proposal: Bot Config UI & MCP Agent Integration (bot-config-ui)",
       "file_type": "document",
-      "source_file": "specs/bot-traefik-routing/proposal.md",
+      "source_file": "specs/bot-config-ui/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_bot_traefik_routing_proposal_proposal_roteamento_bot_tork_services_via_traefik_bot_traefik_routing",
-      "community": 129,
-      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
-      "norm_label": "proposal: roteamento bot.tork.services via traefik (bot-traefik-routing)"
+      "id": "specs_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "community": 58,
+      "community_name": "src/server.ts",
+      "norm_label": "proposal: bot config ui & mcp agent integration (bot-config-ui)"
     },
     {
       "label": "Problema",
       "file_type": "document",
-      "source_file": "specs/bot-traefik-routing/proposal.md",
+      "source_file": "specs/bot-config-ui/proposal.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_bot_traefik_routing_proposal_problema",
-      "community": 129,
-      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
+      "id": "specs_bot_config_ui_proposal_problema",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "problema"
     },
     {
       "label": "Solu\u00e7\u00e3o Proposta",
       "file_type": "document",
-      "source_file": "specs/bot-traefik-routing/proposal.md",
-      "source_location": "L10",
+      "source_file": "specs/bot-config-ui/proposal.md",
+      "source_location": "L6",
       "_origin": "ast",
-      "id": "specs_bot_traefik_routing_proposal_solu\u00e7\u00e3o_proposta",
-      "community": 129,
-      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
+      "id": "specs_bot_config_ui_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "solucao proposta"
     },
     {
       "label": "Contratos de Dados",
       "file_type": "document",
-      "source_file": "specs/bot-traefik-routing/proposal.md",
-      "source_location": "L17",
+      "source_file": "specs/bot-config-ui/proposal.md",
+      "source_location": "L16",
       "_origin": "ast",
-      "id": "specs_bot_traefik_routing_proposal_contratos_de_dados",
-      "community": 129,
-      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
+      "id": "specs_bot_config_ui_proposal_contratos_de_dados",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "contratos de dados"
     },
     {
       "label": "API / Interface",
       "file_type": "document",
-      "source_file": "specs/bot-traefik-routing/proposal.md",
-      "source_location": "L20",
+      "source_file": "specs/bot-config-ui/proposal.md",
+      "source_location": "L22",
       "_origin": "ast",
-      "id": "specs_bot_traefik_routing_proposal_api_interface",
-      "community": 129,
-      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
+      "id": "specs_bot_config_ui_proposal_api_interface",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "api / interface"
     },
     {
       "label": "Features Existentes Impactadas",
       "file_type": "document",
-      "source_file": "specs/bot-traefik-routing/proposal.md",
-      "source_location": "L39",
+      "source_file": "specs/bot-config-ui/proposal.md",
+      "source_location": "L27",
       "_origin": "ast",
-      "id": "specs_bot_traefik_routing_proposal_features_existentes_impactadas",
-      "community": 129,
-      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
+      "id": "specs_bot_config_ui_proposal_features_existentes_impactadas",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "features existentes impactadas"
     },
     {
       "label": "Risco Principal",
       "file_type": "document",
-      "source_file": "specs/bot-traefik-routing/proposal.md",
-      "source_location": "L43",
+      "source_file": "specs/bot-config-ui/proposal.md",
+      "source_location": "L31",
       "_origin": "ast",
-      "id": "specs_bot_traefik_routing_proposal_risco_principal",
-      "community": 129,
-      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
+      "id": "specs_bot_config_ui_proposal_risco_principal",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "risco principal"
     },
     {
-      "label": "bot-traefik-routing/spec-plan.md",
+      "label": "bot-config-ui/spec-plan.md",
       "file_type": "document",
-      "source_file": "specs/bot-traefik-routing/spec-plan.md",
+      "source_file": "specs/bot-config-ui/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_bot_traefik_routing_spec_plan",
-      "community": 477,
-      "community_name": "Spec Plan: bot-traefik-routing",
-      "norm_label": "bot-traefik-routing/spec-plan.md"
+      "id": "specs_bot_config_ui_spec_plan",
+      "community": 129,
+      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
+      "norm_label": "bot-config-ui/spec-plan.md"
     },
     {
-      "label": "Spec Plan: bot-traefik-routing",
+      "label": "Spec Plan: Bot Config UI & MCP Agent Integration (bot-config-ui)",
       "file_type": "document",
-      "source_file": "specs/bot-traefik-routing/spec-plan.md",
+      "source_file": "specs/bot-config-ui/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_bot_traefik_routing_spec_plan_spec_plan_bot_traefik_routing",
-      "community": 477,
-      "community_name": "Spec Plan: bot-traefik-routing",
-      "norm_label": "spec plan: bot-traefik-routing"
+      "id": "specs_bot_config_ui_spec_plan_spec_plan_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "community": 129,
+      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
+      "norm_label": "spec plan: bot config ui & mcp agent integration (bot-config-ui)"
     },
     {
       "label": "Tasks",
       "file_type": "document",
-      "source_file": "specs/bot-traefik-routing/spec-plan.md",
+      "source_file": "specs/bot-config-ui/spec-plan.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_bot_traefik_routing_spec_plan_tasks",
-      "community": 477,
-      "community_name": "Spec Plan: bot-traefik-routing",
+      "id": "specs_bot_config_ui_spec_plan_tasks",
+      "community": 129,
+      "community_name": "Proposal: Roteamento bot.tork.services via Traefik (bot-traefik-routing)",
       "norm_label": "tasks"
     },
     {
@@ -61732,7 +61952,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/hooks/useAiSettings.ts",
-      "source_location": "L12",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_hooks_useaisettings",
@@ -61743,7 +61963,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/hooks/useAiSettings.ts",
-      "source_location": "L62",
+      "source_location": "L68",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_hooks_useaisettings",
@@ -61876,7 +62096,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/agente.tsx",
-      "source_location": "L32",
+      "source_location": "L33",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_routes_agente_agentepage",
@@ -61924,7 +62144,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/agente.tsx",
-      "source_location": "L33",
+      "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_routes_agente_agentepage",
@@ -62485,7 +62705,18 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/hooks/useBotLogs.ts",
-      "source_location": "L13",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_hooks_usebotlogs",
+      "target": "src_hooks_usebotlogs_usebotauditlogs",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useBotLogs.ts",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_hooks_usebotlogs",
@@ -62514,6 +62745,18 @@
       "_origin": "ast",
       "source": "src_hooks_usebotlogs",
       "target": "src_lib_supabase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/agente.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_routes_agente",
+      "target": "src_hooks_usebotlogs",
       "confidence_score": 1.0
     },
     {
@@ -62551,6 +62794,30 @@
       "_origin": "ast",
       "source": "src_routes_configuracoes_configuracoespage",
       "target": "src_hooks_usebotlogs_usebotlogs"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/agente.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_routes_agente",
+      "target": "src_hooks_usebotlogs_usebotauditlogs",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/routes/agente.tsx",
+      "source_location": "L44",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_routes_agente_agentepage",
+      "target": "src_hooks_usebotlogs_usebotauditlogs"
     },
     {
       "relation": "contains",
@@ -66319,7 +66586,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/agente.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_routes_agente",
@@ -66343,7 +66610,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/agente.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_routes_agente",
@@ -66356,7 +66623,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/agente.tsx",
-      "source_location": "L108",
+      "source_location": "L118",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_routes_agente_agentepage",
@@ -68879,7 +69146,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "src/routes/agente.tsx",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
       "context": "collection",
@@ -68891,7 +69158,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/agente.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_routes_agente",
@@ -70790,7 +71057,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".agent/memory/ui.md",
-      "source_location": "L55",
+      "source_location": "L67",
       "weight": 1.0,
       "_origin": "ast",
       "source": "agent_memory_ui_mem\u00f3ria_modular_interface_ux_frontend",
@@ -70801,7 +71068,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".agent/memory/ui.md",
-      "source_location": "L15",
+      "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast",
       "source": "agent_memory_ui_mem\u00f3ria_modular_interface_ux_frontend",
@@ -70812,7 +71079,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".agent/memory/ui.md",
-      "source_location": "L79",
+      "source_location": "L91",
       "weight": 1.0,
       "_origin": "ast",
       "source": "agent_memory_ui_mem\u00f3ria_modular_interface_ux_frontend",
@@ -70823,7 +71090,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".agent/memory/ui.md",
-      "source_location": "L29",
+      "source_location": "L41",
       "weight": 1.0,
       "_origin": "ast",
       "source": "agent_memory_ui_mem\u00f3ria_modular_interface_ux_frontend",
@@ -70834,7 +71101,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".agent/memory/ui.md",
-      "source_location": "L42",
+      "source_location": "L54",
       "weight": 1.0,
       "_origin": "ast",
       "source": "agent_memory_ui_mem\u00f3ria_modular_interface_ux_frontend",
@@ -70845,7 +71112,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".agent/memory/ui.md",
-      "source_location": "L67",
+      "source_location": "L79",
       "weight": 1.0,
       "_origin": "ast",
       "source": "agent_memory_ui_mem\u00f3ria_modular_interface_ux_frontend",
@@ -70857,6 +71124,17 @@
       "confidence": "EXTRACTED",
       "source_file": ".agent/memory/ui.md",
       "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agent_memory_ui_mem\u00f3ria_modular_interface_ux_frontend",
+      "target": "agent_memory_ui_2026_07_28_feature_id_bot_config_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agent/memory/ui.md",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "agent_memory_ui_mem\u00f3ria_modular_interface_ux_frontend",
@@ -86574,6 +86852,182 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-traefik-routing/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_traefik_routing_design",
+      "target": "specs_archive_bot_traefik_routing_design_design_bot_traefik_routing",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-traefik-routing/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_traefik_routing_design_design_bot_traefik_routing",
+      "target": "specs_archive_bot_traefik_routing_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-traefik-routing/design.md",
+      "source_location": "L67",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_traefik_routing_design_design_bot_traefik_routing",
+      "target": "specs_archive_bot_traefik_routing_design_cen\u00e1rios_de_verifica\u00e7\u00e3o",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-traefik-routing/design.md",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_traefik_routing_design_design_bot_traefik_routing",
+      "target": "specs_archive_bot_traefik_routing_design_mudan\u00e7as_t\u00e9cnicas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-traefik-routing/design.md",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_traefik_routing_design_design_bot_traefik_routing",
+      "target": "specs_archive_bot_traefik_routing_design_por_que_o_traefik_consegue_rotear",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-traefik-routing/design.md",
+      "source_location": "L35",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_traefik_routing_design_mudan\u00e7as_t\u00e9cnicas",
+      "target": "specs_archive_bot_traefik_routing_design_1_bot_docker_compose_yml_rede_correta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-traefik-routing/design.md",
+      "source_location": "L51",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_traefik_routing_design_mudan\u00e7as_t\u00e9cnicas",
+      "target": "specs_archive_bot_traefik_routing_design_2_cloudflared_config_yml_reverter_para_traefik",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-traefik-routing/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_traefik_routing_proposal",
+      "target": "specs_archive_bot_traefik_routing_proposal_proposal_roteamento_bot_tork_services_via_traefik_bot_traefik_routing",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-traefik-routing/proposal.md",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_traefik_routing_proposal_proposal_roteamento_bot_tork_services_via_traefik_bot_traefik_routing",
+      "target": "specs_archive_bot_traefik_routing_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-traefik-routing/proposal.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_traefik_routing_proposal_proposal_roteamento_bot_tork_services_via_traefik_bot_traefik_routing",
+      "target": "specs_archive_bot_traefik_routing_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-traefik-routing/proposal.md",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_traefik_routing_proposal_proposal_roteamento_bot_tork_services_via_traefik_bot_traefik_routing",
+      "target": "specs_archive_bot_traefik_routing_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-traefik-routing/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_traefik_routing_proposal_proposal_roteamento_bot_tork_services_via_traefik_bot_traefik_routing",
+      "target": "specs_archive_bot_traefik_routing_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-traefik-routing/proposal.md",
+      "source_location": "L43",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_traefik_routing_proposal_proposal_roteamento_bot_tork_services_via_traefik_bot_traefik_routing",
+      "target": "specs_archive_bot_traefik_routing_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-traefik-routing/proposal.md",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_traefik_routing_proposal_proposal_roteamento_bot_tork_services_via_traefik_bot_traefik_routing",
+      "target": "specs_archive_bot_traefik_routing_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-traefik-routing/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_traefik_routing_spec_plan",
+      "target": "specs_archive_bot_traefik_routing_spec_plan_spec_plan_bot_traefik_routing",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-traefik-routing/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_traefik_routing_spec_plan_spec_plan_bot_traefik_routing",
+      "target": "specs_archive_bot_traefik_routing_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "specs/archive/conciliacao-baixa-manual-override/design.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -91117,177 +91571,166 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/bot-traefik-routing/design.md",
+      "source_file": "specs/bot-config-ui/design.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_bot_traefik_routing_design",
-      "target": "specs_bot_traefik_routing_design_design_bot_traefik_routing",
+      "source": "specs_bot_config_ui_design",
+      "target": "specs_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/bot-traefik-routing/design.md",
+      "source_file": "specs/bot-config-ui/design.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_bot_traefik_routing_design_design_bot_traefik_routing",
-      "target": "specs_bot_traefik_routing_design_arquitetura_t\u00e9cnica",
+      "source": "specs_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_bot_config_ui_design_arquitetura_t\u00e9cnica",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/bot-traefik-routing/design.md",
-      "source_location": "L67",
+      "source_file": "specs/bot-config-ui/design.md",
+      "source_location": "L59",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_bot_traefik_routing_design_design_bot_traefik_routing",
-      "target": "specs_bot_traefik_routing_design_cen\u00e1rios_de_verifica\u00e7\u00e3o",
+      "source": "specs_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_bot_config_ui_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/bot-traefik-routing/design.md",
-      "source_location": "L33",
+      "source_file": "specs/bot-config-ui/design.md",
+      "source_location": "L41",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_bot_traefik_routing_design_design_bot_traefik_routing",
-      "target": "specs_bot_traefik_routing_design_mudan\u00e7as_t\u00e9cnicas",
+      "source": "specs_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_bot_config_ui_design_componentes_hooks_fun\u00e7\u00f5es",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/bot-traefik-routing/design.md",
-      "source_location": "L22",
+      "source_file": "specs/bot-config-ui/design.md",
+      "source_location": "L52",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_bot_traefik_routing_design_design_bot_traefik_routing",
-      "target": "specs_bot_traefik_routing_design_por_que_o_traefik_consegue_rotear",
+      "source": "specs_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_bot_config_ui_design_fluxo_de_ui",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/bot-traefik-routing/design.md",
-      "source_location": "L35",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_traefik_routing_design_mudan\u00e7as_t\u00e9cnicas",
-      "target": "specs_bot_traefik_routing_design_1_bot_docker_compose_yml_rede_correta",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-traefik-routing/design.md",
-      "source_location": "L51",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_traefik_routing_design_mudan\u00e7as_t\u00e9cnicas",
-      "target": "specs_bot_traefik_routing_design_2_cloudflared_config_yml_reverter_para_traefik",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-traefik-routing/proposal.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_traefik_routing_proposal",
-      "target": "specs_bot_traefik_routing_proposal_proposal_roteamento_bot_tork_services_via_traefik_bot_traefik_routing",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-traefik-routing/proposal.md",
-      "source_location": "L20",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_traefik_routing_proposal_proposal_roteamento_bot_tork_services_via_traefik_bot_traefik_routing",
-      "target": "specs_bot_traefik_routing_proposal_api_interface",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-traefik-routing/proposal.md",
+      "source_file": "specs/bot-config-ui/design.md",
       "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_bot_traefik_routing_proposal_proposal_roteamento_bot_tork_services_via_traefik_bot_traefik_routing",
-      "target": "specs_bot_traefik_routing_proposal_contratos_de_dados",
+      "source": "specs_bot_config_ui_design_design_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_bot_config_ui_design_interfaces_typescript",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/bot-traefik-routing/proposal.md",
-      "source_location": "L39",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_traefik_routing_proposal_proposal_roteamento_bot_tork_services_via_traefik_bot_traefik_routing",
-      "target": "specs_bot_traefik_routing_proposal_features_existentes_impactadas",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-traefik-routing/proposal.md",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_traefik_routing_proposal_proposal_roteamento_bot_tork_services_via_traefik_bot_traefik_routing",
-      "target": "specs_bot_traefik_routing_proposal_problema",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-traefik-routing/proposal.md",
-      "source_location": "L43",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_traefik_routing_proposal_proposal_roteamento_bot_tork_services_via_traefik_bot_traefik_routing",
-      "target": "specs_bot_traefik_routing_proposal_risco_principal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-traefik-routing/proposal.md",
-      "source_location": "L10",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_traefik_routing_proposal_proposal_roteamento_bot_tork_services_via_traefik_bot_traefik_routing",
-      "target": "specs_bot_traefik_routing_proposal_solu\u00e7\u00e3o_proposta",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-traefik-routing/spec-plan.md",
+      "source_file": "specs/bot-config-ui/proposal.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_bot_traefik_routing_spec_plan",
-      "target": "specs_bot_traefik_routing_spec_plan_spec_plan_bot_traefik_routing",
+      "source": "specs_bot_config_ui_proposal",
+      "target": "specs_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/bot-traefik-routing/spec-plan.md",
+      "source_file": "specs/bot-config-ui/proposal.md",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_bot_config_ui_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/bot-config-ui/proposal.md",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_bot_config_ui_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/bot-config-ui/proposal.md",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_bot_config_ui_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/bot-config-ui/proposal.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_bot_traefik_routing_spec_plan_spec_plan_bot_traefik_routing",
-      "target": "specs_bot_traefik_routing_spec_plan_tasks",
+      "source": "specs_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_bot_config_ui_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/bot-config-ui/proposal.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_bot_config_ui_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/bot-config-ui/proposal.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_bot_config_ui_proposal_proposal_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_bot_config_ui_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/bot-config-ui/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_bot_config_ui_spec_plan",
+      "target": "specs_bot_config_ui_spec_plan_spec_plan_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/bot-config-ui/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_bot_config_ui_spec_plan_spec_plan_bot_config_ui_mcp_agent_integration_bot_config_ui",
+      "target": "specs_bot_config_ui_spec_plan_tasks",
       "confidence_score": 1.0
     },
     {
@@ -91941,5 +92384,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "d60fe16348674d8fd0dbfdbf6b5e82226fbd6e06"
+  "built_at_commit": "a024f21af98e58c27a362f1fe4a467ea68755ef7"
 }
