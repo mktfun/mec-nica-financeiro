@@ -1,41 +1,14 @@
-# 🧠 Memória Modular: Importação OFX & Adquirentes
+# 🧠 Memória Modular: Importação & Processamento de Planilhas (OFX, XLSX, CSV)
 
-## [2026-07-27] — Feature ID: fix-os-import-parsing-and-patio-metrics
+## [2026-07-28] — Feature ID: fix-import-fk-and-log-ui
 
-**Contexto:** Correção na leitura de relatórios de OSs do ERP Excel, cálculo do Valor Total (`total_value = paid_value + open_value`) e exibição de saldos pendentes na tela `/patio`.
-
-**Regra aprendida:**
-- **Separação de Colunas no Excel de OSs:** As colunas "Valor Pago" / "Total Pago" (`paidValue`) NUNCA devem compartilhar expressões com colunas de saldo restante ("Em Aberto", "Restante", "Falta", "Saldo").
-- **Cálculo do Valor Total:** O valor total da OS na oficina mecânica é derivado por `total_value = paid_value + open_value`.
-- **Status do Excel:** A string da coluna Status/D4 (`raw_status`) deve ser preservada e utilizada para determinar a classe do status (`em_aberto` vs `pago_parcial` vs `finalizado`). Nunca force o status `finalizado` para OSs cuja string do Excel informe "Em Aberto" ou "Pendente".
-
-**Risco identificado:** Mapear palavras como "Restante" ou "Falta" para `paidValue` fazia o valor pago zerar o saldo em aberto da OS, distorcendo todos os indicadores financeiros do pátio.
-
-**Não fazer:** Nunca sobrescrever o status de OSs em aberto para finalizado baseado apenas na existência de um pagamento parcial.
-
-## [2026-07-24] — Feature ID: fix-pix-parsing-and-extended-window
-
-**Contexto:** Correção do bug de extração do PIX (5 vendas declaradas = R$ 0,00) e expansão da janela de busca da conciliação para D-7 (permitindo casar depósitos de dias anteriores como o PIX do Ronildo do dia 17/07 com a conciliação do dia 23/07).
+**Contexto:** Correção de violação de chave estrangeira (`conciliation_matches_ofx_transaction_id_fkey`) durante a reimportação/gravação de lotes e redesign do painel de progresso da importação (`Step 4` em `CentralImportWizard.tsx`).
 
 **Regra aprendida:**
-- **Parser de Forma de Pagamento:** Strings em planilhas Excel da OS podem não conter dois-pontos (`:`). O regex deve capturar formatos como `"PIX 680,00"`, `"Pix R$680"`, `"TRANSFERÊNCIA PIX"` usando o padrão universal `/(PIX|TRANSF|DEP|DINHEIRO|DÉBITO|DEBITO|CRÉDITO|CREDITO|CARTAO|CARTÃO)\s*[:\-\s]?\s*(?:R\$\s*)?([\d\.,]+)?/gi`.
-- **Coluna do Banco de Dados:** A tabela `patio_os` armazena o valor do PIX na coluna física `pix_transfer_value`. Sempre leia `os.pix_transfer_value || os.parsed_pix_transfer` ao calcular o total das vendas de PIX no frontend.
-- **Janela de Busca da Conciliação:** A busca de transações OFX e vendas do Pátio deve considerar um intervalo de busca estendido de no mínimo **D-0 a D-7** (8 dias). Vendas e PIXs ocorridos no final de semana ou em dias anteriores podem cair no extrato bancário dias depois.
+- **FK ON DELETE SET NULL Obrigatório:** As Foreign Keys `ofx_transaction_id` e `rede_transaction_id` na tabela `public.conciliation_matches` DEVEM possuir a cláusula `ON DELETE SET NULL`. Isso garante que quando uma transação de extrato ou adquirente for atualizada, substituída ou excluída no reprocessamento de lotes, o PostgreSQL desvincule a chave sem abortar com erro `violates foreign key constraint`.
+- **Ordem de Deleção de Lotes:** Na RPC `delete_import_batch` e nos fallbacks em JS (`useImportProcessor.ts`), SEMPRE deletar registros de `public.conciliation_matches` ANTES de deletar registros de `public.transactions`, `patio_os` e `receivables`.
+- **Design do Painel de Progresso (Sem Visual Terminal/CMD):** O Step 4 da Central de Importação NÃO DEVE usar caixas pretas monospaçadas (`font-mono`, `bg-black`, `[hh:mm:ss]`). Deve utilizar um Painel Executivo com barra de progresso animada (0% - 100%), 4 cards de etapas (`Pátio OS`, `Maquininha Rede`, `Extrato OFX`, `Conciliação`) com status badges (`Pendente`, `Processando...`, `Concluído ✓`, `Erro`) e card de falha amigável com suporte a re-tentativa.
 
-**Risco identificado:** Restringir a busca de transações a D-2 oculta depósitos bancários legítimos de dias passados que pertencem a vendas anteriores pendentes de conciliação.
+**Risco identificado:** Tentar apagar ou sobrescrever transações de extrato/adquirente sem `ON DELETE SET NULL` na FK de `conciliation_matches` causa travamento total do fluxo de confirmação de lote.
 
-**Não fazer:** Nunca exigir dois-pontos (`:`) como delimitador único para extração de valores monetários em strings de pagamento nem restringir a busca de extrato OFX a janelas menores que D-7.
-
-## [2026-07-24] — Feature ID: conciliacao-fk-definitive-fix
-
-**Contexto:** Correção definitiva do erro de Foreign Key ao confirmar a importação de extratos OFX (`conciliation_matches_ofx_transaction_id_fkey`).
-
-**Regra aprendida:**
-- Ao fazer `upsert` na tabela `transactions` com conflito por `(store_id, fitid)`, o Postgres atualiza a linha existente e **mantém a chave primária antiga (`id`)** do banco de dados.
-- O Javascript gera um `crypto.randomUUID()` em memória que NUNCA é salvo no banco de dados quando ocorre conflito no `upsert`.
-- Para vincular transações OFX em `conciliation_matches`, você DEVE consultar a tabela `transactions` via `.in('fitid', fitids)` **após** o salvamento para remapear e resgatar o `id` primário real do Postgres.
-- Sempre faça uma checagem de existência física (`.in('id', checkIds)`) antes de disparar o `insert` em `conciliation_matches`. Se o ID não existir fisicamente no banco de dados, atribua `null` no campo `ofx_transaction_id` ou `rede_transaction_id`.
-
-**Risco identificado:** Tentar usar IDs gerados no Javascript em memória para tabelas filhas com Foreign Key antes de consultar quais IDs o Postgres manteve no `upsert`.
-
-**Não fazer:** Nunca confiar em UUIDs gerados no frontend para tabelas com relacionamentos FK após operações de `upsert` com `onConflict`.
+**Não fazer:** Nunca reintroduzir caixas de texto com fontes monospaçadas ou ícones de terminal retrô em fluxos de importação executivos.
