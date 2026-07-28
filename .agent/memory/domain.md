@@ -1,6 +1,19 @@
 # 🧠 Memória Modular: Domínio & Conciliação
 
+## [2026-07-28] — Feature ID: fix-conciliacao-date-bleeding-and-mini-cards-ui
+
+**Contexto:** Correção do vazamento de saldo bancário histórico (`FATURAMENTO ITAÚ (OFX)`) para datas sem conciliação na tela principal `/conciliacao` e redesign dos mini-cards de Fechamento por Loja.
+
+**Regra aprendida:**
+- **Zero Vazamento de Datas no Saldo OFX:** O valor da coluna `FATURAMENTO ITAÚ (OFX)` em `conciliacao.index.tsx` DEVE verificar obrigatoriamente se há atividade real na `selectedDate` (`faturamento > 0 || maquininha > 0 || pixOs > 0 || bankInDate > 0`). Caso a data selecionada não possua conciliação nem extrato importado para aquele dia, a coluna DEVE exibir rigorosamente `R$ 0,00`, impedindo que buscas como `useLatestBankBalance` injetem saldos de datas passadas.
+- **Redesign Espaçoso dos Mini-Cards:** A grade dos 6 indicadores de loja em `conciliacao.index.tsx` DEVE ser composta por caixas individuais estilizadas (`bg-black/40 border border-white/10 p-3 rounded-xl flex flex-col justify-between min-w-0`), com rótulos `text-[10px] uppercase tracking-wider block truncate`, evitando colisões de texto ou sobreposições visuais em resoluções médias/menores.
+
+**Risco identificado:** Usar `latestBankBalance` sem checar se há atividade na data selecionada faz dias vazios do calendário exibirem saldos bancários de R$ 19k/R$ 59k/R$ 21k, criando a falsa impressão de que houve movimentação.
+
+**Não fazer:** Nunca exibir acumulados de extrato bancário de outras datas sem validar a existência de atividade ou extrato na data selecionada.
+
 ## [2026-07-28] — Feature ID: audit-and-batch-all-stores-ai-reconciler
+
 
 **Contexto:** Varredura sequencial multi-loja 100% completa na conciliação por IA (`useBackgroundAiReconciler`), fatiamento de pendências em lotes (chunking) e correção de mapeamento de colunas de telemetria em `ai_execution_logs` (`input_payload` e `output_payload`).
 
