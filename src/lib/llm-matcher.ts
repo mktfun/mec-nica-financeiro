@@ -92,31 +92,49 @@ Se não encontrar associações plausíveis, retorne {"matches": []}.
 `;
 
   const payload = {
-    os: unmatchedOs.map(o => ({
-      id: o.id || o.os_number,
-      os_number: String(o.os_number || o.id),
-      client_name: o.client_name || o.customer_name || 'Cliente',
-      total_value: o.total_value || o.paid_value || 0,
-      pix_value: o.pix_transfer_value || o.parsed_pix_transfer || 0,
-      credit_value: o.credit_value || o.parsed_credit || 0,
-      opened_at: o.opened_at || o.created_at,
-      payment_method: o.payment_method || ''
-    })),
-    rede: (unmatchedRede || []).map(r => ({
-      id: r.id,
-      title: r.title || 'Rede',
-      gross_value: r.gross_value || r.amount || 0,
-      net_value: r.net_value || r.amount || 0,
-      payment_date: r.occurred_at || r.payment_date,
-      nsu: r.nsu
-    })),
-    ofx: (unmatchedOfx || []).map(t => ({
-      id: t.id,
-      description: t.title || t.subtitle || t.memo || '',
-      amount: t.amount,
-      occurred_at: t.occurred_at || t.date
-    }))
+    os: (unmatchedOs || []).map(o => {
+      const raw = o.raw_os || o.os_data || o;
+      const totalVal = Number(o.total_value || o.amount || raw.total_value || raw.paid_value || 0);
+      const pixVal = Number(o.pix_value || o.pix_transfer_value || raw.pix_transfer_value || raw.parsed_pix_transfer || 0);
+      const creditVal = Number(o.credit_value || o.credit_debit_value || raw.credit_debit_value || raw.parsed_credit || 0);
+      const osNum = String(o.os_number || raw.os_number || o.id || raw.id || '');
+      const clientName = o.client_name || raw.client_name || raw.customer_name || 'Cliente';
+
+      return {
+        id: osNum,
+        os_number: osNum,
+        client_name: clientName,
+        total_value: totalVal > 0 ? totalVal : (pixVal + creditVal),
+        pix_value: pixVal,
+        credit_value: creditVal,
+        opened_at: o.opened_at || raw.opened_at || raw.created_at || o.created_at,
+        payment_method: o.payment_method || raw.payment_method || ''
+      };
+    }).filter(o => o.total_value > 0 || o.pix_value > 0 || o.credit_value > 0),
+
+    rede: (unmatchedRede || []).map(r => {
+      const raw = r.raw_rede || r;
+      return {
+        id: raw.id || r.id,
+        title: raw.title || raw.maquininha_title || r.title || 'Rede',
+        gross_value: Number(raw.gross_value || raw.rede_bruto || raw.amount || r.amount || 0),
+        net_value: Number(raw.net_value || raw.amount || r.amount || 0),
+        payment_date: raw.occurred_at || raw.payment_date || r.payment_date,
+        nsu: raw.nsu || r.nsu || ''
+      };
+    }).filter(r => r.gross_value > 0 || r.net_value > 0),
+
+    ofx: (unmatchedOfx || []).map(t => {
+      const ofxObj = t.ofxDeposit || t.ofxPix || t;
+      return {
+        id: ofxObj.id,
+        description: ofxObj.title || ofxObj.subtitle || ofxObj.memo || ofxObj.description || '',
+        amount: Number(ofxObj.amount || 0),
+        occurred_at: ofxObj.occurred_at || ofxObj.date
+      };
+    }).filter(t => Math.abs(t.amount) > 0)
   };
+
 
   const userMessage = `Analise os dados abaixo e retorne as associações recomendadas em JSON:\n${JSON.stringify(payload, null, 2)}`;
 
