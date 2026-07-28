@@ -117,8 +117,13 @@ function ConciliacaoPage() {
                     const maquininha = storeMod1?.cartao_entrou || 0;
                     const pixOs = storeMod1?.pix_os || 0;
                     const naLojaOs = storeMod1?.na_loja_os || 0;
-                    // Saldo real: prefere o ultimo rawBalance importado (não zera em dias sem OFX)
-                    const saldoItau = latestBankBalance[store.id] || bankBalances?.[store.id]?.rawBalance || 0;
+
+                    // Saldo Itaú OFX: Estritamente da data selecionada para evitar vazamento histórico em dias sem movimento
+                    const bankInDate = bankBalances?.[store.id]?.in || 0;
+                    const saldoBancoMod1 = storeMod1?.saldo_banco_itau || 0;
+                    const hasActivityOnDate = faturamento > 0 || maquininha > 0 || pixOs > 0 || bankInDate > 0 || saldoBancoMod1 > 0;
+                    const saldoItau = hasActivityOnDate ? (saldoBancoMod1 || bankInDate || latestBankBalance[store.id] || 0) : 0;
+
                     const diferenca = faturamento - (maquininha + pixOs);
                     const isDiferencaOk = Math.abs(diferenca) < 1.0;
 
@@ -127,61 +132,77 @@ function ConciliacaoPage() {
                         <Card className="p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-6 transition-all hover:scale-[1.01] hover:bg-white/10 hover:border-white/20 cursor-pointer shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] border border-white/5 backdrop-blur-md">
                           
                           {/* Nome da Loja & Status */}
-                          <div className="flex-1 flex items-center gap-4">
-                            <div className={`w-2 h-12 rounded-full ${isDiferencaOk ? 'bg-[var(--color-accent-teal)]' : 'bg-[var(--color-accent-danger)]'}`} />
+                          <div className="w-full xl:w-56 shrink-0 flex items-center gap-4">
+                            <div className={`w-2 h-14 rounded-full ${isDiferencaOk ? 'bg-[var(--color-accent-teal)]' : 'bg-[var(--color-accent-danger)]'}`} />
                             <div>
-                              <p className="font-semibold text-lg">{store.name}</p>
-                              <p className="text-xs text-[var(--text-tertiary)]">ID: {store.id}</p>
+                              <p className="font-semibold text-base sm:text-lg text-white leading-tight">{store.name}</p>
+                              <p className="text-xs text-[var(--text-tertiary)] font-mono mt-0.5">ID: {store.id}</p>
                             </div>
                           </div>
 
-                          {/* 6 Colunas Métricas */}
-                          <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4 bg-black/20 p-4 rounded-xl border border-white/5 flex-1 font-sans tabular-nums text-xs">
+                          {/* 6 Mini-Cards de Métricas Individuais */}
+                          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 flex-1 font-sans tabular-nums text-xs">
                             
                             {/* 1. Faturamento */}
-                            <div>
-                              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans">Faturamento</p>
-                              <p className="font-bold text-[var(--text-primary)]">
+                            <div className="p-3 bg-black/40 rounded-xl border border-white/10 flex flex-col justify-between min-w-0">
+                              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block truncate">
+                                Faturamento
+                              </span>
+                              <p className="font-bold text-sm text-[var(--text-primary)] mt-1 font-mono">
                                 <AnimatedNumber value={faturamento} format="currency" />
                               </p>
                             </div>
 
                             {/* 2. Maquininha */}
-                            <div>
-                              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans">Maquininha</p>
-                              <p className="font-bold text-[var(--color-accent-teal)]">
+                            <div className="p-3 bg-black/40 rounded-xl border border-white/10 flex flex-col justify-between min-w-0">
+                              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block truncate">
+                                Maquininha
+                              </span>
+                              <p className="font-bold text-sm text-[var(--color-accent-teal)] mt-1 font-mono">
                                 <AnimatedNumber value={maquininha} format="currency" />
                               </p>
                             </div>
 
                             {/* 3. PIX */}
-                            <div>
-                              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans">PIX</p>
-                              <p className="font-bold text-[var(--color-primary)]">
+                            <div className="p-3 bg-black/40 rounded-xl border border-white/10 flex flex-col justify-between min-w-0">
+                              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block truncate">
+                                PIX
+                              </span>
+                              <p className="font-bold text-sm text-[var(--color-primary)] mt-1 font-mono">
                                 <AnimatedNumber value={pixOs} format="currency" />
                               </p>
                             </div>
 
                             {/* 4. Na Loja OS */}
-                            <div>
-                              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans">Na Loja OS</p>
-                              <p className="font-bold text-[var(--color-accent-warning)]">
+                            <div className="p-3 bg-black/40 rounded-xl border border-white/10 flex flex-col justify-between min-w-0">
+                              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block truncate">
+                                Na Loja OS
+                              </span>
+                              <p className="font-bold text-sm text-[var(--color-accent-warning)] mt-1 font-mono">
                                 <AnimatedNumber value={naLojaOs} format="currency" />
                               </p>
                             </div>
 
-                            {/* 5. Faturamento Itaú (Saldo Real OFX) */}
-                            <div>
-                              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans">Faturamento Itaú (OFX)</p>
-                              <p className="font-bold text-[var(--color-accent-light-blue)]">
+                            {/* 5. Faturamento Itaú (OFX) */}
+                            <div className="p-3 bg-black/40 rounded-xl border border-white/10 flex flex-col justify-between min-w-0">
+                              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block truncate">
+                                Faturamento Itaú
+                              </span>
+                              <p className="font-bold text-sm text-[var(--color-accent-light-blue)] mt-1 font-mono">
                                 <AnimatedNumber value={saldoItau} format="currency" />
                               </p>
                             </div>
 
                             {/* 6. Diferença */}
-                            <div className="text-right border-l border-white/5 pl-3">
-                              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1 font-sans font-bold">Diferença</p>
-                              <p className={`font-bold ${isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
+                            <div className={`p-3 rounded-xl border flex flex-col justify-between min-w-0 ${
+                              isDiferencaOk ? 'bg-[var(--color-accent-teal)]/10 border-[var(--color-accent-teal)]/30' : 'bg-[var(--color-accent-danger)]/10 border-[var(--color-accent-danger)]/30'
+                            }`}>
+                              <span className={`text-[10px] uppercase font-bold tracking-wider block truncate ${
+                                isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
+                              }`}>
+                                Diferença
+                              </span>
+                              <p className={`font-bold text-sm mt-1 font-mono ${isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
                                 <AnimatedNumber value={diferenca} format="currency" />
                               </p>
                             </div>
@@ -191,6 +212,7 @@ function ConciliacaoPage() {
                       </Link>
                     );
                   })}
+
                 </div>
             </div>
           </>
