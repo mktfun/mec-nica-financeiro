@@ -4,7 +4,7 @@ import { AppShell } from '@/components/layout/AppShell';
 import { supabase } from '@/lib/supabase';
 import { PromptBox } from '@/components/chat/PromptBox';
 import { MessageList, Message } from '@/components/chat/MessageList';
-import { Bot, Plus, Trash2, Key, BarChart3, Terminal, MessageSquare, RefreshCw, Play } from 'lucide-react';
+import { Bot, Plus, Trash2, Key, BarChart3, Terminal, MessageSquare, RefreshCw, Play, Cpu, Zap, CheckCircle2, XCircle, Clock, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/Badge';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useQuery } from '@tanstack/react-query';
 import { useAiSettings, useSaveAiSettings } from '@/hooks/useAiSettings';
+import { useBotAuditLogs } from '@/hooks/useBotLogs';
 import { generateTripleMatchSuggestions } from '@/lib/llm-matcher';
 
 export const Route = createFileRoute('/agente')({
@@ -19,7 +20,7 @@ export const Route = createFileRoute('/agente')({
 });
 
 function AgentePage() {
-  const [activeMainTab, setActiveMainTab] = useState<'chat' | 'providers' | 'telemetry' | 'inspector'>('chat');
+  const [activeMainTab, setActiveMainTab] = useState<'chat' | 'providers' | 'telemetry' | 'inspector' | 'bot'>('chat');
 
   // State do Chat
   const [conversations, setConversations] = useState<any[]>([]);
@@ -35,11 +36,20 @@ function AgentePage() {
   const [model, setModel] = useState<string>('gemini-2.0-flash');
   const [apiKey, setApiKey] = useState<string>('');
 
+  // State das Configurações do Bot
+  const [botUrl, setBotUrl] = useState<string>('https://bot.tork.services');
+  const [botApiKey, setBotApiKey] = useState<string>('');
+  const [isTesting, setIsTesting] = useState(false);
+  const [botTestResult, setBotTestResult] = useState<{ ok: boolean; message: string } | null>(null);
+  const { data: botLogs = [], isLoading: loadingBotLogs, refetch: refetchBotLogs } = useBotAuditLogs(50);
+
   useEffect(() => {
     if (aiSettings) {
       setProvider(aiSettings.provider || 'google');
       setModel(aiSettings.model || 'gemini-2.0-flash');
       setApiKey(aiSettings.api_key || '');
+      setBotUrl(aiSettings.bot_url || 'https://bot.tork.services');
+      setBotApiKey(aiSettings.bot_api_key || '');
     }
   }, [aiSettings]);
 
@@ -246,8 +256,39 @@ function AgentePage() {
 
       if (aiError) throw aiError;
 
-      const finalAnswer = aiRes.text || "Sem resposta.";
+      let finalAnswer = aiRes.text || "Sem resposta.";
       let mcpLogsData: any = null;
+
+      // ── MCP: Interceptar tool calls do bot ─────────────────────────────────
+      // O LLM pode retornar comandos como [BOT_SYNC:oficina], [BOT_SYNC:rede] ou [BOT_SYNC:all]
+      const botSyncMatch = finalAnswer.match(/\[BOT_SYNC:(oficina|rede|all)\]/i);
+      if (botSyncMatch && botUrl && botApiKey) {
+        const service = botSyncMatch[1].toLowerCase() as 'oficina' | 'rede' | 'all';
+        const today = new Date();
+        today.setDate(today.getDate() - 1);
+        const targetDate = today.toISOString().split('T')[0];
+        const endpoint = service === 'all' ? '/api/sync' : `/api/sync/${service}`;
+        try {
+          toast.info(`🤖 MCP: acionando bot para "${service}"...`);
+          const botRes = await fetch(`${botUrl}${endpoint}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Api-Key': botApiKey },
+            body: JSON.stringify({ targetDate }),
+            signal: AbortSignal.timeout(30000)
+          });
+          const botData = botRes.ok ? await botRes.json() : null;
+          const statusMsg = botRes.ok
+            ? `✅ Bot acionado com sucesso para "${service}" (${targetDate}). ${botData?.message || ''}`
+            : `⚠️ Bot retornou erro ${botRes.status}`;
+          finalAnswer = finalAnswer.replace(botSyncMatch[0], `\n\n---\n${statusMsg}`);
+          if (botRes.ok) {
+            toast.success(`Bot sincronizou "${service}" com sucesso!`);
+            setTimeout(() => refetchBotLogs(), 5000);
+          }
+        } catch (e: any) {
+          finalAnswer = finalAnswer.replace(botSyncMatch[0], `\n\n---\n⚠️ Falha ao acionar bot: ${e.message}`);
+        }
+      }
 
       if (aiRes.toolResults && aiRes.toolResults.length > 0) {
         mcpLogsData = aiRes.toolResults.map((tr: any) => ({
@@ -291,9 +332,62 @@ function AgentePage() {
     }
   };
 
+
+  // Testar conexão com bot remoto
+  const handleTestBotConnection = async () => {
+    if (!botUrl) { toast.error('Informe a URL do Bot.'); return; }
+    setIsTesting(true);
+    setBotTestResult(null);
+    try {
+      const headers: HeadersInit = { 'Content-Type': 'application/json' };
+      if (botApiKey) headers['X-Api-Key'] = botApiKey;
+      const res = await fetch(`${botUrl}/health`, { headers, signal: AbortSignal.timeout(10000) });
+      if (res.ok) {
+        const data = await res.json();
+        setBotTestResult({ ok: true, message: `Bot online! Uptime: ${Math.floor((data.uptime || 0) / 60)}min` });
+        toast.success('Bot respondeu com sucesso!');
+      } else {
+        setBotTestResult({ ok: false, message: `Status: ${res.status}` });
+        toast.error(`Bot retornou erro ${res.status}`);
+      }
+    } catch (e: any) {
+      setBotTestResult({ ok: false, message: e.message || 'Timeout/offline' });
+      toast.error('Não foi possível conectar ao bot.');
+    } finally {
+      setIsTesting(false);
+    }
+  };
+
+  // Acionar sincronização pelo bot remotamente (MCP)
+  const handleTriggerBotSync = async (service: 'oficina' | 'rede' | 'all') => {
+    if (!botUrl || !botApiKey) { toast.error('Configure a URL e API Key do Bot primeiro.'); return; }
+    const today = new Date();
+    today.setDate(today.getDate() - 1);
+    const targetDate = today.toISOString().split('T')[0];
+    try {
+      toast.info(`Acionando sincronização do bot (${service})...`);
+      const endpoint = service === 'all' ? '/api/sync' : `/api/sync/${service}`;
+      const res = await fetch(`${botUrl}${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Api-Key': botApiKey },
+        body: JSON.stringify({ targetDate }),
+        signal: AbortSignal.timeout(30000)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        toast.success(`Sincronização iniciada! ${data.message || ''}`);
+        setTimeout(() => refetchBotLogs(), 5000);
+      } else {
+        toast.error(`Erro ${res.status} ao acionar bot`);
+      }
+    } catch (e: any) {
+      toast.error(`Falha ao acionar: ${e.message}`);
+    }
+  };
+
   // Botões de Abas Muted para o Header
   const renderNavTabs = () => (
-    <div className="flex bg-[var(--bg-surface-elevated)] p-1 rounded-lg border border-[var(--border-subtle)] gap-1 text-xs shrink-0">
+    <div className="flex bg-[var(--bg-surface-elevated)] p-1 rounded-lg border border-[var(--border-subtle)] gap-1 text-xs shrink-0 flex-wrap">
       <button
         onClick={() => setActiveMainTab('chat')}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium transition-colors ${activeMainTab === 'chat' ? 'bg-white/10 text-white font-semibold' : 'text-[var(--text-tertiary)] hover:text-white'}`}
@@ -304,19 +398,25 @@ function AgentePage() {
         onClick={() => setActiveMainTab('providers')}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium transition-colors ${activeMainTab === 'providers' ? 'bg-white/10 text-white font-semibold' : 'text-[var(--text-tertiary)] hover:text-white'}`}
       >
-        <Key size={14} /> Provedores & API
+        <Key size={14} /> Provedores &amp; API
       </button>
       <button
         onClick={() => setActiveMainTab('telemetry')}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium transition-colors ${activeMainTab === 'telemetry' ? 'bg-white/10 text-white font-semibold' : 'text-[var(--text-tertiary)] hover:text-white'}`}
       >
-        <BarChart3 size={14} /> Telemetria & Custos
+        <BarChart3 size={14} /> Telemetria &amp; Custos
       </button>
       <button
         onClick={() => setActiveMainTab('inspector')}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium transition-colors ${activeMainTab === 'inspector' ? 'bg-white/10 text-white font-semibold' : 'text-[var(--text-tertiary)] hover:text-white'}`}
       >
         <Terminal size={14} /> Inspector JSON
+      </button>
+      <button
+        onClick={() => setActiveMainTab('bot')}
+        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium transition-colors ${activeMainTab === 'bot' ? 'bg-[#6366f1]/20 text-[#a5b4fc] font-semibold border border-[#6366f1]/40' : 'text-[var(--text-tertiary)] hover:text-white'}`}
+      >
+        <Cpu size={14} /> Bot &amp; MCP
       </button>
     </div>
   );
@@ -700,6 +800,174 @@ function AgentePage() {
               )}
             </div>
           )}
+          {/* ══════════════════════════════════════════════════════════════════
+              ABA: BOT & MCP
+          ══════════════════════════════════════════════════════════════════ */}
+          {activeMainTab === 'bot' && (
+            <div className="space-y-6 animate-in fade-in duration-300">
+
+              {/* Hero Banner */}
+              <div className="rounded-2xl border border-[#6366f1]/30 bg-gradient-to-br from-[#1e1b4b]/60 to-[#0f0e2a]/80 p-6 flex items-center gap-5">
+                <div className="w-14 h-14 rounded-2xl bg-[#6366f1]/20 border border-[#6366f1]/40 flex items-center justify-center shrink-0">
+                  <Cpu size={28} className="text-[#a5b4fc]" />
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-lg font-bold text-white">ConciliaMec Bot</h2>
+                  <p className="text-xs text-[var(--text-tertiary)] mt-0.5">Playwright headless rodando na VPS via Traefik. Configure o endpoint e acione sincronizações diretamente pelo painel.</p>
+                </div>
+                {botTestResult && (
+                  <div className={`flex items-center gap-2 text-xs px-3 py-2 rounded-lg border ${botTestResult.ok ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-red-500/10 border-red-500/30 text-red-400'}`}>
+                    {botTestResult.ok ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
+                    {botTestResult.message}
+                  </div>
+                )}
+              </div>
+
+              {/* Configurações */}
+              <Card className="p-6 space-y-5">
+                <div className="flex items-center gap-2 mb-1">
+                  <Key size={16} className="text-[#a5b4fc]" />
+                  <h3 className="font-semibold text-white text-sm">Configurações de Conexão</h3>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-[var(--text-secondary)]">URL do Bot</label>
+                    <input
+                      type="url"
+                      value={botUrl}
+                      onChange={e => setBotUrl(e.target.value)}
+                      placeholder="https://bot.tork.services"
+                      className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg px-3 py-2.5 text-sm text-white placeholder-[var(--text-tertiary)] focus:outline-none focus:border-[#6366f1]/60 focus:ring-1 focus:ring-[#6366f1]/30 transition-all"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-[var(--text-secondary)]">API Key do Bot</label>
+                    <input
+                      type="password"
+                      value={botApiKey}
+                      onChange={e => setBotApiKey(e.target.value)}
+                      placeholder="cmk-bot-..."
+                      className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg px-3 py-2.5 text-sm text-white placeholder-[var(--text-tertiary)] focus:outline-none focus:border-[#6366f1]/60 focus:ring-1 focus:ring-[#6366f1]/30 transition-all font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 pt-1">
+                  <Button
+                    onClick={() => saveSettings.mutate({ provider, model, api_key: apiKey, bot_url: botUrl, bot_api_key: botApiKey }, {
+                      onSuccess: () => toast.success('Configurações do bot salvas!'),
+                      onError: (e: any) => toast.error(e.message)
+                    })}
+                    disabled={saveSettings.isPending}
+                    className="text-xs"
+                  >
+                    Salvar Configurações
+                  </Button>
+                  <Button
+                    onClick={handleTestBotConnection}
+                    disabled={isTesting}
+                    className="text-xs bg-[#6366f1]/20 border border-[#6366f1]/40 text-[#a5b4fc] hover:bg-[#6366f1]/30"
+                  >
+                    {isTesting ? <LoadingSpinner size="sm" text="Testando..." /> : <><Zap size={12} /> Testar Conexão</>}
+                  </Button>
+                </div>
+              </Card>
+
+              {/* MCP — Ações Rápidas */}
+              <Card className="p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Zap size={16} className="text-amber-400" />
+                  <h3 className="font-semibold text-white text-sm">MCP — Acionar Sincronização</h3>
+                  <Badge variant="warning" className="text-[10px]">Experimental</Badge>
+                </div>
+                <p className="text-xs text-[var(--text-tertiary)] mb-4">Dispara o bot remotamente para raspar dados de ontem. Requer URL e API Key configuradas acima.</p>
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    onClick={() => handleTriggerBotSync('oficina')}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-medium bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] text-white hover:border-amber-500/40 hover:bg-amber-500/5 transition-all"
+                  >
+                    <ChevronRight size={14} className="text-amber-400" />
+                    Oficina Inteligente
+                  </button>
+                  <button
+                    onClick={() => handleTriggerBotSync('rede')}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-medium bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] text-white hover:border-blue-500/40 hover:bg-blue-500/5 transition-all"
+                  >
+                    <ChevronRight size={14} className="text-blue-400" />
+                    Rede (Maquininha)
+                  </button>
+                  <button
+                    onClick={() => handleTriggerBotSync('all')}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-medium bg-[#6366f1]/10 border border-[#6366f1]/30 text-[#a5b4fc] hover:bg-[#6366f1]/20 transition-all"
+                  >
+                    <Play size={14} />
+                    Sincronizar Tudo
+                  </button>
+                </div>
+              </Card>
+
+              {/* Logs do Bot */}
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Terminal size={16} className="text-[var(--text-tertiary)]" />
+                    <h3 className="font-semibold text-white text-sm">Logs de Execução do Bot</h3>
+                    <Badge variant="neutral" className="text-[10px]">bot_audit_logs</Badge>
+                  </div>
+                  <button onClick={() => refetchBotLogs()} className="flex items-center gap-1 text-xs text-[var(--text-tertiary)] hover:text-white transition-colors">
+                    <RefreshCw size={12} /> Atualizar
+                  </button>
+                </div>
+
+                {loadingBotLogs ? (
+                  <div className="p-6 text-center"><LoadingSpinner size="sm" text="Carregando logs..." /></div>
+                ) : botLogs.length === 0 ? (
+                  <div className="p-8 text-center rounded-xl border border-white/5 bg-black/20">
+                    <p className="text-xs text-[var(--text-tertiary)]">Nenhum log de bot registrado ainda.</p>
+                    <p className="text-[10px] text-[var(--text-tertiary)]/60 mt-1">Acione uma sincronização acima para ver os logs aparecerem aqui.</p>
+                  </div>
+                ) : (
+                  <div className="border border-[var(--border-subtle)] rounded-xl overflow-hidden">
+                    <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-[var(--bg-surface-elevated)] border-b border-[var(--border-subtle)] sticky top-0 text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">
+                          <tr>
+                            <th className="p-3">Data / Hora</th>
+                            <th className="p-3">Bot</th>
+                            <th className="p-3 text-center">Status</th>
+                            <th className="p-3">Mensagem</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[var(--border-subtle)]">
+                          {botLogs.map(log => (
+                            <tr key={log.id} className="hover:bg-white/3 transition-colors">
+                              <td className="p-3 text-[var(--text-tertiary)] font-mono whitespace-nowrap">
+                                {new Date(log.created_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                              </td>
+                              <td className="p-3 text-white font-medium">{log.bot_name}</td>
+                              <td className="p-3 text-center">
+                                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium ${
+                                  log.status === 'success' ? 'bg-emerald-500/15 text-emerald-400' :
+                                  log.status === 'error' ? 'bg-red-500/15 text-red-400' :
+                                  'bg-amber-500/15 text-amber-400'
+                                }`}>
+                                  {log.status === 'success' ? <CheckCircle2 size={10} /> : log.status === 'error' ? <XCircle size={10} /> : <Clock size={10} />}
+                                  {log.status}
+                                </span>
+                              </td>
+                              <td className="p-3 text-[var(--text-secondary)] max-w-md truncate">{log.message}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+              </Card>
+            </div>
+          )}
+
         </div>
       )}
     </AppShell>

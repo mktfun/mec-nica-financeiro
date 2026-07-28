@@ -10,6 +10,7 @@ export interface BotAuditLog {
   created_at: string;
 }
 
+/** Hook para AI execution logs (telemetria do LLM) */
 export function useBotLogs(limit = 50) {
   return useQuery({
     queryKey: ['bot_logs', limit],
@@ -34,5 +35,26 @@ export function useBotLogs(limit = 50) {
         return [] as BotAuditLog[];
       }
     },
+  });
+}
+
+/** Hook para logs do bot Playwright (bot_audit_logs) */
+export function useBotAuditLogs(limit = 50) {
+  return useQuery({
+    queryKey: ['bot_audit_logs', limit],
+    queryFn: async (): Promise<BotAuditLog[]> => {
+      const { data, error } = await supabase
+        .from('bot_audit_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(limit);
+
+      if (error) {
+        console.warn('[useBotAuditLogs] Erro:', error.message);
+        return [];
+      }
+      return (data || []) as BotAuditLog[];
+    },
+    refetchInterval: 30_000, // auto-refresh a cada 30s
   });
 }

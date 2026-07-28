@@ -1,5 +1,17 @@
 # 🎨 Memória Modular: Interface & UX (Frontend)
 
+## [2026-07-28] — Feature ID: bot-config-ui
+
+**Contexto:** Criação da aba "Bot & MCP" no painel do Agente de IA para gerenciar credenciais do Playwright remoto, consultar logs (`bot_audit_logs`) e interceptar invocações de ferramentas (tool calls) diretamente no Chat.
+
+**Regra aprendida:**
+- **Integração MCP via Interceptação Frontend:** Em vez de fazer o LLM bater diretamente no endpoint do bot no backend, o LLM retorna uma tag de instrução explícita no texto (ex: `[BOT_SYNC:oficina]`). O `sendMessage` do chat (frontend) intercepta essa tag com Regex, faz o fetch pro bot usando a `bot_api_key` guardada no Supabase e injeta a mensagem final de sucesso/falha na resposta sem o usuário precisar atualizar a página.
+- **Polling de Logs do Bot:** Ao renderizar `bot_audit_logs`, utilizar `useQuery` com `refetchInterval` para atualizar a tabela "live", e exibir botões manuais de `refetch()` perto do cabeçalho da tabela de logs.
+
+**Risco identificado:** Tentar usar DDL (ALTER TABLE) programaticamente na API do Supabase cloud falhará; a migração deve ser fornecida ao usuário via alert/walkthrough para que ele rode manualmente no SQL Editor.
+
+**Não fazer:** Não usar comandos de rede no server para MCP sem considerar que o endpoint do Bot precisa ser configurável (URL e Key não devem ser hardcoded).
+
 ## [2026-07-28] — Feature ID: fix-store-closing-unified-panel-layout
 
 **Contexto:** Restauração do fundo contínuo único para o painel das 6 métricas de loja em `conciliacao.index.tsx` e remoção de pílulas isoladas.

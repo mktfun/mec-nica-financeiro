@@ -6,7 +6,9 @@ export interface AiSettings {
   id?: string;
   provider: string;
   model: string;
-  api_key?: string; // We might not receive it completely if we mask it, but let's assume we can set it
+  api_key?: string;
+  bot_url?: string;
+  bot_api_key?: string;
 }
 
 export function useAiSettings() {
@@ -23,7 +25,7 @@ export function useAiSettings() {
         if (userId) {
           const { data, error } = await supabase
             .from('ai_settings')
-            .select('provider, model, api_key')
+            .select('provider, model, api_key, bot_url, bot_api_key')
             .eq('user_id', userId)
             .maybeSingle();
 
@@ -32,6 +34,8 @@ export function useAiSettings() {
               provider: data.provider || 'google',
               model: data.model || 'gemini-2.0-flash',
               api_key: data.api_key || defaultKey,
+              bot_url: data.bot_url || 'https://bot.tork.services',
+              bot_api_key: data.bot_api_key || '',
             };
           }
         }
@@ -39,7 +43,7 @@ export function useAiSettings() {
         // Tenta buscar pela configuração GLOBAL
         const { data: globalData, error: globalErr } = await supabase
           .from('ai_settings')
-          .select('provider, model, api_key')
+          .select('provider, model, api_key, bot_url, bot_api_key')
           .eq('user_id', 'GLOBAL')
           .maybeSingle();
 
@@ -48,13 +52,15 @@ export function useAiSettings() {
             provider: globalData.provider || 'google',
             model: globalData.model || 'gemini-2.0-flash',
             api_key: globalData.api_key || defaultKey,
+            bot_url: globalData.bot_url || 'https://bot.tork.services',
+            bot_api_key: globalData.bot_api_key || '',
           };
         }
       } catch (err) {
         console.warn('Aviso ao carregar ai_settings do Supabase:', err);
       }
 
-      return { provider: 'google', model: 'gemini-2.0-flash', api_key: defaultKey };
+      return { provider: 'google', model: 'gemini-2.0-flash', api_key: defaultKey, bot_url: 'https://bot.tork.services', bot_api_key: '' };
     },
   });
 }
@@ -73,7 +79,9 @@ export function useSaveAiSettings() {
           user_id: userId,
           provider: settings.provider,
           model: settings.model,
-          api_key: settings.api_key || null
+          api_key: settings.api_key || null,
+          bot_url: settings.bot_url || null,
+          bot_api_key: settings.bot_api_key || null,
         }, { onConflict: 'user_id' });
 
       if (error) throw error;
