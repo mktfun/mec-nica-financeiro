@@ -29,9 +29,9 @@ function ConciliacaoPage() {
 
   const { data: latestBankBalance = {} } = useLatestBankBalance();
 
-  // Ativa o Reconciliador de IA Headless em background para a primeira loja caso haja pendências
-  const firstStoreId = stores[0]?.id || '';
-  useBackgroundAiReconciler(firstStoreId, selectedDate);
+  // Ativa o Reconciliador de IA Headless em background para TODAS as lojas da rede
+  useBackgroundAiReconciler(stores, selectedDate);
+
 
   const isLoading = loadingStores || loadingResumo || loadingDetalhes || loadingBalances || loadingBankBalances || loadingModulo1;
 

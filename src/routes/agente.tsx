@@ -646,36 +646,54 @@ function AgentePage() {
                       </div>
 
                       <div className="bg-black/80 rounded-xl p-4 border border-white/10 overflow-x-auto max-h-[350px] custom-scrollbar text-xs font-mono">
-                        {activeInspectorTab === 'reasoning' && (
-                          <div className="space-y-3">
-                            {Array.isArray(selectedLog.reasoning_steps_json) && selectedLog.reasoning_steps_json.length > 0 ? (
-                              selectedLog.reasoning_steps_json.map((step: any, i: number) => (
-                                <div key={i} className="p-3 bg-white/5 border border-white/10 rounded-lg text-white font-sans">
-                                  <div className="flex items-center justify-between mb-1">
-                                    <strong className="text-white font-mono text-[11px]">Match #{i + 1} ({step.confidence}%)</strong>
-                                    <span className="text-[10px] text-[var(--text-tertiary)] font-mono">OS #{step.os_number || 'S/N'}</span>
+                        {activeInspectorTab === 'reasoning' && (() => {
+                          const steps = selectedLog.reasoning_steps || selectedLog.reasoning_steps_json;
+                          const parsedSteps = typeof steps === 'string' ? JSON.parse(steps || '[]') : (steps || []);
+
+                          return (
+                            <div className="space-y-3">
+                              {Array.isArray(parsedSteps) && parsedSteps.length > 0 ? (
+                                parsedSteps.map((step: any, i: number) => (
+                                  <div key={i} className="p-3 bg-white/5 border border-white/10 rounded-lg text-white font-sans">
+                                    <div className="flex items-center justify-between mb-1">
+                                      <strong className="text-white font-mono text-[11px]">
+                                        Match #{i + 1} ({step.confidence || 95}%) {step.client_name ? `• ${step.client_name}` : ''}
+                                      </strong>
+                                      <span className="text-[10px] text-[var(--text-tertiary)] font-mono">OS #{step.os_number || step.id || 'S/N'}</span>
+                                    </div>
+                                    <p className="text-xs text-[var(--text-secondary)]">{step.reasoning || step.message || JSON.stringify(step)}</p>
                                   </div>
-                                  <p className="text-xs text-[var(--text-secondary)]">{step.reasoning}</p>
-                                </div>
-                              ))
-                            ) : (
-                              <p className="text-[var(--text-tertiary)] font-sans">Nenhum raciocínio gravado nesta chamada.</p>
-                            )}
-                          </div>
-                        )}
+                                ))
+                              ) : (
+                                <p className="text-[var(--text-tertiary)] font-sans">Nenhum raciocínio especifico retornado nesta chamada.</p>
+                              )}
+                            </div>
+                          );
+                        })()}
 
-                        {activeInspectorTab === 'payload' && (
-                          <pre className="text-teal-400 whitespace-pre-wrap leading-relaxed">
-                            {JSON.stringify(selectedLog.raw_payload_json, null, 2)}
-                          </pre>
-                        )}
+                        {activeInspectorTab === 'payload' && (() => {
+                          const payload = selectedLog.input_payload || selectedLog.raw_payload_json;
+                          const parsedPayload = typeof payload === 'string' ? JSON.parse(payload || '{}') : payload;
 
-                        {activeInspectorTab === 'response' && (
-                          <pre className="text-purple-300 whitespace-pre-wrap leading-relaxed">
-                            {JSON.stringify(selectedLog.raw_response_json, null, 2)}
-                          </pre>
-                        )}
+                          return (
+                            <pre className="text-teal-400 whitespace-pre-wrap leading-relaxed">
+                              {JSON.stringify(parsedPayload || {}, null, 2)}
+                            </pre>
+                          );
+                        })()}
+
+                        {activeInspectorTab === 'response' && (() => {
+                          const response = selectedLog.output_payload || selectedLog.raw_response_json;
+                          const parsedResponse = typeof response === 'string' ? JSON.parse(response || '{}') : response;
+
+                          return (
+                            <pre className="text-purple-300 whitespace-pre-wrap leading-relaxed">
+                              {JSON.stringify(parsedResponse || {}, null, 2)}
+                            </pre>
+                          );
+                        })()}
                       </div>
+
                     </Card>
                   )}
                 </div>

@@ -23,11 +23,15 @@ export interface AiTelemetryLog {
   total_tokens: number;
   estimated_cost: number;
   execution_time_ms: number;
-  raw_payload_json: any;
-  raw_response_json: any;
-  reasoning_steps_json: any;
+  input_payload: any;
+  output_payload: any;
+  reasoning_steps: any;
+  raw_payload_json?: any;
+  raw_response_json?: any;
+  reasoning_steps_json?: any;
   matches_applied_count: number;
 }
+
 
 // Tabela de preços de referência por 1k tokens (USD)
 const TOKEN_PRICING: Record<string, { prompt: number; completion: number }> = {
@@ -253,7 +257,7 @@ Se não encontrar associações plausíveis, retorne {"matches": []}.
   const estimatedCost = (promptTokens / 1000) * rates.prompt + (completionTokens / 1000) * rates.completion;
   const executionTimeMs = Date.now() - startTime;
 
-  // Grava Log de Auditoria & Telemetria no Supabase
+  // Grava Log de Auditoria & Telemetria no Supabase com mapeamento correto de colunas
   await saveTelemetryLog({
     store_id: storeId,
     provider: settings.provider,
@@ -263,12 +267,16 @@ Se não encontrar associações plausíveis, retorne {"matches": []}.
     total_tokens: totalTokens,
     estimated_cost: estimatedCost,
     execution_time_ms: executionTimeMs,
+    input_payload: payload,
+    output_payload: rawResponse,
+    reasoning_steps: matchesResult.map(m => ({ id: m.id, os_number: m.os_number, confidence: m.confidence, reasoning: m.reasoning, client_name: m.client_name, amount: m.amount })),
     raw_payload_json: payload,
     raw_response_json: rawResponse,
-    reasoning_steps_json: matchesResult.map(m => ({ id: m.id, os_number: m.os_number, confidence: m.confidence, reasoning: m.reasoning })),
+    reasoning_steps_json: matchesResult,
     matches_applied_count: matchesResult.filter(m => m.confidence >= 90).length,
   });
 
   return matchesResult;
 }
+
 
