@@ -23,7 +23,10 @@ RUN npm ci --ignore-scripts
 
 COPY . .
 
+# Compila TypeScript para JS
+RUN ./node_modules/.bin/tsc --skipLibCheck
+
 EXPOSE 3001
 
-CMD ["npm", "run", "bot:server"]
+CMD ["node", "dist/server.js"]
 

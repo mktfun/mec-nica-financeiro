@@ -21,6 +21,15 @@ import { loginOI, downloadRelatorioOS } from './scrapers/oficina';
 import { loginRede, capturarTodosEstabelecimentos } from './scrapers/rede';
 import { getBotCredentials, getStoreMap, uploadRedeTransacoes } from './sync/supabaseUploader';
 
+// Data alvo: D-1 por padrão (ontem), ou a passada via variável de ambiente
+function getTargetDate(): string {
+  if (process.env.BOT_TARGET_DATE) return process.env.BOT_TARGET_DATE;
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  return d.toISOString().split('T')[0];
+}
+
+
 export interface SyncOptions {
   targetDate?: string;
   services?: ('oficina' | 'rede')[];
