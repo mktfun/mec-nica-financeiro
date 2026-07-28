@@ -17,27 +17,37 @@ const supabase = createClient(
  */
 export async function uploadRedeTransacoes(
   transacoes: RedeTransacao[],
-  storeMap: Record<string, string> // cnpj -> store_id
+  storeMap: Record<string, string> // nome_normalizado -> store_id
 ): Promise<void> {
   if (transacoes.length === 0) {
     console.log('[Uploader] Nenhuma transação da Rede para enviar.');
     return;
   }
 
-  const rows = transacoes.map((tx) => ({
-    store_id: storeMap[tx.cnpj] || null,
-    title: `${tx.modalidade.toUpperCase()} Rede — ${tx.estabelecimento}`,
-    subtitle: tx.nsu ? `NSU: ${tx.nsu}` : null,
-    amount: tx.valor_liquido || tx.valor_bruto,
-    type: 'in' as const,
-    status: 'completed' as const,
-    payment_method: tx.modalidade,
-    os_number: null, // Rede não tem nº OS — será cruzado depois
-    occurred_at: new Date(`${tx.data}T12:00:00`).toISOString(),
-    target_date: tx.data,
-    source: 'rede',
-    icon_type: tx.modalidade.includes('debito') ? 'card' : tx.modalidade.includes('credito') ? 'card' : 'bank',
-  }));
+  const rows = transacoes.map((tx) => {
+    // Tenta encontrar a loja pelo nome do estabelecimento (Rede)
+    const normalizedEstab = tx.estabelecimento.trim().toLowerCase();
+    const matchedStoreId = Object.entries(storeMap).find(([name]) => 
+      normalizedEstab.includes(name) || name.includes(normalizedEstab)
+    )?.[1] || null;
+
+    return {
+      store_id: matchedStoreId,
+      title: `${tx.modalidade.toUpperCase()} Rede — ${tx.estabelecimento}`,
+      subtitle: tx.nsu ? `NSU: ${tx.nsu}` : null,
+      amount: tx.valor_liquido || tx.valor_bruto,
+      type: 'in' as const,
+      status: 'completed' as const,
+      payment_method: tx.modalidade,
+      os_number: null, // Rede não tem nº OS — será cruzado depois
+      external_id: `rede_${tx.nsu || Math.random().toString(36).substring(7)}`,
+      raw_data: tx,
+      occurred_at: new Date(`${tx.data}T12:00:00`).toISOString(),
+      target_date: tx.data,
+      source: 'rede',
+      icon_type: tx.modalidade.includes('debito') ? 'card' : tx.modalidade.includes('credito') ? 'card' : 'bank',
+    };
+  });
 
   // Chunk de 100 para evitar timeout
   const chunkSize = 100;
@@ -61,7 +71,7 @@ export async function uploadRedeTransacoes(
 export async function getStoreMap(): Promise<Record<string, string>> {
   const { data, error } = await supabase
     .from('stores')
-    .select('id, cnpj');
+    .select('id, name');
 
   if (error) {
     console.error('[Uploader] Erro ao buscar stores:', error.message);
@@ -70,10 +80,9 @@ export async function getStoreMap(): Promise<Record<string, string>> {
 
   const map: Record<string, string> = {};
   for (const store of data || []) {
-    if (store.cnpj) {
-      // Remove formatação do CNPJ para comparação limpa
-      const cnpjClean = store.cnpj.replace(/\D/g, '');
-      map[cnpjClean] = store.id;
+    if (store.name) {
+      const nameClean = store.name.trim().toLowerCase();
+      map[nameClean] = store.id;
     }
   }
   return map;
