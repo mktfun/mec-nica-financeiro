@@ -1,5 +1,17 @@
 # 🧠 Memória Modular: Supabase & Schemas
 
+## [2026-07-28] — Feature ID: bot-production-fixes
+
+**Contexto:** Sincronização forçada de Migrations DDL não aplicadas no ambiente Cloud (erro 404 em tabelas como `bot_audit_logs`).
+
+**Regra aprendida:**
+- **Execução de DDL no Supabase:** A SDK JavaScript padrão do Supabase não permite executar queries arbitrárias (SQL puro) por razões de segurança. Além disso, a Supabase Management API (`/v1/projects/.../query`) requer Network Rules estritas e escopos restritos no token, falhando frequentemente com 404 se o projeto for inacessível ou o endpoint tiver mudado.
+- Para injetar correções estruturais rápidas (como criar tabelas) em produção, a melhor e mais segura abordagem é instruir o usuário a rodar o comando diretamente no SQL Editor do painel, garantindo que o comando `NOTIFY pgrst, 'reload schema'` seja incluído ao final para limpar o cache do PostgREST.
+
+**Risco identificado:** Confiar apenas nos arquivos na pasta `supabase/migrations/` sem garantir o push em cloud causa falhas críticas no client do frontend por tabelas ausentes no cache (`PGRST205` ou `404 Not Found`).
+
+**Não fazer:** Nunca tentar usar `fetch` para a Management API ou Supabase JS para queries de DDL brutas (CREATE TABLE, ALTER TABLE) sem o uso de RPCs dedicadas (`exec_sql`).
+
 ## [2026-07-28] — Feature ID: bot-mcp-refactor
 
 **Contexto:** Refatoração da integração do Bot Playwright para operar como uma API de Consulta MCP verdadeira (Model Context Protocol) via Vercel AI SDK na Edge Function `ai-chat`, substituindo strings mágicas no frontend.

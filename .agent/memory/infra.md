@@ -1,5 +1,17 @@
 # 🧠 Memória Modular: Infraestrutura (Deploy, VPS, DNS, Redes)
 
+## [2026-07-28] — Feature ID: bot-cors-fix
+
+**Contexto:** Correção de bloqueio CORS no servidor do bot headless rodando via Fastify. A ausência de headers bloqueava chamadas preflight (`OPTIONS`) feitas diretamente pelo frontend Lovable (no painel de testes do Agente).
+
+**Regra aprendida:**
+- **Fastify e CORS:** Por padrão, o Fastify não responde a requisições preflight (`OPTIONS`). É estritamente necessário registrar o plugin `@fastify/cors` configurando `origin`, `methods` e `allowedHeaders` antes da declaração de qualquer rota (`await setupRoutes(fastify)`).
+- **Integração Frontend-Bot:** Se um painel client-side precisa interagir com um servidor externo em subdomínio (ex: `bot.tork.services`), o backend do bot precisa explicitamente emitir o header `Access-Control-Allow-Origin`. 
+
+**Risco identificado:** A falta do plugin do CORS causa erros obscuros de "fetch failed" (`net::ERR_FAILED`) no console do navegador, dando a impressão falsa de que o domínio está offline, quando na verdade o erro ocorre porque o Options falhou.
+
+**Não fazer:** Nunca subir um serviço (Fastify/Express) que vai ser invocado por frontends sem incluir explicitamente a configuração de CORS.
+
 ## [2026-07-28] — Feature ID: bot-traefik-routing
 
 **Contexto:** Configuração do bot (Playwright) para receber requisições do Cloudflare Tunnel passando pelo Traefik na mesma rede interna do stack.
