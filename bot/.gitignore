@@ -1,5 +1,5 @@
-session/
-tmp/
+/session/
+/tmp/
 .env
 node_modules/
 dist/
