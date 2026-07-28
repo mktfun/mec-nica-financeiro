@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  conciliamec-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: conciliamec-bot
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - NODE_ENV=production
+    env_file:
+      - .env
+    volumes:
+      - ./tmp:/app/tmp
+      - ./session:/app/session

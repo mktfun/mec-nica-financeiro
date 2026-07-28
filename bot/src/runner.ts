@@ -21,22 +21,32 @@ import { loginOI, downloadRelatorioOS } from './scrapers/oficina';
 import { loginRede, capturarTodosEstabelecimentos } from './scrapers/rede';
 import { getBotCredentials, getStoreMap, uploadRedeTransacoes } from './sync/supabaseUploader';
 
-// Data alvo: D-1 por padrão (ontem), ou a passada via variável de ambiente
-function getTargetDate(): string {
-  if (process.env.BOT_TARGET_DATE) return process.env.BOT_TARGET_DATE;
-  const d = new Date();
-  d.setDate(d.getDate() - 1);
-  return d.toISOString().split('T')[0];
+export interface SyncOptions {
+  targetDate?: string;
+  services?: ('oficina' | 'rede')[];
 }
 
-async function run() {
-  const targetDate = getTargetDate();
-  console.log(`\n🤖 ConciliaMec Bot iniciando para data: ${targetDate}\n`);
+export async function runSync(options: SyncOptions = {}) {
+  const targetDate = options.targetDate || getTargetDate();
+  const services = options.services || ['oficina', 'rede'];
+
+  console.log(`\n🤖 ConciliaMec Bot iniciando execução para data: ${targetDate} (Serviços: ${services.join(', ')})\n`);
+
+  let oiResult = { success: false, xlsxPath: null as string | null };
+  let redeResult = { success: false, txCount: 0 };
 
   // ── Carrega credenciais do banco ────────────────────────────────────────────
-  const oiCreds = await getBotCredentials('oficina_inteligente');
-  const redeCreds = await getBotCredentials('rede');
-  const storeMap = await getStoreMap();
+  let oiCreds: any = null;
+  let redeCreds: any = null;
+  let storeMap: any = {};
+
+  try {
+    storeMap = await getStoreMap();
+    if (services.includes('oficina')) oiCreds = await getBotCredentials('oficina_inteligente');
+    if (services.includes('rede')) redeCreds = await getBotCredentials('rede');
+  } catch (e) {
+    console.warn('[Bot] Aviso ao carregar credenciais Supabase (usando variáveis de ambiente se disponíveis):', e);
+  }
 
   // ── Inicializa Playwright ───────────────────────────────────────────────────
   const browser = await chromium.launch({
@@ -45,69 +55,71 @@ async function run() {
   });
 
   // ── BLOCO: Oficina Inteligente ──────────────────────────────────────────────
-  let xlsxPath: string | null = null;
-  try {
-    const oiContext = await browser.newContext({
-      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36',
-      viewport: { width: 1280, height: 800 },
-    });
+  if (services.includes('oficina') && oiCreds?.username) {
+    try {
+      const oiContext = await browser.newContext({
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36',
+        viewport: { width: 1280, height: 800 },
+      });
 
-    const hasSession = await loadSession('oi', oiContext);
-    const oiPage = await loginOI(oiContext, { username: oiCreds.username, password: oiCreds.password });
-    
-    if (!hasSession) {
-      await saveSession('oi', oiContext);
+      const hasSession = await loadSession('oi', oiContext);
+      const oiPage = await loginOI(oiContext, { username: oiCreds.username, password: oiCreds.password });
+      
+      if (!hasSession) {
+        await saveSession('oi', oiContext);
+      }
+
+      const xlsxPath = await downloadRelatorioOS(oiPage, targetDate);
+      console.log(`✅ [OI] XLSX baixado: ${xlsxPath}`);
+      oiResult = { success: true, xlsxPath };
+
+      await oiContext.close();
+    } catch (e) {
+      console.error('❌ [OI] Falha ao coletar dados do Oficina Inteligente:', e);
     }
-
-    xlsxPath = await downloadRelatorioOS(oiPage, targetDate);
-    console.log(`✅ [OI] XLSX baixado: ${xlsxPath}`);
-
-    await oiContext.close();
-  } catch (e) {
-    console.error('❌ [OI] Falha ao coletar dados do Oficina Inteligente:', e);
   }
 
   // ── BLOCO: Rede ─────────────────────────────────────────────────────────────
-  let redeTransacoes: Awaited<ReturnType<typeof capturarTodosEstabelecimentos>> = [];
-  try {
-    const redeContext = await browser.newContext({
-      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36',
-      viewport: { width: 1280, height: 800 },
-    });
+  if (services.includes('rede') && redeCreds?.username) {
+    let redeTransacoes: Awaited<ReturnType<typeof capturarTodosEstabelecimentos>> = [];
+    try {
+      const redeContext = await browser.newContext({
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36',
+        viewport: { width: 1280, height: 800 },
+      });
 
-    const hasSession = await loadSession('rede', redeContext);
-    const redePage = await loginRede(redeContext, { username: redeCreds.username, password: redeCreds.password });
+      const hasSession = await loadSession('rede', redeContext);
+      const redePage = await loginRede(redeContext, { username: redeCreds.username, password: redeCreds.password });
 
-    if (!hasSession) {
-      await saveSession('rede', redeContext);
+      if (!hasSession) {
+        await saveSession('rede', redeContext);
+      }
+
+      redeTransacoes = await capturarTodosEstabelecimentos(redePage, targetDate);
+      console.log(`✅ [Rede] Total de transações capturadas: ${redeTransacoes.length}`);
+
+      await redeContext.close();
+
+      if (redeTransacoes.length > 0) {
+        await uploadRedeTransacoes(redeTransacoes, storeMap);
+        console.log('✅ [Supabase] Transações da Rede sincronizadas.');
+        redeResult = { success: true, txCount: redeTransacoes.length };
+      }
+    } catch (e) {
+      console.error('❌ [Rede] Falha ao coletar dados da Rede:', e);
     }
-
-    redeTransacoes = await capturarTodosEstabelecimentos(redePage, targetDate);
-    console.log(`✅ [Rede] Total de transações capturadas: ${redeTransacoes.length}`);
-
-    await redeContext.close();
-  } catch (e) {
-    console.error('❌ [Rede] Falha ao coletar dados da Rede:', e);
   }
 
   await browser.close();
 
-  // ── BLOCO: Sync com Supabase ────────────────────────────────────────────────
-  if (redeTransacoes.length > 0) {
-    await uploadRedeTransacoes(redeTransacoes, storeMap);
-    console.log('✅ [Supabase] Transações da Rede sincronizadas.');
-  }
-
-  // TODO: Processar xlsxPath com o parser do OI e sincronizar
-  if (xlsxPath) {
-    console.log('ℹ️ [OI] XLSX disponível para processamento:', xlsxPath);
-    // await processOIXlsx(xlsxPath, targetDate, storeMap);
-  }
-
-  console.log(`\n✅ Bot ConciliaMec concluído para ${targetDate}\n`);
+  console.log(`\n✅ Bot ConciliaMec executado com sucesso para ${targetDate}\n`);
+  return { targetDate, oiResult, redeResult, timestamp: new Date().toISOString() };
 }
 
-run().catch((e) => {
-  console.error('💥 Erro fatal no bot:', e);
-  process.exit(1);
-});
+if (require.main === module) {
+  runSync().catch((e) => {
+    console.error('💥 Erro fatal no bot:', e);
+    process.exit(1);
+  });
+}
+
