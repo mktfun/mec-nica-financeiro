@@ -1,6 +1,20 @@
 # 🧠 Memória Modular: Domínio & Conciliação
 
+## [2026-07-28] — Feature ID: audit-and-batch-all-stores-ai-reconciler
+
+**Contexto:** Varredura sequencial multi-loja 100% completa na conciliação por IA (`useBackgroundAiReconciler`), fatiamento de pendências em lotes (chunking) e correção de mapeamento de colunas de telemetria em `ai_execution_logs` (`input_payload` e `output_payload`).
+
+**Regra aprendida:**
+- **Mapeamento de Colunas de Telemetria:** A tabela `public.ai_execution_logs` no Supabase possui as colunas `input_payload`, `output_payload` e `reasoning_steps`. A função `saveTelemetryLog` em `llm-matcher.ts` DEVE utilizar rigorosamente esses nomes (em vez de `raw_payload_json`), permitindo que o DevTools Inspector na rota `/agente` formate os objetos e exiba 100% dos JSONs de entrada e saída.
+- **Varredura Multi-Loja em Segundo Plano:** O reconciliador de IA silencioso `useBackgroundAiReconciler` NUNCA deve ser limitado a apenas uma loja (`stores[0]`) nem possuir limite rígido de 20 itens. Ele DEVE iterar por TODAS as lojas da rede (`stores`) e fatiar pendências de OS, Rede e OFX em lotes de até 15 itens, garantindo que 100% dos lançamentos sejam analisados pela LLM.
+- **Trava de Hash por Loja:** A referência de hash de execução (`processedHashRef`) deve incluir a ID da loja (`currentStoreId`), a data de referência (`targetDate`) e a contagem dos itens não vinculados para evitar chamadas duplicadas no mesmo ciclo de render do React.
+
+**Risco identificado:** Limitar a busca a `stores[0]` ou usar `.limit(20)` no Supabase faz com que lojas secundárias ou OSs remanescentes do pátio sejam ignoradas pela IA, exigindo intervenção manual desnecessária.
+
+**Não fazer:** Nunca limitar a busca do reconciliador de IA a apenas a primeira loja da rede nem deixar de mapear as colunas `input_payload` e `output_payload` na gravação de logs de telemetria.
+
 ## [2026-07-28] — Feature ID: ai-reconciliation-payload-fix
+
 
 **Contexto:** Correção na montagem do JSON enviado ao motor de IA (`generateTripleMatchSuggestions`) e busca de emergência de pendências reais em `useBackgroundAiReconciler`.
 
