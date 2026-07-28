@@ -5,8 +5,8 @@ services:
       dockerfile: Dockerfile
     container_name: conciliamec-bot
     restart: always
-    ports:
-      - "3001:3001"
+    expose:
+      - "3001"
     environment:
       - PORT=3001
       - NODE_ENV=production
@@ -17,6 +17,11 @@ services:
       - ./session:/app/session
     networks:
       - tork_default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.conciliamec-bot.rule=Host(`bot.tork.services`)"
+      - "traefik.http.routers.conciliamec-bot.entrypoints=web"
+      - "traefik.http.services.conciliamec-bot.loadbalancer.server.port=3001"
 
 networks:
   tork_default:
