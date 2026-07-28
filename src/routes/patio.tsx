@@ -21,6 +21,38 @@ export const Route = createFileRoute('/patio')({
 
 type FilterTab = 'todas' | 'em_aberto' | 'pago_parcial' | 'finalizadas_periodo';
 
+export function getOsEffectiveValues(os: any) {
+  const credit = Number(os.credit_value || os.parsed_credit || os.parsed_credit_debit || 0);
+  const debit = Number(os.debit_value || os.parsed_debit || 0);
+  const pix = Number(os.pix_transfer_value || os.parsed_pix_transfer || 0);
+  const sumPayments = credit + debit + pix;
+
+  const rawTotal = Number(os.total_value || 0);
+  const rawPaid = Number(os.paid_value || 0);
+
+  const total = Math.max(rawTotal, rawPaid, sumPayments);
+  let paid = rawPaid > 0 
+    ? rawPaid 
+    : (os.status === 'finalizado' || os.status === 'ENTROU' ? total : (sumPayments > 0 ? sumPayments : 0));
+  
+  if (paid > total && total > 0) {
+    paid = total;
+  }
+
+  const open = Math.max(0, total - paid);
+
+  let status = os.status || 'em_aberto';
+  if ((paid >= total && total > 0) || open <= 0.05) {
+    status = 'finalizado';
+  } else if (paid > 0 && open > 0.05) {
+    status = 'pago_parcial';
+  } else if (paid === 0) {
+    status = 'em_aberto';
+  }
+
+  return { total, paid, open, status, sumPayments };
+}
+
 function PatioPage() {
   const [activeTab, setActiveTab] = useState<FilterTab>('todas');
   const [searchQuery, setSearchQuery] = useState('');
@@ -40,17 +72,23 @@ function PatioPage() {
 
   const isLoading = loadingPatio || loadingStores;
 
-  const openOs = patioData.filter(os => os.status === 'em_aberto' || os.status === 'pago_parcial');
-  const totalAberto = openOs.reduce((a, os) => a + Math.max(0, Number(os.total_value) - Number(os.paid_value)), 0);
-  const maxOsValue = openOs.length > 0 ? Math.max(...openOs.map(os => Number(os.total_value))) : 0;
-  const noPayment = patioData.filter(os => os.status === 'em_aberto' && Number(os.paid_value) === 0).length;
-  const partialPayment = patioData.filter(os => os.status === 'pago_parcial' || (os.status === 'em_aberto' && Number(os.paid_value) > 0)).length;
+  const openOs = patioData.filter(os => {
+    const eff = getOsEffectiveValues(os);
+    return eff.status === 'em_aberto' || eff.status === 'pago_parcial';
+  });
+  
+  const totalAberto = openOs.reduce((a, os) => a + getOsEffectiveValues(os).open, 0);
+  const maxOsValue = openOs.length > 0 ? Math.max(...openOs.map(os => getOsEffectiveValues(os).total)) : 0;
+  const noPayment = patioData.filter(os => getOsEffectiveValues(os).status === 'em_aberto').length;
+  const partialPayment = patioData.filter(os => getOsEffectiveValues(os).status === 'pago_parcial').length;
 
   const filtered = patioData.filter(os => {
-    if (activeTab === 'em_aberto' && os.status !== 'em_aberto') return false;
-    if (activeTab === 'pago_parcial' && os.status !== 'pago_parcial') return false;
+    const eff = getOsEffectiveValues(os);
+
+    if (activeTab === 'em_aberto' && eff.status !== 'em_aberto') return false;
+    if (activeTab === 'pago_parcial' && eff.status !== 'pago_parcial') return false;
     if (activeTab === 'finalizadas_periodo') {
-      if (os.status !== 'finalizado') return false;
+      if (eff.status !== 'finalizado') return false;
       const closed = os.closed_at || os.updated_at.split('T')[0];
       if (closed < startDate || closed > endDate) return false;
     }
@@ -67,6 +105,7 @@ function PatioPage() {
 
     return true;
   });
+
 
   const totalPages = Math.ceil(filtered.length / pageSize);
   const paginatedData = filtered.slice((page - 1) * pageSize, page * pageSize);
@@ -217,17 +256,16 @@ function PatioPage() {
                 </div>
               ) : (
                 <div className="divide-y divide-[var(--border-subtle)]">
-                  {paginatedData.map((os, i) => {
-                    const isAberto = os.status === 'em_aberto';
-                    const isParcial = os.status === 'pago_parcial';
-                    const isFinalizado = os.status === 'finalizado';
-                    
+                  {paginatedData.map((os) => {
+                    const eff = getOsEffectiveValues(os);
+                    const isFinalizado = eff.status === 'finalizado';
+                    const isParcial = eff.status === 'pago_parcial';
+
                     return (
                       <motion.div
                         key={os.id}
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 5 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.02 }}
                         onClick={() => setSelectedOs(os)}
                         className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 hover:bg-[var(--bg-surface-elevated)] transition-colors group cursor-pointer"
                       >
@@ -254,7 +292,7 @@ function PatioPage() {
                                 } 
                                 className="text-[10px]"
                               >
-                                {os.status.replace('_', ' ')}
+                                {eff.status.replace('_', ' ')}
                               </Badge>
                               {os.days_open > 0 && !isFinalizado && (
                                 <Badge variant="neutral" className="text-[10px] bg-[var(--bg-surface-hover)]">
@@ -279,14 +317,14 @@ function PatioPage() {
                         <div className="mt-3 sm:mt-0 ml-14 sm:ml-0 text-right">
                           <div className="flex flex-col gap-1 items-end">
                             <div className="text-xs text-[var(--text-secondary)]">
-                              Total: <span className="font-display font-medium text-[var(--text-primary)]">R$ {Number(os.total_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                              Total: <span className="font-display font-medium text-[var(--text-primary)]">R$ {eff.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                             </div>
                             <div className="text-sm font-display font-bold text-[var(--color-primary-bright)]">
-                              Pago: R$ {Number(os.paid_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                              Pago: R$ {eff.paid.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                             </div>
-                            {Number(os.total_value) - Number(os.paid_value) > 0.05 && (
+                            {eff.open > 0.05 && (
                               <div className="text-xs font-display font-bold text-[var(--color-accent-danger)]">
-                                Aberto: R$ {(Number(os.total_value) - Number(os.paid_value)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                Aberto: R$ {eff.open.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                               </div>
                             )}
                           </div>
@@ -357,25 +395,31 @@ function PatioPage() {
               )}
             </div>
 
-            <div className="bg-[var(--bg-surface-elevated)] p-4 rounded-lg border border-white/10">
-              <h4 className="text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-3">Financeiro</h4>
-              <div className="space-y-2">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-[var(--text-secondary)]">Valor Total da OS:</span>
-                  <span className="font-bold text-white">R$ {Number(selectedOs.total_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-                </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-[var(--text-secondary)]">Valor Pago (Liquidado):</span>
-                  <span className="font-bold text-[var(--color-primary-bright)]">R$ {Number(selectedOs.paid_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-                </div>
-                {Number(selectedOs.total_value) - Number(selectedOs.paid_value) > 0 && (
-                  <div className="flex justify-between items-center text-sm pt-2 border-t border-white/10 mt-2">
-                    <span className="text-[var(--text-secondary)]">Saldo em Aberto (A Pagar):</span>
-                    <span className="font-bold text-[var(--color-accent-danger)]">R$ {(Number(selectedOs.total_value) - Number(selectedOs.paid_value)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+            {(() => {
+              const effModal = getOsEffectiveValues(selectedOs);
+              return (
+                <div className="bg-[var(--bg-surface-elevated)] p-4 rounded-lg border border-white/10">
+                  <h4 className="text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-3">Financeiro</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-[var(--text-secondary)]">Valor Total da OS:</span>
+                      <span className="font-bold text-white">R$ {effModal.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-[var(--text-secondary)]">Valor Pago (Liquidado):</span>
+                      <span className="font-bold text-[var(--color-primary-bright)]">R$ {effModal.paid.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                    </div>
+                    {effModal.open > 0.05 && (
+                      <div className="flex justify-between items-center text-sm pt-2 border-t border-white/10 mt-2">
+                        <span className="text-[var(--text-secondary)]">Saldo em Aberto (A Pagar):</span>
+                        <span className="font-bold text-[var(--color-accent-danger)]">R$ {effModal.open.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            </div>
+                </div>
+              );
+            })()}
+
 
             {selectedOs.payment_method && (
               <div className="bg-[var(--bg-surface-elevated)] p-4 rounded-lg border border-white/10">

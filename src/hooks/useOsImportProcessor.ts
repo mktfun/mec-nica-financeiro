@@ -133,50 +133,15 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
         const paidValue = colMap.paidValue !== undefined ? parseValue(row[colMap.paidValue]) : 0;
         const openValue = colMap.openValue !== undefined ? parseValue(row[colMap.openValue]) : 0;
 
-        // O valor total da OS é a soma do que foi pago com o que está em aberto (ou rawTotalValue se for maior)
-        let totalValue = 0;
-        if (paidValue > 0 && openValue > 0) {
-          totalValue = paidValue + openValue;
-        } else if (openValue > 0 && paidValue === 0) {
-          totalValue = openValue;
-        } else if (rawTotalValue > 0) {
-          totalValue = Math.max(rawTotalValue, paidValue + openValue);
-        } else {
-          totalValue = paidValue + openValue;
-        }
-        
         const opened_at = parseExcelDate(row[colMap.openedAt]) || getDefaultDate();
         let closed_at: string | null = parseExcelDate(row[colMap.closedAt]);
-        
-        let statusEnum: 'em_aberto' | 'pago_parcial' | 'finalizado' = 'em_aberto';
-        
-        const isClosedStr = statusStr.match(/finalizad[oa]|pag[oa]|entregue|faturad[oa]|fechad[oa]/i);
-        const isOpenStr = statusStr.match(/em\s*aberto|abert[oa]|pendente/i);
-        const isPartialStr = statusStr.match(/parcial/i);
-        
-        if (isClosedStr) {
-          statusEnum = 'finalizado';
-          osCount++;
-        } else if (isPartialStr || (isOpenStr && paidValue > 0 && (totalValue - paidValue) > 0.05)) {
-          statusEnum = 'pago_parcial';
-        } else if (isOpenStr) {
-          statusEnum = 'em_aberto';
-        } else {
-          if (paidValue >= totalValue && totalValue > 0) {
-            statusEnum = 'finalizado';
-            osCount++;
-          } else if (paidValue > 0 && (totalValue - paidValue) > 0.05) {
-            statusEnum = 'pago_parcial';
-          } else {
-            statusEnum = 'em_aberto';
-          }
-        }
-        
+
         const start = new Date(opened_at);
         const end = closed_at && !isNaN(new Date(closed_at).getTime()) ? new Date(closed_at) : new Date();
         const diffMs = !isNaN(start.getTime()) && !isNaN(end.getTime()) ? (end.getTime() - start.getTime()) : 0;
         const days_open = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24))) || 0;
 
+        // 1. Extração antecipada das formas de pagamento (Crédito, Débito, PIX)
         const payment_method_str = String(row[colMap.paymentMethod] || '').trim();
         let parsed_credit = 0;
         let parsed_debit = 0;
@@ -186,14 +151,13 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
           const upperMethod = payment_method_str.toUpperCase();
           let foundPair = false;
 
-          // 1. Tenta extrair pares no formato METODO: VALOR ou METODO VALOR
           const regex = /(PIX|TRANSF|DEP|DINHEIRO|DÉBITO|DEBITO|CRÉDITO|CREDITO|CARTAO|CARTÃO)\s*[:\-\s]?\s*(?:R\$\s*)?([\d\.,]+)?/gi;
           let match;
 
           while ((match = regex.exec(upperMethod)) !== null) {
             const method = match[1].toUpperCase();
             const valStr = match[2];
-            const val = valStr ? parseValue(valStr) : (paidValue || totalValue);
+            const val = valStr ? parseValue(valStr) : (paidValue || rawTotalValue);
 
             if (val > 0 || !valStr) {
               if (method.includes('CREDITO') || method.includes('CRÉDITO') || method.includes('CARTAO') || method.includes('CARTÃO')) {
@@ -209,21 +173,55 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
             }
           }
 
-          // 2. Se não encontrou valor numérico no par, classifica pela palavra-chave no texto
           if (!foundPair || (parsed_credit === 0 && parsed_debit === 0 && parsed_pix_transfer === 0)) {
             if (upperMethod.includes('PIX') || upperMethod.includes('TRANSF') || upperMethod.includes('DEP') || upperMethod.includes('DINHEIRO')) {
-              parsed_pix_transfer = paidValue || totalValue;
+              parsed_pix_transfer = paidValue || rawTotalValue;
             } else if (upperMethod.includes('DEBITO') || upperMethod.includes('DÉBITO')) {
-              parsed_debit = paidValue || totalValue;
+              parsed_debit = paidValue || rawTotalValue;
             } else if (upperMethod.includes('CREDITO') || upperMethod.includes('CRÉDITO') || upperMethod.includes('CARTÃO') || upperMethod.includes('CARTAO')) {
-              parsed_credit = paidValue || totalValue;
+              parsed_credit = paidValue || rawTotalValue;
             }
+          }
+        }
+
+        const sumPayments = parsed_credit + parsed_debit + parsed_pix_transfer;
+
+        // 2. Consolidação robusta do Valor Total e Valor Pago
+        let totalValue = Math.max(rawTotalValue, paidValue + openValue, sumPayments);
+        if (totalValue === 0 && (paidValue > 0 || openValue > 0)) {
+          totalValue = paidValue + openValue;
+        }
+
+        let finalPaidValue = paidValue;
+        if (finalPaidValue === 0) {
+          if (openValue > 0 && totalValue > openValue) {
+            finalPaidValue = totalValue - openValue;
+          } else if (openValue === 0 && sumPayments > 0) {
+            finalPaidValue = sumPayments;
           }
         }
 
         // Fallback apenas se NENHUM método foi identificado no texto
         if (parsed_credit === 0 && parsed_debit === 0 && parsed_pix_transfer === 0) {
-          parsed_credit = totalValue || paidValue;
+          parsed_credit = totalValue || finalPaidValue;
+        }
+
+        // 3. Determinação precisa do Status da OS
+        let statusEnum: 'em_aberto' | 'pago_parcial' | 'finalizado' = 'em_aberto';
+
+        const isClosedStr = statusStr.match(/finalizad[oa]|pag[oa]|entregue|faturad[oa]|fechad[oa]|concluíd[oa]/i);
+        const isOpenStr = statusStr.match(/em\s*aberto|abert[oa]|pendente/i);
+        const isPartialStr = statusStr.match(/parcial/i);
+
+        const remOpen = Math.max(0, totalValue - finalPaidValue);
+
+        if (isClosedStr || (totalValue > 0 && remOpen <= 0.05)) {
+          statusEnum = 'finalizado';
+          osCount++;
+        } else if (isPartialStr || (finalPaidValue > 0 && remOpen > 0.05)) {
+          statusEnum = 'pago_parcial';
+        } else {
+          statusEnum = 'em_aberto';
         }
 
         osArray.push({
@@ -232,7 +230,7 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
           opened_at,
           closed_at,
           total_value: totalValue,
-          paid_value: paidValue,
+          paid_value: finalPaidValue,
           payment_method: payment_method_str || null,
           status: statusEnum,
           raw_status: statusStr || null,
@@ -242,6 +240,7 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
           parsed_pix_transfer
         });
       }
+
 
       results.push({
         fileName: file.name,

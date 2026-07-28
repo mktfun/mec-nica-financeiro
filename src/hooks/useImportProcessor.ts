@@ -61,6 +61,7 @@ export async function savePatioOsAndReceivables(
         total_value: os.total_value,
         paid_value: os.paid_value,
         payment_method: os.payment_method,
+        status: os.status,
         raw_status: os.raw_status || null,
         credit_value: os.parsed_credit || 0,
         debit_value: os.parsed_debit || 0,
@@ -70,6 +71,7 @@ export async function savePatioOsAndReceivables(
         days_open: os.days_open,
         updated_at: new Date().toISOString()
       };
+
 
       const existingObj = existingMap.get(String(os.os_number));
       if (existingObj) {

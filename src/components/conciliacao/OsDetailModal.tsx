@@ -47,11 +47,19 @@ export function OsDetailModal({ isOpen, onClose, osData }: OsDetailModalProps) {
     });
   };
 
-  const totalValue = osData.paid_value !== undefined && osData.paid_value !== null
-    ? osData.paid_value
-    : (osData.total_value || 0);
   const creditValue = osData.parsed_credit_debit || 0;
   const pixValue = osData.parsed_pix_transfer || 0;
+  const sumPayments = creditValue + pixValue;
+
+  const rawTotal = Number(osData.total_value || 0);
+  const rawPaid = Number(osData.paid_value || 0);
+
+  const totalValue = Math.max(rawTotal, rawPaid, sumPayments);
+  const paidValue = rawPaid > 0 
+    ? rawPaid 
+    : (isEntrou || osData.status === 'finalizado' ? totalValue : (sumPayments > 0 ? sumPayments : 0));
+  const openValue = Math.max(0, totalValue - paidValue);
+
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={`Ordem de Serviço #${osData.os_number}`}>
@@ -103,9 +111,10 @@ export function OsDetailModal({ isOpen, onClose, osData }: OsDetailModalProps) {
           <div className="p-4 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl">
             <span className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider font-semibold">Valor Pago Registrado</span>
             <p className="text-xl font-bold text-[var(--color-accent-teal)] mt-1 font-mono">
-              R$ {totalValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              R$ {paidValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </p>
           </div>
+
         </div>
 
         {/* Quebra de Formas de Pagamento */}
