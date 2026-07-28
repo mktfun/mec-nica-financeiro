@@ -1,5 +1,18 @@
 # 🧠 Memória Modular: Domínio & Conciliação
 
+## [2026-07-28] — Feature ID: ai-reconciliation-payload-fix
+
+**Contexto:** Correção na montagem do JSON enviado ao motor de IA (`generateTripleMatchSuggestions`) e busca de emergência de pendências reais em `useBackgroundAiReconciler`.
+
+**Regra aprendida:**
+- **Parser Defensivo de Payload:** O desempacotador em `llm-matcher.ts` DEVE inspecionar tanto a raiz do objeto quanto sub-propriedades como `raw_os`, `os_data`, `ofxDeposit` e `ofxPix`, extraindo `total_value`, `pix_value`, `credit_value`, `gross_value`, `net_value`, descrições de extrato e nomes de clientes.
+- **Filtragem de Itens Zerados:** Itens com valor 0 (`0.00`) NUNCA devem ser incluídos no payload JSON enviado para a LLM, pois isso infla a contagem de tokens sem fornecer informação útil.
+- **Busca de Emergência em Background:** Quando o hook `useBackgroundAiReconciler` recebe arrays vazios de pendências, ele DEVE consultar diretamente o Supabase por OSs abertas (`status != 'ENTROU'`), vendas da Rede e extratos OFX sem match para garantir que o payload contenha lançamentos reais.
+
+**Risco identificado:** Mapear apenas propriedades rasas (`o.total_value`) sem verificar `o.raw_os?.total_value` faz com que objetos envelopados sejam serializados com valor 0, levando a LLM a responder com `{"matches": []}`.
+
+**Não fazer:** Nunca invocar `generateTripleMatchSuggestions` sem desempacotar propriedades ou sem verificar se há dados válidos (> R$ 0.00) nos arrays.
+
 ## [2026-07-27] — Feature ID: redesign-conciliacao-cards-and-daily-summary
 
 **Contexto:** Reestruturação dos cards de "Fechamento por Loja" na tela `/conciliacao` para exibir 6 colunas operacionalmente relevantes, remoção das colunas inúteis "Dinheiro MP" e "A Receber", e correção do saldo OFX que zerava em dias sem importação.
