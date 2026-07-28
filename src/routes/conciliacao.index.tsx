@@ -140,75 +140,75 @@ function ConciliacaoPage() {
                             </div>
                           </div>
 
-                          {/* 6 Mini-Cards de Métricas Individuais */}
-                          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 flex-1 font-sans tabular-nums text-xs">
-                            
-                            {/* 1. Saldo (Extrato Itaú OFX do dia) */}
-                            <div className="p-3 bg-black/40 rounded-xl border border-white/10 flex flex-col justify-between min-w-0">
-                              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block truncate">
-                                Saldo
-                              </span>
-                              <p className="font-bold text-sm text-[var(--color-accent-light-blue)] mt-1 font-mono">
-                                <AnimatedNumber value={saldoItau} format="currency" />
-                              </p>
+                          {/* Painel Único de Fundo Contínuo Envelopando as 6 Métricas */}
+                          <div className="bg-black/25 p-4 sm:p-5 rounded-2xl border border-white/5 flex-1 font-sans tabular-nums text-xs">
+                            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6 xl:gap-8 items-center">
+                              
+                              {/* 1. Saldo */}
+                              <div>
+                                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
+                                  Saldo
+                                </span>
+                                <p className="font-bold text-sm text-[var(--color-accent-light-blue)] font-mono">
+                                  <AnimatedNumber value={saldoItau} format="currency" />
+                                </p>
+                              </div>
+
+                              {/* 2. Maquininha */}
+                              <div>
+                                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
+                                  Maquininha
+                                </span>
+                                <p className="font-bold text-sm text-[var(--color-accent-teal)] font-mono">
+                                  <AnimatedNumber value={maquininha} format="currency" />
+                                </p>
+                              </div>
+
+                              {/* 3. PIX */}
+                              <div>
+                                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
+                                  PIX
+                                </span>
+                                <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
+                                  <AnimatedNumber value={pixOs} format="currency" />
+                                </p>
+                              </div>
+
+                              {/* 4. Na Loja OS */}
+                              <div>
+                                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
+                                  Na Loja OS
+                                </span>
+                                <p className="font-bold text-sm text-[var(--color-accent-warning)] font-mono">
+                                  <AnimatedNumber value={naLojaOs} format="currency" />
+                                </p>
+                              </div>
+
+                              {/* 5. Faturamento */}
+                              <div>
+                                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
+                                  Faturamento
+                                </span>
+                                <p className="font-bold text-sm text-[var(--text-primary)] font-mono">
+                                  <AnimatedNumber value={faturamento} format="currency" />
+                                </p>
+                              </div>
+
+                              {/* 6. Diferença */}
+                              <div className="xl:border-l xl:border-white/10 xl:pl-6">
+                                <span className={`text-[10px] uppercase font-bold tracking-wider block mb-1 ${
+                                  isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
+                                }`}>
+                                  Diferença
+                                </span>
+                                <p className={`font-bold text-sm font-mono ${isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
+                                  <AnimatedNumber value={diferenca} format="currency" />
+                                </p>
+                              </div>
+
                             </div>
-
-                            {/* 2. Maquininha */}
-                            <div className="p-3 bg-black/40 rounded-xl border border-white/10 flex flex-col justify-between min-w-0">
-                              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block truncate">
-                                Maquininha
-                              </span>
-                              <p className="font-bold text-sm text-[var(--color-accent-teal)] mt-1 font-mono">
-                                <AnimatedNumber value={maquininha} format="currency" />
-                              </p>
-                            </div>
-
-                            {/* 3. PIX */}
-                            <div className="p-3 bg-black/40 rounded-xl border border-white/10 flex flex-col justify-between min-w-0">
-                              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block truncate">
-                                PIX
-                              </span>
-                              <p className="font-bold text-sm text-[var(--color-primary)] mt-1 font-mono">
-                                <AnimatedNumber value={pixOs} format="currency" />
-                              </p>
-                            </div>
-
-                            {/* 4. Na Loja OS */}
-                            <div className="p-3 bg-black/40 rounded-xl border border-white/10 flex flex-col justify-between min-w-0">
-                              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block truncate">
-                                Na Loja OS
-                              </span>
-                              <p className="font-bold text-sm text-[var(--color-accent-warning)] mt-1 font-mono">
-                                <AnimatedNumber value={naLojaOs} format="currency" />
-                              </p>
-                            </div>
-
-                            {/* 5. Faturamento (Receita Bruta Total das OSs) */}
-                            <div className="p-3 bg-black/40 rounded-xl border border-white/10 flex flex-col justify-between min-w-0">
-                              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block truncate">
-                                Faturamento
-                              </span>
-                              <p className="font-bold text-sm text-[var(--text-primary)] mt-1 font-mono">
-                                <AnimatedNumber value={faturamento} format="currency" />
-                              </p>
-                            </div>
-
-
-                            {/* 6. Diferença */}
-                            <div className={`p-3 rounded-xl border flex flex-col justify-between min-w-0 ${
-                              isDiferencaOk ? 'bg-[var(--color-accent-teal)]/10 border-[var(--color-accent-teal)]/30' : 'bg-[var(--color-accent-danger)]/10 border-[var(--color-accent-danger)]/30'
-                            }`}>
-                              <span className={`text-[10px] uppercase font-bold tracking-wider block truncate ${
-                                isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
-                              }`}>
-                                Diferença
-                              </span>
-                              <p className={`font-bold text-sm mt-1 font-mono ${isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
-                                <AnimatedNumber value={diferenca} format="currency" />
-                              </p>
-                            </div>
-
                           </div>
+
                         </Card>
                       </Link>
                     );
