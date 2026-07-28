@@ -12,3 +12,4 @@
 - **Painel de Gestão & Telemetria (`src/routes/agente.tsx`):** Abas Chat, Provedores & API Keys, Telemetria & Custos (tokens e R$ BRL) e DevTools Inspector JSON com botão "Executar Teste de IA".
 - **Tabela `public.ai_execution_logs`:** Registro imutável de chamadas, tokens, custo estimado, tempo de execução e payloads.
 - **Tabela `public.ai_settings`:** Configurações de provedor, modelo e chave de API por usuário ou `GLOBAL`.
+- **ConciliaMec Bot (VPS / Traefik):** Serviço headless de coleta de relatórios via Playwright (Oficina Inteligente / Rede), exposto publicamente sob `bot.tork.services` via Cloudflare Tunnel.
