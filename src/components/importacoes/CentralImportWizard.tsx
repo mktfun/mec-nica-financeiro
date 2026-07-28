@@ -893,84 +893,248 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         </motion.div>
       )}
 
-      {/* STEP 4: TERMINAL DE LOGS EM TEMPO REAL & SUCESSO */}
-      {step === 4 && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-          <Card className="p-8 bg-[#050711] border border-[var(--border-subtle)] shadow-2xl">
-            <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
-              <div className="flex items-center gap-3">
-                <Terminal className="text-emerald-400" size={24} />
+      {/* STEP 4: PAINEL EXECUTIVO DE PROGRESSO & GRAVAÇÃO */}
+      {step === 4 && (() => {
+        const progressPct = saveFinished ? 100 : (
+          importLogs.some(l => l.message.includes('Vinculando')) ? 85 :
+          importLogs.some(l => l.message.includes('extrato')) ? 65 :
+          importLogs.some(l => l.message.includes('Rede')) ? 40 :
+          importLogs.some(l => l.message.includes('Pátio')) ? 20 : 10
+        );
+
+        const currentPhase = saveFinished ? 'completed' : (
+          importLogs.some(l => l.message.includes('Vinculando')) ? 'matches' :
+          importLogs.some(l => l.message.includes('extrato') || l.message.includes('transações')) ? 'ofx' :
+          importLogs.some(l => l.message.includes('Rede')) ? 'rede' : 'os'
+        );
+
+        return (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+            <Card className="p-6 md:p-8 bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-2xl shadow-xl space-y-6">
+              
+              {/* Header do Painel */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[var(--border-subtle)]">
                 <div>
-                  <h3 className="font-mono text-base font-bold text-white">Terminal de Processamento & Gravação</h3>
-                  <p className="font-mono text-xs text-zinc-400">Gravando lotes no banco de dados do Supabase em tempo real...</p>
+                  <h3 className="font-display text-xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+                    <Sparkles className="text-[var(--color-primary)]" size={22} />
+                    Painel de Gravação do Lote
+                  </h3>
+                  <p className="text-xs text-[var(--text-tertiary)] mt-1">
+                    Persistindo e deduplicando Ordens de Serviço, Maquininhas e Extrato Bancário no Supabase...
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <Badge variant="outline" className="text-xs font-mono px-3 py-1 bg-[var(--bg-surface-elevated)] border-[var(--border-subtle)]">
+                    {progressPct}% Concluído
+                  </Badge>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                {!saveFinished ? (
-                  <Badge variant="outline" className="bg-sky-500/10 text-sky-400 border-sky-500/30 flex items-center gap-1.5 font-mono">
-                    <LoadingSpinner size="xs" text="" /> Processando...
-                  </Badge>
-                ) : (
-                  <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 font-mono">
-                    ✅ Concluído
-                  </Badge>
-                )}
-              </div>
-            </div>
 
-            {/* Terminal Feed Box */}
-            <div className="my-6 p-4 bg-[#0a0d1a] border border-zinc-800/80 rounded-xl font-mono text-xs space-y-2.5 max-h-80 overflow-y-auto shadow-inner">
-              {importLogs.map((log) => (
-                <div key={log.id} className="flex items-start gap-2.5 leading-relaxed">
-                  <span className="text-zinc-500 shrink-0">[{log.timestamp}]</span>
-                  <span className={
-                    log.type === 'success' ? 'text-emerald-400 font-semibold' :
-                    log.type === 'warning' ? 'text-amber-400' :
-                    log.type === 'error' ? 'text-red-400 font-semibold' :
-                    'text-sky-300'
-                  }>
-                    {log.message}
-                  </span>
+              {/* Barra de Progresso Animada */}
+              <div className="space-y-1.5">
+                <div className="w-full bg-[var(--bg-surface-elevated)] h-2.5 rounded-full overflow-hidden border border-[var(--border-subtle)]">
+                  <div 
+                    className="bg-gradient-to-r from-[var(--color-primary)] via-sky-500 to-[var(--color-accent-teal)] h-full transition-all duration-500 rounded-full" 
+                    style={{ width: `${progressPct}%` }}
+                  />
                 </div>
-              ))}
-              <div ref={logsEndRef} />
-            </div>
+              </div>
 
-            {/* Success Panel and Final Navigation Action Buttons */}
-            {saveFinished && (
-              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="pt-4 border-t border-zinc-800 space-y-6">
-                <div className="bg-emerald-500/10 border border-emerald-500/20 p-5 rounded-xl flex items-center gap-4">
-                  <CheckCircle2 size={32} className="text-emerald-400 shrink-0" />
-                  <div>
-                    <h4 className="font-semibold text-emerald-400 text-base">Importação Gravada com Sucesso!</h4>
-                    <p className="text-xs text-zinc-300 mt-0.5">
-                      Todos os registros de OS, Maquininha e Extrato Bancário foram persistidos e deduplicados no banco de dados.
-                    </p>
+              {/* Grid de Cards de Etapas */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                {/* Etapa 1: Pátio OS */}
+                <div className={`p-4 rounded-xl border transition-all ${
+                  currentPhase === 'os' ? 'bg-[var(--bg-surface-elevated)] border-[var(--color-primary)]/50 shadow-md' :
+                  saveFinished || currentPhase !== 'os' ? 'bg-[var(--bg-surface)] border-[var(--border-subtle)]' :
+                  'bg-[var(--bg-surface)]/50 border-[var(--border-subtle)]/50 opacity-60'
+                }`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <FileText size={18} className="text-[var(--color-primary)]" />
+                    {currentPhase === 'os' && !saveFinished && (
+                      <Badge variant="outline" className="bg-sky-500/10 text-sky-400 border-sky-500/30 text-[10px] gap-1">
+                        <LoadingSpinner size="xs" /> Gravando
+                      </Badge>
+                    )}
+                    {(saveFinished || currentPhase !== 'os') && (
+                      <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[10px] gap-1">
+                        <CheckCircle2 size={11} /> Concluído
+                      </Badge>
+                    )}
                   </div>
+                  <h4 className="font-semibold text-xs text-[var(--text-primary)]">1. OSs do Pátio</h4>
+                  <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">{filteredOsCount} ordens salvas</p>
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-center justify-end gap-4 pt-2">
-                  <button
-                    onClick={onCancel}
-                    className="w-full sm:w-auto px-5 py-3 text-xs font-semibold bg-zinc-900 hover:bg-zinc-800 text-zinc-300 rounded-xl border border-zinc-700 transition-colors flex items-center justify-center gap-2"
-                  >
-                    <FileSpreadsheet size={16} />
-                    Ver Histórico de Importações
-                  </button>
-
-                  <button
-                    onClick={() => navigate({ to: '/conciliacao' })}
-                    className="w-full sm:w-auto px-6 py-3 text-xs font-bold bg-emerald-500 hover:bg-emerald-600 text-zinc-950 rounded-xl shadow-[0_4px_20px_rgba(16,185,129,0.3)] transition-all transform hover:scale-105 flex items-center justify-center gap-2"
-                  >
-                    <CheckCircle2 size={16} />
-                    Ir para a Tela de Conciliação →
-                  </button>
+                {/* Etapa 2: Maquininha */}
+                <div className={`p-4 rounded-xl border transition-all ${
+                  currentPhase === 'rede' ? 'bg-[var(--bg-surface-elevated)] border-[var(--color-accent-teal)]/50 shadow-md' :
+                  ['ofx', 'matches', 'completed'].includes(currentPhase) ? 'bg-[var(--bg-surface)] border-[var(--border-subtle)]' :
+                  'bg-[var(--bg-surface)]/50 border-[var(--border-subtle)]/50 opacity-60'
+                }`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <CreditCard size={18} className="text-[var(--color-accent-teal)]" />
+                    {currentPhase === 'rede' && !saveFinished && (
+                      <Badge variant="outline" className="bg-sky-500/10 text-sky-400 border-sky-500/30 text-[10px] gap-1">
+                        <LoadingSpinner size="xs" /> Gravando
+                      </Badge>
+                    )}
+                    {['ofx', 'matches', 'completed'].includes(currentPhase) && (
+                      <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[10px] gap-1">
+                        <CheckCircle2 size={11} /> Concluído
+                      </Badge>
+                    )}
+                    {currentPhase === 'os' && (
+                      <Badge variant="outline" className="bg-[var(--bg-surface)] text-[var(--text-tertiary)] border-[var(--border-subtle)] text-[10px]">
+                        Aguardando
+                      </Badge>
+                    )}
+                  </div>
+                  <h4 className="font-semibold text-xs text-[var(--text-primary)]">2. Maquininha (Rede)</h4>
+                  <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">{redeFiltered.length} cartões</p>
                 </div>
-              </motion.div>
-            )}
-          </Card>
-        </motion.div>
-      )}
+
+                {/* Etapa 3: Extrato OFX */}
+                <div className={`p-4 rounded-xl border transition-all ${
+                  currentPhase === 'ofx' ? 'bg-[var(--bg-surface-elevated)] border-sky-500/50 shadow-md' :
+                  ['matches', 'completed'].includes(currentPhase) ? 'bg-[var(--bg-surface)] border-[var(--border-subtle)]' :
+                  'bg-[var(--bg-surface)]/50 border-[var(--border-subtle)]/50 opacity-60'
+                }`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <Database size={18} className="text-sky-400" />
+                    {currentPhase === 'ofx' && !saveFinished && (
+                      <Badge variant="outline" className="bg-sky-500/10 text-sky-400 border-sky-500/30 text-[10px] gap-1">
+                        <LoadingSpinner size="xs" /> Gravando
+                      </Badge>
+                    )}
+                    {['matches', 'completed'].includes(currentPhase) && (
+                      <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[10px] gap-1">
+                        <CheckCircle2 size={11} /> Concluído
+                      </Badge>
+                    )}
+                    {['os', 'rede'].includes(currentPhase) && (
+                      <Badge variant="outline" className="bg-[var(--bg-surface)] text-[var(--text-tertiary)] border-[var(--border-subtle)] text-[10px]">
+                        Aguardando
+                      </Badge>
+                    )}
+                  </div>
+                  <h4 className="font-semibold text-xs text-[var(--text-primary)]">3. Extrato Bancário</h4>
+                  <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">{allOfxTx.length} extratos</p>
+                </div>
+
+                {/* Etapa 4: Conciliação */}
+                <div className={`p-4 rounded-xl border transition-all ${
+                  currentPhase === 'matches' ? 'bg-[var(--bg-surface-elevated)] border-purple-500/50 shadow-md' :
+                  saveFinished ? 'bg-[var(--bg-surface)] border-[var(--border-subtle)]' :
+                  'bg-[var(--bg-surface)]/50 border-[var(--border-subtle)]/50 opacity-60'
+                }`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <Sparkles size={18} className="text-purple-400" />
+                    {currentPhase === 'matches' && !saveFinished && (
+                      <Badge variant="outline" className="bg-purple-500/10 text-purple-400 border-purple-500/30 text-[10px] gap-1">
+                        <LoadingSpinner size="xs" /> Vinculando
+                      </Badge>
+                    )}
+                    {saveFinished && (
+                      <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[10px] gap-1">
+                        <CheckCircle2 size={11} /> Concluído
+                      </Badge>
+                    )}
+                    {['os', 'rede', 'ofx'].includes(currentPhase) && !saveFinished && (
+                      <Badge variant="outline" className="bg-[var(--bg-surface)] text-[var(--text-tertiary)] border-[var(--border-subtle)] text-[10px]">
+                        Aguardando
+                      </Badge>
+                    )}
+                  </div>
+                  <h4 className="font-semibold text-xs text-[var(--text-primary)]">4. Conciliação</h4>
+                  <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">Pares automáticos</p>
+                </div>
+
+              </div>
+
+              {/* Feed de Atividades Limpo */}
+              <div className="space-y-2">
+                <span className="text-[10px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider block">
+                  Diário de Operações
+                </span>
+                <div className="p-4 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
+                  {importLogs.map((log) => (
+                    <div key={log.id} className="flex items-center gap-2.5 text-xs">
+                      {log.type === 'success' ? <CheckCircle2 size={14} className="text-emerald-400 shrink-0" /> :
+                       log.type === 'warning' ? <AlertCircle size={14} className="text-amber-400 shrink-0" /> :
+                       log.type === 'error' ? <AlertCircle size={14} className="text-red-400 shrink-0" /> :
+                       <Sparkles size={14} className="text-sky-400 shrink-0" />}
+                      <span className={
+                        log.type === 'success' ? 'text-emerald-300 font-medium' :
+                        log.type === 'warning' ? 'text-amber-300 font-medium' :
+                        log.type === 'error' ? 'text-red-400 font-semibold' :
+                        'text-[var(--text-secondary)]'
+                      }>
+                        {log.message}
+                      </span>
+                    </div>
+                  ))}
+                  <div ref={logsEndRef} />
+                </div>
+              </div>
+
+              {/* Alerta de Erro se houver */}
+              {importLogs.some(l => l.type === 'error') && (
+                <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-xl flex items-start justify-between gap-4 animate-in fade-in">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle size={20} className="text-red-400 shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-red-400 text-sm">Falha durante o processamento</h4>
+                      <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                        {importLogs.find(l => l.type === 'error')?.message}
+                      </p>
+                    </div>
+                  </div>
+                  <Button onClick={handleConfirm} disabled={isSaving} className="bg-red-500 text-white hover:bg-red-600 text-xs px-3 py-1.5 shrink-0">
+                    Tentar Novamente
+                  </Button>
+                </div>
+              )}
+
+              {/* Painel de Sucesso e Ações Finais */}
+              {saveFinished && (
+                <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="pt-4 border-t border-[var(--border-subtle)] space-y-5">
+                  <div className="bg-emerald-500/10 border border-emerald-500/20 p-5 rounded-xl flex items-center gap-4">
+                    <CheckCircle2 size={28} className="text-emerald-400 shrink-0" />
+                    <div>
+                      <h4 className="font-semibold text-emerald-400 text-base">Lote Importado com Sucesso!</h4>
+                      <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                        Todas as OSs, vendas de cartão e lançamentos do extrato foram persistidos no banco de dados.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-2">
+                    <Button
+                      onClick={onCancel}
+                      variant="secondary"
+                      className="w-full sm:w-auto text-xs px-4 py-2.5"
+                    >
+                      <FileSpreadsheet size={16} />
+                      Ver Histórico de Importações
+                    </Button>
+
+                    <Button
+                      onClick={() => navigate({ to: '/conciliacao' })}
+                      className="w-full sm:w-auto text-xs px-5 py-2.5 font-semibold bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 shadow-[0_4px_15px_rgba(var(--color-primary-rgb),0.3)]"
+                    >
+                      <CheckCircle2 size={16} />
+                      Ir para a Tela de Conciliação →
+                    </Button>
+                  </div>
+                </motion.div>
+              )}
+            </Card>
+          </motion.div>
+        );
+      })()}
     </div>
   );
 }
+
