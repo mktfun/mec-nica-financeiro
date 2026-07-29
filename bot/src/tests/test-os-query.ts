@@ -1,8 +1,6 @@
 import { chromium } from 'playwright';
-import * as dotenv from 'dotenv';
 import * as path from 'path';
 import * as fs from 'fs';
-dotenv.config({ path: path.join(__dirname, '../../../.env') }); // Carrega o .env principal do projeto
 
 import { loginOI } from '../scrapers/oficina';
 import { getBotCredentials } from '../sync/supabaseUploader';
@@ -21,7 +19,11 @@ async function testOsQuery() {
     process.exit(1);
   }
 
-  const browser = await chromium.launch({ headless: false }); // Headed para ver o fluxo!
+  const browser = await chromium.launch({ 
+    headless: true, // Must be true in docker
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  }); 
   const context = await browser.newContext();
 
   try {
