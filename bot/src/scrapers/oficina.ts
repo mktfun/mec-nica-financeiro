@@ -98,3 +98,61 @@ export async function downloadRelatorioOS(page: Page, targetDate: string): Promi
 
   return outputPath;
 }
+
+export async function fetchOSByNumber(page: Page, osNumber: string): Promise<any> {
+  console.log(`[OI] Navegando para busca de OS...`);
+  await page.goto('https://sistemaoficinainteligente.com.br/wfOrdemDeServicoBusca.aspx', {
+    waitUntil: 'domcontentloaded',
+  });
+
+  console.log(`[OI] Preenchendo campo de busca com a OS ${osNumber}...`);
+  await page.fill('#ctl00_cph_txtOrdemDeServicoID', osNumber);
+
+  console.log(`[OI] Clicando no botão Buscar e aguardando resposta AJAX...`);
+  
+  // O sistema usa um UpdatePanel (ASP.NET AJAX). Vamos aguardar a resposta da requisição POST que atualiza o grid.
+  const [response] = await Promise.all([
+    page.waitForResponse(response => 
+      response.url().includes('wfOrdemDeServicoBusca.aspx') && 
+      response.status() === 200 && 
+      response.request().method() === 'POST'
+    ),
+    page.click('#ctl00_cph_btnBuscar')
+  ]);
+
+  console.log(`[OI] Resposta recebida! Aguardando estabilização do DOM...`);
+  await page.waitForTimeout(2000); // Dar um tempo extra para o ASP.NET trocar o DOM
+
+  // Extrair os dados da Grid (assumindo que a grid usa a class ou ID gdvOrdemDeServico ou similar)
+  const osData = await page.evaluate(() => {
+    // A tabela tem um id que contém 'gdv'
+    const grid = document.querySelector('table[id*="gdv"]') as HTMLTableElement;
+    if (!grid) return null;
+
+    // A primeira linha tr possui os headers, a segunda (e as próximas) possuem os dados
+    const rows = Array.from(grid.querySelectorAll('tr'));
+    if (rows.length < 2) return null; // Sem resultados
+
+    // Extrair os cabeçalhos
+    const headers = Array.from(rows[0].querySelectorAll('th, td')).map(th => th.textContent?.trim() || '');
+    
+    // Pegar o primeiro resultado (a OS desejada)
+    const dataCells = Array.from(rows[1].querySelectorAll('td'));
+    
+    const result: Record<string, string> = {};
+    for (let i = 0; i < headers.length; i++) {
+      let key = headers[i];
+      if (!key) key = `Coluna_${i}`;
+      result[key] = dataCells[i]?.textContent?.trim() || '';
+    }
+
+    return result;
+  });
+
+  if (!osData) {
+    throw new Error(`[OI] OS ${osNumber} não encontrada ou falha ao ler a grid.`);
+  }
+
+  console.log(`[OI] Dados da OS ${osNumber} extraídos com sucesso:`, osData);
+  return osData;
+}

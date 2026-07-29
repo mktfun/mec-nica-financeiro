@@ -75,6 +75,50 @@ app.post('/api/sync/rede', async (req: Request, res: Response) => {
   }
 });
 
+import { chromium } from '@playwright/test';
+import { getBotCredentials } from './sync/supabaseUploader';
+import { loginOI, fetchOSByNumber } from './scrapers/oficina';
+
+// GET /api/os/:id — Busca uma OS específica no Oficina Inteligente
+app.get('/api/os/:id', async (req: Request, res: Response) => {
+  const osNumber = req.params.id;
+  if (!osNumber) {
+    return res.status(400).json({ success: false, error: 'O ID da OS é obrigatório' });
+  }
+
+  let browser;
+  try {
+    console.log(`[API] GET /api/os/${osNumber} — Iniciando busca em tempo real...`);
+    
+    // Obter credenciais
+    const oiCreds = await getBotCredentials('oficina_inteligente');
+    if (!oiCreds || !oiCreds.username) {
+      throw new Error('Credenciais da OI não encontradas no Supabase.');
+    }
+
+    // Iniciar browser headless configurado pro Docker
+    browser = await chromium.launch({ 
+      headless: true,
+      executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    }); 
+    const context = await browser.newContext();
+
+    // Login
+    const page = await loginOI(context, { username: oiCreds.username as string, password: oiCreds.password as string });
+    
+    // Buscar OS
+    const osData = await fetchOSByNumber(page, osNumber);
+
+    res.json({ success: true, data: osData });
+  } catch (error: any) {
+    console.error(`[API] Erro ao buscar OS ${osNumber}:`, error);
+    res.status(500).json({ success: false, error: error.message || String(error) });
+  } finally {
+    if (browser) await browser.close();
+  }
+});
+
 const PORT = Number(process.env.BOT_PORT || process.env.PORT || 3001);
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n🚀 ConciliaMec Bot API rodando em http://0.0.0.0:${PORT}`);
