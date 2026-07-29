@@ -6,6 +6,10 @@ import cors from 'cors';
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
 import { runSync } from './runner';
+import { chromium } from '@playwright/test';
+import { loginOI, fetchOSByNumber } from './scrapers/oficina';
+import { getBotCredentials } from './sync/supabaseUploader';
+import { loadSession, saveSession } from './session/sessionManager';
 
 const app = express();
 app.use(cors());
@@ -75,47 +79,56 @@ app.post('/api/sync/rede', async (req: Request, res: Response) => {
   }
 });
 
-import { chromium } from '@playwright/test';
-import { getBotCredentials } from './sync/supabaseUploader';
-import { loginOI, fetchOSByNumber } from './scrapers/oficina';
-
-// GET /api/os/:id — Busca uma OS específica no Oficina Inteligente
+// GET /api/os/:id — Busca uma Ordem de Serviço específica no Oficina Inteligente
 app.get('/api/os/:id', async (req: Request, res: Response) => {
   const osNumber = req.params.id;
   if (!osNumber) {
-    return res.status(400).json({ success: false, error: 'O ID da OS é obrigatório' });
+    res.status(400).json({ success: false, error: 'Número da OS é obrigatório.' });
+    return;
   }
 
+  console.log(`[API] GET /api/os/${osNumber} — Iniciando busca sob demanda`);
   let browser;
   try {
-    console.log(`[API] GET /api/os/${osNumber} — Iniciando busca em tempo real...`);
-    
-    // Obter credenciais
+    // Buscar credenciais (pode lançar erro se não configurado)
     const oiCreds = await getBotCredentials('oficina_inteligente');
-    if (!oiCreds || !oiCreds.username) {
-      throw new Error('Credenciais da OI não encontradas no Supabase.');
+    if (!oiCreds?.username) {
+      throw new Error('Credenciais do Oficina Inteligente não configuradas no Supabase.');
     }
 
-    // Iniciar browser headless configurado pro Docker
-    browser = await chromium.launch({ 
+    browser = await chromium.launch({
       headless: true,
       executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    }); 
-    const context = await browser.newContext();
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
 
-    // Login
-    const page = await loginOI(context, { username: oiCreds.username as string, password: oiCreds.password as string });
+    const context = await browser.newContext({
+      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36',
+      viewport: { width: 1280, height: 800 },
+    });
+
+    const hasSession = await loadSession('oi', context);
+    const oiPage = await loginOI(context, { username: oiCreds.username, password: oiCreds.password });
     
-    // Buscar OS
-    const osData = await fetchOSByNumber(page, osNumber);
+    if (!hasSession) {
+      await saveSession('oi', context);
+    }
 
+    const osData = await fetchOSByNumber(oiPage, osNumber);
+    
     res.json({ success: true, data: osData });
   } catch (error: any) {
     console.error(`[API] Erro ao buscar OS ${osNumber}:`, error);
-    res.status(500).json({ success: false, error: error.message || String(error) });
+    
+    if (error.message && error.message.includes('não encontrada')) {
+      res.status(404).json({ success: false, error: error.message });
+    } else {
+      res.status(500).json({ success: false, error: error.message || String(error) });
+    }
   } finally {
-    if (browser) await browser.close();
+    if (browser) {
+      await browser.close().catch(console.error);
+    }
   }
 });
 
@@ -127,5 +140,6 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`      GET  /health              (público)`);
   console.log(`      POST /api/sync            (requer X-Api-Key)`);
   console.log(`      POST /api/sync/oficina    (requer X-Api-Key)`);
-  console.log(`      POST /api/sync/rede       (requer X-Api-Key)\n`);
+  console.log(`      POST /api/sync/rede       (requer X-Api-Key)`);
+  console.log(`      GET  /api/os/:id          (requer X-Api-Key)\n`);
 });

@@ -208,3 +208,23 @@
 **Risco identificado:** A baixa manual precisa atualizar a Aba SALDO imediatamente, retirando a OS de "NA LOJA (G16)" e migrando para o caixa realizado.
 
 **Não fazer:** Nunca exigir recarregamento manual da página (F5) para refletir a baixa efetuada pelo operador.
+
+## [2026-07-29] — Feature ID: vps-mcp-aspnet
+
+**Contexto:** Extração sob demanda de dados da Ordem de Serviço (OS) do "Oficina Inteligente" rodando a partir do bot Playwright na VPS, exposto como um endpoint `GET /api/os/:id`. O objetivo foi resolver problemas de timeout de UI, falta de persistência de sessão local e lidar com a arquitetura legado do ASP.NET WebForms.
+
+**Regra aprendida:**
+- **Navegação ASP.NET UpdatePanel (AJAX):** Telas de busca baseadas em WebForms (ex: `wfOrdemDeServicoBusca.aspx`) não recarregam a página completa nem mudam a URL ao fazer pesquisas. É EXTREMAMENTE proibido usar `page.waitForNavigation` nestes casos, pois ele lançará TimeoutError.
+- A forma robusta de lidar com buscas via UpdatePanel no Playwright é interceptar o tráfego de rede e a mutação do DOM simultaneamente:
+  ```typescript
+  const [response] = await Promise.all([
+    page.waitForResponse(res => res.url().includes('wfOrdemDeServicoBusca.aspx') && res.status() === 200, { timeout: 30_000 }),
+    page.click('input[id*="btnBuscar"]')
+  ]);
+  await page.waitForSelector('table[id*="grd"]', { timeout: 10_000 });
+  ```
+- **Seletor de Grid:** O seletor oficial das tabelas geradas pelo GridView do Oficina Inteligente geralmente carrega o padrão `id*="grd"`, não "gdv".
+
+**Risco identificado:** Usar seletores hardcoded sem substring matcher (`*=`) no ASP.NET quebra a automação porque o framework injeta prefixos dinâmicos como `ctl00_cph_`.
+
+**Não fazer:** Nunca depender de navegação de URL (`waitForURL` / `waitForNavigation`) após submeter um formulário em sistemas ASP.NET WebForms com AJAX, e nunca injetar automações pesadas no browser local do usuário quando isso pode ser rodado de forma headless na VPS via endpoint isolado.

@@ -99,60 +99,72 @@ export async function downloadRelatorioOS(page: Page, targetDate: string): Promi
   return outputPath;
 }
 
-export async function fetchOSByNumber(page: Page, osNumber: string): Promise<any> {
-  console.log(`[OI] Navegando para busca de OS...`);
+export interface OSRecord {
+  idInterno?: string;
+  osNumber: string;
+  cliente: string;
+  placa: string;
+  data: string;
+  status: string;
+  valor: string;
+}
+
+export async function fetchOSByNumber(page: Page, osNumber: string): Promise<OSRecord> {
+  console.log(`[OI] Buscando OS ${osNumber}...`);
+
   await page.goto('https://sistemaoficinainteligente.com.br/wfOrdemDeServicoBusca.aspx', {
     waitUntil: 'domcontentloaded',
+    timeout: 30_000,
   });
 
-  console.log(`[OI] Preenchendo campo de busca com a OS ${osNumber}...`);
-  await page.fill('#ctl00_cph_txtOrdemDeServicoID', osNumber);
+  await withRetry(async () => {
+    await page.fill('input[id*="txtOrdemDeServicoID"]', osNumber);
 
-  console.log(`[OI] Clicando no botão Buscar e aguardando resposta AJAX...`);
-  
-  // O sistema usa um UpdatePanel (ASP.NET AJAX). Vamos aguardar a resposta da requisição POST que atualiza o grid.
-  const [response] = await Promise.all([
-    page.waitForResponse(response => 
-      response.url().includes('wfOrdemDeServicoBusca.aspx') && 
-      response.status() === 200 && 
-      response.request().method() === 'POST'
-    ),
-    page.click('#ctl00_cph_btnBuscar')
-  ]);
-
-  console.log(`[OI] Resposta recebida! Aguardando estabilização do DOM...`);
-  await page.waitForTimeout(2000); // Dar um tempo extra para o ASP.NET trocar o DOM
-
-  // Extrair os dados da Grid (assumindo que a grid usa a class ou ID gdvOrdemDeServico ou similar)
-  const osData = await page.evaluate(() => {
-    // A tabela tem um id que contém 'gdv'
-    const grid = document.querySelector('table[id*="gdv"]') as HTMLTableElement;
-    if (!grid) return null;
-
-    // A primeira linha tr possui os headers, a segunda (e as próximas) possuem os dados
-    const rows = Array.from(grid.querySelectorAll('tr'));
-    if (rows.length < 2) return null; // Sem resultados
-
-    // Extrair os cabeçalhos
-    const headers = Array.from(rows[0].querySelectorAll('th, td')).map(th => th.textContent?.trim() || '');
+    console.log(`[OI] Acionando busca via AJAX UpdatePanel para OS ${osNumber}...`);
+    const [response] = await Promise.all([
+      page.waitForResponse(res => res.url().includes('wfOrdemDeServicoBusca.aspx') && res.status() === 200, { timeout: 30_000 }),
+      page.click('input[id*="btnBuscar"]')
+    ]);
     
-    // Pegar o primeiro resultado (a OS desejada)
-    const dataCells = Array.from(rows[1].querySelectorAll('td'));
-    
-    const result: Record<string, string> = {};
-    for (let i = 0; i < headers.length; i++) {
-      let key = headers[i];
-      if (!key) key = `Coluna_${i}`;
-      result[key] = dataCells[i]?.textContent?.trim() || '';
-    }
+    console.log(`[OI] AJAX Response recebida. Extraindo dados da GridView...`);
+  }, 3, 'busca AJAX da OS');
 
-    return result;
-  });
-
-  if (!osData) {
-    throw new Error(`[OI] OS ${osNumber} não encontrada ou falha ao ler a grid.`);
+  try {
+    await page.waitForSelector('table[id*="grd"], table[id*="grd"]', { timeout: 10_000 });
+  } catch (e) {
+    const html = await page.content();
+    require('fs').writeFileSync(path.join(__dirname, '../../tmp/debug_dom.html'), html);
+    console.log('[OI] Timeout esperando a GridView. DOM salvo em tmp/debug_dom.html');
+    throw e;
   }
 
-  console.log(`[OI] Dados da OS ${osNumber} extraídos com sucesso:`, osData);
-  return osData;
+  const rowLocator = page.locator('table[id*="grd"] tr:nth-child(2)');
+  const rowCount = await rowLocator.count();
+  if (rowCount === 0) {
+    throw new Error(`OS não encontrada: ${osNumber}`);
+  }
+
+  const record = await rowLocator.first().evaluate((tr) => {
+    const tds = tr.querySelectorAll('td');
+    if (!tds || tds.length < 5) {
+        throw new Error('Formato da tabela inesperado');
+    }
+    const texts = Array.from(tds).map(td => td.innerText.trim());
+    
+    return {
+      _rawTexts: texts,
+      osNumber: texts.find(t => t.match(/^\d+$/)) || texts[0] || '', // column 0
+      data: texts[1] || '',
+      cliente: texts[6] || '',
+      placa: texts[5] || '',
+      veiculo: texts[4] || '',
+      valor: texts.find(t => t.includes('R$')) || '', // Valor pode estar oculto ou não no array de texto
+      status: texts.length > 7 ? texts[texts.length - 1] : ''
+    };
+  });
+
+  return {
+    ...record,
+    osNumber: osNumber,
+  } as OSRecord & { _rawTexts?: string[], veiculo?: string };
 }

@@ -626,12 +626,5 @@
   "624": "start.ts",
   "625": "Spec Plan: Correções de Produção (CORS VPS e Schema Cache) (bot-production-fixes)",
   "626": "Spec Plan: Nova Interface do Chat e Resolução de Ferramentas (chat-ui-minimalist)",
-  "627": "class-variance-authority",
-  "628": "Spec Plan: Nova Interface do Chat e Resolução de Ferramentas (chat-ui-minimalist)",
-  "629": "Spec Plan: Consulta Live de OS no Bot Oficina Inteligente (bot-live-os-query)",
-  "630": "Spec Plan: Ordem de Serviço Bot Scraper (vps-mcp-aspnet)",
-  "631": "@cloudflare/vite-plugin",
-  "632": "@radix-ui/react-avatar",
-  "633": "ssh2",
-  "634": "vite-tsconfig-paths"
+  "627": "class-variance-authority"
 }
