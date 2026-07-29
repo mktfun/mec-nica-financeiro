@@ -35,3 +35,22 @@
 **Risco identificado:** Alterar o código localmente sem comitar/deployar para a VPS criava uma falsa sensação de erro ao testar a URL de produção remota, gerando 404s por falta de roteamento atualizado.
 
 **Não fazer:** Nunca deixar scripts de scraper (Playwright) dependendo de `fs.writeFileSync` para depuração no ambiente de produção sem envolver em bloco `try/catch` robusto.
+
+## [2026-07-29] — Feature ID: oficina-system-connector
+
+**Contexto:** Expansão do Bot headless de um conector de OS para um conector sistêmico completo (Financeiro, Agenda, Config). O servidor Express passou de 2 para 11 endpoints de leitura. A Edge Function `ai-chat` passou de 5 para 9 tools.
+
+**Regra aprendida:**
+- **Padrão de helper `createBotSession(lojaSlug?)`:** Toda vez que o bot precisar criar um browser Playwright, deve-se usar um helper centralizado que (1) busca credenciais via `getBotCredentials`, (2) lança o browser, (3) faz login, (4) chama `ensureCompany(page, idEmpresaOI)` se `lojaSlug` for fornecido. Isso elimina ~30 linhas de código duplicado por endpoint.
+- **`ensureCompany` é tolerante a falha:** Se o dropdown `select[id*="ddlEmpresa"]` não for encontrado (tela não tem troca de empresa) ou se `id_empresa_oi === "DESCOBRIR"`, a função retorna silenciosamente via warn — nunca lança exceção. Isso garante que todos os scrapers funcionam mesmo quando o mapeamento de empresa está incompleto.
+- **`extractGrid` genérico:** A função `extractGrid(page, hint)` é o padrão para qualquer tela ASP.NET WebForms com grid. Usa `table[id*="${hint}"]`, espera 10s, e extrai headers + rows como array de Record<string,string>. Em timeout → retorna `[]` sem exceção.
+- **Slugs de loja devem suportar aliases:** O arquivo `empresas.json` deve ter o campo `aliases: string[]` porque usuários vão escrever "Jabaquara", "JAB", "jab", "jab_jabaquara" de formas diferentes. `resolveEmpresa()` faz match por: (1) store_id exato, (2) empresa_slug exato, (3) substring de aliases.
+- **`id_empresa_oi` é o campo crítico não-preenchível automaticamente:** O ID interno do Oficina para troca de empresa via dropdown só pode ser descoberto manualmente (inspecionando o HTML do select ou rodando o bot headed). Deve ser marcado como `"DESCOBRIR"` até ser confirmado.
+
+**Risco identificado:**
+- Se `id_empresa_oi` estiver como `"DESCOBRIR"`, o bot não trocará de empresa e retornará dados da empresa padrão logada — sem erro explícito. O usuário precisa preencher esse campo para garantir isolamento multi-empresa.
+- O deploy do código bot na VPS requer `git pull + docker compose build + docker compose up -d`. Sem isso, os novos endpoints retornam 404 mesmo após o push no GitHub.
+
+**Não fazer:**
+- Nunca criar endpoints de leitura do Oficina sem exigir `loja` como parâmetro obrigatório — o Oficina é multi-empresa e retornar dados da empresa padrão sem avisar causa confusão silenciosa.
+- Nunca lançar exceção não tratada nos scrapers — use sempre o padrão `return { warning: "...", parcial: [] }` para que o agente IA possa informar o usuário de forma graciosa em vez de quebrar.

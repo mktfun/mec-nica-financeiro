@@ -86,28 +86,26 @@ Deno.serve(async (req) => {
 
     const mcpTools = {
       consulta_os_detalhe_completo: tool({
-        description: 'Consulta os detalhes COMPLETOS de uma Ordem de Serviço na API EXTERNA (Oficina Inteligente). Use SOMENTE se a OS não for encontrada localmente ou se faltar dados profundos (checklist, histórico).',
+        description: 'Consulta os detalhes COMPLETOS de uma OS na API EXTERNA (Oficina). Use SOMENTE se a OS não for encontrada localmente ou se faltar dados profundos (checklist, histórico). Informe loja para direcionar a empresa correta.',
         parameters: z.object({
-          osNumber: z.string().describe('O número da OS (ex: 1763)')
+          osNumber: z.string().describe('O número da OS (ex: 1763)'),
+          loja: z.string().optional().describe('Slug ou store_id da loja (ex: jab_jabaquara, st-02)')
         }),
-        execute: async ({ osNumber }) => {
+        execute: async ({ osNumber, loja }) => {
           try {
-            const url = `${settings?.bot_url}/api/os/detalhe/${osNumber}`;
+            const lojaParam = loja ? `?loja=${encodeURIComponent(loja)}` : '';
+            const url = `${settings?.bot_url}/api/os/detalhe/${osNumber}${lojaParam}`;
             const response = await fetch(url, {
-              headers: {
-                'x-api-key': settings?.bot_api_key || ''
-              }
+              headers: { 'x-api-key': settings?.bot_api_key || '' }
             });
             if (!response.ok) return { error: `Erro na API externa: HTTP ${response.status}. Use apenas os dados locais.` };
             const json = await response.json();
-            
             await supabaseClient.from('mcp_logs').insert([{
               conversation_id: 'auto-mcp-log',
               action: 'consulta_os_detalhe_completo',
-              params: { osNumber },
+              params: { osNumber, loja },
               result: json
             }]);
-            
             return json;
           } catch (e: any) {
             return { error: `Falha de conexão com a API externa: ${e.message}. Use apenas os dados locais.` };
@@ -174,22 +172,133 @@ Deno.serve(async (req) => {
            if (error) return { erro_local: error.message };
            return data;
         }
+      }),
+
+      // ── NOVAS TOOLS EXTERNAS (Oficina via Bot) ──────────────────────────────
+      consulta_contas_pagar_oficina: tool({
+        description: 'Busca Contas a Pagar diretamente no Oficina Inteligente (sistema externo via bot). Use quando o usuário perguntar sobre contas a pagar, fornecedores, parcelas ou vencimentos. EXIGE saber a loja — se não souber, pergunte antes.',
+        parameters: z.object({
+          loja: z.string().describe('Slug ou store_id da loja (ex: jab_jabaquara, brasicar_planalto)'),
+          vencimento_inicio: z.string().optional().describe('Data de início do vencimento YYYY-MM-DD'),
+          vencimento_fim: z.string().optional().describe('Data de fim do vencimento YYYY-MM-DD')
+        }),
+        execute: async ({ loja, vencimento_inicio, vencimento_fim }) => {
+          try {
+            let url = `${settings?.bot_url}/api/contas-pagar?loja=${encodeURIComponent(loja)}`;
+            if (vencimento_inicio) url += `&vencimento_inicio=${vencimento_inicio}`;
+            if (vencimento_fim) url += `&vencimento_fim=${vencimento_fim}`;
+            const response = await fetch(url, { headers: { 'x-api-key': settings?.bot_api_key || '' } });
+            if (!response.ok) return { error: `Erro ao buscar contas a pagar: HTTP ${response.status}` };
+            return await response.json();
+          } catch (e: any) {
+            return { error: `Falha de conexão: ${e.message}` };
+          }
+        }
+      }),
+
+      consulta_contas_receber_oficina: tool({
+        description: 'Busca Contas a Receber diretamente no Oficina Inteligente. Use quando o usuário perguntar sobre valores a receber, clientes devedores ou creditórios pendentes. EXIGE loja.',
+        parameters: z.object({
+          loja: z.string().describe('Slug ou store_id da loja'),
+          vencimento_inicio: z.string().optional().describe('Data de início YYYY-MM-DD'),
+          vencimento_fim: z.string().optional().describe('Data de fim YYYY-MM-DD')
+        }),
+        execute: async ({ loja, vencimento_inicio, vencimento_fim }) => {
+          try {
+            let url = `${settings?.bot_url}/api/contas-receber?loja=${encodeURIComponent(loja)}`;
+            if (vencimento_inicio) url += `&vencimento_inicio=${vencimento_inicio}`;
+            if (vencimento_fim) url += `&vencimento_fim=${vencimento_fim}`;
+            const response = await fetch(url, { headers: { 'x-api-key': settings?.bot_api_key || '' } });
+            if (!response.ok) return { error: `Erro ao buscar contas a receber: HTTP ${response.status}` };
+            return await response.json();
+          } catch (e: any) {
+            return { error: `Falha de conexão: ${e.message}` };
+          }
+        }
+      }),
+
+      consulta_agenda_oficina: tool({
+        description: 'Busca a agenda de serviços e agendamentos no Oficina Inteligente. Use quando o usuário perguntar sobre horários, agendamentos, escala do dia ou slots disponivéis. EXIGE loja e período.',
+        parameters: z.object({
+          loja: z.string().describe('Slug ou store_id da loja'),
+          data_inicio: z.string().describe('Data de início YYYY-MM-DD'),
+          data_fim: z.string().describe('Data de fim YYYY-MM-DD')
+        }),
+        execute: async ({ loja, data_inicio, data_fim }) => {
+          try {
+            const url = `${settings?.bot_url}/api/agenda?loja=${encodeURIComponent(loja)}&data_inicio=${data_inicio}&data_fim=${data_fim}`;
+            const response = await fetch(url, { headers: { 'x-api-key': settings?.bot_api_key || '' } });
+            if (!response.ok) return { error: `Erro ao buscar agenda: HTTP ${response.status}` };
+            return await response.json();
+          } catch (e: any) {
+            return { error: `Falha de conexão: ${e.message}` };
+          }
+        }
+      }),
+
+      consulta_config_oficina: tool({
+        description: 'Busca configurações do sistema Oficina (status de OS, formas de pagamento). Use quando o usuário perguntar quais status existem, quais formas de pagamento estão cadastradas etc.',
+        parameters: z.object({
+          loja: z.string().describe('Slug ou store_id da loja'),
+          recurso: z.enum(['status-os', 'formas-pagamento']).describe('Qual configuração buscar')
+        }),
+        execute: async ({ loja, recurso }) => {
+          try {
+            const url = `${settings?.bot_url}/api/config/${recurso}?loja=${encodeURIComponent(loja)}`;
+            const response = await fetch(url, { headers: { 'x-api-key': settings?.bot_api_key || '' } });
+            if (!response.ok) return { error: `Erro ao buscar config ${recurso}: HTTP ${response.status}` };
+            return await response.json();
+          } catch (e: any) {
+            return { error: `Falha de conexão: ${e.message}` };
+          }
+        }
       })
     };
 
-    const systemPrompt = `Você é o Agente de I.A. da Oficina Inteligente, o Conector Sistêmico oficial da rede.
-O sistema Oficina Inteligente tem múltiplos módulos (OS, Financeiro, Conciliação, Estoque).
+    const systemPrompt = `Você é o Agente de I.A. do ConciliaMec, o Conector Sistêmico oficial da rede de oficinas.
+Você tem acesso a TODOS os módulos do sistema Oficina Inteligente: OS, Financeiro, Conciliação, Agenda e Configurações.
+
+LOJAS DISPONÍVEIS (use o slug ao chamar ferramentas externas):
+- Dom Pedro (DP) → dp_dom_pedro [st-01]
+- Jabaquara (JAB) → jab_jabaquara [st-02]
+- Jorge Beretta (DHJV) → dhjv_jorge_beretta [st-03]
+- Kennedy (MP) → mp_kennedy [st-04]
+- Maua (MHE) → mhe_maua [3a3dd7ce-...]
+- Piraporinha (EMPORIO) → emporio_piraporinha [st-05]
+- Planalto (BRASICAR) → brasicar_planalto [st-06]
+- Rei do Módulo (MP) → mp_rei_modulo [st-09]
+- Rudge Ramos (CAP) → cap_rudge_ramos [st-07]
+- Santo André (HD) → hd_santo_andre [st-08]
 
 REGRAS DE ROTEAMENTO COGNITIVO (MUITO IMPORTANTE):
-1. Fonte Primária (Banco Local): O sistema ConciliaMec já importa dados da Oficina diariamente. Para perguntas como "quantas OS temos?", "quanto temos no caixa?", "resumo de conciliações", ou listar contas em aberto, USE SEMPRE AS TOOLS LOCAIS (consulta_resumo_os, consulta_saldo_contas, consulta_conciliacao_periodo, consulta_contas_em_aberto).
-2. Fonte Secundária (API Externa Oficina via Bot): SÓ USE a tool \`consulta_os_detalhe_completo\` se:
-   - O usuário pedir especificamente detalhes profundos de uma OS (ex: checklist, mecânico executor) E ESSES DADOS NÃO EXISTIREM NO RESUMO LOCAL.
-   - O usuário afirmar que a OS não consta no banco local.
 
-TRATAMENTO DE ERROS:
-- Se qualquer ferramenta retornar um JSON contendo uma chave \`error\` ou \`erro_local\`, leia a mensagem de erro.
-- EXPLIQUE ao usuário de forma educada o que falhou (ex: "A OS não foi encontrada na Oficina" ou "O serviço de conexão externa está offline"). NUNCA devolva apenas um "Ocorreu um erro genérico" ou "non-2xx status code".
-- Formate os dados monetários em R$ (BRL). Se a ferramenta retornar dados, apresente os valores ao usuário de forma limpa.`;
+1. IDENTIFICAÇÃO DE LOJA: Antes de usar qualquer ferramenta EXTERNA, identifique a loja da pergunta.
+   - Se o usuário mencionar nome de loja ("Jabaquara", "Brasicar", "Kennedy") → mapeie para o slug correto.
+   - Se não mencionar loja e a pergunta exigir uma → PERGUNTE: "Para qual loja deseja a informação?"
+   - Se uma OS for informada, você pode consultar o banco local primeiro para descobrir a loja.
+
+2. FONTE PRIMÁRIA (Banco Local ConciliaMec): Para listagens e resumos, use SEMPRE os dados locais antes:
+   - OS (status, placa, valor) → consulta_resumo_os
+   - Conciliações de caixa → consulta_conciliacao_periodo
+   - Movimentações / transações → consulta_saldo_contas
+   - Contas em aberto (receivables) → consulta_contas_em_aberto
+
+3. FONTE SECUNDÁRIA (API Oficina via Bot Externo): Use somente quando o banco local não tiver o dado:
+   - Detalhe profundo de OS (checklist, histórico) → consulta_os_detalhe_completo (pass loja)
+   - Contas a pagar do Oficina → consulta_contas_pagar_oficina (EXIGE loja)
+   - Contas a receber do Oficina → consulta_contas_receber_oficina (EXIGE loja)
+   - Agenda / agendamentos → consulta_agenda_oficina (EXIGE loja + período)
+   - Configurações (status OS, formas pagamento) → consulta_config_oficina (EXIGE loja)
+
+4. TRATAMENTO DE ERROS:
+   - Se ferramenta retornar {error} ou {erro_local} → explique ao usuário de forma clara e educada.
+   - Se retornar {warning, parcial} → avise que os dados podem estar incompletos e mostre o que tem.
+   - Se não houver dados → diga claramente que não encontrou, não invente dados.
+
+5. FORMATAÇÃO:
+   - Valores monetários: sempre em R$ (BRL) com 2 casas decimais.
+   - Datas: formato brasileiro (dd/mm/aaaa).
+   - Quando retornar listas, use tabelas ou listas com marcadores para facilitar a leitura.`;
 
     const { text, toolCalls, toolResults } = await generateText({
       model: llmModel,

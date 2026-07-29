@@ -228,3 +228,29 @@
 **Risco identificado:** Usar seletores hardcoded sem substring matcher (`*=`) no ASP.NET quebra a automação porque o framework injeta prefixos dinâmicos como `ctl00_cph_`.
 
 **Não fazer:** Nunca depender de navegação de URL (`waitForURL` / `waitForNavigation`) após submeter um formulário em sistemas ASP.NET WebForms com AJAX, e nunca injetar automações pesadas no browser local do usuário quando isso pode ser rodado de forma headless na VPS via endpoint isolado.
+
+## [2026-07-29] — Feature ID: oficina-system-connector
+
+**Contexto:** Expansão do agente IA para responder sobre Contas a Pagar, Contas a Receber, Agenda e Configurações do sistema Oficina Inteligente. O agente ganhou roteamento de intenção por loja + domínio.
+
+**Regra aprendida:**
+- **Hierarquia de Fontes (imutável):** LOCAL (Supabase) → EXTERNO (Bot Playwright). As tools locais sempre são chamadas primeiro. Tools externas só são acionadas quando o banco local não tem o dado suficiente ou quando o usuário pede dados operacionais não sincronizados diariamente (contas a pagar, agenda do dia, config).
+- **Identificação de loja é pré-condição para tools externas:** O agente DEVE extrair a loja antes de chamar qualquer tool externa. Se a loja não estiver clara na mensagem, o agente deve perguntar explicitamente "Para qual loja?" antes de acionar a ferramenta. Isso foi validado em produção (Cenário 5) — resposta exata: "Para qual loja você deseja verificar as contas a pagar que vencem essa semana?".
+- **Mapa de lojas no system prompt:** O system prompt da Edge Function `ai-chat` contém o mapa completo de lojas com slug e aliases (Dom Pedro → `dp_dom_pedro`, Jabaquara → `jab_jabaquara`, etc.). Ao atualizar o mapa de lojas, o system prompt deve ser atualizado também.
+- **Domínios do Oficina Inteligente confirmados:**
+  - Contas a Pagar → `wfContaBuscaPagar.aspx`
+  - Contas a Receber → `wfContaBuscaReceber.aspx`
+  - Agenda → `wfAgendaCalendario.aspx`
+  - Status de OS → `wfStatusOrdemDeServico.aspx`
+  - Formas de Pagamento → `wfFormaDePagamento.aspx`
+  - Filtro de busca → `input[id*="txtVencimentoInicio"]`, `input[id*="btnBuscar"]`
+  - Grid de resultados → `table[id*="grd"]`
+- **Padrão de retorno `{ warning, parcial }` para ferramentas com seletor falho:** Se o scraper não encontra a grid ou os inputs de filtro, deve retornar `{ warning: "mensagem descritiva", parcial: [] }` — jamais uma exceção não tratada. O agente IA exibe o warning de forma amigável ao usuário.
+
+**Risco identificado:**
+- O campo `id_empresa_oi` no `empresas.json` é `"DESCOBRIR"` para todas as lojas. Enquanto estiver assim, `ensureCompany` NÃO trocará de empresa e retornará dados da conta padrão logada sem aviso ao usuário final.
+- As colunas das grids do Oficina não têm nomes padronizados entre telas (ex: "Fornecedor" vs "Nome", "Vencimento" vs "Dt Vencimento"). O parser usa múltiplos fallbacks com `|| ''` para cada campo — isso pode resultar em campos vazios se o Oficina mudar os headers das colunas.
+
+**Não fazer:**
+- Nunca adicionar uma nova loja no ConciliaMec sem também adicionar sua entrada em `bot/src/config/empresas.json` com os aliases corretos e o `id_empresa_oi` preenchido.
+- Nunca fazer uma tool externa de Financeiro/Agenda sem exigir `loja` como parâmetro required no schema Zod — o Oficina é multi-empresa e dados sem loja definida são ambíguos por definição.

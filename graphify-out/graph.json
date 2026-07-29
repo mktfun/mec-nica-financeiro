@@ -521,6 +521,72 @@
       "norm_label": "typescript"
     },
     {
+      "label": "empresas.ts",
+      "file_type": "code",
+      "source_file": "bot/src/config/empresas.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "bot_src_config_empresas",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "empresas.ts"
+    },
+    {
+      "label": "EmpresaConfig",
+      "file_type": "code",
+      "source_file": "bot/src/config/empresas.ts",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "bot_src_config_empresas_empresaconfig",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "empresaconfig"
+    },
+    {
+      "label": "EmpresaMap",
+      "file_type": "code",
+      "source_file": "bot/src/config/empresas.ts",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "bot_src_config_empresas_empresamap",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "empresamap"
+    },
+    {
+      "label": "loadEmpresaMap()",
+      "file_type": "code",
+      "source_file": "bot/src/config/empresas.ts",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "bot_src_config_empresas_loadempresamap",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "loadempresamap()"
+    },
+    {
+      "label": "resolveEmpresa()",
+      "file_type": "code",
+      "source_file": "bot/src/config/empresas.ts",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "bot_src_config_empresas_resolveempresa",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "resolveempresa()"
+    },
+    {
+      "label": "listEmpresas()",
+      "file_type": "code",
+      "source_file": "bot/src/config/empresas.ts",
+      "source_location": "L56",
+      "_origin": "ast",
+      "id": "bot_src_config_empresas_listempresas",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "listempresas()"
+    },
+    {
       "label": "runner.ts",
       "file_type": "code",
       "source_file": "bot/src/runner.ts",
@@ -675,6 +741,160 @@
       "norm_label": "fetchosdetailedview()"
     },
     {
+      "label": "ContaPagar",
+      "file_type": "code",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L325",
+      "_origin": "ast",
+      "id": "bot_src_scrapers_oficina_contapagar",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "contapagar"
+    },
+    {
+      "label": "ContaReceber",
+      "file_type": "code",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L335",
+      "_origin": "ast",
+      "id": "bot_src_scrapers_oficina_contareceber",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "contareceber"
+    },
+    {
+      "label": "AgendaItem",
+      "file_type": "code",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L345",
+      "_origin": "ast",
+      "id": "bot_src_scrapers_oficina_agendaitem",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "agendaitem"
+    },
+    {
+      "label": "StatusOS",
+      "file_type": "code",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L355",
+      "_origin": "ast",
+      "id": "bot_src_scrapers_oficina_statusos",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "statusos"
+    },
+    {
+      "label": "FormaPagamento",
+      "file_type": "code",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L360",
+      "_origin": "ast",
+      "id": "bot_src_scrapers_oficina_formapagamento",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "formapagamento"
+    },
+    {
+      "label": "FiltrosFinanceiro",
+      "file_type": "code",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L366",
+      "_origin": "ast",
+      "id": "bot_src_scrapers_oficina_filtrosfinanceiro",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "filtrosfinanceiro"
+    },
+    {
+      "label": "FiltrosAgenda",
+      "file_type": "code",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L373",
+      "_origin": "ast",
+      "id": "bot_src_scrapers_oficina_filtrosagenda",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "filtrosagenda"
+    },
+    {
+      "label": "ensureCompany()",
+      "file_type": "code",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L384",
+      "_origin": "ast",
+      "id": "bot_src_scrapers_oficina_ensurecompany",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "ensurecompany()"
+    },
+    {
+      "label": "extractGrid()",
+      "file_type": "code",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L420",
+      "_origin": "ast",
+      "id": "bot_src_scrapers_oficina_extractgrid",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "extractgrid()"
+    },
+    {
+      "label": "fetchContasPagar()",
+      "file_type": "code",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L456",
+      "_origin": "ast",
+      "id": "bot_src_scrapers_oficina_fetchcontaspagar",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "fetchcontaspagar()"
+    },
+    {
+      "label": "fetchContasReceber()",
+      "file_type": "code",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L505",
+      "_origin": "ast",
+      "id": "bot_src_scrapers_oficina_fetchcontasreceber",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "fetchcontasreceber()"
+    },
+    {
+      "label": "fetchAgenda()",
+      "file_type": "code",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L553",
+      "_origin": "ast",
+      "id": "bot_src_scrapers_oficina_fetchagenda",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "fetchagenda()"
+    },
+    {
+      "label": "fetchConfigStatusOS()",
+      "file_type": "code",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L594",
+      "_origin": "ast",
+      "id": "bot_src_scrapers_oficina_fetchconfigstatusos",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "fetchconfigstatusos()"
+    },
+    {
+      "label": "fetchConfigFormasPagamento()",
+      "file_type": "code",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L618",
+      "_origin": "ast",
+      "id": "bot_src_scrapers_oficina_fetchconfigformaspagamento",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "fetchconfigformaspagamento()"
+    },
+    {
       "label": "TODO: Navegar para o menu de Relat\u00f3rios",
       "file_type": "rationale",
       "source_file": "bot/src/scrapers/oficina.ts",
@@ -821,7 +1041,7 @@
       "label": "app",
       "file_type": "code",
       "source_file": "bot/src/server.ts",
-      "source_location": "L14",
+      "source_location": "L24",
       "_origin": "ast",
       "id": "bot_src_server_app",
       "community": 6,
@@ -832,7 +1052,7 @@
       "label": "requireApiKey()",
       "file_type": "code",
       "source_file": "bot/src/server.ts",
-      "source_location": "L21",
+      "source_location": "L31",
       "_origin": "ast",
       "id": "bot_src_server_requireapikey",
       "community": 6,
@@ -840,10 +1060,21 @@
       "norm_label": "requireapikey()"
     },
     {
+      "label": "createBotSession()",
+      "file_type": "code",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L158",
+      "_origin": "ast",
+      "id": "bot_src_server_createbotsession",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "createbotsession()"
+    },
+    {
       "label": "PORT",
       "file_type": "code",
       "source_file": "bot/src/server.ts",
-      "source_location": "L188",
+      "source_location": "L320",
       "_origin": "ast",
       "id": "bot_src_server_port",
       "community": 6,
@@ -2914,8 +3145,8 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "package_dependencies_class_variance_authority",
-      "community": 28,
-      "community_name": "dependencies",
+      "community": 650,
+      "community_name": "class-variance-authority",
       "norm_label": "class-variance-authority"
     },
     {
@@ -2925,8 +3156,8 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "class_variance_authority",
-      "community": 28,
-      "community_name": "dependencies",
+      "community": 650,
+      "community_name": "class-variance-authority",
       "norm_label": "class-variance-authority"
     },
     {
@@ -2936,8 +3167,8 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "package_dependencies_clsx",
-      "community": 496,
-      "community_name": "clsx",
+      "community": 28,
+      "community_name": "dependencies",
       "norm_label": "clsx"
     },
     {
@@ -2947,8 +3178,8 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "clsx",
-      "community": 496,
-      "community_name": "clsx",
+      "community": 28,
+      "community_name": "dependencies",
       "norm_label": "clsx"
     },
     {
@@ -11106,8 +11337,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_chat_messagelist",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 496,
+      "community_name": "clsx",
       "norm_label": "messagelist.tsx"
     },
     {
@@ -11117,8 +11348,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_chat_messagelist_message",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 496,
+      "community_name": "clsx",
       "norm_label": "message"
     },
     {
@@ -11128,8 +11359,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_components_chat_messagelist_messagelist",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 496,
+      "community_name": "clsx",
       "norm_label": "messagelist()"
     },
     {
@@ -11326,8 +11557,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_chat_promptinput",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "promptinput.tsx"
     },
     {
@@ -11337,8 +11568,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_attachment",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "attachment"
     },
     {
@@ -11348,8 +11579,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_morphingtext",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "morphingtext()"
     },
     {
@@ -11359,8 +11590,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_modelicon",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "modelicon()"
     },
     {
@@ -11370,8 +11601,8 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_arrowupicon",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "arrowupicon()"
     },
     {
@@ -11381,8 +11612,8 @@
       "source_location": "L86",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_micicon",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "micicon()"
     },
     {
@@ -11392,8 +11623,8 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_stopicon",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "stopicon()"
     },
     {
@@ -11403,8 +11634,8 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_plusicon",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "plusicon()"
     },
     {
@@ -11414,8 +11645,8 @@
       "source_location": "L111",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_closeicon",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "closeicon()"
     },
     {
@@ -11425,8 +11656,8 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_dynamicbarsicon",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "dynamicbarsicon()"
     },
     {
@@ -11436,8 +11667,8 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_attachmentthumb",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "attachmentthumb()"
     },
     {
@@ -11447,8 +11678,8 @@
       "source_location": "L197",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_attachmentgallerymodal",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "attachmentgallerymodal()"
     },
     {
@@ -11458,8 +11689,8 @@
       "source_location": "L294",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_promptinputprops",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "promptinputprops"
     },
     {
@@ -11469,8 +11700,8 @@
       "source_location": "L310",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_promptinput",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "promptinput"
     },
     {
@@ -11480,8 +11711,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "modulo1saldopanel.tsx"
     },
     {
@@ -11513,8 +11744,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_ofxsemmatchtable",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "ofxsemmatchtable.tsx"
     },
     {
@@ -11524,8 +11755,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_conciliacao_ofxsemmatchtable_ofxsemmatchtable",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "ofxsemmatchtable()"
     },
     {
@@ -11590,8 +11821,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_pixvsofxtable",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "pixvsofxtable.tsx"
     },
     {
@@ -11601,8 +11832,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_conciliacao_pixvsofxtable_pixvsofxtable",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "pixvsofxtable()"
     },
     {
@@ -11612,8 +11843,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsextratotable",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "redevsextratotable.tsx"
     },
     {
@@ -11623,8 +11854,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsextratotable_redevsextratotableprops",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "redevsextratotableprops"
     },
     {
@@ -11634,8 +11865,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsextratotable_redevsextratotable",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "redevsextratotable()"
     },
     {
@@ -11645,8 +11876,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsofxtable",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "redevsofxtable.tsx"
     },
     {
@@ -11656,8 +11887,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsofxtable_redevsofxtable",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "redevsofxtable()"
     },
     {
@@ -11700,8 +11931,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "alertresolvedialog.tsx"
     },
     {
@@ -11711,8 +11942,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog_alertresolvedialogprops",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "alertresolvedialogprops"
     },
     {
@@ -11722,8 +11953,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog_alertresolvedialog",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "alertresolvedialog()"
     },
     {
@@ -11821,8 +12052,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "newtransactiondialog.tsx"
     },
     {
@@ -11832,8 +12063,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialogprops",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "newtransactiondialogprops"
     },
     {
@@ -11843,8 +12074,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialog",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "newtransactiondialog()"
     },
     {
@@ -11854,8 +12085,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_rationale_17",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "todo: implement transaction creation"
     },
     {
@@ -11865,8 +12096,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "quickactions.tsx"
     },
     {
@@ -11876,8 +12107,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_container",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "container"
     },
     {
@@ -11887,8 +12118,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_item",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "item"
     },
     {
@@ -11898,8 +12129,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_quickactions",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "quickactions()"
     },
     {
@@ -11909,8 +12140,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_recentactivity",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "recentactivity.tsx"
     },
     {
@@ -12140,8 +12371,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_appshell",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "appshell.tsx"
     },
     {
@@ -12151,8 +12382,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_layout_appshell_appshell",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "appshell()"
     },
     {
@@ -12162,8 +12393,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_bottomnav",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "bottomnav.tsx"
     },
     {
@@ -12173,8 +12404,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_layout_bottomnav_navitems",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "navitems"
     },
     {
@@ -12184,8 +12415,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_components_layout_bottomnav_bottomnav",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "bottomnav()"
     },
     {
@@ -12195,8 +12426,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_sidebar",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "sidebar.tsx"
     },
     {
@@ -12206,8 +12437,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_layout_sidebar_navitems",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "navitems"
     },
     {
@@ -12217,8 +12448,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_components_layout_sidebar_sidebar",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "sidebar()"
     },
     {
@@ -12283,8 +12514,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_badge",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "badge.tsx"
     },
     {
@@ -12294,8 +12525,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_components_ui_badge_badgeprops",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "badgeprops"
     },
     {
@@ -12305,8 +12536,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_ui_badge_badge",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "badge()"
     },
     {
@@ -12316,8 +12547,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_button",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "button.tsx"
     },
     {
@@ -12327,8 +12558,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_ui_button_buttonprops",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "buttonprops"
     },
     {
@@ -12338,8 +12569,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_ui_button_button",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "button()"
     },
     {
@@ -12349,8 +12580,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_card",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "card.tsx"
     },
     {
@@ -12360,8 +12591,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_ui_card_cardprops",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "cardprops"
     },
     {
@@ -12371,8 +12602,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_ui_card_card",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "card()"
     },
     {
@@ -12415,8 +12646,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_loadingspinner",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "loadingspinner.tsx"
     },
     {
@@ -12426,8 +12657,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_components_ui_loadingspinner_loadingspinnerprops",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "loadingspinnerprops"
     },
     {
@@ -12437,8 +12668,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_ui_loadingspinner_loadingspinner",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "loadingspinner()"
     },
     {
@@ -12448,8 +12679,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_modal",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "modal.tsx"
     },
     {
@@ -12459,8 +12690,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_ui_modal_modalprops",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "modalprops"
     },
     {
@@ -12470,8 +12701,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_components_ui_modal_modal",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "modal()"
     },
     {
@@ -12591,8 +12822,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useaisettings",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 496,
+      "community_name": "clsx",
       "norm_label": "useaisettings.ts"
     },
     {
@@ -12602,8 +12833,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_useaisettings_aisettings",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 496,
+      "community_name": "clsx",
       "norm_label": "aisettings"
     },
     {
@@ -12613,8 +12844,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_hooks_useaisettings_useaisettings",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 496,
+      "community_name": "clsx",
       "norm_label": "useaisettings()"
     },
     {
@@ -12624,8 +12855,8 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "src_hooks_useaisettings_usesaveaisettings",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 496,
+      "community_name": "clsx",
       "norm_label": "usesaveaisettings()"
     },
     {
@@ -12635,8 +12866,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usealerts",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "usealerts.ts"
     },
     {
@@ -12646,8 +12877,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_usealerts_usealerts",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "usealerts()"
     },
     {
@@ -12657,8 +12888,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_hooks_usealerts_useallalerts",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "useallalerts()"
     },
     {
@@ -12668,8 +12899,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "src_hooks_usealerts_useresolvealert",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "useresolvealert()"
     },
     {
@@ -12679,8 +12910,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useauth",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 501,
+      "community_name": "useAuth.ts",
       "norm_label": "useauth.ts"
     },
     {
@@ -12690,8 +12921,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_hooks_useauth_listeners",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 501,
+      "community_name": "useAuth.ts",
       "norm_label": "listeners"
     },
     {
@@ -12701,8 +12932,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_hooks_useauth_usesession",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "usesession()"
     },
     {
@@ -12723,8 +12954,8 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "src_hooks_useauth_uselogout",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "uselogout()"
     },
     {
@@ -12734,8 +12965,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebackgroundaireconciler",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 496,
+      "community_name": "clsx",
       "norm_label": "usebackgroundaireconciler.ts"
     },
     {
@@ -12745,8 +12976,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_hooks_usebackgroundaireconciler_usebackgroundaireconciler",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 496,
+      "community_name": "clsx",
       "norm_label": "usebackgroundaireconciler()"
     },
     {
@@ -12844,8 +13075,8 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotauditlogs",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 496,
+      "community_name": "clsx",
       "norm_label": "usebotauditlogs()"
     },
     {
@@ -12965,8 +13196,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "useconciliacao.ts"
     },
     {
@@ -12976,8 +13207,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_isvaliduuid",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "isvaliduuid()"
     },
     {
@@ -12987,8 +13218,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_conciliacaoresumo",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "conciliacaoresumo"
     },
     {
@@ -13020,8 +13251,8 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesaveimportedreport",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 13,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usesaveimportedreport()"
     },
     {
@@ -13042,8 +13273,8 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesystemtransactions",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usesystemtransactions()"
     },
     {
@@ -13053,8 +13284,8 @@
       "source_location": "L139",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usedailyreconciliationdelta",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usedailyreconciliationdelta()"
     },
     {
@@ -13064,8 +13295,8 @@
       "source_location": "L175",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_findexactsubsetmatch",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "findexactsubsetmatch()"
     },
     {
@@ -13075,8 +13306,8 @@
       "source_location": "L210",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usereconciliationviews",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usereconciliationviews()"
     },
     {
@@ -13108,8 +13339,8 @@
       "source_location": "L649",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useresolveunmatchedalert",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "useresolveunmatchedalert()"
     },
     {
@@ -13471,8 +13702,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_userecebiveis",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "userecebiveis()"
     },
     {
@@ -13647,8 +13878,8 @@
       "source_location": "L242",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactionspordataeloja",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usetransactionspordataeloja()"
     },
     {
@@ -13735,8 +13966,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher",
-      "community": 639,
-      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "auth-attacher.ts"
     },
     {
@@ -13746,8 +13977,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher_attachsupabaseauth",
-      "community": 639,
-      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "attachsupabaseauth"
     },
     {
@@ -13812,8 +14043,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_integrations_supabase_client",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "client.ts"
     },
     {
@@ -13823,8 +14054,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_integrations_supabase_client_createsupabaseclient",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "createsupabaseclient()"
     },
     {
@@ -14087,8 +14318,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_error_capture",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "error-capture.ts"
     },
     {
@@ -14098,8 +14329,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_lib_error_capture_record",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "record()"
     },
     {
@@ -14109,8 +14340,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_lib_error_capture_consumelastcapturederror",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "consumelastcapturederror()"
     },
     {
@@ -14120,8 +14351,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_error_page",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "error-page.ts"
     },
     {
@@ -14131,8 +14362,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_error_page_rendererrorpage",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "rendererrorpage()"
     },
     {
@@ -14175,8 +14406,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_llm_matcher",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 496,
+      "community_name": "clsx",
       "norm_label": "llm-matcher.ts"
     },
     {
@@ -14186,8 +14417,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_lib_llm_matcher_matchsuggestion",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 496,
+      "community_name": "clsx",
       "norm_label": "matchsuggestion"
     },
     {
@@ -14197,8 +14428,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_lib_llm_matcher_aitelemetrylog",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 496,
+      "community_name": "clsx",
       "norm_label": "aitelemetrylog"
     },
     {
@@ -14208,8 +14439,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "src_lib_llm_matcher_token_pricing",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 496,
+      "community_name": "clsx",
       "norm_label": "token_pricing"
     },
     {
@@ -14219,8 +14450,8 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "src_lib_llm_matcher_savetelemetrylog",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 496,
+      "community_name": "clsx",
       "norm_label": "savetelemetrylog()"
     },
     {
@@ -14230,8 +14461,8 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "src_lib_llm_matcher_generatetriplematchsuggestions",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 496,
+      "community_name": "clsx",
       "norm_label": "generatetriplematchsuggestions()"
     },
     {
@@ -14802,8 +15033,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_lib_supabase_reconciliationrow",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "reconciliationrow"
     },
     {
@@ -14813,8 +15044,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "src_lib_supabase_alertrow",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "alertrow"
     },
     {
@@ -14912,8 +15143,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_lib_utils_cn",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "cn()"
     },
     {
@@ -15220,8 +15451,8 @@
       "source_location": "L397",
       "_origin": "ast",
       "id": "src_routetree_gen_routetree",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 647,
+      "community_name": "router.tsx",
       "norm_label": "routetree"
     },
     {
@@ -15242,8 +15473,8 @@
       "source_location": "L404",
       "_origin": "ast",
       "id": "src_routetree_gen_register",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 647,
+      "community_name": "router.tsx",
       "norm_label": "register"
     },
     {
@@ -15253,8 +15484,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_router",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 647,
+      "community_name": "router.tsx",
       "norm_label": "router.tsx"
     },
     {
@@ -15264,8 +15495,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_router_getrouter",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 647,
+      "community_name": "router.tsx",
       "norm_label": "getrouter()"
     },
     {
@@ -15341,8 +15572,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_agente",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 496,
+      "community_name": "clsx",
       "norm_label": "agente.tsx"
     },
     {
@@ -15363,8 +15594,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_routes_agente_agentepage",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 496,
+      "community_name": "clsx",
       "norm_label": "agentepage()"
     },
     {
@@ -15374,8 +15605,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_alertas",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "alertas.tsx"
     },
     {
@@ -15396,8 +15627,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_routes_alertas_filtertype",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "filtertype"
     },
     {
@@ -15407,8 +15638,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_routes_alertas_alertaspage",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "alertaspage()"
     },
     {
@@ -15506,8 +15737,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "conciliacao.$lojaid.tsx"
     },
     {
@@ -15528,8 +15759,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_formatdate",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "formatdate()"
     },
     {
@@ -15539,8 +15770,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_tabtype",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "tabtype"
     },
     {
@@ -15550,8 +15781,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_tabbtn",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "tabbtn()"
     },
     {
@@ -15561,8 +15792,8 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_conciliacaolojapage",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "conciliacaolojapage()"
     },
     {
@@ -15638,8 +15869,8 @@
       "source_location": "L326",
       "_origin": "ast",
       "id": "src_routes_configuracoes_aisettingsform",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 496,
+      "community_name": "clsx",
       "norm_label": "aisettingsform()"
     },
     {
@@ -16001,8 +16232,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_lojas",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "lojas.tsx"
     },
     {
@@ -16210,8 +16441,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_recebiveis",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "recebiveis.tsx"
     },
     {
@@ -16232,8 +16463,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_routes_recebiveis_filtertab",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "filtertab"
     },
     {
@@ -16243,8 +16474,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_routes_recebiveis_recebiveispage",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "recebiveispage()"
     },
     {
@@ -16254,8 +16485,8 @@
       "source_location": "L291",
       "_origin": "ast",
       "id": "src_routes_recebiveis_tabbtn",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "tabbtn()"
     },
     {
@@ -16265,8 +16496,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_server",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "src/server.ts"
     },
     {
@@ -16276,8 +16507,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_server_serverentry",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "serverentry"
     },
     {
@@ -16287,8 +16518,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_server_getserverentry",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "getserverentry()"
     },
     {
@@ -16298,8 +16529,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_server_brandederrorresponse",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "brandederrorresponse()"
     },
     {
@@ -16309,8 +16540,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "src_server_iscatastrophicssrerrorbody",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "iscatastrophicssrerrorbody()"
     },
     {
@@ -16320,8 +16551,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "src_server_normalizecatastrophicssrresponse",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "normalizecatastrophicssrresponse()"
     },
     {
@@ -16331,8 +16562,8 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "src_server_fetch",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "fetch()"
     },
     {
@@ -16342,8 +16573,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_start",
-      "community": 639,
-      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "start.ts"
     },
     {
@@ -16353,8 +16584,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_start_errormiddleware",
-      "community": 639,
-      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
+      "community": 37,
+      "community_name": "supabase/types.ts",
       "norm_label": "errormiddleware"
     },
     {
@@ -16364,8 +16595,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_start_startinstance",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 647,
+      "community_name": "router.tsx",
       "norm_label": "startinstance"
     },
     {
@@ -16532,6 +16763,17 @@
       "community": 594,
       "community_name": "ai-chat/index.ts",
       "norm_label": "ai-chat/index.ts"
+    },
+    {
+      "label": "corsHeaders",
+      "file_type": "code",
+      "source_file": "supabase/functions/ai-chat/index.ts",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "supabase_functions_ai_chat_index_corsheaders",
+      "community": 594,
+      "community_name": "ai-chat/index.ts",
+      "norm_label": "corsheaders"
     },
     {
       "label": "mcp-proxy/deno.json",
@@ -17271,6 +17513,17 @@
       "norm_label": "[2026-07-29] \u2014 feature id: vps-mcp-aspnet"
     },
     {
+      "label": "[2026-07-29] \u2014 Feature ID: oficina-system-connector",
+      "file_type": "document",
+      "source_file": ".agent/memory/domain.md",
+      "source_location": "L232",
+      "_origin": "ast",
+      "id": "agent_memory_domain_2026_07_29_feature_id_oficina_system_connector",
+      "community": 27,
+      "community_name": "\ud83e\udde0 Mem\u00f3ria Modular: Dom\u00ednio & Concilia\u00e7\u00e3o",
+      "norm_label": "[2026-07-29] \u2014 feature id: oficina-system-connector"
+    },
+    {
       "label": "infra.md",
       "file_type": "document",
       "source_file": ".agent/memory/infra.md",
@@ -17324,6 +17577,17 @@
       "community": 403,
       "community_name": "\ud83e\udde0 Mem\u00f3ria Modular: Infraestrutura (Deploy, VPS, DNS, Redes)",
       "norm_label": "[2026-07-29] \u2014 feature id: bot-agent-alignment"
+    },
+    {
+      "label": "[2026-07-29] \u2014 Feature ID: oficina-system-connector",
+      "file_type": "document",
+      "source_file": ".agent/memory/infra.md",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "agent_memory_infra_2026_07_29_feature_id_oficina_system_connector",
+      "community": 403,
+      "community_name": "\ud83e\udde0 Mem\u00f3ria Modular: Infraestrutura (Deploy, VPS, DNS, Redes)",
+      "norm_label": "[2026-07-29] \u2014 feature id: oficina-system-connector"
     },
     {
       "label": "ofx.md",
@@ -21847,6 +22111,17 @@
       "norm_label": "inteligaancia artificial & telemetria"
     },
     {
+      "label": "ui-refactor",
+      "file_type": "document",
+      "source_file": "spec/global/features.md",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "spec_global_features_ui_refactor",
+      "community": 354,
+      "community_name": "Features e M\u00f3dulos Existentes (Mapa Vivo Anti-Duplica\u00e7\u00e3o)",
+      "norm_label": "ui-refactor"
+    },
+    {
       "label": "016-loja-cleanup/design.md",
       "file_type": "document",
       "source_file": "specs/016-loja-cleanup/design.md",
@@ -24298,6 +24573,204 @@
       "community": 568,
       "community_name": "054-dashboard-conciliation-fix/spec-plan.md",
       "norm_label": "spec plan - 054"
+    },
+    {
+      "label": "agent-domain-routing/design.md",
+      "file_type": "document",
+      "source_file": "specs/agent-domain-routing/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_agent_domain_routing_design",
+      "community": 645,
+      "community_name": "Design: Agent Domain Routing (agent-domain-routing)",
+      "norm_label": "agent-domain-routing/design.md"
+    },
+    {
+      "label": "Design: Agent Domain Routing (agent-domain-routing)",
+      "file_type": "document",
+      "source_file": "specs/agent-domain-routing/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_agent_domain_routing_design_design_agent_domain_routing_agent_domain_routing",
+      "community": 645,
+      "community_name": "Design: Agent Domain Routing (agent-domain-routing)",
+      "norm_label": "design: agent domain routing (agent-domain-routing)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/agent-domain-routing/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_agent_domain_routing_design_arquitetura_t\u00e9cnica",
+      "community": 645,
+      "community_name": "Design: Agent Domain Routing (agent-domain-routing)",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Interfaces TypeScript",
+      "file_type": "document",
+      "source_file": "specs/agent-domain-routing/design.md",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "specs_agent_domain_routing_design_interfaces_typescript",
+      "community": 645,
+      "community_name": "Design: Agent Domain Routing (agent-domain-routing)",
+      "norm_label": "interfaces typescript"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/agent-domain-routing/design.md",
+      "source_location": "L51",
+      "_origin": "ast",
+      "id": "specs_agent_domain_routing_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 645,
+      "community_name": "Design: Agent Domain Routing (agent-domain-routing)",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Infra / Deploy",
+      "file_type": "document",
+      "source_file": "specs/agent-domain-routing/design.md",
+      "source_location": "L54",
+      "_origin": "ast",
+      "id": "specs_agent_domain_routing_design_infra_deploy",
+      "community": 645,
+      "community_name": "Design: Agent Domain Routing (agent-domain-routing)",
+      "norm_label": "infra / deploy"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/agent-domain-routing/design.md",
+      "source_location": "L58",
+      "_origin": "ast",
+      "id": "specs_agent_domain_routing_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 645,
+      "community_name": "Design: Agent Domain Routing (agent-domain-routing)",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "agent-domain-routing/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/agent-domain-routing/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_agent_domain_routing_proposal",
+      "community": 643,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "agent-domain-routing/proposal.md"
+    },
+    {
+      "label": "Proposal: Agent Domain Routing (agent-domain-routing)",
+      "file_type": "document",
+      "source_file": "specs/agent-domain-routing/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_agent_domain_routing_proposal_proposal_agent_domain_routing_agent_domain_routing",
+      "community": 643,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "proposal: agent domain routing (agent-domain-routing)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/agent-domain-routing/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_agent_domain_routing_proposal_problema",
+      "community": 643,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/agent-domain-routing/proposal.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "specs_agent_domain_routing_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 643,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/agent-domain-routing/proposal.md",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "specs_agent_domain_routing_proposal_contratos_de_dados",
+      "community": 643,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/agent-domain-routing/proposal.md",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "specs_agent_domain_routing_proposal_api_interface",
+      "community": 643,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/agent-domain-routing/proposal.md",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "specs_agent_domain_routing_proposal_features_existentes_impactadas",
+      "community": 643,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/agent-domain-routing/proposal.md",
+      "source_location": "L33",
+      "_origin": "ast",
+      "id": "specs_agent_domain_routing_proposal_risco_principal",
+      "community": 643,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "agent-domain-routing/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/agent-domain-routing/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_agent_domain_routing_spec_plan",
+      "community": 648,
+      "community_name": "Spec Plan: Agent Domain Routing (agent-domain-routing)",
+      "norm_label": "agent-domain-routing/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Agent Domain Routing (agent-domain-routing)",
+      "file_type": "document",
+      "source_file": "specs/agent-domain-routing/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_agent_domain_routing_spec_plan_spec_plan_agent_domain_routing_agent_domain_routing",
+      "community": 648,
+      "community_name": "Spec Plan: Agent Domain Routing (agent-domain-routing)",
+      "norm_label": "spec plan: agent domain routing (agent-domain-routing)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/agent-domain-routing/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_agent_domain_routing_spec_plan_tasks",
+      "community": 648,
+      "community_name": "Spec Plan: Agent Domain Routing (agent-domain-routing)",
+      "norm_label": "tasks"
     },
     {
       "label": "001-backend-supabase/design.md",
@@ -43154,6 +43627,193 @@
       "norm_label": "tasks"
     },
     {
+      "label": "ui-refactor/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/ui-refactor/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_ui_refactor_design",
+      "community": 646,
+      "community_name": "Design: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "ui-refactor/design.md"
+    },
+    {
+      "label": "Design: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "file_type": "document",
+      "source_file": "specs/archive/ui-refactor/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_ui_refactor_design_design_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "community": 646,
+      "community_name": "Design: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "design: refatoracao ui conciliacao (ui-refactor)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/archive/ui-refactor/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_ui_refactor_design_arquitetura_t\u00e9cnica",
+      "community": 646,
+      "community_name": "Design: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/archive/ui-refactor/design.md",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "specs_archive_ui_refactor_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 646,
+      "community_name": "Design: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Fluxo de UI",
+      "file_type": "document",
+      "source_file": "specs/archive/ui-refactor/design.md",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "specs_archive_ui_refactor_design_fluxo_de_ui",
+      "community": 646,
+      "community_name": "Design: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "fluxo de ui"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/archive/ui-refactor/design.md",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "specs_archive_ui_refactor_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 646,
+      "community_name": "Design: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "ui-refactor/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/ui-refactor/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_ui_refactor_proposal",
+      "community": 644,
+      "community_name": "Proposal: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "ui-refactor/proposal.md"
+    },
+    {
+      "label": "Proposal: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "file_type": "document",
+      "source_file": "specs/archive/ui-refactor/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "community": 644,
+      "community_name": "Proposal: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "proposal: refatoracao ui conciliacao (ui-refactor)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/archive/ui-refactor/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_ui_refactor_proposal_problema",
+      "community": 644,
+      "community_name": "Proposal: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/archive/ui-refactor/proposal.md",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "specs_archive_ui_refactor_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 644,
+      "community_name": "Proposal: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/ui-refactor/proposal.md",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "specs_archive_ui_refactor_proposal_contratos_de_dados",
+      "community": 644,
+      "community_name": "Proposal: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/archive/ui-refactor/proposal.md",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "specs_archive_ui_refactor_proposal_api_interface",
+      "community": 644,
+      "community_name": "Proposal: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/archive/ui-refactor/proposal.md",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "specs_archive_ui_refactor_proposal_features_existentes_impactadas",
+      "community": 644,
+      "community_name": "Proposal: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/archive/ui-refactor/proposal.md",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "specs_archive_ui_refactor_proposal_risco_principal",
+      "community": 644,
+      "community_name": "Proposal: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "ui-refactor/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/ui-refactor/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_ui_refactor_spec_plan",
+      "community": 649,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "ui-refactor/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "file_type": "document",
+      "source_file": "specs/archive/ui-refactor/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_ui_refactor_spec_plan_spec_plan_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "community": 649,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "spec plan: refatoracao ui conciliacao (ui-refactor)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/ui-refactor/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_ui_refactor_spec_plan_tasks",
+      "community": 649,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "tasks"
+    },
+    {
       "label": "vps-mcp-aspnet/design.md",
       "file_type": "document",
       "source_file": "specs/archive/vps-mcp-aspnet/design.md",
@@ -44749,6 +45409,380 @@
       "norm_label": "global overview"
     },
     {
+      "label": "oficina-system-connector/design.md",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_design",
+      "community": 635,
+      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "oficina-system-connector/design.md"
+    },
+    {
+      "label": "Design: Oficina System Connector (oficina-system-connector)",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_design_design_oficina_system_connector_oficina_system_connector",
+      "community": 635,
+      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "design: oficina system connector (oficina-system-connector)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_design_arquitetura_t\u00e9cnica",
+      "community": 635,
+      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Interfaces TypeScript",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/design.md",
+      "source_location": "L41",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_design_interfaces_typescript",
+      "community": 635,
+      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "interfaces typescript"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/design.md",
+      "source_location": "L100",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 635,
+      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Bot (`bot/src/`)",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/design.md",
+      "source_location": "L102",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_design_bot_bot_src",
+      "community": 635,
+      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "bot (`bot/src/`)"
+    },
+    {
+      "label": "Edge Function (`supabase/functions/ai-chat/index.ts`)",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/design.md",
+      "source_location": "L120",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_design_edge_function_supabase_functions_ai_chat_index_ts",
+      "community": 635,
+      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "edge function (`supabase/functions/ai-chat/index.ts`)"
+    },
+    {
+      "label": "Padr\u00e3o de Seletores ASP.NET WebForms",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/design.md",
+      "source_location": "L131",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_design_padr\u00e3o_de_seletores_asp_net_webforms",
+      "community": 635,
+      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "padrao de seletores asp.net webforms"
+    },
+    {
+      "label": "Infra / Deploy",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/design.md",
+      "source_location": "L151",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_design_infra_deploy",
+      "community": 635,
+      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "infra / deploy"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/design.md",
+      "source_location": "L158",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 635,
+      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "oficina-system-connector/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_proposal",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "oficina-system-connector/proposal.md"
+    },
+    {
+      "label": "Proposal: Oficina System Connector (oficina-system-connector)",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_proposal_proposal_oficina_system_connector_oficina_system_connector",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "proposal: oficina system connector (oficina-system-connector)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_proposal_problema",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_proposal_contratos_de_dados",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "Tabelas Supabase envolvidas (s\u00f3 leitura)",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_proposal_tabelas_supabase_envolvidas_s\u00f3_leitura",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "tabelas supabase envolvidas (so leitura)"
+    },
+    {
+      "label": "Novos endpoints no Bot (source externa / Playwright)",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_proposal_novos_endpoints_no_bot_source_externa_playwright",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "novos endpoints no bot (source externa / playwright)"
+    },
+    {
+      "label": "Config de V\u00ednculo de Lojas",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L40",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_proposal_config_de_v\u00ednculo_de_lojas",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "config de vinculo de lojas"
+    },
+    {
+      "label": "Mudan\u00e7a nos endpoints existentes",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L50",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_proposal_mudan\u00e7a_nos_endpoints_existentes",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "mudanca nos endpoints existentes"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L56",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_proposal_api_interface",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Bot (Express \u2014 `bot/src/server.ts`)",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L58",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_proposal_bot_express_bot_src_server_ts",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "bot (express \u2014 `bot/src/server.ts`)"
+    },
+    {
+      "label": "Scrapers (`bot/src/scrapers/oficina.ts`)",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L63",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_proposal_scrapers_bot_src_scrapers_oficina_ts",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "scrapers (`bot/src/scrapers/oficina.ts`)"
+    },
+    {
+      "label": "Edge Function (`supabase/functions/ai-chat/index.ts`)",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L70",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_proposal_edge_function_supabase_functions_ai_chat_index_ts",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "edge function (`supabase/functions/ai-chat/index.ts`)"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L76",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_proposal_features_existentes_impactadas",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L82",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_proposal_risco_principal",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "oficina-system-connector/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_spec_plan",
+      "community": 639,
+      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "oficina-system-connector/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Oficina System Connector (oficina-system-connector)",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_spec_plan_spec_plan_oficina_system_connector_oficina_system_connector",
+      "community": 639,
+      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "spec plan: oficina system connector (oficina-system-connector)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_spec_plan_tasks",
+      "community": 639,
+      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "tasks"
+    },
+    {
+      "label": "\ud83d\udce6 INFRA \u2014 Config de Lojas",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/spec-plan.md",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_spec_plan_infra_config_de_lojas",
+      "community": 639,
+      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "\ud83d\udce6 infra \u2014 config de lojas"
+    },
+    {
+      "label": "\ud83e\udd16 BOT \u2014 Scrapers Novos",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/spec-plan.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_spec_plan_bot_scrapers_novos",
+      "community": 639,
+      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "\ud83e\udd16 bot \u2014 scrapers novos"
+    },
+    {
+      "label": "\ud83c\udf10 BOT \u2014 Novos Endpoints HTTP",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/spec-plan.md",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_spec_plan_bot_novos_endpoints_http",
+      "community": 639,
+      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "\ud83c\udf10 bot \u2014 novos endpoints http"
+    },
+    {
+      "label": "\ud83e\udde0 EDGE FUNCTION \u2014 Novas Tools",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/spec-plan.md",
+      "source_location": "L35",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_spec_plan_edge_function_novas_tools",
+      "community": 639,
+      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "\ud83e\udde0 edge function \u2014 novas tools"
+    },
+    {
+      "label": "\ud83d\ude80 DEPLOY",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/spec-plan.md",
+      "source_location": "L52",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_spec_plan_deploy",
+      "community": 639,
+      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "\ud83d\ude80 deploy"
+    },
+    {
+      "label": "\ud83e\uddea TEST",
+      "file_type": "document",
+      "source_file": "specs/oficina-system-connector/spec-plan.md",
+      "source_location": "L58",
+      "_origin": "ast",
+      "id": "specs_oficina_system_connector_spec_plan_test",
+      "community": 639,
+      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "\ud83e\uddea test"
+    },
+    {
       "label": "oi-system-connector/design.md",
       "file_type": "document",
       "source_file": "specs/oi-system-connector/design.md",
@@ -44989,193 +46023,6 @@
       "community": 623,
       "community_name": "Design: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
       "norm_label": "\ud83d\udd27 checklist de implementacao"
-    },
-    {
-      "label": "ui-refactor/design.md",
-      "file_type": "document",
-      "source_file": "specs/ui-refactor/design.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "specs_ui_refactor_design",
-      "community": 635,
-      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
-      "norm_label": "ui-refactor/design.md"
-    },
-    {
-      "label": "Design: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
-      "file_type": "document",
-      "source_file": "specs/ui-refactor/design.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "specs_ui_refactor_design_design_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
-      "community": 635,
-      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
-      "norm_label": "design: refatoracao ui conciliacao (ui-refactor)"
-    },
-    {
-      "label": "Arquitetura T\u00e9cnica",
-      "file_type": "document",
-      "source_file": "specs/ui-refactor/design.md",
-      "source_location": "L3",
-      "_origin": "ast",
-      "id": "specs_ui_refactor_design_arquitetura_t\u00e9cnica",
-      "community": 635,
-      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
-      "norm_label": "arquitetura tecnica"
-    },
-    {
-      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
-      "file_type": "document",
-      "source_file": "specs/ui-refactor/design.md",
-      "source_location": "L8",
-      "_origin": "ast",
-      "id": "specs_ui_refactor_design_componentes_hooks_fun\u00e7\u00f5es",
-      "community": 635,
-      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
-      "norm_label": "componentes / hooks / funcoes"
-    },
-    {
-      "label": "Fluxo de UI",
-      "file_type": "document",
-      "source_file": "specs/ui-refactor/design.md",
-      "source_location": "L24",
-      "_origin": "ast",
-      "id": "specs_ui_refactor_design_fluxo_de_ui",
-      "community": 635,
-      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
-      "norm_label": "fluxo de ui"
-    },
-    {
-      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
-      "file_type": "document",
-      "source_file": "specs/ui-refactor/design.md",
-      "source_location": "L30",
-      "_origin": "ast",
-      "id": "specs_ui_refactor_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
-      "community": 635,
-      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
-      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
-    },
-    {
-      "label": "ui-refactor/proposal.md",
-      "file_type": "document",
-      "source_file": "specs/ui-refactor/proposal.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "specs_ui_refactor_proposal",
-      "community": 630,
-      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
-      "norm_label": "ui-refactor/proposal.md"
-    },
-    {
-      "label": "Proposal: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
-      "file_type": "document",
-      "source_file": "specs/ui-refactor/proposal.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "specs_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
-      "community": 630,
-      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
-      "norm_label": "proposal: refatoracao ui conciliacao (ui-refactor)"
-    },
-    {
-      "label": "Problema",
-      "file_type": "document",
-      "source_file": "specs/ui-refactor/proposal.md",
-      "source_location": "L3",
-      "_origin": "ast",
-      "id": "specs_ui_refactor_proposal_problema",
-      "community": 630,
-      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
-      "norm_label": "problema"
-    },
-    {
-      "label": "Solu\u00e7\u00e3o Proposta",
-      "file_type": "document",
-      "source_file": "specs/ui-refactor/proposal.md",
-      "source_location": "L8",
-      "_origin": "ast",
-      "id": "specs_ui_refactor_proposal_solu\u00e7\u00e3o_proposta",
-      "community": 630,
-      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
-      "norm_label": "solucao proposta"
-    },
-    {
-      "label": "Contratos de Dados",
-      "file_type": "document",
-      "source_file": "specs/ui-refactor/proposal.md",
-      "source_location": "L14",
-      "_origin": "ast",
-      "id": "specs_ui_refactor_proposal_contratos_de_dados",
-      "community": 630,
-      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
-      "norm_label": "contratos de dados"
-    },
-    {
-      "label": "API / Interface",
-      "file_type": "document",
-      "source_file": "specs/ui-refactor/proposal.md",
-      "source_location": "L18",
-      "_origin": "ast",
-      "id": "specs_ui_refactor_proposal_api_interface",
-      "community": 630,
-      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
-      "norm_label": "api / interface"
-    },
-    {
-      "label": "Features Existentes Impactadas",
-      "file_type": "document",
-      "source_file": "specs/ui-refactor/proposal.md",
-      "source_location": "L26",
-      "_origin": "ast",
-      "id": "specs_ui_refactor_proposal_features_existentes_impactadas",
-      "community": 630,
-      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
-      "norm_label": "features existentes impactadas"
-    },
-    {
-      "label": "Risco Principal",
-      "file_type": "document",
-      "source_file": "specs/ui-refactor/proposal.md",
-      "source_location": "L29",
-      "_origin": "ast",
-      "id": "specs_ui_refactor_proposal_risco_principal",
-      "community": 630,
-      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
-      "norm_label": "risco principal"
-    },
-    {
-      "label": "ui-refactor/spec-plan.md",
-      "file_type": "document",
-      "source_file": "specs/ui-refactor/spec-plan.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "specs_ui_refactor_spec_plan",
-      "community": 643,
-      "community_name": "Spec Plan: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
-      "norm_label": "ui-refactor/spec-plan.md"
-    },
-    {
-      "label": "Spec Plan: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
-      "file_type": "document",
-      "source_file": "specs/ui-refactor/spec-plan.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "specs_ui_refactor_spec_plan_spec_plan_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
-      "community": 643,
-      "community_name": "Spec Plan: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
-      "norm_label": "spec plan: refatoracao ui conciliacao (ui-refactor)"
-    },
-    {
-      "label": "Tasks",
-      "file_type": "document",
-      "source_file": "specs/ui-refactor/spec-plan.md",
-      "source_location": "L3",
-      "_origin": "ast",
-      "id": "specs_ui_refactor_spec_plan_tasks",
-      "community": 643,
-      "community_name": "Spec Plan: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
-      "norm_label": "tasks"
     }
   ],
   "links": [
@@ -45666,6 +46513,121 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "bot/src/config/empresas.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_config_empresas",
+      "target": "bot_src_config_empresas_empresaconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/config/empresas.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_config_empresas",
+      "target": "bot_src_config_empresas_empresamap",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/config/empresas.ts",
+      "source_location": "L56",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_config_empresas",
+      "target": "bot_src_config_empresas_listempresas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/config/empresas.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_config_empresas",
+      "target": "bot_src_config_empresas_loadempresamap",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/config/empresas.ts",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_config_empresas",
+      "target": "bot_src_config_empresas_resolveempresa",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server",
+      "target": "bot_src_config_empresas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/config/empresas.ts",
+      "source_location": "L57",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_config_empresas_listempresas",
+      "target": "bot_src_config_empresas_loadempresamap",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/config/empresas.ts",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_config_empresas_resolveempresa",
+      "target": "bot_src_config_empresas_loadempresamap",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server",
+      "target": "bot_src_config_empresas_resolveempresa",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L181",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server_createbotsession",
+      "target": "bot_src_config_empresas_resolveempresa",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "bot/src/runner.ts",
       "source_location": "L25",
       "weight": 1.0,
@@ -46000,11 +46962,121 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L345",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina",
+      "target": "bot_src_scrapers_oficina_agendaitem",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L325",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina",
+      "target": "bot_src_scrapers_oficina_contapagar",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L335",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina",
+      "target": "bot_src_scrapers_oficina_contareceber",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
       "source_location": "L67",
       "weight": 1.0,
       "_origin": "ast",
       "source": "bot_src_scrapers_oficina",
       "target": "bot_src_scrapers_oficina_downloadrelatorioos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L384",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina",
+      "target": "bot_src_scrapers_oficina_ensurecompany",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L420",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina",
+      "target": "bot_src_scrapers_oficina_extractgrid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L553",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina",
+      "target": "bot_src_scrapers_oficina_fetchagenda",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L618",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina",
+      "target": "bot_src_scrapers_oficina_fetchconfigformaspagamento",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L594",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina",
+      "target": "bot_src_scrapers_oficina_fetchconfigstatusos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L456",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina",
+      "target": "bot_src_scrapers_oficina_fetchcontaspagar",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L505",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina",
+      "target": "bot_src_scrapers_oficina_fetchcontasreceber",
       "confidence_score": 1.0
     },
     {
@@ -46027,6 +47099,39 @@
       "_origin": "ast",
       "source": "bot_src_scrapers_oficina",
       "target": "bot_src_scrapers_oficina_fetchosdetailedview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L373",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina",
+      "target": "bot_src_scrapers_oficina_filtrosagenda",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L366",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina",
+      "target": "bot_src_scrapers_oficina_filtrosfinanceiro",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L360",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina",
+      "target": "bot_src_scrapers_oficina_formapagamento",
       "confidence_score": 1.0
     },
     {
@@ -46071,6 +47176,17 @@
       "_origin": "ast",
       "source": "bot_src_scrapers_oficina",
       "target": "bot_src_scrapers_oficina_osrecord",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L355",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina",
+      "target": "bot_src_scrapers_oficina_statusos",
       "confidence_score": 1.0
     },
     {
@@ -46133,7 +47249,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "bot/src/server.ts",
-      "source_location": "L169",
+      "source_location": "L138",
       "weight": 1.0,
       "_origin": "ast",
       "source": "bot_src_server",
@@ -46201,6 +47317,18 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L176",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server_createbotsession",
+      "target": "bot_src_scrapers_oficina_loginoi",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -46253,11 +47381,155 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "bot/src/server.ts",
-      "source_location": "L169",
+      "source_location": "L138",
       "weight": 1.0,
       "_origin": "ast",
       "source": "bot_src_server",
       "target": "bot_src_scrapers_oficina_fetchosdetailedview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server",
+      "target": "bot_src_scrapers_oficina_ensurecompany",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L183",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server_createbotsession",
+      "target": "bot_src_scrapers_oficina_ensurecompany",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L570",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina_fetchagenda",
+      "target": "bot_src_scrapers_oficina_extractgrid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L625",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina_fetchconfigformaspagamento",
+      "target": "bot_src_scrapers_oficina_extractgrid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L601",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina_fetchconfigstatusos",
+      "target": "bot_src_scrapers_oficina_extractgrid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L481",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina_fetchcontaspagar",
+      "target": "bot_src_scrapers_oficina_extractgrid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L529",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina_fetchcontasreceber",
+      "target": "bot_src_scrapers_oficina_extractgrid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server",
+      "target": "bot_src_scrapers_oficina_fetchcontaspagar",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server",
+      "target": "bot_src_scrapers_oficina_fetchcontasreceber",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server",
+      "target": "bot_src_scrapers_oficina_fetchagenda",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server",
+      "target": "bot_src_scrapers_oficina_fetchconfigstatusos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server",
+      "target": "bot_src_scrapers_oficina_fetchconfigformaspagamento",
       "confidence_score": 1.0
     },
     {
@@ -46400,7 +47672,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "bot/src/server.ts",
-      "source_location": "L14",
+      "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
       "source": "bot_src_server",
@@ -46411,7 +47683,18 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "bot/src/server.ts",
-      "source_location": "L188",
+      "source_location": "L158",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server",
+      "target": "bot_src_server_createbotsession",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L320",
       "weight": 1.0,
       "_origin": "ast",
       "source": "bot_src_server",
@@ -46422,7 +47705,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "bot/src/server.ts",
-      "source_location": "L45",
+      "source_location": "L55",
       "weight": 1.0,
       "_origin": "ast",
       "context": "argument",
@@ -46435,7 +47718,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "bot/src/server.ts",
-      "source_location": "L12",
+      "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
       "source": "bot_src_server",
@@ -46447,7 +47730,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "bot/src/server.ts",
-      "source_location": "L12",
+      "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
       "source": "bot_src_server",
@@ -46459,7 +47742,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "bot/src/server.ts",
-      "source_location": "L12",
+      "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
       "source": "bot_src_server",
@@ -46471,7 +47754,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "bot/src/server.ts",
-      "source_location": "L11",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "bot_src_server",
@@ -46483,10 +47766,46 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "bot/src/server.ts",
-      "source_location": "L11",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "bot_src_server",
+      "target": "bot_src_sync_supabaseuploader_getbotcredentials",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L175",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server_createbotsession",
+      "target": "bot_src_session_sessionmanager_loadsession",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L177",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server_createbotsession",
+      "target": "bot_src_session_sessionmanager_savesession",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L159",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server_createbotsession",
       "target": "bot_src_sync_supabaseuploader_getbotcredentials",
       "confidence_score": 1.0
     },
@@ -72873,6 +74192,17 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "supabase/functions/ai-chat/index.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "supabase_functions_ai_chat_index",
+      "target": "supabase_functions_ai_chat_index_corsheaders",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "supabase/functions/mcp-proxy/deno.json",
       "source_location": "L2",
       "weight": 1.0,
@@ -73542,6 +74872,17 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".agent/memory/domain.md",
+      "source_location": "L232",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agent_memory_domain_mem\u00f3ria_modular_dom\u00ednio_concilia\u00e7\u00e3o",
+      "target": "agent_memory_domain_2026_07_29_feature_id_oficina_system_connector",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agent/memory/domain.md",
       "source_location": "L212",
       "weight": 1.0,
       "_origin": "ast",
@@ -73591,6 +74932,17 @@
       "_origin": "ast",
       "source": "agent_memory_infra_mem\u00f3ria_modular_infraestrutura_deploy_vps_dns_redes",
       "target": "agent_memory_infra_2026_07_29_feature_id_bot_agent_alignment",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agent/memory/infra.md",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agent_memory_infra_mem\u00f3ria_modular_infraestrutura_deploy_vps_dns_redes",
+      "target": "agent_memory_infra_2026_07_29_feature_id_oficina_system_connector",
       "confidence_score": 1.0
     },
     {
@@ -77325,6 +78677,17 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "spec/global/features.md",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "spec_global_features_intelig\u00e3ancia_artificial_telemetria",
+      "target": "spec_global_features_ui_refactor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "specs/016-loja-cleanup/design.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -79300,6 +80663,171 @@
       "_origin": "ast",
       "source": "specs_054_dashboard_conciliation_fix_spec_plan",
       "target": "specs_054_dashboard_conciliation_fix_spec_plan_spec_plan_054",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/agent-domain-routing/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_agent_domain_routing_design",
+      "target": "specs_agent_domain_routing_design_design_agent_domain_routing_agent_domain_routing",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/agent-domain-routing/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_agent_domain_routing_design_design_agent_domain_routing_agent_domain_routing",
+      "target": "specs_agent_domain_routing_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/agent-domain-routing/design.md",
+      "source_location": "L58",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_agent_domain_routing_design_design_agent_domain_routing_agent_domain_routing",
+      "target": "specs_agent_domain_routing_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/agent-domain-routing/design.md",
+      "source_location": "L51",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_agent_domain_routing_design_design_agent_domain_routing_agent_domain_routing",
+      "target": "specs_agent_domain_routing_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/agent-domain-routing/design.md",
+      "source_location": "L54",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_agent_domain_routing_design_design_agent_domain_routing_agent_domain_routing",
+      "target": "specs_agent_domain_routing_design_infra_deploy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/agent-domain-routing/design.md",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_agent_domain_routing_design_design_agent_domain_routing_agent_domain_routing",
+      "target": "specs_agent_domain_routing_design_interfaces_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/agent-domain-routing/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_agent_domain_routing_proposal",
+      "target": "specs_agent_domain_routing_proposal_proposal_agent_domain_routing_agent_domain_routing",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/agent-domain-routing/proposal.md",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_agent_domain_routing_proposal_proposal_agent_domain_routing_agent_domain_routing",
+      "target": "specs_agent_domain_routing_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/agent-domain-routing/proposal.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_agent_domain_routing_proposal_proposal_agent_domain_routing_agent_domain_routing",
+      "target": "specs_agent_domain_routing_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/agent-domain-routing/proposal.md",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_agent_domain_routing_proposal_proposal_agent_domain_routing_agent_domain_routing",
+      "target": "specs_agent_domain_routing_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/agent-domain-routing/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_agent_domain_routing_proposal_proposal_agent_domain_routing_agent_domain_routing",
+      "target": "specs_agent_domain_routing_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/agent-domain-routing/proposal.md",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_agent_domain_routing_proposal_proposal_agent_domain_routing_agent_domain_routing",
+      "target": "specs_agent_domain_routing_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/agent-domain-routing/proposal.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_agent_domain_routing_proposal_proposal_agent_domain_routing_agent_domain_routing",
+      "target": "specs_agent_domain_routing_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/agent-domain-routing/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_agent_domain_routing_spec_plan",
+      "target": "specs_agent_domain_routing_spec_plan_spec_plan_agent_domain_routing_agent_domain_routing",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/agent-domain-routing/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_agent_domain_routing_spec_plan_spec_plan_agent_domain_routing_agent_domain_routing",
+      "target": "specs_agent_domain_routing_spec_plan_tasks",
       "confidence_score": 1.0
     },
     {
@@ -94936,6 +96464,160 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "specs/archive/ui-refactor/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_ui_refactor_design",
+      "target": "specs_archive_ui_refactor_design_design_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/ui-refactor/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_ui_refactor_design_design_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_archive_ui_refactor_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/ui-refactor/design.md",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_ui_refactor_design_design_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_archive_ui_refactor_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/ui-refactor/design.md",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_ui_refactor_design_design_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_archive_ui_refactor_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/ui-refactor/design.md",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_ui_refactor_design_design_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_archive_ui_refactor_design_fluxo_de_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/ui-refactor/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_ui_refactor_proposal",
+      "target": "specs_archive_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/ui-refactor/proposal.md",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_archive_ui_refactor_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/ui-refactor/proposal.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_archive_ui_refactor_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/ui-refactor/proposal.md",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_archive_ui_refactor_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/ui-refactor/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_archive_ui_refactor_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/ui-refactor/proposal.md",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_archive_ui_refactor_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/ui-refactor/proposal.md",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_archive_ui_refactor_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/ui-refactor/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_ui_refactor_spec_plan",
+      "target": "specs_archive_ui_refactor_spec_plan_spec_plan_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/ui-refactor/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_ui_refactor_spec_plan_spec_plan_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_archive_ui_refactor_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "specs/archive/vps-mcp-aspnet/design.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -96223,6 +97905,347 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_design",
+      "target": "specs_oficina_system_connector_design_design_oficina_system_connector_oficina_system_connector",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_design_design_oficina_system_connector_oficina_system_connector",
+      "target": "specs_oficina_system_connector_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/design.md",
+      "source_location": "L158",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_design_design_oficina_system_connector_oficina_system_connector",
+      "target": "specs_oficina_system_connector_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/design.md",
+      "source_location": "L100",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_design_design_oficina_system_connector_oficina_system_connector",
+      "target": "specs_oficina_system_connector_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/design.md",
+      "source_location": "L151",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_design_design_oficina_system_connector_oficina_system_connector",
+      "target": "specs_oficina_system_connector_design_infra_deploy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/design.md",
+      "source_location": "L41",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_design_design_oficina_system_connector_oficina_system_connector",
+      "target": "specs_oficina_system_connector_design_interfaces_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/design.md",
+      "source_location": "L131",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_design_design_oficina_system_connector_oficina_system_connector",
+      "target": "specs_oficina_system_connector_design_padr\u00e3o_de_seletores_asp_net_webforms",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/design.md",
+      "source_location": "L102",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_design_componentes_hooks_fun\u00e7\u00f5es",
+      "target": "specs_oficina_system_connector_design_bot_bot_src",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/design.md",
+      "source_location": "L120",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_design_componentes_hooks_fun\u00e7\u00f5es",
+      "target": "specs_oficina_system_connector_design_edge_function_supabase_functions_ai_chat_index_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_proposal",
+      "target": "specs_oficina_system_connector_proposal_proposal_oficina_system_connector_oficina_system_connector",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L56",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_proposal_proposal_oficina_system_connector_oficina_system_connector",
+      "target": "specs_oficina_system_connector_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_proposal_proposal_oficina_system_connector_oficina_system_connector",
+      "target": "specs_oficina_system_connector_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L76",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_proposal_proposal_oficina_system_connector_oficina_system_connector",
+      "target": "specs_oficina_system_connector_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_proposal_proposal_oficina_system_connector_oficina_system_connector",
+      "target": "specs_oficina_system_connector_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L82",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_proposal_proposal_oficina_system_connector_oficina_system_connector",
+      "target": "specs_oficina_system_connector_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_proposal_proposal_oficina_system_connector_oficina_system_connector",
+      "target": "specs_oficina_system_connector_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L40",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_proposal_contratos_de_dados",
+      "target": "specs_oficina_system_connector_proposal_config_de_v\u00ednculo_de_lojas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L50",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_proposal_contratos_de_dados",
+      "target": "specs_oficina_system_connector_proposal_mudan\u00e7a_nos_endpoints_existentes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_proposal_contratos_de_dados",
+      "target": "specs_oficina_system_connector_proposal_novos_endpoints_no_bot_source_externa_playwright",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_proposal_contratos_de_dados",
+      "target": "specs_oficina_system_connector_proposal_tabelas_supabase_envolvidas_s\u00f3_leitura",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L58",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_proposal_api_interface",
+      "target": "specs_oficina_system_connector_proposal_bot_express_bot_src_server_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L70",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_proposal_api_interface",
+      "target": "specs_oficina_system_connector_proposal_edge_function_supabase_functions_ai_chat_index_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/proposal.md",
+      "source_location": "L63",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_proposal_api_interface",
+      "target": "specs_oficina_system_connector_proposal_scrapers_bot_src_scrapers_oficina_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_spec_plan",
+      "target": "specs_oficina_system_connector_spec_plan_spec_plan_oficina_system_connector_oficina_system_connector",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_spec_plan_spec_plan_oficina_system_connector_oficina_system_connector",
+      "target": "specs_oficina_system_connector_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/spec-plan.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_spec_plan_tasks",
+      "target": "specs_oficina_system_connector_spec_plan_bot_novos_endpoints_http",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/spec-plan.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_spec_plan_tasks",
+      "target": "specs_oficina_system_connector_spec_plan_bot_scrapers_novos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/spec-plan.md",
+      "source_location": "L52",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_spec_plan_tasks",
+      "target": "specs_oficina_system_connector_spec_plan_deploy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/spec-plan.md",
+      "source_location": "L35",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_spec_plan_tasks",
+      "target": "specs_oficina_system_connector_spec_plan_edge_function_novas_tools",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/spec-plan.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_spec_plan_tasks",
+      "target": "specs_oficina_system_connector_spec_plan_infra_config_de_lojas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/oficina-system-connector/spec-plan.md",
+      "source_location": "L58",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_oficina_system_connector_spec_plan_tasks",
+      "target": "specs_oficina_system_connector_spec_plan_test",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "specs/oi-system-connector/design.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -96417,162 +98440,8 @@
       "source": "specs_os_query_mcp_arquitetura_e_fluxo",
       "target": "specs_os_query_mcp_testes_pr\u00e9vios_realizados",
       "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/ui-refactor/design.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_ui_refactor_design",
-      "target": "specs_ui_refactor_design_design_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/ui-refactor/design.md",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_ui_refactor_design_design_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
-      "target": "specs_ui_refactor_design_arquitetura_t\u00e9cnica",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/ui-refactor/design.md",
-      "source_location": "L30",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_ui_refactor_design_design_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
-      "target": "specs_ui_refactor_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/ui-refactor/design.md",
-      "source_location": "L8",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_ui_refactor_design_design_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
-      "target": "specs_ui_refactor_design_componentes_hooks_fun\u00e7\u00f5es",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/ui-refactor/design.md",
-      "source_location": "L24",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_ui_refactor_design_design_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
-      "target": "specs_ui_refactor_design_fluxo_de_ui",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/ui-refactor/proposal.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_ui_refactor_proposal",
-      "target": "specs_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/ui-refactor/proposal.md",
-      "source_location": "L18",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
-      "target": "specs_ui_refactor_proposal_api_interface",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/ui-refactor/proposal.md",
-      "source_location": "L14",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
-      "target": "specs_ui_refactor_proposal_contratos_de_dados",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/ui-refactor/proposal.md",
-      "source_location": "L26",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
-      "target": "specs_ui_refactor_proposal_features_existentes_impactadas",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/ui-refactor/proposal.md",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
-      "target": "specs_ui_refactor_proposal_problema",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/ui-refactor/proposal.md",
-      "source_location": "L29",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
-      "target": "specs_ui_refactor_proposal_risco_principal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/ui-refactor/proposal.md",
-      "source_location": "L8",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
-      "target": "specs_ui_refactor_proposal_solu\u00e7\u00e3o_proposta",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/ui-refactor/spec-plan.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_ui_refactor_spec_plan",
-      "target": "specs_ui_refactor_spec_plan_spec_plan_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/ui-refactor/spec-plan.md",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_ui_refactor_spec_plan_spec_plan_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
-      "target": "specs_ui_refactor_spec_plan_tasks",
-      "confidence_score": 1.0
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "8a5d38dc328f22d50e6a3b08fac24a5d6ee7ebbe"
+  "built_at_commit": "213dc82873c6d936c528709a8afbd5142f9d544d"
 }

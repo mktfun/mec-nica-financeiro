@@ -4,4 +4,17 @@
 - Match Triplo (OS vs Maquininha vs Banco) com D+1 [Spec 051].
 - UI de Configurações Remotas de Bot & Telemetria do Playwright (`src/routes/agente.tsx`, `useBotLogs.ts`).
 - Integração MCP Nativa via Tool Calling no Vercel AI SDK (`ai-chat` e `mcp-proxy` edge functions).
-- Bot Standalone com API HTTP em Fastify + `@fastify/cors` para integrações web (Playwright Headless).
+- Bot Standalone com API HTTP em Express + `cors` para integrações web (Playwright Headless).
+- **[oficina-system-connector]** Oficina System Connector: Bot expandido para conector sistêmico completo com 11 endpoints GET:
+  - `GET /api/contas-pagar?loja=<slug>` — Contas a Pagar via Playwright (`wfContaBuscaPagar.aspx`)
+  - `GET /api/contas-receber?loja=<slug>` — Contas a Receber (`wfContaBuscaReceber.aspx`)
+  - `GET /api/agenda?loja=<slug>&data_inicio=&data_fim=` — Agenda (`wfAgendaCalendario.aspx`)
+  - `GET /api/config/status-os?loja=<slug>` — Status de OS configurados
+  - `GET /api/config/formas-pagamento?loja=<slug>` — Formas de pagamento
+  - `GET /api/os/:id?loja=<slug>` — OS com empresa direcionada (backward compatible)
+  - `GET /api/os/detalhe/:id?loja=<slug>` — Detalhe OS com empresa direcionada
+- **[oficina-system-connector]** Mapa de Empresas: `bot/src/config/empresas.json` (10 lojas) + `bot/src/config/empresas.ts` (`resolveEmpresa()` com match por store_id, slug e aliases).
+- **[oficina-system-connector]** `ensureCompany(page, idEmpresaOI)` — helper Playwright para troca de empresa ativa no Oficina via dropdown (`select[id*="ddlEmpresa"]`).
+- **[oficina-system-connector]** `extractGrid(page, hint)` — helper genérico para extração de grids ASP.NET WebForms. Retorna `[]` sem exceção se grid não encontrada.
+- **[oficina-system-connector]** 4 novas tools na Edge Function `ai-chat`: `consulta_contas_pagar_oficina`, `consulta_contas_receber_oficina`, `consulta_agenda_oficina`, `consulta_config_oficina`.
+- **[oficina-system-connector]** System prompt expandido com mapa de 10 lojas + 5 regras de roteamento cognitivo (local-first, loja obrigatória, perguntar antes de chamar tool externa).

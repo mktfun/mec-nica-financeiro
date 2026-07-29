@@ -642,5 +642,12 @@
   "640": "Spec Plan: Oficina Inteligente System Connector (oi-system-connector)",
   "641": "dotenv",
   "642": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
-  "643": "Spec Plan: Refatoração UI Conciliação (ui-refactor)"
+  "643": "Spec Plan: Refatoração UI Conciliação (ui-refactor)",
+  "644": "Proposal: Refatoração UI Conciliação (ui-refactor)",
+  "645": "Design: Agent Domain Routing (agent-domain-routing)",
+  "646": "Design: Refatoração UI Conciliação (ui-refactor)",
+  "647": "router.tsx",
+  "648": "Spec Plan: Agent Domain Routing (agent-domain-routing)",
+  "649": "Spec Plan: Refatoração UI Conciliação (ui-refactor)",
+  "650": "class-variance-authority"
 }
