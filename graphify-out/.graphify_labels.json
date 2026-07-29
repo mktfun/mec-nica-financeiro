@@ -633,5 +633,12 @@
   "631": "@cloudflare/vite-plugin",
   "632": "@radix-ui/react-avatar",
   "633": "ssh2",
-  "634": "vite-tsconfig-paths"
+  "634": "vite-tsconfig-paths",
+  "635": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
+  "636": "Proposal: Oficina Inteligente System Connector (oi-system-connector)",
+  "637": "Design: Oficina Inteligente System Connector (oi-system-connector)",
+  "638": "Spec Plan: Ordem de Serviço Bot Scraper (vps-mcp-aspnet)",
+  "639": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
+  "640": "Spec Plan: Oficina Inteligente System Connector (oi-system-connector)",
+  "641": "dotenv"
 }

@@ -631,6 +631,28 @@
       "norm_label": "downloadrelatorioos()"
     },
     {
+      "label": "OSRecord",
+      "file_type": "code",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L102",
+      "_origin": "ast",
+      "id": "bot_src_scrapers_oficina_osrecord",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "osrecord"
+    },
+    {
+      "label": "fetchOSByNumber()",
+      "file_type": "code",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L112",
+      "_origin": "ast",
+      "id": "bot_src_scrapers_oficina_fetchosbynumber",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "fetchosbynumber()"
+    },
+    {
       "label": "TODO: Navegar para o menu de Relat\u00f3rios",
       "file_type": "rationale",
       "source_file": "bot/src/scrapers/oficina.ts",
@@ -777,7 +799,7 @@
       "label": "app",
       "file_type": "code",
       "source_file": "bot/src/server.ts",
-      "source_location": "L10",
+      "source_location": "L14",
       "_origin": "ast",
       "id": "bot_src_server_app",
       "community": 6,
@@ -788,7 +810,7 @@
       "label": "requireApiKey()",
       "file_type": "code",
       "source_file": "bot/src/server.ts",
-      "source_location": "L17",
+      "source_location": "L21",
       "_origin": "ast",
       "id": "bot_src_server_requireapikey",
       "community": 6,
@@ -799,7 +821,7 @@
       "label": "PORT",
       "file_type": "code",
       "source_file": "bot/src/server.ts",
-      "source_location": "L78",
+      "source_location": "L135",
       "_origin": "ast",
       "id": "bot_src_server_port",
       "community": 6,
@@ -1003,6 +1025,28 @@
       "community": 219,
       "community_name": "resilience.test.ts",
       "norm_label": "synctransactions()"
+    },
+    {
+      "label": "test-os-query.ts",
+      "file_type": "code",
+      "source_file": "bot/src/tests/test-os-query.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "bot_src_tests_test_os_query",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "test-os-query.ts"
+    },
+    {
+      "label": "testOsQuery()",
+      "file_type": "code",
+      "source_file": "bot/src/tests/test-os-query.ts",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "bot_src_tests_test_os_query_testosquery",
+      "community": 6,
+      "community_name": "runner.ts",
+      "norm_label": "testosquery()"
     },
     {
       "label": "bot/tsconfig.json",
@@ -2078,8 +2122,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "package_dependencies_cloudflare_vite_plugin",
-      "community": 28,
-      "community_name": "dependencies",
+      "community": 631,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "@cloudflare/vite-plugin"
     },
     {
@@ -2089,8 +2133,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "cloudflare_vite_plugin",
-      "community": 28,
-      "community_name": "dependencies",
+      "community": 631,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "@cloudflare/vite-plugin"
     },
     {
@@ -2188,8 +2232,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "package_dependencies_radix_ui_react_avatar",
-      "community": 28,
-      "community_name": "dependencies",
+      "community": 632,
+      "community_name": "@radix-ui/react-avatar",
       "norm_label": "@radix-ui/react-avatar"
     },
     {
@@ -2199,8 +2243,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "radix_ui_react_avatar",
-      "community": 28,
-      "community_name": "dependencies",
+      "community": 632,
+      "community_name": "@radix-ui/react-avatar",
       "norm_label": "@radix-ui/react-avatar"
     },
     {
@@ -2364,8 +2408,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "package_dependencies_radix_ui_react_menubar",
-      "community": 514,
-      "community_name": "@radix-ui/react-menubar",
+      "community": 28,
+      "community_name": "dependencies",
       "norm_label": "@radix-ui/react-menubar"
     },
     {
@@ -2375,8 +2419,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "radix_ui_react_menubar",
-      "community": 514,
-      "community_name": "@radix-ui/react-menubar",
+      "community": 28,
+      "community_name": "dependencies",
       "norm_label": "@radix-ui/react-menubar"
     },
     {
@@ -2936,8 +2980,8 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "package_dependencies_dotenv",
-      "community": 504,
-      "community_name": "dotenv",
+      "community": 28,
+      "community_name": "dependencies",
       "norm_label": "dotenv"
     },
     {
@@ -2947,8 +2991,8 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "package_json_dotenv",
-      "community": 504,
-      "community_name": "dotenv",
+      "community": 28,
+      "community_name": "dependencies",
       "norm_label": "dotenv"
     },
     {
@@ -3260,10 +3304,32 @@
       "norm_label": "sonner"
     },
     {
-      "label": "tailwind-merge",
+      "label": "ssh2",
       "file_type": "code",
       "source_file": "package.json",
       "source_location": "L69",
+      "_origin": "ast",
+      "id": "package_dependencies_ssh2",
+      "community": 633,
+      "community_name": "ssh2",
+      "norm_label": "ssh2"
+    },
+    {
+      "label": "ssh2",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L69",
+      "_origin": "ast",
+      "id": "ssh2",
+      "community": 633,
+      "community_name": "ssh2",
+      "norm_label": "ssh2"
+    },
+    {
+      "label": "tailwind-merge",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L70",
       "_origin": "ast",
       "id": "package_dependencies_tailwind_merge",
       "community": 535,
@@ -3274,7 +3340,7 @@
       "label": "tailwind-merge",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L69",
+      "source_location": "L70",
       "_origin": "ast",
       "id": "tailwind_merge",
       "community": 535,
@@ -3285,7 +3351,7 @@
       "label": "tailwindcss",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L70",
+      "source_location": "L71",
       "_origin": "ast",
       "id": "package_dependencies_tailwindcss",
       "community": 536,
@@ -3296,7 +3362,7 @@
       "label": "tailwindcss",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L70",
+      "source_location": "L71",
       "_origin": "ast",
       "id": "tailwindcss",
       "community": 536,
@@ -3307,29 +3373,29 @@
       "label": "tw-animate-css",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L71",
+      "source_location": "L72",
       "_origin": "ast",
       "id": "package_dependencies_tw_animate_css",
-      "community": 542,
-      "community_name": "tw-animate-css",
+      "community": 28,
+      "community_name": "dependencies",
       "norm_label": "tw-animate-css"
     },
     {
       "label": "tw-animate-css",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L71",
+      "source_location": "L72",
       "_origin": "ast",
       "id": "tw_animate_css",
-      "community": 542,
-      "community_name": "tw-animate-css",
+      "community": 28,
+      "community_name": "dependencies",
       "norm_label": "tw-animate-css"
     },
     {
       "label": "vaul",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L72",
+      "source_location": "L73",
       "_origin": "ast",
       "id": "package_dependencies_vaul",
       "community": 544,
@@ -3340,7 +3406,7 @@
       "label": "vaul",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L72",
+      "source_location": "L73",
       "_origin": "ast",
       "id": "vaul",
       "community": 544,
@@ -3351,29 +3417,29 @@
       "label": "vite-tsconfig-paths",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L73",
+      "source_location": "L74",
       "_origin": "ast",
       "id": "package_dependencies_vite_tsconfig_paths",
-      "community": 28,
-      "community_name": "dependencies",
+      "community": 634,
+      "community_name": "vite-tsconfig-paths",
       "norm_label": "vite-tsconfig-paths"
     },
     {
       "label": "vite-tsconfig-paths",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L73",
+      "source_location": "L74",
       "_origin": "ast",
       "id": "vite_tsconfig_paths",
-      "community": 28,
-      "community_name": "dependencies",
+      "community": 634,
+      "community_name": "vite-tsconfig-paths",
       "norm_label": "vite-tsconfig-paths"
     },
     {
       "label": "xlsx",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L74",
+      "source_location": "L75",
       "_origin": "ast",
       "id": "package_dependencies_xlsx",
       "community": 545,
@@ -3384,7 +3450,7 @@
       "label": "xlsx",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L74",
+      "source_location": "L75",
       "_origin": "ast",
       "id": "package_json_xlsx",
       "community": 545,
@@ -3395,7 +3461,7 @@
       "label": "zod",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L75",
+      "source_location": "L76",
       "_origin": "ast",
       "id": "package_dependencies_zod",
       "community": 546,
@@ -3406,7 +3472,7 @@
       "label": "zod",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L75",
+      "source_location": "L76",
       "_origin": "ast",
       "id": "zod",
       "community": 546,
@@ -3417,7 +3483,7 @@
       "label": "devDependencies",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L77",
+      "source_location": "L78",
       "_origin": "ast",
       "id": "package_devdependencies",
       "community": 1,
@@ -3428,7 +3494,7 @@
       "label": "@eslint/js",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L78",
+      "source_location": "L79",
       "_origin": "ast",
       "id": "package_devdependencies_eslint_js",
       "community": 1,
@@ -3439,7 +3505,7 @@
       "label": "@eslint/js",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L78",
+      "source_location": "L79",
       "_origin": "ast",
       "id": "eslint_js",
       "community": 1,
@@ -3450,7 +3516,7 @@
       "label": "@lovable.dev/vite-tanstack-config",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L79",
+      "source_location": "L80",
       "_origin": "ast",
       "id": "package_devdependencies_lovable_dev_vite_tanstack_config",
       "community": 1,
@@ -3461,7 +3527,7 @@
       "label": "@lovable.dev/vite-tanstack-config",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L79",
+      "source_location": "L80",
       "_origin": "ast",
       "id": "lovable_dev_vite_tanstack_config",
       "community": 1,
@@ -3472,7 +3538,7 @@
       "label": "@types/node",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L80",
+      "source_location": "L81",
       "_origin": "ast",
       "id": "package_devdependencies_types_node",
       "community": 1,
@@ -3483,7 +3549,7 @@
       "label": "@types/node",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L80",
+      "source_location": "L81",
       "_origin": "ast",
       "id": "package_json_types_node",
       "community": 1,
@@ -3494,7 +3560,7 @@
       "label": "@types/react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L81",
+      "source_location": "L82",
       "_origin": "ast",
       "id": "package_devdependencies_types_react",
       "community": 1,
@@ -3505,7 +3571,7 @@
       "label": "@types/react",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L81",
+      "source_location": "L82",
       "_origin": "ast",
       "id": "types_react",
       "community": 1,
@@ -3516,7 +3582,7 @@
       "label": "@types/react-dom",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L82",
+      "source_location": "L83",
       "_origin": "ast",
       "id": "package_devdependencies_types_react_dom",
       "community": 1,
@@ -3527,7 +3593,7 @@
       "label": "@types/react-dom",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L82",
+      "source_location": "L83",
       "_origin": "ast",
       "id": "types_react_dom",
       "community": 1,
@@ -3538,7 +3604,7 @@
       "label": "@vitejs/plugin-react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L83",
+      "source_location": "L84",
       "_origin": "ast",
       "id": "package_devdependencies_vitejs_plugin_react",
       "community": 1,
@@ -3549,7 +3615,7 @@
       "label": "@vitejs/plugin-react",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L83",
+      "source_location": "L84",
       "_origin": "ast",
       "id": "vitejs_plugin_react",
       "community": 1,
@@ -3560,7 +3626,7 @@
       "label": "eslint",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L84",
+      "source_location": "L85",
       "_origin": "ast",
       "id": "package_devdependencies_eslint",
       "community": 1,
@@ -3571,7 +3637,7 @@
       "label": "eslint",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L84",
+      "source_location": "L85",
       "_origin": "ast",
       "id": "eslint",
       "community": 1,
@@ -3582,7 +3648,7 @@
       "label": "eslint-config-prettier",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L85",
+      "source_location": "L86",
       "_origin": "ast",
       "id": "package_devdependencies_eslint_config_prettier",
       "community": 1,
@@ -3593,7 +3659,7 @@
       "label": "eslint-config-prettier",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L85",
+      "source_location": "L86",
       "_origin": "ast",
       "id": "eslint_config_prettier",
       "community": 1,
@@ -3604,7 +3670,7 @@
       "label": "eslint-plugin-prettier",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L86",
+      "source_location": "L87",
       "_origin": "ast",
       "id": "package_devdependencies_eslint_plugin_prettier",
       "community": 1,
@@ -3615,7 +3681,7 @@
       "label": "eslint-plugin-prettier",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L86",
+      "source_location": "L87",
       "_origin": "ast",
       "id": "eslint_plugin_prettier",
       "community": 1,
@@ -3626,7 +3692,7 @@
       "label": "eslint-plugin-react-hooks",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L87",
+      "source_location": "L88",
       "_origin": "ast",
       "id": "package_devdependencies_eslint_plugin_react_hooks",
       "community": 1,
@@ -3637,7 +3703,7 @@
       "label": "eslint-plugin-react-hooks",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L87",
+      "source_location": "L88",
       "_origin": "ast",
       "id": "eslint_plugin_react_hooks",
       "community": 1,
@@ -3648,7 +3714,7 @@
       "label": "eslint-plugin-react-refresh",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L88",
+      "source_location": "L89",
       "_origin": "ast",
       "id": "package_devdependencies_eslint_plugin_react_refresh",
       "community": 1,
@@ -3659,7 +3725,7 @@
       "label": "eslint-plugin-react-refresh",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L88",
+      "source_location": "L89",
       "_origin": "ast",
       "id": "eslint_plugin_react_refresh",
       "community": 1,
@@ -3670,7 +3736,7 @@
       "label": "globals",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L89",
+      "source_location": "L90",
       "_origin": "ast",
       "id": "package_devdependencies_globals",
       "community": 1,
@@ -3681,7 +3747,7 @@
       "label": "globals",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L89",
+      "source_location": "L90",
       "_origin": "ast",
       "id": "globals",
       "community": 1,
@@ -3692,7 +3758,7 @@
       "label": "prettier",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L90",
+      "source_location": "L91",
       "_origin": "ast",
       "id": "package_devdependencies_prettier",
       "community": 1,
@@ -3703,7 +3769,7 @@
       "label": "prettier",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L90",
+      "source_location": "L91",
       "_origin": "ast",
       "id": "prettier",
       "community": 1,
@@ -3714,7 +3780,7 @@
       "label": "typescript",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L91",
+      "source_location": "L92",
       "_origin": "ast",
       "id": "package_devdependencies_typescript",
       "community": 1,
@@ -3725,7 +3791,7 @@
       "label": "typescript",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L91",
+      "source_location": "L92",
       "_origin": "ast",
       "id": "package_json_typescript",
       "community": 1,
@@ -3736,7 +3802,7 @@
       "label": "typescript-eslint",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L92",
+      "source_location": "L93",
       "_origin": "ast",
       "id": "package_devdependencies_typescript_eslint",
       "community": 1,
@@ -3747,7 +3813,7 @@
       "label": "typescript-eslint",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L92",
+      "source_location": "L93",
       "_origin": "ast",
       "id": "typescript_eslint",
       "community": 1,
@@ -3758,7 +3824,7 @@
       "label": "vite",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L93",
+      "source_location": "L94",
       "_origin": "ast",
       "id": "package_devdependencies_vite",
       "community": 1,
@@ -3769,7 +3835,7 @@
       "label": "vite",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L93",
+      "source_location": "L94",
       "_origin": "ast",
       "id": "vite",
       "community": 1,
@@ -11018,8 +11084,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_chat_messagelist",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "messagelist.tsx"
     },
     {
@@ -11029,8 +11095,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_chat_messagelist_message",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "message"
     },
     {
@@ -11040,8 +11106,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_components_chat_messagelist_messagelist",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "messagelist()"
     },
     {
@@ -11414,8 +11480,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel",
-      "community": 36,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "modulo1saldopanel.tsx"
     },
     {
@@ -11425,8 +11491,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel_modulo1saldopanelprops",
-      "community": 36,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "modulo1saldopanelprops"
     },
     {
@@ -11436,8 +11502,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel_modulo1saldopanel",
-      "community": 36,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "modulo1saldopanel()"
     },
     {
@@ -11546,8 +11612,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsextratotable",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "redevsextratotable.tsx"
     },
     {
@@ -11557,8 +11623,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsextratotable_redevsextratotableprops",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "redevsextratotableprops"
     },
     {
@@ -11568,8 +11634,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsextratotable_redevsextratotable",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "redevsextratotable()"
     },
     {
@@ -11601,8 +11667,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel",
-      "community": 36,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "resumodiapanel.tsx"
     },
     {
@@ -11612,8 +11678,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel_resumodiapanelprops",
-      "community": 36,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "resumodiapanelprops"
     },
     {
@@ -11623,8 +11689,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel_resumodiapanel",
-      "community": 36,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "resumodiapanel()"
     },
     {
@@ -11634,8 +11700,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog",
-      "community": 477,
-      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "alertresolvedialog.tsx"
     },
     {
@@ -11645,8 +11711,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog_alertresolvedialogprops",
-      "community": 477,
-      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "alertresolvedialogprops"
     },
     {
@@ -11656,8 +11722,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog_alertresolvedialog",
-      "community": 477,
-      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "alertresolvedialog()"
     },
     {
@@ -11689,8 +11755,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_cashflowchart",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "cashflowchart.tsx"
     },
     {
@@ -11700,8 +11766,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_dashboard_cashflowchart_cashflowchart",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "cashflowchart()"
     },
     {
@@ -11711,8 +11777,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "herobalance.tsx"
     },
     {
@@ -11722,8 +11788,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance_herobalance",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "herobalance()"
     },
     {
@@ -11733,8 +11799,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "motorstatus.tsx"
     },
     {
@@ -11744,8 +11810,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus_motorstatus",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "motorstatus()"
     },
     {
@@ -11755,8 +11821,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog",
-      "community": 477,
-      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "newtransactiondialog.tsx"
     },
     {
@@ -11766,8 +11832,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialogprops",
-      "community": 477,
-      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "newtransactiondialogprops"
     },
     {
@@ -11777,8 +11843,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialog",
-      "community": 477,
-      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "newtransactiondialog()"
     },
     {
@@ -11788,8 +11854,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_rationale_17",
-      "community": 477,
-      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "todo: implement transaction creation"
     },
     {
@@ -11843,8 +11909,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_recentactivity",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "recentactivity.tsx"
     },
     {
@@ -11854,8 +11920,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_components_dashboard_recentactivity_recentactivity",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "recentactivity()"
     },
     {
@@ -12074,8 +12140,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_appshell",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "appshell.tsx"
     },
     {
@@ -12085,8 +12151,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_layout_appshell_appshell",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "appshell()"
     },
     {
@@ -12096,8 +12162,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_bottomnav",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "bottomnav.tsx"
     },
     {
@@ -12107,8 +12173,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_layout_bottomnav_navitems",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "navitems"
     },
     {
@@ -12118,8 +12184,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_components_layout_bottomnav_bottomnav",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "bottomnav()"
     },
     {
@@ -12129,8 +12195,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_sidebar",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "sidebar.tsx"
     },
     {
@@ -12140,8 +12206,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_layout_sidebar_navitems",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "navitems"
     },
     {
@@ -12151,8 +12217,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_components_layout_sidebar_sidebar",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "sidebar()"
     },
     {
@@ -12162,8 +12228,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_topbar",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "topbar.tsx"
     },
     {
@@ -12173,8 +12239,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_layout_topbar_topbar",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "topbar()"
     },
     {
@@ -12184,8 +12250,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_animatednumber",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "animatednumber.tsx"
     },
     {
@@ -12195,8 +12261,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumberprops",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "animatednumberprops"
     },
     {
@@ -12206,8 +12272,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumber",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "animatednumber()"
     },
     {
@@ -12250,8 +12316,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_button",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "button.tsx"
     },
     {
@@ -12261,8 +12327,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_ui_button_buttonprops",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "buttonprops"
     },
     {
@@ -12272,8 +12338,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_ui_button_button",
-      "community": 477,
-      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "button()"
     },
     {
@@ -12316,8 +12382,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_input",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "input.tsx"
     },
     {
@@ -12327,8 +12393,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_ui_input_inputprops",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "inputprops"
     },
     {
@@ -12338,8 +12404,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_ui_input_input",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "input"
     },
     {
@@ -12382,8 +12448,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_modal",
-      "community": 477,
-      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "modal.tsx"
     },
     {
@@ -12393,8 +12459,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_ui_modal_modalprops",
-      "community": 477,
-      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "modalprops"
     },
     {
@@ -12404,8 +12470,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_components_ui_modal_modal",
-      "community": 477,
-      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "modal()"
     },
     {
@@ -12415,8 +12481,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_themetoggle",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "themetoggle.tsx"
     },
     {
@@ -12426,8 +12492,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_components_ui_themetoggle_themetoggle",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "themetoggle()"
     },
     {
@@ -12569,8 +12635,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usealerts",
-      "community": 477,
-      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "usealerts.ts"
     },
     {
@@ -12580,8 +12646,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_usealerts_usealerts",
-      "community": 477,
-      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "usealerts()"
     },
     {
@@ -12591,8 +12657,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_hooks_usealerts_useallalerts",
-      "community": 477,
-      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "useallalerts()"
     },
     {
@@ -12602,8 +12668,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "src_hooks_usealerts_useresolvealert",
-      "community": 477,
-      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "useresolvealert()"
     },
     {
@@ -12613,8 +12679,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useauth",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 501,
+      "community_name": "useAuth.ts",
       "norm_label": "useauth.ts"
     },
     {
@@ -12624,8 +12690,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_hooks_useauth_listeners",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 501,
+      "community_name": "useAuth.ts",
       "norm_label": "listeners"
     },
     {
@@ -12635,8 +12701,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_hooks_useauth_usesession",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "usesession()"
     },
     {
@@ -12657,8 +12723,8 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "src_hooks_useauth_uselogout",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "uselogout()"
     },
     {
@@ -12690,8 +12756,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "usebotcredentials.ts"
     },
     {
@@ -12701,8 +12767,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_botcredentialrow",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "botcredentialrow"
     },
     {
@@ -12712,8 +12778,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usebotcredentials",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "usebotcredentials()"
     },
     {
@@ -12723,8 +12789,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_useupdatebotcredential",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "useupdatebotcredential()"
     },
     {
@@ -12734,8 +12800,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usemarkcredentialvalid",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "usemarkcredentialvalid()"
     },
     {
@@ -12767,8 +12833,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotlogs",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "usebotlogs()"
     },
     {
@@ -12811,8 +12877,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_hooks_usebotruns_usebotrunhistory",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "usebotrunhistory()"
     },
     {
@@ -12899,8 +12965,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "useconciliacao.ts"
     },
     {
@@ -12910,8 +12976,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_isvaliduuid",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "isvaliduuid()"
     },
     {
@@ -12921,8 +12987,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_conciliacaoresumo",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "conciliacaoresumo"
     },
     {
@@ -12976,8 +13042,8 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesystemtransactions",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "usesystemtransactions()"
     },
     {
@@ -12987,8 +13053,8 @@
       "source_location": "L139",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usedailyreconciliationdelta",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "usedailyreconciliationdelta()"
     },
     {
@@ -12998,8 +13064,8 @@
       "source_location": "L175",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_findexactsubsetmatch",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "findexactsubsetmatch()"
     },
     {
@@ -13042,8 +13108,8 @@
       "source_location": "L644",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useresolveunmatchedalert",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "useresolveunmatchedalert()"
     },
     {
@@ -13053,8 +13119,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot",
-      "community": 36,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "usedailysnapshot.ts"
     },
     {
@@ -13064,8 +13130,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_dailysnapshotrow",
-      "community": 36,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "dailysnapshotrow"
     },
     {
@@ -13075,8 +13141,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usedailysnapshot",
-      "community": 36,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "usedailysnapshot()"
     },
     {
@@ -13086,8 +13152,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usepreviousdaysnapshot",
-      "community": 36,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "usepreviousdaysnapshot()"
     },
     {
@@ -13097,8 +13163,8 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usesavedailysnapshot",
-      "community": 36,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "usesavedailysnapshot()"
     },
     {
@@ -13361,8 +13427,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usepatio",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "usepatio.ts"
     },
     {
@@ -13372,8 +13438,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_usepatio_usepatioos",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "usepatioos()"
     },
     {
@@ -13383,8 +13449,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_hooks_usepatio_useupdatepatioos",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "useupdatepatioos()"
     },
     {
@@ -13405,8 +13471,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_userecebiveis",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "userecebiveis()"
     },
     {
@@ -13493,8 +13559,8 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "src_hooks_usestores_usedeletestore",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "usedeletestore()"
     },
     {
@@ -13504,8 +13570,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usetransactions",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "usetransactions.ts"
     },
     {
@@ -13515,8 +13581,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactions",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "usetransactions()"
     },
     {
@@ -13526,8 +13592,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactionsbystore",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "usetransactionsbystore()"
     },
     {
@@ -13537,8 +13603,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedashboardsummary",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "usedashboardsummary()"
     },
     {
@@ -13548,8 +13614,8 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usecashflow",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "usecashflow()"
     },
     {
@@ -13559,8 +13625,8 @@
       "source_location": "L157",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useextrato",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "useextrato()"
     },
     {
@@ -13592,8 +13658,8 @@
       "source_location": "L259",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useweeklyrevenuetrend",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "useweeklyrevenuetrend()"
     },
     {
@@ -13669,8 +13735,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher",
-      "community": 624,
-      "community_name": "start.ts",
+      "community": 612,
+      "community_name": "router.tsx",
       "norm_label": "auth-attacher.ts"
     },
     {
@@ -13680,8 +13746,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher_attachsupabaseauth",
-      "community": 624,
-      "community_name": "start.ts",
+      "community": 612,
+      "community_name": "router.tsx",
       "norm_label": "attachsupabaseauth"
     },
     {
@@ -14351,8 +14417,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_modulo1calculations",
-      "community": 36,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "modulo1calculations.ts"
     },
     {
@@ -14362,8 +14428,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_storesaldostate",
-      "community": 36,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "storesaldostate"
     },
     {
@@ -14373,8 +14439,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_modulo1calculated",
-      "community": 36,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "modulo1calculated"
     },
     {
@@ -14384,8 +14450,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_calculatemodulo1saldo",
-      "community": 36,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "calculatemodulo1saldo()"
     },
     {
@@ -14747,8 +14813,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "src_lib_supabase_alertrow",
-      "community": 477,
-      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "alertrow"
     },
     {
@@ -14758,8 +14824,8 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "src_lib_supabase_transactionrow",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "transactionrow"
     },
     {
@@ -14780,8 +14846,8 @@
       "source_location": "L91",
       "_origin": "ast",
       "id": "src_lib_supabase_patioosrow",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "patioosrow"
     },
     {
@@ -14835,8 +14901,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_utils",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "utils.ts"
     },
     {
@@ -14846,8 +14912,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_lib_utils_cn",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "cn()"
     },
     {
@@ -14857,8 +14923,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_lib_utils_getdefaultdate",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "getdefaultdate()"
     },
     {
@@ -14868,8 +14934,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_lib_utils_formatcurrency",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "formatcurrency()"
     },
     {
@@ -15143,8 +15209,8 @@
       "source_location": "L255",
       "_origin": "ast",
       "id": "src_routetree_gen_fileroutesbypath",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "fileroutesbypath"
     },
     {
@@ -15154,8 +15220,8 @@
       "source_location": "L397",
       "_origin": "ast",
       "id": "src_routetree_gen_routetree",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 624,
+      "community_name": "start.ts",
       "norm_label": "routetree"
     },
     {
@@ -15176,8 +15242,8 @@
       "source_location": "L404",
       "_origin": "ast",
       "id": "src_routetree_gen_register",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 624,
+      "community_name": "start.ts",
       "norm_label": "register"
     },
     {
@@ -15187,8 +15253,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_router",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 624,
+      "community_name": "start.ts",
       "norm_label": "router.tsx"
     },
     {
@@ -15198,8 +15264,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_router_getrouter",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 624,
+      "community_name": "start.ts",
       "norm_label": "getrouter()"
     },
     {
@@ -15286,8 +15352,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_routes_agente_route",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15308,8 +15374,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_alertas",
-      "community": 477,
-      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "alertas.tsx"
     },
     {
@@ -15319,8 +15385,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_routes_alertas_route",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15330,8 +15396,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_routes_alertas_filtertype",
-      "community": 477,
-      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "filtertype"
     },
     {
@@ -15341,8 +15407,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_routes_alertas_alertaspage",
-      "community": 477,
-      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "alertaspage()"
     },
     {
@@ -15363,8 +15429,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_route",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15451,8 +15517,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_route",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15517,8 +15583,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_conciliacao_index_route",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15539,8 +15605,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_configuracoes",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "configuracoes.tsx"
     },
     {
@@ -15550,8 +15616,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_routes_configuracoes_route",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15561,8 +15627,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_routes_configuracoes_configuracoespage",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "configuracoespage()"
     },
     {
@@ -15583,8 +15649,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_historico",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "historico.tsx"
     },
     {
@@ -15594,8 +15660,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_historico_route",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15605,8 +15671,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_routes_historico_getdefaultperiod",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "getdefaultperiod()"
     },
     {
@@ -15616,8 +15682,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "src_routes_historico_formatdate",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "formatdate()"
     },
     {
@@ -15627,8 +15693,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "src_routes_historico_geticonformethod",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "geticonformethod()"
     },
     {
@@ -15638,8 +15704,8 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "src_routes_historico_historicopage",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "historicopage()"
     },
     {
@@ -15660,8 +15726,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_route",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15715,8 +15781,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_routes_importacoes_route",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15759,8 +15825,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_routes_importar_os_route",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15803,8 +15869,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_index",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "index.tsx"
     },
     {
@@ -15814,8 +15880,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_routes_index_route",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15825,8 +15891,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_index_dashboardpage",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 3,
+      "community_name": "useConciliacao.ts",
       "norm_label": "dashboardpage()"
     },
     {
@@ -15880,8 +15946,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_route",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15946,8 +16012,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_routes_lojas_route",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -15968,8 +16034,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_patio",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "patio.tsx"
     },
     {
@@ -15979,8 +16045,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_routes_patio_historychange",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "historychange"
     },
     {
@@ -15990,8 +16056,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_patio_historylog",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "historylog"
     },
     {
@@ -16001,8 +16067,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_routes_patio_route",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -16012,8 +16078,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_routes_patio_filtertab",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "filtertab"
     },
     {
@@ -16023,8 +16089,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_routes_patio_getoseffectivevalues",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "getoseffectivevalues()"
     },
     {
@@ -16034,8 +16100,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "src_routes_patio_patiopage",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "patiopage()"
     },
     {
@@ -16045,8 +16111,8 @@
       "source_location": "L518",
       "_origin": "ast",
       "id": "src_routes_patio_tabbtn",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "tabbtn()"
     },
     {
@@ -16144,8 +16210,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_recebiveis",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "recebiveis.tsx"
     },
     {
@@ -16155,8 +16221,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_routes_recebiveis_route",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -16166,8 +16232,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_routes_recebiveis_filtertab",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "filtertab"
     },
     {
@@ -16177,8 +16243,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_routes_recebiveis_recebiveispage",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "recebiveispage()"
     },
     {
@@ -16188,8 +16254,8 @@
       "source_location": "L291",
       "_origin": "ast",
       "id": "src_routes_recebiveis_tabbtn",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "tabbtn()"
     },
     {
@@ -16276,8 +16342,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_start",
-      "community": 624,
-      "community_name": "start.ts",
+      "community": 612,
+      "community_name": "router.tsx",
       "norm_label": "start.ts"
     },
     {
@@ -16287,8 +16353,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_start_errormiddleware",
-      "community": 624,
-      "community_name": "start.ts",
+      "community": 612,
+      "community_name": "router.tsx",
       "norm_label": "errormiddleware"
     },
     {
@@ -16298,9 +16364,64 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_start_startinstance",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 624,
+      "community_name": "start.ts",
       "norm_label": "startinstance"
+    },
+    {
+      "label": "ssh-test.cjs",
+      "file_type": "code",
+      "source_file": "ssh-test.cjs",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ssh_test",
+      "community": 626,
+      "community_name": "Spec Plan: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "norm_label": "ssh-test.cjs"
+    },
+    {
+      "label": "{ Client }",
+      "file_type": "code",
+      "source_file": "ssh-test.cjs",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ssh_test_client",
+      "community": 626,
+      "community_name": "Spec Plan: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "norm_label": "{ client }"
+    },
+    {
+      "label": "fs",
+      "file_type": "code",
+      "source_file": "ssh-test.cjs",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "ssh_test_fs",
+      "community": 626,
+      "community_name": "Spec Plan: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "norm_label": "fs"
+    },
+    {
+      "label": "path",
+      "file_type": "code",
+      "source_file": "ssh-test.cjs",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "ssh_test_path",
+      "community": 626,
+      "community_name": "Spec Plan: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "norm_label": "path"
+    },
+    {
+      "label": "conn",
+      "file_type": "code",
+      "source_file": "ssh-test.cjs",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "ssh_test_conn",
+      "community": 626,
+      "community_name": "Spec Plan: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "norm_label": "conn"
     },
     {
       "label": "sum.cjs",
@@ -17148,6 +17269,17 @@
       "community": 27,
       "community_name": "\ud83e\udde0 Mem\u00f3ria Modular: Dom\u00ednio & Concilia\u00e7\u00e3o",
       "norm_label": "[2026-07-24] \u2014 feature id: conciliacao-baixa-manual-override"
+    },
+    {
+      "label": "[2026-07-29] \u2014 Feature ID: vps-mcp-aspnet",
+      "file_type": "document",
+      "source_file": ".agent/memory/domain.md",
+      "source_location": "L212",
+      "_origin": "ast",
+      "id": "agent_memory_domain_2026_07_29_feature_id_vps_mcp_aspnet",
+      "community": 27,
+      "community_name": "\ud83e\udde0 Mem\u00f3ria Modular: Dom\u00ednio & Concilia\u00e7\u00e3o",
+      "norm_label": "[2026-07-29] \u2014 feature id: vps-mcp-aspnet"
     },
     {
       "label": "infra.md",
@@ -21671,37 +21803,37 @@
       "norm_label": "spec/global/features.md"
     },
     {
-      "label": "Features e M\u00f3dulos Existentes (Mapa Vivo Anti-Duplica\u00e7\u00e3o)",
+      "label": "Features e M\u00c3\u00b3dulos Existentes (Mapa Vivo Anti-Duplica\u00c3\u00a7\u00c3\u00a3o)",
       "file_type": "document",
       "source_file": "spec/global/features.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "spec_global_features_features_e_m\u00f3dulos_existentes_mapa_vivo_anti_duplica\u00e7\u00e3o",
+      "id": "spec_global_features_features_e_m\u00e33dulos_existentes_mapa_vivo_anti_duplica\u00e3_\u00e3_o",
       "community": 354,
       "community_name": "Features e M\u00f3dulos Existentes (Mapa Vivo Anti-Duplica\u00e7\u00e3o)",
-      "norm_label": "features e modulos existentes (mapa vivo anti-duplicacao)"
+      "norm_label": "features e ma3dulos existentes (mapa vivo anti-duplicaa\u00a7a\u00a3o)"
     },
     {
-      "label": "Concilia\u00e7\u00e3o & Fechamento",
+      "label": "Concilia\u00c3\u00a7\u00c3\u00a3o & Fechamento",
       "file_type": "document",
       "source_file": "spec/global/features.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "spec_global_features_concilia\u00e7\u00e3o_fechamento",
+      "id": "spec_global_features_concilia\u00e3_\u00e3_o_fechamento",
       "community": 354,
       "community_name": "Features e M\u00f3dulos Existentes (Mapa Vivo Anti-Duplica\u00e7\u00e3o)",
-      "norm_label": "conciliacao & fechamento"
+      "norm_label": "conciliaa\u00a7a\u00a3o & fechamento"
     },
     {
-      "label": "Intelig\u00eancia Artificial & Telemetria",
+      "label": "Intelig\u00c3\u00aancia Artificial & Telemetria",
       "file_type": "document",
       "source_file": "spec/global/features.md",
       "source_location": "L9",
       "_origin": "ast",
-      "id": "spec_global_features_intelig\u00eancia_artificial_telemetria",
+      "id": "spec_global_features_intelig\u00e3ancia_artificial_telemetria",
       "community": 354,
       "community_name": "Features e M\u00f3dulos Existentes (Mapa Vivo Anti-Duplica\u00e7\u00e3o)",
-      "norm_label": "inteligencia artificial & telemetria"
+      "norm_label": "inteligaancia artificial & telemetria"
     },
     {
       "label": "016-loja-cleanup/design.md",
@@ -37423,6 +37555,193 @@
       "norm_label": "tasks"
     },
     {
+      "label": "chat-ui-minimalist/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/chat-ui-minimalist/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_chat_ui_minimalist_design",
+      "community": 542,
+      "community_name": "tw-animate-css",
+      "norm_label": "chat-ui-minimalist/design.md"
+    },
+    {
+      "label": "Design: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "file_type": "document",
+      "source_file": "specs/archive/chat-ui-minimalist/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_chat_ui_minimalist_design_design_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
+      "community": 542,
+      "community_name": "tw-animate-css",
+      "norm_label": "design: nova interface do chat e resolucao de ferramentas (chat-ui-minimalist)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/archive/chat-ui-minimalist/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_chat_ui_minimalist_design_arquitetura_t\u00e9cnica",
+      "community": 542,
+      "community_name": "tw-animate-css",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/archive/chat-ui-minimalist/design.md",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "specs_archive_chat_ui_minimalist_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 542,
+      "community_name": "tw-animate-css",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Fluxo de UI",
+      "file_type": "document",
+      "source_file": "specs/archive/chat-ui-minimalist/design.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "specs_archive_chat_ui_minimalist_design_fluxo_de_ui",
+      "community": 542,
+      "community_name": "tw-animate-css",
+      "norm_label": "fluxo de ui"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/archive/chat-ui-minimalist/design.md",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "specs_archive_chat_ui_minimalist_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 542,
+      "community_name": "tw-animate-css",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "chat-ui-minimalist/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/chat-ui-minimalist/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_chat_ui_minimalist_proposal",
+      "community": 36,
+      "community_name": "ResumoDiaPanel.tsx",
+      "norm_label": "chat-ui-minimalist/proposal.md"
+    },
+    {
+      "label": "Proposal: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "file_type": "document",
+      "source_file": "specs/archive/chat-ui-minimalist/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_chat_ui_minimalist_proposal_proposal_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
+      "community": 36,
+      "community_name": "ResumoDiaPanel.tsx",
+      "norm_label": "proposal: nova interface do chat e resolucao de ferramentas (chat-ui-minimalist)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/archive/chat-ui-minimalist/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_chat_ui_minimalist_proposal_problema",
+      "community": 36,
+      "community_name": "ResumoDiaPanel.tsx",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/archive/chat-ui-minimalist/proposal.md",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "specs_archive_chat_ui_minimalist_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 36,
+      "community_name": "ResumoDiaPanel.tsx",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/chat-ui-minimalist/proposal.md",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "specs_archive_chat_ui_minimalist_proposal_contratos_de_dados",
+      "community": 36,
+      "community_name": "ResumoDiaPanel.tsx",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/archive/chat-ui-minimalist/proposal.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "specs_archive_chat_ui_minimalist_proposal_api_interface",
+      "community": 36,
+      "community_name": "ResumoDiaPanel.tsx",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/archive/chat-ui-minimalist/proposal.md",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "specs_archive_chat_ui_minimalist_proposal_features_existentes_impactadas",
+      "community": 36,
+      "community_name": "ResumoDiaPanel.tsx",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/archive/chat-ui-minimalist/proposal.md",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "specs_archive_chat_ui_minimalist_proposal_risco_principal",
+      "community": 36,
+      "community_name": "ResumoDiaPanel.tsx",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "chat-ui-minimalist/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/chat-ui-minimalist/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_chat_ui_minimalist_spec_plan",
+      "community": 628,
+      "community_name": "Spec Plan: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "norm_label": "chat-ui-minimalist/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "file_type": "document",
+      "source_file": "specs/archive/chat-ui-minimalist/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_chat_ui_minimalist_spec_plan_spec_plan_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
+      "community": 628,
+      "community_name": "Spec Plan: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "norm_label": "spec plan: nova interface do chat e resolucao de ferramentas (chat-ui-minimalist)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/chat-ui-minimalist/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_chat_ui_minimalist_spec_plan_tasks",
+      "community": 628,
+      "community_name": "Spec Plan: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "norm_label": "tasks"
+    },
+    {
       "label": "conciliacao-baixa-manual-override/design.md",
       "file_type": "document",
       "source_file": "specs/archive/conciliacao-baixa-manual-override/design.md",
@@ -42989,190 +43308,190 @@
       "norm_label": "tasks"
     },
     {
-      "label": "chat-ui-minimalist/design.md",
+      "label": "bot-live-os-query/design.md",
       "file_type": "document",
-      "source_file": "specs/chat-ui-minimalist/design.md",
+      "source_file": "specs/bot-live-os-query/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_chat_ui_minimalist_design",
-      "community": 623,
-      "community_name": "Design: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
-      "norm_label": "chat-ui-minimalist/design.md"
+      "id": "specs_bot_live_os_query_design",
+      "community": 620,
+      "community_name": "Spec Plan: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
+      "norm_label": "bot-live-os-query/design.md"
     },
     {
-      "label": "Design: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "label": "Design: Consulta Live de OS no Bot Oficina Inteligente (bot-live-os-query)",
       "file_type": "document",
-      "source_file": "specs/chat-ui-minimalist/design.md",
+      "source_file": "specs/bot-live-os-query/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_chat_ui_minimalist_design_design_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
-      "community": 623,
-      "community_name": "Design: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
-      "norm_label": "design: nova interface do chat e resolucao de ferramentas (chat-ui-minimalist)"
+      "id": "specs_bot_live_os_query_design_design_consulta_live_de_os_no_bot_oficina_inteligente_bot_live_os_query",
+      "community": 620,
+      "community_name": "Spec Plan: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
+      "norm_label": "design: consulta live de os no bot oficina inteligente (bot-live-os-query)"
     },
     {
       "label": "Arquitetura T\u00e9cnica",
       "file_type": "document",
-      "source_file": "specs/chat-ui-minimalist/design.md",
+      "source_file": "specs/bot-live-os-query/design.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_chat_ui_minimalist_design_arquitetura_t\u00e9cnica",
-      "community": 623,
-      "community_name": "Design: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "id": "specs_bot_live_os_query_design_arquitetura_t\u00e9cnica",
+      "community": 620,
+      "community_name": "Spec Plan: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
       "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Interfaces TypeScript",
+      "file_type": "document",
+      "source_file": "specs/bot-live-os-query/design.md",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "specs_bot_live_os_query_design_interfaces_typescript",
+      "community": 620,
+      "community_name": "Spec Plan: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
+      "norm_label": "interfaces typescript"
     },
     {
       "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
       "file_type": "document",
-      "source_file": "specs/chat-ui-minimalist/design.md",
-      "source_location": "L14",
+      "source_file": "specs/bot-live-os-query/design.md",
+      "source_location": "L26",
       "_origin": "ast",
-      "id": "specs_chat_ui_minimalist_design_componentes_hooks_fun\u00e7\u00f5es",
-      "community": 623,
-      "community_name": "Design: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "id": "specs_bot_live_os_query_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 620,
+      "community_name": "Spec Plan: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
       "norm_label": "componentes / hooks / funcoes"
-    },
-    {
-      "label": "Fluxo de UI",
-      "file_type": "document",
-      "source_file": "specs/chat-ui-minimalist/design.md",
-      "source_location": "L19",
-      "_origin": "ast",
-      "id": "specs_chat_ui_minimalist_design_fluxo_de_ui",
-      "community": 623,
-      "community_name": "Design: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
-      "norm_label": "fluxo de ui"
     },
     {
       "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
       "file_type": "document",
-      "source_file": "specs/chat-ui-minimalist/design.md",
-      "source_location": "L26",
+      "source_file": "specs/bot-live-os-query/design.md",
+      "source_location": "L32",
       "_origin": "ast",
-      "id": "specs_chat_ui_minimalist_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
-      "community": 623,
-      "community_name": "Design: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "id": "specs_bot_live_os_query_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 620,
+      "community_name": "Spec Plan: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
       "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
     },
     {
-      "label": "chat-ui-minimalist/proposal.md",
+      "label": "bot-live-os-query/proposal.md",
       "file_type": "document",
-      "source_file": "specs/chat-ui-minimalist/proposal.md",
+      "source_file": "specs/bot-live-os-query/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_chat_ui_minimalist_proposal",
-      "community": 620,
-      "community_name": "Spec Plan: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
-      "norm_label": "chat-ui-minimalist/proposal.md"
+      "id": "specs_bot_live_os_query_proposal",
+      "community": 477,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "norm_label": "bot-live-os-query/proposal.md"
     },
     {
-      "label": "Proposal: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "label": "Proposal: Consulta Live de OS no Bot Oficina Inteligente (bot-live-os-query)",
       "file_type": "document",
-      "source_file": "specs/chat-ui-minimalist/proposal.md",
+      "source_file": "specs/bot-live-os-query/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_chat_ui_minimalist_proposal_proposal_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
-      "community": 620,
-      "community_name": "Spec Plan: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
-      "norm_label": "proposal: nova interface do chat e resolucao de ferramentas (chat-ui-minimalist)"
+      "id": "specs_bot_live_os_query_proposal_proposal_consulta_live_de_os_no_bot_oficina_inteligente_bot_live_os_query",
+      "community": 477,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
+      "norm_label": "proposal: consulta live de os no bot oficina inteligente (bot-live-os-query)"
     },
     {
       "label": "Problema",
       "file_type": "document",
-      "source_file": "specs/chat-ui-minimalist/proposal.md",
+      "source_file": "specs/bot-live-os-query/proposal.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_chat_ui_minimalist_proposal_problema",
-      "community": 620,
-      "community_name": "Spec Plan: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
+      "id": "specs_bot_live_os_query_proposal_problema",
+      "community": 477,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
       "norm_label": "problema"
     },
     {
       "label": "Solu\u00e7\u00e3o Proposta",
       "file_type": "document",
-      "source_file": "specs/chat-ui-minimalist/proposal.md",
-      "source_location": "L8",
+      "source_file": "specs/bot-live-os-query/proposal.md",
+      "source_location": "L6",
       "_origin": "ast",
-      "id": "specs_chat_ui_minimalist_proposal_solu\u00e7\u00e3o_proposta",
-      "community": 620,
-      "community_name": "Spec Plan: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
+      "id": "specs_bot_live_os_query_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 477,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
       "norm_label": "solucao proposta"
     },
     {
       "label": "Contratos de Dados",
       "file_type": "document",
-      "source_file": "specs/chat-ui-minimalist/proposal.md",
-      "source_location": "L15",
+      "source_file": "specs/bot-live-os-query/proposal.md",
+      "source_location": "L12",
       "_origin": "ast",
-      "id": "specs_chat_ui_minimalist_proposal_contratos_de_dados",
-      "community": 620,
-      "community_name": "Spec Plan: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
+      "id": "specs_bot_live_os_query_proposal_contratos_de_dados",
+      "community": 477,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
       "norm_label": "contratos de dados"
     },
     {
       "label": "API / Interface",
       "file_type": "document",
-      "source_file": "specs/chat-ui-minimalist/proposal.md",
-      "source_location": "L19",
+      "source_file": "specs/bot-live-os-query/proposal.md",
+      "source_location": "L16",
       "_origin": "ast",
-      "id": "specs_chat_ui_minimalist_proposal_api_interface",
-      "community": 620,
-      "community_name": "Spec Plan: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
+      "id": "specs_bot_live_os_query_proposal_api_interface",
+      "community": 477,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
       "norm_label": "api / interface"
     },
     {
       "label": "Features Existentes Impactadas",
       "file_type": "document",
-      "source_file": "specs/chat-ui-minimalist/proposal.md",
-      "source_location": "L23",
+      "source_file": "specs/bot-live-os-query/proposal.md",
+      "source_location": "L20",
       "_origin": "ast",
-      "id": "specs_chat_ui_minimalist_proposal_features_existentes_impactadas",
-      "community": 620,
-      "community_name": "Spec Plan: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
+      "id": "specs_bot_live_os_query_proposal_features_existentes_impactadas",
+      "community": 477,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
       "norm_label": "features existentes impactadas"
     },
     {
       "label": "Risco Principal",
       "file_type": "document",
-      "source_file": "specs/chat-ui-minimalist/proposal.md",
-      "source_location": "L26",
+      "source_file": "specs/bot-live-os-query/proposal.md",
+      "source_location": "L24",
       "_origin": "ast",
-      "id": "specs_chat_ui_minimalist_proposal_risco_principal",
-      "community": 620,
-      "community_name": "Spec Plan: Corre\u00e7\u00f5es de Produ\u00e7\u00e3o (CORS VPS e Schema Cache) (bot-production-fixes)",
+      "id": "specs_bot_live_os_query_proposal_risco_principal",
+      "community": 477,
+      "community_name": "Design: Refatora\u00e7\u00e3o do Bot para API de Consulta MCP (bot-mcp-refactor)",
       "norm_label": "risco principal"
     },
     {
-      "label": "chat-ui-minimalist/spec-plan.md",
+      "label": "bot-live-os-query/spec-plan.md",
       "file_type": "document",
-      "source_file": "specs/chat-ui-minimalist/spec-plan.md",
+      "source_file": "specs/bot-live-os-query/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_chat_ui_minimalist_spec_plan",
-      "community": 626,
-      "community_name": "Spec Plan: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
-      "norm_label": "chat-ui-minimalist/spec-plan.md"
+      "id": "specs_bot_live_os_query_spec_plan",
+      "community": 629,
+      "community_name": "Spec Plan: Consulta Live de OS no Bot Oficina Inteligente (bot-live-os-query)",
+      "norm_label": "bot-live-os-query/spec-plan.md"
     },
     {
-      "label": "Spec Plan: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "label": "Spec Plan: Consulta Live de OS no Bot Oficina Inteligente (bot-live-os-query)",
       "file_type": "document",
-      "source_file": "specs/chat-ui-minimalist/spec-plan.md",
+      "source_file": "specs/bot-live-os-query/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_chat_ui_minimalist_spec_plan_spec_plan_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
-      "community": 626,
-      "community_name": "Spec Plan: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
-      "norm_label": "spec plan: nova interface do chat e resolucao de ferramentas (chat-ui-minimalist)"
+      "id": "specs_bot_live_os_query_spec_plan_spec_plan_consulta_live_de_os_no_bot_oficina_inteligente_bot_live_os_query",
+      "community": 629,
+      "community_name": "Spec Plan: Consulta Live de OS no Bot Oficina Inteligente (bot-live-os-query)",
+      "norm_label": "spec plan: consulta live de os no bot oficina inteligente (bot-live-os-query)"
     },
     {
       "label": "Tasks",
       "file_type": "document",
-      "source_file": "specs/chat-ui-minimalist/spec-plan.md",
+      "source_file": "specs/bot-live-os-query/spec-plan.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_chat_ui_minimalist_spec_plan_tasks",
-      "community": 626,
-      "community_name": "Spec Plan: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "id": "specs_bot_live_os_query_spec_plan_tasks",
+      "community": 629,
+      "community_name": "Spec Plan: Consulta Live de OS no Bot Oficina Inteligente (bot-live-os-query)",
       "norm_label": "tasks"
     },
     {
@@ -43999,6 +44318,270 @@
       "community": 592,
       "community_name": "overview.md",
       "norm_label": "global overview"
+    },
+    {
+      "label": "os-query-mcp.md",
+      "file_type": "document",
+      "source_file": "specs/os-query-mcp.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_os_query_mcp",
+      "community": 623,
+      "community_name": "Design: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "norm_label": "os-query-mcp.md"
+    },
+    {
+      "label": "\ud83c\udfaf Objetivo",
+      "file_type": "document",
+      "source_file": "specs/os-query-mcp.md",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "specs_os_query_mcp_objetivo",
+      "community": 623,
+      "community_name": "Design: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "norm_label": "\ud83c\udfaf objetivo"
+    },
+    {
+      "label": "\ud83c\udfd7\ufe0f Arquitetura e Fluxo",
+      "file_type": "document",
+      "source_file": "specs/os-query-mcp.md",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "specs_os_query_mcp_arquitetura_e_fluxo",
+      "community": 623,
+      "community_name": "Design: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "norm_label": "\ud83c\udfd7\ufe0f arquitetura e fluxo"
+    },
+    {
+      "label": "\ud83d\udcdd Testes Pr\u00e9vios Realizados",
+      "file_type": "document",
+      "source_file": "specs/os-query-mcp.md",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "specs_os_query_mcp_testes_pr\u00e9vios_realizados",
+      "community": 623,
+      "community_name": "Design: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "norm_label": "\ud83d\udcdd testes previos realizados"
+    },
+    {
+      "label": "\ud83d\udd27 Checklist de Implementa\u00e7\u00e3o",
+      "file_type": "document",
+      "source_file": "specs/os-query-mcp.md",
+      "source_location": "L33",
+      "_origin": "ast",
+      "id": "specs_os_query_mcp_checklist_de_implementa\u00e7\u00e3o",
+      "community": 623,
+      "community_name": "Design: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
+      "norm_label": "\ud83d\udd27 checklist de implementacao"
+    },
+    {
+      "label": "vps-mcp-aspnet/design.md",
+      "file_type": "document",
+      "source_file": "specs/vps-mcp-aspnet/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_vps_mcp_aspnet_design",
+      "community": 504,
+      "community_name": "dotenv",
+      "norm_label": "vps-mcp-aspnet/design.md"
+    },
+    {
+      "label": "Design: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "file_type": "document",
+      "source_file": "specs/vps-mcp-aspnet/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_vps_mcp_aspnet_design_design_ordem_de_servi\u00e7o_bot_scraper_vps_mcp_aspnet",
+      "community": 504,
+      "community_name": "dotenv",
+      "norm_label": "design: ordem de servico bot scraper (vps-mcp-aspnet)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/vps-mcp-aspnet/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_vps_mcp_aspnet_design_arquitetura_t\u00e9cnica",
+      "community": 504,
+      "community_name": "dotenv",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Interfaces TypeScript",
+      "file_type": "document",
+      "source_file": "specs/vps-mcp-aspnet/design.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "specs_vps_mcp_aspnet_design_interfaces_typescript",
+      "community": 504,
+      "community_name": "dotenv",
+      "norm_label": "interfaces typescript"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/vps-mcp-aspnet/design.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "specs_vps_mcp_aspnet_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 504,
+      "community_name": "dotenv",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Fluxo de Automa\u00e7\u00e3o Playwright",
+      "file_type": "document",
+      "source_file": "specs/vps-mcp-aspnet/design.md",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "specs_vps_mcp_aspnet_design_fluxo_de_automa\u00e7\u00e3o_playwright",
+      "community": 504,
+      "community_name": "dotenv",
+      "norm_label": "fluxo de automacao playwright"
+    },
+    {
+      "label": "Infra / Deploy",
+      "file_type": "document",
+      "source_file": "specs/vps-mcp-aspnet/design.md",
+      "source_location": "L37",
+      "_origin": "ast",
+      "id": "specs_vps_mcp_aspnet_design_infra_deploy",
+      "community": 504,
+      "community_name": "dotenv",
+      "norm_label": "infra / deploy"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/vps-mcp-aspnet/design.md",
+      "source_location": "L41",
+      "_origin": "ast",
+      "id": "specs_vps_mcp_aspnet_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 504,
+      "community_name": "dotenv",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "vps-mcp-aspnet/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/vps-mcp-aspnet/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_vps_mcp_aspnet_proposal",
+      "community": 514,
+      "community_name": "@radix-ui/react-menubar",
+      "norm_label": "vps-mcp-aspnet/proposal.md"
+    },
+    {
+      "label": "Proposal: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "file_type": "document",
+      "source_file": "specs/vps-mcp-aspnet/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_vps_mcp_aspnet_proposal_proposal_ordem_de_servi\u00e7o_bot_scraper_vps_mcp_aspnet",
+      "community": 514,
+      "community_name": "@radix-ui/react-menubar",
+      "norm_label": "proposal: ordem de servico bot scraper (vps-mcp-aspnet)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/vps-mcp-aspnet/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_vps_mcp_aspnet_proposal_problema",
+      "community": 514,
+      "community_name": "@radix-ui/react-menubar",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/vps-mcp-aspnet/proposal.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "specs_vps_mcp_aspnet_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 514,
+      "community_name": "@radix-ui/react-menubar",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/vps-mcp-aspnet/proposal.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "specs_vps_mcp_aspnet_proposal_contratos_de_dados",
+      "community": 514,
+      "community_name": "@radix-ui/react-menubar",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/vps-mcp-aspnet/proposal.md",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "specs_vps_mcp_aspnet_proposal_api_interface",
+      "community": 514,
+      "community_name": "@radix-ui/react-menubar",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/vps-mcp-aspnet/proposal.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "specs_vps_mcp_aspnet_proposal_features_existentes_impactadas",
+      "community": 514,
+      "community_name": "@radix-ui/react-menubar",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/vps-mcp-aspnet/proposal.md",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "specs_vps_mcp_aspnet_proposal_risco_principal",
+      "community": 514,
+      "community_name": "@radix-ui/react-menubar",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "vps-mcp-aspnet/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/vps-mcp-aspnet/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_vps_mcp_aspnet_spec_plan",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "vps-mcp-aspnet/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "file_type": "document",
+      "source_file": "specs/vps-mcp-aspnet/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_vps_mcp_aspnet_spec_plan_spec_plan_ordem_de_servi\u00e7o_bot_scraper_vps_mcp_aspnet",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "spec plan: ordem de servico bot scraper (vps-mcp-aspnet)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/vps-mcp-aspnet/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_vps_mcp_aspnet_spec_plan_tasks",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "tasks"
     }
   ],
   "links": [
@@ -44834,6 +45417,17 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L112",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina",
+      "target": "bot_src_scrapers_oficina_fetchosbynumber",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
       "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
@@ -44850,6 +45444,17 @@
       "_origin": "ast",
       "source": "bot_src_scrapers_oficina",
       "target": "bot_src_scrapers_oficina_oicredentials",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L102",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina",
+      "target": "bot_src_scrapers_oficina_osrecord",
       "confidence_score": 1.0
     },
     {
@@ -44908,6 +45513,30 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server",
+      "target": "bot_src_scrapers_oficina",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/tests/test-os-query.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_tests_test_os_query",
+      "target": "bot_src_scrapers_oficina",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -44924,11 +45553,71 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "bot/src/scrapers/oficina.ts",
+      "source_location": "L120",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_scrapers_oficina_fetchosbynumber",
+      "target": "bot_src_scrapers_oficina_withretry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/scrapers/oficina.ts",
       "source_location": "L42",
       "weight": 1.0,
       "_origin": "ast",
       "source": "bot_src_scrapers_oficina_loginoi",
       "target": "bot_src_scrapers_oficina_withretry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server",
+      "target": "bot_src_scrapers_oficina_loginoi",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/tests/test-os-query.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_tests_test_os_query",
+      "target": "bot_src_scrapers_oficina_loginoi",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/tests/test-os-query.ts",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_tests_test_os_query_testosquery",
+      "target": "bot_src_scrapers_oficina_loginoi",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server",
+      "target": "bot_src_scrapers_oficina_fetchosbynumber",
       "confidence_score": 1.0
     },
     {
@@ -45071,7 +45760,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "bot/src/server.ts",
-      "source_location": "L10",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
       "source": "bot_src_server",
@@ -45082,7 +45771,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "bot/src/server.ts",
-      "source_location": "L78",
+      "source_location": "L135",
       "weight": 1.0,
       "_origin": "ast",
       "source": "bot_src_server",
@@ -45093,13 +45782,73 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "bot/src/server.ts",
-      "source_location": "L41",
+      "source_location": "L45",
       "weight": 1.0,
       "_origin": "ast",
       "context": "argument",
       "source": "bot_src_server",
       "target": "bot_src_server_requireapikey",
       "confidence_score": 0.5
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server",
+      "target": "bot_src_session_sessionmanager",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server",
+      "target": "bot_src_session_sessionmanager_loadsession",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server",
+      "target": "bot_src_session_sessionmanager_savesession",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server",
+      "target": "bot_src_sync_supabaseuploader",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/server.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_server",
+      "target": "bot_src_sync_supabaseuploader_getbotcredentials",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -45248,6 +45997,42 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/tests/test-os-query.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_tests_test_os_query",
+      "target": "bot_src_sync_supabaseuploader",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/tests/test-os-query.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_tests_test_os_query",
+      "target": "bot_src_sync_supabaseuploader_getbotcredentials",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/tests/test-os-query.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_tests_test_os_query_testosquery",
+      "target": "bot_src_sync_supabaseuploader_getbotcredentials",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "bot/src/tests/resilience.test.ts",
@@ -45324,6 +46109,17 @@
       "_origin": "ast",
       "source": "bot_src_tests_resilience_test_synctransactions",
       "target": "bot_src_tests_resilience_test_fetchwithbackoff",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bot/src/tests/test-os-query.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "bot_src_tests_test_os_query",
+      "target": "bot_src_tests_test_os_query_testosquery",
       "confidence_score": 1.0
     },
     {
@@ -46139,7 +46935,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L77",
+      "source_location": "L78",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package",
@@ -46788,6 +47584,17 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
+      "source_location": "L69",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package_dependencies",
+      "target": "package_dependencies_ssh2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
       "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast",
@@ -46799,7 +47606,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L69",
+      "source_location": "L70",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_dependencies",
@@ -46810,7 +47617,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L70",
+      "source_location": "L71",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_dependencies",
@@ -46876,7 +47683,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L71",
+      "source_location": "L72",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_dependencies",
@@ -46898,7 +47705,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L72",
+      "source_location": "L73",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_dependencies",
@@ -46909,7 +47716,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L73",
+      "source_location": "L74",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_dependencies",
@@ -46920,7 +47727,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L74",
+      "source_location": "L75",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_dependencies",
@@ -46931,7 +47738,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L75",
+      "source_location": "L76",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_dependencies",
@@ -47606,6 +48413,18 @@
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
+      "source": "package_dependencies_ssh2",
+      "target": "ssh2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L70",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
       "source": "package_dependencies_tailwind_merge",
       "target": "tailwind_merge",
       "confidence_score": 1.0
@@ -47614,7 +48433,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L70",
+      "source_location": "L71",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -47626,7 +48445,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L71",
+      "source_location": "L72",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -47638,7 +48457,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L72",
+      "source_location": "L73",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -47650,7 +48469,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L73",
+      "source_location": "L74",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -47662,7 +48481,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L74",
+      "source_location": "L75",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -47674,7 +48493,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L75",
+      "source_location": "L76",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -47686,7 +48505,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L84",
+      "source_location": "L85",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -47697,7 +48516,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L85",
+      "source_location": "L86",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -47708,7 +48527,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L78",
+      "source_location": "L79",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -47719,7 +48538,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L86",
+      "source_location": "L87",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -47730,7 +48549,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L87",
+      "source_location": "L88",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -47741,7 +48560,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L88",
+      "source_location": "L89",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -47752,7 +48571,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L89",
+      "source_location": "L90",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -47763,7 +48582,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L79",
+      "source_location": "L80",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -47774,7 +48593,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L90",
+      "source_location": "L91",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -47785,7 +48604,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L80",
+      "source_location": "L81",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -47796,7 +48615,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L81",
+      "source_location": "L82",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -47807,7 +48626,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L82",
+      "source_location": "L83",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -47818,7 +48637,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L91",
+      "source_location": "L92",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -47829,7 +48648,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L92",
+      "source_location": "L93",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -47840,7 +48659,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L93",
+      "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -47851,7 +48670,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L83",
+      "source_location": "L84",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -47862,7 +48681,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L78",
+      "source_location": "L79",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -47874,7 +48693,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L79",
+      "source_location": "L80",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -47886,7 +48705,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L80",
+      "source_location": "L81",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -47898,7 +48717,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L81",
+      "source_location": "L82",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -47910,7 +48729,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L82",
+      "source_location": "L83",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -47922,7 +48741,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L83",
+      "source_location": "L84",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -47934,7 +48753,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L84",
+      "source_location": "L85",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -47946,7 +48765,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L85",
+      "source_location": "L86",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -47958,7 +48777,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L86",
+      "source_location": "L87",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -47970,7 +48789,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L87",
+      "source_location": "L88",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -47982,7 +48801,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L88",
+      "source_location": "L89",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -47994,7 +48813,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L89",
+      "source_location": "L90",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -48006,7 +48825,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L90",
+      "source_location": "L91",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -48018,7 +48837,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L91",
+      "source_location": "L92",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -48030,7 +48849,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L92",
+      "source_location": "L93",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -48042,7 +48861,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L93",
+      "source_location": "L94",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -71484,6 +72303,50 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "ssh-test.cjs",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ssh_test",
+      "target": "ssh_test_client",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ssh-test.cjs",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ssh_test",
+      "target": "ssh_test_conn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ssh-test.cjs",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ssh_test",
+      "target": "ssh_test_fs",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ssh-test.cjs",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ssh_test",
+      "target": "ssh_test_path",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "sum.cjs",
       "source_location": "L5",
       "weight": 1.0,
@@ -72235,6 +73098,17 @@
       "_origin": "ast",
       "source": "agent_memory_domain_mem\u00f3ria_modular_dom\u00ednio_concilia\u00e7\u00e3o",
       "target": "agent_memory_domain_2026_07_28_feature_id_fix_store_closing_card_labels_and_values",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agent/memory/domain.md",
+      "source_location": "L212",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agent_memory_domain_mem\u00f3ria_modular_dom\u00ednio_concilia\u00e7\u00e3o",
+      "target": "agent_memory_domain_2026_07_29_feature_id_vps_mcp_aspnet",
       "confidence_score": 1.0
     },
     {
@@ -75963,7 +76837,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "spec_global_features",
-      "target": "spec_global_features_features_e_m\u00f3dulos_existentes_mapa_vivo_anti_duplica\u00e7\u00e3o",
+      "target": "spec_global_features_features_e_m\u00e33dulos_existentes_mapa_vivo_anti_duplica\u00e3_\u00e3_o",
       "confidence_score": 1.0
     },
     {
@@ -75973,8 +76847,8 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "spec_global_features_features_e_m\u00f3dulos_existentes_mapa_vivo_anti_duplica\u00e7\u00e3o",
-      "target": "spec_global_features_concilia\u00e7\u00e3o_fechamento",
+      "source": "spec_global_features_features_e_m\u00e33dulos_existentes_mapa_vivo_anti_duplica\u00e3_\u00e3_o",
+      "target": "spec_global_features_concilia\u00e3_\u00e3_o_fechamento",
       "confidence_score": 1.0
     },
     {
@@ -75984,8 +76858,8 @@
       "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "spec_global_features_features_e_m\u00f3dulos_existentes_mapa_vivo_anti_duplica\u00e7\u00e3o",
-      "target": "spec_global_features_intelig\u00eancia_artificial_telemetria",
+      "source": "spec_global_features_features_e_m\u00e33dulos_existentes_mapa_vivo_anti_duplica\u00e3_\u00e3_o",
+      "target": "spec_global_features_intelig\u00e3ancia_artificial_telemetria",
       "confidence_score": 1.0
     },
     {
@@ -89037,6 +89911,160 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "specs/archive/chat-ui-minimalist/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_chat_ui_minimalist_design",
+      "target": "specs_archive_chat_ui_minimalist_design_design_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/chat-ui-minimalist/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_chat_ui_minimalist_design_design_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
+      "target": "specs_archive_chat_ui_minimalist_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/chat-ui-minimalist/design.md",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_chat_ui_minimalist_design_design_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
+      "target": "specs_archive_chat_ui_minimalist_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/chat-ui-minimalist/design.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_chat_ui_minimalist_design_design_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
+      "target": "specs_archive_chat_ui_minimalist_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/chat-ui-minimalist/design.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_chat_ui_minimalist_design_design_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
+      "target": "specs_archive_chat_ui_minimalist_design_fluxo_de_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/chat-ui-minimalist/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_chat_ui_minimalist_proposal",
+      "target": "specs_archive_chat_ui_minimalist_proposal_proposal_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/chat-ui-minimalist/proposal.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_chat_ui_minimalist_proposal_proposal_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
+      "target": "specs_archive_chat_ui_minimalist_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/chat-ui-minimalist/proposal.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_chat_ui_minimalist_proposal_proposal_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
+      "target": "specs_archive_chat_ui_minimalist_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/chat-ui-minimalist/proposal.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_chat_ui_minimalist_proposal_proposal_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
+      "target": "specs_archive_chat_ui_minimalist_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/chat-ui-minimalist/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_chat_ui_minimalist_proposal_proposal_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
+      "target": "specs_archive_chat_ui_minimalist_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/chat-ui-minimalist/proposal.md",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_chat_ui_minimalist_proposal_proposal_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
+      "target": "specs_archive_chat_ui_minimalist_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/chat-ui-minimalist/proposal.md",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_chat_ui_minimalist_proposal_proposal_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
+      "target": "specs_archive_chat_ui_minimalist_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/chat-ui-minimalist/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_chat_ui_minimalist_spec_plan",
+      "target": "specs_archive_chat_ui_minimalist_spec_plan_spec_plan_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/chat-ui-minimalist/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_chat_ui_minimalist_spec_plan_spec_plan_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
+      "target": "specs_archive_chat_ui_minimalist_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "specs/archive/conciliacao-baixa-manual-override/design.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -93580,155 +94608,155 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/chat-ui-minimalist/design.md",
+      "source_file": "specs/bot-live-os-query/design.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_chat_ui_minimalist_design",
-      "target": "specs_chat_ui_minimalist_design_design_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
+      "source": "specs_bot_live_os_query_design",
+      "target": "specs_bot_live_os_query_design_design_consulta_live_de_os_no_bot_oficina_inteligente_bot_live_os_query",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/chat-ui-minimalist/design.md",
+      "source_file": "specs/bot-live-os-query/design.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_chat_ui_minimalist_design_design_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
-      "target": "specs_chat_ui_minimalist_design_arquitetura_t\u00e9cnica",
+      "source": "specs_bot_live_os_query_design_design_consulta_live_de_os_no_bot_oficina_inteligente_bot_live_os_query",
+      "target": "specs_bot_live_os_query_design_arquitetura_t\u00e9cnica",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/chat-ui-minimalist/design.md",
+      "source_file": "specs/bot-live-os-query/design.md",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_bot_live_os_query_design_design_consulta_live_de_os_no_bot_oficina_inteligente_bot_live_os_query",
+      "target": "specs_bot_live_os_query_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/bot-live-os-query/design.md",
       "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_chat_ui_minimalist_design_design_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
-      "target": "specs_chat_ui_minimalist_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "source": "specs_bot_live_os_query_design_design_consulta_live_de_os_no_bot_oficina_inteligente_bot_live_os_query",
+      "target": "specs_bot_live_os_query_design_componentes_hooks_fun\u00e7\u00f5es",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/chat-ui-minimalist/design.md",
+      "source_file": "specs/bot-live-os-query/design.md",
       "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_chat_ui_minimalist_design_design_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
-      "target": "specs_chat_ui_minimalist_design_componentes_hooks_fun\u00e7\u00f5es",
+      "source": "specs_bot_live_os_query_design_design_consulta_live_de_os_no_bot_oficina_inteligente_bot_live_os_query",
+      "target": "specs_bot_live_os_query_design_interfaces_typescript",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/chat-ui-minimalist/design.md",
-      "source_location": "L19",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_chat_ui_minimalist_design_design_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
-      "target": "specs_chat_ui_minimalist_design_fluxo_de_ui",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/chat-ui-minimalist/proposal.md",
+      "source_file": "specs/bot-live-os-query/proposal.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_chat_ui_minimalist_proposal",
-      "target": "specs_chat_ui_minimalist_proposal_proposal_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
+      "source": "specs_bot_live_os_query_proposal",
+      "target": "specs_bot_live_os_query_proposal_proposal_consulta_live_de_os_no_bot_oficina_inteligente_bot_live_os_query",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/chat-ui-minimalist/proposal.md",
-      "source_location": "L19",
+      "source_file": "specs/bot-live-os-query/proposal.md",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_chat_ui_minimalist_proposal_proposal_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
-      "target": "specs_chat_ui_minimalist_proposal_api_interface",
+      "source": "specs_bot_live_os_query_proposal_proposal_consulta_live_de_os_no_bot_oficina_inteligente_bot_live_os_query",
+      "target": "specs_bot_live_os_query_proposal_api_interface",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/chat-ui-minimalist/proposal.md",
-      "source_location": "L15",
+      "source_file": "specs/bot-live-os-query/proposal.md",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_chat_ui_minimalist_proposal_proposal_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
-      "target": "specs_chat_ui_minimalist_proposal_contratos_de_dados",
+      "source": "specs_bot_live_os_query_proposal_proposal_consulta_live_de_os_no_bot_oficina_inteligente_bot_live_os_query",
+      "target": "specs_bot_live_os_query_proposal_contratos_de_dados",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/chat-ui-minimalist/proposal.md",
-      "source_location": "L23",
+      "source_file": "specs/bot-live-os-query/proposal.md",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_chat_ui_minimalist_proposal_proposal_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
-      "target": "specs_chat_ui_minimalist_proposal_features_existentes_impactadas",
+      "source": "specs_bot_live_os_query_proposal_proposal_consulta_live_de_os_no_bot_oficina_inteligente_bot_live_os_query",
+      "target": "specs_bot_live_os_query_proposal_features_existentes_impactadas",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/chat-ui-minimalist/proposal.md",
+      "source_file": "specs/bot-live-os-query/proposal.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_chat_ui_minimalist_proposal_proposal_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
-      "target": "specs_chat_ui_minimalist_proposal_problema",
+      "source": "specs_bot_live_os_query_proposal_proposal_consulta_live_de_os_no_bot_oficina_inteligente_bot_live_os_query",
+      "target": "specs_bot_live_os_query_proposal_problema",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/chat-ui-minimalist/proposal.md",
-      "source_location": "L26",
+      "source_file": "specs/bot-live-os-query/proposal.md",
+      "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_chat_ui_minimalist_proposal_proposal_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
-      "target": "specs_chat_ui_minimalist_proposal_risco_principal",
+      "source": "specs_bot_live_os_query_proposal_proposal_consulta_live_de_os_no_bot_oficina_inteligente_bot_live_os_query",
+      "target": "specs_bot_live_os_query_proposal_risco_principal",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/chat-ui-minimalist/proposal.md",
-      "source_location": "L8",
+      "source_file": "specs/bot-live-os-query/proposal.md",
+      "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_chat_ui_minimalist_proposal_proposal_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
-      "target": "specs_chat_ui_minimalist_proposal_solu\u00e7\u00e3o_proposta",
+      "source": "specs_bot_live_os_query_proposal_proposal_consulta_live_de_os_no_bot_oficina_inteligente_bot_live_os_query",
+      "target": "specs_bot_live_os_query_proposal_solu\u00e7\u00e3o_proposta",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/chat-ui-minimalist/spec-plan.md",
+      "source_file": "specs/bot-live-os-query/spec-plan.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_chat_ui_minimalist_spec_plan",
-      "target": "specs_chat_ui_minimalist_spec_plan_spec_plan_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
+      "source": "specs_bot_live_os_query_spec_plan",
+      "target": "specs_bot_live_os_query_spec_plan_spec_plan_consulta_live_de_os_no_bot_oficina_inteligente_bot_live_os_query",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/chat-ui-minimalist/spec-plan.md",
+      "source_file": "specs/bot-live-os-query/spec-plan.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_chat_ui_minimalist_spec_plan_spec_plan_nova_interface_do_chat_e_resolu\u00e7\u00e3o_de_ferramentas_chat_ui_minimalist",
-      "target": "specs_chat_ui_minimalist_spec_plan_tasks",
+      "source": "specs_bot_live_os_query_spec_plan_spec_plan_consulta_live_de_os_no_bot_oficina_inteligente_bot_live_os_query",
+      "target": "specs_bot_live_os_query_spec_plan_tasks",
       "confidence_score": 1.0
     },
     {
@@ -94379,8 +95407,228 @@
       "source": "specs_global_overview",
       "target": "specs_global_overview_global_overview",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/os-query-mcp.md",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_os_query_mcp",
+      "target": "specs_os_query_mcp_arquitetura_e_fluxo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/os-query-mcp.md",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_os_query_mcp",
+      "target": "specs_os_query_mcp_checklist_de_implementa\u00e7\u00e3o",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/os-query-mcp.md",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_os_query_mcp",
+      "target": "specs_os_query_mcp_objetivo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/os-query-mcp.md",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_os_query_mcp_arquitetura_e_fluxo",
+      "target": "specs_os_query_mcp_testes_pr\u00e9vios_realizados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/vps-mcp-aspnet/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_vps_mcp_aspnet_design",
+      "target": "specs_vps_mcp_aspnet_design_design_ordem_de_servi\u00e7o_bot_scraper_vps_mcp_aspnet",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/vps-mcp-aspnet/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_vps_mcp_aspnet_design_design_ordem_de_servi\u00e7o_bot_scraper_vps_mcp_aspnet",
+      "target": "specs_vps_mcp_aspnet_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/vps-mcp-aspnet/design.md",
+      "source_location": "L41",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_vps_mcp_aspnet_design_design_ordem_de_servi\u00e7o_bot_scraper_vps_mcp_aspnet",
+      "target": "specs_vps_mcp_aspnet_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/vps-mcp-aspnet/design.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_vps_mcp_aspnet_design_design_ordem_de_servi\u00e7o_bot_scraper_vps_mcp_aspnet",
+      "target": "specs_vps_mcp_aspnet_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/vps-mcp-aspnet/design.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_vps_mcp_aspnet_design_design_ordem_de_servi\u00e7o_bot_scraper_vps_mcp_aspnet",
+      "target": "specs_vps_mcp_aspnet_design_fluxo_de_automa\u00e7\u00e3o_playwright",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/vps-mcp-aspnet/design.md",
+      "source_location": "L37",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_vps_mcp_aspnet_design_design_ordem_de_servi\u00e7o_bot_scraper_vps_mcp_aspnet",
+      "target": "specs_vps_mcp_aspnet_design_infra_deploy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/vps-mcp-aspnet/design.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_vps_mcp_aspnet_design_design_ordem_de_servi\u00e7o_bot_scraper_vps_mcp_aspnet",
+      "target": "specs_vps_mcp_aspnet_design_interfaces_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/vps-mcp-aspnet/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_vps_mcp_aspnet_proposal",
+      "target": "specs_vps_mcp_aspnet_proposal_proposal_ordem_de_servi\u00e7o_bot_scraper_vps_mcp_aspnet",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/vps-mcp-aspnet/proposal.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_vps_mcp_aspnet_proposal_proposal_ordem_de_servi\u00e7o_bot_scraper_vps_mcp_aspnet",
+      "target": "specs_vps_mcp_aspnet_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/vps-mcp-aspnet/proposal.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_vps_mcp_aspnet_proposal_proposal_ordem_de_servi\u00e7o_bot_scraper_vps_mcp_aspnet",
+      "target": "specs_vps_mcp_aspnet_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/vps-mcp-aspnet/proposal.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_vps_mcp_aspnet_proposal_proposal_ordem_de_servi\u00e7o_bot_scraper_vps_mcp_aspnet",
+      "target": "specs_vps_mcp_aspnet_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/vps-mcp-aspnet/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_vps_mcp_aspnet_proposal_proposal_ordem_de_servi\u00e7o_bot_scraper_vps_mcp_aspnet",
+      "target": "specs_vps_mcp_aspnet_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/vps-mcp-aspnet/proposal.md",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_vps_mcp_aspnet_proposal_proposal_ordem_de_servi\u00e7o_bot_scraper_vps_mcp_aspnet",
+      "target": "specs_vps_mcp_aspnet_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/vps-mcp-aspnet/proposal.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_vps_mcp_aspnet_proposal_proposal_ordem_de_servi\u00e7o_bot_scraper_vps_mcp_aspnet",
+      "target": "specs_vps_mcp_aspnet_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/vps-mcp-aspnet/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_vps_mcp_aspnet_spec_plan",
+      "target": "specs_vps_mcp_aspnet_spec_plan_spec_plan_ordem_de_servi\u00e7o_bot_scraper_vps_mcp_aspnet",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/vps-mcp-aspnet/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_vps_mcp_aspnet_spec_plan_spec_plan_ordem_de_servi\u00e7o_bot_scraper_vps_mcp_aspnet",
+      "target": "specs_vps_mcp_aspnet_spec_plan_tasks",
+      "confidence_score": 1.0
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "1c08143e02cbc02feac7d327ad3e84cf59cbea89"
+  "built_at_commit": "b40f638a5d113090e9c0415eb32ec4cbd2d83408"
 }
