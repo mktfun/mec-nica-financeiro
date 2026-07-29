@@ -317,3 +317,322 @@ export async function fetchOSDetailedView(page: Page, osNumber: string): Promise
     pagamentos
   };
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NOVOS DOMÍNIOS — Tipos e Scrapers
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface ContaPagar {
+  id_interno: string;
+  fornecedor: string;
+  plano_contas: string;
+  valor_original: number;
+  valor_em_aberto: number;
+  vencimento: string;
+  status: string;
+}
+
+export interface ContaReceber {
+  id_interno: string;
+  cliente: string;
+  descricao: string;
+  valor_original: number;
+  valor_em_aberto: number;
+  vencimento: string;
+  status: string;
+}
+
+export interface AgendaItem {
+  os_number?: string;
+  descricao: string;
+  data: string;
+  hora: string;
+  responsavel?: string;
+  placa?: string;
+  status: string;
+}
+
+export interface StatusOS {
+  id: string;
+  descricao: string;
+}
+
+export interface FormaPagamento {
+  id: string;
+  descricao: string;
+  ativo: boolean;
+}
+
+export interface FiltrosFinanceiro {
+  lojaSlug?: string;
+  vencimentoInicio?: string;
+  vencimentoFim?: string;
+  status?: string;
+}
+
+export interface FiltrosAgenda {
+  lojaSlug?: string;
+  dataInicio: string;
+  dataFim: string;
+}
+
+/**
+ * Troca de empresa ativa no Oficina Inteligente via dropdown.
+ * idEmpresaOI é o valor do <option> no select de empresas.
+ * Se idEmpresaOI for "DESCOBRIR" ou vazio, não faz nada (usa empresa atual).
+ */
+export async function ensureCompany(page: Page, idEmpresaOI: string): Promise<void> {
+  if (!idEmpresaOI || idEmpresaOI === 'DESCOBRIR') {
+    console.log('[OI] ensureCompany: idEmpresaOI não configurado, usando empresa ativa.');
+    return;
+  }
+
+  try {
+    // Dropdown de empresa — seletor genérico do Oficina Inteligente
+    const ddlSelector = 'select[id*="ddlEmpresa"], select[name*="ddlEmpresa"]';
+    const ddlExists = await page.$(ddlSelector);
+    if (!ddlExists) {
+      console.log('[OI] ensureCompany: dropdown de empresa não encontrado na tela atual.');
+      return;
+    }
+
+    const currentVal = await page.$eval(ddlSelector, (el: HTMLSelectElement) => el.value);
+    if (currentVal === idEmpresaOI) {
+      console.log(`[OI] ensureCompany: empresa ${idEmpresaOI} já está selecionada.`);
+      return;
+    }
+
+    console.log(`[OI] ensureCompany: trocando para empresa ${idEmpresaOI}...`);
+    await page.selectOption(ddlSelector, idEmpresaOI);
+
+    // Aguarda possível postback (ASP.NET WebForms)
+    await page.waitForTimeout(1500);
+    console.log(`[OI] ensureCompany: empresa ${idEmpresaOI} selecionada.`);
+  } catch (e: any) {
+    console.warn('[OI] ensureCompany: erro ao trocar empresa:', e.message);
+  }
+}
+
+/**
+ * Extrai linhas de uma grid ASP.NET (table[id*="grd"]) como array de objetos.
+ * Retorna [] se a grid não for encontrada (não lança exceção).
+ */
+async function extractGrid(page: Page, gridSelectorHint = 'grd'): Promise<Record<string, string>[]> {
+  try {
+    const tableSelector = `table[id*="${gridSelectorHint}"]`;
+    await page.waitForSelector(tableSelector, { timeout: 10_000 });
+
+    return await page.$$eval(tableSelector, (tables) => {
+      const table = tables[0];
+      if (!table) return [];
+
+      const headers: string[] = [];
+      const headerCells = table.querySelectorAll('thead tr th, tr:first-child th');
+      headerCells.forEach((th) => headers.push(th.textContent?.trim() || ''));
+
+      const rows: Record<string, string>[] = [];
+      const bodyRows = table.querySelectorAll('tbody tr, tr:not(:first-child)');
+      bodyRows.forEach((tr) => {
+        const cells = tr.querySelectorAll('td');
+        if (cells.length === 0) return;
+        const row: Record<string, string> = {};
+        cells.forEach((td, i) => {
+          const key = headers[i] || `col_${i}`;
+          row[key] = td.textContent?.trim() || '';
+        });
+        rows.push(row);
+      });
+      return rows;
+    });
+  } catch (e: any) {
+    console.warn(`[OI] extractGrid: grid "${gridSelectorHint}" não encontrada:`, e.message);
+    return [];
+  }
+}
+
+/**
+ * Busca Contas a Pagar no Oficina via wfContaBuscaPagar.aspx.
+ */
+export async function fetchContasPagar(page: Page, filtros: FiltrosFinanceiro): Promise<ContaPagar[] | { warning: string; parcial: ContaPagar[] }> {
+  try {
+    console.log('[OI] fetchContasPagar: navegando para wfContaBuscaPagar.aspx...');
+    await page.goto('https://sistemaoficinainteligente.com.br/wfContaBuscaPagar.aspx', {
+      waitUntil: 'domcontentloaded', timeout: 30_000
+    });
+
+    if (filtros.vencimentoInicio) {
+      const inputInicio = await page.$('input[id*="txtVencimentoInicio"], input[id*="txtDataInicio"]');
+      if (inputInicio) await inputInicio.fill(filtros.vencimentoInicio.replace(/-/g, '/'));
+    }
+    if (filtros.vencimentoFim) {
+      const inputFim = await page.$('input[id*="txtVencimentoFim"], input[id*="txtDataFim"]');
+      if (inputFim) await inputFim.fill(filtros.vencimentoFim.replace(/-/g, '/'));
+    }
+
+    // Clica em buscar e aguarda resposta AJAX (UpdatePanel)
+    const btnBuscar = await page.$('input[id*="btnBuscar"], button[id*="btnBuscar"]');
+    if (btnBuscar) {
+      await Promise.all([
+        page.waitForResponse(res => res.url().includes('wfContaBuscaPagar') && res.status() === 200, { timeout: 20_000 }),
+        btnBuscar.click()
+      ]);
+    }
+
+    const rows = await extractGrid(page, 'grd');
+    if (rows.length === 0) {
+      return { warning: 'Nenhuma conta a pagar encontrada com os filtros informados.', parcial: [] };
+    }
+
+    const contas: ContaPagar[] = rows.map((r, i) => ({
+      id_interno: r['Código'] || r['ID'] || String(i + 1),
+      fornecedor: r['Fornecedor'] || r['Nome'] || '',
+      plano_contas: r['Plano de Contas'] || r['Plano'] || '',
+      valor_original: parseFloat((r['Valor'] || r['Valor Original'] || '0').replace(/[R$.\s]/g, '').replace(',', '.')) || 0,
+      valor_em_aberto: parseFloat((r['Em Aberto'] || r['Saldo'] || '0').replace(/[R$.\s]/g, '').replace(',', '.')) || 0,
+      vencimento: r['Vencimento'] || r['Dt Vencimento'] || '',
+      status: r['Status'] || r['Situação'] || '',
+    }));
+
+    return contas;
+  } catch (e: any) {
+    return { warning: `Erro ao buscar contas a pagar: ${e.message}`, parcial: [] };
+  }
+}
+
+/**
+ * Busca Contas a Receber no Oficina via wfContaBuscaReceber.aspx.
+ */
+export async function fetchContasReceber(page: Page, filtros: FiltrosFinanceiro): Promise<ContaReceber[] | { warning: string; parcial: ContaReceber[] }> {
+  try {
+    console.log('[OI] fetchContasReceber: navegando para wfContaBuscaReceber.aspx...');
+    await page.goto('https://sistemaoficinainteligente.com.br/wfContaBuscaReceber.aspx', {
+      waitUntil: 'domcontentloaded', timeout: 30_000
+    });
+
+    if (filtros.vencimentoInicio) {
+      const inputInicio = await page.$('input[id*="txtVencimentoInicio"], input[id*="txtDataInicio"]');
+      if (inputInicio) await inputInicio.fill(filtros.vencimentoInicio.replace(/-/g, '/'));
+    }
+    if (filtros.vencimentoFim) {
+      const inputFim = await page.$('input[id*="txtVencimentoFim"], input[id*="txtDataFim"]');
+      if (inputFim) await inputFim.fill(filtros.vencimentoFim.replace(/-/g, '/'));
+    }
+
+    const btnBuscar = await page.$('input[id*="btnBuscar"], button[id*="btnBuscar"]');
+    if (btnBuscar) {
+      await Promise.all([
+        page.waitForResponse(res => res.url().includes('wfContaBuscaReceber') && res.status() === 200, { timeout: 20_000 }),
+        btnBuscar.click()
+      ]);
+    }
+
+    const rows = await extractGrid(page, 'grd');
+    if (rows.length === 0) {
+      return { warning: 'Nenhuma conta a receber encontrada com os filtros informados.', parcial: [] };
+    }
+
+    const contas: ContaReceber[] = rows.map((r, i) => ({
+      id_interno: r['Código'] || r['ID'] || String(i + 1),
+      cliente: r['Cliente'] || r['Nome'] || '',
+      descricao: r['Descrição'] || r['Histórico'] || '',
+      valor_original: parseFloat((r['Valor'] || '0').replace(/[R$.\s]/g, '').replace(',', '.')) || 0,
+      valor_em_aberto: parseFloat((r['Em Aberto'] || r['Saldo'] || '0').replace(/[R$.\s]/g, '').replace(',', '.')) || 0,
+      vencimento: r['Vencimento'] || r['Dt Vencimento'] || '',
+      status: r['Status'] || r['Situação'] || '',
+    }));
+
+    return contas;
+  } catch (e: any) {
+    return { warning: `Erro ao buscar contas a receber: ${e.message}`, parcial: [] };
+  }
+}
+
+/**
+ * Busca agenda (agendamentos) no Oficina via wfAgendaCalendario.aspx.
+ */
+export async function fetchAgenda(page: Page, filtros: FiltrosAgenda): Promise<AgendaItem[] | { warning: string; parcial: AgendaItem[] }> {
+  try {
+    console.log('[OI] fetchAgenda: navegando para wfAgendaCalendario.aspx...');
+    await page.goto('https://sistemaoficinainteligente.com.br/wfAgendaCalendario.aspx', {
+      waitUntil: 'domcontentloaded', timeout: 30_000
+    });
+
+    // Tenta preencher filtro de data inicial se existir
+    const inputData = await page.$('input[id*="txtData"], input[id*="txtDataInicio"]');
+    if (inputData && filtros.dataInicio) {
+      await inputData.fill(filtros.dataInicio.replace(/-/g, '/'));
+    }
+
+    const btnBuscar = await page.$('input[id*="btnBuscar"], button[id*="btnBuscar"]');
+    if (btnBuscar) await btnBuscar.click();
+    await page.waitForTimeout(2000);
+
+    const rows = await extractGrid(page, 'grd');
+    if (rows.length === 0) {
+      return { warning: 'Nenhum agendamento encontrado no período informado.', parcial: [] };
+    }
+
+    const agenda: AgendaItem[] = rows.map((r) => ({
+      os_number: r['OS'] || r['Ordem de Serviço'] || undefined,
+      descricao: r['Descrição'] || r['Serviço'] || '',
+      data: r['Data'] || filtros.dataInicio,
+      hora: r['Hora'] || r['Horário'] || '',
+      responsavel: r['Responsável'] || r['Mecânico'] || undefined,
+      placa: r['Placa'] || undefined,
+      status: r['Status'] || r['Situação'] || '',
+    }));
+
+    return agenda;
+  } catch (e: any) {
+    return { warning: `Erro ao buscar agenda: ${e.message}`, parcial: [] };
+  }
+}
+
+/**
+ * Busca configurações de Status de OS no Oficina via wfStatusOrdemDeServico.aspx.
+ */
+export async function fetchConfigStatusOS(page: Page): Promise<StatusOS[] | { warning: string; parcial: StatusOS[] }> {
+  try {
+    console.log('[OI] fetchConfigStatusOS: navegando para wfStatusOrdemDeServico.aspx...');
+    await page.goto('https://sistemaoficinainteligente.com.br/wfStatusOrdemDeServico.aspx', {
+      waitUntil: 'domcontentloaded', timeout: 30_000
+    });
+
+    const rows = await extractGrid(page, 'grd');
+    if (rows.length === 0) {
+      return { warning: 'Nenhum status de OS encontrado.', parcial: [] };
+    }
+
+    return rows.map((r) => ({
+      id: r['Código'] || r['ID'] || '',
+      descricao: r['Descrição'] || r['Status'] || '',
+    }));
+  } catch (e: any) {
+    return { warning: `Erro ao buscar status de OS: ${e.message}`, parcial: [] };
+  }
+}
+
+/**
+ * Busca configurações de Formas de Pagamento no Oficina via wfFormaDePagamento.aspx.
+ */
+export async function fetchConfigFormasPagamento(page: Page): Promise<FormaPagamento[] | { warning: string; parcial: FormaPagamento[] }> {
+  try {
+    console.log('[OI] fetchConfigFormasPagamento: navegando para wfFormaDePagamento.aspx...');
+    await page.goto('https://sistemaoficinainteligente.com.br/wfFormaDePagamento.aspx', {
+      waitUntil: 'domcontentloaded', timeout: 30_000
+    });
+
+    const rows = await extractGrid(page, 'grd');
+    if (rows.length === 0) {
+      return { warning: 'Nenhuma forma de pagamento encontrada.', parcial: [] };
+    }
+
+    return rows.map((r) => ({
+      id: r['Código'] || r['ID'] || '',
+      descricao: r['Descrição'] || r['Forma'] || '',
+      ativo: (r['Ativo'] || r['Status'] || 'S').toUpperCase() !== 'N',
+    }));
+  } catch (e: any) {
+    return { warning: `Erro ao buscar formas de pagamento: ${e.message}`, parcial: [] };
+  }
+}

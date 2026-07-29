@@ -7,9 +7,19 @@ dotenv.config({ path: path.join(__dirname, '../.env') });
 
 import { runSync } from './runner';
 import { chromium } from '@playwright/test';
-import { loginOI, fetchOSByNumber } from './scrapers/oficina';
+import {
+  loginOI,
+  fetchOSByNumber,
+  ensureCompany,
+  fetchContasPagar,
+  fetchContasReceber,
+  fetchAgenda,
+  fetchConfigStatusOS,
+  fetchConfigFormasPagamento,
+} from './scrapers/oficina';
 import { getBotCredentials } from './sync/supabaseUploader';
 import { loadSession, saveSession } from './session/sessionManager';
+import { resolveEmpresa } from './config/empresas';
 
 const app = express();
 app.use(cors());
@@ -87,34 +97,13 @@ app.get('/api/os/:id', async (req: Request, res: Response) => {
     return;
   }
 
-  console.log(`[API] GET /api/os/${osNumber} — Iniciando busca sob demanda`);
+  const lojaSlug = req.query.loja as string | undefined;
+  console.log(`[API] GET /api/os/${osNumber} — loja: ${lojaSlug || 'padrão'}`);
   let browser;
   try {
-    // Buscar credenciais (pode lançar erro se não configurado)
-    const oiCreds = await getBotCredentials('oficina_inteligente');
-    if (!oiCreds?.username) {
-      throw new Error('Credenciais do Oficina Inteligente não configuradas no Supabase.');
-    }
-
-    browser = await chromium.launch({
-      headless: true,
-      executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
-
-    const context = await browser.newContext({
-      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36',
-      viewport: { width: 1280, height: 800 },
-    });
-
-    const hasSession = await loadSession('oi', context);
-    const oiPage = await loginOI(context, { username: oiCreds.username, password: oiCreds.password });
-    
-    if (!hasSession) {
-      await saveSession('oi', context);
-    }
-
-    const osData = await fetchOSByNumber(oiPage, osNumber);
+    const session = await createBotSession(lojaSlug);
+    browser = session.browser;
+    const osData = await fetchOSByNumber(session.page, osNumber);
     
     res.json({ success: true, data: osData });
   } catch (error: any) {
@@ -140,34 +129,14 @@ app.get('/api/os/detalhe/:id', async (req: Request, res: Response) => {
     return;
   }
 
-  console.log(`[API] GET /api/os/detalhe/${osNumber} — Iniciando busca detalhada`);
+  const lojaSlug = req.query.loja as string | undefined;
+  console.log(`[API] GET /api/os/detalhe/${osNumber} — loja: ${lojaSlug || 'padrão'}`);
   let browser;
   try {
-    const oiCreds = await getBotCredentials('oficina_inteligente');
-    if (!oiCreds?.username) {
-      throw new Error('Credenciais do Oficina Inteligente não configuradas no Supabase.');
-    }
-
-    browser = await chromium.launch({
-      headless: true,
-      executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
-
-    const context = await browser.newContext({
-      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36',
-      viewport: { width: 1280, height: 800 },
-    });
-
-    const hasSession = await loadSession('oi', context);
-    const oiPage = await loginOI(context, { username: oiCreds.username, password: oiCreds.password });
-    
-    if (!hasSession) {
-      await saveSession('oi', context);
-    }
-
+    const session = await createBotSession(lojaSlug);
+    browser = session.browser;
     const { fetchOSDetailedView } = require('./scrapers/oficina');
-    const osData = await fetchOSDetailedView(oiPage, osNumber);
+    const osData = await fetchOSDetailedView(session.page, osNumber);
     
     res.json({ success: true, data: osData });
   } catch (error: any) {
@@ -185,14 +154,183 @@ app.get('/api/os/detalhe/:id', async (req: Request, res: Response) => {
   }
 });
 
+// ── Helper: cria browser, faz login e opcionalmente troca empresa ─────────────
+async function createBotSession(lojaSlug?: string) {
+  const oiCreds = await getBotCredentials('oficina_inteligente');
+  if (!oiCreds?.username) {
+    throw new Error('Credenciais do Oficina Inteligente não configuradas no Supabase.');
+  }
+
+  const browser = await chromium.launch({
+    headless: true,
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
+
+  const context = await browser.newContext({
+    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36',
+    viewport: { width: 1280, height: 800 },
+  });
+
+  const hasSession = await loadSession('oi', context);
+  const page = await loginOI(context, { username: oiCreds.username, password: oiCreds.password });
+  if (!hasSession) await saveSession('oi', context);
+
+  // Troca de empresa se loja fornecida
+  if (lojaSlug) {
+    const empresa = resolveEmpresa(lojaSlug);
+    if (empresa) {
+      await ensureCompany(page, empresa.id_empresa_oi);
+    } else {
+      console.warn(`[API] Loja "${lojaSlug}" não encontrada no mapa de empresas.`);
+    }
+  }
+
+  return { browser, page };
+}
+
+// GET /api/contas-pagar — Busca contas a pagar no Oficina
+app.get('/api/contas-pagar', async (req: Request, res: Response) => {
+  const loja = req.query.loja as string;
+  if (!loja) {
+    res.status(400).json({ success: false, error: 'Parâmetro "loja" é obrigatório.' });
+    return;
+  }
+
+  let browser;
+  try {
+    console.log(`[API] GET /api/contas-pagar — loja: ${loja}`);
+    const session = await createBotSession(loja);
+    browser = session.browser;
+    const filtros = {
+      lojaSlug: loja,
+      vencimentoInicio: req.query.vencimento_inicio as string,
+      vencimentoFim: req.query.vencimento_fim as string,
+    };
+    const data = await fetchContasPagar(session.page, filtros);
+    res.json({ success: true, data });
+  } catch (e: any) {
+    console.error('[API] Erro em /api/contas-pagar:', e);
+    res.status(500).json({ success: false, error: e.message || String(e) });
+  } finally {
+    if (browser) await browser.close().catch(console.error);
+  }
+});
+
+// GET /api/contas-receber — Busca contas a receber no Oficina
+app.get('/api/contas-receber', async (req: Request, res: Response) => {
+  const loja = req.query.loja as string;
+  if (!loja) {
+    res.status(400).json({ success: false, error: 'Parâmetro "loja" é obrigatório.' });
+    return;
+  }
+
+  let browser;
+  try {
+    console.log(`[API] GET /api/contas-receber — loja: ${loja}`);
+    const session = await createBotSession(loja);
+    browser = session.browser;
+    const filtros = {
+      lojaSlug: loja,
+      vencimentoInicio: req.query.vencimento_inicio as string,
+      vencimentoFim: req.query.vencimento_fim as string,
+    };
+    const data = await fetchContasReceber(session.page, filtros);
+    res.json({ success: true, data });
+  } catch (e: any) {
+    console.error('[API] Erro em /api/contas-receber:', e);
+    res.status(500).json({ success: false, error: e.message || String(e) });
+  } finally {
+    if (browser) await browser.close().catch(console.error);
+  }
+});
+
+// GET /api/agenda — Busca agenda no Oficina
+app.get('/api/agenda', async (req: Request, res: Response) => {
+  const loja = req.query.loja as string;
+  const dataInicio = req.query.data_inicio as string;
+  const dataFim = req.query.data_fim as string;
+
+  if (!loja) {
+    res.status(400).json({ success: false, error: 'Parâmetro "loja" é obrigatório.' });
+    return;
+  }
+  if (!dataInicio || !dataFim) {
+    res.status(400).json({ success: false, error: 'Parâmetros "data_inicio" e "data_fim" são obrigatórios.' });
+    return;
+  }
+
+  let browser;
+  try {
+    console.log(`[API] GET /api/agenda — loja: ${loja} período: ${dataInicio} → ${dataFim}`);
+    const session = await createBotSession(loja);
+    browser = session.browser;
+    const data = await fetchAgenda(session.page, { lojaSlug: loja, dataInicio, dataFim });
+    res.json({ success: true, data });
+  } catch (e: any) {
+    console.error('[API] Erro em /api/agenda:', e);
+    res.status(500).json({ success: false, error: e.message || String(e) });
+  } finally {
+    if (browser) await browser.close().catch(console.error);
+  }
+});
+
+// GET /api/config/status-os — Lista status de OS configurados
+app.get('/api/config/status-os', async (req: Request, res: Response) => {
+  const loja = req.query.loja as string;
+  if (!loja) {
+    res.status(400).json({ success: false, error: 'Parâmetro "loja" é obrigatório.' });
+    return;
+  }
+
+  let browser;
+  try {
+    const session = await createBotSession(loja);
+    browser = session.browser;
+    const data = await fetchConfigStatusOS(session.page);
+    res.json({ success: true, data });
+  } catch (e: any) {
+    res.status(500).json({ success: false, error: e.message || String(e) });
+  } finally {
+    if (browser) await browser.close().catch(console.error);
+  }
+});
+
+// GET /api/config/formas-pagamento — Lista formas de pagamento configuradas
+app.get('/api/config/formas-pagamento', async (req: Request, res: Response) => {
+  const loja = req.query.loja as string;
+  if (!loja) {
+    res.status(400).json({ success: false, error: 'Parâmetro "loja" é obrigatório.' });
+    return;
+  }
+
+  let browser;
+  try {
+    const session = await createBotSession(loja);
+    browser = session.browser;
+    const data = await fetchConfigFormasPagamento(session.page);
+    res.json({ success: true, data });
+  } catch (e: any) {
+    res.status(500).json({ success: false, error: e.message || String(e) });
+  } finally {
+    if (browser) await browser.close().catch(console.error);
+  }
+});
+
 const PORT = Number(process.env.BOT_PORT || process.env.PORT || 3001);
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n🚀 ConciliaMec Bot API rodando em http://0.0.0.0:${PORT}`);
+  console.log(`\n🚀 ConciliaMec Bot API — Oficina System Connector rodando em http://0.0.0.0:${PORT}`);
   console.log(`   🔑 API Key configurada: ${BOT_API_KEY.substring(0, 8)}...`);
   console.log(`   📡 Endpoints:`);
-  console.log(`      GET  /health              (público)`);
-  console.log(`      POST /api/sync            (requer X-Api-Key)`);
-  console.log(`      POST /api/sync/oficina    (requer X-Api-Key)`);
-  console.log(`      POST /api/sync/rede       (requer X-Api-Key)`);
-  console.log(`      GET  /api/os/:id          (requer X-Api-Key)\n`);
+  console.log(`      GET  /health                        (público)`);
+  console.log(`      POST /api/sync                      (requer X-Api-Key)`);
+  console.log(`      POST /api/sync/oficina              (requer X-Api-Key)`);
+  console.log(`      POST /api/sync/rede                 (requer X-Api-Key)`);
+  console.log(`      GET  /api/os/:id[?loja=<slug>]      (requer X-Api-Key)`);
+  console.log(`      GET  /api/os/detalhe/:id[?loja=<slug>] (requer X-Api-Key)`);
+  console.log(`      GET  /api/contas-pagar?loja=<slug>  (requer X-Api-Key)`);
+  console.log(`      GET  /api/contas-receber?loja=<slug>(requer X-Api-Key)`);
+  console.log(`      GET  /api/agenda?loja=<slug>        (requer X-Api-Key)`);
+  console.log(`      GET  /api/config/status-os?loja=    (requer X-Api-Key)`);
+  console.log(`      GET  /api/config/formas-pagamento?  (requer X-Api-Key)\n`);
 });
