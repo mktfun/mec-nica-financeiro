@@ -86,22 +86,21 @@ Deno.serve(async (req) => {
 
     const mcpTools = {
       consulta_os_detalhe_completo: tool({
-        description: 'Consulta os detalhes COMPLETOS de uma Ordem de Serviço específica pelo seu número (Ex: 1763). Retorna cabeçalho, serviços, peças, pagamentos e valores totais.',
+        description: 'Consulta os detalhes COMPLETOS de uma Ordem de Serviço na API EXTERNA (Oficina Inteligente). Use SOMENTE se a OS não for encontrada localmente ou se faltar dados profundos (checklist, histórico).',
         parameters: z.object({
           osNumber: z.string().describe('O número da OS (ex: 1763)')
         }),
         execute: async ({ osNumber }) => {
           try {
-            const url = \`\${settings?.bot_url}/api/os/detalhe/\${osNumber}\`;
+            const url = `${settings?.bot_url}/api/os/detalhe/${osNumber}`;
             const response = await fetch(url, {
               headers: {
                 'x-api-key': settings?.bot_api_key || ''
               }
             });
-            if (!response.ok) throw new Error(\`Erro HTTP \${response.status}\`);
+            if (!response.ok) return { error: `Erro na API externa: HTTP ${response.status}. Use apenas os dados locais.` };
             const json = await response.json();
             
-            // Log action
             await supabaseClient.from('mcp_logs').insert([{
               conversation_id: 'auto-mcp-log',
               action: 'consulta_os_detalhe_completo',
@@ -111,70 +110,86 @@ Deno.serve(async (req) => {
             
             return json;
           } catch (e: any) {
-            return { error: e.message };
+            return { error: `Falha de conexão com a API externa: ${e.message}. Use apenas os dados locais.` };
           }
         },
       }),
-      consulta_os_movimento_periodo: tool({
-        description: 'Consulta as movimentações e resumos de OS de uma loja em um determinado período.',
+      consulta_resumo_os: tool({
+        description: 'Consulta o banco de dados LOCAL para listar Ordens de Serviço (OS). Use esta ferramenta ANTES de chamar APIs externas. Retorna status, placa, loja e valores.',
         parameters: z.object({
-          loja: z.string().describe('ID da loja'),
-          data_inicio: z.string().describe('Data de início YYYY-MM-DD'),
-          data_fim: z.string().describe('Data de fim YYYY-MM-DD'),
-          status: z.string().optional().describe('Status opcional da OS')
+          osNumber: z.string().optional().describe('Número específico da OS'),
+          loja: z.string().optional().describe('ID da loja (ex: mp_jabaquara)'),
+          limit: z.number().default(10).describe('Quantidade de OS a retornar')
         }),
-        execute: async () => 'Funcionalidade em desenvolvimento no MCP',
+        execute: async ({ osNumber, loja, limit }) => {
+           let query = supabaseClient.from('patio_os').select('*');
+           if (osNumber) query = query.eq('os_number', osNumber);
+           if (loja) query = query.eq('store_id', loja);
+           const { data, error } = await query.limit(limit);
+           if (error) return { erro_local: error.message };
+           if (!data || data.length === 0) return { aviso: 'OS não encontrada no banco local.' };
+           return data;
+        }
       }),
-      consulta_contas_pagar_exposicao: tool({
-        description: 'Consulta as contas a pagar que estão em exposição (próximas de vencer) ou num período.',
+      consulta_saldo_contas: tool({
+        description: 'Consulta o fluxo de caixa, transações e saldo no banco LOCAL (ConciliaMec).',
         parameters: z.object({
           loja: z.string().optional().describe('ID da loja'),
-          vencimento_inicio: z.string().optional().describe('Data vencimento início'),
-          vencimento_fim: z.string().optional().describe('Data vencimento fim')
+          limit: z.number().default(50).describe('Quantidade de registros')
         }),
-        execute: async () => 'Funcionalidade em desenvolvimento no MCP',
+        execute: async ({ loja, limit }) => {
+           let query = supabaseClient.from('transactions').select('*');
+           if (loja) query = query.eq('store_id', loja);
+           const { data, error } = await query.limit(limit);
+           if (error) return { erro_local: error.message };
+           return data;
+        }
       }),
-      consulta_fluxo_caixa: tool({
-        description: 'Consulta o fluxo de caixa de uma loja em um período.',
+      consulta_conciliacao_periodo: tool({
+        description: 'Consulta resumos de conciliações (fechamento de caixa) no banco LOCAL.',
         parameters: z.object({
-          loja: z.string().describe('ID da loja'),
-          periodo: z.string().describe('Período de consulta')
+          loja: z.string().optional().describe('ID da loja'),
+          data_inicio: z.string().optional().describe('Data de início YYYY-MM-DD'),
+          limit: z.number().default(30).describe('Quantidade de registros')
         }),
-        execute: async () => 'Funcionalidade em desenvolvimento no MCP',
+        execute: async ({ loja, data_inicio, limit }) => {
+           let query = supabaseClient.from('reconciliations').select('*');
+           if (loja) query = query.eq('store_id', loja);
+           if (data_inicio) query = query.gte('date', data_inicio);
+           const { data, error } = await query.limit(limit);
+           if (error) return { erro_local: error.message };
+           return data;
+        }
       }),
-      consulta_estoque_baixo: tool({
-        description: 'Consulta produtos com estoque abaixo do limite em uma loja.',
+      consulta_contas_em_aberto: tool({
+        description: 'Consulta contas a pagar/receber (receivables) que estão em aberto no banco LOCAL.',
         parameters: z.object({
-          loja: z.string().describe('ID da loja'),
-          limite_quantidade: z.number().describe('Quantidade limite')
+          loja: z.string().optional().describe('ID da loja'),
+          limit: z.number().default(30).describe('Quantidade de registros')
         }),
-        execute: async () => 'Funcionalidade em desenvolvimento no MCP',
-      }),
-      consulta_agenda_dia: tool({
-        description: 'Consulta a agenda de serviços/agendamentos para um dia específico.',
-        parameters: z.object({
-          loja: z.string().describe('ID da loja'),
-          data: z.string().describe('Data YYYY-MM-DD')
-        }),
-        execute: async () => 'Funcionalidade em desenvolvimento no MCP',
+        execute: async ({ loja, limit }) => {
+           let query = supabaseClient.from('receivables').select('*').eq('status', 'PENDING');
+           if (loja) query = query.eq('store_id', loja);
+           const { data, error } = await query.limit(limit);
+           if (error) return { erro_local: error.message };
+           return data;
+        }
       })
     };
 
     const systemPrompt = `Você é o Agente de I.A. da Oficina Inteligente, o Conector Sistêmico oficial da rede.
-O sistema Oficina Inteligente tem múltiplos módulos:
-- OS (ordem de serviço)
-- Financeiro (contas a pagar/receber, caixa, fluxo)
-- Estoque/Produtos
-- Agenda
-- Configurações
+O sistema Oficina Inteligente tem múltiplos módulos (OS, Financeiro, Conciliação, Estoque).
 
-IMPORTANTE: Você é um Agente operando na nuvem. NUNCA tente acessar endereços locais (como localhost, 127.0.0.1, portas internas) ou acessar arquivos de sistema do servidor. Todo acesso ao sistema legado Oficina Inteligente é feito estritamente através das Tools fornecidas, que se comunicam via HTTPS com a nossa API oficial de produção (bot.tork.services).
+REGRAS DE ROTEAMENTO COGNITIVO (MUITO IMPORTANTE):
+1. Fonte Primária (Banco Local): O sistema ConciliaMec já importa dados da Oficina diariamente. Para perguntas como "quantas OS temos?", "quanto temos no caixa?", "resumo de conciliações", ou listar contas em aberto, USE SEMPRE AS TOOLS LOCAIS (consulta_resumo_os, consulta_saldo_contas, consulta_conciliacao_periodo, consulta_contas_em_aberto).
+2. Fonte Secundária (API Externa Oficina via Bot): SÓ USE a tool \`consulta_os_detalhe_completo\` se:
+   - O usuário pedir especificamente detalhes profundos de uma OS (ex: checklist, mecânico executor) E ESSES DADOS NÃO EXISTIREM NO RESUMO LOCAL.
+   - O usuário afirmar que a OS não consta no banco local.
 
-Você NÃO deve assumir que toda pergunta é sobre OS.
-Sempre identifique se a intenção é sobre OS, financeiro, estoque, agenda ou config antes de escolher a ferramenta.
-Quando o usuário pedir qualquer coisa sobre uma OS específica (ex: "Detalhes da OS 1763", "me mostra essa OS completa"), extraia o número e chame \`consulta_os_detalhe_completo\`.
-Se a ferramenta retornar dados, apresente o quadro completo: loja, cliente, veículo, responsável, status, valor total, quanto já foi pago, percentual e a lista resumida de itens. Não responda com texto genérico se a ferramenta retornar dados.
-SEMPRE que for necessário buscar dados do sistema, USE as tools disponíveis em vez de adivinhar. Formate os dados monetários em R$ (BRL).`;
+TRATAMENTO DE ERROS:
+- Se qualquer ferramenta retornar um JSON contendo uma chave \`error\` ou \`erro_local\`, leia a mensagem de erro.
+- EXPLIQUE ao usuário de forma educada o que falhou (ex: "A OS não foi encontrada na Oficina" ou "O serviço de conexão externa está offline"). NUNCA devolva apenas um "Ocorreu um erro genérico" ou "non-2xx status code".
+- Formate os dados monetários em R$ (BRL). Se a ferramenta retornar dados, apresente os valores ao usuário de forma limpa.`;
 
     const { text, toolCalls, toolResults } = await generateText({
       model: llmModel,
