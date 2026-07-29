@@ -18,3 +18,9 @@
 - **PromptInput Minimalista (\src/components/chat/PromptInput.tsx\):** Componente avançado com animações framer-motion-like em CSS puro e auto-resize com blur, substituto do PromptBox.
 - **MessageList (\src/components/chat/MessageList.tsx\):** Exibe execuções de MCP logs via um bloco expansível \<details>\ minimalista.
 - **Tool Edge Function (\supabase/functions/ai-chat/index.ts\):** Possui a tool \consulta_detalhes_os\ para buscar informações no Supabase local de forma ultra-rápida, contornando chamadas remotas.
+  
+### ui-refactor  
+- Modificado: src/components/conciliacao/RedeVsOfxTable.tsx (Refatorado para formato Extrato)  
+- Modificado: src/components/conciliacao/PixVsOfxTable.tsx (Refatorado para formato Extrato)  
+- Modificado: src/hooks/useConciliacao.ts (adicionado calculo de taxas em osVsRede)  
+- Removido: src/components/conciliacao/ConciliacaoAlertsSection.tsx 

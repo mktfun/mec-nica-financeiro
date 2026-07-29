@@ -8,7 +8,7 @@ import { OsVsRedeTable } from '@/components/conciliacao/OsVsRedeTable';
 import { RedeVsOfxTable } from '@/components/conciliacao/RedeVsOfxTable';
 import { PixVsOfxTable } from '@/components/conciliacao/PixVsOfxTable';
 import { OfxSemMatchTable } from '@/components/conciliacao/OfxSemMatchTable';
-import { ConciliacaoAlertsSection } from '@/components/conciliacao/ConciliacaoAlertsSection';
+
 import { useTransactionsPorDataELoja } from '@/hooks/useTransactions';
 import { useReconciliationViews } from '@/hooks/useConciliacao';
 import { useBackgroundAiReconciler } from '@/hooks/useBackgroundAiReconciler';
@@ -78,7 +78,7 @@ function ConciliacaoLojaPage() {
     );
   }
 
-  const totalJuros = transactions.filter(t => t.source === 'rede_taxa').reduce((acc, t) => acc + Number(t.amount || 0), 0);
+  const totalJuros = transactions.filter(t => (t as any).source === 'rede_taxa').reduce((acc, t) => acc + Number(t.amount || 0), 0);
 
   return (
     <AppShell>
@@ -122,10 +122,6 @@ function ConciliacaoLojaPage() {
           <TabBtn active={activeTab === 'ofx_sem_match'} onClick={() => setActiveTab('ofx_sem_match')}>
             4. Banco (Sem Origem)
           </TabBtn>
-          <TabBtn active={activeTab === 'alerts'} onClick={() => setActiveTab('alerts')}>
-            <ShieldAlert size={14} className="text-[var(--color-accent-warning)]" />
-            5. Alertas de Exceções
-          </TabBtn>
         </div>
 
         <div className="min-h-[400px]">
@@ -133,7 +129,6 @@ function ConciliacaoLojaPage() {
           {activeTab === 'rede_ofx' && <RedeVsOfxTable storeId={lojaId} date={targetDate} />}
           {activeTab === 'pix_ofx' && <PixVsOfxTable storeId={lojaId} date={targetDate} />}
           {activeTab === 'ofx_sem_match' && <OfxSemMatchTable storeId={lojaId} date={targetDate} />}
-          {activeTab === 'alerts' && <ConciliacaoAlertsSection storeId={lojaId} date={targetDate} />}
         </div>
       </div>
     </AppShell>

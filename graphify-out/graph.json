@@ -11106,8 +11106,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_chat_messagelist",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "messagelist.tsx"
     },
     {
@@ -11117,8 +11117,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_chat_messagelist_message",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "message"
     },
     {
@@ -11128,8 +11128,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_components_chat_messagelist_messagelist",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "messagelist()"
     },
     {
@@ -11326,8 +11326,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_chat_promptinput",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "promptinput.tsx"
     },
     {
@@ -11337,8 +11337,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_attachment",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "attachment"
     },
     {
@@ -11348,8 +11348,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_morphingtext",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "morphingtext()"
     },
     {
@@ -11359,8 +11359,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_modelicon",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "modelicon()"
     },
     {
@@ -11370,8 +11370,8 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_arrowupicon",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "arrowupicon()"
     },
     {
@@ -11381,8 +11381,8 @@
       "source_location": "L86",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_micicon",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "micicon()"
     },
     {
@@ -11392,8 +11392,8 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_stopicon",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "stopicon()"
     },
     {
@@ -11403,8 +11403,8 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_plusicon",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "plusicon()"
     },
     {
@@ -11414,8 +11414,8 @@
       "source_location": "L111",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_closeicon",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "closeicon()"
     },
     {
@@ -11425,8 +11425,8 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_dynamicbarsicon",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "dynamicbarsicon()"
     },
     {
@@ -11436,8 +11436,8 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_attachmentthumb",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "attachmentthumb()"
     },
     {
@@ -11447,8 +11447,8 @@
       "source_location": "L197",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_attachmentgallerymodal",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "attachmentgallerymodal()"
     },
     {
@@ -11458,8 +11458,8 @@
       "source_location": "L294",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_promptinputprops",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "promptinputprops"
     },
     {
@@ -11469,31 +11469,9 @@
       "source_location": "L310",
       "_origin": "ast",
       "id": "src_components_chat_promptinput_promptinput",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "promptinput"
-    },
-    {
-      "label": "ConciliacaoAlertsSection.tsx",
-      "file_type": "code",
-      "source_file": "src/components/conciliacao/ConciliacaoAlertsSection.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_components_conciliacao_conciliacaoalertssection",
-      "community": 17,
-      "community_name": "patio.tsx",
-      "norm_label": "conciliacaoalertssection.tsx"
-    },
-    {
-      "label": "ConciliacaoAlertsSection()",
-      "file_type": "code",
-      "source_file": "src/components/conciliacao/ConciliacaoAlertsSection.tsx",
-      "source_location": "L8",
-      "_origin": "ast",
-      "id": "src_components_conciliacao_conciliacaoalertssection_conciliacaoalertssection",
-      "community": 17,
-      "community_name": "patio.tsx",
-      "norm_label": "conciliacaoalertssection()"
     },
     {
       "label": "Modulo1SaldoPanel.tsx",
@@ -11502,8 +11480,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "modulo1saldopanel.tsx"
     },
     {
@@ -11535,8 +11513,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_ofxsemmatchtable",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "ofxsemmatchtable.tsx"
     },
     {
@@ -11557,8 +11535,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_osdetailmodal",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "osdetailmodal.tsx"
     },
     {
@@ -11568,8 +11546,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_conciliacao_osdetailmodal_osdetailmodalprops",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "osdetailmodalprops"
     },
     {
@@ -11579,8 +11557,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "src_components_conciliacao_osdetailmodal_osdetailmodal",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "osdetailmodal()"
     },
     {
@@ -11590,8 +11568,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_osvsredetable",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "osvsredetable.tsx"
     },
     {
@@ -11601,8 +11579,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_components_conciliacao_osvsredetable_osvsredetable",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "osvsredetable()"
     },
     {
@@ -11612,8 +11590,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_pixvsofxtable",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "pixvsofxtable.tsx"
     },
     {
@@ -11667,8 +11645,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsofxtable",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "redevsofxtable.tsx"
     },
     {
@@ -11722,8 +11700,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog",
-      "community": 514,
-      "community_name": "@radix-ui/react-menubar",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "alertresolvedialog.tsx"
     },
     {
@@ -11733,8 +11711,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog_alertresolvedialogprops",
-      "community": 514,
-      "community_name": "@radix-ui/react-menubar",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "alertresolvedialogprops"
     },
     {
@@ -11744,8 +11722,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog_alertresolvedialog",
-      "community": 514,
-      "community_name": "@radix-ui/react-menubar",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "alertresolvedialog()"
     },
     {
@@ -11777,8 +11755,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_cashflowchart",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "cashflowchart.tsx"
     },
     {
@@ -11788,8 +11766,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_dashboard_cashflowchart_cashflowchart",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "cashflowchart()"
     },
     {
@@ -11799,8 +11777,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "herobalance.tsx"
     },
     {
@@ -11810,8 +11788,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance_herobalance",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "herobalance()"
     },
     {
@@ -11821,8 +11799,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "motorstatus.tsx"
     },
     {
@@ -11832,8 +11810,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus_motorstatus",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "motorstatus()"
     },
     {
@@ -11887,8 +11865,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "quickactions.tsx"
     },
     {
@@ -11898,8 +11876,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_container",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "container"
     },
     {
@@ -11909,8 +11887,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_item",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "item"
     },
     {
@@ -11920,8 +11898,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_quickactions",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "quickactions()"
     },
     {
@@ -11931,8 +11909,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_recentactivity",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "recentactivity.tsx"
     },
     {
@@ -11953,8 +11931,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_storeformdialog",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "storeformdialog.tsx"
     },
     {
@@ -11964,8 +11942,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_dashboard_storeformdialog_storeformdialogprops",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "storeformdialogprops"
     },
     {
@@ -11975,8 +11953,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_dashboard_storeformdialog_storeformdialog",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "storeformdialog()"
     },
     {
@@ -11986,8 +11964,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_storerankingchart",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "storerankingchart.tsx"
     },
     {
@@ -11997,8 +11975,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_dashboard_storerankingchart_storerankingchart",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "storerankingchart()"
     },
     {
@@ -12107,8 +12085,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "wizardimportacao.tsx"
     },
     {
@@ -12118,8 +12096,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_wizardimportacaoprops",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "wizardimportacaoprops"
     },
     {
@@ -12129,8 +12107,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_usestoremapping",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "usestoremapping()"
     },
     {
@@ -12140,8 +12118,8 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_wizardimportacao",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "wizardimportacao()"
     },
     {
@@ -12151,8 +12129,8 @@
       "source_location": "L465",
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_stepindicator",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "stepindicator()"
     },
     {
@@ -12162,8 +12140,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_appshell",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "appshell.tsx"
     },
     {
@@ -12173,8 +12151,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_layout_appshell_appshell",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "appshell()"
     },
     {
@@ -12184,8 +12162,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_bottomnav",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "bottomnav.tsx"
     },
     {
@@ -12195,8 +12173,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_layout_bottomnav_navitems",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "navitems"
     },
     {
@@ -12206,8 +12184,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_components_layout_bottomnav_bottomnav",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "bottomnav()"
     },
     {
@@ -12217,8 +12195,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_sidebar",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "sidebar.tsx"
     },
     {
@@ -12228,8 +12206,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_layout_sidebar_navitems",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "navitems"
     },
     {
@@ -12239,8 +12217,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_components_layout_sidebar_sidebar",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "sidebar()"
     },
     {
@@ -12250,8 +12228,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_topbar",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "topbar.tsx"
     },
     {
@@ -12261,8 +12239,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_layout_topbar_topbar",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "topbar()"
     },
     {
@@ -12272,8 +12250,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_animatednumber",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "animatednumber.tsx"
     },
     {
@@ -12283,8 +12261,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumberprops",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "animatednumberprops"
     },
     {
@@ -12294,8 +12272,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumber",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "animatednumber()"
     },
     {
@@ -12305,8 +12283,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_badge",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "badge.tsx"
     },
     {
@@ -12316,8 +12294,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_components_ui_badge_badgeprops",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "badgeprops"
     },
     {
@@ -12327,8 +12305,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_ui_badge_badge",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "badge()"
     },
     {
@@ -12371,8 +12349,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_card",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "card.tsx"
     },
     {
@@ -12382,8 +12360,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_ui_card_cardprops",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "cardprops"
     },
     {
@@ -12393,8 +12371,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_ui_card_card",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "card()"
     },
     {
@@ -12404,8 +12382,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_input",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "input.tsx"
     },
     {
@@ -12415,8 +12393,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_ui_input_inputprops",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "inputprops"
     },
     {
@@ -12426,8 +12404,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_ui_input_input",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "input"
     },
     {
@@ -12503,8 +12481,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_themetoggle",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "themetoggle.tsx"
     },
     {
@@ -12514,8 +12492,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_components_ui_themetoggle_themetoggle",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "themetoggle()"
     },
     {
@@ -12657,8 +12635,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usealerts",
-      "community": 514,
-      "community_name": "@radix-ui/react-menubar",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usealerts.ts"
     },
     {
@@ -12668,8 +12646,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_usealerts_usealerts",
-      "community": 514,
-      "community_name": "@radix-ui/react-menubar",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "usealerts()"
     },
     {
@@ -12679,8 +12657,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_hooks_usealerts_useallalerts",
-      "community": 514,
-      "community_name": "@radix-ui/react-menubar",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "useallalerts()"
     },
     {
@@ -12690,8 +12668,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "src_hooks_usealerts_useresolvealert",
-      "community": 514,
-      "community_name": "@radix-ui/react-menubar",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "useresolvealert()"
     },
     {
@@ -12701,8 +12679,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useauth",
-      "community": 501,
-      "community_name": "useAuth.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "useauth.ts"
     },
     {
@@ -12712,8 +12690,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_hooks_useauth_listeners",
-      "community": 501,
-      "community_name": "useAuth.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "listeners"
     },
     {
@@ -12723,8 +12701,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_hooks_useauth_usesession",
-      "community": 2,
-      "community_name": "supabase.ts",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "usesession()"
     },
     {
@@ -12745,8 +12723,8 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "src_hooks_useauth_uselogout",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 19,
+      "community_name": "AppShell.tsx",
       "norm_label": "uselogout()"
     },
     {
@@ -12767,8 +12745,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_hooks_usebackgroundaireconciler_usebackgroundaireconciler",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "usebackgroundaireconciler()"
     },
     {
@@ -12778,8 +12756,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "usebotcredentials.ts"
     },
     {
@@ -12789,8 +12767,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_botcredentialrow",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "botcredentialrow"
     },
     {
@@ -12800,8 +12778,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usebotcredentials",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "usebotcredentials()"
     },
     {
@@ -12811,8 +12789,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_useupdatebotcredential",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "useupdatebotcredential()"
     },
     {
@@ -12822,8 +12800,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usemarkcredentialvalid",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "usemarkcredentialvalid()"
     },
     {
@@ -12855,8 +12833,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotlogs",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "usebotlogs()"
     },
     {
@@ -12899,8 +12877,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_hooks_usebotruns_usebotrunhistory",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "usebotrunhistory()"
     },
     {
@@ -12987,8 +12965,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "useconciliacao.ts"
     },
     {
@@ -12998,8 +12976,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_isvaliduuid",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "isvaliduuid()"
     },
     {
@@ -13009,8 +12987,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_conciliacaoresumo",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "conciliacaoresumo"
     },
     {
@@ -13042,8 +13020,8 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesaveimportedreport",
-      "community": 13,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "usesaveimportedreport()"
     },
     {
@@ -13064,8 +13042,8 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesystemtransactions",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "usesystemtransactions()"
     },
     {
@@ -13075,8 +13053,8 @@
       "source_location": "L139",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usedailyreconciliationdelta",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "usedailyreconciliationdelta()"
     },
     {
@@ -13105,7 +13083,7 @@
       "label": "useModulo1StoresData()",
       "file_type": "code",
       "source_file": "src/hooks/useConciliacao.ts",
-      "source_location": "L524",
+      "source_location": "L529",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usemodulo1storesdata",
       "community": 16,
@@ -13116,22 +13094,22 @@
       "label": "useUpdateOsStatus()",
       "file_type": "code",
       "source_file": "src/hooks/useConciliacao.ts",
-      "source_location": "L601",
+      "source_location": "L606",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useupdateosstatus",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "useupdateosstatus()"
     },
     {
       "label": "useResolveUnmatchedAlert()",
       "file_type": "code",
       "source_file": "src/hooks/useConciliacao.ts",
-      "source_location": "L644",
+      "source_location": "L649",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useresolveunmatchedalert",
-      "community": 17,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "useresolveunmatchedalert()"
     },
     {
@@ -13515,8 +13493,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usestores",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "usestores.ts"
     },
     {
@@ -13526,8 +13504,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usestores_sanitizestore",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "sanitizestore()"
     },
     {
@@ -13537,8 +13515,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_hooks_usestores_usestores",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "usestores()"
     },
     {
@@ -13548,8 +13526,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "src_hooks_usestores_usestore",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "usestore()"
     },
     {
@@ -13559,8 +13537,8 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "src_hooks_usestores_useupdatestore",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "useupdatestore()"
     },
     {
@@ -13570,8 +13548,8 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "src_hooks_usestores_usecreatestore",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "usecreatestore()"
     },
     {
@@ -13581,8 +13559,8 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "src_hooks_usestores_usedeletestore",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "usedeletestore()"
     },
     {
@@ -13592,8 +13570,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usetransactions",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "usetransactions.ts"
     },
     {
@@ -13603,8 +13581,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactions",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "usetransactions()"
     },
     {
@@ -13614,8 +13592,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactionsbystore",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "usetransactionsbystore()"
     },
     {
@@ -13625,8 +13603,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedashboardsummary",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "usedashboardsummary()"
     },
     {
@@ -13636,8 +13614,8 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usecashflow",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "usecashflow()"
     },
     {
@@ -13647,8 +13625,8 @@
       "source_location": "L157",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useextrato",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "useextrato()"
     },
     {
@@ -13658,8 +13636,8 @@
       "source_location": "L216",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useallstoresbalances",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "useallstoresbalances()"
     },
     {
@@ -13680,8 +13658,8 @@
       "source_location": "L259",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useweeklyrevenuetrend",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "useweeklyrevenuetrend()"
     },
     {
@@ -13713,8 +13691,8 @@
       "source_location": "L340",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usebulkinserttransactions",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "usebulkinserttransactions()"
     },
     {
@@ -13757,8 +13735,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher",
-      "community": 37,
-      "community_name": "supabase/types.ts",
+      "community": 639,
+      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
       "norm_label": "auth-attacher.ts"
     },
     {
@@ -13768,8 +13746,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher_attachsupabaseauth",
-      "community": 37,
-      "community_name": "supabase/types.ts",
+      "community": 639,
+      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
       "norm_label": "attachsupabaseauth"
     },
     {
@@ -13834,8 +13812,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_integrations_supabase_client",
-      "community": 37,
-      "community_name": "supabase/types.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "client.ts"
     },
     {
@@ -13845,8 +13823,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_integrations_supabase_client_createsupabaseclient",
-      "community": 37,
-      "community_name": "supabase/types.ts",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "createsupabaseclient()"
     },
     {
@@ -14109,8 +14087,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_error_capture",
-      "community": 37,
-      "community_name": "supabase/types.ts",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "error-capture.ts"
     },
     {
@@ -14120,8 +14098,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_lib_error_capture_record",
-      "community": 37,
-      "community_name": "supabase/types.ts",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "record()"
     },
     {
@@ -14131,8 +14109,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_lib_error_capture_consumelastcapturederror",
-      "community": 37,
-      "community_name": "supabase/types.ts",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "consumelastcapturederror()"
     },
     {
@@ -14142,8 +14120,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_error_page",
-      "community": 37,
-      "community_name": "supabase/types.ts",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "error-page.ts"
     },
     {
@@ -14153,8 +14131,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_error_page_rendererrorpage",
-      "community": 37,
-      "community_name": "supabase/types.ts",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "rendererrorpage()"
     },
     {
@@ -14813,8 +14791,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_lib_supabase_storerow",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "storerow"
     },
     {
@@ -14824,8 +14802,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_lib_supabase_reconciliationrow",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "reconciliationrow"
     },
     {
@@ -14835,8 +14813,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "src_lib_supabase_alertrow",
-      "community": 514,
-      "community_name": "@radix-ui/react-menubar",
+      "community": 34,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "alertrow"
     },
     {
@@ -14846,8 +14824,8 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "src_lib_supabase_transactionrow",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "transactionrow"
     },
     {
@@ -14934,8 +14912,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_lib_utils_cn",
-      "community": 495,
-      "community_name": "@cloudflare/vite-plugin",
+      "community": 15,
+      "community_name": "supabase",
       "norm_label": "cn()"
     },
     {
@@ -14945,8 +14923,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_lib_utils_getdefaultdate",
-      "community": 16,
-      "community_name": "useTransactions.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "getdefaultdate()"
     },
     {
@@ -15242,8 +15220,8 @@
       "source_location": "L397",
       "_origin": "ast",
       "id": "src_routetree_gen_routetree",
-      "community": 624,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "routetree"
     },
     {
@@ -15264,8 +15242,8 @@
       "source_location": "L404",
       "_origin": "ast",
       "id": "src_routetree_gen_register",
-      "community": 624,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "register"
     },
     {
@@ -15275,8 +15253,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_router",
-      "community": 624,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "router.tsx"
     },
     {
@@ -15286,8 +15264,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_router_getrouter",
-      "community": 624,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "getrouter()"
     },
     {
@@ -15396,8 +15374,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_alertas",
-      "community": 514,
-      "community_name": "@radix-ui/react-menubar",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "alertas.tsx"
     },
     {
@@ -15418,8 +15396,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_routes_alertas_filtertype",
-      "community": 514,
-      "community_name": "@radix-ui/react-menubar",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "filtertype"
     },
     {
@@ -15429,8 +15407,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_routes_alertas_alertaspage",
-      "community": 514,
-      "community_name": "@radix-ui/react-menubar",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "alertaspage()"
     },
     {
@@ -15440,8 +15418,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "conciliacao-detalhes.tsx"
     },
     {
@@ -15462,8 +15440,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_tab",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "tab"
     },
     {
@@ -15473,8 +15451,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_statustab",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "statustab"
     },
     {
@@ -15495,8 +15473,8 @@
       "source_location": "L166",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_row",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "row()"
     },
     {
@@ -15506,8 +15484,8 @@
       "source_location": "L183",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_tabbutton",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "tabbutton()"
     },
     {
@@ -15517,8 +15495,8 @@
       "source_location": "L203",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_lojatable",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 16,
+      "community_name": "useTransactions.ts",
       "norm_label": "lojatable()"
     },
     {
@@ -15627,8 +15605,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_configuracoes",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "configuracoes.tsx"
     },
     {
@@ -15649,8 +15627,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_routes_configuracoes_configuracoespage",
-      "community": 15,
-      "community_name": "supabase",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "configuracoespage()"
     },
     {
@@ -15671,8 +15649,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_historico",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "historico.tsx"
     },
     {
@@ -15693,8 +15671,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_routes_historico_getdefaultperiod",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "getdefaultperiod()"
     },
     {
@@ -15704,8 +15682,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "src_routes_historico_formatdate",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "formatdate()"
     },
     {
@@ -15715,8 +15693,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "src_routes_historico_geticonformethod",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "geticonformethod()"
     },
     {
@@ -15726,8 +15704,8 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "src_routes_historico_historicopage",
-      "community": 19,
-      "community_name": "AppShell.tsx",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "historicopage()"
     },
     {
@@ -15737,8 +15715,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "importacoes-despesas.tsx"
     },
     {
@@ -15759,8 +15737,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_usestoremapping",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "usestoremapping()"
     },
     {
@@ -15770,8 +15748,8 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_importacoesdespesaswizard",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "importacoesdespesaswizard()"
     },
     {
@@ -15781,8 +15759,8 @@
       "source_location": "L380",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_stepindicator",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "stepindicator()"
     },
     {
@@ -15891,8 +15869,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_index",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "index.tsx"
     },
     {
@@ -15913,8 +15891,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_index_dashboardpage",
-      "community": 3,
-      "community_name": "useConciliacao.ts",
+      "community": 58,
+      "community_name": "src/server.ts",
       "norm_label": "dashboardpage()"
     },
     {
@@ -16023,8 +16001,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_lojas",
-      "community": 34,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 2,
+      "community_name": "supabase.ts",
       "norm_label": "lojas.tsx"
     },
     {
@@ -16045,8 +16023,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "src_routes_lojas_lojaspage",
-      "community": 58,
-      "community_name": "src/server.ts",
+      "community": 17,
+      "community_name": "patio.tsx",
       "norm_label": "lojaspage()"
     },
     {
@@ -16287,8 +16265,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_server",
-      "community": 37,
-      "community_name": "supabase/types.ts",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "src/server.ts"
     },
     {
@@ -16298,8 +16276,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_server_serverentry",
-      "community": 37,
-      "community_name": "supabase/types.ts",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "serverentry"
     },
     {
@@ -16309,8 +16287,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_server_getserverentry",
-      "community": 37,
-      "community_name": "supabase/types.ts",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "getserverentry()"
     },
     {
@@ -16320,8 +16298,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_server_brandederrorresponse",
-      "community": 37,
-      "community_name": "supabase/types.ts",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "brandederrorresponse()"
     },
     {
@@ -16331,8 +16309,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "src_server_iscatastrophicssrerrorbody",
-      "community": 37,
-      "community_name": "supabase/types.ts",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "iscatastrophicssrerrorbody()"
     },
     {
@@ -16342,8 +16320,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "src_server_normalizecatastrophicssrresponse",
-      "community": 37,
-      "community_name": "supabase/types.ts",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "normalizecatastrophicssrresponse()"
     },
     {
@@ -16353,8 +16331,8 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "src_server_fetch",
-      "community": 37,
-      "community_name": "supabase/types.ts",
+      "community": 495,
+      "community_name": "@cloudflare/vite-plugin",
       "norm_label": "fetch()"
     },
     {
@@ -16364,8 +16342,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_start",
-      "community": 37,
-      "community_name": "supabase/types.ts",
+      "community": 639,
+      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
       "norm_label": "start.ts"
     },
     {
@@ -16375,8 +16353,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_start_errormiddleware",
-      "community": 37,
-      "community_name": "supabase/types.ts",
+      "community": 639,
+      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
       "norm_label": "errormiddleware"
     },
     {
@@ -16386,8 +16364,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_start_startinstance",
-      "community": 624,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "startinstance"
     },
     {
@@ -17621,6 +17599,17 @@
       "community": 82,
       "community_name": "\ud83c\udfa8 Mem\u00f3ria Modular: Interface & UX (Frontend)",
       "norm_label": "[2026-07-28] \ufffd [feature id: chat-ui-minimalist]"
+    },
+    {
+      "label": "[2026-07-29] - [Feature ID: ui-refactor]",
+      "file_type": "document",
+      "source_file": ".agent/memory/ui.md",
+      "source_location": "L126",
+      "_origin": "ast",
+      "id": "agent_memory_ui_2026_07_29_feature_id_ui_refactor",
+      "community": 82,
+      "community_name": "\ud83c\udfa8 Mem\u00f3ria Modular: Interface & UX (Frontend)",
+      "norm_label": "[2026-07-29] - [feature id: ui-refactor]"
     },
     {
       "label": "activation-rules.md",
@@ -36587,6 +36576,215 @@
       "norm_label": "tasks"
     },
     {
+      "label": "bot-agent-alignment/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-agent-alignment/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_agent_alignment_design",
+      "community": 514,
+      "community_name": "@radix-ui/react-menubar",
+      "norm_label": "bot-agent-alignment/design.md"
+    },
+    {
+      "label": "Design: bot-agent-alignment (Bot Agent Alignment)",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-agent-alignment/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_agent_alignment_design_design_bot_agent_alignment_bot_agent_alignment",
+      "community": 514,
+      "community_name": "@radix-ui/react-menubar",
+      "norm_label": "design: bot-agent-alignment (bot agent alignment)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-agent-alignment/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_bot_agent_alignment_design_arquitetura_t\u00e9cnica",
+      "community": 514,
+      "community_name": "@radix-ui/react-menubar",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Interfaces TypeScript",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-agent-alignment/design.md",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "specs_archive_bot_agent_alignment_design_interfaces_typescript",
+      "community": 514,
+      "community_name": "@radix-ui/react-menubar",
+      "norm_label": "interfaces typescript"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-agent-alignment/design.md",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "specs_archive_bot_agent_alignment_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 514,
+      "community_name": "@radix-ui/react-menubar",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Fluxo de UI",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-agent-alignment/design.md",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "specs_archive_bot_agent_alignment_design_fluxo_de_ui",
+      "community": 514,
+      "community_name": "@radix-ui/react-menubar",
+      "norm_label": "fluxo de ui"
+    },
+    {
+      "label": "Infra / Deploy",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-agent-alignment/design.md",
+      "source_location": "L42",
+      "_origin": "ast",
+      "id": "specs_archive_bot_agent_alignment_design_infra_deploy",
+      "community": 514,
+      "community_name": "@radix-ui/react-menubar",
+      "norm_label": "infra / deploy"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-agent-alignment/design.md",
+      "source_location": "L47",
+      "_origin": "ast",
+      "id": "specs_archive_bot_agent_alignment_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 514,
+      "community_name": "@radix-ui/react-menubar",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "bot-agent-alignment/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-agent-alignment/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_agent_alignment_proposal",
+      "community": 624,
+      "community_name": "start.ts",
+      "norm_label": "bot-agent-alignment/proposal.md"
+    },
+    {
+      "label": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-agent-alignment/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_agent_alignment_proposal_proposal_bot_agent_alignment_bot_agent_alignment",
+      "community": 624,
+      "community_name": "start.ts",
+      "norm_label": "proposal: bot-agent-alignment (bot agent alignment)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-agent-alignment/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_bot_agent_alignment_proposal_problema",
+      "community": 624,
+      "community_name": "start.ts",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-agent-alignment/proposal.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "specs_archive_bot_agent_alignment_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 624,
+      "community_name": "start.ts",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-agent-alignment/proposal.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "specs_archive_bot_agent_alignment_proposal_contratos_de_dados",
+      "community": 624,
+      "community_name": "start.ts",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-agent-alignment/proposal.md",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "specs_archive_bot_agent_alignment_proposal_api_interface",
+      "community": 624,
+      "community_name": "start.ts",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-agent-alignment/proposal.md",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "specs_archive_bot_agent_alignment_proposal_features_existentes_impactadas",
+      "community": 624,
+      "community_name": "start.ts",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-agent-alignment/proposal.md",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "specs_archive_bot_agent_alignment_proposal_risco_principal",
+      "community": 624,
+      "community_name": "start.ts",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "bot-agent-alignment/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-agent-alignment/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_agent_alignment_spec_plan",
+      "community": 642,
+      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "bot-agent-alignment/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-agent-alignment/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_bot_agent_alignment_spec_plan_spec_plan_bot_agent_alignment_bot_agent_alignment",
+      "community": 642,
+      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "spec plan: bot-agent-alignment (bot agent alignment)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/bot-agent-alignment/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_bot_agent_alignment_spec_plan_tasks",
+      "community": 642,
+      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "tasks"
+    },
+    {
       "label": "bot-config-ui/design.md",
       "file_type": "document",
       "source_file": "specs/archive/bot-config-ui/design.md",
@@ -43539,215 +43737,6 @@
       "norm_label": "tasks"
     },
     {
-      "label": "bot-agent-alignment/design.md",
-      "file_type": "document",
-      "source_file": "specs/bot-agent-alignment/design.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "specs_bot_agent_alignment_design",
-      "community": 630,
-      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
-      "norm_label": "bot-agent-alignment/design.md"
-    },
-    {
-      "label": "Design: bot-agent-alignment (Bot Agent Alignment)",
-      "file_type": "document",
-      "source_file": "specs/bot-agent-alignment/design.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "specs_bot_agent_alignment_design_design_bot_agent_alignment_bot_agent_alignment",
-      "community": 630,
-      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
-      "norm_label": "design: bot-agent-alignment (bot agent alignment)"
-    },
-    {
-      "label": "Arquitetura T\u00e9cnica",
-      "file_type": "document",
-      "source_file": "specs/bot-agent-alignment/design.md",
-      "source_location": "L3",
-      "_origin": "ast",
-      "id": "specs_bot_agent_alignment_design_arquitetura_t\u00e9cnica",
-      "community": 630,
-      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
-      "norm_label": "arquitetura tecnica"
-    },
-    {
-      "label": "Interfaces TypeScript",
-      "file_type": "document",
-      "source_file": "specs/bot-agent-alignment/design.md",
-      "source_location": "L7",
-      "_origin": "ast",
-      "id": "specs_bot_agent_alignment_design_interfaces_typescript",
-      "community": 630,
-      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
-      "norm_label": "interfaces typescript"
-    },
-    {
-      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
-      "file_type": "document",
-      "source_file": "specs/bot-agent-alignment/design.md",
-      "source_location": "L32",
-      "_origin": "ast",
-      "id": "specs_bot_agent_alignment_design_componentes_hooks_fun\u00e7\u00f5es",
-      "community": 630,
-      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
-      "norm_label": "componentes / hooks / funcoes"
-    },
-    {
-      "label": "Fluxo de UI",
-      "file_type": "document",
-      "source_file": "specs/bot-agent-alignment/design.md",
-      "source_location": "L39",
-      "_origin": "ast",
-      "id": "specs_bot_agent_alignment_design_fluxo_de_ui",
-      "community": 630,
-      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
-      "norm_label": "fluxo de ui"
-    },
-    {
-      "label": "Infra / Deploy",
-      "file_type": "document",
-      "source_file": "specs/bot-agent-alignment/design.md",
-      "source_location": "L42",
-      "_origin": "ast",
-      "id": "specs_bot_agent_alignment_design_infra_deploy",
-      "community": 630,
-      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
-      "norm_label": "infra / deploy"
-    },
-    {
-      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
-      "file_type": "document",
-      "source_file": "specs/bot-agent-alignment/design.md",
-      "source_location": "L47",
-      "_origin": "ast",
-      "id": "specs_bot_agent_alignment_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
-      "community": 630,
-      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
-      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
-    },
-    {
-      "label": "bot-agent-alignment/proposal.md",
-      "file_type": "document",
-      "source_file": "specs/bot-agent-alignment/proposal.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "specs_bot_agent_alignment_proposal",
-      "community": 635,
-      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
-      "norm_label": "bot-agent-alignment/proposal.md"
-    },
-    {
-      "label": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
-      "file_type": "document",
-      "source_file": "specs/bot-agent-alignment/proposal.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "specs_bot_agent_alignment_proposal_proposal_bot_agent_alignment_bot_agent_alignment",
-      "community": 635,
-      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
-      "norm_label": "proposal: bot-agent-alignment (bot agent alignment)"
-    },
-    {
-      "label": "Problema",
-      "file_type": "document",
-      "source_file": "specs/bot-agent-alignment/proposal.md",
-      "source_location": "L3",
-      "_origin": "ast",
-      "id": "specs_bot_agent_alignment_proposal_problema",
-      "community": 635,
-      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
-      "norm_label": "problema"
-    },
-    {
-      "label": "Solu\u00e7\u00e3o Proposta",
-      "file_type": "document",
-      "source_file": "specs/bot-agent-alignment/proposal.md",
-      "source_location": "L6",
-      "_origin": "ast",
-      "id": "specs_bot_agent_alignment_proposal_solu\u00e7\u00e3o_proposta",
-      "community": 635,
-      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
-      "norm_label": "solucao proposta"
-    },
-    {
-      "label": "Contratos de Dados",
-      "file_type": "document",
-      "source_file": "specs/bot-agent-alignment/proposal.md",
-      "source_location": "L11",
-      "_origin": "ast",
-      "id": "specs_bot_agent_alignment_proposal_contratos_de_dados",
-      "community": 635,
-      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
-      "norm_label": "contratos de dados"
-    },
-    {
-      "label": "API / Interface",
-      "file_type": "document",
-      "source_file": "specs/bot-agent-alignment/proposal.md",
-      "source_location": "L15",
-      "_origin": "ast",
-      "id": "specs_bot_agent_alignment_proposal_api_interface",
-      "community": 635,
-      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
-      "norm_label": "api / interface"
-    },
-    {
-      "label": "Features Existentes Impactadas",
-      "file_type": "document",
-      "source_file": "specs/bot-agent-alignment/proposal.md",
-      "source_location": "L18",
-      "_origin": "ast",
-      "id": "specs_bot_agent_alignment_proposal_features_existentes_impactadas",
-      "community": 635,
-      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
-      "norm_label": "features existentes impactadas"
-    },
-    {
-      "label": "Risco Principal",
-      "file_type": "document",
-      "source_file": "specs/bot-agent-alignment/proposal.md",
-      "source_location": "L22",
-      "_origin": "ast",
-      "id": "specs_bot_agent_alignment_proposal_risco_principal",
-      "community": 635,
-      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
-      "norm_label": "risco principal"
-    },
-    {
-      "label": "bot-agent-alignment/spec-plan.md",
-      "file_type": "document",
-      "source_file": "specs/bot-agent-alignment/spec-plan.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "specs_bot_agent_alignment_spec_plan",
-      "community": 639,
-      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
-      "norm_label": "bot-agent-alignment/spec-plan.md"
-    },
-    {
-      "label": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
-      "file_type": "document",
-      "source_file": "specs/bot-agent-alignment/spec-plan.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "specs_bot_agent_alignment_spec_plan_spec_plan_bot_agent_alignment_bot_agent_alignment",
-      "community": 639,
-      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
-      "norm_label": "spec plan: bot-agent-alignment (bot agent alignment)"
-    },
-    {
-      "label": "Tasks",
-      "file_type": "document",
-      "source_file": "specs/bot-agent-alignment/spec-plan.md",
-      "source_location": "L3",
-      "_origin": "ast",
-      "id": "specs_bot_agent_alignment_spec_plan_tasks",
-      "community": 639,
-      "community_name": "Spec Plan: bot-agent-alignment (Bot Agent Alignment)",
-      "norm_label": "tasks"
-    },
-    {
       "label": "bot-live-os-query/design.md",
       "file_type": "document",
       "source_file": "specs/bot-live-os-query/design.md",
@@ -45000,6 +44989,193 @@
       "community": 623,
       "community_name": "Design: Nova Interface do Chat e Resolu\u00e7\u00e3o de Ferramentas (chat-ui-minimalist)",
       "norm_label": "\ud83d\udd27 checklist de implementacao"
+    },
+    {
+      "label": "ui-refactor/design.md",
+      "file_type": "document",
+      "source_file": "specs/ui-refactor/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_ui_refactor_design",
+      "community": 635,
+      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "ui-refactor/design.md"
+    },
+    {
+      "label": "Design: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "file_type": "document",
+      "source_file": "specs/ui-refactor/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_ui_refactor_design_design_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "community": 635,
+      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "design: refatoracao ui conciliacao (ui-refactor)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/ui-refactor/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_ui_refactor_design_arquitetura_t\u00e9cnica",
+      "community": 635,
+      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/ui-refactor/design.md",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "specs_ui_refactor_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 635,
+      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Fluxo de UI",
+      "file_type": "document",
+      "source_file": "specs/ui-refactor/design.md",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "specs_ui_refactor_design_fluxo_de_ui",
+      "community": 635,
+      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "fluxo de ui"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/ui-refactor/design.md",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "specs_ui_refactor_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 635,
+      "community_name": "Proposal: bot-agent-alignment (Bot Agent Alignment)",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "ui-refactor/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/ui-refactor/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_ui_refactor_proposal",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "ui-refactor/proposal.md"
+    },
+    {
+      "label": "Proposal: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "file_type": "document",
+      "source_file": "specs/ui-refactor/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "proposal: refatoracao ui conciliacao (ui-refactor)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/ui-refactor/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_ui_refactor_proposal_problema",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/ui-refactor/proposal.md",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "specs_ui_refactor_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/ui-refactor/proposal.md",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "specs_ui_refactor_proposal_contratos_de_dados",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/ui-refactor/proposal.md",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "specs_ui_refactor_proposal_api_interface",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/ui-refactor/proposal.md",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "specs_ui_refactor_proposal_features_existentes_impactadas",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/ui-refactor/proposal.md",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "specs_ui_refactor_proposal_risco_principal",
+      "community": 630,
+      "community_name": "Spec Plan: Ordem de Servi\u00e7o Bot Scraper (vps-mcp-aspnet)",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "ui-refactor/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/ui-refactor/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_ui_refactor_spec_plan",
+      "community": 643,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "ui-refactor/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "file_type": "document",
+      "source_file": "specs/ui-refactor/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_ui_refactor_spec_plan_spec_plan_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "community": 643,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "spec plan: refatoracao ui conciliacao (ui-refactor)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/ui-refactor/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_ui_refactor_spec_plan_tasks",
+      "community": 643,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o UI Concilia\u00e7\u00e3o (ui-refactor)",
+      "norm_label": "tasks"
     }
   ],
   "links": [
@@ -58115,197 +58291,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "src/components/conciliacao/ConciliacaoAlertsSection.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_conciliacao_conciliacaoalertssection",
-      "target": "src_components_conciliacao_conciliacaoalertssection_conciliacaoalertssection",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/conciliacao/ConciliacaoAlertsSection.tsx",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_conciliacao_conciliacaoalertssection",
-      "target": "src_components_ui_badge",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/conciliacao/ConciliacaoAlertsSection.tsx",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_conciliacao_conciliacaoalertssection",
-      "target": "src_components_ui_badge_badge",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/conciliacao/ConciliacaoAlertsSection.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_conciliacao_conciliacaoalertssection",
-      "target": "src_components_ui_button",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/conciliacao/ConciliacaoAlertsSection.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_conciliacao_conciliacaoalertssection",
-      "target": "src_components_ui_button_button",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/conciliacao/ConciliacaoAlertsSection.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_conciliacao_conciliacaoalertssection",
-      "target": "src_components_ui_card",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/conciliacao/ConciliacaoAlertsSection.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_conciliacao_conciliacaoalertssection",
-      "target": "src_components_ui_card_card",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/conciliacao/ConciliacaoAlertsSection.tsx",
-      "source_location": "L6",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_conciliacao_conciliacaoalertssection",
-      "target": "src_components_ui_loadingspinner",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/conciliacao/ConciliacaoAlertsSection.tsx",
-      "source_location": "L6",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_conciliacao_conciliacaoalertssection",
-      "target": "src_components_ui_loadingspinner_loadingspinner",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/conciliacao/ConciliacaoAlertsSection.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_conciliacao_conciliacaoalertssection",
-      "target": "src_hooks_useconciliacao",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/conciliacao/ConciliacaoAlertsSection.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_conciliacao_conciliacaoalertssection",
-      "target": "src_hooks_useconciliacao_usereconciliationviews",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/conciliacao/ConciliacaoAlertsSection.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_conciliacao_conciliacaoalertssection",
-      "target": "src_hooks_useconciliacao_useresolveunmatchedalert",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/conciliacao.$lojaId.tsx",
-      "source_location": "L11",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_routes_conciliacao_lojaid",
-      "target": "src_components_conciliacao_conciliacaoalertssection",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/components/conciliacao/ConciliacaoAlertsSection.tsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_conciliacao_conciliacaoalertssection_conciliacaoalertssection",
-      "target": "src_hooks_useconciliacao_usereconciliationviews"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/components/conciliacao/ConciliacaoAlertsSection.tsx",
-      "source_location": "L10",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_conciliacao_conciliacaoalertssection_conciliacaoalertssection",
-      "target": "src_hooks_useconciliacao_useresolveunmatchedalert"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/conciliacao.$lojaId.tsx",
-      "source_location": "L11",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_routes_conciliacao_lojaid",
-      "target": "src_components_conciliacao_conciliacaoalertssection_conciliacaoalertssection",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "src/components/conciliacao/Modulo1SaldoPanel.tsx",
       "source_location": "L14",
       "weight": 1.0,
@@ -65974,7 +65959,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/hooks/useConciliacao.ts",
-      "source_location": "L524",
+      "source_location": "L529",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_hooks_useconciliacao",
@@ -65996,7 +65981,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/hooks/useConciliacao.ts",
-      "source_location": "L644",
+      "source_location": "L649",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_hooks_useconciliacao",
@@ -66040,7 +66025,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/hooks/useConciliacao.ts",
-      "source_location": "L601",
+      "source_location": "L606",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_hooks_useconciliacao",
@@ -66172,7 +66157,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/hooks/useConciliacao.ts",
-      "source_location": "L653",
+      "source_location": "L658",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_hooks_useconciliacao_useresolveunmatchedalert",
@@ -66352,7 +66337,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/hooks/useConciliacao.ts",
-      "source_location": "L358",
+      "source_location": "L363",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_hooks_useconciliacao_usereconciliationviews",
@@ -73837,6 +73822,17 @@
       "_origin": "ast",
       "source": "agent_memory_ui_mem\u00f3ria_modular_interface_ux_frontend",
       "target": "agent_memory_ui_2026_07_28_feature_id_fix_store_closing_unified_panel_layout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agent/memory/ui.md",
+      "source_location": "L126",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agent_memory_ui_mem\u00f3ria_modular_interface_ux_frontend",
+      "target": "agent_memory_ui_2026_07_29_feature_id_ui_refactor",
       "confidence_score": 1.0
     },
     {
@@ -89550,6 +89546,182 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-agent-alignment/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_agent_alignment_design",
+      "target": "specs_archive_bot_agent_alignment_design_design_bot_agent_alignment_bot_agent_alignment",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-agent-alignment/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_agent_alignment_design_design_bot_agent_alignment_bot_agent_alignment",
+      "target": "specs_archive_bot_agent_alignment_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-agent-alignment/design.md",
+      "source_location": "L47",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_agent_alignment_design_design_bot_agent_alignment_bot_agent_alignment",
+      "target": "specs_archive_bot_agent_alignment_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-agent-alignment/design.md",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_agent_alignment_design_design_bot_agent_alignment_bot_agent_alignment",
+      "target": "specs_archive_bot_agent_alignment_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-agent-alignment/design.md",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_agent_alignment_design_design_bot_agent_alignment_bot_agent_alignment",
+      "target": "specs_archive_bot_agent_alignment_design_fluxo_de_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-agent-alignment/design.md",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_agent_alignment_design_design_bot_agent_alignment_bot_agent_alignment",
+      "target": "specs_archive_bot_agent_alignment_design_infra_deploy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-agent-alignment/design.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_agent_alignment_design_design_bot_agent_alignment_bot_agent_alignment",
+      "target": "specs_archive_bot_agent_alignment_design_interfaces_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-agent-alignment/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_agent_alignment_proposal",
+      "target": "specs_archive_bot_agent_alignment_proposal_proposal_bot_agent_alignment_bot_agent_alignment",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-agent-alignment/proposal.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_agent_alignment_proposal_proposal_bot_agent_alignment_bot_agent_alignment",
+      "target": "specs_archive_bot_agent_alignment_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-agent-alignment/proposal.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_agent_alignment_proposal_proposal_bot_agent_alignment_bot_agent_alignment",
+      "target": "specs_archive_bot_agent_alignment_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-agent-alignment/proposal.md",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_agent_alignment_proposal_proposal_bot_agent_alignment_bot_agent_alignment",
+      "target": "specs_archive_bot_agent_alignment_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-agent-alignment/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_agent_alignment_proposal_proposal_bot_agent_alignment_bot_agent_alignment",
+      "target": "specs_archive_bot_agent_alignment_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-agent-alignment/proposal.md",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_agent_alignment_proposal_proposal_bot_agent_alignment_bot_agent_alignment",
+      "target": "specs_archive_bot_agent_alignment_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-agent-alignment/proposal.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_agent_alignment_proposal_proposal_bot_agent_alignment_bot_agent_alignment",
+      "target": "specs_archive_bot_agent_alignment_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-agent-alignment/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_agent_alignment_spec_plan",
+      "target": "specs_archive_bot_agent_alignment_spec_plan_spec_plan_bot_agent_alignment_bot_agent_alignment",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/bot-agent-alignment/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_bot_agent_alignment_spec_plan_spec_plan_bot_agent_alignment_bot_agent_alignment",
+      "target": "specs_archive_bot_agent_alignment_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "specs/archive/bot-config-ui/design.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -95248,182 +95420,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/bot-agent-alignment/design.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_agent_alignment_design",
-      "target": "specs_bot_agent_alignment_design_design_bot_agent_alignment_bot_agent_alignment",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-agent-alignment/design.md",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_agent_alignment_design_design_bot_agent_alignment_bot_agent_alignment",
-      "target": "specs_bot_agent_alignment_design_arquitetura_t\u00e9cnica",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-agent-alignment/design.md",
-      "source_location": "L47",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_agent_alignment_design_design_bot_agent_alignment_bot_agent_alignment",
-      "target": "specs_bot_agent_alignment_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-agent-alignment/design.md",
-      "source_location": "L32",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_agent_alignment_design_design_bot_agent_alignment_bot_agent_alignment",
-      "target": "specs_bot_agent_alignment_design_componentes_hooks_fun\u00e7\u00f5es",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-agent-alignment/design.md",
-      "source_location": "L39",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_agent_alignment_design_design_bot_agent_alignment_bot_agent_alignment",
-      "target": "specs_bot_agent_alignment_design_fluxo_de_ui",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-agent-alignment/design.md",
-      "source_location": "L42",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_agent_alignment_design_design_bot_agent_alignment_bot_agent_alignment",
-      "target": "specs_bot_agent_alignment_design_infra_deploy",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-agent-alignment/design.md",
-      "source_location": "L7",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_agent_alignment_design_design_bot_agent_alignment_bot_agent_alignment",
-      "target": "specs_bot_agent_alignment_design_interfaces_typescript",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-agent-alignment/proposal.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_agent_alignment_proposal",
-      "target": "specs_bot_agent_alignment_proposal_proposal_bot_agent_alignment_bot_agent_alignment",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-agent-alignment/proposal.md",
-      "source_location": "L15",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_agent_alignment_proposal_proposal_bot_agent_alignment_bot_agent_alignment",
-      "target": "specs_bot_agent_alignment_proposal_api_interface",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-agent-alignment/proposal.md",
-      "source_location": "L11",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_agent_alignment_proposal_proposal_bot_agent_alignment_bot_agent_alignment",
-      "target": "specs_bot_agent_alignment_proposal_contratos_de_dados",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-agent-alignment/proposal.md",
-      "source_location": "L18",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_agent_alignment_proposal_proposal_bot_agent_alignment_bot_agent_alignment",
-      "target": "specs_bot_agent_alignment_proposal_features_existentes_impactadas",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-agent-alignment/proposal.md",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_agent_alignment_proposal_proposal_bot_agent_alignment_bot_agent_alignment",
-      "target": "specs_bot_agent_alignment_proposal_problema",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-agent-alignment/proposal.md",
-      "source_location": "L22",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_agent_alignment_proposal_proposal_bot_agent_alignment_bot_agent_alignment",
-      "target": "specs_bot_agent_alignment_proposal_risco_principal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-agent-alignment/proposal.md",
-      "source_location": "L6",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_agent_alignment_proposal_proposal_bot_agent_alignment_bot_agent_alignment",
-      "target": "specs_bot_agent_alignment_proposal_solu\u00e7\u00e3o_proposta",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-agent-alignment/spec-plan.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_agent_alignment_spec_plan",
-      "target": "specs_bot_agent_alignment_spec_plan_spec_plan_bot_agent_alignment_bot_agent_alignment",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/bot-agent-alignment/spec-plan.md",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_bot_agent_alignment_spec_plan_spec_plan_bot_agent_alignment_bot_agent_alignment",
-      "target": "specs_bot_agent_alignment_spec_plan_tasks",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "specs/bot-live-os-query/design.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -96421,8 +96417,162 @@
       "source": "specs_os_query_mcp_arquitetura_e_fluxo",
       "target": "specs_os_query_mcp_testes_pr\u00e9vios_realizados",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/ui-refactor/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_ui_refactor_design",
+      "target": "specs_ui_refactor_design_design_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/ui-refactor/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_ui_refactor_design_design_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_ui_refactor_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/ui-refactor/design.md",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_ui_refactor_design_design_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_ui_refactor_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/ui-refactor/design.md",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_ui_refactor_design_design_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_ui_refactor_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/ui-refactor/design.md",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_ui_refactor_design_design_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_ui_refactor_design_fluxo_de_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/ui-refactor/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_ui_refactor_proposal",
+      "target": "specs_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/ui-refactor/proposal.md",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_ui_refactor_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/ui-refactor/proposal.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_ui_refactor_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/ui-refactor/proposal.md",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_ui_refactor_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/ui-refactor/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_ui_refactor_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/ui-refactor/proposal.md",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_ui_refactor_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/ui-refactor/proposal.md",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_ui_refactor_proposal_proposal_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_ui_refactor_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/ui-refactor/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_ui_refactor_spec_plan",
+      "target": "specs_ui_refactor_spec_plan_spec_plan_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/ui-refactor/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_ui_refactor_spec_plan_spec_plan_refatora\u00e7\u00e3o_ui_concilia\u00e7\u00e3o_ui_refactor",
+      "target": "specs_ui_refactor_spec_plan_tasks",
+      "confidence_score": 1.0
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "ee19a28023ebfbd0cbb047d0a2a460ebb63aeed6"
+  "built_at_commit": "8a5d38dc328f22d50e6a3b08fac24a5d6ee7ebbe"
 }

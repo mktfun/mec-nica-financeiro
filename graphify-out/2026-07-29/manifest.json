@@ -35,8 +35,8 @@
     "semantic_hash": ""
   },
   "bot/src/scrapers/oficina.ts": {
-    "mtime": 1785328468.86023,
-    "ast_hash": "bbf5fab517ef233e5f78817877ff96c4",
+    "mtime": 1785330303.4326017,
+    "ast_hash": "20f7c3a3ac394df6ad8e7483ce45ae4b",
     "semantic_hash": ""
   },
   "bot/src/scrapers/rede.ts": {
@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "bot/src/server.ts": {
-    "mtime": 1785327502.0250027,
-    "ast_hash": "8554c7f3bec1ef3fe60ff493189fe5a8",
+    "mtime": 1785329597.8357365,
+    "ast_hash": "332ae2043beba414eceb1d806a720ace",
     "semantic_hash": ""
   },
   "bot/src/session/sessionManager.ts": {
@@ -1425,8 +1425,8 @@
     "semantic_hash": ""
   },
   "supabase/functions/ai-chat/index.ts": {
-    "mtime": 1785266537.4202795,
-    "ast_hash": "503c06956c8d539bee170c05173593b7",
+    "mtime": 1785330320.928203,
+    "ast_hash": "0c6802a10701e23f4e1ffcc977c1ad86",
     "semantic_hash": ""
   },
   "supabase/functions/mcp-proxy/deno.json": {
@@ -1590,8 +1590,8 @@
     "semantic_hash": ""
   },
   ".agent/memory/infra.md": {
-    "mtime": 1785261971.3057845,
-    "ast_hash": "dabc9b590a9591c5f6898acf5bca9abb",
+    "mtime": 1785331749.198064,
+    "ast_hash": "c0802adb3a3f83dcdd7bd253905a4f34",
     "semantic_hash": ""
   },
   ".agent/memory/ofx.md": {
@@ -3842,6 +3842,51 @@
   "bot/src/tests/oi-home.png": {
     "mtime": 1785272114.8862216,
     "ast_hash": "bfd8d38dd9a318ed7b12f655ba62aeaf",
+    "semantic_hash": ""
+  },
+  "specs/archive/vps-mcp-aspnet/design.md": {
+    "mtime": 1785327181.988342,
+    "ast_hash": "40953d357d7102b1f511711c2e7f8847",
+    "semantic_hash": ""
+  },
+  "specs/archive/vps-mcp-aspnet/proposal.md": {
+    "mtime": 1785327171.3380594,
+    "ast_hash": "14fd023c515f8ba6a94542308e73b54e",
+    "semantic_hash": ""
+  },
+  "specs/archive/vps-mcp-aspnet/spec-plan.md": {
+    "mtime": 1785327554.0054946,
+    "ast_hash": "b27c3e7fa09fd5b1698875b0204662fe",
+    "semantic_hash": ""
+  },
+  "specs/bot-agent-alignment/design.md": {
+    "mtime": 1785330222.525632,
+    "ast_hash": "da08d4aed401384a23186115225c7f87",
+    "semantic_hash": ""
+  },
+  "specs/bot-agent-alignment/proposal.md": {
+    "mtime": 1785330209.8233068,
+    "ast_hash": "62616dcf394d2d40e3a44b19a9889ea1",
+    "semantic_hash": ""
+  },
+  "specs/bot-agent-alignment/spec-plan.md": {
+    "mtime": 1785331507.5383935,
+    "ast_hash": "34563018336f3c0367fa734fa5a266c5",
+    "semantic_hash": ""
+  },
+  "specs/oi-system-connector/design.md": {
+    "mtime": 1785329180.5862749,
+    "ast_hash": "e385fc49ebd22bf987a6033801bcf55f",
+    "semantic_hash": ""
+  },
+  "specs/oi-system-connector/proposal.md": {
+    "mtime": 1785329168.0622022,
+    "ast_hash": "ac2e118861f5ede42750aced01a04215",
+    "semantic_hash": ""
+  },
+  "specs/oi-system-connector/spec-plan.md": {
+    "mtime": 1785329581.5536587,
+    "ast_hash": "23fcd6f26663b25312d11f1b8560960c",
     "semantic_hash": ""
   }
 }

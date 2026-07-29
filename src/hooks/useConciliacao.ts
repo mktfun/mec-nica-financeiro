@@ -263,7 +263,9 @@ export function useReconciliationViews(storeId: string, date: string) {
          }
          if (taxaTx) usedTaxas.add(taxaTx.id);
          
-         const redeBruto = redeTx.amount + (taxaTx ? Math.abs(taxaTx.amount) : 0);
+         const taxaAmount = taxaTx ? Math.abs(taxaTx.amount) : 0;
+         const redeBruto = redeTx.amount + taxaAmount;
+         const taxaPercent = redeBruto > 0 ? (taxaAmount / redeBruto) * 100 : 0;
          
          let osFaturamento = 0;
          let osNumber = redeTx.os_number;
@@ -307,6 +309,9 @@ export function useReconciliationViews(storeId: string, date: string) {
             id: redeTx.id,
             maquininha_title: redeTx.title || 'Transação Maquininha',
             rede_bruto: redeBruto,
+            taxa_brl: taxaAmount,
+            taxa_percent: taxaPercent,
+            rede_liquido: redeTx.amount,
             os_total: osFaturamento,
             os_number: osNumber || 'Não Localizada',
             os_data: osData,

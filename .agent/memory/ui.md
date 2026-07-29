@@ -123,3 +123,12 @@
 
 **Não fazer:** Nunca injetar styles diretamente com backticks (\\\\\) escapados por barras investidas (\\\\\\\\\) dentro de \dangerouslySetInnerHTML\, sob pena de causar erro de sintaxe TypeScript do Vite.
 
+## [2026-07-29] - [Feature ID: ui-refactor]  
+  
+**Contexto:** Refatoracao das abas de concilicao de Maquininha e PIX para utilizar padrao de extrato linear focado na transacao de origem, substituindo cards aninhados agrupados por depoosito OFX. Aba de Alertas removida.  
+  
+**Regra aprendida:** Ao exibir visoes cruzadas (origem -> banco), centralizar a iteracao no array da origem (ex: osVsRede ou osPix) e calcular o match/status como uma propriedade derivada da listagem de deposito, garantindo que taxas (percentual e valor) sejam pre-calculadas no hook de view.  
+  
+**Risco identificado:** Iterar apenas sobre os depoositos bancarios oculta transacoes de maquininha que 'nao entraram' no banco. E preciso iterar sobre a lista completa de transacoes da maquina/PIX.  
+  
+**Nao fazer:** Nao utilizar estruturas aninhadas complexas de UI (ex: cards dentro de cards por deposito OFX) quando o usuario quer auditar os lancamentos individuais de maquininha e PIX. O usuario prefere um extrato simples e binario (Entrou/Nao Entrou). 
