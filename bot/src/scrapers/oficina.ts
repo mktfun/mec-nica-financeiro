@@ -168,3 +168,152 @@ export async function fetchOSByNumber(page: Page, osNumber: string): Promise<OSR
     osNumber: osNumber,
   } as OSRecord & { _rawTexts?: string[], veiculo?: string };
 }
+
+export interface OSDetailedRecord {
+  osNumber: string;
+  loja: string;
+  cliente: string;
+  veiculo: string;
+  responsavel: string;
+  status: string;
+  valorTotal: number;
+  valorPago: number;
+  itens: Array<{
+    descricao: string;
+    tipo: string;
+    quantidade: number;
+    valorTotal: number;
+  }>;
+  pagamentos: Array<{
+    data: string;
+    forma: string;
+    valor: number;
+  }>;
+}
+
+export async function fetchOSDetailedView(page: Page, osNumber: string): Promise<OSDetailedRecord> {
+  console.log(`[OI-Detail] Buscando OS ${osNumber} para detalhamento completo...`);
+  
+  // 1. Usa a busca existente para chegar na grid
+  await fetchOSByNumber(page, osNumber);
+
+  // 2. Extrai a URL de detalhe a partir do evento onclick
+  const linkLocator = page.locator('table[id*="grd"] tr:nth-child(2) a[id*="lkbOrdemDeServicoID"]').first();
+  const onclickStr = await linkLocator.getAttribute('onclick');
+  
+  if (!onclickStr) {
+    throw new Error('Não foi possível encontrar o link para abrir os detalhes da OS.');
+  }
+
+  // Espera algo como: fncNovaAba('wfOrdemDeServico.aspx?EmpresaID=...');
+  const match = onclickStr.match(/'([^']+)'/);
+  if (!match || !match[1]) {
+    throw new Error(`Falha ao extrair URL de detalhe do onclick: ${onclickStr}`);
+  }
+
+  const detailUrl = `https://sistemaoficinainteligente.com.br/${match[1]}`;
+  console.log(`[OI-Detail] Navegando para os detalhes: ${detailUrl}`);
+
+  try {
+    console.log('[OI-Detail] Aguardando page.goto...');
+    await page.goto(detailUrl, { waitUntil: 'domcontentloaded', timeout: 30_000 });
+    console.log('[OI-Detail] page.goto concluído com sucesso!');
+  } catch (e: any) {
+    console.log('[OI-Detail] Erro no page.goto:', e.message);
+    try {
+      const html = await page.content();
+      const tmpPath = require('path').join(__dirname, '../../tmp');
+      if (!require('fs').existsSync(tmpPath)) require('fs').mkdirSync(tmpPath, { recursive: true });
+      require('fs').writeFileSync(require('path').join(tmpPath, 'debug_detail_error.html'), html);
+    } catch (err) {
+      console.log('[OI-Detail] Erro ao salvar DOM de debug:', err);
+    }
+    throw e;
+  }
+
+  // 3. Raspar cabeçalho (OS, cliente, veiculo, responsavel, status, valorTotal)
+  console.log('[OI-Detail] Aguardando lblCliente...');
+  await page.waitForSelector('span[id*="lblCliente"]', { timeout: 3_000 }).catch(() => null);
+  console.log('[OI-Detail] Passou do waitForSelector. Salvando DOM...');
+  try {
+    const html = await page.content();
+    const tmpPath = require('path').join(__dirname, '../../tmp');
+    if (!require('fs').existsSync(tmpPath)) require('fs').mkdirSync(tmpPath, { recursive: true });
+    require('fs').writeFileSync(require('path').join(tmpPath, 'debug_detail.html'), html);
+  } catch (err) {
+    console.log('[OI-Detail] Erro ao salvar DOM de debug:', err);
+  }
+
+  // Fallbacks genéricos caso os IDs variem. Isso pode precisar de ajuste dependendo do HTML real.
+  const cliente = await page.locator('span[id*="lblCliente"]').textContent().catch(() => '') || '';
+  const veiculo = await page.locator('span[id*="lblVeiculo"]').textContent().catch(() => '') || '';
+  const responsavel = await page.locator('span[id*="lblResponsavel"], select[id*="ddlResponsavel"] option[selected]').textContent().catch(() => '') || '';
+  const status = await page.locator('span[id*="lblStatus"], select[id*="ddlStatusOrdemDeServico"] option[selected]').textContent().catch(() => '') || '';
+  const valorTotalStr = await page.locator('span[id*="lblTotalDaOS"], span[id*="lblValorTotal"]').textContent().catch(() => '') || '0';
+  
+  const parseCurrency = (val: string) => {
+    const clean = val.replace(/R\$\s*/g, '').replace(/\./g, '').replace(/,/g, '.').trim();
+    return parseFloat(clean) || 0;
+  };
+
+  const valorTotal = parseCurrency(valorTotalStr);
+
+  // 4. Raspar Produtos e Serviços
+  // Assumindo que pode estar numa tabela específica.
+  const itens = [];
+  const gridItens = page.locator('table[id*="grdServicosProdutos"] tr'); // Placeholder ID
+  const numItens = await gridItens.count().catch(() => 0);
+  for (let i = 1; i < numItens; i++) {
+    const tds = gridItens.nth(i).locator('td');
+    const tdCount = await tds.count();
+    if (tdCount > 4) {
+       const descricao = await tds.nth(1).textContent().catch(() => '') || '';
+       const valorStr = await tds.nth(tdCount - 1).textContent().catch(() => '') || '0';
+       if (descricao.trim()) {
+         itens.push({
+           descricao: descricao.trim(),
+           tipo: 'Misto',
+           quantidade: 1,
+           valorTotal: parseCurrency(valorStr)
+         });
+       }
+    }
+  }
+
+  // 5. Raspar Pagamentos (Financeiro da OS)
+  const pagamentos = [];
+  const gridPagamentos = page.locator('table[id*="grdFinanceiro"], table[id*="grdPagamentos"] tr'); // Placeholder ID
+  const numPagamentos = await gridPagamentos.count().catch(() => 0);
+  let valorPago = 0;
+  for (let i = 1; i < numPagamentos; i++) {
+    const tds = gridPagamentos.nth(i).locator('td');
+    const tdCount = await tds.count();
+    if (tdCount > 3) {
+       const data = await tds.nth(1).textContent().catch(() => '') || '';
+       const forma = await tds.nth(2).textContent().catch(() => '') || '';
+       const valorStr = await tds.nth(tdCount - 1).textContent().catch(() => '') || '0';
+       const valor = parseCurrency(valorStr);
+       if (valor > 0) {
+         valorPago += valor;
+         pagamentos.push({
+           data: data.trim(),
+           forma: forma.trim(),
+           valor
+         });
+       }
+    }
+  }
+
+  return {
+    osNumber,
+    loja: 'Principal', // placeholder
+    cliente: cliente.trim(),
+    veiculo: veiculo.trim(),
+    responsavel: responsavel.trim(),
+    status: status.trim(),
+    valorTotal,
+    valorPago,
+    itens,
+    pagamentos
+  };
+}

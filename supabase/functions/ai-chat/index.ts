@@ -85,63 +85,96 @@ Deno.serve(async (req) => {
     }
 
     const mcpTools = {
-      consulta_os_semana: tool({
-        description: 'Consulta as Ordens de Serviço (OS) finalizadas na semana.',
-        parameters: z.object({
-          limit: z.number().optional().describe('Limite de resultados')
-        }),
-        execute: async ({ limit }) => {
-          return invokeMCP('consulta_os_semana', { limit })
-        },
-      }),
-      consulta_cmv_loja: tool({
-        description: 'Consulta o CMV (Custo de Mercadoria Vendida) por loja.',
-        parameters: z.object({
-          lojaId: z.string().optional().describe('ID da loja')
-        }),
-        execute: async ({ lojaId }) => {
-          return invokeMCP('consulta_cmv_loja', { lojaId })
-        },
-      }),
-      consulta_contas_pagar: tool({
-        description: 'Consulta as contas a pagar que estão em exposição (próximas de vencer).',
-        parameters: z.object({}),
-        execute: async () => {
-          return invokeMCP('consulta_contas_pagar_exposicao', {})
-        },
-      }),
-      consulta_detalhes_os: tool({
-        description: 'Consulta os detalhes de uma Ordem de Serviço específica pelo seu número (Ex: 1763).',
+      consulta_os_detalhe_completo: tool({
+        description: 'Consulta os detalhes COMPLETOS de uma Ordem de Serviço específica pelo seu número (Ex: 1763). Retorna cabeçalho, serviços, peças, pagamentos e valores totais.',
         parameters: z.object({
           osNumber: z.string().describe('O número da OS (ex: 1763)')
         }),
         execute: async ({ osNumber }) => {
-          const { data, error } = await supabaseClient
-            .from('os')
-            .select('*')
-            .eq('os_number', osNumber)
-            .single()
+          try {
+            const url = \`\${settings?.bot_url}/api/os/detalhe/\${osNumber}\`;
+            const response = await fetch(url, {
+              headers: {
+                'x-api-key': settings?.bot_api_key || ''
+              }
+            });
+            if (!response.ok) throw new Error(\`Erro HTTP \${response.status}\`);
+            const json = await response.json();
             
-          const result = error ? { error: error.message } : data;
-          
-          // Log manual to mcp_logs so the UI can display it
-          await supabaseClient.from('mcp_logs').insert([{
-            conversation_id: 'auto-mcp-log',
-            action: 'consulta_detalhes_os',
-            params: { osNumber },
-            result
-          }])
-          
-          return result;
+            // Log action
+            await supabaseClient.from('mcp_logs').insert([{
+              conversation_id: 'auto-mcp-log',
+              action: 'consulta_os_detalhe_completo',
+              params: { osNumber },
+              result: json
+            }]);
+            
+            return json;
+          } catch (e: any) {
+            return { error: e.message };
+          }
         },
+      }),
+      consulta_os_movimento_periodo: tool({
+        description: 'Consulta as movimentações e resumos de OS de uma loja em um determinado período.',
+        parameters: z.object({
+          loja: z.string().describe('ID da loja'),
+          data_inicio: z.string().describe('Data de início YYYY-MM-DD'),
+          data_fim: z.string().describe('Data de fim YYYY-MM-DD'),
+          status: z.string().optional().describe('Status opcional da OS')
+        }),
+        execute: async () => 'Funcionalidade em desenvolvimento no MCP',
+      }),
+      consulta_contas_pagar_exposicao: tool({
+        description: 'Consulta as contas a pagar que estão em exposição (próximas de vencer) ou num período.',
+        parameters: z.object({
+          loja: z.string().optional().describe('ID da loja'),
+          vencimento_inicio: z.string().optional().describe('Data vencimento início'),
+          vencimento_fim: z.string().optional().describe('Data vencimento fim')
+        }),
+        execute: async () => 'Funcionalidade em desenvolvimento no MCP',
+      }),
+      consulta_fluxo_caixa: tool({
+        description: 'Consulta o fluxo de caixa de uma loja em um período.',
+        parameters: z.object({
+          loja: z.string().describe('ID da loja'),
+          periodo: z.string().describe('Período de consulta')
+        }),
+        execute: async () => 'Funcionalidade em desenvolvimento no MCP',
+      }),
+      consulta_estoque_baixo: tool({
+        description: 'Consulta produtos com estoque abaixo do limite em uma loja.',
+        parameters: z.object({
+          loja: z.string().describe('ID da loja'),
+          limite_quantidade: z.number().describe('Quantidade limite')
+        }),
+        execute: async () => 'Funcionalidade em desenvolvimento no MCP',
+      }),
+      consulta_agenda_dia: tool({
+        description: 'Consulta a agenda de serviços/agendamentos para um dia específico.',
+        parameters: z.object({
+          loja: z.string().describe('ID da loja'),
+          data: z.string().describe('Data YYYY-MM-DD')
+        }),
+        execute: async () => 'Funcionalidade em desenvolvimento no MCP',
       })
     };
 
-    const systemPrompt = `Você é o Agente de I.A. da Oficina Inteligente.
-Sua missão é ajudar os mecânicos e gestores a analisar a saúde financeira e operacional da oficina.
-Você tem acesso ao motor MCP que extrai dados em tempo real.
-SEMPRE que for necessário buscar dados de sistema, USE as tools disponíveis em vez de adivinhar.
-Seja conciso, direto, e formate os dados monetários em R$ (BRL).`;
+    const systemPrompt = `Você é o Agente de I.A. da Oficina Inteligente, o Conector Sistêmico oficial da rede.
+O sistema Oficina Inteligente tem múltiplos módulos:
+- OS (ordem de serviço)
+- Financeiro (contas a pagar/receber, caixa, fluxo)
+- Estoque/Produtos
+- Agenda
+- Configurações
+
+IMPORTANTE: Você é um Agente operando na nuvem. NUNCA tente acessar endereços locais (como localhost, 127.0.0.1, portas internas) ou acessar arquivos de sistema do servidor. Todo acesso ao sistema legado Oficina Inteligente é feito estritamente através das Tools fornecidas, que se comunicam via HTTPS com a nossa API oficial de produção (bot.tork.services).
+
+Você NÃO deve assumir que toda pergunta é sobre OS.
+Sempre identifique se a intenção é sobre OS, financeiro, estoque, agenda ou config antes de escolher a ferramenta.
+Quando o usuário pedir qualquer coisa sobre uma OS específica (ex: "Detalhes da OS 1763", "me mostra essa OS completa"), extraia o número e chame \`consulta_os_detalhe_completo\`.
+Se a ferramenta retornar dados, apresente o quadro completo: loja, cliente, veículo, responsável, status, valor total, quanto já foi pago, percentual e a lista resumida de itens. Não responda com texto genérico se a ferramenta retornar dados.
+SEMPRE que for necessário buscar dados do sistema, USE as tools disponíveis em vez de adivinhar. Formate os dados monetários em R$ (BRL).`;
 
     const { text, toolCalls, toolResults } = await generateText({
       model: llmModel,
