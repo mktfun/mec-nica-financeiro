@@ -28,11 +28,23 @@ async function testOsQuery() {
     console.log('Navigating to wfOrdemDeServicoBusca.aspx...');
     await page.goto('https://sistemaoficinainteligente.com.br/wfOrdemDeServicoBusca.aspx', { waitUntil: 'networkidle' });
     
-    console.log('Filling search form...');
-    // We try to find the inputs
-    const html = await page.content();
-    fs.writeFileSync(path.join(__dirname, 'oi-os-busca.html'), html);
-    console.log('Saved oi-os-busca.html');
+    console.log('Filling search form with OS 1763...');
+    await page.fill('#ctl00_cph_txtOrdemDeServicoID', '1763');
+    
+    await Promise.all([
+      page.waitForNavigation({ waitUntil: 'networkidle' }),
+      page.click('#ctl00_cph_btnBuscar')
+    ]);
+
+    console.log('Search completed, extracting table data...');
+    // The grid is likely a table with class containing "GridView" or id containing "gdv"
+    const gridHtml = await page.evaluate(() => {
+       const grid = document.querySelector('table[id*="gdv"]');
+       return grid ? grid.outerHTML : 'Table not found';
+    });
+
+    fs.writeFileSync(path.join(__dirname, 'oi-os-result.html'), gridHtml);
+    console.log('Saved oi-os-result.html');
 
   } catch (err) {
     console.error('Test failed:', err);
