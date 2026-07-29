@@ -32,16 +32,25 @@ async function testOsQuery() {
     
     console.log('Login successful, URL:', page.url());
 
-    console.log('Aguardando 10 segundos para carregar o painel inicial...');
-    await page.waitForTimeout(10000);
+    console.log('Aguardando painel inicial...');
+    await page.waitForTimeout(5000);
     
-    const screenshotPath = path.join(__dirname, 'oi-home.png');
-    await page.screenshot({ path: screenshotPath });
-    console.log('Screenshot of home page saved to oi-home.png');
+    console.log('Buscando OS 1763 na Busca Rápida...');
+    await page.fill('#ctl00_txtMenuBuscaRapida', '1763');
+    await Promise.all([
+      page.waitForNavigation({ waitUntil: 'networkidle' }),
+      page.click('#ctl00_btnMenuBuscaRapida')
+    ]);
+
+    console.log('Navegação concluída! URL atual:', page.url());
+
+    const screenshotPath = path.join(__dirname, 'oi-os-1763.png');
+    await page.screenshot({ path: screenshotPath, fullPage: true });
+    console.log('Screenshot saved to oi-os-1763.png');
 
     const html = await page.content();
-    fs.writeFileSync(path.join(__dirname, 'oi-home.html'), html);
-    console.log('HTML of home page saved to oi-home.html');
+    fs.writeFileSync(path.join(__dirname, 'oi-os-1763.html'), html);
+    console.log('HTML saved to oi-os-1763.html');
 
   } catch (err) {
     console.error('Test failed:', err);
