@@ -132,6 +132,59 @@ app.get('/api/os/:id', async (req: Request, res: Response) => {
   }
 });
 
+// GET /api/os/detalhe/:id — Busca o DETALHE COMPLETO de uma Ordem de Serviço
+app.get('/api/os/detalhe/:id', async (req: Request, res: Response) => {
+  const osNumber = req.params.id;
+  if (!osNumber) {
+    res.status(400).json({ success: false, error: 'Número da OS é obrigatório.' });
+    return;
+  }
+
+  console.log(`[API] GET /api/os/detalhe/${osNumber} — Iniciando busca detalhada`);
+  let browser;
+  try {
+    const oiCreds = await getBotCredentials('oficina_inteligente');
+    if (!oiCreds?.username) {
+      throw new Error('Credenciais do Oficina Inteligente não configuradas no Supabase.');
+    }
+
+    browser = await chromium.launch({
+      headless: true,
+      executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
+
+    const context = await browser.newContext({
+      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36',
+      viewport: { width: 1280, height: 800 },
+    });
+
+    const hasSession = await loadSession('oi', context);
+    const oiPage = await loginOI(context, { username: oiCreds.username, password: oiCreds.password });
+    
+    if (!hasSession) {
+      await saveSession('oi', context);
+    }
+
+    const { fetchOSDetailedView } = require('./scrapers/oficina');
+    const osData = await fetchOSDetailedView(oiPage, osNumber);
+    
+    res.json({ success: true, data: osData });
+  } catch (error: any) {
+    console.error(`[API] Erro ao buscar detalhe da OS ${osNumber}:`, error);
+    
+    if (error.message && error.message.includes('não encontrada')) {
+      res.status(404).json({ success: false, error: error.message });
+    } else {
+      res.status(500).json({ success: false, error: error.message || String(error) });
+    }
+  } finally {
+    if (browser) {
+      await browser.close().catch(console.error);
+    }
+  }
+});
+
 const PORT = Number(process.env.BOT_PORT || process.env.PORT || 3001);
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n🚀 ConciliaMec Bot API rodando em http://0.0.0.0:${PORT}`);
