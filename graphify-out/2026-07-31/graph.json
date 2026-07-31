@@ -2551,8 +2551,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "package_dependencies_ai_sdk_react",
-      "community": 687,
-      "community_name": "@ai-sdk/react",
+      "community": 45,
+      "community_name": "dependencies",
       "norm_label": "@ai-sdk/react"
     },
     {
@@ -2562,8 +2562,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "ai_sdk_react",
-      "community": 687,
-      "community_name": "@ai-sdk/react",
+      "community": 45,
+      "community_name": "dependencies",
       "norm_label": "@ai-sdk/react"
     },
     {
@@ -3343,8 +3343,8 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "package_dependencies_ai",
-      "community": 45,
-      "community_name": "dependencies",
+      "community": 687,
+      "community_name": "ai",
       "norm_label": "ai"
     },
     {
@@ -3354,8 +3354,8 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "ai",
-      "community": 45,
-      "community_name": "dependencies",
+      "community": 687,
+      "community_name": "ai",
       "norm_label": "ai"
     },
     {
@@ -4047,8 +4047,8 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "package_devdependencies_eslint_js",
-      "community": 1,
-      "community_name": "devDependencies",
+      "community": 690,
+      "community_name": "@eslint/js",
       "norm_label": "@eslint/js"
     },
     {
@@ -4058,8 +4058,8 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "eslint_js",
-      "community": 1,
-      "community_name": "devDependencies",
+      "community": 690,
+      "community_name": "@eslint/js",
       "norm_label": "@eslint/js"
     },
     {
@@ -4201,8 +4201,8 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "package_devdependencies_eslint_config_prettier",
-      "community": 690,
-      "community_name": "eslint-config-prettier",
+      "community": 1,
+      "community_name": "devDependencies",
       "norm_label": "eslint-config-prettier"
     },
     {
@@ -4212,8 +4212,8 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "eslint_config_prettier",
-      "community": 690,
-      "community_name": "eslint-config-prettier",
+      "community": 1,
+      "community_name": "devDependencies",
       "norm_label": "eslint-config-prettier"
     },
     {
@@ -12273,7 +12273,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel",
       "community": 16,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "modulo1saldopanel.tsx"
     },
     {
@@ -12284,7 +12284,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel_modulo1saldopanelprops",
       "community": 16,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "modulo1saldopanelprops"
     },
     {
@@ -12295,7 +12295,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel_modulo1saldopanel",
       "community": 16,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "modulo1saldopanel()"
     },
     {
@@ -12460,7 +12460,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel",
       "community": 16,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "resumodiapanel.tsx"
     },
     {
@@ -12471,7 +12471,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel_resumodiapanelprops",
       "community": 16,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "resumodiapanelprops"
     },
     {
@@ -12482,7 +12482,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel_resumodiapanel",
       "community": 16,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "resumodiapanel()"
     },
     {
@@ -12547,8 +12547,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_cashflowchart",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 16,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "cashflowchart.tsx"
     },
     {
@@ -12558,8 +12558,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_dashboard_cashflowchart_cashflowchart",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 16,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "cashflowchart()"
     },
     {
@@ -12822,7 +12822,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard",
-      "community": 13,
+      "community": 16,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportwizard.tsx"
     },
@@ -12833,7 +12833,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_importlogentry",
-      "community": 13,
+      "community": 16,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "importlogentry"
     },
@@ -12844,7 +12844,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_useunifiedstoremapping",
-      "community": 13,
+      "community": 16,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "useunifiedstoremapping()"
     },
@@ -12855,7 +12855,7 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_stepindicator",
-      "community": 13,
+      "community": 16,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "stepindicator()"
     },
@@ -12866,7 +12866,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_centralimportwizard",
-      "community": 13,
+      "community": 16,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportwizard()"
     },
@@ -12899,8 +12899,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_usestoremapping",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "usestoremapping()"
     },
     {
@@ -12910,8 +12910,8 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_wizardimportacao",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "wizardimportacao()"
     },
     {
@@ -13504,8 +13504,8 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "src_hooks_useauth_uselogin",
-      "community": 27,
-      "community_name": "login.tsx",
+      "community": 41,
+      "community_name": "AppShell.tsx",
       "norm_label": "uselogin()"
     },
     {
@@ -13790,8 +13790,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useconciliacaoresumo",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "useconciliacaoresumo()"
     },
     {
@@ -13801,8 +13801,8 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useconciliacaodetalhes",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "useconciliacaodetalhes()"
     },
     {
@@ -13812,8 +13812,8 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesaveimportedreport",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 13,
+      "community_name": "importacoes.tsx",
       "norm_label": "usesaveimportedreport()"
     },
     {
@@ -13878,8 +13878,8 @@
       "source_location": "L529",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usemodulo1storesdata",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 16,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usemodulo1storesdata()"
     },
     {
@@ -13912,7 +13912,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot",
       "community": 16,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usedailysnapshot.ts"
     },
     {
@@ -13923,7 +13923,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_dailysnapshotrow",
       "community": 16,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "dailysnapshotrow"
     },
     {
@@ -13934,7 +13934,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usedailysnapshot",
       "community": 16,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usedailysnapshot()"
     },
     {
@@ -13945,7 +13945,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usepreviousdaysnapshot",
       "community": 16,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usepreviousdaysnapshot()"
     },
     {
@@ -13956,7 +13956,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usesavedailysnapshot",
       "community": 16,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usesavedailysnapshot()"
     },
     {
@@ -14088,7 +14088,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor",
       "community": 13,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "useimportprocessor.ts"
     },
     {
@@ -14099,7 +14099,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_parsedos",
       "community": 13,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "parsedos"
     },
     {
@@ -14110,7 +14110,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_parsedreceivable",
       "community": 13,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "parsedreceivable"
     },
     {
@@ -14120,7 +14120,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_savepatioosandreceivables",
-      "community": 13,
+      "community": 16,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "savepatioosandreceivables()"
     },
@@ -14132,7 +14132,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useprocessimporteddata",
       "community": 13,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "useprocessimporteddata()"
     },
     {
@@ -14143,7 +14143,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_groupedimportlog",
       "community": 13,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "groupedimportlog"
     },
     {
@@ -14154,7 +14154,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useimportshistory",
       "community": 13,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "useimportshistory()"
     },
     {
@@ -14165,7 +14165,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_usedeleteimport",
       "community": 13,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "usedeleteimport()"
     },
     {
@@ -14176,7 +14176,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useclearalldata",
       "community": 13,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "useclearalldata()"
     },
     {
@@ -14187,7 +14187,7 @@
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor",
       "community": 13,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "useosimportprocessor.ts"
     },
     {
@@ -14198,7 +14198,7 @@
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor_osimportresult",
       "community": 13,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "osimportresult"
     },
     {
@@ -14209,7 +14209,7 @@
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor_processosfiles",
       "community": 13,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "processosfiles()"
     },
     {
@@ -14362,8 +14362,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usetransactions",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 16,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usetransactions.ts"
     },
     {
@@ -14373,8 +14373,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactions",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 16,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usetransactions()"
     },
     {
@@ -14384,8 +14384,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactionsbystore",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 16,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usetransactionsbystore()"
     },
     {
@@ -14406,8 +14406,8 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usecashflow",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 16,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usecashflow()"
     },
     {
@@ -14450,8 +14450,8 @@
       "source_location": "L259",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useweeklyrevenuetrend",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 16,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "useweeklyrevenuetrend()"
     },
     {
@@ -14461,7 +14461,7 @@
       "source_location": "L312",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usecreateimportbatch",
-      "community": 13,
+      "community": 16,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "usecreateimportbatch()"
     },
@@ -14472,7 +14472,7 @@
       "source_location": "L327",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usebulkinsertconciliationmatches",
-      "community": 13,
+      "community": 16,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "usebulkinsertconciliationmatches()"
     },
@@ -14483,8 +14483,8 @@
       "source_location": "L340",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usebulkinserttransactions",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 16,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usebulkinserttransactions()"
     },
     {
@@ -14494,8 +14494,8 @@
       "source_location": "L427",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedailysystembalance",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 16,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usedailysystembalance()"
     },
     {
@@ -14505,8 +14505,8 @@
       "source_location": "L468",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_uselatestbankbalance",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 16,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "uselatestbankbalance()"
     },
     {
@@ -14516,8 +14516,8 @@
       "source_location": "L500",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedailybankbalance",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 16,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usedailybankbalance()"
     },
     {
@@ -14527,8 +14527,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher",
-      "community": 694,
-      "community_name": "start.ts",
+      "community": 680,
+      "community_name": "src/server.ts",
       "norm_label": "auth-attacher.ts"
     },
     {
@@ -14538,8 +14538,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher_attachsupabaseauth",
-      "community": 694,
-      "community_name": "start.ts",
+      "community": 680,
+      "community_name": "src/server.ts",
       "norm_label": "attachsupabaseauth"
     },
     {
@@ -15562,7 +15562,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations",
       "community": 16,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "modulo1calculations.ts"
     },
     {
@@ -15573,7 +15573,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_storesaldostate",
       "community": 16,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "storesaldostate"
     },
     {
@@ -15584,7 +15584,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_modulo1calculated",
       "community": 16,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "modulo1calculated"
     },
     {
@@ -15595,7 +15595,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_calculatemodulo1saldo",
       "community": 16,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "calculatemodulo1saldo()"
     },
     {
@@ -15946,8 +15946,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_lib_supabase_reconciliationrow",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "reconciliationrow"
     },
     {
@@ -16045,8 +16045,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_utils",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 16,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "utils.ts"
     },
     {
@@ -16067,8 +16067,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_lib_utils_getdefaultdate",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 16,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "getdefaultdate()"
     },
     {
@@ -16079,7 +16079,7 @@
       "_origin": "ast",
       "id": "src_lib_utils_formatcurrency",
       "community": 16,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -16331,8 +16331,8 @@
       "source_location": "L170",
       "_origin": "ast",
       "id": "src_routetree_gen_fileroutesbyid",
-      "community": 400,
-      "community_name": "__root.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "fileroutesbyid"
     },
     {
@@ -16375,8 +16375,8 @@
       "source_location": "L281",
       "_origin": "ast",
       "id": "src_routetree_gen_fileroutesbypath",
-      "community": 700,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "fileroutesbypath"
     },
     {
@@ -16386,8 +16386,8 @@
       "source_location": "L439",
       "_origin": "ast",
       "id": "src_routetree_gen_routetree",
-      "community": 694,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "routetree"
     },
     {
@@ -16408,8 +16408,8 @@
       "source_location": "L446",
       "_origin": "ast",
       "id": "src_routetree_gen_register",
-      "community": 694,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "register"
     },
     {
@@ -16419,8 +16419,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_router",
-      "community": 694,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "router.tsx"
     },
     {
@@ -16430,8 +16430,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_router_getrouter",
-      "community": 694,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "getrouter()"
     },
     {
@@ -16441,8 +16441,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_root",
-      "community": 400,
-      "community_name": "__root.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "__root.tsx"
     },
     {
@@ -16452,8 +16452,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_routes_root_notfoundcomponent",
-      "community": 400,
-      "community_name": "__root.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "notfoundcomponent()"
     },
     {
@@ -16463,8 +16463,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "src_routes_root_errorcomponent",
-      "community": 400,
-      "community_name": "__root.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "errorcomponent()"
     },
     {
@@ -16474,8 +16474,8 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "src_routes_root_route",
-      "community": 400,
-      "community_name": "__root.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -16485,8 +16485,8 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "src_routes_root_rootshell",
-      "community": 400,
-      "community_name": "__root.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "rootshell()"
     },
     {
@@ -16496,8 +16496,8 @@
       "source_location": "L128",
       "_origin": "ast",
       "id": "src_routes_root_rootcomponent",
-      "community": 400,
-      "community_name": "__root.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "rootcomponent()"
     },
     {
@@ -16551,8 +16551,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_routes_alertas_route",
-      "community": 700,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -16584,8 +16584,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "conciliacao-detalhes.tsx"
     },
     {
@@ -16595,8 +16595,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_route",
-      "community": 700,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -16606,8 +16606,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_tab",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "tab"
     },
     {
@@ -16617,8 +16617,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_statustab",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "statustab"
     },
     {
@@ -16628,8 +16628,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_conciliacaodetalhespage",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "conciliacaodetalhespage()"
     },
     {
@@ -16639,8 +16639,8 @@
       "source_location": "L166",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_row",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "row()"
     },
     {
@@ -16650,8 +16650,8 @@
       "source_location": "L183",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_tabbutton",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "tabbutton()"
     },
     {
@@ -16661,8 +16661,8 @@
       "source_location": "L203",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_lojatable",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "lojatable()"
     },
     {
@@ -16683,8 +16683,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_route",
-      "community": 700,
-      "community_name": "FileRoutesByPath",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "route"
     },
     {
@@ -16738,8 +16738,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_conciliacao_index",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 16,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "conciliacao.index.tsx"
     },
     {
@@ -16749,8 +16749,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_conciliacao_index_route",
-      "community": 700,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -16760,8 +16760,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_routes_conciliacao_index_conciliacaopage",
-      "community": 37,
-      "community_name": "useTransactions.ts",
+      "community": 16,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "conciliacaopage()"
     },
     {
@@ -16782,8 +16782,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_routes_configuracoes_route",
-      "community": 700,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -16826,8 +16826,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_historico_route",
-      "community": 700,
-      "community_name": "FileRoutesByPath",
+      "community": 495,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "route"
     },
     {
@@ -16892,8 +16892,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_route",
-      "community": 700,
-      "community_name": "FileRoutesByPath",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "route"
     },
     {
@@ -16937,7 +16937,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes",
       "community": 13,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "importacoes.tsx"
     },
     {
@@ -16947,8 +16947,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_routes_importacoes_route",
-      "community": 700,
-      "community_name": "FileRoutesByPath",
+      "community": 13,
+      "community_name": "importacoes.tsx",
       "norm_label": "route"
     },
     {
@@ -16959,7 +16959,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes_formatdate",
       "community": 13,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "formatdate()"
     },
     {
@@ -16970,7 +16970,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes_importacoespage",
       "community": 13,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "importacoespage()"
     },
     {
@@ -16981,7 +16981,7 @@
       "_origin": "ast",
       "id": "src_routes_importar_os",
       "community": 13,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "importar-os.tsx"
     },
     {
@@ -16991,8 +16991,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_routes_importar_os_route",
-      "community": 700,
-      "community_name": "FileRoutesByPath",
+      "community": 13,
+      "community_name": "importacoes.tsx",
       "norm_label": "route"
     },
     {
@@ -17003,7 +17003,7 @@
       "_origin": "ast",
       "id": "src_routes_importar_os_useosstoremapping",
       "community": 13,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "useosstoremapping()"
     },
     {
@@ -17014,7 +17014,7 @@
       "_origin": "ast",
       "id": "src_routes_importar_os_stepindicator",
       "community": 13,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "stepindicator()"
     },
     {
@@ -17025,7 +17025,7 @@
       "_origin": "ast",
       "id": "src_routes_importar_os_importaroswizard",
       "community": 13,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "importaroswizard()"
     },
     {
@@ -17046,8 +17046,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_routes_index_route",
-      "community": 700,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -17057,8 +17057,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_index_dashboardpage",
-      "community": 3,
-      "community_name": "patio.tsx",
+      "community": 16,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "dashboardpage()"
     },
     {
@@ -17068,8 +17068,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_login",
-      "community": 27,
-      "community_name": "login.tsx",
+      "community": 41,
+      "community_name": "AppShell.tsx",
       "norm_label": "login.tsx"
     },
     {
@@ -17079,8 +17079,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_routes_login_route",
-      "community": 27,
-      "community_name": "login.tsx",
+      "community": 41,
+      "community_name": "AppShell.tsx",
       "norm_label": "route"
     },
     {
@@ -17090,8 +17090,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_routes_login_loginpage",
-      "community": 27,
-      "community_name": "login.tsx",
+      "community": 41,
+      "community_name": "AppShell.tsx",
       "norm_label": "loginpage()"
     },
     {
@@ -17112,8 +17112,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_routes_logs_agente_route",
-      "community": 700,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -17145,8 +17145,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_routes_logs_motor_route",
-      "community": 700,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -17178,8 +17178,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_route",
-      "community": 700,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -17244,8 +17244,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_routes_lojas_route",
-      "community": 700,
-      "community_name": "FileRoutesByPath",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -17299,8 +17299,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_routes_patio_route",
-      "community": 700,
-      "community_name": "FileRoutesByPath",
+      "community": 3,
+      "community_name": "patio.tsx",
       "norm_label": "route"
     },
     {
@@ -17354,8 +17354,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_proposta",
-      "community": 215,
-      "community_name": "proposta.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "proposta.tsx"
     },
     {
@@ -17365,8 +17365,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_routes_proposta_route",
-      "community": 215,
-      "community_name": "proposta.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -17376,8 +17376,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_routes_proposta_costconfig",
-      "community": 215,
-      "community_name": "proposta.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "costconfig"
     },
     {
@@ -17387,8 +17387,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_routes_proposta_defaultconfig",
-      "community": 215,
-      "community_name": "proposta.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "defaultconfig"
     },
     {
@@ -17398,8 +17398,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "src_routes_proposta_propostapage",
-      "community": 215,
-      "community_name": "proposta.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "propostapage()"
     },
     {
@@ -17409,8 +17409,8 @@
       "source_location": "L355",
       "_origin": "ast",
       "id": "src_routes_proposta_costrow",
-      "community": 215,
-      "community_name": "proposta.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "costrow()"
     },
     {
@@ -17420,8 +17420,8 @@
       "source_location": "L370",
       "_origin": "ast",
       "id": "src_routes_proposta_editfield",
-      "community": 215,
-      "community_name": "proposta.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "editfield()"
     },
     {
@@ -17431,8 +17431,8 @@
       "source_location": "L384",
       "_origin": "ast",
       "id": "src_routes_proposta_editstringfield",
-      "community": 215,
-      "community_name": "proposta.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "editstringfield()"
     },
     {
@@ -17453,8 +17453,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_routes_recebiveis_route",
-      "community": 700,
-      "community_name": "FileRoutesByPath",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "route"
     },
     {
@@ -17574,8 +17574,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_start",
-      "community": 694,
-      "community_name": "start.ts",
+      "community": 680,
+      "community_name": "src/server.ts",
       "norm_label": "start.ts"
     },
     {
@@ -17585,8 +17585,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_start_errormiddleware",
-      "community": 694,
-      "community_name": "start.ts",
+      "community": 680,
+      "community_name": "src/server.ts",
       "norm_label": "errormiddleware"
     },
     {
@@ -17596,8 +17596,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_start_startinstance",
-      "community": 694,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "startinstance"
     },
     {
@@ -45486,6 +45486,215 @@
       "norm_label": "tasks"
     },
     {
+      "label": "fix-sidebar-crash/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/fix-sidebar-crash/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_fix_sidebar_crash_design",
+      "community": 27,
+      "community_name": "Design: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "norm_label": "fix-sidebar-crash/design.md"
+    },
+    {
+      "label": "Design: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "file_type": "document",
+      "source_file": "specs/archive/fix-sidebar-crash/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_fix_sidebar_crash_design_design_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "community": 27,
+      "community_name": "Design: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "norm_label": "design: correcao de crash na tela de agente e limpeza do sidebar (fix-sidebar-crash)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/archive/fix-sidebar-crash/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_fix_sidebar_crash_design_arquitetura_t\u00e9cnica",
+      "community": 27,
+      "community_name": "Design: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Interfaces TypeScript",
+      "file_type": "document",
+      "source_file": "specs/archive/fix-sidebar-crash/design.md",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "specs_archive_fix_sidebar_crash_design_interfaces_typescript",
+      "community": 27,
+      "community_name": "Design: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "norm_label": "interfaces typescript"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/archive/fix-sidebar-crash/design.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "specs_archive_fix_sidebar_crash_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 27,
+      "community_name": "Design: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Fluxo de UI",
+      "file_type": "document",
+      "source_file": "specs/archive/fix-sidebar-crash/design.md",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "specs_archive_fix_sidebar_crash_design_fluxo_de_ui",
+      "community": 27,
+      "community_name": "Design: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "norm_label": "fluxo de ui"
+    },
+    {
+      "label": "Infra / Deploy",
+      "file_type": "document",
+      "source_file": "specs/archive/fix-sidebar-crash/design.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "specs_archive_fix_sidebar_crash_design_infra_deploy",
+      "community": 27,
+      "community_name": "Design: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "norm_label": "infra / deploy"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/archive/fix-sidebar-crash/design.md",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "specs_archive_fix_sidebar_crash_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 27,
+      "community_name": "Design: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "fix-sidebar-crash/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/fix-sidebar-crash/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_fix_sidebar_crash_proposal",
+      "community": 37,
+      "community_name": "Proposal: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "norm_label": "fix-sidebar-crash/proposal.md"
+    },
+    {
+      "label": "Proposal: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "file_type": "document",
+      "source_file": "specs/archive/fix-sidebar-crash/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_fix_sidebar_crash_proposal_proposal_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "community": 37,
+      "community_name": "Proposal: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "norm_label": "proposal: correcao de crash na tela de agente e limpeza do sidebar (fix-sidebar-crash)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/archive/fix-sidebar-crash/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_fix_sidebar_crash_proposal_problema",
+      "community": 37,
+      "community_name": "Proposal: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/archive/fix-sidebar-crash/proposal.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "specs_archive_fix_sidebar_crash_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 37,
+      "community_name": "Proposal: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/fix-sidebar-crash/proposal.md",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "specs_archive_fix_sidebar_crash_proposal_contratos_de_dados",
+      "community": 37,
+      "community_name": "Proposal: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/archive/fix-sidebar-crash/proposal.md",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "specs_archive_fix_sidebar_crash_proposal_api_interface",
+      "community": 37,
+      "community_name": "Proposal: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/archive/fix-sidebar-crash/proposal.md",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "specs_archive_fix_sidebar_crash_proposal_features_existentes_impactadas",
+      "community": 37,
+      "community_name": "Proposal: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/archive/fix-sidebar-crash/proposal.md",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "specs_archive_fix_sidebar_crash_proposal_risco_principal",
+      "community": 37,
+      "community_name": "Proposal: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "fix-sidebar-crash/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/fix-sidebar-crash/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_fix_sidebar_crash_spec_plan",
+      "community": 530,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "norm_label": "fix-sidebar-crash/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "file_type": "document",
+      "source_file": "specs/archive/fix-sidebar-crash/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_fix_sidebar_crash_spec_plan_spec_plan_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "community": 530,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "norm_label": "spec plan: correcao de crash na tela de agente e limpeza do sidebar (fix-sidebar-crash)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/fix-sidebar-crash/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_fix_sidebar_crash_spec_plan_tasks",
+      "community": 530,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "norm_label": "tasks"
+    },
+    {
       "label": "fix-store-closing-card-labels-and-values/design.md",
       "file_type": "document",
       "source_file": "specs/archive/fix-store-closing-card-labels-and-values/design.md",
@@ -49556,212 +49765,190 @@
       "norm_label": "tasks"
     },
     {
-      "label": "fix-sidebar-crash/design.md",
+      "label": "fix-chat-reactivity/design.md",
       "file_type": "document",
-      "source_file": "specs/fix-sidebar-crash/design.md",
+      "source_file": "specs/fix-chat-reactivity/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_fix_sidebar_crash_design",
-      "community": 530,
-      "community_name": "Design: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
-      "norm_label": "fix-sidebar-crash/design.md"
+      "id": "specs_fix_chat_reactivity_design",
+      "community": 400,
+      "community_name": "Design: Corre\u00e7\u00e3o de Reatividade do Chat e Regress\u00e3o de UI (fix-chat-reactivity)",
+      "norm_label": "fix-chat-reactivity/design.md"
     },
     {
-      "label": "Design: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "label": "Design: Corre\u00e7\u00e3o de Reatividade do Chat e Regress\u00e3o de UI (fix-chat-reactivity)",
       "file_type": "document",
-      "source_file": "specs/fix-sidebar-crash/design.md",
+      "source_file": "specs/fix-chat-reactivity/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_fix_sidebar_crash_design_design_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
-      "community": 530,
-      "community_name": "Design: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
-      "norm_label": "design: correcao de crash na tela de agente e limpeza do sidebar (fix-sidebar-crash)"
+      "id": "specs_fix_chat_reactivity_design_design_corre\u00e7\u00e3o_de_reatividade_do_chat_e_regress\u00e3o_de_ui_fix_chat_reactivity",
+      "community": 400,
+      "community_name": "Design: Corre\u00e7\u00e3o de Reatividade do Chat e Regress\u00e3o de UI (fix-chat-reactivity)",
+      "norm_label": "design: correcao de reatividade do chat e regressao de ui (fix-chat-reactivity)"
     },
     {
       "label": "Arquitetura T\u00e9cnica",
       "file_type": "document",
-      "source_file": "specs/fix-sidebar-crash/design.md",
+      "source_file": "specs/fix-chat-reactivity/design.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_fix_sidebar_crash_design_arquitetura_t\u00e9cnica",
-      "community": 530,
-      "community_name": "Design: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "id": "specs_fix_chat_reactivity_design_arquitetura_t\u00e9cnica",
+      "community": 400,
+      "community_name": "Design: Corre\u00e7\u00e3o de Reatividade do Chat e Regress\u00e3o de UI (fix-chat-reactivity)",
       "norm_label": "arquitetura tecnica"
     },
     {
       "label": "Interfaces TypeScript",
       "file_type": "document",
-      "source_file": "specs/fix-sidebar-crash/design.md",
-      "source_location": "L8",
+      "source_file": "specs/fix-chat-reactivity/design.md",
+      "source_location": "L14",
       "_origin": "ast",
-      "id": "specs_fix_sidebar_crash_design_interfaces_typescript",
-      "community": 530,
-      "community_name": "Design: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "id": "specs_fix_chat_reactivity_design_interfaces_typescript",
+      "community": 400,
+      "community_name": "Design: Corre\u00e7\u00e3o de Reatividade do Chat e Regress\u00e3o de UI (fix-chat-reactivity)",
       "norm_label": "interfaces typescript"
     },
     {
       "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
       "file_type": "document",
-      "source_file": "specs/fix-sidebar-crash/design.md",
-      "source_location": "L11",
+      "source_file": "specs/fix-chat-reactivity/design.md",
+      "source_location": "L17",
       "_origin": "ast",
-      "id": "specs_fix_sidebar_crash_design_componentes_hooks_fun\u00e7\u00f5es",
-      "community": 530,
-      "community_name": "Design: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "id": "specs_fix_chat_reactivity_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 400,
+      "community_name": "Design: Corre\u00e7\u00e3o de Reatividade do Chat e Regress\u00e3o de UI (fix-chat-reactivity)",
       "norm_label": "componentes / hooks / funcoes"
-    },
-    {
-      "label": "Fluxo de UI",
-      "file_type": "document",
-      "source_file": "specs/fix-sidebar-crash/design.md",
-      "source_location": "L15",
-      "_origin": "ast",
-      "id": "specs_fix_sidebar_crash_design_fluxo_de_ui",
-      "community": 530,
-      "community_name": "Design: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
-      "norm_label": "fluxo de ui"
-    },
-    {
-      "label": "Infra / Deploy",
-      "file_type": "document",
-      "source_file": "specs/fix-sidebar-crash/design.md",
-      "source_location": "L19",
-      "_origin": "ast",
-      "id": "specs_fix_sidebar_crash_design_infra_deploy",
-      "community": 530,
-      "community_name": "Design: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
-      "norm_label": "infra / deploy"
     },
     {
       "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
       "file_type": "document",
-      "source_file": "specs/fix-sidebar-crash/design.md",
-      "source_location": "L22",
+      "source_file": "specs/fix-chat-reactivity/design.md",
+      "source_location": "L29",
       "_origin": "ast",
-      "id": "specs_fix_sidebar_crash_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
-      "community": 530,
-      "community_name": "Design: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "id": "specs_fix_chat_reactivity_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 400,
+      "community_name": "Design: Corre\u00e7\u00e3o de Reatividade do Chat e Regress\u00e3o de UI (fix-chat-reactivity)",
       "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
     },
     {
-      "label": "fix-sidebar-crash/proposal.md",
+      "label": "fix-chat-reactivity/proposal.md",
       "file_type": "document",
-      "source_file": "specs/fix-sidebar-crash/proposal.md",
+      "source_file": "specs/fix-chat-reactivity/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_fix_sidebar_crash_proposal",
-      "community": 631,
-      "community_name": "Proposal: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
-      "norm_label": "fix-sidebar-crash/proposal.md"
+      "id": "specs_fix_chat_reactivity_proposal",
+      "community": 215,
+      "community_name": "Proposal: Corre\u00e7\u00e3o de Reatividade do Chat e Regress\u00e3o de UI (fix-chat-reactivity)",
+      "norm_label": "fix-chat-reactivity/proposal.md"
     },
     {
-      "label": "Proposal: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "label": "Proposal: Corre\u00e7\u00e3o de Reatividade do Chat e Regress\u00e3o de UI (fix-chat-reactivity)",
       "file_type": "document",
-      "source_file": "specs/fix-sidebar-crash/proposal.md",
+      "source_file": "specs/fix-chat-reactivity/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_fix_sidebar_crash_proposal_proposal_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
-      "community": 631,
-      "community_name": "Proposal: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
-      "norm_label": "proposal: correcao de crash na tela de agente e limpeza do sidebar (fix-sidebar-crash)"
+      "id": "specs_fix_chat_reactivity_proposal_proposal_corre\u00e7\u00e3o_de_reatividade_do_chat_e_regress\u00e3o_de_ui_fix_chat_reactivity",
+      "community": 215,
+      "community_name": "Proposal: Corre\u00e7\u00e3o de Reatividade do Chat e Regress\u00e3o de UI (fix-chat-reactivity)",
+      "norm_label": "proposal: correcao de reatividade do chat e regressao de ui (fix-chat-reactivity)"
     },
     {
       "label": "Problema",
       "file_type": "document",
-      "source_file": "specs/fix-sidebar-crash/proposal.md",
+      "source_file": "specs/fix-chat-reactivity/proposal.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_fix_sidebar_crash_proposal_problema",
-      "community": 631,
-      "community_name": "Proposal: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "id": "specs_fix_chat_reactivity_proposal_problema",
+      "community": 215,
+      "community_name": "Proposal: Corre\u00e7\u00e3o de Reatividade do Chat e Regress\u00e3o de UI (fix-chat-reactivity)",
       "norm_label": "problema"
     },
     {
       "label": "Solu\u00e7\u00e3o Proposta",
       "file_type": "document",
-      "source_file": "specs/fix-sidebar-crash/proposal.md",
-      "source_location": "L6",
+      "source_file": "specs/fix-chat-reactivity/proposal.md",
+      "source_location": "L7",
       "_origin": "ast",
-      "id": "specs_fix_sidebar_crash_proposal_solu\u00e7\u00e3o_proposta",
-      "community": 631,
-      "community_name": "Proposal: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "id": "specs_fix_chat_reactivity_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 215,
+      "community_name": "Proposal: Corre\u00e7\u00e3o de Reatividade do Chat e Regress\u00e3o de UI (fix-chat-reactivity)",
       "norm_label": "solucao proposta"
     },
     {
       "label": "Contratos de Dados",
       "file_type": "document",
-      "source_file": "specs/fix-sidebar-crash/proposal.md",
-      "source_location": "L10",
+      "source_file": "specs/fix-chat-reactivity/proposal.md",
+      "source_location": "L13",
       "_origin": "ast",
-      "id": "specs_fix_sidebar_crash_proposal_contratos_de_dados",
-      "community": 631,
-      "community_name": "Proposal: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "id": "specs_fix_chat_reactivity_proposal_contratos_de_dados",
+      "community": 215,
+      "community_name": "Proposal: Corre\u00e7\u00e3o de Reatividade do Chat e Regress\u00e3o de UI (fix-chat-reactivity)",
       "norm_label": "contratos de dados"
     },
     {
       "label": "API / Interface",
       "file_type": "document",
-      "source_file": "specs/fix-sidebar-crash/proposal.md",
-      "source_location": "L13",
+      "source_file": "specs/fix-chat-reactivity/proposal.md",
+      "source_location": "L17",
       "_origin": "ast",
-      "id": "specs_fix_sidebar_crash_proposal_api_interface",
-      "community": 631,
-      "community_name": "Proposal: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "id": "specs_fix_chat_reactivity_proposal_api_interface",
+      "community": 215,
+      "community_name": "Proposal: Corre\u00e7\u00e3o de Reatividade do Chat e Regress\u00e3o de UI (fix-chat-reactivity)",
       "norm_label": "api / interface"
     },
     {
       "label": "Features Existentes Impactadas",
       "file_type": "document",
-      "source_file": "specs/fix-sidebar-crash/proposal.md",
-      "source_location": "L17",
+      "source_file": "specs/fix-chat-reactivity/proposal.md",
+      "source_location": "L21",
       "_origin": "ast",
-      "id": "specs_fix_sidebar_crash_proposal_features_existentes_impactadas",
-      "community": 631,
-      "community_name": "Proposal: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "id": "specs_fix_chat_reactivity_proposal_features_existentes_impactadas",
+      "community": 215,
+      "community_name": "Proposal: Corre\u00e7\u00e3o de Reatividade do Chat e Regress\u00e3o de UI (fix-chat-reactivity)",
       "norm_label": "features existentes impactadas"
     },
     {
       "label": "Risco Principal",
       "file_type": "document",
-      "source_file": "specs/fix-sidebar-crash/proposal.md",
-      "source_location": "L20",
+      "source_file": "specs/fix-chat-reactivity/proposal.md",
+      "source_location": "L24",
       "_origin": "ast",
-      "id": "specs_fix_sidebar_crash_proposal_risco_principal",
-      "community": 631,
-      "community_name": "Proposal: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "id": "specs_fix_chat_reactivity_proposal_risco_principal",
+      "community": 215,
+      "community_name": "Proposal: Corre\u00e7\u00e3o de Reatividade do Chat e Regress\u00e3o de UI (fix-chat-reactivity)",
       "norm_label": "risco principal"
     },
     {
-      "label": "fix-sidebar-crash/spec-plan.md",
+      "label": "fix-chat-reactivity/spec-plan.md",
       "file_type": "document",
-      "source_file": "specs/fix-sidebar-crash/spec-plan.md",
+      "source_file": "specs/fix-chat-reactivity/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_fix_sidebar_crash_spec_plan",
-      "community": 735,
-      "community_name": "Spec Plan: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
-      "norm_label": "fix-sidebar-crash/spec-plan.md"
+      "id": "specs_fix_chat_reactivity_spec_plan",
+      "community": 631,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o de Reatividade do Chat (fix-chat-reactivity)",
+      "norm_label": "fix-chat-reactivity/spec-plan.md"
     },
     {
-      "label": "Spec Plan: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "label": "Spec Plan: Corre\u00e7\u00e3o de Reatividade do Chat (fix-chat-reactivity)",
       "file_type": "document",
-      "source_file": "specs/fix-sidebar-crash/spec-plan.md",
+      "source_file": "specs/fix-chat-reactivity/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_fix_sidebar_crash_spec_plan_spec_plan_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
-      "community": 735,
-      "community_name": "Spec Plan: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
-      "norm_label": "spec plan: correcao de crash na tela de agente e limpeza do sidebar (fix-sidebar-crash)"
+      "id": "specs_fix_chat_reactivity_spec_plan_spec_plan_corre\u00e7\u00e3o_de_reatividade_do_chat_fix_chat_reactivity",
+      "community": 631,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o de Reatividade do Chat (fix-chat-reactivity)",
+      "norm_label": "spec plan: correcao de reatividade do chat (fix-chat-reactivity)"
     },
     {
       "label": "Tasks",
       "file_type": "document",
-      "source_file": "specs/fix-sidebar-crash/spec-plan.md",
+      "source_file": "specs/fix-chat-reactivity/spec-plan.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_fix_sidebar_crash_spec_plan_tasks",
-      "community": 735,
-      "community_name": "Spec Plan: Corre\u00e7\u00e3o de Crash na Tela de Agente e Limpeza do Sidebar (fix-sidebar-crash)",
+      "id": "specs_fix_chat_reactivity_spec_plan_tasks",
+      "community": 631,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o de Reatividade do Chat (fix-chat-reactivity)",
       "norm_label": "tasks"
     },
     {
@@ -103166,6 +103353,182 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "specs/archive/fix-sidebar-crash/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_fix_sidebar_crash_design",
+      "target": "specs_archive_fix_sidebar_crash_design_design_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/fix-sidebar-crash/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_fix_sidebar_crash_design_design_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "target": "specs_archive_fix_sidebar_crash_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/fix-sidebar-crash/design.md",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_fix_sidebar_crash_design_design_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "target": "specs_archive_fix_sidebar_crash_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/fix-sidebar-crash/design.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_fix_sidebar_crash_design_design_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "target": "specs_archive_fix_sidebar_crash_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/fix-sidebar-crash/design.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_fix_sidebar_crash_design_design_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "target": "specs_archive_fix_sidebar_crash_design_fluxo_de_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/fix-sidebar-crash/design.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_fix_sidebar_crash_design_design_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "target": "specs_archive_fix_sidebar_crash_design_infra_deploy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/fix-sidebar-crash/design.md",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_fix_sidebar_crash_design_design_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "target": "specs_archive_fix_sidebar_crash_design_interfaces_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/fix-sidebar-crash/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_fix_sidebar_crash_proposal",
+      "target": "specs_archive_fix_sidebar_crash_proposal_proposal_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/fix-sidebar-crash/proposal.md",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_fix_sidebar_crash_proposal_proposal_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "target": "specs_archive_fix_sidebar_crash_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/fix-sidebar-crash/proposal.md",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_fix_sidebar_crash_proposal_proposal_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "target": "specs_archive_fix_sidebar_crash_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/fix-sidebar-crash/proposal.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_fix_sidebar_crash_proposal_proposal_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "target": "specs_archive_fix_sidebar_crash_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/fix-sidebar-crash/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_fix_sidebar_crash_proposal_proposal_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "target": "specs_archive_fix_sidebar_crash_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/fix-sidebar-crash/proposal.md",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_fix_sidebar_crash_proposal_proposal_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "target": "specs_archive_fix_sidebar_crash_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/fix-sidebar-crash/proposal.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_fix_sidebar_crash_proposal_proposal_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "target": "specs_archive_fix_sidebar_crash_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/fix-sidebar-crash/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_fix_sidebar_crash_spec_plan",
+      "target": "specs_archive_fix_sidebar_crash_spec_plan_spec_plan_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/fix-sidebar-crash/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_fix_sidebar_crash_spec_plan_spec_plan_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "target": "specs_archive_fix_sidebar_crash_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "specs/archive/fix-store-closing-card-labels-and-values/design.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -106543,177 +106906,155 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/fix-sidebar-crash/design.md",
+      "source_file": "specs/fix-chat-reactivity/design.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_fix_sidebar_crash_design",
-      "target": "specs_fix_sidebar_crash_design_design_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "source": "specs_fix_chat_reactivity_design",
+      "target": "specs_fix_chat_reactivity_design_design_corre\u00e7\u00e3o_de_reatividade_do_chat_e_regress\u00e3o_de_ui_fix_chat_reactivity",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/fix-sidebar-crash/design.md",
+      "source_file": "specs/fix-chat-reactivity/design.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_fix_sidebar_crash_design_design_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
-      "target": "specs_fix_sidebar_crash_design_arquitetura_t\u00e9cnica",
+      "source": "specs_fix_chat_reactivity_design_design_corre\u00e7\u00e3o_de_reatividade_do_chat_e_regress\u00e3o_de_ui_fix_chat_reactivity",
+      "target": "specs_fix_chat_reactivity_design_arquitetura_t\u00e9cnica",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/fix-sidebar-crash/design.md",
-      "source_location": "L22",
+      "source_file": "specs/fix-chat-reactivity/design.md",
+      "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_fix_sidebar_crash_design_design_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
-      "target": "specs_fix_sidebar_crash_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "source": "specs_fix_chat_reactivity_design_design_corre\u00e7\u00e3o_de_reatividade_do_chat_e_regress\u00e3o_de_ui_fix_chat_reactivity",
+      "target": "specs_fix_chat_reactivity_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/fix-sidebar-crash/design.md",
-      "source_location": "L11",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_fix_sidebar_crash_design_design_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
-      "target": "specs_fix_sidebar_crash_design_componentes_hooks_fun\u00e7\u00f5es",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/fix-sidebar-crash/design.md",
-      "source_location": "L15",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_fix_sidebar_crash_design_design_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
-      "target": "specs_fix_sidebar_crash_design_fluxo_de_ui",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/fix-sidebar-crash/design.md",
-      "source_location": "L19",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_fix_sidebar_crash_design_design_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
-      "target": "specs_fix_sidebar_crash_design_infra_deploy",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/fix-sidebar-crash/design.md",
-      "source_location": "L8",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_fix_sidebar_crash_design_design_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
-      "target": "specs_fix_sidebar_crash_design_interfaces_typescript",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/fix-sidebar-crash/proposal.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_fix_sidebar_crash_proposal",
-      "target": "specs_fix_sidebar_crash_proposal_proposal_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/fix-sidebar-crash/proposal.md",
-      "source_location": "L13",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_fix_sidebar_crash_proposal_proposal_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
-      "target": "specs_fix_sidebar_crash_proposal_api_interface",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/fix-sidebar-crash/proposal.md",
-      "source_location": "L10",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_fix_sidebar_crash_proposal_proposal_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
-      "target": "specs_fix_sidebar_crash_proposal_contratos_de_dados",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/fix-sidebar-crash/proposal.md",
+      "source_file": "specs/fix-chat-reactivity/design.md",
       "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_fix_sidebar_crash_proposal_proposal_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
-      "target": "specs_fix_sidebar_crash_proposal_features_existentes_impactadas",
+      "source": "specs_fix_chat_reactivity_design_design_corre\u00e7\u00e3o_de_reatividade_do_chat_e_regress\u00e3o_de_ui_fix_chat_reactivity",
+      "target": "specs_fix_chat_reactivity_design_componentes_hooks_fun\u00e7\u00f5es",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/fix-sidebar-crash/proposal.md",
-      "source_location": "L3",
+      "source_file": "specs/fix-chat-reactivity/design.md",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_fix_sidebar_crash_proposal_proposal_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
-      "target": "specs_fix_sidebar_crash_proposal_problema",
+      "source": "specs_fix_chat_reactivity_design_design_corre\u00e7\u00e3o_de_reatividade_do_chat_e_regress\u00e3o_de_ui_fix_chat_reactivity",
+      "target": "specs_fix_chat_reactivity_design_interfaces_typescript",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/fix-sidebar-crash/proposal.md",
-      "source_location": "L20",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_fix_sidebar_crash_proposal_proposal_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
-      "target": "specs_fix_sidebar_crash_proposal_risco_principal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/fix-sidebar-crash/proposal.md",
-      "source_location": "L6",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_fix_sidebar_crash_proposal_proposal_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
-      "target": "specs_fix_sidebar_crash_proposal_solu\u00e7\u00e3o_proposta",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/fix-sidebar-crash/spec-plan.md",
+      "source_file": "specs/fix-chat-reactivity/proposal.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_fix_sidebar_crash_spec_plan",
-      "target": "specs_fix_sidebar_crash_spec_plan_spec_plan_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
+      "source": "specs_fix_chat_reactivity_proposal",
+      "target": "specs_fix_chat_reactivity_proposal_proposal_corre\u00e7\u00e3o_de_reatividade_do_chat_e_regress\u00e3o_de_ui_fix_chat_reactivity",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/fix-sidebar-crash/spec-plan.md",
+      "source_file": "specs/fix-chat-reactivity/proposal.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_fix_chat_reactivity_proposal_proposal_corre\u00e7\u00e3o_de_reatividade_do_chat_e_regress\u00e3o_de_ui_fix_chat_reactivity",
+      "target": "specs_fix_chat_reactivity_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/fix-chat-reactivity/proposal.md",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_fix_chat_reactivity_proposal_proposal_corre\u00e7\u00e3o_de_reatividade_do_chat_e_regress\u00e3o_de_ui_fix_chat_reactivity",
+      "target": "specs_fix_chat_reactivity_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/fix-chat-reactivity/proposal.md",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_fix_chat_reactivity_proposal_proposal_corre\u00e7\u00e3o_de_reatividade_do_chat_e_regress\u00e3o_de_ui_fix_chat_reactivity",
+      "target": "specs_fix_chat_reactivity_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/fix-chat-reactivity/proposal.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_fix_sidebar_crash_spec_plan_spec_plan_corre\u00e7\u00e3o_de_crash_na_tela_de_agente_e_limpeza_do_sidebar_fix_sidebar_crash",
-      "target": "specs_fix_sidebar_crash_spec_plan_tasks",
+      "source": "specs_fix_chat_reactivity_proposal_proposal_corre\u00e7\u00e3o_de_reatividade_do_chat_e_regress\u00e3o_de_ui_fix_chat_reactivity",
+      "target": "specs_fix_chat_reactivity_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/fix-chat-reactivity/proposal.md",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_fix_chat_reactivity_proposal_proposal_corre\u00e7\u00e3o_de_reatividade_do_chat_e_regress\u00e3o_de_ui_fix_chat_reactivity",
+      "target": "specs_fix_chat_reactivity_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/fix-chat-reactivity/proposal.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_fix_chat_reactivity_proposal_proposal_corre\u00e7\u00e3o_de_reatividade_do_chat_e_regress\u00e3o_de_ui_fix_chat_reactivity",
+      "target": "specs_fix_chat_reactivity_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/fix-chat-reactivity/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_fix_chat_reactivity_spec_plan",
+      "target": "specs_fix_chat_reactivity_spec_plan_spec_plan_corre\u00e7\u00e3o_de_reatividade_do_chat_fix_chat_reactivity",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/fix-chat-reactivity/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_fix_chat_reactivity_spec_plan_spec_plan_corre\u00e7\u00e3o_de_reatividade_do_chat_fix_chat_reactivity",
+      "target": "specs_fix_chat_reactivity_spec_plan_tasks",
       "confidence_score": 1.0
     },
     {
@@ -107565,5 +107906,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "709862cc62bdbdc962b5707206ed1b175144bd93"
+  "built_at_commit": "cec9b71d52afdddd14e440478a4417df3d35bf2a"
 }

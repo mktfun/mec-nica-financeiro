@@ -1310,8 +1310,8 @@
     "semantic_hash": ""
   },
   "src/routes/agente.tsx": {
-    "mtime": 1785507733.8695219,
-    "ast_hash": "2c6c4dbec59fc5d0e2fbc404ad6ea6f4",
+    "mtime": 1785508725.2455459,
+    "ast_hash": "9086b06ad933de6709d4ea9595b61aa5",
     "semantic_hash": ""
   },
   "src/routes/alertas.tsx": {
@@ -3660,8 +3660,8 @@
     "semantic_hash": ""
   },
   "src/components/chat/PromptInput.tsx": {
-    "mtime": 1785428874.0,
-    "ast_hash": "814d6a2e8f63f2254b347b6ac63768e5",
+    "mtime": 1785508799.9987793,
+    "ast_hash": "595fc3563f3454435645bdbd3921881b",
     "semantic_hash": ""
   },
   "specs/archive/bot-production-fixes/design.md": {
@@ -4312,6 +4312,36 @@
   "specs/archive/fix-chat-ui/spec-plan.md": {
     "mtime": 1785503910.970126,
     "ast_hash": "8dedd6d95eb4d1038982e748399acd3c",
+    "semantic_hash": ""
+  },
+  "specs/archive/fix-sidebar-crash/design.md": {
+    "mtime": 1785507657.6424546,
+    "ast_hash": "7ca69465792f4a142b0e3b70fe64dba4",
+    "semantic_hash": ""
+  },
+  "specs/archive/fix-sidebar-crash/proposal.md": {
+    "mtime": 1785507645.5840528,
+    "ast_hash": "bca78dfaa240748b52560e3949611b18",
+    "semantic_hash": ""
+  },
+  "specs/archive/fix-sidebar-crash/spec-plan.md": {
+    "mtime": 1785507751.1740634,
+    "ast_hash": "b405a6e9a4543cc9f7487058b2a39acb",
+    "semantic_hash": ""
+  },
+  "specs/fix-chat-reactivity/design.md": {
+    "mtime": 1785508597.5745163,
+    "ast_hash": "ae6ce6993454b1a41e6bf522ef24c177",
+    "semantic_hash": ""
+  },
+  "specs/fix-chat-reactivity/proposal.md": {
+    "mtime": 1785508585.687114,
+    "ast_hash": "ee4ca51ab4a812f5bca250cf48a94eb1",
+    "semantic_hash": ""
+  },
+  "specs/fix-chat-reactivity/spec-plan.md": {
+    "mtime": 1785508821.2339504,
+    "ast_hash": "f4218cb380078bdb65a22e2eef669e24",
     "semantic_hash": ""
   }
 }

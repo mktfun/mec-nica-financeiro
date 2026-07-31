@@ -30,14 +30,15 @@ export const toolsOficina = (supabaseClient: any, settings: any, userId: string)
           const lojaParam = loja ? `?loja=${encodeURIComponent(loja)}` : '';
           const url = `${BOT_URL}/api/os/detalhe/${osNumber}${lojaParam}`;
           const response = await fetch(url, {
-            headers: { 'x-api-key': BOT_API_KEY }
+            headers: { 'x-api-key': BOT_API_KEY },
+            signal: AbortSignal.timeout(5000)
           });
-          if (!response.ok) return { error: `Erro na API externa (HTTP ${response.status}). Detalhes: A API do Oficina retornou status ${response.status} ao consultar OS. Informe o usuário.` };
+          if (!response.ok) return { aviso: `API externa retornou HTTP ${response.status}. Utilize os dados do banco local.` };
           const json = await response.json();
           await logMcpExecution(supabaseClient, 'consulta_os_detalhe_completo', { osNumber, loja }, json, userId);
           return json;
         } catch (e: any) {
-          return { error: `Falha de conexão com a API externa: ${e.message}. O servidor remoto pode estar inacessível.` };
+          return { aviso: `API externa indisponível ou timed out (${e.message}). Utilize os dados locais já disponíveis.` };
         }
       },
     }),
@@ -53,13 +54,16 @@ export const toolsOficina = (supabaseClient: any, settings: any, userId: string)
           let url = `${BOT_URL}/api/contas-pagar?loja=${encodeURIComponent(loja)}`;
           if (vencimento_inicio) url += `&vencimento_inicio=${vencimento_inicio}`;
           if (vencimento_fim) url += `&vencimento_fim=${vencimento_fim}`;
-          const response = await fetch(url, { headers: { 'x-api-key': BOT_API_KEY } });
-          if (!response.ok) return { error: `Erro na API externa (HTTP ${response.status}). Falha ao buscar contas a pagar no Oficina Inteligente.` };
+          const response = await fetch(url, { 
+            headers: { 'x-api-key': BOT_API_KEY },
+            signal: AbortSignal.timeout(5000)
+          });
+          if (!response.ok) return { aviso: `API externa retornou HTTP ${response.status}.` };
           const json = await response.json();
           await logMcpExecution(supabaseClient, 'consulta_contas_pagar_oficina', { loja, vencimento_inicio, vencimento_fim }, json, userId);
           return json;
         } catch (e: any) {
-          return { error: `Falha de conexão com a API externa: ${e.message}` };
+          return { aviso: `API externa indisponível ou timed out (${e.message}).` };
         }
       }
     }),
@@ -75,13 +79,16 @@ export const toolsOficina = (supabaseClient: any, settings: any, userId: string)
           let url = `${BOT_URL}/api/contas-receber?loja=${encodeURIComponent(loja)}`;
           if (vencimento_inicio) url += `&vencimento_inicio=${vencimento_inicio}`;
           if (vencimento_fim) url += `&vencimento_fim=${vencimento_fim}`;
-          const response = await fetch(url, { headers: { 'x-api-key': BOT_API_KEY } });
-          if (!response.ok) return { error: `Erro na API externa (HTTP ${response.status}). Falha ao buscar contas a receber.` };
+          const response = await fetch(url, { 
+            headers: { 'x-api-key': BOT_API_KEY },
+            signal: AbortSignal.timeout(5000)
+          });
+          if (!response.ok) return { aviso: `API externa retornou HTTP ${response.status}.` };
           const json = await response.json();
           await logMcpExecution(supabaseClient, 'consulta_contas_receber_oficina', { loja, vencimento_inicio, vencimento_fim }, json, userId);
           return json;
         } catch (e: any) {
-          return { error: `Falha de conexão com a API externa: ${e.message}` };
+          return { aviso: `API externa indisponível ou timed out (${e.message}).` };
         }
       }
     }),

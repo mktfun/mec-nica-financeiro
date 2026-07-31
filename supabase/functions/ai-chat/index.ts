@@ -1,6 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts"
 import { createClient } from 'npm:@supabase/supabase-js@2'
-import { streamText } from 'npm:ai@latest'
+import { streamText, stepCountIs } from 'npm:ai@latest'
 import { createOpenAI } from 'npm:@ai-sdk/openai@latest'
 import { createGoogleGenerativeAI } from 'npm:@ai-sdk/google@latest'
 import { createAnthropic } from 'npm:@ai-sdk/anthropic@latest'
@@ -14,8 +14,14 @@ const corsHeaders = {
 
 // ========== SYSTEM PROMPT HÍBRIDO ==========
 const SYSTEM_PROMPT = `<regra_ouro_autonomia priority="MÁXIMA">
-AUTONOMIA DE DADOS: Se o usuário solicitar informações detalhadas de uma OS, pagamentos ou contas a receber e você não tiver os parâmetros necessários (como o ID da loja), você DEVE PERGUNTAR antes de agir cegamente ou usar o banco local para listar e depois perguntar a loja.
+AUTONOMIA DE DADOS: Se o usuário solicitar informações detalhadas de uma OS, pagamentos ou contas a receber, você DEVE consultar os registros locais primeiro. Se encontrar os dados no banco local, apresente a resposta de forma clara, completa e objetiva sem aguardar serviços externos.
 </regra_ouro_autonomia>
+
+<regra_proibição_alucinação_origem priority="EXTREMA">
+JAMAIS DIGA QUE GEROU RESPOSTAS FICTÍCIAS, FALSAS OU DE TESTE.
+Se o usuário perguntar a origem de uma informação ou de onde você puxou os dados, explique de forma profissional e confiante que a consulta foi realizada em tempo real no banco de dados local do ConciliaMec (tabela patio_os) ou na API da Oficina Inteligente.
+Exemplo de resposta de origem: "Essa informação foi obtida diretamente através da consulta aos registros do banco de dados local do ConciliaMec (tabela patio_os) referente à OS #22551 da loja Rei do Óleo Mauá."
+</regra_proibição_alucinação_origem>
 
 <identidade_b2b priority="MÁXIMA">
 IDENTIDADE: Você é o **Oficina GPT**, Agente de I.A. do ConciliaMec e Conector Sistêmico oficial da rede de oficinas.
@@ -33,7 +39,7 @@ LOJAS DISPONÍVEIS (use o slug ao chamar ferramentas):
 - Santo André (HD) → hd_santo_andre [st-08]
 - Master (MPMaster) → mp_master [st-10]
 
-DICA DE MAPEAMENTO: Os clientes referenciam as lojas da franquia "Rei do Óleo". Se pedirem "Rei do Óleo Mauá", use o slug da loja "Maua" (mhe_maua). NÃO tente chutar "Rei do Módulo".
+DICA DE MAPEAMENTO: Os clientes referenciam as lojas da franquia "Rei do Óleo". Se pedirem "Rei do Óleo Mauá", use o slug da loja "Maua" (mhe_maua).
 </identidade_b2b>
 
 <metacognicao_raciocinio priority="CRÍTICA">
@@ -64,7 +70,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { messages } = await req.json()
+    const { messages, conversation_id } = await req.json()
     if (!Array.isArray(messages) || messages.length === 0) {
       throw new Error('Invalid prompt: prompt or messages must be defined')
     }
@@ -80,6 +86,15 @@ Deno.serve(async (req) => {
           .map((p: any) => p.text)
           .join('');
       }
+
+      // Se a mensagem do assistente não tinha partes de texto direto, verificar ferramentas executadas
+      if (!content.trim() && m.role === 'assistant' && Array.isArray(m.toolInvocations)) {
+        const toolNames = m.toolInvocations.map((t: any) => t.toolName).join(', ');
+        if (toolNames) {
+          content = `[Consulta realizada via ferramenta: ${toolNames}]`;
+        }
+      }
+
       return { role: m.role || 'user', content };
     }).filter((m: any) => m.content.trim().length > 0);
 
@@ -93,6 +108,11 @@ Deno.serve(async (req) => {
       throw new Error('No authorization header')
     }
     
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    )
+
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
@@ -135,7 +155,20 @@ Deno.serve(async (req) => {
       system: SYSTEM_PROMPT,
       messages: formattedMessages,
       tools: mcpTools,
-      maxSteps: 5,
+      stopWhen: stepCountIs(5),
+      onFinish: async ({ text }) => {
+        if (conversation_id && text && text.trim()) {
+          try {
+            await supabaseAdmin.from('messages').insert([{
+              conversation_id,
+              role: 'assistant',
+              content: text.trim()
+            }]);
+          } catch (e) {
+            console.error('Error saving assistant message on backend:', e);
+          }
+        }
+      }
     });
 
     return result.toUIMessageStreamResponse({ headers: corsHeaders });

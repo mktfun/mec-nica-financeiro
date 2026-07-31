@@ -17,15 +17,35 @@ import { chromium } from 'playwright';
   await page.goto('http://localhost:8080/agente');
   await page.waitForTimeout(2000);
 
-  console.log('4. Sending question to Oficina GPT...');
+  console.log('3.1 Clicking Nova Conversa...');
+  await page.click('button:has-text("Nova Conversa")');
+  await page.waitForTimeout(1000);
+
+  console.log('4. Sending question with OS 22551 to Oficina GPT...');
   await page.focus('textarea');
-  await page.fill('textarea', 'quais os detalhes da OS no rei do oleo maua?');
+  await page.fill('textarea', 'quais os detalhes da OS 22551 no rei do oleo maua?');
   await page.keyboard.press('Enter');
   
-  console.log('5. Waiting 15s for AI response streaming...');
-  await page.waitForTimeout(15000);
+  console.log('5. Waiting 10s for first AI response...');
+  await page.waitForTimeout(10000);
+
+  console.log('6. Asking follow-up question: de onde vc puxou essa informação??...');
+  await page.focus('textarea');
+  await page.fill('textarea', 'de onde vc puxou essa informação??');
+  await page.keyboard.press('Enter');
+
+  console.log('7. Waiting 10s for provenance AI response...');
+  await page.waitForTimeout(10000);
 
   await page.screenshot({ path: 'tela_agente_e2e.png', fullPage: true });
-  console.log('Screenshot saved to tela_agente_e2e.png');
+  console.log('Screenshot 1 (Data Provenance) saved to tela_agente_e2e.png');
+
+  console.log('8. Clicking Nova Conversa to test history isolation...');
+  await page.click('button:has-text("Nova Conversa")');
+  await page.waitForTimeout(2000);
+
+  await page.screenshot({ path: 'tela_agente_f5_e2e.png', fullPage: true });
+  console.log('Screenshot 2 (Nova Conversa Isolated) saved to tela_agente_f5_e2e.png');
+
   await browser.close();
 })();

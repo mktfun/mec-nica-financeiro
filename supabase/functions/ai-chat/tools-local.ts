@@ -11,8 +11,11 @@ export const toolsLocal = (supabaseClient: any) => ({
     }),
     execute: async ({ osNumber, loja, limit }) => {
        let query = supabaseClient.from('patio_os').select('*');
-       if (osNumber) query = query.eq('os_number', osNumber);
-       if (loja) query = query.eq('store_id', loja);
+       if (osNumber) {
+         query = query.eq('os_number', String(osNumber).trim());
+       } else if (loja) {
+         query = query.or(`store_id.eq.${loja},store_name.ilike.%${loja}%`);
+       }
        const { data, error } = await query.limit(limit);
        if (error) return { erro_local: error.message };
        if (!data || data.length === 0) return { aviso: 'OS não encontrada no banco local.' };

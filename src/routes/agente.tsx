@@ -48,16 +48,21 @@ function AgentePage() {
     transport: chatTransport,
     onError: (error) => {
       console.error('Erro na resposta do Agente IAS:', error);
-      toast.error(`Erro ao obter resposta do Agente IAS: ${error.message || 'Falha na conexão com a Edge Function'}`);
+      const cleanMsg = typeof error === 'string' ? error : error?.message || 'Falha na conexão com a Edge Function';
+      toast.error(`Erro no Agente IAS: ${cleanMsg.substring(0, 120)}`);
     },
     onFinish: async (message) => {
       if (activeConversationIdRef.current) {
-        // SDK v4: message.parts é array de {type, text}
-        const textContent = Array.isArray((message as any).parts)
-          ? (message as any).parts.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('')
-          : typeof (message as any).content === 'string'
-            ? (message as any).content
-            : '';
+        let textContent = '';
+        if (typeof (message as any).content === 'string' && (message as any).content.trim()) {
+          textContent = (message as any).content.trim();
+        } else if (Array.isArray((message as any).parts)) {
+          textContent = (message as any).parts
+            .filter((p: any) => p.type === 'text')
+            .map((p: any) => p.text)
+            .join('\n')
+            .trim();
+        }
 
         if (!textContent) return;
 
@@ -91,7 +96,7 @@ function AgentePage() {
         },
         (payload) => {
           const newMsg = payload.new;
-          if (!newMsg) return;
+          if (!newMsg || newMsg.conversation_id !== activeConversationIdRef.current) return;
 
           setMessages((prevMessages) => {
             const exists = prevMessages.some(
@@ -116,6 +121,14 @@ function AgentePage() {
       supabase.removeChannel(channel);
     };
   }, [activeConversationId, setMessages]);
+
+  const handleSelectConversation = (id: string) => {
+    if (id === activeConversationIdRef.current) return;
+    setMessages([]);
+    setActiveConversationId(id);
+    activeConversationIdRef.current = id;
+    loadMessages(id);
+  };
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -280,10 +293,7 @@ function AgentePage() {
             {conversations.map(conv => (
               <div
                 key={conv.id}
-                onClick={() => {
-                  setActiveConversationId(conv.id);
-                  loadMessages(conv.id);
-                }}
+                onClick={() => handleSelectConversation(conv.id)}
                 className={`px-3 py-2.5 rounded-lg cursor-pointer flex justify-between items-center group transition-all duration-200 ${
                   activeConversationId === conv.id
                     ? 'bg-[var(--bg-surface-elevated)] font-medium text-[var(--text-primary)]'
