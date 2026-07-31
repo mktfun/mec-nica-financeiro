@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Button } from '@/components/ui/Button';
@@ -7,11 +7,10 @@ import {
   AlertOctagon, Save, AlertTriangle, CheckCircle2,
   CalendarDays, ChevronRight, Landmark, Wallet, Receipt, ShoppingBag
 } from 'lucide-react';
-import { useDailySnapshot, useSaveDailySnapshot } from '@/hooks/useDailySnapshot';
-import { supabase } from '@/lib/supabase';
-import { TransactionRow } from '@/lib/supabase';
-import { formatCurrency, getDefaultDate } from '@/lib/utils';
-import { calculateModulo1Saldo, StoreSaldoState } from '@/lib/modulo1Calculations';
+import { useDailySnapshot, usePreviousDaySnapshot, useSaveDailySnapshot } from '@/hooks/useDailySnapshot';
+import { getDefaultDate } from '@/lib/utils';
+import { calculateGlobalConciliacao, GlobalConciliacaoInput } from '@/lib/modulo1Calculations';
+import { StoreSaldoState } from '@/lib/modulo1Calculations'; // We don't need this exactly for calculation, but for props
 
 interface ResumoDiaPanelProps {
   selectedDate: string;
@@ -23,7 +22,7 @@ interface ResumoDiaPanelProps {
   totalSistema: number;
   totalBancarioIn: number;
   totalBancarioRaw: number;
-  storesData?: StoreSaldoState[];
+  storesData?: any[]; // We just need it to get faturamento_atual from index
 }
 
 export function ResumoDiaPanel({
@@ -39,26 +38,50 @@ export function ResumoDiaPanel({
   storesData = []
 }: ResumoDiaPanelProps) {
   const [isSaved, setIsSaved] = useState(false);
-  const [manualDinheiroMpGlobal, setManualDinheiroMpGlobal] = useState<number | undefined>(undefined);
 
+  // Lê o snapshot do dia selecionado (que já contém os inputs manuais salvos via ImportWizard)
   const { data: currentSnapshot } = useDailySnapshot(selectedDate);
+  // Lê o snapshot da conciliação imediatamente anterior
+  const { data: previousSnapshot } = usePreviousDaySnapshot(selectedDate);
   const saveSnapshot = useSaveDailySnapshot();
 
-  const storesWithManual = storesData.map(st => ({
-    ...st,
-    dinheiro_mp_manual: manualDinheiroMpGlobal !== undefined ? manualDinheiroMpGlobal : st.dinheiro_mp_manual
-  }));
+  // Faturamento Atual global do sistema (acumulado do mês até hoje) lido das transações
+  const faturamentoAtualGlobal = storesData.reduce((acc, st) => acc + (st.faturamento_atual || 0), 0);
 
-  const { globalCalculated } = calculateModulo1Saldo(storesWithManual);
+  // Faturamento Anterior é o Faturamento Acumulado salvo no último fechamento (previousSnapshot)
+  const faturamentoAnteriorGlobal = previousSnapshot?.faturamento || 0;
+
+  // Caixa Anterior salvo no último fechamento
+  const caixaAnteriorGlobal = previousSnapshot?.caixa_atual || 0;
+
+  const inputForCalculation: GlobalConciliacaoInput = {
+    saldo_bancario: currentSnapshot?.saldo_bancario || totalBancarioRaw, // Se já salvou usa o salvo, senão o raw lido do OFX
+    dinheiro_mp: currentSnapshot?.dinheiro_mp || 0,
+    a_receber_manual: currentSnapshot?.a_receber_manual || 0,
+    na_loja_os: currentSnapshot?.total_patio || 0,
+    saldo_negativo_itau: currentSnapshot?.saldo_negativo_itau || 0,
+    caixa_anterior: caixaAnteriorGlobal,
+    faturamento_atual: faturamentoAtualGlobal,
+    faturamento_anterior: faturamentoAnteriorGlobal,
+    faturamento_outros: currentSnapshot?.faturamento_outros_valor || 0,
+    juros_rede: currentSnapshot?.juros_rede || 0,
+    contas_a_pagar: currentSnapshot?.contas_a_pagar || 0,
+    provisao: currentSnapshot?.provisao || 0,
+  };
+
+  const calculated = calculateGlobalConciliacao(inputForCalculation);
 
   const handleSave = async () => {
+    // Ao salvar, atualiza as colunas de resultado no snapshot de hoje
     await saveSnapshot.mutateAsync({
       date: selectedDate,
-      faturamento: globalCalculated.faturamento_g27,
-      total_recebiveis: globalCalculated.a_receber_g15,
-      total_patio: globalCalculated.na_loja_g16,
-      saldo_bancario: globalCalculated.saldo_g13,
-      notes: 'Fechamento salvo.',
+      caixa_atual: calculated.caixa_atual,
+      // Faturamento salvo deve ser o ATUAL acumulado, para que o dia seguinte use como `faturamento_anterior`
+      faturamento: faturamentoAtualGlobal,
+      total_recebiveis: calculated.a_receber,
+      total_patio: calculated.na_loja,
+      saldo_bancario: calculated.saldo,
+      notes: 'Fechamento salvo com base nos valores lidos da importação.',
     });
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 3000);
@@ -66,6 +89,9 @@ export function ResumoDiaPanel({
 
   const statusSuccess = isApproved && divergenciaGlobal === 0 && detalhesCount > 0;
   const statusDanger = divergenciaGlobal !== 0;
+
+  const diferencaAbs = Math.abs(calculated.diferenca);
+  const isDiferencaOk = calculated.diferenca >= -50 && calculated.diferenca <= 50;
 
   return (
     <motion.div
@@ -81,8 +107,6 @@ export function ResumoDiaPanel({
     >
       {/* Top Header Section */}
       <div className="p-6 border-b border-[var(--border-subtle)] flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-        
-        {/* Title & Status */}
         <div className="flex items-start gap-4">
           <div className={`p-3 rounded-full mt-1 ${
             statusSuccess 
@@ -99,17 +123,8 @@ export function ResumoDiaPanel({
               {statusSuccess ? 'Caixas Batidos com Sucesso' : statusDanger ? 'Divergência Encontrada no Dia' : 'Aguardando Fechamento'}
             </h2>
             <p className="text-xs text-[var(--text-tertiary)] mt-1 max-w-md">
-              {statusDanger 
-                ? 'O Saldo Líquido do Sistema não confere com o Extrato Bancário.'
-                : 'Saldos Bancários, Extrato OFX e Apuração de Saldo Livre Real Consolidado.'}
+              Dados globais da operação lidos do arquivo e dos inputs da importação (Somente Leitura).
             </p>
-            {statusDanger && (
-              <div className="mt-2">
-                <Link to="/alertas" className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-accent-danger)] hover:text-white bg-[var(--color-accent-danger)]/10 hover:bg-[var(--color-accent-danger)]/30 px-3 py-1.5 rounded-full transition-colors border border-[var(--color-accent-danger)]/20">
-                  <AlertTriangle size={14} /> Ver Detalhes em Alertas
-                </Link>
-              </div>
-            )}
           </div>
         </div>
 
@@ -151,9 +166,10 @@ export function ResumoDiaPanel({
         </div>
       </div>
 
-      {/* Grid das Métricas da Aba SALDO */}
+      {/* Grid das Métricas - Apenas Leitura */}
       <div className="p-6 bg-[var(--bg-canvas)]">
-        {/* 4 Pilares Iniciais */}
+        
+        {/* 4 Pilares Iniciais (Intocados Visualmente, mas Read-Only) */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
             <div className="flex items-center justify-between">
@@ -161,9 +177,9 @@ export function ResumoDiaPanel({
               <Landmark size={15} className="text-[var(--color-accent-light-blue)]" />
             </div>
             <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-light-blue)]">
-              <AnimatedNumber value={globalCalculated.saldo_g13} format="currency" />
+              <AnimatedNumber value={calculated.saldo} format="currency" />
             </p>
-            <span className="text-[10px] text-[var(--text-tertiary)] block">Extrato bancário OFX acumulado</span>
+            <span className="text-[10px] text-[var(--text-tertiary)] block">Extrato bancário OFX global</span>
           </div>
 
           <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
@@ -171,17 +187,10 @@ export function ResumoDiaPanel({
               <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">DINHEIRO MP</span>
               <Wallet size={15} className="text-[var(--color-accent-teal)]" />
             </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                step="0.01"
-                placeholder="0,00"
-                value={manualDinheiroMpGlobal !== undefined ? manualDinheiroMpGlobal : (globalCalculated.dinheiro_mp_g14 || '')}
-                onChange={(e) => setManualDinheiroMpGlobal(parseFloat(e.target.value) || 0)}
-                className="w-full text-lg font-bold font-sans tabular-nums bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded px-2 py-0.5 text-[var(--color-accent-teal)] focus:outline-none focus:border-[var(--color-primary)]"
-              />
-            </div>
-            <span className="text-[10px] text-[var(--text-tertiary)] block">Lançado manual no sistema</span>
+            <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-teal)]">
+              <AnimatedNumber value={calculated.dinheiro_mp} format="currency" />
+            </p>
+            <span className="text-[10px] text-[var(--text-tertiary)] block">Preenchido na importação</span>
           </div>
 
           <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
@@ -190,9 +199,9 @@ export function ResumoDiaPanel({
               <Receipt size={15} className="text-[var(--color-primary)]" />
             </div>
             <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-primary)]">
-              <AnimatedNumber value={globalCalculated.a_receber_g15} format="currency" />
+              <AnimatedNumber value={calculated.a_receber} format="currency" />
             </p>
-            <span className="text-[10px] text-[var(--text-tertiary)] block">Recebíveis pendentes</span>
+            <span className="text-[10px] text-[var(--text-tertiary)] block">Boletos/Descontos manuais</span>
           </div>
 
           <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
@@ -201,54 +210,91 @@ export function ResumoDiaPanel({
               <ShoppingBag size={15} className="text-[var(--color-accent-warning)]" />
             </div>
             <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-warning)]">
-              <AnimatedNumber value={globalCalculated.na_loja_g16} format="currency" />
+              <AnimatedNumber value={calculated.na_loja} format="currency" />
             </p>
             <span className="text-[10px] text-[var(--text-tertiary)] block">OSs do Pátio pendentes</span>
           </div>
         </div>
 
-        {/* Totais de Fechamento */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl font-sans tabular-nums text-xs">
-          <div>
-            <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">SALDO TOTAL</span>
-            <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
-              <AnimatedNumber value={globalCalculated.saldo_total_g17} format="currency" />
-            </span>
-            <span className="text-[10px] text-[var(--text-tertiary)]">Banco + MP + A Receber + Na Loja</span>
+        {/* Dashboard de Consolidação & Diferença */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          
+          {/* Card Grandão - Consolidação */}
+          <div className="lg:col-span-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-5 shadow-sm">
+            <h3 className="font-semibold text-[var(--text-primary)] mb-4 uppercase text-xs tracking-wider">Consolidação do Dia</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
+                <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Caixa Atual</span>
+                <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
+                  <AnimatedNumber value={calculated.caixa_atual} format="currency" />
+                </span>
+                <span className="text-[9px] text-[var(--text-tertiary)]">Descontado saldo negativo (Itaú)</span>
+              </div>
+              <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
+                <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Fluxo de Caixa</span>
+                <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
+                  <AnimatedNumber value={calculated.fluxo_cx} format="currency" />
+                </span>
+                <span className="text-[9px] text-[var(--text-tertiary)]">Caixa atual vs Conciliação Anterior</span>
+              </div>
+              <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
+                <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Faturamento Líquido</span>
+                <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
+                  <AnimatedNumber value={calculated.faturamento} format="currency" />
+                </span>
+                <span className="text-[9px] text-[var(--text-tertiary)]">Diferença mês + Outros Faturamentos</span>
+              </div>
+              <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
+                <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Valor Disp. Contas</span>
+                <span className="text-lg font-bold text-[var(--color-primary-bright)] mt-1 block">
+                  <AnimatedNumber value={calculated.valor_disp_contas} format="currency" />
+                </span>
+                <span className="text-[9px] text-[var(--text-tertiary)]">Faturamento + Fluxo de Caixa</span>
+              </div>
+            </div>
+            
+            <div className="mt-4 pt-4 border-t border-[var(--border-subtle)] flex justify-between items-center bg-[var(--bg-surface-elevated)] p-3 rounded-lg">
+               <div>
+                  <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Subtotal: Valor Contas</span>
+                  <span className="text-[9px] text-[var(--text-tertiary)]">Juros (REDE) + Pagar + Provisão</span>
+               </div>
+               <span className="text-lg font-bold text-[var(--color-accent-warning)]">
+                 <AnimatedNumber value={calculated.valor_contas} format="currency" />
+               </span>
+            </div>
           </div>
 
-          <div>
-            <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">CAIXA ATUAL</span>
-            <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
-              <AnimatedNumber value={globalCalculated.caixa_atual_g21} format="currency" />
-            </span>
-            <span className="text-[10px] text-[var(--text-tertiary)]">Saldo Total - Limite</span>
-          </div>
-
-          <div>
-            <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">DISPONÍVEL CONTAS</span>
-            <span className="text-lg font-bold text-[var(--color-primary-bright)] mt-1 block">
-              <AnimatedNumber value={globalCalculated.disponivel_contas_g29} format="currency" />
-            </span>
-            <span className="text-[10px] text-[var(--text-tertiary)]">Faturamento - Fluxo</span>
-          </div>
-
-          <div className="p-3 bg-[var(--color-accent-teal)]/10 rounded-xl border border-[var(--color-accent-teal)]/30">
-            <span className="text-[10px] text-[var(--color-accent-teal)] uppercase block font-bold">RESULTADO FINAL</span>
-            <span className="text-xl font-bold text-[var(--color-accent-teal)] mt-0.5 block">
-              <AnimatedNumber value={globalCalculated.resultado_final_g31} format="currency" />
-            </span>
-            <span className="text-[10px] text-[var(--color-accent-teal)] opacity-80">Saldo Livre Real Consolidado</span>
+          {/* Card Lateral - Diferença Verde/Vermelho */}
+          <div className={`p-6 rounded-xl border flex flex-col justify-center items-center text-center shadow-lg transition-colors ${
+            isDiferencaOk
+              ? 'bg-[var(--color-accent-teal)]/10 border-[var(--color-accent-teal)]/30'
+              : 'bg-[var(--color-accent-danger)]/10 border-[var(--color-accent-danger)]/30'
+          }`}>
+             <h3 className={`text-xs font-bold uppercase tracking-wider mb-2 ${
+               isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
+             }`}>Diferença Final</h3>
+             
+             <p className={`text-4xl font-display font-bold tabular-nums ${
+               isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
+             }`}>
+               <AnimatedNumber value={calculated.diferenca} format="currency" />
+             </p>
+             
+             <p className={`text-xs mt-3 opacity-80 ${
+               isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
+             }`}>
+               {isDiferencaOk 
+                 ? 'Variação dentro do limite seguro (± R$ 50).' 
+                 : 'Variação fora da tolerância de ± R$ 50. Verifique os lançamentos!'}
+             </p>
           </div>
         </div>
-
-
 
         <div className="flex justify-end border-t border-[var(--border-subtle)] pt-4 mt-6">
           <Button
             variant="primary"
             onClick={handleSave}
-            disabled={saveSnapshot.isPending}
+            disabled={saveSnapshot.isPending || !currentSnapshot}
             className="gap-2 px-6 py-2 text-sm"
           >
             <Save size={16} />

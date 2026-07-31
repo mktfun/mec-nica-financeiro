@@ -4,7 +4,7 @@
 - **Cards de Fechamento por Loja (`src/routes/conciliacao.index.tsx`):** Exibe 6 colunas por loja: Faturamento, Maquininha, PIX, Na Loja OS, Faturamento Itaú (OFX - Saldo Real) e Diferença.
 - **Resumo Financeiro Consolidado (`src/components/conciliacao/ResumoDiaPanel.tsx`):** Hero Card único consolidando os saldos da rede, OFX e OSs.
 - **Hook `useLatestBankBalance` (`src/hooks/useTransactions.ts`):** Retorna o último saldo real OFX (`bank_total`) por loja para evitar saldo zerado em dias sem importação nova.
-- **Hook `useModulo1StoresData` (`src/hooks/useConciliacao.ts`):** Retorna o faturamento, entradas de cartão, PIX das OSs e saldo em aberto real por loja na data.
+- **Hook `useModulo1StoresData` (`src/hooks/useConciliacao.ts`):** Retorna o faturamento real (Maquininha + PIX Casado no banco), entradas de cartão, PIX válidos com match de OFX, e saldo em aberto real por loja na data.
 
 ## Inteligência Artificial & Telemetria
 - **Motor de Conciliação Headless (`src/hooks/useBackgroundAiReconciler.ts`):** Dispara automaticamente em background em busca de triplas associações (OS / Maquininha / Banco).

@@ -543,14 +543,11 @@ export function useModulo1StoresData(date: string) {
 
       const { data: patioOs } = await supabase
         .from('patio_os')
-        .select('*')
-        .eq('target_date', date);
+        .select('*');
 
       const { data: receivables } = await supabase
         .from('receivables')
-        .select('*')
-        .eq('target_date', date);
-
+        .select('*');
       return (stores || []).map(store => {
         const storeTxs = txs?.filter(t => t.store_id === store.id) || [];
         const storeOs = patioOs?.filter(o => o.store_id === store.id) || [];
@@ -571,14 +568,43 @@ export function useModulo1StoresData(date: string) {
             return acc + Math.max(0, Number(o.total_value || 0) - Number(o.paid_value || 0));
           }, 0);
 
-        // PIX recebido nas OSs do dia
-        const pixOs = storeOs.reduce((acc, o) => acc + Number((o as any).pix_transfer_value || 0), 0);
+        // 1. Extrair transações PIX/TED do OFX (entrada)
+        const ofxPixTxs = storeTxs.filter(t => {
+           if (t.source !== 'ofx' || t.type !== 'in') return false;
+           const txt = `${t.title || ''} ${t.subtitle || ''}`.toUpperCase();
+           return txt.includes('PIX') || txt.includes('TRANSF') || txt.includes('TED') || txt.includes('DOC');
+        });
+
+        // 2. Extrair valores declarados como PIX nas OSs
+        const osPixList = storeOs.map(os => {
+           const totalVal = os.paid_value !== undefined && os.paid_value !== null ? os.paid_value : (os.total_value || 0);
+           const realPixVal = (os as any).pix_transfer_value !== undefined && (os as any).pix_transfer_value !== null ? (os as any).pix_transfer_value : ((os as any).parsed_pix_transfer || 0);
+           const pixRatio = realPixVal / (totalVal || 1);
+           const isPixMethod = (os.payment_method || '').toLowerCase().includes('pix') || (os.payment_method || '').toLowerCase().includes('transf');
+           
+           if (realPixVal > 0 || isPixMethod || pixRatio > 0) {
+              return realPixVal > 0 ? realPixVal : (pixRatio > 0 ? totalVal * pixRatio : totalVal);
+           }
+           return 0;
+        }).filter(v => v > 0);
+
+        // 3. Cruzar OFX com OS (Match)
+        let pixOsMatched = 0;
+        ofxPixTxs.forEach(ofxPix => {
+           const amt = Number(ofxPix.amount || 0);
+           const matchIdx = osPixList.findIndex(osVal => Math.abs(osVal - amt) < 0.05);
+           if (matchIdx !== -1) {
+              pixOsMatched += amt;
+              // Remove para não dar match duplo
+              osPixList.splice(matchIdx, 1);
+           }
+        });
+
+        const faturamentoAtual = cartaoEntrou + pixOsMatched;
 
         const aReceber = storeRec
           .filter(r => r.status === 'pendente')
           .reduce((acc, r) => acc + Number(r.value || 0), 0);
-
-        const faturamentoAtual = storeOs.reduce((acc, o) => acc + Number(o.total_value || 0), 0);
 
         return {
           store_id: store.id,
@@ -590,7 +616,7 @@ export function useModulo1StoresData(date: string) {
           dinheiro_loja: 0,
           a_receber: aReceber,
           na_loja_os: naLojaOs,
-          pix_os: pixOs,
+          pix_os: pixOsMatched,
           faturamento_atual: faturamentoAtual,
           faturamento_anterior: faturamentoAtual * 0.9,
           seguro_sinistro: 0,

@@ -267,11 +267,11 @@ function AgentePage() {
     }
 
     // Salva silenciosamente no banco em background (não-bloqueante)
-    supabase.from('messages').insert([{
+    (supabase.from as any)('messages').insert([{
       conversation_id: currentConvId,
       role: 'user',
       content: text
-    }]).then(({ error }) => {
+    }]).then(({ error }: any) => {
       if (error) {
         console.error('Erro ao salvar mensagem no Supabase:', error);
         toast.error('Erro ao enviar mensagem para o histórico');

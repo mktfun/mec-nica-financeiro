@@ -1,3 +1,73 @@
+export interface GlobalConciliacaoInput {
+  saldo_bancario: number; // Soma de saldos das lojas no extrato
+  dinheiro_mp: number; // Manual
+  a_receber_manual: number; // Manual
+  na_loja_os: number; // Soma das pendências de OS do pátio (total_patio)
+  saldo_negativo_itau: number; // Extraído do OFX
+  caixa_anterior: number; // Caixa da última conciliação
+  faturamento_atual: number; // Acumulado lido do banco (todas as receitas) hoje
+  faturamento_anterior: number; // Acumulado na última conciliação
+  faturamento_outros: number; // Manual
+  juros_rede: number; // Extraído do relatório REDE
+  contas_a_pagar: number; // Manual
+  provisao: number; // Manual
+}
+
+export interface GlobalConciliacaoCalculated {
+  saldo: number;
+  dinheiro_mp: number;
+  a_receber: number;
+  na_loja: number;
+  caixa_atual: number;
+  fluxo_cx: number;
+  faturamento: number;
+  valor_disp_contas: number;
+  valor_contas: number;
+  diferenca: number;
+}
+
+/**
+ * Calcula a conciliação diária global exata conforme a regra de negócio consolidada (agosto 2026).
+ */
+export function calculateGlobalConciliacao(input: GlobalConciliacaoInput): GlobalConciliacaoCalculated {
+  const saldo = Number(input.saldo_bancario || 0);
+  const dinheiro_mp = Number(input.dinheiro_mp || 0);
+  const a_receber = Number(input.a_receber_manual || 0);
+  const na_loja = Number(input.na_loja_os || 0);
+  const saldo_negativo_itau = Number(input.saldo_negativo_itau || 0);
+
+  // Caixa atual = (Soma Saldos + Dinheiro MP + A Receber + Na Loja) - Saldo Negativo
+  const caixa_atual = (saldo + dinheiro_mp + a_receber + na_loja) - saldo_negativo_itau;
+
+  // Fluxo CX = caixa atual (conciliacao hoje) - caixa anterior (caixa da conciliacao anterior)
+  const fluxo_cx = caixa_atual - Number(input.caixa_anterior || 0);
+
+  // Faturamento = (faturamento atual - anterior) + outros faturamentos
+  const faturamento = (Number(input.faturamento_atual || 0) - Number(input.faturamento_anterior || 0)) + Number(input.faturamento_outros || 0);
+
+  // Valor disp contas = fat atual + fluxo caixa
+  const valor_disp_contas = faturamento + fluxo_cx;
+
+  // Valor contas = juros REDE + contas a pagar + provisão
+  const valor_contas = Number(input.juros_rede || 0) + Number(input.contas_a_pagar || 0) + Number(input.provisao || 0);
+
+  // Diferença = valor disp - contas
+  const diferenca = valor_disp_contas - valor_contas;
+
+  return {
+    saldo,
+    dinheiro_mp,
+    a_receber,
+    na_loja,
+    caixa_atual,
+    fluxo_cx,
+    faturamento,
+    valor_disp_contas,
+    valor_contas,
+    diferenca,
+  };
+}
+
 export interface StoreSaldoState {
   store_id: string;
   store_name: string;
@@ -6,10 +76,10 @@ export interface StoreSaldoState {
   cartao_entrou: number;
   cartao_nao_entrou: number;
   dinheiro_loja: number;
-  dinheiro_mp_manual?: number; // Preenchimento manual conforme pedido do usuário
+  dinheiro_mp_manual?: number;
   a_receber: number;
   na_loja_os: number;
-  pix_os?: number;             // PIX recebido nas OSs do dia
+  pix_os?: number;
   faturamento_atual: number;
   faturamento_anterior: number;
   seguro_sinistro: number;
@@ -19,22 +89,18 @@ export interface StoreSaldoState {
 }
 
 export interface Modulo1Calculated {
-  saldo_g13: number;             // Soma Saldo Banco Itaú
-  dinheiro_mp_g14: number;       // Dinheiro MP (Preenchimento manual / apurado)
-  a_receber_g15: number;         // Soma Módulo 3 (Recebíveis)
-  na_loja_g16: number;           // Soma Módulo 2 (OSs em aberto na loja)
-  saldo_total_g17: number;       // G13 + G14 + G15 + G16
-  caixa_atual_g21: number;       // G17 - Limite Consolidado
-  fluxo_caixa_g23: number;       // G21 - Caixa Anterior
-  faturamento_g27: number;       // (FatAtual - FatAnt) + Seguro + Juros
-  disponivel_contas_g29: number; // G27 - G23 (Faturamento - Fluxo Caixa)
-  resultado_final_g31: number;   // G29 - G30 (Saldo Livre Real)
+  saldo_g13: number;
+  dinheiro_mp_g14: number;
+  a_receber_g15: number;
+  na_loja_g16: number;
+  saldo_total_g17: number;
+  caixa_atual_g21: number;
+  fluxo_caixa_g23: number;
+  faturamento_g27: number;
+  disponivel_contas_g29: number;
+  resultado_final_g31: number;
 }
 
-/**
- * Utilitário central de cálculo da Aba SALDO (Módulo 1 da planilha CONCILIACAO-2307.xlsx)
- * Aplica rigorosamente as fórmulas de G13 a G31 da planilha
- */
 export function calculateModulo1Saldo(stores: StoreSaldoState[]): {
   storesCalculated: Record<string, Modulo1Calculated>;
   globalCalculated: Modulo1Calculated;
@@ -55,7 +121,6 @@ export function calculateModulo1Saldo(stores: StoreSaldoState[]): {
 
   stores.forEach(st => {
     const g13 = Number(st.saldo_banco_itau || 0);
-    // Dinheiro MP: Se fornecido manual usa o manual; senão soma dinheiro da loja + cartões não entrou
     const g14 = st.dinheiro_mp_manual !== undefined
       ? Number(st.dinheiro_mp_manual || 0)
       : Number(st.dinheiro_loja || 0) + Number(st.cartao_nao_entrou || 0);

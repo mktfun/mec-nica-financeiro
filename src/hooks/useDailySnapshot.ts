@@ -10,6 +10,13 @@ export type DailySnapshotRow = {
   total_recebiveis: number;
   total_patio: number;
   saldo_bancario: number;
+  a_receber_manual: number;
+  faturamento_outros_valor: number;
+  faturamento_outros_desc: string | null;
+  contas_a_pagar: number;
+  provisao: number;
+  saldo_negativo_itau: number;
+  juros_rede: number;
   notes: string | null;
   created_at: string;
   updated_at: string;

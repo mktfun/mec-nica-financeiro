@@ -14,6 +14,7 @@ import { useStores } from '@/hooks/useStores';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useCentralImport, UnifiedImportResult } from '@/hooks/useCentralImport';
 import { useBulkInsertTransactions, useCreateImportBatch, useBulkInsertConciliationMatches } from '@/hooks/useTransactions';
+import { useSaveDailySnapshot } from '@/hooks/useDailySnapshot';
 import { supabase } from '@/lib/supabase';
 import { useNavigate } from '@tanstack/react-router';
 import { savePatioOsAndReceivables, ParsedReceivable } from '@/hooks/useImportProcessor';
@@ -77,6 +78,14 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const [targetDate, setTargetDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [unmappedAliases, setUnmappedAliases] = useState<string[]>([]);
   
+  // Manual inputs globais
+  const [manualDinheiroMp, setManualDinheiroMp] = useState<number>(0);
+  const [manualAReceber, setManualAReceber] = useState<number>(0);
+  const [manualOutrosFaturamentos, setManualOutrosFaturamentos] = useState<number>(0);
+  const [manualOutrosDesc, setManualOutrosDesc] = useState<string>('');
+  const [manualContasAPagar, setManualContasAPagar] = useState<number>(0);
+  const [manualProvisao, setManualProvisao] = useState<number>(0);
+
   // Terminal logs state
   const [importLogs, setImportLogs] = useState<ImportLogEntry[]>([]);
   const [saveFinished, setSaveFinished] = useState(false);
@@ -88,6 +97,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const { mutateAsync: saveTransactions } = useBulkInsertTransactions();
   const { mutateAsync: createImportBatch } = useCreateImportBatch();
   const { mutateAsync: insertConciliationMatches } = useBulkInsertConciliationMatches();
+  const saveSnapshot = useSaveDailySnapshot();
   const [isSaving, setIsSaving] = useState(false);
   const navigate = useNavigate();
 
@@ -526,6 +536,49 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       const { error: upsertErr } = await supabase.from('import_logs').upsert(logsToInsert, { onConflict: 'store_id,target_date' });
       if (upsertErr) console.warn("Erro ao registrar import log", upsertErr);
 
+      // 4. Salvar Daily Snapshot (Valores Globais)
+      addLog("📝 Gravando fechamento diário (daily_snapshots)...", "info");
+      
+      let saldoNegativoItau = 0;
+      results.ofxResults.forEach(ofx => {
+        if (ofx.bankBalance !== undefined && ofx.bankBalance < 0) {
+          saldoNegativoItau += Math.abs(ofx.bankBalance); // Somamos o valor absoluto do negativo
+        }
+      });
+
+      let jurosRedeTotal = 0;
+      results.redeResults.forEach(r => {
+        if (r.success) {
+          r.transactions.forEach(t => {
+             jurosRedeTotal += t.interest || 0;
+          });
+        }
+      });
+
+      try {
+        await saveSnapshot.mutateAsync({
+          date: targetDate,
+          caixa_atual: 0, // Será preenchido via conciliação
+          faturamento: 0, // Será preenchido via conciliação
+          total_recebiveis: 0,
+          total_patio: 0,
+          saldo_bancario: 0,
+          dinheiro_mp: manualDinheiroMp,
+          a_receber_manual: manualAReceber,
+          faturamento_outros_valor: manualOutrosFaturamentos,
+          faturamento_outros_desc: manualOutrosDesc || null,
+          contas_a_pagar: manualContasAPagar,
+          provisao: manualProvisao,
+          saldo_negativo_itau: saldoNegativoItau,
+          juros_rede: jurosRedeTotal,
+          notes: 'Valores gerados via Importação',
+        });
+        addLog("✅ Valores manuais globais salvos com sucesso!", "success");
+      } catch (snapErr) {
+        console.warn("Erro ao salvar daily_snapshot:", snapErr);
+        addLog("⚠️ Aviso: Falha ao gravar valores manuais do dia.", "warning");
+      }
+
       addLog("🎉 TODAS AS ETAPAS FORAM CONCLUÍDAS COM SUCESSO!", "success");
       setSaveFinished(true);
 
@@ -868,6 +921,73 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                 );
               })}
             </div>
+
+            {/* Início: Valores Manuais Globais */}
+            <div className="pt-6 border-t border-[var(--border-subtle)] space-y-4">
+              <h4 className="font-semibold text-lg text-[var(--text-primary)]">Valores Manuais do Dia</h4>
+              <p className="text-sm text-[var(--text-secondary)] mb-4">
+                Preencha os dados abaixo. Eles serão salvos no fechamento diário e não poderão ser editados na tela de conciliação.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Dinheiro MP (Daniel)</label>
+                  <input 
+                    type="number" 
+                    value={manualDinheiroMp} 
+                    onChange={e => setManualDinheiroMp(Number(e.target.value))}
+                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">A Receber (Boleto/Desc.)</label>
+                  <input 
+                    type="number" 
+                    value={manualAReceber} 
+                    onChange={e => setManualAReceber(Number(e.target.value))}
+                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Outros Faturamentos (R$)</label>
+                  <input 
+                    type="number" 
+                    value={manualOutrosFaturamentos} 
+                    onChange={e => setManualOutrosFaturamentos(Number(e.target.value))}
+                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Desc. Outros Faturamentos</label>
+                  <input 
+                    type="text" 
+                    value={manualOutrosDesc} 
+                    onChange={e => setManualOutrosDesc(e.target.value)}
+                    placeholder="Ex: Venda de sucata"
+                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Contas a Pagar</label>
+                  <input 
+                    type="number" 
+                    value={manualContasAPagar} 
+                    onChange={e => setManualContasAPagar(Number(e.target.value))}
+                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Provisão</label>
+                  <input 
+                    type="number" 
+                    value={manualProvisao} 
+                    onChange={e => setManualProvisao(Number(e.target.value))}
+                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)]"
+                  />
+                </div>
+              </div>
+            </div>
+            {/* Fim: Valores Manuais Globais */}
 
             <div className="pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between">
               <div>
