@@ -13,8 +13,6 @@ const navItems = [
   { id: "/alertas", label: "Alertas", icon: AlertTriangle },
   { id: "/importacoes", label: "Importações", icon: FileSpreadsheet },
   { id: "/agente", label: "Agente IA", icon: Bot },
-  { id: "/logs/agente", label: "Log do Agente de IA", icon: Terminal },
-  { id: "/logs/motor", label: "Log do Motor de Conciliação", icon: Workflow },
 ];
 
 export function Sidebar() {

@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { PromptInput } from '@/components/chat/PromptInput';
 import { MessageList } from '@/components/chat/MessageList';
 import { useChat } from '@ai-sdk/react';
-import { Bot, Plus, Trash2, Settings, Terminal } from 'lucide-react';
+import { Bot, Plus, Trash2, Settings, Terminal, Workflow } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/agente')({
