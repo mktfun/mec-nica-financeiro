@@ -1,7 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
-import { Workflow, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react';
+import { Workflow, CheckCircle2, XCircle, AlertTriangle, ArrowLeft, ChevronDown } from 'lucide-react';
 import { useBotLogs } from '@/hooks/useBotLogs';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
@@ -17,6 +17,9 @@ function LogsMotorPage() {
     <AppShell>
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-4xl mx-auto">
         <div className="mb-8">
+          <Link to="/agente" className="inline-flex items-center gap-2 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors mb-6 bg-[var(--bg-surface)] px-3 py-1.5 rounded-full border border-[var(--border-subtle)]">
+            <ArrowLeft size={16} /> Voltar para o Agente
+          </Link>
           <h1 className="font-display font-bold text-3xl mb-2 flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-blue-500/15 flex items-center justify-center">
               <Workflow size={20} className="text-blue-400" />
@@ -54,9 +57,38 @@ function LogsMotorPage() {
                     </div>
                     <p className="text-sm text-[var(--text-primary)]">{log.message}</p>
                     {log.payload && (
-                      <pre className="text-[10px] text-[var(--text-tertiary)] font-mono bg-black/40 p-2 rounded mt-1 overflow-x-auto">
-                        {JSON.stringify(log.payload, null, 2)}
-                      </pre>
+                      <details className="mt-2 group">
+                        <summary className="text-[11px] font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer list-none flex items-center gap-1 select-none">
+                          <ChevronDown size={14} className="group-open:-rotate-180 transition-transform duration-200" />
+                          Ver Detalhes do Payload
+                        </summary>
+                        <div className="mt-2 p-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] flex flex-col gap-3">
+                          {log.payload.input && (
+                            <div>
+                              <div className="text-[10px] uppercase tracking-wider font-semibold text-[var(--text-tertiary)] mb-1">Input (Request)</div>
+                              <pre className="text-[10px] text-[var(--text-primary)] font-mono bg-[#050711] p-2 rounded overflow-x-auto border border-[var(--border-subtle)]">
+                                {JSON.stringify(log.payload.input, null, 2)}
+                              </pre>
+                            </div>
+                          )}
+                          {log.payload.output && (
+                            <div>
+                              <div className="text-[10px] uppercase tracking-wider font-semibold text-[var(--text-tertiary)] mb-1">Output (Response)</div>
+                              <pre className="text-[10px] text-[var(--text-primary)] font-mono bg-[#050711] p-2 rounded overflow-x-auto border border-[var(--border-subtle)]">
+                                {JSON.stringify(log.payload.output, null, 2)}
+                              </pre>
+                            </div>
+                          )}
+                          {!log.payload.input && !log.payload.output && (
+                            <div>
+                              <div className="text-[10px] uppercase tracking-wider font-semibold text-[var(--text-tertiary)] mb-1">Payload Bruto</div>
+                              <pre className="text-[10px] text-[var(--text-primary)] font-mono bg-[#050711] p-2 rounded overflow-x-auto border border-[var(--border-subtle)]">
+                                {JSON.stringify(log.payload, null, 2)}
+                              </pre>
+                            </div>
+                          )}
+                        </div>
+                      </details>
                     )}
                   </div>
                 ))}

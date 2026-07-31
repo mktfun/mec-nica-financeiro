@@ -6,7 +6,7 @@ import { PromptInput } from '@/components/chat/PromptInput';
 import { MessageList } from '@/components/chat/MessageList';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
-import { Bot, Plus, Trash2, Settings, Terminal, Workflow } from 'lucide-react';
+import { Bot, Plus, Trash2, Settings, Terminal, Workflow, Pencil } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/agente')({
@@ -16,6 +16,7 @@ export const Route = createFileRoute('/agente')({
 function AgentePage() {
   // State do Chat
   const [conversations, setConversations] = useState<any[]>([]);
+  const [showAllHistory, setShowAllHistory] = useState(false);
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const activeConversationIdRef = useRef<string | null>(null);
   
@@ -134,6 +135,22 @@ function AgentePage() {
 
   useEffect(() => {
     loadConversations();
+    
+    // Assinatura para atualizar títulos automaticamente (ex: auto-titulação do LLM em background)
+    const channel = supabase
+      .channel('conversations_changes')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'conversations' },
+        (payload) => {
+          setConversations(prev => prev.map(c => c.id === payload.new.id ? { ...c, title: payload.new.title } : c));
+        }
+      )
+      .subscribe();
+      
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   useEffect(() => {
@@ -207,6 +224,21 @@ function AgentePage() {
     }
   };
 
+  const handleRenameConversation = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const conv = conversations.find(c => c.id === id);
+    if (!conv) return;
+    const newTitle = window.prompt("Digite o novo título da conversa:", conv.title || "Nova Conversa");
+    if (newTitle && newTitle.trim() !== "" && newTitle !== conv.title) {
+      const { error } = await supabase.from('conversations').update({ title: newTitle }).eq('id', id);
+      if (!error) {
+        setConversations(conversations.map(c => c.id === id ? { ...c, title: newTitle } : c));
+      } else {
+        toast.error("Erro ao renomear conversa");
+      }
+    }
+  };
+
   const sendMessage = async (text: string, meta?: any) => {
     if (!text.trim()) return;
 
@@ -256,7 +288,7 @@ function AgentePage() {
 
   return (
     <AppShell>
-      <div className="absolute top-16 left-0 right-0 bottom-0 z-30 animate-in fade-in slide-in-from-bottom-4 duration-700 flex flex-col md:flex-row bg-[var(--bg-canvas)] overflow-hidden">
+      <div className="absolute top-20 left-0 right-0 bottom-0 z-30 animate-in fade-in slide-in-from-bottom-4 duration-700 flex flex-col md:flex-row bg-[var(--bg-canvas)] overflow-hidden">
         
         {/* Sidebar Histórico */}
         <div className="w-full md:w-[260px] bg-transparent border-r border-[var(--border-subtle)] flex flex-col overflow-hidden shrink-0 pt-4">
@@ -276,10 +308,10 @@ function AgentePage() {
           <div className="px-4 pb-3 shrink-0">
             <button
               onClick={handleNewConversation}
-              className="w-full bg-[var(--text-primary)] text-[var(--bg-canvas)] rounded-full py-2.5 px-4 flex items-center justify-between font-medium text-sm hover:bg-[var(--text-secondary)] transition-colors shadow-sm"
+              className="group w-full bg-[var(--text-primary)] text-[var(--bg-canvas)] rounded-full py-2.5 px-4 flex items-center justify-between font-medium text-sm hover:bg-[var(--text-secondary)] transition-all duration-200 active:scale-95 shadow-sm"
             >
               <span>Nova Conversa</span>
-              <Plus size={16} />
+              <Plus size={16} className="transition-transform duration-300 group-hover:rotate-90 group-active:scale-90" />
             </button>
           </div>
 
@@ -290,27 +322,45 @@ function AgentePage() {
 
           {/* Scrollable History List */}
           <div className="flex-1 overflow-y-auto px-2 space-y-0.5 custom-scrollbar pb-2">
-            {conversations.map(conv => (
+            {(showAllHistory ? conversations : conversations.slice(0, 5)).map(conv => (
               <div
                 key={conv.id}
                 onClick={() => handleSelectConversation(conv.id)}
                 className={`px-3 py-2.5 rounded-lg cursor-pointer flex justify-between items-center group transition-all duration-200 ${
                   activeConversationId === conv.id
                     ? 'bg-[var(--bg-surface-elevated)] font-medium text-[var(--text-primary)]'
-                    : 'hover:bg-black/5 text-[var(--text-secondary)]'
+                    : 'hover:bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
                 <div className="truncate text-[13px] flex-1 mr-2">{conv.title || 'Nova Conversa'}</div>
-                <button
-                  onClick={(e) => handleDeleteConversation(conv.id, e)}
-                  className="p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity text-[var(--text-tertiary)] hover:text-[var(--color-accent-danger)]"
-                >
-                  <Trash2 size={13} />
-                </button>
+                <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    onClick={(e) => handleRenameConversation(conv.id, e)}
+                    className="p-1 rounded text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                    title="Renomear"
+                  >
+                    <Pencil size={13} />
+                  </button>
+                  <button
+                    onClick={(e) => handleDeleteConversation(conv.id, e)}
+                    className="p-1 rounded text-[var(--text-tertiary)] hover:text-[var(--color-accent-danger)]"
+                    title="Excluir"
+                  >
+                    <Trash2 size={13} />
+                  </button>
+                </div>
               </div>
             ))}
             {conversations.length === 0 && (
               <div className="text-center p-6 text-sm text-[var(--text-tertiary)]">Nenhuma conversa</div>
+            )}
+            {conversations.length > 5 && !showAllHistory && (
+              <button 
+                onClick={() => setShowAllHistory(true)}
+                className="w-full text-[11px] font-medium text-[var(--text-tertiary)] hover:text-[var(--text-primary)] text-center py-3 transition-colors mt-2"
+              >
+                Ver mais {conversations.length - 5} conversas...
+              </button>
             )}
           </div>
 
@@ -343,18 +393,12 @@ function AgentePage() {
         {/* Main Chat Area */}
         <div className="flex-1 bg-transparent flex flex-col relative overflow-hidden">
           
-          {/* Header Limpo */}
-          <div className="px-6 py-3 flex justify-between items-center z-10 border-b border-[var(--border-subtle)] bg-[var(--bg-canvas)]">
-            <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
-              <span className="w-2 h-2 rounded-full bg-[var(--color-accent-teal)] animate-pulse" />
-              <span className="font-medium">Conectado ao ConciliaMec IAS</span>
-            </div>
-          </div>
+          {/* Header Removed for cleaner UI */}
 
           {/* Messages Area */}
           <div className="flex-1 overflow-y-auto px-4 md:px-16 pt-4 pb-32 custom-scrollbar relative">
             {messages.length === 0 && (
-              <div className="h-full flex flex-col items-center justify-center text-[var(--text-tertiary)] opacity-60">
+              <div className="h-full flex flex-col items-center justify-center">
                 <div className="w-16 h-16 rounded-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-primary)] mb-6 shadow-sm">
                   <Bot size={32} />
                 </div>

@@ -18,6 +18,7 @@ import { Route as ImportarOsRouteImport } from './routes/importar-os'
 import { Route as ImportacoesDespesasRouteImport } from './routes/importacoes-despesas'
 import { Route as ImportacoesRouteImport } from './routes/importacoes'
 import { Route as HistoricoRouteImport } from './routes/historico'
+import { Route as CustosRouteImport } from './routes/custos'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as ConciliacaoDetalhesRouteImport } from './routes/conciliacao-detalhes'
 import { Route as AlertasRouteImport } from './routes/alertas'
@@ -72,6 +73,11 @@ const ImportacoesRoute = ImportacoesRouteImport.update({
 const HistoricoRoute = HistoricoRouteImport.update({
   id: '/historico',
   path: '/historico',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CustosRoute = CustosRouteImport.update({
+  id: '/custos',
+  path: '/custos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
@@ -131,6 +137,7 @@ export interface FileRoutesByFullPath {
   '/alertas': typeof AlertasRoute
   '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/custos': typeof CustosRoute
   '/historico': typeof HistoricoRoute
   '/importacoes': typeof ImportacoesRoute
   '/importacoes-despesas': typeof ImportacoesDespesasRoute
@@ -152,6 +159,7 @@ export interface FileRoutesByTo {
   '/alertas': typeof AlertasRoute
   '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/custos': typeof CustosRoute
   '/historico': typeof HistoricoRoute
   '/importacoes': typeof ImportacoesRoute
   '/importacoes-despesas': typeof ImportacoesDespesasRoute
@@ -174,6 +182,7 @@ export interface FileRoutesById {
   '/alertas': typeof AlertasRoute
   '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/custos': typeof CustosRoute
   '/historico': typeof HistoricoRoute
   '/importacoes': typeof ImportacoesRoute
   '/importacoes-despesas': typeof ImportacoesDespesasRoute
@@ -197,6 +206,7 @@ export interface FileRouteTypes {
     | '/alertas'
     | '/conciliacao-detalhes'
     | '/configuracoes'
+    | '/custos'
     | '/historico'
     | '/importacoes'
     | '/importacoes-despesas'
@@ -218,6 +228,7 @@ export interface FileRouteTypes {
     | '/alertas'
     | '/conciliacao-detalhes'
     | '/configuracoes'
+    | '/custos'
     | '/historico'
     | '/importacoes'
     | '/importacoes-despesas'
@@ -239,6 +250,7 @@ export interface FileRouteTypes {
     | '/alertas'
     | '/conciliacao-detalhes'
     | '/configuracoes'
+    | '/custos'
     | '/historico'
     | '/importacoes'
     | '/importacoes-despesas'
@@ -261,6 +273,7 @@ export interface RootRouteChildren {
   AlertasRoute: typeof AlertasRoute
   ConciliacaoDetalhesRoute: typeof ConciliacaoDetalhesRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
+  CustosRoute: typeof CustosRoute
   HistoricoRoute: typeof HistoricoRoute
   ImportacoesRoute: typeof ImportacoesRoute
   ImportacoesDespesasRoute: typeof ImportacoesDespesasRoute
@@ -342,6 +355,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HistoricoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/custos': {
+      id: '/custos'
+      path: '/custos'
+      fullPath: '/custos'
+      preLoaderRoute: typeof CustosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/configuracoes': {
       id: '/configuracoes'
       path: '/configuracoes'
@@ -421,6 +441,7 @@ const rootRouteChildren: RootRouteChildren = {
   AlertasRoute: AlertasRoute,
   ConciliacaoDetalhesRoute: ConciliacaoDetalhesRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
+  CustosRoute: CustosRoute,
   HistoricoRoute: HistoricoRoute,
   ImportacoesRoute: ImportacoesRoute,
   ImportacoesDespesasRoute: ImportacoesDespesasRoute,

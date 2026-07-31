@@ -12,7 +12,7 @@ import { StoreRow } from '@/lib/supabase';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useBotCredentials, useUpdateBotCredential } from '@/hooks/useBotCredentials';
 import { useBotLogs } from '@/hooks/useBotLogs';
-import { Bot, Eye, EyeOff, CheckCircle2, XCircle, Clock, ExternalLink, Terminal, AlertTriangle, Workflow } from 'lucide-react';
+import { Bot, Eye, EyeOff, CheckCircle2, XCircle, Clock, ExternalLink, Terminal, AlertTriangle, Workflow, ArrowLeft } from 'lucide-react';
 
 export const Route = createFileRoute('/configuracoes')({
   component: ConfiguracoesPage,
@@ -50,6 +50,9 @@ function ConfiguracoesPage() {
     <AppShell>
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-2xl mx-auto">
         <div className="mb-8">
+          <Link to="/agente" className="inline-flex items-center gap-2 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors mb-6 bg-[var(--bg-surface)] px-3 py-1.5 rounded-full border border-[var(--border-subtle)]">
+            <ArrowLeft size={16} /> Voltar para o Agente
+          </Link>
           <h1 className="font-display font-bold text-3xl mb-2">Configurações</h1>
           <p className="text-[var(--text-secondary)] text-sm">Gerencie o comportamento do motor de conciliação autônomo e lojas.</p>
         </div>

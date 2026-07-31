@@ -1,7 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
-import { Terminal, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react';
+import { Terminal, CheckCircle2, XCircle, AlertTriangle, ArrowLeft } from 'lucide-react';
 import { useBotLogs } from '@/hooks/useBotLogs';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
@@ -17,6 +17,9 @@ function LogsAgentePage() {
     <AppShell>
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-4xl mx-auto">
         <div className="mb-8">
+          <Link to="/agente" className="inline-flex items-center gap-2 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors mb-6 bg-[var(--bg-surface)] px-3 py-1.5 rounded-full border border-[var(--border-subtle)]">
+            <ArrowLeft size={16} /> Voltar para o Agente
+          </Link>
           <h1 className="font-display font-bold text-3xl mb-2 flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-indigo-500/15 flex items-center justify-center">
               <Terminal size={20} className="text-indigo-400" />

@@ -1,6 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts"
 import { createClient } from 'npm:@supabase/supabase-js@2'
-import { streamText, stepCountIs } from 'npm:ai@latest'
+import { streamText, stepCountIs, generateText } from 'npm:ai@latest'
 import { createOpenAI } from 'npm:@ai-sdk/openai@latest'
 import { createGoogleGenerativeAI } from 'npm:@ai-sdk/google@latest'
 import { createAnthropic } from 'npm:@ai-sdk/anthropic@latest'
@@ -170,6 +170,29 @@ Deno.serve(async (req) => {
         }
       }
     });
+
+    // Auto-titulação: Se for a primeira mensagem, gerar um título em background e atualizar
+    if (formattedMessages.length === 1 && conversation_id) {
+      const firstMessageText = formattedMessages[0].content;
+      
+      // Promessa não bloqueante (fire-and-forget)
+      generateText({
+        model: llmModel,
+        system: "Você é um assistente criador de títulos. Resuma a mensagem do usuário em um título curto de no máximo 4 palavras. Apenas retorne as palavras, sem aspas, sem pontuação final.",
+        prompt: firstMessageText,
+      }).then(async ({ text: titleText }) => {
+        if (titleText && titleText.trim()) {
+          try {
+            await supabaseAdmin.from('conversations')
+              .update({ title: titleText.trim() })
+              .eq('id', conversation_id)
+              // Only update if it's still 'Nova Conversa' or empty (handled by frontend typically, but good to just update)
+          } catch (e) {
+            console.error('Error updating conversation title:', e);
+          }
+        }
+      }).catch(err => console.error("Error generating title:", err));
+    }
 
     return result.toUIMessageStreamResponse({ headers: corsHeaders });
   } catch (err: any) {
