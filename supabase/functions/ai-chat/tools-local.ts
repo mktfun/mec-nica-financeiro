@@ -1,5 +1,5 @@
 import { z } from 'npm:zod@3'
-import { tool } from 'npm:ai@3'
+import { tool } from 'npm:ai@latest'
 
 export const toolsLocal = (supabaseClient: any) => ({
   consulta_resumo_os: tool({

@@ -13,6 +13,17 @@ export type Message = {
   toolInvocations?: any[];
 };
 
+const getMessageContent = (msg: any) => {
+  if (typeof msg.content === 'string' && msg.content.trim()) return msg.content;
+  if (Array.isArray(msg.parts)) {
+    return msg.parts
+      .filter((p: any) => p.type === 'text')
+      .map((p: any) => p.text)
+      .join('');
+  }
+  return msg.content || '';
+};
+
 export function MessageList({ messages, isLoading }: { messages: Message[], isLoading?: boolean }) {
   return (
     <div className="flex flex-col gap-6 py-6 max-w-4xl mx-auto px-4 md:px-0">
@@ -23,71 +34,73 @@ export function MessageList({ messages, isLoading }: { messages: Message[], isLo
       )}
       
       <AnimatePresence initial={false}>
-        {messages.map(msg => (
-          <motion.div 
-            key={msg.id} 
-            initial={{ opacity: 0, y: 12, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.35, ease: [0.175, 0.885, 0.32, 1.275] }}
-            className={cn("flex w-full gap-4", msg.role === 'user' ? "justify-end" : "justify-start")}
-          >
-            {msg.role === 'assistant' && (
-              <div className="shrink-0 mt-0.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 shadow-sm">
-                  <Bot size={16} strokeWidth={2} />
+        {messages.map(msg => {
+          const textContent = getMessageContent(msg);
+          return (
+            <motion.div 
+              key={msg.id} 
+              initial={{ opacity: 0, y: 12, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.35, ease: [0.175, 0.885, 0.32, 1.275] }}
+              className={cn("flex w-full gap-4", msg.role === 'user' ? "justify-end" : "justify-start")}
+            >
+              {msg.role === 'assistant' && (
+                <div className="shrink-0 mt-0.5">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 shadow-sm">
+                    <Bot size={16} strokeWidth={2} />
+                  </div>
                 </div>
-              </div>
-            )}
-            
-            <div className={cn(
-              "flex flex-col gap-1.5 min-w-0 max-w-[85%] md:max-w-[75%]", 
-              msg.role === 'user' ? "items-end" : "items-start"
-            )}>
-              <span className="text-[11px] font-medium text-zinc-500 px-1">
-                {msg.role === 'user' ? 'Você' : 'Oficina GPT'}
-              </span>
+              )}
               
               <div className={cn(
-                "px-5 py-3.5 whitespace-pre-wrap text-[15px] leading-relaxed shadow-sm break-words transition-all", 
-                msg.role === 'user' 
-                  ? "bg-zinc-800 text-zinc-100 rounded-[22px] rounded-tr-[4px]" 
-                  : "bg-transparent border border-zinc-800/80 text-zinc-200 rounded-[22px] rounded-tl-[4px] backdrop-blur-sm shadow-none"
+                "flex flex-col gap-1.5 min-w-0 max-w-[85%] md:max-w-[75%]", 
+                msg.role === 'user' ? "items-end" : "items-start"
               )}>
-                {msg.role === 'user' ? (
-                  msg.content
-                ) : (
-                  <div className="prose prose-invert prose-zinc max-w-none text-zinc-300">
-                    <ReactMarkdown 
-                      remarkPlugins={[remarkGfm]}
-                      components={{
-                        table: ({node, ...props}) => (
-                          <div className="overflow-x-auto my-4 rounded-xl border border-zinc-800/60 bg-black/20">
-                            <table className="w-full text-sm border-collapse" {...props} />
-                          </div>
-                        ),
-                        thead: ({node, ...props}) => <thead className="bg-zinc-900/80 border-b border-zinc-800" {...props} />,
-                        th: ({node, ...props}) => <th className="p-3 text-left font-semibold text-zinc-200 border-r border-zinc-800/30 last:border-0 uppercase tracking-wider text-[11px]" {...props} />,
-                        td: ({node, ...props}) => <td className="p-3 border-b border-zinc-800/40 border-r border-zinc-800/30 last:border-r-0 text-zinc-400 font-mono text-[13px]" {...props} />,
-                        tr: ({node, ...props}) => <tr className="hover:bg-zinc-800/30 transition-colors" {...props} />,
-                        p: ({node, ...props}) => <p className="mb-4 last:mb-0 leading-relaxed text-[15px]" {...props} />,
-                        a: ({node, ...props}) => <a className="text-[#a5b4fc] hover:text-[#818cf8] underline decoration-1 underline-offset-2" {...props} />,
-                        code: ({node, inline, ...props}: any) => 
-                          inline ? (
-                            <code className="px-1.5 py-0.5 rounded-md bg-zinc-800 text-zinc-300 font-mono text-[13px]" {...props} />
-                          ) : (
-                            <div className="my-4 rounded-xl border border-zinc-800/60 bg-zinc-950 overflow-hidden">
-                              <pre className="p-4 overflow-x-auto custom-scrollbar">
-                                <code className="font-mono text-[13px] text-zinc-300" {...props} />
-                              </pre>
+                <span className="text-[11px] font-medium text-zinc-500 px-1">
+                  {msg.role === 'user' ? 'Você' : 'Oficina GPT'}
+                </span>
+                
+                <div className={cn(
+                  "px-5 py-3.5 whitespace-pre-wrap text-[15px] leading-relaxed shadow-sm break-words transition-all", 
+                  msg.role === 'user' 
+                    ? "bg-zinc-800 text-zinc-100 rounded-[22px] rounded-tr-[4px]" 
+                    : "bg-transparent border border-zinc-800/80 text-zinc-200 rounded-[22px] rounded-tl-[4px] backdrop-blur-sm shadow-none"
+                )}>
+                  {msg.role === 'user' ? (
+                    textContent
+                  ) : (
+                    <div className="prose prose-invert prose-zinc max-w-none text-zinc-300">
+                      <ReactMarkdown 
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          table: ({node, ...props}) => (
+                            <div className="overflow-x-auto my-4 rounded-xl border border-zinc-800/60 bg-black/20">
+                              <table className="w-full text-sm border-collapse" {...props} />
                             </div>
-                          )
-                      }}
-                    >
-                      {msg.content}
-                    </ReactMarkdown>
-                  </div>
-                )}
-              </div>
+                          ),
+                          thead: ({node, ...props}) => <thead className="bg-zinc-900/80 border-b border-zinc-800" {...props} />,
+                          th: ({node, ...props}) => <th className="p-3 text-left font-semibold text-zinc-200 border-r border-zinc-800/30 last:border-0 uppercase tracking-wider text-[11px]" {...props} />,
+                          td: ({node, ...props}) => <td className="p-3 border-b border-zinc-800/40 border-r border-zinc-800/30 last:border-r-0 text-zinc-400 font-mono text-[13px]" {...props} />,
+                          tr: ({node, ...props}) => <tr className="hover:bg-zinc-800/30 transition-colors" {...props} />,
+                          p: ({node, ...props}) => <p className="mb-4 last:mb-0 leading-relaxed text-[15px]" {...props} />,
+                          a: ({node, ...props}) => <a className="text-[#a5b4fc] hover:text-[#818cf8] underline decoration-1 underline-offset-2" {...props} />,
+                          code: ({node, inline, ...props}: any) => 
+                            inline ? (
+                              <code className="px-1.5 py-0.5 rounded-md bg-zinc-800 text-zinc-300 font-mono text-[13px]" {...props} />
+                            ) : (
+                              <div className="my-4 rounded-xl border border-zinc-800/60 bg-zinc-950 overflow-hidden">
+                                <pre className="p-4 overflow-x-auto custom-scrollbar">
+                                  <code className="font-mono text-[13px] text-zinc-300" {...props} />
+                                </pre>
+                              </div>
+                            )
+                        }}
+                      >
+                        {textContent}
+                      </ReactMarkdown>
+                    </div>
+                  )}
+                </div>
 
               {msg.toolInvocations && msg.toolInvocations.length > 0 && (
                 <div className="flex flex-col gap-1 w-full mt-1.5 mb-2">
@@ -137,7 +150,8 @@ export function MessageList({ messages, isLoading }: { messages: Message[], isLo
               )}
             </div>
           </motion.div>
-        ))}
+        );
+      })}
       </AnimatePresence>
       
       {/* NOVO LOADING STATE: HIGH-END & FLUID */}

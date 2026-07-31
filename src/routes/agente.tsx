@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { PromptInput } from '@/components/chat/PromptInput';
 import { MessageList } from '@/components/chat/MessageList';
 import { useChat } from '@ai-sdk/react';
+import { DefaultChatTransport } from 'ai';
 import { Bot, Plus, Trash2, Settings, Terminal, Workflow } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -22,18 +23,48 @@ function AgentePage() {
     activeConversationIdRef.current = activeConversationId; 
   }, [activeConversationId]);
   
-  const { messages, setMessages, append, isLoading } = useChat({
-    api: `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ias-hub`,
+  // transport com auth dinâmico — prepareSendMessagesRequest lê o token em cada request
+  const chatTransport = React.useMemo(() => new DefaultChatTransport({
+    api: `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-chat`,
+    prepareSendMessagesRequest: async (request) => {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      return {
+        ...request,
+        headers: {
+          ...(request.headers || {}),
+          'Authorization': `Bearer ${token}`
+        },
+        body: {
+          ...(request.body || {}),
+          messages: request.messages,
+          conversation_id: activeConversationIdRef.current
+        }
+      };
+    }
+  }), []);
+
+  const { messages, setMessages, sendMessage: appendMessage, status } = useChat({
+    transport: chatTransport,
     onError: (error) => {
       console.error('Erro na resposta do Agente IAS:', error);
       toast.error(`Erro ao obter resposta do Agente IAS: ${error.message || 'Falha na conexão com a Edge Function'}`);
     },
     onFinish: async (message) => {
       if (activeConversationIdRef.current) {
+        // SDK v4: message.parts é array de {type, text}
+        const textContent = Array.isArray((message as any).parts)
+          ? (message as any).parts.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('')
+          : typeof (message as any).content === 'string'
+            ? (message as any).content
+            : '';
+
+        if (!textContent) return;
+
         const { error } = await supabase.from('messages').insert([{
           conversation_id: activeConversationIdRef.current,
           role: 'assistant',
-          content: message.content
+          content: textContent
         }]);
         if (error) {
           console.error('Erro ao salvar mensagem do assistente:', error);
@@ -41,6 +72,8 @@ function AgentePage() {
       }
     }
   });
+
+  const isLoading = status === 'submitted' || status === 'streaming';
 
   // Subscription em tempo real (Supabase Realtime) nas mensagens da conversa ativa
   useEffect(() => {
@@ -188,9 +221,6 @@ function AgentePage() {
       activeConversationIdRef.current = data.id;
     }
 
-    const { data: sessionData } = await supabase.auth.getSession();
-    const token = sessionData.session?.access_token;
-
     // Salva silenciosamente no banco em background (não-bloqueante)
     supabase.from('messages').insert([{
       conversation_id: currentConvId,
@@ -203,17 +233,11 @@ function AgentePage() {
       }
     });
 
-    // Optimistic append immediately to UI - com try/catch
+    // SDK v4: apenas { text } — auth e conversation_id injetados pelo transport
     try {
-      await append(
-        { role: 'user', content: text },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          body: { conversation_id: currentConvId }
-        }
-      );
+      await appendMessage({ text });
     } catch (err) {
-      console.warn("Erro ao disparar append (Edge Function pode estar offline):", err);
+      console.warn("Erro ao disparar appendMessage (Edge Function pode estar offline):", err);
     }
   };
 

@@ -34,3 +34,8 @@
 ### fix-chat-ui
 - **Novas Telas de Log:** `src/routes/logs.agente.tsx` e `src/routes/logs.motor.tsx` criadas para exibir as trilhas de auditoria separadas da aba de configurações.
 - **Sidebar Agente (`src/routes/agente.tsx`):** Links âncora `Log do Agente IA` e `Log do Motor` restaurados e mapeados para suas novas rotas.
+
+### fix-chat-payload-and-e2e
+- **Edge Function `ai-chat` (`supabase/functions/ai-chat/index.ts`):** Atualizada para AI SDK 5 (`npm:ai@latest`), higienização de mensagens `UIMessage` -> `CoreMessage`, streaming com `toUIMessageStreamResponse()`.
+- **Chat Transport (`src/routes/agente.tsx`):** Injeção correta de `messages: request.messages` e `conversation_id` no `prepareSendMessagesRequest`.
+- **Extrator Defensivo (`src/components/chat/MessageList.tsx`):** Adicionado `getMessageContent()` para interpretar `parts` (Vercel AI SDK v4) e `content`.

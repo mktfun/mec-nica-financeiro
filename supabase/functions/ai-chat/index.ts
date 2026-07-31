@@ -1,9 +1,9 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts"
 import { createClient } from 'npm:@supabase/supabase-js@2'
-import { streamText } from 'npm:ai@3'
-import { createOpenAI } from 'npm:@ai-sdk/openai@0'
-import { createGoogleGenerativeAI } from 'npm:@ai-sdk/google@0'
-import { createAnthropic } from 'npm:@ai-sdk/anthropic@0'
+import { streamText } from 'npm:ai@latest'
+import { createOpenAI } from 'npm:@ai-sdk/openai@latest'
+import { createGoogleGenerativeAI } from 'npm:@ai-sdk/google@latest'
+import { createAnthropic } from 'npm:@ai-sdk/anthropic@latest'
 import { toolsLocal } from './tools-local.ts'
 import { toolsOficina } from './tools-oficina.ts'
 
@@ -65,6 +65,27 @@ Deno.serve(async (req) => {
 
   try {
     const { messages } = await req.json()
+    if (!Array.isArray(messages) || messages.length === 0) {
+      throw new Error('Invalid prompt: prompt or messages must be defined')
+    }
+
+    // Mapear UIMessages (v4 parts ou content) para CoreMessages ({ role, content })
+    const formattedMessages = messages.map((m: any) => {
+      let content = '';
+      if (typeof m.content === 'string' && m.content) {
+        content = m.content;
+      } else if (Array.isArray(m.parts)) {
+        content = m.parts
+          .filter((p: any) => p.type === 'text')
+          .map((p: any) => p.text)
+          .join('');
+      }
+      return { role: m.role || 'user', content };
+    }).filter((m: any) => m.content.trim().length > 0);
+
+    if (formattedMessages.length === 0) {
+      throw new Error('Invalid prompt: prompt or messages must be defined')
+    }
     
     // Auth Check
     const authHeader = req.headers.get('Authorization')
@@ -112,12 +133,12 @@ Deno.serve(async (req) => {
     const result = streamText({
       model: llmModel,
       system: SYSTEM_PROMPT,
-      messages,
+      messages: formattedMessages,
       tools: mcpTools,
       maxSteps: 5,
     });
 
-    return result.toDataStreamResponse({ headers: corsHeaders });
+    return result.toUIMessageStreamResponse({ headers: corsHeaders });
   } catch (err: any) {
     return new Response(JSON.stringify({ error: err.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

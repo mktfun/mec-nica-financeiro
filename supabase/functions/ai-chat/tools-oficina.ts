@@ -1,5 +1,5 @@
 import { z } from 'npm:zod@3'
-import { tool } from 'npm:ai@3'
+import { tool } from 'npm:ai@latest'
 
 const logMcpExecution = async (supabaseClient: any, action: string, params: any, result: any, userId?: string) => {
   try {
