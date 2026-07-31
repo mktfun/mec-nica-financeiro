@@ -6,7 +6,7 @@ import { PromptInput } from '@/components/chat/PromptInput';
 import { MessageList } from '@/components/chat/MessageList';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
-import { Bot, Plus, Trash2, Settings, Terminal, Workflow, Pencil } from 'lucide-react';
+import { Bot, Plus, Trash2, Settings, Terminal, Workflow, Pencil, BarChart3 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/agente')({
@@ -197,20 +197,7 @@ function AgentePage() {
   };
 
   const handleNewConversation = async () => {
-    const { data: user } = await supabase.auth.getUser();
-    if (!user.user) return;
-    const { data, error } = await supabase
-      .from('conversations')
-      .insert([{ user_id: user.user.id, title: 'Nova Conversa' }])
-      .select()
-      .single();
-
-    if (error) {
-      console.error(error);
-      return;
-    }
-    setConversations([data, ...conversations]);
-    setActiveConversationId(data.id);
+    setActiveConversationId(null);
     setMessages([]);
   };
 
@@ -250,9 +237,10 @@ function AgentePage() {
         toast.error('Usuário não autenticado');
         return;
       }
+      const initialTitle = text.length > 30 ? text.substring(0, 30) + '...' : text;
       const { data, error } = await supabase
         .from('conversations')
-        .insert([{ user_id: user.user.id, title: text.substring(0, 30) }])
+        .insert([{ user_id: user.user.id, title: initialTitle }])
         .select()
         .single();
       if (error) {
@@ -261,9 +249,41 @@ function AgentePage() {
         return;
       }
       currentConvId = data.id;
-      setConversations([data, ...conversations]);
+      setConversations([{...data, title: initialTitle}, ...conversations]);
       setActiveConversationId(data.id);
       activeConversationIdRef.current = data.id;
+
+      // Smart Title Generation via Edge Function in background
+      (async () => {
+        try {
+          const { data: sessionData } = await supabase.auth.getSession();
+          const token = sessionData.session?.access_token;
+          const prompt = `Gere um título super curto (máximo 4 palavras) que resuma esta mensagem: "${text}"`;
+          
+          const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-chat`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              messages: [{ role: 'user', content: prompt }],
+              conversation_id: 'smart-title-gen' // Evitar logar no histórico principal
+            })
+          });
+
+          if (response.ok) {
+             const resText = await response.text();
+             // Simple extraction assuming it streams or returns text
+             const cleanTitle = resText.replace(/["'*]/g, '').trim();
+             if (cleanTitle && cleanTitle.length < 50) {
+               await supabase.from('conversations').update({ title: cleanTitle }).eq('id', data.id);
+             }
+          }
+        } catch (err) {
+          console.warn("Smart title generation failed (fallback to snippet):", err);
+        }
+      })();
     }
 
     // Salva silenciosamente no banco em background (não-bloqueante)
@@ -386,6 +406,13 @@ function AgentePage() {
             >
               <Workflow size={15} />
               <span>Log do Motor</span>
+            </Link>
+            <Link
+              to="/custos"
+              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)] transition-colors"
+            >
+              <BarChart3 size={15} />
+              <span>Custos</span>
             </Link>
           </div>
         </div>

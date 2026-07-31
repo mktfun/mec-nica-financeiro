@@ -1,16 +1,16 @@
 # Graph Report - financeiro  (2026-07-31)
 
 ## Corpus Check
-- 874 files · ~333,343 words
+- 892 files · ~348,950 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 4751 nodes · 5142 edges · 763 communities (513 shown, 250 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 121 edges (avg confidence: 0.5)
+- 4848 nodes · 5230 edges · 780 communities (526 shown, 254 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 122 edges (avg confidence: 0.5)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `eb8e2e7b`
+- Built from commit: `2c427fdb`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -18,7 +18,7 @@
 - query
 - devDependencies
 - supabase/types.ts
-- patio.tsx
+- Button.tsx
 - BankReconciliationDashboard.tsx
 - helpers.js
 - oficina.ts
@@ -369,7 +369,7 @@
 - seed-stress-test.js
 - test-all-tables.js
 - Regras do Debate Multi-Agente (The True Council)
-- Features e MÃ³dulos Existentes (Mapa Vivo Anti-DuplicaÃ§Ã£o)
+- Features e Módulos Existentes (Mapa Vivo Anti-Duplicação)
 - Design: Conciliação Diária e Deleção Cascade
 - Tasks: Conciliação Diária e Cascade Delete
 - Spec 035 - Design
@@ -415,7 +415,7 @@
 - Design: Correção na Importação de OSs (Status, Valor Total = Pago + Aberto) e Ajuste da Tela de OSs (fix-os-import-parsing-and-patio-metrics)
 - CategorySelector.tsx
 - Design: Bot Config UI & MCP Agent Integration (bot-config-ui)
-- importacoes-despesas.tsx
+- utils.ts
 - sum.cjs
 - imports
 - @radix-ui/react-checkbox
@@ -507,8 +507,8 @@
 - worker_2_gen2/ORIGINAL_REQUEST.md
 - worker_2_gen2/progress.md
 - worker_2/ORIGINAL_REQUEST.md
-- loja.$lojaId.tsx
 - supabase.ts
+- loja.$lojaId.tsx
 - react-markdown
 - embla-carousel-react
 - Design: Correção de Lógica e Mapeamento de Lojas da IA (chat-logic-fix)
@@ -672,14 +672,14 @@
 - Design: Corrigir Violação de FK na Reimportação de OFX (bugfix-ofx-import-fk)
 - Spec Plan: Corrigir Violação de FK na Reimportação de OFX (bugfix-ofx-import-fk)
 - Spec Plan: Correção de Erro Interno (s is not a function) no AI SDK (bugfix-ai-chat-2)
-- ai
-- pdfjs-dist
+- Tasks
+- patio.tsx
 - Spec Plan: Corrigir UX do Agente e Stream Abort (bugfix-ai-chat)
 - @eslint/js
 - clsx
 - spec/global/constraints.md
 - MessageList.tsx
-- start.ts
+- Design: Passo a Passo Expansível, Tratamento de Erros Limpo e Prevenção de Respostas Vazias (fix-chat-steps-and-error-ui)
 - Design: Central de Agentes IAS (ias-architecture-hub)
 - Proposal: Central de Agentes IAS (ias-architecture-hub)
 - Spec Plan: Central de Agentes IAS (ias-architecture-hub)
@@ -717,47 +717,63 @@
 - Progress Log — worker_impl_1
 - 2026-07-31T13:46:31Z
 - Spec Plan: Sidebar Layout Adjustment (sidebar-layout)
-- Design: Passo a Passo Expansível, Tratamento de Erros Limpo e Prevenção de Respostas Vazias (fix-chat-steps-and-error-ui)
+- start.ts
 - Design: Fix Chat Reativity and Sidebar UI (fix-chat-ui)
 - Spec Plan: Fix Chat Reativity and Sidebar UI (fix-chat-ui)
 - Proposal: Alinhamento de Endpoint e Protocolo AI SDK (fix-endpoint-alignment)
 - proposta.tsx
 - Proposal: Correção de Crash do AI SDK (fix-ai-sdk-crash)
-- Proposal: Passo a Passo Expansível, Tratamento de Erros Limpo e Prevenção de Respostas Vazias (fix-chat-steps-and-error-ui)
-- Proposal: Agrupamento de Turnos do Assistente, Passo a Passo Unificado e Persistência Pós-F5 (fix-chat-turn-aggregation-and-persistence)
+- Proposal: Melhorias Visuais e Refatoração UI do Chat (fix-chat-ui-layout)
+- Design: Refinamentos UX do Agente e Novo Módulo de Custos (agente-refinements)
 - Design: Alinhamento de Endpoint e Protocolo AI SDK (fix-endpoint-alignment)
 - __root.tsx
 - Design: Correção de Payload do Chat e Teste E2E Oficina GPT (fix-chat-payload-and-e2e)
 - Proposal: Correção de Payload do Chat e Teste E2E Oficina GPT (fix-chat-payload-and-e2e)
 - Design: Correção de Reatividade do Chat e Regressão de UI (fix-chat-reactivity)
 - Design: Correção de Crash do AI SDK (fix-ai-sdk-crash)
-- Proposal: Resiliência Anti-Hang, Consulta Local Inteligente Primeiro e Prova E2E (fix-ai-timeout-and-local-first)
-- useAuth.ts
-- Design: Transparência de Origem de Dados, Isolamento Estrito de Conversas e Raciocínio Adaptativo (fix-ai-provenance-and-conversation-isolation)
-- Proposal: Transparência de Origem de Dados, Isolamento Estrito de Conversas e Raciocínio Adaptativo (fix-ai-provenance-and-conversation-isolation)
-- Design: Resiliência Anti-Hang, Consulta Local Inteligente Primeiro e Prova E2E (fix-ai-timeout-and-local-first)
-- Design: Agrupamento de Turnos do Assistente, Passo a Passo Unificado e Persistência Pós-F5 (fix-chat-turn-aggregation-and-persistence)
+- Proposal: Refinamentos UX do Agente e Novo Módulo de Custos (agente-refinements)
+- login.tsx
+- Proposal: Passo a Passo Expansível, Tratamento de Erros Limpo e Prevenção de Respostas Vazias (fix-chat-steps-and-error-ui)
+- Proposal: Agrupamento de Turnos do Assistente, Passo a Passo Unificado e Persistência Pós-F5 (fix-chat-turn-aggregation-and-persistence)
+- Design: Refatoração da Conciliação Diária (conciliacao-diaria-refactor)
+- Proposal: Refatoração da Conciliação Diária (conciliacao-diaria-refactor)
 - Spec Plan: Correção de Payload do Chat e Teste E2E Oficina GPT (fix-chat-payload-and-e2e)
 - Spec Plan: Correção de Reatividade do Chat (fix-chat-reactivity)
-- Spec Plan: Transparência de Origem de Dados, Isolamento Estrito de Conversas e Raciocínio Adaptativo (fix-ai-provenance-and-conversation-isolation)
+- Design: Melhorias Visuais e Refatoração UI do Chat (fix-chat-ui-layout)
 - Spec Plan: Correção de Crash do AI SDK (fix-ai-sdk-crash)
-- Spec Plan: Resiliência Anti-Hang, Consulta Local Inteligente Primeiro e Prova E2E (fix-ai-timeout-and-local-first)
-- Spec Plan: Passo a Passo Expansível, Tratamento de Erros Limpo e Prevenção de Respostas Vazias (fix-chat-steps-and-error-ui)
-- Spec Plan: Agrupamento de Turnos do Assistente, Passo a Passo Unificado e Persistência Pós-F5 (fix-chat-turn-aggregation-and-persistence)
+- Proposal: Resiliência Anti-Hang, Consulta Local Inteligente Primeiro e Prova E2E (fix-ai-timeout-and-local-first)
+- Proposal: Reestruturação do Agente IA & Nova Conversa (agente-ui-custos)
+- Design: Transparência de Origem de Dados, Isolamento Estrito de Conversas e Raciocínio Adaptativo (fix-ai-provenance-and-conversation-isolation)
 - Spec Plan: Alinhamento de Endpoint e Protocolo AI SDK (fix-endpoint-alignment)
 - @ai-sdk/react
 - eslint-config-prettier
+- Proposal: Transparência de Origem de Dados, Isolamento Estrito de Conversas e Raciocínio Adaptativo (fix-ai-provenance-and-conversation-isolation)
+- Design: Resiliência Anti-Hang, Consulta Local Inteligente Primeiro e Prova E2E (fix-ai-timeout-and-local-first)
+- Design: Agrupamento de Turnos do Assistente, Passo a Passo Unificado e Persistência Pós-F5 (fix-chat-turn-aggregation-and-persistence)
+- Spec Plan: Transparência de Origem de Dados, Isolamento Estrito de Conversas e Raciocínio Adaptativo (fix-ai-provenance-and-conversation-isolation)
+- Spec Plan: Resiliência Anti-Hang, Consulta Local Inteligente Primeiro e Prova E2E (fix-ai-timeout-and-local-first)
+- Spec Plan: Passo a Passo Expansível, Tratamento de Erros Limpo e Prevenção de Respostas Vazias (fix-chat-steps-and-error-ui)
+- Spec Plan: Agrupamento de Turnos do Assistente, Passo a Passo Unificado e Persistência Pós-F5 (fix-chat-turn-aggregation-and-persistence)
+- Spec Plan: Refatoração da Conciliação Diária (conciliacao-diaria-refactor)
+- Proposal: Refatoração do Faturamento e PIX na Conciliação Diária (faturamento-pix-refactor)
+- Spec Plan: Melhorias Visuais e Refatoração UI do Chat (fix-chat-ui-layout)
+- class-variance-authority
+- Design: Reestruturação do Agente IA & Nova Conversa (agente-ui-custos)
+- Design: Refatoração do Faturamento e PIX na Conciliação Diária (faturamento-pix-refactor)
+- Spec Plan: Reestruturação do Agente IA & Nova Conversa (agente-ui-custos)
+- Spec Plan: Refatoração do Faturamento e PIX na Conciliação Diária (faturamento-pix-refactor)
+- ai
 
 ## God Nodes (most connected - your core abstractions)
 1. `useStores()` - 33 edges
-2. `Card()` - 28 edges
-3. `supabase` - 28 edges
+2. `Card()` - 29 edges
+3. `supabase` - 27 edges
 4. `LoadingSpinner()` - 24 edges
 5. `query()` - 22 edges
 6. `getDefaultDate()` - 22 edges
-7. `AnimatedNumber()` - 21 edges
-8. `Badge()` - 21 edges
-9. `FileRoutesByPath` - 21 edges
+7. `FileRoutesByPath` - 22 edges
+8. `AnimatedNumber()` - 21 edges
+9. `Badge()` - 21 edges
 10. `query()` - 20 edges
 
 ## Surprising Connections (you probably didn't know these)
@@ -775,7 +791,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (763 total, 250 thin omitted)
+## Communities (780 total, 254 thin omitted)
 
 ### Community 0 - "query"
 Cohesion: 0.05
@@ -789,13 +805,13 @@ Nodes (11): eslint, eslint-plugin-prettier, eslint-plugin-react-hooks, @lovable.
 Cohesion: 0.14
 Nodes (12): requireSupabaseAuth, supabaseAdmin, CompositeTypes, Constants, Database, DatabaseWithoutInternals, DefaultSchema, Enums (+4 more)
 
-### Community 3 - "patio.tsx"
-Cohesion: 0.11
-Nodes (16): NewTransactionDialogProps, TODO: Implement transaction creation, container, item, RecentActivity(), Button(), ButtonProps, Modal() (+8 more)
+### Community 3 - "Button.tsx"
+Cohesion: 0.15
+Nodes (12): AlertResolveDialog(), AlertResolveDialogProps, NewTransactionDialogProps, TODO: Implement transaction creation, container, item, Button(), ButtonProps (+4 more)
 
 ### Community 4 - "BankReconciliationDashboard.tsx"
-Cohesion: 0.10
-Nodes (30): BankReconciliationDashboard(), ClassifiedFile, classifyFile(), FileTypeCategory, UniversalDropzone(), UniversalDropzoneProps, MaquininhaItem, UnifiedImportResult (+22 more)
+Cohesion: 0.09
+Nodes (32): BankReconciliationDashboard(), useStoreMapping(), WizardImportacao(), ClassifiedFile, classifyFile(), FileTypeCategory, UniversalDropzone(), UniversalDropzoneProps (+24 more)
 
 ### Community 5 - "helpers.js"
 Cohesion: 0.07
@@ -823,7 +839,7 @@ Nodes (28): 001 · Tasks — Backend Supabase, 1.1 Infraestrutura, 1.2 Banco —
 
 ### Community 11 - "routeTree.gen.ts"
 Cohesion: 0.06
-Nodes (42): Route, Route, Route, Route, Route, Route, Route, Route (+34 more)
+Nodes (44): Route, Route, Route, Route, Route, Route, Route, Route (+36 more)
 
 ### Community 12 - "compilerOptions"
 Cohesion: 0.07
@@ -831,7 +847,7 @@ Nodes (26): DOM, DOM.Iterable, ES2022, eslint.config.js, src/**/*.ts, src/**/*.t
 
 ### Community 13 - "CentralImportWizard.tsx"
 Cohesion: 0.15
-Nodes (20): CentralImportWizard(), ImportLogEntry, useUnifiedStoreMapping(), useSaveImportedReport(), GroupedImportLog, ParsedOS, ParsedReceivable, savePatioOsAndReceivables() (+12 more)
+Nodes (20): CentralImportWizard(), ImportLogEntry, useUnifiedStoreMapping(), GroupedImportLog, ParsedOS, ParsedReceivable, savePatioOsAndReceivables(), useClearAllData() (+12 more)
 
 ### Community 14 - "Design: bot-traefik-routing"
 Cohesion: 0.25
@@ -843,11 +859,11 @@ Nodes (14): API / Interface, Bot (Express — `bot/src/server.ts`), Config de V�
 
 ### Community 16 - "ResumoDiaPanel.tsx"
 Cohesion: 0.23
-Nodes (11): Modulo1SaldoPanel(), Modulo1SaldoPanelProps, ResumoDiaPanel(), ResumoDiaPanelProps, DailySnapshotRow, useDailySnapshot(), useSaveDailySnapshot(), calculateModulo1Saldo() (+3 more)
+Nodes (12): Modulo1SaldoPanelProps, ResumoDiaPanel(), ResumoDiaPanelProps, DailySnapshotRow, useDailySnapshot(), usePreviousDaySnapshot(), useSaveDailySnapshot(), calculateGlobalConciliacao() (+4 more)
 
 ### Community 17 - "useStores"
-Cohesion: 0.11
-Nodes (22): StoreFormDialog(), StoreFormDialogProps, StoreRankingChart(), TopBar(), Input, InputProps, ThemeToggle(), BotCredentialRow (+14 more)
+Cohesion: 0.19
+Nodes (17): StoreFormDialog(), StoreFormDialogProps, StoreRankingChart(), Input, BotCredentialRow, useBotCredentials(), useUpdateBotCredential(), useBotRunHistory() (+9 more)
 
 ### Community 18 - "Design System: Mecânica Popular Financeiro v2"
 Cohesion: 0.10
@@ -914,8 +930,8 @@ Cohesion: 0.12
 Nodes (8): ClassValue, DialogContent, DialogOverlay, PopoverContent, PromptBox, PromptBoxProps, toolsList, TooltipContent
 
 ### Community 34 - "useConciliacao.ts"
-Cohesion: 0.17
-Nodes (18): OfxSemMatchTable(), OsDetailModal(), OsDetailModalProps, OsVsRedeTable(), PixVsOfxTable(), RedeVsOfxTable(), Badge(), BadgeProps (+10 more)
+Cohesion: 0.16
+Nodes (19): OfxSemMatchTable(), OsDetailModal(), OsDetailModalProps, OsVsRedeTable(), PixVsOfxTable(), RedeVsOfxTable(), Badge(), BadgeProps (+11 more)
 
 ### Community 35 - "Modelo de Banco de Dados"
 Cohesion: 0.12
@@ -942,8 +958,8 @@ Cohesion: 0.13
 Nodes (14): Banco de Dados, Bug 1 — Recebíveis mostrando R$ 7,7 milhões (valor absurdo), Bug 2 — Saldo Líquido do Dashboard zerado, Bug 3 — Sem histórico de importações rastreável, Bug 4 — Recebíveis: lógica de status incorreta, Contexto e Problemas Identificados, Critérios de Aceite, Hooks (+6 more)
 
 ### Community 41 - "Card.tsx"
-Cohesion: 0.13
-Nodes (17): AppShell(), BottomNav(), navItems, navItems, Sidebar(), Card(), CardProps, useLogout() (+9 more)
+Cohesion: 0.09
+Nodes (26): Modulo1SaldoPanel(), RedeVsExtratoTableProps, WizardImportacaoProps, AppShell(), AnimatedNumber(), AnimatedNumberProps, Card(), CardProps (+18 more)
 
 ### Community 42 - "Handoff Report — Milestone 2: Reconciliation Calculation & Silent AI Telemetry Validation (Requirement R2)"
 Cohesion: 0.14
@@ -959,7 +975,7 @@ Nodes (11): campoBate(), cronBateAgora(), { Pool }, query(), app, { cronBateAgor
 
 ### Community 45 - "dependencies"
 Cohesion: 0.12
-Nodes (17): class-variance-authority, @cloudflare/vite-plugin, cmdk, nitro, dependencies, class-variance-authority, @cloudflare/vite-plugin, cmdk (+9 more)
+Nodes (17): @cloudflare/vite-plugin, cmdk, nitro, dependencies, @cloudflare/vite-plugin, cmdk, nitro, pdfjs-dist (+9 more)
 
 ### Community 46 - "query"
 Cohesion: 0.24
@@ -2137,9 +2153,9 @@ Nodes (3): generateBatchTag(), runSeed(), supabase
 Cohesion: 0.50
 Nodes (3): 1. Isolamento Inicial (Round 1), 2. Obrigação de Refutação (Round 2), Regras do Debate Multi-Agente (The True Council)
 
-### Community 354 - "Features e MÃ³dulos Existentes (Mapa Vivo Anti-DuplicaÃ§Ã£o)"
-Cohesion: 0.25
-Nodes (7): ConciliaÃ§Ã£o & Fechamento, Features e MÃ³dulos Existentes (Mapa Vivo Anti-DuplicaÃ§Ã£o), fix-chat-payload-and-e2e, fix-chat-ui, ias-architecture-hub, InteligÃªncia Artificial & Telemetria, ui-refactor
+### Community 354 - "Features e Módulos Existentes (Mapa Vivo Anti-Duplicação)"
+Cohesion: 0.50
+Nodes (3): Conciliação & Fechamento, Features e Módulos Existentes (Mapa Vivo Anti-Duplicação), Inteligência Artificial & Telemetria
 
 ### Community 355 - "Design: Conciliação Diária e Deleção Cascade"
 Cohesion: 0.50
@@ -2317,9 +2333,9 @@ Nodes (3): Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Desig
 Cohesion: 0.29
 Nodes (6): Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Componentes / Hooks / Funções, Design: Bot Config UI & MCP Agent Integration (bot-config-ui), Fluxo de UI, Interfaces TypeScript
 
-### Community 400 - "importacoes-despesas.tsx"
-Cohesion: 0.14
-Nodes (14): RedeVsExtratoTableProps, useStoreMapping(), WizardImportacao(), WizardImportacaoProps, AnimatedNumber(), AnimatedNumberProps, LoadingSpinner(), LoadingSpinnerProps (+6 more)
+### Community 400 - "utils.ts"
+Cohesion: 0.16
+Nodes (10): BottomNav(), navItems, navItems, Sidebar(), TopBar(), InputProps, ThemeToggle(), listeners (+2 more)
 
 ### Community 401 - "sum.cjs"
 Cohesion: 0.50
@@ -2337,13 +2353,13 @@ Nodes (7): API / Interface, Contratos de Dados, Features Existentes Impactadas, 
 Cohesion: 0.25
 Nodes (7): API / Interface, Contratos de Dados, Features Existentes Impactadas, Problema, Proposal: Consulta Live de OS no Bot Oficina Inteligente (bot-live-os-query), Risco Principal, Solução Proposta
 
-### Community 495 - "loja.$lojaId.tsx"
-Cohesion: 0.22
-Nodes (14): useCashRegisters(), useCloseCashRegister(), useStoreHistory(), useExtrato(), CashRegisterRow, TransactionRow, formatDate(), getDefaultPeriod() (+6 more)
-
-### Community 496 - "supabase.ts"
+### Community 495 - "supabase.ts"
 Cohesion: 0.09
-Nodes (23): AlertResolveDialog(), AlertResolveDialogProps, AiSettings, useAiSettings(), useSaveAiSettings(), useAlerts(), useResolveAlert(), useBackgroundAiReconciler() (+15 more)
+Nodes (20): AiSettings, useAiSettings(), useSaveAiSettings(), useBackgroundAiReconciler(), BotAuditLog, GoalRow, ImportLog, ImportLogFilters (+12 more)
+
+### Community 496 - "loja.$lojaId.tsx"
+Cohesion: 0.24
+Nodes (13): useCashRegisters(), useCloseCashRegister(), useStoreHistory(), useExtrato(), TransactionRow, formatDate(), getDefaultPeriod(), getIconForMethod() (+5 more)
 
 ### Community 499 - "Design: Correção de Lógica e Mapeamento de Lojas da IA (chat-logic-fix)"
 Cohesion: 0.29
@@ -2386,8 +2402,8 @@ Cohesion: 0.33
 Nodes (5): Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Componentes / Hooks / Funções, Design: Nova Interface do Chat e Resolução de Ferramentas (chat-ui-minimalist), Fluxo de UI
 
 ### Community 591 - "Features"
-Cohesion: 0.40
-Nodes (4): [bugfix-ai-chat], [bugfix-ofx-import-fk], Features, M�dulo IAS Hub
+Cohesion: 0.33
+Nodes (5): [bugfix-ai-chat], [bugfix-ofx-import-fk], Features, Frontend, M¢dulo IAS Hub
 
 ### Community 594 - "ai-chat/index.ts"
 Cohesion: 0.43
@@ -2521,13 +2537,21 @@ Nodes (3): Architecture, Padrões de Pastas, Stack
 Cohesion: 0.29
 Nodes (6): Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Componentes / Hooks / Funções, Design: Corrigir Violação de FK na Reimportação de OFX (bugfix-ofx-import-fk), Fluxo de UI, Interfaces TypeScript
 
+### Community 687 - "Tasks"
+Cohesion: 0.22
+Nodes (8): Auto-Titulação (LLM), Gestão de Histórico (Paginação & Rename), Navegação (Botões de Voltar), Nova Rota: Tela de Custos, Refatoração de Logs do Motor, Spec Plan: Refinamentos UX do Agente e Novo Módulo de Custos (agente-refinements), Tasks, UI Base & Sidebar
+
+### Community 688 - "patio.tsx"
+Cohesion: 0.23
+Nodes (8): RecentActivity(), usePatioOS(), PatioOSRow, FilterTab, getOsEffectiveValues(), HistoryChange, HistoryLog, PatioPage()
+
 ### Community 693 - "MessageList.tsx"
 Cohesion: 0.27
 Nodes (9): aggregateAssistantTurns(), AggregatedTurn, extractSteps(), getMessageContent(), getToolLabel(), Message, MessageList(), sanitizeErrorText() (+1 more)
 
-### Community 694 - "start.ts"
+### Community 694 - "Design: Passo a Passo Expansível, Tratamento de Erros Limpo e Prevenção de Respostas Vazias (fix-chat-steps-and-error-ui)"
 Cohesion: 0.25
-Nodes (6): attachSupabaseAuth, getRouter(), Register, routeTree, errorMiddleware, startInstance
+Nodes (7): 1. `StepAccordion` em `src/components/chat/MessageList.tsx`, 2. `SanitizeError` em `src/routes/agente.tsx` & `MessageList.tsx`, Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Componentes / Hooks Modificados, Design: Passo a Passo Expansível, Tratamento de Erros Limpo e Prevenção de Respostas Vazias (fix-chat-steps-and-error-ui), Interfaces e Estrutura de Tipos
 
 ### Community 695 - "Design: Central de Agentes IAS (ias-architecture-hub)"
 Cohesion: 0.25
@@ -2633,9 +2657,9 @@ Nodes (6): Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → 
 Cohesion: 0.50
 Nodes (3): Progress Log — worker_impl_1, Status: COMPLETE, Tasks Completed
 
-### Community 732 - "Design: Passo a Passo Expansível, Tratamento de Erros Limpo e Prevenção de Respostas Vazias (fix-chat-steps-and-error-ui)"
+### Community 732 - "start.ts"
 Cohesion: 0.25
-Nodes (7): 1. `StepAccordion` em `src/components/chat/MessageList.tsx`, 2. `SanitizeError` em `src/routes/agente.tsx` & `MessageList.tsx`, Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Componentes / Hooks Modificados, Design: Passo a Passo Expansível, Tratamento de Erros Limpo e Prevenção de Respostas Vazias (fix-chat-steps-and-error-ui), Interfaces e Estrutura de Tipos
+Nodes (6): attachSupabaseAuth, getRouter(), Register, routeTree, errorMiddleware, startInstance
 
 ### Community 733 - "Design: Fix Chat Reativity and Sidebar UI (fix-chat-ui)"
 Cohesion: 0.29
@@ -2653,13 +2677,13 @@ Nodes (3): CostConfig, defaultConfig, Route
 Cohesion: 0.29
 Nodes (6): API / Interface, Contratos de Dados, Problema, Proposal: Correção de Crash do AI SDK (fix-ai-sdk-crash), Risco Principal, Solução Proposta
 
-### Community 738 - "Proposal: Passo a Passo Expansível, Tratamento de Erros Limpo e Prevenção de Respostas Vazias (fix-chat-steps-and-error-ui)"
-Cohesion: 0.29
-Nodes (6): Contratos de Dados, Features Existentes Impactadas, Problema, Proposal: Passo a Passo Expansível, Tratamento de Erros Limpo e Prevenção de Respostas Vazias (fix-chat-steps-and-error-ui), Risco Principal, Solução Proposta
+### Community 738 - "Proposal: Melhorias Visuais e Refatoração UI do Chat (fix-chat-ui-layout)"
+Cohesion: 0.25
+Nodes (7): API / Interface, Contratos de Dados, Features Existentes Impactadas, Problema, Proposal: Melhorias Visuais e Refatoração UI do Chat (fix-chat-ui-layout), Risco Principal, Solução Proposta
 
-### Community 739 - "Proposal: Agrupamento de Turnos do Assistente, Passo a Passo Unificado e Persistência Pós-F5 (fix-chat-turn-aggregation-and-persistence)"
+### Community 739 - "Design: Refinamentos UX do Agente e Novo Módulo de Custos (agente-refinements)"
 Cohesion: 0.29
-Nodes (6): Contratos de Dados, Features Existentes Impactadas, Problema Identificado com Evidência Empírica, Proposal: Agrupamento de Turnos do Assistente, Passo a Passo Unificado e Persistência Pós-F5 (fix-chat-turn-aggregation-and-persistence), Risco Principal, Solução Proposta
+Nodes (6): Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Componentes / Hooks / Funções, Design: Refinamentos UX do Agente e Novo Módulo de Custos (agente-refinements), Fluxo de UI, Interfaces TypeScript
 
 ### Community 740 - "Design: Alinhamento de Endpoint e Protocolo AI SDK (fix-endpoint-alignment)"
 Cohesion: 0.29
@@ -2681,49 +2705,89 @@ Nodes (5): Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → 
 Cohesion: 0.33
 Nodes (5): Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Componentes / Hooks / Funções, Design: Correção de Crash do AI SDK (fix-ai-sdk-crash), Interfaces TypeScript
 
-### Community 746 - "Proposal: Resiliência Anti-Hang, Consulta Local Inteligente Primeiro e Prova E2E (fix-ai-timeout-and-local-first)"
+### Community 746 - "Proposal: Refinamentos UX do Agente e Novo Módulo de Custos (agente-refinements)"
+Cohesion: 0.29
+Nodes (6): API / Interface, Contratos de Dados, Problema, Proposal: Refinamentos UX do Agente e Novo Módulo de Custos (agente-refinements), Risco Principal, Solução Proposta
+
+### Community 747 - "login.tsx"
+Cohesion: 0.67
+Nodes (3): useLogin(), LoginPage(), Route
+
+### Community 748 - "Proposal: Passo a Passo Expansível, Tratamento de Erros Limpo e Prevenção de Respostas Vazias (fix-chat-steps-and-error-ui)"
+Cohesion: 0.29
+Nodes (6): Contratos de Dados, Features Existentes Impactadas, Problema, Proposal: Passo a Passo Expansível, Tratamento de Erros Limpo e Prevenção de Respostas Vazias (fix-chat-steps-and-error-ui), Risco Principal, Solução Proposta
+
+### Community 749 - "Proposal: Agrupamento de Turnos do Assistente, Passo a Passo Unificado e Persistência Pós-F5 (fix-chat-turn-aggregation-and-persistence)"
+Cohesion: 0.29
+Nodes (6): Contratos de Dados, Features Existentes Impactadas, Problema Identificado com Evidência Empírica, Proposal: Agrupamento de Turnos do Assistente, Passo a Passo Unificado e Persistência Pós-F5 (fix-chat-turn-aggregation-and-persistence), Risco Principal, Solução Proposta
+
+### Community 750 - "Design: Refatoração da Conciliação Diária (conciliacao-diaria-refactor)"
+Cohesion: 0.29
+Nodes (6): Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Componentes / Hooks / Funções, Design: Refatoração da Conciliação Diária (conciliacao-diaria-refactor), Fluxo de UI, Interfaces TypeScript
+
+### Community 751 - "Proposal: Refatoração da Conciliação Diária (conciliacao-diaria-refactor)"
+Cohesion: 0.29
+Nodes (6): API / Interface, Contratos de Dados, Problema, Proposal: Refatoração da Conciliação Diária (conciliacao-diaria-refactor), Risco Principal, Solução Proposta
+
+### Community 754 - "Design: Melhorias Visuais e Refatoração UI do Chat (fix-chat-ui-layout)"
+Cohesion: 0.29
+Nodes (6): Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Componentes / Hooks / Funções, Design: Melhorias Visuais e Refatoração UI do Chat (fix-chat-ui-layout), Fluxo de UI, Interfaces TypeScript
+
+### Community 756 - "Proposal: Resiliência Anti-Hang, Consulta Local Inteligente Primeiro e Prova E2E (fix-ai-timeout-and-local-first)"
 Cohesion: 0.33
 Nodes (5): Contratos de Dados, Problema Identificado com Evidência Empírica, Proposal: Resiliência Anti-Hang, Consulta Local Inteligente Primeiro e Prova E2E (fix-ai-timeout-and-local-first), Risco Principal, Solução Proposta
 
-### Community 747 - "useAuth.ts"
-Cohesion: 0.47
-Nodes (4): listeners, useLogin(), LoginPage(), Route
+### Community 757 - "Proposal: Reestruturação do Agente IA & Nova Conversa (agente-ui-custos)"
+Cohesion: 0.25
+Nodes (7): Contratos de Dados, Features Existentes Impactadas, Interfaces Afetadas, Problema, Proposal: Reestruturação do Agente IA & Nova Conversa (agente-ui-custos), Risco Principal, Solução Proposta
 
-### Community 748 - "Design: Transparência de Origem de Dados, Isolamento Estrito de Conversas e Raciocínio Adaptativo (fix-ai-provenance-and-conversation-isolation)"
+### Community 758 - "Design: Transparência de Origem de Dados, Isolamento Estrito de Conversas e Raciocínio Adaptativo (fix-ai-provenance-and-conversation-isolation)"
 Cohesion: 0.40
 Nodes (4): Ajustes em `src/routes/agente.tsx` (Isolamento Estrito), Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Design: Transparência de Origem de Dados, Isolamento Estrito de Conversas e Raciocínio Adaptativo (fix-ai-provenance-and-conversation-isolation)
 
-### Community 749 - "Proposal: Transparência de Origem de Dados, Isolamento Estrito de Conversas e Raciocínio Adaptativo (fix-ai-provenance-and-conversation-isolation)"
+### Community 763 - "Proposal: Transparência de Origem de Dados, Isolamento Estrito de Conversas e Raciocínio Adaptativo (fix-ai-provenance-and-conversation-isolation)"
 Cohesion: 0.40
 Nodes (4): Problema Identificado com Evidência Empírica, Proposal: Transparência de Origem de Dados, Isolamento Estrito de Conversas e Raciocínio Adaptativo (fix-ai-provenance-and-conversation-isolation), Risco Principal, Solução Proposta
 
-### Community 750 - "Design: Resiliência Anti-Hang, Consulta Local Inteligente Primeiro e Prova E2E (fix-ai-timeout-and-local-first)"
+### Community 764 - "Design: Resiliência Anti-Hang, Consulta Local Inteligente Primeiro e Prova E2E (fix-ai-timeout-and-local-first)"
 Cohesion: 0.40
 Nodes (4): Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Componentes / Arquivos Modificados, Design: Resiliência Anti-Hang, Consulta Local Inteligente Primeiro e Prova E2E (fix-ai-timeout-and-local-first)
 
-### Community 751 - "Design: Agrupamento de Turnos do Assistente, Passo a Passo Unificado e Persistência Pós-F5 (fix-chat-turn-aggregation-and-persistence)"
+### Community 765 - "Design: Agrupamento de Turnos do Assistente, Passo a Passo Unificado e Persistência Pós-F5 (fix-chat-turn-aggregation-and-persistence)"
 Cohesion: 0.40
 Nodes (4): Algoritmo de Agrupamento de Turnos (`aggregateAssistantTurns`), Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Design: Agrupamento de Turnos do Assistente, Passo a Passo Unificado e Persistência Pós-F5 (fix-chat-turn-aggregation-and-persistence)
 
+### Community 771 - "Proposal: Refatoração do Faturamento e PIX na Conciliação Diária (faturamento-pix-refactor)"
+Cohesion: 0.25
+Nodes (7): API / Interface, Contratos de Dados, Features Existentes Impactadas, Problema, Proposal: Refatoração do Faturamento e PIX na Conciliação Diária (faturamento-pix-refactor), Risco Principal, Solução Proposta
+
+### Community 775 - "Design: Reestruturação do Agente IA & Nova Conversa (agente-ui-custos)"
+Cohesion: 0.33
+Nodes (5): Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Componentes / Hooks / Funções, Design: Reestruturação do Agente IA & Nova Conversa (agente-ui-custos), Fluxo de UI
+
+### Community 776 - "Design: Refatoração do Faturamento e PIX na Conciliação Diária (faturamento-pix-refactor)"
+Cohesion: 0.33
+Nodes (5): Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Componentes / Hooks / Funções, Design: Refatoração do Faturamento e PIX na Conciliação Diária (faturamento-pix-refactor), Fluxo de UI
+
 ## Knowledge Gaps
-- **2611 isolated node(s):** `XLSX`, `fs`, `files`, `json`, `statusIdx` (+2606 more)
+- **2674 isolated node(s):** `XLSX`, `fs`, `files`, `json`, `statusIdx` (+2669 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **250 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **254 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `dependencies` connect `dependencies` to `@radix-ui/react-hover-card`, `dotenv`, `@radix-ui/react-label`, `@radix-ui/react-navigation-menu`, `@radix-ui/react-popover`, `@radix-ui/react-progress`, `@radix-ui/react-radio-group`, `@supabase/supabase-js`, `zod`, `@radix-ui/react-slider`, `@radix-ui/react-switch`, `@radix-ui/react-tabs`, `@radix-ui/react-toggle-group`, `@radix-ui/react-tooltip`, `date-fns`, `react-day-picker`, `@radix-ui/react-checkbox`, `@radix-ui/react-scroll-area`, `react-dropzone`, `react-hook-form`, `react-resizable-panels`, `framer-motion`, `recharts`, `tailwind-merge`, `@radix-ui/react-menubar`, `package.json`, `@radix-ui/react-slot`, `@radix-ui/react-toggle`, `tailwindcss`, `@tailwindcss/vite`, `@tanstack/react-router`, `@tanstack/react-start`, `@tanstack/router-plugin`, `@types/pdfjs-dist`, `vaul`, `xlsx`, `ai`, `pdfjs-dist`, `clsx`, `@radix-ui/react-alert-dialog`, `react`, `tw-animate-css`, `input-otp`, `@ai-sdk/react`, `react-markdown`, `embla-carousel-react`, `ssh2`, `@hookform/resolvers`, `remark-gfm`, `lucide-react`, `@tanstack/react-query`, `@radix-ui/react-avatar`, `sonner`, `@radix-ui/react-accordion`, `@radix-ui/react-aspect-ratio`, `vite-tsconfig-paths`, `@radix-ui/react-context-menu`, `@radix-ui/react-dialog`, `@radix-ui/react-dropdown-menu`?**
+- **Why does `dependencies` connect `dependencies` to `@radix-ui/react-hover-card`, `dotenv`, `@radix-ui/react-label`, `@radix-ui/react-navigation-menu`, `@radix-ui/react-popover`, `class-variance-authority`, `@radix-ui/react-progress`, `@radix-ui/react-radio-group`, `@supabase/supabase-js`, `zod`, `@radix-ui/react-slider`, `ai`, `@radix-ui/react-switch`, `@radix-ui/react-tabs`, `@radix-ui/react-toggle-group`, `@radix-ui/react-tooltip`, `date-fns`, `react-day-picker`, `@radix-ui/react-checkbox`, `@radix-ui/react-scroll-area`, `react-dropzone`, `react-hook-form`, `react-resizable-panels`, `framer-motion`, `recharts`, `tailwind-merge`, `@radix-ui/react-menubar`, `package.json`, `@radix-ui/react-slot`, `@radix-ui/react-toggle`, `tailwindcss`, `@tailwindcss/vite`, `@tanstack/react-router`, `@tanstack/react-start`, `@tanstack/router-plugin`, `@types/pdfjs-dist`, `vaul`, `xlsx`, `clsx`, `@radix-ui/react-alert-dialog`, `react`, `tw-animate-css`, `input-otp`, `@ai-sdk/react`, `react-markdown`, `embla-carousel-react`, `ssh2`, `@hookform/resolvers`, `remark-gfm`, `lucide-react`, `@tanstack/react-query`, `@radix-ui/react-avatar`, `sonner`, `@radix-ui/react-accordion`, `@radix-ui/react-aspect-ratio`, `vite-tsconfig-paths`, `@radix-ui/react-context-menu`, `@radix-ui/react-dialog`, `@radix-ui/react-dropdown-menu`?**
   _High betweenness centrality (0.002) - this node is a cross-community bridge._
-- **Why does `supabase` connect `supabase.ts` to `useConciliacao.ts`, `patio.tsx`, `BankReconciliationDashboard.tsx`, `PromptInput.tsx`, `Card.tsx`, `useAuth.ts`, `CentralImportWizard.tsx`, `loja.$lojaId.tsx`, `ResumoDiaPanel.tsx`, `useStores`, `importacoes-despesas.tsx`, `start.ts`, `useTransactions.ts`?**
+- **Why does `supabase` connect `supabase.ts` to `useConciliacao.ts`, `Button.tsx`, `BankReconciliationDashboard.tsx`, `PromptInput.tsx`, `Card.tsx`, `CentralImportWizard.tsx`, `utils.ts`, `useStores`, `loja.$lojaId.tsx`, `ResumoDiaPanel.tsx`, `patio.tsx`, `useTransactions.ts`, `start.ts`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
 - **Why does `devDependencies` connect `devDependencies` to `prettier`, `@types/node`, `@types/react`, `typescript`, `typescript-eslint`, `vite`, `@vitejs/plugin-react`, `@eslint/js`, `globals`, `eslint-plugin-react-refresh`, `eslint-config-prettier`, `package.json`, `playwright`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
 - **What connects `XLSX`, `fs`, `files` to the rest of the system?**
-  _2611 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _2674 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `query` be split into smaller, more focused modules?**
   _Cohesion score 0.053551912568306013 - nodes in this community are weakly interconnected._
 - **Should `supabase/types.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.14166666666666666 - nodes in this community are weakly interconnected._
-- **Should `patio.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.11384615384615385 - nodes in this community are weakly interconnected._
+- **Should `BankReconciliationDashboard.tsx` be split into smaller, more focused modules?**
+  _Cohesion score 0.09191583610188261 - nodes in this community are weakly interconnected._
