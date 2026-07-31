@@ -23,13 +23,66 @@ function AgentePage() {
   }, [activeConversationId]);
   
   const { messages, setMessages, append, isLoading } = useChat({
-    api: `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-chat`,
+    api: `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ias-hub`,
+    onError: (error) => {
+      console.error('Erro na resposta do Agente IAS:', error);
+      toast.error(`Erro ao obter resposta do Agente IAS: ${error.message || 'Falha na conexão com a Edge Function'}`);
+    },
     onFinish: async (message) => {
       if (activeConversationIdRef.current) {
-        await supabase.from('messages').insert([{ conversation_id: activeConversationIdRef.current, role: 'assistant', content: message.content }]);
+        const { error } = await supabase.from('messages').insert([{
+          conversation_id: activeConversationIdRef.current,
+          role: 'assistant',
+          content: message.content
+        }]);
+        if (error) {
+          console.error('Erro ao salvar mensagem do assistente:', error);
+        }
       }
     }
   });
+
+  // Subscription em tempo real (Supabase Realtime) nas mensagens da conversa ativa
+  useEffect(() => {
+    if (!activeConversationId) return;
+
+    const channel = supabase
+      .channel(`messages:${activeConversationId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `conversation_id=eq.${activeConversationId}`,
+        },
+        (payload) => {
+          const newMsg = payload.new;
+          if (!newMsg) return;
+
+          setMessages((prevMessages) => {
+            const exists = prevMessages.some(
+              (m) => m.id === newMsg.id || (m.role === newMsg.role && m.content === newMsg.content)
+            );
+            if (exists) return prevMessages;
+
+            return [
+              ...prevMessages,
+              {
+                id: newMsg.id,
+                role: newMsg.role,
+                content: newMsg.content,
+              },
+            ];
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [activeConversationId, setMessages]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -126,6 +179,7 @@ function AgentePage() {
         .single();
       if (error) {
         console.error(error);
+        toast.error('Erro ao criar conversa');
         return;
       }
       currentConvId = data.id;
@@ -134,19 +188,29 @@ function AgentePage() {
       activeConversationIdRef.current = data.id;
     }
 
-    await supabase.from('messages').insert([{
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token;
+
+    // Optimistic append immediately to UI
+    append(
+      { role: 'user', content: text },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        body: { conversation_id: currentConvId }
+      }
+    );
+
+    // Salva silenciosamente no banco em background
+    const { error: insertError } = await supabase.from('messages').insert([{
       conversation_id: currentConvId,
       role: 'user',
       content: text
     }]);
 
-    const { data: sessionData } = await supabase.auth.getSession();
-    const token = sessionData.session?.access_token;
-
-    append(
-      { role: 'user', content: text },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+    if (insertError) {
+      console.error('Erro ao salvar mensagem no Supabase:', insertError);
+      toast.error('Erro ao enviar mensagem para o histórico');
+    }
   };
 
   return (
@@ -222,12 +286,18 @@ function AgentePage() {
               <span>Configurações</span>
             </Link>
             <Link
-              to="/configuracoes"
-              hash="logs"
+              to="/logs/agente"
               className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)] transition-colors"
             >
               <Terminal size={15} />
-              <span>Logs do Sistema</span>
+              <span>Log do Agente IA</span>
+            </Link>
+            <Link
+              to="/logs/motor"
+              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)] transition-colors"
+            >
+              <Workflow size={15} />
+              <span>Log do Motor</span>
             </Link>
           </div>
         </div>

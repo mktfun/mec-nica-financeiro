@@ -1,6 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Home, PieChart, Store, AlertTriangle, Settings, Car, DollarSign, FileText, LogOut, FileSpreadsheet, Bot } from "lucide-react";
+import { Home, PieChart, Store, AlertTriangle, Settings, Car, DollarSign, FileText, LogOut, FileSpreadsheet, Bot, Terminal, Workflow } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLogout } from "@/hooks/useAuth";
 
@@ -13,6 +13,8 @@ const navItems = [
   { id: "/alertas", label: "Alertas", icon: AlertTriangle },
   { id: "/importacoes", label: "Importações", icon: FileSpreadsheet },
   { id: "/agente", label: "Agente IA", icon: Bot },
+  { id: "/logs/agente", label: "Log do Agente de IA", icon: Terminal },
+  { id: "/logs/motor", label: "Log do Motor de Conciliação", icon: Workflow },
 ];
 
 export function Sidebar() {

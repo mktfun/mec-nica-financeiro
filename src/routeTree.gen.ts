@@ -25,6 +25,8 @@ import { Route as AgenteRouteImport } from './routes/agente'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ConciliacaoIndexRouteImport } from './routes/conciliacao.index'
 import { Route as LojaLojaIdRouteImport } from './routes/loja.$lojaId'
+import { Route as LogsMotorRouteImport } from './routes/logs.motor'
+import { Route as LogsAgenteRouteImport } from './routes/logs.agente'
 import { Route as ConciliacaoLojaIdRouteImport } from './routes/conciliacao.$lojaId'
 
 const RecebiveisRoute = RecebiveisRouteImport.update({
@@ -107,6 +109,16 @@ const LojaLojaIdRoute = LojaLojaIdRouteImport.update({
   path: '/loja/$lojaId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LogsMotorRoute = LogsMotorRouteImport.update({
+  id: '/logs/motor',
+  path: '/logs/motor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LogsAgenteRoute = LogsAgenteRouteImport.update({
+  id: '/logs/agente',
+  path: '/logs/agente',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConciliacaoLojaIdRoute = ConciliacaoLojaIdRouteImport.update({
   id: '/conciliacao/$lojaId',
   path: '/conciliacao/$lojaId',
@@ -129,6 +141,8 @@ export interface FileRoutesByFullPath {
   '/proposta': typeof PropostaRoute
   '/recebiveis': typeof RecebiveisRoute
   '/conciliacao/$lojaId': typeof ConciliacaoLojaIdRoute
+  '/logs/agente': typeof LogsAgenteRoute
+  '/logs/motor': typeof LogsMotorRoute
   '/loja/$lojaId': typeof LojaLojaIdRoute
   '/conciliacao/': typeof ConciliacaoIndexRoute
 }
@@ -148,6 +162,8 @@ export interface FileRoutesByTo {
   '/proposta': typeof PropostaRoute
   '/recebiveis': typeof RecebiveisRoute
   '/conciliacao/$lojaId': typeof ConciliacaoLojaIdRoute
+  '/logs/agente': typeof LogsAgenteRoute
+  '/logs/motor': typeof LogsMotorRoute
   '/loja/$lojaId': typeof LojaLojaIdRoute
   '/conciliacao': typeof ConciliacaoIndexRoute
 }
@@ -168,6 +184,8 @@ export interface FileRoutesById {
   '/proposta': typeof PropostaRoute
   '/recebiveis': typeof RecebiveisRoute
   '/conciliacao/$lojaId': typeof ConciliacaoLojaIdRoute
+  '/logs/agente': typeof LogsAgenteRoute
+  '/logs/motor': typeof LogsMotorRoute
   '/loja/$lojaId': typeof LojaLojaIdRoute
   '/conciliacao/': typeof ConciliacaoIndexRoute
 }
@@ -189,6 +207,8 @@ export interface FileRouteTypes {
     | '/proposta'
     | '/recebiveis'
     | '/conciliacao/$lojaId'
+    | '/logs/agente'
+    | '/logs/motor'
     | '/loja/$lojaId'
     | '/conciliacao/'
   fileRoutesByTo: FileRoutesByTo
@@ -208,6 +228,8 @@ export interface FileRouteTypes {
     | '/proposta'
     | '/recebiveis'
     | '/conciliacao/$lojaId'
+    | '/logs/agente'
+    | '/logs/motor'
     | '/loja/$lojaId'
     | '/conciliacao'
   id:
@@ -227,6 +249,8 @@ export interface FileRouteTypes {
     | '/proposta'
     | '/recebiveis'
     | '/conciliacao/$lojaId'
+    | '/logs/agente'
+    | '/logs/motor'
     | '/loja/$lojaId'
     | '/conciliacao/'
   fileRoutesById: FileRoutesById
@@ -247,6 +271,8 @@ export interface RootRouteChildren {
   PropostaRoute: typeof PropostaRoute
   RecebiveisRoute: typeof RecebiveisRoute
   ConciliacaoLojaIdRoute: typeof ConciliacaoLojaIdRoute
+  LogsAgenteRoute: typeof LogsAgenteRoute
+  LogsMotorRoute: typeof LogsMotorRoute
   LojaLojaIdRoute: typeof LojaLojaIdRoute
   ConciliacaoIndexRoute: typeof ConciliacaoIndexRoute
 }
@@ -365,6 +391,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LojaLojaIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/logs/motor': {
+      id: '/logs/motor'
+      path: '/logs/motor'
+      fullPath: '/logs/motor'
+      preLoaderRoute: typeof LogsMotorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/logs/agente': {
+      id: '/logs/agente'
+      path: '/logs/agente'
+      fullPath: '/logs/agente'
+      preLoaderRoute: typeof LogsAgenteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/conciliacao/$lojaId': {
       id: '/conciliacao/$lojaId'
       path: '/conciliacao/$lojaId'
@@ -391,6 +431,8 @@ const rootRouteChildren: RootRouteChildren = {
   PropostaRoute: PropostaRoute,
   RecebiveisRoute: RecebiveisRoute,
   ConciliacaoLojaIdRoute: ConciliacaoLojaIdRoute,
+  LogsAgenteRoute: LogsAgenteRoute,
+  LogsMotorRoute: LogsMotorRoute,
   LojaLojaIdRoute: LojaLojaIdRoute,
   ConciliacaoIndexRoute: ConciliacaoIndexRoute,
 }

@@ -1,9 +1,13 @@
-# Progress — explorer_1
+# Progress Log
 
-Last visited: 2026-07-31T08:50:00Z
+- **Status**: Completed investigation & handoff report generated
+- **Last visited**: 2026-07-31T13:33:25Z
 
-- [x] Initialize ORIGINAL_REQUEST.md and BRIEFING.md
-- [x] Task 1: Explore `src/routes/agente.tsx` and sidebar/header components
-- [x] Task 2: Explore IAS Bot, Graphify, Claritas, Supabase / Edge Function setup
-- [x] Task 3: Draft `specs/ias_hub/proposal.md`, `specs/ias_hub/design.md`, `specs/ias_hub/spec-plan.md`
-- [x] Task 4: Produce `handoff.md` and send message to parent agent
+## Tasks Completed
+1. [x] Investigate Track 1: Chat Realtime & Bot Processing (R1)
+   - Identified root cause: Absence of Supabase Realtime channel subscription in `agente.tsx`, disconnected client-side `onFinish` persistence, unhandled `useChat` errors, and Edge Function endpoint divergence (`ai-chat` vs `ias-hub`).
+2. [x] Investigate Track 2: Sidebar Navigation Buttons for Logs (R2)
+   - Identified root cause: Removal of dedicated sidebar buttons in `Sidebar.tsx` and collapse into an embedded card in `configuracoes.tsx`.
+3. [x] Synthesize findings and write `analysis.md`
+4. [x] Write `handoff.md`
+5. [x] Send completion message to parent agent

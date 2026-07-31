@@ -30,3 +30,7 @@
 - **Tabelas:** claritas_prompts, claritas_policies, gent_reflections  
 - **Edge Functions:** ias-hub (Orquestrador do ciclo Critical Thinking + Graphify + Claritas)  
 - **Storage:** Bucket knowledge_graph 
+
+### fix-chat-ui
+- **Novas Telas de Log:** `src/routes/logs.agente.tsx` e `src/routes/logs.motor.tsx` criadas para exibir as trilhas de auditoria separadas da aba de configurações.
+- **Sidebar Agente (`src/routes/agente.tsx`):** Links âncora `Log do Agente IA` e `Log do Motor` restaurados e mapeados para suas novas rotas.

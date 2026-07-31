@@ -1,30 +1,25 @@
-# Central de Agentes IAS - Plan
+# Plan: Chat Realtime & Sidebar Navigation Fixes
 
-## Phase 1: Exploration & Proposal Specs
-1. **Explore Codebase**:
-   - Explorer analyzes `src/routes/agente.tsx`, existing bot/hub files, Graphify setup, Claritas rules/prompts setup, Supabase database schema, edge functions.
-   - Produce proposal specs in `specs/ias_hub/proposal.md`, `design.md`, `spec-plan.md` adhering to `.agent/rules/ia.md` (`/vibe-proposal`).
+## Objectives
+1. Fix real-time chat message sending & receiving bot response without requiring page refresh (F5).
+2. Restore individual sidebar navigation buttons for "Log do Agente de IA" and "Log do Motor de Conciliação" directing to isolated log views.
 
-## Phase 2: Execution of Parte 1 (UI Fix & Base Hub Connectors)
-2. **Milestone 1 (M1: UI Layout Fix in agente.tsx)**:
-   - Move "Oficina GPT" title to top of sidebar above "Nova Conversa".
-   - Remove "Oficina GPT" from main header.
-   - Fix "Configurações" and "Logs do Sistema" buttons anchored at the bottom (`mt-auto`) of sidebar without scroll overlap.
-   - Worker implements -> Reviewer verifies -> Challenger & Auditor check integrity.
-3. **Milestone 2 (M2: Hub Base Connectors - Graphify + Claritas)**:
-   - Create connector modules for Graphify context engine and Claritas policy registry.
-   - Expose connectors for dependency injection in Oficina GPT and AntiGravity bots.
-   - Worker implements -> Reviewer verifies -> Auditor checks integrity.
+## Execution Steps
 
-## Phase 3: Execution of Parte 2 (Arquitetura Cognitiva)
-4. **Milestone 3 (M3: Memória Dual & RAG Auditável com Grafos)**:
-   - Implement dual memory separation in database (transactional vs structural).
-   - Implement Graph RAG pipeline returning response + graph traversal path (`caminho do grafo`).
-   - Worker implements -> Reviewer verifies -> Auditor checks integrity.
-5. **Milestone 4 (M4: Camada de Reflexão & Testes Edge Function)**:
-   - Implement reflection layer using Graphify reflect to validate LLM outputs against Claritas policies.
-   - Enable controlled testing on Edge Function with real OS queries ("quais os detalhes da OS 22549 no rei do oleo").
-   - Worker implements -> Reviewer verifies -> Challenger & Auditor check integrity.
+### Phase 1: Exploration & Diagnosis (M1)
+- Dispatch `teamwork_preview_explorer` to:
+  - Inspect chat sending & receiving implementation in `src/routes/agente.tsx` (and related components/hooks).
+  - Inspect sidebar navigation in `src/components/Sidebar.tsx` (and related router configuration).
+  - Determine root causes for (1) chat non-reactivity / bot silence and (2) UI navigation regression.
+  - Produce recommendations for implementation in worker report.
 
-## Phase 4: Final Verification & Human Reporting
-6. Verify all acceptance criteria are met, verify build/tests, generate completion report.
+### Phase 2: Implementation (M2)
+- Dispatch `teamwork_preview_worker` to:
+  - Implement chat real-time state mutation / Supabase realtime updates / Bot Edge Function triggering so messages and bot responses update immediately.
+  - Restore "Log do Agente de IA" and "Log do Motor de Conciliação" buttons in the Sidebar pointing to dedicated isolated log routes.
+  - Run build (`npm run build` or Vite build) and tests to verify no syntax errors or regressions.
+
+### Phase 3: Review & Audit Gating (M3)
+- Dispatch `teamwork_preview_reviewer` to review changes, run build/tests, and test functionality.
+- Dispatch `teamwork_preview_auditor` to conduct forensic integrity verification.
+- Synthesize findings and report final completion to parent/user.

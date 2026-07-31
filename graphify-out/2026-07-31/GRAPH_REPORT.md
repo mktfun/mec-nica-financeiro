@@ -1,12 +1,12 @@
-# Graph Report - financeiro  (2026-07-30)
+# Graph Report - financeiro  (2026-07-31)
 
 ## Corpus Check
-- 808 files · ~302,522 words
+- 837 files · ~317,079 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 4344 nodes · 4752 edges · 701 communities (469 shown, 232 thin omitted)
-- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 119 edges (avg confidence: 0.5)
+- 4542 nodes · 4941 edges · 727 communities (488 shown, 239 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 119 edges (avg confidence: 0.5)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
@@ -29,15 +29,15 @@
 - useTransactions.ts
 - useStores
 - Design System: Mecânica Popular Financeiro v2
-- alertas.tsx
-- 1.2 Database Tables & Schema Models
+- importacoes-despesas.tsx
+- Handoff Report — explorer_1 (Central de Agentes IAS Exploration)
 - agent-runtime/package.json
 - compilerOptions
 - components.json
 - orquestrador/package.json
 - workflow-engine/package.json
 - seed.ts
-- useAuth.ts
+- login.tsx
 - package.json
 - integration-hub/package.json
 - connectorRegistry.js
@@ -59,17 +59,17 @@
 - query
 - integration-hub/src/index.js
 - BMF IA OS — Serviços (Release 1, Ambiente Local)
-- BRIEFING — 2026-07-27T11:20:00Z
-- BRIEFING — 2026-07-24T19:46:30Z
+- BRIEFING — 2026-07-31T08:55:20Z
+- BRIEFING — 2026-07-31T08:46:04-03:00
 - Original User Request
-- BRIEFING — 2026-07-24T19:55:50Z
-- BRIEFING — 2026-07-24T16:57:51-03:00
+- BRIEFING — 2026-07-31T11:52:00Z
+- BRIEFING — 2026-07-31T08:57:19-03:00
 - BRIEFING — 2026-07-27T11:19:00Z
 - agent-runtime/src/index.js
 - connectorManager.js
 - Design: Rastreamento de Importações e Correções (008)
 - Design: Correção de Erro Interno (s is not a function) no AI SDK (bugfix-ai-chat-2)
-- BRIEFING — 2026-07-24T16:56:21-03:00
+- BRIEFING — 2026-07-31T11:53:00Z
 - Plano — Fundação Visual + Painel Geral
 - agentExecutor.js
 - 002 – Redesign Premium Completo: Mecânica Popular Financeiro
@@ -95,9 +95,9 @@
 - Proposal: UX do Chat e Integração com VPS Bot (chat-ux-bot-fix)
 - append-memory.cjs
 - BRIEFING — 2026-07-24T19:45:38Z
-- BRIEFING — 2026-07-24T19:49:00Z
-- Reviewer 1 Handoff Report — Requirement R1 Verification
-- BRIEFING — 2026-07-24T19:45:38Z
+- BRIEFING — 2026-07-31T08:50:00Z
+- Review Handoff Report — reviewer_1 (Milestone 1: UI Fix in agente.tsx)
+- BRIEFING — 2026-07-31T09:22:00Z
 - clear_db.js
 - BDD Scenarios
 - UI — Divisão de Componentes
@@ -142,7 +142,7 @@
 - Proposal: Bot Config UI & MCP Agent Integration (bot-config-ui)
 - Proposal: Refatoração do Bot para API de Consulta MCP (bot-mcp-refactor)
 - ssh-verify.cjs
-- Handoff Report — Requirement R1 (Mock Data Generation and Insertion)
+- Handoff Report — worker_1 (Milestone 1: UI Fix in agente.tsx)
 - Changelog
 - 3. ARQUITETURAS DE NOMENCLATURA COM MAIOR ROI (Foco em Conversão)
 - replace_spinners.js
@@ -274,8 +274,8 @@
 - Proposal: Teste Matrencial Granular N:M (Múltiplas Mini OSs -> Múltiplas Mini Vendas na Maquininha/OFX) (granular-n-to-m-matrix-matching-test)
 - Design: Conciliação Headless em Background & Central de Telemetria/Logs da IA (headless-background-ai-reconciliation)
 - Design: Implantação do Bot Playwright no Servidor VPS e Mapeamento Completo da API Oficina Inteligente & Rede (deploy-playwright-bot-vps-and-oficina-mapping)
-- Plan — End-to-End Reconciliation & Silent AI Telemetry Stress Test
-- Project: End-to-End Reconciliation & Silent AI Telemetry Stress Test
+- Central de Agentes IAS - Plan
+- Project: Central de Agentes IAS
 - round_1/contrarian.md
 - fix_db.js
 - read-xls.cjs
@@ -342,7 +342,7 @@
 - Design: Corrige Falha de Build no Lovable Publish (bugfix-lovable-publish)
 - @radix-ui/react-alert-dialog
 - Audit Progress - Auditor 1
-- Progress — End-to-End Reconciliation & Silent AI Telemetry Stress Test
+- Central de Agentes IAS - Progress
 - check_db2.js
 - check_os_cols.ts
 - A Solução Pragmática (Caminho de Menor Resistência e Maior Valor)
@@ -495,10 +495,10 @@
 - auditor_1/ORIGINAL_REQUEST.md
 - explorer_1/ORIGINAL_REQUEST.md
 - reviewer_1/ORIGINAL_REQUEST.md
-- reviewer_1/progress.md
+- Progress Log — reviewer_1
 - rules/graphify.md
 - worker_1/ORIGINAL_REQUEST.md
-- worker_1/progress.md
+- Status: IN_PROGRESS
 - worker_2_gen2/ORIGINAL_REQUEST.md
 - worker_2_gen2/progress.md
 - worker_2/ORIGINAL_REQUEST.md
@@ -681,6 +681,32 @@
 - Proposal: Erro "s is not a function" no Vercel AI SDK (chat-bug-not-a-function)
 - Spec Plan: Erro "s is not a function" no Vercel AI SDK (chat-bug-not-a-function)
 - ai
+- ias-hub.ts
+- Forensic Audit Report — auditor_2
+- BRIEFING — 2026-07-31T09:05:04Z
+- Handoff & Review Report — Reviewer 2 (IAS Backend & Cognitive Architecture)
+- 1. Component Architecture & UI Layout
+- 5-Component Handoff Report
+- BRIEFING — 2026-07-31T12:11:15Z
+- BRIEFING — 2026-07-31T09:16:52Z
+- Handoff Report — Worker 2 (IAS Backend & Cognitive Architecture: Milestones 2, 3, and 4)
+- Proposal: Central de Agentes IAS & Sidebar UI Alignment
+- Proposal: Sidebar Layout Adjustment (sidebar-layout)
+- Handoff Report — Project Sentinel (Central de Agentes IAS)
+- 5-Component Handoff Report — Victory Auditor
+- apply-migration.cjs
+- test-os-command.cjs
+- Design: Sidebar Layout Adjustment (sidebar-layout)
+- verify-db-ias.cjs
+- Proposed Changes
+- Spec Plan: Sidebar Layout Adjustment (sidebar-layout)
+- auditor_2/ORIGINAL_REQUEST.md
+- auditor_2/progress.md
+- explorer_1/progress.md
+- reviewer_2/ORIGINAL_REQUEST.md
+- reviewer_2/progress.md
+- victory_auditor/ORIGINAL_REQUEST.md
+- victory_auditor/progress.md
 
 ## God Nodes (most connected - your core abstractions)
 1. `useStores()` - 33 edges
@@ -709,7 +735,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (701 total, 232 thin omitted)
+## Communities (727 total, 239 thin omitted)
 
 ### Community 0 - "query"
 Cohesion: 0.05
@@ -724,12 +750,12 @@ Cohesion: 0.14
 Nodes (12): requireSupabaseAuth, supabaseAdmin, CompositeTypes, Constants, Database, DatabaseWithoutInternals, DefaultSchema, Enums (+4 more)
 
 ### Community 3 - "patio.tsx"
-Cohesion: 0.16
-Nodes (14): HeroBalance(), MotorStatus(), RecentActivity(), AnimatedNumber(), AnimatedNumberProps, usePatioOS(), useDashboardSummary(), PatioOSRow (+6 more)
+Cohesion: 0.14
+Nodes (12): NewTransactionDialogProps, TODO: Implement transaction creation, RecentActivity(), Modal(), ModalProps, usePatioOS(), PatioOSRow, FilterTab (+4 more)
 
 ### Community 4 - "BankReconciliationDashboard.tsx"
 Cohesion: 0.10
-Nodes (31): BankReconciliationDashboard(), ClassifiedFile, classifyFile(), FileTypeCategory, UniversalDropzone(), UniversalDropzoneProps, MaquininhaItem, UnifiedImportResult (+23 more)
+Nodes (30): BankReconciliationDashboard(), ClassifiedFile, classifyFile(), FileTypeCategory, UniversalDropzone(), UniversalDropzoneProps, MaquininhaItem, UnifiedImportResult (+22 more)
 
 ### Community 5 - "helpers.js"
 Cohesion: 0.07
@@ -764,8 +790,8 @@ Cohesion: 0.07
 Nodes (26): DOM, DOM.Iterable, ES2022, eslint.config.js, src/**/*.ts, src/**/*.tsx, vite/client, vite.config.ts (+18 more)
 
 ### Community 13 - "CentralImportWizard.tsx"
-Cohesion: 0.15
-Nodes (19): CentralImportWizard(), ImportLogEntry, useUnifiedStoreMapping(), useSaveImportedReport(), GroupedImportLog, ParsedOS, ParsedReceivable, savePatioOsAndReceivables() (+11 more)
+Cohesion: 0.16
+Nodes (19): CentralImportWizard(), ImportLogEntry, useUnifiedStoreMapping(), GroupedImportLog, ParsedOS, ParsedReceivable, savePatioOsAndReceivables(), useClearAllData() (+11 more)
 
 ### Community 14 - "Design: bot-traefik-routing"
 Cohesion: 0.25
@@ -776,24 +802,24 @@ Cohesion: 0.13
 Nodes (14): API / Interface, Bot (Express — `bot/src/server.ts`), Config de Vínculo de Lojas, Contratos de Dados, Edge Function (`supabase/functions/ai-chat/index.ts`), Features Existentes Impactadas, Mudança nos endpoints existentes, Novos endpoints no Bot (source externa / Playwright) (+6 more)
 
 ### Community 16 - "useTransactions.ts"
-Cohesion: 0.15
-Nodes (15): CashFlowChart(), useConciliacaoDetalhes(), useConciliacaoResumo(), useModulo1StoresData(), useCashFlow(), useDailyBankBalance(), useDailySystemBalance(), useLatestBankBalance() (+7 more)
+Cohesion: 0.12
+Nodes (21): CashFlowChart(), HeroBalance(), MotorStatus(), AnimatedNumber(), AnimatedNumberProps, useConciliacaoDetalhes(), useConciliacaoResumo(), useModulo1StoresData() (+13 more)
 
 ### Community 17 - "useStores"
-Cohesion: 0.13
-Nodes (18): StoreFormDialog(), StoreFormDialogProps, StoreRankingChart(), useStoreMapping(), WizardImportacao(), WizardImportacaoProps, ImportLog, ImportLogFilters (+10 more)
+Cohesion: 0.14
+Nodes (16): StoreFormDialog(), StoreFormDialogProps, StoreRankingChart(), TopBar(), Input, InputProps, ThemeToggle(), ImportLog (+8 more)
 
 ### Community 18 - "Design System: Mecânica Popular Financeiro v2"
 Cohesion: 0.10
 Nodes (20): Active Nav Indicator, Animações (APENAS performáticas), Bottom Nav Mobile, Card Hover, Componentes Chave, Design System: Mecânica Popular Financeiro v2, Desktop (≥768px), Glass Panel (componentes padrão) (+12 more)
 
-### Community 19 - "alertas.tsx"
-Cohesion: 0.14
-Nodes (16): AlertResolveDialog(), AlertResolveDialogProps, NewTransactionDialogProps, TODO: Implement transaction creation, container, item, QuickActions(), Button() (+8 more)
+### Community 19 - "importacoes-despesas.tsx"
+Cohesion: 0.18
+Nodes (11): container, item, QuickActions(), useStoreMapping(), WizardImportacao(), WizardImportacaoProps, Button(), ButtonProps (+3 more)
 
-### Community 20 - "1.2 Database Tables & Schema Models"
-Cohesion: 0.10
-Nodes (19): 1.1 Registered Stores List, 1.2 Database Tables & Schema Models, 1.3 AI Reconciliation Engine Implementation & Telemetry, 1. Observation, 2. Logic Chain, 3. Caveats, 4.1 Detailed Data Seeding Plan for Stress Testing, 4. Conclusion & Data Seeding Plan (+11 more)
+### Community 20 - "Handoff Report — explorer_1 (Central de Agentes IAS Exploration)"
+Cohesion: 0.22
+Nodes (8): 1. Observation, 2. Logic Chain, 3. Caveats, 4. Conclusion, 5. Verification Method, Handoff Report — explorer_1 (Central de Agentes IAS Exploration), IAS Bot, Edge Functions & RAG Setup, UI Layout Code (`src/routes/agente.tsx`)
 
 ### Community 21 - "agent-runtime/package.json"
 Cohesion: 0.10
@@ -819,9 +845,9 @@ Nodes (18): dependencies, dotenv, express, ioredis, node-fetch, pg, description,
 Cohesion: 0.24
 Nodes (15): useAlerts(), useCashInputs(), useStores(), ALERTS, buildHistory(), ensureSeed(), KEYS, STORES (+7 more)
 
-### Community 27 - "useAuth.ts"
-Cohesion: 0.47
-Nodes (4): listeners, useLogin(), LoginPage(), Route
+### Community 27 - "login.tsx"
+Cohesion: 0.67
+Nodes (3): useLogin(), LoginPage(), Route
 
 ### Community 28 - "package.json"
 Cohesion: 0.25
@@ -848,8 +874,8 @@ Cohesion: 0.12
 Nodes (8): ClassValue, DialogContent, DialogOverlay, PopoverContent, PromptBox, PromptBoxProps, toolsList, TooltipContent
 
 ### Community 34 - "useConciliacao.ts"
-Cohesion: 0.12
-Nodes (26): OfxSemMatchTable(), OsDetailModal(), OsDetailModalProps, OsVsRedeTable(), PixVsOfxTable(), RedeVsExtratoTableProps, RedeVsOfxTable(), Badge() (+18 more)
+Cohesion: 0.11
+Nodes (27): OfxSemMatchTable(), OsDetailModal(), OsDetailModalProps, OsVsRedeTable(), PixVsOfxTable(), RedeVsExtratoTableProps, RedeVsOfxTable(), Badge() (+19 more)
 
 ### Community 35 - "Modelo de Banco de Dados"
 Cohesion: 0.12
@@ -907,25 +933,25 @@ Nodes (11): { Pool }, app, connectorManager, connectorRegistry, express, path, {
 Cohesion: 0.15
 Nodes (12): BMF IA OS — Serviços (Release 1, Ambiente Local), Como rodar, Context Compressor — Prevenção de Contexto Sem Limite, Knowledge Base Service — Fechando o Maior Gap Técnico do Projeto, Learning Agent IA — Aprendizagem de Processos (PROC-LEARN-DOC-001), Limites Adicionais de Contexto — Business Memory e Workflow Engine, O que ainda é placeholder ou backlog (por decisão explícita), O que já está validado (+4 more)
 
-### Community 49 - "BRIEFING — 2026-07-27T11:20:00Z"
-Cohesion: 0.17
-Nodes (11): Artifact Index, Attack Surface, Audit Progress, Audit Scope, BRIEFING — 2026-07-27T11:20:00Z, Current Parent, 🔒 Key Constraints, Key Decisions Made (+3 more)
+### Community 49 - "BRIEFING — 2026-07-31T08:55:20Z"
+Cohesion: 0.20
+Nodes (9): Artifact Index, Audit Progress, Audit Scope, BRIEFING — 2026-07-31T08:55:20Z, Current Parent, 🔒 Key Constraints, Key Decisions Made, Mission (+1 more)
 
-### Community 50 - "BRIEFING — 2026-07-24T19:46:30Z"
+### Community 50 - "BRIEFING — 2026-07-31T08:46:04-03:00"
 Cohesion: 0.17
-Nodes (11): Active Timers, Artifact Index, BRIEFING — 2026-07-24T19:46:30Z, Current Parent, 🔒 Key Constraints, Key Decisions Made, Mission, 🔒 My Identity (+3 more)
+Nodes (11): Active Timers, Artifact Index, BRIEFING — 2026-07-31T08:46:04-03:00, Current Parent, 🔒 Key Constraints, Key Decisions Made, Mission, 🔒 My Identity (+3 more)
 
 ### Community 51 - "Original User Request"
-Cohesion: 0.17
-Nodes (11): Acceptance Criteria, Follow-up — 2026-07-27T11:18:42Z, Follow-up — 2026-07-27T11:19:19Z, Follow-up — 2026-07-27T11:21:02Z, Initial Request — 2026-07-24T19:45:38Z, Original User Request, R1. Geração e Inserção de Dados Fictícios de Teste, R2. Teste e Validação do Motor de Conciliação e IA (+3 more)
+Cohesion: 0.11
+Nodes (18): Acceptance Criteria, Acceptance Criteria, Cognição & RAG (Parte 2), Follow-up — 2026-07-27T11:18:42Z, Follow-up — 2026-07-27T11:19:19Z, Follow-up — 2026-07-27T11:21:02Z, Follow-up — 2026-07-31T08:45:17Z, Initial Request — 2026-07-24T19:45:38Z (+10 more)
 
-### Community 52 - "BRIEFING — 2026-07-24T19:55:50Z"
+### Community 52 - "BRIEFING — 2026-07-31T11:52:00Z"
 Cohesion: 0.17
-Nodes (11): Artifact Index, BRIEFING — 2026-07-24T19:55:50Z, Change Tracker, Current Parent, 🔒 Key Constraints, Key Decisions Made, Loaded Skills, Mission (+3 more)
+Nodes (11): Artifact Index, BRIEFING — 2026-07-31T11:52:00Z, Change Tracker, Current Parent, 🔒 Key Constraints, Key Decisions Made, Loaded Skills, Mission (+3 more)
 
-### Community 53 - "BRIEFING — 2026-07-24T16:57:51-03:00"
+### Community 53 - "BRIEFING — 2026-07-31T08:57:19-03:00"
 Cohesion: 0.17
-Nodes (11): Artifact Index, BRIEFING — 2026-07-24T16:57:51-03:00, Change Tracker, Current Parent, 🔒 Key Constraints, Key Decisions Made, Loaded Skills, Mission (+3 more)
+Nodes (11): Artifact Index, BRIEFING — 2026-07-31T08:57:19-03:00, Change Tracker, Current Parent, 🔒 Key Constraints, Key Decisions Made, Loaded Skills, Mission (+3 more)
 
 ### Community 54 - "BRIEFING — 2026-07-27T11:19:00Z"
 Cohesion: 0.17
@@ -947,9 +973,9 @@ Nodes (11): 1. Banco de Dados (Supabase), 2. Hooks (Frontend), 3. Nova UI: Hist�
 Cohesion: 0.25
 Nodes (7): Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Componentes / Hooks / Funções, Design: Correção de Erro Interno (s is not a function) no AI SDK (bugfix-ai-chat-2), Fluxo de UI, Infra / Deploy, Interfaces TypeScript
 
-### Community 59 - "BRIEFING — 2026-07-24T16:56:21-03:00"
-Cohesion: 0.18
-Nodes (10): Artifact Index, Attack Surface, BRIEFING — 2026-07-24T16:56:21-03:00, Current Parent, 🔒 Key Constraints, Key Decisions Made, Mission, 🔒 My Identity (+2 more)
+### Community 59 - "BRIEFING — 2026-07-31T11:53:00Z"
+Cohesion: 0.22
+Nodes (8): Artifact Index, BRIEFING — 2026-07-31T11:53:00Z, Current Parent, 🔒 Key Constraints, Key Decisions Made, Mission, 🔒 My Identity, Review Scope
 
 ### Community 60 - "Plano — Fundação Visual + Painel Geral"
 Cohesion: 0.18
@@ -1051,17 +1077,17 @@ Nodes (5): featuresPath, fs, path, supabasePath, uiPath
 Cohesion: 0.22
 Nodes (8): Artifact Index, BRIEFING — 2026-07-24T19:45:38Z, 🔒 Key Constraints, Mission, 🔒 My Identity, Project Status, User Context, Victory Audit Status
 
-### Community 85 - "BRIEFING — 2026-07-24T19:49:00Z"
+### Community 85 - "BRIEFING — 2026-07-31T08:50:00Z"
 Cohesion: 0.22
-Nodes (8): Artifact Index, BRIEFING — 2026-07-24T19:49:00Z, Current Parent, Investigation State, 🔒 Key Constraints, Key Decisions Made, Mission, 🔒 My Identity
+Nodes (8): Artifact Index, BRIEFING — 2026-07-31T08:50:00Z, Current Parent, Investigation State, 🔒 Key Constraints, Key Decisions Made, Mission, 🔒 My Identity
 
-### Community 86 - "Reviewer 1 Handoff Report — Requirement R1 Verification"
-Cohesion: 0.22
-Nodes (8): 1. Observation, 2. Logic Chain, 3. Caveats, 4. Conclusion, 5. Verification Method, Execution & Test Command Results:, Reviewer 1 Handoff Report — Requirement R1 Verification, Verified Claims:
+### Community 86 - "Review Handoff Report — reviewer_1 (Milestone 1: UI Fix in agente.tsx)"
+Cohesion: 0.20
+Nodes (9): 1. Observation, 2. Logic Chain, 3. Caveats, 4. Conclusion, 5. Verification Method, Build Verification:, Integrity Verification:, Review Handoff Report — reviewer_1 (Milestone 1: UI Fix in agente.tsx) (+1 more)
 
-### Community 87 - "BRIEFING — 2026-07-24T19:45:38Z"
+### Community 87 - "BRIEFING — 2026-07-31T09:22:00Z"
 Cohesion: 0.22
-Nodes (8): Artifact Index, BRIEFING — 2026-07-24T19:45:38Z, 🔒 Key Constraints, Mission, 🔒 My Identity, Project Status, User Context, Victory Audit Status
+Nodes (8): Artifact Index, BRIEFING — 2026-07-31T09:22:00Z, 🔒 Key Constraints, Mission, 🔒 My Identity, Project Status, User Context, Victory Audit Status
 
 ### Community 88 - "clear_db.js"
 Cohesion: 0.22
@@ -1227,9 +1253,9 @@ Nodes (7): API / Interface, Contratos de Dados, Features Existentes Impactadas, 
 Cohesion: 0.25
 Nodes (7): API / Interface, Contratos de Dados, Features Existentes Impactadas, Problema, Proposal: Refatoração do Bot para API de Consulta MCP (bot-mcp-refactor), Risco Principal, Solução Proposta
 
-### Community 132 - "Handoff Report — Requirement R1 (Mock Data Generation and Insertion)"
+### Community 132 - "Handoff Report — worker_1 (Milestone 1: UI Fix in agente.tsx)"
 Cohesion: 0.29
-Nodes (6): 1. Observation, 2. Logic Chain, 3. Caveats, 4. Conclusion, 5. Verification Method, Handoff Report — Requirement R1 (Mock Data Generation and Insertion)
+Nodes (6): 1. Observation, 2. Logic Chain, 3. Caveats, 4. Conclusion, 5. Verification Method, Handoff Report — worker_1 (Milestone 1: UI Fix in agente.tsx)
 
 ### Community 133 - "Changelog"
 Cohesion: 0.29
@@ -1755,13 +1781,13 @@ Nodes (5): Arquitetura de Background & Telemetria, Cenários de Verificação (S
 Cohesion: 0.33
 Nodes (5): Arquitetura de Comunicação e Deploy, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Componentes do Módulo `bot/`, Design: Implantação do Bot Playwright no Servidor VPS e Mapeamento Completo da API Oficina Inteligente & Rede (deploy-playwright-bot-vps-and-oficina-mapping), Estrutura da API HTTP (`bot/src/server.ts`)
 
-### Community 264 - "Plan — End-to-End Reconciliation & Silent AI Telemetry Stress Test"
-Cohesion: 0.40
-Nodes (4): Milestone 1: Exploration & Data Seeding (R1), Milestone 2: Silent AI Reconciler Execution & Telemetry Validation (R2), Milestone 3: Audit Report & 100% Test Data Cleanup (R3), Plan — End-to-End Reconciliation & Silent AI Telemetry Stress Test
+### Community 264 - "Central de Agentes IAS - Plan"
+Cohesion: 0.33
+Nodes (5): Central de Agentes IAS - Plan, Phase 1: Exploration & Proposal Specs, Phase 2: Execution of Parte 1 (UI Fix & Base Hub Connectors), Phase 3: Execution of Parte 2 (Arquitetura Cognitiva), Phase 4: Final Verification & Human Reporting
 
-### Community 265 - "Project: End-to-End Reconciliation & Silent AI Telemetry Stress Test"
+### Community 265 - "Project: Central de Agentes IAS"
 Cohesion: 0.40
-Nodes (4): Architecture, Interface Contracts & Data Schema Boundaries, Milestones, Project: End-to-End Reconciliation & Silent AI Telemetry Stress Test
+Nodes (4): Architecture, Code Layout, Milestones, Project: Central de Agentes IAS
 
 ### Community 266 - "round_1/contrarian.md"
 Cohesion: 0.40
@@ -2019,9 +2045,9 @@ Nodes (7): Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → 
 Cohesion: 0.50
 Nodes (3): Audit Progress - Auditor 1, Current Step, Status Checklist
 
-### Community 332 - "Progress — End-to-End Reconciliation & Silent AI Telemetry Stress Test"
-Cohesion: 0.50
-Nodes (3): Current Status, Iteration Status, Progress — End-to-End Reconciliation & Silent AI Telemetry Stress Test
+### Community 332 - "Central de Agentes IAS - Progress"
+Cohesion: 0.33
+Nodes (5): Central de Agentes IAS - Progress, Checklist, Current Status, Iteration Status, Team Roster & Spawns
 
 ### Community 335 - "A Solução Pragmática (Caminho de Menor Resistência e Maior Valor)"
 Cohesion: 0.50
@@ -2267,13 +2293,17 @@ Nodes (7): API / Interface, Contratos de Dados, Features Existentes Impactadas, 
 Cohesion: 0.25
 Nodes (7): API / Interface, Contratos de Dados, Features Existentes Impactadas, Problema, Proposal: Consulta Live de OS no Bot Oficina Inteligente (bot-live-os-query), Risco Principal, Solução Proposta
 
+### Community 490 - "Status: IN_PROGRESS"
+Cohesion: 0.40
+Nodes (4): Completed Steps:, Next Steps:, Progress Log - worker_1, Status: IN_PROGRESS
+
 ### Community 495 - "loja.$lojaId.tsx"
-Cohesion: 0.24
-Nodes (13): useCashRegisters(), useCloseCashRegister(), useStoreHistory(), useExtrato(), TransactionRow, formatDate(), getDefaultPeriod(), getIconForMethod() (+5 more)
+Cohesion: 0.22
+Nodes (14): useCashRegisters(), useCloseCashRegister(), useStoreHistory(), useExtrato(), CashRegisterRow, TransactionRow, formatDate(), getDefaultPeriod() (+6 more)
 
 ### Community 496 - "supabase.ts"
-Cohesion: 0.09
-Nodes (25): AiSettings, useAiSettings(), useSaveAiSettings(), useBackgroundAiReconciler(), BotCredentialRow, useBotCredentials(), useUpdateBotCredential(), BotAuditLog (+17 more)
+Cohesion: 0.08
+Nodes (31): AlertResolveDialog(), AlertResolveDialogProps, AiSettings, useAiSettings(), useSaveAiSettings(), useAlerts(), useResolveAlert(), useBackgroundAiReconciler() (+23 more)
 
 ### Community 499 - "Design: Correção de Lógica e Mapeamento de Lojas da IA (chat-logic-fix)"
 Cohesion: 0.29
@@ -2312,16 +2342,16 @@ Cohesion: 0.29
 Nodes (6): API / Interface, Contratos de Dados, Problema, Proposal: Streaming de Raciocínio, Logs MCP e Correção Lógica (chat-mcp-debug-ux), Risco Principal, Solução Proposta
 
 ### Community 530 - "AppShell.tsx"
-Cohesion: 0.19
-Nodes (12): AppShell(), BottomNav(), navItems, navItems, Sidebar(), TopBar(), Input, InputProps (+4 more)
+Cohesion: 0.27
+Nodes (9): AppShell(), BottomNav(), navItems, navItems, Sidebar(), listeners, useLogout(), useSession() (+1 more)
 
 ### Community 542 - "Design: Nova Interface do Chat e Resolução de Ferramentas (chat-ui-minimalist)"
 Cohesion: 0.33
 Nodes (5): Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Componentes / Hooks / Funções, Design: Nova Interface do Chat e Resolução de Ferramentas (chat-ui-minimalist), Fluxo de UI
 
 ### Community 591 - "Features"
-Cohesion: 0.50
-Nodes (3): [bugfix-ai-chat], [bugfix-ofx-import-fk], Features
+Cohesion: 0.40
+Nodes (4): [bugfix-ai-chat], [bugfix-ofx-import-fk], Features, M�dulo IAS Hub
 
 ### Community 594 - "ai-chat/index.ts"
 Cohesion: 0.43
@@ -2467,25 +2497,97 @@ Nodes (7): API / Interface, Contratos de Dados, Features Existentes Impactadas, 
 Cohesion: 0.25
 Nodes (7): API / Interface, Contratos de Dados, Features Existentes Impactadas, Problema, Proposal: Erro "s is not a function" no Vercel AI SDK (chat-bug-not-a-function), Risco Principal, Solução Proposta
 
+### Community 701 - "ias-hub.ts"
+Cohesion: 0.09
+Nodes (13): AgentReflection, ClaritasConnector, ClaritasPolicy, ClaritasPrompt, createClaritasConnector(), createGraphifyConnector(), GraphData, GraphEdge (+5 more)
+
+### Community 702 - "Forensic Audit Report — auditor_2"
+Cohesion: 0.18
+Nodes (10): 1. Observation, 2. Logic Chain, 3. Caveats, 4. Conclusion, 5. Verification Method, Forensic Audit Report — auditor_2, Phase 1: Source Code Audit, Phase 2: Empirical Behavioral Verification (+2 more)
+
+### Community 703 - "BRIEFING — 2026-07-31T09:05:04Z"
+Cohesion: 0.18
+Nodes (10): Artifact Index, Attack Surface, BRIEFING — 2026-07-31T09:05:04Z, Current Parent, 🔒 Key Constraints, Key Decisions Made, Mission, 🔒 My Identity (+2 more)
+
+### Community 704 - "Handoff & Review Report — Reviewer 2 (IAS Backend & Cognitive Architecture)"
+Cohesion: 0.18
+Nodes (10): 1. Observation, 2. Verified Claims & Acceptance Criteria, 3. Logic Chain, 4. Caveats, 5. Conclusion, 6. Verification Method, Codebase Inspections, Handoff & Review Report — Reviewer 2 (IAS Backend & Cognitive Architecture) (+2 more)
+
+### Community 705 - "1. Component Architecture & UI Layout"
+Cohesion: 0.18
+Nodes (10): 1.1 Sidebar Structure (`src/routes/agente.tsx`), 1.2 Layout Isolation & Preventing Overlap, 1.3 Main Chat Column Header Refactor, 1. Component Architecture & UI Layout, 2.1 Dual Memory Data Architecture, 2.2 Claritas Governance Pipeline, 2.3 OS Query Routing Walkthrough: `"quais os detalhes da OS 22549 no rei do oleo"`, 2. IAS Bot & Dual-Memory Backend Specification (+2 more)
+
+### Community 706 - "5-Component Handoff Report"
+Cohesion: 0.20
+Nodes (9): 1. Observation, 2. Logic Chain, 3. Caveats, 4. Conclusion, 5-Component Handoff Report, 5. Verification Method, Forensic Audit & Handoff Report — auditor_1 (Milestone 1), Forensic Audit Report (+1 more)
+
+### Community 707 - "BRIEFING — 2026-07-31T12:11:15Z"
+Cohesion: 0.20
+Nodes (9): Artifact Index, Audit Progress, Audit Scope, BRIEFING — 2026-07-31T12:11:15Z, Current Parent, 🔒 Key Constraints, Key Decisions Made, Mission (+1 more)
+
+### Community 708 - "BRIEFING — 2026-07-31T09:16:52Z"
+Cohesion: 0.20
+Nodes (9): Artifact Index, Audit Progress, Audit Scope, BRIEFING — 2026-07-31T09:16:52Z, Current Parent, 🔒 Key Constraints, Key Decisions Made, Mission (+1 more)
+
+### Community 709 - "Handoff Report — Worker 2 (IAS Backend & Cognitive Architecture: Milestones 2, 3, and 4)"
+Cohesion: 0.20
+Nodes (9): 1. Observation, 2. Logic Chain, 3. Caveats, 4. Conclusion, 5. Verification Method, Codebase & Schema Verification, Controlled Test Command Output, Edge Functions Alignment (+1 more)
+
+### Community 710 - "Proposal: Central de Agentes IAS & Sidebar UI Alignment"
+Cohesion: 0.25
+Nodes (7): 1. Executive Summary, 2. Problem Statement, 3.1 Sidebar & UI Layout Refactor (`src/routes/agente.tsx`), 3.2 IAS Hub Backend & RAG Routing, 3. Proposed Changes, 4. User Impact & Benefits, Proposal: Central de Agentes IAS & Sidebar UI Alignment
+
+### Community 711 - "Proposal: Sidebar Layout Adjustment (sidebar-layout)"
+Cohesion: 0.25
+Nodes (7): API / Interface, Contratos de Dados, Features Existentes Impactadas, Problema, Proposal: Sidebar Layout Adjustment (sidebar-layout), Risco Principal, Solução Proposta
+
+### Community 712 - "Handoff Report — Project Sentinel (Central de Agentes IAS)"
+Cohesion: 0.29
+Nodes (6): 1. Observation, 2. Logic Chain, 3. Caveats, 4. Conclusion, 5. Verification Method, Handoff Report — Project Sentinel (Central de Agentes IAS)
+
+### Community 713 - "5-Component Handoff Report — Victory Auditor"
+Cohesion: 0.29
+Nodes (6): 1. Observation, 2. Logic Chain, 3. Caveats, 4. Conclusion, 5-Component Handoff Report — Victory Auditor, 5. Verification Method
+
+### Community 714 - "apply-migration.cjs"
+Cohesion: 0.33
+Nodes (6): fs, main(), path, runSql(), sql, sqlPath
+
+### Community 715 - "test-os-command.cjs"
+Cohesion: 0.38
+Nodes (6): { createClient }, IAS_STORE_MAPPINGS, main(), resolveStoreSlug(), runControlledTestCommand(), supabase
+
+### Community 716 - "Design: Sidebar Layout Adjustment (sidebar-layout)"
+Cohesion: 0.29
+Nodes (6): Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Componentes / Hooks / Funções, Design: Sidebar Layout Adjustment (sidebar-layout), Fluxo de UI, Interfaces TypeScript
+
+### Community 717 - "verify-db-ias.cjs"
+Cohesion: 0.40
+Nodes (5): { createClient }, IAS_STORE_MAPPINGS, main(), resolveStoreSlug(), supabase
+
+### Community 718 - "Proposed Changes"
+Cohesion: 0.33
+Nodes (5): Backend & Edge Function Alignments, Proposed Changes, Spec Plan: Central de Agentes IAS & UI Layout Refactor, Task List & Execution Status, UI Modifications (`src/routes/agente.tsx`)
+
 ## Knowledge Gaps
-- **2375 isolated node(s):** `XLSX`, `fs`, `files`, `json`, `statusIdx` (+2370 more)
+- **2490 isolated node(s):** `XLSX`, `fs`, `files`, `json`, `statusIdx` (+2485 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **232 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **239 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `dependencies` connect `dependencies` to `@radix-ui/react-hover-card`, `dotenv`, `@radix-ui/react-label`, `@radix-ui/react-navigation-menu`, `@radix-ui/react-popover`, `@radix-ui/react-progress`, `@radix-ui/react-radio-group`, `@supabase/supabase-js`, `zod`, `@radix-ui/react-slider`, `@radix-ui/react-switch`, `@radix-ui/react-tabs`, `@radix-ui/react-toggle-group`, `@radix-ui/react-tooltip`, `date-fns`, `react-day-picker`, `@radix-ui/react-checkbox`, `@radix-ui/react-scroll-area`, `react-dropzone`, `react-hook-form`, `react-resizable-panels`, `framer-motion`, `recharts`, `tailwind-merge`, `@radix-ui/react-menubar`, `package.json`, `@radix-ui/react-slot`, `@radix-ui/react-toggle`, `tailwindcss`, `@tailwindcss/vite`, `@tanstack/react-router`, `@tanstack/react-start`, `@tanstack/router-plugin`, `@types/pdfjs-dist`, `vaul`, `xlsx`, `@ai-sdk/react`, `pdfjs-dist`, `clsx`, `ai`, `@radix-ui/react-alert-dialog`, `react`, `tw-animate-css`, `input-otp`, `react-markdown`, `embla-carousel-react`, `ssh2`, `@hookform/resolvers`, `remark-gfm`, `lucide-react`, `@tanstack/react-query`, `@radix-ui/react-avatar`, `sonner`, `@radix-ui/react-accordion`, `@radix-ui/react-aspect-ratio`, `vite-tsconfig-paths`, `@radix-ui/react-context-menu`, `@radix-ui/react-dialog`, `@radix-ui/react-dropdown-menu`?**
   _High betweenness centrality (0.002) - this node is a cross-community bridge._
-- **Why does `supabase` connect `supabase.ts` to `useConciliacao.ts`, `patio.tsx`, `BankReconciliationDashboard.tsx`, `ResumoDiaPanel.tsx`, `PromptInput.tsx`, `CentralImportWizard.tsx`, `loja.$lojaId.tsx`, `useTransactions.ts`, `useStores`, `alertas.tsx`, `start.ts`, `useAuth.ts`?**
-  _High betweenness centrality (0.002) - this node is a cross-community bridge._
+- **Why does `supabase` connect `supabase.ts` to `useConciliacao.ts`, `patio.tsx`, `BankReconciliationDashboard.tsx`, `ResumoDiaPanel.tsx`, `PromptInput.tsx`, `CentralImportWizard.tsx`, `loja.$lojaId.tsx`, `useTransactions.ts`, `useStores`, `AppShell.tsx`, `importacoes-despesas.tsx`, `start.ts`?**
+  _High betweenness centrality (0.001) - this node is a cross-community bridge._
 - **Why does `devDependencies` connect `devDependencies` to `prettier`, `@types/node`, `@types/react`, `typescript`, `typescript-eslint`, `vite`, `@vitejs/plugin-react`, `@eslint/js`, `eslint-config-prettier`, `eslint-plugin-react-refresh`, `globals`, `package.json`, `playwright`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
 - **What connects `XLSX`, `fs`, `files` to the rest of the system?**
-  _2375 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _2490 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `query` be split into smaller, more focused modules?**
   _Cohesion score 0.053551912568306013 - nodes in this community are weakly interconnected._
 - **Should `supabase/types.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.14166666666666666 - nodes in this community are weakly interconnected._
-- **Should `BankReconciliationDashboard.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.09523809523809523 - nodes in this community are weakly interconnected._
+- **Should `patio.tsx` be split into smaller, more focused modules?**
+  _Cohesion score 0.14035087719298245 - nodes in this community are weakly interconnected._
