@@ -1,0 +1,30 @@
+services:
+  conciliamec-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: conciliamec-bot
+    restart: always
+    expose:
+      - "3001"
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - NODE_ENV=production
+    env_file:
+      - .env
+    volumes:
+      - ./tmp:/app/tmp
+      - ./session:/app/session
+    networks:
+      - tork-stack_internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.conciliamec-bot.rule=Host(`bot.tork.services`)"
+      - "traefik.http.routers.conciliamec-bot.entrypoints=web"
+      - "traefik.http.services.conciliamec-bot.loadbalancer.server.port=3001"
+
+networks:
+  tork-stack_internal:
+    external: true

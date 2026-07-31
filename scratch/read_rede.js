@@ -1,0 +1,1 @@
+const xlsx = require('xlsx'); const wb = xlsx.readFile('C:\\Users\\admin\\Downloads\\cnciliacao\\Rede_Rel_Vendas_15_07_2026-15_07_2026-64d4d4e6-cd1a-4248-adcb-edf15f2f4964.xlsx'); const sheet = wb.Sheets[wb.SheetNames[0]]; console.log(xlsx.utils.sheet_to_json(sheet, {header: 1}).slice(0, 5));  

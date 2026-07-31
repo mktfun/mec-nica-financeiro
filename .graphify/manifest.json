@@ -1,0 +1,1602 @@
+{
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/analyze.js": {
+    "mtime": 1781625827985.8179,
+    "hash": "c3efa8d530d1690485b28fa092e12106"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/analyze_files.ts": {
+    "mtime": 1781615936719.927,
+    "hash": "c433e2db4d0d7b57105553ff53570cdc"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/bot/src/runner.ts": {
+    "mtime": 1784056181859.3367,
+    "hash": "716d41d99157f7d31da545f99779965c"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/bot/src/scrapers/oficina.ts": {
+    "mtime": 1784057438445.97,
+    "hash": "d33f9d79ae10d822aa7e9e6f721e0ad0"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/bot/src/scrapers/rede.ts": {
+    "mtime": 1784056960958.9868,
+    "hash": "c1ae54a53779ecdf5143112d7c558024"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/bot/src/session/sessionManager.ts": {
+    "mtime": 1784040454649.5515,
+    "hash": "b6072312a0d70be31eea6d84305615ce"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/bot/src/sync/supabaseUploader.ts": {
+    "mtime": 1784056191908.2776,
+    "hash": "59e944bddfb03a3027a71e2aba16e59e"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/bot/src/tests/resilience.test.ts": {
+    "mtime": 1784054746633.2727,
+    "hash": "999317b197c7b1527534728513ede516"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/check.js": {
+    "mtime": 1781615936723.9167,
+    "hash": "80e2ea8f368006e6ae16be48fc969ac3"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/check_db.ts": {
+    "mtime": 1781615936725.272,
+    "hash": "d3e90c6b51e4d8dfc5c481620634a34e"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/check_db2.js": {
+    "mtime": 1781615936726.6865,
+    "hash": "b59a449d87279af11049c3133b167686"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/check_os_cols.ts": {
+    "mtime": 1784573390232.546,
+    "hash": "6b2173143993d3ef15730cc31d47ec39"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/combined_migrations.sql": {
+    "mtime": 1781615936727.8914,
+    "hash": "380fa129e0385f220b7c5a7df76e7cd4"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/eslint.config.js": {
+    "mtime": 1781615936728.9624,
+    "hash": "20097f0c1a669549b3a8d3a194c3c25d"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/fix_db.js": {
+    "mtime": 1781615936730.088,
+    "hash": "31243b15613bd3dc93bb9ecd0e9f6907"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/insert_creds.ts": {
+    "mtime": 1784055573547.9807,
+    "hash": "f745efc183412522a25176a3d0af507f"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/inspect_rede.ts": {
+    "mtime": 1784574327750.1816,
+    "hash": "7a31de958a4c66c1536711af8cfb287a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/patch-alertas.js": {
+    "mtime": 1781615936733.6467,
+    "hash": "7f2657f0b54862179ecc7f048c508ce3"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/read_conciliacao.ts": {
+    "mtime": 1784121842300.4016,
+    "hash": "bb79e6c9bee915f7095bb97d2f9de4ed"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/read_rede_headers.ts": {
+    "mtime": 1784115870566.1238,
+    "hash": "2e80c570846bb0163655ac425b05f84f"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/replace_spinners.js": {
+    "mtime": 1781615936735.9104,
+    "hash": "59e3b9ff69598bda72bca79788f67546"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/run_migration.js": {
+    "mtime": 1784730060321.9333,
+    "hash": "4a7e3a56a463d533aba01db8e3ffb1d4"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/scratch/check_txs.ts": {
+    "mtime": 1784206104706.0437,
+    "hash": "ec2897a803c77f3ca9c666b2c461c652"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/scratch/clean_db.js": {
+    "mtime": 1784210520625.4922,
+    "hash": "503c63e81991e940c173e42841accacc"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/scratch/read_rede.js": {
+    "mtime": 1784208565525.3909,
+    "hash": "95d0f9f40e47f0c2291513770e297737"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/scratch/reset_db.ts": {
+    "mtime": 1784125625370.0132,
+    "hash": "4f0dcc5fe42271b090373de8c1f0bad8"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/scripts/analyze-xls.js": {
+    "mtime": 1781615936737.0774,
+    "hash": "5d1dd949dcee6166118bd29b41e15e41"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/scripts/create-import-logs.js": {
+    "mtime": 1781615936737.0774,
+    "hash": "d807bcece4f9cda28fda0911027663f8"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/scripts/purge-bug-17m.ts": {
+    "mtime": 1781615936738.3093,
+    "hash": "35a5267b7d0617c9ae6ce1c1cac55e37"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/scripts/read-xls.js": {
+    "mtime": 1781615936739.336,
+    "hash": "4873b58caeaa7827d71c079d93bcd47c"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/scripts/test-db.ts": {
+    "mtime": 1781615936740.3594,
+    "hash": "c7f115527694e648625bff1d86350aa5"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/scripts/test-tx.ts": {
+    "mtime": 1781615936740.3594,
+    "hash": "36ec17e47a5fad3383aa7e5b627f25e9"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/setup/install.ps1": {
+    "mtime": 1784721706000,
+    "hash": "88647bf5f354acc0221a60c13bd8d223"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/setup_cash_registers.sql": {
+    "mtime": 1781615936744.9692,
+    "hash": "fd1c18e2ff43f43032e7374bf802d7c4"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/HealthCheck.jsx": {
+    "mtime": 1783432010262.584,
+    "hash": "f3240711ebe416190e06fbb85219c370"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/chat/MessageList.tsx": {
+    "mtime": 1784413822535.4216,
+    "hash": "85c8213af8721270f75b362d0378ffc9"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/chat/PromptBox.tsx": {
+    "mtime": 1784407784501.5896,
+    "hash": "59960db75a718a6a2d160bbeef292785"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/conciliacao/OfxSemMatchTable.tsx": {
+    "mtime": 1784727962980.4844,
+    "hash": "ff5f05a6f49fba4583ed14022e3e4584"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/conciliacao/OsVsRedeTable.tsx": {
+    "mtime": 1784735080617.1047,
+    "hash": "683bad5fe87f96d102c0a7d2b1459439"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/conciliacao/RedeVsExtratoTable.tsx": {
+    "mtime": 1784649397124.4602,
+    "hash": "e129bd3fe1c6a6cfaac0bf74cb6568df"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/conciliacao/RedeVsOfxTable.tsx": {
+    "mtime": 1784727947457.2134,
+    "hash": "5681c23bb1b65d1affdab891ee0e994d"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/conciliacao/ResumoDiaPanel.tsx": {
+    "mtime": 1784660789116.5396,
+    "hash": "632580568b7a8e885f11893f2512e1ab"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/dashboard/AlertResolveDialog.tsx": {
+    "mtime": 1784129814933.6836,
+    "hash": "0089c598d838a6a6589453512408d7b8"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/dashboard/BankReconciliationDashboard.tsx": {
+    "mtime": 1784129832223.428,
+    "hash": "7fb3e903278bacd2532174a013c01a13"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/dashboard/CashFlowChart.tsx": {
+    "mtime": 1781615936930.829,
+    "hash": "df0f1bcbfd58d67a529b1d2ead81d047"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/dashboard/HeroBalance.tsx": {
+    "mtime": 1781615936930.829,
+    "hash": "d7cfe1c27e41b759016b19f304f2765f"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/dashboard/MotorStatus.tsx": {
+    "mtime": 1784126150073.7446,
+    "hash": "5ee09e2ad1367859757d355ddeb9ad30"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/dashboard/NewTransactionDialog.tsx": {
+    "mtime": 1784129814886.5608,
+    "hash": "489ca5c05b1d93aebfe5f6cc2503f8e3"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/dashboard/QuickActions.tsx": {
+    "mtime": 1784126141774.4265,
+    "hash": "b79a99ffad677f623b9c8e88ae083e01"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/dashboard/RecentActivity.tsx": {
+    "mtime": 1781615936934.2996,
+    "hash": "0c9469ba923d60d15bb3b60836a2d303"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/dashboard/StoreFormDialog.tsx": {
+    "mtime": 1784129814952.405,
+    "hash": "926f0cc0aecc3622094d47d8cde70894"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/dashboard/StoreRankingChart.tsx": {
+    "mtime": 1784126164963.1304,
+    "hash": "ffdd68023528a4feac391b33d01b5e85"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/importacoes/CategorySelector.tsx": {
+    "mtime": 1784130338626.02,
+    "hash": "5f6b52b8933f91cdeb4ced4d47cfc7a4"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/importacoes/CentralImportWizard.tsx": {
+    "mtime": 1784818564360.5696,
+    "hash": "8832ba6ce705bb38f420d73a33c8a268"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/importacoes/WizardImportacao.tsx": {
+    "mtime": 1784130338808.5232,
+    "hash": "134de286de8573f76030c1474cc5d8b5"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/layout/AppShell.tsx": {
+    "mtime": 1781615936940.1543,
+    "hash": "cbbdceee92816ae8e66fd832c6d14895"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/layout/BottomNav.tsx": {
+    "mtime": 1781615936941.1545,
+    "hash": "53c70eba1cbf3acbc6127c993afd9554"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/layout/Sidebar.tsx": {
+    "mtime": 1784379489371.8596,
+    "hash": "ede72957576308aa861364641b85359d"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/layout/TopBar.tsx": {
+    "mtime": 1781615936944.1492,
+    "hash": "b2aaaa9aa9a6b126096d5619a7da478a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/ui/AnimatedNumber.tsx": {
+    "mtime": 1781615936945.1614,
+    "hash": "a4e00fa37015a878d1a881ce39387a05"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/ui/Badge.tsx": {
+    "mtime": 1781615936945.1614,
+    "hash": "c14d57f9a28ad62ab34bc4206d6c7e6a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/ui/Button.tsx": {
+    "mtime": 1781615936946.6226,
+    "hash": "44207d76669667b77c3a45089229ecb0"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/ui/Card.tsx": {
+    "mtime": 1781615936946.6226,
+    "hash": "72e7106feb7b20f0c436bb60845250d3"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/ui/Input.tsx": {
+    "mtime": 1781615936947.7415,
+    "hash": "bff029c1860588fbf11d609f303543d3"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/ui/LoadingSpinner.tsx": {
+    "mtime": 1784129549838.0173,
+    "hash": "9de2b7bcff6b540490863ab113746c44"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/ui/Modal.tsx": {
+    "mtime": 1784129549566.1836,
+    "hash": "2c2c0c2484785886c07a4f279735404e"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/ui/ThemeToggle.tsx": {
+    "mtime": 1781615936950.093,
+    "hash": "94beb4d9048f0ccb710b3d50410c6b60"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/components/ui/UniversalDropzone.tsx": {
+    "mtime": 1784129549547.5923,
+    "hash": "430b96cb39b918626a2ad1d08f469e14"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/hooks/use-mobile.tsx": {
+    "mtime": 1781615936951.098,
+    "hash": "1bb3ebac7752b497a78d34e341975bbd"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/hooks/useAiSettings.ts": {
+    "mtime": 1784409165885.7173,
+    "hash": "8d537ff919bd3ef4101003a7158ca0a5"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/hooks/useAlerts.ts": {
+    "mtime": 1781615936952.0813,
+    "hash": "fdd93dbc4d6b8b256082338168bb2857"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/hooks/useAuth.ts": {
+    "mtime": 1784046170189.4277,
+    "hash": "b6b1e2334830950a355efcb740f9d2c6"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/hooks/useBotLogs.ts": {
+    "mtime": 1784054617240.3967,
+    "hash": "9ebf8dffbfc87563c16dedeb6e47fe3e"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/hooks/useBotRuns.ts": {
+    "mtime": 1784409166109.8125,
+    "hash": "e299115b0eddda86cbb22095507f05f6"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/hooks/useCashRegisters.ts": {
+    "mtime": 1781615936953.0789,
+    "hash": "de1ec62798a0d2c44007d2e3c42564d1"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/hooks/useCentralImport.ts": {
+    "mtime": 1784813737512.9778,
+    "hash": "1dff1c80c6f2752fd075600187b346e5"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/hooks/useConciliacao.ts": {
+    "mtime": 1784749909311.1538,
+    "hash": "bd8613797696c64df47b62cc960143fd"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/hooks/useDailySnapshot.ts": {
+    "mtime": 1784040201776.8381,
+    "hash": "8f22a90780344fc4d6227e4b315b035f"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/hooks/useExpenseImportProcessor.ts": {
+    "mtime": 1781615936956.7915,
+    "hash": "148164db8a60366f51e6eabbe4131e5b"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/hooks/useGoals.ts": {
+    "mtime": 1784054681199.644,
+    "hash": "4e81ae5c6c2235e81003efec10bd8371"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/hooks/useImportLogs.ts": {
+    "mtime": 1781615936956.7915,
+    "hash": "041289373be9a7ca593ecb8ee8693507"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/hooks/useImportProcessor.ts": {
+    "mtime": 1784731478095.6306,
+    "hash": "fbbd10787ef0ccde5201f43c608d0367"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/hooks/useOsImportProcessor.ts": {
+    "mtime": 1784813680862.9219,
+    "hash": "fed69b3187bb9560e3a9b91708b4082d"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/hooks/usePatio.ts": {
+    "mtime": 1781615936961.4854,
+    "hash": "327fb788ec01ad0919e7df8a2c5e5984"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/hooks/useRecebiveis.ts": {
+    "mtime": 1781615936961.4854,
+    "hash": "3c7abe743473b946363ada34b88f559e"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/hooks/useStores.ts": {
+    "mtime": 1784413611642.7815,
+    "hash": "de16b75b8adffd4144a81eaaae4907d9"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/hooks/useTransactions.ts": {
+    "mtime": 1784818536096.2114,
+    "hash": "a2c23607222fce9acc604ab1e3d98df3"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/integrations/supabase/auth-attacher.ts": {
+    "mtime": 1781615936965.343,
+    "hash": "c229b19c0b170ba70e2fe39a5b6e192f"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/integrations/supabase/auth-middleware.ts": {
+    "mtime": 1781615936966.9114,
+    "hash": "5e33344f54a6b6880cf9281c62c9fe4f"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/integrations/supabase/client.server.ts": {
+    "mtime": 1781615936966.9114,
+    "hash": "41e7fa94eb60cf2faed0dd47c86af90a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/integrations/supabase/client.ts": {
+    "mtime": 1781615936967.9385,
+    "hash": "08e3aa30d5ad892ea214152849404282"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/integrations/supabase/types.ts": {
+    "mtime": 1784573831430.6223,
+    "hash": "6989ee1144f2dd9328008860bd5532b8"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/lib/database.types.ts": {
+    "mtime": 1784042701524.4678,
+    "hash": "e81e36474683599bf4133856341e7110"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/lib/error-capture.ts": {
+    "mtime": 1781615936971.4856,
+    "hash": "1d158c2d639c781546da5f816c39f48d"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/lib/error-page.ts": {
+    "mtime": 1781615936971.4856,
+    "hash": "cc10be665a4bf6be668d0c29c207b92d"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/lib/format.ts": {
+    "mtime": 1781615936972.4917,
+    "hash": "45a3fddd5a34ef6010534f282c60456c"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/lib/llm-matcher.ts": {
+    "mtime": 1784552514184.3203,
+    "hash": "96a21a7a1cddd4a682ec7d37205dfe42"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/lib/mock/hooks.ts": {
+    "mtime": 1781615936972.4917,
+    "hash": "75cae7d5c04e539497a26e83d1231806"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/lib/mock/seed.ts": {
+    "mtime": 1781615936973.9475,
+    "hash": "ecfc6dc4177d36bdd622945165c6b492"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/lib/mock/types.ts": {
+    "mtime": 1781615936974.9556,
+    "hash": "952662c85f29763e32d43e790e872e67"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/lib/ofxParser.ts": {
+    "mtime": 1781615936975.9924,
+    "hash": "b31f80a575735a0eae66ccb11d2e852d"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/lib/parsers/contasAPagarParser.ts": {
+    "mtime": 1781615936977.4597,
+    "hash": "4195ec31e4258a488b943ca3f8d05168"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/lib/parsers/jurosRedeParser.ts": {
+    "mtime": 1781615936978.4993,
+    "hash": "127417104a89e458dd901e9aba6d6f54"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/lib/parsers/mapaMetasParser.ts": {
+    "mtime": 1784122559507.8313,
+    "hash": "1e61cfededc5ae904b58076a59e2ea87"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/lib/parsers/numberUtils.ts": {
+    "mtime": 1781615936978.4993,
+    "hash": "751c5c45851046a25340cb17aa5087ca"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/lib/parsers/ofxParser.ts": {
+    "mtime": 1784812764093.7507,
+    "hash": "0bf38dbebae14d9c586a3a0ba9d8c40f"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/lib/parsers/redeParser.ts": {
+    "mtime": 1784816151274.8716,
+    "hash": "094af3a17748eed4b7702a29fb643051"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/lib/storage.ts": {
+    "mtime": 1781615936980.5815,
+    "hash": "0ca06dcb052d1cec111c19d912af7251"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/lib/supabase.ts": {
+    "mtime": 1784223336424.8076,
+    "hash": "7eba347d1fa7db23157268c4446b8772"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/lib/utils.ts": {
+    "mtime": 1784046332015.8672,
+    "hash": "9ea4fb46e64fa5848fca2a0fb4112621"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/routeTree.gen.ts": {
+    "mtime": 1784379532152.4368,
+    "hash": "fe8a65699a3688ce5ce981c3cc1c7e9e"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/router.tsx": {
+    "mtime": 1784044811189.2139,
+    "hash": "6ada6c58f8ac21af51064cc5fb98ef3f"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/routes/__root.tsx": {
+    "mtime": 1781615936983.8533,
+    "hash": "6c84e0822b8cc4718bac0c536a8e934c"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/routes/agente.tsx": {
+    "mtime": 1784409165143.3987,
+    "hash": "7cb51fb873384870cc3d3655c65eb473"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/routes/alertas.tsx": {
+    "mtime": 1784126348971.3909,
+    "hash": "fa0902192ff2b7236c42b1fd74b58d6e"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/routes/conciliacao-detalhes.tsx": {
+    "mtime": 1784127033856.2683,
+    "hash": "cab21e9e9c0a5ccfe6a57ea8e6e93712"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/routes/conciliacao.$lojaId.tsx": {
+    "mtime": 1784726597273.1858,
+    "hash": "4b4a0b6ae6507ec6d3c3cc73b4c746f4"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/routes/conciliacao.index.tsx": {
+    "mtime": 1784812153101.6987,
+    "hash": "efb8a35124f20179bf4eaaa5e8569ae5"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/routes/configuracoes.tsx": {
+    "mtime": 1784552481088.7202,
+    "hash": "1c371cca85244fbdf0a6dc79afff8b99"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/routes/historico.tsx": {
+    "mtime": 1784127408402.8633,
+    "hash": "5054966edee65be3a1725b2266d5c463"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/routes/importacoes-despesas.tsx": {
+    "mtime": 1784127727670.577,
+    "hash": "007e76bc088d6d42e090baee01ecd641"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/routes/importacoes.tsx": {
+    "mtime": 1784131821668.9622,
+    "hash": "358e84cded9694a979a274193b3a42c2"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/routes/importar-os.tsx": {
+    "mtime": 1784128222241.2463,
+    "hash": "cfdd8f0cabcce32a111620dc64c19ba8"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/routes/index.tsx": {
+    "mtime": 1781615936992.481,
+    "hash": "e74ade53f487f2429942ad916bdbff5c"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/routes/login.tsx": {
+    "mtime": 1781615936994.8438,
+    "hash": "7f799662457c35d8199be13c668299c8"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/routes/loja.$lojaId.tsx": {
+    "mtime": 1784206520038.528,
+    "hash": "db985e1617f7e42f32d30a0bc2d952ac"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/routes/lojas.tsx": {
+    "mtime": 1781615936998.762,
+    "hash": "cae8309c99fb10470279e5b5901a3988"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/routes/patio.tsx": {
+    "mtime": 1784128861405.6191,
+    "hash": "3c6eedf1dca9564ab265f781aac9a14f"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/routes/proposta.tsx": {
+    "mtime": 1784129010611.4304,
+    "hash": "696b0ac4186d06673a950a83c2da7b42"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/routes/recebiveis.tsx": {
+    "mtime": 1784129251960.1382,
+    "hash": "da7ba8395ac6e35a32d06996839a117c"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/server.ts": {
+    "mtime": 1781615937004.8062,
+    "hash": "66ee5567f7cf04dfe7e00f52f3b50564"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/src/start.ts": {
+    "mtime": 1781615937004.8062,
+    "hash": "aa01f67c91855fafedcd229168fba76a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/functions/ai-chat/index.ts": {
+    "mtime": 1784382201713.0466,
+    "hash": "6da70c299e55ae4d4fc68d3232c687d4"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/functions/mcp-proxy/index.ts": {
+    "mtime": 1784380265865.5437,
+    "hash": "524236bb38b3c323622d40a733fdc92d"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260602140022_add_history_log_to_patio_os.sql": {
+    "mtime": 1781615937016.802,
+    "hash": "296a2f0a722d842d049d36205c18c831"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260603000000_fix_import_logs.sql": {
+    "mtime": 1781615937016.802,
+    "hash": "d9f6a44632f31664572a16db88abe48a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260605123007_create_delete_import_rpc.sql": {
+    "mtime": 1781615937018.0774,
+    "hash": "901cae6cc4da51089a315f379e28b54a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260610091633_add_machine_total_to_reconciliations.sql": {
+    "mtime": 1781615937018.0774,
+    "hash": "8023c4e5f8fd9aa3ec00de9383483275"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260610121559_add_machine_total_to_reconciliations.sql": {
+    "mtime": 1781615937019.0825,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260610125106_add_bank_reconciliation_fields.sql": {
+    "mtime": 1781615937019.0825,
+    "hash": "f99fdc9e4b412721514ff4995bfee5e6"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260610191300_add_bank_total_to_reconciliations.sql": {
+    "mtime": 1781615937019.0825,
+    "hash": "75c2d161e523725dda180ac8d57d6efd"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260610210000_add_tx_source_and_match_engine.sql": {
+    "mtime": 1781615937020.3108,
+    "hash": "4dae19389e2ccb36220d73a8787030ea"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260610212000_fix_delete_import_rpc_source_ofx.sql": {
+    "mtime": 1781615937020.3108,
+    "hash": "bb45df14ed146d5a931b9cd2bf724d06"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260610220000_update_bank_total_trigger.sql": {
+    "mtime": 1781615937021.3076,
+    "hash": "1ec89582425e720840ebcf17842d032f"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260611083000_fix_store_id_uuid_to_text.sql": {
+    "mtime": 1781615937021.3076,
+    "hash": "b2efdd70ba0e92c44f780bbc2ca9fa3a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260611140000_add_target_date_to_transactions.sql": {
+    "mtime": 1781615937022.3054,
+    "hash": "a2b5b8a15231f870f071bb42cbc35088"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260612131236_create_interest_rates.sql": {
+    "mtime": 1781615937023.303,
+    "hash": "b319fced326fae012d16e1fec895613b"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260714000002_remove_interest_rates.sql": {
+    "mtime": 1784042547506.67,
+    "hash": "73060cd55b74eba4ea80405e9b5a9038"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260714184300_bot_logs_and_goals.sql": {
+    "mtime": 1784054601742.983,
+    "hash": "5f25675e09ca104ee08ddcecd6490e04"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260716000000_fix_ofx_deletion.sql": {
+    "mtime": 1784206158278.608,
+    "hash": "1b99e9f9cc3da2a5e11ac7cce36e2198"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260717000000_goals_and_tx_update.sql": {
+    "mtime": 1784298755227.6765,
+    "hash": "37f958e9bfacbe138243ca3c346de0dc"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260718000000_ai_chat.sql": {
+    "mtime": 1784379307992.4895,
+    "hash": "41e5e219a4359dc93ab9fab3bacdbd96"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260718000001_ai_settings.sql": {
+    "mtime": 1784381906871.588,
+    "hash": "be8e83261988064ffb18ff4d632663b7"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260720100000_reconciliacoes_triplas.sql": {
+    "mtime": 1784552455897.6506,
+    "hash": "5256db6c0c380a13302712eb04fe0d27"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260720140922_fix_delete_import_remnants.sql": {
+    "mtime": 1784556977695.46,
+    "hash": "233114c2cb517fe3b42230b62b35b802"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260720180000_enrich_patio_os.sql": {
+    "mtime": 1784573597642.3286,
+    "hash": "daba082c111e1a2796c9044550203e0e"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/migrations/20260722142023_split_credit_debit.sql": {
+    "mtime": 1784730051584.4404,
+    "hash": "68b6c1ee7af0f31e6490b92c912358fb"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/supabase/wipe_test_data.sql": {
+    "mtime": 1784548900149.656,
+    "hash": "52b13cfd328cb01a7c21c333726e1a85"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/vite.config.ts": {
+    "mtime": 1781615937024.3,
+    "hash": "19bc3e249bb70df99d581c900f1ab841"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/CHANGELOG.md": {
+    "mtime": 1781615936717.9268,
+    "hash": "5e84dd6b6fb2cfc9b3a56283f1a8902a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/PROJECT_CONTEXT.md": {
+    "mtime": 1781615936718.9312,
+    "hash": "63289926b3180ef4167c434d1fc8f2e8"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/pdf_texts.txt": {
+    "mtime": 1781615936733.6467,
+    "hash": "c77db9c15ed3b85e86845dd3260f9548"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/scratch/spec.md": {
+    "mtime": 1784206320207.119,
+    "hash": "9c85884f1f8b6063671a165b19f091c4"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/skills/adaptive-reasoning/SKILL.md": {
+    "mtime": 1784721706000,
+    "hash": "e36bad5b25cade46cf5025b6eb134f82"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/skills/afrexai-nextjs-production/SKILL.md": {
+    "mtime": 1784721706000,
+    "hash": "476b13dd2ee0447517192da7cb4c23c2"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/skills/backend/SKILL.md": {
+    "mtime": 1784721706000,
+    "hash": "fcbcef2c81e88f5396c6a87d94133e2d"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/skills/council-debate/SKILL.md": {
+    "mtime": 1784721706000,
+    "hash": "a1b3829c48d253fb6b62f78514d25c53"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/skills/council-debate/agents/analyst.md": {
+    "mtime": 1784721706000,
+    "hash": "be460a70b5b722c1541a59abc64666c2"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/skills/council-debate/agents/architect.md": {
+    "mtime": 1784721706000,
+    "hash": "30c04825a003614a67d4eeaddcb16106"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/skills/council-debate/agents/contrarian.md": {
+    "mtime": 1784721706000,
+    "hash": "2c23c7e1f9c8068785c8f8c1396936c0"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/skills/council-debate/agents/engineer.md": {
+    "mtime": 1784721706000,
+    "hash": "4df99dd98af805639d6e128f8d1751ee"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/skills/council-debate/agents/synthesizer.md": {
+    "mtime": 1784721706000,
+    "hash": "6184873cd4aefd7506de2da9e8f90e93"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/skills/council-debate/references/debate-rules.md": {
+    "mtime": 1784721706000,
+    "hash": "d2eddb99c6bb429fc6b71d17b8c75633"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/skills/deciqai-bayesian-reasoning/SKILL.md": {
+    "mtime": 1784721706000,
+    "hash": "8d4f5e406be006ecbb80b904d80119e8"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/skills/frontend-design-3/SKILL.md": {
+    "mtime": 1784721706000,
+    "hash": "7a32e56d962dc3e20a3aade5c0e2fc55"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/skills/frontend-design-pro/SKILL.md": {
+    "mtime": 1784721706000,
+    "hash": "977b7b60548f66c150d673c3af69430a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/skills/github/SKILL.md": {
+    "mtime": 1784721706000,
+    "hash": "fe634a268ef938db1ae079453f8abf51"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/skills/obsidian/SKILL.md": {
+    "mtime": 1784721706000,
+    "hash": "cd7c2f08acf936d30cc6ffcf82bc370c"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/skills/supabase/SKILL.md": {
+    "mtime": 1784721706000,
+    "hash": "b8c700d15893b527f9f852505d6b1840"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/016-loja-cleanup/design.md": {
+    "mtime": 1781615936756.6277,
+    "hash": "051ca7c6f1b6a23018f07593784ef2f1"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/016-loja-cleanup/proposal.md": {
+    "mtime": 1781615936757.869,
+    "hash": "10bf13da1b69cfba4c29e38648187c86"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/016-loja-cleanup/tasks.md": {
+    "mtime": 1781615936757.869,
+    "hash": "0b306831e13dc91c8eba637d73b08257"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/028-cascade-and-conciliation/design.md": {
+    "mtime": 1781615936760.444,
+    "hash": "c37f674a1fa51a2af4e7f1f9790c9790"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/028-cascade-and-conciliation/proposal.md": {
+    "mtime": 1781615936760.444,
+    "hash": "d2fef4e7a9fe801ae7dec482d3bd923a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/028-cascade-and-conciliation/tasks.md": {
+    "mtime": 1781615936761.7686,
+    "hash": "4ec7d80c5f787ebcd5564ec1f4261894"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/032-central-importacao-inteligente/design.md": {
+    "mtime": 1781615936762.9502,
+    "hash": "94a943f5db7324f6293884f2cbbe094d"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/032-central-importacao-inteligente/proposal.md": {
+    "mtime": 1781615936764.082,
+    "hash": "db2f7eb82ebf3898e481c348f549946e"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/032-central-importacao-inteligente/research.md": {
+    "mtime": 1781615936764.082,
+    "hash": "08e26b938f018d1f00e92449a4328d2d"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/032-central-importacao-inteligente/tasks.md": {
+    "mtime": 1781615936764.082,
+    "hash": "cf6566a0b56d330e7cc69fe29bbfc4c2"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/035-conciliacao-extrato-visivel/design.md": {
+    "mtime": 1781615936765.3223,
+    "hash": "5b6cf09cb1c50c96de4fdc6db0810ddf"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/035-conciliacao-extrato-visivel/proposal.md": {
+    "mtime": 1781615936766.3286,
+    "hash": "cf4e5fd8ee6b39cfbfa22250f12b7374"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/035-conciliacao-extrato-visivel/tasks.md": {
+    "mtime": 1781615936766.3286,
+    "hash": "cbf974ddc652ea10f5348a0d55abefa1"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/043-correcao-saldo-bancario/design.md": {
+    "mtime": 1781615936767.6118,
+    "hash": "1b2e75de33cc42eaa5fc886933e4a23e"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/043-correcao-saldo-bancario/proposal.md": {
+    "mtime": 1781615936767.6118,
+    "hash": "893e55643187a94381aa08c7fe4062d5"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/043-correcao-saldo-bancario/research.md": {
+    "mtime": 1781615936768.6162,
+    "hash": "219462a6f97351175fbf61ad75209d8f"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/043-correcao-saldo-bancario/tasks.md": {
+    "mtime": 1781615936768.6162,
+    "hash": "a899eb42e87e46ace26e05ec2254fc1d"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/044-extracao-balamt-ofx/design.md": {
+    "mtime": 1781615936769.6216,
+    "hash": "27dc405429d168afe722282060b85e92"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/044-extracao-balamt-ofx/proposal.md": {
+    "mtime": 1781615936770.6777,
+    "hash": "37dac866b4f691c9449b2a6f9e8cec5e"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/044-extracao-balamt-ofx/research.md": {
+    "mtime": 1781615936770.6777,
+    "hash": "6e4efd9b879905b6316d59443df9ef6a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/044-extracao-balamt-ofx/tasks.md": {
+    "mtime": 1781615936771.6836,
+    "hash": "293ec8ba57570395c7a1e48171d46241"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/045-unificar-saldo-real/design.md": {
+    "mtime": 1781615936772.689,
+    "hash": "fd66e4d61da93fc24b7af267153aa72c"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/045-unificar-saldo-real/proposal.md": {
+    "mtime": 1781615936772.689,
+    "hash": "6b2144ec1915e1eed3acb70a3857bfc5"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/045-unificar-saldo-real/research.md": {
+    "mtime": 1781615936773.695,
+    "hash": "ce2c06b5d29e4a7483dfd74dcca1de93"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/045-unificar-saldo-real/tasks.md": {
+    "mtime": 1781615936773.695,
+    "hash": "fab765c0c4f627282e72c26f1299936d"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/046-correcao-ofx-cents/design.md": {
+    "mtime": 1781615936774.6975,
+    "hash": "d2edb867fde710ad38fb3840da3eaa1f"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/046-correcao-ofx-cents/proposal.md": {
+    "mtime": 1781615936775.6975,
+    "hash": "98ce2263c1e6389d7d8e6a117c251f8f"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/046-correcao-ofx-cents/research.md": {
+    "mtime": 1781615936777.176,
+    "hash": "8814cf7354227c5d471f9dab7eee1098"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/046-correcao-ofx-cents/tasks.md": {
+    "mtime": 1781615936777.176,
+    "hash": "1fa3077eb8fae4a696053fd0cfd38403"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/047-apurado-diario-correto/design.md": {
+    "mtime": 1781615936778.4033,
+    "hash": "ecaabdf0658b60f3551c27481ffa0946"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/047-apurado-diario-correto/proposal.md": {
+    "mtime": 1781615936779.684,
+    "hash": "1aed02b396952ac361a8b26891ec811e"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/047-apurado-diario-correto/research.md": {
+    "mtime": 1781615936779.684,
+    "hash": "7f7c84013eed4bfef4d7ed50493e6c07"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/047-apurado-diario-correto/tasks.md": {
+    "mtime": 1781615936779.684,
+    "hash": "855c195c17abfeaf547b071570ec2de0"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/048-conciliacao-tripla/design.md": {
+    "mtime": 1781615936780.69,
+    "hash": "31e7429b78128d3286111d99033a61f7"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/048-conciliacao-tripla/proposal.md": {
+    "mtime": 1781615936781.6958,
+    "hash": "a4d4c9b8c09a8784b5e3c929167546b6"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/048-conciliacao-tripla/research.md": {
+    "mtime": 1781615936781.6958,
+    "hash": "47b4b11f136382c576ed982c810657ae"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/048-conciliacao-tripla/tasks.md": {
+    "mtime": 1781615936782.701,
+    "hash": "60970042daacbe98dd12e2907d7c1d8a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/050-loja-extrato-historico/design.md": {
+    "mtime": 1781615936783.7063,
+    "hash": "402ca51fced0f0d0eca80b8f51064767"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/050-loja-extrato-historico/proposal.md": {
+    "mtime": 1781615936783.7063,
+    "hash": "349a1d7bb67dab2cccdf33feb5511382"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/050-loja-extrato-historico/tasks.md": {
+    "mtime": 1781615936784.712,
+    "hash": "555c6d7d09e0e727f4eb191c3ab79b75"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/054-dashboard-conciliation-fix/design.md": {
+    "mtime": 1781622995302.3923,
+    "hash": "3c47c1598f2e5ed0e2567b9094d83f0c"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/054-dashboard-conciliation-fix/proposal.md": {
+    "mtime": 1781622984008.516,
+    "hash": "02e9c243c3c743f2ad0f368eea1c2823"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/054-dashboard-conciliation-fix/spec-plan.md": {
+    "mtime": 1781623004243.448,
+    "hash": "a50173fd988eb0c3c516e6b76d5cd495"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/001-backend-supabase/design.md": {
+    "mtime": 1781615936785.9407,
+    "hash": "f6709911f1b6a455075c490d0e9a28ab"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/001-backend-supabase/proposal.md": {
+    "mtime": 1781615936785.9407,
+    "hash": "f57919bb7697633bbe46929dbb2c91d8"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/001-backend-supabase/tasks.md": {
+    "mtime": 1781615936786.9478,
+    "hash": "f4acd7137235f96d62b145b345a728ba"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/001-mecanica-vibe/design.md": {
+    "mtime": 1781615936787.954,
+    "hash": "642900654bb4ff6990fc89cd7722cf82"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/001-mecanica-vibe/proposal.md": {
+    "mtime": 1781615936787.954,
+    "hash": "51586bd14ec7471c75270fd44f2fccad"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/001-mecanica-vibe/tasks.md": {
+    "mtime": 1781615936788.9604,
+    "hash": "facdda2abca0c3efd97e2563b9418c80"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/001-ui-ux-refinements/design.md": {
+    "mtime": 1781615936789.9663,
+    "hash": "db809a78a2349db278a0c6983b27a655"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/001-ui-ux-refinements/proposal.md": {
+    "mtime": 1781615936790.9895,
+    "hash": "f732170ca9880f20dbad9618cc0147c4"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/001-ui-ux-refinements/tasks.md": {
+    "mtime": 1781615936790.9895,
+    "hash": "38a61975521a1a1e81e1092b7141bc6f"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/002-dashboard-rework/design.md": {
+    "mtime": 1781615936793.0344,
+    "hash": "43a2d62fd6c318430f08b08533b22c10"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/002-dashboard-rework/proposal.md": {
+    "mtime": 1781615936794.1233,
+    "hash": "5a33fd67fa5fe8d1b011f71ef2a1757a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/002-dashboard-rework/tasks.md": {
+    "mtime": 1781615936794.1233,
+    "hash": "43fd445a9c68a136de9d966b6a024c2b"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/002-premium-redesign/design.md": {
+    "mtime": 1781615936795.3198,
+    "hash": "0772dc942f76c799e37b490868f46eef"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/002-premium-redesign/proposal.md": {
+    "mtime": 1781615936796.3408,
+    "hash": "d7984f50196e8e1a588cfbc2c2df43bc"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/002-premium-redesign/tasks.md": {
+    "mtime": 1781615936796.3408,
+    "hash": "ae46807bc8494898c25399783dd1fef7"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/002-relatorio-unidade/design.md": {
+    "mtime": 1781615936797.4487,
+    "hash": "4e13e4ed9c6e69cf2f3c47e5c68dd3c6"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/002-relatorio-unidade/proposal.md": {
+    "mtime": 1781615936797.4487,
+    "hash": "4cf6ceeffa026037f33930fa192ca211"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/002-relatorio-unidade/tasks.md": {
+    "mtime": 1781615936798.455,
+    "hash": "5a3cf76e6174cab6c5db89703e2ead3b"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/002-saldo-consolidado/design.md": {
+    "mtime": 1781615936799.4626,
+    "hash": "3a22571e3d3b5f00654d05e0b7743918"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/002-saldo-consolidado/proposal.md": {
+    "mtime": 1781615936799.4626,
+    "hash": "cd6bda5b74b7dbd17076e44dfd1358fc"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/002-saldo-consolidado/tasks.md": {
+    "mtime": 1781615936800.664,
+    "hash": "a43b51bcc87f1e6cd464757ab68bee1f"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/003-import-parser-rework/design.md": {
+    "mtime": 1781615936800.664,
+    "hash": "426d1c2aff6d9a7df7e69eaffccb5ebf"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/003-import-parser-rework/proposal.md": {
+    "mtime": 1781615936801.7263,
+    "hash": "9c7256c0a9658714c754fa1dff912758"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/003-import-parser-rework/tasks.md": {
+    "mtime": 1781615936802.7751,
+    "hash": "29c9fd3033893b3ad761e0f36b4ed1bb"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/003-premium-mock-preview/design.md": {
+    "mtime": 1781615936802.7751,
+    "hash": "59d05c38725a73c8f64fa3ad215dcdee"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/003-premium-mock-preview/proposal.md": {
+    "mtime": 1781615936803.816,
+    "hash": "0474a609d37d687274b088267115ce5d"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/003-premium-mock-preview/tasks.md": {
+    "mtime": 1781615936804.8425,
+    "hash": "998d28b7e82c92872c17017f7bbabf68"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/003-refatoracao-dashboard-loja/design.md": {
+    "mtime": 1781615936804.8425,
+    "hash": "e5050246e39df781b31550772f9e3440"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/003-refatoracao-dashboard-loja/proposal.md": {
+    "mtime": 1781615936806.011,
+    "hash": "b72e3e044195ab1518e31dc66b5b35e9"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/003-refatoracao-dashboard-loja/research.md": {
+    "mtime": 1781615936806.011,
+    "hash": "91d9575ee4162765c885d32ef4ca9a22"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/003-refatoracao-dashboard-loja/tasks.md": {
+    "mtime": 1781615936807.4016,
+    "hash": "50df531ddd561e1a5674b739107b2307"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/004-interactive-mock-details/design.md": {
+    "mtime": 1781615936808.5354,
+    "hash": "029f88ee79fe7019ef2bc83dc1f088c9"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/004-interactive-mock-details/proposal.md": {
+    "mtime": 1781615936809.5396,
+    "hash": "f830bf65dfa3806292a136834b24f35a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/004-interactive-mock-details/tasks.md": {
+    "mtime": 1781615936810.9653,
+    "hash": "44c41d258b673553fe35a86ebaf292d8"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/004-master-and-imports-refinements/design.md": {
+    "mtime": 1781615936810.9653,
+    "hash": "f66f05aa829183144e796ba676b0c0be"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/004-master-and-imports-refinements/proposal.md": {
+    "mtime": 1781615936811.9722,
+    "hash": "df8b79128298e3f310a3af50a6f8eefe"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/004-master-and-imports-refinements/research.md": {
+    "mtime": 1781615936812.99,
+    "hash": "9f7a93d68b2ac1737289c36f721cb3a8"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/004-master-and-imports-refinements/tasks.md": {
+    "mtime": 1781615936812.99,
+    "hash": "4a1223e87afb9081e907b7c7f5f9f632"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/004-ui-details-and-parser-fixes/design.md": {
+    "mtime": 1781615936814.0889,
+    "hash": "cd9ecbfaac79bd9f030cb2fcf1a1ce38"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/004-ui-details-and-parser-fixes/proposal.md": {
+    "mtime": 1781615936815.3206,
+    "hash": "4b24b4a7a85e0727e4a5ce0002813b05"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/004-ui-details-and-parser-fixes/tasks.md": {
+    "mtime": 1781615936815.3206,
+    "hash": "b7d95cb387fc3d1a1c481a407834daef"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/005-full-interactivity/design.md": {
+    "mtime": 1781615936816.432,
+    "hash": "ed951d548ea02fdc3cefb031bb1ea4c1"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/005-full-interactivity/proposal.md": {
+    "mtime": 1781615936816.432,
+    "hash": "065b644df0bb0e56f0f2ade1c8220387"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/005-full-interactivity/tasks.md": {
+    "mtime": 1781615936817.881,
+    "hash": "940670bc79e4f892edfb69c354e0e587"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/005-planilha-import-fix/design.md": {
+    "mtime": 1781615936817.881,
+    "hash": "504dad57a91b8634c42ae6a98d9a938d"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/005-planilha-import-fix/proposal.md": {
+    "mtime": 1781615936819.0483,
+    "hash": "b1c99181beeb39183de2c58dd97ebe00"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/005-planilha-import-fix/tasks.md": {
+    "mtime": 1781615936819.0483,
+    "hash": "f9a2149b472134bb9ab1703dbe265aae"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/006-lovable-sync/proposal.md": {
+    "mtime": 1781615936820.4797,
+    "hash": "c544bedec0275c4f6fc8af5586972bf2"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/006-lovable-sync/tasks.md": {
+    "mtime": 1781615936820.4797,
+    "hash": "cc08ca994c14df39611193ee72ab1d73"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/006-period-filters-and-history/design.md": {
+    "mtime": 1781615936821.5703,
+    "hash": "1d4637745ccd8ee41ea09dae36f4774f"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/006-period-filters-and-history/proposal.md": {
+    "mtime": 1781615936822.9348,
+    "hash": "8e127dc63323209fccdda63ccaf4ea34"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/006-period-filters-and-history/tasks.md": {
+    "mtime": 1781615936822.9348,
+    "hash": "64091362a41184d2fa6b472f1268322a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/007-db-reset-and-auth/design.md": {
+    "mtime": 1781615936825.2046,
+    "hash": "97abdd665675442d87f96f6e19b5063c"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/007-db-reset-and-auth/proposal.md": {
+    "mtime": 1781615936826.2021,
+    "hash": "36947dd6ec7e6182499bd43efc895d3b"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/007-db-reset-and-auth/tasks.md": {
+    "mtime": 1781615936827.262,
+    "hash": "a6ebe0cb216fdc71b048d40be4ddccb0"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/008-import-history-and-fixes/design.md": {
+    "mtime": 1781615936828.304,
+    "hash": "dce8f2006439c97011436f9785945566"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/008-import-history-and-fixes/proposal.md": {
+    "mtime": 1781615936829.4575,
+    "hash": "df2c45be8139b307100baa3d0e87f50b"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/008-import-history-and-fixes/tasks.md": {
+    "mtime": 1781615936829.4575,
+    "hash": "9b42bae3fc1b34029ff8a6eda4c5923b"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/009-import-rework-and-extrato/design.md": {
+    "mtime": 1781615936830.697,
+    "hash": "cfa3e66b314829792b3a3bec152ee634"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/009-import-rework-and-extrato/proposal.md": {
+    "mtime": 1781615936831.9268,
+    "hash": "63662d6a0e382defa59712c6c78b6365"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/009-import-rework-and-extrato/tasks.md": {
+    "mtime": 1781615936831.9268,
+    "hash": "c1931ebd478217af8d627fa1915cdfd0"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/009-import-rework-and-extrato/xls-analysis.md": {
+    "mtime": 1781615936833.3645,
+    "hash": "96b8a49525c303060ced508b84c448ba"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/010-dashboard-and-store-details/design.md": {
+    "mtime": 1781615936834.3716,
+    "hash": "53e241da250b02c9c3d8c0324ece75b2"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/010-dashboard-and-store-details/proposal.md": {
+    "mtime": 1781615936834.3716,
+    "hash": "5cbe38a2eb1820dc840a9a4ca4ce1b9b"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/011-dashboard-enhancements/design.md": {
+    "mtime": 1781615936835.5703,
+    "hash": "3ba0fe2c4ebfd7a9f300b5f8a9a8d568"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/011-dashboard-enhancements/proposal.md": {
+    "mtime": 1781615936836.635,
+    "hash": "a082c7da50bcecc0e747214340b3c5d7"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/011-dashboard-enhancements/tasks.md": {
+    "mtime": 1781615936836.635,
+    "hash": "80cbefc715802c59793d891b82587109"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/012-ui-fixes/design.md": {
+    "mtime": 1781615936837.643,
+    "hash": "9a0b98a7c98a0dd45a1d773dec24c96a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/012-ui-fixes/proposal.md": {
+    "mtime": 1781615936838.649,
+    "hash": "446285666c5d592740a7190f86c0765c"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/012-ui-fixes/tasks.md": {
+    "mtime": 1781615936838.649,
+    "hash": "55721fd1480b04ac27368f53579fda67"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/013-pagination/design.md": {
+    "mtime": 1781615936839.6555,
+    "hash": "58919887d9985acf0029414e6fc77e61"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/013-pagination/proposal.md": {
+    "mtime": 1781615936840.9568,
+    "hash": "87790b0161858fce47f53c788c0a7ca4"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/013-pagination/tasks.md": {
+    "mtime": 1781615936841.9683,
+    "hash": "b269c9f9ccdedbf7fedb754f0620d455"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/014-importacao-conciliacao/design.md": {
+    "mtime": 1781615936844.3608,
+    "hash": "813417ba270ac024c17d38393569d413"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/014-importacao-conciliacao/proposal.md": {
+    "mtime": 1781615936845.385,
+    "hash": "3b099b3cbe59e0d8eb031039997ba0e3"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/014-importacao-conciliacao/tasks.md": {
+    "mtime": 1781615936845.385,
+    "hash": "0ba982988708a00a77b811de03b8d2c4"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/015-juros-e-importacao/design.md": {
+    "mtime": 1781615936847.8738,
+    "hash": "29c5a8ece3a853eff9821f700b75adc2"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/015-juros-e-importacao/proposal.md": {
+    "mtime": 1781615936848.875,
+    "hash": "324664a931451f16bbb4b38616a8aaee"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/015-juros-e-importacao/tasks.md": {
+    "mtime": 1781615936848.875,
+    "hash": "2062bbe7fc2082f9c75c4d830ff39b4c"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/017-fechamento-caixa/design.md": {
+    "mtime": 1781615936849.8723,
+    "hash": "a0df81d47527507724694ac07e62f3f5"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/017-fechamento-caixa/proposal.md": {
+    "mtime": 1781615936850.8704,
+    "hash": "c59b18fc543d2332ea2a6fbcde992bf1"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/017-fechamento-caixa/tasks.md": {
+    "mtime": 1781615936850.8704,
+    "hash": "fbe773db59e771eddfebc9c09487cccb"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/018-bugfixes-loading/design.md": {
+    "mtime": 1781615936851.867,
+    "hash": "4189c2677acf142f637acdf8491dc0e7"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/018-bugfixes-loading/proposal.md": {
+    "mtime": 1781615936852.8647,
+    "hash": "b926dca7cc21430b1558cc37737acb30"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/018-bugfixes-loading/research.md": {
+    "mtime": 1781615936853.8616,
+    "hash": "875a13c923073678d2d6c1ab1b861c21"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/018-bugfixes-loading/tasks.md": {
+    "mtime": 1781615936853.8616,
+    "hash": "0ec2a1d56834d123ec7d84be8afe882c"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/019-os-history/design.md": {
+    "mtime": 1781615936854.8586,
+    "hash": "b9a9971e5b7c31e9e856225de4c49757"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/019-os-history/proposal.md": {
+    "mtime": 1781615936856.1094,
+    "hash": "c05feb577d4bb3d366d2f361203ea8b6"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/019-os-history/research.md": {
+    "mtime": 1781615936856.1094,
+    "hash": "7fee538c18415e388b029d3069f3881b"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/019-os-history/tasks.md": {
+    "mtime": 1781615936857.1208,
+    "hash": "d94feab36bbb8fd986cd00df27807b9d"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/021-conciliacao-revamp/design.md": {
+    "mtime": 1781615936858.1265,
+    "hash": "0c5f2fa7ac1acdb071c32d17be299deb"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/021-conciliacao-revamp/proposal.md": {
+    "mtime": 1781615936860.1626,
+    "hash": "525ba2befff4d78969c55b0bd98c4eba"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/021-conciliacao-revamp/research.md": {
+    "mtime": 1781615936861.12,
+    "hash": "70644231769ee38b7065c192ba80d491"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/021-conciliacao-revamp/tasks.md": {
+    "mtime": 1781615936862.1165,
+    "hash": "84b08af51c988da057a843556813a127"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/022-conciliacao-macro-view/design.md": {
+    "mtime": 1781615936863.1643,
+    "hash": "e7876dac45580eb3320295703aadc3b0"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/022-conciliacao-macro-view/proposal.md": {
+    "mtime": 1781615936864.1724,
+    "hash": "aad6a414d79a8951358043a9d28c22c2"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/022-conciliacao-macro-view/research.md": {
+    "mtime": 1781615936864.1724,
+    "hash": "f849cb3a3a581b7c497e4a6c154fca95"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/022-conciliacao-macro-view/tasks.md": {
+    "mtime": 1781615936864.1724,
+    "hash": "ce086c5b718d2d530f444511b7be71d6"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/023-revolut-conciliacao-design/design.md": {
+    "mtime": 1781615936865.3926,
+    "hash": "f98c6499cf8868158d352b0513513baf"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/023-revolut-conciliacao-design/proposal.md": {
+    "mtime": 1781615936866.4014,
+    "hash": "ad6391ed4a0e7d9afe6653310abbbdaf"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/023-revolut-conciliacao-design/research.md": {
+    "mtime": 1781615936866.4014,
+    "hash": "f3fea512f8a7eefb62695d81f3916c16"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/023-revolut-conciliacao-design/tasks.md": {
+    "mtime": 1781615936867.4087,
+    "hash": "7f798466e6feaafab5a6e3f5034b8e8b"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/024-conciliacao-rollback/design.md": {
+    "mtime": 1781615936868.4158,
+    "hash": "500d45480699ef8c5984b7079ea6aa83"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/024-conciliacao-rollback/proposal.md": {
+    "mtime": 1781615936868.4158,
+    "hash": "edce7a74fea28adabfd876e54c491fb6"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/024-conciliacao-rollback/research.md": {
+    "mtime": 1781615936869.4236,
+    "hash": "c275fe0632869db1ebbe82a4af5d3ac5"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/024-conciliacao-rollback/tasks.md": {
+    "mtime": 1781615936869.4236,
+    "hash": "a040cfa8f0f90bf738c6714545dd2f43"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/025-importacao-despesas/design.md": {
+    "mtime": 1781615936870.4307,
+    "hash": "9edea15338e87c83b5493c37da78d53b"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/025-importacao-despesas/proposal.md": {
+    "mtime": 1781615936870.4307,
+    "hash": "7078f7ef825cef6616b66a9175fa306b"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/025-importacao-despesas/research.md": {
+    "mtime": 1781615936871.6265,
+    "hash": "31abe545567beaf57ba524a1fb97b944"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/025-importacao-despesas/tasks.md": {
+    "mtime": 1781615936872.6343,
+    "hash": "aa7fd8fa8f64cd8a1a3b412022887a3f"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/027-import-history-fix/design.md": {
+    "mtime": 1781615936873.6426,
+    "hash": "913e2cbac2cea2322874a92e6829db53"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/027-import-history-fix/proposal.md": {
+    "mtime": 1781615936873.6426,
+    "hash": "495a789dc0913fccfd09c05199fb54d2"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/027-import-history-fix/tasks.md": {
+    "mtime": 1781615936874.651,
+    "hash": "691ecd122f6e2e7f29f5cc358b6dca12"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/028-patio-import-store-name/design.md": {
+    "mtime": 1781615936877.2256,
+    "hash": "3729357582438d33e369d0a6dee46ae8"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/028-patio-import-store-name/proposal.md": {
+    "mtime": 1781615936878.311,
+    "hash": "1723d05696a72f810754409e5e8c4e8e"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/028-patio-import-store-name/research.md": {
+    "mtime": 1781615936878.311,
+    "hash": "ba881efd5a5685a081c0c6faf426f228"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/028-patio-import-store-name/tasks.md": {
+    "mtime": 1781615936879.3198,
+    "hash": "cfa4d1466be92331f32bffae86b8f2ac"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/029-import-maquininha/design.md": {
+    "mtime": 1781615936879.3198,
+    "hash": "c9f14a6c669082dbb902f239713bac4c"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/029-import-maquininha/proposal.md": {
+    "mtime": 1781615936880.5574,
+    "hash": "6517cb67e6708f8f35603abc24ab3bda"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/029-import-maquininha/tasks.md": {
+    "mtime": 1781615936881.6008,
+    "hash": "11081210a66e17694bfe4527eb0439a7"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/030-conciliacao-bancaria/design.md": {
+    "mtime": 1781615936881.6008,
+    "hash": "228e116b2504888bc65a1e8e5f046fce"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/030-conciliacao-bancaria/proposal.md": {
+    "mtime": 1781615936882.611,
+    "hash": "b949366c8732d39e4b18cf9c19e0836b"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/030-conciliacao-bancaria/research.md": {
+    "mtime": 1781615936882.611,
+    "hash": "afb391ed5641203f2aa2029727c6a8ec"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/030-conciliacao-bancaria/tasks.md": {
+    "mtime": 1781615936883.9807,
+    "hash": "ea87df01ef7d2c73ba1189f678225a7b"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/031-unified-mass-import/design.md": {
+    "mtime": 1781615936883.9807,
+    "hash": "6e301111eac493b2a613fd6f96622931"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/031-unified-mass-import/proposal.md": {
+    "mtime": 1781615936885.1792,
+    "hash": "ae732a930a2c6e0ca529b233200dbc10"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/031-unified-mass-import/research.md": {
+    "mtime": 1781615936885.1792,
+    "hash": "87992874a1c38ffa26d28b1f2e59f66a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/031-unified-mass-import/tasks.md": {
+    "mtime": 1781615936886.4355,
+    "hash": "d6fe260552434bff59ba7baa86b0a25f"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/033-conciliacao-extrato-bancario/design.md": {
+    "mtime": 1781615936887.5017,
+    "hash": "ac34ce8235cedec83208ecf903649d70"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/033-conciliacao-extrato-bancario/proposal.md": {
+    "mtime": 1781615936887.5017,
+    "hash": "bd538e1da3b3bd69d3be668ddb08834e"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/033-conciliacao-extrato-bancario/research.md": {
+    "mtime": 1781615936888.5684,
+    "hash": "3b4e276e434d50c9df4825b95086ada8"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/033-conciliacao-extrato-bancario/tasks.md": {
+    "mtime": 1781615936888.5684,
+    "hash": "7ae5f7de2c15edf9e9051d4efbf48d4c"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/034-conciliacao-diagnostico-profundo/design.md": {
+    "mtime": 1781615936889.7932,
+    "hash": "5c37893a2dffd3d6f4417c9413660b5b"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/034-conciliacao-diagnostico-profundo/proposal.md": {
+    "mtime": 1781615936889.7932,
+    "hash": "6d80fb61a1c9733d745dd27ee8cca3a2"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/034-conciliacao-diagnostico-profundo/research.md": {
+    "mtime": 1781615936891.1404,
+    "hash": "3ea23b841b33b200b2e9321212f85982"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/034-conciliacao-diagnostico-profundo/tasks.md": {
+    "mtime": 1781615936892.3352,
+    "hash": "fb7e96a446300f49e154b0356add82cc"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/036-importacao-data-unificada/design.md": {
+    "mtime": 1781615936894.6128,
+    "hash": "cdee075f58b5199b6027ebadfd6d0782"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/036-importacao-data-unificada/proposal.md": {
+    "mtime": 1781615936894.6128,
+    "hash": "ac4f6893f5f89c559a876f5f86fafeb8"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/036-importacao-data-unificada/tasks.md": {
+    "mtime": 1781615936895.931,
+    "hash": "0e3d9ef95a1df8b7f0b849c5f31a1e78"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/037-conciliacao-saldo-exato/design.md": {
+    "mtime": 1781615936895.931,
+    "hash": "6727a4a9960b7266aeed0919caa38b99"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/037-conciliacao-saldo-exato/proposal.md": {
+    "mtime": 1781615936897.1936,
+    "hash": "c75d2deab926192df7bd0de9f52b3aae"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/037-conciliacao-saldo-exato/tasks.md": {
+    "mtime": 1781615936897.1936,
+    "hash": "302a3ab0dea3379d2f4bb6d5da2d9c45"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/038-arquitetura-conciliacao-cruzada/Documentacao-Conciliacao.md": {
+    "mtime": 1781615936899.3262,
+    "hash": "4535a26c24874dd9ae41d8f02bf34280"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/038-arquitetura-conciliacao-cruzada/design.md": {
+    "mtime": 1781615936901.6733,
+    "hash": "b22f67f002ff4c617002d541986f8c24"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/038-arquitetura-conciliacao-cruzada/proposal.md": {
+    "mtime": 1781615936901.6733,
+    "hash": "2f75161dc77822cacf43360d7328957c"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/038-arquitetura-conciliacao-cruzada/tasks.md": {
+    "mtime": 1781615936902.934,
+    "hash": "0d34511ad6547341d0c582b3ea314bcf"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/039-fechamento-por-lote/design.md": {
+    "mtime": 1781615936903.9407,
+    "hash": "17b2e48e4d4f3435894993839aaa9bf9"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/039-fechamento-por-lote/proposal.md": {
+    "mtime": 1781615936903.9407,
+    "hash": "092f2f5dfb759833ca42b4098231c99f"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/039-fechamento-por-lote/tasks.md": {
+    "mtime": 1781615936905.1316,
+    "hash": "5cf889eb3bbca02286bfdccab6a571d9"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/040-motor-target-date/design.md": {
+    "mtime": 1781615936906.1511,
+    "hash": "41d85a60e3f99ca317ca10e15c6789ab"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/040-motor-target-date/proposal.md": {
+    "mtime": 1781615936906.1511,
+    "hash": "bf5aa79f254a1111e8b693d4584c7571"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/040-motor-target-date/tasks.md": {
+    "mtime": 1781615936907.3164,
+    "hash": "91b46341de96675129bf225629492712"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/041-ofx-single-source-of-truth/design.md": {
+    "mtime": 1781615936908.344,
+    "hash": "e8714f626cf9148d67074a10d475414f"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/041-ofx-single-source-of-truth/proposal.md": {
+    "mtime": 1781615936909.339,
+    "hash": "83adb08c3e8bc4cd014923f7983764b3"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/041-ofx-single-source-of-truth/tasks.md": {
+    "mtime": 1781615936910.545,
+    "hash": "d0c36199fba9be54179b0f1852119555"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/042-correcao-ofx-parser-e-tela-loja/design.md": {
+    "mtime": 1781615936912.6487,
+    "hash": "09389f8f55f19c7493b6a82c2cfbefdb"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/042-correcao-ofx-parser-e-tela-loja/proposal.md": {
+    "mtime": 1781615936912.6487,
+    "hash": "9b1fb342a463021e922bfa81bfa951d9"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/042-correcao-ofx-parser-e-tela-loja/tasks.md": {
+    "mtime": 1781615936913.7202,
+    "hash": "ab147a36ed8a24234460f639e3c824d5"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/049-conciliacao-refinamento/design.md": {
+    "mtime": 1781615936913.7202,
+    "hash": "2c6b5661d59a8f57ec39581c7263c1c7"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/049-conciliacao-refinamento/proposal.md": {
+    "mtime": 1781615936915.047,
+    "hash": "0034d79a1381611c3631d4ae4f0038c4"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/049-conciliacao-refinamento/tasks.md": {
+    "mtime": 1781615936916.268,
+    "hash": "6021da8b323d7dde4d2ae660e897d85d"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/051-importacao-e-conciliacao-tripla/design.md": {
+    "mtime": 1781615936917.4993,
+    "hash": "4de3658ff015685beadf913b7506db56"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/051-importacao-e-conciliacao-tripla/proposal.md": {
+    "mtime": 1781615936917.4993,
+    "hash": "f62ddcf9f98ed4804d94caf00d79c56a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/051-importacao-e-conciliacao-tripla/spec-plan.md": {
+    "mtime": 1781615936919.0415,
+    "hash": "2d5223897d37d9733cffe948dcadc89a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/052-refinamento-ux-importacao/design.md": {
+    "mtime": 1781620983610.0952,
+    "hash": "c8ab22ed392422bf30bb662daed75e0a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/052-refinamento-ux-importacao/proposal.md": {
+    "mtime": 1781620983611.3801,
+    "hash": "765303bafd2c549226ed0258e8ad28a7"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/052-refinamento-ux-importacao/spec-plan.md": {
+    "mtime": 1781620983612.382,
+    "hash": "b4a378738216dc0df7da013c24e18f1d"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/053-correcao-filtro-e-insercao-dados/design.md": {
+    "mtime": 1781620983615.4114,
+    "hash": "edff8921ac42f191997244b1a1a22196"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/053-correcao-filtro-e-insercao-dados/proposal.md": {
+    "mtime": 1781620983616.8345,
+    "hash": "3cd3a84ec97e6acc424f89252c534912"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/053-correcao-filtro-e-insercao-dados/spec-plan.md": {
+    "mtime": 1781620983618.35,
+    "hash": "998f584d30758634e94ce65d72bd91d6"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/global/architecture.md": {
+    "mtime": 1781615936920.3877,
+    "hash": "349636d40a9bb65674a1843061ca2880"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/global/constraints.md": {
+    "mtime": 1781615936920.3877,
+    "hash": "80a8c4e5d3f568983934ea507e9d459e"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/global/features.md": {
+    "mtime": 1781615936921.6687,
+    "hash": "4094cbba14ce8ac8b7ad7f57b7cd9619"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/global/overview.md": {
+    "mtime": 1781615936922.672,
+    "hash": "b96d6a0f0a1b4f300178992ecc5ee672"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/specs/archive/038-arquitetura-conciliacao-cruzada/Documentacao-Conciliacao.pdf": {
+    "mtime": 1781615936899.3262,
+    "hash": "2f84dbfc765c72f0e159eb2673d3f16a"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/diagnose2.mjs": {
+    "mtime": 1784817489236.678,
+    "hash": "fdddbf8089173a3b0e6856880c5b0873"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/diagnose3.mjs": {
+    "mtime": 1784817505700.907,
+    "hash": "2a7113dfd26b3dae0efb5b8f958a6699"
+  },
+  "C:/Users/admin/.gemini/antigravity/scratch/mec-nica-financeiro/diagnose_db.mjs": {
+    "mtime": 1784817315005.627,
+    "hash": "856291e3f16dc55dc62e0c2514af7215"
+  }
+}

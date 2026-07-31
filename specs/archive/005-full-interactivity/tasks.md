@@ -1,0 +1,10 @@
+- [ ] 1. Hotfix: lojas.tsx crash (re-add Input import)
+- [ ] 2. Expandir mock data (10 lojas, OS pátio, recebíveis, conciliação detalhada, +transações)
+- [ ] 3. Reescrever conciliacao.tsx como full-page (grid lojas, alertas, dinheiro caixa)
+- [ ] 4. Criar conciliacao-detalhes.tsx (tabela por loja, erros, abas)
+- [ ] 5. Criar patio.tsx (carros no pátio com tabela de OS)
+- [ ] 6. Criar recebiveis.tsx (tabela de recebíveis)
+- [ ] 7. Criar historico.tsx (histórico completo de transações)
+- [ ] 8. Atualizar RecentActivity.tsx (clicável + link "ver todas")
+- [ ] 9. Atualizar Sidebar.tsx e BottomNav.tsx (novas rotas)
+- [ ] 10. Build + push

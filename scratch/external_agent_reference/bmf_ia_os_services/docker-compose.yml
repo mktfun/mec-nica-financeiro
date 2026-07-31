@@ -1,0 +1,196 @@
+version: "3.9"
+
+# BMF IA OS — Ambiente Local (Release 1)
+# Referência: C4-DOC-001 (Seção 5.2, Figura 4) e ADR-001/ADR-002/ADR-003
+#
+# Os serviços "orquestrador", "agent-runtime" e "integration-hub" têm
+# código real em ./orquestrador, ./agent-runtime e ./integration-hub
+# (Node.js/Express), implementando os componentes especificados no
+# C4-DOC-001 (Seção 4) e C4-DOC-002 (Seção 2). Copie .env.example
+# para .env e preencha ANTHROPIC_API_KEY antes de subir.
+
+services:
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: bmf_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - orquestrador
+    restart: unless-stopped
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: bmf_postgres
+    environment:
+      POSTGRES_USER: bmf_admin
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme_local_only}
+      POSTGRES_DB: bmf_ia_os
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./db/migrations:/docker-entrypoint-initdb.d:ro   # DM-DOC-001 §3 + BL-011
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bmf_admin -d bmf_ia_os"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: bmf_redis
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  orquestrador:
+    build: ./orquestrador
+    container_name: bmf_orquestrador
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: 8080
+      DATABASE_URL: postgresql://bmf_admin:${POSTGRES_PASSWORD:-changeme_local_only}@postgres:5432/bmf_ia_os
+      REDIS_URL: redis://redis:6379
+      AGENT_RUNTIME_URL: http://agent-runtime:8081
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+
+  agent-runtime:
+    build: ./agent-runtime
+    container_name: bmf_agent_runtime
+    ports:
+      - "8081:8081"
+    environment:
+      PORT: 8081
+      DATABASE_URL: postgresql://bmf_admin:${POSTGRES_PASSWORD:-changeme_local_only}@postgres:5432/bmf_ia_os
+      REDIS_URL: redis://redis:6379
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      CONTEXT_COMPRESSOR_LIMITE: ${CONTEXT_COMPRESSOR_LIMITE:-20}
+      CONTEXT_COMPRESSOR_MANTER: ${CONTEXT_COMPRESSOR_MANTER:-6}
+      BUSINESS_MEMORY_LIMITE: ${BUSINESS_MEMORY_LIMITE:-20}
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+
+  integration-hub:
+    build: ./integration-hub
+    container_name: bmf_integration_hub
+    ports:
+      - "8082:8082"
+    environment:
+      PORT: 8082
+      DATABASE_URL: postgresql://bmf_admin:${POSTGRES_PASSWORD:-changeme_local_only}@postgres:5432/bmf_ia_os
+      REDIS_URL: redis://redis:6379
+      # CRM_API_URL / ESIGNATURE_API_URL: definir quando parceiros reais forem integrados (ver connectors/*.js)
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  workflow-engine:
+    build: ./workflow-engine
+    container_name: bmf_workflow_engine
+    ports:
+      - "8083:8083"
+    environment:
+      PORT: 8083
+      DATABASE_URL: postgresql://bmf_admin:${POSTGRES_PASSWORD:-changeme_local_only}@postgres:5432/bmf_ia_os
+      REDIS_URL: redis://redis:6379
+      AGENT_RUNTIME_URL: http://agent-runtime:8081
+      INTEGRATION_HUB_URL: http://integration-hub:8082
+      KNOWLEDGE_BASE_URL: http://knowledge-base:8085
+      WORKFLOW_CONTEXT_MAX_STEPS: ${WORKFLOW_CONTEXT_MAX_STEPS:-10}
+      WORKFLOW_CONTEXT_MAX_VALOR_CHARS: ${WORKFLOW_CONTEXT_MAX_VALOR_CHARS:-2000}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+
+  knowledge-base:
+    build: ./knowledge-base
+    container_name: bmf_knowledge_base
+    ports:
+      - "8085:8085"
+    environment:
+      PORT: 8085
+      DATABASE_URL: postgresql://bmf_admin:${POSTGRES_PASSWORD:-changeme_local_only}@postgres:5432/bmf_ia_os
+      AGENT_RUNTIME_URL: http://agent-runtime:8081
+      VOYAGE_API_KEY: ${VOYAGE_API_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  scheduler:
+    build: ./scheduler
+    container_name: bmf_scheduler
+    ports:
+      - "8084:8084"
+    environment:
+      PORT: 8084
+      DATABASE_URL: postgresql://bmf_admin:${POSTGRES_PASSWORD:-changeme_local_only}@postgres:5432/bmf_ia_os
+      WORKFLOW_ENGINE_URL: http://workflow-engine:8083
+    depends_on:
+      postgres:
+        condition: service_healthy
+      workflow-engine:
+        condition: service_started
+    restart: unless-stopped
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: bmf_otel_collector
+    volumes:
+      - ./observability/otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml:ro
+    ports:
+      - "4318:4318"
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: bmf_prometheus
+    volumes:
+      - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: bmf_grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-changeme_local_only}
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+volumes:
+  pg_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:

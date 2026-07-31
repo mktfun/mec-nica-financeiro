@@ -1,0 +1,14 @@
+{
+  "name": "bmf-knowledge-base",
+  "version": "1.0.0",
+  "description": "BMF IA OS - Knowledge Base Service (C4-DOC-002 Secao 1)",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "scripts": { "start": "node src/index.js" },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "node-fetch": "^2.7.0",
+    "pg": "^8.13.0"
+  }
+}

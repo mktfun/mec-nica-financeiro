@@ -1,0 +1,154 @@
+@import "tailwindcss";
+
+@theme {
+  --color-canvas: #000000;
+  --color-canvas-light: #ffffff;
+  
+  --color-surface-elevated: #16181a;
+  --color-surface-deep: #0a0a0a;
+  --color-surface-soft: #f4f4f4;
+  --color-surface-card: #ffffff;
+  
+  --color-on-dark: #ffffff;
+  --color-on-dark-mute: rgba(255, 255, 255, 0.72);
+  
+  --color-ink: #191c1f;
+  --color-body: #1f2226;
+  --color-mute: #505a63;
+  --color-stone: #8d969e;
+  
+  --color-hairline-dark: rgba(255, 255, 255, 0.12);
+  --color-divider-soft: rgba(255, 255, 255, 0.06);
+  --color-hairline-light: #e2e2e7;
+  --color-hairline-strong: #191c1f;
+  
+  --color-primary: #494fdf;
+  --color-primary-bright: #4f55f1;
+  --color-primary-deep: #3a40c4;
+  
+  --color-accent-teal: #00a87e;
+  --color-accent-danger: #e23b4a;
+  --color-accent-warning: #ec7e00;
+  --color-accent-yellow: #b09000;
+  --color-accent-light-blue: #007bc2;
+  --color-accent-pink: #e61e49;
+
+  --font-display: "DM Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+}
+
+@layer base {
+  :root {
+    --bg-canvas: var(--color-canvas-light);
+    --bg-surface: var(--color-surface-card);
+    --bg-surface-elevated: var(--color-surface-soft);
+    
+    --text-primary: var(--color-ink);
+    --text-secondary: var(--color-mute);
+    --text-tertiary: var(--color-stone);
+    
+    --border-subtle: var(--color-hairline-light);
+    --border-strong: var(--color-hairline-strong);
+    
+    --btn-primary-bg: var(--color-canvas);
+    --btn-primary-text: var(--color-canvas-light);
+    --btn-secondary-bg: var(--color-surface-soft);
+    --btn-secondary-text: var(--color-ink);
+  }
+
+  /* Using standard "dark" class convention */
+  .dark {
+    --bg-canvas: var(--color-canvas);
+    --bg-surface: var(--color-surface-deep);
+    --bg-surface-elevated: var(--color-surface-elevated);
+    
+    --text-primary: var(--color-on-dark);
+    --text-secondary: var(--color-on-dark-mute);
+    --text-tertiary: var(--color-stone);
+    
+    --border-subtle: var(--color-divider-soft);
+    --border-strong: var(--color-hairline-dark);
+    
+    --btn-primary-bg: var(--color-canvas-light);
+    --btn-primary-text: var(--color-canvas);
+    --btn-secondary-bg: var(--color-surface-elevated);
+    --btn-secondary-text: var(--color-on-dark);
+  }
+
+  body {
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .font-mono, font-mono {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Custom Scrollbar Styles */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: var(--radius-full);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+  }
+}
+
+@layer utilities {
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+  
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  /* Glassmorphism utilities - Premium Dark Cards */
+  .glass-panel {
+    background-color: rgba(16, 18, 20, 0.85); /* Quase preto, alta legibilidade */
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    
+    /* Força as variáveis de cores para o modo escuro dentro do card */
+    --bg-surface: var(--color-surface-deep);
+    --bg-surface-elevated: var(--color-surface-elevated);
+    --text-primary: var(--color-on-dark);
+    --text-secondary: var(--color-on-dark-mute);
+    --text-tertiary: var(--color-stone);
+    --border-subtle: var(--color-divider-soft);
+    --border-strong: var(--color-hairline-dark);
+    
+    color: var(--text-primary);
+  }
+}

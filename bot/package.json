@@ -1,0 +1,27 @@
+{
+  "name": "conciliamec-bot",
+  "version": "1.0.0",
+  "description": "Bot Playwright para automação de coleta de dados do Oficina Inteligente e portal Rede",
+  "scripts": {
+    "bot": "ts-node src/runner.ts",
+    "bot:server": "ts-node src/server.ts",
+    "bot:oi": "ts-node src/runner.ts --target oficina",
+    "bot:rede": "ts-node src/runner.ts --target rede",
+    "bot:install-browsers": "npx playwright install chromium"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.44.0",
+    "@supabase/supabase-js": "^2.45.0",
+    "@types/cors": "^2.8.19",
+    "cors": "^2.8.6",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}

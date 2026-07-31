@@ -1,0 +1,1 @@
+{"nodes":[{"id":"migrations_20260714000002_remove_interest_rates","label":"20260714000002_remove_interest_rates.sql","file_type":"code","source_file":"supabase/migrations/20260714000002_remove_interest_rates.sql","source_location":"L1"}],"edges":[]}

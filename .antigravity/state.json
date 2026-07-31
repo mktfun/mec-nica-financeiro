@@ -1,0 +1,31 @@
+{
+  "providers": {
+    "frontend_provider": null,
+    "dns_provider": "cloudflare",
+    "backend_provider": "supabase_self_hosted",
+    "infrastructure_provider": "vps"
+  },
+  "infra": {
+    "vps": {
+      "host": "env:VPS_HOST",
+      "port": "env:VPS_PORT",
+      "user": "env:VPS_USER",
+      "password": "env:VPS_PASSWORD"
+    },
+    "cloudflare": {
+      "api_token": "env:CLOUDFLARE_API_TOKEN",
+      "tunnel_id": "40d59b8e-f384-4c36-9c7f-b8657572b8d9.cfargotunnel.com",
+      "subdomains": [
+        "chat.tork.services",
+        "evo.tork.services",
+        "minio.tork.services",
+        "traefik.tork.services"
+      ]
+    },
+    "directories": {
+      "tork_stack": "/opt/tork-stack/",
+      "bots": "/opt/bots/",
+      "conciliamec": "/opt/conciliamec-bot/bot/"
+    }
+  }
+}

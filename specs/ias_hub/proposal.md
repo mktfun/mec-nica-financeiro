@@ -1,0 +1,76 @@
+# Proposal: Central de Agentes IAS & Sidebar UI Alignment
+
+## 1. Executive Summary
+This proposal defines the structural specifications for the **Central de Agentes IAS (Oficina GPT)** within the ConciliaMec platform. It addresses two primary areas:
+1. **UI Layout Alignment in `src/routes/agente.tsx`**: Re-ordering the sidebar elements to place the "Oficina GPT" identity header at the top of the sidebar above "Nova Conversa", removing the redundant title header in the main chat viewport, and anchoring "Configurações" and "Logs do Sistema" to the bottom of the sidebar using Flexbox `mt-auto` to eliminate overlap with the chat history scroll list.
+2. **IAS Hub & Dual Memory Architecture**: Standardizing the dual-memory (Transactional SQL vs Structural Knowledge Graph), Claritas governance policies (`claritas_prompts`, `claritas_policies`, `agent_reflections`), Graphify integration, and Edge Function routing for OS queries across local Supabase tables and external bot APIs.
+
+## 2. Problem Statement
+- **UI Disconnect in `agente.tsx`**:
+  - "Oficina GPT" title currently resides inside the header component of the main chat column (`lines 198-208`), while the left sidebar immediately starts with the "Nova Conversa" button (`lines 158-166`).
+  - "Configurações" and "Logs do Sistema" links are absent from the agent sidebar, requiring users to leave the chat context to access settings or logs.
+  - The chat history list flexes dynamically without a fixed bottom section anchor, risking visual overlap or awkward spacing if additional static actions are added.
+- **Architectural Standardization**:
+  - The IAS system relies on a hybrid pipeline: transactional SQL queries against local Supabase tables (`patio_os`, `transactions`, `reconciliations`, `receivables`), live external bot API queries (`bot.tork.services`), structural knowledge graph evaluation (`Graphify` graph in Supabase Storage `knowledge_graph`), and Claritas policy enforcement (`agent_reflections`).
+  - Need a clear, unambiguous specification mapping the routing of complex OS queries (e.g., "quais os detalhes da OS 22549 no rei do oleo") through this dual-memory architecture.
+
+## 3. Proposed Changes
+
+### 3.1 Sidebar & UI Layout Refactor (`src/routes/agente.tsx`)
+- **Move Title Header to Top of Sidebar**:
+  - Insert a brand section at line ~158 of `src/routes/agente.tsx`:
+    ```tsx
+    <div className="px-4 pb-4 border-b border-[var(--border-subtle)] mb-3 flex items-center gap-2.5">
+      <div className="w-8 h-8 rounded-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-primary)] shadow-sm">
+        <Bot size={18} />
+      </div>
+      <div>
+        <h3 className="font-semibold text-sm text-[var(--text-primary)]">Oficina GPT</h3>
+        <p className="text-[10px] text-[var(--text-tertiary)] font-medium">Central IAS</p>
+      </div>
+    </div>
+    ```
+- **Reposition "Nova Conversa" Button**:
+  - Place directly underneath the brand header in the sidebar.
+- **Clean Main Chat Area Header**:
+  - Remove `<h3 className="font-semibold text-sm text-white">Oficina GPT</h3>` from the top header of the main chat panel (`lines 198-208`), replacing it with a minimal session status indicator or model selection badge.
+- **Anchor "Configurações" & "Logs do Sistema" to Sidebar Bottom**:
+  - Append a bottom navigation section at the bottom of the sidebar container (`mt-auto pt-3 border-t border-[var(--border-subtle)] space-y-1 shrink-0`):
+    ```tsx
+    <div className="mt-auto px-3 py-3 border-t border-[var(--border-subtle)] space-y-1 shrink-0">
+      <Link
+        to="/configuracoes"
+        className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/5 transition-colors"
+      >
+        <Settings size={15} />
+        <span>Configurações</span>
+      </Link>
+      <Link
+        to="/configuracoes"
+        hash="logs"
+        className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/5 transition-colors"
+      >
+        <Terminal size={15} />
+        <span>Logs do Sistema</span>
+      </Link>
+    </div>
+    ```
+  - Because the history list div has `flex-1 overflow-y-auto custom-scrollbar`, placing `mt-auto shrink-0` below it ensures the scroll container naturally adjusts its height to fit the remaining space, completely preventing overlap.
+
+### 3.2 IAS Hub Backend & RAG Routing
+- **Dual Memory Architecture**:
+  - *Transactional Memory (RAG Path A & B)*:
+    - Primary local DB queries (`patio_os`, `transactions`, etc.) via `tools-local.ts`.
+    - Secondary live Playwright Bot API queries (`/api/os/detalhe/:id?loja=<slug>`) via `tools-oficina.ts`.
+  - *Structural Memory (RAG Path C)*:
+    - Static code/domain dependency graph stored in Supabase Storage (`knowledge_graph/graph.json`) generated by `graphifyy` CLI tool.
+    - Queryable via `query_knowledge_graph` tool in `supabase/functions/ias-hub/index.ts`.
+- **Claritas Governance & Policy Enforcement**:
+  - `claritas_prompts`: Active system prompt injection (`is_active = true`).
+  - `claritas_policies`: Dynamic safety and severe business rules (`low`, `medium`, `high`, `critical`).
+  - `agent_reflections`: Post-generation reflection logging (`conversation_id`, `tool_used`, `outcome_success`, `reflection_notes`, `policy_evaluations`).
+
+## 4. User Impact & Benefits
+- **Improved UX**: Clean, intuitive sidebar structure matching standard AI chat interfaces (ChatGPT, Claude) with persistent access to Nova Conversa, Histórico, Configurações, and Logs do Sistema.
+- **Architectural Clarity**: Clear separation of responsibilities between local transactional DB search, live external API fetching, and structural knowledge RAG.
+- **No-Hallucination Safety**: Claritas rules and Edge Function system prompts enforce strict factual accuracy for OS details and financial metrics.

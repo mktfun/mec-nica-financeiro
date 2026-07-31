@@ -1,0 +1,94 @@
+{
+  "st-01": {
+    "empresa_slug": "dp_dom_pedro",
+    "nome_display": "Dom Pedro - DP",
+    "id_empresa_oi": "4045",
+    "aliases": [
+      "dom pedro",
+      "dp"
+    ]
+  },
+  "st-02": {
+    "empresa_slug": "jab_jabaquara",
+    "nome_display": "Jabaquara - JAB",
+    "id_empresa_oi": "4469",
+    "aliases": [
+      "jabaquara",
+      "jab"
+    ]
+  },
+  "st-03": {
+    "empresa_slug": "dhjv_jorge_beretta",
+    "nome_display": "Jorge Beretta - DHJV",
+    "id_empresa_oi": "2602",
+    "aliases": [
+      "jorge beretta",
+      "beretta",
+      "dhjv"
+    ]
+  },
+  "st-04": {
+    "empresa_slug": "mp_kennedy",
+    "nome_display": "Kennedy - MP",
+    "id_empresa_oi": "351",
+    "aliases": [
+      "kennedy",
+      "mp kennedy"
+    ]
+  },
+  "3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f": {
+    "empresa_slug": "mhe_maua",
+    "nome_display": "Maua - MHE",
+    "id_empresa_oi": "146",
+    "aliases": [
+      "maua",
+      "mhe"
+    ]
+  },
+  "st-05": {
+    "empresa_slug": "emporio_piraporinha",
+    "nome_display": "Piraporinha - EMPORIO",
+    "id_empresa_oi": "205",
+    "aliases": [
+      "piraporinha",
+      "emporio"
+    ]
+  },
+  "st-06": {
+    "empresa_slug": "brasicar_planalto",
+    "nome_display": "Planalto - BRASICAR",
+    "id_empresa_oi": "203",
+    "aliases": [
+      "planalto",
+      "brasicar"
+    ]
+  },
+  "st-09": {
+    "empresa_slug": "mp_rei_modulo",
+    "nome_display": "Rei do Módulo - MP",
+    "id_empresa_oi": "2190",
+    "aliases": [
+      "rei do modulo",
+      "rei modulo"
+    ]
+  },
+  "st-07": {
+    "empresa_slug": "cap_rudge_ramos",
+    "nome_display": "Rudge Ramos - CAP",
+    "id_empresa_oi": "748",
+    "aliases": [
+      "rudge ramos",
+      "cap",
+      "rudge"
+    ]
+  },
+  "st-08": {
+    "empresa_slug": "hd_santo_andre",
+    "nome_display": "Santo André - HD",
+    "id_empresa_oi": "2112",
+    "aliases": [
+      "santo andre",
+      "hd"
+    ]
+  }
+}
