@@ -1015,8 +1015,8 @@
     "semantic_hash": ""
   },
   "src/components/layout/Sidebar.tsx": {
-    "mtime": 1785505820.9781356,
-    "ast_hash": "f7fafff17a90edaaa656c33da70a9fd0",
+    "mtime": 1785507742.3007092,
+    "ast_hash": "873db437b9ff17ec18597dccc98f3722",
     "semantic_hash": ""
   },
   "src/components/layout/TopBar.tsx": {
@@ -1310,8 +1310,8 @@
     "semantic_hash": ""
   },
   "src/routes/agente.tsx": {
-    "mtime": 1785506680.9641628,
-    "ast_hash": "0a2ae19f6c7ac3552f908fdb26b2dada",
+    "mtime": 1785508725.2455459,
+    "ast_hash": "9086b06ad933de6709d4ea9595b61aa5",
     "semantic_hash": ""
   },
   "src/routes/alertas.tsx": {
@@ -3660,8 +3660,8 @@
     "semantic_hash": ""
   },
   "src/components/chat/PromptInput.tsx": {
-    "mtime": 1785428874.0,
-    "ast_hash": "814d6a2e8f63f2254b347b6ac63768e5",
+    "mtime": 1785508799.9987793,
+    "ast_hash": "595fc3563f3454435645bdbd3921881b",
     "semantic_hash": ""
   },
   "specs/archive/bot-production-fixes/design.md": {
@@ -4297,6 +4297,51 @@
   "specs/archive/sidebar-layout/spec-plan.md": {
     "mtime": 1785497648.128899,
     "ast_hash": "eb0a0a649f848c58f42acfc2a664cf8b",
+    "semantic_hash": ""
+  },
+  "specs/archive/fix-chat-ui/design.md": {
+    "mtime": 1785503900.1507208,
+    "ast_hash": "a903e5981b3e3d2116582905fa2d818c",
+    "semantic_hash": ""
+  },
+  "specs/archive/fix-chat-ui/proposal.md": {
+    "mtime": 1785503880.7761285,
+    "ast_hash": "5f14bfe9c9a5bb0b9344667e2eb4d5ac",
+    "semantic_hash": ""
+  },
+  "specs/archive/fix-chat-ui/spec-plan.md": {
+    "mtime": 1785503910.970126,
+    "ast_hash": "8dedd6d95eb4d1038982e748399acd3c",
+    "semantic_hash": ""
+  },
+  "specs/archive/fix-sidebar-crash/design.md": {
+    "mtime": 1785507657.6424546,
+    "ast_hash": "7ca69465792f4a142b0e3b70fe64dba4",
+    "semantic_hash": ""
+  },
+  "specs/archive/fix-sidebar-crash/proposal.md": {
+    "mtime": 1785507645.5840528,
+    "ast_hash": "bca78dfaa240748b52560e3949611b18",
+    "semantic_hash": ""
+  },
+  "specs/archive/fix-sidebar-crash/spec-plan.md": {
+    "mtime": 1785507751.1740634,
+    "ast_hash": "b405a6e9a4543cc9f7487058b2a39acb",
+    "semantic_hash": ""
+  },
+  "specs/fix-chat-reactivity/design.md": {
+    "mtime": 1785508597.5745163,
+    "ast_hash": "ae6ce6993454b1a41e6bf522ef24c177",
+    "semantic_hash": ""
+  },
+  "specs/fix-chat-reactivity/proposal.md": {
+    "mtime": 1785508585.687114,
+    "ast_hash": "ee4ca51ab4a812f5bca250cf48a94eb1",
+    "semantic_hash": ""
+  },
+  "specs/fix-chat-reactivity/spec-plan.md": {
+    "mtime": 1785508821.2339504,
+    "ast_hash": "f4218cb380078bdb65a22e2eef669e24",
     "semantic_hash": ""
   }
 }

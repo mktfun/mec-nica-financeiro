@@ -335,6 +335,23 @@ export const PromptInput = React.forwardRef<HTMLDivElement, PromptInputProps>(
     const [attachments, setAttachments] = useState<Attachment[]>([]);
     const [activeAttachment, setActiveAttachment] = useState<{ attachment: Attachment; rect: DOMRect } | null>(null);
 
+    const [forceEnable, setForceEnable] = useState(false);
+
+    useEffect(() => {
+      if (disabled) {
+        setForceEnable(false);
+        const timer = setTimeout(() => {
+          setForceEnable(true);
+        }, 15000); // 15 seconds timeout
+        return () => clearTimeout(timer);
+      } else {
+        setForceEnable(false);
+      }
+    }, [disabled]);
+
+    const isActuallyDisabled = disabled && !forceEnable;
+
+
     // Audio/Voice recording states
     const [isRecording, setIsRecording] = useState(false);
     const [audioData, setAudioData] = useState<number[]>(new Array(5).fill(0));
@@ -390,7 +407,7 @@ export const PromptInput = React.forwardRef<HTMLDivElement, PromptInputProps>(
     }, [isControlled, onChange]);
 
     const expand = () => {
-      if (disabled) return;
+      if (isActuallyDisabled) return;
       setIsSmoothResize(false); 
       setExpanded(true);
     };
@@ -426,7 +443,7 @@ export const PromptInput = React.forwardRef<HTMLDivElement, PromptInputProps>(
     }, []);
 
     const startRecording = useCallback(async () => {
-      if (disabled) return;
+      if (isActuallyDisabled) return;
       setIsSmoothResize(false);
       setExpanded(true);
 
@@ -539,7 +556,7 @@ export const PromptInput = React.forwardRef<HTMLDivElement, PromptInputProps>(
         }, 100);
         simulateText();
       }
-    }, [disabled, handleValueChange, stopRecording]);
+    }, [isActuallyDisabled, handleValueChange, stopRecording]);
 
     // Keep textarea auto-scrolled to bottom while recording
     useEffect(() => {
@@ -576,7 +593,7 @@ export const PromptInput = React.forwardRef<HTMLDivElement, PromptInputProps>(
         }, 50);
         return () => clearTimeout(timer);
       }
-    }, [expanded, isRecording, disabled]);
+    }, [expanded, isRecording, isActuallyDisabled]);
 
     // ONLY updates height on value/text change. Adding attachments leaves this completely isolated.
     useEffect(() => {
@@ -627,7 +644,7 @@ export const PromptInput = React.forwardRef<HTMLDivElement, PromptInputProps>(
     };
 
     const handleSubmit = () => {
-      if (disabled || (value.trim() === "" && !hasAttachments)) return;
+      if (isActuallyDisabled || (value.trim() === "" && !hasAttachments)) return;
       setIsSmoothResize(false);
       onSubmit?.(value, { model: selectedModel, effort: efforts[effortIndex], attachments: attachments.map((a) => a.file) });
       handleValueChange("");
@@ -639,13 +656,13 @@ export const PromptInput = React.forwardRef<HTMLDivElement, PromptInputProps>(
 
     const cycleEffort = (e: React.MouseEvent) => {
       e.stopPropagation();
-      if (disabled) return;
+      if (isActuallyDisabled) return;
       setEffortIndex((prev) => (prev + 1) % efforts.length);
     };
 
     const openFileChooser = (e: React.MouseEvent) => {
       e.stopPropagation();
-      if (disabled) return;
+      if (isActuallyDisabled) return;
       fileInputRef.current?.click();
     };
 
@@ -691,7 +708,7 @@ export const PromptInput = React.forwardRef<HTMLDivElement, PromptInputProps>(
 
     const onActionButtonClick = (e: React.MouseEvent) => {
       e.preventDefault();
-      if (disabled) return;
+      if (isActuallyDisabled) return;
       if (isRecording) {
         stopRecording();
       } else if (hasValue) {
@@ -712,7 +729,7 @@ export const PromptInput = React.forwardRef<HTMLDivElement, PromptInputProps>(
             internalContainerRef.current = node;
           }}
           onBlur={handleBlur}
-          className={cn("relative flex flex-col w-full mx-auto", className, disabled && "opacity-60")}
+          className={cn("relative flex flex-col w-full mx-auto", className, isActuallyDisabled && "opacity-60")}
           style={{
             maxWidth: expanded ? 768 : 320,
             transition: isSmoothResize ? "max-width 0.15s ease-out" : "max-width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
@@ -727,7 +744,7 @@ export const PromptInput = React.forwardRef<HTMLDivElement, PromptInputProps>(
             className="hidden"
             tabIndex={-1}
             aria-hidden="true"
-            disabled={disabled}
+            disabled={isActuallyDisabled}
           />
 
           {/* Independent Attachment Tab (Slides up from behind the prompt input) */}
@@ -773,7 +790,7 @@ export const PromptInput = React.forwardRef<HTMLDivElement, PromptInputProps>(
           <div
             onMouseDown={(e) => {
               const isTextarea = e.target === textareaRef.current;
-              if (expanded && !isTextarea && !isRecording && !disabled) {
+              if (expanded && !isTextarea && !isRecording && !isActuallyDisabled) {
                 e.preventDefault();
                 textareaRef.current?.focus();
               }
@@ -787,7 +804,7 @@ export const PromptInput = React.forwardRef<HTMLDivElement, PromptInputProps>(
             className={cn(
               "relative w-full border border-border bg-card shadow-sm focus-within:border-ring/40 focus-within:ring-1 focus-within:ring-ring/20 hover:border-border/80 z-10 transition-colors",
               expanded ? "cursor-text" : "cursor-default",
-              disabled && "cursor-not-allowed hover:border-border"
+              isActuallyDisabled && "cursor-not-allowed hover:border-border"
             )}
           >
             <style dangerouslySetInnerHTML={{ __html: `

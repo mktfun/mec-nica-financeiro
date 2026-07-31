@@ -191,25 +191,29 @@ function AgentePage() {
     const { data: sessionData } = await supabase.auth.getSession();
     const token = sessionData.session?.access_token;
 
-    // Optimistic append immediately to UI
-    append(
-      { role: 'user', content: text },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-        body: { conversation_id: currentConvId }
-      }
-    );
-
-    // Salva silenciosamente no banco em background
-    const { error: insertError } = await supabase.from('messages').insert([{
+    // Salva silenciosamente no banco em background (não-bloqueante)
+    supabase.from('messages').insert([{
       conversation_id: currentConvId,
       role: 'user',
       content: text
-    }]);
+    }]).then(({ error }) => {
+      if (error) {
+        console.error('Erro ao salvar mensagem no Supabase:', error);
+        toast.error('Erro ao enviar mensagem para o histórico');
+      }
+    });
 
-    if (insertError) {
-      console.error('Erro ao salvar mensagem no Supabase:', insertError);
-      toast.error('Erro ao enviar mensagem para o histórico');
+    // Optimistic append immediately to UI - com try/catch
+    try {
+      await append(
+        { role: 'user', content: text },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          body: { conversation_id: currentConvId }
+        }
+      );
+    } catch (err) {
+      console.warn("Erro ao disparar append (Edge Function pode estar offline):", err);
     }
   };
 
