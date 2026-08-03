@@ -41,3 +41,12 @@
 **Regra aprendida:** Em gráficos verticais de `BarChart` no Recharts exibindo nomes de entidades (como Lojas/Filiais), NUNCA deixe o YAxis com `width` padrão estreito. Ajuste `width={130}` ou mais, combine com uma função `shortenName` (que remove artigos irrelevantes, não apenas os abrevie) e insira `<LabelList position="right">` na ponta da barra para que o usuário não dependa do mouse (Tooltip) em views executivas ou mobile.
 **Risco identificado:** word-break feio em nomes compostos e visual pobre "fora-da-caixa" em charts nativos.
 **Não fazer:** Nunca entregue um gráfico de barras num dashboard Premium sem engordar as barras (`barSize={14+}`) e sem aplicar `radius` nos cantos. Gráficos com barras finas passam uma imagem barata ao software.
+
+## [2026-08-03] — [Feature ID: 071-faturamento-chart-fix]
+
+**Contexto:** O gráfico "Faturamento × Contas" sofria com a quebra de linha forçada do Recharts no Eixo Y, labels sobrepostos em valores pequenos e o tooltip sendo cortado (overflow clip) pelo container com scroll.
+**Regra aprendida:** 
+- **Anti-Wrap no YAxis:** Para forçar o Recharts a renderizar o rótulo (tick) inteiro numa linha só e alinhar na direita, construa um `<CustomYAxisTick>` retornando um `<g>` com `<text textAnchor="end">`. O SVG `<text>` cru evita os múltiplos `<tspan>` de auto-wrap do Recharts.
+- **Tooltip Escape:** Em containers pequenos com `overflow-y-auto`, adicione `allowEscapeViewBox={{ x: true, y: true }}` no `<Tooltip>` para que ele não sofra clipping.
+- **Densidade Dinâmica:** O cálculo de altura do gráfico vertical não pode deixar espaços vagos; `chartData.length * 40` é um excelente multiplicador para um `barCategoryGap` de `15%`.
+**Não fazer:** Nunca adicione `<LabelList>` dentro de barras agrupadas em espaços horizontais estreitos, a menos que os valores sejam perfeitamente previsíveis. Valores díspares causam *overlap* total.
