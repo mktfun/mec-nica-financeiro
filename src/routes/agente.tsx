@@ -33,8 +33,10 @@ function AgentePage() {
   }, [activeConversationId]);
   
   // transport com auth dinâmico — prepareSendMessagesRequest lê o token em cada request
-  const chatTransport = React.useMemo(() => new DefaultChatTransport({
-    api: `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-chat`,
+  const chatTransport = React.useMemo(() => {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "https://cnwzsvowkfymtdiryhqc.supabase.co";
+    return new DefaultChatTransport({
+    api: `${supabaseUrl}/functions/v1/ai-chat`,
     prepareSendMessagesRequest: async (request) => {
       const { data: sessionData } = await supabase.auth.getSession();
       const token = sessionData.session?.access_token;
@@ -270,7 +272,8 @@ function AgentePage() {
           const token = sessionData.session?.access_token;
           const prompt = `Gere um título super curto (máximo 4 palavras) que resuma esta mensagem: "${text}"`;
           
-          const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-chat`, {
+          const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "https://cnwzsvowkfymtdiryhqc.supabase.co";
+          const response = await fetch(`${supabaseUrl}/functions/v1/ai-chat`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
