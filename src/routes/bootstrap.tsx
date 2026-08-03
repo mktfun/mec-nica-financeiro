@@ -1,0 +1,214 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { useState } from 'react';
+import { Card } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { useStores } from '@/hooks/useStores';
+import { supabase } from '@/lib/supabase';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { Sparkles, Save, ArrowLeft } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+
+export const Route = createFileRoute('/bootstrap')({
+  component: BootstrapPage,
+});
+
+function BootstrapPage() {
+  const { data: stores = [], isLoading: isLoadingStores } = useStores();
+  
+  // Default to yesterday
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const [targetDate, setTargetDate] = useState(yesterday.toISOString().split('T')[0]);
+  
+  const [formData, setFormData] = useState<Record<string, { saldo: string; faturamento: string; contas: string }>>({});
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+
+  const handleInputChange = (storeId: string, field: 'saldo' | 'faturamento' | 'contas', value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [storeId]: {
+        ...(prev[storeId] || { saldo: '', faturamento: '', contas: '' }),
+        [field]: value
+      }
+    }));
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    setSaveSuccess(false);
+
+    try {
+      const promises = [];
+      
+      for (const store of stores) {
+        const data = formData[store.id];
+        if (!data) continue;
+
+        const saldo = Number(data.saldo || 0);
+        const faturamento = Number(data.faturamento || 0);
+        const contas = Number(data.contas || 0);
+
+        if (saldo === 0 && faturamento === 0 && contas === 0) continue;
+
+        // Upsert Reconciliations (para Saldo Anterior)
+        if (saldo > 0) {
+          promises.push(
+            supabase.from('reconciliations').upsert({
+              store_id: store.id,
+              date: targetDate,
+              status: 'validated',
+              bank_total: saldo,
+              // Campos obrigatórios dummies para satisfazer constraints se necessário
+              reconciled_total: saldo,
+              card_total: 0,
+              pix_total: 0,
+              os_total: 0,
+              total_diff: 0,
+              missing_os: [],
+              matched_os: [],
+              unmatched_receipts: []
+            }, { onConflict: 'store_id,date' })
+          );
+        }
+
+        // Upsert Daily Snapshots (para Faturamento e Contas Anterior)
+        if (faturamento > 0 || contas > 0 || saldo > 0) {
+          promises.push(
+            supabase.from('daily_snapshots').upsert({
+              store_id: store.id,
+              date: targetDate,
+              faturamento_outros_valor: faturamento,
+              contas_a_pagar: contas,
+              saldo_final: saldo,
+              dinheiro_mp: 0,
+              a_receber_manual: 0,
+              provisao: 0
+            }, { onConflict: 'store_id,date' })
+          );
+        }
+      }
+
+      await Promise.all(promises);
+      setSaveSuccess(true);
+    } catch (err) {
+      console.error('Erro no Bootstrap:', err);
+      alert('Falha ao salvar Carga Inicial.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  if (isLoadingStores) {
+    return <div className="p-8 flex justify-center"><LoadingSpinner size="lg" /></div>;
+  }
+
+  return (
+    <div className="p-6 md:p-8 max-w-5xl mx-auto space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <Link to="/" className="inline-flex items-center gap-2 text-sm text-[var(--text-tertiary)] hover:text-[var(--color-primary)] transition-colors mb-2">
+            <ArrowLeft size={16} /> Voltar ao Início
+          </Link>
+          <h1 className="text-2xl font-display font-bold text-[var(--text-primary)] flex items-center gap-2">
+            <Sparkles className="text-[var(--color-primary)]" />
+            Bootstrap: Dia Zero
+          </h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-1">
+            Injeção de carga inicial para que o sistema consiga calcular métricas do dia seguinte sem bugs.
+          </p>
+        </div>
+        <Button 
+          variant="primary" 
+          onClick={handleSave} 
+          disabled={isSaving}
+          className="gap-2 font-semibold"
+        >
+          {isSaving ? <LoadingSpinner size="sm" /> : <Save size={18} />}
+          {isSaving ? 'Salvando...' : 'Salvar Carga Inicial'}
+        </Button>
+      </div>
+
+      {saveSuccess && (
+        <div className="p-4 rounded-xl bg-[var(--color-accent-teal)]/10 border border-[var(--color-accent-teal)]/20 text-[var(--color-accent-teal)] flex items-center gap-2">
+          <Sparkles size={18} />
+          <strong>Sucesso!</strong> Dados do Dia Zero injetados. O Dashboard do dia seguinte já terá lastro para calcular "% vs ANTERIOR" e Fluxo de Caixa.
+        </div>
+      )}
+
+      <Card className="p-6 border border-[var(--color-primary)]/20 shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.05)]">
+        <div className="flex items-center gap-4 mb-6 pb-6 border-b border-[var(--border-subtle)]">
+          <div>
+            <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1 uppercase tracking-wider">
+              Data do Dia Zero (Ex: 30/07 se o sistema ligar dia 31/07)
+            </label>
+            <input
+              type="date"
+              value={targetDate}
+              onChange={(e) => setTargetDate(e.target.value)}
+              className="bg-[var(--bg-surface-hover)] border border-[var(--border-subtle)] rounded-lg px-4 py-2 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--color-primary)] transition-colors"
+            />
+          </div>
+        </div>
+
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-[var(--border-subtle)] text-xs text-[var(--text-tertiary)] uppercase tracking-wider">
+                <th className="pb-3 font-semibold">Loja</th>
+                <th className="pb-3 font-semibold">Saldo em Conta</th>
+                <th className="pb-3 font-semibold">Faturamento Total</th>
+                <th className="pb-3 font-semibold">Contas Pagas</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[var(--border-subtle)]">
+              {stores.map(store => (
+                <tr key={store.id} className="hover:bg-[var(--bg-surface-hover)] transition-colors">
+                  <td className="py-3">
+                    <span className="text-sm font-semibold text-[var(--text-primary)]">{store.name}</span>
+                  </td>
+                  <td className="py-3 pr-4">
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] text-xs font-bold">R$</span>
+                      <input
+                        type="number"
+                        placeholder="0.00"
+                        value={formData[store.id]?.saldo || ''}
+                        onChange={(e) => handleInputChange(store.id, 'saldo', e.target.value)}
+                        className="w-full bg-[var(--bg-base)] border border-[var(--border-subtle)] rounded-md pl-8 pr-3 py-1.5 text-sm focus:outline-none focus:border-[var(--color-accent-teal)]"
+                      />
+                    </div>
+                  </td>
+                  <td className="py-3 pr-4">
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] text-xs font-bold">R$</span>
+                      <input
+                        type="number"
+                        placeholder="0.00"
+                        value={formData[store.id]?.faturamento || ''}
+                        onChange={(e) => handleInputChange(store.id, 'faturamento', e.target.value)}
+                        className="w-full bg-[var(--bg-base)] border border-[var(--border-subtle)] rounded-md pl-8 pr-3 py-1.5 text-sm focus:outline-none focus:border-[var(--color-primary)]"
+                      />
+                    </div>
+                  </td>
+                  <td className="py-3">
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] text-xs font-bold">R$</span>
+                      <input
+                        type="number"
+                        placeholder="0.00"
+                        value={formData[store.id]?.contas || ''}
+                        onChange={(e) => handleInputChange(store.id, 'contas', e.target.value)}
+                        className="w-full bg-[var(--bg-base)] border border-[var(--border-subtle)] rounded-md pl-8 pr-3 py-1.5 text-sm focus:outline-none focus:border-[var(--color-accent-warning)]"
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}

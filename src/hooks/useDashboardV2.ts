@@ -136,7 +136,7 @@ export function useDashboardV2(selectedDateStr?: string) {
       const contasManual = Number(snapshotRes.data?.contas_a_pagar || 0);
       
       let faturamentoAtualLog = 0;
-      let faturamentoAnterior = 0;
+      let faturamentoAnteriorLog = 0;
       const fatByStore: Record<string, number> = {};
       const contasByStore: Record<string, number> = {};
       let contasAPagarBase = 0;
@@ -158,13 +158,17 @@ export function useDashboardV2(selectedDateStr?: string) {
           }
         } else if (tx.target_date === dateAnterior) {
           if (tx.type === 'in') {
-            faturamentoAnterior += val;
+            faturamentoAnteriorLog += val;
           }
         }
       }
       
       const faturamentoAtual = faturamentoAtualLog + fatManual;
       const contasAPagar = contasAPagarBase + contasManual;
+
+      const snapshotAnterior = (historicoSnapshotsRes.data || []).find((s: any) => s.date === dateAnterior);
+      const fatManualAnterior = Number(snapshotAnterior?.faturamento_outros_valor || 0);
+      const faturamentoAnterior = faturamentoAnteriorLog + fatManualAnterior;
 
       const variacaoFaturamento = faturamentoAnterior > 0
         ? ((faturamentoAtual - faturamentoAnterior) / faturamentoAnterior) * 100
