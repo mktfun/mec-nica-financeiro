@@ -8,12 +8,12 @@
 
 **Não fazer:** Nunca armazenar OS em cache infinito sem verificar se ela já foi dada como encerrada.
 
-## [2026-08-03] — [Feature ID: 068-faturamento-patio-os]
+## [2026-08-03] — [Feature ID: 069-faturamento-recebimentos]
 
 **Contexto:** Definição da fonte de verdade para a métrica de "Faturamento Diário".
 
-**Regra aprendida:** O Faturamento de Ordens de Serviço nunca deve ser derivado de logs de importação pontuais (`import_logs`). Ele deve ser calculado dinamicamente com base na data de encerramento da OS. Em `patio_os`, a soma de `total_value` das OSs onde `closed_at` pertence à data alvo é o valor faturado verdadeiro e imutável.
+**Regra aprendida:** O Faturamento nunca deve ser derivado do valor bruto das Ordens de Serviço (`total_value` em `patio_os` ou `import_logs`). Na regra de negócios deste cliente, "Faturamento" significa **Recebimento de Caixa Real** (Dinheiro que entrou). Portanto, a métrica oficial de Faturamento deve SEMPRE espelhar as entradas financeiras da conciliação (`transactions` onde `type = 'in'`).
 
-**Risco identificado:** Basear relatórios financeiros (Macro Chart) em `import_logs.total_os` causa lacunas no histórico caso o log falhe ou as planilhas não tenham sido submetidas em dias específicos, mesmo com as OSs finalizadas existindo no sistema (Pátio).
+**Risco identificado:** Basear relatórios financeiros (Macro Chart, Cards e Tabelas) em `total_value` das OSs causa divergência contábil monstruosa com os recebimentos reais via Pix e Maquininha (Rede), invalidando o Dashboard.
 
-**Não fazer:** Nunca utilize `import_logs` como repositório principal de Faturamento. Ele serve apenas como log sistêmico. Toda e qualquer métrica de Faturamento deve provir do `patio_os` (`closed_at`).
+**Não fazer:** Nunca utilize `patio_os` nem `import_logs` para somar "Faturamento". Faturamento = Soma de Entradas (`transactions` type='in') + Lançamentos Manuais (`faturamento_outros_valor`).

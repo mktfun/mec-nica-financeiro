@@ -61,14 +61,14 @@ export function useDashboardV2(selectedDateStr?: string) {
       // 2. Disparar queries paralelas baseadas na dateAtual
       const [
         recsAll,         // para bank_total mais recente de cada loja
-        patioOs,         // Veículos no pátio, Faturamento (closed_at) e A Receber real
-        contasRows,      // Transações do OFX (Saídas) para formar "Contas"
+        patioOs,         // Veículos no pátio e A Receber real
+        transacoesAtuais,// Transações (Entradas e Saídas) para Faturamento e Contas
         storesRes,       // Lojas
         snapshotRes,     // Dados manuais (Dinheiro MP, A Receber manual, Faturamento Outros)
         
         // Histórico Macro (Mês Atual)
         historicoSaldosRes,
-        historicoContasRes,
+        historicoTransacoesRes,
         historicoSnapshotsRes
       ] = await Promise.all([
         supabase
@@ -82,10 +82,8 @@ export function useDashboardV2(selectedDateStr?: string) {
 
         supabase
           .from('transactions')
-          .select('store_id, amount')
-          .eq('target_date', dateAtual)
-          .eq('type', 'out')
-          .lt('amount', 0),
+          .select('store_id, amount, target_date, type')
+          .in('target_date', [dateAtual, dateAnterior]),
 
         supabase.from('stores').select('id, name'),
 
@@ -101,7 +99,7 @@ export function useDashboardV2(selectedDateStr?: string) {
           : Promise.resolve({ data: [] }),
           
         monthDates.length > 0
-          ? supabase.from('transactions').select('target_date, amount').in('target_date', monthDates).eq('type', 'out').lt('amount', 0)
+          ? supabase.from('transactions').select('target_date, amount, type').in('target_date', monthDates)
           : Promise.resolve({ data: [] }),
           
         monthDates.length > 0
@@ -133,27 +131,33 @@ export function useDashboardV2(selectedDateStr?: string) {
       const saldoAnterior = Object.values(latestPrevByStore).reduce((acc, v) => acc + v, 0);
       const fluxoCaixa = saldoTotal - saldoAnterior;
 
-      // --- Faturamento (patio_os + Manual) ---
+      // --- Faturamento (Transações 'in' + Manual) ---
       const fatManual = Number(snapshotRes.data?.faturamento_outros_valor || 0);
       
       let faturamentoAtualLog = 0;
       let faturamentoAnterior = 0;
       const fatByStore: Record<string, number> = {};
+      const contasByStore: Record<string, number> = {};
+      let contasAPagar = 0;
       
-      for (const po of patioOs.data || []) {
-        // Se tem closed_at, usamos. Se não, mas está finalizado, usamos a data de importação (updated_at)
-        const effectiveDateStr = po.closed_at || (po.status === 'finalizado' ? po.updated_at : null);
+      for (const tx of transacoesAtuais.data || []) {
+        const val = Math.abs(Number(tx.amount || 0));
         
-        if (effectiveDateStr) {
-          // Extraímos a data no formato YYYY-MM-DD
-          const closedDate = effectiveDateStr.split('T')[0];
-          
-          if (closedDate === dateAtual) {
-            const val = Number(po.total_value || 0);
+        if (tx.target_date === dateAtual) {
+          if (tx.type === 'in') {
             faturamentoAtualLog += val;
-            fatByStore[po.store_id] = (fatByStore[po.store_id] || 0) + val;
-          } else if (closedDate === dateAnterior) {
-            faturamentoAnterior += Number(po.total_value || 0);
+            if (tx.store_id) {
+              fatByStore[tx.store_id] = (fatByStore[tx.store_id] || 0) + val;
+            }
+          } else if (tx.type === 'out') {
+            contasAPagar += val;
+            if (tx.store_id) {
+              contasByStore[tx.store_id] = (contasByStore[tx.store_id] || 0) + val;
+            }
+          }
+        } else if (tx.target_date === dateAnterior) {
+          if (tx.type === 'in') {
+            faturamentoAnterior += val;
           }
         }
       }
@@ -187,19 +191,6 @@ export function useDashboardV2(selectedDateStr?: string) {
         }
         patioByStore[os.store_id].qtd += 1;
         patioByStore[os.store_id].valor += Number(os.total_value || 0);
-      }
-
-      // --- Contas (Despesas OFX via transactions) ---
-      // Como amount já é negativo (lt(0)), vamos usar o Math.abs para somar positivamente
-      const contasAPagar = (contasRows.data || []).reduce(
-        (acc, t) => acc + Math.abs(Number(t.amount || 0)),
-        0
-      );
-
-      const contasByStore: Record<string, number> = {};
-      for (const t of contasRows.data || []) {
-        if (!t.store_id) continue;
-        contasByStore[t.store_id] = (contasByStore[t.store_id] || 0) + Math.abs(Number(t.amount || 0));
       }
 
       // --- Caixa e Diferença ---
@@ -252,26 +243,21 @@ export function useDashboardV2(selectedDateStr?: string) {
         }
       }
       
-      // Faturamento (patio_os closed_at + manual do dia)
-      for (const po of patioOs.data || []) {
-        const effectiveDateStr = po.closed_at || (po.status === 'finalizado' ? po.updated_at : null);
-        if (effectiveDateStr) {
-          const closedDate = effectiveDateStr.split('T')[0];
-          if (histMap[closedDate] !== undefined) {
-            histMap[closedDate].faturamento += Number(po.total_value || 0);
+      // Faturamento e Contas via transactions
+      for (const row of historicoTransacoesRes.data || []) {
+        if (histMap[row.target_date] !== undefined) {
+          if (row.type === 'in') {
+            histMap[row.target_date].faturamento += Math.abs(Number(row.amount || 0));
+          } else if (row.type === 'out') {
+            histMap[row.target_date].contas += Math.abs(Number(row.amount || 0));
           }
         }
       }
+      
+      // Adicionar faturamento manual
       for (const row of historicoSnapshotsRes.data || []) {
         if (histMap[row.date] !== undefined) {
           histMap[row.date].faturamento += Number(row.faturamento_outros_valor || 0);
-        }
-      }
-
-      // Contas (transactions type='out' e amount < 0)
-      for (const row of historicoContasRes.data || []) {
-        if (histMap[row.target_date] !== undefined) {
-          histMap[row.target_date].contas += Math.abs(Number(row.amount || 0));
         }
       }
 
