@@ -17,3 +17,9 @@
 **Risco identificado:** Basear relatórios financeiros (Macro Chart, Cards e Tabelas) em `total_value` das OSs causa divergência contábil monstruosa com os recebimentos reais via Pix e Maquininha (Rede), invalidando o Dashboard.
 
 **Não fazer:** Nunca utilize `patio_os` nem `import_logs` para somar "Faturamento". Faturamento = Soma de Entradas (`transactions` type='in') + Lançamentos Manuais (`faturamento_outros_valor`).
+
+## [2026-08-03] — [Feature ID: 072-bootstrap-legacy-data]
+
+**Contexto:** O primeiro dia de uso de um sistema (Dia 1) não tem dados do Dia 0 no banco, quebrando comparações percentuais e cálculos de Fluxo de Caixa (que dependem de `Saldo Atual - Saldo Anterior`).
+**Regra aprendida:** "Síndrome do Sistema Virgem". Sempre forneça uma rota administrativa de Bootstrap (`/bootstrap`) para injeção manual das métricas base do "Dia Zero" (Saldo Bancário, Faturamento, Contas). É a forma mais robusta de plugar dados legados do dia anterior sem escrever parsers frágeis para planilhas `.xlsx` antigas.
+**Risco identificado:** Matemática do dashboard (`% vs ANTERIOR`) deve olhar para `faturamento_outros_valor` do dia anterior (`dateAnterior`), e não apenas para transações transacionadas, senão o painel nunca considerará os valores do Bootstrap.
