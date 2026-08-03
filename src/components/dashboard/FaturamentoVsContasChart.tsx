@@ -9,20 +9,31 @@ interface FaturamentoVsContasChartProps {
   isLoading?: boolean;
 }
 
-import { CartesianGrid, LabelList } from 'recharts';
+import { CartesianGrid } from 'recharts';
 
 const formatCurrency = (value: number) =>
   `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 
-const formatCompactCurrency = (value: number) => {
-  if (value >= 1000) {
-    return `R$ ${(value / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 })}k`;
-  }
-  return formatCurrency(value);
-};
-
 const shortenName = (name: string) =>
   name.replace(/Rei do /gi, '').replace(/Mecânica /gi, '').slice(0, 20);
+
+const CustomYAxisTick = ({ x, y, payload }: any) => {
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text
+        x={0}
+        y={0}
+        dy={4}
+        textAnchor="end"
+        fill="var(--text-secondary)"
+        fontSize={11}
+        fontWeight={500}
+      >
+        {payload.value}
+      </text>
+    </g>
+  );
+};
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
@@ -87,12 +98,12 @@ export function FaturamentoVsContasChart({ data, isLoading }: FaturamentoVsConta
         </div>
       ) : (
         <div className="flex-1 overflow-y-auto min-h-[260px] pr-2 custom-scrollbar">
-          <div style={{ height: Math.max(260, chartData.length * 55) }}>
+          <div style={{ height: Math.max(260, chartData.length * 38) }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={chartData}
                 layout="vertical"
-                margin={{ top: 0, right: 50, left: 0, bottom: 0 }}
+                margin={{ top: 0, right: 16, left: 0, bottom: 0 }}
                 barCategoryGap="15%"
               >
                 <CartesianGrid horizontal={false} stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
@@ -102,12 +113,14 @@ export function FaturamentoVsContasChart({ data, isLoading }: FaturamentoVsConta
                   type="category"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: 'var(--text-secondary)', fontSize: 11, fontWeight: 500 }}
+                  tick={<CustomYAxisTick />}
                   width={130}
                 />
                 <Tooltip
                   cursor={{ fill: 'rgba(255,255,255,0.04)', radius: 4 }}
                   content={<CustomTooltip />}
+                  allowEscapeViewBox={{ x: true, y: true }}
+                  isAnimationActive={false}
                 />
                 <Legend
                   iconType="circle"
@@ -119,29 +132,13 @@ export function FaturamentoVsContasChart({ data, isLoading }: FaturamentoVsConta
                   fill="var(--color-accent-teal)"
                   radius={[0, 4, 4, 0]}
                   barSize={14}
-                >
-                  <LabelList 
-                    dataKey="Faturamento" 
-                    position="right" 
-                    formatter={formatCompactCurrency} 
-                    fill="var(--text-tertiary)" 
-                    fontSize={10} 
-                  />
-                </Bar>
+                />
                 <Bar
                   dataKey="Contas"
                   fill="var(--color-accent-warning)"
                   radius={[0, 4, 4, 0]}
                   barSize={14}
-                >
-                  <LabelList 
-                    dataKey="Contas" 
-                    position="right" 
-                    formatter={formatCompactCurrency} 
-                    fill="var(--text-tertiary)" 
-                    fontSize={10} 
-                  />
-                </Bar>
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
