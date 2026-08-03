@@ -1,5 +1,6 @@
 import * as XLSX from 'xlsx';
 import { extractNumber } from './numberUtils';
+import { normalizeRedeStoreName } from './storeMapping';
 
 export interface RedeTransaction {
   storeName: string;
@@ -61,7 +62,10 @@ export async function parseRedeFile(file: File): Promise<RedeResult> {
       const methodRaw = String(row[0] || '').toLowerCase();
       const grossRaw = row[2];
       const netRaw = row[3];
-      const storeName = String(row[9] || 'DESCONHECIDA').trim();
+      const rawStoreName = String(row[9] || 'DESCONHECIDA').trim();
+      const storeName = normalizeRedeStoreName(rawStoreName);
+
+      if (storeName === 'IGNORAR') continue;
 
       // Se a linha não tiver valor de venda numérico, ignora
       if (grossRaw === undefined || grossRaw === null || grossRaw === '') continue;

@@ -27,6 +27,11 @@ export interface ImportLogEntry {
   message: string;
 }
 
+function generateSyntheticFitId(source: string, store: string, date: string, amount: number, method: string = '') {
+  const rawString = `${source}_${store}_${date}_${amount}_${method}`.trim().toLowerCase();
+  return rawString.replace(/\s+/g, '_');
+}
+
 // Hook para gerenciar mapeamento de lojas
 function useUnifiedStoreMapping() {
   const [mapping, setMapping] = useState<Record<string, string>>({});
@@ -366,7 +371,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             occurred_at: item.dateCredito ? new Date(item.dateCredito.split('/').reverse().join('-')).toISOString() : `${targetDate}T12:00:00Z`,
             target_date: targetDate,
             icon_type: 'card',
-            source: 'maquininha'
+            source: 'maquininha',
+            fitid: generateSyntheticFitId('maquininha', item.storeName, item.dateVenda || targetDate, item.amount || 0)
         });
       });
 
@@ -417,7 +423,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             title: `Rede (Líquido) - ${t.storeName}`,
             target_date: targetDate,
             source: 'rede',
-            os_number: matched_os_number
+            os_number: matched_os_number,
+            fitid: generateSyntheticFitId('rede', t.storeName, t.date || targetDate, t.netAmount, t.method)
           });
           
           if (matched_os_number && store_id) {
@@ -442,7 +449,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
               title: `Taxa Rede - ${t.storeName}`,
               target_date: targetDate,
               source: 'rede_taxa',
-              os_number: matched_os_number
+              os_number: matched_os_number,
+              fitid: generateSyntheticFitId('rede_taxa', t.storeName, t.date || targetDate, t.interest, 'Taxa')
             });
           }
         });

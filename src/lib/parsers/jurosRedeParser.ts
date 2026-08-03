@@ -1,6 +1,7 @@
 import * as XLSX from 'xlsx';
 import { ParsedExpense } from './contasAPagarParser';
 import { extractNumber } from '@/lib/parsers/numberUtils';
+import { normalizeRedeStoreName } from './storeMapping';
 
 export function parseJurosRede(workbook: XLSX.WorkBook): ParsedExpense[] {
   const sheetName = workbook.SheetNames[0];
@@ -60,7 +61,10 @@ export function parseJurosRede(workbook: XLSX.WorkBook): ParsedExpense[] {
     const row = data[i] || [];
     
     for (const block of storeBlocks) {
-      const storeStr = block.name.toUpperCase();
+      const normalizedStoreName = normalizeRedeStoreName(block.name);
+      if (normalizedStoreName === 'IGNORAR') continue;
+
+      const storeStr = normalizedStoreName.toUpperCase();
       if (storeStr.includes('TOTAL') || storeStr.includes('SOMA') || storeStr.includes('GERAL')) {
         continue;
       }
@@ -90,7 +94,7 @@ export function parseJurosRede(workbook: XLSX.WorkBook): ParsedExpense[] {
             }
             
             expenses.push({
-              storeName: block.name,
+              storeName: normalizedStoreName,
               amount: amount,
               description: `Juros Antecipação - Tipo: ${extraInfo}`,
               occurredAt: new Date().toISOString().split('T')[0],

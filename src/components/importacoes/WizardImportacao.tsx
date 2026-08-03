@@ -44,6 +44,11 @@ function useStoreMapping(localStorageKey = '@mecanica/store-mappings') {
   return { mapping, updateMapping, setMapping };
 }
 
+function generateSyntheticFitId(source: string, store: string, date: string, amount: number, method: string = '') {
+  const rawString = `${source}_${store}_${date}_${amount}_${method}`.trim().toLowerCase();
+  return rawString.replace(/\s+/g, '_');
+}
+
 export function WizardImportacao({ category, onCancel, onSuccess }: WizardImportacaoProps) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [files, setFiles] = useState<File[]>([]);
@@ -78,7 +83,8 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
           occurred_at: category === 'MAQUININHA' ? `${targetDate}T12:00:00Z` : (item.date || new Date().toISOString()),
           target_date: targetDate,
           icon_type: isOfx ? 'bank' : 'card',
-          source: category === 'OFX' ? 'ofx' : (category === 'MAQUININHA' ? 'maquininha' : 'sistema')
+          source: category === 'OFX' ? 'ofx' : (category === 'MAQUININHA' ? 'maquininha' : 'sistema'),
+          ...(category === 'MAQUININHA' ? { fitid: generateSyntheticFitId('maquininha', item.storeName, targetDate, item.amount || 0) } : {})
         };
       });
       const storeBankBalances: Record<string, number> = {};

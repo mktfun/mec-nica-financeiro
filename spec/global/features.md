@@ -21,3 +21,7 @@
 - **Ferramentas de Custo & Config:** Rota avulsa `/custos` e suas integrações.
 - **Auto-Titulação do Histórico:** Em `src/routes/agente.tsx`, sistema de requisição assíncrona gerando "Smart Titles" em background para não travar a UI de chat, incluindo limpeza imediata de histórico ao alternar conversas.
 - **Regras de Proveniência & Isolamento (`supabase/functions/ai-chat/index.ts`):** Inclusão da `<regra_proibição_alucinação_origem>` e isolamento estrito de histórico por `conversation_id` em `src/routes/agente.tsx`.
+
+## Parsers e Importação
+- **Normalização de Nomes de Loja (`src/lib/parsers/storeMapping.ts`):** Dicionário utilitário que padroniza lojas inconsistentes (Maquininha/Juros) usando keys normalizadas em lowercase e mapeamento explícito, protegendo contra hard-ignores destrutivos.
+- **Idempotência de Maquininha (`src/components/importacoes/CentralImportWizard.tsx`):** Geração de `fitid` sintético determinístico (`source_store_date_amount_method`) para transações Rede/Taxas/Maquininha, prevenindo duplicações em múltiplas importações do mesmo Excel via onConflict nativo.
