@@ -61,16 +61,13 @@ export function useDashboardV2(selectedDateStr?: string) {
       // 2. Disparar queries paralelas baseadas na dateAtual
       const [
         recsAll,         // para bank_total mais recente de cada loja
-        logsCurr,        // Faturamento atual via import_logs
-        logsPrev,        // Faturamento anterior via import_logs
-        patioOs,         // Veículos no pátio e A Receber real
+        patioOs,         // Veículos no pátio, Faturamento (closed_at) e A Receber real
         contasRows,      // Transações do OFX (Saídas) para formar "Contas"
         storesRes,       // Lojas
         snapshotRes,     // Dados manuais (Dinheiro MP, A Receber manual, Faturamento Outros)
         
         // Histórico Macro (Mês Atual)
         historicoSaldosRes,
-        historicoFatRes,
         historicoContasRes,
         historicoSnapshotsRes
       ] = await Promise.all([
@@ -80,18 +77,8 @@ export function useDashboardV2(selectedDateStr?: string) {
           .order('date', { ascending: false }),
 
         supabase
-          .from('import_logs')
-          .select('store_id, total_os, target_date')
-          .eq('target_date', dateAtual),
-
-        supabase
-          .from('import_logs')
-          .select('store_id, total_os')
-          .eq('target_date', dateAnterior),
-
-        supabase
           .from('patio_os')
-          .select('store_id, total_value, paid_value, status'),
+          .select('store_id, total_value, paid_value, status, closed_at'),
 
         supabase
           .from('transactions')
@@ -111,10 +98,6 @@ export function useDashboardV2(selectedDateStr?: string) {
         // Macro Queries
         monthDates.length > 0 
           ? supabase.from('reconciliations').select('date, bank_total').in('date', monthDates)
-          : Promise.resolve({ data: [] }),
-          
-        monthDates.length > 0
-          ? supabase.from('import_logs').select('target_date, total_os').in('target_date', monthDates)
           : Promise.resolve({ data: [] }),
           
         monthDates.length > 0
@@ -150,12 +133,30 @@ export function useDashboardV2(selectedDateStr?: string) {
       const saldoAnterior = Object.values(latestPrevByStore).reduce((acc, v) => acc + v, 0);
       const fluxoCaixa = saldoTotal - saldoAnterior;
 
-      // --- Faturamento (Import Logs + Manual) ---
+      // --- Faturamento (patio_os + Manual) ---
       const fatManual = Number(snapshotRes.data?.faturamento_outros_valor || 0);
-      const faturamentoAtualLog = (logsCurr.data || []).reduce((acc, r) => acc + Number(r.total_os || 0), 0);
+      
+      let faturamentoAtualLog = 0;
+      let faturamentoAnterior = 0;
+      const fatByStore: Record<string, number> = {};
+      
+      for (const po of patioOs.data || []) {
+        if (po.closed_at) {
+          // Extraímos a data no formato YYYY-MM-DD
+          const closedDate = po.closed_at.split('T')[0];
+          
+          if (closedDate === dateAtual) {
+            const val = Number(po.total_value || 0);
+            faturamentoAtualLog += val;
+            fatByStore[po.store_id] = (fatByStore[po.store_id] || 0) + val;
+          } else if (closedDate === dateAnterior) {
+            faturamentoAnterior += Number(po.total_value || 0);
+          }
+        }
+      }
+      
       const faturamentoAtual = faturamentoAtualLog + fatManual;
 
-      const faturamentoAnterior = (logsPrev.data || []).reduce((acc, r) => acc + Number(r.total_os || 0), 0);
       const variacaoFaturamento = faturamentoAnterior > 0
         ? ((faturamentoAtual - faturamentoAnterior) / faturamentoAnterior) * 100
         : 0;
@@ -203,12 +204,6 @@ export function useDashboardV2(selectedDateStr?: string) {
       const caixaAtual = saldoTotal + aReceber + dinheiroMp;
       const diferenca = caixaAtual - contasAPagar;
 
-      // --- Métricas por Loja ---
-      const fatByStore: Record<string, number> = {};
-      for (const r of logsCurr.data || []) {
-        fatByStore[r.store_id] = (fatByStore[r.store_id] || 0) + Number(r.total_os || 0);
-      }
-
       const allStoreIds = new Set([
         ...Object.keys(latestByStore),
         ...Object.keys(fatByStore),
@@ -254,10 +249,13 @@ export function useDashboardV2(selectedDateStr?: string) {
         }
       }
       
-      // Faturamento (import_logs + manual do dia)
-      for (const row of historicoFatRes.data || []) {
-        if (histMap[row.target_date] !== undefined) {
-          histMap[row.target_date].faturamento += Number(row.total_os || 0);
+      // Faturamento (patio_os closed_at + manual do dia)
+      for (const po of patioOs.data || []) {
+        if (po.closed_at) {
+          const closedDate = po.closed_at.split('T')[0];
+          if (histMap[closedDate] !== undefined) {
+            histMap[closedDate].faturamento += Number(po.total_value || 0);
+          }
         }
       }
       for (const row of historicoSnapshotsRes.data || []) {
