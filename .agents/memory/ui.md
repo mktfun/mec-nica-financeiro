@@ -17,3 +17,10 @@
 **Risco identificado:** Dados que dependem de crons (como `oficina_contas`) podem retornar valores vazios/zerados se a sincronização não tiver rodado. É preciso deixar claro na UI (via tooltips) a origem daquele dado.
 
 **Não fazer:** Não misture status de sistema/tecnologia (ex: "Motor rodando") com os KPIs executivos no mesmo nível hierárquico. Status de background jobs deve ficar em sua respectiva tela (Conciliação) ou num banner discreto, deixando o espaço nobre para números.
+
+## [2026-08-03] — [Feature ID: 063-dashboard-fintech-v3]
+
+**Contexto:** O dashboard foi pivotado para basear todas as suas métricas financeiras (Saldo Total, Faturamento Atual, Caixa Atual) na "Última data de Conciliação" (max date em `reconciliations`) em vez de um "Mês Selecionado".
+**Regra aprendida:** Em painéis financeiros focados em fechamento/caixa (Cash Flow Analytics), usar intervalos "Mensais" é um anti-pattern. A operação vive de "Qual o saldo do último fechamento?". A matemática deve ser guiada por pivôs temporais absolutos (último registro validado) e não agrupamentos mensais incompletos.
+**Risco identificado:** Ao fazer queries globais em dados diários por loja (`reconciliations`), diferentes lojas podem ter a "última conciliação" em datas diferentes se uma atrasar. A query precisa considerar "a última data global", mas fazer fallback para a última da loja.
+**Não fazer:** Nunca crie um Dashboard de conciliação agrupando faturamento por `Mês Atual` se as despesas não acompanham o mesmo compasso cronológico. Amarre tudo ao fechamento diário mais recente.

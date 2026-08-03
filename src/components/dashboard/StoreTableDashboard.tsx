@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { TableIcon, TrendingUp, TrendingDown } from 'lucide-react';
 import type { StoreMetrics } from '@/hooks/useDashboardV2';
+import { useMemo } from 'react';
 
 interface StoreTableDashboardProps {
   data: StoreMetrics[];
@@ -25,6 +26,20 @@ const statusLabel = (s: StoreMetrics['statusConciliacao']) => {
 };
 
 export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProps) {
+  const totais = useMemo(() => {
+    return data.reduce(
+      (acc, curr) => ({
+        saldoAtual: acc.saldoAtual + curr.saldoAtual,
+        faturamento: acc.faturamento + curr.faturamento,
+        contas: acc.contas + curr.contas,
+        resultado: acc.resultado + curr.resultado,
+        veiculosPatioValor: acc.veiculosPatioValor + curr.veiculosPatioValor,
+        veiculosPatio: acc.veiculosPatio + curr.veiculosPatio,
+      }),
+      { saldoAtual: 0, faturamento: 0, contas: 0, resultado: 0, veiculosPatioValor: 0, veiculosPatio: 0 }
+    );
+  }, [data]);
+
   if (isLoading) {
     return (
       <Card className="h-full flex flex-col">
@@ -36,6 +51,8 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
     );
   }
 
+  const isTotalPositive = totais.resultado >= 0;
+
   return (
     <Card className="h-full flex flex-col overflow-hidden">
       <div className="mb-5 shrink-0">
@@ -43,14 +60,14 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
           <TableIcon size={16} className="text-[var(--color-primary)]" />
           Resultado por Loja
         </h3>
-        <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">Saldo, faturamento e contas no período</p>
+        <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">Saldo, faturamento, contas e pátio no período</p>
       </div>
 
       <div className="overflow-x-auto flex-1">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-[var(--border-subtle)]">
-              {['Loja', 'Saldo', 'Faturamento', 'Contas', 'Resultado', 'Status'].map(h => (
+              {['Loja', 'Saldo Bancário', 'Faturamento', 'Contas', 'Resultado', 'Pátio', 'Status'].map(h => (
                 <th
                   key={h}
                   className="text-left pb-2 text-[10px] uppercase tracking-widest text-[var(--text-tertiary)] font-semibold px-2 first:pl-0"
@@ -63,7 +80,7 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
           <tbody>
             {data.length === 0 && (
               <tr>
-                <td colSpan={6} className="text-center py-8 text-sm text-[var(--text-tertiary)]">
+                <td colSpan={7} className="text-center py-8 text-sm text-[var(--text-tertiary)]">
                   Sem dados para o período selecionado
                 </td>
               </tr>
@@ -98,6 +115,17 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
                       {fmt(store.resultado)}
                     </span>
                   </td>
+                  <td className="py-3 px-2 text-[11px] whitespace-nowrap text-[var(--text-secondary)]">
+                    {store.veiculosPatio > 0 ? (
+                      <>
+                        <span className="font-semibold text-[var(--color-accent-warning)]">{store.veiculosPatio}</span> ud. 
+                        <span className="opacity-50 mx-1">•</span>
+                        <span className="font-mono">{fmt(store.veiculosPatioValor)}</span>
+                      </>
+                    ) : (
+                      <span className="text-[var(--text-tertiary)]">-</span>
+                    )}
+                  </td>
                   <td className="py-3 pl-2">
                     <Badge variant={statusVariant(store.statusConciliacao)} className="text-[10px]">
                       {statusLabel(store.statusConciliacao)}
@@ -107,6 +135,39 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
               );
             })}
           </tbody>
+          
+          {data.length > 0 && (
+            <tfoot className="bg-[var(--bg-surface-elevated)] border-t-2 border-[var(--border-subtle)]">
+              <tr>
+                <td className="py-3 pr-2 font-display font-bold text-[var(--text-primary)] uppercase tracking-wider text-xs">
+                  Total
+                </td>
+                <td className="py-3 px-2 font-mono font-bold text-[var(--text-primary)] whitespace-nowrap">
+                  {fmt(totais.saldoAtual)}
+                </td>
+                <td className="py-3 px-2 font-mono font-bold text-[var(--color-accent-teal)] whitespace-nowrap">
+                  {fmt(totais.faturamento)}
+                </td>
+                <td className="py-3 px-2 font-mono font-bold text-[var(--color-accent-warning)] whitespace-nowrap">
+                  {fmt(totais.contas)}
+                </td>
+                <td className="py-3 px-2 whitespace-nowrap">
+                  <span className={`font-mono font-bold flex items-center gap-1 ${
+                    isTotalPositive ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
+                  }`}>
+                    {isTotalPositive ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                    {fmt(totais.resultado)}
+                  </span>
+                </td>
+                <td className="py-3 px-2 text-[12px] whitespace-nowrap">
+                  <span className="font-bold text-[var(--color-accent-warning)]">{totais.veiculosPatio}</span> ud. 
+                  <span className="opacity-50 mx-1 text-[var(--text-tertiary)]">•</span>
+                  <span className="font-mono font-bold text-[var(--text-primary)]">{fmt(totais.veiculosPatioValor)}</span>
+                </td>
+                <td className="py-3 pl-2"></td>
+              </tr>
+            </tfoot>
+          )}
         </table>
       </div>
     </Card>

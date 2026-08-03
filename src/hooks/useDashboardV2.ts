@@ -9,9 +9,13 @@ export interface StoreMetrics {
   contas: number;
   resultado: number;
   statusConciliacao: 'approved' | 'divergence' | 'pending';
+  veiculosPatio: number;
+  veiculosPatioValor: number;
 }
 
 export interface DashboardV2Data {
+  dataAtual: string;
+  dataAnterior: string;
   saldoTotal: number;
   caixaAtual: number;
   contasAPagar: number;
@@ -24,66 +28,79 @@ export interface DashboardV2Data {
   veiculosPatio: number;
   veiculosPatioValor: number;
   porLoja: StoreMetrics[];
+  historicoSaldos: { date: string; saldo: number }[];
 }
 
-function getPrevMonth(monthStr: string): string {
-  const [y, m] = monthStr.split('-').map(Number);
-  const d = new Date(y, m - 2, 1);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-}
-
-function getMonthRange(monthStr: string): { start: string; end: string } {
-  const [y, m] = monthStr.split('-').map(Number);
-  const start = `${y}-${String(m).padStart(2, '0')}-01`;
-  const lastDay = new Date(y, m, 0).getDate();
-  const end = `${y}-${String(m).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
-  return { start, end };
-}
-
-export function useDashboardV2(monthStr: string) {
+export function useDashboardV2() {
   return useQuery({
-    queryKey: ['dashboard-v2', monthStr],
+    queryKey: ['dashboard-v2'],
     queryFn: async (): Promise<DashboardV2Data> => {
-      const prevMonth = getPrevMonth(monthStr);
-      const { start: startCurr, end: endCurr } = getMonthRange(monthStr);
-      const { start: startPrev, end: endPrev } = getMonthRange(prevMonth);
+      // 1. Descobrir as top 2 datas e as top 15 datas de conciliação
+      const { data: datesData, error: datesErr } = await supabase
+        .from('reconciliations')
+        .select('date')
+        .order('date', { ascending: false });
 
-      // 5 queries paralelas
-      const [recsAll, recsCurr, recsPrev, patioOs, contasRows, storesRes] = await Promise.all([
-        // 1. Saldo atual: última reconciliação por loja (todos os tempos)
+      if (datesErr) throw datesErr;
+
+      // Pega as datas únicas, decrescentes
+      const uniqueDates = Array.from(new Set((datesData || []).map(d => d.date)));
+      
+      const dateAtual = uniqueDates[0] || new Date().toISOString().split('T')[0];
+      const dateAnterior = uniqueDates[1] || dateAtual;
+      
+      const last15Dates = uniqueDates.slice(0, 15).reverse();
+
+      // 2. Disparar queries paralelas baseadas na dateAtual
+      const [
+        recsAll, 
+        recsCurr, 
+        recsPrev, 
+        patioOs, 
+        contasRows, 
+        storesRes,
+        historicoRes
+      ] = await Promise.all([
+        // Saldo atual (mais recente de todas as lojas)
         supabase
           .from('reconciliations')
           .select('store_id, bank_total, date, os_total, divergence, status')
           .order('date', { ascending: false }),
 
-        // 2. Faturamento mês atual
+        // Faturamento da ÚLTIMA CONCILIAÇÃO
         supabase
           .from('reconciliations')
           .select('store_id, os_total, financial_total, divergence, status, date')
-          .gte('date', startCurr)
-          .lte('date', endCurr),
+          .eq('date', dateAtual),
 
-        // 3. Faturamento mês anterior
+        // Faturamento da PENÚLTIMA CONCILIAÇÃO
         supabase
           .from('reconciliations')
           .select('store_id, os_total')
-          .gte('date', startPrev)
-          .lte('date', endPrev),
+          .eq('date', dateAnterior),
 
-        // 4. Pátio OS — a receber e veículos
+        // Pátio OS — a receber e veículos
         supabase
           .from('patio_os')
           .select('store_id, total_value, paid_value, status'),
 
-        // 5. Contas a pagar (oficina_contas pode estar vazia se sync ainda não rodou)
+        // Contas a pagar global (o que está no cache da oficina_contas)
         supabase
           .from('oficina_contas')
           .select('store_id, valor_em_aberto, tipo, status')
           .eq('tipo', 'PAGAR')
           .not('status', 'in', '("PAG","PAGO","pago","pag")'),
 
-        // 6. Lojas
+        // Lojas
         supabase.from('stores').select('id, name'),
+
+        // Histórico dos últimos 15 dias (para evolução do saldo)
+        last15Dates.length > 0 
+          ? supabase
+              .from('reconciliations')
+              .select('date, bank_total')
+              .in('date', last15Dates)
+          : Promise.resolve({ data: [] })
       ]);
 
       // Construir lookup de nomes de lojas
@@ -92,7 +109,8 @@ export function useDashboardV2(monthStr: string) {
         storeMap[s.id] = s.name;
       });
 
-      // --- Saldo Atual por Loja (mais recente de recsAll) ---
+      // --- Saldo Atual por Loja (mais recente de recsAll independente da data) ---
+      // Caso alguma loja não tenha conciliação no dateAtual, pegamos o último disponível
       const latestByStore: Record<string, { bank_total: number; date: string }> = {};
       for (const row of recsAll.data || []) {
         if (!latestByStore[row.store_id] || row.date > latestByStore[row.store_id].date) {
@@ -101,27 +119,28 @@ export function useDashboardV2(monthStr: string) {
       }
       const saldoTotal = Object.values(latestByStore).reduce((acc, v) => acc + v.bank_total, 0);
 
-      // Saldo mês anterior para fluxo de caixa
+      // Saldo anterior para fluxo de caixa (saldo até dateAnterior)
       const latestPrevByStore: Record<string, number> = {};
       for (const row of recsAll.data || []) {
-        if (row.date <= endPrev && (!latestPrevByStore[row.store_id] || row.date > (latestPrevByStore[row.store_id] ?? ''))) {
+        if (row.date <= dateAnterior && (!latestPrevByStore[row.store_id] || row.date > (latestPrevByStore[row.store_id] ?? ''))) {
           latestPrevByStore[row.store_id] = Number(row.bank_total || 0);
         }
       }
       const saldoAnterior = Object.values(latestPrevByStore).reduce((acc, v) => acc + v, 0);
       const fluxoCaixa = saldoTotal - saldoAnterior;
 
-      // --- Faturamento mês atual e anterior ---
+      // --- Faturamento Atual e Anterior ---
       const faturamentoAtual = (recsCurr.data || []).reduce((acc, r) => acc + Number(r.os_total || 0), 0);
       const faturamentoAnterior = (recsPrev.data || []).reduce((acc, r) => acc + Number(r.os_total || 0), 0);
       const variacaoFaturamento = faturamentoAnterior > 0
         ? ((faturamentoAtual - faturamentoAnterior) / faturamentoAnterior) * 100
         : 0;
 
-      // --- A Receber e Veículos em Pátio ---
+      // --- A Receber e Veículos em Pátio (Global e por Loja) ---
       const osAbertos = (patioOs.data || []).filter(
         os => os.status === 'em_aberto' || os.status === 'pago_parcial'
       );
+      
       const aReceber = osAbertos.reduce(
         (acc, os) => acc + Math.max(0, Number(os.total_value || 0) - Number(os.paid_value || 0)),
         0
@@ -129,30 +148,38 @@ export function useDashboardV2(monthStr: string) {
       const veiculosPatio = osAbertos.length;
       const veiculosPatioValor = osAbertos.reduce((acc, os) => acc + Number(os.total_value || 0), 0);
 
-      // --- Contas a Pagar ---
+      // Pátio por Loja
+      const patioByStore: Record<string, { qtd: number; valor: number }> = {};
+      for (const os of osAbertos) {
+        if (!os.store_id) continue;
+        if (!patioByStore[os.store_id]) {
+          patioByStore[os.store_id] = { qtd: 0, valor: 0 };
+        }
+        patioByStore[os.store_id].qtd += 1;
+        patioByStore[os.store_id].valor += Number(os.total_value || 0);
+      }
+
+      // --- Contas a Pagar (Global e por Loja) ---
       const contasAPagar = (contasRows.data || []).reduce(
         (acc, c) => acc + Number(c.valor_em_aberto || 0),
         0
       );
 
-      // --- Caixa e Diferença ---
-      const caixaAtual = saldoTotal + aReceber;
-      const diferenca = caixaAtual - contasAPagar;
-
-      // --- Métricas por Loja ---
-      // Faturamento por loja no mês atual
-      const fatByStore: Record<string, number> = {};
-      for (const r of recsCurr.data || []) {
-        fatByStore[r.store_id] = (fatByStore[r.store_id] || 0) + Number(r.os_total || 0);
-      }
-
-      // Contas por loja
       const contasByStore: Record<string, number> = {};
       for (const c of contasRows.data || []) {
         contasByStore[c.store_id] = (contasByStore[c.store_id] || 0) + Number(c.valor_em_aberto || 0);
       }
 
-      // Status de conciliação por loja (pior status do mês atual)
+      // --- Caixa e Diferença ---
+      const caixaAtual = saldoTotal + aReceber;
+      const diferenca = caixaAtual - contasAPagar;
+
+      // --- Métricas por Loja (Faturamento e Status) ---
+      const fatByStore: Record<string, number> = {};
+      for (const r of recsCurr.data || []) {
+        fatByStore[r.store_id] = (fatByStore[r.store_id] || 0) + Number(r.os_total || 0);
+      }
+
       const statusByStore: Record<string, 'approved' | 'divergence' | 'pending'> = {};
       for (const r of recsCurr.data || []) {
         const curr = statusByStore[r.store_id];
@@ -162,16 +189,19 @@ export function useDashboardV2(monthStr: string) {
         }
       }
 
-      // Montar porLoja usando as lojas com dados em qualquer das fontes
       const allStoreIds = new Set([
         ...Object.keys(latestByStore),
         ...Object.keys(fatByStore),
+        ...Object.keys(contasByStore),
+        ...Object.keys(patioByStore),
       ]);
 
       const porLoja: StoreMetrics[] = Array.from(allStoreIds).map(storeId => {
         const saldoAtual = latestByStore[storeId]?.bank_total || 0;
         const faturamento = fatByStore[storeId] || 0;
         const contas = contasByStore[storeId] || 0;
+        const patio = patioByStore[storeId] || { qtd: 0, valor: 0 };
+
         return {
           storeId,
           storeName: storeMap[storeId] || storeId,
@@ -180,10 +210,30 @@ export function useDashboardV2(monthStr: string) {
           contas,
           resultado: faturamento - contas,
           statusConciliacao: statusByStore[storeId] || 'pending',
+          veiculosPatio: patio.qtd,
+          veiculosPatioValor: patio.valor,
         };
       }).sort((a, b) => b.faturamento - a.faturamento);
 
+      // --- Histórico de Saldos (Agrupado por data) ---
+      const histMap: Record<string, number> = {};
+      // Inicializar com 0
+      last15Dates.forEach(d => { histMap[d] = 0; });
+      
+      for (const row of historicoRes.data || []) {
+        if (histMap[row.date] !== undefined) {
+          histMap[row.date] += Number(row.bank_total || 0);
+        }
+      }
+      
+      const historicoSaldos = last15Dates.map(d => ({
+        date: d,
+        saldo: histMap[d]
+      }));
+
       return {
+        dataAtual: dateAtual,
+        dataAnterior: dateAnterior,
         saldoTotal,
         caixaAtual,
         contasAPagar,
@@ -196,8 +246,9 @@ export function useDashboardV2(monthStr: string) {
         veiculosPatio,
         veiculosPatioValor,
         porLoja,
+        historicoSaldos,
       };
     },
-    staleTime: 5 * 60 * 1000, // 5 min cache
+    staleTime: 5 * 60 * 1000,
   });
 }

@@ -1,13 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { useState } from 'react';
 import { AppShell } from '@/components/layout/AppShell';
 import { KpiCard } from '@/components/dashboard/KpiCard';
 import { StoreTableDashboard } from '@/components/dashboard/StoreTableDashboard';
 import { FaturamentoVsContasChart } from '@/components/dashboard/FaturamentoVsContasChart';
+import { EvolucaoSaldoChart } from '@/components/dashboard/EvolucaoSaldoChart';
 import { useDashboardV2 } from '@/hooks/useDashboardV2';
-import { getDefaultDate } from '@/lib/utils';
 import {
-  CalendarDays,
   Landmark,
   Wallet,
   CreditCard,
@@ -16,6 +14,7 @@ import {
   ArrowRightLeft,
   Clock,
   Car,
+  CalendarCheck2
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
@@ -25,14 +24,14 @@ export const Route = createFileRoute('/')({
   component: DashboardPage,
 });
 
-function DashboardPage() {
-  const [selectedMonth, setSelectedMonth] = useState(() => {
-    const today = getDefaultDate();
-    const [year, month] = today.split('-');
-    return `${year}-${month}`;
-  });
+function formatDate(dateStr?: string) {
+  if (!dateStr) return '';
+  const [y, m, d] = dateStr.split('-');
+  return `${d}/${m}/${y}`;
+}
 
-  const { data, isLoading } = useDashboardV2(selectedMonth);
+function DashboardPage() {
+  const { data, isLoading } = useDashboardV2();
 
   return (
     <AppShell>
@@ -42,13 +41,10 @@ function DashboardPage() {
         <div className="flex justify-between items-center">
           <h1 className="font-display font-bold text-3xl text-white">Visão Geral</h1>
           <div className="flex items-center gap-2 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] px-3 py-1.5 rounded-lg shadow-sm">
-            <CalendarDays size={16} className="text-[var(--color-primary)]" />
-            <input
-              type="month"
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
-              className="bg-transparent text-sm text-white focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert"
-            />
+            <CalendarCheck2 size={16} className="text-[var(--color-primary)]" />
+            <span className="text-sm text-white">
+              {isLoading ? 'Carregando data...' : `Última conciliação: ${formatDate(data?.dataAtual)}`}
+            </span>
           </div>
         </div>
 
@@ -61,7 +57,7 @@ function DashboardPage() {
             color="primary"
             isLoading={isLoading}
             index={0}
-            tooltip="Soma do bank_total mais recente de cada loja nas reconciliações bancárias."
+            tooltip="Soma do bank_total da conciliação mais recente de cada loja."
           />
           <KpiCard
             label="Caixa Atual"
@@ -79,7 +75,7 @@ function DashboardPage() {
             color="warning"
             isLoading={isLoading}
             index={2}
-            tooltip="Soma dos valores em aberto de todas as contas a pagar sincronizadas da Oficina Inteligente."
+            tooltip="Soma dos valores em aberto de todas as contas a pagar importadas do sistema legado."
           />
           <KpiCard
             label="Diferença Final"
@@ -107,7 +103,7 @@ function DashboardPage() {
             </div>
             <div className="grid grid-cols-2 gap-4 mt-1">
               <div>
-                <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Mês Atual</p>
+                <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Atual</p>
                 <p className="font-mono font-bold text-2xl text-[var(--color-accent-teal)]">
                   {isLoading ? (
                     <span className="animate-pulse h-7 w-28 bg-[var(--bg-surface-hover)] rounded block" />
@@ -117,7 +113,7 @@ function DashboardPage() {
                 </p>
               </div>
               <div>
-                <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Mês Anterior</p>
+                <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Anterior</p>
                 <p className="font-mono font-bold text-2xl text-[var(--text-secondary)]">
                   {isLoading ? (
                     <span className="animate-pulse h-7 w-28 bg-[var(--bg-surface-hover)] rounded block" />
@@ -139,7 +135,7 @@ function DashboardPage() {
               >
                 <TrendingUp size={12} />
                 {data.variacaoFaturamento >= 0 ? '+' : ''}
-                {data.variacaoFaturamento.toFixed(1)}% vs mês anterior
+                {data.variacaoFaturamento.toFixed(1)}% vs ANTERIOR
               </motion.div>
             )}
           </Card>
@@ -163,7 +159,7 @@ function DashboardPage() {
             color={!data || data.fluxoCaixa >= 0 ? 'teal' : 'danger'}
             isLoading={isLoading}
             index={5}
-            tooltip="Variação do saldo bancário total entre o fim do mês atual e o fim do mês anterior."
+            tooltip="Variação do Saldo Total entre a conciliação atual e a conciliação imediatamente anterior."
           />
         </div>
 
@@ -184,13 +180,18 @@ function DashboardPage() {
           </motion.div>
         )}
 
-        {/* ── FAIXA BASE — Tabela + Gráfico ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4" style={{ minHeight: 340 }}>
-          <div className="lg:col-span-2">
+        {/* ── FAIXA BASE — Tabela + Gráficos ── */}
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-4" style={{ minHeight: 340 }}>
+          <div className="xl:col-span-3">
             <StoreTableDashboard data={data?.porLoja ?? []} isLoading={isLoading} />
           </div>
-          <div className="lg:col-span-1">
-            <FaturamentoVsContasChart data={data?.porLoja ?? []} isLoading={isLoading} />
+          <div className="xl:col-span-1 flex flex-col gap-4">
+            <div className="flex-1">
+              <EvolucaoSaldoChart data={data?.historicoSaldos ?? []} isLoading={isLoading} />
+            </div>
+            <div className="flex-1">
+              <FaturamentoVsContasChart data={data?.porLoja ?? []} isLoading={isLoading} />
+            </div>
           </div>
         </div>
 
