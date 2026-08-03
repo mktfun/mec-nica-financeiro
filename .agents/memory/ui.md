@@ -25,7 +25,8 @@
 **Risco identificado:** Não fazer: Não misture sumarizações globais (Dashboard V2) com cálculos parciais locais. A fonte da verdade para "Contas a Pagar" parou de ser a API externa `oficina_contas` e passou a ser estritamente o Extrato OFX (`transactions`, amount < 0).
 
 ### Dashboard Layout Patterns (Macro Chart)
-- **Painéis Consolidados:** Sempre prefira painéis panorâmicos ("Hero Cards") posicionados no topo da visualização (`xl:col-span-3`). Evite colocar gráficos principais empilhados em colunas laterais "espremidas".
+- **Painéis Consolidados (Full-Width):** Sempre prefira painéis panorâmicos ("Hero Cards") posicionados no topo absoluto da visualização, ocupando **todas as colunas** (ex: `xl:col-span-4`). Evite enjaular gráficos macrocópicos em grids parciais (como `xl:col-span-3`). A largura 100% (Widescreen) eleva o padrão visual.
+- **Gráficos Horizontais e Finos:** Para gráficos Hero, prefira layouts horizontais achatados (`min-h-[220px]`). Mova as legendas para o Header (alinhadas ao topo) em vez de poluírem o espaço do gráfico, garantindo um visual de "cockpit" limpo e minimalista. Eixos Y devem ser mantidos visíveis mas extremamente discretos (ex: notation compact "15 mil").
 - **ComposedChart com Escala Dinâmica:** Ao exibir métricas financeiras cruzadas (Saldo, Faturamento e Contas), utilize um `ComposedChart` agrupando as linhas. O eixo de tempo **não deve ser um last-N-days rígido**, mas sim uma escala dinâmica baseada nas datas do **mês de referência selecionado**. Isso garante flexibilidade conforme os dados são importados do mês.
 **Não fazer:** Nunca crie um Dashboard de conciliação agrupando faturamento por `Mês Atual` se as despesas não acompanham o mesmo compasso cronológico. Amarre tudo ao fechamento diário mais recente.
 

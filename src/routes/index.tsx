@@ -181,8 +181,13 @@ function DashboardPage() {
 
         {/* ── FAIXA BASE — Tabela + Gráficos ── */}
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-4" style={{ minHeight: 340 }}>
-          <div className="xl:col-span-3 flex flex-col gap-4">
+          {/* Topo - Widescreen Chart */}
+          <div className="xl:col-span-4">
             <EvolucaoMacroChart data={data?.historicoMacro ?? []} isLoading={isLoading} />
+          </div>
+          
+          {/* Bottom Split */}
+          <div className="xl:col-span-3">
             <StoreTableDashboard data={data?.porLoja ?? []} isLoading={isLoading} />
           </div>
           <div className="xl:col-span-1">
