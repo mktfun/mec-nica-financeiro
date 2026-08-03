@@ -67,7 +67,7 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-[var(--border-subtle)]">
-              {['Loja', 'Saldo Bancário', 'Faturamento', 'Contas', 'Resultado', 'Pátio', 'Status'].map(h => (
+              {['Loja', 'Saldo Bancário', 'Faturamento', 'Contas (OFX)', 'Resultado', 'Pátio', 'Status'].map(h => (
                 <th
                   key={h}
                   className="text-left pb-2 text-[10px] uppercase tracking-widest text-[var(--text-tertiary)] font-semibold px-2 first:pl-0"

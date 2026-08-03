@@ -35,97 +35,95 @@ export function useDashboardV2(selectedDateStr?: string) {
   return useQuery({
     queryKey: ['dashboard-v2', selectedDateStr || 'latest'],
     queryFn: async (): Promise<DashboardV2Data> => {
-      // 1. Descobrir as datas
+      // 1. Descobrir as datas via import_logs (nova fonte da verdade para importações)
       const { data: datesData, error: datesErr } = await supabase
-        .from('reconciliations')
-        .select('date')
-        .order('date', { ascending: false });
+        .from('import_logs')
+        .select('target_date')
+        .order('target_date', { ascending: false });
 
       if (datesErr) throw datesErr;
 
       // Pega as datas únicas, decrescentes
-      const uniqueDates = Array.from(new Set((datesData || []).map(d => d.date)));
+      const uniqueDates = Array.from(new Set((datesData || []).map(d => d.target_date)));
       
       let dateAtual = selectedDateStr || uniqueDates[0] || new Date().toISOString().split('T')[0];
       
-      // Se a data selecionada for de um final de semana e não tiver fechamento, vamos tentar 
-      // achar a conciliação mais próxima anterior. Mas o fallback seguro é apenas filtrar.
+      // Ancorar na data real de fechamento mais próxima (<= selectedDateStr)
       const validPastDates = uniqueDates.filter(d => d <= dateAtual);
-      dateAtual = validPastDates[0] || dateAtual; // Ancorar na data real de fechamento mais próxima
+      dateAtual = validPastDates[0] || dateAtual;
 
       const dateAnterior = validPastDates[1] || dateAtual;
-      
       const last15Dates = validPastDates.slice(0, 15).reverse();
 
       // 2. Disparar queries paralelas baseadas na dateAtual
       const [
-        recsAll, 
-        recsCurr, 
-        recsPrev, 
-        patioOs, 
-        contasRows, 
-        storesRes,
-        historicoRes
+        recsAll,         // para bank_total mais recente de cada loja
+        logsCurr,        // Faturamento atual via import_logs
+        logsPrev,        // Faturamento anterior via import_logs
+        patioOs,         // Veículos no pátio e A Receber real
+        contasRows,      // Transações do OFX (Saídas) para formar "Contas"
+        storesRes,       // Lojas
+        historicoRes,    // Evolução do saldo
+        snapshotRes      // Dados manuais (Dinheiro MP, A Receber manual, Faturamento Outros)
       ] = await Promise.all([
-        // Saldo atual (mais recente de todas as lojas)
         supabase
           .from('reconciliations')
-          .select('store_id, bank_total, date, os_total, divergence, status')
+          .select('store_id, bank_total, date, status')
           .order('date', { ascending: false }),
 
-        // Faturamento da ÚLTIMA CONCILIAÇÃO
         supabase
-          .from('reconciliations')
-          .select('store_id, os_total, financial_total, divergence, status, date')
-          .eq('date', dateAtual),
+          .from('import_logs')
+          .select('store_id, total_os, target_date')
+          .eq('target_date', dateAtual),
 
-        // Faturamento da PENÚLTIMA CONCILIAÇÃO
         supabase
-          .from('reconciliations')
-          .select('store_id, os_total')
-          .eq('date', dateAnterior),
+          .from('import_logs')
+          .select('store_id, total_os')
+          .eq('target_date', dateAnterior),
 
-        // Pátio OS — a receber e veículos
         supabase
           .from('patio_os')
           .select('store_id, total_value, paid_value, status'),
 
-        // Contas a pagar global (o que está no cache da oficina_contas)
+        // Nova query de Contas (Soma do Extrato - Valores Negativos)
         supabase
-          .from('oficina_contas')
-          .select('store_id, valor_em_aberto, tipo, status')
-          .eq('tipo', 'PAGAR')
-          .not('status', 'in', '("PAG","PAGO","pago","pag")'),
+          .from('transactions')
+          .select('store_id, amount')
+          .eq('target_date', dateAtual)
+          .eq('type', 'out')
+          .lt('amount', 0),
 
-        // Lojas
         supabase.from('stores').select('id, name'),
 
-        // Histórico dos últimos 15 dias (para evolução do saldo)
         last15Dates.length > 0 
           ? supabase
               .from('reconciliations')
               .select('date, bank_total')
               .in('date', last15Dates)
-          : Promise.resolve({ data: [] })
+          : Promise.resolve({ data: [] }),
+
+        supabase
+          .from('daily_snapshots')
+          .select('faturamento_outros_valor, dinheiro_mp, a_receber_manual')
+          .eq('date', dateAtual)
+          .maybeSingle()
       ]);
 
-      // Construir lookup de nomes de lojas
       const storeMap: Record<string, string> = {};
       (storesRes.data || []).forEach((s: { id: string; name: string }) => {
         storeMap[s.id] = s.name;
       });
 
-      // --- Saldo Atual por Loja (mais recente de recsAll independente da data) ---
-      // Caso alguma loja não tenha conciliação no dateAtual, pegamos o último disponível
-      const latestByStore: Record<string, { bank_total: number; date: string }> = {};
+      // --- Saldo Atual por Loja (bank_total de reconciliations) ---
+      const latestByStore: Record<string, { bank_total: number; date: string; status: string }> = {};
       for (const row of recsAll.data || []) {
         if (!latestByStore[row.store_id] || row.date > latestByStore[row.store_id].date) {
-          latestByStore[row.store_id] = { bank_total: Number(row.bank_total || 0), date: row.date };
+          latestByStore[row.store_id] = { bank_total: Number(row.bank_total || 0), date: row.date, status: row.status || 'pending' };
         }
       }
       const saldoTotal = Object.values(latestByStore).reduce((acc, v) => acc + v.bank_total, 0);
 
-      // Saldo anterior para fluxo de caixa (saldo até dateAnterior)
+      // Fluxo de Caixa
       const latestPrevByStore: Record<string, number> = {};
       for (const row of recsAll.data || []) {
         if (row.date <= dateAnterior && (!latestPrevByStore[row.store_id] || row.date > (latestPrevByStore[row.store_id] ?? ''))) {
@@ -135,26 +133,31 @@ export function useDashboardV2(selectedDateStr?: string) {
       const saldoAnterior = Object.values(latestPrevByStore).reduce((acc, v) => acc + v, 0);
       const fluxoCaixa = saldoTotal - saldoAnterior;
 
-      // --- Faturamento Atual e Anterior ---
-      const faturamentoAtual = (recsCurr.data || []).reduce((acc, r) => acc + Number(r.os_total || 0), 0);
-      const faturamentoAnterior = (recsPrev.data || []).reduce((acc, r) => acc + Number(r.os_total || 0), 0);
+      // --- Faturamento (Import Logs + Manual) ---
+      const fatManual = Number(snapshotRes.data?.faturamento_outros_valor || 0);
+      const faturamentoAtualLog = (logsCurr.data || []).reduce((acc, r) => acc + Number(r.total_os || 0), 0);
+      const faturamentoAtual = faturamentoAtualLog + fatManual;
+
+      const faturamentoAnterior = (logsPrev.data || []).reduce((acc, r) => acc + Number(r.total_os || 0), 0);
       const variacaoFaturamento = faturamentoAnterior > 0
         ? ((faturamentoAtual - faturamentoAnterior) / faturamentoAnterior) * 100
         : 0;
 
-      // --- A Receber e Veículos em Pátio (Global e por Loja) ---
+      // --- A Receber e Pátio ---
       const osAbertos = (patioOs.data || []).filter(
         os => os.status === 'em_aberto' || os.status === 'pago_parcial'
       );
       
-      const aReceber = osAbertos.reduce(
+      const aReceberManual = Number(snapshotRes.data?.a_receber_manual || 0);
+      const aReceberPatio = osAbertos.reduce(
         (acc, os) => acc + Math.max(0, Number(os.total_value || 0) - Number(os.paid_value || 0)),
         0
       );
+      const aReceber = aReceberPatio + aReceberManual;
+
       const veiculosPatio = osAbertos.length;
       const veiculosPatioValor = osAbertos.reduce((acc, os) => acc + Number(os.total_value || 0), 0);
 
-      // Pátio por Loja
       const patioByStore: Record<string, { qtd: number; valor: number }> = {};
       for (const os of osAbertos) {
         if (!os.store_id) continue;
@@ -165,34 +168,28 @@ export function useDashboardV2(selectedDateStr?: string) {
         patioByStore[os.store_id].valor += Number(os.total_value || 0);
       }
 
-      // --- Contas a Pagar (Global e por Loja) ---
+      // --- Contas (Despesas OFX via transactions) ---
+      // Como amount já é negativo (lt(0)), vamos usar o Math.abs para somar positivamente
       const contasAPagar = (contasRows.data || []).reduce(
-        (acc, c) => acc + Number(c.valor_em_aberto || 0),
+        (acc, t) => acc + Math.abs(Number(t.amount || 0)),
         0
       );
 
       const contasByStore: Record<string, number> = {};
-      for (const c of contasRows.data || []) {
-        contasByStore[c.store_id] = (contasByStore[c.store_id] || 0) + Number(c.valor_em_aberto || 0);
+      for (const t of contasRows.data || []) {
+        if (!t.store_id) continue;
+        contasByStore[t.store_id] = (contasByStore[t.store_id] || 0) + Math.abs(Number(t.amount || 0));
       }
 
       // --- Caixa e Diferença ---
-      const caixaAtual = saldoTotal + aReceber;
+      const dinheiroMp = Number(snapshotRes.data?.dinheiro_mp || 0);
+      const caixaAtual = saldoTotal + aReceber + dinheiroMp;
       const diferenca = caixaAtual - contasAPagar;
 
-      // --- Métricas por Loja (Faturamento e Status) ---
+      // --- Métricas por Loja ---
       const fatByStore: Record<string, number> = {};
-      for (const r of recsCurr.data || []) {
-        fatByStore[r.store_id] = (fatByStore[r.store_id] || 0) + Number(r.os_total || 0);
-      }
-
-      const statusByStore: Record<string, 'approved' | 'divergence' | 'pending'> = {};
-      for (const r of recsCurr.data || []) {
-        const curr = statusByStore[r.store_id];
-        const s = r.status === 'approved' ? 'approved' : r.status === 'divergence' ? 'divergence' : 'pending';
-        if (!curr || s === 'divergence' || (s === 'pending' && curr === 'approved')) {
-          statusByStore[r.store_id] = s;
-        }
+      for (const r of logsCurr.data || []) {
+        fatByStore[r.store_id] = (fatByStore[r.store_id] || 0) + Number(r.total_os || 0);
       }
 
       const allStoreIds = new Set([
@@ -203,10 +200,15 @@ export function useDashboardV2(selectedDateStr?: string) {
       ]);
 
       const porLoja: StoreMetrics[] = Array.from(allStoreIds).map(storeId => {
+        // Fallback robusto se a loja não tiver dados naquele dia
         const saldoAtual = latestByStore[storeId]?.bank_total || 0;
         const faturamento = fatByStore[storeId] || 0;
         const contas = contasByStore[storeId] || 0;
         const patio = patioByStore[storeId] || { qtd: 0, valor: 0 };
+        
+        let rawStatus = latestByStore[storeId]?.status || 'pending';
+        const statusConciliacao: 'approved' | 'divergence' | 'pending' = 
+          rawStatus === 'approved' ? 'approved' : rawStatus === 'divergence' ? 'divergence' : 'pending';
 
         return {
           storeId,
@@ -215,27 +217,21 @@ export function useDashboardV2(selectedDateStr?: string) {
           faturamento,
           contas,
           resultado: faturamento - contas,
-          statusConciliacao: statusByStore[storeId] || 'pending',
+          statusConciliacao,
           veiculosPatio: patio.qtd,
           veiculosPatioValor: patio.valor,
         };
       }).sort((a, b) => b.faturamento - a.faturamento);
 
-      // --- Histórico de Saldos (Agrupado por data) ---
+      // --- Histórico de Saldos ---
       const histMap: Record<string, number> = {};
-      // Inicializar com 0
       last15Dates.forEach(d => { histMap[d] = 0; });
-      
       for (const row of historicoRes.data || []) {
         if (histMap[row.date] !== undefined) {
           histMap[row.date] += Number(row.bank_total || 0);
         }
       }
-      
-      const historicoSaldos = last15Dates.map(d => ({
-        date: d,
-        saldo: histMap[d]
-      }));
+      const historicoSaldos = last15Dates.map(d => ({ date: d, saldo: histMap[d] }));
 
       return {
         dataAtual: dateAtual,

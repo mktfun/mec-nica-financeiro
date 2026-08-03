@@ -531,11 +531,14 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
       // Log de Importação
       addLog("📝 Atualizando histórico de importação (import_logs)...", "info");
+      
+      const osValueTotal = results.osFiles.filter(r => r.success).reduce((acc, curr) => acc + curr.osArray.reduce((sum, os) => sum + (os.total_value || 0), 0), 0);
+      
       const logsToInsert = [{
           store_id: Object.values(mapping)[0] || 'GLOBAL',
           store_name: 'Conciliação Centralizada',
           target_date: targetDate,
-          total_os: 0,
+          total_os: osValueTotal,
           os_count: osCountTotal,
           total_paid_all: txsToInsert.reduce((a,b) => a + b.amount, 0),
           receivables_count: txsToInsert.filter(t => t.source === 'maquininha' || t.source === 'rede').length

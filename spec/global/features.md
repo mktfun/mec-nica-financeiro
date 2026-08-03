@@ -33,8 +33,11 @@
 - **[Frontend] Telemetria Híbrida**: Painéis \LogsAgentePanel\ (lendo da tabela \mcp_logs\) e \CacheAgentePanel\ para inspecionar cache nativo das Ordens de Serviço diretamente pela UI do Agente.
 - **[Backend] Automação Postgres Cron**: Migration com pg_cron e pg_net para acionar HTTP hooks em background.
 
-## Dashboard Executivo (Fintech V4)
-- **Hook Central de KPIs (`src/hooks/useDashboardV2.ts`):** Pivotado para ancorar na última data de conciliação registrada (em vez do mês). Aceita um parâmetro opcional `selectedDateStr` permitindo "Time Travel" interativo para conciliações anteriores. Faz fallback automático para a maior data `<= selectedDateStr`.
+## Dashboard Executivo (Fintech V5)
+- **Hook Central de KPIs (`src/hooks/useDashboardV2.ts`):** Pivotado para ancorar datas e o faturamento base na tabela `import_logs` (já que a importação parou de gravar `os_total` em `reconciliations`).
+- **Data Augmentation:** Puxa e soma dados manuais globais (`daily_snapshots`) como *Dinheiro MP*, *Faturamento Outros* e *A Receber Manual*.
+- **Contas via OFX:** Elimina o uso da API legada (`oficina_contas`) e extrai as "Contas (OFX)" filtrando `amount < 0` e `type = 'out'` diretamente da tabela `transactions` para aquele fechamento.
+- **Tabela de Lojas (`src/components/dashboard/StoreTableDashboard.tsx`):** Exibe colunas de saldo, faturamento e a nova coluna `Contas (OFX)` por loja, usando dados extraídos do extrato bancário puro.
 - **`KpiCard` Genérico (`src/components/dashboard/KpiCard.tsx`):** Componente base de UI para métricas com animações, formatação inteligente e tooltips.
 - **Tabela de Lojas (`src/components/dashboard/StoreTableDashboard.tsx`):** Visão base do dashboard condensando status, saldo real, contas e pátio por loja (com dados empilhados para não espremer layout). Possui `<tfoot>` nativo para Totalizadores da rede.
 - **Faturamento vs Contas Chart (`src/components/dashboard/FaturamentoVsContasChart.tsx`):** Gráfico de barras horizontal responsivo usando Recharts.
