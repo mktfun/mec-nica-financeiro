@@ -141,9 +141,12 @@ export function useDashboardV2(selectedDateStr?: string) {
       const fatByStore: Record<string, number> = {};
       
       for (const po of patioOs.data || []) {
-        if (po.closed_at) {
+        // Se tem closed_at, usamos. Se não, mas está finalizado, usamos a data de importação (updated_at)
+        const effectiveDateStr = po.closed_at || (po.status === 'finalizado' ? po.updated_at : null);
+        
+        if (effectiveDateStr) {
           // Extraímos a data no formato YYYY-MM-DD
-          const closedDate = po.closed_at.split('T')[0];
+          const closedDate = effectiveDateStr.split('T')[0];
           
           if (closedDate === dateAtual) {
             const val = Number(po.total_value || 0);
@@ -251,8 +254,9 @@ export function useDashboardV2(selectedDateStr?: string) {
       
       // Faturamento (patio_os closed_at + manual do dia)
       for (const po of patioOs.data || []) {
-        if (po.closed_at) {
-          const closedDate = po.closed_at.split('T')[0];
+        const effectiveDateStr = po.closed_at || (po.status === 'finalizado' ? po.updated_at : null);
+        if (effectiveDateStr) {
+          const closedDate = effectiveDateStr.split('T')[0];
           if (histMap[closedDate] !== undefined) {
             histMap[closedDate].faturamento += Number(po.total_value || 0);
           }

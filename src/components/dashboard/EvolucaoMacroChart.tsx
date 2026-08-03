@@ -30,7 +30,7 @@ export function EvolucaoMacroChart({ data, isLoading }: EvolucaoMacroChartProps)
   // O Recharts espera os dados do mais antigo pro mais novo (para a linha ir da esquerda para a direita)
   const chartData = useMemo(() => {
     if (!data) return [];
-    return [...data].reverse();
+    return data;
   }, [data]);
 
   if (isLoading) {
