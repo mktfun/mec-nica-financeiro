@@ -7,3 +7,12 @@
 **Risco identificado:** A inserÃ§Ã£o pode falhar se nÃ£o houver um `try/catch` ao redor de `supabaseAdmin.from('ai_execution_logs').insert(...)`. Falhas nesse log nÃ£o devem quebrar a resposta que jÃ¡ foi enviada ao usuÃ¡rio.
 
 **NÃ£o fazer:** NÃ£o deixe o front-end calcular e salvar os custos de token (a menos que seja apenas cÃ¡lculo de exibiÃ§Ã£o), o backend (Edge Function) tem a contagem real apÃ³s a resposta.
+
+
+## [2026-08-03] — [Feature ID: 060-oficina-sync-ui-cron]
+
+**Contexto:** Agendamento nativo no banco para disparo de background jobs e logs das tools de IA.
+**Regra aprendida:** O Supabase possui as extensões pg_cron e pg_net. Você pode agendar requisições HTTP para Edge Functions locais usando cron.schedule em conjunto com 
+et.http_post. No entanto, chamadas protegidas requerem passagem explícita do header Authorization: Bearer <Anon_ou_Service_Key> dentro do JSONB no PostgreSQL.
+**Risco identificado:** Ambientes de desenvolvimento local e nuvem possuem URLs distintas. Nunca fixe 'http://localhost' na nuvem. Migrations com pg_net na nuvem requerem privilégios superuser ou roles específicos.
+**Não fazer:** Não deixe o usuário descobrir que a sincronização automática parou. Monitore a saúde dos crons via telemetria.

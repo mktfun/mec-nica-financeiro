@@ -6,19 +6,20 @@ import { PromptInput } from '@/components/chat/PromptInput';
 import { MessageList } from '@/components/chat/MessageList';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
-import { Bot, Plus, Trash2, Settings, Terminal, Workflow, Pencil, BarChart3 } from 'lucide-react';
+import { Bot, Plus, Trash2, Settings, Terminal, Workflow, Pencil, BarChart3, Database } from 'lucide-react';
 import { toast } from 'sonner';
 import { CustosPanel } from '@/components/agente/CustosPanel';
 import { ConfiguracoesPanel } from '@/components/agente/ConfiguracoesPanel';
 import { LogsAgentePanel } from '@/components/agente/LogsAgentePanel';
 import { LogsMotorPanel } from '@/components/agente/LogsMotorPanel';
+import { CacheAgentePanel } from '@/components/agente/CacheAgentePanel';
 
 export const Route = createFileRoute('/agente')({
   component: AgentePage,
 });
 
 function AgentePage() {
-  type ActiveView = 'chat' | 'config' | 'logs-agent' | 'logs-motor' | 'costs';
+  type ActiveView = 'chat' | 'config' | 'logs-agent' | 'logs-motor' | 'costs' | 'cache';
   const [activeView, setActiveView] = useState<ActiveView>('chat');
 
   // State do Chat
@@ -423,6 +424,13 @@ function AgentePage() {
               <BarChart3 size={15} />
               <span>Custos</span>
             </button>
+            <button
+              onClick={() => setActiveView('cache')}
+              className={`flex w-full items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${activeView === 'cache' ? 'bg-[var(--bg-surface-elevated)] text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)]'}`}
+            >
+              <Database size={15} />
+              <span>Cache Oficina</span>
+            </button>
           </div>
         </div>
 
@@ -433,6 +441,7 @@ function AgentePage() {
           {activeView === 'costs' && <div className="flex-1 overflow-y-auto custom-scrollbar"><CustosPanel /></div>}
           {activeView === 'logs-agent' && <div className="flex-1 overflow-y-auto custom-scrollbar"><LogsAgentePanel /></div>}
           {activeView === 'logs-motor' && <div className="flex-1 overflow-y-auto custom-scrollbar"><LogsMotorPanel /></div>}
+          {activeView === 'cache' && <div className="flex-1 overflow-y-auto custom-scrollbar"><CacheAgentePanel /></div>}
           
           <div className={`flex-1 flex-col relative overflow-hidden ${activeView === 'chat' ? 'flex' : 'hidden'}`}>
             {/* Messages Area */}

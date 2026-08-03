@@ -29,3 +29,6 @@
 
 - **[Backend] Edge Function sync-oficina**: Motor de sincronização que puxa listas de Contas a Pagar e OSs de forma assíncrona do bot.
 - **[Backend] Tabelas de Cache de IA**: oficina_contas e oficina_os_cache. Essenciais para o funcionamento condicional (live vs cache) da ferramenta do Agente AI para evitar timeouts no Playwright.
+
+- **[Frontend] Telemetria Híbrida**: Painéis \LogsAgentePanel\ (lendo da tabela \mcp_logs\) e \CacheAgentePanel\ para inspecionar cache nativo das Ordens de Serviço diretamente pela UI do Agente.
+- **[Backend] Automação Postgres Cron**: Migration com pg_cron e pg_net para acionar HTTP hooks em background.
