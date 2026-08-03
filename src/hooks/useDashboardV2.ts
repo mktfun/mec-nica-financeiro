@@ -89,7 +89,7 @@ export function useDashboardV2(selectedDateStr?: string) {
 
         supabase
           .from('daily_snapshots')
-          .select('faturamento_outros_valor, dinheiro_mp, a_receber_manual')
+          .select('faturamento_outros_valor, dinheiro_mp, a_receber_manual, contas_a_pagar')
           .eq('date', dateAtual)
           .maybeSingle(),
 
@@ -103,7 +103,7 @@ export function useDashboardV2(selectedDateStr?: string) {
           : Promise.resolve({ data: [] }),
           
         monthDates.length > 0
-          ? supabase.from('daily_snapshots').select('date, faturamento_outros_valor').in('date', monthDates)
+          ? supabase.from('daily_snapshots').select('date, faturamento_outros_valor, contas_a_pagar').in('date', monthDates)
           : Promise.resolve({ data: [] })
       ]);
 
@@ -131,14 +131,15 @@ export function useDashboardV2(selectedDateStr?: string) {
       const saldoAnterior = Object.values(latestPrevByStore).reduce((acc, v) => acc + v, 0);
       const fluxoCaixa = saldoTotal - saldoAnterior;
 
-      // --- Faturamento (Transações 'in' + Manual) ---
+      // --- Faturamento e Contas (Transações + Manual) ---
       const fatManual = Number(snapshotRes.data?.faturamento_outros_valor || 0);
+      const contasManual = Number(snapshotRes.data?.contas_a_pagar || 0);
       
       let faturamentoAtualLog = 0;
       let faturamentoAnterior = 0;
       const fatByStore: Record<string, number> = {};
       const contasByStore: Record<string, number> = {};
-      let contasAPagar = 0;
+      let contasAPagarBase = 0;
       
       for (const tx of transacoesAtuais.data || []) {
         const val = Math.abs(Number(tx.amount || 0));
@@ -150,7 +151,7 @@ export function useDashboardV2(selectedDateStr?: string) {
               fatByStore[tx.store_id] = (fatByStore[tx.store_id] || 0) + val;
             }
           } else if (tx.type === 'out') {
-            contasAPagar += val;
+            contasAPagarBase += val;
             if (tx.store_id) {
               contasByStore[tx.store_id] = (contasByStore[tx.store_id] || 0) + val;
             }
@@ -163,6 +164,7 @@ export function useDashboardV2(selectedDateStr?: string) {
       }
       
       const faturamentoAtual = faturamentoAtualLog + fatManual;
+      const contasAPagar = contasAPagarBase + contasManual;
 
       const variacaoFaturamento = faturamentoAnterior > 0
         ? ((faturamentoAtual - faturamentoAnterior) / faturamentoAnterior) * 100
@@ -254,10 +256,11 @@ export function useDashboardV2(selectedDateStr?: string) {
         }
       }
       
-      // Adicionar faturamento manual
+      // Adicionar faturamento e contas manuais
       for (const row of historicoSnapshotsRes.data || []) {
         if (histMap[row.date] !== undefined) {
           histMap[row.date].faturamento += Number(row.faturamento_outros_valor || 0);
+          histMap[row.date].contas += Number(row.contas_a_pagar || 0);
         }
       }
 
