@@ -156,7 +156,7 @@ Deno.serve(async (req) => {
       messages: formattedMessages,
       tools: mcpTools,
       stopWhen: stepCountIs(5),
-      onFinish: async ({ text }) => {
+      onFinish: async ({ text, usage }) => {
         if (conversation_id && text && text.trim()) {
           try {
             await supabaseAdmin.from('messages').insert([{
@@ -164,6 +164,30 @@ Deno.serve(async (req) => {
               role: 'assistant',
               content: text.trim()
             }]);
+
+            if (usage) {
+              const providerStr = settings?.provider || 'google';
+              const modelStr = settings?.model || 'gemini-2.0-flash';
+              let costInBrl = 0;
+              
+              // Taxas aproximadas USD para BRL (1 USD = 5.50 BRL)
+              if (providerStr === 'openai') {
+                costInBrl = ((usage.promptTokens * 5) / 1000000 + (usage.completionTokens * 15) / 1000000) * 5.5;
+              } else if (providerStr === 'anthropic') {
+                costInBrl = ((usage.promptTokens * 3) / 1000000 + (usage.completionTokens * 15) / 1000000) * 5.5;
+              } else {
+                costInBrl = ((usage.promptTokens * 0.075) / 1000000 + (usage.completionTokens * 0.3) / 1000000) * 5.5;
+              }
+              
+              await supabaseAdmin.from('ai_execution_logs').insert([{
+                provider: 'agent',
+                model: modelStr,
+                prompt_tokens: usage.promptTokens,
+                completion_tokens: usage.completionTokens,
+                total_tokens: usage.promptTokens + usage.completionTokens,
+                estimated_cost: costInBrl
+              }]);
+            }
           } catch (e) {
             console.error('Error saving assistant message on backend:', e);
           }

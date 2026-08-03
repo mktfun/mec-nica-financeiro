@@ -8,12 +8,19 @@ import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { Bot, Plus, Trash2, Settings, Terminal, Workflow, Pencil, BarChart3 } from 'lucide-react';
 import { toast } from 'sonner';
+import { CustosPanel } from '@/components/agente/CustosPanel';
+import { ConfiguracoesPanel } from '@/components/agente/ConfiguracoesPanel';
+import { LogsAgentePanel } from '@/components/agente/LogsAgentePanel';
+import { LogsMotorPanel } from '@/components/agente/LogsMotorPanel';
 
 export const Route = createFileRoute('/agente')({
   component: AgentePage,
 });
 
 function AgentePage() {
+  type ActiveView = 'chat' | 'config' | 'logs-agent' | 'logs-motor' | 'costs';
+  const [activeView, setActiveView] = useState<ActiveView>('chat');
+
   // State do Chat
   const [conversations, setConversations] = useState<any[]>([]);
   const [showAllHistory, setShowAllHistory] = useState(false);
@@ -124,6 +131,7 @@ function AgentePage() {
   }, [activeConversationId, setMessages]);
 
   const handleSelectConversation = (id: string) => {
+    setActiveView('chat');
     if (id === activeConversationIdRef.current) return;
     setMessages([]);
     setActiveConversationId(id);
@@ -197,6 +205,7 @@ function AgentePage() {
   };
 
   const handleNewConversation = async () => {
+    setActiveView('chat');
     setActiveConversationId(null);
     setMessages([]);
   };
@@ -386,43 +395,47 @@ function AgentePage() {
 
           {/* Bottom Anchored Section: Configurações & Logs */}
           <div className="mt-auto px-3 py-3 border-t border-[var(--border-subtle)] space-y-1 shrink-0 bg-[var(--bg-canvas)]">
-            <Link
-              to="/configuracoes"
-              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)] transition-colors"
+            <button
+              onClick={() => setActiveView('config')}
+              className={`flex w-full items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${activeView === 'config' ? 'bg-[var(--bg-surface-elevated)] text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)]'}`}
             >
               <Settings size={15} />
               <span>Configurações</span>
-            </Link>
-            <Link
-              to="/logs/agente"
-              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)] transition-colors"
+            </button>
+            <button
+              onClick={() => setActiveView('logs-agent')}
+              className={`flex w-full items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${activeView === 'logs-agent' ? 'bg-[var(--bg-surface-elevated)] text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)]'}`}
             >
               <Terminal size={15} />
               <span>Log do Agente IA</span>
-            </Link>
-            <Link
-              to="/logs/motor"
-              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)] transition-colors"
+            </button>
+            <button
+              onClick={() => setActiveView('logs-motor')}
+              className={`flex w-full items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${activeView === 'logs-motor' ? 'bg-[var(--bg-surface-elevated)] text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)]'}`}
             >
               <Workflow size={15} />
               <span>Log do Motor</span>
-            </Link>
-            <Link
-              to="/custos"
-              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)] transition-colors"
+            </button>
+            <button
+              onClick={() => setActiveView('costs')}
+              className={`flex w-full items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${activeView === 'costs' ? 'bg-[var(--bg-surface-elevated)] text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)]'}`}
             >
               <BarChart3 size={15} />
               <span>Custos</span>
-            </Link>
+            </button>
           </div>
         </div>
 
-        {/* Main Chat Area */}
+        {/* Main Area */}
         <div className="flex-1 bg-transparent flex flex-col relative overflow-hidden">
           
-          {/* Header Removed for cleaner UI */}
-
-          {/* Messages Area */}
+          {activeView === 'config' && <div className="flex-1 overflow-y-auto custom-scrollbar"><ConfiguracoesPanel /></div>}
+          {activeView === 'costs' && <div className="flex-1 overflow-y-auto custom-scrollbar"><CustosPanel /></div>}
+          {activeView === 'logs-agent' && <div className="flex-1 overflow-y-auto custom-scrollbar"><LogsAgentePanel /></div>}
+          {activeView === 'logs-motor' && <div className="flex-1 overflow-y-auto custom-scrollbar"><LogsMotorPanel /></div>}
+          
+          <div className={`flex-1 flex-col relative overflow-hidden ${activeView === 'chat' ? 'flex' : 'hidden'}`}>
+            {/* Messages Area */}
           <div className="flex-1 overflow-y-auto px-4 md:px-16 pt-4 pb-32 custom-scrollbar relative">
             {messages.length === 0 && (
               <div className="h-full flex flex-col items-center justify-center">
@@ -444,6 +457,7 @@ function AgentePage() {
             <div className="max-w-3xl mx-auto pointer-events-auto">
               <PromptInput onSubmit={(val, meta) => sendMessage(val, meta)} disabled={isLoading} />
             </div>
+          </div>
           </div>
         </div>
       </div>

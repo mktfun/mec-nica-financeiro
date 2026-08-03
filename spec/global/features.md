@@ -18,7 +18,8 @@
 - **MessageList (`src/components/chat/MessageList.tsx`):** Exibe execuções de MCP logs via um bloco expansível `StepAccordion` minimalista com suporte a `aggregateAssistantTurns`.
 - **Tool Edge Function (`supabase/functions/ai-chat/index.ts`):** Possui as ferramentas locais `consulta_resumo_os`, `consulta_saldo_contas`, `consulta_conciliacao_periodo`, `consulta_contas_em_aberto` e as externas `consulta_os_detalhe_completo`, `consulta_contas_pagar_oficina`, `consulta_contas_receber_oficina`.
 - **Persistência de Retaguarda:** Gravando no evento `onFinish` do `streamText` usando `supabaseAdmin` (`SERVICE_ROLE_KEY`) para garantir persistência no Supabase sem depender do cliente.
-- **Ferramentas de Custo & Config:** Rota avulsa `/custos` e suas integrações.
+- **Workspace do Agente de IA (`src/routes/agente.tsx`):** Container SPA com navegação fluida em abas (Chat, Configurações, Custos, Logs) gerenciada por `activeView`, sem reload de rotas globais.
+- **Painéis do Workspace (`src/components/agente/*`):** Componentes extraídos para modularizar a interface, incluindo `CustosPanel`, `ConfiguracoesPanel`, `LogsAgentePanel` e `LogsMotorPanel`.
 - **Auto-Titulação do Histórico:** Em `src/routes/agente.tsx`, sistema de requisição assíncrona gerando "Smart Titles" em background para não travar a UI de chat, incluindo limpeza imediata de histórico ao alternar conversas.
 - **Regras de Proveniência & Isolamento (`supabase/functions/ai-chat/index.ts`):** Inclusão da `<regra_proibição_alucinação_origem>` e isolamento estrito de histórico por `conversation_id` em `src/routes/agente.tsx`.
 
