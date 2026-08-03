@@ -35,3 +35,7 @@ dist-ssr
 .env.local
 .env
 .agent/
+
+# Supabase binaries
+supabase.zip
+supabase_bin/

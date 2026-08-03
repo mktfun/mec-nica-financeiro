@@ -7,3 +7,13 @@
 **Risco identificado:** Crescimento desordenado do arquivo `agente.tsx`. É crítico extrair sub-telas para arquivos separados na pasta `src/components/agente/` (e.g. `LogsAgentePanel.tsx`), e renderizá-los condicionalmente na view principal, garantindo um código limpo.
 
 **Não fazer:** Não jogue a rota `/configuracoes` na barra lateral global se ela está intimamente ligada apenas ao contexto da ferramenta do Agente IA. O usuário deve focar no workspace.
+
+## [2026-08-03] — [Feature ID: 062-dashboard-fintech-v2]
+
+**Contexto:** O dashboard principal foi reescrito de um layout superficial (com atalhos e status dispersos) para uma grade executiva no estilo fintech. Foi criado um hook central `useDashboardV2` que faz 5 queries paralelas (reconciliations, patio_os, oficina_contas, stores) para construir os KPIs financeiros.
+
+**Regra aprendida:** Em dashboards financeiros executivos, sempre exiba dados agregados centralizados (ex: "Saldo Total", "Diferença Final") no topo, com gráficos e tabelas detalhadas por loja na base. O uso de `Promise.all` com MÚLTIPLAS chamadas para o Supabase no mesmo hook é o padrão para montar a "Big Picture" sem forçar a UI a fazer múltiplos loadings fragmentados.
+
+**Risco identificado:** Dados que dependem de crons (como `oficina_contas`) podem retornar valores vazios/zerados se a sincronização não tiver rodado. É preciso deixar claro na UI (via tooltips) a origem daquele dado.
+
+**Não fazer:** Não misture status de sistema/tecnologia (ex: "Motor rodando") com os KPIs executivos no mesmo nível hierárquico. Status de background jobs deve ficar em sua respectiva tela (Conciliação) ou num banner discreto, deixando o espaço nobre para números.

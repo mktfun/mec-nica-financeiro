@@ -21,9 +21,9 @@ import { motion } from 'framer-motion';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Card } from '@/components/ui/Card';
 
-export const Route = createFileRoute('/')(({
+export const Route = createFileRoute('/')({
   component: DashboardPage,
-}));
+});
 
 function DashboardPage() {
   const [selectedMonth, setSelectedMonth] = useState(() => {
