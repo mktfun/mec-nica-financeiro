@@ -24,3 +24,9 @@
 **Regra aprendida:** Em painéis financeiros focados em fechamento/caixa (Cash Flow Analytics), usar intervalos "Mensais" é um anti-pattern. A operação vive de "Qual o saldo do último fechamento?". A matemática deve ser guiada por pivôs temporais absolutos (último registro validado) e não agrupamentos mensais incompletos.
 **Risco identificado:** Ao fazer queries globais em dados diários por loja (`reconciliations`), diferentes lojas podem ter a "última conciliação" em datas diferentes se uma atrasar. A query precisa considerar "a última data global", mas fazer fallback para a última da loja.
 **Não fazer:** Nunca crie um Dashboard de conciliação agrupando faturamento por `Mês Atual` se as despesas não acompanham o mesmo compasso cronológico. Amarre tudo ao fechamento diário mais recente.
+
+## [2026-08-03] — [Feature ID: 064-dashboard-fintech-v4]
+
+**Contexto:** O usuário não conseguia voltar para dias anteriores, pois a dashboard forçava a última data disponível automaticamente. Além disso, a tabela de lojas estava muito espremida com a adição das métricas de Pátio.
+**Regra aprendida:** Em painéis amarrados à "Última Conciliação" global, é obrigatório prover um seletor de data (`<input type="date">`) permitindo o **Time Travel** para fechamentos anteriores. Se o usuário abrir o painel num domingo sem dados, a interface precisa exibir a data mais próxima no passado que tenha dados ou permitir explicitamente a navegação.
+**Risco identificado:** Adicionar muitas colunas em tabelas de `Dashboard` rapidamente "espreme" os dados. Se for preciso adicionar sub-métricas (ex: Qtd e Valor de veículos no pátio), deve-se usar flex-col para empilhá-las em uma única `td` usando tipografia menor, garantindo a preservação da largura das colunas principais de dinheiro.

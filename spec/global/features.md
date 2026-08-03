@@ -33,9 +33,9 @@
 - **[Frontend] Telemetria Híbrida**: Painéis \LogsAgentePanel\ (lendo da tabela \mcp_logs\) e \CacheAgentePanel\ para inspecionar cache nativo das Ordens de Serviço diretamente pela UI do Agente.
 - **[Backend] Automação Postgres Cron**: Migration com pg_cron e pg_net para acionar HTTP hooks em background.
 
-## Dashboard Executivo (Fintech V3)
-- **Hook Central de KPIs (`src/hooks/useDashboardV2.ts`):** Pivotado para ancorar na última data de conciliação registrada (em vez do mês). Busca `dateAtual` e `dateAnterior` para basear todas as métricas financeiras (Caixa, Faturamento, Diferença).
+## Dashboard Executivo (Fintech V4)
+- **Hook Central de KPIs (`src/hooks/useDashboardV2.ts`):** Pivotado para ancorar na última data de conciliação registrada (em vez do mês). Aceita um parâmetro opcional `selectedDateStr` permitindo "Time Travel" interativo para conciliações anteriores. Faz fallback automático para a maior data `<= selectedDateStr`.
 - **`KpiCard` Genérico (`src/components/dashboard/KpiCard.tsx`):** Componente base de UI para métricas com animações, formatação inteligente e tooltips.
-- **Tabela de Lojas (`src/components/dashboard/StoreTableDashboard.tsx`):** Visão base do dashboard condensando status, saldo real, contas e pátio por loja. Possui `<tfoot>` nativo para Totalizadores da rede.
+- **Tabela de Lojas (`src/components/dashboard/StoreTableDashboard.tsx`):** Visão base do dashboard condensando status, saldo real, contas e pátio por loja (com dados empilhados para não espremer layout). Possui `<tfoot>` nativo para Totalizadores da rede.
 - **Faturamento vs Contas Chart (`src/components/dashboard/FaturamentoVsContasChart.tsx`):** Gráfico de barras horizontal responsivo usando Recharts.
 - **Evolução do Saldo Global (`src/components/dashboard/EvolucaoSaldoChart.tsx`):** Gráfico de área preenchida (`AreaChart`) ilustrando o histórico do saldo total (bank_total) nos últimos 15 dias para leitura executiva da saúde financeira.

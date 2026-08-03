@@ -117,11 +117,10 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
                   </td>
                   <td className="py-3 px-2 text-[11px] whitespace-nowrap text-[var(--text-secondary)]">
                     {store.veiculosPatio > 0 ? (
-                      <>
-                        <span className="font-semibold text-[var(--color-accent-warning)]">{store.veiculosPatio}</span> ud. 
-                        <span className="opacity-50 mx-1">•</span>
-                        <span className="font-mono">{fmt(store.veiculosPatioValor)}</span>
-                      </>
+                      <div className="flex flex-col gap-0.5">
+                        <span className="font-semibold text-[var(--color-accent-warning)]">{store.veiculosPatio} ud.</span>
+                        <span className="font-mono text-[10px] opacity-80">{fmt(store.veiculosPatioValor)}</span>
+                      </div>
                     ) : (
                       <span className="text-[var(--text-tertiary)]">-</span>
                     )}
@@ -159,10 +158,11 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
                     {fmt(totais.resultado)}
                   </span>
                 </td>
-                <td className="py-3 px-2 text-[12px] whitespace-nowrap">
-                  <span className="font-bold text-[var(--color-accent-warning)]">{totais.veiculosPatio}</span> ud. 
-                  <span className="opacity-50 mx-1 text-[var(--text-tertiary)]">•</span>
-                  <span className="font-mono font-bold text-[var(--text-primary)]">{fmt(totais.veiculosPatioValor)}</span>
+                <td className="py-3 px-2 text-[11px] whitespace-nowrap">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-bold text-[var(--color-accent-warning)]">{totais.veiculosPatio} ud.</span>
+                    <span className="font-mono font-bold text-[var(--text-primary)] text-[10px]">{fmt(totais.veiculosPatioValor)}</span>
+                  </div>
                 </td>
                 <td className="py-3 pl-2"></td>
               </tr>

@@ -31,11 +31,11 @@ export interface DashboardV2Data {
   historicoSaldos: { date: string; saldo: number }[];
 }
 
-export function useDashboardV2() {
+export function useDashboardV2(selectedDateStr?: string) {
   return useQuery({
-    queryKey: ['dashboard-v2'],
+    queryKey: ['dashboard-v2', selectedDateStr || 'latest'],
     queryFn: async (): Promise<DashboardV2Data> => {
-      // 1. Descobrir as top 2 datas e as top 15 datas de conciliação
+      // 1. Descobrir as datas
       const { data: datesData, error: datesErr } = await supabase
         .from('reconciliations')
         .select('date')
@@ -46,10 +46,16 @@ export function useDashboardV2() {
       // Pega as datas únicas, decrescentes
       const uniqueDates = Array.from(new Set((datesData || []).map(d => d.date)));
       
-      const dateAtual = uniqueDates[0] || new Date().toISOString().split('T')[0];
-      const dateAnterior = uniqueDates[1] || dateAtual;
+      let dateAtual = selectedDateStr || uniqueDates[0] || new Date().toISOString().split('T')[0];
       
-      const last15Dates = uniqueDates.slice(0, 15).reverse();
+      // Se a data selecionada for de um final de semana e não tiver fechamento, vamos tentar 
+      // achar a conciliação mais próxima anterior. Mas o fallback seguro é apenas filtrar.
+      const validPastDates = uniqueDates.filter(d => d <= dateAtual);
+      dateAtual = validPastDates[0] || dateAtual; // Ancorar na data real de fechamento mais próxima
+
+      const dateAnterior = validPastDates[1] || dateAtual;
+      
+      const last15Dates = validPastDates.slice(0, 15).reverse();
 
       // 2. Disparar queries paralelas baseadas na dateAtual
       const [

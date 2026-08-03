@@ -19,32 +19,31 @@ import {
 import { motion } from 'framer-motion';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Card } from '@/components/ui/Card';
+import { useState } from 'react';
 
 export const Route = createFileRoute('/')({
   component: DashboardPage,
 });
 
-function formatDate(dateStr?: string) {
-  if (!dateStr) return '';
-  const [y, m, d] = dateStr.split('-');
-  return `${d}/${m}/${y}`;
-}
-
 function DashboardPage() {
-  const { data, isLoading } = useDashboardV2();
+  const [selectedDate, setSelectedDate] = useState<string>('');
+  const { data, isLoading } = useDashboardV2(selectedDate || undefined);
 
   return (
     <AppShell>
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6">
 
         {/* ── HEADER ── */}
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <h1 className="font-display font-bold text-3xl text-white">Visão Geral</h1>
-          <div className="flex items-center gap-2 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] px-3 py-1.5 rounded-lg shadow-sm">
+          <div className="flex items-center gap-2 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] px-3 py-1.5 rounded-lg shadow-sm focus-within:ring-1 focus-within:ring-[var(--color-primary)]">
             <CalendarCheck2 size={16} className="text-[var(--color-primary)]" />
-            <span className="text-sm text-white">
-              {isLoading ? 'Carregando data...' : `Última conciliação: ${formatDate(data?.dataAtual)}`}
-            </span>
+            <input 
+              type="date"
+              value={selectedDate || data?.dataAtual || ''}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="bg-transparent border-none outline-none text-sm text-white font-medium w-[130px] p-0 focus:ring-0 [&::-webkit-calendar-picker-indicator]:invert-[0.6] cursor-pointer"
+            />
           </div>
         </div>
 
