@@ -67,7 +67,7 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-[var(--border-subtle)]">
-              {['Loja', 'Saldo Bancário', 'Faturamento', 'Contas (OFX)', 'Resultado', 'Pátio', 'Status'].map(h => (
+              {['Loja', 'Saldo Bancário', 'Faturamento', 'Contas (OFX)', 'Resultado', 'Pátio'].map(h => (
                 <th
                   key={h}
                   className="text-left pb-2 text-[10px] uppercase tracking-widest text-[var(--text-tertiary)] font-semibold px-2 first:pl-0"
@@ -80,7 +80,7 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
           <tbody>
             {data.length === 0 && (
               <tr>
-                <td colSpan={7} className="text-center py-8 text-sm text-[var(--text-tertiary)]">
+                <td colSpan={6} className="text-center py-8 text-sm text-[var(--text-tertiary)]">
                   Sem dados para o período selecionado
                 </td>
               </tr>
@@ -125,11 +125,6 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
                       <span className="text-[var(--text-tertiary)]">-</span>
                     )}
                   </td>
-                  <td className="py-3 pl-2">
-                    <Badge variant={statusVariant(store.statusConciliacao)} className="text-[10px]">
-                      {statusLabel(store.statusConciliacao)}
-                    </Badge>
-                  </td>
                 </motion.tr>
               );
             })}
@@ -164,7 +159,6 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
                     <span className="font-mono font-bold text-[var(--text-primary)] text-[10px]">{fmt(totais.veiculosPatioValor)}</span>
                   </div>
                 </td>
-                <td className="py-3 pl-2"></td>
               </tr>
             </tfoot>
           )}

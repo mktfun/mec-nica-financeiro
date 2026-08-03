@@ -3,7 +3,7 @@ import { AppShell } from '@/components/layout/AppShell';
 import { KpiCard } from '@/components/dashboard/KpiCard';
 import { StoreTableDashboard } from '@/components/dashboard/StoreTableDashboard';
 import { FaturamentoVsContasChart } from '@/components/dashboard/FaturamentoVsContasChart';
-import { EvolucaoSaldoChart } from '@/components/dashboard/EvolucaoSaldoChart';
+import { EvolucaoMacroChart } from '@/components/dashboard/EvolucaoMacroChart';
 import { useDashboardV2 } from '@/hooks/useDashboardV2';
 import {
   Landmark,
@@ -181,16 +181,12 @@ function DashboardPage() {
 
         {/* ── FAIXA BASE — Tabela + Gráficos ── */}
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-4" style={{ minHeight: 340 }}>
-          <div className="xl:col-span-3">
+          <div className="xl:col-span-3 flex flex-col gap-4">
+            <EvolucaoMacroChart data={data?.historicoMacro ?? []} isLoading={isLoading} />
             <StoreTableDashboard data={data?.porLoja ?? []} isLoading={isLoading} />
           </div>
-          <div className="xl:col-span-1 flex flex-col gap-4">
-            <div className="flex-1">
-              <EvolucaoSaldoChart data={data?.historicoSaldos ?? []} isLoading={isLoading} />
-            </div>
-            <div className="flex-1">
-              <FaturamentoVsContasChart data={data?.porLoja ?? []} isLoading={isLoading} />
-            </div>
+          <div className="xl:col-span-1">
+            <FaturamentoVsContasChart data={data?.porLoja ?? []} isLoading={isLoading} />
           </div>
         </div>
 

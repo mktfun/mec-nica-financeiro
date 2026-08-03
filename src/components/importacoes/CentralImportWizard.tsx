@@ -532,17 +532,61 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       // Log de Importação
       addLog("📝 Atualizando histórico de importação (import_logs)...", "info");
       
-      const osValueTotal = results.osFiles.filter(r => r.success).reduce((acc, curr) => acc + curr.osArray.reduce((sum, os) => sum + (os.total_value || 0), 0), 0);
+      const logsByStore = new Map<string, any>();
       
-      const logsToInsert = [{
-          store_id: Object.values(mapping)[0] || 'GLOBAL',
-          store_name: 'Conciliação Centralizada',
-          target_date: targetDate,
-          total_os: osValueTotal,
-          os_count: osCountTotal,
-          total_paid_all: txsToInsert.reduce((a,b) => a + b.amount, 0),
-          receivables_count: txsToInsert.filter(t => t.source === 'maquininha' || t.source === 'rede').length
-      }];
+      // Inicializar com as lojas mapeadas
+      Object.values(mapping).forEach(sId => {
+        if (sId !== 'GLOBAL') {
+          logsByStore.set(sId, {
+            store_id: sId,
+            store_name: Object.keys(mapping).find(k => mapping[k] === sId) || sId,
+            target_date: targetDate,
+            total_os: 0,
+            os_count: 0,
+            total_paid_all: 0,
+            receivables_count: 0
+          });
+        }
+      });
+      
+      // Fallback
+      if (logsByStore.size === 0) {
+          logsByStore.set('GLOBAL', {
+              store_id: 'GLOBAL',
+              store_name: 'Conciliação Centralizada',
+              target_date: targetDate,
+              total_os: 0,
+              os_count: 0,
+              total_paid_all: 0,
+              receivables_count: 0
+          });
+      }
+
+      // Adicionar Faturamento (OSs)
+      results.osFiles.filter(r => r.success).forEach(r => {
+          let sId = mapping[r.storeAlias] || 'GLOBAL';
+          if (!logsByStore.has(sId)) {
+             logsByStore.set(sId, { store_id: sId, store_name: r.storeAlias, target_date: targetDate, total_os: 0, os_count: 0, total_paid_all: 0, receivables_count: 0 });
+          }
+          const log = logsByStore.get(sId)!;
+          log.os_count += r.osArray.length;
+          log.total_os += r.osArray.reduce((sum, os) => sum + (os.total_value || 0), 0);
+      });
+      
+      // Adicionar Totais Pagos e Recebíveis
+      txsToInsert.forEach(t => {
+          let sId = t.store_id || 'GLOBAL';
+          if (!logsByStore.has(sId)) {
+             logsByStore.set(sId, { store_id: sId, store_name: t.store_name || sId, target_date: targetDate, total_os: 0, os_count: 0, total_paid_all: 0, receivables_count: 0 });
+          }
+          const log = logsByStore.get(sId)!;
+          log.total_paid_all += (t.amount || 0);
+          if (t.source === 'maquininha' || t.source === 'rede') {
+              log.receivables_count += 1;
+          }
+      });
+
+      const logsToInsert = Array.from(logsByStore.values());
 
       const { error: upsertErr } = await supabase.from('import_logs').upsert(logsToInsert, { onConflict: 'store_id,target_date' });
       if (upsertErr) console.warn("Erro ao registrar import log", upsertErr);

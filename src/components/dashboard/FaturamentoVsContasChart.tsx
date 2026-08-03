@@ -52,14 +52,15 @@ export function FaturamentoVsContasChart({ data, isLoading }: FaturamentoVsConta
           <p className="text-sm text-[var(--text-tertiary)]">Sem dados para o período</p>
         </div>
       ) : (
-        <div className="flex-1 min-h-[260px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={chartData}
-              layout="vertical"
-              margin={{ top: 0, right: 16, left: 0, bottom: 0 }}
-              barCategoryGap="30%"
-            >
+        <div className="flex-1 overflow-y-auto min-h-[260px] pr-1">
+          <div style={{ height: Math.max(260, chartData.length * 45) }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={chartData}
+                layout="vertical"
+                margin={{ top: 0, right: 16, left: 0, bottom: 0 }}
+                barCategoryGap="25%"
+              >
               <XAxis type="number" hide tickFormatter={formatCurrency} />
               <YAxis
                 dataKey="name"
@@ -100,7 +101,8 @@ export function FaturamentoVsContasChart({ data, isLoading }: FaturamentoVsConta
                 fillOpacity={0.85}
               />
             </BarChart>
-          </ResponsiveContainer>
+            </ResponsiveContainer>
+          </div>
         </div>
       )}
     </Card>

@@ -28,7 +28,7 @@ export interface DashboardV2Data {
   veiculosPatio: number;
   veiculosPatioValor: number;
   porLoja: StoreMetrics[];
-  historicoSaldos: { date: string; saldo: number }[];
+  historicoMacro: { date: string; saldo: number; faturamento: number; contas: number }[];
 }
 
 export function useDashboardV2(selectedDateStr?: string) {
@@ -53,7 +53,10 @@ export function useDashboardV2(selectedDateStr?: string) {
       dateAtual = validPastDates[0] || dateAtual;
 
       const dateAnterior = validPastDates[1] || dateAtual;
-      const last15Dates = validPastDates.slice(0, 15).reverse();
+      
+      const [ano, mes] = dateAtual.split('-');
+      const monthPrefix = `${ano}-${mes}-`;
+      const monthDates = validPastDates.filter(d => d.startsWith(monthPrefix)).reverse();
 
       // 2. Disparar queries paralelas baseadas na dateAtual
       const [
@@ -63,8 +66,13 @@ export function useDashboardV2(selectedDateStr?: string) {
         patioOs,         // Veículos no pátio e A Receber real
         contasRows,      // Transações do OFX (Saídas) para formar "Contas"
         storesRes,       // Lojas
-        historicoRes,    // Evolução do saldo
-        snapshotRes      // Dados manuais (Dinheiro MP, A Receber manual, Faturamento Outros)
+        snapshotRes,     // Dados manuais (Dinheiro MP, A Receber manual, Faturamento Outros)
+        
+        // Histórico Macro (Mês Atual)
+        historicoSaldosRes,
+        historicoFatRes,
+        historicoContasRes,
+        historicoSnapshotsRes
       ] = await Promise.all([
         supabase
           .from('reconciliations')
@@ -85,7 +93,6 @@ export function useDashboardV2(selectedDateStr?: string) {
           .from('patio_os')
           .select('store_id, total_value, paid_value, status'),
 
-        // Nova query de Contas (Soma do Extrato - Valores Negativos)
         supabase
           .from('transactions')
           .select('store_id, amount')
@@ -95,18 +102,28 @@ export function useDashboardV2(selectedDateStr?: string) {
 
         supabase.from('stores').select('id, name'),
 
-        last15Dates.length > 0 
-          ? supabase
-              .from('reconciliations')
-              .select('date, bank_total')
-              .in('date', last15Dates)
-          : Promise.resolve({ data: [] }),
-
         supabase
           .from('daily_snapshots')
           .select('faturamento_outros_valor, dinheiro_mp, a_receber_manual')
           .eq('date', dateAtual)
-          .maybeSingle()
+          .maybeSingle(),
+
+        // Macro Queries
+        monthDates.length > 0 
+          ? supabase.from('reconciliations').select('date, bank_total').in('date', monthDates)
+          : Promise.resolve({ data: [] }),
+          
+        monthDates.length > 0
+          ? supabase.from('import_logs').select('target_date, total_os').in('target_date', monthDates)
+          : Promise.resolve({ data: [] }),
+          
+        monthDates.length > 0
+          ? supabase.from('transactions').select('target_date, amount').in('target_date', monthDates).eq('type', 'out').lt('amount', 0)
+          : Promise.resolve({ data: [] }),
+          
+        monthDates.length > 0
+          ? supabase.from('daily_snapshots').select('date, faturamento_outros_valor').in('date', monthDates)
+          : Promise.resolve({ data: [] })
       ]);
 
       const storeMap: Record<string, string> = {};
@@ -223,15 +240,45 @@ export function useDashboardV2(selectedDateStr?: string) {
         };
       }).sort((a, b) => b.faturamento - a.faturamento);
 
-      // --- Histórico de Saldos ---
-      const histMap: Record<string, number> = {};
-      last15Dates.forEach(d => { histMap[d] = 0; });
-      for (const row of historicoRes.data || []) {
+      // --- Histórico Macro ---
+      const histMap: Record<string, { saldo: number; faturamento: number; contas: number }> = {};
+      
+      monthDates.forEach(d => { 
+        histMap[d] = { saldo: 0, faturamento: 0, contas: 0 }; 
+      });
+      
+      // Saldo (já temos o total por dia no banco, mas pode vir múltiplo por loja? Se sim, somamos)
+      for (const row of historicoSaldosRes.data || []) {
         if (histMap[row.date] !== undefined) {
-          histMap[row.date] += Number(row.bank_total || 0);
+          histMap[row.date].saldo += Number(row.bank_total || 0);
         }
       }
-      const historicoSaldos = last15Dates.map(d => ({ date: d, saldo: histMap[d] }));
+      
+      // Faturamento (import_logs + manual do dia)
+      for (const row of historicoFatRes.data || []) {
+        if (histMap[row.target_date] !== undefined) {
+          histMap[row.target_date].faturamento += Number(row.total_os || 0);
+        }
+      }
+      for (const row of historicoSnapshotsRes.data || []) {
+        if (histMap[row.date] !== undefined) {
+          histMap[row.date].faturamento += Number(row.faturamento_outros_valor || 0);
+        }
+      }
+
+      // Contas (transactions type='out' e amount < 0)
+      for (const row of historicoContasRes.data || []) {
+        if (histMap[row.target_date] !== undefined) {
+          histMap[row.target_date].contas += Math.abs(Number(row.amount || 0));
+        }
+      }
+
+      const historicoMacro = monthDates.map(d => ({ 
+        date: d, 
+        saldo: histMap[d].saldo,
+        faturamento: histMap[d].faturamento,
+        contas: histMap[d].contas
+      }));
 
       return {
         dataAtual: dateAtual,
@@ -248,7 +295,7 @@ export function useDashboardV2(selectedDateStr?: string) {
         veiculosPatio,
         veiculosPatioValor,
         porLoja,
-        historicoSaldos,
+        historicoMacro,
       };
     },
     staleTime: 5 * 60 * 1000,
