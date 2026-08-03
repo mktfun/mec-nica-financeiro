@@ -122,12 +122,14 @@ Deno.serve(async (req) => {
     const { data: { user } } = await supabaseClient.auth.getUser()
     if (!user) throw new Error('Unauthorized')
 
-    // Fetch AI Settings gracefully — .maybeSingle() retorna null sem lançar erro quando não há registro
-    const { data: settings } = await supabaseClient
+    // Fetch AI Settings via admin client (bypassa RLS, user já foi validado acima)
+    const { data: settings, error: settingsError } = await supabaseAdmin
       .from('ai_settings')
-      .select('*')
+      .select('provider, model, api_key, bot_url, bot_api_key')
       .eq('user_id', user.id)
       .maybeSingle()
+    
+    if (settingsError) console.error('[ai-chat] settings fetch error:', settingsError.message)
 
     let llmModel;
     
@@ -140,7 +142,7 @@ Deno.serve(async (req) => {
     } else {
       // Default to Google Generative AI
       const apiKey = settings?.api_key || Deno.env.get('GOOGLE_API_KEY')
-      if (!apiKey) throw new Error('API Key não configurada para o provedor selecionado.')
+      if (!apiKey) throw new Error(`API Key não configurada. Configure em Agente IA > Configurações. (settings: ${JSON.stringify({ provider: settings?.provider, hasKey: !!settings?.api_key })})`)
       const google = createGoogleGenerativeAI({ apiKey })
       llmModel = google(settings?.model || 'gemini-2.0-flash')
     }

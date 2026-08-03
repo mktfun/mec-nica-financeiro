@@ -9,7 +9,7 @@ import { DefaultChatTransport } from 'ai';
 import { Bot, Plus, Trash2, Settings, Terminal, Workflow, Pencil, BarChart3, Database } from 'lucide-react';
 import { toast } from 'sonner';
 import { CustosPanel } from '@/components/agente/CustosPanel';
-import { ConfiguracoesPanel } from '@/components/agente/ConfiguracoesPanel';
+import { AgenteIAConfigPanel } from '@/components/agente/AgenteIAConfigPanel';
 import { LogsAgentePanel } from '@/components/agente/LogsAgentePanel';
 import { LogsMotorPanel } from '@/components/agente/LogsMotorPanel';
 import { CacheAgentePanel } from '@/components/agente/CacheAgentePanel';
@@ -441,7 +441,7 @@ function AgentePage() {
         {/* Main Area */}
         <div className="flex-1 bg-transparent flex flex-col relative overflow-hidden">
           
-          {activeView === 'config' && <div className="flex-1 overflow-y-auto custom-scrollbar"><ConfiguracoesPanel /></div>}
+          {activeView === 'config' && <div className="flex-1 overflow-y-auto custom-scrollbar"><AgenteIAConfigPanel /></div>}
           {activeView === 'costs' && <div className="flex-1 overflow-y-auto custom-scrollbar"><CustosPanel /></div>}
           {activeView === 'logs-agent' && <div className="flex-1 overflow-y-auto custom-scrollbar"><LogsAgentePanel /></div>}
           {activeView === 'logs-motor' && <div className="flex-1 overflow-y-auto custom-scrollbar"><LogsMotorPanel /></div>}
