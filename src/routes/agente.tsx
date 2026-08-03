@@ -53,7 +53,8 @@ function AgentePage() {
         }
       };
     }
-  }), []);
+  });
+  }, []);
 
   const { messages, setMessages, sendMessage: appendMessage, status } = useChat({
     transport: chatTransport,
