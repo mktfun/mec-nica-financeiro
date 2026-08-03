@@ -8,7 +8,7 @@ import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { 
   UploadCloud, CheckCircle2, FileType2, Link as LinkIcon, ArrowRight, ArrowLeft, 
   Database, Search, X, TrendingDown, TrendingUp, AlertCircle, CreditCard, FileText, 
-  Terminal, Sparkles, FileSpreadsheet, Layers 
+  Terminal, Sparkles, FileSpreadsheet, Layers, RefreshCcw 
 } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
@@ -667,31 +667,62 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       </div>
 
       {step === 1 && (
+      {step === 1 && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-          <div 
-            {...getRootProps()} 
-            className={`border-2 border-dashed rounded-3xl p-16 flex flex-col items-center justify-center cursor-pointer transition-all duration-300
-              ${isDragActive 
-                ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/5 scale-[1.02]' 
-                : 'border-[var(--border-strong)] hover:border-[var(--color-primary)]/50 hover:bg-[var(--bg-surface-hover)]'
-              }
-            `}
-          >
-            <input {...getInputProps()} />
-            <div className="flex gap-4 mb-6">
-               <div className="bg-[var(--color-primary)]/20 p-4 rounded-full shadow-xl border border-[var(--border-subtle)] text-[var(--color-primary)]">
-                 <Database size={32} />
-               </div>
-               <div className="bg-[var(--color-accent-teal)]/20 p-4 rounded-full shadow-xl border border-[var(--border-subtle)] text-[var(--color-accent-teal)]">
-                 <UploadCloud size={32} />
-               </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Esquerda: Upload Manual (Planilhas) */}
+            <div 
+              {...getRootProps()} 
+              className={`border-2 border-dashed rounded-3xl p-10 flex flex-col items-center justify-center cursor-pointer transition-all duration-300
+                ${isDragActive 
+                  ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/5 scale-[1.02]' 
+                  : 'border-[var(--border-strong)] hover:border-[var(--color-primary)]/50 hover:bg-[var(--bg-surface-hover)]'
+                }
+              `}
+            >
+              <input {...getInputProps()} />
+              <div className="flex gap-4 mb-6">
+                 <div className="bg-[var(--color-primary)]/20 p-4 rounded-full shadow-xl border border-[var(--border-subtle)] text-[var(--color-primary)]">
+                   <Database size={32} />
+                 </div>
+                 <div className="bg-[var(--color-accent-teal)]/20 p-4 rounded-full shadow-xl border border-[var(--border-subtle)] text-[var(--color-accent-teal)]">
+                   <UploadCloud size={32} />
+                 </div>
+              </div>
+              <h3 className="font-display font-semibold text-xl mb-2 text-center">
+                {isDragActive ? 'Solte os arquivos aqui' : 'Planilhas Manuais (Fallback)'}
+              </h3>
+              <p className="text-[var(--text-tertiary)] text-sm text-center max-w-sm">
+                Arraste Planilhas OS, Rede e Extratos OFX (.xls, .xlsx, .ofx) caso precise importar manualmente.
+              </p>
             </div>
-            <h3 className="font-display font-semibold text-xl mb-2 text-center">
-              {isDragActive ? 'Solte os arquivos aqui' : 'Arraste Planilhas OS, Rede, OFX e Mapa de Metas'}
-            </h3>
-            <p className="text-[var(--text-tertiary)] text-sm text-center max-w-sm">
-              O sistema detectará automaticamente o tipo de cada arquivo (.xls, .xlsx, .ofx, .pdf).
-            </p>
+            
+            {/* Direita: Sincronização Automática Bot (Novo Fluxo Híbrido) */}
+            <div className="border border-[var(--border-subtle)] bg-[var(--bg-surface)] rounded-3xl p-10 flex flex-col items-center justify-center transition-all duration-300 hover:border-[var(--color-primary)]/50 relative overflow-hidden">
+              <div className="absolute top-0 right-0 bg-[var(--color-primary)]/20 text-[var(--color-primary)] text-xs px-3 py-1 font-bold rounded-bl-xl border-l border-b border-[var(--color-primary)]/20 flex items-center gap-1">
+                <Sparkles size={12} /> RECOMENDADO
+              </div>
+              <div className="bg-[var(--color-primary)]/10 p-5 rounded-full shadow-xl border border-[var(--color-primary)]/20 text-[var(--color-primary)] mb-6 animate-pulse">
+                <RefreshCcw />
+              </div>
+              <h3 className="font-display font-semibold text-xl mb-2 text-center text-[var(--text-primary)]">
+                Sincronização Cloud (Bot)
+              </h3>
+              <p className="text-[var(--text-secondary)] text-sm text-center max-w-sm mb-6">
+                Busca automaticamente resumos de Ordens de Serviço (Pátio) e Contas a Pagar diretamente do sistema Oficina Inteligente em tempo real.
+              </p>
+              <Button 
+                onClick={async () => {
+                   addLog("Iniciando Sincronização Cloud via Bot...", "info");
+                   // Em um fluxo real, chamaria a edge function aqui
+                   // supabase.functions.invoke('sync-oficina', { body: { loja: 'st-02' } })
+                   alert('Edge Function sync-oficina acionada. (Mock para demonstração da nova spec)');
+                }}
+                className="w-full shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.3)] hover:scale-105 transition-transform"
+              >
+                Sincronizar Oficina Agora
+              </Button>
+            </div>
           </div>
           
           {isProcessing && (

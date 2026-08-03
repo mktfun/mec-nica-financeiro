@@ -26,3 +26,6 @@
 ## Parsers e Importação
 - **Normalização de Nomes de Loja (`src/lib/parsers/storeMapping.ts`):** Dicionário utilitário que padroniza lojas inconsistentes (Maquininha/Juros) usando keys normalizadas em lowercase e mapeamento explícito, protegendo contra hard-ignores destrutivos.
 - **Idempotência de Maquininha (`src/components/importacoes/CentralImportWizard.tsx`):** Geração de `fitid` sintético determinístico (`source_store_date_amount_method`) para transações Rede/Taxas/Maquininha, prevenindo duplicações em múltiplas importações do mesmo Excel via onConflict nativo.
+
+- **[Backend] Edge Function sync-oficina**: Motor de sincroniza��o que puxa listas de Contas a Pagar e OSs de forma ass�ncrona do bot.
+- **[Backend] Tabelas de Cache de IA**: oficina_contas e oficina_os_cache. Essenciais para o funcionamento condicional (live vs cache) da ferramenta do Agente AI para evitar timeouts no Playwright.

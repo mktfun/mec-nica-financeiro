@@ -6,14 +6,12 @@
 ## 1. üîë Credenciais e Acesso SSH
 A VPS atual onde rodam o Tork Stack, os Bots em PM2 e a Evolution API √© acessada com as seguintes credenciais:
 
-- **Host (IP P√∫blico):** 203.0.113.50
 - **Host (IP Tailscale):** 100.126.50.101
 - **Porta:** 22
 - **Usu√°rio:** operacional
 - **Senha:** Mktfunil8563*
 
-*Aten√ß√£o:* Deixar a porta 22 exposta para a internet p√∫blica apenas com senha √© perigoso (os bots da internet v√£o ficar tentando adivinhar a senha 24 horas por dia). O ideal √© desativar o login por senha e usar apenas Chave SSH (SSH Key), o que deixa o servidor blindado, mesmo sendo p√∫blico.
-Para acessar sem o Tailscale, bastaria usar o IP p√∫blico no terminal: `ssh operacional@203.0.113.50` e digitar a mesma senha.
+*Aten√ß√£o:* O servidor √© acess√≠vel prioritariamente via Tailscale (VPN) por quest√µes de seguran√ßa. O acesso SSH direto via IP p√∫blico est√° bloqueado no firewall/porta 22.
 
 ### Como Agentes IA devem acessar (Script Node.js):
 A melhor forma para um Agente acessar a VPS e rodar comandos sem interatividade (evitando senhas no terminal) √© usando a biblioteca `ssh2` via Node.js local. Exemplo de template para scripts `.cjs`:
@@ -87,3 +85,11 @@ As vari√°veis de ambiente usadas pelos rob√¥s para conectar no Supabase (`SUPABA
 
 - **URL:** `https://cnwzsvowkfymtdiryhqc.supabase.co`
 - O `SUPABASE_SERVICE_ROLE_KEY` deve ser usado exclusivamente pelo backend (PM2/Docker na VPS). Jamais coloque isso em client-side web apps.
+
+
+## [2026-08-03] ó [Feature ID: 059-oficina-bot-automation]
+
+**Contexto:** SincronizaÁ„o autom·tica do Oficina Inteligente via Bot e falhas de timeout na IA.
+**Regra aprendida:** O bot na VPS usa scraping (Playwright) que pode levar atÈ 20s. A Vercel AI SDK ou Edge Functions falham por timeout com o limite default de 5s. A soluÁ„o È expandir a trava de AbortSignal.timeout(45000) para consultas live e implementar cache.
+**Risco identificado:** AlteraÁıes no DOM do sistema legado quebram o retorno do bot e preenchem o cache com valores nulos/vazios.
+**N„o fazer:** Nunca consultar o bot da VPS de forma massiva e sÌncrona dentro de interaÁıes r·pidas de IA (pode resultar em IP ban do bot e travamentos).

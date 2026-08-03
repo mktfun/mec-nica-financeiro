@@ -20,80 +20,103 @@ export const toolsOficina = (supabaseClient: any, settings: any, userId: string)
 
   return {
     consulta_os_detalhe_completo: tool({
-      description: 'Consulta os detalhes COMPLETOS de uma OS na API EXTERNA (Oficina). Use SOMENTE se a OS não for encontrada localmente ou se faltar dados profundos (checklist, histórico). Informe loja para direcionar a empresa correta. ALERTA DE ALUCINAÇÃO: Se o JSON retornar erro ou vazio, NUNCA INVENTE DADOS. Diga que não encontrou a OS. O JSON retornado é a única fonte da verdade.',
+      description: 'Consulta os detalhes COMPLETOS de uma OS na API EXTERNA (Oficina) ou no Cache Local. Informe loja para direcionar a empresa correta. ALERTA: Retorna peças, checklist, valores.',
       parameters: z.object({
         osNumber: z.string().describe('O número da OS (ex: 1763)'),
-        loja: z.string().optional().describe('Slug ou store_id da loja (ex: jab_jabaquara, st-02)')
+        loja: z.string().describe('Slug ou store_id da loja (ex: jab_jabaquara, st-02)')
       }),
       execute: async ({ osNumber, loja }) => {
         try {
-          const lojaParam = loja ? `?loja=${encodeURIComponent(loja)}` : '';
-          const url = `${BOT_URL}/api/os/detalhe/${osNumber}${lojaParam}`;
+          // 1. Tenta ler do cache
+          const { data: cached } = await supabaseClient
+            .from('oficina_os_cache')
+            .select('*')
+            .eq('store_id', loja)
+            .eq('os_number', osNumber)
+            .single();
+
+          if (cached && cached.status_cache === 'FINALIZADO') {
+            await logMcpExecution(supabaseClient, 'consulta_os_detalhe_completo', { osNumber, loja, source: 'cache' }, cached.payload_completo, userId);
+            return cached.payload_completo;
+          }
+
+          // 2. Se não tem ou não está finalizada, busca no bot (Timeout 45s)
+          const url = `${BOT_URL}/api/os/detalhe/${osNumber}?loja=${encodeURIComponent(loja)}`;
           const response = await fetch(url, {
             headers: { 'x-api-key': BOT_API_KEY },
-            signal: AbortSignal.timeout(5000)
+            signal: AbortSignal.timeout(45000)
           });
+          
           if (!response.ok) return { aviso: `API externa retornou HTTP ${response.status}. Utilize os dados do banco local.` };
           const json = await response.json();
-          await logMcpExecution(supabaseClient, 'consulta_os_detalhe_completo', { osNumber, loja }, json, userId);
+          
+          // 3. Salva no cache
+          if (json.success && json.data) {
+             const statusStr = (json.data.status || '').toUpperCase();
+             await supabaseClient.from('oficina_os_cache').upsert({
+               store_id: loja,
+               os_number: osNumber,
+               status_cache: statusStr,
+               payload_completo: json,
+               updated_at: new Date().toISOString()
+             }, { onConflict: 'store_id, os_number' });
+          }
+
+          await logMcpExecution(supabaseClient, 'consulta_os_detalhe_completo', { osNumber, loja, source: 'bot' }, json, userId);
           return json;
         } catch (e: any) {
-          return { aviso: `API externa indisponível ou timed out (${e.message}). Utilize os dados locais já disponíveis.` };
+          return { aviso: `API externa indisponível ou timed out (${e.message}). Tente novamente mais tarde.` };
         }
       },
     }),
     consulta_contas_pagar_oficina: tool({
-      description: 'Busca Contas a Pagar diretamente no Oficina Inteligente (sistema externo via bot). Use quando o usuário perguntar sobre contas a pagar, fornecedores, parcelas ou vencimentos. EXIGE saber a loja — se não souber, pergunte antes. ATENÇÃO: A API externa retorna TODAS as contas. É OBRIGATÓRIO que você descarte e ignore qualquer conta no retorno JSON cujo status seja "PAG" (Pagas), mostrando apenas as pendentes, a menos que o usuário peça as pagas. ALERTA DE ALUCINAÇÃO: Se o JSON retornado vier vazio ou após filtrar as "PAG" não sobrar nada, NUNCA INVENTE contas. Diga categoricamente que não há contas a pagar pendentes para essa loja. O JSON retornado é a única fonte da verdade.',
+      description: 'Busca Contas a Pagar lendo do banco de dados sincronizado local (rápido). Use quando o usuário perguntar sobre contas a pagar, fornecedores, parcelas. EXIGE saber a loja.',
       parameters: z.object({
-        loja: z.string().describe('Slug ou store_id da loja (ex: jab_jabaquara, brasicar_planalto)'),
-        vencimento_inicio: z.string().optional().describe('Data de início do vencimento YYYY-MM-DD'),
-        vencimento_fim: z.string().optional().describe('Data de fim do vencimento YYYY-MM-DD')
+        loja: z.string().describe('Slug ou store_id da loja (ex: jab_jabaquara, brasicar_planalto)')
       }),
-      execute: async ({ loja, vencimento_inicio, vencimento_fim }) => {
+      execute: async ({ loja }) => {
         try {
-          let url = `${BOT_URL}/api/contas-pagar?loja=${encodeURIComponent(loja)}`;
-          if (vencimento_inicio) url += `&vencimento_inicio=${vencimento_inicio}`;
-          if (vencimento_fim) url += `&vencimento_fim=${vencimento_fim}`;
-          const response = await fetch(url, { 
-            headers: { 'x-api-key': BOT_API_KEY },
-            signal: AbortSignal.timeout(5000)
-          });
-          if (!response.ok) return { aviso: `API externa retornou HTTP ${response.status}.` };
-          const json = await response.json();
-          await logMcpExecution(supabaseClient, 'consulta_contas_pagar_oficina', { loja, vencimento_inicio, vencimento_fim }, json, userId);
-          return json;
+          const { data, error } = await supabaseClient
+            .from('oficina_contas')
+            .select('*')
+            .eq('store_id', loja)
+            .eq('tipo', 'PAGAR')
+            .neq('status', 'PAG'); // Oculta pagas
+
+          if (error) throw error;
+          
+          const result = { success: true, data: data };
+          await logMcpExecution(supabaseClient, 'consulta_contas_pagar_oficina', { loja, source: 'db' }, result, userId);
+          return result;
         } catch (e: any) {
-          return { aviso: `API externa indisponível ou timed out (${e.message}).` };
+          return { aviso: `Erro ao consultar banco de dados (${e.message}).` };
         }
       }
     }),
     consulta_contas_receber_oficina: tool({
-      description: 'Busca Contas a Receber diretamente no Oficina Inteligente. Use quando o usuário perguntar sobre valores a receber, clientes devedores ou creditórios pendentes. EXIGE loja.',
+      description: 'Busca Contas a Receber lendo do banco sincronizado local.',
       parameters: z.object({
-        loja: z.string().describe('Slug ou store_id da loja'),
-        vencimento_inicio: z.string().optional().describe('Data de início YYYY-MM-DD'),
-        vencimento_fim: z.string().optional().describe('Data de fim YYYY-MM-DD')
+        loja: z.string().describe('Slug ou store_id da loja')
       }),
-      execute: async ({ loja, vencimento_inicio, vencimento_fim }) => {
+      execute: async ({ loja }) => {
         try {
-          let url = `${BOT_URL}/api/contas-receber?loja=${encodeURIComponent(loja)}`;
-          if (vencimento_inicio) url += `&vencimento_inicio=${vencimento_inicio}`;
-          if (vencimento_fim) url += `&vencimento_fim=${vencimento_fim}`;
-          const response = await fetch(url, { 
-            headers: { 'x-api-key': BOT_API_KEY },
-            signal: AbortSignal.timeout(5000)
-          });
-          if (!response.ok) return { aviso: `API externa retornou HTTP ${response.status}.` };
-          const json = await response.json();
-          await logMcpExecution(supabaseClient, 'consulta_contas_receber_oficina', { loja, vencimento_inicio, vencimento_fim }, json, userId);
-          return json;
+          const { data, error } = await supabaseClient
+            .from('oficina_contas')
+            .select('*')
+            .eq('store_id', loja)
+            .eq('tipo', 'RECEBER');
+          
+          if (error) throw error;
+          const result = { success: true, data: data };
+          await logMcpExecution(supabaseClient, 'consulta_contas_receber_oficina', { loja, source: 'db' }, result, userId);
+          return result;
         } catch (e: any) {
-          return { aviso: `API externa indisponível ou timed out (${e.message}).` };
+          return { aviso: `Erro ao consultar banco de dados (${e.message}).` };
         }
       }
     }),
     consulta_agenda_oficina: tool({
-      description: 'Busca a agenda de serviços e agendamentos no Oficina Inteligente. Use quando o usuário perguntar sobre horários, agendamentos, escala do dia ou slots disponivéis. EXIGE loja e período.',
+      description: 'Busca a agenda de serviços no Oficina Inteligente via Bot. EXIGE loja e período.',
       parameters: z.object({
         loja: z.string().describe('Slug ou store_id da loja'),
         data_inicio: z.string().describe('Data de início YYYY-MM-DD'),
@@ -102,7 +125,7 @@ export const toolsOficina = (supabaseClient: any, settings: any, userId: string)
       execute: async ({ loja, data_inicio, data_fim }) => {
         try {
           const url = `${BOT_URL}/api/agenda?loja=${encodeURIComponent(loja)}&data_inicio=${data_inicio}&data_fim=${data_fim}`;
-          const response = await fetch(url, { headers: { 'x-api-key': BOT_API_KEY } });
+          const response = await fetch(url, { headers: { 'x-api-key': BOT_API_KEY }, signal: AbortSignal.timeout(45000) });
           if (!response.ok) return { error: `Erro na API externa (HTTP ${response.status}). Falha ao buscar agenda.` };
           const json = await response.json();
           await logMcpExecution(supabaseClient, 'consulta_agenda_oficina', { loja, data_inicio, data_fim }, json, userId);
@@ -113,7 +136,7 @@ export const toolsOficina = (supabaseClient: any, settings: any, userId: string)
       }
     }),
     consulta_config_oficina: tool({
-      description: 'Busca configurações do sistema Oficina (status de OS, formas de pagamento). Use quando o usuário perguntar quais status existem, quais formas de pagamento estão cadastradas etc.',
+      description: 'Busca configurações do sistema Oficina via Bot.',
       parameters: z.object({
         loja: z.string().describe('Slug ou store_id da loja'),
         recurso: z.enum(['status-os', 'formas-pagamento']).describe('Qual configuração buscar')
@@ -121,7 +144,7 @@ export const toolsOficina = (supabaseClient: any, settings: any, userId: string)
       execute: async ({ loja, recurso }) => {
         try {
           const url = `${BOT_URL}/api/config/${recurso}?loja=${encodeURIComponent(loja)}`;
-          const response = await fetch(url, { headers: { 'x-api-key': BOT_API_KEY } });
+          const response = await fetch(url, { headers: { 'x-api-key': BOT_API_KEY }, signal: AbortSignal.timeout(45000) });
           if (!response.ok) return { error: `Erro na API externa (HTTP ${response.status}). Falha ao buscar configuração ${recurso}.` };
           const json = await response.json();
           await logMcpExecution(supabaseClient, 'consulta_config_oficina', { loja, recurso }, json, userId);
