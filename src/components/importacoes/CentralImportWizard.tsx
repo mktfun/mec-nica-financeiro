@@ -667,7 +667,6 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       </div>
 
       {step === 1 && (
-      {step === 1 && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Esquerda: Upload Manual (Planilhas) */}
