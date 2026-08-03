@@ -122,12 +122,12 @@ Deno.serve(async (req) => {
     const { data: { user } } = await supabaseClient.auth.getUser()
     if (!user) throw new Error('Unauthorized')
 
-    // Fetch AI Settings
+    // Fetch AI Settings gracefully — .maybeSingle() retorna null sem lançar erro quando não há registro
     const { data: settings } = await supabaseClient
       .from('ai_settings')
       .select('*')
       .eq('user_id', user.id)
-      .single()
+      .maybeSingle()
 
     let llmModel;
     
