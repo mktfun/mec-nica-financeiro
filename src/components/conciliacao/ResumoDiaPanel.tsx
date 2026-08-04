@@ -75,7 +75,7 @@ export function ResumoDiaPanel({
     saldo_bancario: currentSnapshot?.saldo_bancario || totalBancarioIn, // Se já salvou usa o salvo, senão a soma das entradas (in) do OFX
     dinheiro_mp: currentSnapshot?.dinheiro_mp || 0,
     a_receber_manual: currentSnapshot?.a_receber_manual || 0,
-    na_loja_os: currentSnapshot?.total_patio || 0,
+    na_loja_os: dynamicGlobalNaLojaOs,
     saldo_negativo_itau: currentSnapshot?.saldo_negativo_itau || 0,
     caixa_anterior: caixaAnteriorGlobal,
     faturamento_atual: faturamentoAtualGlobal,
