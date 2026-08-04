@@ -40,6 +40,9 @@ function BootstrapPage() {
 
     try {
       const promises = [];
+      let totalSaldo = 0;
+      let totalFaturamento = 0;
+      let totalContas = 0;
       
       for (const store of stores) {
         const data = formData[store.id];
@@ -48,6 +51,10 @@ function BootstrapPage() {
         const saldo = Number(data.saldo || 0);
         const faturamento = Number(data.faturamento || 0);
         const contas = Number(data.contas || 0);
+
+        totalSaldo += saldo;
+        totalFaturamento += faturamento;
+        totalContas += contas;
 
         if (saldo === 0 && faturamento === 0 && contas === 0) continue;
 
@@ -71,22 +78,21 @@ function BootstrapPage() {
             }, { onConflict: 'store_id,date' })
           );
         }
+      }
 
-        // Upsert Daily Snapshots (para Faturamento e Contas Anterior)
-        if (faturamento > 0 || contas > 0 || saldo > 0) {
-          promises.push(
-            supabase.from('daily_snapshots').upsert({
-              store_id: store.id,
-              date: targetDate,
-              faturamento_outros_valor: faturamento,
-              contas_a_pagar: contas,
-              saldo_final: saldo,
-              dinheiro_mp: 0,
-              a_receber_manual: 0,
-              provisao: 0
-            }, { onConflict: 'store_id,date' })
-          );
-        }
+      // Upsert Daily Snapshots Global (Agregado da Rede)
+      if (totalFaturamento > 0 || totalContas > 0 || totalSaldo > 0) {
+        promises.push(
+          supabase.from('daily_snapshots').upsert({
+            date: targetDate,
+            faturamento_outros_valor: totalFaturamento,
+            contas_a_pagar: totalContas,
+            saldo_bancario: totalSaldo,
+            dinheiro_mp: 0,
+            a_receber_manual: 0,
+            provisao: 0
+          }, { onConflict: 'date' })
+        );
       }
 
       await Promise.all(promises);
