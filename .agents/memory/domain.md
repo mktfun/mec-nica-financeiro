@@ -23,3 +23,13 @@
 **Contexto:** O primeiro dia de uso de um sistema (Dia 1) n√£o tem dados do Dia 0 no banco, quebrando compara√ß√µes percentuais e c√°lculos de Fluxo de Caixa (que dependem de `Saldo Atual - Saldo Anterior`).
 **Regra aprendida:** "S√≠ndrome do Sistema Virgem". Sempre forne√ßa uma rota administrativa de Bootstrap (`/bootstrap`) para inje√ß√£o manual das m√©tricas base do "Dia Zero" (Saldo Banc√°rio, Faturamento, Contas). √â a forma mais robusta de plugar dados legados do dia anterior sem escrever parsers fr√°geis para planilhas `.xlsx` antigas.
 **Risco identificado:** Matem√°tica do dashboard (`% vs ANTERIOR`) deve olhar para `faturamento_outros_valor` do dia anterior (`dateAnterior`), e n√£o apenas para transa√ß√µes transacionadas, sen√£o o painel nunca considerar√° os valores do Bootstrap.
+
+## [2026-08-04] ó [Feature ID: 075-fix-conciliation-bugs]
+
+**Contexto:** CorreÁ„o de c·lculo no painel de ConciliaÁ„o Global onde o Saldo Banco exibia R$ 17 milhıes (sendo o saldo real de R$ 1.7 milh„o multiplicado por 10 lojas).
+
+**Regra aprendida:** O saldo bruto de uma conta banc·ria (<LEDGERBAL> do OFX) N√O deve ser somado iterativamente para todas as filiais/lojas se elas compartilharem o mesmo arquivo corporativo ou matriz (Holding). Fazer o .reduce((acc, val) => acc + val.rawBalance) multiplica o caixa matriz N vezes. Para derivar o saldo global justo, utilize a soma rigorosa das transaÁıes isoladas de cada filial (ankInDate / soma de .in) para espelhar a arrecadaÁ„o da ponta, garantindo que o Painel Global represente a soma fiel dos caixas isolados.
+
+**Risco identificado:** Calcular mÈtricas financeiras globais somando diretamente campos <LEDGERBAL> persistidos por filial sem um deduplicador estrito de Conta/Banco causa aberraÁıes monet·rias milion·rias.
+
+**N„o fazer:** Nunca some saldos banc·rios est·ticos (ank_total, awBalance, <LEDGERBAL>) iterando as lojas caso n„o exista segregaÁ„o de Conta Corrente no parser. Para totais globais, prefira a soma determinÌstica de fluxo (entradas e saÌdas).

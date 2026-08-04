@@ -55,7 +55,7 @@ export function ResumoDiaPanel({
   const caixaAnteriorGlobal = previousSnapshot?.caixa_atual || 0;
 
   const inputForCalculation: GlobalConciliacaoInput = {
-    saldo_bancario: currentSnapshot?.saldo_bancario || totalBancarioRaw, // Se já salvou usa o salvo, senão o raw lido do OFX
+    saldo_bancario: currentSnapshot?.saldo_bancario || totalBancarioIn, // Se já salvou usa o salvo, senão a soma das entradas (in) do OFX
     dinheiro_mp: currentSnapshot?.dinheiro_mp || 0,
     a_receber_manual: currentSnapshot?.a_receber_manual || 0,
     na_loja_os: currentSnapshot?.total_patio || 0,
@@ -146,7 +146,7 @@ export function ResumoDiaPanel({
             </div>
             <button 
               onClick={() => onDayChange(1)} 
-              disabled={selectedDate === getDefaultDate()}
+              disabled={selectedDate === new Date().toISOString().substring(0, 10)}
               className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)] disabled:opacity-30"
             >
               <ChevronRight size={16} />
