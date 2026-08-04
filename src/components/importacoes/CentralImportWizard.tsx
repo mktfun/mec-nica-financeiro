@@ -86,10 +86,6 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   // Manual inputs globais
   const [manualDinheiroMp, setManualDinheiroMp] = useState<number>(0);
   const [manualAReceber, setManualAReceber] = useState<number>(0);
-  const [manualOutrosFaturamentos, setManualOutrosFaturamentos] = useState<number>(0);
-  const [manualOutrosDesc, setManualOutrosDesc] = useState<string>('');
-  const [manualContasAPagar, setManualContasAPagar] = useState<number>(0);
-  const [manualProvisao, setManualProvisao] = useState<number>(0);
 
   // Terminal logs state
   const [importLogs, setImportLogs] = useState<ImportLogEntry[]>([]);
@@ -620,10 +616,9 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           saldo_bancario: 0,
           dinheiro_mp: manualDinheiroMp,
           a_receber_manual: manualAReceber,
-          faturamento_outros_valor: manualOutrosFaturamentos,
-          faturamento_outros_desc: manualOutrosDesc || null,
-          contas_a_pagar: manualContasAPagar,
-          provisao: manualProvisao,
+          faturamento_outros_valor: 0,
+          contas_a_pagar: 0,
+          provisao: 0,
           saldo_negativo_itau: saldoNegativoItau,
           juros_rede: jurosRedeTotal,
           notes: 'Valores gerados via Importação',
@@ -1030,43 +1025,6 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                     type="number" 
                     value={manualAReceber} 
                     onChange={e => setManualAReceber(Number(e.target.value))}
-                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Outros Faturamentos (R$)</label>
-                  <input 
-                    type="number" 
-                    value={manualOutrosFaturamentos} 
-                    onChange={e => setManualOutrosFaturamentos(Number(e.target.value))}
-                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Desc. Outros Faturamentos</label>
-                  <input 
-                    type="text" 
-                    value={manualOutrosDesc} 
-                    onChange={e => setManualOutrosDesc(e.target.value)}
-                    placeholder="Ex: Venda de sucata"
-                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Contas a Pagar</label>
-                  <input 
-                    type="number" 
-                    value={manualContasAPagar} 
-                    onChange={e => setManualContasAPagar(Number(e.target.value))}
-                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Provisão</label>
-                  <input 
-                    type="number" 
-                    value={manualProvisao} 
-                    onChange={e => setManualProvisao(Number(e.target.value))}
                     className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)]"
                   />
                 </div>

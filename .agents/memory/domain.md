@@ -43,3 +43,13 @@
 **Risco identificado:** Achar que tabelas operacionais live refletem o passado.
 
 **Não fazer:** Fazer upsert no Daily Snapshots no Bootstrap sem popular explicitamente o caixa_atual com todos os dinheiros reais informados na tela.
+
+## [2026-08-04] - [Feature ID: 077]
+
+**Contexto:** Automação de Contas a Pagar e Outros Faturamentos via OFX.
+
+**Regra aprendida:** O cálculo de Despesas (Contas a Pagar) e Faturamento Avulso (Outros Faturamentos) deixou de ser manual no Importador. A fonte da verdade agora é 100% o OFX Global. 'Contas a Pagar' é a soma direta de TODAS as transações de saída (type='out') do extrato. 'Outros Faturamentos' é a soma das entradas (type='in') deduzindo as parcelas identificadas como transferências PIX das Ordens de Serviço (OS). O front-end usa o hook \useConciliacaoResumo\ para calcular esses globais on-the-fly.
+
+**Risco identificado:** Achar que esses valores vêm do snapshot (daily_snapshots.contas_a_pagar) na tela de conciliação diária. A tela de conciliação atualiza esses totais dinamicamente no componente e SÓ GRAVA no snapshot quando o usuário aperta o botão de Gravar Fechamento.
+
+**Não fazer:** Inserir inputs manuais na tela de importação para despesas que já estão mapeadas e documentadas no Extrato Bancário.

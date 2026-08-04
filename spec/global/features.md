@@ -44,3 +44,5 @@
 - **Evolução do Saldo Global (`src/components/dashboard/EvolucaoSaldoChart.tsx`):** Gráfico de área preenchida (`AreaChart`) ilustrando o histórico do saldo total (bank_total) nos últimos 15 dias para leitura executiva da saúde financeira.
 - **Histórico de Transações por Loja (`src/routes/loja.$lojaId.tsx`):** Exibe a lista completa de transações da loja (OFX e sistema) em um layout de tabela clássica e compacta (Data, Tipo, Descrição, Valor), em substituição aos blocos de card.
 - **Limite de Conta (OFX):** Extrai dinamicamente as tags `<OVERDRAFTLIMIT>` ou `<CREDITLIMIT>` no parser `ofxParser.ts` e atualiza `account_limit` da tabela `stores` automaticamente na importação.
+
+- **Automa��o Cont�bil OFX (Agosto 2026)**: 'Contas a Pagar' e 'Outros Faturamentos' s�o calculados dinamicamente via useConciliacaoResumo (	otalOfxOut e dedu��es de 	otalOfxIn vs 	otalPixOs) em ResumoDiaPanel.tsx. N�o existem mais campos manuais para esses valores na Importa��o.

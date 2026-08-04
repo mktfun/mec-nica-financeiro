@@ -23,6 +23,8 @@ interface ResumoDiaPanelProps {
   totalSistema: number;
   totalBancarioIn: number;
   totalBancarioRaw: number;
+  totalOfxIn?: number;
+  totalOfxOut?: number;
   storesData?: any[]; // We just need it to get faturamento_atual from index
 }
 
@@ -36,6 +38,8 @@ export function ResumoDiaPanel({
   totalSistema,
   totalBancarioIn,
   totalBancarioRaw,
+  totalOfxIn = 0,
+  totalOfxOut = 0,
   storesData = []
 }: ResumoDiaPanelProps) {
   const [isSaved, setIsSaved] = useState(false);
@@ -55,6 +59,18 @@ export function ResumoDiaPanel({
   // Caixa Anterior salvo no último fechamento
   const caixaAnteriorGlobal = previousSnapshot?.caixa_atual || 0;
 
+  // Calcular pix_os cruzado (quantos PIX foram declarados de OS e encontrados no banco)
+  let totalPixOs = 0;
+  if (storesData) {
+    storesData.forEach(st => {
+      totalPixOs += (st.pix_os || 0);
+    });
+  }
+
+  // Automáticos via OFX
+  const faturamentoOutrosAutomatico = Math.max(0, totalOfxIn - totalPixOs);
+  const contasAPagarAutomatico = totalOfxOut;
+
   const inputForCalculation: GlobalConciliacaoInput = {
     saldo_bancario: currentSnapshot?.saldo_bancario || totalBancarioIn, // Se já salvou usa o salvo, senão a soma das entradas (in) do OFX
     dinheiro_mp: currentSnapshot?.dinheiro_mp || 0,
@@ -64,10 +80,10 @@ export function ResumoDiaPanel({
     caixa_anterior: caixaAnteriorGlobal,
     faturamento_atual: faturamentoAtualGlobal,
     faturamento_anterior: faturamentoAnteriorGlobal,
-    faturamento_outros: currentSnapshot?.faturamento_outros_valor || 0,
+    faturamento_outros: faturamentoOutrosAutomatico,
     juros_rede: currentSnapshot?.juros_rede || 0,
-    contas_a_pagar: currentSnapshot?.contas_a_pagar || 0,
-    provisao: currentSnapshot?.provisao || 0,
+    contas_a_pagar: contasAPagarAutomatico,
+    provisao: 0,
   };
 
   const calculated = calculateGlobalConciliacao(inputForCalculation);
@@ -86,17 +102,20 @@ export function ResumoDiaPanel({
       await Promise.all(promises);
     }
 
-    // Ao salvar, atualiza as colunas de resultado no snapshot de hoje
-    await saveSnapshot.mutateAsync({
-      date: selectedDate,
-      caixa_atual: calculated.caixa_atual,
-      // Faturamento salvo deve ser o ATUAL acumulado, para que o dia seguinte use como `faturamento_anterior`
-      faturamento: faturamentoAtualGlobal,
-      total_recebiveis: calculated.a_receber,
-      total_patio: calculated.na_loja,
-      saldo_bancario: calculated.saldo,
-      notes: 'Fechamento salvo com base nos valores lidos da importação.',
-    });
+      // Ao salvar, atualiza as colunas de resultado no snapshot de hoje
+      await saveSnapshot.mutateAsync({
+        date: selectedDate,
+        caixa_atual: calculated.caixa_atual,
+        // Faturamento salvo deve ser o ATUAL acumulado, para que o dia seguinte use como `faturamento_anterior`
+        faturamento: faturamentoAtualGlobal,
+        total_recebiveis: calculated.a_receber,
+        total_patio: calculated.na_loja,
+        saldo_bancario: calculated.saldo,
+        faturamento_outros_valor: faturamentoOutrosAutomatico,
+        contas_a_pagar: contasAPagarAutomatico,
+        provisao: 0,
+        notes: 'Fechamento salvo com base nos valores lidos da importação automática de OFX.',
+      });
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 3000);
   };

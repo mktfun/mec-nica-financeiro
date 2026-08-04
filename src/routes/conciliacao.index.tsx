@@ -95,6 +95,8 @@ function ConciliacaoPage() {
               totalSistema={totalSistema}
               totalBancarioIn={totalBancarioIn}
               totalBancarioRaw={totalBancarioRaw}
+              totalOfxIn={resumo?.totalOfxIn || 0}
+              totalOfxOut={resumo?.totalOfxOut || 0}
               storesData={storesState}
             />
 
