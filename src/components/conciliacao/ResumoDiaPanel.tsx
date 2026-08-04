@@ -10,7 +10,8 @@ import {
 import { useDailySnapshot, usePreviousDaySnapshot, useSaveDailySnapshot } from '@/hooks/useDailySnapshot';
 import { getDefaultDate } from '@/lib/utils';
 import { calculateGlobalConciliacao, GlobalConciliacaoInput } from '@/lib/modulo1Calculations';
-import { StoreSaldoState } from '@/lib/modulo1Calculations'; // We don't need this exactly for calculation, but for props
+import { StoreSaldoState } from '@/lib/modulo1Calculations';
+import { supabase } from '@/lib/supabase';
 
 interface ResumoDiaPanelProps {
   selectedDate: string;
@@ -72,6 +73,19 @@ export function ResumoDiaPanel({
   const calculated = calculateGlobalConciliacao(inputForCalculation);
 
   const handleSave = async () => {
+    // Gravar na_loja_os no histórico de cada loja individualmente
+    if (storesMod1) {
+      const promises = Object.values(storesMod1).map(s => 
+        supabase.from('reconciliations').upsert({
+          store_id: s.store_id,
+          date: selectedDate,
+          na_loja_os: s.na_loja_os,
+          status: 'validated'
+        }, { onConflict: 'store_id,date' })
+      );
+      await Promise.all(promises);
+    }
+
     // Ao salvar, atualiza as colunas de resultado no snapshot de hoje
     await saveSnapshot.mutateAsync({
       date: selectedDate,

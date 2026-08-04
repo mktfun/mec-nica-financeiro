@@ -18,7 +18,7 @@ export const Route = createFileRoute('/conciliacao/')({
 });
 
 function ConciliacaoPage() {
-  const [selectedDate, setSelectedDate] = useState(() => getDefaultDate());
+  const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().substring(0, 10));
 
   const { data: stores = [], isLoading: loadingStores } = useStores();
   const { data: resumo, isLoading: loadingResumo } = useConciliacaoResumo(selectedDate);

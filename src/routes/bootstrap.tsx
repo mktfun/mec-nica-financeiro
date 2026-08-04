@@ -20,15 +20,15 @@ function BootstrapPage() {
   yesterday.setDate(yesterday.getDate() - 1);
   const [targetDate, setTargetDate] = useState(yesterday.toISOString().split('T')[0]);
   
-  const [formData, setFormData] = useState<Record<string, { saldo: string; faturamento: string; contas: string }>>({});
+  const [formData, setFormData] = useState<Record<string, { saldo: string; faturamento: string; contas: string; patio: string }>>({});
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  const handleInputChange = (storeId: string, field: 'saldo' | 'faturamento' | 'contas', value: string) => {
+  const handleInputChange = (storeId: string, field: 'saldo' | 'faturamento' | 'contas' | 'patio', value: string) => {
     setFormData(prev => ({
       ...prev,
       [storeId]: {
-        ...(prev[storeId] || { saldo: '', faturamento: '', contas: '' }),
+        ...(prev[storeId] || { saldo: '', faturamento: '', contas: '', patio: '' }),
         [field]: value
       }
     }));
@@ -43,6 +43,7 @@ function BootstrapPage() {
       let totalSaldo = 0;
       let totalFaturamento = 0;
       let totalContas = 0;
+      let totalPatio = 0;
       
       for (const store of stores) {
         const data = formData[store.id];
@@ -51,21 +52,24 @@ function BootstrapPage() {
         const saldo = Number(data.saldo || 0);
         const faturamento = Number(data.faturamento || 0);
         const contas = Number(data.contas || 0);
+        const patio = Number(data.patio || 0);
 
         totalSaldo += saldo;
         totalFaturamento += faturamento;
         totalContas += contas;
+        totalPatio += patio;
 
-        if (saldo === 0 && faturamento === 0 && contas === 0) continue;
+        if (saldo === 0 && faturamento === 0 && contas === 0 && patio === 0) continue;
 
-        // Upsert Reconciliations (para Saldo Anterior)
-        if (saldo > 0) {
+        // Upsert Reconciliations (para Saldo Anterior e Pátio Anterior)
+        if (saldo > 0 || patio > 0) {
           promises.push(
             supabase.from('reconciliations').upsert({
               store_id: store.id,
               date: targetDate,
               status: 'validated',
               bank_total: saldo,
+              na_loja_os: patio,
               // Campos obrigatórios dummies para satisfazer constraints se necessário
               reconciled_total: saldo,
               card_total: 0,
@@ -81,13 +85,15 @@ function BootstrapPage() {
       }
 
       // Upsert Daily Snapshots Global (Agregado da Rede)
-      if (totalFaturamento > 0 || totalContas > 0 || totalSaldo > 0) {
+      if (totalFaturamento > 0 || totalContas > 0 || totalSaldo > 0 || totalPatio > 0) {
         promises.push(
           supabase.from('daily_snapshots').upsert({
             date: targetDate,
+            caixa_atual: totalSaldo + totalPatio,
             faturamento_outros_valor: totalFaturamento,
             contas_a_pagar: totalContas,
             saldo_bancario: totalSaldo,
+            total_patio: totalPatio,
             dinheiro_mp: 0,
             a_receber_manual: 0,
             provisao: 0
@@ -163,6 +169,7 @@ function BootstrapPage() {
               <tr className="border-b border-[var(--border-subtle)] text-xs text-[var(--text-tertiary)] uppercase tracking-wider">
                 <th className="pb-3 font-semibold">Loja</th>
                 <th className="pb-3 font-semibold">Saldo em Conta</th>
+                <th className="pb-3 font-semibold">Pátio Pendente</th>
                 <th className="pb-3 font-semibold">Faturamento Total</th>
                 <th className="pb-3 font-semibold">Contas Pagas</th>
               </tr>
@@ -182,6 +189,18 @@ function BootstrapPage() {
                         value={formData[store.id]?.saldo || ''}
                         onChange={(e) => handleInputChange(store.id, 'saldo', e.target.value)}
                         className="w-full bg-[var(--bg-base)] border border-[var(--border-subtle)] rounded-md pl-8 pr-3 py-1.5 text-sm focus:outline-none focus:border-[var(--color-accent-teal)]"
+                      />
+                    </div>
+                  </td>
+                  <td className="py-3 pr-4">
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] text-xs font-bold">R$</span>
+                      <input
+                        type="number"
+                        placeholder="0.00"
+                        value={formData[store.id]?.patio || ''}
+                        onChange={(e) => handleInputChange(store.id, 'patio', e.target.value)}
+                        className="w-full bg-[var(--bg-base)] border border-[var(--border-subtle)] rounded-md pl-8 pr-3 py-1.5 text-sm focus:outline-none focus:border-[var(--color-primary)]"
                       />
                     </div>
                   </td>

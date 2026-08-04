@@ -40,3 +40,6 @@
 - Conectores em src/lib/graphify.ts, src/lib/claritas.ts, src/lib/ias-hub.ts.  
 - Tabelas: claritas_prompts, claritas_policies, gent_reflections.  
 - Edge Function: ias-hub. 
+
+- **[076] Snapshot Histórico Pátio:** Tabela econciliations agora possui 
+a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evitar bugs de fluxo de caixa.

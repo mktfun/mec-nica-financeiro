@@ -33,3 +33,13 @@
 **Risco identificado:** Calcular métricas financeiras globais somando diretamente campos <LEDGERBAL> persistidos por filial sem um deduplicador estrito de Conta/Banco causa aberrações monetárias milionárias.
 
 **Não fazer:** Nunca some saldos bancários estáticos (ank_total, awBalance, <LEDGERBAL>) iterando as lojas caso não exista segregação de Conta Corrente no parser. Para totais globais, prefira a soma determinística de fluxo (entradas e saídas).
+
+## [2026-08-04] — [Feature ID: 076]
+
+**Contexto:** Correção de Pátio Pendente retroativo (Na Loja OS) e erro de 93k de caixa.
+
+**Regra aprendida:** Se uma tela exibe o estado consolidado de um dia passado (como Pátio Pendente), NUNCA calcule on-the-fly usando tabelas LIVE (como patio_os). O valor DEVE ser gravado em um snapshot (econciliations). Além disso, rotinas de Bootstrap (Carga de Dia Zero) são responsáveis por popular OBRIGATORIAMENTE o Caixa Atual com a SOMA TOTAL de todos os saldos herdados. Se o Bootstrap salvar Caixa Atual = 0, o cálculo de Fluxo de Caixa (Caixa Hoje - Caixa Ontem) fará o caixa inteiro entrar no fluxo, gerando rombo artificial no Disponível.
+
+**Risco identificado:** Achar que tabelas operacionais live refletem o passado.
+
+**Não fazer:** Fazer upsert no Daily Snapshots no Bootstrap sem popular explicitamente o caixa_atual com todos os dinheiros reais informados na tela.

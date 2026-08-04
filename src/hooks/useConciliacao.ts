@@ -548,10 +548,17 @@ export function useModulo1StoresData(date: string) {
       const { data: receivables } = await supabase
         .from('receivables')
         .select('*');
+
+      const { data: reconciliations } = await supabase
+        .from('reconciliations')
+        .select('store_id, na_loja_os')
+        .eq('date', date);
+
       return (stores || []).map(store => {
         const storeTxs = txs?.filter(t => t.store_id === store.id) || [];
         const storeOs = patioOs?.filter(o => o.store_id === store.id) || [];
         const storeRec = receivables?.filter(r => r.store_id === store.id) || [];
+        const storeRecon = reconciliations?.find(r => r.store_id === store.id);
 
         const saldoBancoItau = storeTxs
           .filter(t => t.source === 'ofx' && (t.type === 'in' || Number(t.amount || 0) > 0))
@@ -562,11 +569,16 @@ export function useModulo1StoresData(date: string) {
           .reduce((acc, t) => acc + Number(t.amount || 0), 0);
 
         // Saldo em aberto real das OSs ativas (total_value - paid_value)
-        const naLojaOs = storeOs
-          .filter(o => o.status === 'em_aberto' || o.status === 'pago_parcial')
-          .reduce((acc, o) => {
-            return acc + Math.max(0, Number(o.total_value || 0) - Number(o.paid_value || 0));
-          }, 0);
+        // Se houver snapshot histórico em reconciliations.na_loja_os, usar ele!
+        const isHistorical = storeRecon && storeRecon.na_loja_os !== undefined && storeRecon.na_loja_os !== null;
+        
+        const naLojaOs = isHistorical 
+          ? Number(storeRecon.na_loja_os) 
+          : storeOs
+              .filter(o => o.status === 'em_aberto' || o.status === 'pago_parcial')
+              .reduce((acc, o) => {
+                return acc + Math.max(0, Number(o.total_value || 0) - Number(o.paid_value || 0));
+              }, 0);
 
         // 1. Extrair transações PIX/TED do OFX (entrada)
         const ofxPixTxs = storeTxs.filter(t => {
