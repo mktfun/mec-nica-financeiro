@@ -20,7 +20,18 @@ function BootstrapPage() {
   yesterday.setDate(yesterday.getDate() - 1);
   const [targetDate, setTargetDate] = useState(yesterday.toISOString().split('T')[0]);
   
-  const [formData, setFormData] = useState<Record<string, { saldo: string; faturamento: string; contas: string; patio: string }>>({});
+  const [formData, setFormData] = useState<Record<string, { saldo: string; faturamento: string; contas: string; patio: string }>>({
+    'st-01': { saldo: '23652', faturamento: '8083', contas: '3850', patio: '8851.60' }, // Dom Pedro
+    'st-02': { saldo: '49751', faturamento: '0', contas: '3850', patio: '13000' }, // Jabaquara
+    'st-03': { saldo: '28864', faturamento: '8349.32', contas: '3850', patio: '2716.90' }, // Jorge Beretta
+    'st-04': { saldo: '10606', faturamento: '4389', contas: '3850', patio: '1968.30' }, // Kennedy
+    '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f': { saldo: '15974', faturamento: '2094', contas: '3850', patio: '0' }, // Maua
+    'st-05': { saldo: '28747', faturamento: '2347', contas: '3850', patio: '0' }, // Piraporinha
+    'st-06': { saldo: '25883', faturamento: '350', contas: '3850', patio: '0' }, // Planalto
+    'st-09': { saldo: '19385', faturamento: '1640', contas: '3850', patio: '1400' }, // Rei do Módulo
+    'st-07': { saldo: '19401', faturamento: '10867', contas: '3850', patio: '1945.10' }, // Rudge Ramos
+    'st-08': { saldo: '14244', faturamento: '1962', contas: '3850', patio: '347.80' }, // Santo André
+  });
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
