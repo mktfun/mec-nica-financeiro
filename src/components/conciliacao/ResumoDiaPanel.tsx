@@ -90,10 +90,10 @@ export function ResumoDiaPanel({
 
   const handleSave = async () => {
     // Gravar na_loja_os no histórico de cada loja individualmente
-    if (storesMod1) {
-      const promises = Object.values(storesMod1).map(s => 
+    if (storesData) {
+      const promises = Object.values(storesData).map(s => 
         supabase.from('reconciliations').upsert({
-          store_id: s.store_id,
+          store_id: s.store_id || (s as any).id,
           date: selectedDate,
           na_loja_os: s.na_loja_os,
           status: 'validated'

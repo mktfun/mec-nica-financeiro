@@ -549,10 +549,13 @@ export function useModulo1StoresData(date: string) {
         .from('receivables')
         .select('*');
 
+      const thirtyDaysAgo = new Date(new Date(date).getTime() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
       const { data: reconciliations } = await supabase
         .from('reconciliations')
-        .select('store_id, na_loja_os')
-        .eq('date', date);
+        .select('store_id, date, na_loja_os')
+        .lte('date', date)
+        .gte('date', thirtyDaysAgo)
+        .order('date', { ascending: false });
 
       return (stores || []).map(store => {
         const storeTxs = txs?.filter(t => t.store_id === store.id) || [];

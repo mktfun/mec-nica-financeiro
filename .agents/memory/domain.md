@@ -53,3 +53,13 @@
 **Risco identificado:** Achar que esses valores vêm do snapshot (daily_snapshots.contas_a_pagar) na tela de conciliação diária. A tela de conciliação atualiza esses totais dinamicamente no componente e SÓ GRAVA no snapshot quando o usuário aperta o botão de Gravar Fechamento.
 
 **Não fazer:** Inserir inputs manuais na tela de importação para despesas que já estão mapeadas e documentadas no Extrato Bancário.
+
+## [2026-08-04] - [Feature ID: 078]
+
+**Contexto:** Pátio Pendente (Na Loja OS) colapsando para 0 ao trocar de dia.
+
+**Regra aprendida:** O Pátio Pendente de uma oficina atua como uma conta corrente de devedores. Como as integrações ao vivo ('patio_os') costumam não ter OSs legadas antigas (que só constam em controles do Excel), o 'Na Loja OS' para o dia corrente NUNCA deve ser derivado puramente da tabela viva se ela estiver incompleta. Ao carregar as métricas do dia, o sistema DEVE usar uma query de fallback (ex: '.lte(date).order(date, desc)') para herdar e carregar o 'na_loja_os' do último snapshot conhecido daquela loja, preservando assim o valor da dívida legada até que o usuário grave explicitamente o fechamento do novo dia.
+
+**Risco identificado:** Calcular dívidas históricas acumuladas ('Na Loja OS') baseando-se apenas em integrações novas ('patio_os') gera um falso positivo de R$ 0,00, quebrando a conciliação.
+
+**Não fazer:** Nunca consultar o Pátio Pendente para o dia corrente usando '.eq(date)' estrito sem fallback para o último snapshot válido.
