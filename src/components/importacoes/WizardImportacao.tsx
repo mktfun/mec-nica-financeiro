@@ -58,6 +58,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
   const [extractedItems, setExtractedItems] = useState<any[]>([]);
   const [targetDate, setTargetDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [extractedBankBalances, setExtractedBankBalances] = useState<Record<string, number>>({});
+  const [extractedAccountLimits, setExtractedAccountLimits] = useState<Record<string, number>>({});
   
   const { data: stores = [] } = useStores();
   // Para OFX usamos uma chave separada de mapeamento (conta bancária → loja)
@@ -125,6 +126,16 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
       if (logsToInsert.length > 0) {
          const { error: upsertErr } = await supabase.from('import_logs').upsert(logsToInsert, { onConflict: 'store_id,target_date' });
          if (upsertErr) console.warn("Erro ao registrar import log", upsertErr);
+      }
+
+      // Update account limits
+      const storesToUpdateLimits = Object.entries(extractedAccountLimits).map(([alias, limit]) => {
+         return { store_id: mapping[alias], limit };
+      }).filter(s => s.store_id && s.store_id !== 'GLOBAL');
+
+      for (const st of storesToUpdateLimits) {
+         const { error: errLimit } = await supabase.from('stores').update({ account_limit: st.limit }).eq('id', st.store_id);
+         if (errLimit) console.warn("Erro ao atualizar limite da conta", errLimit);
       }
 
       onSuccess();
@@ -218,11 +229,14 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
           allItems.push(...itemsWithFile);
           results.push({ fileName: file.name, success: true, count: items.length });
         } else if (category === 'OFX') {
-          // Novo formato: { alias, transactions }
+          // Novo formato: { alias, transactions, bankBalance, accountLimit }
           const result = await processOFX(file);
-          const { alias, transactions, bankBalance } = result as any;
+          const { alias, transactions, bankBalance, accountLimit } = result as any;
           if (bankBalance !== undefined) {
              setExtractedBankBalances(prev => ({ ...prev, [alias]: bankBalance }));
+          }
+          if (accountLimit !== undefined) {
+             setExtractedAccountLimits(prev => ({ ...prev, [alias]: accountLimit }));
           }
           const itemsWithFile = transactions.map((i: any) => ({
             ...i,

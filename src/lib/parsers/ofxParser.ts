@@ -14,6 +14,7 @@ export interface OfxParseResult {
   transactions: OfxTransaction[];
   bankBalance?: number;
   previousBalance?: number;
+  accountLimit?: number;
   fileName?: string;
 }
 
@@ -141,5 +142,14 @@ export async function parseOFXFile(file: File): Promise<OfxParseResult> {
     }
   }
 
-  return { alias, transactions, bankBalance, previousBalance, fileName: file.name };
+  let accountLimit: number | undefined;
+  const overdraftMatch = text.match(/<OVERDRAFTLIMIT>([^\r\n<]+)/);
+  const creditMatch = text.match(/<CREDITLIMIT>([^\r\n<]+)/);
+  if (overdraftMatch) {
+    accountLimit = Math.abs(parseFloat(overdraftMatch[1].replace(',', '.')));
+  } else if (creditMatch) {
+    accountLimit = Math.abs(parseFloat(creditMatch[1].replace(',', '.')));
+  }
+
+  return { alias, transactions, bankBalance, previousBalance, accountLimit, fileName: file.name };
 }

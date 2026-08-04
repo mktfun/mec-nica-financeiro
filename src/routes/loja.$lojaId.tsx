@@ -325,7 +325,14 @@ function LojaDashboardPage() {
                 format="currency" 
               />
             </div>
-            <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Livre para contas (Real)</p>
+            <div className="flex items-center justify-between mt-3">
+              <p className="text-[10px] text-[var(--text-tertiary)]">Livre para contas (Real)</p>
+              {(store as any).account_limit != null && (store as any).account_limit > 0 && (
+                <span className="text-[10px] font-medium text-[var(--text-secondary)] bg-[var(--bg-canvas)] px-2 py-0.5 rounded border border-[var(--border-subtle)]">
+                  Limite: R$ {Number((store as any).account_limit).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </span>
+              )}
+            </div>
           </Card>
           
           <Card className="border-l-4 border-l-[var(--color-accent-danger)] p-5">
@@ -567,113 +574,58 @@ function LojaDashboardPage() {
                     })}
                   </div>
                 )
-              ) : tab === 'entradas' ? (
-                <div className="divide-y divide-[var(--border-subtle)]">
-                  {(extrato?.transactions || []).filter((tx: TransactionRow) => tx.type === 'in').length === 0 ? (
-                    <div className="text-center py-20">
-                      <p className="text-[var(--text-secondary)] font-medium">Nenhuma entrada encontrada neste período.</p>
-                    </div>
-                  ) : (
-                    (extrato?.transactions || []).filter((tx: TransactionRow) => tx.type === 'in').map((tx: TransactionRow, i: number) => (
-                      <motion.div 
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.05 }}
-                        key={tx.id || i} 
-                        className="p-4 flex items-center justify-between hover:bg-[var(--bg-surface)] transition-colors"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-[var(--color-success)]/10 flex items-center justify-center text-[var(--color-success)]">
-                            <ArrowUpRight size={18} />
-                          </div>
-                          <div>
-                            <p className="font-medium text-sm text-[var(--text-primary)]">{tx.title || 'Entrada'}</p>
-                            <p className="text-xs text-[var(--text-secondary)] flex items-center gap-1">
-                              <Calendar size={12} /> {formatDate(tx.occurred_at || tx.created_at)}
-                              {tx.subtitle && <span className="ml-2 px-1.5 py-0.5 bg-[var(--bg-canvas)] rounded border border-[var(--border-subtle)] text-[10px]">{tx.subtitle}</span>}
-                            </p>
-                          </div>
+              ) : tab === 'extrato' || tab === 'entradas' || tab === 'saidas' ? (
+                <div className="overflow-x-auto">
+                  {(() => {
+                    let txs = extrato?.transactions || [];
+                    if (tab === 'entradas') txs = txs.filter((t: TransactionRow) => t.type === 'in');
+                    if (tab === 'saidas') txs = txs.filter((t: TransactionRow) => t.type === 'out');
+                    
+                    if (txs.length === 0) {
+                      return (
+                        <div className="text-center py-20">
+                          <p className="text-[var(--text-secondary)] font-medium">Nenhuma transação encontrada neste período.</p>
                         </div>
-                        <div className="text-right">
-                          <p className="font-mono font-bold text-[var(--color-success)]">
-                            + R$ {Number(tx.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                          </p>
-                        </div>
-                      </motion.div>
-                    ))
-                  )}
-                </div>
-              ) : tab === 'saidas' ? (
-                <div className="divide-y divide-[var(--border-subtle)]">
-                  {(extrato?.transactions || []).filter((tx: TransactionRow) => tx.type === 'out').length === 0 ? (
-                    <div className="text-center py-20">
-                      <p className="text-[var(--text-secondary)] font-medium">Nenhuma saída encontrada neste período.</p>
-                    </div>
-                  ) : (
-                    (extrato?.transactions || []).filter((tx: TransactionRow) => tx.type === 'out').map((tx: TransactionRow, i: number) => (
-                      <motion.div 
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.05 }}
-                        key={tx.id || i} 
-                        className="p-4 flex items-center justify-between hover:bg-[var(--bg-surface)] transition-colors"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-[var(--color-accent-danger)]/10 flex items-center justify-center text-[var(--color-accent-danger)]">
-                            <ArrowDownRight size={18} />
-                          </div>
-                          <div>
-                            <p className="font-medium text-sm text-[var(--text-primary)]">{tx.title || 'Saída'}</p>
-                            <p className="text-xs text-[var(--text-secondary)] flex items-center gap-1">
-                              <Calendar size={12} /> {formatDate(tx.occurred_at || tx.created_at)}
-                              {tx.subtitle && <span className="ml-2 px-1.5 py-0.5 bg-[var(--bg-canvas)] rounded border border-[var(--border-subtle)] text-[10px]">{tx.subtitle}</span>}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-mono font-bold text-[var(--color-accent-danger)]">
-                            - R$ {Number(tx.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                          </p>
-                        </div>
-                      </motion.div>
-                    ))
-                  )}
-                </div>
-              ) : tab === 'extrato' ? (
-                <div className="divide-y divide-[var(--border-subtle)]">
-                  {(extrato?.transactions || []).length === 0 ? (
-                    <div className="text-center py-20">
-                      <p className="text-[var(--text-secondary)] font-medium">Nenhuma transação encontrada neste período.</p>
-                    </div>
-                  ) : (
-                    (extrato?.transactions || []).map((tx: TransactionRow, i: number) => (
-                      <motion.div 
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.02 }}
-                        key={tx.id || i} 
-                        className="p-4 flex items-center justify-between hover:bg-[var(--bg-surface)] transition-colors"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${tx.type === 'in' ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' : 'bg-[var(--color-accent-danger)]/10 text-[var(--color-accent-danger)]'}`}>
-                            {tx.type === 'in' ? <ArrowUpRight size={18} /> : <ArrowDownRight size={18} />}
-                          </div>
-                          <div>
-                            <p className="font-medium text-sm text-[var(--text-primary)]">{tx.title || (tx.type === 'in' ? 'Entrada' : 'Saída')}</p>
-                            <p className="text-xs text-[var(--text-secondary)] flex items-center gap-1">
-                              <Calendar size={12} /> {formatDate(tx.occurred_at || tx.created_at)}
-                              {tx.subtitle && <span className="ml-2 px-1.5 py-0.5 bg-[var(--bg-canvas)] rounded border border-[var(--border-subtle)] text-[10px]">{tx.subtitle}</span>}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className={`font-mono font-bold ${tx.type === 'in' ? 'text-[var(--color-success)]' : 'text-[var(--color-accent-danger)]'}`}>
-                            {tx.type === 'in' ? '+' : '-'} R$ {Number(tx.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                          </p>
-                        </div>
-                      </motion.div>
-                    ))
-                  )}
+                      );
+                    }
+                    
+                    return (
+                      <table className="w-full text-sm text-left whitespace-nowrap">
+                        <thead className="text-xs text-[var(--text-secondary)] uppercase bg-[var(--bg-surface)] border-b border-[var(--border-subtle)]">
+                          <tr>
+                            <th className="px-4 py-3 font-medium">Data</th>
+                            <th className="px-4 py-3 font-medium">Tipo</th>
+                            <th className="px-4 py-3 font-medium">Descrição</th>
+                            <th className="px-4 py-3 font-medium">Categoria / Método</th>
+                            <th className="px-4 py-3 font-medium text-right">Valor</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[var(--border-subtle)]">
+                          {txs.map((tx: TransactionRow, i: number) => (
+                            <tr key={tx.id || i} className="hover:bg-[var(--bg-surface)] transition-colors">
+                              <td className="px-4 py-3 text-[var(--text-secondary)]">
+                                {formatDate(tx.occurred_at || tx.created_at)}
+                              </td>
+                              <td className="px-4 py-3">
+                                <Badge variant={tx.type === 'in' ? 'success' : 'danger'}>
+                                  {tx.type === 'in' ? 'Entrada' : 'Saída'}
+                                </Badge>
+                              </td>
+                              <td className="px-4 py-3 text-[var(--text-primary)] font-medium max-w-[250px] truncate" title={tx.title}>
+                                {tx.title || (tx.type === 'in' ? 'Entrada' : 'Saída')}
+                              </td>
+                              <td className="px-4 py-3 text-[var(--text-tertiary)]">
+                                {tx.subtitle || '-'}
+                              </td>
+                              <td className={`px-4 py-3 text-right font-mono font-medium ${tx.type === 'in' ? 'text-[var(--color-success)]' : 'text-[var(--color-accent-danger)]'}`}>
+                                {tx.type === 'in' ? '+' : '-'} R$ {Number(tx.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    );
+                  })()}
                 </div>
               ) : null}
             </Card>

@@ -50,3 +50,13 @@
 - **Tooltip Escape:** Em containers pequenos com `overflow-y-auto`, adicione `allowEscapeViewBox={{ x: true, y: true }}` no `<Tooltip>` para que ele não sofra clipping.
 - **Densidade Dinâmica:** O cálculo de altura do gráfico vertical não pode deixar espaços vagos; `chartData.length * 40` é um excelente multiplicador para um `barCategoryGap` de `15%`.
 **Não fazer:** Nunca adicione `<LabelList>` dentro de barras agrupadas em espaços horizontais estreitos, a menos que os valores sejam perfeitamente previsíveis. Valores díspares causam *overlap* total.
+
+## [2026-08-04] — [Feature ID: 073-loja-detalhes-transacoes]
+
+**Contexto:** O painel "Extrato Bancário" de cada loja renderizava transações como grandes cards. O usuário reclamou que não via o "histórico de cada um" porque os cards não tinham cara de histórico denso e ocupavam muito espaço vertical.
+
+**Regra aprendida:** Em painéis financeiros onde o usuário quer ver o "histórico" ou "extrato" detalhado, NUNCA utilize listas de cards verticais com ícones gigantes. Utilize sempre uma `<table>` nativa, compacta, escaneável e com cabeçalhos clássicos (Data, Tipo, Descrição, Valor).
+
+**Risco identificado:** A quebra de expectativa do usuário. Extratos de banco são tabelas por excelência.
+
+**Não fazer:** Não reinvente a roda visualizando logs densos (como transações de centavos) em componentes de Card. Cards servem para notificações, não para conciliação bancária linha a linha.

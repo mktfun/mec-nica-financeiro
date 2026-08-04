@@ -14,6 +14,7 @@ export type StoreRow = {
   mechanics: string[];
   avatar_url: string | null;
   active: boolean;
+  account_limit: number | null;
   created_at: string;
   updated_at: string;
 };
