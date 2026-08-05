@@ -71,6 +71,9 @@ export function ResumoDiaPanel({
   const faturamentoOutrosAutomatico = Math.max(0, totalOfxIn - totalPixOs);
   const contasAPagarAutomatico = totalOfxOut;
 
+  // Sum na_loja_os directly from storesData to avoid loop with 0 value
+  const dynamicGlobalNaLojaOs = storesData ? Object.values(storesData).reduce((acc: number, s: any) => acc + (s.na_loja_os || 0), 0) : 0;
+
   const inputForCalculation: GlobalConciliacaoInput = {
     saldo_bancario: currentSnapshot?.saldo_bancario || totalBancarioIn, // Se já salvou usa o salvo, senão a soma das entradas (in) do OFX
     dinheiro_mp: currentSnapshot?.dinheiro_mp || 0,
