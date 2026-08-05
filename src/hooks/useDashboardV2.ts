@@ -74,6 +74,7 @@ export function useDashboardV2(selectedDateStr?: string) {
         supabase
           .from('reconciliations')
           .select('store_id, bank_total, date, status')
+          .lte('date', dateAtual)
           .order('date', { ascending: false }),
 
         supabase
@@ -115,7 +116,7 @@ export function useDashboardV2(selectedDateStr?: string) {
       // --- Saldo Atual por Loja (bank_total de reconciliations) ---
       const latestByStore: Record<string, { bank_total: number; date: string; status: string }> = {};
       for (const row of recsAll.data || []) {
-        if (!latestByStore[row.store_id] || row.date > latestByStore[row.store_id].date) {
+        if (row.date <= dateAtual && (!latestByStore[row.store_id] || row.date > latestByStore[row.store_id].date)) {
           latestByStore[row.store_id] = { bank_total: Number(row.bank_total || 0), date: row.date, status: row.status || 'pending' };
         }
       }
