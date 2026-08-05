@@ -48,3 +48,15 @@ A regra de ouro na importação é: *Importar um dia é um pacote fechado. O nov
 **Risco identificado:** Usar `upsert` baseado em chaves geradas externamente (`fitid`) pode gerar acúmulo infinito de fantasmas se o provedor alterar a string em exportações subsequentes, inflando o financeiro.
 
 **Não fazer:** Nunca use `upsert` na tabela de transações para deduplicação de importações de arquivos em lote visando atualizar conciliações diárias. Sempre apague o estado anterior da data inteira e re-insira do zero.
+
+## [2026-08-05] — [Feature ID: 088-fix-dashboard-centavos]
+
+**Contexto:** O Dashboard exibia valores astronômicos (R$ 12 milhões) no Saldo Total. A causa era que `bank_total` na tabela `reconciliations` estava armazenado em centavos (inteiro), mas o hook `useDashboardV2.ts` lia e somava como reais.
+
+**Regra aprendida:**
+- **Centavos OFX Brasileiros:** Bancos brasileiros (Itaú, Bradesco etc.) exportam o `BALAMT` no OFX como inteiro sem ponto decimal (ex: `1931431` ao invés de `19314.31`). O parser deve SEMPRE verificar se a string não tem separador decimal E o valor é > 100, e se sim, dividir por 100 antes de salvar como `bank_total` em reais.
+- **Unidade Canônica:** A unidade do sistema é REAIS com duas casas decimais. Nenhum campo monetário do Supabase deve jamais armazenar centavos.
+
+**Risco identificado:** Se o banco exportar `5000` como centavos (R$ 50,00), o critério `> 100` ativaria a divisão erroneamente (resultaria em R$ 50,00 correto, coincidência feliz). Mas se o saldo real for R$ 50,00 e vier como `5000`, precisaria dividir. Edge case raro e aceitável dado o padrão dos bancos nacionais.
+
+**Não fazer:** Nunca salvar `bank_total` em centavos na tabela `reconciliations`. Se detectar valores > 10.000 sem casas decimais nos dados, desconfie de centavos.

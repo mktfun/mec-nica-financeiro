@@ -134,10 +134,17 @@ export async function parseOFXFile(file: File): Promise<OfxParseResult> {
   const ledgerMatch = text.match(/<LEDGERBAL>[\s\S]*?<BALAMT>([^\r\n<]+)/);
   if (ledgerMatch) {
     const balStr = ledgerMatch[1].trim();
-    // Brazilian OFX uses decimal point or comma — never assume centavos for integers
     let balNum = parseFloat(balStr.replace(',', '.'));
     if (isNaN(balNum)) balNum = parseInt(balStr, 10);
     if (!isNaN(balNum)) {
+      // Alguns bancos brasileiros (ex: Itaú, Bradesco) exportam o BALAMT como inteiro
+      // de centavos sem ponto decimal (ex: "1931431" ao invés de "19314.31").
+      // Critério: se a string original não contém ponto/vírgula E o valor absoluto > 100,
+      // então divide por 100 para converter de centavos para reais.
+      const hasDecimalSeparator = balStr.includes('.') || balStr.includes(',');
+      if (!hasDecimalSeparator && Math.abs(balNum) > 100) {
+        balNum = balNum / 100;
+      }
       bankBalance = balNum;
     }
   }
