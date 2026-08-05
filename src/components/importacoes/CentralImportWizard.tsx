@@ -27,10 +27,6 @@ export interface ImportLogEntry {
   message: string;
 }
 
-function generateSyntheticFitId(source: string, store: string, date: string, amount: number, method: string = '') {
-  const rawString = `${source}_${store}_${date}_${amount}_${method}`.trim().toLowerCase();
-  return rawString.replace(/\s+/g, '_');
-}
 
 // Hook para gerenciar mapeamento de lojas
 function useUnifiedStoreMapping() {
@@ -352,106 +348,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         });
       });
 
-      // Maquininha (fallback)
-      results.maquininhaItems.forEach(item => {
-        let store_id: string | null = mapping[item.storeName];
-        if (store_id === 'GLOBAL') store_id = null;
-        
-        txsToInsert.push({
-            store_id,
-            store_name: item.storeName,
-            title: `Recebimento Adquirente (${item.dateVenda || targetDate})`,
-            subtitle: item.storeName,
-            amount: item.amount || 0,
-            type: 'in',
-            occurred_at: item.dateCredito ? new Date(item.dateCredito.split('/').reverse().join('-')).toISOString() : `${targetDate}T12:00:00Z`,
-            target_date: targetDate,
-            icon_type: 'card',
-            source: 'maquininha',
-            fitid: generateSyntheticFitId('maquininha', item.storeName, item.dateVenda || targetDate, item.amount || 0)
-        });
-      });
-
-      // Rede (novo)
-      const uniqueRedeTxs = new Map();
-      results.redeResults.filter(r => r.success).forEach(r => {
-        r.transactions.forEach((t: any) => {
-           const key = `${t.storeName}_${t.grossAmount}_${t.netAmount}_${t.method}_${t.date}`;
-           if (!uniqueRedeTxs.has(key)) {
-             uniqueRedeTxs.set(key, t);
-           }
-        });
-      });
-        
-      Array.from(uniqueRedeTxs.values()).forEach((t: any) => {
-          let store_id: string | null = mapping[t.storeName];
-          if (store_id === 'GLOBAL') store_id = null;
-          
-          let matched_os_number = null;
-          if (store_id && autoMatchMap[store_id]) {
-            const matchedOs = autoMatchMap[store_id].find(os => {
-               const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
-               if (Math.abs(delta - t.grossAmount) < 1.0) return true;
-               
-               if (os.payment_method) {
-                 const regex = /:\s*([\d.]+)/g;
-                 let match;
-                 while ((match = regex.exec(os.payment_method)) !== null) {
-                   const partialVal = parseFloat(match[1]);
-                   if (Math.abs(partialVal - t.grossAmount) < 1.0) return true;
-                 }
-               }
-               return false;
-            });
-            if (matchedOs) {
-              matched_os_number = matchedOs.os_number;
-            }
-          }
-          
-          const txId = crypto.randomUUID();
-          txsToInsert.push({
-            id: txId,
-            store_id,
-            occurred_at: t.date ? `${t.date}T12:00:00.000Z` : getDefaultDate(),
-            amount: t.netAmount,
-            type: 'in',
-            payment_method: t.method,
-            title: `Rede (Líquido) - ${t.storeName}`,
-            target_date: targetDate,
-            source: 'rede',
-            os_number: matched_os_number,
-            fitid: generateSyntheticFitId('rede', t.storeName, t.date || targetDate, t.netAmount, t.method)
-          });
-          
-          if (matched_os_number && store_id) {
-            matchesToInsert.push({
-              store_id,
-              target_date: targetDate,
-              system_os_number: matched_os_number,
-              rede_transaction_id: txId,
-              status: 'perfect_match',
-              divergence_amount: 0
-            });
-          }
-          
-          if (t.interest > 0) {
-            txsToInsert.push({
-              id: crypto.randomUUID(),
-              store_id,
-              occurred_at: t.date ? `${t.date}T12:00:00.000Z` : getDefaultDate(),
-              amount: -t.interest,
-              type: 'out',
-              payment_method: 'Taxa',
-              title: `Taxa Rede - ${t.storeName}`,
-              target_date: targetDate,
-              source: 'rede_taxa',
-              os_number: matched_os_number,
-              fitid: generateSyntheticFitId('rede_taxa', t.storeName, t.date || targetDate, t.interest, 'Taxa')
-            });
-          }
-        });
-
-      addLog(`💾 Gravando batch de ${txsToInsert.length} transações no banco...`, "info");
+      addLog(`⚙️ Gravando batch de ${txsToInsert.length} transações no banco...`, "info");
       const batch = await createImportBatch({ target_date: targetDate });
       
       await saveTransactions({ transactions: txsToInsert, storeBankBalances, import_batch_id: batch.id } as any);
