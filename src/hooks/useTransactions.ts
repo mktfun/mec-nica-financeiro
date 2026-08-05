@@ -378,6 +378,25 @@ export function useBulkInsertTransactions() {
 
       // Outras transações (OS, Rede): insert normal
       if (!error && otherTxs.length > 0) {
+        // 1.5 DELETAR transações non-OFX anteriores para os mesmos stores e datas, 
+        // para evitar multiplicação (milhões) no dashboard se o usuário importar várias vezes.
+        const storeDates = new Set<string>();
+        otherTxs.forEach((t: any) => {
+          if (t.store_id && t.target_date) {
+            storeDates.add(`${t.store_id}|${t.target_date}`);
+          }
+        });
+
+        for (const sd of Array.from(storeDates)) {
+          const [sId, tDate] = sd.split('|');
+          await supabase
+            .from('transactions')
+            .delete()
+            .eq('store_id', sId)
+            .eq('target_date', tDate)
+            .is('fitid', null);
+        }
+
         const { data: d2, error: e2 } = await supabase
           .from('transactions')
           .insert(otherTxs);
