@@ -10,7 +10,9 @@ const isValidUuid = (str?: string | null) => {
 export interface ConciliacaoResumo {
   date: string;
   totalSystemOS: number;
+  totalRedeGross: number;
   totalRedeNet: number;
+  totalRedeFee: number;
   totalOfxIn: number;
   totalOfxOut: number;
   totalDivergence: number;
@@ -54,9 +56,17 @@ export function useConciliacaoResumo(date: string) {
         return acc + Number(val);
       }, 0) || 0;
 
+      const totalRedeGross = txs
+        ?.filter(t => t.source === 'rede' && t.type === 'in')
+        .reduce((acc, t) => acc + Number(t.gross_amount || t.amount), 0) || 0;
+
       const totalRedeNet = txs
         ?.filter(t => t.source === 'rede' && t.type === 'in')
         .reduce((acc, t) => acc + Number(t.amount), 0) || 0;
+
+      const totalRedeFee = txs
+        ?.filter(t => t.source === 'rede' && t.type === 'in')
+        .reduce((acc, t) => acc + Number(t.fee_amount || 0), 0) || 0;
 
       const totalOfxIn = txs
         ?.filter(t => t.source === 'ofx' && t.type === 'in')
@@ -66,12 +76,20 @@ export function useConciliacaoResumo(date: string) {
         ?.filter(t => t.source === 'ofx' && t.type === 'out')
         .reduce((acc, t) => acc + Number(t.amount), 0) || 0;
 
-      const totalDivergence = Math.abs(totalSystemOS - totalOfxIn);
+      const totalOfxPix = txs
+        ?.filter(t => t.source === 'ofx' && t.type === 'in' && t.payment_method?.toLowerCase().includes('pix'))
+        .reduce((acc, t) => acc + Number(t.amount), 0) || 0;
+
+      // Divergência real = OS Bruto - Rede Bruto - PIX 
+      // (Simplified logic just for the hook. ResumoDiaPanel will do the precise per-store math)
+      const totalDivergence = Math.abs(totalSystemOS - totalRedeGross - totalOfxPix);
 
       return {
         date,
         totalSystemOS,
+        totalRedeGross,
         totalRedeNet,
+        totalRedeFee,
         totalOfxIn,
         totalOfxOut,
         totalDivergence,

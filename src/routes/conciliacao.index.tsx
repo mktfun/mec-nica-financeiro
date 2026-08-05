@@ -44,13 +44,15 @@ function ConciliacaoPage() {
     setSelectedDate(d.toISOString().substring(0, 10));
   };
 
-  const totalSistema = Object.values(dailyBalances || {}).reduce((acc, val) => acc + Number(val), 0);
+  const totalSistema = Object.values(dailyBalances || {}).reduce((acc, val: any) => acc + (val.gross || 0), 0);
   const totalBancarioIn = Object.values(bankBalances || {}).reduce((acc, val) => acc + (val.in || 0), 0);
   const totalBancarioRaw = Object.values(bankBalances || {}).reduce((acc, val) => acc + (val.rawBalance || 0), 0);
   const divergenciaGlobal = totalSistema - totalBancarioIn;
 
   const storesState: StoreSaldoState[] = stores.map(s => {
-    const sys = dailyBalances?.[s.id] || 0;
+    const sysGross = dailyBalances?.[s.id]?.gross || 0;
+    const sysNet = dailyBalances?.[s.id]?.net || 0;
+    const sysFee = dailyBalances?.[s.id]?.fee || 0;
     const bankIn = bankBalances?.[s.id]?.in || 0;
     const storeMod1 = modulo1StoresData.find(m => m.store_id === s.id);
 
@@ -65,10 +67,10 @@ function ConciliacaoPage() {
       dinheiro_mp_manual: undefined,
       a_receber: storeMod1?.a_receber || 0,
       na_loja_os: storeMod1?.na_loja_os || 0,
-      faturamento_atual: sys || storeMod1?.faturamento_atual || 0,
-      faturamento_anterior: (sys || storeMod1?.faturamento_atual || 0) * 0.9,
+      faturamento_atual: sysGross || storeMod1?.faturamento_atual || 0,
+      faturamento_anterior: (sysGross || storeMod1?.faturamento_atual || 0) * 0.9,
       seguro_sinistro: 0,
-      juros_atual: 0,
+      juros_atual: sysFee,
       caixa_anterior: (s as any).previous_caixa || 0,
       valor_contas: 0
     };

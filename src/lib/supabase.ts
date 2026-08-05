@@ -76,6 +76,8 @@ export type TransactionRow = {
   cnpj_cpf?: string | null;
   counterpart_name?: string | null;
   previous_balance?: number | null;
+  gross_amount?: number | null;
+  fee_amount?: number | null;
 };
 
 export type CashRegisterRow = {

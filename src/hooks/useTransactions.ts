@@ -487,7 +487,7 @@ export function useDailySystemBalance(targetDate: string) {
       
       const rows = data as TransactionRow[];
       
-      return rows.reduce((acc: Record<string, number>, row) => {
+      return rows.reduce((acc: Record<string, { gross: number; net: number; fee: number }>, row) => {
         if (row.source === 'ofx' || (row.title && row.title.includes('Extrato Bancário'))) {
           return acc; // OFX is handled in useDailyBankBalance
         }
@@ -498,13 +498,20 @@ export function useDailySystemBalance(targetDate: string) {
         }
         
         const storeId = row.store_id || 'unknown';
-        if (!acc[storeId]) acc[storeId] = 0;
+        if (!acc[storeId]) acc[storeId] = { gross: 0, net: 0, fee: 0 };
         
         const amount = Number(row.amount || 0);
+        const gross = Number(row.gross_amount || amount);
+        const fee = Number(row.fee_amount || 0);
+
         if (row.type === 'in') {
-          acc[storeId] += amount;
+          acc[storeId].gross += gross;
+          acc[storeId].net += amount;
+          acc[storeId].fee += fee;
         } else if (row.type === 'out') {
-          acc[storeId] -= amount;
+          acc[storeId].gross -= gross;
+          acc[storeId].net -= amount;
+          acc[storeId].fee -= fee;
         }
         
         return acc;

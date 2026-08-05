@@ -48,3 +48,5 @@
 - **Automação Contábil OFX (Agosto 2026)**: 'Contas a Pagar' e 'Outros Faturamentos' são calculados dinamicamente via useConciliacaoResumo (	otalOfxOut e deduções de 	otalOfxIn vs 	otalPixOs) em ResumoDiaPanel.tsx. Não existem mais campos manuais para esses valores na Importação.
 
 - **Herança de Pátio Pendente (Agosto 2026)**: A métrica 'Na Loja OS' no fechamento diário agora usa uma estratégia de carry-over (useModulo1StoresData), varrendo os últimos 30 dias para herdar a dívida legada caso não haja snapshot gravado para o dia corrente.
+
+- **Refatoração Matemática Bruto/Líquido (Agosto 2026)**: A conciliação distingue Venda Bruta (OS e Maquininha na data) de Pagamento Líquido (OFX na data de liquidação). O parser da Rede salva `gross_amount` e `fee_amount` na tabela `transactions`, e a UI `ResumoDiaPanel.tsx` exibe as "Taxas/Juros" subtraídas dinamicamente para evitar falsas divergências.

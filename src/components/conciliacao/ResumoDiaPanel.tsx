@@ -81,6 +81,8 @@ export function ResumoDiaPanel({
   // Sum na_loja_os directly from storesData to avoid loop with 0 value
   const dynamicGlobalNaLojaOs = storesData ? Object.values(storesData).reduce((acc: number, s: any) => acc + (s.na_loja_os || 0), 0) : 0;
 
+  const dynamicJurosRede = storesData ? Object.values(storesData).reduce((acc: number, s: any) => acc + (s.juros_atual || 0), 0) : 0;
+
   const inputForCalculation: GlobalConciliacaoInput = {
     saldo_bancario: currentSnapshot?.saldo_bancario || totalBancarioIn, // Se já salvou usa o salvo, senão a soma das entradas (in) do OFX
     dinheiro_mp: currentSnapshot?.dinheiro_mp || 0,
@@ -91,7 +93,7 @@ export function ResumoDiaPanel({
     faturamento_atual: faturamentoAtualGlobal,
     faturamento_anterior: faturamentoAnteriorGlobal,
     faturamento_outros: faturamentoOutrosAutomatico,
-    juros_rede: currentSnapshot?.juros_rede || 0,
+    juros_rede: currentSnapshot?.juros_rede || dynamicJurosRede,
     contas_a_pagar: contasAPagarAutomatico,
     provisao: 0,
   };
@@ -212,8 +214,8 @@ export function ResumoDiaPanel({
       {/* Grid das Métricas - Apenas Leitura */}
       <div className="p-6 bg-[var(--bg-canvas)]">
         
-        {/* 4 Pilares Iniciais (Intocados Visualmente, mas Read-Only) */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        {/* 5 Pilares Iniciais (Intocados Visualmente, mas Read-Only) */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
           <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">SALDO BANCO ITAÚ</span>
@@ -256,6 +258,17 @@ export function ResumoDiaPanel({
               <AnimatedNumber value={calculated.na_loja} format="currency" />
             </p>
             <span className="text-[10px] text-[var(--text-tertiary)] block">OSs do Pátio pendentes</span>
+          </div>
+
+          <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">TAXAS/JUROS</span>
+              <Receipt size={15} className="text-[var(--color-accent-danger)]" />
+            </div>
+            <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-danger)]">
+              <AnimatedNumber value={inputForCalculation.juros_rede} format="currency" />
+            </p>
+            <span className="text-[10px] text-[var(--text-tertiary)] block">Desconto da maquininha</span>
           </div>
         </div>
 

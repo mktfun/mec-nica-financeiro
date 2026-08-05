@@ -61,6 +61,10 @@ A regra de ouro na importação é: *Importar um dia é um pacote fechado. O nov
 
 **Não fazer:** Nunca salvar `bank_total` em centavos na tabela `reconciliations`. Se detectar valores > 10.000 sem casas decimais nos dados, desconfie de centavos.## [2026-08-05] — [Feature ID: 089]
 
+**Não fazer:** Nunca salvar `bank_total` em centavos na tabela `reconciliations`. Se detectar valores > 10.000 sem casas decimais nos dados, desconfie de centavos.
+
+## [2026-08-05] — [Feature ID: 089]
+
 **Contexto:** O saldo anterior (Caixa Inicial) da conciliação estava propenso a amnésia e efeito cascata caso dias anteriores não tivessem sido importados. O OFX traz essa verdade na transação com `<MEMO>SALDO ANTERIOR`.
 
 **Regra aprendida:** O `<SALDO ANTERIOR>` extraído do OFX também precisa de verificação anti-centavos, pois seu `<TRNAMT>` pode vir sem vírgulas em contas do Itaú (ex: `1931431`). Use a mesma lógica de divisão por 100 do `bank_total`. Na conciliação, deve-se usar esse `previous_balance` originado do OFX para que o dia feche independente de o usuário ter pulado importações de dias anteriores.
@@ -68,3 +72,17 @@ A regra de ouro na importação é: *Importar um dia é um pacote fechado. O nov
 **Risco identificado:** Basear o Saldo Anterior em snapshots de fechamento de conciliação de ontem quebra todo o sistema em cascata se o usuário pular um dia. O OFX blinda isso.
 
 **Não fazer:** Nunca recalcule Saldo Anterior via soma de tabelas se ele já vem escrito de forma absoluta no próprio documento bancário importado.
+
+## [2026-08-05] — [Feature ID: 090-reconciliation-math]
+
+**Contexto:** Refatoração matemática da conciliação para resolver o descasamento temporal (D+1, D+30) e separar Venda Bruta (OS) de Pagamento Líquido (OFX).
+
+**Regra aprendida:** 
+- A divergência principal em relatórios de vendas ocorre pelo desconto das taxas da maquininha.
+- **OS (Bruto)** deve ser cruzada com **Maquininha (Bruto)** na Data da Venda.
+- **Maquininha (Líquido)** deve ser cruzada com **OFX (Líquido)** na Data do Payout.
+- A tabela `transactions` precisa suportar campos `gross_amount` e `fee_amount` para registrar a anatomia completa da venda da maquininha, evitando que o desconto pareça uma divergência de quebra de caixa.
+
+**Risco identificado:** Tentar conciliar a venda da maquininha de hoje (D+0) com o depósito do banco (D+1) usando a mesma data gera falsos "em caminho" infinitamente.
+
+**Não fazer:** Nunca subtrair OS Bruto de Banco Líquido de forma direta. A diferença entre os dois deve ser classificada de forma transparente como Juros/Taxas da adquirente.

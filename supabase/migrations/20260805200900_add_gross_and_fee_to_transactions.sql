@@ -1,0 +1,1 @@
+ALTER TABLE public.transactions ADD COLUMN IF NOT EXISTS gross_amount NUMERIC; ALTER TABLE public.transactions ADD COLUMN IF NOT EXISTS fee_amount NUMERIC;
