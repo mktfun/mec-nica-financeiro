@@ -63,3 +63,13 @@
 **Risco identificado:** Calcular dívidas históricas acumuladas ('Na Loja OS') baseando-se apenas em integrações novas ('patio_os') gera um falso positivo de R$ 0,00, quebrando a conciliação.
 
 **Não fazer:** Nunca consultar o Pátio Pendente para o dia corrente usando '.eq(date)' estrito sem fallback para o último snapshot válido.
+
+## [2026-08-05] - [Feature ID: 081-stop-maquininha-duplication]
+
+**Contexto:** A tela do Extrato Bancário por loja exibia todas as transações da Rede (maquininha) duplicadas. O Faturamento Atual no Dashboard estava dobrado em relação ao valor real. O bug ocorria porque o CentralImportWizard.tsx injetava os dados da Rede (XLSX) na tabela 	ransactions junto com o OFX — mas o OFX já continha os lançamentos reais de recebimento da Rede quando o dinheiro entrou na conta.
+
+**Regra aprendida:** A tabela 	ransactions é exclusivamente o Livro-Razão (Ledger) do Extrato Bancário. Apenas transações parseadas do arquivo OFX devem ser inseridas nela. Vendas da Maquininha e relatórios da Rede são Recebíveis (tabela eceivables), não transações bancárias realizadas. NUNCA insira na 	ransactions dados oriundos de planilhas da Rede ou Maquininha — esses documentos representam expectativas de recebimento, não entradas bancárias confirmadas.
+
+**Risco identificado:** O useDashboardV2 soma todas as 	ransactions onde 	ype = 'in' para calcular Faturamento. Se a Rede for inserida em 	ransactions, o Faturamento dobra (OFX + Rede = 2x a mesma entrada).
+
+**Não fazer:** Nunca faça 	xsToInsert.push(...) com dados de esults.maquininhaItems ou esults.redeResults. Esses itens devem ir APENAS para eceivables via savePatioOsAndReceivables.

@@ -48,3 +48,38 @@ VocÃª opera sob a jurisdiÃ§Ã£o de 8 skills fundamentais. Elas nÃ£o precisam ser 
 - RaciocÃ­nio: `deciqai-bayesian-reasoning`, `adaptive-reasoning`
 - Engenharia: `frontend-design-pro`, `frontend-design-3`, `afrexai-nextjs-production`, `backend`, `supabase`
 - MemÃ³ria e DevOps: `obsidian`, `github`
+
+## 5. Regra de Separação de Fontes Financeiras (Ledger vs. Receivables)
+
+**NUNCA** insira em 	ransactions dados que vêm de relatórios de adquirentes (Rede, Cielo, Stone, planilhas de maquininha), mesmo que exista lógica de "match" com OS ou OFX.
+
+- 	ransactions = Livro-Razão bancário. Apenas dados parseados de arquivos **OFX** são inseridos aqui.
+- eceivables = Recebíveis e vendas. Dados da Rede, Maquininha e Cartão vão aqui via savePatioOsAndReceivables.
+- Misturar as duas fontes em 	ransactions causa dupla contagem no Faturamento e no Extrato, pois o OFX já registra a entrada real quando o adquirente liquida a venda.
+
+**Guardrail:** Antes de qualquer .push() em arrays que alimentam useBulkInsertTransactions, responda: **"Este dado veio de um OFX?"** — Se não, ele NÃO vai para 	ransactions.
+
+## 6. Regra: Inspecionar Antes de Teorizar (Zero Presunções sobre Estrutura de Arquivos)
+
+**ANTES** de diagnosticar qualquer problema relacionado a parsing, importação ou estrutura de arquivos (OFX, XLSX, CSV, JSON, ZIP), a IA DEVE:
+
+1. Verificar se o arquivo está disponível no sistema (Downloads, workspace, etc.)
+2. Ler o conteúdo real do arquivo antes de qualquer diagnóstico
+3. **NUNCA** afirmar que um arquivo é "global", "corporativo", "compartilhado" ou tem qualquer estrutura específica sem evidência direta do conteúdo do próprio arquivo
+
+O critério de verdade é sempre o arquivo, não a teoria da IA.
+
+**Comportamento proibido:** Diagnosticar "o OFX é um extrato corporativo único compartilhado entre lojas" sem ter lido o arquivo.
+**Guardrail:** Se o usuário mencionar arquivo de dados e há um problema de parsing/estrutura, SEMPRE peça o arquivo ou inspecione antes de teorizar.
+
+## 7. Regra: git status Obrigatório Antes de Qualquer Commit
+
+**SEMPRE** execute git status (ou C:\Users\admin\.gemini\antigravity\scratch\mingit\cmd\git.exe status) ANTES de qualquer sequência de git add + git commit + git push.
+
+Verifique EXPLICITAMENTE:
+- Changes not staged for commit ? arquivos modificados mas não adicionados ao stage
+- Untracked files ? arquivos novos criados mas não rastreados
+- Changes to be committed ? confirme que todos os artefatos da sessão estão listados
+
+**Comportamento proibido:** Fazer commit + push sem rodar git status primeiro, presumindo que todos os arquivos editados foram automaticamente incluídos.
+**Guardrail:** Use git add -A ou liste explicitamente cada arquivo modificado na sessão para garantir que nada fica fora do commit. Um commit incompleto para produção (Lovable, Vercel, etc.) pode fazer o usuário levar uma build quebrada com parte das correções aplicadas e parte faltando.
