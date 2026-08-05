@@ -265,8 +265,45 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
            autoMatchMap[store_id].push(...osResult.osArray);
          }
       });
-      
       const matchesToInsert: any[] = [];
+
+      // Insere Maquininhas e Rede na tabela transactions para a Conciliação Diária
+      Object.entries(maqByStore).forEach(([sid, items]) => {
+        items.forEach(item => {
+          txsToInsert.push({
+            id: crypto.randomUUID(),
+            store_id: sid,
+            store_name: item.storeName,
+            title: item.title || 'Importação Maquininha',
+            subtitle: item.storeName,
+            amount: item.amount || 0,
+            type: 'in',
+            occurred_at: `${targetDate}T12:00:00Z`,
+            target_date: targetDate,
+            icon_type: 'card',
+            source: 'maquininha'
+          });
+        });
+      });
+
+      Object.entries(redeByStore).forEach(([sid, items]) => {
+        items.forEach(item => {
+          txsToInsert.push({
+            id: crypto.randomUUID(),
+            store_id: sid,
+            store_name: item.storeName,
+            title: item.title || 'Importação Rede',
+            subtitle: item.storeName,
+            amount: item.netAmount || 0,
+            type: 'in',
+            occurred_at: item.date || `${targetDate}T12:00:00Z`,
+            target_date: targetDate,
+            icon_type: 'card',
+            source: 'rede'
+          });
+        });
+      });
+
 
       results.ofxResults.forEach(ofx => {
         let store_id: string | null = mapping[ofx.alias];
@@ -857,10 +894,12 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                   return acc + sum;
                 }, 0);
 
-                const storeRedeNet = results.redeResults.filter(r => r.success).reduce((acc, r) => {
+                let storeRedeNet = results.redeResults.filter(r => r.success).reduce((acc, r) => {
                   const txs = r.transactions.filter(tx => mapping[tx.storeName] === storeId);
                   return acc + txs.reduce((sum, tx) => sum + tx.netAmount, 0);
                 }, 0);
+
+                storeRedeNet += results.maquininhaItems.filter(item => mapping[item.storeName] === storeId).reduce((acc, item) => acc + (item.amount || 0), 0);
 
                 const storeOfxIn = results.ofxResults.filter(r => mapping[r.alias] === storeId).reduce((acc, r) => {
                   const txs = r.transactions.filter(tx => tx.type === 'in');

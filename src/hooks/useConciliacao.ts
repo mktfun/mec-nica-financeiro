@@ -116,13 +116,10 @@ export function useSystemTransactions(date: string) {
   return useQuery({
     queryKey: ['system-transactions', date],
     queryFn: async () => {
-      const startOfDay = `${date}T00:00:00.000Z`;
-      const endOfDay = `${date}T23:59:59.999Z`;
       const { data, error } = await supabase
         .from('transactions')
         .select('*')
-        .gte('created_at', startOfDay)
-        .lte('created_at', endOfDay);
+        .eq('target_date', date);
       if (error) throw error;
       
       return (data || []).map(t => ({
@@ -140,14 +137,10 @@ export function useDailyReconciliationDelta(targetDate: string) {
   return useQuery({
     queryKey: ['reconciliation-delta', targetDate],
     queryFn: async () => {
-      const startOfDay = `${targetDate}T00:00:00.000Z`;
-      const endOfDay = `${targetDate}T23:59:59.999Z`;
-
       const { data, error } = await supabase
         .from('transactions')
         .select('store_id, amount, type, source')
-        .gte('occurred_at', startOfDay)
-        .lte('occurred_at', endOfDay);
+        .eq('target_date', targetDate);
 
       if (error) throw error;
 
