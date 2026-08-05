@@ -29,12 +29,11 @@ export const Route = createFileRoute('/loja/$lojaId')({
 
 function getDefaultPeriod() {
   const now = new Date();
-  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const todayStr = now.toISOString().split('T')[0];
   
   return {
-    start: firstDay.toISOString().split('T')[0],
-    end: lastDay.toISOString().split('T')[0]
+    start: todayStr,
+    end: todayStr
   };
 }
 
@@ -89,9 +88,9 @@ function LojaDashboardPage() {
     setLoadingConc(true);
     (async () => {
       const [ofxRes, sysRes, despRes] = await Promise.all([
-        supabase.from('transactions').select('amount, type').eq('store_id', lojaId).eq('source', 'ofx').gte('occurred_at', startDate).lte('occurred_at', endDate),
-        supabase.from('transactions').select('amount').eq('store_id', lojaId).in('source', ['patio', 'maquininha']).eq('type', 'in').gte('occurred_at', startDate).lte('occurred_at', endDate),
-        supabase.from('transactions').select('amount').eq('store_id', lojaId).eq('source', 'despesa').gte('occurred_at', startDate).lte('occurred_at', endDate),
+        supabase.from('transactions').select('amount, type').eq('store_id', lojaId).eq('source', 'ofx').gte('target_date', startDate).lte('target_date', endDate),
+        supabase.from('transactions').select('amount').eq('store_id', lojaId).in('source', ['patio', 'maquininha']).eq('type', 'in').gte('target_date', startDate).lte('target_date', endDate),
+        supabase.from('transactions').select('amount').eq('store_id', lojaId).eq('source', 'despesa').gte('target_date', startDate).lte('target_date', endDate),
       ]);
       setConcBanco((ofxRes.data || []).reduce((s, r) => s + (r.type === 'in' ? Number(r.amount) : -Number(r.amount)), 0));
       setConcSistema((sysRes.data || []).reduce((s, r) => s + Number(r.amount), 0));
