@@ -408,7 +408,8 @@ export function useClearAllData() {
         'import_logs',
         'import_batches',
         'cash_registers',
-        'reconciliacoes_triplas'
+        'reconciliacoes_triplas',
+        'daily_snapshots'
       ];
 
       for (const table of tables) {
