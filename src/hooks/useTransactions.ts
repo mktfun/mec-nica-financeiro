@@ -368,33 +368,58 @@ export function useBulkInsertTransactions() {
       let data: any = null;
       let error: any = null;
 
-      // OFX: upsert idempotente por store_id, fitid (reimportar não duplica)
+      // OFX: Limpar estado anterior do dia para evitar duplicação por mudança de fitid
       if (ofxTxs.length > 0) {
+        const ofxStoreDates = new Set<string>();
+        ofxTxs.forEach((t: any) => {
+          if (t.target_date) {
+            ofxStoreDates.add(`${t.store_id || 'null'}|${t.target_date}`);
+          }
+        });
+
+        for (const sd of Array.from(ofxStoreDates)) {
+          const [sId, tDate] = sd.split('|');
+          const delQuery = supabase
+            .from('transactions')
+            .delete()
+            .eq('source', 'ofx')
+            .eq('target_date', tDate);
+            
+          if (sId === 'null') {
+            await delQuery.is('store_id', null);
+          } else {
+            await delQuery.eq('store_id', sId);
+          }
+        }
+
         const { data: d1, error: e1 } = await supabase
           .from('transactions')
-          .upsert(ofxTxs, { onConflict: 'store_id, fitid', ignoreDuplicates: false });
+          .insert(ofxTxs);
         if (e1) { error = e1; } else { data = d1; }
       }
 
-      // Outras transações (OS, Rede): insert normal
+      // Outras transações (OS, Rede): insert normal com delete prévio robusto para NULL store_id
       if (!error && otherTxs.length > 0) {
-        // 1.5 DELETAR transações non-OFX anteriores para os mesmos stores e datas, 
-        // para evitar multiplicação (milhões) no dashboard se o usuário importar várias vezes.
         const storeDates = new Set<string>();
         otherTxs.forEach((t: any) => {
-          if (t.store_id && t.target_date) {
-            storeDates.add(`${t.store_id}|${t.target_date}`);
+          if (t.target_date) {
+            storeDates.add(`${t.store_id || 'null'}|${t.target_date}`);
           }
         });
 
         for (const sd of Array.from(storeDates)) {
           const [sId, tDate] = sd.split('|');
-          await supabase
+          const delQuery = supabase
             .from('transactions')
             .delete()
-            .eq('store_id', sId)
             .eq('target_date', tDate)
             .is('fitid', null);
+            
+          if (sId === 'null') {
+            await delQuery.is('store_id', null);
+          } else {
+            await delQuery.eq('store_id', sId);
+          }
         }
 
         const { data: d2, error: e2 } = await supabase
