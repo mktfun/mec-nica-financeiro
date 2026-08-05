@@ -395,7 +395,7 @@ export function useBulkInsertTransactions() {
 
         const { data: d1, error: e1 } = await supabase
           .from('transactions')
-          .insert(ofxTxs);
+          .upsert(ofxTxs, { onConflict: 'store_id, fitid', ignoreDuplicates: true });
         if (e1) { error = e1; } else { data = d1; }
       }
 
