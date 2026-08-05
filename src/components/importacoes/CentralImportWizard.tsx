@@ -171,6 +171,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
       const txsToInsert: any[] = [];
       const storeBankBalances: Record<string, number> = {};
+      const storePreviousBalances: Record<string, number> = {};
 
       // 1. OSs do Pátio e Recebíveis
       const osCountTotal = results.osFiles.filter(r => r.success).reduce((acc, curr) => acc + curr.osArray.length, 0);
@@ -309,6 +310,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         let store_id: string | null = mapping[ofx.alias];
         if (store_id === 'GLOBAL') store_id = null;
         if (ofx.bankBalance !== undefined && store_id) storeBankBalances[store_id] = ofx.bankBalance;
+        if (ofx.previousBalance !== undefined && store_id) storePreviousBalances[store_id] = ofx.previousBalance;
 
         let globalStoreId: string | null = mapping[ofx.alias] || null;
         if (globalStoreId === 'GLOBAL') globalStoreId = null;
@@ -388,7 +390,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       addLog(`⚙️ Gravando batch de ${txsToInsert.length} transações no banco...`, "info");
       const batch = await createImportBatch({ target_date: targetDate });
       
-      await saveTransactions({ transactions: txsToInsert, storeBankBalances, import_batch_id: batch.id } as any);
+      await saveTransactions({ transactions: txsToInsert, storeBankBalances, storePreviousBalances, import_batch_id: batch.id } as any);
       addLog("✅ Transações do extrato e adquirente salvas com sucesso!", "success");
 
       if (matchesToInsert.length > 0) {

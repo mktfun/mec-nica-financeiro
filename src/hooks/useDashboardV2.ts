@@ -122,14 +122,24 @@ export function useDashboardV2(selectedDateStr?: string) {
       }
       const saldoTotal = Object.values(latestByStore).reduce((acc, v) => acc + v.bank_total, 0);
 
-      // Fluxo de Caixa
-      const latestPrevByStore: Record<string, number> = {};
+      // Fluxo de Caixa (Usando previous_balance nativo do OFX ou fallback pro histórico corrigido)
+      const latestPrevByStore: Record<string, { total: number; date: string }> = {};
+      
       for (const row of recsAll.data || []) {
-        if (row.date <= dateAnterior && (!latestPrevByStore[row.store_id] || row.date > (latestPrevByStore[row.store_id] ?? ''))) {
-          latestPrevByStore[row.store_id] = Number(row.bank_total || 0);
+        if (row.date === dateAtual && row.previous_balance !== null && row.previous_balance !== undefined) {
+          // OFX do próprio dia tem a verdade absoluta do saldo inicial
+          latestPrevByStore[row.store_id] = { total: Number(row.previous_balance), date: row.date };
+        } else if (row.date <= dateAnterior) {
+          // Histórico: Pega o bank_total mais recente até o dia anterior
+          if (!latestPrevByStore[row.store_id] || row.date > latestPrevByStore[row.store_id].date) {
+            // Só sobrescreve se não for o valor garantido do próprio dia (dateAtual)
+            if (latestPrevByStore[row.store_id]?.date !== dateAtual) {
+              latestPrevByStore[row.store_id] = { total: Number(row.bank_total || 0), date: row.date };
+            }
+          }
         }
       }
-      const saldoAnterior = Object.values(latestPrevByStore).reduce((acc, v) => acc + v, 0);
+      const saldoAnterior = Object.values(latestPrevByStore).reduce((acc, v) => acc + v.total, 0);
       const fluxoCaixa = saldoTotal - saldoAnterior;
 
       // --- Faturamento e Contas (Transações + Manual) ---

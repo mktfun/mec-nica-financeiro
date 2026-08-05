@@ -12,6 +12,7 @@ import { getDefaultDate } from '@/lib/utils';
 import { calculateGlobalConciliacao, GlobalConciliacaoInput } from '@/lib/modulo1Calculations';
 import { StoreSaldoState } from '@/lib/modulo1Calculations';
 import { supabase } from '@/lib/supabase';
+import { useReconciliationsForDate } from '@/hooks/useConciliacao';
 
 interface ResumoDiaPanelProps {
   selectedDate: string;
@@ -56,8 +57,14 @@ export function ResumoDiaPanel({
   // Faturamento Anterior é o Faturamento Acumulado salvo no último fechamento (previousSnapshot)
   const faturamentoAnteriorGlobal = previousSnapshot?.faturamento || 0;
 
-  // Caixa Anterior salvo no último fechamento
-  const caixaAnteriorGlobal = previousSnapshot?.caixa_atual || 0;
+  // Caixa Anterior vem nativamente do OFX (previous_balance da tabela reconciliations do dia ATUAL)
+  const { data: recsToday } = useReconciliationsForDate(selectedDate);
+  const sumOfxPreviousBalance = recsToday?.reduce((acc, r) => acc + (r.previous_balance || 0), 0) || 0;
+  
+  // Usamos o previous_balance nativo se existir, caso contrário fazemos fallback pro sistema histórico
+  const caixaAnteriorGlobal = sumOfxPreviousBalance > 0 
+    ? sumOfxPreviousBalance 
+    : (previousSnapshot?.caixa_atual || 0);
 
   // Calcular pix_os cruzado (quantos PIX foram declarados de OS e encontrados no banco)
   let totalPixOs = 0;

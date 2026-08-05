@@ -17,6 +17,21 @@ export interface ConciliacaoResumo {
   approved: number;
 }
 
+export function useReconciliationsForDate(date: string) {
+  return useQuery({
+    queryKey: ['reconciliations', date],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('reconciliations')
+        .select('*')
+        .eq('date', date);
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!date,
+  });
+}
+
 export function useConciliacaoResumo(date: string) {
   return useQuery({
     queryKey: ['conciliacao_resumo', date],

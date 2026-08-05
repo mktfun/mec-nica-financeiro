@@ -37,6 +37,7 @@ export type ReconciliationRow = {
   bank_divergence?: number;
   machine_fees?: number;
   bank_total?: number;
+  previous_balance?: number | null;
 };
 
 export type AlertRow = {

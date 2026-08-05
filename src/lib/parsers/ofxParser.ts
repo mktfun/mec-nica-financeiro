@@ -96,7 +96,12 @@ export async function parseOFXFile(file: File): Promise<OfxParseResult> {
     
     // Capture SALDO ANTERIOR before filtering it out
     if (rawMemo.toUpperCase().includes('SALDO ANTERIOR')) {
-      previousBalance = Math.abs(amount);
+      let parsedBal = Math.abs(amount);
+      const hasDecimalSeparator = amountStr.includes('.') || amountStr.includes(',');
+      if (!hasDecimalSeparator && parsedBal > 100) {
+        parsedBal = parsedBal / 100;
+      }
+      previousBalance = parsedBal;
       continue; // Don't add as transaction
     }
     

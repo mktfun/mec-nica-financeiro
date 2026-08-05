@@ -1,0 +1,6 @@
+- Modificado: src/lib/parsers/ofxParser.ts (Lógica de centavos aplicada também em SALDO ANTERIOR)
+- Modificado: src/components/importacoes/CentralImportWizard.tsx (Captura e pipeline de storePreviousBalances)
+- Modificado: src/hooks/useTransactions.ts (upsert de previous_balance na tabela reconciliations)
+- Modificado: src/components/conciliacao/ResumoDiaPanel.tsx (Uso do previous_balance nativo)
+- Modificado: src/hooks/useDashboardV2.ts (Uso do previous_balance nativo no Fluxo de Caixa)
+- Banco: Tabela reconciliations recebeu coluna previous_balance (NUMERIC)

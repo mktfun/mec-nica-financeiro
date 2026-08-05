@@ -340,10 +340,11 @@ export function useBulkInsertConciliationMatches() {
 export function useBulkInsertTransactions() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (payload: any[] | { transactions: any[], storeBankBalances?: Record<string, number>, import_batch_id?: string }) => {
+    mutationFn: async (payload: any[] | { transactions: any[], storeBankBalances?: Record<string, number>, storePreviousBalances?: Record<string, number>, import_batch_id?: string }) => {
       // Separar as transações do possível ofxBankBalance
       const txs = Array.isArray(payload) ? payload : payload.transactions;
       const storeBankBalances = Array.isArray(payload) ? undefined : payload.storeBankBalances;
+      const storePreviousBalances = Array.isArray(payload) ? undefined : payload.storePreviousBalances;
       const import_batch_id = Array.isArray(payload) ? undefined : payload.import_batch_id;
       
       // Inject import_batch_id into all transactions
@@ -443,15 +444,20 @@ export function useBulkInsertTransactions() {
         // Fazer upsert para cada store+date com o saldo real do extrato DAQUELA LOJA ESPECIFICA
         for (const [storeId, targetDate] of storeDates.entries()) {
           const bankBalance = storeBankBalances[storeId];
-          if (bankBalance !== undefined) {
+          const previousBalance = storePreviousBalances ? storePreviousBalances[storeId] : undefined;
+          
+          if (bankBalance !== undefined || previousBalance !== undefined) {
+            const updatePayload: any = {
+              store_id: storeId,
+              date: targetDate,
+              status: 'pending' // status default
+            };
+            if (bankBalance !== undefined) updatePayload.bank_total = bankBalance;
+            if (previousBalance !== undefined) updatePayload.previous_balance = previousBalance;
+
             await supabase
               .from('reconciliations')
-              .upsert({
-                store_id: storeId,
-                date: targetDate,
-                bank_total: bankBalance,
-                status: 'pending' // status default
-              }, { onConflict: 'store_id, date' });
+              .upsert(updatePayload, { onConflict: 'store_id, date' });
           }
         }
       }
