@@ -64,3 +64,8 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 ## [094-fix-import-wipeout]
 - Correção Crítica do Mecanismo de Importação (Fim do Wipeout)
 - Modificado: `src/hooks/useTransactions.ts` (Removido delete-and-insert do OFX e restringido o delete da Rede apenas aos sources de origem, protegendo lançamentos manuais)
+
+## [095-fix-pix-match-text]
+- Remoção do Filtro Restritivo de Texto do PIX e Restauração do Faturamento Real
+- Modificado: `src/hooks/useConciliacao.ts` (Remoção da restrição textual `includes('PIX')` no cruzamento matemático do Extrato)
+- Modificado: `src/routes/conciliacao.index.tsx` (Substituição do Faturamento Baseado em Texto por Faturamento de Amarração Real do Banco de Dados)

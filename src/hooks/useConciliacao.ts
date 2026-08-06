@@ -615,12 +615,8 @@ export function useModulo1StoresData(date: string) {
                 return acc + Math.max(0, Number(o.total_value || 0) - Number(o.paid_value || 0));
               }, 0);
 
-        // 1. Extrair transações PIX/TED do OFX (entrada)
-        const ofxPixTxs = storeTxs.filter(t => {
-           if (t.source !== 'ofx' || t.type !== 'in') return false;
-           const txt = `${t.title || ''} ${t.subtitle || ''}`.toUpperCase();
-           return txt.includes('PIX') || txt.includes('TRANSF') || txt.includes('TED') || txt.includes('DOC');
-        });
+        // 1. Extrair transações de entrada do OFX (sem filtro restrito de texto como 'PIX', pois cada banco tem uma sigla)
+        const ofxPixTxs = storeTxs.filter(t => t.source === 'ofx' && t.type === 'in');
 
         // 2. Extrair valores declarados como PIX nas OSs
         const osPixList = storeOs.map(os => {

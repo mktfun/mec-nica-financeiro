@@ -106,3 +106,7 @@ A regra de ouro na importa√ß√£o √©: *Importar um dia √© um pacote fechado. O nov
 **Risco identificado:** Excluir do `Faturamento` a Maquininha causa um falso positivo grave de diferen√ßa, pois a expectativa (OS + Rede) ser√° sempre muito maior que apenas o PIX banc√°rio.
 
 **N√£o fazer:** Nunca restrinja o Faturamento de uma loja exclusivamente ao arquivo OFX. Arquivos de Adquirentes tamb√©m s√£o documentos de liquidez real e devem compor o painel principal.
+
+## [2026-08-06] ó [Feature ID: 095-fix-pix-match-text]
+
+**Regra de Nomenclatura Banc·ria:** NUNCA filtre depÛsitos ou recebimentos PIX/TED do extrato (OFX) buscando por nomes fixos no tÌtulo (como 'PIX', 'TRANSF' ou 'TED'). Cada instituiÁ„o financeira utiliza nomenclaturas legadas diferentes (ex: DEP DINH, CRED TEF). Para cruzar valores recebidos, utilize sempre e unicamente a validaÁ„o matem·tica do valor atrelada ‡ direÁ„o do fluxo (	ype === 'in').
