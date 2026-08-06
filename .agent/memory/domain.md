@@ -125,3 +125,8 @@ A regra de ouro na importaÃ§Ã£o Ã©: *Importar um dia Ã© um pacote fechado. O nov
 **Blindagem Matemática:** Todo input de despesa (ex: juros_rede, contas_a_pagar) deve passar por Math.abs() no engine central antes de compor o subtotal de saídas. A diferença de fechamento é calculada de forma linear, sem riscos de inverter soma e subtração devido a inputs negativos do OFX ou digitação.
 **Status Expansivo (Pátio OS):** Ao cruzar OSs ativas, utilizar a normalização 	oLowerCase().trim() checando um array expandido ['em_aberto', 'pago_parcial', 'pendente', 'aberta', 'aberto', 'em andamento']. Nunca restringir rigidamente a apenas um ou dois status de forma exata, prevendo integrações de terceiros.
 **Ancoragem do Fluxo de Caixa (Dia 1):** O cálculo de fluxo (Fluxo = Caixa Hoje - Caixa Ontem) precisa suportar o cenário em que 'Caixa Ontem' não existe no banco de dados. Para evitar que o Fluxo copie integralmente o Caixa de Hoje, um input manual (manualCaixaAnterior) no Frontend permite injetar este saldo para calibrar o fechamento em lojas que acabaram de ativar o sistema.
+
+## [2026-08-06] — [Feature ID: 099-revert-manual-and-fix-patio]
+
+**Restrição Histórica do Pátio:** O snapshot de Pátio (OS) da conciliação SÓ deve ser recuperado da tabela econciliations se houver match exato na data (.date === date). Utilizar <= para preencher lacunas de dias passados corrompe a visão histórica da oficina.
+**Isolamento do Caixa Anterior:** O cálculo global de 'Caixa Anterior' (âncora do Fluxo de Caixa) deve puxar estritamente o valor consolidado na conciliação do dia anterior (daily_snapshots). Ele JAMAIS deve ser misturado, preenchido ou herdado do previous_balance do OFX bancário isolado, e tampouco depender de inputs manuais no frontend.

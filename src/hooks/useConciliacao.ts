@@ -593,7 +593,7 @@ export function useModulo1StoresData(date: string) {
         const storeOs = patioOs?.filter(o => o.store_id === store.id) || [];
         const storeRec = receivables?.filter(r => r.store_id === store.id) || [];
         // Encontra o snapshot mais recente que tenha dívida legada registrada (> 0)
-      const storeRecon = reconciliations?.find(r => r.store_id === store.id && Number(r.na_loja_os) > 0);
+      const storeRecon = reconciliations?.find(r => r.store_id === store.id && r.date === date);
 
         const saldoBancoItau = storeTxs
           .filter(t => t.source === 'ofx' && (t.type === 'in' || Number(t.amount || 0) > 0))

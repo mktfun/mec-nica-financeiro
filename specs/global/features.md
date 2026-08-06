@@ -85,4 +85,7 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - Consertos na Matemática de Contas, Extração de Pátio e Inicialização de Fluxo
 - Modificado: `src/lib/modulo1Calculations.ts` (Adição de `Math.abs` em despesas para evitar cálculos matemáticos invertidos com números negativos).
 - Modificado: `src/hooks/useConciliacao.ts` (Regra de filtro tolerante para o status de OS pendente).
-- Modificado: `src/components/conciliacao/ResumoDiaPanel.tsx` (Adição do input `manualCaixaAnterior` para garantir que o Fluxo de Caixa possa ser calculado no 'Dia 1' da loja).
+## [099-revert-manual-and-fix-patio]
+- Escopo Rigoroso de Pátio e Reversão de Automação de Caixa
+- Modificado: `src/hooks/useConciliacao.ts` (Remoção do vazamento de dados de snapshots passados. A foto do pátio agora é estritamente vinculada à data exata).
+- Modificado: `src/components/conciliacao/ResumoDiaPanel.tsx` (Remoção do input de caixa manual e abolição da herança do `previous_balance` do OFX para a composição global do Caixa Anterior, blindando a integridade do Fluxo).

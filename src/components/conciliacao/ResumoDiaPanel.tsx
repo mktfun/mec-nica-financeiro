@@ -44,7 +44,6 @@ export function ResumoDiaPanel({
   storesData = []
 }: ResumoDiaPanelProps) {
   const [isSaved, setIsSaved] = useState(false);
-  const [manualCaixaAnterior, setManualCaixaAnterior] = useState<number | null>(null);
 
   // Lê o snapshot do dia selecionado (que já contém os inputs manuais salvos via ImportWizard)
   const { data: currentSnapshot } = useDailySnapshot(selectedDate);
@@ -62,10 +61,8 @@ export function ResumoDiaPanel({
   const { data: recsToday } = useReconciliationsForDate(selectedDate);
   const sumOfxPreviousBalance = recsToday?.reduce((acc, r) => acc + (r.previous_balance || 0), 0) || 0;
   
-  // Usamos o previous_balance nativo se existir, caso contrário fazemos fallback pro sistema histórico
-  const caixaAnteriorGlobal = sumOfxPreviousBalance > 0 
-    ? sumOfxPreviousBalance 
-    : (previousSnapshot?.caixa_atual || 0);
+  // Usamos EXCLUSIVAMENTE o saldo consolidado na conciliação anterior para não conflitar com saldos de banco isolados
+  const caixaAnteriorGlobal = previousSnapshot?.caixa_atual || 0;
 
   // Calcular pix_os cruzado (quantos PIX foram declarados de OS e encontrados no banco)
   let totalPixOs = 0;
@@ -90,7 +87,7 @@ export function ResumoDiaPanel({
     a_receber_manual: currentSnapshot?.a_receber_manual || 0,
     na_loja_os: dynamicGlobalNaLojaOs,
     saldo_negativo_itau: currentSnapshot?.saldo_negativo_itau || 0,
-    caixa_anterior: manualCaixaAnterior !== null ? manualCaixaAnterior : caixaAnteriorGlobal,
+    caixa_anterior: caixaAnteriorGlobal,
     faturamento_atual: faturamentoAtualGlobal,
     faturamento_anterior: faturamentoAnteriorGlobal,
     faturamento_outros: faturamentoOutrosAutomatico,
@@ -292,19 +289,7 @@ export function ResumoDiaPanel({
                 <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
                   <AnimatedNumber value={calculated.fluxo_cx} format="currency" />
                 </span>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="text-[9px] text-[var(--text-tertiary)]">Caixa atual vs Conciliação Anterior</span>
-                  {(caixaAnteriorGlobal === 0 || manualCaixaAnterior !== null) && (
-                    <input 
-                      type="number" 
-                      placeholder="Anterior"
-                      className="bg-black/50 border border-[var(--border-subtle)] text-[var(--text-secondary)] text-[9px] px-1.5 py-0.5 rounded w-16 outline-none focus:border-[var(--color-primary)]"
-                      value={manualCaixaAnterior || ''}
-                      onChange={(e) => setManualCaixaAnterior(e.target.value ? parseFloat(e.target.value) : null)}
-                      title="Forçar Caixa Anterior (Dia 1)"
-                    />
-                  )}
-                </div>
+                <span className="text-[9px] text-[var(--text-tertiary)] block mt-1">Caixa atual vs Conciliação Anterior</span>
               </div>
               <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
                 <div className="flex justify-between items-start">
