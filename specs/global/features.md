@@ -69,3 +69,10 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - Remoção do Filtro Restritivo de Texto do PIX e Restauração do Faturamento Real
 - Modificado: `src/hooks/useConciliacao.ts` (Remoção da restrição textual `includes('PIX')` no cruzamento matemático do Extrato)
 - Modificado: `src/routes/conciliacao.index.tsx` (Substituição do Faturamento Baseado em Texto por Faturamento de Amarração Real do Banco de Dados)
+
+## [096-fix-math-rage]
+- Alinhamento Matemático de "Planilha vs Banco" e Snapshots de Pátio
+- Modificado: `src/components/importacoes/CentralImportWizard.tsx` (Adicionado Snapshot instantâneo do Pátio `na_loja_os` para blindagem de dados históricos)
+- Modificado: `src/routes/conciliacao.index.tsx` (Alterado o Faturamento para ser puramente o saldo validado do extrato `saldo_banco_itau`, sem mistura com planilhas)
+- Modificado: `src/lib/modulo1Calculations.ts` (Remoção de Provisão do fluxo de despesas pagas no dia)
+- Modificado: `src/components/conciliacao/ResumoDiaPanel.tsx` (Ajustado `contasAPagarAutomatico` para capturar as saídas OFX em valor absoluto)

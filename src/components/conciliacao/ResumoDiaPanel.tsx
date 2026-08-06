@@ -76,7 +76,7 @@ export function ResumoDiaPanel({
 
   // Automáticos via OFX (Outros agora é 0 por padrão, não um residual)
   const faturamentoOutrosAutomatico = 0;
-  const contasAPagarAutomatico = totalOfxOut;
+  const contasAPagarAutomatico = Math.abs(totalOfxOut);
 
   // Sum na_loja_os directly from storesData to avoid loop with 0 value
   const dynamicGlobalNaLojaOs = storesData ? Object.values(storesData).reduce((acc: number, s: any) => acc + (s.na_loja_os || 0), 0) : 0;

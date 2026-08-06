@@ -110,3 +110,8 @@ A regra de ouro na importaÃ§Ã£o Ã©: *Importar um dia Ã© um pacote fechado. O nov
 ## [2026-08-06] — [Feature ID: 095-fix-pix-match-text]
 
 **Regra de Nomenclatura Bancária:** NUNCA filtre depósitos ou recebimentos PIX/TED do extrato (OFX) buscando por nomes fixos no título (como 'PIX', 'TRANSF' ou 'TED'). Cada instituição financeira utiliza nomenclaturas legadas diferentes (ex: DEP DINH, CRED TEF). Para cruzar valores recebidos, utilize sempre e unicamente a validação matemática do valor atrelada à direção do fluxo (	ype === 'in').
+
+## [2026-08-06] — [Feature ID: 096-fix-math-rage]
+
+**Blindagem Planilha vs Banco:** O Faturamento deve ser estritamente o valor que consta no extrato bancário (OFX) vinculado. NUNCA some expectativas de recebimento de planilhas (como Maquininha ou previsões de PIX) com os valores consolidados do banco no cálculo de Faturamento. A diferença de fechamento deve ser estruturada como (Planilhas) - (Faturamento Banco).
+**Snapshot Histórico (Pátio OS):** Valores mutáveis (como dívidas de OS no pátio) devem sofrer snapshot no momento da importação e serem salvos no banco para a data-alvo. Não dependa de tabelas vivas para calcular saldos históricos.

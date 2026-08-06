@@ -235,6 +235,36 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
       await Promise.all([...osPromises, ...maqPromises, ...redePromises]);
       addLog("✅ OSs e Recebíveis salvos nas tabelas de origem!", "success");
+      
+      // Snapshot Na Loja OS
+      addLog(`📸 Gerando snapshot de OSs ativas no pátio...`, "info");
+      const allStoreIds = new Set<string>();
+      Object.values(mapping).forEach(v => {
+        if (v && v !== 'GLOBAL') allStoreIds.add(v);
+      });
+      
+      if (allStoreIds.size > 0) {
+         const { data: activeOs } = await supabase
+           .from('patio_os')
+           .select('store_id, total_value, paid_value')
+           .in('status', ['em_aberto', 'pago_parcial']);
+           
+         if (activeOs) {
+           const snapshotPromises = Array.from(allStoreIds).map(sid => {
+              const naLojaOs = activeOs
+                .filter(o => o.store_id === sid)
+                .reduce((acc, o) => acc + Math.max(0, Number(o.total_value || 0) - Number(o.paid_value || 0)), 0);
+                
+              return supabase.from('reconciliations').upsert({
+                 store_id: sid,
+                 date: targetDate,
+                 na_loja_os: naLojaOs
+              }, { onConflict: 'store_id,date' });
+           });
+           await Promise.all(snapshotPromises);
+         }
+      }
+      
       await new Promise(r => setTimeout(r, 200));
 
       // 2. Transações e OFX

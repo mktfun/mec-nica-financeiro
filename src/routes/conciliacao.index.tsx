@@ -119,8 +119,7 @@ function ConciliacaoPage() {
 
                     const storeMod1 = modulo1StoresData.find(m => m.store_id === store.id);
                     const maquininha = storeMod1?.cartao_entrou || 0;
-                    const faturamentoRealOfx = storeMod1?.faturamento_real_ofx || 0;
-                    const faturamento = maquininha + faturamentoRealOfx;
+                    const faturamento = storeMod1?.saldo_banco_itau || 0;
                     const pixOs = storeMod1?.pix_os_expected || 0;
                     const naLojaOs = storeMod1?.na_loja_os || 0;
 
