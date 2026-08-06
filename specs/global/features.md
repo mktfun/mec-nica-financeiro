@@ -80,3 +80,9 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 ## [097-saldo-faturamento-fix]
 - Nomenclatura UI e Inversão de Diferença Contábil
 - Modificado: `src/routes/conciliacao.index.tsx` (Renomeado os painéis de "Saldo" para "Faturam. Banco" e "Faturamento" para "Previsto". A conta de Diferença foi invertida para Faturamento Banco - Previsto, tornando as sobras positivas (verdes) e os furos negativos (vermelhos))
+
+## [098-conciliacao-bugs-fix]
+- Consertos na Matemática de Contas, Extração de Pátio e Inicialização de Fluxo
+- Modificado: `src/lib/modulo1Calculations.ts` (Adição de `Math.abs` em despesas para evitar cálculos matemáticos invertidos com números negativos).
+- Modificado: `src/hooks/useConciliacao.ts` (Regra de filtro tolerante para o status de OS pendente).
+- Modificado: `src/components/conciliacao/ResumoDiaPanel.tsx` (Adição do input `manualCaixaAnterior` para garantir que o Fluxo de Caixa possa ser calculado no 'Dia 1' da loja).

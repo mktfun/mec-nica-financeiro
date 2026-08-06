@@ -610,7 +610,10 @@ export function useModulo1StoresData(date: string) {
         const naLojaOs = isHistorical 
           ? Number(storeRecon.na_loja_os) 
           : storeOs
-              .filter(o => o.status === 'em_aberto' || o.status === 'pago_parcial')
+              .filter(o => {
+                const s = String(o.status || '').toLowerCase().trim();
+                return ['em_aberto', 'pago_parcial', 'pendente', 'aberta', 'aberto', 'em andamento'].includes(s);
+              })
               .reduce((acc, o) => {
                 return acc + Math.max(0, Number(o.total_value || 0) - Number(o.paid_value || 0));
               }, 0);

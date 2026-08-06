@@ -49,7 +49,7 @@ export function calculateGlobalConciliacao(input: GlobalConciliacaoInput): Globa
   const valor_disp_contas = faturamento + fluxo_cx;
 
   // Valor contas = juros REDE + contas a pagar + provisão
-  const valor_contas = Number(input.juros_rede || 0) + Number(input.contas_a_pagar || 0);
+  const valor_contas = Math.abs(Number(input.juros_rede || 0)) + Math.abs(Number(input.contas_a_pagar || 0));
 
   // Diferença = valor disp - contas
   const diferenca = valor_disp_contas - valor_contas;

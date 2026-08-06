@@ -119,3 +119,9 @@ A regra de ouro na importaÃ§Ã£o Ã©: *Importar um dia Ã© um pacote fechado. O nov
 ## [2026-08-06] — [Feature ID: 097-saldo-faturamento-fix]
 
 **Nomenclatura UI e Diferença:** O termo 'Faturamento Banco' substitui 'Saldo' para representar exclusivamente o dinheiro que entrou na conta (OFX IN). O 'Previsto' representa o que a loja declarou esperar (Maquininha + PIX planilhados). A 'Diferença' no fechamento é SEMPRE calculada como Faturamento Banco - Previsto. Valores positivos (>= 0) indicam sobra de caixa e devem ser exibidos em verde. Valores negativos indicam falta/furo e exibidos em vermelho.
+
+## [2026-08-06] — [Feature ID: 098-conciliacao-bugs-fix]
+
+**Blindagem Matemática:** Todo input de despesa (ex: juros_rede, contas_a_pagar) deve passar por Math.abs() no engine central antes de compor o subtotal de saídas. A diferença de fechamento é calculada de forma linear, sem riscos de inverter soma e subtração devido a inputs negativos do OFX ou digitação.
+**Status Expansivo (Pátio OS):** Ao cruzar OSs ativas, utilizar a normalização 	oLowerCase().trim() checando um array expandido ['em_aberto', 'pago_parcial', 'pendente', 'aberta', 'aberto', 'em andamento']. Nunca restringir rigidamente a apenas um ou dois status de forma exata, prevendo integrações de terceiros.
+**Ancoragem do Fluxo de Caixa (Dia 1):** O cálculo de fluxo (Fluxo = Caixa Hoje - Caixa Ontem) precisa suportar o cenário em que 'Caixa Ontem' não existe no banco de dados. Para evitar que o Fluxo copie integralmente o Caixa de Hoje, um input manual (manualCaixaAnterior) no Frontend permite injetar este saldo para calibrar o fechamento em lojas que acabaram de ativar o sistema.
