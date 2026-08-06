@@ -369,37 +369,16 @@ export function useBulkInsertTransactions() {
       let data: any = null;
       let error: any = null;
 
-      // OFX: Limpar estado anterior do dia para evitar duplicação por mudança de fitid
+      // OFX: Upsert idempotente (onConflict DO NOTHING graças ao ignoreDuplicates)
+      // Removemos o delete prévio destrutivo para preservar as chaves primárias originais e não quebrar amarrações (Wipeout Bug)
       if (ofxTxs.length > 0) {
-        const ofxStoreDates = new Set<string>();
-        ofxTxs.forEach((t: any) => {
-          if (t.target_date) {
-            ofxStoreDates.add(`${t.store_id || 'null'}|${t.target_date}`);
-          }
-        });
-
-        for (const sd of Array.from(ofxStoreDates)) {
-          const [sId, tDate] = sd.split('|');
-          const delQuery = supabase
-            .from('transactions')
-            .delete()
-            .eq('source', 'ofx')
-            .eq('target_date', tDate);
-            
-          if (sId === 'null') {
-            await delQuery.is('store_id', null);
-          } else {
-            await delQuery.eq('store_id', sId);
-          }
-        }
-
         const { data: d1, error: e1 } = await supabase
           .from('transactions')
           .upsert(ofxTxs, { onConflict: 'store_id, fitid', ignoreDuplicates: true });
         if (e1) { error = e1; } else { data = d1; }
       }
 
-      // Outras transações (OS, Rede): insert normal com delete prévio robusto para NULL store_id
+      // Outras transações (Rede/Maquininha): insert normal com delete prévio restrito à origem
       if (!error && otherTxs.length > 0) {
         const storeDates = new Set<string>();
         otherTxs.forEach((t: any) => {
@@ -414,7 +393,7 @@ export function useBulkInsertTransactions() {
             .from('transactions')
             .delete()
             .eq('target_date', tDate)
-            .is('fitid', null);
+            .in('source', ['rede', 'maquininha']);
             
           if (sId === 'null') {
             await delQuery.is('store_id', null);

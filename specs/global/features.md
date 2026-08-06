@@ -60,3 +60,7 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - Otimização Visual do Faturamento Diário
 - Modificado: `src/routes/conciliacao.index.tsx` (Faturamento = Maquininha + PIX Matemático)
 - Modificado: `src/components/conciliacao/ResumoDiaPanel.tsx` (Exibição de `Ant:` para Faturamento Anterior no card Consolidação)
+
+## [094-fix-import-wipeout]
+- Correção Crítica do Mecanismo de Importação (Fim do Wipeout)
+- Modificado: `src/hooks/useTransactions.ts` (Removido delete-and-insert do OFX e restringido o delete da Rede apenas aos sources de origem, protegendo lançamentos manuais)
