@@ -54,23 +54,33 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
     let headerIndex = -1;
     for (let i = 0; i < Math.min(10, json.length); i++) {
       const r = json[i];
-      if (Array.isArray(r) && r.some(c => String(c).toLowerCase().includes('valor bruto'))) {
-        headerIndex = i;
-        break;
+      if (Array.isArray(r)) {
+        const rowStr = r.map(c => String(c).toLowerCase().trim());
+        if (rowStr.some(c => c.includes('bruto') || c.includes('líquido') || c.includes('liquido') || c.includes('bandeira') || c.includes('produto') || c.includes('estabelecimento'))) {
+          headerIndex = i;
+          break;
+        }
       }
     }
 
     if (headerIndex === -1) {
-      throw new Error("Cabeçalho da Rede não encontrado.");
+      headerIndex = 1; // Fallback seguro para Rede
     }
 
-    const headers = json[headerIndex].map((h: any) => String(h || '').toLowerCase().trim());
+    const headers = json[headerIndex] ? json[headerIndex].map((h: any) => String(h || '').toLowerCase().trim()) : [];
     
-    // Mapeamento dinâmico
-    const methodIdx = headers.findIndex((h: string) => h.includes('meio de pagamento') || h.includes('bandeira'));
-    const grossIdx = headers.findIndex((h: string) => h.includes('valor bruto') || h.includes('venda bruta'));
-    const netIdx = headers.findIndex((h: string) => h.includes('valor líquido') || h.includes('venda liquida') || h.includes('venda líquida'));
-    const storeIdx = headers.findIndex((h: string) => h.includes('nome do estabelecimento') || h.includes('estabelecimento'));
+    // Mapeamento dinâmico com fallback pros índices originais testados (0, 2, 3, 9)
+    let methodIdx = headers.findIndex((h: string) => h.includes('meio de pagamento') || h.includes('bandeira') || h.includes('produto'));
+    if (methodIdx === -1) methodIdx = 0;
+
+    let grossIdx = headers.findIndex((h: string) => h.includes('valor bruto') || h.includes('venda bruta') || h.includes('bruto'));
+    if (grossIdx === -1) grossIdx = 2;
+
+    let netIdx = headers.findIndex((h: string) => h.includes('valor líquido') || h.includes('venda liquida') || h.includes('venda líquida') || h.includes('liquido') || h.includes('líquido'));
+    if (netIdx === -1) netIdx = 3;
+
+    let storeIdx = headers.findIndex((h: string) => h.includes('nome do estabelecimento') || h.includes('estabelecimento') || h.includes('loja'));
+    if (storeIdx === -1) storeIdx = 9;
 
     const transactions: RedeTransaction[] = [];
     let totalInterest = 0;
@@ -82,7 +92,7 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
       const row = json[i];
       if (!Array.isArray(row) || row.length === 0) continue;
 
-      const methodRaw = methodIdx !== -1 ? String(row[methodIdx] || '').toLowerCase() : '';
+      const methodRaw = String(row[methodIdx] || '').toLowerCase();
       const grossRaw = grossIdx !== -1 ? row[grossIdx] : undefined;
       const netRaw = netIdx !== -1 ? row[netIdx] : undefined;
       const rawStoreName = storeIdx !== -1 ? String(row[storeIdx] || 'DESCONHECIDA').trim() : 'DESCONHECIDA';
