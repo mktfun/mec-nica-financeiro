@@ -18,6 +18,8 @@ export interface OfxParseResult {
   fileName?: string;
 }
 
+import { traceLog } from '../logger';
+
 // Extracts CPF (000.000.000-00) or CNPJ (00.000.000/0000-00) from the end of a MEMO string
 function extractDocument(memo: string): { doc: string | undefined; name: string | undefined } {
   const cnpjMatch = memo.match(/(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\s*$/);
@@ -35,7 +37,7 @@ function extractDocument(memo: string): { doc: string | undefined; name: string 
   return { doc: undefined, name: undefined };
 }
 
-export async function parseOFXFile(file: File): Promise<OfxParseResult> {
+export async function parseOFXFile(file: File, options?: { sessionId?: string }): Promise<OfxParseResult> {
   const text = await file.text();
   
   // Tenta achar a tag ORG (Banco) e ACCTID (Conta)
@@ -161,6 +163,18 @@ export async function parseOFXFile(file: File): Promise<OfxParseResult> {
     accountLimit = Math.abs(parseFloat(overdraftMatch[1].replace(',', '.')));
   } else if (creditMatch) {
     accountLimit = Math.abs(parseFloat(creditMatch[1].replace(',', '.')));
+  }
+
+  if (options?.sessionId) {
+    traceLog('2_EXTRACTION_OFX', 'DEBUG', 'Extração de transações do OFX concluída', options.sessionId, {
+      bank_id: banco,
+      account_id: conta,
+      total_transactions_found: transactions.length,
+      sample_extracted: transactions.slice(0, 3).reduce((acc: any, t, i) => {
+        acc[`transaction_${i + 1}`] = { fitid: t.fitid, date: t.date, amount: t.amount, memo: t.title, type: t.type };
+        return acc;
+      }, {})
+    });
   }
 
   return { alias, transactions, bankBalance, previousBalance, accountLimit, fileName: file.name };

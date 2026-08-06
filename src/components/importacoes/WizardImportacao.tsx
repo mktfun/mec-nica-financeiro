@@ -11,6 +11,7 @@ import * as XLSX from 'xlsx';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { extractNumber } from '@/lib/parsers/numberUtils';
 import { parseOFXFile } from '@/lib/parsers/ofxParser';
+import { traceLog, generateSessionId } from '@/lib/logger';
 import { useBulkInsertTransactions } from '@/hooks/useTransactions';
 import { supabase } from '@/lib/supabase';
 
@@ -208,13 +209,19 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
     return items;
   };
 
-  const processOFX = async (file: File) => {
+  const processOFX = async (file: File, sessionId: string) => {
     // parseOFXFile agora retorna { alias, transactions } — não um array direto
-    return await parseOFXFile(file);
+    return await parseOFXFile(file, { sessionId });
   };
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
+    
+    const sessionId = generateSessionId();
+    traceLog('1_UPLOAD', 'INFO', 'Iniciando processo de importação', sessionId, {
+      files_received: acceptedFiles.map(f => ({ filename: f.name, size_bytes: f.size, type: category }))
+    });
+
     setFiles(prev => [...prev, ...acceptedFiles]);
     setIsProcessing(true);
     
@@ -230,7 +237,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
           results.push({ fileName: file.name, success: true, count: items.length });
         } else if (category === 'OFX') {
           // Novo formato: { alias, transactions, bankBalance, accountLimit }
-          const result = await processOFX(file);
+          const result = await processOFX(file, sessionId);
           const { alias, transactions, bankBalance, accountLimit } = result as any;
           if (bankBalance !== undefined) {
              setExtractedBankBalances(prev => ({ ...prev, [alias]: bankBalance }));
@@ -253,6 +260,11 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
           results.push({ fileName: file.name, success: true, count: 1 });
         }
       }
+
+      traceLog('6_STAGING_READY', 'INFO', 'Payload gerado e aguardando confirmação do usuário', sessionId, {
+        total_to_import: allItems.length,
+        results_summary: results
+      });
 
       setImportResults(prev => [...prev, ...results]);
       setExtractedItems(allItems);
@@ -283,8 +295,9 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
       } else if (allItems.length > 0) {
         setStep(3);
       }
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      console.error("Erro ao processar arquivo:", error);
+      traceLog('1_UPLOAD', 'ERROR', 'Falha no processamento do arquivo', sessionId, { error });
       setIsProcessing(false);
       alert('Erro ao processar arquivo.');
     }

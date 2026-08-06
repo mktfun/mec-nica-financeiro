@@ -1,6 +1,7 @@
 import * as XLSX from 'xlsx';
 import { extractNumber } from './numberUtils';
 import { normalizeRedeStoreName } from './storeMapping';
+import { traceLog } from '../logger';
 
 export interface RedeTransaction {
   storeName: string;
@@ -21,7 +22,7 @@ export interface RedeResult {
   error?: string;
 }
 
-export async function parseRedeFile(file: File): Promise<RedeResult> {
+export async function parseRedeFile(file: File, options?: { sessionId?: string }): Promise<RedeResult> {
   try {
     const buffer = await file.arrayBuffer();
     const workbook = XLSX.read(buffer, { type: 'buffer' });
@@ -105,6 +106,15 @@ export async function parseRedeFile(file: File): Promise<RedeResult> {
         netAmount,
         interest,
         date: rowDate
+      });
+    }
+
+    if (options?.sessionId) {
+      traceLog('3_EXTRACTION_EXCEL', 'DEBUG', 'Extração de linhas do Excel concluída (REDE)', options.sessionId, {
+        sheet_name: sheetName,
+        total_rows_read: json.length,
+        transactions_extracted: transactions.length,
+        sample_extracted: transactions.slice(0, 2)
       });
     }
 

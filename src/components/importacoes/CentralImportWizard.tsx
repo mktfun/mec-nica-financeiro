@@ -12,6 +12,8 @@ import {
 } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { CentralImportResults, parseCentralImports } from '@/lib/parsers/centralImportManager';
+import { traceLog, generateSessionId } from '@/lib/logger';
 import { useCentralImport, UnifiedImportResult } from '@/hooks/useCentralImport';
 import { useBulkInsertTransactions, useCreateImportBatch, useBulkInsertConciliationMatches } from '@/hooks/useTransactions';
 import { useSaveDailySnapshot } from '@/hooks/useDailySnapshot';
@@ -78,6 +80,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const [isPreparing, setIsPreparing] = useState(false);
   const [targetDate, setTargetDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [unmappedAliases, setUnmappedAliases] = useState<string[]>([]);
+  const [sessionId, setSessionId] = useState<string>('');
   
   // Manual inputs globais
   const [manualDinheiroMp, setManualDinheiroMp] = useState<number>(0);
@@ -109,10 +112,23 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
     }
   }, [importLogs]);
 
-  const onDrop = async (acceptedFiles: File[]) => {
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
-    await processFiles(acceptedFiles);
-  };
+    
+    const newSessionId = generateSessionId();
+    setSessionId(newSessionId);
+    
+    traceLog('1_UPLOAD', 'INFO', 'Iniciando processo de importação centralizada', newSessionId, {
+      files_received: acceptedFiles.map(f => ({ filename: f.name, size_bytes: f.size }))
+    });
+
+    try {
+      await processFiles(acceptedFiles);
+      // Aqui após o processamento (sucesso ou não) poderemos logar 6_STAGING_READY
+    } catch (e: any) {
+      traceLog('1_UPLOAD', 'ERROR', 'Falha no processamento centralizado', newSessionId, { error: e.message });
+    }
+  }, [processFiles]);
 
   useEffect(() => {
     if (isProcessing) return;
@@ -141,6 +157,14 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
     setMapping(currentMapping);
     
+    // Log de Staging Ready
+    traceLog('6_STAGING_READY', 'INFO', 'Payload gerado e aguardando confirmação do usuário', sessionId, {
+      total_os_files: results.osFiles.length,
+      total_rede_files: results.redeResults.length,
+      total_ofx_files: results.ofxResults.length,
+      total_maquininha_items: results.maquininhaItems.length
+    });
+
     if (aliasArray.length > 0) {
       setStep(2);
     } else {
