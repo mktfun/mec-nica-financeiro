@@ -759,7 +759,7 @@
   "757": "Proposal: Dashboard Fintech V4 — Filtro de Data Dinâmico e UI Ajustada (064)",
   "758": "Design: Transparência de Origem de Dados, Isolamento Estrito de Conversas e Raciocínio Adaptativo (fix-ai-provenance-and-conversation-isolation)",
   "759": "Spec Plan: Alinhamento de Endpoint e Protocolo AI SDK (fix-endpoint-alignment)",
-  "760": "@ai-sdk/react",
+  "760": "Proposal: Advanced Trace Logging (102)",
   "761": "Design: Loja Detalhes e Transações (073-loja-detalhes-transacoes)",
   "762": "test_e2e.js",
   "763": "Proposal: Transparência de Origem de Dados, Isolamento Estrito de Conversas e Raciocínio Adaptativo (fix-ai-provenance-and-conversation-isolation)",
@@ -954,13 +954,15 @@
   "952": "start.ts",
   "953": "proposta.tsx",
   "954": "__root.tsx",
-  "955": "Proposal: Advanced Trace Logging (102)",
-  "956": "Design: Advanced Trace Logging (102)",
+  "955": "Design: Advanced Trace Logging (102)",
+  "956": "Especificação de Funcionalidade: Correção do Mapeamento de Colunas do Excel de OS (Feature 103)",
   "957": "Proposal: Implementação de Trace Logs Estruturados (101)",
   "958": "Design: Trace Logs Estruturados (101)",
   "959": "login.tsx",
   "960": "Spec Plan: Advanced Trace Logging (102)",
   "961": "Spec Plan: Trace Logs Estruturados (101)",
   "962": "ai",
-  "963": "eslint-config-prettier"
+  "963": "eslint-config-prettier",
+  "964": "Plano de Implementa��o: Corre��o Robusta de Colunas (OS e REDE)",
+  "965": "tailwindcss"
 }

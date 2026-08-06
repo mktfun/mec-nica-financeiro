@@ -1150,8 +1150,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useOsImportProcessor.ts": {
-    "mtime": 1786049240.3374517,
-    "ast_hash": "53547e808ebcd60e5151b162102db79d",
+    "mtime": 1786059156.1814663,
+    "ast_hash": "18750c9b57a6a3bc227d3365d86ee899",
     "semantic_hash": ""
   },
   "src/hooks/usePatio.ts": {
@@ -1275,8 +1275,8 @@
     "semantic_hash": ""
   },
   "src/lib/parsers/redeParser.ts": {
-    "mtime": 1786049270.1716025,
-    "ast_hash": "2921d4e65ce953956b6d47584ecb26d4",
+    "mtime": 1786059176.149685,
+    "ast_hash": "2c94c989902311f8d56dc94c0ddf6bf5",
     "semantic_hash": ""
   },
   "src/lib/storage.ts": {
@@ -4710,8 +4710,8 @@
     "semantic_hash": ""
   },
   "src/lib/logger.ts": {
-    "mtime": 1786047259.659703,
-    "ast_hash": "dd3c02b3aba11ac57da24eef0750849f",
+    "mtime": 1786049724.1643085,
+    "ast_hash": "7db2178470889bdcbc22639718db747e",
     "semantic_hash": ""
   },
   "src/lib/parsers/storeMapping.ts": {
@@ -4775,8 +4775,8 @@
     "semantic_hash": ""
   },
   ".agents/memory/domain.md": {
-    "mtime": 1785934072.2970545,
-    "ast_hash": "a4952540b0c2b3e5f6acb418c89da9c2",
+    "mtime": 1786059276.5728981,
+    "ast_hash": "2353bce898de2a839879800ca1a0290f",
     "semantic_hash": ""
   },
   ".agents/memory/infra.md": {
@@ -5624,21 +5624,6 @@
     "ast_hash": "1f590fb49c3e962ffe369e16f31e9716",
     "semantic_hash": ""
   },
-  "specs/102-advanced-trace-logging/design.md": {
-    "mtime": 1786049168.9009397,
-    "ast_hash": "484adca632bb5a576799b62811330acf",
-    "semantic_hash": ""
-  },
-  "specs/102-advanced-trace-logging/proposal.md": {
-    "mtime": 1786049166.6668558,
-    "ast_hash": "0c6f3cb4053fa72fdfe91bcafe6d7cda",
-    "semantic_hash": ""
-  },
-  "specs/102-advanced-trace-logging/spec-plan.md": {
-    "mtime": 1786049293.7914371,
-    "ast_hash": "36a676dc654ea765f9093bf668f7a3e7",
-    "semantic_hash": ""
-  },
   "specs/archive/101-structured-trace-logs/design.md": {
     "mtime": 1786047196.9564948,
     "ast_hash": "f4feead3ad97fc4c783d87c66821039e",
@@ -5652,6 +5637,31 @@
   "specs/archive/101-structured-trace-logs/spec-plan.md": {
     "mtime": 1786047697.6349761,
     "ast_hash": "6bf119f0655aacc6e7d6921bc008fd36",
+    "semantic_hash": ""
+  },
+  "specs/archive/102-advanced-trace-logging/design.md": {
+    "mtime": 1786049168.9009397,
+    "ast_hash": "484adca632bb5a576799b62811330acf",
+    "semantic_hash": ""
+  },
+  "specs/archive/102-advanced-trace-logging/proposal.md": {
+    "mtime": 1786049166.6668558,
+    "ast_hash": "0c6f3cb4053fa72fdfe91bcafe6d7cda",
+    "semantic_hash": ""
+  },
+  "specs/archive/102-advanced-trace-logging/spec-plan.md": {
+    "mtime": 1786049293.7914371,
+    "ast_hash": "36a676dc654ea765f9093bf668f7a3e7",
+    "semantic_hash": ""
+  },
+  "specs/archive/103-os-parser-column-fix/proposal.md": {
+    "mtime": 1786058911.2427151,
+    "ast_hash": "8168906d7b497e49f138635d678c2cbc",
+    "semantic_hash": ""
+  },
+  "specs/archive/103-os-parser-column-fix/spec-plan.md": {
+    "mtime": 1786059095.53149,
+    "ast_hash": "53d71558a49e3495c625efc5096244a5",
     "semantic_hash": ""
   }
 }

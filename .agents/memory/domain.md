@@ -73,3 +73,8 @@
 **Risco identificado:** O useDashboardV2 soma todas as 	ransactions onde 	ype = 'in' para calcular Faturamento. Se a Rede for inserida em 	ransactions, o Faturamento dobra (OFX + Rede = 2x a mesma entrada).
 
 **Não fazer:** Nunca faça 	xsToInsert.push(...) com dados de esults.maquininhaItems ou esults.redeResults. Esses itens devem ir APENAS para eceivables via savePatioOsAndReceivables.
+
+
+## [2026-08-06] Regras de Parsing de OS e REDE (Feature 103)
+- **Oficina Inteligente (OS):** O Excel exporta a coluna de pagamento como 'Total Pagto na OS'. O parser deve sempre proteger o índice de \	otalValue\ para não ser engolido por \Pagto\, e deve buscar por \'pagto'\ ou \'pgto'\ para mapear corretamente o \paid_value\. Se o \paid_value\ for 0 indevidamente, o motor de conciliação aborta o vínculo com a REDE, julgando a OS \em_aberto\.
+- **REDE:** Arquivos de Maquininha REDE (\Extrato Simples Conferência\) não têm colunas perfeitamente indexadas. O parser deve SEMPRE ler dinamicamente (usando \indIndex\) no cabeçalho (geralmente linha 1 ou 2) buscando \'valor bruto'\, \'valor líquido'\, \'estabelecimento'\ e \'meio de pagamento'\.
