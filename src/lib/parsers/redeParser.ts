@@ -50,20 +50,42 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
       }
     }
 
+    // Encontra o índice da linha de cabeçalho
+    let headerIndex = -1;
+    for (let i = 0; i < Math.min(10, json.length); i++) {
+      const r = json[i];
+      if (Array.isArray(r) && r.some(c => String(c).toLowerCase().includes('valor bruto'))) {
+        headerIndex = i;
+        break;
+      }
+    }
+
+    if (headerIndex === -1) {
+      throw new Error("Cabeçalho da Rede não encontrado.");
+    }
+
+    const headers = json[headerIndex].map((h: any) => String(h || '').toLowerCase().trim());
+    
+    // Mapeamento dinâmico
+    const methodIdx = headers.findIndex((h: string) => h.includes('meio de pagamento') || h.includes('bandeira'));
+    const grossIdx = headers.findIndex((h: string) => h.includes('valor bruto') || h.includes('venda bruta'));
+    const netIdx = headers.findIndex((h: string) => h.includes('valor líquido') || h.includes('venda liquida') || h.includes('venda líquida'));
+    const storeIdx = headers.findIndex((h: string) => h.includes('nome do estabelecimento') || h.includes('estabelecimento'));
+
     const transactions: RedeTransaction[] = [];
     let totalInterest = 0;
     let totalNet = 0;
     let totalGross = 0;
 
-    // Os dados começam na linha 2 (index 2)
-    for (let i = 2; i < json.length; i++) {
+    // Os dados começam na linha seguinte ao cabeçalho
+    for (let i = headerIndex + 1; i < json.length; i++) {
       const row = json[i];
-      if (!Array.isArray(row) || row.length < 10) continue;
+      if (!Array.isArray(row) || row.length === 0) continue;
 
-      const methodRaw = String(row[0] || '').toLowerCase();
-      const grossRaw = row[2];
-      const netRaw = row[3];
-      const rawStoreName = String(row[9] || 'DESCONHECIDA').trim();
+      const methodRaw = methodIdx !== -1 ? String(row[methodIdx] || '').toLowerCase() : '';
+      const grossRaw = grossIdx !== -1 ? row[grossIdx] : undefined;
+      const netRaw = netIdx !== -1 ? row[netIdx] : undefined;
+      const rawStoreName = storeIdx !== -1 ? String(row[storeIdx] || 'DESCONHECIDA').trim() : 'DESCONHECIDA';
       const storeName = normalizeRedeStoreName(rawStoreName);
 
       if (storeName === 'IGNORAR') continue;

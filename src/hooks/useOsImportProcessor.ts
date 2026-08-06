@@ -98,9 +98,16 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
               if (colName === 'status' || colName === 'situação' || colName === 'situacao') colMap.status = idx;
               if (colName === 'finalizada em' || colName === 'data fim' || colName.includes('fechamento') || colName.includes('finalizada') || colName.includes('saida') || colName.includes('saída')) colMap.closedAt = idx;
               
-              if (colName.includes('total') || colName.includes('valor total') || colName.includes('r$ total') || colName.includes('vlr total') || colName.includes('vl total') || colName.includes('bruto') || colName.includes('valor os') || colName.includes('valor final')) colMap.totalValue = idx;
+              if (colMap.totalValue === undefined && (colName.includes('total') || colName.includes('valor total') || colName.includes('r$ total') || colName.includes('vlr total') || colName.includes('vl total') || colName.includes('bruto') || colName.includes('valor os') || colName.includes('valor final'))) {
+                // Previne que 'Total Pagto' sobrescreva o Total da OS real
+                if (!colName.includes('pagto') && !colName.includes('pago')) {
+                  colMap.totalValue = idx;
+                }
+              }
               
-              if (colName.includes('liquidado') || colName.includes('total pago') || colName.includes('valor pago') || colName.includes('vlr pago') || colName.includes('vl pago') || colName === 'pago' || colName === 'recebido') colMap.paidValue = idx;
+              if (colName.includes('liquidado') || colName.includes('total pago') || colName.includes('valor pago') || colName.includes('vlr pago') || colName.includes('vl pago') || colName === 'pago' || colName === 'recebido' || colName.includes('pagto') || colName.includes('pgto')) {
+                colMap.paidValue = idx;
+              }
               
               if (colName.includes('aberto') || colName.includes('restante') || colName.includes('falta') || colName.includes('saldo')) colMap.openValue = idx;
               
