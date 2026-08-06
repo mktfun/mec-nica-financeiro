@@ -583,6 +583,11 @@ export function useModulo1StoresData(date: string) {
         .gte('date', thirtyDaysAgo)
         .order('date', { ascending: false });
 
+      const { data: matches } = await supabase
+        .from('conciliation_matches')
+        .select('*')
+        .eq('target_date', date);
+
       return (stores || []).map(store => {
         const storeTxs = txs?.filter(t => t.store_id === store.id) || [];
         const storeOs = patioOs?.filter(o => o.store_id === store.id) || [];
@@ -632,6 +637,10 @@ export function useModulo1StoresData(date: string) {
 
         // 3. Cruzar OFX com OS (Match)
         let pixOsMatched = 0;
+        let pixOsExpected = 0;
+        
+        const originalOsPixList = [...osPixList];
+        
         ofxPixTxs.forEach(ofxPix => {
            const amt = Number(ofxPix.amount || 0);
            const matchIdx = osPixList.findIndex(osVal => Math.abs(osVal - amt) < 0.05);
@@ -641,6 +650,15 @@ export function useModulo1StoresData(date: string) {
               osPixList.splice(matchIdx, 1);
            }
         });
+        
+        pixOsExpected = originalOsPixList.reduce((acc, val) => acc + val, 0);
+
+        const storeMatches = matches?.filter(m => m.store_id === store.id) || [];
+        const linkedOfxIds = new Set(storeMatches.map(m => m.ofx_transaction_id).filter(Boolean));
+        
+        const faturamentoRealOfx = storeTxs
+          .filter(t => t.source === 'ofx' && t.type === 'in' && linkedOfxIds.has(t.id))
+          .reduce((acc, t) => acc + Number(t.amount || 0), 0);
 
         const faturamentoAtual = cartaoEntrou + pixOsMatched;
 
@@ -659,6 +677,8 @@ export function useModulo1StoresData(date: string) {
           a_receber: aReceber,
           na_loja_os: naLojaOs,
           pix_os: pixOsMatched,
+          pix_os_expected: pixOsExpected,
+          faturamento_real_ofx: faturamentoRealOfx,
           faturamento_atual: faturamentoAtual,
           faturamento_anterior: faturamentoAtual * 0.9,
           seguro_sinistro: 0,

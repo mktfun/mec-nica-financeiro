@@ -80,6 +80,8 @@ export interface StoreSaldoState {
   a_receber: number;
   na_loja_os: number;
   pix_os?: number;
+  pix_os_expected?: number;
+  faturamento_real_ofx?: number;
   faturamento_atual: number;
   faturamento_anterior: number;
   seguro_sinistro: number;

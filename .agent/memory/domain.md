@@ -86,3 +86,13 @@ A regra de ouro na importação é: *Importar um dia é um pacote fechado. O nov
 **Risco identificado:** Tentar conciliar a venda da maquininha de hoje (D+0) com o depósito do banco (D+1) usando a mesma data gera falsos "em caminho" infinitamente.
 
 **Não fazer:** Nunca subtrair OS Bruto de Banco Líquido de forma direta. A diferença entre os dois deve ser classificada de forma transparente como Juros/Taxas da adquirente.
+
+## [2026-08-06] — [Feature ID: 092-fix-faturamento-math]
+
+**Contexto:** Refatoração do cálculo de faturamento na conciliação. Em vez de somar expectativas, o faturamento passou a ser extraído do cruzamento real dos depósitos do OFX (`faturamento_real_ofx`) que estão devidamente linkados (`conciliation_matches`). A diferença agora é tratada como a balança: `(Expectativa Maquininha + Expectativa PIX) - Realidade Faturamento (OFX)`.
+
+**Regra aprendida:** O cálculo de Conciliação Diária de uma loja é uma balança de verificação (Expectativa vs Realidade) e não uma construção teórica. O Faturamento não é o que o sistema Pátio/OS gerou de receita no dia, mas única e exclusivamente o dinheiro real (OFX) pingado na conta e comprovadamente amarrado, somado às liquidações de cartão.
+
+**Risco identificado:** Construir faturamentos baseando-se em `paid_value` de uma OS causa divergências imensas com o financeiro bancário, criando desconfiança. Só registre como "Faturamento Atual" aquilo que for corroborado pelo banco/adquirente.
+
+**Não fazer:** NUNCA calcule "Faturamento da Loja" somando os totais preenchidos no sistema de gerenciamento de OS (Pátio OS). Esse valor representa apenas a "Expectativa", não a liquidez real bancária.

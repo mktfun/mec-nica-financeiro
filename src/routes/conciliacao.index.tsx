@@ -67,8 +67,9 @@ function ConciliacaoPage() {
       dinheiro_mp_manual: undefined,
       a_receber: storeMod1?.a_receber || 0,
       na_loja_os: storeMod1?.na_loja_os || 0,
-      faturamento_atual: sysGross || storeMod1?.faturamento_atual || 0,
-      faturamento_anterior: (sysGross || storeMod1?.faturamento_atual || 0) * 0.9,
+      pix_os: storeMod1?.pix_os_expected || 0,
+      faturamento_atual: storeMod1?.faturamento_real_ofx || 0,
+      faturamento_anterior: (storeMod1?.faturamento_real_ofx || 0) * 0.9,
       seguro_sinistro: 0,
       juros_atual: sysFee,
       caixa_anterior: (s as any).previous_caixa || 0,
@@ -117,9 +118,9 @@ function ConciliacaoPage() {
                   const isStoreOk = Math.abs(div) < 0.01;
 
                     const storeMod1 = modulo1StoresData.find(m => m.store_id === store.id);
-                    const faturamento = storeMod1?.faturamento_atual || 0;
+                    const faturamento = storeMod1?.faturamento_real_ofx || 0;
                     const maquininha = storeMod1?.cartao_entrou || 0;
-                    const pixOs = storeMod1?.pix_os || 0;
+                    const pixOs = storeMod1?.pix_os_expected || 0;
                     const naLojaOs = storeMod1?.na_loja_os || 0;
 
                     // Saldo Itaú OFX: Estritamente da data selecionada para evitar vazamento histórico em dias sem movimento
@@ -128,7 +129,7 @@ function ConciliacaoPage() {
                     const hasActivityOnDate = faturamento > 0 || maquininha > 0 || pixOs > 0 || bankInDate > 0 || saldoBancoMod1 > 0;
                     const saldoItau = hasActivityOnDate ? (saldoBancoMod1 || bankInDate || latestBankBalance[store.id] || 0) : 0;
 
-                    const diferenca = faturamento - (maquininha + pixOs);
+                    const diferenca = (maquininha + pixOs) - faturamento;
                     const isDiferencaOk = Math.abs(diferenca) < 1.0;
 
                     return (
