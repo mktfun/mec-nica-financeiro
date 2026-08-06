@@ -88,4 +88,6 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 ## [099-revert-manual-and-fix-patio]
 - Escopo Rigoroso de Pátio e Reversão de Automação de Caixa
 - Modificado: `src/hooks/useConciliacao.ts` (Remoção do vazamento de dados de snapshots passados. A foto do pátio agora é estritamente vinculada à data exata).
-- Modificado: `src/components/conciliacao/ResumoDiaPanel.tsx` (Remoção do input de caixa manual e abolição da herança do `previous_balance` do OFX para a composição global do Caixa Anterior, blindando a integridade do Fluxo).
+## [100-fix-ofx-cents-amounts]
+- Proteção de Parsing de Transações OFX em Centavos
+- Modificado: `src/lib/parsers/ofxParser.ts` (Implementação de varredura e divisão por 100 para extrações de `TRNAMT` que não possuam separador decimal).

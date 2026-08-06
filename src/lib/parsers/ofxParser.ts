@@ -61,7 +61,12 @@ export async function parseOFXFile(file: File): Promise<OfxParseResult> {
     // Extract TRNAMT
     const amtMatch = trnBlock.match(/<TRNAMT>([^\r\n<]+)/);
     const amountStr = amtMatch ? amtMatch[1].trim() : '0';
-    const amount = parseFloat(amountStr.replace(',', '.'));
+    let amount = parseFloat(amountStr.replace(',', '.'));
+    
+    const hasDecimalSeparator = amountStr.includes('.') || amountStr.includes(',');
+    if (!hasDecimalSeparator && Math.abs(amount) > 100) {
+      amount = amount / 100;
+    }
     
     if (isNaN(amount)) continue;
     
@@ -96,12 +101,7 @@ export async function parseOFXFile(file: File): Promise<OfxParseResult> {
     
     // Capture SALDO ANTERIOR before filtering it out
     if (rawMemo.toUpperCase().includes('SALDO ANTERIOR')) {
-      let parsedBal = Math.abs(amount);
-      const hasDecimalSeparator = amountStr.includes('.') || amountStr.includes(',');
-      if (!hasDecimalSeparator && parsedBal > 100) {
-        parsedBal = parsedBal / 100;
-      }
-      previousBalance = parsedBal;
+      previousBalance = Math.abs(amount);
       continue; // Don't add as transaction
     }
     

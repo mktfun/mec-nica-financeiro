@@ -130,3 +130,7 @@ A regra de ouro na importaÃ§Ã£o Ã©: *Importar um dia Ã© um pacote fechado. O nov
 
 **Restrição Histórica do Pátio:** O snapshot de Pátio (OS) da conciliação SÓ deve ser recuperado da tabela econciliations se houver match exato na data (.date === date). Utilizar <= para preencher lacunas de dias passados corrompe a visão histórica da oficina.
 **Isolamento do Caixa Anterior:** O cálculo global de 'Caixa Anterior' (âncora do Fluxo de Caixa) deve puxar estritamente o valor consolidado na conciliação do dia anterior (daily_snapshots). Ele JAMAIS deve ser misturado, preenchido ou herdado do previous_balance do OFX bancário isolado, e tampouco depender de inputs manuais no frontend.
+
+## [2026-08-06] — [Feature ID: 100-fix-ofx-cents-amounts]
+
+**Normalização de OFX em Centavos (Itaú/Bradesco):** Certos bancos emitem o OFX com os valores (BALAMT e TRNAMT) mascarados como inteiros de centavos em vez de usar separadores decimais (ex: 190530 ao invés de 1905.30). O Parser Global de OFX (ofxParser.ts) aplica uma varredura rigorosa: toda variável de mount extraída que não contiver . ou , E cujo valor absoluto for maior que 100, deve ser irreversivelmente dividida por 100 antes de alimentar a base de dados de transações.
