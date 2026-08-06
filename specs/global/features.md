@@ -76,3 +76,7 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - Modificado: `src/routes/conciliacao.index.tsx` (Alterado o Faturamento para ser puramente o saldo validado do extrato `saldo_banco_itau`, sem mistura com planilhas)
 - Modificado: `src/lib/modulo1Calculations.ts` (Remoção de Provisão do fluxo de despesas pagas no dia)
 - Modificado: `src/components/conciliacao/ResumoDiaPanel.tsx` (Ajustado `contasAPagarAutomatico` para capturar as saídas OFX em valor absoluto)
+
+## [097-saldo-faturamento-fix]
+- Nomenclatura UI e Inversão de Diferença Contábil
+- Modificado: `src/routes/conciliacao.index.tsx` (Renomeado os painéis de "Saldo" para "Faturam. Banco" e "Faturamento" para "Previsto". A conta de Diferença foi invertida para Faturamento Banco - Previsto, tornando as sobras positivas (verdes) e os furos negativos (vermelhos))

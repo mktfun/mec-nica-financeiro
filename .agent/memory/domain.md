@@ -115,3 +115,7 @@ A regra de ouro na importaÃ§Ã£o Ã©: *Importar um dia Ã© um pacote fechado. O nov
 
 **Blindagem Planilha vs Banco:** O Faturamento deve ser estritamente o valor que consta no extrato bancário (OFX) vinculado. NUNCA some expectativas de recebimento de planilhas (como Maquininha ou previsões de PIX) com os valores consolidados do banco no cálculo de Faturamento. A diferença de fechamento deve ser estruturada como (Planilhas) - (Faturamento Banco).
 **Snapshot Histórico (Pátio OS):** Valores mutáveis (como dívidas de OS no pátio) devem sofrer snapshot no momento da importação e serem salvos no banco para a data-alvo. Não dependa de tabelas vivas para calcular saldos históricos.
+
+## [2026-08-06] — [Feature ID: 097-saldo-faturamento-fix]
+
+**Nomenclatura UI e Diferença:** O termo 'Faturamento Banco' substitui 'Saldo' para representar exclusivamente o dinheiro que entrou na conta (OFX IN). O 'Previsto' representa o que a loja declarou esperar (Maquininha + PIX planilhados). A 'Diferença' no fechamento é SEMPRE calculada como Faturamento Banco - Previsto. Valores positivos (>= 0) indicam sobra de caixa e devem ser exibidos em verde. Valores negativos indicam falta/furo e exibidos em vermelho.

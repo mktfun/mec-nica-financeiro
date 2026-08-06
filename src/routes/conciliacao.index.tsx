@@ -119,18 +119,18 @@ function ConciliacaoPage() {
 
                     const storeMod1 = modulo1StoresData.find(m => m.store_id === store.id);
                     const maquininha = storeMod1?.cartao_entrou || 0;
-                    const faturamento = storeMod1?.saldo_banco_itau || 0;
-                    const pixOs = storeMod1?.pix_os_expected || 0;
+                    const pixOsExpected = storeMod1?.pix_os_expected || 0;
+                    const previstoPlanilhas = maquininha + pixOsExpected;
                     const naLojaOs = storeMod1?.na_loja_os || 0;
 
                     // Saldo Itaú OFX: Estritamente da data selecionada para evitar vazamento histórico em dias sem movimento
                     const bankInDate = bankBalances?.[store.id]?.in || 0;
                     const saldoBancoMod1 = storeMod1?.saldo_banco_itau || 0;
-                    const hasActivityOnDate = faturamento > 0 || maquininha > 0 || pixOs > 0 || bankInDate > 0 || saldoBancoMod1 > 0;
+                    const hasActivityOnDate = maquininha > 0 || pixOsExpected > 0 || bankInDate > 0 || saldoBancoMod1 > 0;
                     const saldoItau = hasActivityOnDate ? (saldoBancoMod1 || bankInDate || latestBankBalance[store.id] || 0) : 0;
 
-                    const diferenca = (maquininha + pixOs) - faturamento;
-                    const isDiferencaOk = Math.abs(diferenca) < 1.0;
+                    const diferenca = saldoItau - previstoPlanilhas;
+                    const isDiferencaOk = diferenca >= -1.0;
 
                     return (
                       <Link to="/conciliacao/$lojaId" params={{ lojaId: store.id }} search={{ date: selectedDate }} key={store.id} className="block">
@@ -149,10 +149,10 @@ function ConciliacaoPage() {
                           <div className="bg-black/25 p-4 sm:p-5 rounded-2xl border border-white/5 flex-1 font-sans tabular-nums text-xs">
                             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6 xl:gap-8 items-center">
                               
-                              {/* 1. Saldo */}
+                              {/* 1. Saldo (Faturamento Banco) */}
                               <div>
                                 <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
-                                  Saldo
+                                  Faturam. Banco
                                 </span>
                                 <p className="font-bold text-sm text-[var(--color-accent-light-blue)] font-mono">
                                   <AnimatedNumber value={saldoItau} format="currency" />
@@ -175,7 +175,7 @@ function ConciliacaoPage() {
                                   PIX
                                 </span>
                                 <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
-                                  <AnimatedNumber value={pixOs} format="currency" />
+                                  <AnimatedNumber value={pixOsExpected} format="currency" />
                                 </p>
                               </div>
 
@@ -189,13 +189,13 @@ function ConciliacaoPage() {
                                 </p>
                               </div>
 
-                              {/* 5. Faturamento */}
+                              {/* 5. Previsto */}
                               <div>
                                 <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
-                                  Faturamento
+                                  Previsto
                                 </span>
                                 <p className="font-bold text-sm text-[var(--text-primary)] font-mono">
-                                  <AnimatedNumber value={faturamento} format="currency" />
+                                  <AnimatedNumber value={previstoPlanilhas} format="currency" />
                                 </p>
                               </div>
 
