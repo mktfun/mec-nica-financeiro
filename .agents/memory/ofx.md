@@ -17,3 +17,13 @@
 **Risco identificado:** Emitir logs massivos na UI poderia travar o navegador ou confundir o usuÃ¡rio. A soluÃ§Ã£o Ã© cuspir o objeto JSON apenas no console do desenvolvedor.
 
 **NÃ£o fazer:** NÃ£o usar console.log simples com strings ao debugar importaÃ§Ãµes complexas. Sempre emitir metadados e amostras cruas via JSON para facilitar o rastreamento em cenÃ¡rios de quebra de valores (ex: leitura de centavos).
+
+## [2026-08-06] — [Feature ID: 102-advanced-trace-logging]
+
+**Contexto:** O debug da conciliação exigia ver exatamente cada valor extraído de cada OFX, OS e Rede para comparar distorções (trace logs superficiais não serviam).
+
+**Regra aprendida:** O hook centralizador (\useCentralImport\) deve EXPLICITAMENTE repassar o \sessionId\ gerado no Wizard para as chamadas dos parsers filhos (\parseOFXFile\, \parseRedeFile\, \processOsFiles\). E os parsers não devem limitar a amostragem com \slice(0,3)\ em processos críticos de rastreabilidade de valor; em vez disso, devem mapear o array completo extraindo apenas os campos necessários (\mount\, \date\, \itid\) para gerar um JSON denso no DevTools (F12) que permita Ctrl+F do usuário em todos os arquivos processados.
+
+**Risco identificado:** Consumo de memória na aba do navegador. Aceitável apenas porque o \console.debug\ é inspecionado ativamente via F12.
+
+**Não fazer:** Nunca truncar a amostra (\slice\) no log de staging se o propósito for debug de centavos/valores divergentes.

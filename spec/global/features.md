@@ -54,3 +54,5 @@
 - **Deduplica√ß√£o de OFX Ignorando Conflitos (Agosto 2026)**: O hook `useBulkInsertTransactions` utiliza o m√©todo de Upsert nativo com `ignoreDuplicates: true` para ignorar silenciosamente transa√ß√µes OFX de outros dias presentes no lote corrente, evitando o erro de constraint `transactions_store_fitid_key`.
   
 - **M¢dulo**: Logger (Trace Log Json) (src/lib/logger.ts) - Implementado na Spec 101 
+
+- **Advanced Trace Logging (Spec 102)**: PropagaÁ„o de sessionId pelo useCentralImport.ts e emiss„o de array JSON completo para cada parser (ofxParser, redeParser, useOsImportProcessor, maquininha) para viabilizar debug 100% acurado no DevTools.

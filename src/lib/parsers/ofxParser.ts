@@ -170,10 +170,12 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
       bank_id: banco,
       account_id: conta,
       total_transactions_found: transactions.length,
-      sample_extracted: transactions.slice(0, 3).reduce((acc: any, t, i) => {
-        acc[`transaction_${i + 1}`] = { fitid: t.fitid, date: t.date, amount: t.amount, memo: t.title, type: t.type };
-        return acc;
-      }, {})
+      extracted_values: transactions.map(t => ({
+        fitid: t.fitid,
+        date: t.date,
+        amount: t.amount,
+        type: t.type
+      }))
     });
   }
 

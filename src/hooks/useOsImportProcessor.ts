@@ -1,6 +1,7 @@
 import * as XLSX from 'xlsx';
 import { ParsedOS, ParsedReceivable } from './useImportProcessor';
 import { getDefaultDate } from '@/lib/utils';
+import { traceLog } from '@/lib/logger';
 
 export type OsImportResult = {
   fileName: string;
@@ -12,7 +13,7 @@ export type OsImportResult = {
   error?: string;
 };
 
-export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
+export async function processOsFiles(files: File[], options?: { sessionId?: string }): Promise<OsImportResult[]> {
   const results: OsImportResult[] = [];
 
   for (const file of files) {
@@ -241,6 +242,28 @@ export async function processOsFiles(files: File[]): Promise<OsImportResult[]> {
         });
       }
 
+      if (osArray.length > 0) {
+        if (options?.sessionId) {
+          traceLog('3_EXTRACTION_EXCEL', 'DEBUG', `Extração Completa Pátio/OS: ${file.name}`, options.sessionId, {
+            storeAlias,
+            os_count: osArray.length,
+            os_extracted_values: osArray.map(os => ({
+              os_number: os.os_number,
+              total_value: os.total_value,
+              paid_value: os.paid_value,
+              pending_value: os.pending_value,
+              status: os.status
+            })),
+            receivables_count: receivablesArray.length,
+            receivables_extracted_values: receivablesArray.map(r => ({
+              os_number: r.os_number,
+              value: r.value,
+              type: r.type,
+              date: r.date
+            }))
+          });
+        }
+      }
 
       results.push({
         fileName: file.name,

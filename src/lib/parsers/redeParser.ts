@@ -114,7 +114,13 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
         sheet_name: sheetName,
         total_rows_read: json.length,
         transactions_extracted: transactions.length,
-        sample_extracted: transactions.slice(0, 2)
+        extracted_values: transactions.map(t => ({
+          date: t.date,
+          method: t.method,
+          grossAmount: t.grossAmount,
+          netAmount: t.netAmount,
+          interest: t.interest
+        }))
       });
     }
 

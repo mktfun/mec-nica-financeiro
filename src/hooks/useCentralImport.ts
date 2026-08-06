@@ -6,6 +6,7 @@ import { extractNumber } from '@/lib/parsers/numberUtils';
 import { parseRedeFile, RedeResult } from '@/lib/parsers/redeParser';
 import { parseMapaMetasPDF, MapaMetasResult } from '@/lib/parsers/mapaMetasParser';
 import { supabase } from '@/lib/supabase';
+import { traceLog } from '@/lib/logger';
 
 export type UnifiedImportResult = {
   osFiles: OsImportResult[];
@@ -33,7 +34,7 @@ export function useCentralImport() {
     mapaMetasResults: []
   });
 
-  const processMaquininha = async (file: File): Promise<MaquininhaItem[]> => {
+  const processMaquininha = async (file: File, options?: { sessionId?: string }): Promise<MaquininhaItem[]> => {
     const buffer = await file.arrayBuffer();
     const workbook = XLSX.read(buffer, { type: 'buffer' });
     const sheetName = workbook.SheetNames[0];
@@ -90,6 +91,14 @@ export function useCentralImport() {
         }
       }
     }
+
+    if (options?.sessionId && items.length > 0) {
+      traceLog('3_EXTRACTION_EXCEL', 'DEBUG', `Extração Completa Maquininha Genérica: ${file.name}`, options.sessionId, {
+        transactions_extracted: items.length,
+        extracted_values: items.map(i => ({ amount: i.amount, dateVenda: i.dateVenda, storeName: i.storeName }))
+      });
+    }
+
     return items;
   };
 
@@ -98,7 +107,7 @@ export function useCentralImport() {
     return name.includes('CONCILIAC') || name.includes('CONCILIATION') || name.includes('RESUMO_GERAL') || name.includes('CONSOLIDADO');
   };
 
-  const processFiles = useCallback(async (files: File[]) => {
+  const processFiles = useCallback(async (files: File[], options?: { sessionId?: string }) => {
     setIsProcessing(true);
     const newResults: UnifiedImportResult = { osFiles: [], maquininhaItems: [], redeResults: [], ofxResults: [], mapaMetasResults: [] };
 
@@ -119,7 +128,7 @@ export function useCentralImport() {
 
       // Processa OFX
       for (const file of ofxFiles) {
-        const result = await parseOFXFile(file);
+        const result = await parseOFXFile(file, { sessionId: options?.sessionId });
         newResults.ofxResults.push(result);
         await new Promise(r => setTimeout(r, 0));
       }
@@ -134,14 +143,14 @@ export function useCentralImport() {
       // 2. Processa os Excel (tenta Rede -> OS -> Maquininha Genérica)
       if (excelFiles.length > 0) {
         // Testa parse OS em lote
-        const osResults = await processOsFiles(excelFiles);
+        const osResults = await processOsFiles(excelFiles, { sessionId: options?.sessionId });
         
         for (let i = 0; i < excelFiles.length; i++) {
           const file = excelFiles[i];
           await new Promise(r => setTimeout(r, 0)); // Cede o controle ao navegador
           
           // Primeiro, testa se é do formato Rede
-          const redeRes = await parseRedeFile(file);
+          const redeRes = await parseRedeFile(file, { sessionId: options?.sessionId });
           if (redeRes.success && redeRes.transactions.length > 0) {
              newResults.redeResults.push(redeRes);
              continue; // Sucesso como Rede
@@ -156,7 +165,7 @@ export function useCentralImport() {
           
           // Falhou como Rede e OS, tenta Maquininha Genérica
           try {
-            const maqItems = await processMaquininha(file);
+            const maqItems = await processMaquininha(file, { sessionId: options?.sessionId });
             if (maqItems.length > 0) {
               newResults.maquininhaItems.push(...maqItems);
             } else {

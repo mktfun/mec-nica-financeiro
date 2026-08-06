@@ -123,7 +123,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
     });
 
     try {
-      await processFiles(acceptedFiles);
+      await processFiles(acceptedFiles, { sessionId: newSessionId });
       // Aqui após o processamento (sucesso ou não) poderemos logar 6_STAGING_READY
     } catch (e: any) {
       traceLog('1_UPLOAD', 'ERROR', 'Falha no processamento centralizado', newSessionId, { error: e.message });
