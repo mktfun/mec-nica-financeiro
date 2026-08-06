@@ -96,3 +96,13 @@ A regra de ouro na importação é: *Importar um dia é um pacote fechado. O nov
 **Risco identificado:** Construir faturamentos baseando-se em `paid_value` de uma OS causa divergências imensas com o financeiro bancário, criando desconfiança. Só registre como "Faturamento Atual" aquilo que for corroborado pelo banco/adquirente.
 
 **Não fazer:** NUNCA calcule "Faturamento da Loja" somando os totais preenchidos no sistema de gerenciamento de OS (Pátio OS). Esse valor representa apenas a "Expectativa", não a liquidez real bancária.
+
+## [2026-08-06] — [Feature ID: 093-fix-faturamento-visor]
+
+**Contexto:** O faturamento no visor de conciliação diária foi ajustado para consolidar duas realidades: o arquivo da Maquininha (liquidação em D+0) e o PIX (crédito no OFX). Anteriormente, a Maquininha estava de fora do visor de faturamento.
+
+**Regra aprendida:** O Faturamento Real de D+0 é a soma de TUDO o que foi processado e liquidado no dia pela operação (Cartão Entrou) mais as entradas diretas na conta corrente (PIX no OFX). A Diferença (Balança) compara essa realidade com a expectativa declarada (Maquininha lida + PIX de OS).
+
+**Risco identificado:** Excluir do `Faturamento` a Maquininha causa um falso positivo grave de diferença, pois a expectativa (OS + Rede) será sempre muito maior que apenas o PIX bancário.
+
+**Não fazer:** Nunca restrinja o Faturamento de uma loja exclusivamente ao arquivo OFX. Arquivos de Adquirentes também são documentos de liquidez real e devem compor o painel principal.

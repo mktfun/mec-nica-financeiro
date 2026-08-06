@@ -55,3 +55,8 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - Modificado: `src/hooks/useConciliacao.ts` (retorno de `pix_os_expected` e `faturamento_real_ofx` extraído dos matches)
 - Modificado: `src/components/conciliacao/ResumoDiaPanel.tsx` (nova matemática da balança de diferenças e `faturamentoOutrosAutomatico = 0`)
 - Modificado: `src/routes/conciliacao.index.tsx` (Faturamento Atual amarrado à liquidez bancária)
+
+## [093-fix-faturamento-visor]
+- Otimização Visual do Faturamento Diário
+- Modificado: `src/routes/conciliacao.index.tsx` (Faturamento = Maquininha + PIX Matemático)
+- Modificado: `src/components/conciliacao/ResumoDiaPanel.tsx` (Exibição de `Ant:` para Faturamento Anterior no card Consolidação)

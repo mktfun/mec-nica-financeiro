@@ -294,7 +294,12 @@ export function ResumoDiaPanel({
                 <span className="text-[9px] text-[var(--text-tertiary)]">Caixa atual vs Conciliação Anterior</span>
               </div>
               <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
-                <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Faturamento Líquido</span>
+                <div className="flex justify-between items-start">
+                  <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Faturamento Líquido</span>
+                  <span className="text-[10px] font-mono text-[var(--text-secondary)] bg-[var(--bg-surface-hover)] px-1.5 rounded">
+                    Ant: <AnimatedNumber value={faturamentoAnteriorGlobal} format="currency" />
+                  </span>
+                </div>
                 <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
                   <AnimatedNumber value={calculated.faturamento} format="currency" />
                 </span>
