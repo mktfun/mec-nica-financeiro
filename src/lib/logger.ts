@@ -24,7 +24,7 @@ export function traceLog(
   } else if (level === 'WARN') {
     console.warn(`[TRACE:${stage}]`, jsonLog);
   } else if (level === 'DEBUG') {
-    console.debug(`[TRACE:${stage}]`, jsonLog);
+    console.log(`[TRACE:${stage}]`, jsonLog);
   } else {
     console.info(`[TRACE:${stage}]`, jsonLog);
   }
