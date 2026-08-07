@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS ai_settings (
 -- RLS
 ALTER TABLE ai_settings ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can manage their own ai settings" ON ai_settings;
 CREATE POLICY "Users can manage their own ai settings"
 ON ai_settings FOR ALL
 TO authenticated

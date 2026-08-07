@@ -7,7 +7,7 @@ import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { usePatioOS, PatioOSRow } from '@/hooks/usePatio';
+import { usePatioOS, usePatioSummary, PatioOSRow } from '@/hooks/usePatio';
 import { useStores } from '@/hooks/useStores';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { Clock, TrendingUp, CheckCircle2 } from 'lucide-react';
@@ -69,18 +69,16 @@ function PatioPage() {
   
   const { data: patioData = [], isLoading: loadingPatio } = usePatioOS();
   const { data: stores = [], isLoading: loadingStores } = useStores();
+  const { data: summaryData = [], isLoading: loadingSummary } = usePatioSummary();
 
-  const isLoading = loadingPatio || loadingStores;
+  const isLoading = loadingPatio || loadingStores || loadingSummary;
 
-  const openOs = patioData.filter(os => {
-    const eff = getOsEffectiveValues(os);
-    return eff.status === 'em_aberto' || eff.status === 'pago_parcial';
-  });
+  // The 'Hoje' and partial metrics for the tables will still be filtered, but the total sums are from the RPC
+  const totalAberto = summaryData.reduce((acc: number, item: any) => acc + (item.total_open_value || 0), 0);
+  const maxOsValue = patioData.length > 0 ? Math.max(...patioData.map(os => getOsEffectiveValues(os).total)) : 0;
   
-  const totalAberto = openOs.reduce((a, os) => a + getOsEffectiveValues(os).open, 0);
-  const maxOsValue = openOs.length > 0 ? Math.max(...openOs.map(os => getOsEffectiveValues(os).total)) : 0;
-  const noPayment = patioData.filter(os => getOsEffectiveValues(os).status === 'em_aberto').length;
-  const partialPayment = patioData.filter(os => getOsEffectiveValues(os).status === 'pago_parcial').length;
+  const noPayment = summaryData.reduce((acc: number, item: any) => acc + (item.count_open || 0), 0);
+  const partialPayment = summaryData.reduce((acc: number, item: any) => acc + (item.count_partial || 0), 0);
 
   const filtered = patioData.filter(os => {
     const eff = getOsEffectiveValues(os);

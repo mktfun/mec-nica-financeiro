@@ -31,6 +31,19 @@ export function useUpdatePatioOS() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['patio'] });
+      qc.invalidateQueries({ queryKey: ['patio_summary'] });
     },
   });
 }
+
+export function usePatioSummary() {
+  return useQuery({
+    queryKey: ['patio_summary'],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_patio_summary');
+      if (error) throw error;
+      return data || [];
+    },
+  });
+}
+

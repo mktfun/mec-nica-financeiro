@@ -7,7 +7,7 @@ import { getDefaultDate } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { DollarSign, Clock, AlertTriangle, CheckCircle2 } from 'lucide-react';
-import { useRecebiveis } from '@/hooks/useRecebiveis';
+import { useRecebiveis, useReceivablesSummary } from '@/hooks/useRecebiveis';
 import { useStores } from '@/hooks/useStores';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
@@ -35,17 +35,19 @@ function RecebiveisPage() {
 
   const { data: recebiveis = [], isLoading: loadingRec } = useRecebiveis({ startDate, endDate });
   const { data: stores = [], isLoading: loadingStores } = useStores();
+  const { data: summaryData = [], isLoading: loadingSummary } = useReceivablesSummary();
 
-  const isLoading = loadingRec || loadingStores;
+  const isLoading = loadingRec || loadingStores || loadingSummary;
 
-  const pendentes = recebiveis.filter(r => r.status === 'pendente');
-  const recebidos = recebiveis.filter(r => r.status === 'recebido');
-  const vencidos = recebiveis.filter(r => r.status === 'vencido');
-
-  const totalReceber = pendentes.reduce((a, r) => a + Number(r.value || 0), 0);
-  const totalVencidos = vencidos.reduce((a, r) => a + Number(r.value || 0), 0);
+  const totalReceber = summaryData.reduce((acc: number, row: any) => acc + (row.total_pending || 0), 0);
+  const totalVencidos = summaryData.reduce((acc: number, row: any) => acc + (row.total_overdue || 0), 0);
   
   const todayStr = getDefaultDate();
+  
+  // As metricas "Hoje" podem continuar sendo filtradas localmente já que os registros estão cacheados
+  // E o impacto computacional disso é minimo comparado aos totais gerais
+  const recebidos = recebiveis.filter(r => r.status === 'recebido');
+  const pendentes = recebiveis.filter(r => r.status === 'pendente');
   
   const totalRecebidoHoje = recebidos
     .filter(r => r.due_date === todayStr)

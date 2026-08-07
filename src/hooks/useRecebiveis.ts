@@ -30,6 +30,18 @@ export function useMarkReceived() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['receivables'] });
+      qc.invalidateQueries({ queryKey: ['receivables_summary'] });
+    },
+  });
+}
+
+export function useReceivablesSummary() {
+  return useQuery({
+    queryKey: ['receivables_summary'],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_receivables_summary');
+      if (error) throw error;
+      return data || [];
     },
   });
 }

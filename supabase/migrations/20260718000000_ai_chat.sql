@@ -32,11 +32,13 @@ ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.mcp_logs ENABLE ROW LEVEL SECURITY;
 
 -- Policies: Conversations
+DROP POLICY IF EXISTS "Users can manage their own conversations" ON public.conversations;
 CREATE POLICY "Users can manage their own conversations" 
 ON public.conversations 
 FOR ALL USING (auth.uid() = user_id);
 
 -- Policies: Messages
+DROP POLICY IF EXISTS "Users can manage their own messages" ON public.messages;
 CREATE POLICY "Users can manage their own messages" 
 ON public.messages 
 FOR ALL USING (
@@ -47,6 +49,7 @@ FOR ALL USING (
 );
 
 -- Policies: MCP Logs
+DROP POLICY IF EXISTS "Users can manage their own MCP logs" ON public.mcp_logs;
 CREATE POLICY "Users can manage their own MCP logs" 
 ON public.mcp_logs 
 FOR ALL USING (

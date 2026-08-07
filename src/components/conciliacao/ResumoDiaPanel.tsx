@@ -13,6 +13,7 @@ import { calculateGlobalConciliacao, GlobalConciliacaoInput } from '@/lib/modulo
 import { StoreSaldoState } from '@/lib/modulo1Calculations';
 import { supabase } from '@/lib/supabase';
 import { useReconciliationsForDate } from '@/hooks/useConciliacao';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface ResumoDiaPanelProps {
   selectedDate: string;
@@ -44,6 +45,25 @@ export function ResumoDiaPanel({
   storesData = []
 }: ResumoDiaPanelProps) {
   const [isSaved, setIsSaved] = useState(false);
+  const [isMatching, setIsMatching] = useState(false);
+  const queryClient = useQueryClient();
+
+  const handleMatchTransactions = async () => {
+    setIsMatching(true);
+    try {
+      const { error } = await supabase.rpc('auto_match_transactions', { p_date: selectedDate });
+      if (error) throw error;
+      
+      // Invalidate queries to refresh the UI
+      queryClient.invalidateQueries({ queryKey: ['backend-dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
+      queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] });
+    } catch (err) {
+      console.error("Erro ao parear transações:", err);
+    } finally {
+      setIsMatching(false);
+    }
+  };
 
   // Lê o snapshot do dia selecionado (que já contém os inputs manuais salvos via ImportWizard)
   const { data: currentSnapshot } = useDailySnapshot(selectedDate);
@@ -173,27 +193,41 @@ export function ResumoDiaPanel({
 
         {/* Date & Core Totals */}
         <div className="flex flex-col items-end gap-4 w-full lg:w-auto">
-          {/* Date Picker */}
-          <div className="flex items-center gap-1 bg-[var(--bg-canvas)] rounded-lg p-1 border border-[var(--border-subtle)]">
-            <button onClick={() => onDayChange(-1)} className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)]">
-              <ChevronRight size={16} className="rotate-180" />
-            </button>
-            <div className="flex items-center gap-2 px-2">
-              <CalendarDays size={14} className="text-[var(--text-tertiary)]" />
-              <input
-                type="date"
-                value={selectedDate}
-                onChange={(e) => onDateSelect(e.target.value)}
-                className="bg-transparent text-sm font-medium text-[var(--text-secondary)] focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert opacity-80 hover:opacity-100"
-              />
-            </div>
-            <button 
-              onClick={() => onDayChange(1)} 
-              disabled={selectedDate === new Date().toISOString().substring(0, 10)}
-              className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)] disabled:opacity-30"
+          {/* Action Row */}
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleMatchTransactions} 
+              disabled={isMatching}
+              className="gap-2 border-[var(--color-primary)]/50 text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10"
             >
-              <ChevronRight size={16} />
-            </button>
+              <Save size={16} />
+              {isMatching ? 'Pareando...' : 'Parear Transações'}
+            </Button>
+            
+            {/* Date Picker */}
+            <div className="flex items-center gap-1 bg-[var(--bg-canvas)] rounded-lg p-1 border border-[var(--border-subtle)]">
+              <button onClick={() => onDayChange(-1)} className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)]">
+                <ChevronRight size={16} className="rotate-180" />
+              </button>
+              <div className="flex items-center gap-2 px-2">
+                <CalendarDays size={14} className="text-[var(--text-tertiary)]" />
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => onDateSelect(e.target.value)}
+                  className="bg-transparent text-sm font-medium text-[var(--text-secondary)] focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert opacity-80 hover:opacity-100"
+                />
+              </div>
+              <button 
+                onClick={() => onDayChange(1)} 
+                disabled={selectedDate === new Date().toISOString().substring(0, 10)}
+                className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)] disabled:opacity-30"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
           </div>
 
           <div className="flex gap-6 text-right font-sans tabular-nums">

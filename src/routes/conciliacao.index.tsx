@@ -6,7 +6,6 @@ import { Store } from 'lucide-react';
 import { useState } from 'react';
 import { useStores } from '@/hooks/useStores';
 import { useBackendConciliacao } from '@/hooks/useBackendConciliacao';
-import { useBackgroundAiReconciler } from '@/hooks/useBackgroundAiReconciler';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { ResumoDiaPanel } from '@/components/conciliacao/ResumoDiaPanel';
 import { StoreSaldoState } from '@/lib/modulo1Calculations';
@@ -20,9 +19,6 @@ function ConciliacaoPage() {
 
   const { data: stores = [], isLoading: loadingStores } = useStores();
   const { data: logsData = [], isLoading: loadingLogs } = useBackendConciliacao(selectedDate);
-
-  // Ativa o Reconciliador de IA Headless em background para TODAS as lojas da rede
-  useBackgroundAiReconciler(stores, selectedDate);
 
   const isLoading = loadingStores || loadingLogs;
 

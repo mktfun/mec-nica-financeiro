@@ -26,3 +26,19 @@ et.http_post. No entanto, chamadas protegidas requerem passagem explícita do he
 **Risco identificado:** Tentar usar propriedades inexistentes num UPSERT ou no `onConflict` (ex: enviar `store_id` para uma tabela global) faz a API Rest do Supabase rejeitar a query com erro 400.
 
 **Não fazer:** Nunca crie lógicas de upsert presumindo que todas as tabelas usam `store_id`. Sempre verifique a constraint UNIQUE no arquivo original de migration SQL para saber a verdadeira chave composta.
+
+## Delegação de Processamento (Specs 099, 109, 110)
+- **Regra de Ouro:** O React nunca deve usar .reduce() ou .filter() em massa para cálculos financeiros ou pareamentos.
+- **Null Contagion:** Em PL/pgSQL, ao fazer cálculos, SEMPRE use COALESCE(val, 0) para TODAS as variáveis de soma ou extração, evitando que falhas de linha resultem em aniquilação matemática (soma + NULL = NULL).
+- **Matemática Inviolável do Dashboard (get_dashboard_metrics):** A lógica mestra financeira reside 100% no Supabase. O Frontend apenas consome os 10 passos pré-agregados (Caixa Atual, Fluxo CX, Fatura, Diferença, etc.).
+- **O Pareador Inteligente (uto_match_transactions):** A conciliação OFX vs. Rede/PIX ocorre no backend via cursores, empilhando frações da maquininha até atingir o total do extrato. Isso atualiza matched_ofx_id e match_status = 'MATCHED', permitindo que o React exiba os dados pré-vinculados sem sobrecarga.
+
+## [2026-08-07] — [Feature ID: 114]
+
+**Contexto:** Correção de bugs sequenciais de typo (coluna fantasma parsed_pix_transfer e payment_methods no plural) na RPC calculate_daily_conciliation do Supabase.
+
+**Regra aprendida:** O parser de funções PL/pgSQL do Supabase/PostgreSQL tem validações relaxadas no momento da criação para queries estáticas dependendo de como as tabelas são referenciadas. Erros de colunas inexistentes ou de digitação (payment_methods vs payment_method) muitas vezes só estouram durante a chamada da API (PostgREST), resultando em 400 Bad Request.
+
+**Risco identificado:** Assumir que se o CREATE OR REPLACE FUNCTION passou, o schema está 100% correto. 
+
+**Não fazer:** Nunca crie ou altere uma função RPC que referencie uma tabela sem olhar o schema exato real da tabela (através das migrations anteriores) em vez de apenas inferir o nome das colunas.

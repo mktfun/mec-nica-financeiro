@@ -97,3 +97,20 @@ export function useDeleteStore() {
     },
   });
 }
+
+export function useStoreFinancialStats(storeId: string, startDate: string, endDate: string) {
+  return useQuery({
+    queryKey: ['store_financial_stats', storeId, startDate, endDate],
+    queryFn: async () => {
+      if (!storeId || !startDate || !endDate) return null;
+      const { data, error } = await supabase.rpc('get_store_financial_stats', {
+        p_store_id: storeId,
+        p_start_date: startDate,
+        p_end_date: endDate
+      });
+      if (error) throw error;
+      return data?.[0] || { current_balance: 0, faturamento: 0, contas: 0 };
+    },
+    enabled: !!storeId && !!startDate && !!endDate,
+  });
+}

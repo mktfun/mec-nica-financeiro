@@ -11,7 +11,7 @@ import { OfxSemMatchTable } from '@/components/conciliacao/OfxSemMatchTable';
 
 import { useTransactionsPorDataELoja } from '@/hooks/useTransactions';
 import { useReconciliationViews } from '@/hooks/useConciliacao';
-import { useBackgroundAiReconciler } from '@/hooks/useBackgroundAiReconciler';
+
 
 export const Route = createFileRoute('/conciliacao/$lojaId')({
   component: ConciliacaoLojaPage,
@@ -57,14 +57,6 @@ function ConciliacaoLojaPage() {
   const { data: transactions = [] } = useTransactionsPorDataELoja(targetDate, lojaId);
   const { data: reconData } = useReconciliationViews(lojaId, targetDate);
 
-  // Invoca o acionamento automático silencioso em background da IA
-  useBackgroundAiReconciler(
-    lojaId,
-    targetDate,
-    reconData?.pixVsOfx?.osPix || [],
-    reconData?.redeVsOfx?.unassignedRedeTxs || [],
-    reconData?.ofxSemMatch || []
-  );
 
   if (!store) {
     return (

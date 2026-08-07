@@ -26,6 +26,7 @@ ON CONFLICT (portal) DO NOTHING;
 -- RLS
 ALTER TABLE bot_credentials ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Admins can manage bot_credentials" ON bot_credentials;
 CREATE POLICY "Admins can manage bot_credentials"
   ON bot_credentials
   FOR ALL
@@ -55,11 +56,13 @@ CREATE TABLE IF NOT EXISTS daily_snapshots (
 -- RLS para daily_snapshots (todos os usuários autenticados podem ler, só admin escreve)
 ALTER TABLE daily_snapshots ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Authenticated users can read daily_snapshots" ON daily_snapshots;
 CREATE POLICY "Authenticated users can read daily_snapshots"
   ON daily_snapshots
   FOR SELECT
   USING (auth.role() = 'authenticated');
 
+DROP POLICY IF EXISTS "Admins can manage daily_snapshots" ON daily_snapshots;
 CREATE POLICY "Admins can manage daily_snapshots"
   ON daily_snapshots
   FOR ALL
