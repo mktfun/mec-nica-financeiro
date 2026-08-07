@@ -83,6 +83,8 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
     if (storeIdx === -1) storeIdx = headers.findIndex((h: string) => h.includes('nome do estabelecimento'));
     if (storeIdx === -1) storeIdx = headers.findIndex((h: string) => h.includes('estabelecimento') && !h.includes('número') && !h.includes('numero'));
     if (storeIdx === -1) storeIdx = 9;
+    
+    let taxIdx = headers.findIndex((h: string) => h.includes('taxa') || h.includes('tarifa') || h.includes('juros') || h.includes('desconto'));
 
     const transactions: RedeTransaction[] = [];
     let totalInterest = 0;
@@ -97,6 +99,7 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
       const methodRaw = String(row[methodIdx] || '').toLowerCase();
       const grossRaw = grossIdx !== -1 ? row[grossIdx] : undefined;
       const netRaw = netIdx !== -1 ? row[netIdx] : undefined;
+      const taxRaw = taxIdx !== -1 ? row[taxIdx] : undefined;
       const rawStoreName = storeIdx !== -1 ? String(row[storeIdx] || 'DESCONHECIDA').trim() : 'DESCONHECIDA';
       const storeName = normalizeRedeStoreName(rawStoreName);
 
@@ -115,7 +118,10 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
       else if (methodRaw.includes('débito') || methodRaw.includes('debito')) method = 'Cartão Débito';
       else if (methodRaw.includes('pix')) method = 'PIX';
 
-      const interest = parseFloat((grossAmount - netAmount).toFixed(2));
+      let interest = taxRaw !== undefined ? extractNumber(taxRaw) : 0;
+      if (isNaN(interest) || interest === 0) {
+        interest = parseFloat((grossAmount - netAmount).toFixed(2));
+      }
       
       totalGross += grossAmount;
       totalNet += netAmount;

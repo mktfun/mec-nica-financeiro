@@ -935,8 +935,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1786105437.401787,
-    "ast_hash": "6ae3ff6584e8111dbe3d1f27714afc62",
+    "mtime": 1786110600.621037,
+    "ast_hash": "7358c7b692ae34d0ef896ce1aced2c0a",
     "semantic_hash": ""
   },
   "src/components/dashboard/AlertResolveDialog.tsx": {
@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1786063309.495624,
-    "ast_hash": "e2b1fa41922a178ea717bde4bc9b36bc",
+    "mtime": 1786114610.774704,
+    "ast_hash": "32f34a11bc61d3dd592ecdf901e475b4",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -1165,8 +1165,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useTransactions.ts": {
-    "mtime": 1786018660.8065085,
-    "ast_hash": "c25ec67b3033320e601597a115493fd3",
+    "mtime": 1786114646.4758935,
+    "ast_hash": "3e8c9a8ce1f85333b44881df3225f879",
     "semantic_hash": ""
   },
   "src/integrations/supabase/auth-attacher.ts": {
@@ -1265,8 +1265,8 @@
     "semantic_hash": ""
   },
   "src/lib/parsers/redeParser.ts": {
-    "mtime": 1786064107.9265912,
-    "ast_hash": "6955600e6d9478125c8209d27d808448",
+    "mtime": 1786114696.6234517,
+    "ast_hash": "78659f670e6d0a62a91ad100bdb4bde6",
     "semantic_hash": ""
   },
   "src/lib/storage.ts": {
@@ -3475,8 +3475,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786045263.0672662,
-    "ast_hash": "6611a1d8f5d1a238707725d0fe9490d4",
+    "mtime": 1786110780.3190243,
+    "ast_hash": "d52b2df745419a469775ac36ecb36b68",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -4765,8 +4765,8 @@
     "semantic_hash": ""
   },
   ".agents/memory/domain.md": {
-    "mtime": 1786064120.6056173,
-    "ast_hash": "86d9529e2b0045902f9f9d8c6fd2d664",
+    "mtime": 1786115191.0137424,
+    "ast_hash": "bd7e532c9f2e6a598582e3cc9dae464a",
     "semantic_hash": ""
   },
   ".agents/memory/infra.md": {
@@ -4865,8 +4865,8 @@
     "semantic_hash": ""
   },
   ".agents/skills/ia/SKILL.md": {
-    "mtime": 1785934215.0747743,
-    "ast_hash": "c5a1a6110ed18b16ab7bd67a07f1a1a4",
+    "mtime": 1786108006.8236265,
+    "ast_hash": "f0bd965a8d1a05aa545d6a838be7a3aa",
     "semantic_hash": ""
   },
   ".agents/skills/obsidian/SKILL.md": {
@@ -5700,8 +5700,8 @@
     "semantic_hash": ""
   },
   "supabase/migrations/20260807000003_master_backend_delegation.sql": {
-    "mtime": 1786104555.7178178,
-    "ast_hash": "29802507c6909cbcce39a73b503ef625",
+    "mtime": 1786111155.4573827,
+    "ast_hash": "b77da511b193d37b77135580800d833e",
     "semantic_hash": ""
   },
   "specs/107-backend-conciliation-log/design.md": {
@@ -5794,51 +5794,6 @@
     "ast_hash": "a7bbca2504de51d3a60c9c5744a735e7",
     "semantic_hash": ""
   },
-  "specs/112-fix-backend-performance-and-ai/design.md": {
-    "mtime": 1786106552.0578425,
-    "ast_hash": "592375832345cc123141c3198dd6954e",
-    "semantic_hash": ""
-  },
-  "specs/112-fix-backend-performance-and-ai/proposal.md": {
-    "mtime": 1786106536.003981,
-    "ast_hash": "e0eeb44532d4dc49cfd3e66bada2404e",
-    "semantic_hash": ""
-  },
-  "specs/112-fix-backend-performance-and-ai/spec-plan.md": {
-    "mtime": 1786107127.7343595,
-    "ast_hash": "8c5d19acf94e94b1dcf9546e04b9fd8b",
-    "semantic_hash": ""
-  },
-  "specs/113-remove-phantom-column/design.md": {
-    "mtime": 1786107279.110521,
-    "ast_hash": "847ba344269d6f0e27c58db8481bc7b2",
-    "semantic_hash": ""
-  },
-  "specs/113-remove-phantom-column/proposal.md": {
-    "mtime": 1786107279.1075187,
-    "ast_hash": "d7025b8061730c257b41148d72534566",
-    "semantic_hash": ""
-  },
-  "specs/113-remove-phantom-column/spec-plan.md": {
-    "mtime": 1786107370.5262752,
-    "ast_hash": "d431a0a8a7750d5edf8e864737dc8a42",
-    "semantic_hash": ""
-  },
-  "specs/114-fix-payment-method-column/design.md": {
-    "mtime": 1786107578.0250425,
-    "ast_hash": "cdae28b5772ed52c3aea18a52beabe71",
-    "semantic_hash": ""
-  },
-  "specs/114-fix-payment-method-column/proposal.md": {
-    "mtime": 1786107578.0224962,
-    "ast_hash": "bd50bb47ee9ad1bd0aabba7de87f10b2",
-    "semantic_hash": ""
-  },
-  "specs/114-fix-payment-method-column/spec-plan.md": {
-    "mtime": 1786107658.9546127,
-    "ast_hash": "c6c98cfd23388aec45eb99aa14464633",
-    "semantic_hash": ""
-  },
   "specs/archive/099-backend-dashboard-and-matcher/design.md": {
     "mtime": 1786104331.6705437,
     "ast_hash": "38c30e5c10082cd14634130411fdacb3",
@@ -5867,6 +5822,126 @@
   "specs/archive/110-backend-aggregation-views/spec-plan.md": {
     "mtime": 1786103999.04342,
     "ast_hash": "914006f0dcc8c03db6552eb0aae9acad",
+    "semantic_hash": ""
+  },
+  "apply-migration-115.cjs": {
+    "mtime": 1786110067.9028265,
+    "ast_hash": "56593f78078e42b42f1c30f4354bec88",
+    "semantic_hash": ""
+  },
+  "apply-migration-3.cjs": {
+    "mtime": 1786110999.0342028,
+    "ast_hash": "d58bd81a908d291e256d7c7053dbee12",
+    "semantic_hash": ""
+  },
+  "get-cols.cjs": {
+    "mtime": 1786110919.0389874,
+    "ast_hash": "64f933a933bca12294165be569a34c58",
+    "semantic_hash": ""
+  },
+  "get-null.cjs": {
+    "mtime": 1786114211.7526076,
+    "ast_hash": "1eb2ab1240f57f0fafc8626c36433aa4",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000007_fix_dashboard_patio_math.sql": {
+    "mtime": 1786109832.2575808,
+    "ast_hash": "9bc9a463926c536100094dfcc1709d60",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000008_math_accuracy_fixes.sql": {
+    "mtime": 1786114538.1539645,
+    "ast_hash": "b16ac112069f3ac20b59bdd31b7edb32",
+    "semantic_hash": ""
+  },
+  "specs/117-reconciliation-expected-values/proposal.md": {
+    "mtime": 1786112295.4161549,
+    "ast_hash": "85e2dfa95cddb8f123f2c0d613caa33f",
+    "semantic_hash": ""
+  },
+  "specs/118-fix-dashboard-math-part3/proposal.md": {
+    "mtime": 1786114294.3574543,
+    "ast_hash": "b7c816170a2c3c4a327a6ceed4807a60",
+    "semantic_hash": ""
+  },
+  "specs/118-fix-dashboard-math-part3/spec-plan.md": {
+    "mtime": 1786114767.2818284,
+    "ast_hash": "ae1e34ecb4726734ac3c93ad6a342987",
+    "semantic_hash": ""
+  },
+  "specs/archive/112-fix-backend-performance-and-ai/design.md": {
+    "mtime": 1786106552.0578425,
+    "ast_hash": "592375832345cc123141c3198dd6954e",
+    "semantic_hash": ""
+  },
+  "specs/archive/112-fix-backend-performance-and-ai/proposal.md": {
+    "mtime": 1786106536.003981,
+    "ast_hash": "e0eeb44532d4dc49cfd3e66bada2404e",
+    "semantic_hash": ""
+  },
+  "specs/archive/112-fix-backend-performance-and-ai/spec-plan.md": {
+    "mtime": 1786107127.7343595,
+    "ast_hash": "8c5d19acf94e94b1dcf9546e04b9fd8b",
+    "semantic_hash": ""
+  },
+  "specs/archive/113-remove-phantom-column/design.md": {
+    "mtime": 1786107279.110521,
+    "ast_hash": "847ba344269d6f0e27c58db8481bc7b2",
+    "semantic_hash": ""
+  },
+  "specs/archive/113-remove-phantom-column/proposal.md": {
+    "mtime": 1786107279.1075187,
+    "ast_hash": "d7025b8061730c257b41148d72534566",
+    "semantic_hash": ""
+  },
+  "specs/archive/113-remove-phantom-column/spec-plan.md": {
+    "mtime": 1786107370.5262752,
+    "ast_hash": "d431a0a8a7750d5edf8e864737dc8a42",
+    "semantic_hash": ""
+  },
+  "specs/archive/114-fix-payment-method-column/design.md": {
+    "mtime": 1786107578.0250425,
+    "ast_hash": "cdae28b5772ed52c3aea18a52beabe71",
+    "semantic_hash": ""
+  },
+  "specs/archive/114-fix-payment-method-column/proposal.md": {
+    "mtime": 1786107578.0224962,
+    "ast_hash": "bd50bb47ee9ad1bd0aabba7de87f10b2",
+    "semantic_hash": ""
+  },
+  "specs/archive/114-fix-payment-method-column/spec-plan.md": {
+    "mtime": 1786107658.9546127,
+    "ast_hash": "c6c98cfd23388aec45eb99aa14464633",
+    "semantic_hash": ""
+  },
+  "specs/archive/115-fix-dashboard-math-discrepancies/design.md": {
+    "mtime": 1786109684.5676458,
+    "ast_hash": "0713ffba5b8999aed509c54232c82175",
+    "semantic_hash": ""
+  },
+  "specs/archive/115-fix-dashboard-math-discrepancies/proposal.md": {
+    "mtime": 1786109670.0289013,
+    "ast_hash": "82fd423fd64250ebbbb7822159a11cef",
+    "semantic_hash": ""
+  },
+  "specs/archive/115-fix-dashboard-math-discrepancies/spec-plan.md": {
+    "mtime": 1786110092.0812643,
+    "ast_hash": "ccf1676c1ea475e475b025fb03860944",
+    "semantic_hash": ""
+  },
+  "specs/archive/116-auto-match-and-pix/design.md": {
+    "mtime": 1786110399.5991032,
+    "ast_hash": "63dba216f9d9111d9fdbb6cf3bfea284",
+    "semantic_hash": ""
+  },
+  "specs/archive/116-auto-match-and-pix/proposal.md": {
+    "mtime": 1786110386.5640893,
+    "ast_hash": "8c35ec7a8cfb105c51dae3f7cba0ed9c",
+    "semantic_hash": ""
+  },
+  "specs/archive/116-auto-match-and-pix/spec-plan.md": {
+    "mtime": 1786110614.4502847,
+    "ast_hash": "84805e6f8161506861406dace7ae7b63",
     "semantic_hash": ""
   }
 }

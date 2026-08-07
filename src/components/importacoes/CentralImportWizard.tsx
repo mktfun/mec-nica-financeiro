@@ -411,8 +411,9 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       results.ofxResults.forEach(ofx => {
         let store_id: string | null = mapping[ofx.alias];
         if (store_id === 'GLOBAL') store_id = null;
-        if (ofx.bankBalance !== undefined && store_id) storeBankBalances[store_id] = ofx.bankBalance;
-        if (ofx.previousBalance !== undefined && store_id) storePreviousBalances[store_id] = ofx.previousBalance;
+        const dictKey = store_id || 'global_account';
+        if (ofx.bankBalance !== undefined) storeBankBalances[dictKey] = ofx.bankBalance;
+        if (ofx.previousBalance !== undefined) storePreviousBalances[dictKey] = ofx.previousBalance;
 
         let globalStoreId: string | null = mapping[ofx.alias] || null;
         if (globalStoreId === 'GLOBAL') globalStoreId = null;

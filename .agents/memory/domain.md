@@ -82,3 +82,16 @@
  -   * * U I : * *   N u n c a   m i s t u r e   o   m a p e a m e n t o   d e   O r d e n s   d e   S e r v i o   ( q u e   u s a m   o   n o m e   d a   p l a n i l h a )   c o m   o   m a p e a m e n t o   d a   R e d e / M a q u i n i n h a   ( q u e   u s a m   c a m p o s   d e   e s t a b e l e c i m e n t o )   n a   m e s m a   l i s t a .   A   U I   d e v e   s e m p r e   s e p a r a r   v i s u a l m e n t e   p o r   ' O S   ( P t i o ) '   e   ' M a q u i n i n h a s   ( R e d e ) ' . 
  -   * * P a r s e r   R e d e : * *   A   c o l u n a   ' n m e r o   d o   e s t a b e l e c i m e n t o '   v e m   a n t e s   d e   ' n o m e   d o   e s t a b e l e c i m e n t o '   e m   p l a n i l h a s   d a   R e d e .   S e   o   p a r s e r   u s a r   u m   ' i n c l u d e s '   g e n r i c o   p a r a   b u s c a r   o   n d i c e   d a   l o j a ,   e l e   i r   e n g o l i r   o   n m e r o   ( 1 0 1 4 2 2 9 9 7 )   e m   v e z   d o   n o m e   ( ' H D   M P ' ) .   S E M P R E   u s e   u m a   c h e c a g e m   r e s t r i t a   q u e   n e g u e   ' n m e r o '   a o   b u s c a r   p e l o   n o m e ,   o u   u s e   m a t c h i n g   e x a t o .  
  
+## [2026-08-07] - [Feature ID: 118]
+
+**Contexto:** Correção dos cálculos avançados do dashboard (fluxo de caixa absurdo, falta de somatório da conta global, juros genéricos e contas evaporando).
+
+**Regra aprendida:** 
+- O cálculo de fluxo de caixa nunca deve depender cegamente de p_date - 1 day porque finais de semana ou dias não logados causam lacunas e resultam num fluxo de caixa totalmente distorcido (ex: R$ +180.000). Use sempre o último saldo válido antes da data atual (ORDER BY date DESC LIMIT 1).
+- Saldos bancários globais salvos na reconciliação devem ser agrupados a nível de tabela econciliations e não limitados aos IDs existentes na tabela stores, para garantir que saldos de contas globais (store_id IS NULL) sejam incluídos.
+- Na extração de taxas do parseamento, deve-se sempre procurar por colunas explícitas (Taxa, Juros, Tarifa) antes de inferir uma diferença bruta-líquida genérica que pode ser inflada por outros componentes como antecipação.
+
+**Risco identificado:** A matemática de contas globais e fluxos dependia de correspondências perfeitas contínuas, sem prever que o cliente pudesse fazer importação com chave GLOBAL no frontend que mapeia para 
+ull no backend.
+
+**Não fazer:** Nunca restrinja relatórios de caixa a source = 'ofx' quando 	ype = 'out', pois isso mata registros manuais ou de planilhas. Use apenas a intenção de débito (	ype = 'out').

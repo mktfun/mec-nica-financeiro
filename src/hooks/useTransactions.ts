@@ -415,19 +415,28 @@ export function useBulkInsertTransactions() {
         // Pega os stores únicos 
         const storeDates = new Map<string, string>();
         txs.forEach(t => {
-          if (t.store_id && t.target_date) {
-            storeDates.set(t.store_id, t.target_date);
+          if (t.target_date) {
+            const sId = t.store_id || 'global_account';
+            storeDates.set(sId, t.target_date);
           }
         });
         
+        // Adiciona as chaves de storeBankBalances que não vieram nas transações (ex: OFX sem lançamentos na data)
+        Object.keys(storeBankBalances).forEach(k => {
+           if (!storeDates.has(k)) {
+             storeDates.set(k, txs[0].target_date);
+           }
+        });
+        
         // Fazer upsert para cada store+date com o saldo real do extrato DAQUELA LOJA ESPECIFICA
-        for (const [storeId, targetDate] of storeDates.entries()) {
-          const bankBalance = storeBankBalances[storeId];
-          const previousBalance = storePreviousBalances ? storePreviousBalances[storeId] : undefined;
+        for (const [storeKey, targetDate] of storeDates.entries()) {
+          const bankBalance = storeBankBalances[storeKey];
+          const previousBalance = storePreviousBalances ? storePreviousBalances[storeKey] : undefined;
           
           if (bankBalance !== undefined || previousBalance !== undefined) {
+            const realStoreId = storeKey === 'global_account' ? null : storeKey;
             const updatePayload: any = {
-              store_id: storeId,
+              store_id: realStoreId,
               date: targetDate,
               status: 'pending' // status default
             };
