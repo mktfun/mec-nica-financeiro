@@ -23,12 +23,22 @@ export function useBackendDashboard(date: string) {
   return useQuery({
     queryKey: ['backend-dashboard', date],
     queryFn: async (): Promise<DashboardMetrics> => {
-      if (!date) {
-        date = new Date().toISOString().split('T')[0];
+      let effectiveDate = date;
+      if (!effectiveDate) {
+        const { data: latestLog } = await supabase
+          .from('import_logs')
+          .select('target_date')
+          .order('target_date', { ascending: false })
+          .limit(1)
+          .single();
+        
+        effectiveDate = latestLog?.target_date || new Date().toISOString().split('T')[0];
       }
       
+      console.log(`[Dashboard] Solicitando métricas via RPC get_dashboard_metrics para a data: ${effectiveDate}`);
+      
       const { data, error } = await supabase.rpc('get_dashboard_metrics', {
-        p_date: date
+        p_date: effectiveDate
       });
 
       if (error) {

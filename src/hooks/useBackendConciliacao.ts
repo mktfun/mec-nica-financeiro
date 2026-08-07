@@ -17,10 +17,22 @@ export function useBackendConciliacao(date: string) {
   return useQuery({
     queryKey: ['backend-conciliacao', date],
     queryFn: async (): Promise<ConciliationDailyLog[]> => {
-      if (!date) return [];
-      
+      let effectiveDate = date;
+      if (!effectiveDate) {
+        const { data: latestLog } = await supabase
+          .from('import_logs')
+          .select('target_date')
+          .order('target_date', { ascending: false })
+          .limit(1)
+          .single();
+        
+        effectiveDate = latestLog?.target_date || new Date().toISOString().split('T')[0];
+      }
+
+      console.log(`[Conciliação] Solicitando cálculo via RPC calculate_daily_conciliation para a data: ${effectiveDate}`);
+
       const { data, error } = await supabase.rpc('calculate_daily_conciliation', {
-        p_date: date
+        p_date: effectiveDate
       });
 
       if (error) {
