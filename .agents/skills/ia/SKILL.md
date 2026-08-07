@@ -1,4 +1,4 @@
----
+ï»¿---
 name: ia
 trigger: always_on
 ---
@@ -33,6 +33,8 @@ trigger: always_on
   - NUNCA use `npx @baml/graphify` â€” esse pacote nÃ£o existe
 - **Geral**: Se jÃ¡ existe â†’ USE. Crie um wrapper se precisar, NÃƒO duplique. NUNCA crie tabela, RPC, ou polÃ­tica sem verificar o que existe no banco e na memÃ³ria.
 
+- **ValidaÃ§Ã£o Estrita de Schema Supabase**: No PL/pgSQL, o PostgreSQL muitas vezes mascara colunas inexistentes durante o `CREATE FUNCTION`, quebrando a aplicaÃ§Ã£o em tempo real com `400 Bad Request`. O agente NUNCA deve inventar, assumir ou tentar adivinhar nomes de colunas. Antes de montar ou atualizar queries SQL, o agente Ã© OBRIGADO a verificar o schema exato da tabela referenciada (lendo as migrations anteriores ou `.agent/memory/supabase.md`).
+
 ## 3. Workflows Oficiais
 
 Toda iteraÃ§Ã£o passa exclusivamente por estes comandos:
@@ -49,37 +51,38 @@ VocÃª opera sob a jurisdiÃ§Ã£o de 8 skills fundamentais. Elas nÃ£o precisam ser 
 - Engenharia: `frontend-design-pro`, `frontend-design-3`, `afrexai-nextjs-production`, `backend`, `supabase`
 - MemÃ³ria e DevOps: `obsidian`, `github`
 
-## 5. Regra de Separação de Fontes Financeiras (Ledger vs. Receivables)
+## 5. Regra de Separaï¿½ï¿½o de Fontes Financeiras (Ledger vs. Receivables)
 
-**NUNCA** insira em 	ransactions dados que vêm de relatórios de adquirentes (Rede, Cielo, Stone, planilhas de maquininha), mesmo que exista lógica de "match" com OS ou OFX.
+**NUNCA** insira em 	ransactions dados que vï¿½m de relatï¿½rios de adquirentes (Rede, Cielo, Stone, planilhas de maquininha), mesmo que exista lï¿½gica de "match" com OS ou OFX.
 
-- 	ransactions = Livro-Razão bancário. Apenas dados parseados de arquivos **OFX** são inseridos aqui.
-- eceivables = Recebíveis e vendas. Dados da Rede, Maquininha e Cartão vão aqui via savePatioOsAndReceivables.
-- Misturar as duas fontes em 	ransactions causa dupla contagem no Faturamento e no Extrato, pois o OFX já registra a entrada real quando o adquirente liquida a venda.
+- 	ransactions = Livro-Razï¿½o bancï¿½rio. Apenas dados parseados de arquivos **OFX** sï¿½o inseridos aqui.
+- eceivables = Recebï¿½veis e vendas. Dados da Rede, Maquininha e Cartï¿½o vï¿½o aqui via savePatioOsAndReceivables.
+- Misturar as duas fontes em 	ransactions causa dupla contagem no Faturamento e no Extrato, pois o OFX jï¿½ registra a entrada real quando o adquirente liquida a venda.
 
-**Guardrail:** Antes de qualquer .push() em arrays que alimentam useBulkInsertTransactions, responda: **"Este dado veio de um OFX?"** — Se não, ele NÃO vai para 	ransactions.
+**Guardrail:** Antes de qualquer .push() em arrays que alimentam useBulkInsertTransactions, responda: **"Este dado veio de um OFX?"** ï¿½ Se nï¿½o, ele Nï¿½O vai para 	ransactions.
 
-## 6. Regra: Inspecionar Antes de Teorizar (Zero Presunções sobre Estrutura de Arquivos)
+## 6. Regra: Inspecionar Antes de Teorizar (Zero Presunï¿½ï¿½es sobre Estrutura de Arquivos)
 
-**ANTES** de diagnosticar qualquer problema relacionado a parsing, importação ou estrutura de arquivos (OFX, XLSX, CSV, JSON, ZIP), a IA DEVE:
+**ANTES** de diagnosticar qualquer problema relacionado a parsing, importaï¿½ï¿½o ou estrutura de arquivos (OFX, XLSX, CSV, JSON, ZIP), a IA DEVE:
 
-1. Verificar se o arquivo está disponível no sistema (Downloads, workspace, etc.)
-2. Ler o conteúdo real do arquivo antes de qualquer diagnóstico
-3. **NUNCA** afirmar que um arquivo é "global", "corporativo", "compartilhado" ou tem qualquer estrutura específica sem evidência direta do conteúdo do próprio arquivo
+1. Verificar se o arquivo estï¿½ disponï¿½vel no sistema (Downloads, workspace, etc.)
+2. Ler o conteï¿½do real do arquivo antes de qualquer diagnï¿½stico
+3. **NUNCA** afirmar que um arquivo ï¿½ "global", "corporativo", "compartilhado" ou tem qualquer estrutura especï¿½fica sem evidï¿½ncia direta do conteï¿½do do prï¿½prio arquivo
 
-O critério de verdade é sempre o arquivo, não a teoria da IA.
+O critï¿½rio de verdade ï¿½ sempre o arquivo, nï¿½o a teoria da IA.
 
-**Comportamento proibido:** Diagnosticar "o OFX é um extrato corporativo único compartilhado entre lojas" sem ter lido o arquivo.
-**Guardrail:** Se o usuário mencionar arquivo de dados e há um problema de parsing/estrutura, SEMPRE peça o arquivo ou inspecione antes de teorizar.
+**Comportamento proibido:** Diagnosticar "o OFX ï¿½ um extrato corporativo ï¿½nico compartilhado entre lojas" sem ter lido o arquivo.
+**Guardrail:** Se o usuï¿½rio mencionar arquivo de dados e hï¿½ um problema de parsing/estrutura, SEMPRE peï¿½a o arquivo ou inspecione antes de teorizar.
 
-## 7. Regra: git status Obrigatório Antes de Qualquer Commit
+## 7. Regra: git status Obrigatï¿½rio Antes de Qualquer Commit
 
-**SEMPRE** execute git status (ou C:\Users\admin\.gemini\antigravity\scratch\mingit\cmd\git.exe status) ANTES de qualquer sequência de git add + git commit + git push.
+**SEMPRE** execute git status (ou C:\Users\admin\.gemini\antigravity\scratch\mingit\cmd\git.exe status) ANTES de qualquer sequï¿½ncia de git add + git commit + git push.
 
 Verifique EXPLICITAMENTE:
-- Changes not staged for commit ? arquivos modificados mas não adicionados ao stage
-- Untracked files ? arquivos novos criados mas não rastreados
-- Changes to be committed ? confirme que todos os artefatos da sessão estão listados
+- Changes not staged for commit ? arquivos modificados mas nï¿½o adicionados ao stage
+- Untracked files ? arquivos novos criados mas nï¿½o rastreados
+- Changes to be committed ? confirme que todos os artefatos da sessï¿½o estï¿½o listados
 
-**Comportamento proibido:** Fazer commit + push sem rodar git status primeiro, presumindo que todos os arquivos editados foram automaticamente incluídos.
-**Guardrail:** Use git add -A ou liste explicitamente cada arquivo modificado na sessão para garantir que nada fica fora do commit. Um commit incompleto para produção (Lovable, Vercel, etc.) pode fazer o usuário levar uma build quebrada com parte das correções aplicadas e parte faltando.
+**Comportamento proibido:** Fazer commit + push sem rodar git status primeiro, presumindo que todos os arquivos editados foram automaticamente incluï¿½dos.
+**Guardrail:** Use git add -A ou liste explicitamente cada arquivo modificado na sessï¿½o para garantir que nada fica fora do commit. Um commit incompleto para produï¿½ï¿½o (Lovable, Vercel, etc.) pode fazer o usuï¿½rio levar uma build quebrada com parte das correï¿½ï¿½es aplicadas e parte faltando.
+
