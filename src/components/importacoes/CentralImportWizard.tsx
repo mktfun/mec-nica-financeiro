@@ -457,6 +457,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           }
           
           const txId = crypto.randomUUID();
+          const isPix = tx.title?.toUpperCase().includes('PIX') ? 'pix' : null;
           txsToInsert.push({
             id: txId,
             store_id: matched_store_id,
@@ -473,6 +474,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             fitid: tx.fitid || null,
             cnpj_cpf: tx.cnpj_cpf || null,
             counterpart_name: tx.counterpart_name || null,
+            payment_method: isPix,
           });
           
           if (matched_os_number && matched_store_id) {
@@ -667,7 +669,11 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         addLog("⚠️ Aviso: Falha ao gravar valores manuais do dia.", "warning");
       }
 
-      addLog("🎉 TODAS AS ETAPAS FORAM CONCLUÍDAS COM SUCESSO!", "success");
+      addLog("🔧 Pareando transações importadas com Ordens de Serviço...", "info");
+      const { error: matchErr } = await supabase.rpc('auto_match_transactions', { p_date: targetDate });
+      if (matchErr) throw matchErr;
+
+      addLog("✅ TODAS AS ETAPAS FORAM CONCLUÍDAS COM SUCESSO!", "success");
       setSaveFinished(true);
 
     } catch(e: any) {

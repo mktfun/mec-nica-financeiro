@@ -45,25 +45,7 @@ export function ResumoDiaPanel({
   storesData = []
 }: ResumoDiaPanelProps) {
   const [isSaved, setIsSaved] = useState(false);
-  const [isMatching, setIsMatching] = useState(false);
   const queryClient = useQueryClient();
-
-  const handleMatchTransactions = async () => {
-    setIsMatching(true);
-    try {
-      const { error } = await supabase.rpc('auto_match_transactions', { p_date: selectedDate });
-      if (error) throw error;
-      
-      // Invalidate queries to refresh the UI
-      queryClient.invalidateQueries({ queryKey: ['backend-dashboard'] });
-      queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
-      queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] });
-    } catch (err) {
-      console.error("Erro ao parear transações:", err);
-    } finally {
-      setIsMatching(false);
-    }
-  };
 
   // Lê o snapshot do dia selecionado (que já contém os inputs manuais salvos via ImportWizard)
   const { data: currentSnapshot } = useDailySnapshot(selectedDate);
@@ -195,17 +177,6 @@ export function ResumoDiaPanel({
         <div className="flex flex-col items-end gap-4 w-full lg:w-auto">
           {/* Action Row */}
           <div className="flex items-center gap-3">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={handleMatchTransactions} 
-              disabled={isMatching}
-              className="gap-2 border-[var(--color-primary)]/50 text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10"
-            >
-              <Save size={16} />
-              {isMatching ? 'Pareando...' : 'Parear Transações'}
-            </Button>
-            
             {/* Date Picker */}
             <div className="flex items-center gap-1 bg-[var(--bg-canvas)] rounded-lg p-1 border border-[var(--border-subtle)]">
               <button onClick={() => onDayChange(-1)} className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)]">
@@ -294,13 +265,13 @@ export function ResumoDiaPanel({
 
           <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">TAXAS/JUROS</span>
+              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">DESPESAS / JUROS</span>
               <Receipt size={15} className="text-[var(--color-accent-danger)]" />
             </div>
             <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-danger)]">
-              <AnimatedNumber value={inputForCalculation.juros_rede} format="currency" />
+              <AnimatedNumber value={inputForCalculation.juros_rede + contasAPagarAutomatico} format="currency" />
             </p>
-            <span className="text-[10px] text-[var(--text-tertiary)] block">Desconto da maquininha</span>
+            <span className="text-[10px] text-[var(--text-tertiary)] block">OFX Out + Maquininha</span>
           </div>
         </div>
 

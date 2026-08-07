@@ -144,3 +144,12 @@ A regra de ouro na importação é: *Importar um dia é um pacote fechado. O nov
 **Risco identificado:** Mutaes no cdigo JS do frontend perdem o rastreio auditvel dirio. Qualquer alterao em regra financeira deve refletir nas RPCs para que o log dirio no fique defasado em relao  tela.
 
 **No fazer:** No use .reduce e arrays imensos no frontend para computar Totais, Faturamentos e Caixas. O React component deve ser estritamente passivo (marionete do banco de dados).
+
+## [2026-08-07] - [Feature ID: 115]
+
+**Contexto:** O cálculo "Na Loja OS" do Dashboard principal estava subestimado, reportando ~18k enquanto o pátio acumulava ~53k. Isso ocorria porque o get_dashboard_metrics refazia a soma fria do dia e ignorava a dívida/crédito legado.
+**Regra aprendida:** O cálculo de "Na Loja" em métricas agregadas diárias deve **sempre** puxar a propriedade 
+a_loja_os diretamente da tabela econciliations gerada no final do dia do snapshot. A tabela econciliations atua como a única fonte de verdade (carry-over lock) que transporta passivos acumulados do passado para o dashboard atual.
+**Risco identificado:** Calcular 
+a_loja (Patio OS) via agregação on-the-fly das faturas abertas do dia quebra a visão do caixa porque exclui o legado. 
+**Não fazer:** Nunca somar as transações abertas puramente com as entradas do dia atual para estimar o "Na Loja OS" (_na_loja). O valor deve herdar (SELECT na_loja_os FROM reconciliations WHERE store_id = p_store_id AND date <= p_date ORDER BY date DESC LIMIT 1).

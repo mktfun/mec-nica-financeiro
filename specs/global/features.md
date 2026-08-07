@@ -91,3 +91,7 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 ## [100-fix-ofx-cents-amounts]
 - Proteção de Parsing de Transações OFX em Centavos
 - Modificado: `src/lib/parsers/ofxParser.ts` (Implementação de varredura e divisão por 100 para extrações de `TRNAMT` que não possuam separador decimal).
+
+### 4.7 Automação de Conciliação
+- **Importação Centralizada (CentralImportWizard.tsx)**: Arquivo base para entrada de dados em lote. Aciona automaticamente o pareamento das transações importadas no banco de dados, via uto_match_transactions, ao final do fluxo.
+- **Identificação de PIX**: O parser do Wizard avalia o 	itle das transações do OFX. Se contiver 'PIX', injeta a string pix na coluna payment_method para que o painel diário contabilize corretamente o fluxo.
