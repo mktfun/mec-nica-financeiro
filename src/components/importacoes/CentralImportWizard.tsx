@@ -33,23 +33,19 @@ export interface ImportLogEntry {
 // Hook para gerenciar mapeamento de lojas
 function useUnifiedStoreMapping() {
   const [mapping, setMapping] = useState<Record<string, string>>({});
-  const autoMatchMapRef = useRef<Record<string, any[]>>({});
   
-  useEffect(() => {
-    const saved = localStorage.getItem('@mecanica/unified-mappings');
-    if (saved) {
-      try {
-        setMapping(JSON.parse(saved));
-      } catch (e) {}
-    }
-  }, []);
-
-  const updateMapping = (alias: string, storeId: string) => {
+  const updateMapping = (alias: string, storeId: string, storeName?: string) => {
     setMapping(prev => {
       const next = { ...prev, [alias]: storeId };
-      localStorage.setItem('@mecanica/unified-mappings', JSON.stringify(next));
       return next;
     });
+
+    if (storeName) {
+      const savedStr = localStorage.getItem('@mecanica/unified-mappings');
+      const savedSlugs = savedStr ? JSON.parse(savedStr) : {};
+      savedSlugs[alias] = storeName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+      localStorage.setItem('@mecanica/unified-mappings', JSON.stringify(savedSlugs));
+    }
   };
 
   return { mapping, updateMapping, setMapping };
@@ -130,6 +126,28 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
     }
   }, [processFiles]);
 
+  const handleDevAutoLoad = async () => {
+    try {
+      const { mockFiles } = await import('../../__mocks__/importFiles');
+      
+      const fileObjects = mockFiles.map((mock: any) => {
+        const byteCharacters = atob(mock.base64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: mock.type });
+        return new File([blob], mock.name, { type: mock.type });
+      });
+
+      onDrop(fileObjects);
+    } catch (e) {
+      console.error("Erro ao carregar mocks", e);
+      addLog("Erro ao carregar mocks. Execute o generate-mocks.mjs", "error");
+    }
+  };
+
   useEffect(() => {
     if (isProcessing) return;
     if (results.osFiles.length === 0 && results.maquininhaItems.length === 0 && results.ofxResults.length === 0 && results.redeResults.length === 0 && results.mapaMetasResults.length === 0) return;
@@ -145,13 +163,35 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
     const aliasArray = Array.from(aliases);
     const normalizeString = (str: string) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+    
+    // Lê os slugs salvos do localStorage
+    const savedStr = localStorage.getItem('@mecanica/unified-mappings');
+    const savedSlugs = savedStr ? JSON.parse(savedStr) : {};
+
     let currentMapping = { ...mapping };
 
     aliasArray.forEach(alias => {
-      if (!currentMapping[alias]) {
-        const normalizedAlias = normalizeString(alias);
-        const match = stores.find(s => normalizeString(s.name) === normalizedAlias);
-        if (match) currentMapping[alias] = match.id;
+      const mappedId = currentMapping[alias];
+      const stillExists = mappedId ? stores.find(s => s.id === mappedId) : null;
+      
+      if (!stillExists) {
+        let match = null;
+        const savedSlug = savedSlugs[alias];
+        
+        if (savedSlug) {
+          match = stores.find(s => normalizeString(s.name) === savedSlug);
+        }
+        
+        if (!match) {
+          const normalizedAlias = normalizeString(alias);
+          match = stores.find(s => normalizeString(s.name) === normalizedAlias);
+        }
+
+        if (match) {
+          currentMapping[alias] = match.id;
+        } else {
+          delete currentMapping[alias]; // Força a ficar vazio se não encontrar
+        }
       }
     });
 
@@ -690,6 +730,15 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           <h2 className="text-2xl font-display font-bold text-[var(--text-primary)]">Central de Importação</h2>
           <p className="text-sm text-[var(--text-secondary)]">Importe OSs do Pátio, Vendas da Maquininha (Rede) e Extratos Bancários (OFX).</p>
         </div>
+        {import.meta.env.DEV && (
+          <button 
+            onClick={handleDevAutoLoad} 
+            className="ml-auto flex items-center gap-2 px-4 py-2 bg-[var(--bg-surface-elevated)] border border-[var(--color-primary)] text-[var(--color-primary)] rounded-full hover:bg-[var(--color-primary)] hover:text-white transition-colors text-sm font-semibold shadow-sm"
+          >
+            <Sparkles size={16} />
+            Auto-Load Mocks
+          </button>
+        )}
       </div>
 
       <div className="flex items-center mb-8 space-x-4 max-w-3xl mx-auto">
@@ -809,7 +858,10 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                             <div className="flex-1">
                               <select 
                                 value={mapping[alias] || ''} 
-                                onChange={e => updateMapping(alias, e.target.value)}
+                              onChange={e => {
+                                const s = stores.find(st => st.id === e.target.value);
+                                updateMapping(alias, e.target.value, s?.name);
+                              }}
                                 className={`w-full bg-[var(--bg-surface-elevated)] border rounded p-3 text-sm focus:outline-none 
                                   ${mapping[alias] ? 'border-[var(--color-accent-teal)] text-[var(--text-primary)]' : 'border-[var(--color-accent-warning)] text-[var(--text-secondary)] animate-pulse'}`}
                               >
@@ -865,7 +917,10 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                           <div className="flex-1">
                             <select 
                               value={mapping[alias] || ''} 
-                              onChange={e => updateMapping(alias, e.target.value)}
+                              onChange={e => {
+                                const s = stores.find(st => st.id === e.target.value);
+                                updateMapping(alias, e.target.value, s?.name);
+                              }}
                               className={`w-full bg-[var(--bg-surface-elevated)] border rounded p-3 text-sm focus:outline-none 
                                 ${mapping[alias] ? 'border-[var(--color-accent-teal)] text-[var(--text-primary)]' : 'border-[var(--color-accent-warning)] text-[var(--text-secondary)]'}`}
                             >
