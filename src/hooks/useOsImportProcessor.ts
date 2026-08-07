@@ -98,9 +98,9 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
               if (colName === 'status' || colName === 'situação' || colName === 'situacao') colMap.status = idx;
               if (colName === 'finalizada em' || colName === 'data fim' || colName.includes('fechamento') || colName.includes('finalizada') || colName.includes('saida') || colName.includes('saída')) colMap.closedAt = idx;
               
-              if (colMap.totalValue === undefined && (colName.includes('total') || colName.includes('valor total') || colName.includes('r$ total') || colName.includes('vlr total') || colName.includes('vl total') || colName.includes('bruto') || colName.includes('valor os') || colName.includes('valor final'))) {
-                // Previne que 'Total Pagto' sobrescreva o Total da OS real
-                if (!colName.includes('pagto') && !colName.includes('pago')) {
+              const isExactTotal = ['total', 'r$ total', 'valor total', 'vlr total', 'vl total', 'valor os', 'valor da os', 'valor final', 'bruto'].includes(colName);
+              if ((colMap.totalValue === undefined || isExactTotal) && (colName.includes('total') || colName.includes('bruto') || colName.includes('valor os') || colName.includes('valor final'))) {
+                if (!colName.includes('pagto') && !colName.includes('pago') && !colName.includes('produto') && !colName.includes('serviço') && !colName.includes('servico') && !colName.includes('desconto')) {
                   colMap.totalValue = idx;
                 }
               }
@@ -111,7 +111,7 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
               
               if (colName.includes('aberto') || colName.includes('restante') || colName.includes('falta') || colName.includes('saldo')) colMap.openValue = idx;
               
-              if (colName.includes('forma') || colName.includes('pagamento') || colName.includes('meio')) colMap.paymentMethod = idx;
+              if (colName.includes('forma') || colName.includes('pagamento') || colName.includes('meio') || colName.includes('regra') || colName.includes('negocia')) colMap.paymentMethod = idx;
             });
             break;
           }
@@ -159,7 +159,7 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
           const upperMethod = payment_method_str.toUpperCase();
           let foundPair = false;
 
-          const regex = /(PIX|TRANSF|DEP|DINHEIRO|DÉBITO|DEBITO|CRÉDITO|CREDITO|CARTAO|CARTÃO)\s*[:\-\s]?\s*(?:R\$\s*)?([\d\.,]+)?/gi;
+          const regex = /(PIX|TRANSF|DEP|DINHEIRO|DÉBITO|DEBITO|CRÉDITO|CREDITO|CARTAO|CARTÃO)[^\d]*?([\d\.,]+)/gi;
           let match;
 
           while ((match = regex.exec(upperMethod)) !== null) {
