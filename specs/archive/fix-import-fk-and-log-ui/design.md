@@ -1,4 +1,4 @@
-# Design: Correção de FK na Importação e Redesign do Painel de Progresso (fix-import-fk-and-log-ui)
+﻿# Design: CorreçÁo de FK na ImportaçÁo e Redesign do Painel de Progresso (fix-import-fk-and-log-ui)
 
 ## Arquitetura Técnica
 
@@ -23,7 +23,7 @@
 ### Layout Visual:
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│ 🚀 Processamento do Lote de Importação                        [85%]   │
+│ 🚀 Processamento do Lote de ImportaçÁo                        [85%]   │
 │ [===========================================================>......]   │
 ├────────────────────────────────────────────────────────────────────────┤
 │                                                                        │
@@ -31,13 +31,13 @@
 │    324 OSs processadas e salvas com sucesso                            │
 │                                                                        │
 │ 💳 Relatórios de Maquininha (Rede)                 [ CONCLUÍDO  ✓ ]   │
-│    12 transações de cartão processadas                                 │
+│    12 transações de cartÁo processadas                                 │
 │                                                                        │
 │ 🏦 Extrato Bancário (OFX)                        [ PROCESSANDO... ⏳] │
 │    Gravando 56 lançamentos no banco de dados...                        │
 │                                                                        │
-│ 🔗 Associação de Conciliação                       [ AGUARDANDO    ]   │
-│    Aguardando gravação das transações de origem...                     │
+│ 🔗 AssociaçÁo de ConciliaçÁo                       [ AGUARDANDO    ]   │
+│    Aguardando gravaçÁo das transações de origem...                     │
 │                                                                        │
 └────────────────────────────────────────────────────────────────────────┘
 ```
@@ -66,14 +66,14 @@ ALTER TABLE public.conciliation_matches
   ON DELETE SET NULL;
 ```
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 
-- **Cenário 1 (Confirmar importação com substituição de transações):**
+- **Cenário 1 (Confirmar importaçÁo com substituiçÁo de transações):**
   - Estado inicial: Transações anteriores já existem no banco e têm matches vinculados.
-  - Ação: Reimportar a planilha e clicar em "Confirmar e Gravar Importação".
-  - Resultado esperado: Transações e matches são atualizados/desvinculados graciosamente sem erro de violação de FK (`conciliation_matches_ofx_transaction_id_fkey`).
+  - AçÁo: Reimportar a planilha e clicar em "Confirmar e Gravar ImportaçÁo".
+  - Resultado esperado: Transações e matches sÁo atualizados/desvinculados graciosamente sem erro de violaçÁo de FK (`conciliation_matches_ofx_transaction_id_fkey`).
 
 - **Cenário 2 (Visual do Painel de Progresso):**
-  - Estado inicial: Usuário clica em "Confirmar Importação".
-  - Ação: O sistema avança para o Step 4.
+  - Estado inicial: Usuário clica em "Confirmar ImportaçÁo".
+  - AçÁo: O sistema avança para o Step 4.
   - Resultado esperado: Exibe barra de progresso animada, 4 cards executivos com badges e ícones do sistema, sem nenhum elemento em caixa preta monospaçada (`font-mono` / CMD).

@@ -1,7 +1,7 @@
-# Design: Nomenclatura e Diferença (097)
+﻿# Design: Nomenclatura e Diferença (097)
 
 ## Arquitetura Técnica
-A alteração ocorrerá apenas em `src/routes/conciliacao.index.tsx` dentro do map de `stores`.
+A alteraçÁo ocorrerá apenas em `src/routes/conciliacao.index.tsx` dentro do map de `stores`.
 
 ## Fluxo de UI
 1. O usuário vê a loja na lista (ex: Dom Pedro - DP).
@@ -19,7 +19,7 @@ A alteração ocorrerá apenas em `src/routes/conciliacao.index.tsx` dentro do m
 No `conciliacao.index.tsx`:
 
 ```typescript
-// 1. Extração de variáveis base
+// 1. ExtraçÁo de variáveis base
 const faturamentoBanco = hasActivityOnDate ? (saldoBancoMod1 || bankInDate || latestBankBalance[store.id] || 0) : 0;
 const previstoPlanilhas = maquininha + pixOs;
 
@@ -28,7 +28,7 @@ const diferenca = faturamentoBanco - previstoPlanilhas;
 ```
 
 O `isDiferencaOk` deve checar a margem de erro.
-Mas atenção à cor no UI:
+Mas atençÁo à cor no UI:
 - Se `diferenca > 0.01` (Sobra): Exibir em Verde (Emerald), denotando sobra de caixa.
 - Se `diferenca < -0.01` (Furo): Exibir em Vermelho (Danger), denotando que entrou menos do que devia.
 - Se perto de 0: Exibir Neutro.

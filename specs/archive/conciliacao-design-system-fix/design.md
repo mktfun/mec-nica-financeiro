@@ -1,4 +1,4 @@
-# Design: Uniformização Visual da Tela de Conciliação (conciliacao-design-system-fix)
+﻿# Design: UniformizaçÁo Visual da Tela de ConciliaçÁo (conciliacao-design-system-fix)
 
 ## Mapa de Tokens CSS (Design System Real)
 
@@ -41,7 +41,7 @@ Light blue:           var(--color-accent-light-blue) = #007bc2
 - Ícones de PIX: `text-[var(--color-primary)]`
 
 ### `OsVsRedeTable.tsx`
-- Card wrapper: `<Card className="p-0 overflow-hidden">` (padrão)
+- Card wrapper: `<Card className="p-0 overflow-hidden">` (padrÁo)
 - Header da tabela: `bg-[var(--bg-surface)] border-b border-[var(--border-subtle)]`
 - `thead`: `bg-[var(--bg-canvas)]`
 - Linhas: `hover:bg-[var(--bg-surface)]`

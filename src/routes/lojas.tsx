@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+﻿import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
@@ -27,7 +27,8 @@ function LojasPage() {
   const [search, setSearch] = useState('');
 
   const { data: stores = [], isLoading: loadingStores } = useStores();
-  const { data: conciliations = [], isLoading: loadingConciliations } = useConciliacaoDetalhes();
+  const today = new Date().toISOString().split('T')[0];
+  const { data: conciliations = [], isLoading: loadingConciliations } = useConciliacaoDetalhes(today);
   const { data: allBalances = {}, isLoading: loadingBalances } = useAllStoresBalances();
   const deleteMutation = useDeleteStore();
 
@@ -57,7 +58,7 @@ function LojasPage() {
         <div className="mb-8 flex justify-between items-end">
           <div>
             <h1 className="font-display font-bold text-3xl mb-2">Lojas da Rede</h1>
-            <p className="text-[var(--text-secondary)] text-sm">Visão consolidada do fluxo de caixa e conciliação por unidade.</p>
+            <p className="text-[var(--text-secondary)] text-sm">VisÁo consolidada do fluxo de caixa e conciliaçÁo por unidade.</p>
           </div>
           <Button variant="primary" onClick={() => { setStoreToEdit(undefined); setIsFormOpen(true); }} className="gap-2">
             <Plus size={16} /> Nova Loja
@@ -83,7 +84,7 @@ function LojasPage() {
             <div className="text-center p-8 text-[var(--text-tertiary)]">Nenhuma loja encontrada.</div>
           ) : (
             filteredStores.map((store) => {
-              const rec = conciliations.find(c => c.store_id === store.id) || null;
+              const rec: any = conciliations.find(c => c.store_id === store.id) || null;
               const status = rec?.status || 'pending';
               const divergence = rec?.divergence || 0;
               const financialTotal = rec?.financial_total || 0;

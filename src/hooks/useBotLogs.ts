@@ -10,25 +10,26 @@ export interface BotAuditLog {
   created_at: string;
 }
 
-/** Hook para AI execution logs (telemetria do LLM) */
+/** Hook para Logs Unificados (system_logs) */
 export function useBotLogs(limit = 50) {
   return useQuery({
-    queryKey: ['bot_logs', limit],
+    queryKey: ['system_logs', 'ai', limit],
     queryFn: async () => {
       try {
         const { data, error } = await supabase
-          .from('ai_execution_logs')
+          .from('system_logs')
           .select('*')
+          .eq('context', 'ai')
           .order('created_at', { ascending: false })
           .limit(limit);
 
         if (error) return [] as BotAuditLog[];
         return (data || []).map((item: any) => ({
           id: item.id,
-          bot_name: item.provider ? `${item.provider} (${item.model})` : 'AI Engine',
-          status: item.matches_applied_count > 0 ? 'success' : 'warning',
-          message: `Execução ${item.execution_time_ms || 0}ms • ${item.matches_applied_count || 0} matches • ${item.total_tokens || 0} tokens`,
-          payload: item.raw_payload_json,
+          bot_name: 'AI Engine',
+          status: item.level === 'error' ? 'error' : item.level === 'warning' ? 'warning' : 'success',
+          message: item.message,
+          payload: item.metadata,
           created_at: item.created_at,
         })) as BotAuditLog[];
       } catch (e) {
@@ -38,14 +39,15 @@ export function useBotLogs(limit = 50) {
   });
 }
 
-/** Hook para logs do bot Playwright (bot_audit_logs) */
+/** Hook para logs de Auditoria (system_logs context bot) */
 export function useBotAuditLogs(limit = 50) {
   return useQuery({
-    queryKey: ['bot_audit_logs', limit],
+    queryKey: ['system_logs', 'bot', limit],
     queryFn: async (): Promise<BotAuditLog[]> => {
       const { data, error } = await supabase
-        .from('bot_audit_logs')
+        .from('system_logs')
         .select('*')
+        .eq('context', 'bot')
         .order('created_at', { ascending: false })
         .limit(limit);
 
@@ -53,8 +55,15 @@ export function useBotAuditLogs(limit = 50) {
         console.warn('[useBotAuditLogs] Erro:', error.message);
         return [];
       }
-      return (data || []) as BotAuditLog[];
+      return (data || []).map((item: any) => ({
+          id: item.id,
+          bot_name: 'Bot',
+          status: item.level === 'error' ? 'error' : item.level === 'warning' ? 'warning' : 'success',
+          message: item.message,
+          payload: item.metadata,
+          created_at: item.created_at,
+        })) as BotAuditLog[];
     },
-    refetchInterval: 30_000, // auto-refresh a cada 30s
+    refetchInterval: 30_000,
   });
 }

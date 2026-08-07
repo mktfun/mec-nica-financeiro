@@ -1,11 +1,11 @@
-# Design: Auditor de Conciliação Silenciosa em Background & Central de Telemetria (background-ai-telemetry-engine)
+﻿# Design: Auditor de ConciliaçÁo Silenciosa em Background & Central de Telemetria (background-ai-telemetry-engine)
 
-## Arquitetura de Telemetria e Execução Headless
+## Arquitetura de Telemetria e ExecuçÁo Headless
 
 ```
-[Importação de Dados / Carregamento de Conciliação]
+[ImportaçÁo de Dados / Carregamento de ConciliaçÁo]
                          |
-                         v (Execução Silenciosa 100% Background)
+                         v (ExecuçÁo Silenciosa 100% Background)
                [src/lib/llm-matcher.ts]
                          |
          +---------------+---------------+
@@ -59,19 +59,19 @@ create policy "Allow all insert for ai_execution_logs" on public.ai_execution_lo
 
 - **Inspector de Logs & JSON (DevTools UI):**
   - Tabela com colunas `Data/Hora`, `Loja`, `Provedor/Modelo`, `Matches Aplicados`, `Tokens`, `Custo`, `Tempo (ms)`, `Ações (Inspecionar)`.
-  - Ao expandir uma linha, exibe 3 abas de inspeção:
+  - Ao expandir uma linha, exibe 3 abas de inspeçÁo:
     - **`[Entrada JSON]`**: Payload JSON completo enviado para a LLM.
     - **`[Saída JSON]`**: Resposta bruta retornada pela LLM.
     - **`[Raciocínio IA]`**: Passo-a-passo textual e justificativas registradas pela IA.
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 
-- **Cenário 1 (Interface de Conciliação Limpa):**
-  - *Ação:* Navegar em `/conciliacao` e `/conciliacao/$lojaId`.
-  - *Resultado Esperado:* Nenhum botão, modal ou elemento com o rótulo "IA" é exibido. A tela é 100% tradicional e rápida.
-- **Cenário 2 (Execução Silenciosa & Inserção de Log):**
-  - *Ação:* Executar uma conciliação com chave de IA configurada.
+- **Cenário 1 (Interface de ConciliaçÁo Limpa):**
+  - *AçÁo:* Navegar em `/conciliacao` e `/conciliacao/$lojaId`.
+  - *Resultado Esperado:* Nenhum botÁo, modal ou elemento com o rótulo "IA" é exibido. A tela é 100% tradicional e rápida.
+- **Cenário 2 (ExecuçÁo Silenciosa & InserçÁo de Log):**
+  - *AçÁo:* Executar uma conciliaçÁo com chave de IA configurada.
   - *Resultado Esperado:* A IA processa em background, aplica os matches >= 90% em `conciliation_matches` e grava o registro na tabela `ai_execution_logs`.
-- **Cenário 3 (Inspeção de Telemetria e JSON em `/configuracoes`):**
-  - *Ação:* Abrir a aba "Telemetria & Logs da IA" na página de Configurações.
+- **Cenário 3 (InspeçÁo de Telemetria e JSON em `/configuracoes`):**
+  - *AçÁo:* Abrir a aba "Telemetria & Logs da IA" na página de Configurações.
   - *Resultado Esperado:* Exibe o dashboard de tokens, custos acumulados e o inspector interativo com os arquivos JSON de entrada e saída.

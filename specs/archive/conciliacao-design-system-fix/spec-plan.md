@@ -1,4 +1,4 @@
-# Spec Plan: Uniformização Visual da Tela de Conciliação (conciliacao-design-system-fix)
+﻿# Spec Plan: UniformizaçÁo Visual da Tela de ConciliaçÁo (conciliacao-design-system-fix)
 
 ## Tasks
 
@@ -17,4 +17,4 @@
 - [x] [FRONTEND] Refatorar `src/components/conciliacao/OsDetailModal.tsx`:
   - [x] Limpar todos os `zinc-*` hardcoded
   - [x] Usar tokens do design system para todos os elementos
-- [x] [TEST] Verificar compilação com `npm run build` — ✅ 0 erros (45.24s Client + 4.27s SSR)
+- [x] [TEST] Verificar compilaçÁo com `npm run build` — ✅ 0 erros (45.24s Client + 4.27s SSR)

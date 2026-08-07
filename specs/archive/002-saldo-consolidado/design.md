@@ -1,9 +1,9 @@
-# Design: Saldo Líquido Consolidado (002-saldo-consolidado)
+﻿# Design: Saldo Líquido Consolidado (002-saldo-consolidado)
 
 ## Arquitetura de UI (Stitch MCP)
-- Nenhuma alteração visual significativa é exigida além da separação lógica dos dados no React.
-- O componente `HeroBalance.tsx` continuará existindo, porém, seus valores não dependerão apenas da data. 
-- Vamos introduzir uma pequena indicação visual debaixo do Saldo Consolidado, algo como `(Saldo Real de Todas as Contas)` em vez de deixar ambíguo.
+- Nenhuma alteraçÁo visual significativa é exigida além da separaçÁo lógica dos dados no React.
+- O componente `HeroBalance.tsx` continuará existindo, porém, seus valores nÁo dependerÁo apenas da data. 
+- Vamos introduzir uma pequena indicaçÁo visual debaixo do Saldo Consolidado, algo como `(Saldo Real de Todas as Contas)` em vez de deixar ambíguo.
 - O bloco de "Entradas" e "Saídas" receberá uma badgezinha ou label indicando que referem-se ao mês (ex: `Entradas de Maio`).
 
 ## Arquitetura de Banco de Dados (Supabase)
@@ -23,4 +23,4 @@ Isso será feito internamente no mesmo custom hook (`useDashboardSummary`) retor
   motorStatus: string;
 }
 ```
-Isso satisfaz 100% a lógica de negócio do gestor que necessita de visões independentes de curto prazo (movimentação) e de longuíssimo prazo (saldo real bancário).
+Isso satisfaz 100% a lógica de negócio do gestor que necessita de visões independentes de curto prazo (movimentaçÁo) e de longuíssimo prazo (saldo real bancário).

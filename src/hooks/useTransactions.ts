@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+﻿import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase, TransactionRow } from '@/lib/supabase';
 import { getDefaultDate } from '@/lib/utils';
 
@@ -12,7 +12,7 @@ export function useTransactions(limit = 20) {
         .order('occurred_at', { ascending: false })
         .limit(limit);
       if (error) throw error;
-      return data as TransactionRow[];
+      return data as any[];
     },
   });
 }
@@ -28,7 +28,7 @@ export function useTransactionsByStore(storeId: string) {
         .order('occurred_at', { ascending: false })
         .limit(50);
       if (error) throw error;
-      return data as TransactionRow[];
+      return data as any[];
     },
     enabled: !!storeId,
   });
@@ -179,7 +179,7 @@ export function useExtrato(storeId: string, startDate: string, endDate: string) 
       const { data, error } = await query;
       if (error) throw error;
       
-      const rows = data as TransactionRow[];
+      const rows = data as any[];
       
       const totalIn = rows.filter(r => r.type === 'in').reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
       const totalOut = rows.filter(r => r.type === 'out').reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
@@ -250,7 +250,7 @@ export function useTransactionsPorDataELoja(date: string, storeId: string) {
         .eq('target_date', date)
         .order('created_at', { ascending: false });
       if (error) throw error;
-      return data as TransactionRow[];
+      return data as any[];
     },
     enabled: !!storeId && !!date,
   });
@@ -268,7 +268,7 @@ export function useWeeklyRevenueTrend(anchorDate?: string) {
       pastWeek.setDate(anchor.getDate() - 14); // 14 dias para trás da âncora
       
       const startDateStr = pastWeek.toISOString().split('T')[0] + 'T00:00:00.000Z';
-      // Ajuste: também precisamos de um limite superior (end date) para não trazer dados do futuro em relação à âncora
+      // Ajuste: também precisamos de um limite superior (end date) para nÁo trazer dados do futuro em relaçÁo Á  âncora
       const endDateStr = anchor.toISOString().split('T')[0] + 'T23:59:59.999Z';
       
       const { data, error } = await supabase
@@ -314,7 +314,7 @@ export function useCreateImportBatch() {
   return useMutation({
     mutationFn: async ({ target_date }: { target_date: string }) => {
       const { data, error } = await supabase
-        .from('import_batches')
+        .from('import_batches' as any)
         .insert({ target_date })
         .select()
         .single();
@@ -329,7 +329,7 @@ export function useBulkInsertConciliationMatches() {
     mutationFn: async (matches: any[]) => {
       if (matches.length === 0) return null;
       const { data, error } = await supabase
-        .from('conciliation_matches')
+        .from('conciliation_matches' as any)
         .insert(matches);
       if (error) throw error;
       return data;
@@ -369,43 +369,43 @@ export function useBulkInsertTransactions() {
       let data: any = null;
       let error: any = null;
 
-      // OFX: Upsert idempotente (onConflict DO NOTHING graças ao ignoreDuplicates)
-      // Removemos o delete prévio destrutivo para preservar as chaves primárias originais e não quebrar amarrações (Wipeout Bug)
       if (ofxTxs.length > 0) {
         const { data: d1, error: e1 } = await supabase
-          .from('transactions')
-          .upsert(ofxTxs, { onConflict: 'store_id, fitid', ignoreDuplicates: true });
+          .from('ofx_transactions' as any)
+          .upsert(ofxTxs.map((t: any) => ({
+             store_id: t.store_id,
+             bank_name: t.title || 'Itaú',
+             type: t.type,
+             amount: t.amount,
+             occurred_at: t.occurred_at,
+             fitid: t.fitid || t.id,
+             counterpart_name: t.counterpart_name || t.subtitle || null,
+             cnpj_cpf: t.cnpj_cpf || null,
+             matched_os_number: t.os_number || t.matched_os_number || null,
+             import_batch_id: t.import_batch_id || null
+          })), { onConflict: 'store_id, fitid', ignoreDuplicates: true });
         if (e1) { error = e1; } else { data = d1; }
       }
 
-      // Outras transações (Rede/Maquininha): insert normal com delete prévio restrito à origem
       if (!error && otherTxs.length > 0) {
-        const storeDates = new Set<string>();
-        otherTxs.forEach((t: any) => {
-          if (t.target_date) {
-            storeDates.add(`${t.store_id || 'null'}|${t.target_date}`);
-          }
-        });
-
-        for (const sd of Array.from(storeDates)) {
-          const [sId, tDate] = sd.split('|');
-          const delQuery = supabase
-            .from('transactions')
-            .delete()
-            .eq('target_date', tDate)
-            .in('source', ['rede', 'maquininha']);
-            
-          if (sId === 'null') {
-            await delQuery.is('store_id', null);
-          } else {
-            await delQuery.eq('store_id', sId);
-          }
+        const posTxs = otherTxs.filter((t: any) => t.source === 'rede' || t.source === 'maquininha').map((t: any) => ({
+             store_id: t.store_id,
+             machine_name: t.counterpart_name || t.title || 'Maquininha',
+             payment_method: t.payment_method || 'Outros',
+             gross_amount: t.gross_amount || t.amount,
+             net_amount: t.amount,
+             fee_amount: t.fee_amount || 0,
+             occurred_at: t.occurred_at,
+             matched_os_number: t.os_number || t.matched_os_number || null,
+             import_batch_id: t.import_batch_id || null
+        }));
+        
+        if (posTxs.length > 0) {
+          const { data: d2, error: e2 } = await supabase
+            .from('pos_transactions' as any)
+            .insert(posTxs);
+          if (e2) { error = e2; } else { data = data || d2; }
         }
-
-        const { data: d2, error: e2 } = await supabase
-          .from('transactions')
-          .insert(otherTxs);
-        if (e2) { error = e2; } else { data = data || d2; }
       }
         
       if (error) throw error;
@@ -421,7 +421,7 @@ export function useBulkInsertTransactions() {
           }
         });
         
-        // Adiciona as chaves de storeBankBalances que não vieram nas transações (ex: OFX sem lançamentos na data)
+        // Adiciona as chaves de storeBankBalances que nÁo vieram nas transações (ex: OFX sem lançamentos na data)
         Object.keys(storeBankBalances).forEach(k => {
            if (!storeDates.has(k)) {
              storeDates.set(k, txs[0].target_date);
@@ -473,9 +473,9 @@ export function useDailySystemBalance(targetDate: string) {
         
       if (error) throw error;
       
-      const rows = data as TransactionRow[];
+      const rows = data as any[];
       
-      return rows.reduce((acc: Record<string, { gross: number; net: number; fee: number }>, row) => {
+      return rows.reduce((acc: Record<string, { gross: number; net: number; fee: number }>, row: any) => {
         if (row.source === 'ofx' || (row.title && row.title.includes('Extrato Bancário'))) {
           return acc; // OFX is handled in useDailyBankBalance
         }
@@ -514,7 +514,7 @@ export function useLatestBankBalance() {
   return useQuery({
     queryKey: ['latest-bank-balance'],
     queryFn: async () => {
-      // Busca o último bank_total importado por loja (sem restrição de data)
+      // Busca o último bank_total importado por loja (sem restriçÁo de data)
       // para evitar saldo zerado em dias sem novo upload de OFX
       const { data: stores, error: storesErr } = await supabase.from('stores').select('id');
       if (storesErr) throw storesErr;
@@ -547,7 +547,7 @@ export function useDailyBankBalance(targetDate: string) {
     queryKey: ['daily-bank-balance', targetDate],
     queryFn: async () => {
       // O usuário exigiu que o Saldo OFX seja O SALDO BRUTO DO ARQUIVO (<LEDGERBAL>), sem cálculo matemático de in/out.
-      // O saldo bruto é salvo na tabela reconciliations no campo bank_total durante a importação.
+      // O saldo bruto é salvo na tabela reconciliations no campo bank_total durante a importaçÁo.
       const { data: recData, error: recError } = await supabase
         .from('reconciliations')
         .select('store_id, bank_total')
@@ -588,4 +588,5 @@ export function useDailyBankBalance(targetDate: string) {
     enabled: !!targetDate,
   });
 }
+
 

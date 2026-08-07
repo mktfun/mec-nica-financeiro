@@ -9,91 +9,30 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as RecebiveisRouteImport } from './routes/recebiveis'
-import { Route as PropostaRouteImport } from './routes/proposta'
-import { Route as PatioRouteImport } from './routes/patio'
-import { Route as LojasRouteImport } from './routes/lojas'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as ImportarOsRouteImport } from './routes/importar-os'
-import { Route as ImportacoesDespesasRouteImport } from './routes/importacoes-despesas'
-import { Route as ImportacoesRouteImport } from './routes/importacoes'
-import { Route as HistoricoRouteImport } from './routes/historico'
-import { Route as CustosRouteImport } from './routes/custos'
-import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
-import { Route as ConciliacaoDetalhesRouteImport } from './routes/conciliacao-detalhes'
-import { Route as BootstrapRouteImport } from './routes/bootstrap'
-import { Route as AlertasRouteImport } from './routes/alertas'
-import { Route as AgenteRouteImport } from './routes/agente'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AlertasRouteImport } from './routes/alertas'
+import { Route as BootstrapRouteImport } from './routes/bootstrap'
+import { Route as ConciliacaoDetalhesRouteImport } from './routes/conciliacao-detalhes'
+import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
+import { Route as CustosRouteImport } from './routes/custos'
+import { Route as HistoricoRouteImport } from './routes/historico'
+import { Route as ImportacoesRouteImport } from './routes/importacoes'
+import { Route as ImportacoesDespesasRouteImport } from './routes/importacoes-despesas'
+import { Route as ImportarOsRouteImport } from './routes/importar-os'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as LojasRouteImport } from './routes/lojas'
+import { Route as PatioRouteImport } from './routes/patio'
+import { Route as PropostaRouteImport } from './routes/proposta'
+import { Route as RecebiveisRouteImport } from './routes/recebiveis'
 import { Route as ConciliacaoIndexRouteImport } from './routes/conciliacao.index'
-import { Route as LojaLojaIdRouteImport } from './routes/loja.$lojaId'
-import { Route as LogsMotorRouteImport } from './routes/logs.motor'
-import { Route as LogsAgenteRouteImport } from './routes/logs.agente'
 import { Route as ConciliacaoLojaIdRouteImport } from './routes/conciliacao.$lojaId'
+import { Route as LogsAgenteRouteImport } from './routes/logs.agente'
+import { Route as LogsMotorRouteImport } from './routes/logs.motor'
+import { Route as LojaLojaIdRouteImport } from './routes/loja.$lojaId'
 
-const RecebiveisRoute = RecebiveisRouteImport.update({
-  id: '/recebiveis',
-  path: '/recebiveis',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PropostaRoute = PropostaRouteImport.update({
-  id: '/proposta',
-  path: '/proposta',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PatioRoute = PatioRouteImport.update({
-  id: '/patio',
-  path: '/patio',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LojasRoute = LojasRouteImport.update({
-  id: '/lojas',
-  path: '/lojas',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ImportarOsRoute = ImportarOsRouteImport.update({
-  id: '/importar-os',
-  path: '/importar-os',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ImportacoesDespesasRoute = ImportacoesDespesasRouteImport.update({
-  id: '/importacoes-despesas',
-  path: '/importacoes-despesas',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ImportacoesRoute = ImportacoesRouteImport.update({
-  id: '/importacoes',
-  path: '/importacoes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HistoricoRoute = HistoricoRouteImport.update({
-  id: '/historico',
-  path: '/historico',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CustosRoute = CustosRouteImport.update({
-  id: '/custos',
-  path: '/custos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
-  id: '/configuracoes',
-  path: '/configuracoes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ConciliacaoDetalhesRoute = ConciliacaoDetalhesRouteImport.update({
-  id: '/conciliacao-detalhes',
-  path: '/conciliacao-detalhes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BootstrapRoute = BootstrapRouteImport.update({
-  id: '/bootstrap',
-  path: '/bootstrap',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AlertasRoute = AlertasRouteImport.update({
@@ -101,14 +40,69 @@ const AlertasRoute = AlertasRouteImport.update({
   path: '/alertas',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AgenteRoute = AgenteRouteImport.update({
-  id: '/agente',
-  path: '/agente',
+const BootstrapRoute = BootstrapRouteImport.update({
+  id: '/bootstrap',
+  path: '/bootstrap',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ConciliacaoDetalhesRoute = ConciliacaoDetalhesRouteImport.update({
+  id: '/conciliacao-detalhes',
+  path: '/conciliacao-detalhes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CustosRoute = CustosRouteImport.update({
+  id: '/custos',
+  path: '/custos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoricoRoute = HistoricoRouteImport.update({
+  id: '/historico',
+  path: '/historico',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImportacoesRoute = ImportacoesRouteImport.update({
+  id: '/importacoes',
+  path: '/importacoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImportacoesDespesasRoute = ImportacoesDespesasRouteImport.update({
+  id: '/importacoes-despesas',
+  path: '/importacoes-despesas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImportarOsRoute = ImportarOsRouteImport.update({
+  id: '/importar-os',
+  path: '/importar-os',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LojasRoute = LojasRouteImport.update({
+  id: '/lojas',
+  path: '/lojas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PatioRoute = PatioRouteImport.update({
+  id: '/patio',
+  path: '/patio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PropostaRoute = PropostaRouteImport.update({
+  id: '/proposta',
+  path: '/proposta',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecebiveisRoute = RecebiveisRouteImport.update({
+  id: '/recebiveis',
+  path: '/recebiveis',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConciliacaoIndexRoute = ConciliacaoIndexRouteImport.update({
@@ -116,14 +110,9 @@ const ConciliacaoIndexRoute = ConciliacaoIndexRouteImport.update({
   path: '/conciliacao/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LojaLojaIdRoute = LojaLojaIdRouteImport.update({
-  id: '/loja/$lojaId',
-  path: '/loja/$lojaId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LogsMotorRoute = LogsMotorRouteImport.update({
-  id: '/logs/motor',
-  path: '/logs/motor',
+const ConciliacaoLojaIdRoute = ConciliacaoLojaIdRouteImport.update({
+  id: '/conciliacao/$lojaId',
+  path: '/conciliacao/$lojaId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LogsAgenteRoute = LogsAgenteRouteImport.update({
@@ -131,15 +120,19 @@ const LogsAgenteRoute = LogsAgenteRouteImport.update({
   path: '/logs/agente',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConciliacaoLojaIdRoute = ConciliacaoLojaIdRouteImport.update({
-  id: '/conciliacao/$lojaId',
-  path: '/conciliacao/$lojaId',
+const LogsMotorRoute = LogsMotorRouteImport.update({
+  id: '/logs/motor',
+  path: '/logs/motor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LojaLojaIdRoute = LojaLojaIdRouteImport.update({
+  id: '/loja/$lojaId',
+  path: '/loja/$lojaId',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/agente': typeof AgenteRoute
   '/alertas': typeof AlertasRoute
   '/bootstrap': typeof BootstrapRoute
   '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
@@ -162,7 +155,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/agente': typeof AgenteRoute
   '/alertas': typeof AlertasRoute
   '/bootstrap': typeof BootstrapRoute
   '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
@@ -186,7 +178,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/agente': typeof AgenteRoute
   '/alertas': typeof AlertasRoute
   '/bootstrap': typeof BootstrapRoute
   '/conciliacao-detalhes': typeof ConciliacaoDetalhesRoute
@@ -211,7 +202,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/agente'
     | '/alertas'
     | '/bootstrap'
     | '/conciliacao-detalhes'
@@ -234,7 +224,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/agente'
     | '/alertas'
     | '/bootstrap'
     | '/conciliacao-detalhes'
@@ -257,7 +246,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/agente'
     | '/alertas'
     | '/bootstrap'
     | '/conciliacao-detalhes'
@@ -281,7 +269,6 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AgenteRoute: typeof AgenteRoute
   AlertasRoute: typeof AlertasRoute
   BootstrapRoute: typeof BootstrapRoute
   ConciliacaoDetalhesRoute: typeof ConciliacaoDetalhesRoute
@@ -305,95 +292,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/recebiveis': {
-      id: '/recebiveis'
-      path: '/recebiveis'
-      fullPath: '/recebiveis'
-      preLoaderRoute: typeof RecebiveisRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/proposta': {
-      id: '/proposta'
-      path: '/proposta'
-      fullPath: '/proposta'
-      preLoaderRoute: typeof PropostaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/patio': {
-      id: '/patio'
-      path: '/patio'
-      fullPath: '/patio'
-      preLoaderRoute: typeof PatioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lojas': {
-      id: '/lojas'
-      path: '/lojas'
-      fullPath: '/lojas'
-      preLoaderRoute: typeof LojasRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/importar-os': {
-      id: '/importar-os'
-      path: '/importar-os'
-      fullPath: '/importar-os'
-      preLoaderRoute: typeof ImportarOsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/importacoes-despesas': {
-      id: '/importacoes-despesas'
-      path: '/importacoes-despesas'
-      fullPath: '/importacoes-despesas'
-      preLoaderRoute: typeof ImportacoesDespesasRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/importacoes': {
-      id: '/importacoes'
-      path: '/importacoes'
-      fullPath: '/importacoes'
-      preLoaderRoute: typeof ImportacoesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/historico': {
-      id: '/historico'
-      path: '/historico'
-      fullPath: '/historico'
-      preLoaderRoute: typeof HistoricoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/custos': {
-      id: '/custos'
-      path: '/custos'
-      fullPath: '/custos'
-      preLoaderRoute: typeof CustosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/configuracoes': {
-      id: '/configuracoes'
-      path: '/configuracoes'
-      fullPath: '/configuracoes'
-      preLoaderRoute: typeof ConfiguracoesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/conciliacao-detalhes': {
-      id: '/conciliacao-detalhes'
-      path: '/conciliacao-detalhes'
-      fullPath: '/conciliacao-detalhes'
-      preLoaderRoute: typeof ConciliacaoDetalhesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/bootstrap': {
-      id: '/bootstrap'
-      path: '/bootstrap'
-      fullPath: '/bootstrap'
-      preLoaderRoute: typeof BootstrapRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/alertas': {
@@ -403,18 +306,95 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AlertasRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/agente': {
-      id: '/agente'
-      path: '/agente'
-      fullPath: '/agente'
-      preLoaderRoute: typeof AgenteRouteImport
+    '/bootstrap': {
+      id: '/bootstrap'
+      path: '/bootstrap'
+      fullPath: '/bootstrap'
+      preLoaderRoute: typeof BootstrapRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/conciliacao-detalhes': {
+      id: '/conciliacao-detalhes'
+      path: '/conciliacao-detalhes'
+      fullPath: '/conciliacao-detalhes'
+      preLoaderRoute: typeof ConciliacaoDetalhesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/configuracoes': {
+      id: '/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/configuracoes'
+      preLoaderRoute: typeof ConfiguracoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/custos': {
+      id: '/custos'
+      path: '/custos'
+      fullPath: '/custos'
+      preLoaderRoute: typeof CustosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/historico': {
+      id: '/historico'
+      path: '/historico'
+      fullPath: '/historico'
+      preLoaderRoute: typeof HistoricoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/importacoes': {
+      id: '/importacoes'
+      path: '/importacoes'
+      fullPath: '/importacoes'
+      preLoaderRoute: typeof ImportacoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/importacoes-despesas': {
+      id: '/importacoes-despesas'
+      path: '/importacoes-despesas'
+      fullPath: '/importacoes-despesas'
+      preLoaderRoute: typeof ImportacoesDespesasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/importar-os': {
+      id: '/importar-os'
+      path: '/importar-os'
+      fullPath: '/importar-os'
+      preLoaderRoute: typeof ImportarOsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lojas': {
+      id: '/lojas'
+      path: '/lojas'
+      fullPath: '/lojas'
+      preLoaderRoute: typeof LojasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/patio': {
+      id: '/patio'
+      path: '/patio'
+      fullPath: '/patio'
+      preLoaderRoute: typeof PatioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/proposta': {
+      id: '/proposta'
+      path: '/proposta'
+      fullPath: '/proposta'
+      preLoaderRoute: typeof PropostaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recebiveis': {
+      id: '/recebiveis'
+      path: '/recebiveis'
+      fullPath: '/recebiveis'
+      preLoaderRoute: typeof RecebiveisRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/conciliacao/': {
@@ -424,18 +404,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConciliacaoIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/loja/$lojaId': {
-      id: '/loja/$lojaId'
-      path: '/loja/$lojaId'
-      fullPath: '/loja/$lojaId'
-      preLoaderRoute: typeof LojaLojaIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/logs/motor': {
-      id: '/logs/motor'
-      path: '/logs/motor'
-      fullPath: '/logs/motor'
-      preLoaderRoute: typeof LogsMotorRouteImport
+    '/conciliacao/$lojaId': {
+      id: '/conciliacao/$lojaId'
+      path: '/conciliacao/$lojaId'
+      fullPath: '/conciliacao/$lojaId'
+      preLoaderRoute: typeof ConciliacaoLojaIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/logs/agente': {
@@ -445,11 +418,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LogsAgenteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/conciliacao/$lojaId': {
-      id: '/conciliacao/$lojaId'
-      path: '/conciliacao/$lojaId'
-      fullPath: '/conciliacao/$lojaId'
-      preLoaderRoute: typeof ConciliacaoLojaIdRouteImport
+    '/logs/motor': {
+      id: '/logs/motor'
+      path: '/logs/motor'
+      fullPath: '/logs/motor'
+      preLoaderRoute: typeof LogsMotorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/loja/$lojaId': {
+      id: '/loja/$lojaId'
+      path: '/loja/$lojaId'
+      fullPath: '/loja/$lojaId'
+      preLoaderRoute: typeof LojaLojaIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -457,7 +437,6 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AgenteRoute: AgenteRoute,
   AlertasRoute: AlertasRoute,
   BootstrapRoute: BootstrapRoute,
   ConciliacaoDetalhesRoute: ConciliacaoDetalhesRoute,

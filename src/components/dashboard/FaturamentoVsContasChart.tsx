@@ -2,10 +2,9 @@ import { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Card } from '@/components/ui/Card';
 import { BarChart2 } from 'lucide-react';
-import type { StoreMetrics } from '@/hooks/useDashboardV2';
 
 interface FaturamentoVsContasChartProps {
-  data: StoreMetrics[];
+  data: any[];
   isLoading?: boolean;
 }
 

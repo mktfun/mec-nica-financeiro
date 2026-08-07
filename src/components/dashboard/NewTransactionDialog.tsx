@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Modal } from "../ui/Modal";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
@@ -22,7 +22,7 @@ export function NewTransactionDialog({ isOpen, onClose }: NewTransactionDialogPr
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Nova Transação">
+    <Modal isOpen={isOpen} onClose={onClose} title="Nova TransaçÁo">
       <form onSubmit={handleSubmit} className="space-y-4 mt-4">
         <div>
           <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1 uppercase tracking-wider">

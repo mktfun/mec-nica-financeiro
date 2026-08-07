@@ -1,5 +1,5 @@
-// Arquivo gerado automaticamente por scripts/generate-mocks.mjs
-// NÃO COMITE ESTE ARQUIVO!
+﻿// Arquivo gerado automaticamente por scripts/generate-mocks.mjs
+// NÁO COMITE ESTE ARQUIVO!
 
 export const mockFiles = [
   {

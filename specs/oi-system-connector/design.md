@@ -1,21 +1,21 @@
-# Design: Oficina Inteligente System Connector (oi-system-connector)
+﻿# Design: Oficina Inteligente System Connector (oi-system-connector)
 
 ## Arquitetura Técnica
 Edge Function (`ai-chat/index.ts`) → Bot VPS (`bot/src/server.ts`) → Playwright (`oficina.ts`) → ASP.NET.
 
 1. **System Prompt Routing Layer (Edge Function):**
-   - O `systemPrompt` exigirá explicitamente a identificação do domínio (OS, Financeiro, Estoque, Agenda) antes do acionamento de qualquer tool.
+   - O `systemPrompt` exigirá explicitamente a identificaçÁo do domínio (OS, Financeiro, Estoque, Agenda) antes do acionamento de qualquer tool.
    
-2. **Tool de Consolidação de OS:**
+2. **Tool de ConsolidaçÁo de OS:**
    - A tool será nomeada `consulta_os_detalhe_completo` para substituir fluxos genéricos.
    
 3. **Múltiplos Placeholders de Tools (Edge Function):**
-   - O objeto `mcpTools` será ampliado para conter declarações de domínio cruzado. Como o bot (backend real) ainda precisa ser construído em `/vibe-apply` futuros para alguns deles, as tools retornarão: `"Funcionalidade em desenvolvimento no MCP"`, exceto a de OS detalhe que implementaremos nesta especificação.
+   - O objeto `mcpTools` será ampliado para conter declarações de domínio cruzado. Como o bot (backend real) ainda precisa ser construído em `/vibe-apply` futuros para alguns deles, as tools retornarÁo: `"Funcionalidade em desenvolvimento no MCP"`, exceto a de OS detalhe que implementaremos nesta especificaçÁo.
 
 ## Componentes / Hooks / Funções
 
 1. **Supabase Edge Function: `supabase/functions/ai-chat/index.ts`**
-   - **Mudar `systemPrompt`**: Adicionar catálogo explícito de módulos do Oficina Inteligente e instrução de routing.
+   - **Mudar `systemPrompt`**: Adicionar catálogo explícito de módulos do Oficina Inteligente e instruçÁo de routing.
    - **Atualizar `mcpTools`**:
      - Substituir/modificar tools relacionadas à OS vaga.
      - Adicionar `consulta_os_detalhe_completo(osNumber)`.
@@ -28,12 +28,12 @@ Edge Function (`ai-chat/index.ts`) → Bot VPS (`bot/src/server.ts`) → Playwri
    - Criar `fetchOSDetails(page, osNumber)`.
    - Lógica Playwright:
      - Usar `fetchOSByNumber(page, osNumber)` para entrar na tela de listagem de OS.
-     - Clicar na OS correspondente (ícone de edição ou link).
-     - Extrair abas: Header (veículo, responsável), Tabela de Serviços (descrição, qtd, valor) e Tabela de Pagamentos.
+     - Clicar na OS correspondente (ícone de ediçÁo ou link).
+     - Extrair abas: Header (veículo, responsável), Tabela de Serviços (descriçÁo, qtd, valor) e Tabela de Pagamentos.
 
 ## Fluxo de UI
 Sem mudanças visuais para o cliente WebApp além das respostas textuais mais robustas exibidas na MessageList.
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 - **Cenário 1:** Usuário envia "Me detalhe a OS 1763" → IA seleciona `consulta_os_detalhe_completo(1763)` em vez de busca genérica → Retorna relatório completo com pagamentos e serviços.
 - **Cenário 2:** Usuário envia "Quais contas vencem hoje?" → IA seleciona a tool do domínio financeiro (`consulta_contas_pagar_exposicao`) sem assumir que é sobre OS.

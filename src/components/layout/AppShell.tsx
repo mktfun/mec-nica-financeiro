@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from "react";
+﻿import { ReactNode, useEffect } from "react";
 import { Sidebar } from "./Sidebar";
 import { BottomNav } from "./BottomNav";
 import { TopBar } from "./TopBar";
@@ -12,22 +12,22 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // session === undefined → loading
-    // session === null     → não autenticado → redireciona
+    // session === null     → nÁo autenticado → redireciona
     if (session === null) {
       router.navigate({ to: '/login' });
     }
   }, [session, router]);
 
-  // Loading: aguardando verificação de sessão
+  // Loading: aguardando verificaçÁo de sessÁo
   if (session === undefined) {
     return (
       <div className="min-h-screen bg-[var(--bg-canvas)] flex items-center justify-center">
-        <LoadingSpinner text="Verificando sessão..." />
+        <LoadingSpinner text="Verificando sessÁo..." />
       </div>
     );
   }
 
-  // Não autenticado — redirect em andamento, não renderiza nada
+  // NÁo autenticado — redirect em andamento, nÁo renderiza nada
   if (session === null) return null;
 
   return (

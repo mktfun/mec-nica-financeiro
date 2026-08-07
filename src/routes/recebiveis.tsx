@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+﻿import { createFileRoute, Link } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
@@ -23,7 +23,7 @@ function RecebiveisPage() {
   const [page, setPage] = useState(1);
   const pageSize = 10;
   
-  // Padrão: início do mês atual até fim do mês atual
+  // PadrÁo: início do mês atual até fim do mês atual
   const [startDate, setStartDate] = useState(() => {
     const d = new Date();
     return new Date(d.getFullYear(), d.getMonth(), 1).toISOString().split('T')[0];
@@ -44,10 +44,11 @@ function RecebiveisPage() {
   
   const todayStr = getDefaultDate();
   
-  // As metricas "Hoje" podem continuar sendo filtradas localmente já que os registros estão cacheados
+  // As metricas "Hoje" podem continuar sendo filtradas localmente já que os registros estÁo cacheados
   // E o impacto computacional disso é minimo comparado aos totais gerais
   const recebidos = recebiveis.filter(r => r.status === 'recebido');
   const pendentes = recebiveis.filter(r => r.status === 'pendente');
+  const vencidos = recebiveis.filter(r => r.status === 'vencido');
   
   const totalRecebidoHoje = recebidos
     .filter(r => r.due_date === todayStr)

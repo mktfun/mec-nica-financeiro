@@ -1,5 +1,5 @@
-- [ ] 1. Hotfix: lojas.tsx crash (re-add Input import)
-- [ ] 2. Expandir mock data (10 lojas, OS pátio, recebíveis, conciliação detalhada, +transações)
+﻿- [ ] 1. Hotfix: lojas.tsx crash (re-add Input import)
+- [ ] 2. Expandir mock data (10 lojas, OS pátio, recebíveis, conciliaçÁo detalhada, +transações)
 - [ ] 3. Reescrever conciliacao.tsx como full-page (grid lojas, alertas, dinheiro caixa)
 - [ ] 4. Criar conciliacao-detalhes.tsx (tabela por loja, erros, abas)
 - [ ] 5. Criar patio.tsx (carros no pátio com tabela de OS)

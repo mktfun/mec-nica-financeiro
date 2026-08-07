@@ -1,9 +1,9 @@
-# Design: Ativação Automática do Motor de Conciliação por IA e Telemetria em Background (enable-auto-ai-reconciler-telemetry)
+﻿# Design: AtivaçÁo Automática do Motor de ConciliaçÁo por IA e Telemetria em Background (enable-auto-ai-reconciler-telemetry)
 
-## Fluxo Técnico de Resolução da IA & Telemetria
+## Fluxo Técnico de ResoluçÁo da IA & Telemetria
 
 ```
-[Conciliação / Importação Executada]
+[ConciliaçÁo / ImportaçÁo Executada]
                   |
                   v
 [useBackgroundAiReconciler (Hash Lock)]
@@ -22,14 +22,14 @@
 [Aplica Matches Alta Confiança (>= 90%) em `conciliation_matches`]
                   |
                   v
-[Atualização em Tempo Real da Tela /agente (DevTools & Telemetria)]
+[AtualizaçÁo em Tempo Real da Tela /agente (DevTools & Telemetria)]
 ```
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 
 - **Cenário 1 (Disparo Automático e Registro de Logs):**
-  - *Ação:* Entrar em uma loja na conciliação que contenha itens não pareados.
+  - *AçÁo:* Entrar em uma loja na conciliaçÁo que contenha itens nÁo pareados.
   - *Resultado Esperado:* A IA dispara silenciosamente em background, registra a chamada na tabela `ai_execution_logs` e atualiza a aba Telemetria em `/agente` exibindo a contagem de tokens, chamadas e custo em USD/BRL.
 - **Cenário 2 (DevTools Inspector de Payloads):**
-  - *Ação:* Clicar em uma linha de log na aba Inspector em `/agente`.
+  - *AçÁo:* Clicar em uma linha de log na aba Inspector em `/agente`.
   - *Resultado Esperado:* Exibe o JSON de Entrada (Prompt), o JSON de Resposta (Output) e o Raciocínio (Chain of Thought) gerado pela IA.

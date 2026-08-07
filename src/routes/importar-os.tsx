@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+﻿import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { motion } from 'framer-motion';
@@ -112,7 +112,7 @@ function ImportarOsWizard() {
       setIsProcessing(true);
       for (const res of importResults.filter(r => r.success && mapping[r.storeAlias] !== 'IGNORE')) {
         const storeId = mapping[res.storeAlias];
-        if (!storeId) throw new Error(`Arquivo ${res.fileName} (Loja detectada: ${res.storeAlias}) não está mapeado!`);
+        if (!storeId) throw new Error(`Arquivo ${res.fileName} (Loja detectada: ${res.storeAlias}) nÁo está mapeado!`);
         const storeName = stores.find(s => s.id === storeId)?.name || 'Desconhecida';
         
         await processData.mutateAsync({
@@ -153,7 +153,7 @@ function ImportarOsWizard() {
             <div className={`h-px flex-1 ${step > 1 ? 'bg-[var(--color-primary)]' : 'bg-white/10'}`} />
             <StepIndicator current={step} step={2} title="Mapeamento" />
             <div className={`h-px flex-1 ${step > 2 ? 'bg-[var(--color-primary)]' : 'bg-white/10'}`} />
-            <StepIndicator current={step} step={3} title="Revisão" />
+            <StepIndicator current={step} step={3} title="RevisÁo" />
           </div>
         </div>
 
@@ -212,7 +212,7 @@ function ImportarOsWizard() {
                 <div>
                   <h3 className="font-display text-xl font-semibold mb-1">Mapeamento de Lojas</h3>
                   <p className="text-[var(--text-secondary)] text-sm">
-                    Identificamos {unmappedStores.length} arquivos não mapeados.
+                    Identificamos {unmappedStores.length} arquivos nÁo mapeados.
                   </p>
                 </div>
               </div>
@@ -243,9 +243,9 @@ function ImportarOsWizard() {
                         onChange={(e) => updateMapping(storeName, e.target.value)}
                       >
                         <option value="" disabled>Selecione uma loja...</option>
-                        <option value="IGNORE" className="text-[var(--color-accent-danger)] font-semibold">⛔ Ignorar Arquivo (Não Importar)</option>
+                        <option value="IGNORE" className="text-[var(--color-accent-danger)] font-semibold">⛔ Ignorar Arquivo (NÁo Importar)</option>
                         {stores.map(s => (
-                          <option key={s.id} value={s.id}>{s.name} {s.is_matriz ? '(Master)' : ''}</option>
+                          <option key={s.id} value={s.id}>{s.name} {(s as any).is_matriz ? '(Master)' : ''}</option>
                         ))}
                       </select>
                     </div>
@@ -274,7 +274,7 @@ function ImportarOsWizard() {
               </div>
               <h3 className="font-display font-semibold text-2xl mb-2">Tudo Pronto para Importar</h3>
               <p className="text-[var(--text-secondary)] mb-8">
-                Serão processados {importResults.filter(r => r.success && mapping[r.storeAlias] !== 'IGNORE').length} arquivos contendo um total de <strong>{totalOs} Ordens de Serviço</strong>.
+                SerÁo processados {importResults.filter(r => r.success && mapping[r.storeAlias] !== 'IGNORE').length} arquivos contendo um total de <strong>{totalOs} Ordens de Serviço</strong>.
               </p>
               
               <div className="mb-8 p-4 bg-[var(--bg-surface-elevated)] border border-white/10 rounded-xl max-w-md mx-auto text-left">
@@ -286,7 +286,7 @@ function ImportarOsWizard() {
                   className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors"
                 />
                 <p className="text-xs text-[var(--text-tertiary)] mt-2">
-                  Se preenchida, força todas as OS e recebíveis a serem agrupados nesta data para a conciliação e histórico.
+                  Se preenchida, força todas as OS e recebíveis a serem agrupados nesta data para a conciliaçÁo e histórico.
                 </p>
               </div>
 

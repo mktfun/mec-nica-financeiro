@@ -1,4 +1,4 @@
-# Checklist de Implementação: Spec 066
+﻿# Checklist de ImplementaçÁo: Spec 066
 
 ## Tasks
 

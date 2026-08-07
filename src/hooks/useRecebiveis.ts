@@ -39,7 +39,7 @@ export function useReceivablesSummary() {
   return useQuery({
     queryKey: ['receivables_summary'],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc('get_receivables_summary');
+      const { data, error } = await supabase.rpc('get_receivables_summary' as any);
       if (error) throw error;
       return data || [];
     },

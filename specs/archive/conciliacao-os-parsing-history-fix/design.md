@@ -1,10 +1,10 @@
-# Design: Ajuste no Importador e Motor de Conciliação Módulo 2 — OS Bruta, Status Finalizado, Busca Histórica e Trava Anti-Duplicação (conciliacao-os-parsing-history-fix)
+﻿# Design: Ajuste no Importador e Motor de ConciliaçÁo Módulo 2 — OS Bruta, Status Finalizado, Busca Histórica e Trava Anti-DuplicaçÁo (conciliacao-os-parsing-history-fix)
 
-## Fluxo de Conciliação com Trava Anti-Duplicação
+## Fluxo de ConciliaçÁo com Trava Anti-DuplicaçÁo
 
 ```
  ┌────────────────────────────────────────────────────────┐
- │ 1. TRANSAÇÃO DE ENTRADA (Hoje: R$ 380,00 no OFX/Rede)  │
+ │ 1. TRANSAÇÁO DE ENTRADA (Hoje: R$ 380,00 no OFX/Rede)  │
  └───────────────────────────┬────────────────────────────┘
                              │
                              ▼
@@ -18,7 +18,7 @@
                              ▼
  ┌────────────────────────────────────────────────────────┐
  │ 3. MATCHING PELO VALOR BRUTO (credit_debit_value)      │
- │    - Localiza OS #902 Nova (R$ 380,00 Bruto em cartão) │
+ │    - Localiza OS #902 Nova (R$ 380,00 Bruto em cartÁo) │
  │    - Ignora OS #549 Antiga de ontem (Já 'ENTROU')     │
  └───────────────────────────┬────────────────────────────┘
                              │
@@ -30,7 +30,7 @@
  └────────────────────────────────────────────────────────┘
 ```
 
-## Trava Anti-Duplicação em `useConciliacao.ts`
+## Trava Anti-DuplicaçÁo em `useConciliacao.ts`
 
 ```typescript
 // 1. Carregar todas as OSs que JÁ foram conciliadas anteriormente
@@ -68,7 +68,7 @@ export function parsePaymentMethodString(paymentStr: string, defaultAmount: numb
         const method = match[1].toUpperCase().trim();
         const val = parseFloat(match[2].replace(/\./g, '').replace(',', '.')) || 0;
 
-        if (method.includes('CREDITO') || method.includes('CRÉDITO') || method.includes('CARTAO') || method.includes('CARTÃO')) {
+        if (method.includes('CREDITO') || method.includes('CRÉDITO') || method.includes('CARTAO') || method.includes('CARTÁO')) {
           parsed_credit += val;
         } else if (method.includes('DEBITO') || method.includes('DÉBITO')) {
           parsed_debit += val;
@@ -79,7 +79,7 @@ export function parsePaymentMethodString(paymentStr: string, defaultAmount: numb
     });
   } else {
     const lower = str.toLowerCase();
-    if (lower.includes('credito') || lower.includes('crédito') || lower.includes('cartao') || lower.includes('cartão')) {
+    if (lower.includes('credito') || lower.includes('crédito') || lower.includes('cartao') || lower.includes('cartÁo')) {
       parsed_credit = defaultAmount;
     } else if (lower.includes('debito') || lower.includes('débito')) {
       parsed_debit = defaultAmount;
@@ -92,14 +92,14 @@ export function parsePaymentMethodString(paymentStr: string, defaultAmount: numb
 }
 ```
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 
-- **Cenário 1 (OS Finalizada no Dia 21 com R$ 3.385,00 no Crédito - Primeira Conciliação):**
+- **Cenário 1 (OS Finalizada no Dia 21 com R$ 3.385,00 no Crédito - Primeira ConciliaçÁo):**
   - *Dados:* OS #549 finalizada emitida no dia 21 com pagamento `Credito: 3385.00`. Lançamento de maquininha entra no extrato hoje.
-  - *Ação:* Rodar a conciliação.
-  - *Resultado Esperado:* O motor localiza a OS #549 (que ainda está pendente de conciliação) e pareia $1:1$ com o lançamento da maquininha. Ao fechar, atualiza a OS para `status = 'ENTROU'`.
+  - *AçÁo:* Rodar a conciliaçÁo.
+  - *Resultado Esperado:* O motor localiza a OS #549 (que ainda está pendente de conciliaçÁo) e pareia $1:1$ com o lançamento da maquininha. Ao fechar, atualiza a OS para `status = 'ENTROU'`.
 
-- **Cenário 2 (Trava Anti-Duplicação no Dia Seguinte):**
-  - *Dados:* Amanhã entra outro lançamento de R$ 3.385,00 no extrato. A OS #549 já possui status `'ENTROU'`.
-  - *Ação:* Rodar a conciliação de amanhã.
-  - *Resultado Esperado:* O sistema ignora a OS #549 (já conciliada) e busca apenas OSs pendentes novas dos arquivos recentes. O novo lançamento fica como "Pendente" se não houver OS nova de R$ 3.385,00.
+- **Cenário 2 (Trava Anti-DuplicaçÁo no Dia Seguinte):**
+  - *Dados:* AmanhÁ entra outro lançamento de R$ 3.385,00 no extrato. A OS #549 já possui status `'ENTROU'`.
+  - *AçÁo:* Rodar a conciliaçÁo de amanhÁ.
+  - *Resultado Esperado:* O sistema ignora a OS #549 (já conciliada) e busca apenas OSs pendentes novas dos arquivos recentes. O novo lançamento fica como "Pendente" se nÁo houver OS nova de R$ 3.385,00.

@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+﻿import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 
 export interface StoreMetrics {
@@ -132,7 +132,7 @@ export function useDashboardV2(selectedDateStr?: string) {
         } else if (row.date <= dateAnterior) {
           // Histórico: Pega o bank_total mais recente até o dia anterior
           if (!latestPrevByStore[row.store_id] || row.date > latestPrevByStore[row.store_id].date) {
-            // Só sobrescreve se não for o valor garantido do próprio dia (dateAtual)
+            // Só sobrescreve se nÁo for o valor garantido do próprio dia (dateAtual)
             if (latestPrevByStore[row.store_id]?.date !== dateAtual) {
               latestPrevByStore[row.store_id] = { total: Number(row.bank_total || 0), date: row.date };
             }
@@ -223,7 +223,7 @@ export function useDashboardV2(selectedDateStr?: string) {
       ]);
 
       const porLoja: StoreMetrics[] = Array.from(allStoreIds).map(storeId => {
-        // Fallback robusto se a loja não tiver dados naquele dia
+        // Fallback robusto se a loja nÁo tiver dados naquele dia
         const saldoAtual = latestByStore[storeId]?.bank_total || 0;
         const faturamento = fatByStore[storeId] || 0;
         const contas = contasByStore[storeId] || 0;

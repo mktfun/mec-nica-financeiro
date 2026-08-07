@@ -1,4 +1,4 @@
-import { Card } from '@/components/ui/Card';
+﻿import { Card } from '@/components/ui/Card';
 import { Terminal, Database, Server, Wrench, Clock } from 'lucide-react';
 import { useMcpLogs } from '@/hooks/useMcpLogs';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
@@ -15,7 +15,7 @@ export function LogsAgentePanel() {
           </div>
           MCP Tools Logs
         </h1>
-        <p className="text-[var(--text-secondary)] text-sm">Monitoramento de execução de ferramentas e consultas (Cache vs Live).</p>
+        <p className="text-[var(--text-secondary)] text-sm">Monitoramento de execuçÁo de ferramentas e consultas (Cache vs Live).</p>
       </div>
 
       <Card variant="glass" className="p-6">

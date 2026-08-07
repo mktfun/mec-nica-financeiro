@@ -1,17 +1,17 @@
-# Design: Dashboard Fintech V3 (063)
+﻿# Design: Dashboard Fintech V3 (063)
 
 ## Arquitetura Técnica
-A principal mudança arquitetural é a transição de um intervalo de datas (mensal) para um pivô baseado na ÚLTIMA data de conciliação registrada.
+A principal mudança arquitetural é a transiçÁo de um intervalo de datas (mensal) para um pivô baseado na ÚLTIMA data de conciliaçÁo registrada.
 
 Fluxo de Dados:
 1. `useDashboardV2` faz uma query inicial na tabela `reconciliations` extraindo todas as `date` distintas e ordenando DESC.
 2. Pega `dates[0]` como `dateAtual` e `dates[1]` como `dateAnterior`.
-3. Dispara as queries paralelas filtrando estritamente por essas datas, garantindo que "Faturamento" reflita o valor daquele dia/fechamento, não de 30 dias acumulados.
-4. O componente de tabela calcula os totais locais e injeta na renderização (`<tfoot>`).
+3. Dispara as queries paralelas filtrando estritamente por essas datas, garantindo que "Faturamento" reflita o valor daquele dia/fechamento, nÁo de 30 dias acumulados.
+4. O componente de tabela calcula os totais locais e injeta na renderizaçÁo (`<tfoot>`).
 
 ## Interfaces TypeScript
 ```ts
-// Alteração no retorno de useDashboardV2
+// AlteraçÁo no retorno de useDashboardV2
 export interface StoreMetrics {
   storeId: string;
   storeName: string;
@@ -44,23 +44,23 @@ export interface DashboardV2Data {
 ```
 
 ## Componentes / Hooks / Funções
-- **`useDashboardV2.ts`** [MODIFICADO]: Refatorado para extrair as top 2 datas globais de `reconciliations` e buscar os dados atrelados a elas. Criação do array `historicoSaldos`.
-- **`src/routes/index.tsx`** [MODIFICADO]: Remoção do Seletor de Mês (passa a exibir "Dados ref. à última conciliação: DD/MM/YYYY"). Labels "Atual" e "vs ANTERIOR". Injeção do novo gráfico.
-- **`StoreTableDashboard.tsx`** [MODIFICADO]: Adição da tag `<tfoot>` com os totais globais e uma nova coluna "Pátio (Qtd/R$)" mostrando os veículos parados por loja.
-- **`EvolucaoSaldoChart.tsx`** [NOVO]: Um `AreaChart` do Recharts (linha suave com preenchimento em gradiente teal) exibindo o `Saldo Total` dos últimos 7-10 dias de conciliação para entregar o peso visual solicitado pelo usuário.
+- **`useDashboardV2.ts`** [MODIFICADO]: Refatorado para extrair as top 2 datas globais de `reconciliations` e buscar os dados atrelados a elas. CriaçÁo do array `historicoSaldos`.
+- **`src/routes/index.tsx`** [MODIFICADO]: RemoçÁo do Seletor de Mês (passa a exibir "Dados ref. à última conciliaçÁo: DD/MM/YYYY"). Labels "Atual" e "vs ANTERIOR". InjeçÁo do novo gráfico.
+- **`StoreTableDashboard.tsx`** [MODIFICADO]: AdiçÁo da tag `<tfoot>` com os totais globais e uma nova coluna "Pátio (Qtd/R$)" mostrando os veículos parados por loja.
+- **`EvolucaoSaldoChart.tsx`** [NOVO]: Um `AreaChart` do Recharts (linha suave com preenchimento em gradiente teal) exibindo o `Saldo Total` dos últimos 7-10 dias de conciliaçÁo para entregar o peso visual solicitado pelo usuário.
 
 ## Fluxo de UI
-1. O usuário acessa a página inicial. Não há mais dropdown de mês no topo, mas sim um label informando: `"Última atualização: DD/MM/YYYY"`.
-2. A faixa do meio exibe "Faturamento: Atual" e a comparação inferior "+X% vs ANTERIOR".
+1. O usuário acessa a página inicial. NÁo há mais dropdown de mês no topo, mas sim um label informando: `"Última atualizaçÁo: DD/MM/YYYY"`.
+2. A faixa do meio exibe "Faturamento: Atual" e a comparaçÁo inferior "+X% vs ANTERIOR".
 3. A tabela da base exibe todas as lojas e, na última linha, um **TOTAL** em destaque (negrito, bg mais escuro) facilitando a auditoria da rede.
-4. O gráfico de barras Faturamento vs Contas dividirá espaço com o novo gráfico de Evolução do Saldo, ou o substituirá dependendo do layout (vamos manter ambos empilhados ou lado a lado).
+4. O gráfico de barras Faturamento vs Contas dividirá espaço com o novo gráfico de EvoluçÁo do Saldo, ou o substituirá dependendo do layout (vamos manter ambos empilhados ou lado a lado).
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
-- **Cenário 1:** Renderização do Hook.
-  - SCAN: `useDashboardV2` não recebe parâmetro de mês.
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
+- **Cenário 1:** RenderizaçÁo do Hook.
+  - SCAN: `useDashboardV2` nÁo recebe parâmetro de mês.
   - INFER: Deve descobrir automaticamente a data mais recente via supabase.
-  - VERIFY: Os valores de Faturamento batem apenas com a `date` encontrada (e não o mês todo).
+  - VERIFY: Os valores de Faturamento batem apenas com a `date` encontrada (e nÁo o mês todo).
 - **Cenário 2:** Somatório na Tabela.
   - SCAN: Array `porLoja`.
   - INFER: A `tfoot` deve renderizar o `.reduce()` exato dessas colunas.
-  - VERIFY: Não há quebra de layout na tabela responsiva com a inserção do `tfoot`.
+  - VERIFY: NÁo há quebra de layout na tabela responsiva com a inserçÁo do `tfoot`.

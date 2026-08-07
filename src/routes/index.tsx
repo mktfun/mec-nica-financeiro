@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+﻿import { createFileRoute } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { KpiCard } from '@/components/dashboard/KpiCard';
 import { StoreTableDashboard } from '@/components/dashboard/StoreTableDashboard';
@@ -35,7 +35,7 @@ function DashboardPage() {
 
         {/* ── HEADER ── */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <h1 className="font-display font-bold text-3xl text-white">Visão Geral</h1>
+          <h1 className="font-display font-bold text-3xl text-white">VisÁo Geral</h1>
           <div className="flex items-center gap-2 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] px-3 py-1.5 rounded-lg shadow-sm focus-within:ring-1 focus-within:ring-[var(--color-primary)]">
             <CalendarCheck2 size={16} className="text-[var(--color-primary)]" />
             <input 
@@ -56,7 +56,7 @@ function DashboardPage() {
             color="primary"
             isLoading={isLoading}
             index={0}
-            tooltip="Soma do bank_total da conciliação mais recente de cada loja."
+            tooltip="Soma do bank_total da conciliaçÁo mais recente de cada loja."
           />
           <KpiCard
             label="Caixa Atual"
@@ -158,7 +158,7 @@ function DashboardPage() {
             color={!data || data.fluxoCaixa >= 0 ? 'teal' : 'danger'}
             isLoading={isLoading}
             index={5}
-            tooltip="Variação do Saldo Total entre a conciliação atual e a conciliação imediatamente anterior."
+            tooltip="VariaçÁo do Saldo Total entre a conciliaçÁo atual e a conciliaçÁo imediatamente anterior."
           />
         </div>
 

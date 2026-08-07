@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+﻿import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 
 export interface GoalRow {
@@ -30,11 +30,11 @@ export function useMonthlyGoal(storeId: string = 'GLOBAL') {
         .single();
 
       if (error && error.code !== 'PGRST116') {
-        // Ignora erro de schema caso a migration ainda não tenha rodado
+        // Ignora erro de schema caso a migration ainda nÁo tenha rodado
         console.warn('Failed to fetch goals:', error);
       }
 
-      // Se não houver meta para o mês, retorna valores padrão para a UI não quebrar
+      // Se nÁo houver meta para o mês, retorna valores padrÁo para a UI nÁo quebrar
       if (!data) {
         return {
           target_amount: 0,

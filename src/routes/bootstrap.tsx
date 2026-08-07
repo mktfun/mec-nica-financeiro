@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+﻿import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -75,7 +75,7 @@ function BootstrapPage() {
         // Upsert Reconciliations (para Saldo Anterior e Pátio Anterior)
         if (saldo > 0 || patio > 0) {
           promises.push(
-            supabase.from('reconciliations').upsert({
+            (supabase.from('reconciliations' as any).upsert({
               store_id: store.id,
               date: targetDate,
               status: 'validated',
@@ -90,7 +90,7 @@ function BootstrapPage() {
               missing_os: [],
               matched_os: [],
               unmatched_receipts: []
-            }, { onConflict: 'store_id,date' })
+            } as any, { onConflict: 'store_id,date' }) as any)
           );
         }
       }
@@ -98,7 +98,7 @@ function BootstrapPage() {
       // Upsert Daily Snapshots Global (Agregado da Rede)
       if (totalFaturamento > 0 || totalContas > 0 || totalSaldo > 0 || totalPatio > 0) {
         promises.push(
-          supabase.from('daily_snapshots').upsert({
+          (supabase.from('daily_snapshots' as any).upsert({
             date: targetDate,
             caixa_atual: totalSaldo + totalPatio,
             faturamento_outros_valor: totalFaturamento,
@@ -108,7 +108,7 @@ function BootstrapPage() {
             dinheiro_mp: 0,
             a_receber_manual: 0,
             provisao: 0
-          }, { onConflict: 'date' })
+          } as any, { onConflict: 'date' }) as any)
         );
       }
 
@@ -138,7 +138,7 @@ function BootstrapPage() {
             Bootstrap: Dia Zero
           </h1>
           <p className="text-sm text-[var(--text-secondary)] mt-1">
-            Injeção de carga inicial para que o sistema consiga calcular métricas do dia seguinte sem bugs.
+            InjeçÁo de carga inicial para que o sistema consiga calcular métricas do dia seguinte sem bugs.
           </p>
         </div>
         <Button 

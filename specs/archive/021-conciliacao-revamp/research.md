@@ -1,10 +1,10 @@
-# Contexto e Escopo
-A tela atual de Conciliação exibe 10 blocos de lojas (e um input global de caixa para todas elas) filtrados mensalmente.
-A navegação para os detalhes da conciliação requer cliques adicionais (`/conciliacao-detalhes`).
+﻿# Contexto e Escopo
+A tela atual de ConciliaçÁo exibe 10 blocos de lojas (e um input global de caixa para todas elas) filtrados mensalmente.
+A navegaçÁo para os detalhes da conciliaçÁo requer cliques adicionais (`/conciliacao-detalhes`).
 
 O feedback do usuário aponta que:
 1. O filtro por mês é insuficiente; precisa ser **por dia exato**.
-2. O input de "Dinheiro em Caixa" não pode ser global e aleatório. Deve aparecer **apenas para lojas que possuem valores em "espécie" (dinheiro)** atrelados a alguma OS naquele dia/período.
+2. O input de "Dinheiro em Caixa" nÁo pode ser global e aleatório. Deve aparecer **apenas para lojas que possuem valores em "espécie" (dinheiro)** atrelados a alguma OS naquele dia/período.
 3. A tela atual é feia e disfuncional. Os detalhes deveriam estar mais acessíveis.
 
 ## Achados Técnicos

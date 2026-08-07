@@ -1,11 +1,11 @@
-# Proposal: Correção de Salvar Bootstrap (074-fix-bootstrap)
+﻿# Proposal: CorreçÁo de Salvar Bootstrap (074-fix-bootstrap)
 
 ## Problema
 O usuário relata o erro `POST https://cnwzsvowkfymtdiryhqc.supabase.co/rest/v1/daily_snapshots?on_conflict=store_id%2Cdate 400 (Bad Request)` ao tentar salvar a Carga Inicial (Dia Zero) na tela de Bootstrap.
 Esse erro ocorre porque o componente frontend `BootstrapPage` tenta iterar por cada loja e realizar um UPSERT na tabela `daily_snapshots` utilizando a chave de conflito `store_id,date` e enviando campos incorretos como `store_id` e `saldo_final`.
-A tabela `daily_snapshots` foi desenhada desde o início como uma tabela **global** da rede (não possui a coluna `store_id` e a unique key é apenas a `date`). Isso causa a rejeição imediata da requisição pela API do Supabase.
+A tabela `daily_snapshots` foi desenhada desde o início como uma tabela **global** da rede (nÁo possui a coluna `store_id` e a unique key é apenas a `date`). Isso causa a rejeiçÁo imediata da requisiçÁo pela API do Supabase.
 
-## Solução Proposta
+## SoluçÁo Proposta
 Modificar a lógica de persistência do `bootstrap.tsx`:
 1. Manter o loop de lojas APENAS para popular a tabela `reconciliations` (que é de fato por loja e aceita `store_id`).
 2. Acumular os totais globais de `faturamento` e `contas` (e `saldo`) informados no formulário.
@@ -13,13 +13,13 @@ Modificar a lógica de persistência do `bootstrap.tsx`:
 
 ## Contratos de Dados
 - Tabela `daily_snapshots` (existente)
-- Não haverá alteração no banco de dados. A mutação no frontend na tabela `daily_snapshots` será corrigida para o formato correto esperado pelo Supabase.
+- NÁo haverá alteraçÁo no banco de dados. A mutaçÁo no frontend na tabela `daily_snapshots` será corrigida para o formato correto esperado pelo Supabase.
 
 ## API / Interface
-- Nenhuma alteração visual. Apenas correção da lógica no `handleSave` em `src/routes/bootstrap.tsx`.
+- Nenhuma alteraçÁo visual. Apenas correçÁo da lógica no `handleSave` em `src/routes/bootstrap.tsx`.
 
 ## Features Existentes Impactadas
-- N/A. Refatoração restrita à tela de inicialização.
+- N/A. RefatoraçÁo restrita à tela de inicializaçÁo.
 
 ## Risco Principal
 Pequeno. O único risco é esquecer de somar todas as lojas antes de enviar o payload único para `daily_snapshots`.

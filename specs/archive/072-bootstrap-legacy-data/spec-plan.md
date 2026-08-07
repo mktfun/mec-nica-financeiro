@@ -1,4 +1,4 @@
-# Checklist de Implementação: Spec 072
+﻿# Checklist de ImplementaçÁo: Spec 072
 
 ## Tasks
 
@@ -12,6 +12,6 @@
   - [x] Montar o form com 1 input de Data e um Grid mapeando as lojas ativas.
   - [x] Lógica de Upsert iterando sobre as lojas preenchidas.
 
-- [x] [FRONTEND] Validação Final
+- [x] [FRONTEND] ValidaçÁo Final
   - [x] Acessar `/bootstrap` e preencher dados falsos para dia `2026-07-30`.
   - [x] Conferir se o Dashboard processou a métrica de `% vs ANTERIOR` usando esses dados.

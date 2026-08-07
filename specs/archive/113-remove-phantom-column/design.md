@@ -1,4 +1,4 @@
-﻿# Design: Remove Phantom Column (113)
+﻿﻿# Design: Remove Phantom Column (113)
 
 ## Arquitetura Técnica
 1. Migration 20260807000005_remove_phantom_pix_column.sql.
@@ -6,7 +6,7 @@
 3. Node.js runner bypassará falhas nas migrations locais antigas, aplicando a RPC diretamente no Banco Remoto.
 
 ## Interfaces TypeScript
-- Nenhuma alteração.
+- Nenhuma alteraçÁo.
 
 ## Componentes / Hooks / Funções
 - **RPC calculate_daily_conciliation** (Supabase): Atualizada para corrigir falha na busca de propriedades.
@@ -18,5 +18,5 @@
 ## Infra / Deploy
 - Será aplicado de forma manual utilizando NodeJS pg Driver, pois as instâncias locais do banco possuem policies defeituosas bloqueando db push.
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
-- **Cenário 1:** Acessar a tela de Conciliação Diária no frontend (Dia 04) → As agregações são retornadas → Tela é renderizada sem erros.
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
+- **Cenário 1:** Acessar a tela de ConciliaçÁo Diária no frontend (Dia 04) → As agregações sÁo retornadas → Tela é renderizada sem erros.

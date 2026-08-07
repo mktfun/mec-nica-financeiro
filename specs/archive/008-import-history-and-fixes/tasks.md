@@ -1,4 +1,4 @@
-# Tasks: Rastreamento de Importações e Correções (008)
+﻿# Tasks: Rastreamento de Importações e Correções (008)
 
 ## Fase 0 — Banco de Dados
 - [ ] **0.1** Criar tabela `import_logs` via migration no Supabase com campos e índice único `(store_id, target_date)`.
@@ -15,11 +15,11 @@
 ## Fase 2 — UI
 - [ ] **2.1** Substituir a rota `/historico` (`historico.tsx`) por um Histórico de Importações que consome `useImportLogs`.
 - [ ] **2.2** Adicionar filtros de período (data início/fim) e loja na nova tela de histórico.
-- [ ] **2.3** Implementar expansão inline (accordion) para mostrar as OSs do dia ao clicar em uma importação.
+- [ ] **2.3** Implementar expansÁo inline (accordion) para mostrar as OSs do dia ao clicar em uma importaçÁo.
 - [ ] **2.4** Atualizar o link "Histórico" no Sidebar para apontar para a nova tela.
 
-## Fase 3 — Verificação
+## Fase 3 — VerificaçÁo
 - [ ] **3.1** `npm run build` — confirmar sem erros de TypeScript.
-- [ ] **3.2** Testar importação de planilha e verificar novo registro em `import_logs`.
-- [ ] **3.3** Verificar que o Dashboard mostra o faturamento bruto após importação.
-- [ ] **3.4** Verificar que Recebíveis não duplicam ao reimportar a mesma planilha.
+- [ ] **3.2** Testar importaçÁo de planilha e verificar novo registro em `import_logs`.
+- [ ] **3.3** Verificar que o Dashboard mostra o faturamento bruto após importaçÁo.
+- [ ] **3.4** Verificar que Recebíveis nÁo duplicam ao reimportar a mesma planilha.

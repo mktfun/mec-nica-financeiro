@@ -1,7 +1,7 @@
-# Design - 019 OS History & Layout Spacing
+﻿# Design - 019 OS History & Layout Spacing
 
 ## Banco de Dados (Supabase MCP)
-- Criar a migração `add_history_log_to_patio_os`.
+- Criar a migraçÁo `add_history_log_to_patio_os`.
 - Adicionar a coluna `history_log` do tipo `jsonb` na tabela `patio_os`, com o default valendo `'[]'::jsonb`.
 - Executar a tipagem (`supabase gen types`).
 
@@ -27,4 +27,4 @@ A estrutura do JSON dentro do `history_log` será:
   - Uso de ícones (ex: `ArrowUp` ou `Clock`) da biblioteca `lucide-react` para ilustrar os updates.
 
 ### Global Spacing (`AppShell.tsx`)
-- Alterar as classes de wrapper interno. No `main`, ajustar `pb-24 md:pb-8` para um valor maior (ex: `pb-32 md:pb-24`) e no contêiner interno garantir margem extra, para que não importe a altura da tela, o conteúdo não fique preso.
+- Alterar as classes de wrapper interno. No `main`, ajustar `pb-24 md:pb-8` para um valor maior (ex: `pb-32 md:pb-24`) e no contêiner interno garantir margem extra, para que nÁo importe a altura da tela, o conteúdo nÁo fique preso.

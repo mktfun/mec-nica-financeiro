@@ -1,13 +1,13 @@
-# Checklist: Implementação UI Revolut para Conciliação
+﻿# Checklist: ImplementaçÁo UI Revolut para ConciliaçÁo
 
 ## Fase 1: Motor Gráfico & Hero
 - [ ] Construir o hook `useWeeklyRevenueTrend()` para alimentar o gráfico com dados dos últimos 7 ou 14 dias de faturamento, gerando o vetor para a linha.
-- [ ] Criar o componente `<RevolutHeroChart>` integrando o Saldo Gigante do Dia com o `<LineChart>` minimalista (sem grid, sem eixos) no fundo do cartão.
+- [ ] Criar o componente `<RevolutHeroChart>` integrando o Saldo Gigante do Dia com o `<LineChart>` minimalista (sem grid, sem eixos) no fundo do cartÁo.
 
 ## Fase 2: Lista Elegante de Lojas
-- [ ] Mudar a iteração de lojas de um Grid para uma lista flex-col vertical.
+- [ ] Mudar a iteraçÁo de lojas de um Grid para uma lista flex-col vertical.
 - [ ] Criar o componente de linha `<StoreListItem>` (Ícone status, Nome da Loja, Valor alinhado à direita).
-- [ ] Implementar o "Ponto de Ação Neon" (Dot pulsante) se a loja precisa de `Smart Cash` (Dinheiro Físico pendente).
+- [ ] Implementar o "Ponto de AçÁo Neon" (Dot pulsante) se a loja precisa de `Smart Cash` (Dinheiro Físico pendente).
 
 ## Fase 3: Revolut Drawer
 - [ ] Atualizar o `<StoreDetailPane>` do Slide-over para o visual Revolut.

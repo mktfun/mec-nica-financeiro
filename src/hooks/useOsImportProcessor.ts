@@ -1,4 +1,4 @@
-import * as XLSX from 'xlsx';
+﻿import * as XLSX from 'xlsx';
 import { ParsedOS, ParsedReceivable } from './useImportProcessor';
 import { getDefaultDate } from '@/lib/utils';
 import { traceLog } from '@/lib/logger';
@@ -95,7 +95,7 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
               if (colName === 'os' || colName === 'nº os' || colName === 'nº da os' || colName === 'numero os' || colName === 'código' || colName === 'cod') colMap.os = idx;
               if (colName === 'data' || colName.includes('data entrada') || colName.includes('abertura') || (colName.includes('data') && colMap.openedAt === undefined)) colMap.openedAt = idx;
               if (colName === 'placa' || colName === 'veículo' || colName === 'veiculo') colMap.plate = idx;
-              if (colName === 'status' || colName === 'situação' || colName === 'situacao') colMap.status = idx;
+              if (colName === 'status' || colName === 'situaçÁo' || colName === 'situacao') colMap.status = idx;
               if (colName === 'finalizada em' || colName === 'data fim' || colName.includes('fechamento') || colName.includes('finalizada') || colName.includes('saida') || colName.includes('saída')) colMap.closedAt = idx;
               
               const isExactTotal = ['total', 'r$ total', 'valor total', 'vlr total', 'vl total', 'valor os', 'valor da os', 'valor final', 'bruto'].includes(colName);
@@ -119,7 +119,7 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
       }
 
       if (headerRowIndex === -1) {
-        throw new Error(`Não foi possível localizar o cabeçalho no arquivo ${file.name}`);
+        throw new Error(`NÁo foi possível localizar o cabeçalho no arquivo ${file.name}`);
       }
 
       let osCount = 0;
@@ -133,7 +133,7 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
         const osNumber = String(rawOsNumber).trim();
         if (!osNumber || osNumber.toLowerCase().includes('total')) continue;
 
-        // Se o status da coluna não foi mapeado pelo cabeçalho, tenta a coluna D (índice 3)
+        // Se o status da coluna nÁo foi mapeado pelo cabeçalho, tenta a coluna D (índice 3)
         const statusIdx = colMap.status !== undefined ? colMap.status : 3;
         const statusStr = String(row[statusIdx] || '').trim();
         
@@ -149,7 +149,7 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
         const diffMs = !isNaN(start.getTime()) && !isNaN(end.getTime()) ? (end.getTime() - start.getTime()) : 0;
         const days_open = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24))) || 0;
 
-        // 1. Extração antecipada das formas de pagamento (Crédito, Débito, PIX)
+        // 1. ExtraçÁo antecipada das formas de pagamento (Crédito, Débito, PIX)
         const payment_method_str = String(row[colMap.paymentMethod] || '').trim();
         let parsed_credit = 0;
         let parsed_debit = 0;
@@ -159,7 +159,7 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
           const upperMethod = payment_method_str.toUpperCase();
           let foundPair = false;
 
-          const regex = /(PIX|TRANSF|DEP|DINHEIRO|DÉBITO|DEBITO|CRÉDITO|CREDITO|CARTAO|CARTÃO)[^\d]*?([\d\.,]+)/gi;
+          const regex = /(PIX|TRANSF|DEP|DINHEIRO|DÉBITO|DEBITO|CRÉDITO|CREDITO|CARTAO|CARTÁO)[^\d]*?([\d\.,]+)/gi;
           let match;
 
           while ((match = regex.exec(upperMethod)) !== null) {
@@ -168,7 +168,7 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
             const val = valStr ? parseValue(valStr) : (paidValue || rawTotalValue);
 
             if (val > 0 || !valStr) {
-              if (method.includes('CREDITO') || method.includes('CRÉDITO') || method.includes('CARTAO') || method.includes('CARTÃO')) {
+              if (method.includes('CREDITO') || method.includes('CRÉDITO') || method.includes('CARTAO') || method.includes('CARTÁO')) {
                 parsed_credit += val;
                 foundPair = true;
               } else if (method.includes('DEBITO') || method.includes('DÉBITO')) {
@@ -186,7 +186,7 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
               parsed_pix_transfer = paidValue || rawTotalValue;
             } else if (upperMethod.includes('DEBITO') || upperMethod.includes('DÉBITO')) {
               parsed_debit = paidValue || rawTotalValue;
-            } else if (upperMethod.includes('CREDITO') || upperMethod.includes('CRÉDITO') || upperMethod.includes('CARTÃO') || upperMethod.includes('CARTAO')) {
+            } else if (upperMethod.includes('CREDITO') || upperMethod.includes('CRÉDITO') || upperMethod.includes('CARTÁO') || upperMethod.includes('CARTAO')) {
               parsed_credit = paidValue || rawTotalValue;
             }
           }
@@ -194,7 +194,7 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
 
         const sumPayments = parsed_credit + parsed_debit + parsed_pix_transfer;
 
-        // 2. Consolidação robusta do Valor Total e Valor Pago
+        // 2. ConsolidaçÁo robusta do Valor Total e Valor Pago
         let totalValue = Math.max(rawTotalValue, paidValue + openValue, sumPayments);
         if (totalValue === 0 && (paidValue > 0 || openValue > 0)) {
           totalValue = paidValue + openValue;
@@ -214,7 +214,7 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
           parsed_credit = totalValue || finalPaidValue;
         }
 
-        // 3. Determinação precisa do Status da OS
+        // 3. DeterminaçÁo precisa do Status da OS
         let statusEnum: 'em_aberto' | 'pago_parcial' | 'finalizado' = 'em_aberto';
 
         const isClosedStr = statusStr.match(/finalizad[oa]|pag[oa]|entregue|faturad[oa]|fechad[oa]|concluíd[oa]/i);
@@ -251,7 +251,7 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
 
       if (osArray.length > 0) {
         if (options?.sessionId) {
-          traceLog('3_EXTRACTION_EXCEL', 'DEBUG', `Extração Completa Pátio/OS: ${file.name}`, options.sessionId, {
+          traceLog('3_EXTRACTION_EXCEL', 'DEBUG', `ExtraçÁo Completa Pátio/OS: ${file.name}`, options.sessionId, {
             storeAlias,
             os_count: osArray.length,
             os_extracted_values: osArray.map(os => ({

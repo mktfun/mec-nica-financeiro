@@ -1,4 +1,4 @@
-import * as pdfjsLib from 'pdfjs-dist';
+﻿import * as pdfjsLib from 'pdfjs-dist';
 
 // Configurar o worker do PDF.js (necessário no client-side / Vite)
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
@@ -33,11 +33,11 @@ export async function parseMapaMetasPDF(file: File): Promise<MapaMetasResult> {
     }
 
     // Como o PDF do Oficina Inteligente ("Mapa de Metas") pode variar muito,
-    // e nós não temos o layout exato, a extração aqui é baseada em heurísticas simples.
+    // e nós nÁo temos o layout exato, a extraçÁo aqui é baseada em heurísticas simples.
     // O ideal seria procurar pelo nome da loja seguido de "R$ XXX.XXX,XX" no total de faturamento.
-    // Por enquanto, apenas tentaremos achar totais gerais se houver padrão, ou retornar tudo zero.
+    // Por enquanto, apenas tentaremos achar totais gerais se houver padrÁo, ou retornar tudo zero.
     
-    // ATENÇÃO: Esta é uma implementação stub robusta. Para 100% de precisão, seria necessário
+    // ATENÇÁO: Esta é uma implementaçÁo stub robusta. Para 100% de precisÁo, seria necessário
     // saber as posições ou regex exato gerado pelo relatório da Oficina Inteligente.
     // De acordo com o manual, bateremos o Faturamento Atual (Mapa de metas de hoje).
     
@@ -45,7 +45,7 @@ export async function parseMapaMetasPDF(file: File): Promise<MapaMetasResult> {
     let totalFaturamento = 0;
 
     // Buscar padrões como "Faturamento Total R$ 1.500,00" ou similar
-    // Como fallback, retornaremos vazio e permitiremos inserção manual no UI se não achar
+    // Como fallback, retornaremos vazio e permitiremos inserçÁo manual no UI se nÁo achar
     const matches = fullText.match(/Faturamento\s*.*?R\$?\s*([\d\.,]+)/gi);
     if (matches) {
        for (const match of matches) {

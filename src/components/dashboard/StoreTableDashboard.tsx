@@ -6,7 +6,7 @@ import type { StoreMetrics } from '@/hooks/useDashboardV2';
 import { useMemo } from 'react';
 
 interface StoreTableDashboardProps {
-  data: StoreMetrics[];
+  data: any[];
   isLoading?: boolean;
 }
 

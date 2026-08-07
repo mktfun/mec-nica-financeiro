@@ -1,4 +1,4 @@
-# Design: Correção da Extração de PIX & Expansão da Janela de Conciliação (fix-pix-parsing-and-extended-window)
+﻿# Design: CorreçÁo da ExtraçÁo de PIX & ExpansÁo da Janela de ConciliaçÁo (fix-pix-parsing-and-extended-window)
 
 ## 1. Parser Universal de Métodos de Pagamento em `useOsImportProcessor.ts`
 
@@ -12,7 +12,7 @@ function parsePaymentMethods(paymentMethodStr: string, paidValue: number, osValu
     const text = paymentMethodStr.toUpperCase();
     
     // Tenta capturar pares "METODO: VALOR" ou "METODO VALOR"
-    const regex = /(PIX|TRANSF|DEP|DINHEIRO|DÉBITO|DEBITO|CRÉDITO|CREDITO|CARTAO|CARTÃO)\s*[:\-\s]?\s*(?:R\$\s*)?([\d\.,]+)?/gi;
+    const regex = /(PIX|TRANSF|DEP|DINHEIRO|DÉBITO|DEBITO|CRÉDITO|CREDITO|CARTAO|CARTÁO)\s*[:\-\s]?\s*(?:R\$\s*)?([\d\.,]+)?/gi;
     let match;
     let foundSpecificValue = false;
 
@@ -21,7 +21,7 @@ function parsePaymentMethods(paymentMethodStr: string, paidValue: number, osValu
       const valStr = match[2];
       const val = valStr ? parseValue(valStr) : (paidValue || osValue);
 
-      if (method.includes('CREDITO') || method.includes('CRÉDITO') || method.includes('CARTAO') || method.includes('CARTÃO')) {
+      if (method.includes('CREDITO') || method.includes('CRÉDITO') || method.includes('CARTAO') || method.includes('CARTÁO')) {
         parsed_credit += val;
         foundSpecificValue = true;
       } else if (method.includes('DEBITO') || method.includes('DÉBITO')) {
@@ -87,11 +87,11 @@ patioOs?.forEach(os => {
 });
 ```
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 
 - **Cenário 1 (Soma do Card de PIX):**
-  - *Ação:* Navegar até a aba "3. PIX (OS -> Banco OFX)" da loja Dom Pedro.
-  - *Resultado Esperado:* O card "PIX (OS Sistema Pátio)" exibe a soma real de todas as vendas com PIX declarado (e não R$ 0,00).
+  - *AçÁo:* Navegar até a aba "3. PIX (OS -> Banco OFX)" da loja Dom Pedro.
+  - *Resultado Esperado:* O card "PIX (OS Sistema Pátio)" exibe a soma real de todas as vendas com PIX declarado (e nÁo R$ 0,00).
 - **Cenário 2 (Matching de PIX de Dias Anteriores D-7):**
-  - *Ação:* Abrir a conciliação do dia 23/07/2026.
+  - *AçÁo:* Abrir a conciliaçÁo do dia 23/07/2026.
   - *Resultado Esperado:* O PIX de R$ 680,00 recebido do cliente Ronildo no dia 17/07 é localizado na janela D-7 e faz match com a OS correspondente de R$ 680,00.

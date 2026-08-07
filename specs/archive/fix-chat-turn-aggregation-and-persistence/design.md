@@ -1,4 +1,4 @@
-# Design: Agrupamento de Turnos do Assistente, Passo a Passo Unificado e Persistência Pós-F5 (fix-chat-turn-aggregation-and-persistence)
+﻿# Design: Agrupamento de Turnos do Assistente, Passo a Passo Unificado e Persistência Pós-F5 (fix-chat-turn-aggregation-and-persistence)
 
 ## Arquitetura Técnica
 
@@ -16,14 +16,14 @@
   │           • Junta todas as ferramentas executadas em steps[]
   │
   ▼
-[Renderização de Turnos Únicos em MessageList.tsx]
+[RenderizaçÁo de Turnos Únicos em MessageList.tsx]
   │
-  ├── Turno do Usuário: Balão à direita
+  ├── Turno do Usuário: BalÁo à direita
   │
   └── Turno do Assistente Único:
        ├── Avatar Oficina GPT (Apenas 1 por turno!)
        ├── StepAccordion (Passo a passo com ferramentas executadas)
-       └── Balão Markdown (Texto final completo)
+       └── BalÁo Markdown (Texto final completo)
 
 [Persistência no Supabase em agente.tsx]
   └── onFinish(lastMessage):
@@ -92,17 +92,17 @@ export const aggregateAssistantTurns = (messages: Message[]): AggregatedTurn[] =
 };
 ```
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 
 - **Cenário 1: Consulta da OS 22551 (Agrupamento e Passo a Passo)**
-  - Ação: Enviar "quais os detalhes da OS 22551 no rei do oleo maua?"
+  - AçÁo: Enviar "quais os detalhes da OS 22551 no rei do oleo maua?"
   - Resultado esperado:
     1. Aparece apenas UM avatar Oficina GPT.
-    2. O acordeão `1 etapa concluída ˅` é exibido logo acima do texto da resposta.
+    2. O acordeÁo `1 etapa concluída ˅` é exibido logo acima do texto da resposta.
     3. A resposta completa (OS 22551, Aberta, R$ 520,00) aparece abaixo sem duplicidade.
 
 - **Cenário 2: Teste de Persistência pós-F5 (Refresh da Página)**
-  - Ação: Enviar pergunta, aguardar resposta, executar `page.reload()`
+  - AçÁo: Enviar pergunta, aguardar resposta, executar `page.reload()`
   - Resultado esperado:
     1. A página recarrega.
     2. A mensagem do assistente é carregada do Supabase e renderizada perfeitamente.

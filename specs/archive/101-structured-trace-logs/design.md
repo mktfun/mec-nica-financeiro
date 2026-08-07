@@ -1,4 +1,4 @@
-# Design: Trace Logs Estruturados (101)
+﻿# Design: Trace Logs Estruturados (101)
 
 ## 1. Novo Arquivo: `src/lib/logger.ts`
 ```typescript
@@ -38,7 +38,7 @@ export function traceLog(
 export const generateSessionId = () => `imp_${Math.random().toString(36).substring(2, 10)}`;
 ```
 
-## 2. Injeção de Logs nos Fluxos Principais
+## 2. InjeçÁo de Logs nos Fluxos Principais
 - **`WizardImportacao.tsx` / `CentralImportWizard.tsx`**:
   - `onDrop`: Gerar `session_id`, logar `1_UPLOAD` listando `files.map(f => ({ name: f.name, size: f.size }))`.
   - Final do parse: Logar `6_STAGING_READY` com a volumetria das transações preparadas.

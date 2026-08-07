@@ -1,4 +1,4 @@
-import * as XLSX from 'xlsx';
+﻿import * as XLSX from 'xlsx';
 import { ParsedExpense } from './contasAPagarParser';
 import { extractNumber } from '@/lib/parsers/numberUtils';
 import { normalizeRedeStoreName } from './storeMapping';
@@ -17,8 +17,8 @@ export function parseJurosRede(workbook: XLSX.WorkBook): ParsedExpense[] {
 
   for (let i = 0; i < 10; i++) {
     const row = data[i] || [];
-    const hasValorBruto = row.some(cell => String(cell).toLowerCase().includes('valor bruto'));
-    const hasValorCobrado = row.some(cell => String(cell).toLowerCase().includes('valor cobrado'));
+    const hasValorBruto = row.some(cell => String(cell).toLowerCase().includes('valor bruto') || String(cell).toLowerCase().includes('valor venda'));
+    const hasValorCobrado = row.some(cell => String(cell).toLowerCase().includes('valor cobrado') || String(cell).toLowerCase().includes('valor juros') || String(cell).toLowerCase().includes('valor de juros'));
     
     if (hasValorBruto && hasValorCobrado) {
       headersRowIndex = i;
@@ -28,7 +28,7 @@ export function parseJurosRede(workbook: XLSX.WorkBook): ParsedExpense[] {
   }
 
   if (headersRowIndex === -1 || storeRowIndex === -1) {
-    throw new Error('Formato inválido: Não foi possível localizar o cabeçalho de Juros (Valor Bruto, valor cobrado).');
+    throw new Error('Formato inválido: NÁo foi possível localizar o cabeçalho de Juros (Valor Bruto, valor cobrado/juros).');
   }
 
   const storeRow = data[storeRowIndex] || [];
@@ -74,7 +74,7 @@ export function parseJurosRede(workbook: XLSX.WorkBook): ParsedExpense[] {
       
       for (let c = block.startIndex; c <= block.endIndex; c++) {
         const h = headersRow[c] ? String(headersRow[c]).toLowerCase().trim() : '';
-        if (h === 'valor cobrado') colValorCobrado = c;
+        if (h === 'valor cobrado' || h === 'valor juros' || h === 'valor de juros') colValorCobrado = c;
         if (h === 'tipo' || h === 'bandeira' || h === 'modalidade') {
             if (colTipo === -1) colTipo = c;
         }
@@ -83,7 +83,7 @@ export function parseJurosRede(workbook: XLSX.WorkBook): ParsedExpense[] {
       if (colValorCobrado !== -1) {
         const rawVal = row[colValorCobrado];
         if (rawVal) {
-          const amount = extractNumber(rawVal);
+          const amount = Math.abs(extractNumber(rawVal));
 
           if (amount > 0) {
             const extraInfo = colTipo !== -1 && row[colTipo] ? String(row[colTipo]) : 'Desconhecida';
@@ -96,7 +96,7 @@ export function parseJurosRede(workbook: XLSX.WorkBook): ParsedExpense[] {
             expenses.push({
               storeName: normalizedStoreName,
               amount: amount,
-              description: `Juros Antecipação - Tipo: ${extraInfo}`,
+              description: `Juros AntecipaçÁo - Tipo: ${extraInfo}`,
               occurredAt: new Date().toISOString().split('T')[0],
               category: 'juros_rede',
               originalStatus: 'PAG'

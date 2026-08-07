@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+﻿﻿import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { getDefaultDate } from '@/lib/utils';
 import { useSaveImportedReport } from './useConciliacao';
@@ -20,7 +20,7 @@ export interface ParsedOS {
 }
 
 export interface ParsedReceivable {
-  type: 'Cartão Crédito' | 'Cartão Débito' | 'PIX' | 'Boleto';
+  type: 'CartÁo Crédito' | 'CartÁo Débito' | 'PIX' | 'Boleto';
   value: number;
   date: string;
   due_date: string;
@@ -35,7 +35,7 @@ export async function savePatioOsAndReceivables(
   osArray: ParsedOS[], 
   receivablesArray: ParsedReceivable[]
 ) {
-  // 1. Process Patio OS (upsert by os_number — idempotent)
+  // 1. Process Patio OS (upsert by os_number â€” idempotent)
   if (osArray.length > 0) {
     const { data: existingOs } = await supabase
       .from('patio_os')
@@ -225,7 +225,7 @@ export function useProcessImportedData() {
       // Para cada dia encontrado, salvar Totals, Logs e Transações (IDEMPOTENTE)
       for (const [date, summary] of Array.from(dailySummaries.entries())) {
         
-        // A) Save Reconciliations (upsert — substitui ao invés de somar)
+        // A) Save Reconciliations (upsert â€” substitui ao invés de somar)
         await saveImportedReport.mutateAsync({
           storeId,
           date,
@@ -234,7 +234,7 @@ export function useProcessImportedData() {
           bankTotal: ofxBankBalance,
         });
 
-        // B) Save Import Log (upsert por store_id + target_date — substitui)
+        // B) Save Import Log (upsert por store_id + target_date â€” substitui)
         const recCountForDate = receivablesArray.filter(r => r.date === date).length;
         await supabase.from('import_logs').upsert({
           store_id: storeId,
@@ -267,13 +267,13 @@ export function useProcessImportedData() {
               target_date: date,
               title: desc,
               os_number: os.os_number,
-              payment_method: os.payment_method || 'Não especificado'
+              payment_method: os.payment_method || 'NÁo especificado'
             });
           }
         }
 
         if (txToInsert.length > 0) {
-          await supabase.from('transactions').insert(txToInsert);
+          await supabase.from('manual_transactions').insert(txToInsert);
         }
       }
     },
@@ -368,11 +368,11 @@ export function useDeleteImport() {
         console.warn('RPC delete_import_batch notice:', e);
       }
 
-      // 2. Fallback resiliente via JS Client para garantir que os logs e registros não fiquem órfãos
+      // 2. Fallback resiliente via JS Client para garantir que os logs e registros nÁo fiquem órfÁos
       if (logIds && logIds.length > 0) {
         if (storeId && storeId !== 'GLOBAL' && targetDates && targetDates.length > 0) {
           await supabase.from('conciliation_matches').delete().eq('store_id', storeId).in('target_date', targetDates);
-          await supabase.from('transactions').delete().eq('store_id', storeId).in('target_date', targetDates);
+          await supabase.from('manual_transactions').delete().eq('store_id', storeId).in('target_date', targetDates);
           await supabase.from('patio_os').delete().eq('store_id', storeId);
           await supabase.from('receivables').delete().eq('store_id', storeId);
           await supabase.from('reconciliations').delete().eq('store_id', storeId).in('date', targetDates);
@@ -425,3 +425,4 @@ export function useClearAllData() {
     }
   });
 }
+

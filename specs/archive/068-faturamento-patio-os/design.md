@@ -1,13 +1,13 @@
-# Design Document: Spec 068
+﻿# Design Document: Spec 068
 
 ## 1. Arquitetura de Dados (Faturamento)
 A métrica de Faturamento passará a ser derivada da tabela `patio_os`.
-- **Regra de Negócio (Faturamento OS):** A OS é contabilizada como Faturamento no dia em que ela foi FECHADA (`closed_at`). OSs em aberto (no pátio) não entram no Faturamento (já que são contabilizadas como "A Receber").
+- **Regra de Negócio (Faturamento OS):** A OS é contabilizada como Faturamento no dia em que ela foi FECHADA (`closed_at`). OSs em aberto (no pátio) nÁo entram no Faturamento (já que sÁo contabilizadas como "A Receber").
 - **Tabela:** `patio_os`
-- **Condição:** `closed_at` deve corresponder (startsWith) à data alvo (`targetDate`).
+- **CondiçÁo:** `closed_at` deve corresponder (startsWith) à data alvo (`targetDate`).
 - **Valor Somado:** `total_value` (Valor bruto total da OS).
 
-## 2. Refatoração do `useDashboardV2.ts`
+## 2. RefatoraçÁo do `useDashboardV2.ts`
 ### 2.1 Fetch Inicial
 Atualmente o hook faz:
 ```typescript
@@ -41,6 +41,6 @@ Mudaremos para:
 
 ### 2.3 Cálculo do Histórico (Macro Chart)
 Atualmente o `historicoMacro` usa `import_logs` para extrair o `Faturamento` dos últimos dias.
-Isso será reescrito. Como a query de `patio_os` (sem limite de data) já traz TODO o histórico que está no banco, não precisamos de uma nova query macro para as OSs. Podemos apenas iterar sobre o cache do `patio_os` já baixado!
-- Agruparemos os `total_value` por loja/data, garantindo que o gráfico reflita com exatidão o Faturamento de OSs para qualquer dia passado presente em `monthDates`.
+Isso será reescrito. Como a query de `patio_os` (sem limite de data) já traz TODO o histórico que está no banco, nÁo precisamos de uma nova query macro para as OSs. Podemos apenas iterar sobre o cache do `patio_os` já baixado!
+- Agruparemos os `total_value` por loja/data, garantindo que o gráfico reflita com exatidÁo o Faturamento de OSs para qualquer dia passado presente em `monthDates`.
 - E os lançamentos manuais do `daily_snapshots` continuam sendo somados normalmente à data correspondente do gráfico.

@@ -1,15 +1,15 @@
-# Proposal: Oficina System Connector (oficina-system-connector)
+﻿# Proposal: Oficina System Connector (oficina-system-connector)
 
 ## Problema
 
 O ConciliaMec Bot hoje expõe apenas 2 endpoints de **leitura sob demanda**: `GET /api/os/:id` e `GET /api/os/detalhe/:id`. Ele é um "bot de OS" operando de forma míope, mesmo que internamente o Playwright já possua os seletores e o Atlas para navegar em Financeiro, Estoque, Agenda e Config do Oficina Inteligente.
 
 **Consequências diretas:**
-- O agente IA do webapp não consegue responder perguntas sobre contas a pagar, agenda, estoque ou config sem tentar chamar um endpoint inexistente ou alucinando dados.
-- A API não recebe `loja_slug` — o bot assume que há uma única empresa, o que quebra o uso multi-loja do ConciliaMec.
-- Não existe um mapa de vínculo `store_id ConciliaMec ↔ empresa_slug Oficina` — o agente IA não sabe em qual empresa entrar para responder "OS da loja Jabaquara".
+- O agente IA do webapp nÁo consegue responder perguntas sobre contas a pagar, agenda, estoque ou config sem tentar chamar um endpoint inexistente ou alucinando dados.
+- A API nÁo recebe `loja_slug` — o bot assume que há uma única empresa, o que quebra o uso multi-loja do ConciliaMec.
+- NÁo existe um mapa de vínculo `store_id ConciliaMec ↔ empresa_slug Oficina` — o agente IA nÁo sabe em qual empresa entrar para responder "OS da loja Jabaquara".
 
-## Solução Proposta
+## SoluçÁo Proposta
 
 Expandir o `bot/src/server.ts` e o `bot/src/scrapers/oficina.ts` para:
 
@@ -45,7 +45,7 @@ GET /api/config/formas-pagamento?loja=<slug>
   "st-02": { "empresa_slug": "mp_brooklin",  "nome_display": "MP Brooklin",  "id_empresa_oi": "13" }
 }
 ```
-*Campos preenchidos na primeira execução; pode ser configurado também no Supabase via `stores.metadata`.*
+*Campos preenchidos na primeira execuçÁo; pode ser configurado também no Supabase via `stores.metadata`.*
 
 ### Mudança nos endpoints existentes
 ```
@@ -81,6 +81,6 @@ GET /api/os/detalhe/:id?loja=<slug>  (idem)
 
 ## Risco Principal
 
-**Seletores do Oficina para novos domínios são desconhecidos.** Temos o Atlas mapeado em memória, mas os seletores exatos de `wfContaBuscaPagar.aspx` (IDs dos inputs de filtro, ID da grid, colunas) precisam ser validados em ambiente real (bot headed ou screenshot). O risco é implementar scrapers com seletores errados que retornam arrays vazios em vez de erros explícitos.
+**Seletores do Oficina para novos domínios sÁo desconhecidos.** Temos o Atlas mapeado em memória, mas os seletores exatos de `wfContaBuscaPagar.aspx` (IDs dos inputs de filtro, ID da grid, colunas) precisam ser validados em ambiente real (bot headed ou screenshot). O risco é implementar scrapers com seletores errados que retornam arrays vazios em vez de erros explícitos.
 
-**Mitigação:** Cada nova função de scraper deverá ter um fallback que retorna `{ warning: "Seletor não encontrado", parcial: [] }` em vez de exceção, permitindo que a IA informe ao usuário que o dado não pôde ser extraído em vez de quebrar a função inteira.
+**MitigaçÁo:** Cada nova funçÁo de scraper deverá ter um fallback que retorna `{ warning: "Seletor nÁo encontrado", parcial: [] }` em vez de exceçÁo, permitindo que a IA informe ao usuário que o dado nÁo pôde ser extraído em vez de quebrar a funçÁo inteira.

@@ -1,4 +1,4 @@
-# Design: Dashboard Fintech V4 (064)
+﻿# Design: Dashboard Fintech V4 (064)
 
 ## Arquitetura Técnica
 A lógica de ancoragem temporal precisa ser flexível.
@@ -22,20 +22,20 @@ export function useDashboardV2(selectedDateStr?: string) { ... }
 - **`src/routes/index.tsx`** [MODIFICADO]:
   - Criar state local `const [selectedDate, setSelectedDate] = useState<string>('')`.
   - Passar o `selectedDate` pro hook `useDashboardV2(selectedDate || undefined)`.
-  - No lugar da Badge "Última conciliação: DD/MM/YYYY", colocar um `<input type="date" value={selectedDate || data?.dataAtual} />` com design limpo (bordas sutis, fundo escuro).
+  - No lugar da Badge "Última conciliaçÁo: DD/MM/YYYY", colocar um `<input type="date" value={selectedDate || data?.dataAtual} />` com design limpo (bordas sutis, fundo escuro).
 - **`StoreTableDashboard.tsx`** [MODIFICADO]:
   - Ajustar classes CSS: Aumentar sutilmente o min-width das colunas críticas (`whitespace-nowrap` já está ativo, mas o contêiner precisa dar espaço para scroll horizontal sem espremer as colunas flexíveis).
-  - Coluna Pátio: Alterar a formatação de "12 ud. • R$ 34.000" para algo empilhado (flex-col) com fontes menores ou sem a palavra "ud.", para poupar espaço horizontal.
+  - Coluna Pátio: Alterar a formataçÁo de "12 ud. • R$ 34.000" para algo empilhado (flex-col) com fontes menores ou sem a palavra "ud.", para poupar espaço horizontal.
 
 ## Fluxo de UI
-1. Usuário entra e vê os dados do dia que tem os dados mais recentes por padrão.
+1. Usuário entra e vê os dados do dia que tem os dados mais recentes por padrÁo.
 2. Ele percebe o calendário no canto superior direito e seleciona um dia do mês passado (ex: 2026-07-25).
-3. Todas as queries rodam e mostram a situação de caixa, faturamento e contas exatamente como estavam atrelados à conciliação daquele dia 25/07. O gráfico de evolução atualiza para mostrar do dia 10/07 até 25/07.
+3. Todas as queries rodam e mostram a situaçÁo de caixa, faturamento e contas exatamente como estavam atrelados à conciliaçÁo daquele dia 25/07. O gráfico de evoluçÁo atualiza para mostrar do dia 10/07 até 25/07.
 
-## Cenários de Verificação
+## Cenários de VerificaçÁo
 - **Cenário 1:** Limpeza do input date.
   - SCAN: Usuário apaga a data do campo.
   - INFER: `selectedDate` fica vazio. O hook reassume o default (maior data do banco).
 - **Cenário 2:** Tabela em telas menores (laptop 13").
   - SCAN: Tabela com 7 colunas.
-  - INFER: Com o empilhamento do Pátio e `whitespace-nowrap`, a tabela não "quebra" em múltiplas linhas caóticas, mas permite scroll horizontal suave.
+  - INFER: Com o empilhamento do Pátio e `whitespace-nowrap`, a tabela nÁo "quebra" em múltiplas linhas caóticas, mas permite scroll horizontal suave.

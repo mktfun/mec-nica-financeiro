@@ -1,4 +1,4 @@
-# Design: Teste Granular N:1 (Múltiplas Transações de Maquininha/OS -> 1 Único Depósito OFX/PIX) (granular-n-to-one-matching-test)
+﻿# Design: Teste Granular N:1 (Múltiplas Transações de Maquininha/OS -> 1 Único Depósito OFX/PIX) (granular-n-to-one-matching-test)
 
 ## Fluxo de Teste Granular N:1 (Maquininha/OS x Depósito Único OFX)
 
@@ -25,20 +25,20 @@
 ## Casos de Teste Granulares
 
 1. **Caso A (5 Vendas Maquininha -> 1 Depósito Líquido OFX):**
-   - 5 transações de cartão com valores centavados fracionados pareando com 1 linha de extrato bancário.
+   - 5 transações de cartÁo com valores centavados fracionados pareando com 1 linha de extrato bancário.
 2. **Caso B (4 Lançamentos PIX em OS -> 1 Depósito Único PIX OFX):**
    - 4 pagamentos fracionados de OSs diferentes que caíram no mesmo lote de PIX bancário.
 3. **Caso C (1 OS -> 3 Cartões de Crédito Diferentes):**
    - 1 OS de valor elevado fracionada em 3 parcelas de cartões de débito/crédito.
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 
 - **Cenário 1 (Batimento de Soma Subset Sum):**
-  - *Ação:* Injetar as N mini transações e o 1 depósito único.
-  - *Resultado Esperado:* A função `findExactSubsetMatch` localiza o conjunto exato de N itens cuja soma é igual ao valor do depósito (descontada a taxa de MDR/Juros).
-- **Cenário 2 (Intervenção da IA em Casos Complexos):**
-  - *Ação:* Se o número de itens exceder a profundidade direta ou possuir variações de data D+1/D+2.
+  - *AçÁo:* Injetar as N mini transações e o 1 depósito único.
+  - *Resultado Esperado:* A funçÁo `findExactSubsetMatch` localiza o conjunto exato de N itens cuja soma é igual ao valor do depósito (descontada a taxa de MDR/Juros).
+- **Cenário 2 (IntervençÁo da IA em Casos Complexos):**
+  - *AçÁo:* Se o número de itens exceder a profundidade direta ou possuir variações de data D+1/D+2.
   - *Resultado Esperado:* A IA em background é acionada, gera o log em `ai_execution_logs` e registra os vínculos em `conciliation_matches` com `confidence >= 90%`.
 - **Cenário 3 (Purga Implacável de Dados):**
-  - *Ação:* Concluir a validação e rodar a rotina de limpeza.
+  - *AçÁo:* Concluir a validaçÁo e rodar a rotina de limpeza.
   - *Resultado Esperado:* O banco de dados retorna a 0 registros fictícios.

@@ -1,9 +1,9 @@
-# Spec Plan: Dashboard Fintech V5 (065)
+﻿# Spec Plan: Dashboard Fintech V5 (065)
 
 ## Tasks
 
 - [x] [BACKEND] Atualizar `src/components/importacoes/CentralImportWizard.tsx`
-  - [x] Consertar hardcode de `total_os: 0` na geração do `logsToInsert`
+  - [x] Consertar hardcode de `total_os: 0` na geraçÁo do `logsToInsert`
   - [x] Somar o valor total (Faturamento real) dos `osFiles` e passar para a variável
 - [x] [BACKEND] Atualizar hook de métricas (`src/hooks/useDashboardV2.ts`)
   - [x] Trocar consulta de `.from('reconciliations')` para `.from('import_logs')` para discovery de datas e ancoragem de faturamento

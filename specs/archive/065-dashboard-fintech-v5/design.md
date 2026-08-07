@@ -1,8 +1,8 @@
-# Design: Dashboard Fintech V5 (065)
+﻿# Design: Dashboard Fintech V5 (065)
 
 ## Arquitetura de Dados (Data Flow)
 
-O Dashboard abandonará completamente as tabelas legadas (`reconciliations` e `oficina_contas`) e fará o merge dos dados diretamente do coração da operação:
+O Dashboard abandonará completamente as tabelas legadas (`reconciliations` e `oficina_contas`) e fará o merge dos dados diretamente do coraçÁo da operaçÁo:
 
 1. **Eixo do Tempo (`import_logs`):**
    - Substitui `reconciliations` como fonte de descoberta de datas (`uniqueDates`).
@@ -20,7 +20,7 @@ O Dashboard abandonará completamente as tabelas legadas (`reconciliations` e `o
    - Lógica: Consulta na tabela `transactions`.
    - Filtro: `target_date = dateAtual`, `amount < 0`, `source = 'ofx'`.
    - Matemática: `Math.abs(amount)`.
-   - Aplicação: Isso alimentará o KPI "Contas" global e o "Contas" de cada loja na tabela `Resultado por Loja`.
+   - AplicaçÁo: Isso alimentará o KPI "Contas" global e o "Contas" de cada loja na tabela `Resultado por Loja`.
 
 5. **A Receber:**
    - Adiciona o campo manual `a_receber_manual` (do Snapshot) na contagem global de A Receber.
@@ -33,5 +33,5 @@ O Dashboard abandonará completamente as tabelas legadas (`reconciliations` e `o
 2. **`src/hooks/useDashboardV2.ts`:**
    - Alterar query inicial de datas de `.from('reconciliations')` para `.from('import_logs')`.
    - Inserir uma query extra para pegar o snapshot do dia: `.from('daily_snapshots').select('*').eq('date', dateAtual).maybeSingle()`.
-   - Alterar a query de `oficina_contas` para usar a já existente requisição de `transactions` (ou fazê-la se não estiver lá) e somar os valores negativos para formar o KPI de Contas.
-   - Refatorar a atribuição final de variáveis (Faturamento, Contas, Saldo) incorporando os campos manuais do snapshot e a saída do OFX.
+   - Alterar a query de `oficina_contas` para usar a já existente requisiçÁo de `transactions` (ou fazê-la se nÁo estiver lá) e somar os valores negativos para formar o KPI de Contas.
+   - Refatorar a atribuiçÁo final de variáveis (Faturamento, Contas, Saldo) incorporando os campos manuais do snapshot e a saída do OFX.

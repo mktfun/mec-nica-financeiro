@@ -1,4 +1,4 @@
-# Design: Restauração Exata do Visual Original da Conciliação (conciliacao-exact-layout-restoration)
+﻿# Design: RestauraçÁo Exata do Visual Original da ConciliaçÁo (conciliacao-exact-layout-restoration)
 
 ## Estrutura do `ResumoDiaPanel.tsx`
 
@@ -44,8 +44,8 @@
 </Card>
 ```
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 
 - **Cenário 1 (Fundo e Estilo dos Cards em `/conciliacao`):**
-  - *Ação:* Visualizar a tela de conciliação.
+  - *AçÁo:* Visualizar a tela de conciliaçÁo.
   - *Resultado Esperado:* O painel principal e os cards de loja reaparecem com o fundo limpo e sóbrio exatamente igual às versões de 6 a 7 commits atrás (`298246a`), com caixas internas `bg-black/20` e bordas translúcidas `border-white/5`.

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+﻿import React, { useCallback, useState } from 'react';
 import { Upload, File } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -94,7 +94,7 @@ export function UniversalDropzone({ onFilesAccepted, isProcessing }: UniversalDr
           <Upload size={36} className="text-white" />
         </motion.div>
         
-        <h3 className="text-2xl font-display font-bold text-[var(--text-primary)] mb-2 tracking-tight">Central de Importação Massiva</h3>
+        <h3 className="text-2xl font-display font-bold text-[var(--text-primary)] mb-2 tracking-tight">Central de ImportaçÁo Massiva</h3>
         <p className="text-[var(--text-secondary)] mb-6 max-w-md">
           Arraste e solte arquivos <strong>.OFX</strong>, <strong>Maquininha (.XLSX)</strong> ou <strong>Juros Rede (.XLSX)</strong>. O sistema classificará e processará todos automaticamente.
         </p>

@@ -1,4 +1,4 @@
-# Design: Pareamento Agrupado de Conciliação, Modal de Detalhes da OS e Redesign de Cards (conciliacao-visual-grouping)
+﻿# Design: Pareamento Agrupado de ConciliaçÁo, Modal de Detalhes da OS e Redesign de Cards (conciliacao-visual-grouping)
 
 ## Arquitetura de Agrupamento por Depósito (Aba 2 & Aba 3)
 
@@ -18,8 +18,8 @@
 - Exibe:
   - Cabeçalho: Número da OS, Cliente, Data, Status.
   - Cards de resumo: Valor Total, Valor Pago, Saldo Devedor.
-  - Tabela de Formas de Pagamento: Cartão Crédito/Débito, PIX, Dinheiro.
-  - Indicador de Conciliação por forma de pagamento.
+  - Tabela de Formas de Pagamento: CartÁo Crédito/Débito, PIX, Dinheiro.
+  - Indicador de ConciliaçÁo por forma de pagamento.
 
 ### 2. Agrupamento em `RedeVsOfxTable.tsx` (Aba 2)
 - Reorganizado de 2 colunas separadas para **Cards Agrupados por Depósito OFX**.
@@ -29,7 +29,7 @@
 - Agrupamento das entradas de PIX do OFX com as OSs do Pátio com pagamento via PIX.
 
 ### 4. Ajustes em `useConciliacao.ts`
-- Remoção da cláusula `.eq('entry_date', date)` na busca de `patio_os` para garantir que OSs com datas de cadastro em dias vizinhos sejam encontradas e exibam o faturamento correto em vez de `R$ 0,00`.
+- RemoçÁo da cláusula `.eq('entry_date', date)` na busca de `patio_os` para garantir que OSs com datas de cadastro em dias vizinhos sejam encontradas e exibam o faturamento correto em vez de `R$ 0,00`.
 
 ## Restrições de UI
 - Paleta Dark UI: Zinc-950 (`bg-[#050711]`), cards `bg-[var(--bg-surface-elevated)]`, bordas `border-zinc-800`.

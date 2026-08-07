@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
@@ -82,7 +82,7 @@ export function Modulo1SaldoPanel({ storesData, selectedDate, onUpdateStoreField
           <p className="text-xl font-bold font-mono text-[var(--color-accent-teal)]">
             <AnimatedNumber value={globalCalculated.dinheiro_mp_g14} format="currency" />
           </p>
-          <span className="text-[10px] text-[var(--text-tertiary)] block">Espécie + Não Entrou (Lançado Manual)</span>
+          <span className="text-[10px] text-[var(--text-tertiary)] block">Espécie + NÁo Entrou (Lançado Manual)</span>
         </div>
 
         {/* G15: A Receber (Módulo 3) */}
@@ -150,7 +150,7 @@ export function Modulo1SaldoPanel({ storesData, selectedDate, onUpdateStoreField
         <div className="p-6 space-y-4 bg-[var(--bg-canvas)]">
           <h4 className="font-display text-sm font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-2">
             <Layers size={16} className="text-[var(--color-primary)]" />
-            Detalhamento por Loja (Visão Aba SALDO Individual)
+            Detalhamento por Loja (VisÁo Aba SALDO Individual)
           </h4>
 
           <div className="overflow-x-auto">

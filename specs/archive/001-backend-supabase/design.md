@@ -1,4 +1,4 @@
-# 001 · Design — Backend Supabase
+﻿# 001 · Design — Backend Supabase
 
 ## Stack
 
@@ -19,7 +19,7 @@
 O Supabase cria automaticamente `auth.users`. Vamos criar apenas:
 
 ```sql
--- Perfis de usuário (extensão do auth.users)
+-- Perfis de usuário (extensÁo do auth.users)
 CREATE TABLE public.profiles (
   id          UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   full_name   TEXT,
@@ -61,7 +61,7 @@ CREATE TABLE public.stores (
 -- Seed das 10 lojas (a ser executado via migration)
 ```
 
-### Fase 3 — Conciliação
+### Fase 3 — ConciliaçÁo
 
 ```sql
 CREATE TABLE public.reconciliations (
@@ -173,7 +173,7 @@ CREATE TABLE public.receivables (
   store_id    TEXT REFERENCES public.stores(id),
   store_name  TEXT,
   
-  type        TEXT NOT NULL, -- 'Cartão Crédito' | 'Cartão Débito' | 'PIX' | 'Boleto'
+  type        TEXT NOT NULL, -- 'CartÁo Crédito' | 'CartÁo Débito' | 'PIX' | 'Boleto'
   value       NUMERIC(12,2) NOT NULL,
   status      TEXT NOT NULL DEFAULT 'pendente', -- 'pendente' | 'recebido' | 'vencido'
   
@@ -231,7 +231,7 @@ CREATE POLICY "reconciliations_service_write" ON public.reconciliations
 CREATE POLICY "reconciliations_service_update" ON public.reconciliations
   FOR UPDATE USING (auth.uid() IS NOT NULL);
 
--- Alerts, Transactions, Patio, Receivables: mesmo padrão
+-- Alerts, Transactions, Patio, Receivables: mesmo padrÁo
 -- (autenticados leem, service role escreve via bot)
 ```
 
@@ -255,7 +255,7 @@ src/
 │   └── login.tsx            ← Tela de login
 ```
 
-### Proteção de Rotas — TanStack Router
+### ProteçÁo de Rotas — TanStack Router
 
 ```ts
 // Em cada rota protegida, no beforeLoad:
@@ -289,7 +289,7 @@ Fase 2 (Lojas)
           └── routes/patio.tsx
           └── routes/recebiveis.tsx
 
-Fase 3 (Conciliação + Alertas)
+Fase 3 (ConciliaçÁo + Alertas)
   └── Migration: reconciliations + alerts + transactions
       └── hooks/useConciliacao.ts → routes/conciliacao.tsx
       └── hooks/useAlerts.ts → routes/alertas.tsx

@@ -1,4 +1,4 @@
-# Design: Oficina System Connector (oficina-system-connector)
+﻿# Design: Oficina System Connector (oficina-system-connector)
 
 ## Arquitetura Técnica
 
@@ -101,7 +101,7 @@ export interface FiltrosAgenda {
 
 ### Bot (`bot/src/`)
 
-| Arquivo | Função | Responsabilidade |
+| Arquivo | FunçÁo | Responsabilidade |
 |---|---|---|
 | `config/empresas.json` | — | Mapa store_id → empresa OI |
 | `config/empresas.ts` | `resolveEmpresa(lojaSlug)` | Retorna `EmpresaConfig` pelo slug ou store_id |
@@ -119,16 +119,16 @@ export interface FiltrosAgenda {
 
 ### Edge Function (`supabase/functions/ai-chat/index.ts`)
 
-| Tool | Descrição | Quando usar |
+| Tool | DescriçÁo | Quando usar |
 |---|---|---|
-| `consulta_contas_pagar_oficina` | Busca contas a pagar no Oficina externo | Dado não existe no Supabase local |
+| `consulta_contas_pagar_oficina` | Busca contas a pagar no Oficina externo | Dado nÁo existe no Supabase local |
 | `consulta_contas_receber_oficina` | Busca contas a receber no Oficina externo | Idem |
-| `consulta_agenda_oficina` | Busca agenda do dia/semana | Não existe localmente |
-| `consulta_config_oficina` | Busca config de status/formas | Não existe localmente |
+| `consulta_agenda_oficina` | Busca agenda do dia/semana | NÁo existe localmente |
+| `consulta_config_oficina` | Busca config de status/formas | NÁo existe localmente |
 
 Todas as tools externas incluem o parâmetro `loja` (opcional — mapeado a partir do contexto da conversa).
 
-## Padrão de Seletores ASP.NET WebForms
+## PadrÁo de Seletores ASP.NET WebForms
 
 Baseado na memória `domain.md#vps-mcp-aspnet`:
 
@@ -153,27 +153,27 @@ await page.waitForSelector('table[id*="grd"]', { timeout: 10_000 });
 - **Bot (VPS):** Alterações em `bot/src/`. Deploy via `git push main` → VPS faz `git pull` → `docker compose build` → `docker compose up -d`.
 - **Edge Function:** Deploy via `npx supabase functions deploy ai-chat --project-ref cnwzsvowkfymtdiryhqc`.
 - **Variáveis de ambiente no Bot:** Nenhuma nova necessária — usa `BOT_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` já existentes.
-- **`empresas.json`:** Commitado junto com o código. Pode ser sobrescrito por configuração no Supabase futuramente.
+- **`empresas.json`:** Commitado junto com o código. Pode ser sobrescrito por configuraçÁo no Supabase futuramente.
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 
 - **Cenário 1 — Contas a Pagar com Loja:**
   - Estado: Bot rodando, loja `mp_jabaquara` mapeada no `empresas.json`
-  - Ação: `GET /api/contas-pagar?loja=mp_jabaquara&vencimento_inicio=2026-07-01`
+  - AçÁo: `GET /api/contas-pagar?loja=mp_jabaquara&vencimento_inicio=2026-07-01`
   - Esperado: JSON com array de `ContaPagar[]`, cada item com fornecedor, valor, vencimento
 
 - **Cenário 2 — Agente IA usa loja a partir do contexto:**
   - Estado: Usuário pergunta "quais contas vencem essa semana na Jabaquara?"
-  - Ação: Agente extrai "Jabaquara" → mapeia para `store_id st-01` → passa `loja=mp_jabaquara` para `consulta_contas_pagar_oficina`
+  - AçÁo: Agente extrai "Jabaquara" → mapeia para `store_id st-01` → passa `loja=mp_jabaquara` para `consulta_contas_pagar_oficina`
   - Esperado: Agente retorna lista formatada de contas a vencer
 
 - **Cenário 3 — Bot sem loja fornecida:**
   - Estado: `GET /api/contas-pagar` sem parâmetro `loja`
   - Esperado: Retorna `400 Bad Request: "Parâmetro loja é obrigatório."` (domínio financeiro requer empresa)
 
-- **Cenário 4 — Seletor não encontrado (seletor inválido no scraper):**
+- **Cenário 4 — Seletor nÁo encontrado (seletor inválido no scraper):**
   - Estado: Scraper tenta `table[id*="grd"]` mas a tela mudou
-  - Esperado: Retorna `{ warning: "Grid não encontrada na tela", parcial: [] }` — NÃO exceção não tratada
+  - Esperado: Retorna `{ warning: "Grid nÁo encontrada na tela", parcial: [] }` — NÁO exceçÁo nÁo tratada
 
 - **Cenário 5 — Agente IA sem loja no contexto:**
   - Estado: Usuário pergunta "quais contas vencem essa semana?" (sem mencionar loja)

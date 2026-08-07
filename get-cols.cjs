@@ -1,26 +1,16 @@
-﻿const fs = require('fs');
-const path = require('path');
-require('dotenv').config();
-
-const projectRef = 'cnwzsvowkfymtdiryhqc';
+﻿require('dotenv').config();
 const token = process.env.SUPABASE_ACCESS_TOKEN;
+const projectRef = 'cnwzsvowkfymtdiryhqc';
 
-async function runSql(querySql) {
+async function runSql() {
   const response = await fetch('https://api.supabase.com/v1/projects/' + projectRef + '/database/query', {
     method: 'POST',
     headers: {
       'Authorization': 'Bearer ' + token,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ query: querySql })
+    body: JSON.stringify({ query: "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'transactions'" })
   });
-
-  const text = await response.text();
-  console.log(text);
+  console.log(await response.text());
 }
-
-runSql(
-SELECT column_name 
-FROM information_schema.columns 
-WHERE table_name = 'patio_os'
-);
+runSql();

@@ -5,7 +5,7 @@ import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Store } from 'lucide-react';
 import { useState } from 'react';
 import { useStores } from '@/hooks/useStores';
-import { useBackendConciliacao } from '@/hooks/useBackendConciliacao';
+import { useBackendConciliacao, useGlobalOfxOut } from '@/hooks/useBackendConciliacao';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { ResumoDiaPanel } from '@/components/conciliacao/ResumoDiaPanel';
 import { StoreSaldoState } from '@/lib/modulo1Calculations';
@@ -19,8 +19,9 @@ function ConciliacaoPage() {
 
   const { data: stores = [], isLoading: loadingStores } = useStores();
   const { data: logsData = [], isLoading: loadingLogs } = useBackendConciliacao(selectedDate);
+  const { data: globalOfxOut = 0, isLoading: loadingOfxOut } = useGlobalOfxOut(selectedDate);
 
-  const isLoading = loadingStores || loadingLogs;
+  const isLoading = loadingStores || loadingLogs || loadingOfxOut;
 
   const resultado = logsData.reduce((acc, log) => acc + log.diferenca, 0);
   const isApproved = logsData.every(log => log.status === 'approved');
@@ -81,7 +82,7 @@ function ConciliacaoPage() {
               totalBancarioIn={totalBancarioIn}
               totalBancarioRaw={totalBancarioRaw}
               totalOfxIn={totalBancarioIn}
-              totalOfxOut={0}
+              totalOfxOut={globalOfxOut}
               storesData={storesState}
             />
 

@@ -1,9 +1,9 @@
-# Design: Acionamento Automático em Background do Motor de IA & Registro de Logs (auto-background-ai-reconciler)
+﻿# Design: Acionamento Automático em Background do Motor de IA & Registro de Logs (auto-background-ai-reconciler)
 
 ## Arquitetura de Acionamento em Background
 
 ```
-[Importação / Carregamento de Conciliação]
+[ImportaçÁo / Carregamento de ConciliaçÁo]
                     |
                     v
    [useBackgroundAiReconciler Hook]
@@ -69,20 +69,20 @@ export function useBackgroundAiReconciler(
         queryClient.invalidateQueries({ queryKey: ['ai_execution_logs'] });
       })
       .catch(err => {
-        console.warn('Execução silenciosa da IA encontrou aviso:', err);
+        console.warn('ExecuçÁo silenciosa da IA encontrou aviso:', err);
       });
   }, [storeId, targetDate, unmatchedOs.length, unmatchedOfx.length, aiSettings]);
 }
 ```
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 
-- **Cenário 1 (Execução Automática de Background):**
-  - *Ação:* Navegar na conciliação de uma loja com vendas de PIX ou cartão não pareadas e com API key configurada.
+- **Cenário 1 (ExecuçÁo Automática de Background):**
+  - *AçÁo:* Navegar na conciliaçÁo de uma loja com vendas de PIX ou cartÁo nÁo pareadas e com API key configurada.
   - *Resultado Esperado:* O hook de background dispara a chamada de IA de forma invisível.
-- **Cenário 2 (Gravação de Logs na Central `/agente`):**
-  - *Ação:* Acessar `/agente` na aba "Telemetria & Custos" ou "Inspector JSON".
+- **Cenário 2 (GravaçÁo de Logs na Central `/agente`):**
+  - *AçÁo:* Acessar `/agente` na aba "Telemetria & Custos" ou "Inspector JSON".
   - *Resultado Esperado:* A chamada recém-executada aparece registrada com contagem de tokens, custo em dólares, payload JSON de entrada/saída e os passos de raciocínio.
-- **Cenário 3 (Prevenção de Loop de Chamadas):**
-  - *Ação:* Re-renderizar a página de conciliação sem alterar os dados.
+- **Cenário 3 (PrevençÁo de Loop de Chamadas):**
+  - *AçÁo:* Re-renderizar a página de conciliaçÁo sem alterar os dados.
   - *Resultado Esperado:* A trava de hash impede que chamadas duplicadas sejam enviadas para a API de IA.

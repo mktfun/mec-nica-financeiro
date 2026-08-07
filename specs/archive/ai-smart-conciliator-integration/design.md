@@ -1,9 +1,9 @@
-# Design: Assistente Inteligente de Conciliação com IA (ai-smart-conciliator-integration)
+﻿# Design: Assistente Inteligente de ConciliaçÁo com IA (ai-smart-conciliator-integration)
 
 ## Fluxo Arquitetural
 
 ```
-[Tela de Conciliação] ---> Clique em "✨ Conciliar com IA"
+[Tela de ConciliaçÁo] ---> Clique em "✨ Conciliar com IA"
       |
       +---> Busca `useAiSettings()` (Provider, Model, API Key)
       |     Se vazia -> Abre modal alertando para configurar em /configuracoes
@@ -21,7 +21,7 @@
             |
             +---> Grava em `conciliation_matches` no Supabase
             +---> Invalida queries React Query (`reconciliation_views`)
-            +---> Notifica sucesso e atualiza a conciliação!
+            +---> Notifica sucesso e atualiza a conciliaçÁo!
 ```
 
 ## Tipos TypeScript (`src/lib/llm-matcher.ts`)
@@ -42,19 +42,19 @@ export interface MatchSuggestion {
 
 ## Componentes Novos
 
-- **`src/components/conciliacao/AiConciliationAssistant.tsx`**: Botão de ação e Modal interativo com listagem de sugestões da IA, badge de confiança, explicação textual do raciocínio e botões de confirmação.
+- **`src/components/conciliacao/AiConciliationAssistant.tsx`**: BotÁo de açÁo e Modal interativo com listagem de sugestões da IA, badge de confiança, explicaçÁo textual do raciocínio e botões de confirmaçÁo.
 
 ## Restrições de UI
 - Design System mantido: Zinc-950, botões primários da marca, badges de confiança verdes/amarelos, tipografia Inter.
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 
-- **Cenário 1 (Chave de IA Não Configurada):**
-  - *Ação:* Clicar no botão "Conciliar com IA" sem chave cadastrada.
+- **Cenário 1 (Chave de IA NÁo Configurada):**
+  - *AçÁo:* Clicar no botÁo "Conciliar com IA" sem chave cadastrada.
   - *Resultado Esperado:* Modal amigável solicita o cadastro da API Key com link direto para a tela `/configuracoes`.
-- **Cenário 2 (Geração de Sugestões de Conciliação com IA):**
-  - *Ação:* Clicar em "Conciliar com IA" com a API Key do Gemini/GPT configurada.
-  - *Resultado Esperado:* A IA analisa os lançamentos pendentes, identifica o PIX/Cartão com raciocínio e exibe o modal de aprovação.
-- **Cenário 3 (Aprovação de Match):**
-  - *Ação:* Clicar em "Aprovar Match" em uma sugestão da IA.
+- **Cenário 2 (GeraçÁo de Sugestões de ConciliaçÁo com IA):**
+  - *AçÁo:* Clicar em "Conciliar com IA" com a API Key do Gemini/GPT configurada.
+  - *Resultado Esperado:* A IA analisa os lançamentos pendentes, identifica o PIX/CartÁo com raciocínio e exibe o modal de aprovaçÁo.
+- **Cenário 3 (AprovaçÁo de Match):**
+  - *AçÁo:* Clicar em "Aprovar Match" em uma sugestÁo da IA.
   - *Resultado Esperado:* O registro é inserido em `conciliation_matches`, os itens somem da lista de pendências e o status da loja é atualizado para pareado.

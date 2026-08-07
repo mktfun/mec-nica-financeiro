@@ -1,4 +1,4 @@
-# Spec Plan: Lógica Refatorada de Conciliação Bruto vs Líquido (090-reconciliation-math)
+﻿# Spec Plan: Lógica Refatorada de ConciliaçÁo Bruto vs Líquido (090-reconciliation-math)
 
 ## Tasks
 

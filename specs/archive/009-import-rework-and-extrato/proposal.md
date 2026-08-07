@@ -1,12 +1,12 @@
-# Proposal: Refatoração da Importação e Novo Extrato Bancário (009)
+﻿# Proposal: RefatoraçÁo da ImportaçÁo e Novo Extrato Bancário (009)
 
 ## Contexto e Problemas Identificados
 
-Com base na sua explicação, nas imagens e na análise profunda que fiz da planilha `1543_ConferenciaOSxFinanceiro.xls`, identifiquei as seguintes lacunas no nosso sistema atual:
+Com base na sua explicaçÁo, nas imagens e na análise profunda que fiz da planilha `1543_ConferenciaOSxFinanceiro.xls`, identifiquei as seguintes lacunas no nosso sistema atual:
 
-1. **Importação Limitada a 1 Dia**: O sistema estava pedindo para você escolher uma data alvo (ex: 28/05/2026) e ignorava todas as outras OSs da planilha que não foram finalizadas exatamente naquele dia. Por isso você importava a planilha inteira e só aparecia 1 OS (R$ 8.550) — era a única finalizada no dia 28/05. 
-2. **Separação de Recebíveis**: Precisamos mapear corretamente as formas de pagamento para os recebíveis, definindo prazos claros para quando o dinheiro "cai na conta".
-3. **Visão de Extrato (Histórico)**: Você quer ver o histórico não apenas como uma lista de planilhas importadas, mas como um **Extrato Bancário** real: entradas (pagamentos das OSs), saídas (despesas manuais), saldo consolidado, e filtros por período (Data Início até Data Fim) e por loja.
+1. **ImportaçÁo Limitada a 1 Dia**: O sistema estava pedindo para você escolher uma data alvo (ex: 28/05/2026) e ignorava todas as outras OSs da planilha que nÁo foram finalizadas exatamente naquele dia. Por isso você importava a planilha inteira e só aparecia 1 OS (R$ 8.550) — era a única finalizada no dia 28/05. 
+2. **SeparaçÁo de Recebíveis**: Precisamos mapear corretamente as formas de pagamento para os recebíveis, definindo prazos claros para quando o dinheiro "cai na conta".
+3. **VisÁo de Extrato (Histórico)**: Você quer ver o histórico nÁo apenas como uma lista de planilhas importadas, mas como um **Extrato Bancário** real: entradas (pagamentos das OSs), saídas (despesas manuais), saldo consolidado, e filtros por período (Data Início até Data Fim) e por loja.
 
 ---
 
@@ -28,7 +28,7 @@ Com base na sua explicação, nas imagens e na análise profunda que fiz da plan
 
 ## O que precisa ser CRIADO ou MODIFICADO
 
-### 1. Novo fluxo de Importação
+### 1. Novo fluxo de ImportaçÁo
 - **Remover o campo "Data Alvo"** do `ImportReportDialog`. A data da OS será lida diretamente da coluna `Finalizada em` do Excel.
 - O parser vai iterar a planilha, ler todas as OSs "Finalizadas", extrair o método de pagamento e criar as transações (`transactions` tipo `in`) e recebíveis correspondentes.
 - Regras de Pagamento que detectei na sua planilha:
@@ -36,7 +36,7 @@ Com base na sua explicação, nas imagens e na análise profunda que fiz da plan
   - `Debito` → Cai no dia seguinte (Vencimento D+1, Status: Pendente/Recebido dependendo da data)
   - `Credito` → Cai em 30 dias (Vencimento D+30, Status: Pendente) *(Nota: me confirme se o seu crédito é D+1 ou D+30)*.
 
-### 2. Geração de Transações Reais
+### 2. GeraçÁo de Transações Reais
 - Em vez de só somar totais na tabela `reconciliations`, cada OS paga vai gerar um registro na tabela `transactions` (tipo `in`), com a data do pagamento.
 - Isso permitirá montar o Extrato Bancário linha a linha.
 
@@ -45,14 +45,14 @@ Com base na sua explicação, nas imagens e na análise profunda que fiz da plan
 - Filtro obrigatório de Período (Data Inicial e Data Final) pré-selecionado no mês atual.
 - Filtro por Loja.
 - Cabeçalho mostrando: Saldo Anterior, Total de Entradas no período, Total de Saídas no período, Saldo Final.
-- Lista cronológica detalhada (Data, Descrição da OS ou Despesa, Forma de Pagamento, Valor verde/vermelho).
+- Lista cronológica detalhada (Data, DescriçÁo da OS ou Despesa, Forma de Pagamento, Valor verde/vermelho).
 
 ---
 
 ## Critérios de Aceite
-1. Ao subir a planilha `1543`, o sistema importa as 43 OSs de uma vez, cada uma com sua data de finalização correta.
+1. Ao subir a planilha `1543`, o sistema importa as 43 OSs de uma vez, cada uma com sua data de finalizaçÁo correta.
 2. A tela de Histórico mostra um extrato no estilo banco, permitindo filtrar datas.
-3. Recebíveis mostram pendências corretas baseadas nos dias de compensação de cada cartão.
+3. Recebíveis mostram pendências corretas baseadas nos dias de compensaçÁo de cada cartÁo.
 
 ---
 
@@ -60,5 +60,5 @@ Com base na sua explicação, nas imagens e na análise profunda que fiz da plan
 
 > [!IMPORTANT]
 > **Antes de avançarmos, me confirme:**
-> 1. **Prazo do Cartão de Crédito**: Na sua maquininha, o crédito cai no dia seguinte (D+1) ou em 30 dias (D+30)? E se for parcelado, a planilha já manda o valor total ou separado? *(Vou configurar D+30 por padrão se você não especificar, mas você mencionou "dia seguinte").*
+> 1. **Prazo do CartÁo de Crédito**: Na sua maquininha, o crédito cai no dia seguinte (D+1) ou em 30 dias (D+30)? E se for parcelado, a planilha já manda o valor total ou separado? *(Vou configurar D+30 por padrÁo se você nÁo especificar, mas você mencionou "dia seguinte").*
 > 2. Posso limpar o banco de novo para que as próximas importações reflitam esse novo formato de "lote" perfeitamente?

@@ -1,4 +1,4 @@
-# Design: Painel Módulo 1 (Aba SALDO Consolidada por Loja) e Integração dos Módulos 1-4 (conciliacao-modulo-saldo-completo)
+﻿# Design: Painel Módulo 1 (Aba SALDO Consolidada por Loja) e IntegraçÁo dos Módulos 1-4 (conciliacao-modulo-saldo-completo)
 
 ## Diagrama da Cadeia de Cálculos do Módulo 1 (Aba SALDO)
 
@@ -60,7 +60,7 @@ export interface StoreSaldoState {
 
 export interface Modulo1Calculated {
   saldo_g13: number;          // Soma Banco Itaú
-  dinheiro_mp_g14: number;    // Soma dinheiro + não entrou + boletos
+  dinheiro_mp_g14: number;    // Soma dinheiro + nÁo entrou + boletos
   a_receber_g15: number;      // Soma Módulo 3
   na_loja_g16: number;        // Soma OSs em aberto
   saldo_total_g17: number;    // G13+G14+G15+G16
@@ -72,7 +72,7 @@ export interface Modulo1Calculated {
 }
 ```
 
-## Função de Cálculo Central (`src/lib/modulo1Calculations.ts`)
+## FunçÁo de Cálculo Central (`src/lib/modulo1Calculations.ts`)
 
 ```typescript
 export function calculateModulo1Saldo(stores: StoreSaldoState[]): {
@@ -164,14 +164,14 @@ Componente React construído com o design system do projeto (`var(--bg-canvas)`,
 - Exibe o **Quadro Geral Consolidado da Aba SALDO** no topo da tela `/conciliacao`.
 - Permite expandir o detalhamento individual por loja (Rei do Módulo, Planalto, Mauá, Kennedy, etc.) com inputs editáveis para Limite de Crédito e Caixa Anterior.
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 
 - **Cenário 1 (Cálculo do Saldo Livre Real - Resultado Final G31):**
   - *Dados:* Loja Rei do Módulo: Banco Itaú R$ 19.957,99, Limite R$ 5.000,00, OSs Pendentes R$ 3.400,00, Faturamento R$ 45.000,00, Contas R$ 12.000,00.
-  - *Ação:* Renderizar o painel do Módulo 1.
+  - *AçÁo:* Renderizar o painel do Módulo 1.
   - *Resultado Esperado:* O sistema calcula `SALDO TOTAL (G17)`, `CAIXA ATUAL (G21)` e `RESULTADO FINAL (G31)` aplicando as fórmulas exatas da planilha.
 
-- **Cenário 2 (Baixa de OS e Atualização Automática de 'NA LOJA' G16):**
+- **Cenário 2 (Baixa de OS e AtualizaçÁo Automática de 'NA LOJA' G16):**
   - *Dados:* OS de R$ 4.021,50 é conciliada e passa para `status = 'ENTROU'`.
-  - *Ação:* Recarregar o painel.
+  - *AçÁo:* Recarregar o painel.
   - *Resultado Esperado:* O valor pendente "Na Loja (G16)" cai R$ 4.021,50 e migra automaticamente para o Saldo Realizado do Banco/Caixa.

@@ -1,15 +1,15 @@
-# Proposal: Correção da Telemetria de Consumo, Logs & Custos de IA (fix-ai-telemetry-logs-and-cost-tracking)
+﻿# Proposal: CorreçÁo da Telemetria de Consumo, Logs & Custos de IA (fix-ai-telemetry-logs-and-cost-tracking)
 
 ## Problema
 Na tela `/agente` (Abas "Telemetria & Custos" e "DevTools Inspector"), a contagem de tokens, chamadas auditadas, custo em USD/BRL e a tabela de logs exibiam **0** e **"Nenhum log registrado ainda"**.
 Root cause identificada:
-1. A tabela `public.ai_execution_logs` não havia sido provisionada com as permissões de RLS no schema do Supabase REST API (erro `PGRST205 - Could not find table public.ai_execution_logs`).
-2. A hook `useAiSettings` dependia estritamente de `supabase.auth.getUser()`. Se o usuário não estivesse logado em sessão JWT ativa, a salvaguarda falhava ou não gravava a chave no banco para a conciliação silenciosa.
+1. A tabela `public.ai_execution_logs` nÁo havia sido provisionada com as permissões de RLS no schema do Supabase REST API (erro `PGRST205 - Could not find table public.ai_execution_logs`).
+2. A hook `useAiSettings` dependia estritamente de `supabase.auth.getUser()`. Se o usuário nÁo estivesse logado em sessÁo JWT ativa, a salvaguarda falhava ou nÁo gravava a chave no banco para a conciliaçÁo silenciosa.
 
-## Solução Proposta
+## SoluçÁo Proposta
 1. Confirmar e garantir o schema da tabela `public.ai_execution_logs` com políticas de RLS liberadas (`ALLOW ALL USING true`), além da tabela `public.ai_settings`.
-2. Atualizar `useAiSettings.ts` para persistir e carregar `ai_settings` (usando fallback `GLOBAL` quando não logado).
-3. Adicionar um botão de teste de disparo manual da IA ("Testar Conciliação & Gerar Telemetria") na aba de Telemetria/Inspector para permitir auditoria instantânea sem esperar a navegação da conciliação.
+2. Atualizar `useAiSettings.ts` para persistir e carregar `ai_settings` (usando fallback `GLOBAL` quando nÁo logado).
+3. Adicionar um botÁo de teste de disparo manual da IA ("Testar ConciliaçÁo & Gerar Telemetria") na aba de Telemetria/Inspector para permitir auditoria instantânea sem esperar a navegaçÁo da conciliaçÁo.
 4. Garantir que `generateTripleMatchSuggestions` grave os tokens, custo estimado ($ USD e R$ BRL) e o log em `ai_execution_logs`.
 
 ## Contratos de Dados
@@ -43,10 +43,10 @@ Root cause identificada:
 - `/agente`: Renderiza os 4 cards de telemetria (Tokens, Custo USD/BRL, Chamadas, Matches) e a lista do Inspector JSON.
 
 ## Features Existentes Impactadas
-- `src/routes/agente.tsx`: Interface de gestão do agente, telemetria e inspector.
+- `src/routes/agente.tsx`: Interface de gestÁo do agente, telemetria e inspector.
 - `src/hooks/useAiSettings.ts`: Gerenciamento de credenciais do modelo LLM.
-- `src/lib/llm-matcher.ts`: Chamada às APIs do Gemini/OpenAI/Claude e inserção de telemetria.
+- `src/lib/llm-matcher.ts`: Chamada às APIs do Gemini/OpenAI/Claude e inserçÁo de telemetria.
 
 ## Risco Principal
 Chave de API em branco caso o usuário limpe as configurações.
-*Mitigação:* `saveTelemetryLog` trata erros graciosamente e `useAiSettings` sempre faz fallback para `import.meta.env.VITE_GEMINI_API_KEY`.
+*MitigaçÁo:* `saveTelemetryLog` trata erros graciosamente e `useAiSettings` sempre faz fallback para `import.meta.env.VITE_GEMINI_API_KEY`.

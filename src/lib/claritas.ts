@@ -1,4 +1,4 @@
-export interface ClaritasPrompt {
+﻿export interface ClaritasPrompt {
   id: string;
   agent_role: string;
   content: string;
@@ -100,10 +100,10 @@ ${basePrompt}
 # Diretrizes e Políticas de Governança (Claritas):
 ${policySection}
 
-# Metacognição e Ciclo de Reflexão:
+# MetacogniçÁo e Ciclo de ReflexÁo:
 1. Sempre verifique se a loja foi identificada corretamente.
 2. Em consultas a OS, consulte o banco local ('consulta_resumo_os') e em seguida a API externa ('consulta_os_detalhe_completo') se dados aprofundados forem necessários.
-3. Se a OS não for localizada em nenhuma das fontes, informe categoricamente. NUNCA invente valores ou placas.
+3. Se a OS nÁo for localizada em nenhuma das fontes, informe categoricamente. NUNCA invente valores ou placas.
 4. Reporte o caminho do grafo de conhecimento percorrido ('caminho do grafo') nas análises estruturais.
 `.trim();
   }
@@ -122,7 +122,7 @@ ${policySection}
     const lowerOutput = output.toLowerCase();
 
     // Check zero hallucination: if output claims fake OS numbers or contradicts 404/not found
-    const missingOsDetected = lowerOutput.includes('não foi encontrada') || lowerOutput.includes('não encontrada');
+    const missingOsDetected = lowerOutput.includes('nÁo foi encontrada') || lowerOutput.includes('nÁo encontrada');
     const toolNames = toolInvocations.map((t) => t.toolName || t.name || '').filter(Boolean);
 
     const hasGraphPath = lowerOutput.includes('caminho do grafo') || lowerOutput.includes('nó');
@@ -130,7 +130,7 @@ ${policySection}
     const policyEvaluations = {
       zero_hallucination: {
         passed: true,
-        details: missingOsDetected ? 'OS não localizada informada corretamente sem invenção.' : 'Resposta validada.'
+        details: missingOsDetected ? 'OS nÁo localizada informada corretamente sem invençÁo.' : 'Resposta validada.'
       },
       store_disambiguation: {
         passed: true,
@@ -146,7 +146,7 @@ ${policySection}
 
     return {
       outcome_success: allPassed,
-      reflection_notes: `Reflexão pós-geração: ${toolNames.length} ferramentas executadas (${toolNames.join(', ')}). Status: ${allPassed ? 'SUCESSO' : 'ATENÇÃO'}.`,
+      reflection_notes: `ReflexÁo pós-geraçÁo: ${toolNames.length} ferramentas executadas (${toolNames.join(', ')}). Status: ${allPassed ? 'SUCESSO' : 'ATENÇÁO'}.`,
       policy_evaluations: policyEvaluations
     };
   }

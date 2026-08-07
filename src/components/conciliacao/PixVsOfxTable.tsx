@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { CheckCircle2, AlertTriangle, Info, QrCode, FileText } from 'lucide-react';
@@ -118,7 +118,7 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
                           </Badge>
                         ) : (
                           <Badge variant="danger" className="bg-[var(--color-accent-danger)]/10 text-[var(--color-accent-danger)] border-[var(--color-accent-danger)]/30">
-                            <AlertTriangle size={12} className="mr-1" /> Não Entrou
+                            <AlertTriangle size={12} className="mr-1" /> NÁo Entrou
                           </Badge>
                         )}
                       </td>

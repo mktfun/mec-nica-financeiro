@@ -1,9 +1,9 @@
-# Design Document: Spec 067
+﻿# Design Document: Spec 067
 
 ## Arquitetura Visual
 1. **Container Principal (Topo, Full Width)**
    - Um novo wrapper `xl:col-span-4` (ocupando todo o Grid da página).
-   - O `<EvolucaoMacroChart />` receberá estilização de altura menor (max. 220px/250px) para esticar-se como um painel de aviador (Widescreen).
+   - O `<EvolucaoMacroChart />` receberá estilizaçÁo de altura menor (max. 220px/250px) para esticar-se como um painel de aviador (Widescreen).
    
 2. **Container Secundário (Bottom, Split)**
    - O `<StoreTableDashboard />` voltará para `xl:col-span-3`.
@@ -20,4 +20,4 @@
      - Grid lines horizontais muito suaves (`CartesianGrid`).
 
 ## Impactos no Sistema
-- Nenhuma alteração nos Hooks ou Lógica de Backend, tudo 100% focado em refatoração estética.
+- Nenhuma alteraçÁo nos Hooks ou Lógica de Backend, tudo 100% focado em refatoraçÁo estética.

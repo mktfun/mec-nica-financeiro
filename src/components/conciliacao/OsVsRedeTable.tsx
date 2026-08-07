@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -37,9 +37,9 @@ export function OsVsRedeTable({ storeId, date }: { storeId: string; date: string
         <div className="bg-[var(--bg-surface)] p-4 border-b border-[var(--border-subtle)] flex items-center justify-between">
           <div>
             <h3 className="font-display font-semibold text-lg flex items-center gap-2 text-[var(--text-primary)]">
-              1. Cartão <span className="text-[var(--text-tertiary)]">(Sistema OS → Maquininha)</span>
+              1. CartÁo <span className="text-[var(--text-tertiary)]">(Sistema OS → Maquininha)</span>
             </h3>
-            <p className="text-xs text-[var(--text-secondary)]">Clique na OS para ver detalhes ou use o botão 'Baixar' para marcar como ENTROU manualmente.</p>
+            <p className="text-xs text-[var(--text-secondary)]">Clique na OS para ver detalhes ou use o botÁo 'Baixar' para marcar como ENTROU manualmente.</p>
           </div>
           <Badge variant="neutral" className="text-xs font-mono">
             {rows.length} Transações
@@ -49,14 +49,14 @@ export function OsVsRedeTable({ storeId, date }: { storeId: string; date: string
         {rows.length === 0 ? (
           <div className="p-12 text-center text-[var(--text-tertiary)] flex flex-col items-center">
             <Info size={36} className="opacity-20 mb-3" />
-            Nenhuma transação de maquininha encontrada para esta data.
+            Nenhuma transaçÁo de maquininha encontrada para esta data.
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-[var(--text-tertiary)] text-xs uppercase tracking-wider border-b border-[var(--border-subtle)] bg-[var(--bg-canvas)] font-mono">
-                  <th className="text-left py-3 px-4 font-medium">Transação Maquininha</th>
+                  <th className="text-left py-3 px-4 font-medium">TransaçÁo Maquininha</th>
                   <th className="text-right py-3 px-4 font-medium">Rede (Bruto)</th>
                   <th className="text-right py-3 px-4 font-medium">Faturamento Sistema (OS)</th>
                   <th className="text-right py-3 px-4 font-medium">Delta</th>
@@ -66,7 +66,7 @@ export function OsVsRedeTable({ storeId, date }: { storeId: string; date: string
               </thead>
               <tbody className="divide-y divide-[var(--border-subtle)]">
                 {rows.map((row: any, i: number) => {
-                  const hasOs = row.os_number !== 'Não Localizada';
+                  const hasOs = row.os_number !== 'NÁo Localizada';
                   const isEntrou = row.os_data?.status === 'ENTROU';
 
                   return (

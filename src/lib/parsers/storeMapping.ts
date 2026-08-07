@@ -1,4 +1,4 @@
-export const REDE_STORE_MAPPING: Record<string, string> = {
+﻿export const REDE_STORE_MAPPING: Record<string, string> = {
   "mpsantoandre": "Santo André - HD",
   "mpjabaquara": "Jabaquara - JAB",
   "mpjorgeberetta": "Jorge Beretta - DHJV",
@@ -19,6 +19,6 @@ export function normalizeRedeStoreName(rawName: string): string {
     return REDE_STORE_MAPPING[normalized];
   }
   
-  // Se não encontrar, retorna o original limpo
+  // Se nÁo encontrar, retorna o original limpo
   return rawName.trim();
 }

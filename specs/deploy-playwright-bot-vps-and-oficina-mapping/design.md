@@ -1,6 +1,6 @@
-# Design: Implantação do Bot Playwright no Servidor VPS e Mapeamento Completo da API Oficina Inteligente & Rede (deploy-playwright-bot-vps-and-oficina-mapping)
+﻿# Design: ImplantaçÁo do Bot Playwright no Servidor VPS e Mapeamento Completo da API Oficina Inteligente & Rede (deploy-playwright-bot-vps-and-oficina-mapping)
 
-## Arquitetura de Comunicação e Deploy
+## Arquitetura de ComunicaçÁo e Deploy
 
 ```
 [Antigravity Frontend / Agent]
@@ -9,7 +9,7 @@
                ▼
 [Servidor HTTP do Bot na VPS (100.126.50.101:3001)]
                │
-               ├── 1. Playwright Headless Chromium (com sessão salva)
+               ├── 1. Playwright Headless Chromium (com sessÁo salva)
                │     ├── Scraper Oficina Inteligente ──► Download XLSX OSs do dia
                │     └── Scraper Rede (Network Intercept) ──► JSON Extrato de Vendas
                │
@@ -29,9 +29,9 @@ bot/
 │   ├── runner.ts                  # Executor do fluxo de raspagem e sync
 │   ├── scrapers/
 │   │   ├── oficina.ts             # Mapeamento do portal Oficina Inteligente
-│   │   └── rede.ts                # Interceptação de API do portal Rede
+│   │   └── rede.ts                # InterceptaçÁo de API do portal Rede
 │   ├── session/
-│   │   └── sessionManager.ts      # Salva e carrega cookies de autenticação
+│   │   └── sessionManager.ts      # Salva e carrega cookies de autenticaçÁo
 │   └── sync/
 │       └── supabaseUploader.ts    # Envio idempotente para o Supabase
 ```
@@ -65,12 +65,12 @@ app.listen(PORT, () => {
 });
 ```
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 
-- **Cenário 1 (Conexão SSH & Saúde do Servidor VPS):**
-  - Ação: Conectar via SSH na máquina `operacional@100.126.50.101` com a chave `antigravity_key`.
-  - Resultado esperado: Conexão bem-sucedida com privilégios sudo e Node.js instalado.
+- **Cenário 1 (ConexÁo SSH & Saúde do Servidor VPS):**
+  - AçÁo: Conectar via SSH na máquina `operacional@100.126.50.101` com a chave `antigravity_key`.
+  - Resultado esperado: ConexÁo bem-sucedida com privilégios sudo e Node.js instalado.
 
-- **Cenário 2 (Disparo de Sincronização via API):**
-  - Ação: Enviar requisição `POST http://100.126.50.101:3001/api/sync` para uma data específica.
+- **Cenário 2 (Disparo de SincronizaçÁo via API):**
+  - AçÁo: Enviar requisiçÁo `POST http://100.126.50.101:3001/api/sync` para uma data específica.
   - Resultado esperado: Retorno HTTP 200 com resumo dos dados gravados no Supabase.

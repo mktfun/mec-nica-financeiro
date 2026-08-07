@@ -1,4 +1,4 @@
-# Design: Correção de Payload do Chat e Teste E2E Oficina GPT (fix-chat-payload-and-e2e)
+﻿# Design: CorreçÁo de Payload do Chat e Teste E2E Oficina GPT (fix-chat-payload-and-e2e)
 
 ## Arquitetura Técnica
 
@@ -24,7 +24,7 @@
 ## Interfaces TypeScript
 
 ```ts
-// Formatação de mensagens no backend (ai-chat/index.ts)
+// FormataçÁo de mensagens no backend (ai-chat/index.ts)
 type CoreMessageFormatted = {
   role: 'user' | 'assistant' | 'system';
   content: string;
@@ -68,13 +68,13 @@ type CoreMessageFormatted = {
    });
    ```
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 
 - **Cenário 1:** Envio de mensagem no frontend
   - Estado inicial: Usuário digita "Olá"
-  - Ação: `appendMessage({ text: "Olá" })`
+  - AçÁo: `appendMessage({ text: "Olá" })`
   - Resultado esperado: POST envia `{ messages: [...], conversation_id: '...' }`. Servidor responde HTTP 200 stream, sem o erro "Invalid prompt: prompt or messages must be defined".
 - **Cenário 2:** Teste E2E de consulta sobre Rei do Óleo
   - Estado inicial: Servidor rodando em `http://localhost:8080`
-  - Ação: Login com `mktfunil1@gmail.com` / `Mktfunil8563*`, enviar pergunta "qual o resumo da OS no rei do oleo maua?"
+  - AçÁo: Login com `mktfunil1@gmail.com` / `Mktfunil8563*`, enviar pergunta "qual o resumo da OS no rei do oleo maua?"
   - Resultado esperado: Oficina GPT responde usando a ferramenta `consulta_resumo_os` e formata em Markdown sem alucinações.

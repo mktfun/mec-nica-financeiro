@@ -1,4 +1,4 @@
-# Spec Plan: Automatizar Contas a Pagar e Outros Faturamentos via OFX (077)
+﻿# Spec Plan: Automatizar Contas a Pagar e Outros Faturamentos via OFX (077)
 
 ## Tasks
 
@@ -9,4 +9,4 @@
 - [x] [FRONTEND] Em `src/components/conciliacao/ResumoDiaPanel.tsx`, definir `faturamento_outros_automatico = resumo.totalOfxIn - totalPixOs` e `contas_a_pagar_automatico = resumo.totalOfxOut`.
 - [x] [FRONTEND] Em `src/components/conciliacao/ResumoDiaPanel.tsx`, injetar as variáveis automáticas no `inputForCalculation` em vez de usar `currentSnapshot`.
 - [x] [FRONTEND] Em `src/components/conciliacao/ResumoDiaPanel.tsx`, atualizar o `handleSave` para gravar `faturamento_outros_automatico` e `contas_a_pagar_automatico` no snapshot (ao invés de manter zero para sempre no banco).
-- [x] [TEST] Verificar se a interface de conciliação carrega sem quebrar e os números de Contas a Pagar batem com as saídas.
+- [x] [TEST] Verificar se a interface de conciliaçÁo carrega sem quebrar e os números de Contas a Pagar batem com as saídas.

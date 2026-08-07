@@ -103,7 +103,7 @@ export function useStoreFinancialStats(storeId: string, startDate: string, endDa
     queryKey: ['store_financial_stats', storeId, startDate, endDate],
     queryFn: async () => {
       if (!storeId || !startDate || !endDate) return null;
-      const { data, error } = await supabase.rpc('get_store_financial_stats', {
+      const { data, error } = await supabase.rpc('get_store_financial_stats' as any, {
         p_store_id: storeId,
         p_start_date: startDate,
         p_end_date: endDate

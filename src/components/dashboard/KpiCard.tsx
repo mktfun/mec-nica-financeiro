@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
 import { type LucideIcon, TrendingUp, TrendingDown, Minus, HelpCircle } from 'lucide-react';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { useState } from 'react';
@@ -9,13 +9,13 @@ interface KpiCardProps {
   label: string;
   value: number;
   format?: 'currency' | 'count';
-  trend?: number;        // % variação vs mês anterior
+  trend?: number;        // % variaçÁo vs mês anterior
   trendLabel?: string;
   icon: LucideIcon;
   color?: KpiColor;
   tooltip?: string;
   isLoading?: boolean;
-  index?: number;        // para delay de animação
+  index?: number;        // para delay de animaçÁo
 }
 
 const COLOR_MAP: Record<KpiColor, { icon: string; bg: string; badge: string }> = {

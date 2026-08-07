@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { createFileRoute, Link, useParams } from '@tanstack/react-router';
 import { useQueryClient } from '@tanstack/react-query';
 import { AppShell } from '@/components/layout/AppShell';
@@ -91,8 +91,8 @@ function LojaDashboardPage() {
       <AppShell>
         <div className="flex flex-col items-center justify-center py-20 text-[var(--text-tertiary)]">
           <Store size={48} className="mb-4 opacity-20" />
-          <h2 className="text-xl font-display">Loja não encontrada</h2>
-          <Link to="/lojas" className="mt-4 text-[var(--color-primary)] hover:underline">Voltar para a conciliação</Link>
+          <h2 className="text-xl font-display">Loja nÁo encontrada</h2>
+          <Link to="/lojas" className="mt-4 text-[var(--color-primary)] hover:underline">Voltar para a conciliaçÁo</Link>
         </div>
       </AppShell>
     );
@@ -135,7 +135,7 @@ function LojaDashboardPage() {
     const parsed = parsePaymentMethods(raw);
     const entries = Object.entries(parsed).filter(([, v]) => v > 0);
     if (entries.length === 0) {
-      // Fallback: se não conseguir parsear, mostra o texto limpo
+      // Fallback: se nÁo conseguir parsear, mostra o texto limpo
       const clean = raw.replace(/\s*\[.*?\]/g, '').replace(/;\s*$/g, '').trim();
       if (!clean) return null;
       return <span className="text-[var(--text-secondary)] text-[11px]">{clean}</span>;
@@ -240,7 +240,7 @@ function LojaDashboardPage() {
   return (
     <AppShell>
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-8 max-w-6xl mx-auto">
-        {/* Header com Navegação */}
+        {/* Header com NavegaçÁo */}
         <div>
           <Link to="/lojas" className="inline-flex items-center gap-2 text-sm text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors mb-4">
             <ArrowLeft size={16} /> Voltar
@@ -335,14 +335,14 @@ function LojaDashboardPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Coluna Esquerda: Resumo de Conciliação e Gráfico */}
+          {/* Coluna Esquerda: Resumo de ConciliaçÁo e Gráfico */}
           <div className="lg:col-span-1 space-y-6">
 
 
             {pieData.length > 0 && (
               <div>
                 <h3 className="font-display font-semibold text-lg mb-4">
-                  {tab === 'in' ? 'Formas de Pagamento' : tab === 'out' ? 'Distribuição de Despesas' : 'Visão Geral'}
+                  {tab === 'entradas' ? 'Formas de Pagamento' : tab === 'saidas' ? 'DistribuiçÁo de Despesas' : 'VisÁo Geral'}
                 </h3>
                 <Card variant="glass" className="p-4 shadow-sm">
                   <div className="h-[200px] w-full">
@@ -459,7 +459,7 @@ function LojaDashboardPage() {
               >
                 Entradas
               </button>
-              {!store.is_matriz && (
+              {!(store as any).is_matriz && (
                 <button
                   onClick={() => { setTab('caixa'); setPage(1); }}
                   className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === 'caixa' ? 'border-[var(--color-warning)] text-[var(--color-warning)]' : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
@@ -568,7 +568,7 @@ function LojaDashboardPage() {
                     if (txs.length === 0) {
                       return (
                         <div className="text-center py-20">
-                          <p className="text-[var(--text-secondary)] font-medium">Nenhuma transação encontrada neste período.</p>
+                          <p className="text-[var(--text-secondary)] font-medium">Nenhuma transaçÁo encontrada neste período.</p>
                         </div>
                       );
                     }
@@ -579,7 +579,7 @@ function LojaDashboardPage() {
                           <tr>
                             <th className="px-4 py-3 font-medium">Data</th>
                             <th className="px-4 py-3 font-medium">Tipo</th>
-                            <th className="px-4 py-3 font-medium">Descrição</th>
+                            <th className="px-4 py-3 font-medium">DescriçÁo</th>
                             <th className="px-4 py-3 font-medium">Categoria / Método</th>
                             <th className="px-4 py-3 font-medium text-right">Valor</th>
                           </tr>
@@ -622,7 +622,7 @@ function LojaDashboardPage() {
           >
             <div className="space-y-4 pt-4">
               <p className="text-sm text-[var(--text-secondary)]">
-                Informe o saldo atual real desta loja na conta bancária. O sistema criará uma transação de ajuste invisível às DREs para que o saldo exibido passe a bater com a realidade.
+                Informe o saldo atual real desta loja na conta bancária. O sistema criará uma transaçÁo de ajuste invisível às DREs para que o saldo exibido passe a bater com a realidade.
               </p>
               <div>
                 <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1 uppercase tracking-wider">
@@ -638,7 +638,7 @@ function LojaDashboardPage() {
                 />
               </div>
               <div className="flex justify-between items-center pt-4 border-t border-[var(--border-subtle)]">
-                <Button variant="danger" size="sm" onClick={handleResetBalance} disabled={isProcessing} className="bg-transparent border border-[var(--color-accent-danger)] text-[var(--color-accent-danger)] hover:bg-[var(--color-accent-danger)] hover:text-white transition-colors">
+                <Button variant="outline" size="sm" onClick={handleResetBalance} disabled={isProcessing} className="bg-transparent border border-[var(--color-accent-danger)] text-[var(--color-accent-danger)] hover:bg-[var(--color-accent-danger)] hover:text-white transition-colors">
                   Zerar Ajustes
                 </Button>
                 <div className="flex gap-3">

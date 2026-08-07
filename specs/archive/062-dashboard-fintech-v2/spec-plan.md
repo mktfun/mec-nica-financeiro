@@ -1,4 +1,4 @@
-# Spec Plan: Dashboard Fintech V2 (062)
+﻿# Spec Plan: Dashboard Fintech V2 (062)
 
 ## Checklist Atômico
 
@@ -9,7 +9,7 @@
   - [/] Query paralela: patio_os (a_receber + count veículos)
   - [/] Query paralela: oficina_contas (contas a pagar)
   - [/] Query paralela: stores (nome/slug por ID)
-  - [/] Calcular métricas derivadas (diferença, variação %, resultado por loja)
+  - [/] Calcular métricas derivadas (diferença, variaçÁo %, resultado por loja)
   - [/] Retornar `porLoja: StoreMetrics[]` para tabela e gráfico
 
 ### Fase 2 — Componentes de UI
@@ -17,7 +17,7 @@
 - [/] Criar `src/components/dashboard/StoreTableDashboard.tsx`
 - [/] Criar `src/components/dashboard/FaturamentoVsContasChart.tsx`
 
-### Fase 3 — Composição do Dashboard
+### Fase 3 — ComposiçÁo do Dashboard
 - [/] Atualizar `src/routes/index.tsx`
 
 ## Status

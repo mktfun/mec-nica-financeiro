@@ -1,4 +1,4 @@
-# Spec Plan: Correção na Importação de OSs (Status, Valor Total = Pago + Aberto) e Ajuste da Tela de OSs (fix-os-import-parsing-and-patio-metrics)
+﻿# Spec Plan: CorreçÁo na ImportaçÁo de OSs (Status, Valor Total = Pago + Aberto) e Ajuste da Tela de OSs (fix-os-import-parsing-and-patio-metrics)
 
 ## Tasks
 
@@ -9,5 +9,5 @@
 - [ ] [FRONTEND] Reformular a Tela de OSs em `src/routes/patio.tsx`:
   - [ ] Ajustar KPI **Total em Aberto** para somar `(total_value - paid_value)` de todas as OSs em aberto/parciais.
   - [ ] Ajustar contadores de **Sem Pagamento** (`paid_value === 0`) e **Pagas Parcialmente** (`paid_value > 0 && total_value > paid_value`).
-  - [ ] Adicionar no Card da OS a exibição explícita do valor **Aberto: R$ (total_value - paid_value)** quando houver saldo pendente.
-- [ ] [TEST] Verificar compilação limpa com `npm run build`.
+  - [ ] Adicionar no Card da OS a exibiçÁo explícita do valor **Aberto: R$ (total_value - paid_value)** quando houver saldo pendente.
+- [ ] [TEST] Verificar compilaçÁo limpa com `npm run build`.

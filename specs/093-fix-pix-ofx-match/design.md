@@ -1,14 +1,14 @@
-# Design: Algoritmo de Conciliação Tolerante (093-fix-pix-ofx-match)
+﻿# Design: Algoritmo de ConciliaçÁo Tolerante (093-fix-pix-ofx-match)
 
 ## Arquitetura Técnica
-A alteração central fica em `src/hooks/useConciliacao.ts` na função `useModulo1StoresData`. 
+A alteraçÁo central fica em `src/hooks/useConciliacao.ts` na funçÁo `useModulo1StoresData`. 
 
 Atualmente temos algo como:
 ```typescript
 const storeTxs = transactions.filter(t => t.store_id === store.id);
 ```
 
-Precisamos introduzir as transações bancárias "órfãs" (onde o extrato não sabe a loja) para serem avaliadas pela heurística de conciliação do PIX:
+Precisamos introduzir as transações bancárias "órfÁs" (onde o extrato nÁo sabe a loja) para serem avaliadas pela heurística de conciliaçÁo do PIX:
 ```typescript
 const allTxsForMatch = transactions.filter(t => 
   t.store_id === store.id || (t.source === 'ofx' && t.store_id === null)
@@ -30,7 +30,7 @@ const allTxsForMatch = transactions.filter(t =>
    - Coluna **Diferença**: Matemática pura de `((Maquininha + PIX) - Faturamento)`.
    - O sistema perdoa resíduos menores que R$ 1,00 para impedir "falsos alertas" gerados por dízimas ou quebras financeiras.
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 - **Cenário 1:** Extrato Itaú sobe R$ 500,00 via PIX (sem loja vinculada). O lojista cria uma OS informando pagamento de R$ 500,00 no PIX para a "Loja Norte". 
   - Antes: O sistema ignorava e a "Diferença" ficava de 500 reais.
   - Depois: O algoritmo casa as informações, zera a diferença e mostra "Faturamento: R$ 500,00".

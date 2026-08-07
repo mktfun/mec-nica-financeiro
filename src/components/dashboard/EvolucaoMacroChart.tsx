@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+﻿import { useMemo } from 'react';
 import { ComposedChart, Area, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid } from 'recharts';
 import { Card } from '@/components/ui/Card';
 import { Activity } from 'lucide-react';
@@ -48,10 +48,10 @@ export function EvolucaoMacroChart({ data, isLoading }: EvolucaoMacroChartProps)
         <div>
           <h3 className="font-display font-semibold text-lg flex items-center gap-2">
             <Activity size={20} className="text-[var(--color-primary)]" />
-            Visão Macro do Mês
+            VisÁo Macro do Mês
           </h3>
           <p className="text-xs text-[var(--text-tertiary)] mt-1">
-            Evolução de Saldo, Faturamento e Contas ({chartData.length} dias processados)
+            EvoluçÁo de Saldo, Faturamento e Contas ({chartData.length} dias processados)
           </p>
         </div>
         

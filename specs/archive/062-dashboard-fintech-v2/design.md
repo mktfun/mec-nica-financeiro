@@ -1,15 +1,15 @@
-# Design: Dashboard Fintech V2 (062)
+﻿# Design: Dashboard Fintech V2 (062)
 
 ## Sistema de Design a Respeitar
 
 Baseado na varredura do código atual:
 
 ```css
-/* CSS Vars já usadas — manter sem exceção */
+/* CSS Vars já usadas — manter sem exceçÁo */
 --color-primary          /* roxo/azul principal */
 --color-accent-teal      /* verde teal — positivo */
 --color-accent-danger    /* vermelho — negativo/alerta */
---color-accent-warning   /* âmbar — atenção */
+--color-accent-warning   /* âmbar — atençÁo */
 --bg-canvas              /* fundo base */
 --bg-surface             /* superfície de card */
 --bg-surface-elevated    /* card elevado/hover */
@@ -20,7 +20,7 @@ Baseado na varredura do código atual:
 --radius-md / --radius-lg
 ```
 
-**Tipografia:** `font-display` (DM Sans) para títulos, `font-mono` para valores financeiros. Tamanhos padrão: título de card `text-xs uppercase tracking-widest`, valor `text-2xl md:text-3xl font-bold font-mono`.
+**Tipografia:** `font-display` (DM Sans) para títulos, `font-mono` para valores financeiros. Tamanhos padrÁo: título de card `text-xs uppercase tracking-widest`, valor `text-2xl md:text-3xl font-bold font-mono`.
 
 **Animações:** `framer-motion` para entrada. `AnimatedNumber` para contadores. Componente `Card variant="glass"` existente para todos os blocos.
 
@@ -30,7 +30,7 @@ Baseado na varredura do código atual:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  Visão Geral          [Seletor de Mês]                  │
+│  VisÁo Geral          [Seletor de Mês]                  │
 ├──────────┬──────────┬──────────┬──────────┬─────────────┤
 │ Saldo    │ Caixa    │ Contas a │ Diferença│             │  ← Faixa Topo
 │ Total    │ Atual    │ Pagar    │ Final    │             │    4 cards iguais
@@ -53,11 +53,11 @@ interface KpiCardProps {
   label: string;           // "Saldo Total"
   value: number;           // valor numérico
   format: 'currency' | 'count';
-  trend?: number;          // % de variação vs mês anterior (opcional)
+  trend?: number;          // % de variaçÁo vs mês anterior (opcional)
   trendLabel?: string;     // "vs mês anterior"
   icon: LucideIcon;
   color: 'primary' | 'teal' | 'danger' | 'warning';
-  tooltip?: string;        // explicação do cálculo
+  tooltip?: string;        // explicaçÁo do cálculo
   isLoading?: boolean;
 }
 ```
@@ -127,5 +127,5 @@ Status → Badge existente (`variant="success"/"warning"/"danger"`).
 ### [NEW] `src/components/dashboard/StoreTableDashboard.tsx`
 ### [NEW] `src/components/dashboard/FaturamentoVsContasChart.tsx`
 
-### [KEEP - não deletar, apenas não usar no index]
+### [KEEP - nÁo deletar, apenas nÁo usar no index]
 - `HeroBalance.tsx`, `QuickActions.tsx`, `MotorStatus.tsx`, `RecentActivity.tsx`, `StoreRankingChart.tsx`

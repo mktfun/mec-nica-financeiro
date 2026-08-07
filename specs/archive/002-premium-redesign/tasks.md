@@ -1,9 +1,9 @@
-# Tasks: 002 Premium Redesign
+﻿# Tasks: 002 Premium Redesign
 
 ## Fase 1 — Foundation (CSS + Performance Fix)
 - [ ] Reescrever `styles.css` com novo background, glass utilities, page-enter animation, custom scrollbar
-- [ ] Remover `AnimatePresence` + `motion.main` do AppShell (causa lentidão)
-- [ ] Adicionar CSS class `page-enter` para transição instantânea
+- [ ] Remover `AnimatePresence` + `motion.main` do AppShell (causa lentidÁo)
+- [ ] Adicionar CSS class `page-enter` para transiçÁo instantânea
 
 ## Fase 2 — Layout Completo
 - [ ] Reescrever `AppSidebar.tsx` — glass sidebar, active glow indicator, avatar footer
@@ -29,5 +29,5 @@
 
 ## Fase 5 — QA
 - [ ] `npm run build` sem erros
-- [ ] Testar navegação entre todas as páginas (instantânea)
+- [ ] Testar navegaçÁo entre todas as páginas (instantânea)
 - [ ] Commit e push

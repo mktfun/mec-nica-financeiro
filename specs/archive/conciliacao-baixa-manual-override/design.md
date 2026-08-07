@@ -1,12 +1,12 @@
-# Design: Baixa Manual Universal & Forçar Status 'ENTROU' para OSs e Pendências (conciliacao-baixa-manual-override)
+﻿# Design: Baixa Manual Universal & Forçar Status 'ENTROU' para OSs e Pendências (conciliacao-baixa-manual-override)
 
 ## Arquitetura do Fluxo de Baixa Manual
 
 ```
  ┌────────────────────────────────────────────────────────┐
- │ 1. AÇÃO DO USUÁRIO NA UI                               │
+ │ 1. AÇÁO DO USUÁRIO NA UI                               │
  │    - Clica em "Marcar como ENTROU" no Modal da OS /     │
- │      no Card de Alerta de Exceção                       │
+ │      no Card de Alerta de ExceçÁo                       │
  └───────────────────────────┬────────────────────────────┘
                              │
                              ▼
@@ -18,7 +18,7 @@
                              │
                              ▼
  ┌────────────────────────────────────────────────────────┐
- │ 3. REVALIDAÇÃO INSTANTÂNEA DE ESTADO (QueryInvalidate) │
+ │ 3. REVALIDAÇÁO INSTANTÂNEA DE ESTADO (QueryInvalidate) │
  │    - Invalida 'reconciliation_views' e 'modulo1_stores'│
  └───────────────────────────┬────────────────────────────┘
                              │
@@ -79,14 +79,14 @@ export function useUpdateOsStatus() {
 }
 ```
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 
 - **Cenário 1 (Baixa Manual de OS Sem Vínculo Bancário):**
   - *Dados:* OS #804 de R$ 1.500,00 sem depósito bancário correspondente.
-  - *Ação:* O usuário clica em "Marcar como ENTROU (Baixa Manual)" no modal ou na tabela.
+  - *AçÁo:* O usuário clica em "Marcar como ENTROU (Baixa Manual)" no modal ou na tabela.
   - *Resultado Esperado:* A OS passa para `status = 'ENTROU'`, exibe badge verde "ENTROU (Manual)", o valor "Na Loja (G16)" cai R$ 1.500,00 e a pendência desaparece da lista.
 
 - **Cenário 2 (Desfazer Baixa Manual):**
   - *Dados:* OS #804 com status `ENTROU` (Manual).
-  - *Ação:* O usuário clica em "Reverter para Pendente".
+  - *AçÁo:* O usuário clica em "Reverter para Pendente".
   - *Resultado Esperado:* A OS retorna ao status anterior (`finalizado` / `em_aberto`), o vínculo em `conciliation_matches` é removido e o saldo "Na Loja" é restaurado.

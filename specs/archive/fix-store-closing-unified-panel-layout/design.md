@@ -1,4 +1,4 @@
-# Design: Restauração do Painel Unificado de Fechamento por Loja com Espaçamento Amplo (fix-store-closing-unified-panel-layout)
+﻿# Design: RestauraçÁo do Painel Unificado de Fechamento por Loja com Espaçamento Amplo (fix-store-closing-unified-panel-layout)
 
 ## Arquitetura do Layout
 
@@ -92,12 +92,12 @@
 </div>
 ```
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 
 - **Cenário 1 (Visual do Painel Único):**
-  - Ação: Abrir a página `/conciliacao` e observar o card de cada loja.
+  - AçÁo: Abrir a página `/conciliacao` e observar o card de cada loja.
   - Resultado esperado: As 6 colunas compartilham o mesmo fundo escuro contínuo do painel (`bg-black/25`), sem 6 caixinhas pretas isoladas flutuando.
 
 - **Cenário 2 (Espaçamento e Legibilidade):**
-  - Ação: Verificar a distância entre as 6 colunas.
-  - Resultado esperado: O espaçamento (`gap-6 xl:gap-8`) garante visual amplo, elegante e fácil de ler sem sobreposição de textos.
+  - AçÁo: Verificar a distância entre as 6 colunas.
+  - Resultado esperado: O espaçamento (`gap-6 xl:gap-8`) garante visual amplo, elegante e fácil de ler sem sobreposiçÁo de textos.

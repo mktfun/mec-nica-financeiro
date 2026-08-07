@@ -1,7 +1,7 @@
-# Design Document: Backend Dashboard & Matcher (Spec 099)
+﻿# Design Document: Backend Dashboard & Matcher (Spec 099)
 
 ## 1. get_dashboard_metrics (A Matemática Inviolável)
-A RPC precisa ser recodificada para emitir exatamente os 10 atributos de output solicitados para cada iteração ou macro.
+A RPC precisa ser recodificada para emitir exatamente os 10 atributos de output solicitados para cada iteraçÁo ou macro.
 
 **Cálculos Estruturais:**
 ```sql
@@ -20,7 +20,7 @@ v_diferenca := v_valor_disp_contas - v_valor_contas;
 ```
 
 ## 2. auto_match_transactions()
-RPC automatizada que será acionada (ou agendada/disparada via API) após a importação.
+RPC automatizada que será acionada (ou agendada/disparada via API) após a importaçÁo.
 
 **Fluxo Lógico:**
 1. Isolar transações OFX do tipo entrada (`type = 'in'`) para um dia.
@@ -29,8 +29,8 @@ RPC automatizada que será acionada (ou agendada/disparada via API) após a impo
 4. Para agrupamentos (1 OFX = múltiplas transações REDE), um cursor somará as transações da Rede até chegar no valor do OFX, unindo-as caso bata na tolerância.
 
 **Mudanças de Schema:**
-Será necessário garantir que a tabela `transactions` comporte um `match_id` ou `matched_ofx_id` caso não exista, e um `status` ('pending', 'matched').
+Será necessário garantir que a tabela `transactions` comporte um `match_id` ou `matched_ofx_id` caso nÁo exista, e um `status` ('pending', 'matched').
 
 ## 3. Frontend Hooks e Tables
 `useDashboardV2.ts` será completamente higienizado. O objeto retornado pela RPC já será a estrutura exata do estado do componente.
-`RedeVsOfxTable.tsx` e `PixVsOfxTable.tsx` não farão mais `some()`, `reduce()` e buscas no array. Renderizarão apenas listas pré-agrupadas baseadas no `matched_ofx_id` fornecido pela tabela `transactions`.
+`RedeVsOfxTable.tsx` e `PixVsOfxTable.tsx` nÁo farÁo mais `some()`, `reduce()` e buscas no array. RenderizarÁo apenas listas pré-agrupadas baseadas no `matched_ofx_id` fornecido pela tabela `transactions`.

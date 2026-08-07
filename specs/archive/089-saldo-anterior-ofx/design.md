@@ -1,4 +1,4 @@
-# Design Técnico: Saldo Anterior OFX (089)
+﻿# Design Técnico: Saldo Anterior OFX (089)
 
 ## 1. Supabase (Database Schema)
 
@@ -13,7 +13,7 @@ ADD COLUMN IF NOT EXISTS previous_balance NUMERIC;
 
 ## 2. Lógica do Parser (Frontend)
 
-O arquivo `src/lib/parsers/ofxParser.ts` já detecta `<SALDO ANTERIOR>` e define `previousBalance`. Como esse campo também pode vir com a anomalia de ausência de decimais (padrão Itaú em centavos sem vírgula, ex: `1931431`), precisamos aplicar a **mesma regra do 088** para o saldo anterior:
+O arquivo `src/lib/parsers/ofxParser.ts` já detecta `<SALDO ANTERIOR>` e define `previousBalance`. Como esse campo também pode vir com a anomalia de ausência de decimais (padrÁo Itaú em centavos sem vírgula, ex: `1931431`), precisamos aplicar a **mesma regra do 088** para o saldo anterior:
 
 ```typescript
 if (rawMemo.toUpperCase().includes('SALDO ANTERIOR')) {
@@ -29,7 +29,7 @@ if (rawMemo.toUpperCase().includes('SALDO ANTERIOR')) {
 }
 ```
 
-## 3. Hook de Importação (`useTransactions.ts`)
+## 3. Hook de ImportaçÁo (`useTransactions.ts`)
 
 Em `CentralImportWizard.tsx`, precisamos extrair o `ofx.previousBalance` junto do `ofx.bankBalance`:
 ```typescript
@@ -39,7 +39,7 @@ if (ofx.previousBalance !== undefined && store_id) {
 }
 ```
 
-Então o Wizard passa esse dicionário para a `useBulkInsertTransactions(payload)`:
+EntÁo o Wizard passa esse dicionário para a `useBulkInsertTransactions(payload)`:
 No momento do `upsert` em `reconciliations` (linha ~448 de `useTransactions.ts`), incluímos a nova coluna:
 ```typescript
 await supabase.from('reconciliations').upsert({
@@ -51,7 +51,7 @@ await supabase.from('reconciliations').upsert({
 }, { onConflict: 'store_id, date' });
 ```
 
-## 4. Reflexo no UI (Conciliação & Dashboard)
+## 4. Reflexo no UI (ConciliaçÁo & Dashboard)
 
 O arquivo `ResumoDiaPanel.tsx` atualmente calcula a `caixa_anterior` somando da Snapshot prévia. Se nós usarmos a soma dos `previous_balance` do próprio dia (extraído do banco em tempo real via a tabela de `reconciliations`), eliminamos o "cascade failure".
 

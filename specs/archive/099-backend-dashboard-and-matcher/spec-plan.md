@@ -1,7 +1,7 @@
-# Spec Plan: Backend Dashboard & Matcher (Spec 099)
+﻿# Spec Plan: Backend Dashboard & Matcher (Spec 099)
 
 ## Objective
-Finalizar a migração pesada de conciliação transferindo a responsabilidade de "matching" (pareamento de transações OFX vs Rede vs PIX) e a macro-matemática exata do painel para o PostgreSQL.
+Finalizar a migraçÁo pesada de conciliaçÁo transferindo a responsabilidade de "matching" (pareamento de transações OFX vs Rede vs PIX) e a macro-matemática exata do painel para o PostgreSQL.
 
 ## Tasks
 
@@ -14,7 +14,7 @@ Finalizar a migração pesada de conciliação transferindo a responsabilidade d
 - [x] [BACKEND] Adicionar cursor na RPC para agrupar múltiplas transações menores da máquina para igualar ao OFX total.
 - [x] [BACKEND] Atualizar `transactions` e `patio_os` com `matched_ofx_id`.
 
-### Fase 3: Telas de Conciliação Clientes
+### Fase 3: Telas de ConciliaçÁo Clientes
 - [ ] [FRONTEND] Refatorar `RedeVsOfxTable.tsx` para listar pares baseando-se no `matched_ofx_id` ao invés de calcular tolerâncias.
 - [ ] [FRONTEND] Refatorar `PixVsOfxTable.tsx` com o mesmo comportamento.
 

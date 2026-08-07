@@ -1,4 +1,4 @@
-# Spec Plan: Refatoração do Faturamento e PIX na Conciliação Diária (faturamento-pix-refactor)
+﻿# Spec Plan: RefatoraçÁo do Faturamento e PIX na ConciliaçÁo Diária (faturamento-pix-refactor)
 
 ## Tasks
 
@@ -8,4 +8,4 @@
 - [x] [FRONTEND] Calcular `pixOsMatched` como a soma dos PIXs validados no banco.
 - [x] [FRONTEND] Ajustar a propriedade `pix_os` (na interface `StoreSaldoState`) para usar o valor retornado por `pixOsMatched`.
 - [x] [FRONTEND] Alterar a fórmula de `faturamento_atual` para ser estritamente `cartaoEntrou + pixOsMatched` em vez do total bruto das OSs.
-- [x] [TEST] Abrir o app (dashboard da conciliação) e constatar visualmente se "Faturamento" corresponde a `Maquininha + PIX`.
+- [x] [TEST] Abrir o app (dashboard da conciliaçÁo) e constatar visualmente se "Faturamento" corresponde a `Maquininha + PIX`.

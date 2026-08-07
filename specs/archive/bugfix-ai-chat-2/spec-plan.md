@@ -1,4 +1,4 @@
-# Spec Plan: Correção de Erro Interno (s is not a function) no AI SDK (bugfix-ai-chat-2)
+﻿# Spec Plan: CorreçÁo de Erro Interno (s is not a function) no AI SDK (bugfix-ai-chat-2)
 
 ## Tasks
 

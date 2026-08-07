@@ -1,4 +1,4 @@
-# Spec Plan: Nomenclatura e Diferença (097)
+﻿# Spec Plan: Nomenclatura e Diferença (097)
 
 ## Tasks
 
@@ -8,5 +8,5 @@
   - Atualizar os rótulos dos Cards no Grid da loja:
     - Alterar label "Saldo" para "Faturam. Banco".
     - Alterar label "Faturamento" para "Previsto".
-  - Ajustar a renderização da Diferença: formatar a exibição da cor dependendo se é sobra (positivo, verde) ou furo (negativo, vermelho).
-- [x] [FRONTEND] Garantir que o valor exibido em "Previsto" (antigo Faturamento) seja a soma `maquininha + pixOs`, e não mais `saldo_banco_itau`.
+  - Ajustar a renderizaçÁo da Diferença: formatar a exibiçÁo da cor dependendo se é sobra (positivo, verde) ou furo (negativo, vermelho).
+- [x] [FRONTEND] Garantir que o valor exibido em "Previsto" (antigo Faturamento) seja a soma `maquininha + pixOs`, e nÁo mais `saldo_banco_itau`.

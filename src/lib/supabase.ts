@@ -1,4 +1,4 @@
-// Re-export the official Supabase client (with real credentials) and shared row types.
+﻿// Re-export the official Supabase client (with real credentials) and shared row types.
 // All app code should import from here OR from "@/integrations/supabase/client" directly.
 
 export { supabase } from '@/integrations/supabase/client';
@@ -113,7 +113,7 @@ export type ReceivableRow = {
   id: string;
   store_id: string | null;
   store_name: string | null;
-  type: 'Cartão Crédito' | 'Cartão Débito' | 'PIX' | 'Boleto';
+  type: 'CartÁo Crédito' | 'CartÁo Débito' | 'PIX' | 'Boleto';
   value: number;
   status: 'pendente' | 'recebido' | 'vencido';
   date: string;

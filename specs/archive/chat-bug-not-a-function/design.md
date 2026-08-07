@@ -1,4 +1,4 @@
-# Design: Erro "s is not a function" no Vercel AI SDK (chat-bug-not-a-function)
+﻿# Design: Erro "s is not a function" no Vercel AI SDK (chat-bug-not-a-function)
 
 ## Arquitetura Técnica
 
@@ -23,7 +23,7 @@ append(
 ## Componentes / Hooks / Funções
 1. **`src/routes/agente.tsx`**: 
    - Remover `fetch` prop do objeto passado para `useChat`.
-   - Modificar a função `sendMessage(text)` para extrair o token do usuário e enviá-lo via `append({ role: 'user', content: text }, { headers: { Authorization: \`Bearer \${token}\` } })`.
+   - Modificar a funçÁo `sendMessage(text)` para extrair o token do usuário e enviá-lo via `append({ role: 'user', content: text }, { headers: { Authorization: \`Bearer \${token}\` } })`.
    - Apenas delegar o `id` omitido para o Vercel AI SDK gerar automaticamente (remover `id: crypto.randomUUID()` caso seja fonte secundária do erro no Edge runtime).
 
 ## Fluxo de UI
@@ -32,9 +32,9 @@ A interface do Chat permanece inalterada, mas o comportamento de "travar" ao env
 ## Infra / Deploy
 - Nenhuma dependência externa nova.
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 
 - **Cenário 1: Envio Síncrono de Mensagem**
   - *Estado Inicial:* Usuário no chat sem mensagens.
-  - *Ação:* Digita "Olá" e clica em enviar.
-  - *Resultado Esperado:* A mensagem "Olá" aparece IMEDIATAMENTE na lista. O erro "s is not a function" não é disparado no console. A requisição HTTP para `ai-chat` leva o header `Authorization`. A resposta da IA é preenchida.
+  - *AçÁo:* Digita "Olá" e clica em enviar.
+  - *Resultado Esperado:* A mensagem "Olá" aparece IMEDIATAMENTE na lista. O erro "s is not a function" nÁo é disparado no console. A requisiçÁo HTTP para `ai-chat` leva o header `Authorization`. A resposta da IA é preenchida.

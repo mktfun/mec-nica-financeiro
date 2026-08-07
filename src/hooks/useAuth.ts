@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+﻿import { useEffect, useState, useCallback } from 'react';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 
@@ -29,7 +29,7 @@ export function useSession() {
       });
     }
 
-    // Define valor inicial caso a sessão global tenha sido atualizada antes do useEffect
+    // Define valor inicial caso a sessÁo global tenha sido atualizada antes do useEffect
     if (session !== globalSession) {
       setSession(globalSession);
     }
@@ -60,11 +60,11 @@ export function useLogin() {
         return false;
       }
 
-      // Supabase onAuthStateChange vai disparar → AppShell detecta sessão → navega
+      // Supabase onAuthStateChange vai disparar → AppShell detecta sessÁo → navega
       return true;
     } catch (err: any) {
       console.error("Login error:", err);
-      setError(err?.message || 'Erro de conexão. Tente novamente.');
+      setError(err?.message || 'Erro de conexÁo. Tente novamente.');
       return false;
     } finally {
       setLoading(false);

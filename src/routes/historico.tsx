@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+﻿import { createFileRoute } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
@@ -63,7 +63,7 @@ function HistoricoPage() {
               Extrato Bancário
             </h1>
             <p className="text-sm text-[var(--text-secondary)] mt-1">
-              Consolidação de entradas, saídas e saldo por período.
+              ConsolidaçÁo de entradas, saídas e saldo por período.
             </p>
           </div>
           <button

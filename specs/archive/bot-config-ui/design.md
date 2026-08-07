@@ -1,11 +1,11 @@
-# Design: Bot Config UI & MCP Agent Integration (bot-config-ui)
+﻿# Design: Bot Config UI & MCP Agent Integration (bot-config-ui)
 
 ## Arquitetura Técnica
 ```
 [AgentePage UI]
   ├─ Aba "Bot & MCP"
   │   ├─ Configurações (URL + API Key) → Salva em ai_settings via RPC/Supabase
-  │   ├─ Botão Testar → Dispara fetch() para <URL>/health e <URL>/api/sync
+  │   ├─ BotÁo Testar → Dispara fetch() para <URL>/health e <URL>/api/sync
   │   └─ Bot Logs → Real-time query na tabela bot_audit_logs
   │
   └─ Aba "Chat" (LLM Integration)
@@ -17,7 +17,7 @@
 ## Interfaces TypeScript
 
 ```typescript
-// Extensão de src/hooks/useAiSettings.ts
+// ExtensÁo de src/hooks/useAiSettings.ts
 export interface AiSettings {
   id?: string;
   provider: string;
@@ -43,11 +43,11 @@ export interface BotAuditLog {
 2. **`useAiSettings` Hook**: Atualizar a `select` e `upsert` para incluir as duas novas colunas.
 3. **`AgentePage` (src/routes/agente.tsx)**:
    - Adicionar uma nova aba `bot` (Bot & MCP).
-   - Sessão 1: Inputs para `bot_url` (default `https://bot.tork.services`) e `bot_api_key`.
-   - Sessão 2: Botão `Testar Conexão`.
-   - Sessão 3: Tabela/lista de Logs consumindo `bot_audit_logs`.
+   - SessÁo 1: Inputs para `bot_url` (default `https://bot.tork.services`) e `bot_api_key`.
+   - SessÁo 2: BotÁo `Testar ConexÁo`.
+   - SessÁo 3: Tabela/lista de Logs consumindo `bot_audit_logs`.
 4. **LLM Tool Invocation**:
-   - Para que o IA chame o bot, o prompt precisará instruir o bot a retornar um comando como `[TOOL_CALL: sync_bot_now]`. A interface intercepta isso e faz a requisição pro backend/bot.
+   - Para que o IA chame o bot, o prompt precisará instruir o bot a retornar um comando como `[TOOL_CALL: sync_bot_now]`. A interface intercepta isso e faz a requisiçÁo pro backend/bot.
 
 ## Fluxo de UI
 1. Usuário acessa aba "IA" no menu principal.
@@ -56,7 +56,7 @@ export interface BotAuditLog {
 4. Clica em "Testar" → Toast "Bot respondeu com sucesso!".
 5. Na listagem de logs abaixo, o usuário vê histórico do Playwright (trazidos da VPS).
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
-- Cenário 1: **Teste de Conexão com Sucesso** → Inserir URL válida e Key válida → Clicar em testar → Sucesso.
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
+- Cenário 1: **Teste de ConexÁo com Sucesso** → Inserir URL válida e Key válida → Clicar em testar → Sucesso.
 - Cenário 2: **Teste sem Key** → Inserir URL válida sem Key → Clicar em testar → Retornar Unauthorized.
-- Cenário 3: **MCP Acionamento** → No chat de IA, pedir "Rode a automação da oficina inteligente agora" → O LLM devolve o comando, o frontend intercepta e bate no endpoint configurado.
+- Cenário 3: **MCP Acionamento** → No chat de IA, pedir "Rode a automaçÁo da oficina inteligente agora" → O LLM devolve o comando, o frontend intercepta e bate no endpoint configurado.

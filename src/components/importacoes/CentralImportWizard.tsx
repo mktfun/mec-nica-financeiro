@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+﻿import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
 import { Card } from '@/components/ui/Card';
@@ -114,13 +114,13 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
     const newSessionId = generateSessionId();
     setSessionId(newSessionId);
     
-    traceLog('1_UPLOAD', 'INFO', 'Iniciando processo de importação centralizada', newSessionId, {
+    traceLog('1_UPLOAD', 'INFO', 'Iniciando processo de importaçÁo centralizada', newSessionId, {
       files_received: acceptedFiles.map(f => ({ filename: f.name, size_bytes: f.size }))
     });
 
     try {
       await processFiles(acceptedFiles, { sessionId: newSessionId });
-      // Aqui após o processamento (sucesso ou não) poderemos logar 6_STAGING_READY
+      // Aqui após o processamento (sucesso ou nÁo) poderemos logar 6_STAGING_READY
     } catch (e: any) {
       traceLog('1_UPLOAD', 'ERROR', 'Falha no processamento centralizado', newSessionId, { error: e.message });
     }
@@ -194,7 +194,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         if (match) {
           currentMapping[alias] = match.id;
         } else {
-          delete currentMapping[alias]; // Força a ficar vazio se não encontrar
+          delete currentMapping[alias]; // Força a ficar vazio se nÁo encontrar
         }
       }
     });
@@ -202,7 +202,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
     setMapping(currentMapping);
     
     // Log de Staging Ready
-    traceLog('6_STAGING_READY', 'INFO', 'Payload gerado e aguardando confirmação do usuário', sessionId, {
+    traceLog('6_STAGING_READY', 'INFO', 'Payload gerado e aguardando confirmaçÁo do usuário', sessionId, {
       total_os_files: results.osFiles.length,
       total_rede_files: results.redeResults.length,
       total_ofx_files: results.ofxResults.length,
@@ -234,7 +234,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
     setSaveFinished(false);
 
     try {
-      addLog("🚀 Iniciando gravação do lote de conciliação...", "info");
+      addLog("ðŸš€ Iniciando gravaçÁo do lote de conciliaçÁo...", "info");
       await new Promise(r => setTimeout(r, 200));
 
       const txsToInsert: any[] = [];
@@ -243,7 +243,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
       // 1. OSs do Pátio e Recebíveis
       const osCountTotal = results.osFiles.filter(r => r.success).reduce((acc, curr) => acc + curr.osArray.length, 0);
-      addLog(`📦 Registrando OSs do Pátio (${osCountTotal} ordens identificadas)...`, "info");
+      addLog(`ðŸ“¦ Registrando OSs do Pátio (${osCountTotal} ordens identificadas)...`, "info");
       
       const osPromises = results.osFiles.filter(r => r.success).map(osResult => {
         let store_id: string | null = mapping[osResult.storeAlias];
@@ -265,7 +265,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       const maqPromises = Object.entries(maqByStore).map(([sid, items]) => {
         const storeName = items[0].storeName;
         const parsedRecs: ParsedReceivable[] = items.map(item => ({
-          type: 'Cartão Crédito',
+          type: 'CartÁo Crédito',
           value: item.amount,
           date: item.dateVenda || targetDate,
           due_date: item.dateCredito || targetDate,
@@ -276,7 +276,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
       // Rede
       const redeCount = results.redeResults.filter(r => r.success).reduce((acc, curr) => acc + curr.transactions.length, 0);
-      addLog(`💳 Processando relatórios da Rede (${redeCount} transações da maquininha)...`, "info");
+      addLog(`ðŸ’³ Processando relatórios da Rede (${redeCount} transações da maquininha)...`, "info");
 
       const redeByStore: Record<string, any[]> = {};
       results.redeResults.filter(r => r.success).forEach(r => {
@@ -302,10 +302,10 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       });
 
       await Promise.all([...osPromises, ...maqPromises, ...redePromises]);
-      addLog("✅ OSs e Recebíveis salvos nas tabelas de origem!", "success");
+      addLog("âœ… OSs e Recebíveis salvos nas tabelas de origem!", "success");
       
       // Snapshot Na Loja OS
-      addLog(`📸 Gerando snapshot de OSs ativas no pátio...`, "info");
+      addLog(`ðŸ“¸ Gerando snapshot de OSs ativas no pátio...`, "info");
       const allStoreIds = new Set<string>();
       Object.values(mapping).forEach(v => {
         if (v && v !== 'GLOBAL') allStoreIds.add(v);
@@ -337,7 +337,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
       // 2. Transações e OFX
       const ofxCount = results.ofxResults.reduce((acc, curr) => acc + curr.transactions.length, 0);
-      addLog(`🏦 Conciliando Extratos OFX (${ofxCount} lançamentos bancários)...`, "info");
+      addLog(`ðŸ¦ Conciliando Extratos OFX (${ofxCount} lançamentos bancários)...`, "info");
 
       const validAmounts = new Set<number>();
       results.osFiles.filter(r => r.success).forEach(r => r.osArray.forEach(os => {
@@ -366,14 +366,14 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       });
       const matchesToInsert: any[] = [];
 
-      // Insere Maquininhas e Rede na tabela transactions para a Conciliação Diária
+      // Insere Maquininhas e Rede na tabela transactions para a ConciliaçÁo Diária
       Object.entries(maqByStore).forEach(([sid, items]) => {
         items.forEach(item => {
           txsToInsert.push({
             id: crypto.randomUUID(),
             store_id: sid,
             store_name: item.storeName,
-            title: item.title || 'Importação Maquininha',
+            title: item.title || 'ImportaçÁo Maquininha',
             subtitle: item.storeName,
             amount: item.amount || 0, // Fallback/Legacy
             gross_amount: item.amount || 0,
@@ -393,7 +393,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             id: crypto.randomUUID(),
             store_id: sid,
             store_name: item.storeName,
-            title: item.title || 'Importação Rede',
+            title: item.title || 'ImportaçÁo Rede',
             subtitle: item.storeName,
             amount: item.netAmount || 0,
             gross_amount: item.grossAmount || item.netAmount || 0,
@@ -463,7 +463,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             id: txId,
             store_id: matched_store_id,
             store_name: matched_store_id ? matched_store_id : ofx.alias,
-            title: tx.title || 'Importação OFX',
+            title: tx.title || 'ImportaçÁo OFX',
             subtitle: tx.counterpart_name || ofx.alias,
             amount: tx.amount || 0,
             type: tx.type,
@@ -492,14 +492,14 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         });
       });
 
-      addLog(`⚙️ Gravando batch de ${txsToInsert.length} transações no banco...`, "info");
+      addLog(`âš™ï¸ Gravando batch de ${txsToInsert.length} transações no banco...`, "info");
       const batch = await createImportBatch({ target_date: targetDate });
       
       await saveTransactions({ transactions: txsToInsert, storeBankBalances, storePreviousBalances, import_batch_id: batch.id } as any);
-      addLog("✅ Transações do extrato e adquirente salvas com sucesso!", "success");
+      addLog("âœ… Transações do extrato e adquirente salvas com sucesso!", "success");
 
       if (matchesToInsert.length > 0) {
-        addLog(`🔗 Vinculando ${matchesToInsert.length} pares perfeitos de conciliação...`, "info");
+        addLog(`ðŸ”— Vinculando ${matchesToInsert.length} pares perfeitos de conciliaçÁo...`, "info");
         
         try {
           // 1. Coletar fitids para consultar o DB
@@ -559,15 +559,15 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           }));
 
           await insertConciliationMatches(sanitizedMatches);
-          addLog("✅ Pares de conciliação salvos com sucesso!", "success");
+          addLog("âœ… Pares de conciliaçÁo salvos com sucesso!", "success");
         } catch (matchErr: any) {
-          console.warn("Aviso ao salvar pares de conciliação:", matchErr);
-          addLog(`⚠️ Pares de conciliação salvos parcialmente (transações garantidas no banco).`, "warning");
+          console.warn("Aviso ao salvar pares de conciliaçÁo:", matchErr);
+          addLog(`âš ï¸ Pares de conciliaçÁo salvos parcialmente (transações garantidas no banco).`, "warning");
         }
       }
 
-      // Log de Importação
-      addLog("📝 Atualizando histórico de importação (import_logs)...", "info");
+      // Log de ImportaçÁo
+      addLog("ðŸ“ Atualizando histórico de importaçÁo (import_logs)...", "info");
       
       const logsByStore = new Map<string, any>();
       
@@ -590,7 +590,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       if (logsByStore.size === 0) {
           logsByStore.set('GLOBAL', {
               store_id: 'GLOBAL',
-              store_name: 'Conciliação Centralizada',
+              store_name: 'ConciliaçÁo Centralizada',
               target_date: targetDate,
               total_os: 0,
               os_count: 0,
@@ -629,7 +629,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       if (upsertErr) console.warn("Erro ao registrar import log", upsertErr);
 
       // 4. Salvar Daily Snapshot (Valores Globais)
-      addLog("📝 Gravando fechamento diário (daily_snapshots)...", "info");
+      addLog("ðŸ“ Gravando fechamento diário (daily_snapshots)...", "info");
       
       let saldoNegativoItau = 0;
       results.ofxResults.forEach(ofx => {
@@ -650,8 +650,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       try {
         await saveSnapshot.mutateAsync({
           date: targetDate,
-          caixa_atual: 0, // Será preenchido via conciliação
-          faturamento: 0, // Será preenchido via conciliação
+          caixa_atual: 0, // Será preenchido via conciliaçÁo
+          faturamento: 0, // Será preenchido via conciliaçÁo
           total_recebiveis: 0,
           total_patio: 0,
           saldo_bancario: 0,
@@ -662,24 +662,24 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           provisao: 0,
           saldo_negativo_itau: saldoNegativoItau,
           juros_rede: jurosRedeTotal,
-          notes: 'Valores gerados via Importação',
+          notes: 'Valores gerados via ImportaçÁo',
         });
-        addLog("✅ Valores manuais globais salvos com sucesso!", "success");
+        addLog("âœ… Valores manuais globais salvos com sucesso!", "success");
       } catch (snapErr) {
         console.warn("Erro ao salvar daily_snapshot:", snapErr);
-        addLog("⚠️ Aviso: Falha ao gravar valores manuais do dia.", "warning");
+        addLog("âš ï¸ Aviso: Falha ao gravar valores manuais do dia.", "warning");
       }
 
-      addLog("🔧 Pareando transações importadas com Ordens de Serviço...", "info");
+      addLog("ðŸ”§ Pareando transações importadas com Ordens de Serviço...", "info");
       const { error: matchErr } = await supabase.rpc('auto_match_transactions', { p_date: targetDate });
       if (matchErr) throw matchErr;
 
-      addLog("✅ TODAS AS ETAPAS FORAM CONCLUÍDAS COM SUCESSO!", "success");
+      addLog("âœ… TODAS AS ETAPAS FORAM CONCLUÁDAS COM SUCESSO!", "success");
       setSaveFinished(true);
 
     } catch(e: any) {
       console.error(e);
-      addLog(`❌ Erro ao confirmar importação: ${e.message || 'Falha no banco de dados.'}`, "error");
+      addLog(`âŒ Erro ao confirmar importaçÁo: ${e.message || 'Falha no banco de dados.'}`, "error");
     } finally {
       setIsSaving(false);
     }
@@ -738,7 +738,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           <ArrowLeft size={20} />
         </button>
         <div>
-          <h2 className="text-2xl font-display font-bold text-[var(--text-primary)]">Central de Importação</h2>
+          <h2 className="text-2xl font-display font-bold text-[var(--text-primary)]">Central de ImportaçÁo</h2>
           <p className="text-sm text-[var(--text-secondary)]">Importe OSs do Pátio, Vendas da Maquininha (Rede) e Extratos Bancários (OFX).</p>
         </div>
         {import.meta.env.DEV && (
@@ -792,7 +792,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
               </p>
             </div>
             
-            {/* Direita: Sincronização Automática Bot (Novo Fluxo Híbrido) */}
+            {/* Direita: SincronizaçÁo Automática Bot (Novo Fluxo Híbrido) */}
             <div className="border border-[var(--border-subtle)] bg-[var(--bg-surface)] rounded-3xl p-10 flex flex-col items-center justify-center transition-all duration-300 hover:border-[var(--color-primary)]/50 relative overflow-hidden">
               <div className="absolute top-0 right-0 bg-[var(--color-primary)]/20 text-[var(--color-primary)] text-xs px-3 py-1 font-bold rounded-bl-xl border-l border-b border-[var(--color-primary)]/20 flex items-center gap-1">
                 <Sparkles size={12} /> RECOMENDADO
@@ -801,17 +801,17 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                 <RefreshCcw />
               </div>
               <h3 className="font-display font-semibold text-xl mb-2 text-center text-[var(--text-primary)]">
-                Sincronização Cloud (Bot)
+                SincronizaçÁo Cloud (Bot)
               </h3>
               <p className="text-[var(--text-secondary)] text-sm text-center max-w-sm mb-6">
                 Busca automaticamente resumos de Ordens de Serviço (Pátio) e Contas a Pagar diretamente do sistema Oficina Inteligente em tempo real.
               </p>
               <Button 
                 onClick={async () => {
-                   addLog("Iniciando Sincronização Cloud via Bot...", "info");
+                   addLog("Iniciando SincronizaçÁo Cloud via Bot...", "info");
                    // Em um fluxo real, chamaria a edge function aqui
                    // supabase.functions.invoke('sync-oficina', { body: { loja: 'st-02' } })
-                   alert('Edge Function sync-oficina acionada. (Mock para demonstração da nova spec)');
+                   alert('Edge Function sync-oficina acionada. (Mock para demonstraçÁo da nova spec)');
                 }}
                 className="w-full shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.3)] hover:scale-105 transition-transform"
               >
@@ -890,7 +890,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                   )}
 
                   <div className="flex justify-end mt-6">
-                    <Button onClick={() => setSubStep(2)}>Próximo: OS (Pátio) →</Button>
+                    <Button onClick={() => setSubStep(2)}>Próximo: OS (Pátio) â†’</Button>
                   </div>
                 </div>
               );
@@ -931,7 +931,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                                 ${mapping[alias] ? 'border-[var(--color-accent-teal)] text-[var(--text-primary)]' : 'border-[var(--color-accent-warning)] text-[var(--text-secondary)]'}`}
                             >
                               <option value="">-- Selecione a Loja Correspondente --</option>
-                              <option value="GLOBAL">-- NÃO VINCULAR / IGNORAR --</option>
+                              <option value="GLOBAL">-- NÁƒO VINCULAR / IGNORAR --</option>
                               {stores.map(s => (
                                 <option key={s.id} value={s.id}>{s.name}</option>
                               ))}
@@ -943,8 +943,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                   )}
 
                   <div className="flex justify-between mt-6">
-                    <Button variant="ghost" onClick={() => setSubStep(1)}>← Voltar para OFX</Button>
-                    <Button onClick={() => setSubStep(3)}>Próximo: Maquininhas (Rede) →</Button>
+                    <Button variant="ghost" onClick={() => setSubStep(1)}>â† Voltar para OFX</Button>
+                    <Button onClick={() => setSubStep(3)}>Próximo: Maquininhas (Rede) â†’</Button>
                   </div>
                 </div>
               );
@@ -974,7 +974,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                       {aliasArray.map(alias => (
                         <div key={`rede-${alias}`} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
                           <div className="flex-1">
-                            <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase">Nº de Estabelecimento / Loja</span><br/>
+                            <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase">NÂº de Estabelecimento / Loja</span><br/>
                             <span className="font-mono text-lg font-semibold text-[var(--text-primary)]">{alias}</span>
                           </div>
                           <LinkIcon className="text-[var(--color-accent-warning)]/50 shrink-0" size={24} />
@@ -989,7 +989,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                                 ${mapping[alias] ? 'border-[var(--color-accent-warning)] text-[var(--text-primary)]' : 'border-red-500/50 text-[var(--text-secondary)]'}`}
                             >
                               <option value="">-- Selecione a Loja Correspondente --</option>
-                              <option value="GLOBAL">-- NÃO VINCULAR / IGNORAR --</option>
+                              <option value="GLOBAL">-- NÁƒO VINCULAR / IGNORAR --</option>
                               {stores.map(s => (
                                 <option key={s.id} value={s.id}>{s.name}</option>
                               ))}
@@ -1001,8 +1001,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                   )}
 
                   <div className="flex justify-between mt-6">
-                    <Button variant="ghost" onClick={() => setSubStep(2)}>← Voltar para OS</Button>
-                    <Button onClick={() => setStep(3)}>Avançar para Preview →</Button>
+                    <Button variant="ghost" onClick={() => setSubStep(2)}>â† Voltar para OS</Button>
+                    <Button onClick={() => setStep(3)}>Avançar para Preview â†’</Button>
                   </div>
                 </div>
               );
@@ -1034,7 +1034,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
               <p className="text-2xl font-bold text-[var(--text-primary)]">
                 <AnimatedNumber value={totalMaq} format="currency" />
               </p>
-              <p className="text-xs text-[var(--text-secondary)] mt-1">{redeFiltered.length} transações de cartão</p>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">{redeFiltered.length} transações de cartÁo</p>
             </Card>
 
             <Card className="p-6 bg-[var(--bg-surface-elevated)] border-l-4 border-l-sky-500">
@@ -1050,7 +1050,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           </div>
 
           <Card className="p-8 space-y-6">
-            <h3 className="font-display text-xl font-semibold">Previsão por Loja</h3>
+            <h3 className="font-display text-xl font-semibold">PrevisÁo por Loja</h3>
             
             <div className="space-y-4">
               {stores.map(store => {
@@ -1121,7 +1121,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             <div className="pt-6 border-t border-[var(--border-subtle)] space-y-4">
               <h4 className="font-semibold text-lg text-[var(--text-primary)]">Valores Manuais do Dia</h4>
               <p className="text-sm text-[var(--text-secondary)] mb-4">
-                Preencha os dados abaixo. Eles serão salvos no fechamento diário e não poderão ser editados na tela de conciliação.
+                Preencha os dados abaixo. Eles serÁo salvos no fechamento diário e nÁo poderÁo ser editados na tela de conciliaçÁo.
               </p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1129,8 +1129,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                   <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Dinheiro MP (Daniel)</label>
                   <input 
                     type="number" 
-                    value={manualDinheiroMp} 
-                    onChange={e => setManualDinheiroMp(Number(e.target.value))}
+                    value={manualDinheiroMp || ''} 
+                      onChange={e => setManualDinheiroMp(Number(e.target.value))}
                     className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)]"
                   />
                 </div>
@@ -1138,8 +1138,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                   <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">A Receber (Boleto/Desc.)</label>
                   <input 
                     type="number" 
-                    value={manualAReceber} 
-                    onChange={e => setManualAReceber(Number(e.target.value))}
+                    value={manualAReceber || ''} 
+                      onChange={e => setManualAReceber(Number(e.target.value))}
                     className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)]"
                   />
                 </div>
@@ -1149,7 +1149,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
             <div className="pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between">
               <div>
-                <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Data Base da Conciliação</label>
+                <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Data Base da ConciliaçÁo</label>
                 <input 
                   type="date" 
                   value={targetDate} 
@@ -1164,14 +1164,14 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                 className="py-4 px-8 text-base font-semibold rounded-xl bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 shadow-[0_4px_20px_rgba(var(--color-primary-rgb),0.4)] flex items-center gap-2"
               >
                 {isSaving ? <LoadingSpinner size="xs" text="Iniciando..." /> : <Sparkles size={18} />}
-                Confirmar e Gravar Importação
+                Confirmar e Gravar ImportaçÁo
               </Button>
             </div>
           </Card>
         </motion.div>
       )}
 
-      {/* STEP 4: PAINEL EXECUTIVO DE PROGRESSO & GRAVAÇÃO */}
+      {/* STEP 4: PAINEL EXECUTIVO DE PROGRESSO & GRAVAÇÁƒO */}
       {step === 4 && (() => {
         const progressPct = saveFinished ? 100 : (
           importLogs.some(l => l.message.includes('Vinculando')) ? 85 :
@@ -1195,7 +1195,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                 <div>
                   <h3 className="font-display text-xl font-bold text-[var(--text-primary)] flex items-center gap-2">
                     <Sparkles className="text-[var(--color-primary)]" size={22} />
-                    Painel de Gravação do Lote
+                    Painel de GravaçÁo do Lote
                   </h3>
                   <p className="text-xs text-[var(--text-tertiary)] mt-1">
                     Persistindo e deduplicando Ordens de Serviço, Maquininhas e Extrato Bancário no Supabase...
@@ -1301,7 +1301,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                   <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">{allOfxTx.length} extratos</p>
                 </div>
 
-                {/* Etapa 4: Conciliação */}
+                {/* Etapa 4: ConciliaçÁo */}
                 <div className={`p-4 rounded-xl border transition-all ${
                   currentPhase === 'matches' ? 'bg-[var(--bg-surface-elevated)] border-purple-500/50 shadow-md' :
                   saveFinished ? 'bg-[var(--bg-surface)] border-[var(--border-subtle)]' :
@@ -1325,7 +1325,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                       </Badge>
                     )}
                   </div>
-                  <h4 className="font-semibold text-xs text-[var(--text-primary)]">4. Conciliação</h4>
+                  <h4 className="font-semibold text-xs text-[var(--text-primary)]">4. ConciliaçÁo</h4>
                   <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">Pares automáticos</p>
                 </div>
 
@@ -1383,7 +1383,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                     <div>
                       <h4 className="font-semibold text-emerald-400 text-base">Lote Importado com Sucesso!</h4>
                       <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                        Todas as OSs, vendas de cartão e lançamentos do extrato foram persistidos no banco de dados.
+                        Todas as OSs, vendas de cartÁo e lançamentos do extrato foram persistidos no banco de dados.
                       </p>
                     </div>
                   </div>
@@ -1403,7 +1403,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                       className="w-full sm:w-auto text-xs px-5 py-2.5 font-semibold bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 shadow-[0_4px_15px_rgba(var(--color-primary-rgb),0.3)]"
                     >
                       <CheckCircle2 size={16} />
-                      Ir para a Tela de Conciliação →
+                      Ir para a Tela de ConciliaçÁo â†’
                     </Button>
                   </div>
                 </motion.div>
@@ -1415,4 +1415,5 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
     </div>
   );
 }
+
 

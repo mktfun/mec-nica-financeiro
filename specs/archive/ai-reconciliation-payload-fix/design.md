@@ -1,4 +1,4 @@
-# Design: Correção do Payload da IA de Conciliação Silenciosa (ai-reconciliation-payload-fix)
+﻿# Design: CorreçÁo do Payload da IA de ConciliaçÁo Silenciosa (ai-reconciliation-payload-fix)
 
 ## Arquitetura Técnica
 
@@ -74,7 +74,7 @@ const payload = {
 ```
 
 ### 2. `src/hooks/useBackgroundAiReconciler.ts`
-Se `unmatchedOs`, `unmatchedRede` ou `unmatchedOfx` não forem passados ou estiverem vazios:
+Se `unmatchedOs`, `unmatchedRede` ou `unmatchedOfx` nÁo forem passados ou estiverem vazios:
 - Executa consulta ao Supabase para buscar:
   - `patio_os` da loja com `status != 'ENTROU'`
   - `transactions` com `source IN ('rede', 'maquininha')` e `target_date = date` sem match
@@ -83,14 +83,14 @@ Se `unmatchedOs`, `unmatchedRede` ou `unmatchedOfx` não forem passados ou estiv
 ### 3. `src/routes/conciliacao.index.tsx`
 Remover a chamada falsa `useBackgroundAiReconciler(firstStoreId, selectedDate, detalhes, [], [])`.
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 
 - **Cenário 1 (Payload com valores reais):**
   - Estado inicial: Existem OSs de R$ 1.300,00 e lançamentos OFX do dia.
-  - Ação: Disparar `useBackgroundAiReconciler`.
+  - AçÁo: Disparar `useBackgroundAiReconciler`.
   - Resultado esperado: DevTools Inspector exibe `Input JSON` com `total_value: 1300`, `pix_value: 1300`, `ofx: [{ amount: 1300 }]`, e `Output JSON` com match e justificativa de raciocínio (`reasoning`).
 
 - **Cenário 2 (Match automático aplicado):**
   - Estado inicial: OS e PIX com valor R$ 1.300,00 e nome do cliente idêntico.
-  - Ação: Execução do reconciliador silencioso.
-  - Resultado esperado: Inserção do match em `conciliation_matches` com `confidence >= 90%` e atualização visual da tabela na loja.
+  - AçÁo: ExecuçÁo do reconciliador silencioso.
+  - Resultado esperado: InserçÁo do match em `conciliation_matches` com `confidence >= 90%` e atualizaçÁo visual da tabela na loja.

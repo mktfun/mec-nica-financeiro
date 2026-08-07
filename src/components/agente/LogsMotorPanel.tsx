@@ -1,4 +1,4 @@
-import { Card } from '@/components/ui/Card';
+﻿import { Card } from '@/components/ui/Card';
 import { Workflow, CheckCircle2, XCircle, AlertTriangle, ChevronDown } from 'lucide-react';
 import { useBotLogs } from '@/hooks/useBotLogs';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
@@ -14,7 +14,7 @@ export function LogsMotorPanel() {
           <div className="w-10 h-10 rounded-lg bg-blue-500/15 flex items-center justify-center">
             <Workflow size={20} className="text-blue-400" />
           </div>
-          Log do Motor de Conciliação
+          Log do Motor de ConciliaçÁo
         </h1>
         <p className="text-[var(--text-secondary)] text-sm">Trilha de auditoria das execuções de coleta do bot.</p>
       </div>

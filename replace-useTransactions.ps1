@@ -1,0 +1,3 @@
+﻿$content = Get-Content src/hooks/useTransactions.ts -Raw
+$content = $content -replace '(?s)\.upsert\(ofxTxs\.map\(\(t: any\) => \{.*?\n\s+return rest; \n\s+\}\),', '.upsert(ofxTxs.map((t: any) => { return { store_id: t.store_id, bank_name: t.title || ''Itaú'', type: t.type, amount: t.amount, occurred_at: t.occurred_at, fitid: t.fitid || t.id, counterpart_name: t.counterpart_name || t.subtitle || null, cnpj_cpf: t.cnpj_cpf || null, matched_os_number: t.os_number || t.matched_os_number || null, import_batch_id: t.import_batch_id || null }; }),'
+Set-Content src/hooks/useTransactions.ts -Value $content -Encoding UTF8

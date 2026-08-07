@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+﻿import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 
@@ -40,7 +40,7 @@ export function useAiSettings() {
           }
         }
 
-        // Tenta buscar pela configuração GLOBAL
+        // Tenta buscar pela configuraçÁo GLOBAL
         const { data: globalData, error: globalErr } = await supabase
           .from('ai_settings')
           .select('provider, model, api_key, bot_url, bot_api_key')

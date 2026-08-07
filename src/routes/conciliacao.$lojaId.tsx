@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { createFileRoute, Link, useParams } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Badge } from '@/components/ui/Badge';
@@ -63,8 +63,8 @@ function ConciliacaoLojaPage() {
       <AppShell>
         <div className="flex flex-col items-center justify-center py-20 text-[var(--text-tertiary)]">
           <Store size={48} className="mb-4 opacity-20" />
-          <h2 className="text-xl font-display">Loja não encontrada</h2>
-          <Link to="/conciliacao" className="mt-4 text-[var(--color-primary)] hover:underline">Voltar para a conciliação</Link>
+          <h2 className="text-xl font-display">Loja nÁo encontrada</h2>
+          <Link to="/conciliacao" className="mt-4 text-[var(--color-primary)] hover:underline">Voltar para a conciliaçÁo</Link>
         </div>
       </AppShell>
     );
@@ -88,7 +88,7 @@ function ConciliacaoLojaPage() {
               </div>
             )}
             <div>
-              <h1 className="font-display font-bold text-3xl">Conciliação: {store.name}</h1>
+              <h1 className="font-display font-bold text-3xl">ConciliaçÁo: {store.name}</h1>
               <div className="flex items-center gap-4 mt-1">
                 <p className="text-[var(--text-secondary)]">Data alvo: {formatDate(targetDate)}</p>
                 {totalJuros > 0 && (
@@ -103,7 +103,7 @@ function ConciliacaoLojaPage() {
 
         <div className="flex border-b border-[var(--border-subtle)] mb-6 overflow-x-auto hide-scrollbar">
           <TabBtn active={activeTab === 'os_rede'} onClick={() => setActiveTab('os_rede')}>
-            1. Cartão (OS → Maquininha)
+            1. CartÁo (OS → Maquininha)
           </TabBtn>
           <TabBtn active={activeTab === 'rede_ofx'} onClick={() => setActiveTab('rede_ofx')}>
             2. Maquininha (Líq) → Banco

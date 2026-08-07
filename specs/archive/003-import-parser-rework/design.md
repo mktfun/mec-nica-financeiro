@@ -1,11 +1,11 @@
-# Design de Implementação (003-import-parser-rework)
+﻿# Design de ImplementaçÁo (003-import-parser-rework)
 
-## 1. Atualização do Banco de Dados (Migração Supabase)
+## 1. AtualizaçÁo do Banco de Dados (MigraçÁo Supabase)
 Para garantir a idempotência (poder importar repetidas vezes sem duplicar nada), precisamos forçar a unicidade no banco.
 - Tabela `patio_os`: `ALTER TABLE patio_os ADD CONSTRAINT unique_store_os UNIQUE (store_id, os_number);`
 - Tabela `receivables`: `ALTER TABLE receivables ADD COLUMN os_number TEXT;`
 - Tabela `receivables`: `ALTER TABLE receivables ADD CONSTRAINT unique_receivable_os UNIQUE (store_id, os_number, type);`
-*(Isso previne que a OS nº 123 gere dois recebíveis de "Cartão Crédito" para a mesma loja)*.
+*(Isso previne que a OS nº 123 gere dois recebíveis de "CartÁo Crédito" para a mesma loja)*.
 
 ## 2. Lógica de Negócio do Parser (ImportReportDialog)
 A rotina passará a transformar cada linha validada do Excel em um Objeto unificado contendo:

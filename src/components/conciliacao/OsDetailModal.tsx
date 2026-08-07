@@ -1,4 +1,4 @@
-import { Modal } from '@/components/ui/Modal';
+﻿import { Modal } from '@/components/ui/Modal';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { FileText, User, Calendar, CreditCard, QrCode, Banknote, CheckCircle2, ShieldCheck, Check, RotateCcw } from 'lucide-react';
@@ -126,7 +126,7 @@ export function OsDetailModal({ isOpen, onClose, osData }: OsDetailModalProps) {
               <div className="p-3 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-xl flex items-center justify-between">
                 <div className="flex items-center gap-2 text-[var(--text-primary)]">
                   <CreditCard size={16} className="text-[var(--color-primary)]" />
-                  <span>Cartão (Crédito / Débito)</span>
+                  <span>CartÁo (Crédito / Débito)</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="font-bold text-[var(--text-primary)]">R$ {creditValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
@@ -171,7 +171,7 @@ export function OsDetailModal({ isOpen, onClose, osData }: OsDetailModalProps) {
           </div>
         )}
 
-        {/* Botão de Ação: Baixa Manual Direct ("Marcar como ENTROU") */}
+        {/* BotÁo de AçÁo: Baixa Manual Direct ("Marcar como ENTROU") */}
         {osData.id && (
           <div className="pt-2 border-t border-[var(--border-subtle)] flex justify-end">
             <Button

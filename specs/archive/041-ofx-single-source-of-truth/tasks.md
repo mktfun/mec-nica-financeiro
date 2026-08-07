@@ -1,4 +1,4 @@
-# Tasks - Spec 041 (OFX Single Source of Truth)
+﻿# Tasks - Spec 041 (OFX Single Source of Truth)
 
 ## Backend Engineer
 - [x] 1. Em `src/hooks/useTransactions.ts`, atualize `useDashboardSummary` para substituir todas as condições `eq('source', 'system')` por `eq('source', 'ofx')`.
@@ -9,5 +9,5 @@
 
 ## Frontend Engineer
 - [x] 1. Em `src/components/importacoes/WizardImportacao.tsx`, garanta a taxonomia de `source`. Na linha `icon_type: isOfx ? 'bank' : 'card'`, modifique também o campo `source` para: `source: category === 'OFX' ? 'ofx' : 'maquininha'`.
-- [x] 2. Em `src/routes/importacoes-despesas.tsx`, adicione o campo explícito `source: 'despesa'` no payload de inserção que vai pro banco de dados (dentro do `payload.map`).
+- [x] 2. Em `src/routes/importacoes-despesas.tsx`, adicione o campo explícito `source: 'despesa'` no payload de inserçÁo que vai pro banco de dados (dentro do `payload.map`).
 - [x] 3. Garantir que tudo compile, marcando as tarefas aqui neste `tasks.md`.

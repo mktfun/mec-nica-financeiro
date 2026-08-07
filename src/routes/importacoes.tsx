@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+﻿import { createFileRoute } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
@@ -49,7 +49,7 @@ function ImportacoesPage() {
       }
     } catch (err) {
       console.error('Failed to delete import log:', err);
-      alert('Erro ao excluir importação: ' + ((err as any).message || JSON.stringify(err)));
+      alert('Erro ao excluir importaçÁo: ' + ((err as any).message || JSON.stringify(err)));
     }
   };
 
@@ -88,7 +88,7 @@ function ImportacoesPage() {
 
             <button onClick={() => setShowWizard(true)} className="bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 text-sm font-medium px-4 py-2.5 rounded-lg flex items-center gap-2 shadow-[0_4px_15px_rgba(var(--color-primary-rgb),0.3)] transition-all transform hover:scale-105">
               <UploadCloud size={18} />
-              Central de Importação
+              Central de ImportaçÁo
             </button>
           </div>
         </div>
@@ -103,9 +103,9 @@ function ImportacoesPage() {
             <div className="bg-[var(--color-accent-warning)]/10 border border-[var(--color-accent-warning)]/20 p-4 rounded-[var(--radius-lg)] flex items-start gap-3">
               <AlertTriangle className="text-[var(--color-accent-warning)] shrink-0 mt-0.5" size={20} />
               <div className="text-sm">
-                <strong className="block text-[var(--color-accent-warning)] mb-1">Atenção ao Desfazer (Cascade Delete)</strong>
+                <strong className="block text-[var(--color-accent-warning)] mb-1">AtençÁo ao Desfazer (Cascade Delete)</strong>
                 <p className="text-[var(--text-secondary)]">
-                  Ao desfazer uma importação em lote, o sistema apagará automaticamente todas as entradas no Extrato, Recebíveis futuros, a Conciliação e as OSs do Pátio referentes à Loja <strong>em todos os dias listados no período daquela planilha</strong>.
+                  Ao desfazer uma importaçÁo em lote, o sistema apagará automaticamente todas as entradas no Extrato, Recebíveis futuros, a ConciliaçÁo e as OSs do Pátio referentes à Loja <strong>em todos os dias listados no período daquela planilha</strong>.
                 </p>
               </div>
             </div>
@@ -163,13 +163,13 @@ function ImportacoesPage() {
                           <div className="flex items-center gap-2 shrink-0">
                             {isConfirming ? (
                               <div className="flex items-center gap-2 animate-in fade-in duration-200">
-                                <span className="text-xs text-[var(--color-accent-danger)] font-medium">Confirmar exclusão?</span>
+                                <span className="text-xs text-[var(--color-accent-danger)] font-medium">Confirmar exclusÁo?</span>
                                 <button
                                   disabled={isDeleting}
                                   onClick={() => handleDelete(log)}
                                   className="px-2.5 py-1 text-xs font-semibold bg-[var(--color-accent-danger)] text-white hover:opacity-90 rounded flex items-center gap-1"
                                 >
-                                  {isDeleting ? <LoadingSpinner size="xs" /> : 'Sim, Excluir'}
+                                  {isDeleting ? <LoadingSpinner size="sm" /> : 'Sim, Excluir'}
                                 </button>
                                 <button
                                   disabled={isDeleting}
@@ -184,9 +184,9 @@ function ImportacoesPage() {
                                 disabled={isDeleting}
                                 onClick={() => handleDelete(log)}
                                 className="p-2 text-[var(--text-tertiary)] hover:text-[var(--color-accent-danger)] hover:bg-[var(--color-accent-danger)]/10 rounded-lg transition-colors"
-                                title="Desfazer/Excluir esta importação"
+                                title="Desfazer/Excluir esta importaçÁo"
                               >
-                                {isDeleting ? <LoadingSpinner size="xs" /> : <Trash2 size={16} />}
+                                {isDeleting ? <LoadingSpinner size="sm" /> : <Trash2 size={16} />}
                               </button>
                             )}
                           </div>
@@ -231,9 +231,9 @@ function ImportacoesPage() {
         >
           <div className="space-y-4 text-sm">
             <div className="bg-red-500/10 border border-red-500/20 p-3 rounded-lg text-red-400">
-              <strong>Atenção: Esta ação é irreversível!</strong>
+              <strong>AtençÁo: Esta açÁo é irreversível!</strong>
               <p className="mt-1 text-xs">
-                Todos os lançamentos do Extrato Bancário, Ordens de Serviço, Vendas da Maquininha, Conciliações e Históricos de Importação serão zerados para todas as lojas.
+                Todos os lançamentos do Extrato Bancário, Ordens de Serviço, Vendas da Maquininha, Conciliações e Históricos de ImportaçÁo serÁo zerados para todas as lojas.
               </p>
             </div>
 
@@ -256,13 +256,13 @@ function ImportacoesPage() {
               >
                 {clearAllData.isPending ? (
                   <>
-                    <LoadingSpinner size="xs" />
+                    <LoadingSpinner size="sm" />
                     Apagando dados...
                   </>
                 ) : (
                   <>
                     <Trash2 size={14} />
-                    Confirmar Exclusão Total
+                    Confirmar ExclusÁo Total
                   </>
                 )}
               </button>

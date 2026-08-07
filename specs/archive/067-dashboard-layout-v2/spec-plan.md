@@ -1,4 +1,4 @@
-# Checklist de Implementação: Spec 067
+﻿# Checklist de ImplementaçÁo: Spec 067
 
 ## Tasks
 
@@ -7,7 +7,7 @@
 - [x] [FRONTEND] Refinar Macro Chart (`src/components/dashboard/EvolucaoMacroChart.tsx`)
   - [x] Ajustar altura do card para deixá-lo mais fino (ex: `min-h-[220px]`).
   - [x] Substituir o `<Legend />` do Recharts por uma div de Legenda Customizada (ex: flexbox) inserida no lado direito do título (`<div className="flex justify-between items-start">`).
-  - [x] Habilitar o `<YAxis hide={false} />` com formatação compacta (`Intl.NumberFormat('pt-BR', { notation: "compact", maximumFractionDigits: 1 })`).
+  - [x] Habilitar o `<YAxis hide={false} />` com formataçÁo compacta (`Intl.NumberFormat('pt-BR', { notation: "compact", maximumFractionDigits: 1 })`).
   - [x] Estilizar YAxis e CartesianGrid para ficarem invisíveis ou muito sutis, mantendo o aspecto minimalista premium.
 
 ## Status

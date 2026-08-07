@@ -1,4 +1,4 @@
-# Design: Central de Agentes IAS & Sidebar UI Technical Design
+﻿# Design: Central de Agentes IAS & Sidebar UI Technical Design
 
 ## 1. Component Architecture & UI Layout
 
@@ -164,7 +164,7 @@ The sidebar component container has flex-direction `column` and fixed width (`w-
                            ▼
          [ Step 4: Strict Hallucination Gate Check ]
   - If JSON returns `{ success: true, data: { ... } }`: Return exact data formatted in Markdown table.
-  - If JSON returns 404 / error / empty: DO NOT INVENT DATA. State clearly: "OS 22549 não foi encontrada no sistema da loja Rei do Óleo (Mauá)."
+  - If JSON returns 404 / error / empty: DO NOT INVENT DATA. State clearly: "OS 22549 nÁo foi encontrada no sistema da loja Rei do Óleo (Mauá)."
                            │
                            ▼
           [ Step 5: Post-Stream Reflection Log ]

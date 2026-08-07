@@ -1,6 +1,6 @@
-# Tasks (004-ui-details-and-parser-fixes)
+﻿# Tasks (004-ui-details-and-parser-fixes)
 
-- [x] **1. Correção do Parser (Fechamento Diário)**
+- [x] **1. CorreçÁo do Parser (Fechamento Diário)**
   - [x] No `ImportReportDialog.tsx`, obter a data do dia (`getDefaultDate()`).
   - [x] Somar `totalOs` e `totalPaid` *apenas* se a OS foi finalizada/paga no próprio dia, ignorando OSs finalizadas em dias anteriores que estejam no histórico do Excel.
 
@@ -8,9 +8,9 @@
   - [x] No `patio.tsx`, adicionar estado `selectedOs` e utilizar o componente `Modal`.
   - [x] Criar o conteúdo do Modal para exibir todas as propriedades da Ordem de Serviço selecionada, reutilizando o visual do `renderPaymentMethods`.
 
-- [x] **3. Correção de Encoding no Banco**
+- [x] **3. CorreçÁo de Encoding no Banco**
   - [x] Criar um script node (ou executar `supabase.rpc`/query) para fazer `UPDATE stores SET name = 'Rei do Módulo' WHERE name LIKE '%Mdulo%'`.
 
-- [x] **4. Build e Explicação**
+- [x] **4. Build e ExplicaçÁo**
   - [x] Rodar o build e commit.
-  - [x] Informar ao usuário sobre a lógica dos Recebíveis (que são transações de crédito/boleto futuras de OSs já finalizadas, não relacionando com o "Em Aberto" do Pátio).
+  - [x] Informar ao usuário sobre a lógica dos Recebíveis (que sÁo transações de crédito/boleto futuras de OSs já finalizadas, nÁo relacionando com o "Em Aberto" do Pátio).

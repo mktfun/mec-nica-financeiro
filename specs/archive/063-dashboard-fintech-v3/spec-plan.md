@@ -1,4 +1,4 @@
-# Spec Plan: Dashboard Fintech V3 (063)
+﻿# Spec Plan: Dashboard Fintech V3 (063)
 
 ## Tasks
 
@@ -21,9 +21,9 @@
 - [x] [FRONTEND] Atualizar `src/routes/index.tsx`
   - [x] Remover `input type="month"` do header
   - [x] Renderizar texto informando a `dateAtual` extraída do hook (ex: "Ref: DD/MM/YYYY")
-  - [x] Alterar as text-labels do card de Faturamento (remover menção a "Mês", deixar "Atual", "Anterior" e "vs ANTERIOR")
+  - [x] Alterar as text-labels do card de Faturamento (remover mençÁo a "Mês", deixar "Atual", "Anterior" e "vs ANTERIOR")
   - [x] Incorporar o `EvolucaoSaldoChart` ao layout da faixa base (possivelmente 2 gráficos menores ou tabs)
-- [x] [TEST] Verificar renderização e crash em cenário sem dados (ex: conta nova)
+- [x] [TEST] Verificar renderizaçÁo e crash em cenário sem dados (ex: conta nova)
 
 ## Status
 COMPLETED

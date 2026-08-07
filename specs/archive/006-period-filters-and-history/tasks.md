@@ -1,4 +1,4 @@
-# Tasks (006-period-filters-and-history)
+﻿# Tasks (006-period-filters-and-history)
 
 - [x] **1. Ajustar o hook do Pátio (`usePatio.ts`)**
   - [x] Adicionar suporte a `startDate` e `endDate` nos parâmetros.
@@ -10,7 +10,7 @@
 - [x] **3. Implementar Modal de Histórico na Tela de Lojas**
   - [x] Criar modal ao clicar em uma loja.
   - [x] Fazer uma query na tabela `conciliations` e exibir o resultado das conciliações passadas.
-- [x] **4. Reforçar o Padrão "Ontem" (D-1)**
-  - [x] Vasculhar o projeto (Dashboard/Recebíveis) por instâncias de datas que não estejam usando o `getDefaultDate()` e substituí-las.
+- [x] **4. Reforçar o PadrÁo "Ontem" (D-1)**
+  - [x] Vasculhar o projeto (Dashboard/Recebíveis) por instâncias de datas que nÁo estejam usando o `getDefaultDate()` e substituí-las.
 - [x] **5. Build & Test**
   - [x] Compilar, checar logs, testar filtros no Pátio.

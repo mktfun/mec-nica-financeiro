@@ -1,14 +1,14 @@
-# Design de Implementação (002-dashboard-rework)
+﻿# Design de ImplementaçÁo (002-dashboard-rework)
 
 ## 1. Arquitetura de Banco (Supabase)
-O schema não precisa de migração estrutural. Vamos apenas preencher melhor os campos que já existem em `ReconciliationRow`:
+O schema nÁo precisa de migraçÁo estrutural. Vamos apenas preencher melhor os campos que já existem em `ReconciliationRow`:
 - `os_total` (float) -> Valor bruto lido da planilha
 - `financial_total` (float) -> Valor líquido lido da planilha
 - `daily_cash` (float) -> Input lateral (Físico/Terminal)
 - `divergence` (float) -> `financial_total - daily_cash`
 - `status` -> `approved` se `divergence == 0 && financial_total > 0`, `divergence` se != 0, caso contrário `pending`.
 
-## 2. Divisão de Front-end (UI)
+## 2. DivisÁo de Front-end (UI)
 
 ### Componente A: Lojas Grid (em `src/routes/conciliacao.tsx`)
 - Alterar `className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3"` 
@@ -16,7 +16,7 @@ O schema não precisa de migração estrutural. Vamos apenas preencher melhor os
 - Melhorar o padding interno dos cards.
 - Exibir a quebra do valor: mostrar tanto "Faturado (OS)" quanto "Caixa Físico" no mesmo card para que o usuário bata o olho e veja *o porquê* deu divergência, ao invés de só mostrar "R$ 0,00".
 
-### Componente B: Lógica de Mutação (`src/hooks/useConciliacao.ts`)
+### Componente B: Lógica de MutaçÁo (`src/hooks/useConciliacao.ts`)
 Vamos injetar inteligência de negócio na camada de hooks (Client-side, já que estamos operando serverless via Supabase e calculando no front antes do `upsert`):
 
 **Atualizar `useSaveDailyCash`**:

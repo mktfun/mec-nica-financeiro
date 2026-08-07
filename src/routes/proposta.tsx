@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+﻿import { createFileRoute } from '@tanstack/react-router';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
@@ -34,7 +34,7 @@ interface CostConfig {
 const defaultConfig: CostConfig = {
   sistemaLabel: 'Plataforma Web (Hospedagem + CDN)',
   sistemaMensal: 150,
-  botLabel: 'Motor de Conciliação (Servidor + Banco)',
+  botLabel: 'Motor de ConciliaçÁo (Servidor + Banco)',
   botMensal: 150,
   iaLabel: 'API de Inteligência Artificial',
   iaMensal: 80,
@@ -70,10 +70,10 @@ function PropostaPage() {
   const custoMensal = config.sistemaMensal + config.botMensal + config.iaMensal + config.whatsappMensal;
 
   const timeline = [
-    { week: 'Semana 1', title: 'Setup & Extração', desc: 'Configuração da infraestrutura, desenvolvimento do bot de extração para 1 loja piloto', status: 'done' },
-    { week: 'Semana 2', title: 'Motor de Regras', desc: 'Implementação das regras de detecção de divergências e integração com banco de dados', status: 'done' },
-    { week: 'Semana 3', title: 'Escala 10 Lojas', desc: 'Expansão do bot para todas as unidades, testes de carga e notificações WhatsApp', status: 'current' },
-    { week: 'Semana 4', title: 'Testes & Go-Live', desc: 'Testes com a Ana (gestora), ajustes finais, deploy em produção e treinamento', status: 'pending' },
+    { week: 'Semana 1', title: 'Setup & ExtraçÁo', desc: 'ConfiguraçÁo da infraestrutura, desenvolvimento do bot de extraçÁo para 1 loja piloto', status: 'done' },
+    { week: 'Semana 2', title: 'Motor de Regras', desc: 'ImplementaçÁo das regras de detecçÁo de divergências e integraçÁo com banco de dados', status: 'done' },
+    { week: 'Semana 3', title: 'Escala 10 Lojas', desc: 'ExpansÁo do bot para todas as unidades, testes de carga e notificações WhatsApp', status: 'current' },
+    { week: 'Semana 4', title: 'Testes & Go-Live', desc: 'Testes com a Ana (gestora), ajustes finais, deploy em produçÁo e treinamento', status: 'pending' },
   ];
 
   return (
@@ -88,10 +88,10 @@ function PropostaPage() {
         >
           <Badge variant="success" className="mb-4 text-xs">Proposta Comercial</Badge>
           <h1 className="font-display font-bold text-4xl md:text-5xl tracking-tight mb-3">
-            Sistema Autônomo de<br />Conciliação Financeira
+            Sistema Autônomo de<br />ConciliaçÁo Financeira
           </h1>
           <p className="text-[var(--text-secondary)] text-lg max-w-xl mx-auto">
-            De 1h30 para 5 minutos. Auditoria automática para 10 unidades, todos os dias, sem intervenção humana.
+            De 1h30 para 5 minutos. Auditoria automática para 10 unidades, todos os dias, sem intervençÁo humana.
           </p>
         </motion.div>
 
@@ -166,11 +166,11 @@ function PropostaPage() {
           </div>
         </motion.div>
 
-        {/* Custo de Implantação */}
+        {/* Custo de ImplantaçÁo */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>
           <div className="flex items-center gap-3 mb-6">
             <Server size={20} className="text-[var(--color-primary)]" />
-            <h2 className="font-display font-bold text-2xl">Investimento — Implantação</h2>
+            <h2 className="font-display font-bold text-2xl">Investimento — ImplantaçÁo</h2>
           </div>
 
           <Card variant="glass" className="p-6">
@@ -183,7 +183,7 @@ function PropostaPage() {
               <CostRow icon={<Zap size={18} />} label={config.whatsappLabel} value={config.whatsappMensal} note="1º mês" />
 
               <div className="border-t border-[var(--border-subtle)] pt-4 flex items-center justify-between">
-                <span className="font-display font-bold text-lg">Total Implantação</span>
+                <span className="font-display font-bold text-lg">Total ImplantaçÁo</span>
                 <span className="font-display font-bold text-2xl text-[var(--color-primary)]">
                   R$ <AnimatedNumber value={custoImplantacao} format="number" />
                 </span>
@@ -196,11 +196,11 @@ function PropostaPage() {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}>
           <div className="flex items-center gap-3 mb-6">
             <Zap size={20} className="text-[var(--color-accent-teal)]" />
-            <h2 className="font-display font-bold text-2xl">Custo Mensal — Em Produção</h2>
+            <h2 className="font-display font-bold text-2xl">Custo Mensal — Em ProduçÁo</h2>
           </div>
 
           <Card variant="glass" className="p-6">
-            <p className="text-sm text-[var(--text-secondary)] mb-6">Após a implantação, o sistema opera com custo fixo mensal previsível.</p>
+            <p className="text-sm text-[var(--text-secondary)] mb-6">Após a implantaçÁo, o sistema opera com custo fixo mensal previsível.</p>
 
             <div className="space-y-4">
               <CostRow icon={<Server size={18} />} label={config.sistemaLabel} value={config.sistemaMensal} note="/mês" />
@@ -222,7 +222,7 @@ function PropostaPage() {
                 <div>
                   <p className="text-sm font-medium text-[var(--color-accent-teal)]">Economia vs. Custo</p>
                   <p className="text-sm text-[var(--text-secondary)] mt-1">
-                    O sistema economiza ~R$ {config.economiaMensalValue.toLocaleString('pt-BR')}/mês em divergências não detectadas + tempo da equipe.
+                    O sistema economiza ~R$ {config.economiaMensalValue.toLocaleString('pt-BR')}/mês em divergências nÁo detectadas + tempo da equipe.
                     Com custo de R$ {custoMensal}/mês, o <span className="font-semibold text-[var(--text-primary)]">retorno líquido é de R$ {(config.economiaMensalValue - custoMensal).toLocaleString('pt-BR')}/mês</span>.
                   </p>
                 </div>
@@ -236,12 +236,12 @@ function PropostaPage() {
           <h2 className="font-display font-bold text-2xl mb-6">O que está incluído</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
-              { title: 'Painel Web Completo', desc: 'Dashboard, conciliação, alertas, pátio, recebíveis, histórico — acesso de qualquer dispositivo' },
-              { title: 'Bot Autônomo 24/7', desc: 'Extração automática do Oficina Inteligente às 07:00, 10 lojas em paralelo' },
-              { title: 'Detecção Inteligente', desc: 'Motor de regras + IA para identificar divergências que passariam despercebidas' },
-              { title: 'Alertas via WhatsApp', desc: 'Notificação imediata para a gestora e sócios quando houver problemas' },
-              { title: 'Logs de Auditoria', desc: 'Cada execução do bot é gravada com screenshot — transparência total' },
-              { title: 'Gestão de Unidades', desc: 'Cadastrar novas lojas, editar gerentes, mecânicos e credenciais pelo painel' },
+              { title: 'Painel Web Completo', desc: 'Dashboard, conciliaçÁo, alertas, pátio, recebíveis, histórico — acesso de qualquer dispositivo' },
+              { title: 'Bot Autônomo 24/7', desc: 'ExtraçÁo automática do Oficina Inteligente às 07:00, 10 lojas em paralelo' },
+              { title: 'DetecçÁo Inteligente', desc: 'Motor de regras + IA para identificar divergências que passariam despercebidas' },
+              { title: 'Alertas via WhatsApp', desc: 'NotificaçÁo imediata para a gestora e sócios quando houver problemas' },
+              { title: 'Logs de Auditoria', desc: 'Cada execuçÁo do bot é gravada com screenshot — transparência total' },
+              { title: 'GestÁo de Unidades', desc: 'Cadastrar novas lojas, editar gerentes, mecânicos e credenciais pelo painel' },
             ].map((item, i) => (
               <motion.div
                 key={i}

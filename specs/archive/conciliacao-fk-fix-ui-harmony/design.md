@@ -1,11 +1,11 @@
-# Design: Correção de Foreign Key no Importador e Harmonização Visual da Conciliação (conciliacao-fk-fix-ui-harmony)
+﻿# Design: CorreçÁo de Foreign Key no Importador e HarmonizaçÁo Visual da ConciliaçÁo (conciliacao-fk-fix-ui-harmony)
 
-## Arquitetura do Layout e Correção de FK
+## Arquitetura do Layout e CorreçÁo de FK
 
 ```
  ┌────────────────────────────────────────────────────────┐
- │ 1. SANITIZAÇÃO DE FK EM MATCHES (CentralImportWizard)  │
- │    - Se txId não for UUID válido em transactions →     │
+ │ 1. SANITIZAÇÁO DE FK EM MATCHES (CentralImportWizard)  │
+ │    - Se txId nÁo for UUID válido em transactions →     │
  │      set ofx_transaction_id = null                    │
  └───────────────────────────┬────────────────────────────┘
                              │
@@ -14,7 +14,7 @@
  │ 2. HERO CARD RECONSTRUÍDO (ResumoDiaPanel.tsx)        │
  │    - Layout limpo, escuro (#0B0D17 / #121526)          │
  │    - Métricas Módulo 1 (G13 a G31) integradas          │
- │    - Seletor de data e navegação preservados           │
+ │    - Seletor de data e navegaçÁo preservados           │
  └───────────────────────────┬────────────────────────────┘
                              │
                              ▼
@@ -26,7 +26,7 @@
  └────────────────────────────────────────────────────────┘
 ```
 
-## Sanitização de FK em `useConciliacao.ts` e `CentralImportWizard.tsx`
+## SanitizaçÁo de FK em `useConciliacao.ts` e `CentralImportWizard.tsx`
 
 ```typescript
 const isValidUuid = (id?: string | null) => {
@@ -41,7 +41,7 @@ const safeOfxId = isValidUuid(txId) ? txId : null;
 ## Componente Reformulado `ResumoDiaPanel.tsx`
 
 Substitui o antigo card genérico pelo **Hero Card Consolidado do Módulo 1 (Aba SALDO G13 a G31)**:
-- Cabeçalho elegante com data, seletor de calendário e badges de aprovação.
+- Cabeçalho elegante com data, seletor de calendário e badges de aprovaçÁo.
 - Grid de 4 pilares: Banco Itaú (G13), Dinheiro MP (G14 Manual), A Receber (G15), Na Loja OS (G16).
 - Faixa de fechamento: Saldo Total (G17), Caixa Atual (G21), Disponível Contas (G29) e Resultado Final (G31).
 
@@ -67,14 +67,14 @@ Cada card de loja exibirá os 6 valores do Módulo 1 daquela unidade:
 </Card>
 ```
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 
-- **Cenário 1 (Importação Sem Erro de FK):**
+- **Cenário 1 (ImportaçÁo Sem Erro de FK):**
   - *Dados:* Upload de arquivos OFX + OS + Rede no `CentralImportWizard`.
-  - *Ação:* Clicar em "Confirmar Importação".
+  - *AçÁo:* Clicar em "Confirmar ImportaçÁo".
   - *Resultado Esperado:* O wizard salva todas as transações e matches sanitizados com `ofx_transaction_id` válido sem estourar o erro de Foreign Key.
 
-- **Cenário 2 (Hero Card e Régua das Lojas na Conciliação `/conciliacao`):**
-  - *Dados:* Visualizar a tela principal de conciliação.
-  - *Ação:* Navegar pelas datas.
+- **Cenário 2 (Hero Card e Régua das Lojas na ConciliaçÁo `/conciliacao`):**
+  - *Dados:* Visualizar a tela principal de conciliaçÁo.
+  - *AçÁo:* Navegar pelas datas.
   - *Resultado Esperado:* O Hero Card exibe o resumo unificado do Módulo 1 e a lista "Fechamento por Loja" exibe exatamente os 6 pilares (`Banco Itaú`, `Dinheiro MP`, `A Receber`, `Na Loja OS`, `Saldo Total`, `Resultado Final`).

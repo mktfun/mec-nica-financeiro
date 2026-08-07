@@ -1,4 +1,4 @@
-# Design: Correção dos Valores e Statuses de OSs na Importação e Pátio (fix-os-import-values-and-statuses)
+﻿# Design: CorreçÁo dos Valores e Statuses de OSs na ImportaçÁo e Pátio (fix-os-import-values-and-statuses)
 
 ## Arquitetura Técnica
 
@@ -67,19 +67,19 @@ export function getOsEffectiveValues(os: {
 }
 ```
 
-## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
 
 - **Cenário 1 (OS sem coluna total explícita, mas com Crédito e PIX):**
   - Estado inicial: Planilha contém OS com `Credito R$ 3.949,15 PIX R$ 6.509,40`.
-  - Ação: Importar a planilha via Central de Importação.
+  - AçÁo: Importar a planilha via Central de ImportaçÁo.
   - Resultado esperado: O sistema salva `total_value = R$ 10.458,55`, `paid_value = R$ 10.458,55` e `status = 'finalizado'`.
 
 - **Cenário 2 (OS em aberto sem pagamento):**
   - Estado inicial: Planilha contém OS com `Total R$ 1.500,00` e status `Em Aberto`.
-  - Ação: Importar e visualizar no Pátio.
+  - AçÁo: Importar e visualizar no Pátio.
   - Resultado esperado: A OS é exibida sob a aba "Em Aberto", com `Total: R$ 1.500,00`, `Pago: R$ 0,00` e `Aberto: R$ 1.500,00`.
 
 - **Cenário 3 (Modal de Detalhes):**
-  - Estado inicial: Clicar na OS no Pátio ou na Conciliação.
-  - Ação: Abrir `OsDetailModal`.
-  - Resultado esperado: O modal exibe `Valor Total da OS: R$ 10.458,55` (não `R$ 0,00`) e lista os pagamentos extratados.
+  - Estado inicial: Clicar na OS no Pátio ou na ConciliaçÁo.
+  - AçÁo: Abrir `OsDetailModal`.
+  - Resultado esperado: O modal exibe `Valor Total da OS: R$ 10.458,55` (nÁo `R$ 0,00`) e lista os pagamentos extratados.
