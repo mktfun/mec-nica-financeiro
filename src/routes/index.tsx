@@ -4,7 +4,7 @@ import { KpiCard } from '@/components/dashboard/KpiCard';
 import { StoreTableDashboard } from '@/components/dashboard/StoreTableDashboard';
 import { FaturamentoVsContasChart } from '@/components/dashboard/FaturamentoVsContasChart';
 import { EvolucaoMacroChart } from '@/components/dashboard/EvolucaoMacroChart';
-import { useDashboardV2 } from '@/hooks/useDashboardV2';
+import { useBackendDashboard } from '@/hooks/useBackendDashboard';
 import {
   Landmark,
   Wallet,
@@ -27,7 +27,7 @@ export const Route = createFileRoute('/')({
 
 function DashboardPage() {
   const [selectedDate, setSelectedDate] = useState<string>('');
-  const { data, isLoading } = useDashboardV2(selectedDate || undefined);
+  const { data, isLoading } = useBackendDashboard(selectedDate || '');
 
   return (
     <AppShell>

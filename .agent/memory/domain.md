@@ -134,3 +134,13 @@ A regra de ouro na importaÃ§Ã£o Ã©: *Importar um dia Ã© um pacote fechado. O nov
 ## [2026-08-06] — [Feature ID: 100-fix-ofx-cents-amounts]
 
 **Normalização de OFX em Centavos (Itaú/Bradesco):** Certos bancos emitem o OFX com os valores (BALAMT e TRNAMT) mascarados como inteiros de centavos em vez de usar separadores decimais (ex: 190530 ao invés de 1905.30). O Parser Global de OFX (ofxParser.ts) aplica uma varredura rigorosa: toda variável de mount extraída que não contiver . ou , E cujo valor absoluto for maior que 100, deve ser irreversivelmente dividida por 100 antes de alimentar a base de dados de transações.
+
+## [2026-08-07] - [Feature ID: 108-global-backend-math-refactor]
+
+**Contexto:** O clculo de indicadores macro (Dashboard, Caixa Atual, Diferena de Lojas, Fluxo de Caixa) era feito no React atravs de reduce/filter sobre registros brutos baixados do Supabase, o que gerava lentido, impossibilidade de auditoria retroativa e clculos incorretos para a Diferena. Todo esse processamento foi movido para Single Source of Truth no backend via RPCs e Snapshots (dashboard_daily_logs e conciliation_daily_logs).
+
+**Regra aprendida:** O frontend nunca deve calcular valores contbeis compostos (ex: Previsto - PIX - Maquininha). Esses valores devem vir mastigados do Postgres. A frmula definitiva para "Diferena" na conciliao de loja  Previsto (OFX Faturamento In) - (Maquininha + Pix).
+
+**Risco identificado:** Mutaes no cdigo JS do frontend perdem o rastreio auditvel dirio. Qualquer alterao em regra financeira deve refletir nas RPCs para que o log dirio no fique defasado em relao  tela.
+
+**No fazer:** No use .reduce e arrays imensos no frontend para computar Totais, Faturamentos e Caixas. O React component deve ser estritamente passivo (marionete do banco de dados).

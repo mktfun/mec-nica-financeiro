@@ -5,10 +5,8 @@ import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Store } from 'lucide-react';
 import { useState } from 'react';
 import { useStores } from '@/hooks/useStores';
-import { useConciliacaoResumo, useConciliacaoDetalhes, useModulo1StoresData } from '@/hooks/useConciliacao';
-import { useDailySystemBalance, useDailyBankBalance, useLatestBankBalance } from '@/hooks/useTransactions';
+import { useBackendConciliacao } from '@/hooks/useBackendConciliacao';
 import { useBackgroundAiReconciler } from '@/hooks/useBackgroundAiReconciler';
-import { getDefaultDate } from '@/lib/utils';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { ResumoDiaPanel } from '@/components/conciliacao/ResumoDiaPanel';
 import { StoreSaldoState } from '@/lib/modulo1Calculations';
@@ -21,22 +19,15 @@ function ConciliacaoPage() {
   const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().substring(0, 10));
 
   const { data: stores = [], isLoading: loadingStores } = useStores();
-  const { data: resumo, isLoading: loadingResumo } = useConciliacaoResumo(selectedDate);
-  const { data: detalhes = [], isLoading: loadingDetalhes } = useConciliacaoDetalhes(selectedDate);
-  const { data: dailyBalances, isLoading: loadingBalances } = useDailySystemBalance(selectedDate);
-  const { data: bankBalances, isLoading: loadingBankBalances } = useDailyBankBalance(selectedDate);
-  const { data: modulo1StoresData = [], isLoading: loadingModulo1 } = useModulo1StoresData(selectedDate);
-
-  const { data: latestBankBalance = {} } = useLatestBankBalance();
+  const { data: logsData = [], isLoading: loadingLogs } = useBackendConciliacao(selectedDate);
 
   // Ativa o Reconciliador de IA Headless em background para TODAS as lojas da rede
   useBackgroundAiReconciler(stores, selectedDate);
 
+  const isLoading = loadingStores || loadingLogs;
 
-  const isLoading = loadingStores || loadingResumo || loadingDetalhes || loadingBalances || loadingBankBalances || loadingModulo1;
-
-  const resultado = resumo?.totalDivergence || 0;
-  const isApproved = resultado === 0 && (resumo?.approved || 0) > 0;
+  const resultado = logsData.reduce((acc, log) => acc + log.diferenca, 0);
+  const isApproved = logsData.every(log => log.status === 'approved');
 
   const handleDayChange = (offset: number) => {
     const d = new Date(selectedDate + 'T12:00:00');
@@ -44,35 +35,30 @@ function ConciliacaoPage() {
     setSelectedDate(d.toISOString().substring(0, 10));
   };
 
-  const totalSistema = Object.values(dailyBalances || {}).reduce((acc, val: any) => acc + (val.gross || 0), 0);
-  const totalBancarioIn = Object.values(bankBalances || {}).reduce((acc, val) => acc + (val.in || 0), 0);
-  const totalBancarioRaw = Object.values(bankBalances || {}).reduce((acc, val) => acc + (val.rawBalance || 0), 0);
-  const divergenciaGlobal = totalSistema - totalBancarioIn;
+  const totalSistema = logsData.reduce((acc, log) => acc + log.previsto_ofx, 0);
+  const totalBancarioIn = logsData.reduce((acc, log) => acc + log.faturamento_banco, 0);
+  const totalBancarioRaw = totalBancarioIn;
+  const divergenciaGlobal = resultado;
 
   const storesState: StoreSaldoState[] = stores.map(s => {
-    const sysGross = dailyBalances?.[s.id]?.gross || 0;
-    const sysNet = dailyBalances?.[s.id]?.net || 0;
-    const sysFee = dailyBalances?.[s.id]?.fee || 0;
-    const bankIn = bankBalances?.[s.id]?.in || 0;
-    const storeMod1 = modulo1StoresData.find(m => m.store_id === s.id);
-
+    const log = logsData.find(l => l.store_id === s.id);
     return {
       store_id: s.id,
       store_name: s.name,
-      saldo_banco_itau: (storeMod1?.saldo_banco_itau || 0) > 0 ? storeMod1!.saldo_banco_itau : bankIn,
-      limite_credito: (s as any).credit_limit || 0,
-      cartao_entrou: storeMod1?.cartao_entrou || 0,
+      saldo_banco_itau: log?.faturamento_banco || 0,
+      limite_credito: 0,
+      cartao_entrou: log?.maquininha || 0,
       cartao_nao_entrou: 0,
       dinheiro_loja: 0,
-      dinheiro_mp_manual: undefined,
-      a_receber: storeMod1?.a_receber || 0,
-      na_loja_os: storeMod1?.na_loja_os || 0,
-      pix_os: storeMod1?.pix_os_expected || 0,
-      faturamento_atual: storeMod1?.faturamento_real_ofx || 0,
-      faturamento_anterior: (storeMod1?.faturamento_real_ofx || 0) * 0.9,
+      a_receber: 0,
+      na_loja_os: log?.na_loja_os || 0,
+      pix_os: log?.pix || 0,
+      pix_os_expected: log?.pix || 0,
+      faturamento_atual: log?.previsto_ofx || 0,
+      faturamento_anterior: 0,
       seguro_sinistro: 0,
-      juros_atual: sysFee,
-      caixa_anterior: (s as any).previous_caixa || 0,
+      juros_atual: 0,
+      caixa_anterior: 0,
       valor_contas: 0
     };
   });
@@ -94,12 +80,12 @@ function ConciliacaoPage() {
               onDateSelect={setSelectedDate}
               divergenciaGlobal={divergenciaGlobal}
               isApproved={isApproved}
-              detalhesCount={detalhes.length}
+              detalhesCount={logsData.length}
               totalSistema={totalSistema}
               totalBancarioIn={totalBancarioIn}
               totalBancarioRaw={totalBancarioRaw}
-              totalOfxIn={resumo?.totalOfxIn || 0}
-              totalOfxOut={resumo?.totalOfxOut || 0}
+              totalOfxIn={totalBancarioIn}
+              totalOfxOut={0}
               storesData={storesState}
             />
 
@@ -112,33 +98,25 @@ function ConciliacaoPage() {
               
               <div className="grid grid-cols-1 gap-4">
                 {stores.map((store) => {
-                  const sys = dailyBalances?.[store.id] || 0;
-                  const bankIn = bankBalances?.[store.id]?.in || 0;
-                  const div = sys - bankIn;
-                  const isStoreOk = Math.abs(div) < 0.01;
+                  const log = logsData.find(l => l.store_id === store.id) || {
+                    faturamento_banco: 0,
+                    maquininha: 0,
+                    pix: 0,
+                    na_loja_os: 0,
+                    previsto_ofx: 0,
+                    diferenca: 0,
+                    status: 'pending'
+                  };
 
-                    const storeMod1 = modulo1StoresData.find(m => m.store_id === store.id);
-                    const maquininha = storeMod1?.cartao_entrou || 0;
-                    const pixOsExpected = storeMod1?.pix_os_expected || 0;
-                    const previstoPlanilhas = maquininha + pixOsExpected;
-                    const naLojaOs = storeMod1?.na_loja_os || 0;
+                  const isDiferencaOk = log.status === 'approved';
 
-                    // Saldo Itaú OFX: Estritamente da data selecionada para evitar vazamento histórico em dias sem movimento
-                    const bankInDate = bankBalances?.[store.id]?.in || 0;
-                    const saldoBancoMod1 = storeMod1?.saldo_banco_itau || 0;
-                    const hasActivityOnDate = maquininha > 0 || pixOsExpected > 0 || bankInDate > 0 || saldoBancoMod1 > 0;
-                    const saldoItau = hasActivityOnDate ? (saldoBancoMod1 || bankInDate || latestBankBalance[store.id] || 0) : 0;
-
-                    const diferenca = saldoItau - previstoPlanilhas;
-                    const isDiferencaOk = diferenca >= -1.0;
-
-                    return (
-                      <Link to="/conciliacao/$lojaId" params={{ lojaId: store.id }} search={{ date: selectedDate }} key={store.id} className="block">
-                        <Card className="p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-6 transition-all hover:scale-[1.01] hover:bg-white/10 hover:border-white/20 cursor-pointer shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] border border-white/5 backdrop-blur-md">
-                          
-                          {/* Nome da Loja & Status */}
-                          <div className="w-full xl:w-56 shrink-0 flex items-center gap-4">
-                            <div className={`w-2 h-14 rounded-full ${isDiferencaOk ? 'bg-[var(--color-accent-teal)]' : 'bg-[var(--color-accent-danger)]'}`} />
+                  return (
+                    <Link to="/conciliacao/$lojaId" params={{ lojaId: store.id }} search={{ date: selectedDate }} key={store.id} className="block">
+                      <Card className="p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-6 transition-all hover:scale-[1.01] hover:bg-white/10 hover:border-white/20 cursor-pointer shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] border border-white/5 backdrop-blur-md">
+                        
+                        {/* Nome da Loja & Status */}
+                        <div className="w-full xl:w-56 shrink-0 flex items-center gap-4">
+                          <div className={`w-2 h-14 rounded-full ${isDiferencaOk ? 'bg-[var(--color-accent-teal)]' : 'bg-[var(--color-accent-danger)]'}`} />
                             <div>
                               <p className="font-semibold text-base sm:text-lg text-white leading-tight">{store.name}</p>
                               <p className="text-xs text-[var(--text-tertiary)] font-mono mt-0.5">ID: {store.id}</p>
@@ -149,13 +127,13 @@ function ConciliacaoPage() {
                           <div className="bg-black/25 p-4 sm:p-5 rounded-2xl border border-white/5 flex-1 font-sans tabular-nums text-xs">
                             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6 xl:gap-8 items-center">
                               
-                              {/* 1. Saldo (Faturamento Banco) */}
+                              {/* 1. Faturam. Banco (OFX) */}
                               <div>
                                 <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
                                   Faturam. Banco
                                 </span>
-                                <p className="font-bold text-sm text-[var(--color-accent-light-blue)] font-mono">
-                                  <AnimatedNumber value={saldoItau} format="currency" />
+                                <p className="font-bold text-sm text-[var(--text-secondary)] font-mono">
+                                  <AnimatedNumber value={log.faturamento_banco} format="currency" />
                                 </p>
                               </div>
 
@@ -164,8 +142,8 @@ function ConciliacaoPage() {
                                 <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
                                   Maquininha
                                 </span>
-                                <p className="font-bold text-sm text-[var(--color-accent-teal)] font-mono">
-                                  <AnimatedNumber value={maquininha} format="currency" />
+                                <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
+                                  <AnimatedNumber value={log.maquininha} format="currency" />
                                 </p>
                               </div>
 
@@ -175,7 +153,7 @@ function ConciliacaoPage() {
                                   PIX
                                 </span>
                                 <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
-                                  <AnimatedNumber value={pixOsExpected} format="currency" />
+                                  <AnimatedNumber value={log.pix} format="currency" />
                                 </p>
                               </div>
 
@@ -185,7 +163,7 @@ function ConciliacaoPage() {
                                   Na Loja OS
                                 </span>
                                 <p className="font-bold text-sm text-[var(--color-accent-warning)] font-mono">
-                                  <AnimatedNumber value={naLojaOs} format="currency" />
+                                  <AnimatedNumber value={log.na_loja_os} format="currency" />
                                 </p>
                               </div>
 
@@ -195,7 +173,7 @@ function ConciliacaoPage() {
                                   Previsto
                                 </span>
                                 <p className="font-bold text-sm text-[var(--text-primary)] font-mono">
-                                  <AnimatedNumber value={previstoPlanilhas} format="currency" />
+                                  <AnimatedNumber value={log.previsto_ofx} format="currency" />
                                 </p>
                               </div>
 
@@ -207,7 +185,7 @@ function ConciliacaoPage() {
                                   Diferença
                                 </span>
                                 <p className={`font-bold text-sm font-mono ${isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
-                                  <AnimatedNumber value={diferenca} format="currency" />
+                                  <AnimatedNumber value={log.diferenca} format="currency" />
                                 </p>
                               </div>
 
