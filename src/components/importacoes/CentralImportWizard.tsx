@@ -184,7 +184,11 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         
         if (!match) {
           const normalizedAlias = normalizeString(alias);
-          match = stores.find(s => normalizeString(s.name) === normalizedAlias);
+          match = stores.find(s => 
+            normalizeString(s.name) === normalizedAlias || 
+            normalizedAlias.includes(normalizeString(s.name)) || 
+            normalizeString(s.name).includes(normalizedAlias)
+          );
         }
 
         if (match) {
@@ -879,36 +883,31 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                   )}
 
                   <div className="flex justify-end mt-6">
-                    <Button onClick={() => setSubStep(2)}>Próximo: Maquininhas & OS →</Button>
+                    <Button onClick={() => setSubStep(2)}>Próximo: OS (Pátio) →</Button>
                   </div>
                 </div>
               );
             })()}
 
-            {/* BLOCO 2: REDE / OS */}
+            {/* BLOCO 2: OS */}
             {subStep === 2 && (() => {
-              const otherAliases = new Set<string>();
-              results.osFiles.filter(r => r.success).forEach(r => otherAliases.add(r.storeAlias));
-              results.maquininhaItems.forEach(i => otherAliases.add(i.storeName));
-              results.redeResults.filter(r => r.success).forEach(r => {
-                r.transactions.forEach(t => otherAliases.add(t.storeName));
-              });
-
-              const aliasArray = Array.from(otherAliases);
+              const osAliases = new Set<string>();
+              results.osFiles.filter(r => r.success).forEach(r => osAliases.add(r.storeAlias));
+              const aliasArray = Array.from(osAliases);
 
               return (
                 <div className="animate-in fade-in slide-in-from-right-4 duration-300">
                   <h4 className="font-display font-semibold text-[var(--color-accent-teal)] flex items-center gap-2 mb-4">
-                    <CreditCard size={20} /> 2. OS (Pátio) & Maquininha (Rede)
+                    <FileText size={20} /> 2. Ordens de Serviço (Pátio)
                   </h4>
                   {aliasArray.length === 0 ? (
                     <div className="p-6 text-center border border-dashed border-[var(--border-subtle)] rounded-lg text-[var(--text-tertiary)]">
-                      Nenhuma loja de OS ou Maquininha identificada.
+                      Nenhuma planilha de OS identificada.
                     </div>
                   ) : (
                     <div className="space-y-4">
                       {aliasArray.map(alias => (
-                        <div key={`other-${alias}`} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
+                        <div key={`os-${alias}`} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
                           <div className="flex-1">
                             <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase">Loja na Planilha</span><br/>
                             <span className="font-mono text-lg font-semibold text-[var(--text-primary)]">{alias}</span>
@@ -938,6 +937,64 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
                   <div className="flex justify-between mt-6">
                     <Button variant="ghost" onClick={() => setSubStep(1)}>← Voltar para OFX</Button>
+                    <Button onClick={() => setSubStep(3)}>Próximo: Maquininhas (Rede) →</Button>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* BLOCO 3: REDE */}
+            {subStep === 3 && (() => {
+              const redeAliases = new Set<string>();
+              results.maquininhaItems.forEach(i => redeAliases.add(i.storeName));
+              results.redeResults.filter(r => r.success).forEach(r => {
+                r.transactions.forEach(t => redeAliases.add(t.storeName));
+              });
+
+              const aliasArray = Array.from(redeAliases);
+
+              return (
+                <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                  <h4 className="font-display font-semibold text-[var(--color-accent-warning)] flex items-center gap-2 mb-4">
+                    <CreditCard size={20} /> 3. Maquininhas (Rede)
+                  </h4>
+                  {aliasArray.length === 0 ? (
+                    <div className="p-6 text-center border border-dashed border-[var(--border-subtle)] rounded-lg text-[var(--text-tertiary)]">
+                      Nenhum relatório de maquininha identificado.
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {aliasArray.map(alias => (
+                        <div key={`rede-${alias}`} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
+                          <div className="flex-1">
+                            <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase">Nº de Estabelecimento / Loja</span><br/>
+                            <span className="font-mono text-lg font-semibold text-[var(--text-primary)]">{alias}</span>
+                          </div>
+                          <LinkIcon className="text-[var(--color-accent-warning)]/50 shrink-0" size={24} />
+                          <div className="flex-1">
+                            <select 
+                              value={mapping[alias] || ''} 
+                              onChange={e => {
+                                const s = stores.find(st => st.id === e.target.value);
+                                updateMapping(alias, e.target.value, s?.name);
+                              }}
+                              className={`w-full bg-[var(--bg-surface-elevated)] border rounded p-3 text-sm focus:outline-none 
+                                ${mapping[alias] ? 'border-[var(--color-accent-warning)] text-[var(--text-primary)]' : 'border-red-500/50 text-[var(--text-secondary)]'}`}
+                            >
+                              <option value="">-- Selecione a Loja Correspondente --</option>
+                              <option value="GLOBAL">-- NÃO VINCULAR / IGNORAR --</option>
+                              {stores.map(s => (
+                                <option key={s.id} value={s.id}>{s.name}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="flex justify-between mt-6">
+                    <Button variant="ghost" onClick={() => setSubStep(2)}>← Voltar para OS</Button>
                     <Button onClick={() => setStep(3)}>Avançar para Preview →</Button>
                   </div>
                 </div>
