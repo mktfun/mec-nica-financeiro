@@ -35,7 +35,7 @@ DECLARE
 BEGIN
     -- Limpar matches anteriores para a data (Idempotência)
     UPDATE transactions SET matched_ofx_id = NULL, match_status = 'pending' WHERE target_date = p_date;
-    UPDATE patio_os SET matched_ofx_id = NULL, match_status = 'pending' WHERE created_at::date = p_date; -- Ajustar coluna de data se necessário
+    UPDATE patio_os SET matched_ofx_id = NULL, match_status = 'pending' WHERE updated_at::date = p_date; -- Ajustar coluna de data se necessário
 
     -- Loop em cada transação OFX de entrada (tipo = 'in')
     FOR ofx_record IN 
@@ -48,12 +48,12 @@ BEGIN
         v_rede_ids := '{}'::uuid[];
 
         -- Tentativa 1: Parear com PIX/Transferência nas Ordens de Serviço (Pátio)
-        SELECT id, COALESCE(pix_transfer_value, parsed_pix_transfer, paid_value, total_value, 0)
+        SELECT id, COALESCE(pix_transfer_value, paid_value, total_value, 0)
         INTO os_record
         FROM patio_os
         WHERE store_id = ofx_record.store_id 
           AND match_status = 'pending'
-          AND ABS(COALESCE(pix_transfer_value, parsed_pix_transfer, paid_value, total_value, 0) - v_target_amount) < 0.1
+          AND ABS(COALESCE(pix_transfer_value, paid_value, total_value, 0) - v_target_amount) < 0.1
         LIMIT 1;
 
         IF FOUND THEN
@@ -140,9 +140,9 @@ BEGIN
         -- PIX: Extração heurística rigorosa
         SELECT COALESCE(SUM(
             CASE 
-                WHEN COALESCE(pix_transfer_value, parsed_pix_transfer, 0) > 0 
-                THEN COALESCE(pix_transfer_value, parsed_pix_transfer, 0)
-                WHEN payment_methods ILIKE '%pix%' OR payment_methods ILIKE '%transfer%'
+                WHEN COALESCE(pix_transfer_value, 0) > 0 
+                THEN COALESCE(pix_transfer_value, 0)
+                WHEN payment_method ILIKE '%pix%' OR payment_method ILIKE '%transfer%'
                 THEN COALESCE(paid_value, total_value, 0)
                 ELSE 0
             END
