@@ -372,7 +372,7 @@ function PatioPage() {
               </div>
               <div className="bg-white/5 p-3 rounded-lg border border-white/10">
                 <span className="text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] block mb-1">Placa</span>
-                <span className="font-mono text-white">{selectedOs.plate || 'NÁo informada'}</span>
+                <span className="font-mono text-white">{selectedOs.plate || 'Não informada'}</span>
               </div>
             </div>
 
@@ -430,7 +430,7 @@ function PatioPage() {
               <div className="bg-[var(--bg-surface-elevated)] p-4 rounded-lg border border-white/10 overflow-hidden relative">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-primary)] opacity-5 blur-3xl rounded-full pointer-events-none" />
                 <h4 className="text-sm font-display font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-4 flex items-center gap-2">
-                  <Clock size={16} className="text-[var(--color-primary)]" /> Linha do Tempo (EvoluçÁo da OS)
+                  <Clock size={16} className="text-[var(--color-primary)]" /> Linha do Tempo (Evolução da OS)
                 </h4>
                 
                 {(!selectedOs.history_log || !Array.isArray(selectedOs.history_log) || selectedOs.history_log.length === 0) ? (
@@ -439,11 +439,11 @@ function PatioPage() {
                       <CheckCircle2 size={18} />
                     </div>
                     <p className="text-sm font-medium text-[var(--text-primary)]">OS Criada</p>
-                    <p className="text-xs text-[var(--text-tertiary)] mt-1">Nenhuma alteraçÁo registrada após a criaçÁo desta OS.</p>
+                    <p className="text-xs text-[var(--text-tertiary)] mt-1">Nenhuma alteração registrada após a criação desta OS.</p>
                   </div>
                 ) : (
                   <div className="space-y-4 relative before:absolute before:inset-0 before:ml-2 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-white/10 before:to-transparent">
-                    {/* Nó de CriaçÁo Fixo */}
+                    {/* Nó de Criação Fixo */}
                     <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                       <div className="flex items-center justify-center w-4 h-4 rounded-full border border-[var(--color-success)]/30 bg-[var(--bg-surface)] shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
                         <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-success)] shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
@@ -454,7 +454,7 @@ function PatioPage() {
                             {new Date((selectedOs as any).created_at || (selectedOs as any).date || Date.now()).toLocaleString('pt-BR')}
                           </span>
                         </div>
-                        <p className="text-xs font-medium text-[var(--color-success)] mt-1">CriaçÁo da Ordem de Serviço</p>
+                        <p className="text-xs font-medium text-[var(--color-success)] mt-1">Criação da Ordem de Serviço</p>
                         <p className="text-[10px] text-[var(--text-tertiary)] mt-0.5">Valor inicial: R$ {Number(selectedOs.total_value).toLocaleString('pt-BR', {minimumFractionDigits:2})}</p>
                       </div>
                     </div>

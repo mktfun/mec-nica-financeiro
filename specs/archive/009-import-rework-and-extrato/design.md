@@ -1,8 +1,8 @@
-﻿# Design: RefatoraçÁo da ImportaçÁo e Novo Extrato Bancário (009)
+﻿# Design: Refatoração da Importação e Novo Extrato Bancário (009)
 
 ## 1. Banco de Dados
 - **Limpeza Necessária**: Vamos limpar as tabelas `patio_os`, `receivables`, `import_logs`, `reconciliations` e `transactions` para começar do zero com o formato em lote.
-- Nenhuma tabela nova será criada, mas o uso da tabela `transactions` vai mudar: agora ela armazenará UMA linha para cada OS finalizada (tipo `in`), permitindo a visÁo real do extrato bancário.
+- Nenhuma tabela nova será criada, mas o uso da tabela `transactions` vai mudar: agora ela armazenará UMA linha para cada OS finalizada (tipo `in`), permitindo a visão real do extrato bancário.
 
 ## 2. Hooks (Frontend)
 
@@ -22,7 +22,7 @@ Ele vai:
 
 ### `ImportReportDialog.tsx`
 - Remover o state `targetDate` e o input da UI.
-- No parsing, remover o filtro `if (closed_at === targetDate)`. Agora todas as OSs sÁo lidas e agrupadas pelas datas em que foram fechadas.
+- No parsing, remover o filtro `if (closed_at === targetDate)`. Agora todas as OSs são lidas e agrupadas pelas datas em que foram fechadas.
 
 ### `historico.tsx`
 - Transformado em Extrato Bancário.

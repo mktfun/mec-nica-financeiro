@@ -227,7 +227,7 @@ export function BankReconciliationDashboard({
       onSuccess();
     } catch (e) {
       console.error(e);
-      alert('Erro ao salvar conciliaçÁo bancária massiva.');
+      alert('Erro ao salvar conciliação bancária massiva.');
     } finally {
       setIsProcessing(false);
     }
@@ -240,7 +240,7 @@ export function BankReconciliationDashboard({
         className="bg-[var(--color-accent-teal)]/20 border border-[var(--color-accent-teal)] p-8 rounded-2xl flex flex-col items-center justify-center text-center shadow-[0_0_50px_-10px_var(--color-accent-teal)] mt-8"
       >
         <CheckCircle2 size={64} className="text-[var(--color-accent-teal)] mb-4" />
-        <h2 className="text-2xl font-bold text-white mb-2">ConciliaçÁo Massiva Concluída!</h2>
+        <h2 className="text-2xl font-bold text-white mb-2">Conciliação Massiva Concluída!</h2>
         <p className="text-[var(--text-secondary)]">Todos os dados de Extratos, Maquininhas e Custos foram integrados com sucesso no fluxo financeiro.</p>
       </motion.div>
     );
@@ -308,7 +308,7 @@ export function BankReconciliationDashboard({
                        <div key={`ofx-${storeId}-${i}`} className="bg-[var(--bg-surface-elevated)] p-3 rounded-lg flex justify-between items-center text-sm border-l-2 border-[var(--color-accent-danger)]">
                          <div>
                            <p className="font-medium text-[var(--text-primary)]">Extrato: {o.memo}</p>
-                           <p className="text-xs text-[var(--color-accent-danger)]">NÁo consta no sistema ({stores.find(s=>s.id===storeId)?.name})</p>
+                           <p className="text-xs text-[var(--color-accent-danger)]">Não consta no sistema ({stores.find(s=>s.id===storeId)?.name})</p>
                          </div>
                          <span className="font-bold"><AnimatedNumber value={o.amount} format="currency" /></span>
                        </div>
@@ -317,7 +317,7 @@ export function BankReconciliationDashboard({
                        <div key={`sys-${storeId}-${i}`} className="bg-[var(--bg-surface-elevated)] p-3 rounded-lg flex justify-between items-center text-sm border-l-2 border-[var(--color-accent-warning)]">
                          <div>
                            <p className="font-medium text-[var(--text-primary)]">Sistema: {s.description || 'Venda'}</p>
-                           <p className="text-xs text-[var(--color-accent-warning)]">NÁo consta no extrato ({stores.find(s=>s.id===storeId)?.name})</p>
+                           <p className="text-xs text-[var(--color-accent-warning)]">Não consta no extrato ({stores.find(s=>s.id===storeId)?.name})</p>
                          </div>
                          <span className="font-bold"><AnimatedNumber value={s.amount} format="currency" /></span>
                        </div>
@@ -347,7 +347,7 @@ export function BankReconciliationDashboard({
             className="bg-[var(--color-accent-teal)] text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 hover:brightness-110 transition-all shadow-[0_0_20px_-5px_var(--color-accent-teal)] disabled:opacity-50"
           >
             {isProcessing ? <LoadingSpinner size="sm" /> : <Save size={20} />}
-            {isProcessing ? 'Salvando...' : 'Salvar ConciliaçÁo Massiva'}
+            {isProcessing ? 'Salvando...' : 'Salvar Conciliação Massiva'}
           </button>
         )}
       </div>
@@ -367,7 +367,7 @@ export function BankReconciliationDashboard({
                 <h3 className="text-xl font-bold text-[var(--text-primary)]">Loja Desconhecida no Arquivo</h3>
               </div>
               <p className="text-sm text-[var(--text-secondary)] mb-6">
-                O arquivo <strong className="text-[var(--text-primary)]">{unmappedFiles[0].file.name}</strong> nÁo foi mapeado automaticamente para nenhuma loja. Por favor, selecione a qual loja este extrato pertence.
+                O arquivo <strong className="text-[var(--text-primary)]">{unmappedFiles[0].file.name}</strong> não foi mapeado automaticamente para nenhuma loja. Por favor, selecione a qual loja este extrato pertence.
               </p>
               <div className="mb-6">
                 <label className="block text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-2">Selecione a Loja</label>

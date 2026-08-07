@@ -60,11 +60,11 @@ ingress:
   - hostname: traefik.tork.services
     service: http://traefik:80
   - hostname: bot.tork.services
-    service: http://traefik:80   # ← VIA TRAEFIK (nÁo direto ao container)
+    service: http://traefik:80   # ← VIA TRAEFIK (não direto ao container)
   - service: http_status:404
 ```
 
-## Cenários de VerificaçÁo
+## Cenários de Verificação
 
 - **Cenário 1 (Health):** `curl https://bot.tork.services/health` → `{"status":"ok",...}` — sem auth
 - **Cenário 2 (Auth required):** `curl -X POST https://bot.tork.services/api/sync` → `401 Unauthorized`

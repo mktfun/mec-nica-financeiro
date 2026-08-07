@@ -1,7 +1,7 @@
 ﻿# Spec 037 - Design e Arquitetura
 
 ## Banco de Dados
-A query para pegar o saldo diário de uma loja na conciliaçÁo precisa considerar as transações criadas naquele dia (ou referentes àquele dia) cujo `source` nÁo seja `ofx`. O hook que buscará isso usará a tabela `transactions`. 
+A query para pegar o saldo diário de uma loja na conciliação precisa considerar as transações criadas naquele dia (ou referentes àquele dia) cujo `source` não seja `ofx`. O hook que buscará isso usará a tabela `transactions`. 
 
 ## Frontend e UX
 1. **Hook `useDailySystemBalance`:** Criaremos um novo hook dentro de `src/hooks/useTransactions.ts` que retorna os totais financeiros (entradas - saídas) por `store_id` em um determinado dia.

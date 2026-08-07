@@ -78,7 +78,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
         return {
           store_id,
           store_name: item.storeName,
-          title: item.title || (isOfx ? 'ImportaçÁo OFX' : 'ImportaçÁo Maquininha'),
+          title: item.title || (isOfx ? 'Importação OFX' : 'Importação Maquininha'),
           subtitle: item.storeName,
           amount: item.amount || 0,
           type: item.type === 'in' || item.type === 'out' ? item.type : 'in',
@@ -142,7 +142,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
       onSuccess();
     } catch(e: any) {
       console.error(e);
-      alert('Erro ao confirmar importaçÁo: ' + (e.message || 'Falha no banco de dados.'));
+      alert('Erro ao confirmar importação: ' + (e.message || 'Falha no banco de dados.'));
     } finally {
       setIsProcessing(false);
     }
@@ -210,7 +210,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
   };
 
   const processOFX = async (file: File, sessionId: string) => {
-    // parseOFXFile agora retorna { alias, transactions } — nÁo um array direto
+    // parseOFXFile agora retorna { alias, transactions } — não um array direto
     return await parseOFXFile(file, { sessionId });
   };
 
@@ -218,7 +218,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
     if (acceptedFiles.length === 0) return;
     
     const sessionId = generateSessionId();
-    traceLog('1_UPLOAD', 'INFO', 'Iniciando processo de importaçÁo', sessionId, {
+    traceLog('1_UPLOAD', 'INFO', 'Iniciando processo de importação', sessionId, {
       files_received: acceptedFiles.map(f => ({ filename: f.name, size_bytes: f.size, type: category }))
     });
 
@@ -261,7 +261,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
         }
       }
 
-      traceLog('6_STAGING_READY', 'INFO', 'Payload gerado e aguardando confirmaçÁo do usuário', sessionId, {
+      traceLog('6_STAGING_READY', 'INFO', 'Payload gerado e aguardando confirmação do usuário', sessionId, {
         total_to_import: allItems.length,
         results_summary: results
       });
@@ -329,7 +329,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
         <div className={`h-px flex-1 ${step > 1 ? 'bg-[var(--color-primary)]' : 'bg-[var(--border-subtle)]'}`} />
         <StepIndicator current={step} step={2} title="Mapeamento" />
         <div className={`h-px flex-1 ${step > 2 ? 'bg-[var(--color-primary)]' : 'bg-[var(--border-subtle)]'}`} />
-        <StepIndicator current={step} step={3} title="RevisÁo" />
+        <StepIndicator current={step} step={3} title="Revisão" />
       </div>
 
       {step === 1 && (
@@ -423,7 +423,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
                 disabled={unmappedStores.some(u => !mapping[u])}
                 className="px-8 py-6 rounded-full text-base font-semibold shadow-[0_4px_20px_rgba(var(--color-primary-rgb),0.3)] hover:scale-105"
               >
-                Continuar para RevisÁo
+                Continuar para Revisão
                 <ArrowRight size={18} className="ml-2" />
               </Button>
             </div>
@@ -438,7 +438,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
              
              <h3 className="font-display text-2xl font-bold mb-6 flex items-center gap-3">
                <CheckCircle2 className="text-[var(--color-accent-teal)]" size={28} />
-               Resumo Pronto para ImportaçÁo
+               Resumo Pronto para Importação
              </h3>
 
              {Object.keys(extractedBankBalances).length > 0 && (
@@ -478,7 +478,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
                  onChange={e => setTargetDate(e.target.value)} 
                  className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
                />
-               <p className="text-xs text-[var(--text-tertiary)] mt-2">Esta data será usada para agrupar o lote de importaçÁo. Se for Maquininha, também será a data das transações.</p>
+               <p className="text-xs text-[var(--text-tertiary)] mt-2">Esta data será usada para agrupar o lote de importação. Se for Maquininha, também será a data das transações.</p>
              </div>
 
              <Button 
@@ -486,7 +486,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
                disabled={isProcessing}
                className="w-full py-6 text-lg font-semibold rounded-[var(--radius-full)] shadow-[0_8px_30px_rgba(var(--color-primary-rgb),0.4)]"
              >
-               {isProcessing ? 'Processando...' : 'Confirmar ImportaçÁo'}
+               {isProcessing ? 'Processando...' : 'Confirmar Importação'}
              </Button>
            </Card>
         </motion.div>

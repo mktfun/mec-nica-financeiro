@@ -1,11 +1,11 @@
-﻿# Design: CorreçÁo Definitiva de Chave Estrangeira em ConciliaçÁo e ImportaçÁo (conciliacao-fk-definitive-fix)
+﻿# Design: Correção Definitiva de Chave Estrangeira em Conciliação e Importação (conciliacao-fk-definitive-fix)
 
-## Fluxo Técnico de RecuperaçÁo de IDs de TransaçÁo
+## Fluxo Técnico de Recuperação de IDs de Transação
 
 ```
   ┌─────────────────────────────────────────────────────────────┐
   │ 1. centralImportWizard (saveTransactions)                  │
-  │    - Txs do OFX sÁo upsertadas na tabela transactions      │
+  │    - Txs do OFX são upsertadas na tabela transactions      │
   │    - Se fitid já existe no DB, Postgres mantem o ID antigo  │
   └──────────────────────────────┬──────────────────────────────┘
                                  │
@@ -21,17 +21,17 @@
                                  │
                                  ▼
   ┌─────────────────────────────────────────────────────────────┐
-  │ 3. REMAPEAMENTO E SANITIZAÇÁO DE CONCILIATION_MATCHES        │
+  │ 3. REMAPEAMENTO E SANITIZAÇÃO DE CONCILIATION_MATCHES        │
   │    - Substitui ofx_transaction_id pelo ID real do DB       │
   │    - Valida contra dbTxIdSet.                               │
-  │    - Se ID nÁo existir fisicamente no DB → seta como null │
+  │    - Se ID não existir fisicamente no DB → seta como null │
   └──────────────────────────────┬──────────────────────────────┘
                                  │
                                  ▼
   ┌─────────────────────────────────────────────────────────────┐
-  │ 4. GRAVAÇÁO RESILIENTE (insertConciliationMatches)          │
+  │ 4. GRAVAÇÃO RESILIENTE (insertConciliationMatches)          │
   │    - Tenta gravar no Postgres                               │
-  │    - Se houver exceçÁo isolada → loga aviso e prossegue     │
+  │    - Se houver exceção isolada → loga aviso e prossegue     │
   └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -72,7 +72,7 @@ const mappedMatches = matchesToInsert.map(m => {
   };
 });
 
-// 3. Trava de VerificaçÁo Física no DB
+// 3. Trava de Verificação Física no DB
 const checkIds = Array.from(new Set(
   mappedMatches.flatMap(m => [m.ofx_transaction_id, m.rede_transaction_id]).filter(Boolean)
 ));
@@ -99,12 +99,12 @@ const sanitizedMatches = mappedMatches.map(m => ({
 }));
 ```
 
-## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
+## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
 
-- **Cenário 1 (ImportaçÁo Inicial de OFX + OS + Rede):**
-  - *AçÁo:* Importar lote limpo pela primeira vez.
-  - *Resultado Esperado:* As transações sÁo inseridas e os matches gravados sem erro de FK.
+- **Cenário 1 (Importação Inicial de OFX + OS + Rede):**
+  - *Ação:* Importar lote limpo pela primeira vez.
+  - *Resultado Esperado:* As transações são inseridas e os matches gravados sem erro de FK.
 
-- **Cenário 2 (Re-importaçÁo de OFX já existente no Banco de Dados - Causa do Bug):**
-  - *AçÁo:* Importar o mesmo arquivo OFX duas vezes seguidas ou reimportar lote existente.
-  - *Resultado Esperado:* O `upsert` reaproveita os IDs de `transactions` existentes; o remapeador encontra os IDs reais do banco; os matches sÁo gravados com os IDs corretos e **zero erro de Foreign Key constraint**.
+- **Cenário 2 (Re-importação de OFX já existente no Banco de Dados - Causa do Bug):**
+  - *Ação:* Importar o mesmo arquivo OFX duas vezes seguidas ou reimportar lote existente.
+  - *Resultado Esperado:* O `upsert` reaproveita os IDs de `transactions` existentes; o remapeador encontra os IDs reais do banco; os matches são gravados com os IDs corretos e **zero erro de Foreign Key constraint**.

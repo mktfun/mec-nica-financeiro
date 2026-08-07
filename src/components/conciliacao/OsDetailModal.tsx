@@ -126,7 +126,7 @@ export function OsDetailModal({ isOpen, onClose, osData }: OsDetailModalProps) {
               <div className="p-3 bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-xl flex items-center justify-between">
                 <div className="flex items-center gap-2 text-[var(--text-primary)]">
                   <CreditCard size={16} className="text-[var(--color-primary)]" />
-                  <span>CartÁo (Crédito / Débito)</span>
+                  <span>Cartão (Crédito / Débito)</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="font-bold text-[var(--text-primary)]">R$ {creditValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
@@ -171,7 +171,7 @@ export function OsDetailModal({ isOpen, onClose, osData }: OsDetailModalProps) {
           </div>
         )}
 
-        {/* BotÁo de AçÁo: Baixa Manual Direct ("Marcar como ENTROU") */}
+        {/* Botão de Ação: Baixa Manual Direct ("Marcar como ENTROU") */}
         {osData.id && (
           <div className="pt-2 border-t border-[var(--border-subtle)] flex justify-end">
             <Button

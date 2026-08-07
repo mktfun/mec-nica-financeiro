@@ -93,7 +93,7 @@ export function useCentralImport() {
     }
 
     if (options?.sessionId && items.length > 0) {
-      traceLog('3_EXTRACTION_EXCEL', 'DEBUG', `ExtraçÁo Completa Maquininha Genérica: ${file.name}`, options.sessionId, {
+      traceLog('3_EXTRACTION_EXCEL', 'DEBUG', `Extração Completa Maquininha Genérica: ${file.name}`, options.sessionId, {
         transactions_extracted: items.length,
         extracted_values: items.map(i => ({ amount: i.amount, dateVenda: i.dateVenda, storeName: i.storeName }))
       });
@@ -112,7 +112,7 @@ export function useCentralImport() {
     const newResults: UnifiedImportResult = { osFiles: [], maquininhaItems: [], redeResults: [], ofxResults: [], mapaMetasResults: [] };
 
     try {
-      // 0. Filtrar planilhas consolidadas manuais (ex: CONCILIAÇÁO 2307.xlsx) para evitar travamento
+      // 0. Filtrar planilhas consolidadas manuais (ex: CONCILIAÇÃO 2307.xlsx) para evitar travamento
       const validFiles = files.filter(file => {
         if (isConsolidatedSummaryFile(file)) {
           console.warn(`[CentralImport] Arquivo "${file.name}" ignorado automaticamente por ser uma planilha consolidada de conferência.`);
@@ -121,7 +121,7 @@ export function useCentralImport() {
         return true;
       });
 
-      // 1. Separar arquivos por extensÁo
+      // 1. Separar arquivos por extensão
       const ofxFiles = validFiles.filter(f => f.name.toLowerCase().endsWith('.ofx'));
       const pdfFiles = validFiles.filter(f => f.name.toLowerCase().endsWith('.pdf'));
       const excelFiles = validFiles.filter(f => f.name.toLowerCase().endsWith('.xls') || f.name.toLowerCase().endsWith('.xlsx'));
@@ -169,7 +169,7 @@ export function useCentralImport() {
             if (maqItems.length > 0) {
               newResults.maquininhaItems.push(...maqItems);
             } else {
-              console.warn(`Arquivo ${file.name} ignorado: NÁo é OS, Rede nem Maquininha reconhecida.`);
+              console.warn(`Arquivo ${file.name} ignorado: Não é OS, Rede nem Maquininha reconhecida.`);
             }
           } catch (err) {
             console.error(`Erro processando ${file.name} como maquininha genérica:`, err);

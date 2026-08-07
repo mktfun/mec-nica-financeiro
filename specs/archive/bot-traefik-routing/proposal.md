@@ -2,12 +2,12 @@
 
 ## Problema
 - O Cloudflare Zero Trust Tunnel já roteia `bot.tork.services → http://traefik:80` ✅
-- O Traefik usa `--providers.docker.exposedbydefault=false`, entÁo ele só descobre containers que estÁo NA MESMA rede Docker que ele E com `traefik.enable=true`.
+- O Traefik usa `--providers.docker.exposedbydefault=false`, então ele só descobre containers que estão NA MESMA rede Docker que ele E com `traefik.enable=true`.
 - A rede do Traefik se chama `internal` (alias Docker compose: `tork-stack_internal` externamente).
-- O container `conciliamec-bot` está na rede `tork-stack_internal` COM labels de Traefik corretas, MAS pode nÁo estar sendo descoberto porque as labels estÁo corretas mas o container precisa ser visível pelo Docker provider do Traefik.
+- O container `conciliamec-bot` está na rede `tork-stack_internal` COM labels de Traefik corretas, MAS pode não estar sendo descoberto porque as labels estão corretas mas o container precisa ser visível pelo Docker provider do Traefik.
 - O cloudflared config atual foi editado para `bot.tork.services → http://conciliamec-bot:3001` diretamente — isso precisa ser revertido para `http://traefik:80`.
 
-## SoluçÁo Proposta
+## Solução Proposta
 
 1. **Corrigir `cloudflared/config.yml`** na VPS: trocar `bot.tork.services → http://conciliamec-bot:3001` de volta para `http://traefik:80` (alinhado com o que o usuário configurou no Zero Trust dashboard).
 2. **Verificar e corrigir Traefik labels no `bot/docker-compose.yml`**: garantir que o container `conciliamec-bot` tem `traefik.enable=true` e está na mesma rede `internal` / `tork-stack_internal` que o Traefik consegue monitorar.
@@ -19,7 +19,7 @@
 
 ## API / Interface
 
-**Fluxo completo após implementaçÁo:**
+**Fluxo completo após implementação:**
 ```
 Usuário/Agent HTTP
   → HTTPS: https://bot.tork.services
@@ -41,4 +41,4 @@ Usuário/Agent HTTP
 - `cloudflared/config.yml` no servidor: revertido para usar `http://traefik:80`.
 
 ## Risco Principal
-O Traefik usa `/var/run/docker.sock` para descoberta, mas só descobre containers na mesma rede Docker. Se o `conciliamec-bot` nÁo estiver acessível pelo Traefik via rede `internal`, o roteamento falha com 404. **MitigaçÁo:** verificar explicitamente a rede compartilhada entre os dois containers.
+O Traefik usa `/var/run/docker.sock` para descoberta, mas só descobre containers na mesma rede Docker. Se o `conciliamec-bot` não estiver acessível pelo Traefik via rede `internal`, o roteamento falha com 404. **Mitigação:** verificar explicitamente a rede compartilhada entre os dois containers.

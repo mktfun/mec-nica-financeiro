@@ -45,17 +45,17 @@ export function ConfiguracoesPanel() {
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-2xl mx-auto w-full p-4 md:p-8">
       <div className="mb-8">
         <h1 className="font-display font-bold text-3xl mb-2">Configurações</h1>
-        <p className="text-[var(--text-secondary)] text-sm">Gerencie o comportamento do motor de conciliaçÁo autônomo e lojas.</p>
+        <p className="text-[var(--text-secondary)] text-sm">Gerencie o comportamento do motor de conciliação autônomo e lojas.</p>
       </div>
 
       <div className="space-y-6">
-        {/* Motor de ConciliaçÁo */}
+        {/* Motor de Conciliação */}
         <Card variant="glass" className="p-6">
-          <h3 className="font-display font-semibold text-lg mb-4">Motor de ConciliaçÁo</h3>
+          <h3 className="font-display font-semibold text-lg mb-4">Motor de Conciliação</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between p-3 rounded-[var(--radius-md)] border border-[var(--border-subtle)] hover:bg-[var(--bg-surface-hover)] transition-colors">
               <div>
-                <p className="font-medium text-[var(--text-primary)]">SincronizaçÁo Automática (07:00)</p>
+                <p className="font-medium text-[var(--text-primary)]">Sincronização Automática (07:00)</p>
                 <p className="text-sm text-[var(--text-secondary)] mt-1">Executar o bot de coleta todos os dias de manhÁ.</p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
@@ -77,7 +77,7 @@ export function ConfiguracoesPanel() {
 
             {lastRun && (
               <div className="mt-4 p-3 bg-[var(--bg-canvas)] rounded-[var(--radius-md)] border border-[var(--border-subtle)]">
-                <p className="text-sm font-medium">Última ExecuçÁo do Bot</p>
+                <p className="text-sm font-medium">Última Execução do Bot</p>
                 <div className="flex items-center justify-between mt-2 text-xs text-[var(--text-secondary)]">
                   <span>{new Date(lastRun.started_at).toLocaleString()}</span>
                   <span className={lastRun.status === 'success' ? 'text-[var(--color-accent-success)]' : 'text-[var(--color-accent-danger)]'}>
@@ -90,7 +90,7 @@ export function ConfiguracoesPanel() {
           </div>
           <div className="mt-6 border-t border-[var(--border-subtle)] pt-4">
             <Button variant="primary" className="w-full sm:w-auto" disabled={loadingBots}>
-              Forçar ExecuçÁo do Motor Agora
+              Forçar Execução do Motor Agora
             </Button>
           </div>
         </Card>
@@ -113,7 +113,7 @@ export function ConfiguracoesPanel() {
                 <div key={store.id} className="flex items-center justify-between p-3 rounded-[var(--radius-md)] border border-[var(--border-subtle)]">
                   <div>
                     <p className="font-medium text-[var(--text-primary)] text-sm">{store.name}</p>
-                    <p className="text-xs text-[var(--text-tertiary)] mt-0.5">Gerente: {store.manager || 'NÁo definido'}</p>
+                    <p className="text-xs text-[var(--text-tertiary)] mt-0.5">Gerente: {store.manager || 'Não definido'}</p>
                   </div>
                   <div className="flex gap-2">
                     <Button variant="outline" size="sm" onClick={() => handleEditStore(store)}>Editar</Button>
@@ -125,14 +125,14 @@ export function ConfiguracoesPanel() {
           )}
         </Card>
 
-        {/* Bot de AutomaçÁo — Credenciais */}
+        {/* Bot de Automação — Credenciais */}
         <Card variant="glass" className="p-6">
           <div className="flex items-center gap-3 mb-5">
             <div className="w-9 h-9 rounded-full bg-amber-400/15 flex items-center justify-center">
               <Bot size={17} className="text-amber-400" />
             </div>
             <div>
-              <h3 className="font-display font-semibold text-lg">Bot de AutomaçÁo</h3>
+              <h3 className="font-display font-semibold text-lg">Bot de Automação</h3>
               <p className="text-xs text-[var(--text-tertiary)]">Credenciais para coleta automática de dados via Playwright.</p>
             </div>
           </div>
@@ -175,7 +175,7 @@ export function ConfiguracoesPanel() {
                           </span>
                         ) : (
                           <span className="flex items-center gap-1 text-[10px] text-[var(--text-tertiary)] bg-white/5 px-2 py-1 rounded-full border border-white/10">
-                            <Clock size={10} /> NÁo validada
+                            <Clock size={10} /> Não validada
                           </span>
                         )}
                       </div>

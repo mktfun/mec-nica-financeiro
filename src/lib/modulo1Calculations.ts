@@ -1,12 +1,12 @@
-﻿export interface GlobalConciliacaoInput {
+export interface GlobalConciliacaoInput {
   saldo_bancario: number; // Soma de saldos das lojas no extrato
   dinheiro_mp: number; // Manual
   a_receber_manual: number; // Manual
   na_loja_os: number; // Soma das pendências de OS do pátio (total_patio)
   saldo_negativo_itau: number; // Extraído do OFX
-  caixa_anterior: number; // Caixa da última conciliaçÁo
+  caixa_anterior: number; // Caixa da última conciliação
   faturamento_atual: number; // Acumulado lido do banco (todas as receitas) hoje
-  faturamento_anterior: number; // Acumulado na última conciliaçÁo
+  faturamento_anterior: number; // Acumulado na última conciliação
   faturamento_outros: number; // Manual
   juros_rede: number; // Extraído do relatório REDE
   contas_a_pagar: number; // Manual
@@ -27,7 +27,7 @@ export interface GlobalConciliacaoCalculated {
 }
 
 /**
- * Calcula a conciliaçÁo diária global exata conforme a regra de negócio consolidada (agosto 2026).
+ * Calcula a conciliação diária global exata conforme a regra de negócio consolidada (agosto 2026).
  */
 export function calculateGlobalConciliacao(input: GlobalConciliacaoInput): GlobalConciliacaoCalculated {
   const saldo = Number(input.saldo_bancario || 0);
@@ -45,10 +45,10 @@ export function calculateGlobalConciliacao(input: GlobalConciliacaoInput): Globa
   // Faturamento = (faturamento atual - anterior) + outros faturamentos
   const faturamento = (Number(input.faturamento_atual || 0) - Number(input.faturamento_anterior || 0)) + Number(input.faturamento_outros || 0);
 
-  // Valor disp contas = fat atual + fluxo caixa
-  const valor_disp_contas = faturamento + fluxo_cx;
+  // Valor disp contas = fat atual - fluxo caixa
+  const valor_disp_contas = faturamento - fluxo_cx;
 
-  // Valor contas = juros REDE + contas a pagar + provisÁo
+  // Valor contas = juros REDE + contas a pagar + provisão
   const valor_contas = Math.abs(Number(input.juros_rede || 0)) + Math.abs(Number(input.contas_a_pagar || 0));
 
   // Diferença = valor disp - contas

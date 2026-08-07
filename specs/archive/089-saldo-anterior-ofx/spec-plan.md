@@ -3,12 +3,12 @@
 ## Tarefas
 
 - [/] [BACKEND] Adicionar coluna `previous_balance NUMERIC` na tabela `reconciliations`
-  - Criar e rodar script de migraçÁo via RPC ou chave de serviço.
+  - Criar e rodar script de migração via RPC ou chave de serviço.
 - [x] [FRONTEND] Atualizar TypeScript de `ReconciliationRow` em `src/lib/supabase.ts`
-  - Adicionar `previous_balance?: number | null;` (se já nÁo estiver lá)
+  - Adicionar `previous_balance?: number | null;` (se já não estiver lá)
 - [x] [FRONTEND] Ajustar Parser `ofxParser.ts`
   - Aplicar checagem anti-centavos no `<TRNAMT>` do `"SALDO ANTERIOR"` (identico à rule do `bank_total`)
-- [x] [FRONTEND] Mapear dados na ImportaçÁo 
+- [x] [FRONTEND] Mapear dados na Importação 
   - Em `CentralImportWizard.tsx`: Coletar `ofx.previousBalance` em `storePreviousBalances` e passar ao payload.
   - Em `useTransactions.ts` (`useBulkInsertTransactions`): Dar upsert em `previous_balance` na `reconciliations`.
 - [x] [FRONTEND] Injetar na Matemática de Fechamento

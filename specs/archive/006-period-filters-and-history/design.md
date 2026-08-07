@@ -2,7 +2,7 @@
 
 ## Alterações de Backend (Hooks / Supabase)
 1. **`usePatio.ts`:**
-   - Adicionar parâmetros `startDate: string` e `endDate: string` na funçÁo.
+   - Adicionar parâmetros `startDate: string` e `endDate: string` na função.
    - Hoje o Pátio puxa as `finalizadas_hoje` filtrando no Javascript ou no SQL pela data exata? 
    - *Design de ajuste:* Vamos passar o range (primeiro e último dia do mês atual). O `.select()` do Supabase para as finalizadas deverá usar `.gte('closed_at', startDate).lte('closed_at', endDate)`.
 2. **`useStores.ts` / `useTransactions.ts`:**

@@ -122,7 +122,7 @@ function ImportacoesDespesasWizard() {
       // Montar os dados para o Supabase
       const payload = allExpenses.map(exp => {
         const storeId = mapping[exp.storeName];
-        if (!storeId) throw new Error(`Loja ${exp.storeName} nÁo está mapeada!`);
+        if (!storeId) throw new Error(`Loja ${exp.storeName} não está mapeada!`);
         
         const date = targetDate;
         const sId = storeId === 'GLOBAL' ? null : storeId;
@@ -189,7 +189,7 @@ function ImportacoesDespesasWizard() {
             <div className={`h-px flex-1 ${step > 1 ? 'bg-[var(--color-primary)]' : 'bg-white/10'}`} />
             <StepIndicator current={step} step={2} title="Mapeamento" />
             <div className={`h-px flex-1 ${step > 2 ? 'bg-[var(--color-primary)]' : 'bg-white/10'}`} />
-            <StepIndicator current={step} step={3} title="RevisÁo" />
+            <StepIndicator current={step} step={3} title="Revisão" />
           </div>
         </div>
 
@@ -254,7 +254,7 @@ function ImportacoesDespesasWizard() {
                   </p>
                 </div>
                 <div className="bg-[var(--color-accent-teal)]/10 text-[var(--color-accent-teal)] px-3 py-1.5 rounded text-xs font-medium border border-[var(--color-accent-teal)]/20 flex items-center gap-2">
-                  <CheckCircle2 size={14} /> MemorizaçÁo Inteligente Ativa
+                  <CheckCircle2 size={14} /> Memorização Inteligente Ativa
                 </div>
               </div>
 
@@ -300,7 +300,7 @@ function ImportacoesDespesasWizard() {
                   disabled={unmappedStores.some(u => !mapping[u])}
                   className="px-8 py-6 rounded-full text-base font-semibold shadow-[0_4px_20px_rgba(var(--color-primary-rgb),0.3)] hover:scale-105"
                 >
-                  Continuar para RevisÁo
+                  Continuar para Revisão
                   <ArrowRight size={18} className="ml-2" />
                 </Button>
               </div>
@@ -308,7 +308,7 @@ function ImportacoesDespesasWizard() {
           </motion.div>
         )}
 
-        {/* STEP 3: REVISÁO */}
+        {/* STEP 3: REVISÃO */}
         {step === 3 && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
              <Card className="p-8 border-[var(--color-primary)]/30 relative overflow-hidden">
@@ -316,7 +316,7 @@ function ImportacoesDespesasWizard() {
                
                <h3 className="font-display text-2xl font-bold mb-6 flex items-center gap-3">
                  <CheckCircle2 className="text-[var(--color-accent-teal)]" size={28} />
-                 Resumo Pronto para ImportaçÁo
+                 Resumo Pronto para Importação
                </h3>
 
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -340,11 +340,11 @@ function ImportacoesDespesasWizard() {
                    onChange={e => setTargetDate(e.target.value)} 
                    className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors"
                  />
-                 <p className="text-xs text-[var(--text-tertiary)] mt-2">Esta data será usada para agrupar o lote de importaçÁo no histórico.</p>
+                 <p className="text-xs text-[var(--text-tertiary)] mt-2">Esta data será usada para agrupar o lote de importação no histórico.</p>
                </div>
 
                <div className="space-y-2 max-h-[300px] overflow-y-auto mb-8 pr-2">
-                 <h4 className="text-sm font-semibold mb-3 border-b border-white/10 pb-2">DistribuiçÁo por Loja (Aliases)</h4>
+                 <h4 className="text-sm font-semibold mb-3 border-b border-white/10 pb-2">Distribuição por Loja (Aliases)</h4>
                  {Array.from(new Set(allExpenses.map(e => e.storeName))).map(alias => {
                    const storeExps = allExpenses.filter(e => e.storeName === alias);
                    const storeTotal = storeExps.reduce((a, c) => a + c.amount, 0);

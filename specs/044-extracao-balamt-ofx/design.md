@@ -1,8 +1,8 @@
-﻿# Design: ExtraçÁo do BALAMT no OFX
+﻿# Design: Extração do BALAMT no OFX
 
 ## Supabase MCP (Backend/Modelagem)
-Nenhuma nova tabela ou coluna é necessária. Já temos `bank_total` em `reconciliations`. A query já lê essa tabela. O que muda é a ingestÁo de dados.
-- O payload de importaçÁo passará a carregar `bankBalance` opcional.
+Nenhuma nova tabela ou coluna é necessária. Já temos `bank_total` em `reconciliations`. A query já lê essa tabela. O que muda é a ingestão de dados.
+- O payload de importação passará a carregar `bankBalance` opcional.
 - No `useImportProcessor.ts` (linha ~304), no bloco que faz `saveImportedReport.mutateAsync`, enviaremos esse `bankBalance` para o backend salvar na coluna `bank_total`.
 
 ## Stitch MCP (Frontend)
@@ -14,8 +14,8 @@ Nenhuma nova tabela ou coluna é necessária. Já temos `bank_total` em `reconci
 - `src/components/importacoes/WizardImportacao.tsx`:
   - No `processOFX`, vai receber `bankBalance`.
   - Atualmente a página armazena um array mutável em `allParsedTransactions`. Mas precisamos de uma forma de vincular o saldo lido. 
-  - Para nÁo quebrar a tipagem complexa, caso haja OFX na importaçÁo, ele pode definir um novo state `ofxBankBalance` no Wizard.
+  - Para não quebrar a tipagem complexa, caso haja OFX na importação, ele pode definir um novo state `ofxBankBalance` no Wizard.
 
 - `src/hooks/useImportProcessor.ts`:
   - A mutation vai precisar aceitar o `ofxBankBalance`.
-  - Modificar os argumentos passados para o processor e enviá-lo durante o salvamento da ReconciliaçÁo (caso ele seja do tipo OFX).
+  - Modificar os argumentos passados para o processor e enviá-lo durante o salvamento da Reconciliação (caso ele seja do tipo OFX).

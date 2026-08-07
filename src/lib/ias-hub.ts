@@ -134,12 +134,12 @@ export class IASHubConnector {
         `- **Número da OS**: ${osData.os_number || osNumber}\n` +
         `- **Loja**: ${osData.store_name || storeName}\n` +
         `- **Status**: ${osData.status || osData.raw_status || 'Em andamento'}\n` +
-        `- **Placa**: ${osData.plate || 'NÁo informada'}\n` +
+        `- **Placa**: ${osData.plate || 'Não informada'}\n` +
         `- **Valor Total**: R$ ${Number(osData.total_value || osData.totalValue || 0).toFixed(2)}\n` +
-        `- **Forma de Pagamento**: ${osData.payment_method || 'NÁo especificada'}\n\n` +
+        `- **Forma de Pagamento**: ${osData.payment_method || 'Não especificada'}\n\n` +
         `**caminho do grafo**: ${caminho_do_grafo}`;
     } else {
-      responseText = `A Ordem de Serviço **${osNumber}** nÁo foi localizada no sistema da loja **${storeName}**.\n\n` +
+      responseText = `A Ordem de Serviço **${osNumber}** não foi localizada no sistema da loja **${storeName}**.\n\n` +
         `*Nota de Governança Claritas*: Verificado no banco local e na API externa sem registros.\n\n` +
         `**caminho do grafo**: ${caminho_do_grafo}`;
     }

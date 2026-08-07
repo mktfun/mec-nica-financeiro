@@ -1,6 +1,6 @@
-﻿# Spec 038 - Diagramas e Mapa Mental da ConciliaçÁo
+﻿# Spec 038 - Diagramas e Mapa Mental da Conciliação
 
-## Mapa Mental da ImportaçÁo (Mind Map)
+## Mapa Mental da Importação (Mind Map)
 
 ```mermaid
 mindmap
@@ -20,12 +20,12 @@ mindmap
     Extrato OFX
       Fonte da Verdade Líquida
       Registra transações OFX
-      NÁo soma com o Sistema
+      Não soma com o Sistema
       Serve apenas como Alvo para comparar
     Maquininha
-      NÁo altera o Saldo do Sistema
+      Não altera o Saldo do Sistema
       Gera aba de Recebíveis
-      Usado para espelhar taxas e datas de liquidaçÁo
+      Usado para espelhar taxas e datas de liquidação
 ```
 
 ## Fluxograma de Cruzamento de Dados (Flowchart)
@@ -47,7 +47,7 @@ graph TD
     D[Extrato Bancário OFX] -->|Grava OFX| T_OFX[Transações OFX]
     T_OFX -->|Soma OFX| BANK[EXTRATO BANCÁRIO NET]
     
-    %% ValidaçÁo e ConciliaçÁo
+    %% Validação e Conciliação
     SYS --> CONCILIACAO{Divergência?}
     BANK --> CONCILIACAO
     
@@ -68,11 +68,11 @@ graph TD
 ```
 
 ## Relatório de Arquitetura por Lojas e Global
-**VisÁo Global:**
-O sistema age como um DRE dinâmico. O dinheiro nÁo nasce mágico no banco. O banco (OFX) é passivo. A Inteligência (Sistema) é proativa. Quando você importa as 4 planilhas, o sistema constrói a história: "A Loja Matriz fez um serviço (OS), a maquininha cobrou X (Juros Rede) e o fornecedor cobrou Y (Despesas). O restante DEVE cair no banco".
+**Visão Global:**
+O sistema age como um DRE dinâmico. O dinheiro não nasce mágico no banco. O banco (OFX) é passivo. A Inteligência (Sistema) é proativa. Quando você importa as 4 planilhas, o sistema constrói a história: "A Loja Matriz fez um serviço (OS), a maquininha cobrou X (Juros Rede) e o fornecedor cobrou Y (Despesas). O restante DEVE cair no banco".
 
-**VisÁo Por Loja:**
-Cada transaçÁo e OS ganha uma tag (um "carimbo") com o `store_id` (via Mapeamento Inteligente nos Wizards). A tela de **ConciliaçÁo** separa esses carimbos.
+**Visão Por Loja:**
+Cada transação e OS ganha uma tag (um "carimbo") com o `store_id` (via Mapeamento Inteligente nos Wizards). A tela de **Conciliação** separa esses carimbos.
 1. O robô soma as Entradas carimbadas daquela loja.
 2. Subtrai as Taxas/Despesas carimbadas daquela loja.
 3. Exibe o resultado como o **Saldo Atual no Sistema**.

@@ -1,4 +1,4 @@
-﻿# Spec Plan: CorreçÁo Lógica e Cronológica do Backend (109-fix-backend-math-and-dashboard)
+﻿# Spec Plan: Correção Lógica e Cronológica do Backend (109-fix-backend-math-and-dashboard)
 
 ## Tasks
 
@@ -9,5 +9,5 @@
   - PIX puxando corretamente via lógica legada (ou matching preciso).
 - [x] [FRONTEND] Atualizar `useBackendDashboard` para buscar a última `target_date` válida em `import_logs` se `date` for vazio.
 - [x] [FRONTEND] Atualizar `useBackendConciliacao` com a mesma lógica de auto-select de data.
-- [x] [FRONTEND] Adicionar log no carregamento do hook para provar pro usuário que os dados estÁo vindo do banco corretamente.
-- [x] [TEST] Verificar se a Tela inicial carrega no dia 04 com Faturamentos nÁo-zerados.
+- [x] [FRONTEND] Adicionar log no carregamento do hook para provar pro usuário que os dados estão vindo do banco corretamente.
+- [x] [TEST] Verificar se a Tela inicial carrega no dia 04 com Faturamentos não-zerados.

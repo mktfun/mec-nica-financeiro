@@ -12,5 +12,5 @@
     ```
 - [x] **2. Mapeamento Automático (Frontend):**
   - [x] No arquivo `src/routes/importar-os.tsx`, dentro ou logo após invocar `processOsFiles`, interceptar o `storeAlias` e cruzar com a lista carregada de `stores`.
-  - [x] Aplicar normalizaçÁo case-insensitive e desacentuada.
-  - [x] Pré-preencher o `mapping` e, se todas as lojas das planilhas importadas forem resolvidas automaticamente, saltar do passo 1 (Upload) direto para o passo 3 (RevisÁo).
+  - [x] Aplicar normalização case-insensitive e desacentuada.
+  - [x] Pré-preencher o `mapping` e, se todas as lojas das planilhas importadas forem resolvidas automaticamente, saltar do passo 1 (Upload) direto para o passo 3 (Revisão).

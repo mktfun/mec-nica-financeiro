@@ -268,7 +268,7 @@ export function useWeeklyRevenueTrend(anchorDate?: string) {
       pastWeek.setDate(anchor.getDate() - 14); // 14 dias para trás da âncora
       
       const startDateStr = pastWeek.toISOString().split('T')[0] + 'T00:00:00.000Z';
-      // Ajuste: também precisamos de um limite superior (end date) para nÁo trazer dados do futuro em relaçÁo Á  âncora
+      // Ajuste: também precisamos de um limite superior (end date) para não trazer dados do futuro em relação Á  âncora
       const endDateStr = anchor.toISOString().split('T')[0] + 'T23:59:59.999Z';
       
       const { data, error } = await supabase
@@ -421,7 +421,7 @@ export function useBulkInsertTransactions() {
           }
         });
         
-        // Adiciona as chaves de storeBankBalances que nÁo vieram nas transações (ex: OFX sem lançamentos na data)
+        // Adiciona as chaves de storeBankBalances que não vieram nas transações (ex: OFX sem lançamentos na data)
         Object.keys(storeBankBalances).forEach(k => {
            if (!storeDates.has(k)) {
              storeDates.set(k, txs[0].target_date);
@@ -514,7 +514,7 @@ export function useLatestBankBalance() {
   return useQuery({
     queryKey: ['latest-bank-balance'],
     queryFn: async () => {
-      // Busca o último bank_total importado por loja (sem restriçÁo de data)
+      // Busca o último bank_total importado por loja (sem restrição de data)
       // para evitar saldo zerado em dias sem novo upload de OFX
       const { data: stores, error: storesErr } = await supabase.from('stores').select('id');
       if (storesErr) throw storesErr;
@@ -547,7 +547,7 @@ export function useDailyBankBalance(targetDate: string) {
     queryKey: ['daily-bank-balance', targetDate],
     queryFn: async () => {
       // O usuário exigiu que o Saldo OFX seja O SALDO BRUTO DO ARQUIVO (<LEDGERBAL>), sem cálculo matemático de in/out.
-      // O saldo bruto é salvo na tabela reconciliations no campo bank_total durante a importaçÁo.
+      // O saldo bruto é salvo na tabela reconciliations no campo bank_total durante a importação.
       const { data: recData, error: recError } = await supabase
         .from('reconciliations')
         .select('store_id, bank_total')

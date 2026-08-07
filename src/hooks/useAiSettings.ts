@@ -40,7 +40,7 @@ export function useAiSettings() {
           }
         }
 
-        // Tenta buscar pela configuraçÁo GLOBAL
+        // Tenta buscar pela configuração GLOBAL
         const { data: globalData, error: globalErr } = await supabase
           .from('ai_settings')
           .select('provider, model, api_key, bot_url, bot_api_key')

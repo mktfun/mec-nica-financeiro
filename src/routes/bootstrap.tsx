@@ -138,7 +138,7 @@ function BootstrapPage() {
             Bootstrap: Dia Zero
           </h1>
           <p className="text-sm text-[var(--text-secondary)] mt-1">
-            InjeçÁo de carga inicial para que o sistema consiga calcular métricas do dia seguinte sem bugs.
+            Injeção de carga inicial para que o sistema consiga calcular métricas do dia seguinte sem bugs.
           </p>
         </div>
         <Button 

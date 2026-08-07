@@ -1315,8 +1315,8 @@
     "semantic_hash": ""
   },
   "src/routes/conciliacao.index.tsx": {
-    "mtime": 1786106704.0436862,
-    "ast_hash": "295eaf8fdf3274aa216c0290660f8858",
+    "mtime": 1786138047.846267,
+    "ast_hash": "0c68c70346920a0706a14d7e29c643b3",
     "semantic_hash": ""
   },
   "src/routes/configuracoes.tsx": {
@@ -1645,8 +1645,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1786107827.4049213,
-    "ast_hash": "c62c3731256283c3f8fe2e4c2d343b3c",
+    "mtime": 1786139731.6908782,
+    "ast_hash": "8dddc75a3c45083688258248f6061521",
     "semantic_hash": ""
   },
   "specs/016-loja-cleanup/design.md": {
@@ -5305,8 +5305,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useBackendConciliacao.ts": {
-    "mtime": 1786127403.1986108,
-    "ast_hash": "b2bd907f44637eb24957ad78d42aba4c",
+    "mtime": 1786138030.2958875,
+    "ast_hash": "1ccbe58f5511b980ecdf883b6d18ed0b",
     "semantic_hash": ""
   },
   "src/hooks/useBackendDashboard.ts": {
@@ -5697,6 +5697,11 @@
   "specs/archive/118-fix-dashboard-math-part3/spec-plan.md": {
     "mtime": 1786127426.456697,
     "ast_hash": "1ca3a6beacc55205f76c7a4c9ef66d43",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000014_fix_conciliacao_math.sql": {
+    "mtime": 1786137995.7811742,
+    "ast_hash": "524b401bb52c96bba9e5d986495a4381",
     "semantic_hash": ""
   }
 }

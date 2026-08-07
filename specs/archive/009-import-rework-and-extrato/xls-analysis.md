@@ -8,7 +8,7 @@
 | 1 | Data (Abertura/Faturamento) | Serial Excel | 46146 → 04/05/2026 |
 | 2 | Cliente | Texto | MARCO HENRIQUE |
 | 3 | Placa | Texto | HNY4E77 |
-| 4 | Regra de NegociaçÁo | Texto | null |
+| 4 | Regra de Negociação | Texto | null |
 | 5 | Status | Texto | "Finalizada" / "Aberta" |
 | 6 | Finalizada em | Serial Excel (float) | 46160.53 → 28/05/2026 14:30 |
 | 7 | Data do Faturamento | Serial Excel | 46146 → 04/05/2026 |
@@ -25,7 +25,7 @@
 - `Credito` → recebe em 30 dias (D+30) 
 - `Debito` → recebe no dia seguinte (D+1)
 - `PAGAMENTO EM CONTA` → recebe no mesmo dia (D+0)
-- `Dinheiro` → nÁo apareceu nesta amostra, mas usuário mencionou
+- `Dinheiro` → não apareceu nesta amostra, mas usuário mencionou
 
 ## Datas importantes
 - **Data (col 1)**: Data de abertura/entrada da OS
@@ -41,4 +41,4 @@
 
 ## Bug no Parser Atual
 O parser filtra por `closed_at === targetDate` mas a planilha tem apenas 1 OS com `Finalizada em` = 28/05/2026 (OS 1686: R$ 8.550,00 Crédito). Por isso só aparece R$ 8.550 crédito.
-O usuário quer importar TODA a planilha do período e ver o histórico filtrado por data, nÁo importar só o dia específico.
+O usuário quer importar TODA a planilha do período e ver o histórico filtrado por data, não importar só o dia específico.

@@ -118,7 +118,7 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
                           </Badge>
                         ) : (
                           <Badge variant="danger" className="bg-[var(--color-accent-danger)]/10 text-[var(--color-accent-danger)] border-[var(--color-accent-danger)]/30">
-                            <AlertTriangle size={12} className="mr-1" /> NÁo Entrou
+                            <AlertTriangle size={12} className="mr-1" /> Não Entrou
                           </Badge>
                         )}
                       </td>

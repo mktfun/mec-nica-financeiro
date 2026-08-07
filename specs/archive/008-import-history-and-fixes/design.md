@@ -10,7 +10,7 @@ CREATE TABLE import_logs (
   store_name TEXT NOT NULL,
   target_date DATE NOT NULL,
   total_os NUMERIC DEFAULT 0,           -- Total bruto das OSs finalizadas no dia
-  total_paid_all NUMERIC DEFAULT 0,     -- Total de TODOS os pagamentos (PIX + CartÁo + Dinheiro)
+  total_paid_all NUMERIC DEFAULT 0,     -- Total de TODOS os pagamentos (PIX + Cartão + Dinheiro)
   total_dinheiro NUMERIC DEFAULT 0,     -- Total apenas em Dinheiro físico
   os_count INTEGER DEFAULT 0,           -- Quantas OSs foram importadas
   receivables_count INTEGER DEFAULT 0,  -- Quantas entradas de recebíveis foram criadas
@@ -18,7 +18,7 @@ CREATE TABLE import_logs (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Índice + unique para evitar dupla importaçÁo do mesmo dia/loja
+-- Índice + unique para evitar dupla importação do mesmo dia/loja
 CREATE UNIQUE INDEX import_logs_store_date_idx ON import_logs (store_id, target_date);
 
 -- RLS
@@ -27,10 +27,10 @@ CREATE POLICY "Authenticated users can read import_logs" ON import_logs FOR SELE
 CREATE POLICY "Authenticated users can insert import_logs" ON import_logs FOR INSERT TO authenticated WITH CHECK (true);
 ```
 
-### CorreçÁo de deduplicaçÁo em `receivables`
-A nova lógica de idempotência usa `(store_id, type, date, value)` — uma combinaçÁo mais precisa — em vez da comparaçÁo aproximada de ponto flutuante que estava causando duplicatas.
+### Correção de deduplicação em `receivables`
+A nova lógica de idempotência usa `(store_id, type, date, value)` — uma combinação mais precisa — em vez da comparação aproximada de ponto flutuante que estava causando duplicatas.
 
-Além disso, para nÁo acumular dados de PIX por meses de importações repetidas, vamos adicionar um índice único:
+Além disso, para não acumular dados de PIX por meses de importações repetidas, vamos adicionar um índice único:
 ```sql
 CREATE UNIQUE INDEX receivables_dedup_idx ON receivables (store_id, type, date, ROUND(value::NUMERIC, 2));
 ```
@@ -42,7 +42,7 @@ CREATE UNIQUE INDEX receivables_dedup_idx ON receivables (store_id, type, date, 
 // Busca lista de importações para o histórico
 useImportLogs(filters?: { storeId?: string; startDate?: string; endDate?: string })
 
-// Busca detalhe de uma importaçÁo (OSs + receivables do dia daquela loja)
+// Busca detalhe de uma importação (OSs + receivables do dia daquela loja)
 useImportLogDetail(storeId: string, targetDate: string)
 ```
 
@@ -51,7 +51,7 @@ useImportLogDetail(storeId: string, targetDate: string)
 - Gravar em `import_logs` após processar OSs e Recebíveis
 - Usar `UPSERT` (ON CONFLICT DO UPDATE) na tabela `reconciliations` para evitar duplicatas
 
-### AtualizaçÁo em `useDashboardSummary` (useTransactions.ts)
+### Atualização em `useDashboardSummary` (useTransactions.ts)
 ```typescript
 // ANTES: usa financial_total (dinheiro físico)
 const totalIn = rows.reduce((s, r) => s + (r.financial_total ?? 0), 0);

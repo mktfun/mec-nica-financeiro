@@ -16,17 +16,17 @@ interface StoreMapping {
 ```
 
 ## Componentes / Hooks / Funções
-1. **`useUnifiedStoreMapping.ts`** (src/hooks/): Modificado para armazenar Slugs ao invés de UUIDs e injetar o UUID correto na hora da avaliaçÁo no Wizard.
-2. **`CentralImportWizard.tsx`** (src/components/importacoes/): Adicionado botÁo secundário "[Dev] Auto-Load Mocks" visível apenas via `import.meta.env.DEV`.
-3. **`scripts/generate-mocks.mjs`** (scripts/): Script de utilidade local para converter os 25 arquivos de teste da pasta Downloads em Base64 dentro de um `src/__mocks__/importFiles.ts` permitindo que o navegador carregue os arquivos da rede sem intervençÁo humana.
+1. **`useUnifiedStoreMapping.ts`** (src/hooks/): Modificado para armazenar Slugs ao invés de UUIDs e injetar o UUID correto na hora da avaliação no Wizard.
+2. **`CentralImportWizard.tsx`** (src/components/importacoes/): Adicionado botão secundário "[Dev] Auto-Load Mocks" visível apenas via `import.meta.env.DEV`.
+3. **`scripts/generate-mocks.mjs`** (scripts/): Script de utilidade local para converter os 25 arquivos de teste da pasta Downloads em Base64 dentro de um `src/__mocks__/importFiles.ts` permitindo que o navegador carregue os arquivos da rede sem intervenção humana.
 
 ## Fluxo de UI
 1. Usuário limpa o banco de dados (Wipe).
-2. Usuário entra na tela de "ImportaçÁo Centralizada".
+2. Usuário entra na tela de "Importação Centralizada".
 3. Ao invés de arrastar, o usuário clica em `[Dev] Auto-Load Mocks`.
-4. Os arquivos de teste (OS, Ofx, Rede, etc) sÁo instantaneamente parseados e injetados na tela.
-5. Quando o Wizard chega no passo 2 (Vincular Lojas), os IDs sÁo resolvidos magicamente pelos Slugs e NENHUM dropdown fica vermelho "NÁo Mapeada". Tudo fica verde e pronto pra Salvar Lote.
+4. Os arquivos de teste (OS, Ofx, Rede, etc) são instantaneamente parseados e injetados na tela.
+5. Quando o Wizard chega no passo 2 (Vincular Lojas), os IDs são resolvidos magicamente pelos Slugs e NENHUM dropdown fica vermelho "Não Mapeada". Tudo fica verde e pronto pra Salvar Lote.
 
-## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
+## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
 - **Cenário 1 (Wipe Total)**: DB dropado → Importar via Auto-Load → Passo 2 mapeia todas as lojas automaticamente com sucesso sem o usuário tocar em nada.
-- **Cenário 2 (Modo ProduçÁo)**: App publicado na Vercel/Lovable → O botÁo `[Dev] Auto-Load Mocks` nÁo existe no DOM.
+- **Cenário 2 (Modo Produção)**: App publicado na Vercel/Lovable → O botão `[Dev] Auto-Load Mocks` não existe no DOM.

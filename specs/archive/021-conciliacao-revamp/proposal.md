@@ -1,12 +1,12 @@
-﻿# Proposal: ConciliaçÁo Inteligente & Master-Detail
+﻿# Proposal: Conciliação Inteligente & Master-Detail
 
-## DescriçÁo do Problema
-O fluxo atual de conciliaçÁo tem gargalos graves de usabilidade:
-- Ele é limitado à visÁo mensal, dificultando a auditoria do que ocorreu **exatamente ontem ou hoje**.
-- A página de "Detalhes" é desconectada da visÁo macro.
-- O input manual de "Dinheiro Físico em Caixa" cobra do usuário informar caixas para lojas que nem tiveram transações em espécie, gerando confusÁo e cliques desnecessários.
+## Descrição do Problema
+O fluxo atual de conciliação tem gargalos graves de usabilidade:
+- Ele é limitado à visão mensal, dificultando a auditoria do que ocorreu **exatamente ontem ou hoje**.
+- A página de "Detalhes" é desconectada da visão macro.
+- O input manual de "Dinheiro Físico em Caixa" cobra do usuário informar caixas para lojas que nem tiveram transações em espécie, gerando confusão e cliques desnecessários.
 
-## SoluçÁo Proposta
+## Solução Proposta
 Uma interface unificada "Side-by-Side" (Split Pane) de **Fechamento de Caixa Diário**.
 
 ### Principais Mudanças:
@@ -16,17 +16,17 @@ Uma interface unificada "Side-by-Side" (Split Pane) de **Fechamento de Caixa Di�
 
 ## BDD Scenarios
 
-### Cenário: Filtrar conciliaçÁo por dia exato
-- **Given (Dado):** O usuário está na tela de ConciliaçÁo
+### Cenário: Filtrar conciliação por dia exato
+- **Given (Dado):** O usuário está na tela de Conciliação
 - **When (Quando):** Ele seleciona a data "Ontem" (ex: 2026-06-01)
-- **Then (EntÁo):** O resumo e o status das 10 lojas devem refletir apenas o faturado, físico e divergências correspondentes a ontem.
+- **Then (Então):** O resumo e o status das 10 lojas devem refletir apenas o faturado, físico e divergências correspondentes a ontem.
 
 ### Cenário: Exibir campo de Dinheiro apenas para quem movimenta em espécie
 - **Given (Dado):** O painel de uma loja está aberto no layout split-pane para a data de hoje.
-- **When (Quando):** O sistema varre as transações e NÁO encontra nenhuma movimentaçÁo com método "dinheiro" e NENHUMA OS em aberto aguardando espécie.
-- **Then (EntÁo):** O campo de "Informar Dinheiro Físico" fica oculto ou desabilitado com a mensagem "Nenhuma operaçÁo em espécie hoje".
+- **When (Quando):** O sistema varre as transações e NÃO encontra nenhuma movimentação com método "dinheiro" e NENHUMA OS em aberto aguardando espécie.
+- **Then (Então):** O campo de "Informar Dinheiro Físico" fica oculto ou desabilitado com a mensagem "Nenhuma operação em espécie hoje".
 
 ### Cenário: Visualizar detalhes instantaneamente
 - **Given (Dado):** O usuário vê a loja "Rei do Módulo" marcada como "Pendente" na esquerda.
 - **When (Quando):** O usuário clica sobre "Rei do Módulo".
-- **Then (EntÁo):** A aba direita exibe instantaneamente as O.S., Entradas e Saídas do Rei do Módulo daquele dia sem necessidade de recarregar a página.
+- **Then (Então):** A aba direita exibe instantaneamente as O.S., Entradas e Saídas do Rei do Módulo daquele dia sem necessidade de recarregar a página.

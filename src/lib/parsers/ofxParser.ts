@@ -99,7 +99,7 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
     
     // Extract MEMO
     const memoMatch = trnBlock.match(/<MEMO>([^\r\n<]+)/);
-    const rawMemo = memoMatch ? memoMatch[1].trim() : 'TransaçÁo Bancária';
+    const rawMemo = memoMatch ? memoMatch[1].trim() : 'Transação Bancária';
     
     // Capture SALDO ANTERIOR before filtering it out
     if (rawMemo.toUpperCase().includes('SALDO ANTERIOR')) {
@@ -146,8 +146,8 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
     if (!isNaN(balNum)) {
       // Alguns bancos brasileiros (ex: Itaú, Bradesco) exportam o BALAMT como inteiro
       // de centavos sem ponto decimal (ex: "1931431" ao invés de "19314.31").
-      // Critério: se a string original nÁo contém ponto/vírgula E o valor absoluto > 100,
-      // entÁo divide por 100 para converter de centavos para reais.
+      // Critério: se a string original não contém ponto/vírgula E o valor absoluto > 100,
+      // então divide por 100 para converter de centavos para reais.
       const hasDecimalSeparator = balStr.includes('.') || balStr.includes(',');
       if (!hasDecimalSeparator && Math.abs(balNum) > 100) {
         balNum = balNum / 100;
@@ -166,7 +166,7 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
   }
 
   if (options?.sessionId) {
-    traceLog('2_EXTRACTION_OFX', 'DEBUG', 'ExtraçÁo de transações do OFX concluída', options.sessionId, {
+    traceLog('2_EXTRACTION_OFX', 'DEBUG', 'Extração de transações do OFX concluída', options.sessionId, {
       bank_id: banco,
       account_id: conta,
       total_transactions_found: transactions.length,

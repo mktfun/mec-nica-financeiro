@@ -132,7 +132,7 @@ export function CustosPanel() {
             <Card variant="glass" className="p-6 border-t-4 border-t-blue-500">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <p className="text-xs font-semibold text-blue-300 uppercase tracking-wider mb-1">Motor (ConciliaçÁo)</p>
+                  <p className="text-xs font-semibold text-blue-300 uppercase tracking-wider mb-1">Motor (Conciliação)</p>
                   <h3 className="text-3xl font-display font-bold text-blue-400">
                     R$ {dadosAtuais.engine.toFixed(2).replace('.', ',')}
                   </h3>
@@ -141,7 +141,7 @@ export function CustosPanel() {
                   <Workflow size={20} className="text-blue-400" />
                 </div>
               </div>
-              <p className="text-[11px] text-[var(--text-tertiary)]">{dadosAtuais.engineReqs} execuções de automaçÁo.</p>
+              <p className="text-[11px] text-[var(--text-tertiary)]">{dadosAtuais.engineReqs} execuções de automação.</p>
             </Card>
           </div>
 
@@ -149,8 +149,8 @@ export function CustosPanel() {
              <h3 className="font-display font-semibold text-lg mb-4">Detalhamento</h3>
              <div className="bg-[var(--bg-canvas)] rounded-lg border border-[var(--border-subtle)] p-8 text-center">
                <BarChart3 size={32} className="mx-auto text-[var(--text-tertiary)] mb-3 opacity-50" />
-               <p className="text-sm font-medium text-[var(--text-secondary)]">A integraçÁo detalhada por token está ativa.</p>
-               <p className="text-xs text-[var(--text-tertiary)] mt-1">Os custos estÁo sendo calculados com base no uso real reportado pelas APIs (estimativa via conversÁo de USD para BRL).</p>
+               <p className="text-sm font-medium text-[var(--text-secondary)]">A integração detalhada por token está ativa.</p>
+               <p className="text-xs text-[var(--text-tertiary)] mt-1">Os custos estão sendo calculados com base no uso real reportado pelas APIs (estimativa via conversão de USD para BRL).</p>
              </div>
           </Card>
         </>

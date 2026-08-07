@@ -2,9 +2,9 @@
 import { FileText, CreditCard, Building2, Wallet, Percent, ChevronRight } from 'lucide-react';
 
 const CATEGORIES = [
-  { id: 'OFX', title: 'Extrato Bancário (OFX)', icon: FileText, desc: 'Importe extratos do banco para conciliaçÁo automática.', color: 'var(--color-accent-teal)' },
+  { id: 'OFX', title: 'Extrato Bancário (OFX)', icon: FileText, desc: 'Importe extratos do banco para conciliação automática.', color: 'var(--color-accent-teal)' },
   { id: 'MAQUININHA', title: 'Maquininha (XLSX)', icon: CreditCard, desc: 'Fechamento de recebíveis das adquirentes.', color: 'var(--color-primary)' },
-  { id: 'PATIO', title: 'Pátio / OS', icon: Building2, desc: 'GestÁo de ordens de serviço e veículos.', color: '#EAB308' },
+  { id: 'PATIO', title: 'Pátio / OS', icon: Building2, desc: 'Gestão de ordens de serviço e veículos.', color: '#EAB308' },
   { id: 'DESPESAS', title: 'Despesas / Contas', icon: Wallet, desc: 'Lançamentos de contas a pagar e despesas.', color: 'var(--color-accent-danger)' },
   { id: 'JUROS', title: 'Juros Rede', icon: Percent, desc: 'Planilha de juros descontados pela adquirente.', color: 'var(--color-success)' }
 ];
@@ -52,7 +52,7 @@ export function CategorySelector({ onSelect }: CategorySelectorProps) {
               </p>
               
               <div className="mt-auto flex items-center gap-2 text-sm font-semibold text-[var(--text-secondary)] transition-colors group-hover:text-[var(--text-primary)]">
-                <span style={{ color: cat.color }}>Iniciar ImportaçÁo</span>
+                <span style={{ color: cat.color }}>Iniciar Importação</span>
                 <ChevronRight size={16} style={{ color: cat.color }} />
               </div>
             </div>

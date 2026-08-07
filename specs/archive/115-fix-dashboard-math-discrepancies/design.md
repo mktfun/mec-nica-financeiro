@@ -1,4 +1,4 @@
-﻿﻿# Design: CorreçÁo Matemática do Dashboard (115)
+﻿﻿# Design: Correção Matemática do Dashboard (115)
 
 ## 1. Banco de Dados (RPC \get_dashboard_metrics\)
 A query que calcula _na_loja no RPC será substituída para aplicar a lógica de carry-over histórico:

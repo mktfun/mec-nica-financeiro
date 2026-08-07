@@ -1,12 +1,12 @@
-﻿# Design System & Data Modeling: RefatoraçÁo Dashboard Loja
+﻿# Design System & Data Modeling: Refatoração Dashboard Loja
 
 ## UI / UX (Tendências 2026 - Liquid Glass & Maximalismo Tátil)
-- **RemoçÁo de Modais Pesados:** O painel lateral sobrecarregava a UI com scroll duplo. Substituímos por uma página dedicada que ocupa toda a área de conteúdo (`/loja/$lojaId`).
-- **Gráfico Dinâmico:** A PieChart deve suportar microinterações ao sofrer `hover` (Tooltip enriquecido). Suas cores alternarÁo entre a paleta "Verde/Teal" (Entradas) e "Vermelho/Laranja" (Saídas) para transmitir fisicalidade aos dados.
-- **BotÁo "Ajustar Saldo":** Estará posicionado de forma discreta mas tátil ao lado do Card "Saldo da Loja" principal, usando um ícone sutil de lápis ou engrenagem, suportando um visual glassmórfico em seu modal.
+- **Remoção de Modais Pesados:** O painel lateral sobrecarregava a UI com scroll duplo. Substituímos por uma página dedicada que ocupa toda a área de conteúdo (`/loja/$lojaId`).
+- **Gráfico Dinâmico:** A PieChart deve suportar microinterações ao sofrer `hover` (Tooltip enriquecido). Suas cores alternarão entre a paleta "Verde/Teal" (Entradas) e "Vermelho/Laranja" (Saídas) para transmitir fisicalidade aos dados.
+- **Botão "Ajustar Saldo":** Estará posicionado de forma discreta mas tátil ao lado do Card "Saldo da Loja" principal, usando um ícone sutil de lápis ou engrenagem, suportando um visual glassmórfico em seu modal.
 
 ## Banco de Dados / Supabase MCP
-NÁo será necessária a criaçÁo de nenhuma nova tabela ou coluna no Supabase. Utilizaremos a flexibilidade de Event-Sourcing (Ledger) existente na tabela `transactions`.
+Não será necessária a criação de nenhuma nova tabela ou coluna no Supabase. Utilizaremos a flexibilidade de Event-Sourcing (Ledger) existente na tabela `transactions`.
 
 ### Tabela `transactions`
 O Saldo Inicial será injetado com o seguinte formato:
@@ -21,7 +21,7 @@ O Saldo Inicial será injetado com o seguinte formato:
   "icon_type": "bank"
 }
 ```
-Isso dispensa qualquer Migration ou alteraçÁo no schema cache, garantindo estabilidade imediata.
+Isso dispensa qualquer Migration ou alteração no schema cache, garantindo estabilidade imediata.
 
 ### Lógica do Gráfico Modular
 No front-end (`src/routes/loja.$lojaId.tsx`):

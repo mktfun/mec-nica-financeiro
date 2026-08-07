@@ -15,7 +15,7 @@ OFX File → ofxParser.ts (parse + detectar centavos → ÷100) → bankBalance 
 → reconciliations.bank_total (reais) → useDashboardV2.ts (valores corretos)
 ```
 
-## Fix 1: ofxParser.ts — DetecçÁo de Centavos no LEDGERBAL
+## Fix 1: ofxParser.ts — Detecção de Centavos no LEDGERBAL
 
 ```typescript
 // ANTES (linha 136-142):
@@ -31,8 +31,8 @@ const balStr = ledgerMatch[1].trim();
 let balNum = parseFloat(balStr.replace(',', '.'));
 if (isNaN(balNum)) balNum = parseInt(balStr, 10);
 if (!isNaN(balNum)) {
-  // Se o valor é grande (>1000) e nÁo contém ponto/vírgula na string original
-  // → provável representaçÁo em centavos (padrÁo de alguns bancos brasileiros)
+  // Se o valor é grande (>1000) e não contém ponto/vírgula na string original
+  // → provável representação em centavos (padrão de alguns bancos brasileiros)
   const hasDecimalPoint = balStr.includes('.') || balStr.includes(',');
   if (!hasDecimalPoint && Math.abs(balNum) > 100) {
     balNum = balNum / 100;
@@ -41,7 +41,7 @@ if (!isNaN(balNum)) {
 }
 ```
 
-## Fix 2: Script de MigraçÁo dos Dados Existentes
+## Fix 2: Script de Migração dos Dados Existentes
 
 ```sql
 -- Executar no Supabase SQL Editor (atômico)
@@ -50,14 +50,14 @@ BEGIN;
 COMMIT;
 ```
 
-Equivalente em PowerShell via REST API (para execuçÁo headless):
+Equivalente em PowerShell via REST API (para execução headless):
 ```powershell
 # Via RPC ou SQL direto — usaremos o endpoint /rpc ou SQL raw via service role
 ```
 
-## Cenários de VerificaçÁo
+## Cenários de Verificação
 
-- **Cenário 1:** Após migraçÁo SQL, `bank_total` da `st-01` deve ser `19314.31` (antes era `1931431`).
-- **Cenário 2:** Após migraçÁo SQL, Dashboard deve exibir `Saldo Total ≈ R$ 121.307,59` (era R$12.130.759).
-- **Cenário 3:** Reimportar OFX com mesmo arquivo — novo `bank_total` deve continuar em reais (nÁo duplicar a divisÁo).
+- **Cenário 1:** Após migração SQL, `bank_total` da `st-01` deve ser `19314.31` (antes era `1931431`).
+- **Cenário 2:** Após migração SQL, Dashboard deve exibir `Saldo Total ≈ R$ 121.307,59` (era R$12.130.759).
+- **Cenário 3:** Reimportar OFX com mesmo arquivo — novo `bank_total` deve continuar em reais (não duplicar a divisão).
 - **Cenário 4:** `CentralImportWizard` exibindo saldo negativo (Itaú) — continua funcionando após fix.

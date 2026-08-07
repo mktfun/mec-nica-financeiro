@@ -7,6 +7,6 @@
   - [ ] Invocar `generateTripleMatchSuggestions()` de forma imperceptível em background quando houver chave de API e lançamentos sem par.
   - [ ] Gravar automaticamente matches com confiança $\ge 90\%$ na tabela `conciliation_matches` do Supabase.
   - [ ] Invalidar as queries `['ai_execution_logs']` e `['conciliacao_detalhes']`.
-- [ ] [FRONTEND] Integrar o hook `useBackgroundAiReconciler` em `src/hooks/useConciliacao.ts` (na conciliaçÁo da loja):
-  - [ ] Passar os itens nÁo pareados das OSs, Maquininha e OFX para acionar a IA silenciosa automaticamente.
-- [ ] [TEST] Verificar compilaçÁo limpa com `npm run build`.
+- [ ] [FRONTEND] Integrar o hook `useBackgroundAiReconciler` em `src/hooks/useConciliacao.ts` (na conciliação da loja):
+  - [ ] Passar os itens não pareados das OSs, Maquininha e OFX para acionar a IA silenciosa automaticamente.
+- [ ] [TEST] Verificar compilação limpa com `npm run build`.

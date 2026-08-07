@@ -29,6 +29,6 @@ interface OSRecordLive {
 - `bot/src/server.ts` **[MODIFICAR]**: Rota `POST /api/query-os`.
 - `supabase/functions/ai-chat/index.ts` **[MODIFICAR]**: Refatorar a tool `consulta_detalhes_os` para usar Fetch pro bot.
 
-## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
+## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
 - **Cenário 1 (Teste Local do Bot):** Executar `ts-node bot/src/tests/test-os-query.ts 1763`. Esperado: Log no terminal com os dados da OS extraídos do painel OI (usando usuário/senha do `.env`). Se falhar, atualizar seletores HTML.
-- **Cenário 2 (IntegraçÁo IA):** Com o bot deployado (ou rodando localmente apontado pelo Edge Function local), pedir "Qual o status da OS 1763?". Esperado: A Edge Function bate no bot, o bot roda Playwright invisível, devolve os dados, e a IA responde corretamente.
+- **Cenário 2 (Integração IA):** Com o bot deployado (ou rodando localmente apontado pelo Edge Function local), pedir "Qual o status da OS 1763?". Esperado: A Edge Function bate no bot, o bot roda Playwright invisível, devolve os dados, e a IA responde corretamente.

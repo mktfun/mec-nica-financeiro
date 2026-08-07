@@ -1,4 +1,4 @@
-﻿# Design: ConciliaçÁo em Lote Multi-Loja Completa & Auditoria de Payloads de IA (audit-and-batch-all-stores-ai-reconciler)
+﻿# Design: Conciliação em Lote Multi-Loja Completa & Auditoria de Payloads de IA (audit-and-batch-all-stores-ai-reconciler)
 
 ## Arquitetura Técnica
 
@@ -69,14 +69,14 @@ await saveTelemetryLog({
 });
 ```
 
-## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
+## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
 
 - **Cenário 1 (Processamento de Todas as Lojas):**
   - Estado inicial: Existem 3 lojas no sistema com lançamentos pendentes no dia.
-  - AçÁo: Abrir a página `/conciliacao`.
+  - Ação: Abrir a página `/conciliacao`.
   - Resultado esperado: O hook percorre as 3 lojas, gera chamadas à LLM para cada loja com pendências e registra os logs correspondentes em `ai_execution_logs`.
 
-- **Cenário 2 (VisualizaçÁo de Payloads no DevTools Inspector):**
+- **Cenário 2 (Visualização de Payloads no DevTools Inspector):**
   - Estado inicial: IA concluiu o processamento silencioso.
-  - AçÁo: Abrir a tela `/agente` -> Aba *DevTools Inspector*.
+  - Ação: Abrir a tela `/agente` -> Aba *DevTools Inspector*.
   - Resultado esperado: Clicar em "Inspecionar" em um log exibe os objetos `Input JSON` (com OSs, Rede e OFX enviados) e `Output JSON` (com os matches retornados) sem estar zerado ou `undefined`.

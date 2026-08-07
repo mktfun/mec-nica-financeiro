@@ -6,7 +6,7 @@
 [Card de Fechamento por Loja (conciliacao.index.tsx)]
                        │
                        ├── 1. Saldo (R$ saldoItau - Extrato bancário Itaú OFX do dia)
-                       ├── 2. Maquininha (R$ maquininha - Vendas cartÁo Rede)
+                       ├── 2. Maquininha (R$ maquininha - Vendas cartão Rede)
                        ├── 3. PIX (R$ pixOs - Recebimentos PIX das OSs do dia)
                        ├── 4. Na Loja OS (R$ naLojaOs - Saldo pendente/em aberto no pátio)
                        ├── 5. Faturamento (R$ faturamento - Faturamento/Receita bruta das OSs)
@@ -81,7 +81,7 @@
 </div>
 ```
 
-## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
+## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
 
 - **Cenário 1 (Exemplo Dom Pedro):**
   - Saldo = R$ 0,00 (Sem OFX na data)

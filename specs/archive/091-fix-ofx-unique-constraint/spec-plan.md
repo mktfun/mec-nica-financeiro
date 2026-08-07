@@ -1,4 +1,4 @@
-﻿# Spec Plan: Corrigir ViolaçÁo de Unique Constraint em OFX (091-fix-ofx-unique-constraint)
+﻿# Spec Plan: Corrigir Violação de Unique Constraint em OFX (091-fix-ofx-unique-constraint)
 
 ## Tasks
 

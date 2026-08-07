@@ -12,22 +12,22 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // session === undefined → loading
-    // session === null     → nÁo autenticado → redireciona
+    // session === null     → não autenticado → redireciona
     if (session === null) {
       router.navigate({ to: '/login' });
     }
   }, [session, router]);
 
-  // Loading: aguardando verificaçÁo de sessÁo
+  // Loading: aguardando verificação de sessão
   if (session === undefined) {
     return (
       <div className="min-h-screen bg-[var(--bg-canvas)] flex items-center justify-center">
-        <LoadingSpinner text="Verificando sessÁo..." />
+        <LoadingSpinner text="Verificando sessão..." />
       </div>
     );
   }
 
-  // NÁo autenticado — redirect em andamento, nÁo renderiza nada
+  // Não autenticado — redirect em andamento, não renderiza nada
   if (session === null) return null;
 
   return (

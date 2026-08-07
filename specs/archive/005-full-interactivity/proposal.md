@@ -2,7 +2,7 @@
 
 ## Requisitos e User Stories
 1. **US-01**: Como investidor, ao clicar em uma loja quero ver detalhes (gerente, mecânicos, financeiro) — ATUALMENTE CRASHANDO
-2. **US-02**: Como investidor, quero ver a ConciliaçÁo Diária como tela completa (nÁo modal), com resumo financeiro, grid de 10 lojas, tabela por loja e erros detectados
+2. **US-02**: Como investidor, quero ver a Conciliação Diária como tela completa (não modal), com resumo financeiro, grid de 10 lojas, tabela por loja e erros detectados
 3. **US-03**: Como investidor, quero ver a tela "Carros no Pátio" com todas as OS abertas, filtros e tabela completa
 4. **US-04**: Como investidor, quero ver a tela "Recebíveis" com valores a receber, vencidos e filtros
 5. **US-05**: Como investidor, ao clicar em uma atividade recente no dashboard, quero ver detalhes

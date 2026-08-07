@@ -1,4 +1,4 @@
-﻿# Design: ImportaçÁo Financeira 2026
+﻿# Design: Importação Financeira 2026
 
 ## 1. Experiência de UI (Liquid Glass & UX 2026)
 Seguindo os padrões do sistema baseados na Spec de Design 2026 (Liquid Glass, Neomorfismo Sutil):
@@ -15,19 +15,19 @@ A nova rota `/importacoes` será um **Dashboard com Wizard Integrado**.
 - Microinterações WCAG 2.2: O `<select>` pisca (Pulse effect) em amarelo quando é obrigatório. Quando mapeado, vira verde translúcido e mostra o logo/ícone da loja.
 
 ### Passo 3: O Resumo (Review Board)
-- Uma mesa de validaçÁo: "SerÁo processadas **X** despesas".
+- Uma mesa de validação: "Serão processadas **X** despesas".
 - Accordions expansíveis para o gestor abrir "Juros de Rede" e ver "Stone - Piraporinha - R$ 39,51" sem precisar abrir a planilha.
-- BotÁo CTA grandioso (Maximalismo Tátil): Bordas arredondadas `rounded-full`, sombra brilhante projetada para fora, hover magnético.
+- Botão CTA grandioso (Maximalismo Tátil): Bordas arredondadas `rounded-full`, sombra brilhante projetada para fora, hover magnético.
 
 ## 2. Modelagem do Banco de Dados
-A infraestrutura principal do Supabase (tabela `transactions`) **nÁo precisará ser alterada** em sua base (DML), mas as despesas importarÁo metadados:
+A infraestrutura principal do Supabase (tabela `transactions`) **não precisará ser alterada** em sua base (DML), mas as despesas importarão metadados:
 
 ### Modificações no Fluxo
 - **Tabela `transactions`:** 
   - Inserções em lote (`insert([...])`) via REST/SDK.
   - `type`: `'out'`
   - `amount`: valor lido no XLS.
-  - `description`: lido do XLS (ex: "REF. RECARGA CARTÁO FLASH").
+  - `description`: lido do XLS (ex: "REF. RECARGA CARTÃO FLASH").
   - `category`: `'contas_pagar'` ou `'juros_rede'`.
   - `occurred_at`: `Dt. Pgto` convertida do Excel Date Time (ou today caso vazio).
   
@@ -38,4 +38,4 @@ A infraestrutura principal do Supabase (tabela `transactions`) **nÁo precisará
 - `Dropzone`: React Dropzone + Tailwind animate-pulse.
 - `Combobox`: Do Radix/Shadcn para lidar com o pareamento de nomes de lojas.
 - `ScrollArea`: Para comportar centenas de linhas lidas do relatório sem quebrar a tela (UX Premium).
-- `Table/List`: RenderizaçÁo virtualizada (opcional caso os XLS sejam gigantes).
+- `Table/List`: Renderização virtualizada (opcional caso os XLS sejam gigantes).

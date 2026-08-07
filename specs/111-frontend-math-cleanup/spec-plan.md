@@ -1,14 +1,14 @@
 ﻿# Spec Plan: Limpeza de Cálculos no Frontend (Spec 111)
 
 ## Objective
-Remover as funções de iteraçÁo O(N) e somatórias (`.reduce()`, `.filter()`) dos componentes React, utilizando as RPCs geradas no Supabase para entregar dados agregados diretamente.
+Remover as funções de iteração O(N) e somatórias (`.reduce()`, `.filter()`) dos componentes React, utilizando as RPCs geradas no Supabase para entregar dados agregados diretamente.
 
 ## Tasks
 
-### Fase 1: Limpeza Mestre (Dashboard & ConciliaçÁo)
+### Fase 1: Limpeza Mestre (Dashboard & Conciliação)
 - [x] [FRONTEND] Alterar `src/hooks/useDashboardV2.ts` para chamar `get_dashboard_metrics` via Supabase e repassar os 10 valores invioláveis direto para o retorno do Hook.
 - [x] [FRONTEND] Em `RedeVsOfxTable.tsx` e `PixVsOfxTable.tsx`, refatorar a leitura para utilizar as colunas `matched_ofx_id` e `match_status`.
-- [x] [FRONTEND] Adicionar um botÁo de "Parear Transações" no Header da ConciliaçÁo Diária, disparando `auto_match_transactions`.
+- [x] [FRONTEND] Adicionar um botão de "Parear Transações" no Header da Conciliação Diária, disparando `auto_match_transactions`.
 
 ### Fase 2: Limpeza das Telas Menores
 - [x] [FRONTEND] Atualizar `recebiveis.tsx` para usar o retorno de `get_receivables_summary`.

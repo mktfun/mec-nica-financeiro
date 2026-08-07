@@ -1,9 +1,9 @@
-﻿# Spec Plan: ReestruturaçÁo dos Cards de Fechamento por Loja e Resumo Diário Consolidado (redesign-conciliacao-cards-and-daily-summary)
+﻿# Spec Plan: Reestruturação dos Cards de Fechamento por Loja e Resumo Diário Consolidado (redesign-conciliacao-cards-and-daily-summary)
 
 ## Tasks
 
 - [ ] [FRONTEND] Atualizar `src/hooks/useTransactions.ts`:
-  - [ ] Criar hook `useLatestBankBalance()` que busca o último `bank_total` importado por loja (sem restriçÁo de data) para evitar saldo zerado em dias sem OFX.
+  - [ ] Criar hook `useLatestBankBalance()` que busca o último `bank_total` importado por loja (sem restrição de data) para evitar saldo zerado em dias sem OFX.
   
 - [ ] [FRONTEND] Atualizar `src/hooks/useConciliacao.ts` (`useModulo1StoresData`):
   - [ ] Adicionar cálculo de `pix_os` = somatório de `pix_transfer_value` das OSs do Pátio de cada loja no dia.

@@ -3,16 +3,16 @@
 ## Arquitetura Técnica
 
 ```
-[Pergunta do Usuário: "de onde vc puxou essa informaçÁo??"]
+[Pergunta do Usuário: "de onde vc puxou essa informação??"]
        │
        ▼
 [Edge Function ai-chat]
        │
-       ├── System Prompt com <regra_proibiçÁo_alucinaçÁo_origem>
+       ├── System Prompt com <regra_proibição_alucinação_origem>
        │    └── PROIBIDO: "gerei resposta fictícia"
-       │    └── OBRIGATÓRIO: "InformaçÁo consultada no banco de dados local ConciliaMec (tabela patio_os)..."
+       │    └── OBRIGATÓRIO: "Informação consultada no banco de dados local ConciliaMec (tabela patio_os)..."
        │
-       └── Retorna explicaçÁo clara e profissional da proveniência dos dados
+       └── Retorna explicação clara e profissional da proveniência dos dados
 ```
 
 ## Ajustes em `src/routes/agente.tsx` (Isolamento Estrito)
@@ -59,11 +59,11 @@ useEffect(() => {
 }, [activeConversationId]);
 ```
 
-## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
+## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
 
 - **Cenário 1: Pergunta sobre Origem dos Dados**
-  - AçÁo: Perguntar "de onde vc puxou essa informaçÁo??" após a OS 22551.
+  - Ação: Perguntar "de onde vc puxou essa informação??" após a OS 22551.
   - Resultado esperado: A IA responde de forma profissional citando o banco de dados local (ConciliaMec / patio_os) sem nunca dizer que criou dados fictícios.
 
 - **Cenário 2: Troca de Conversas Sem Vazamento**
-  - AçÁo: Criar "Nova Conversa" e verificar se as mensagens da conversa anterior sumiram completamente da tela.
+  - Ação: Criar "Nova Conversa" e verificar se as mensagens da conversa anterior sumiram completamente da tela.

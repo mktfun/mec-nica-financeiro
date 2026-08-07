@@ -20,8 +20,8 @@ export function useCentralImport() {
 export async function processOsFiles(files: File[], options?: { sessionId?: string }): Promise<OsImportResult[]>
 ```
 
-## Conteúdo do Log (Cenários de VerificaçÁo)
-- **OFX (Estágio 2):** Array contendo objeto `{ id, date, amount, type }` para CADA transaçÁo no arquivo.
+## Conteúdo do Log (Cenários de Verificação)
+- **OFX (Estágio 2):** Array contendo objeto `{ id, date, amount, type }` para CADA transação no arquivo.
 - **Pátio OS (Estágio 3):** Array contendo `{ os_number, total_value, paid_value, status }` e os recebíveis gerados `{ type, value, date }` para CADA ordem da planilha.
 - **Rede (Estágio 3):** Array contendo `{ date, method, grossAmount, netAmount, interest }` para CADA linha.
 - **Maquininha Genérica (Estágio 3):** Array contendo `{ storeName, amount, dateVenda, dateCredito }` para CADA linha.

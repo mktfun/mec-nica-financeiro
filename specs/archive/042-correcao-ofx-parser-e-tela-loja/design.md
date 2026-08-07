@@ -29,14 +29,14 @@ Ao confirmar, inserir as transações com o `store_id` resolvido a partir do map
 
 ## Frontend / Tela da Loja (`loja.$lojaId.tsx`)
 
-### SeçÁo "Divergências" — Redesign
+### Seção "Divergências" — Redesign
 Remover completamente a lógica de "Entradas sem OS Vinculada".
 Substituir por:
 - **Card Extrato Banco:** Soma das transações OFX (`source = 'ofx'`) da loja no período
 - **Card Apurado Sistema:** Soma das transações do sistema (`source IN ('patio', 'maquininha', 'despesa')`) da loja no período
 - **Card Diferença:** Banco - Sistema
-- Se diferença > 0: "Banco maior que sistema — possível receita nÁo lançada"
-- Se diferença < 0: "Sistema maior que banco — possível lançamento nÁo recebido"
+- Se diferença > 0: "Banco maior que sistema — possível receita não lançada"
+- Se diferença < 0: "Sistema maior que banco — possível lançamento não recebido"
 
-### Gráfico de DistribuiçÁo de Despesas
-Filtrar para mostrar apenas transações `source = 'despesa'` agrupadas por `subtitle` (categoria da despesa), nÁo por `store_id`.
+### Gráfico de Distribuição de Despesas
+Filtrar para mostrar apenas transações `source = 'despesa'` agrupadas por `subtitle` (categoria da despesa), não por `store_id`.

@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 import { useLogout } from "@/hooks/useAuth";
 
 const navItems = [
-  { id: "/", label: "VisÁo Geral", icon: Home },
-  { id: "/conciliacao", label: "ConciliaçÁo", icon: PieChart },
+  { id: "/", label: "Visão Geral", icon: Home },
+  { id: "/conciliacao", label: "Conciliação", icon: PieChart },
   { id: "/lojas", label: "Lojas", icon: Store },
   { id: "/patio", label: "Pátio", icon: Car },
   { id: "/recebiveis", label: "Recebíveis", icon: DollarSign },

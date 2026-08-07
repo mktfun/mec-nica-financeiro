@@ -3,7 +3,7 @@
 ## Tasks
 
 - [x] [BACKEND] Editar `src/hooks/useConciliacao.ts`
-  - Localizar a declaraçÁo de `ofxPixTxs` (por volta da linha 619).
+  - Localizar a declaração de `ofxPixTxs` (por volta da linha 619).
   - Remover a lógica que força o `t.title` a conter `PIX`, `TED`, `TRANSF` ou `DOC`.
   - Deixar o filtro apenas retornando `true` para todas as transações que passarem pela checagem inicial (`t.source === 'ofx'` e `t.type === 'in'`).
 - [x] [FRONTEND] Editar `src/routes/conciliacao.index.tsx`

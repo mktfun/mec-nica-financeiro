@@ -1,15 +1,15 @@
 ﻿# Design: 005-Full-Interactivity
 
-## UI — DivisÁo de Componentes
+## UI — Divisão de Componentes
 
-### ConciliaçÁo Diária (full-page rewrite)
+### Conciliação Diária (full-page rewrite)
 - **Banner de status** — faixa verde/vermelha no topo
 - **SummaryCards** — 4 cards: Entradas, Contas a Pagar, Saldo, Carros no Pátio
 - **StoreGrid** — grid de cards por loja (10 lojas, 2 colunas desktop / 1 mobile)
-- **AlertasAtivos** — seçÁo inline com alertas do dia
+- **AlertasAtivos** — seção inline com alertas do dia
 - **DinheiroCaixa** — inputs por loja para informar dinheiro físico
 
-### ConciliaçÁo Detalhes (drill-down)
+### Conciliação Detalhes (drill-down)
 - **ResumoFinanceiro** — tabela bilateral (entradas vs caixa)
 - **TabelaLojas** — tabela sortable com colunas: Loja, Entradas, Dinheiro, Contas, Resultado, Status
 - **Tabs** — Por Loja | Erros Detectados | Histórico

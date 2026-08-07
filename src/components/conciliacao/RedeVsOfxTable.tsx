@@ -14,7 +14,7 @@ export function RedeVsOfxTable({ storeId, date }: { storeId: string; date: strin
   const osVsRede = data?.osVsRede || [];
   const depositGroups = data?.redeVsOfx?.depositGroups || [];
 
-  // Helper para verificar se a transaçÁo entrou no OFX
+  // Helper para verificar se a transação entrou no OFX
   const hasEntered = (txId: string) => {
     return depositGroups.some((group: any) => 
       group.childRedeTxs?.some((child: any) => child.id === txId)
@@ -75,7 +75,7 @@ export function RedeVsOfxTable({ storeId, date }: { storeId: string; date: strin
         {osVsRede.length === 0 ? (
           <div className="p-12 text-center text-[var(--text-tertiary)] flex flex-col items-center">
             <Info size={36} className="opacity-20 mb-3" />
-            Nenhuma transaçÁo de maquininha encontrada nesta data.
+            Nenhuma transação de maquininha encontrada nesta data.
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -96,7 +96,7 @@ export function RedeVsOfxTable({ storeId, date }: { storeId: string; date: strin
                   return (
                     <tr key={tx.id} className="hover:bg-[var(--bg-canvas)]/50 transition-colors">
                       <td className="py-3 px-4 font-medium text-[var(--text-primary)]">
-                        {tx.os_number && tx.os_number !== 'NÁo Localizada' ? (
+                        {tx.os_number && tx.os_number !== 'Não Localizada' ? (
                           <span className="font-mono text-[var(--color-primary)]">OS #{tx.os_number}</span>
                         ) : (
                           <span className="text-[var(--text-tertiary)] italic">Sem OS</span>
@@ -121,7 +121,7 @@ export function RedeVsOfxTable({ storeId, date }: { storeId: string; date: strin
                           </Badge>
                         ) : (
                           <Badge variant="danger" className="bg-[var(--color-accent-danger)]/10 text-[var(--color-accent-danger)] border-[var(--color-accent-danger)]/30">
-                            <AlertTriangle size={12} className="mr-1" /> NÁo Entrou
+                            <AlertTriangle size={12} className="mr-1" /> Não Entrou
                           </Badge>
                         )}
                       </td>

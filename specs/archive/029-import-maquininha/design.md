@@ -1,4 +1,4 @@
-﻿# Design: ImportaçÁo de Maquininha (Rede)
+﻿# Design: Importação de Maquininha (Rede)
 
 ## Arquitetura de Banco de Dados (Supabase MCP)
 A tabela `reconciliations` existente armazena o status financeiro de uma loja em uma data.
@@ -7,18 +7,18 @@ A tabela `reconciliations` existente armazena o status financeiro de uma loja em
 - O campo `divergence` atual representa (Sistema - Caixa Físico). Precisamos refinar o motor de status para calcular duas divergências:
   1. **Divergência Física:** (Sistema Dinheiro) - (Caixa Físico)
   2. **Divergência Maquininha:** (Sistema Cartões/Pix) - (Maquininha Total)
-  *Nota:* No escopo inicial, para simplificar, se nÁo conseguirmos separar "Sistema Dinheiro" de "Sistema Cartões" com a estrutura de OS atual, podemos consolidar a **Divergência Total = (Sistema) - (Físico + Maquininha)**. O usuário verá os dois declarados lado a lado.
+  *Nota:* No escopo inicial, para simplificar, se não conseguirmos separar "Sistema Dinheiro" de "Sistema Cartões" com a estrutura de OS atual, podemos consolidar a **Divergência Total = (Sistema) - (Físico + Maquininha)**. O usuário verá os dois declarados lado a lado.
 
 ## UI/UX (Stitch MCP / UX Architect 2026)
 Na tela `/conciliacao` (Painel Diário):
-- **BotÁo de AçÁo Primária:** Adicionar um botÁo "Importar Maquininhas" (Ícone de CreditCard ou Upload) no Header ao lado do DatePicker.
+- **Botão de Ação Primária:** Adicionar um botão "Importar Maquininhas" (Ícone de CreditCard ou Upload) no Header ao lado do DatePicker.
 - **Card da Loja (Grid):** Onde atualmente temos "Apurado Sistema" e "Declarado Físico", adicionaremos um terceiro indicador: **"Apurado Maquininha"**.
   - O design do card deverá alocar 3 blocos de valores, garantindo respiro e contraste.
   - A divergência total será calculada como: `(Apurado Sistema) - (Físico + Maquininha)`.
 - **Mapeamento Explícito pelo Conteúdo (CNPJ):** O frontend utilizará o `SheetJS` para ler o Excel ANTES de tentar mapear. Extrairá o valor da coluna `CNPJ`.
   - Checará se alguma Loja tem esse CNPJ cadastrado.
-  - Se nÁo, verificará no `localStorage` (`maquininha_cnpj_mapping`) se o usuário já associou aquele CNPJ a um `storeId`.
-  - Se ainda nÁo achar, abre o modal (`MaquininhaMappingModal`) informando "Estabelecimento X (CNPJ Y) nÁo reconhecido. Selecione a loja." A resposta é salva no `localStorage`.
+  - Se não, verificará no `localStorage` (`maquininha_cnpj_mapping`) se o usuário já associou aquele CNPJ a um `storeId`.
+  - Se ainda não achar, abre o modal (`MaquininhaMappingModal`) informando "Estabelecimento X (CNPJ Y) não reconhecido. Selecione a loja." A resposta é salva no `localStorage`.
 
 ## Motor de Leitura do XLSX (SheetJS)
 - Ler a Sheet[0].

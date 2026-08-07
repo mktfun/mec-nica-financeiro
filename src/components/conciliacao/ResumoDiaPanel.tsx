@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Button } from '@/components/ui/Button';
@@ -49,7 +49,7 @@ export function ResumoDiaPanel({
 
   // Lê o snapshot do dia selecionado (que já contém os inputs manuais salvos via ImportWizard)
   const { data: currentSnapshot } = useDailySnapshot(selectedDate);
-  // Lê o snapshot da conciliaçÁo imediatamente anterior
+  // Lê o snapshot da conciliação imediatamente anterior
   const { data: previousSnapshot } = usePreviousDaySnapshot(selectedDate);
   const saveSnapshot = useSaveDailySnapshot();
 
@@ -63,7 +63,7 @@ export function ResumoDiaPanel({
   const { data: recsToday } = useReconciliationsForDate(selectedDate);
   const sumOfxPreviousBalance = recsToday?.reduce((acc, r) => acc + (r.previous_balance || 0), 0) || 0;
   
-  // Usamos EXCLUSIVAMENTE o saldo consolidado na conciliaçÁo anterior para nÁo conflitar com saldos de banco isolados
+  // Usamos EXCLUSIVAMENTE o saldo consolidado na conciliação anterior para não conflitar com saldos de banco isolados
   const caixaAnteriorGlobal = previousSnapshot?.caixa_atual || 0;
 
   // Calcular pix_os cruzado (quantos PIX foram declarados de OS e encontrados no banco)
@@ -74,7 +74,7 @@ export function ResumoDiaPanel({
     });
   }
 
-  // Automáticos via OFX (Outros agora é 0 por padrÁo, nÁo um residual)
+  // Automáticos via OFX (Outros agora é 0 por padrão, não um residual)
   const faturamentoOutrosAutomatico = 0;
   const contasAPagarAutomatico = Math.abs(totalOfxOut);
 
@@ -86,7 +86,7 @@ export function ResumoDiaPanel({
   const dynamicAReceber = storesData ? Object.values(storesData).reduce((acc: number, s: any) => acc + (s.a_receber_manual || 0), 0) : 0;
 
   const inputForCalculation: GlobalConciliacaoInput = {
-    saldo_bancario: currentSnapshot?.saldo_bancario || totalBancarioIn, // Se já salvou usa o salvo, senÁo a soma das entradas (in) do OFX
+    saldo_bancario: currentSnapshot?.saldo_bancario || totalBancarioIn, // Se já salvou usa o salvo, senão a soma das entradas (in) do OFX
     dinheiro_mp: currentSnapshot?.dinheiro_mp || dynamicDinheiroMp,
     a_receber_manual: currentSnapshot?.a_receber_manual || dynamicAReceber,
     na_loja_os: dynamicGlobalNaLojaOs,
@@ -128,7 +128,7 @@ export function ResumoDiaPanel({
         faturamento_outros_valor: faturamentoOutrosAutomatico,
         contas_a_pagar: contasAPagarAutomatico,
         provisao: 0,
-        notes: 'Fechamento salvo com base nos valores lidos da importaçÁo automática de OFX.',
+        notes: 'Fechamento salvo com base nos valores lidos da importação automática de OFX.',
       });
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 3000);
@@ -165,12 +165,12 @@ export function ResumoDiaPanel({
             {statusDanger ? <AlertOctagon size={24} /> : <CheckCircle2 size={24} />}
           </div>
           <div>
-            <h1 className="text-2xl font-display font-bold text-[var(--text-primary)] tracking-tight">ConciliaçÁo Diária</h1>
+            <h1 className="text-2xl font-display font-bold text-[var(--text-primary)] tracking-tight">Conciliação Diária</h1>
             <h2 className="text-sm font-medium mt-1">
               {statusSuccess ? 'Caixas Batidos com Sucesso' : statusDanger ? 'Divergência Encontrada no Dia' : 'Aguardando Fechamento'}
             </h2>
             <p className="text-xs text-[var(--text-tertiary)] mt-1 max-w-md">
-              Dados globais da operaçÁo lidos do arquivo e dos inputs da importaçÁo (Somente Leitura).
+              Dados globais da operação lidos do arquivo e dos inputs da importação (Somente Leitura).
             </p>
           </div>
         </div>
@@ -240,7 +240,7 @@ export function ResumoDiaPanel({
             <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-teal)]">
               <AnimatedNumber value={calculated.dinheiro_mp} format="currency" />
             </p>
-            <span className="text-[10px] text-[var(--text-tertiary)] block">Preenchido na importaçÁo</span>
+            <span className="text-[10px] text-[var(--text-tertiary)] block">Preenchido na importação</span>
           </div>
 
           <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
@@ -273,16 +273,18 @@ export function ResumoDiaPanel({
             <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-danger)]">
               <AnimatedNumber value={inputForCalculation.juros_rede + contasAPagarAutomatico} format="currency" />
             </p>
-            <span className="text-[10px] text-[var(--text-tertiary)] block">OFX Out + Maquininha</span>
+            <span className="text-[10px] text-[var(--text-tertiary)] block">
+              OFX: <AnimatedNumber value={contasAPagarAutomatico} format="currency" /> | Maquininha: <AnimatedNumber value={inputForCalculation.juros_rede} format="currency" />
+            </span>
           </div>
         </div>
 
-        {/* Dashboard de ConsolidaçÁo & Diferença */}
+        {/* Dashboard de Consolidação & Diferença */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
           
-          {/* Card GrandÁo - ConsolidaçÁo */}
+          {/* Card Grandão - Consolidação */}
           <div className="lg:col-span-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-5 shadow-sm">
-            <h3 className="font-semibold text-[var(--text-primary)] mb-4 uppercase text-xs tracking-wider">ConsolidaçÁo do Dia</h3>
+            <h3 className="font-semibold text-[var(--text-primary)] mb-4 uppercase text-xs tracking-wider">Consolidação do Dia</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
                 <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Caixa Atual</span>
@@ -296,7 +298,7 @@ export function ResumoDiaPanel({
                 <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
                   <AnimatedNumber value={calculated.fluxo_cx} format="currency" />
                 </span>
-                <span className="text-[9px] text-[var(--text-tertiary)] block mt-1">Caixa atual vs ConciliaçÁo Anterior</span>
+                <span className="text-[9px] text-[var(--text-tertiary)] block mt-1">Caixa atual vs Conciliação Anterior</span>
               </div>
               <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
                 <div className="flex justify-between items-start">
@@ -315,14 +317,14 @@ export function ResumoDiaPanel({
                 <span className="text-lg font-bold text-[var(--color-primary-bright)] mt-1 block">
                   <AnimatedNumber value={calculated.valor_disp_contas} format="currency" />
                 </span>
-                <span className="text-[9px] text-[var(--text-tertiary)]">Faturamento + Fluxo de Caixa</span>
+                <span className="text-[9px] text-[var(--text-tertiary)]">Faturamento - Fluxo de Caixa</span>
               </div>
             </div>
             
             <div className="mt-4 pt-4 border-t border-[var(--border-subtle)] flex justify-between items-center bg-[var(--bg-surface-elevated)] p-3 rounded-lg">
                <div>
                   <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Subtotal: Valor Contas</span>
-                  <span className="text-[9px] text-[var(--text-tertiary)]">Juros (REDE) + Pagar + ProvisÁo</span>
+                  <span className="text-[9px] text-[var(--text-tertiary)]">Juros (REDE) + Pagar + Provisão</span>
                </div>
                <span className="text-lg font-bold text-[var(--color-accent-warning)]">
                  <AnimatedNumber value={calculated.valor_contas} format="currency" />
@@ -350,8 +352,8 @@ export function ResumoDiaPanel({
                isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
              }`}>
                {isDiferencaOk 
-                 ? 'VariaçÁo dentro do limite seguro (Â± R$ 50).' 
-                 : 'VariaçÁo fora da tolerância de Â± R$ 50. Verifique os lançamentos!'}
+                 ? 'Variação dentro do limite seguro (Â± R$ 50).' 
+                 : 'Variação fora da tolerância de Â± R$ 50. Verifique os lançamentos!'}
              </p>
           </div>
         </div>

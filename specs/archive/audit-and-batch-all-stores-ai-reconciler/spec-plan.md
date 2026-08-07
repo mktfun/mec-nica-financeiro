@@ -1,4 +1,4 @@
-﻿# Spec Plan: ConciliaçÁo em Lote Multi-Loja Completa & Auditoria de Payloads de IA (audit-and-batch-all-stores-ai-reconciler)
+﻿# Spec Plan: Conciliação em Lote Multi-Loja Completa & Auditoria de Payloads de IA (audit-and-batch-all-stores-ai-reconciler)
 
 ## Tasks
 
@@ -11,6 +11,6 @@
 - [x] [FRONTEND] Atualizar `src/routes/conciliacao.index.tsx`:
   - [x] Invocar `useBackgroundAiReconciler(stores, selectedDate)` passando o array de todas as lojas ativas
 - [x] [FRONTEND] Atualizar `src/routes/agente.tsx`:
-  - [x] Garantir que a renderizaçÁo dos botões "Raciocínio", "Input JSON" e "Output JSON" formate adequadamente objetos JSON e strings
+  - [x] Garantir que a renderização dos botões "Raciocínio", "Input JSON" e "Output JSON" formate adequadamente objetos JSON e strings
 - [x] [TEST] Verificar no DevTools Inspector se os logs gravam e exibem `Input JSON` e `Output JSON` completos com os dados reais
 - [x] [TEST] Verificar build limpo com `npm run build`

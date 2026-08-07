@@ -14,7 +14,7 @@ export function LogsMotorPanel() {
           <div className="w-10 h-10 rounded-lg bg-blue-500/15 flex items-center justify-center">
             <Workflow size={20} className="text-blue-400" />
           </div>
-          Log do Motor de ConciliaçÁo
+          Log do Motor de Conciliação
         </h1>
         <p className="text-[var(--text-secondary)] text-sm">Trilha de auditoria das execuções de coleta do bot.</p>
       </div>

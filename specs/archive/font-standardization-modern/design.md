@@ -1,4 +1,4 @@
-﻿# Design: PadronizaçÁo Tipográfica Global (font-standardization-modern)
+﻿# Design: Padronização Tipográfica Global (font-standardization-modern)
 
 ## Mudanças em `src/styles.css`
 
@@ -31,10 +31,10 @@
 ## Benefícios da Abordagem
 - **Legibilidade Superior:** A fonte **Inter** foi desenhada especificamente para UIs complexas com dashboards financeiros.
 - **Números Perfeitamente Alinhados:** O atributo `tabular-nums` faz todos os numerais ocuparem a mesma largura sem precisar usar fontes tipo máquina de escrever (Courier).
-- **Consistência Total:** 100% dos textos, rótulos, botões, inputs, tabelas e números compartilharÁo a mesma tipografia moderna e coerente.
+- **Consistência Total:** 100% dos textos, rótulos, botões, inputs, tabelas e números compartilharão a mesma tipografia moderna e coerente.
 
-## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
+## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
 
-- **Cenário 1 (VisualizaçÁo de Números e Textos na ConciliaçÁo):**
-  - *AçÁo:* Navegar por `/conciliacao` e telas de loja.
+- **Cenário 1 (Visualização de Números e Textos na Conciliação):**
+  - *Ação:* Navegar por `/conciliacao` e telas de loja.
   - *Resultado Esperado:* Todos os números, saldos e títulos exibem a tipografia elegante **Inter** e **DM Sans** com alinhamento numérico impecável e sem aspecto quadrado monospace.

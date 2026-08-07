@@ -17,7 +17,7 @@ export function OfxSemMatchTable({ storeId, date }: { storeId: string; date: str
     <Card className="p-0 overflow-hidden border-[var(--border-subtle)]">
       <div className="bg-[var(--bg-panel)] p-4 border-b border-[var(--border-subtle)] flex items-center justify-between">
         <h3 className="font-display font-semibold text-lg flex items-center gap-2 text-[var(--color-primary)]">
-          3. Extrato Bancário (Sem AssociaçÁo)
+          3. Extrato Bancário (Sem Associação)
         </h3>
         <Badge variant="outline" className="text-xs border-[var(--color-primary)]/30 text-[var(--color-primary)] bg-[var(--color-primary)]/10">
           {rows.length} Entradas Soltas
@@ -34,7 +34,7 @@ export function OfxSemMatchTable({ storeId, date }: { storeId: string; date: str
           <table className="w-full text-sm">
             <thead>
               <tr className="text-[var(--text-tertiary)] text-xs uppercase tracking-wider border-b border-[var(--border-subtle)] bg-[var(--bg-canvas)]">
-                <th className="text-left py-3 px-4 font-medium">DescriçÁo (OFX)</th>
+                <th className="text-left py-3 px-4 font-medium">Descrição (OFX)</th>
                 <th className="text-right py-3 px-4 font-medium">Valor Depositado</th>
                 <th className="text-center py-3 px-4 font-medium">Status</th>
               </tr>
@@ -51,7 +51,7 @@ export function OfxSemMatchTable({ storeId, date }: { storeId: string; date: str
                   <td className="py-3 px-4 text-center">
                     <Badge variant="outline" className="bg-[var(--bg-panel)] text-[var(--text-secondary)] border-[var(--border-subtle)]">
                       <HelpCircle size={12} className="mr-1 opacity-50" />
-                      NÁo Identificado
+                      Não Identificado
                     </Badge>
                   </td>
                 </tr>

@@ -1,4 +1,4 @@
-﻿# Design: PaginaçÁo e RefatoraçÁo de Tabelas (013)
+﻿# Design: Paginação e Refatoração de Tabelas (013)
 
 ## Componentes Afetados
 
@@ -14,14 +14,14 @@
 
 2. **`src/routes/recebiveis.tsx`**
    - Adicionar o estado de busca `const [searchQuery, setSearchQuery] = useState('')` que faltava.
-   - Adicionar o estado de paginaçÁo `const [page, setPage] = useState(1); const pageSize = 10;`.
-   - Adaptar o array filtrado para considerar a busca (por loja ou tipo) e aplicar a paginaçÁo `.slice(...)`.
+   - Adicionar o estado de paginação `const [page, setPage] = useState(1); const pageSize = 10;`.
+   - Adaptar o array filtrado para considerar a busca (por loja ou tipo) e aplicar a paginação `.slice(...)`.
    - Substituir a `<table>` pela Timeline:
      - Ícone arredondado com a cor baseada no status (`recebido` = verde, `vencido` = vermelho, `pendente` = amarelo).
-     - InformaçÁo de data de vencimento, forma de pagamento e nome da Loja no formato badges.
-   - Adicionar os botões de paginaçÁo.
+     - Informação de data de vencimento, forma de pagamento e nome da Loja no formato badges.
+   - Adicionar os botões de paginação.
 
 ## Mapa de Dependências
 - `src/routes/patio.tsx` depende dos componentes UI existentes e de `lucide-react` para os ícones.
 - `src/routes/recebiveis.tsx` depende de `lucide-react`.
-- O layout nÁo alterará dependências de backend nem lógicas de Supabase, toda a alteraçÁo é puramente de Frontend (React state e Tailwind CSS).
+- O layout não alterará dependências de backend nem lógicas de Supabase, toda a alteração é puramente de Frontend (React state e Tailwind CSS).

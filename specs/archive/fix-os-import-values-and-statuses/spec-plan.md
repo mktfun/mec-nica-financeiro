@@ -1,4 +1,4 @@
-﻿# Spec Plan: CorreçÁo dos Valores e Statuses de OSs na ImportaçÁo e Pátio (fix-os-import-values-and-statuses)
+﻿# Spec Plan: Correção dos Valores e Statuses de OSs na Importação e Pátio (fix-os-import-values-and-statuses)
 
 ## Tasks
 
@@ -14,5 +14,5 @@
   - [x] Implementar helper de fallbacks de valores e status reais (`getOsEffectiveValues`)
   - [x] Ajustar as 4 abas de filtro (`Todas`, `Em Aberto`, `Pagas Parcial`, `Finalizadas (Período)`)
   - [x] Ajustar o card da OS no pátio e o modal interno para exibir Total, Pago e Aberto corretos
-- [x] [TEST] Testar a importaçÁo de planilha de OS e verificar se valores e statuses sÁo gravados e exibidos perfeitamente
+- [x] [TEST] Testar a importação de planilha de OS e verificar se valores e statuses são gravados e exibidos perfeitamente
 - [x] [TEST] Verificar build limpo com `npm run build`

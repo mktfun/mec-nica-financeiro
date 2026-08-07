@@ -1,4 +1,4 @@
-﻿# Checklist de ImplementaçÁo: Spec 071
+﻿# Checklist de Implementação: Spec 071
 
 ## Tasks
 
@@ -11,7 +11,7 @@
   - [x] Remover as tag `<LabelList>` de dentro dos componentes `<Bar>`.
   - [x] Alterar o cálculo da altura da div de `chartData.length * 55` para `chartData.length * 38`.
 
-- [x] [FRONTEND] CorreçÁo do Tooltip
+- [x] [FRONTEND] Correção do Tooltip
   - [x] Adicionar `allowEscapeViewBox={{ x: true, y: true }}` ao `<Tooltip>`.
-  - [x] Desativar animaçÁo do tooltip (`isAnimationActive={false}`) caso haja flickering no escape.
+  - [x] Desativar animação do tooltip (`isAnimationActive={false}`) caso haja flickering no escape.
   - [x] Garantir que a `margin={{ right: ... }}` dê espaço (usar 16 ou 20 em vez de 50).

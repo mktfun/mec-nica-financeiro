@@ -76,7 +76,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Operações financeiras da rede Mecânica Popular: conciliaçÁo diária, alertas e fluxo de caixa por loja.",
+          "Operações financeiras da rede Mecânica Popular: conciliação diária, alertas e fluxo de caixa por loja.",
       },
       { name: "author", content: "Mecânica Popular" },
       { property: "og:title", content: "Mecânica Popular · Financeiro" },

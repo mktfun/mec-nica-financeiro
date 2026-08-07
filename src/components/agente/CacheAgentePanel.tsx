@@ -15,7 +15,7 @@ export function CacheAgentePanel() {
           </div>
           Cache de OS (Oficina)
         </h1>
-        <p className="text-[var(--text-secondary)] text-sm">InspeçÁo do banco de dados local populado pelo Bot/Cron. OSs finalizadas nÁo expiram.</p>
+        <p className="text-[var(--text-secondary)] text-sm">Inspeção do banco de dados local populado pelo Bot/Cron. OSs finalizadas não expiram.</p>
       </div>
 
       <Card variant="glass" className="p-6">

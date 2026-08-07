@@ -1,4 +1,4 @@
-﻿# Design: ReestruturaçÁo dos Cards de Fechamento por Loja e Resumo Diário Consolidado (redesign-conciliacao-cards-and-daily-summary)
+﻿# Design: Reestruturação dos Cards de Fechamento por Loja e Resumo Diário Consolidado (redesign-conciliacao-cards-and-daily-summary)
 
 ## Arquitetura Técnica
 
@@ -14,11 +14,11 @@
   │     ├── Maquininha = ∑ cartao_entrou de todas as lojas  
   │     ├── PIX = ∑ pix_os de todas as lojas (OSs pagas via PIX no dia)
   │     ├── Juros = ∑ juros_atual de todas as lojas
-  │     ├── Saldo Itaú Consolidado = ∑ rawBalance OFX (último disponível, nÁo zerado)
+  │     ├── Saldo Itaú Consolidado = ∑ rawBalance OFX (último disponível, não zerado)
   │     └── Diferença = Faturamento - (Maquininha + PIX)
   └── Cards por Loja (6 colunas)
         ├── Faturamento (OS do dia)
-        ├── Maquininha (Rede/cartÁo)
+        ├── Maquininha (Rede/cartão)
         ├── PIX (OS pagas via PIX que entraram no banco)
         ├── Na Loja OS (saldo em aberto das OSs)
         ├── Faturamento Itaú (OFX) → SALDO REAL (rawBalance)
@@ -42,40 +42,40 @@
 | 5 | Banco Itaú (Saldo) | `bankBalances[store.id].rawBalance` | Azul Claro |
 | 6 | Diferença | `faturamento - (maquininha + pix)` | Verde/Vermelho |
 
-## CorreçÁo do Saldo OFX Consolidado (`useDailyBankBalance`)
+## Correção do Saldo OFX Consolidado (`useDailyBankBalance`)
 
-**Problema:** O hook busca `reconciliations.bank_total` exatamente na data selecionada. Se nÁo houver importaçÁo OFX naquele dia, retorna vazio → saldo zero.
+**Problema:** O hook busca `reconciliations.bank_total` exatamente na data selecionada. Se não houver importação OFX naquele dia, retorna vazio → saldo zero.
 
-**CorreçÁo:** Adicionar um novo hook `useLatestBankBalance()` que, para cada loja, busca o **último** `bank_total` importado sem restriçÁo de data (usando `.order('date', { ascending: false }).limit(1)`).
+**Correção:** Adicionar um novo hook `useLatestBankBalance()` que, para cada loja, busca o **último** `bank_total` importado sem restrição de data (usando `.order('date', { ascending: false }).limit(1)`).
 
-## AdiçÁo de Métricas PIX nas OSs
+## Adição de Métricas PIX nas OSs
 
-**Problema:** O hook `useModulo1StoresData` nÁo calcula o total de PIX das OSs do dia (campo `pix_transfer_value` de `patio_os`).
+**Problema:** O hook `useModulo1StoresData` não calcula o total de PIX das OSs do dia (campo `pix_transfer_value` de `patio_os`).
 
-**CorreçÁo:** Adicionar na query de `patio_os` o somatório de `pix_transfer_value` por loja, retornando o campo `pix_os` no `StoreSaldoState` (ou via campo separado na resposta do hook).
+**Correção:** Adicionar na query de `patio_os` o somatório de `pix_transfer_value` por loja, retornando o campo `pix_os` no `StoreSaldoState` (ou via campo separado na resposta do hook).
 
-## AtualizaçÁo do `ResumoDiaPanel.tsx` (Topo Consolidado)
+## Atualização do `ResumoDiaPanel.tsx` (Topo Consolidado)
 
 Reformular o painel global para exibir:
 - **Faturamento** (∑ faturamento_atual de todas as lojas)
 - **Maquininha** (∑ cartao_entrou)
 - **PIX** (∑ pix_os das OSs)
-- **Juros** (∑ machine_fees/juros da conciliaçÁo do dia)
+- **Juros** (∑ machine_fees/juros da conciliação do dia)
 - **Saldo Total Itaú** (∑ rawBalance / último saldo OFX por loja)
 - **Diferença** (Faturamento − Maquininha − PIX)
 
-## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
+## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
 
-- **Cenário 1 (Saldo Itaú nÁo zerado em dia sem OFX):**
-  - Estado inicial: Data selecionada sem importaçÁo OFX naquele dia.
-  - AçÁo: Acessar `/conciliacao`.
-  - Resultado Esperado: O saldo do Banco Itaú exibe o **último** saldo importado (nÁo R$ 0,00).
+- **Cenário 1 (Saldo Itaú não zerado em dia sem OFX):**
+  - Estado inicial: Data selecionada sem importação OFX naquele dia.
+  - Ação: Acessar `/conciliacao`.
+  - Resultado Esperado: O saldo do Banco Itaú exibe o **último** saldo importado (não R$ 0,00).
 
 - **Cenário 2 (Card de Loja com 6 colunas corretas):**
-  - Estado inicial: Loja com OSs do dia, cartÁo Rede e PIX importados.
-  - AçÁo: Visualizar card "Dom Pedro - DP" na lista de Fechamento por Loja.
-  - Resultado Esperado: ExibiçÁo de Faturamento, Maquininha, PIX, Na Loja OS, Banco Itaú (Saldo) e Diferença; sem "Dinheiro MP" nem "A Receber".
+  - Estado inicial: Loja com OSs do dia, cartão Rede e PIX importados.
+  - Ação: Visualizar card "Dom Pedro - DP" na lista de Fechamento por Loja.
+  - Resultado Esperado: Exibição de Faturamento, Maquininha, PIX, Na Loja OS, Banco Itaú (Saldo) e Diferença; sem "Dinheiro MP" nem "A Receber".
 
 - **Cenário 3 (Diferença calculada corretamente):**
   - Estado inicial: Faturamento = R$ 2.519,11, Maquininha = R$ 2.200,00, PIX = R$ 319,11.
-  - Resultado Esperado: Diferença ≈ R$ 0,00 (casada); se nÁo bater, exibe em vermelho.
+  - Resultado Esperado: Diferença ≈ R$ 0,00 (casada); se não bater, exibe em vermelho.

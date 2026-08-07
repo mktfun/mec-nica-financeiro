@@ -16,21 +16,21 @@
 
 ### 1.3 Hook `useAuth`
 - [ ] Criar `src/hooks/useAuth.ts` com:
-  - `useSession()` — retorna session atual (null se nÁo logado)
+  - `useSession()` — retorna session atual (null se não logado)
   - `useLogin(email, password)` — chama `supabase.auth.signInWithPassword`
   - `useLogout()` — chama `supabase.auth.signOut`
-  - Listener de mudança de sessÁo via `onAuthStateChange`
+  - Listener de mudança de sessão via `onAuthStateChange`
 
 ### 1.4 Tela de Login
 - [ ] Criar `src/routes/login.tsx` com:
   - Layout full-screen, sem AppShell
   - Logo "Mecânica Popular" + título
   - Campos e-mail e senha
-  - BotÁo "Entrar"
+  - Botão "Entrar"
   - Mensagem de erro em caso de credenciais inválidas
   - Visual premium consistente com o design system existente
 
-### 1.5 ProteçÁo de Rotas
+### 1.5 Proteção de Rotas
 - [ ] Modificar `src/routes/__root.tsx` para injetar `session` no context
 - [ ] Adicionar `beforeLoad` guard em TODAS as rotas protegidas:
   - `/` (index)
@@ -43,13 +43,13 @@
   - `/historico`
   - `/configuracoes`
 - [ ] A rota `/proposta` e `/login` ficam públicas
-- [ ] Adicionar botÁo "Sair" no Sidebar/Header com `useLogout`
+- [ ] Adicionar botão "Sair" no Sidebar/Header com `useLogout`
 
-### 1.6 VerificaçÁo Fase 1
-- [ ] Acessar `/` sem sessÁo → redireciona para `/login`
+### 1.6 Verificação Fase 1
+- [ ] Acessar `/` sem sessão → redireciona para `/login`
 - [ ] Login com credenciais erradas → mostra erro
 - [ ] Login com credenciais corretas → vai para `/`
-- [ ] Refresh da página → sessÁo persiste
+- [ ] Refresh da página → sessão persiste
 - [ ] Logout → redireciona para `/login`
 
 ---
@@ -67,27 +67,27 @@
   - `useStore(id)` — `useQuery` para uma loja específica
   - `useUpdateStore(id)` — `useMutation` para editar nome/gerente/etc
 
-### 2.3 IntegraçÁo nas Rotas
+### 2.3 Integração nas Rotas
 - [ ] `routes/lojas.tsx` — substituir `mockStores` por `useStores()`
 - [ ] `routes/conciliacao.tsx` — substituir `mockStores` por `useStores()`
 - [ ] `routes/patio.tsx` — substituir lista de lojas por `useStores()`
 - [ ] `routes/recebiveis.tsx` — substituir lista de lojas por `useStores()`
 - [ ] Adicionar loading skeleton em todas as telas que usam `useStores()`
 
-### 2.4 Configurações — EdiçÁo de Lojas
-- [ ] `routes/configuracoes.tsx` — adicionar seçÁo "Gerenciar Lojas"
-  - Lista todas as lojas com botÁo "Editar"
-  - Modal de ediçÁo: nome, endereço, telefone, gerente, mecânicos
+### 2.4 Configurações — Edição de Lojas
+- [ ] `routes/configuracoes.tsx` — adicionar seção "Gerenciar Lojas"
+  - Lista todas as lojas com botão "Editar"
+  - Modal de edição: nome, endereço, telefone, gerente, mecânicos
   - Salva via `useUpdateStore`
 
-### 2.5 VerificaçÁo Fase 2
-- [ ] Lojas carregam do banco (nÁo do mock)
-- [ ] EdiçÁo de loja salva no Supabase e reflete na UI (TanStack Query revalida)
+### 2.5 Verificação Fase 2
+- [ ] Lojas carregam do banco (não do mock)
+- [ ] Edição de loja salva no Supabase e reflete na UI (TanStack Query revalida)
 - [ ] Loading state visível enquanto carrega
 
 ---
 
-## Fase 3 — ConciliaçÁo, Alertas e Transações 📊
+## Fase 3 — Conciliação, Alertas e Transações 📊
 
 ### 3.1 Migrations
 - [ ] Executar migration: criar tabela `public.reconciliations`
@@ -112,14 +112,14 @@
   - `useTransactions(limit?)` — transações recentes
   - `useTransactionsByStore(storeId)` — filtradas por loja
 
-### 3.4 IntegraçÁo nas Rotas
+### 3.4 Integração nas Rotas
 - [ ] `routes/conciliacao.tsx` — substituir mocks por hooks reais
 - [ ] `routes/conciliacao-detalhes.tsx` — substituir mocks por hooks reais
 - [ ] `routes/alertas.tsx` — substituir mocks por hooks reais
 - [ ] `components/dashboard/RecentActivity.tsx` — substituir mocks por `useTransactions`
 - [ ] `components/dashboard/MotorStatus.tsx` — substituir mocks por dados reais de `useConciliacao`
 
-### 3.5 VerificaçÁo Fase 3
+### 3.5 Verificação Fase 3
 - [ ] Alertas carregam do banco
 - [ ] Resolver alerta atualiza o banco e reflete na UI
 - [ ] "Dinheiro em Caixa" salva no banco via mutation
@@ -150,13 +150,13 @@
   - `useLatestBotRun()` — último run do bot (para MotorStatus)
   - `useBotRunHistory()` — histórico de execuções
 
-### 4.4 IntegraçÁo nas Rotas
+### 4.4 Integração nas Rotas
 - [ ] `routes/patio.tsx` — substituir mocks por `usePatioOS()`
 - [ ] `routes/recebiveis.tsx` — substituir mocks por `useRecebiveis()`
 - [ ] `routes/historico.tsx` — buscar histórico real de conciliações
-- [ ] `routes/configuracoes.tsx` — adicionar seçÁo "Logs do Bot" com `useBotRunHistory()`
+- [ ] `routes/configuracoes.tsx` — adicionar seção "Logs do Bot" com `useBotRunHistory()`
 
-### 4.5 VerificaçÁo Fase 4
+### 4.5 Verificação Fase 4
 - [ ] Pátio mostra OS do banco com filtros funcionando
 - [ ] Recebíveis mostra dados do banco
 - [ ] Histórico mostra conciliações passadas
@@ -173,7 +173,7 @@
 
 ---
 
-## Ordem de ExecuçÁo Recomendada
+## Ordem de Execução Recomendada
 
 ```
 Fase 1 → Fase 2 → Fase 3 → Fase 4 → Extra

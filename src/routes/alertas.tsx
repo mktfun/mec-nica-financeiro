@@ -48,7 +48,7 @@ function AlertasPage() {
         <div className="mb-8 relative">
           <div className="absolute -top-10 -left-10 w-40 h-40 bg-[var(--color-accent-danger)]/20 blur-[80px] rounded-full pointer-events-none" />
           <h1 className="font-display font-bold text-4xl mb-2 text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60 relative z-10">Central de Alertas</h1>
-          <p className="text-[var(--text-secondary)] text-sm relative z-10">Divergências pendentes que requerem sua atençÁo para manter o cofre seguro.</p>
+          <p className="text-[var(--text-secondary)] text-sm relative z-10">Divergências pendentes que requerem sua atenção para manter o cofre seguro.</p>
         </div>
 
         <div className="flex gap-4 mb-8 overflow-x-auto pb-2 scrollbar-none">

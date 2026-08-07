@@ -1,7 +1,7 @@
-﻿# Spec Plan: CorreçÁo Matemática do Dashboard e Resumo (115)
+﻿# Spec Plan: Correção Matemática do Dashboard e Resumo (115)
 
 ## 1. Banco de Dados (Backend)
-- [x] Criar arquivo de migraçÁo supabase/migrations/20260807000007_fix_dashboard_patio_math.sql
+- [x] Criar arquivo de migração supabase/migrations/20260807000007_fix_dashboard_patio_math.sql
 - [x] O script deve redefinir CREATE OR REPLACE FUNCTION get_dashboard_metrics(p_date date)
 - [x] O script deve aplicar a lógica de herança de 
 a_loja_os a partir de econciliations na variável  _na_loja.

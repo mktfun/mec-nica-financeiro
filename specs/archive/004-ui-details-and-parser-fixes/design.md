@@ -4,9 +4,9 @@
 - **`OsDetailsModal.tsx`**: Novo componente na pasta `src/components/patio/` ou apenas embutido em `src/routes/patio.tsx`. Receberá o objeto `os` do tipo `PatioRow`. Exibirá uma UI limpa com os dados completos (Data de entrada, dias em aberto, total, pago, e uma lista com as formas de pagamento decodificadas).
 
 ## Lógica do Banco de Dados / Processamento
-- No arquivo `ImportReportDialog.tsx`, antes de somar `totalOs` e `totalPaid` para enviar ao fechamento diário, precisamos verificar se a OS pertence ao dia alvo da importaçÁo (`targetDate` ou `hoje`).
+- No arquivo `ImportReportDialog.tsx`, antes de somar `totalOs` e `totalPaid` para enviar ao fechamento diário, precisamos verificar se a OS pertence ao dia alvo da importação (`targetDate` ou `hoje`).
 ```typescript
-const isToday = closed_at === targetDate; // (ou getDefaultDate se targetDate nÁo existir explicitamente no escopo da tela)
+const isToday = closed_at === targetDate; // (ou getDefaultDate se targetDate não existir explicitamente no escopo da tela)
 if (statusStr === "Finalizada" && isToday) { 
   totalOs += osValue;
   totalPaid += paidValue;

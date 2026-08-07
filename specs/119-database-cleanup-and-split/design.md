@@ -1,10 +1,10 @@
 ﻿﻿# Design: Database Cleanup & Split Architecture (119)
 
 ## Arquitetura Técnica
-A camada de dados abandona a tabela universal \	ransactions\ para o que nÁo for lançamento manual e cria instâncias tipadas rígidas, removendo a necessidade do campo \source\. A tabela \	ransactions\ se tornará \manual_transactions\ (ou semelhante) dedicada apenas ao que for digitado/XLSX.
-As auditorias da plataforma perderÁo 10 tabelas legadas e usarÁo uma única \system_logs\ com expiraçÁo via \pg_cron\.
+A camada de dados abandona a tabela universal \	ransactions\ para o que não for lançamento manual e cria instâncias tipadas rígidas, removendo a necessidade do campo \source\. A tabela \	ransactions\ se tornará \manual_transactions\ (ou semelhante) dedicada apenas ao que for digitado/XLSX.
+As auditorias da plataforma perderão 10 tabelas legadas e usarão uma única \system_logs\ com expiração via \pg_cron\.
 
-**Fluxo de ImportaçÁo:**
+**Fluxo de Importação:**
 1. \CentralImportWizard\ processa OFX -> Chama \ulkInsertOfx\ -> Salva em \ofx_transactions\.
 2. \CentralImportWizard\ processa Rede -> Chama \ulkInsertPos\ -> Salva em \pos_transactions\ (e \eceivables\ se a regra for manter duplo).
 3. \CentralImportWizard\ / Bot / Edge Functions -> Enviam eventos de telemetria para \system_logs\.
@@ -13,7 +13,7 @@ As auditorias da plataforma perderÁo 10 tabelas legadas e usarÁo uma única \s
 ## Interfaces Supabase
 
 `sql
--- 1. CriaçÁo da Tabela de Extratos Bancários Reais
+-- 1. Criação da Tabela de Extratos Bancários Reais
 CREATE TABLE ofx_transactions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     store_id TEXT REFERENCES stores(id),
@@ -30,7 +30,7 @@ CREATE TABLE ofx_transactions (
     UNIQUE(store_id, fitid)
 );
 
--- 2. CriaçÁo da Tabela de Maquininhas (Crédito/Débito)
+-- 2. Criação da Tabela de Maquininhas (Crédito/Débito)
 CREATE TABLE pos_transactions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     store_id TEXT REFERENCES stores(id),
@@ -45,7 +45,7 @@ CREATE TABLE pos_transactions (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- 3. CriaçÁo do Central Logger com TTL
+-- 3. Criação do Central Logger com TTL
 CREATE TABLE system_logs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     level TEXT NOT NULL,
@@ -59,6 +59,6 @@ CREATE TABLE system_logs (
 SELECT cron.schedule('clean_system_logs', '0 0 * * *', 'DELETE FROM system_logs WHERE created_at < now() - interval ''1 day'';');
 `
 
-## Cenários de VerificaçÁo (SCAN -> INFER -> VERIFY -> FIX)
-- **Cenário 1 (MigraçÁo):** Tentar aplicar o \DROP\ em massa e falhar por Constraints (ex: Foreign Keys presas em outras tabelas). *SoluçÁo:* Mapear as dependências e derrubar CASCADE, e reescrever a \	ransactions\ legada para \manual_transactions\.
-- **Cenário 2 (Dashboard quebrado):** As métricas financeiras (DashboardV2, RPC) ficarem nulas pois tentam ler da tabela \	ransactions\. *SoluçÁo:* Reescrever \get_dashboard_metrics\ para somar \mount\ das 3 tabelas (\ofx_transactions\, \pos_transactions\, e \manual_transactions\) com \UNION ALL\ ou subqueries específicas.
+## Cenários de Verificação (SCAN -> INFER -> VERIFY -> FIX)
+- **Cenário 1 (Migração):** Tentar aplicar o \DROP\ em massa e falhar por Constraints (ex: Foreign Keys presas em outras tabelas). *Solução:* Mapear as dependências e derrubar CASCADE, e reescrever a \	ransactions\ legada para \manual_transactions\.
+- **Cenário 2 (Dashboard quebrado):** As métricas financeiras (DashboardV2, RPC) ficarem nulas pois tentam ler da tabela \	ransactions\. *Solução:* Reescrever \get_dashboard_metrics\ para somar \mount\ das 3 tabelas (\ofx_transactions\, \pos_transactions\, e \manual_transactions\) com \UNION ALL\ ou subqueries específicas.

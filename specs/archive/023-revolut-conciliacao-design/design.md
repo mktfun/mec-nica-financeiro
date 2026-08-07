@@ -4,7 +4,7 @@
 - **Background**: `#000000` (Preto Absoluto) ou `var(--bg-canvas)`.
 - **Surface/Cards**: `#161616` (Muito próximo do preto para criar hierarquia sutil).
 - **Acento Primário**: `#CCFF00` (Neon Yellow) para os botões "Hero" e destaques de saldo principal no Drawer.
-- **Squircles**: Usar exaustivamente `rounded-[24px]` a `rounded-[32px]` nos containers maiores, e `rounded-full` em botões de açÁo e pílulas.
+- **Squircles**: Usar exaustivamente `rounded-[24px]` a `rounded-[32px]` nos containers maiores, e `rounded-full` em botões de ação e pílulas.
 
 ## Componentes a Serem Construídos
 
@@ -16,8 +16,8 @@
 
 ### 2. `StoreListItem`
 - Componente para iterar sobre as 10 lojas.
-- PadrÁo flex-row simples: 
-  `[Ícone de Status Circular] | [Nome Loja + Última TransaçÁo] | [R$ Faturado Hoje + Dot de AçÁo]`
+- Padrão flex-row simples: 
+  `[Ícone de Status Circular] | [Nome Loja + Última Transação] | [R$ Faturado Hoje + Dot de Ação]`
 - Sem bordas visíveis (`border-transparent`), baseando-se apenas no background de surface (`bg-[#161616]`) e separações em listas (`gap-3`).
 
 ### 3. `RevolutDrawer`

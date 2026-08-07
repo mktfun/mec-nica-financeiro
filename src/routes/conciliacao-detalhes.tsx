@@ -44,14 +44,14 @@ function ConciliacaoDetalhesPage() {
         <div className="flex items-center gap-2 text-sm text-[var(--text-tertiary)]">
           <Link to="/conciliacao" className="hover:text-[var(--text-primary)] transition-colors">Financeiro</Link>
           <span>›</span>
-          <span className="text-[var(--text-primary)] font-medium">ConciliaçÁo Diária</span>
+          <span className="text-[var(--text-primary)] font-medium">Conciliação Diária</span>
         </div>
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="font-display font-bold text-3xl">ConciliaçÁo Diária</h1>
-            <p className="text-[var(--text-secondary)] text-sm mt-1">Resultado consolidado e detecçÁo automática de divergências.</p>
+            <h1 className="font-display font-bold text-3xl">Conciliação Diária</h1>
+            <p className="text-[var(--text-secondary)] text-sm mt-1">Resultado consolidado e detecção automática de divergências.</p>
           </div>
           <div className="flex items-center gap-3">
             <Button variant="outline" size="sm" className="gap-2">

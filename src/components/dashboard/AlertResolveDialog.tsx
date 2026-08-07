@@ -34,7 +34,7 @@ export function AlertResolveDialog({ alert, onClose, onResolved }: AlertResolveD
             Cancelar
           </Button>
           <Button onClick={handleResolve} disabled={isPending}>
-            {isPending ? "Processando..." : "Confirmar ResoluçÁo"}
+            {isPending ? "Processando..." : "Confirmar Resolução"}
           </Button>
         </div>
       }
@@ -57,7 +57,7 @@ export function AlertResolveDialog({ alert, onClose, onResolved }: AlertResolveD
         </div>
 
         <div>
-          <h4 className="text-sm font-medium mb-3">Selecione a açÁo corretiva</h4>
+          <h4 className="text-sm font-medium mb-3">Selecione a ação corretiva</h4>
           <div className="space-y-2">
             <label className="flex items-center gap-3 p-3 rounded-[var(--radius-md)] border border-[var(--border-subtle)] hover:bg-[var(--bg-surface-hover)] cursor-pointer transition-colors">
               <input type="radio" name="action" className="w-4 h-4 accent-[var(--color-primary)]" defaultChecked />
@@ -65,7 +65,7 @@ export function AlertResolveDialog({ alert, onClose, onResolved }: AlertResolveD
             </label>
             <label className="flex items-center gap-3 p-3 rounded-[var(--radius-md)] border border-[var(--border-subtle)] hover:bg-[var(--bg-surface-hover)] cursor-pointer transition-colors">
               <input type="radio" name="action" className="w-4 h-4 accent-[var(--color-primary)]" />
-              <span className="text-sm">Justificar Quebra de Caixa (AprovaçÁo Múltipla)</span>
+              <span className="text-sm">Justificar Quebra de Caixa (Aprovação Múltipla)</span>
             </label>
             <label className="flex items-center gap-3 p-3 rounded-[var(--radius-md)] border border-[var(--border-subtle)] hover:bg-[var(--bg-surface-hover)] cursor-pointer transition-colors">
               <input type="radio" name="action" className="w-4 h-4 accent-[var(--color-primary)]" />

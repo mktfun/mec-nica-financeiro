@@ -1,4 +1,4 @@
-﻿# Design: Fix de Escopo e AutomaçÁo (099)
+﻿# Design: Fix de Escopo e Automação (099)
 
 ## 1. `useConciliacao.ts`
 Na linha que busca a âncora histórica do pátio:

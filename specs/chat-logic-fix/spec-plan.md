@@ -1,4 +1,4 @@
-﻿# Spec Plan: CorreçÁo de Lógica da IA (chat-logic-fix)
+﻿# Spec Plan: Correção de Lógica da IA (chat-logic-fix)
 
 ## Tasks
 

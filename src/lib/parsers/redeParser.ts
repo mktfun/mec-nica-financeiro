@@ -5,7 +5,7 @@ import { traceLog } from '../logger';
 
 export interface RedeTransaction {
   storeName: string;
-  method: 'CartÁo Crédito' | 'CartÁo Débito' | 'PIX' | 'Outros';
+  method: 'Cartão Crédito' | 'Cartão Débito' | 'PIX' | 'Outros';
   grossAmount: number;
   netAmount: number;
   interest: number;
@@ -36,7 +36,7 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
 
     const row0 = String(json[0]?.[0] || '');
     if (!row0.includes("EXTRATO PARA SIMPLES CONFERÊNCIA")) {
-       throw new Error("NÁo é um arquivo da Rede reconhecido.");
+       throw new Error("Não é um arquivo da Rede reconhecido.");
     }
 
     // Tentar extrair a data do "PERÍODO: DD-MM-YYYY A DD-MM-YYYY"
@@ -105,7 +105,7 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
 
       if (storeName === 'IGNORAR') continue;
 
-      // Se a linha nÁo tiver valor de venda numérico, ignora
+      // Se a linha não tiver valor de venda numérico, ignora
       if (grossRaw === undefined || grossRaw === null || grossRaw === '') continue;
 
       let grossAmount = extractNumber(grossRaw);
@@ -113,9 +113,9 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
 
       if (grossAmount === 0 && netAmount === 0) continue;
 
-      let method: 'CartÁo Crédito' | 'CartÁo Débito' | 'PIX' | 'Outros' = 'Outros';
-      if (methodRaw.includes('crédito') || methodRaw.includes('credito')) method = 'CartÁo Crédito';
-      else if (methodRaw.includes('débito') || methodRaw.includes('debito')) method = 'CartÁo Débito';
+      let method: 'Cartão Crédito' | 'Cartão Débito' | 'PIX' | 'Outros' = 'Outros';
+      if (methodRaw.includes('crédito') || methodRaw.includes('credito')) method = 'Cartão Crédito';
+      else if (methodRaw.includes('débito') || methodRaw.includes('debito')) method = 'Cartão Débito';
       else if (methodRaw.includes('pix')) method = 'PIX';
 
       let interest = taxRaw !== undefined ? extractNumber(taxRaw) : 0;
@@ -150,7 +150,7 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
     }
 
     if (options?.sessionId) {
-      traceLog('3_EXTRACTION_EXCEL', 'DEBUG', 'ExtraçÁo de linhas do Excel concluída (REDE)', options.sessionId, {
+      traceLog('3_EXTRACTION_EXCEL', 'DEBUG', 'Extração de linhas do Excel concluída (REDE)', options.sessionId, {
         sheet_name: sheetName,
         total_rows_read: json.length,
         transactions_extracted: transactions.length,

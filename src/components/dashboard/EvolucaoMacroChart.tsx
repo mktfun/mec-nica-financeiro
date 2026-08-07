@@ -48,10 +48,10 @@ export function EvolucaoMacroChart({ data, isLoading }: EvolucaoMacroChartProps)
         <div>
           <h3 className="font-display font-semibold text-lg flex items-center gap-2">
             <Activity size={20} className="text-[var(--color-primary)]" />
-            VisÁo Macro do Mês
+            Visão Macro do Mês
           </h3>
           <p className="text-xs text-[var(--text-tertiary)] mt-1">
-            EvoluçÁo de Saldo, Faturamento e Contas ({chartData.length} dias processados)
+            Evolução de Saldo, Faturamento e Contas ({chartData.length} dias processados)
           </p>
         </div>
         

@@ -28,9 +28,9 @@ export type StoreRow = {
 ```
 
 ## Componentes / Hooks / Funções
-- `src/lib/parsers/ofxParser.ts`: FunçÁo `parseOFXFile` modificada para regex das tags de limite.
+- `src/lib/parsers/ofxParser.ts`: Função `parseOFXFile` modificada para regex das tags de limite.
 - `src/components/importacoes/ImportadorOfx.tsx`: Modificado para fazer o supabase `UPDATE` no `store_id` associado, atualizando `account_limit`.
-- `src/routes/loja.$lojaId.tsx`: AdiçÁo da seçÁo `Histórico de Transações` logo abaixo dos gráficos. Renderiza uma tabela (usando possivelmente um componente existente como base) que itera `extrato.transactions`. RenderizaçÁo do Limite da Conta no dashboard executivo (topo).
+- `src/routes/loja.$lojaId.tsx`: Adição da seção `Histórico de Transações` logo abaixo dos gráficos. Renderiza uma tabela (usando possivelmente um componente existente como base) que itera `extrato.transactions`. Renderização do Limite da Conta no dashboard executivo (topo).
 
 ## Fluxo de UI
 1. O usuário entra na tela da Loja.
@@ -39,10 +39,10 @@ export type StoreRow = {
 4. Restrições visuais: Zinc-950, sem glassmorphism, flat UI, tabelas compactas e escaneáveis.
 
 ## Infra / Deploy
-- Nenhuma alteraçÁo estrutural de infraestrutura necessária.
+- Nenhuma alteração estrutural de infraestrutura necessária.
 - Apenas uma Migration no Supabase para a tabela `stores`.
 
-## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
+## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
 - **Cenário 1**: [OFX com limite] → Fazer upload de um OFX que contenha `<BALAMT>` e limite → O limite deve ser lido, e o update executado na tabela `stores`. A tela da loja atualizará seu valor.
-- **Cenário 2**: [OFX sem limite] → Upload normal → Tabela `stores` deve receber `null` ou nÁo atualizar, UI nÁo quebra e oculta ou exibe "R$ 0,00".
-- **Cenário 3**: [VisualizaçÁo Tela de Loja] → Usuário acessa `/loja/id` → Deve aparecer a tabela com os itens do extrato que já estÁo retornando de `useExtrato`.
+- **Cenário 2**: [OFX sem limite] → Upload normal → Tabela `stores` deve receber `null` ou não atualizar, UI não quebra e oculta ou exibe "R$ 0,00".
+- **Cenário 3**: [Visualização Tela de Loja] → Usuário acessa `/loja/id` → Deve aparecer a tabela com os itens do extrato que já estão retornando de `useExtrato`.

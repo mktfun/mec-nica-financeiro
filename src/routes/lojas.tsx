@@ -58,7 +58,7 @@ function LojasPage() {
         <div className="mb-8 flex justify-between items-end">
           <div>
             <h1 className="font-display font-bold text-3xl mb-2">Lojas da Rede</h1>
-            <p className="text-[var(--text-secondary)] text-sm">VisÁo consolidada do fluxo de caixa e conciliaçÁo por unidade.</p>
+            <p className="text-[var(--text-secondary)] text-sm">Visão consolidada do fluxo de caixa e conciliação por unidade.</p>
           </div>
           <Button variant="primary" onClick={() => { setStoreToEdit(undefined); setIsFormOpen(true); }} className="gap-2">
             <Plus size={16} /> Nova Loja

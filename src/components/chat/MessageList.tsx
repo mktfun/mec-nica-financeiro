@@ -74,7 +74,7 @@ const getToolLabel = (name: string, args?: any): string => {
     case 'consulta_contas_pagar_oficina':
       return 'Buscando contas a pagar na API da oficina';
     case 'consulta_conciliacao_periodo':
-      return 'Analisando resumos de conciliaçÁo por período';
+      return 'Analisando resumos de conciliação por período';
     default:
       return name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   }
@@ -84,7 +84,7 @@ const getToolLabel = (name: string, args?: any): string => {
 const extractSteps = (msg: any): StepItem[] => {
   const steps: StepItem[] = [];
 
-  // 1. Tool Invocations padrÁo (SDK v4)
+  // 1. Tool Invocations padrão (SDK v4)
   if (Array.isArray(msg.toolInvocations)) {
     msg.toolInvocations.forEach((tool: any, idx: number) => {
       steps.push({
@@ -156,7 +156,7 @@ const getMessageContent = (msg: any): string => {
   return msg.content || '';
 };
 
-// Componente AcordeÁo Expansível de Passo a Passo (Reasoning & Tool Steps)
+// Componente Acordeão Expansível de Passo a Passo (Reasoning & Tool Steps)
 function StepAccordion({ steps }: { steps: StepItem[] }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -168,7 +168,7 @@ function StepAccordion({ steps }: { steps: StepItem[] }) {
 
   return (
     <div className="w-full my-2 font-sans">
-      {/* BotÁo de Toggle do AcordeÁo */}
+      {/* Botão de Toggle do Acordeão */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-900/60 border border-zinc-800/60 text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40 transition-all select-none group cursor-pointer"
@@ -329,7 +329,7 @@ export function MessageList({ messages, isLoading }: { messages: Message[], isLo
           const isUser = turn.role === 'user';
           const isError = turn.isError;
 
-          // Se o assistente nÁo tem texto nem passos nem erro, nÁo renderizar balÁo em branco
+          // Se o assistente não tem texto nem passos nem erro, não renderizar balão em branco
           if (!isUser && !hasText && steps.length === 0 && !isError) {
             return null;
           }
@@ -368,14 +368,14 @@ export function MessageList({ messages, isLoading }: { messages: Message[], isLo
                   <div className="flex items-start gap-2.5 p-3.5 rounded-2xl bg-red-950/20 border border-red-800/40 text-red-300 text-xs font-mono max-w-full">
                     <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
                     <div className="flex flex-col gap-1 min-w-0">
-                      <span className="font-semibold text-red-200">Falha ao processar requisiçÁo</span>
+                      <span className="font-semibold text-red-200">Falha ao processar requisição</span>
                       <span className="text-[11px] text-red-400/90 leading-relaxed break-words">
                         {sanitizeErrorText(turn.error || textContent)}
                       </span>
                     </div>
                   </div>
                 ) : (
-                  /* BALÁO DE TEXTO (Apenas se houver texto real) */
+                  /* BALÃO DE TEXTO (Apenas se houver texto real) */
                   hasText && (
                     <div className={cn(
                       "px-5 py-3.5 whitespace-pre-wrap text-[15px] leading-relaxed shadow-sm break-words transition-all", 

@@ -17,7 +17,7 @@ Destructive:             oklch(0.64 0.22 25)     /* vermelho vivo */
 
 ## Glassmorphism System
 
-### Glass Panel (componentes padrÁo)
+### Glass Panel (componentes padrão)
 ```css
 .glass-panel {
   background: oklch(0.16 0.022 264 / 60%);
@@ -140,7 +140,7 @@ box-shadow: inset 3px 0 0 var(--primary),
 - Badge de status: pill com border
 
 ### Bottom Nav Mobile
-- 4 slots: Painel, ConciliaçÁo, Alertas, Mais (abre drawer com restante)
+- 4 slots: Painel, Conciliação, Alertas, Mais (abre drawer com restante)
 - Item ativo: ícone + text primary + dot indicator acima
 - Glass background com blur
 

@@ -244,13 +244,13 @@ export function useReconciliationViews(storeId: string, date: string) {
         const redeBruto = redeTx.amount;
         return {
           id: redeTx.id,
-          maquininha_title: redeTx.title || 'TransaçÁo Maquininha',
+          maquininha_title: redeTx.title || 'Transação Maquininha',
           rede_bruto: redeBruto,
           taxa_brl: taxaAmount,
           taxa_percent: 0,
           rede_liquido: redeTx.amount,
           os_total: osData ? (osData.total_value || osData.paid_value) : 0,
-          os_number: osNumber || 'NÁo Localizada',
+          os_number: osNumber || 'Não Localizada',
           os_data: osData,
           delta: 0,
           status: redeTx.match_status === 'MATCHED' ? 'PAREADO' : 'SEM_PAR'
@@ -421,7 +421,7 @@ export function useModulo1StoresData(date: string) {
            const matchIdx = osPixList.findIndex(osVal => Math.abs(osVal - amt) < 0.05);
            if (matchIdx !== -1) {
               pixOsMatched += amt;
-              // Remove para nÁo dar match duplo
+              // Remove para não dar match duplo
               osPixList.splice(matchIdx, 1);
            }
         });

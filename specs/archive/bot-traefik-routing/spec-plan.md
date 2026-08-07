@@ -2,7 +2,7 @@
 
 ## Tasks
 
-- [x] [INFRA] Verificar `docker network inspect tork-stack_internal` — confirmar que `traefik` E `conciliamec-bot` estÁo na mesma rede
+- [x] [INFRA] Verificar `docker network inspect tork-stack_internal` — confirmar que `traefik` E `conciliamec-bot` estão na mesma rede
 - [x] [INFRA] Atualizar `cloudflared/config.yml` na VPS — trocar `bot.tork.services → http://conciliamec-bot:3001` para `http://traefik:80`
 - [x] [INFRA] Reiniciar container `cloudflared` para aplicar nova config
 - [x] [INFRA] Confirmar que `bot/docker-compose.yml` usa rede `tork-stack_internal` com as labels do Traefik corretas

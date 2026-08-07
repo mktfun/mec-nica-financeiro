@@ -1,7 +1,7 @@
 ﻿# Design: Automatizar Contas a Pagar e Outros Faturamentos via OFX (077)
 
 ## Arquitetura Técnica
-A alteraçÁo modifica o "Ponto de Verdade" dos campos:
+A alteração modifica o "Ponto de Verdade" dos campos:
 Antes: `Input (ImportWizard) -> daily_snapshots -> ResumoDiaPanel -> modulo1Calculations`
 Agora: `Extrato Bancário (transactions) -> useConciliacaoResumo -> ResumoDiaPanel -> modulo1Calculations`
 
@@ -10,7 +10,7 @@ Agora: `Extrato Bancário (transactions) -> useConciliacaoResumo -> ResumoDiaPan
 ### `src/components/importacoes/CentralImportWizard.tsx`
 - Remover os states: `manualOutrosFaturamentos`, `manualOutrosDesc`, `manualContasAPagar`, `manualProvisao`.
 - Remover a UI correspondente desses 4 campos.
-- No payload do `saveSnapshot.mutateAsync`, enviaremos `0` (ou nÁo enviar) para essas chaves. (Como o banco espera números e lida com o estado, será `0` gravado no daily_snapshot durante o import, já que agora a tela de conciliaçÁo vai ignorar esse valor e calcular on-the-fly).
+- No payload do `saveSnapshot.mutateAsync`, enviaremos `0` (ou não enviar) para essas chaves. (Como o banco espera números e lida com o estado, será `0` gravado no daily_snapshot durante o import, já que agora a tela de conciliação vai ignorar esse valor e calcular on-the-fly).
 
 ### `src/components/conciliacao/ResumoDiaPanel.tsx`
 - Recuperar os totais via hook: `totalOfxOut` e `totalOfxIn` já vêm do `resumo`.
@@ -46,6 +46,6 @@ Agora: `Extrato Bancário (transactions) -> useConciliacaoResumo -> ResumoDiaPan
   });
   ```
 
-## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
-- **Cenário 1**: O usuário abre o importador. Ele nÁo deve ver "Contas a Pagar", "ProvisÁo", "Outros Faturamentos" e "Desc.". Apenas "Dinheiro MP" e "A Receber".
-- **Cenário 2**: Na tela de conciliaçÁo diária, as seções de contas e despesas devem exibir o valor somado de saídas do OFX e o valor de faturamento extra corretamente baseado no extrato, e a diferença global deve bater perto de zero sem intervençÁo de digitaçÁo de contas.
+## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+- **Cenário 1**: O usuário abre o importador. Ele não deve ver "Contas a Pagar", "Provisão", "Outros Faturamentos" e "Desc.". Apenas "Dinheiro MP" e "A Receber".
+- **Cenário 2**: Na tela de conciliação diária, as seções de contas e despesas devem exibir o valor somado de saídas do OFX e o valor de faturamento extra corretamente baseado no extrato, e a diferença global deve bater perto de zero sem intervenção de digitação de contas.

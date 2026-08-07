@@ -29,7 +29,7 @@ const ALERTS: FinAlert[] = [
     storeId: "jorge-bereta",
     storeName: "Jorge Bereta",
     os: "OS #4821",
-    description: "Pagamento em 3 formas nÁo fecha o total. Diferença: R$ 320,00",
+    description: "Pagamento em 3 formas não fecha o total. Diferença: R$ 320,00",
     detail:
       "Cliente pagou parte em débito (R$ 1.200,00), parte em PIX (R$ 800,00) e parte em crédito 3x (R$ 1.530,00). Total registrado: R$ 3.530,00. Total da OS: R$ 3.850,00.",
     timestamp: "07:34",

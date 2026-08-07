@@ -1,33 +1,33 @@
-﻿# Proposal: Auditor de ConciliaçÁo Silenciosa em Background & Central de Telemetria (background-ai-telemetry-engine)
+﻿# Proposal: Auditor de Conciliação Silenciosa em Background & Central de Telemetria (background-ai-telemetry-engine)
 
 ## Problema
 
-- O usuário nÁo deseja nenhuma intervençÁo manual (sem botões, modais ou selos visíveis de "IA" na tela de conciliaçÁo diária). A conciliaçÁo deve ocorrer de forma **100% silenciosa em segundo plano (Headless Background)**.
+- O usuário não deseja nenhuma intervenção manual (sem botões, modais ou selos visíveis de "IA" na tela de conciliação diária). A conciliação deve ocorrer de forma **100% silenciosa em segundo plano (Headless Background)**.
 - Ao mesmo tempo, o usuário exige **auditabilidade total e telemetria profunda** na página de Configurações (`/configuracoes`), com base nas lições da arquitetura de referência (Hermes Agent / BMF IA OS):
   1. Registro de logs imutáveis de cada chamada (payload JSON de entrada, resposta JSON de saída).
   2. Rastreamento detalhado de tokens (prompt, completion, total) por chamada e custo financeiro estimado ($ / R$) no período.
-  3. Registro do raciocínio passo-a-passo (Chain of Thought) da IA em cada associaçÁo realizada.
-  4. HomologaçÁo com nota de confiança mínima (>= 90%) para aplicaçÁo automática silenciosa em banco.
+  3. Registro do raciocínio passo-a-passo (Chain of Thought) da IA em cada associação realizada.
+  4. Homologação com nota de confiança mínima (>= 90%) para aplicação automática silenciosa em banco.
 
-## SoluçÁo Proposta
+## Solução Proposta
 
-1. **RemoçÁo de 100% dos Elementos Visuais de IA na Tela de ConciliaçÁo:**
-   - ExclusÁo do botÁo "✨ Conciliar com IA" e do modal de aprovaçÁo em `src/routes/conciliacao.$lojaId.tsx`.
-   - ExclusÁo do arquivo `src/components/conciliacao/AiConciliationAssistant.tsx`.
-   - A tela de conciliaçÁo diária permanece 100% limpa, rápida e tradicional.
+1. **Remoção de 100% dos Elementos Visuais de IA na Tela de Conciliação:**
+   - Exclusão do botão "✨ Conciliar com IA" e do modal de aprovação em `src/routes/conciliacao.$lojaId.tsx`.
+   - Exclusão do arquivo `src/components/conciliacao/AiConciliationAssistant.tsx`.
+   - A tela de conciliação diária permanece 100% limpa, rápida e tradicional.
 
-2. **CriaçÁo da Tabela de Auditoria e Telemetria `ai_execution_logs` no Supabase:**
-   - Tabela imutável para guardar todo o rastro de execuçÁo da IA:
+2. **Criação da Tabela de Auditoria e Telemetria `ai_execution_logs` no Supabase:**
+   - Tabela imutável para guardar todo o rastro de execução da IA:
      `id`, `created_at`, `store_id`, `provider`, `model`, `prompt_tokens`, `completion_tokens`, `total_tokens`, `estimated_cost`, `execution_time_ms`, `raw_payload_json`, `raw_response_json`, `reasoning_steps_json`, `matches_applied_count`.
 
-3. **ExecuçÁo Headless Silenciosa (`src/lib/llm-matcher.ts`):**
+3. **Execução Headless Silenciosa (`src/lib/llm-matcher.ts`):**
    - A IA roda em segundo plano sem interromper o usuário.
-   - Vínculos com nota de confiança >= 90% sÁo gravados automaticamente na tabela `conciliation_matches`.
+   - Vínculos com nota de confiança >= 90% são gravados automaticamente na tabela `conciliation_matches`.
    - Toda chamada é auditada e salva na tabela `ai_execution_logs`.
 
 4. **Painel de Telemetria e Inspector de JSON na Tela de Configurações (`/configuracoes`):**
-   - Nova seçÁo dedicada **"📊 Central de Telemetria e Logs da IA"** na página `/configuracoes`.
-   - **Cards de Métricas:** Tokens Totais (Prompt + Completion), Custo Estimado ($), Total de Chamadas e Taxa de ConversÁo de Matches.
+   - Nova seção dedicada **"📊 Central de Telemetria e Logs da IA"** na página `/configuracoes`.
+   - **Cards de Métricas:** Tokens Totais (Prompt + Completion), Custo Estimado ($), Total de Chamadas e Taxa de Conversão de Matches.
    - **Inspector de Logs & JSON (Estilo DevTools):** Tabela de histórico com filtro por data, onde o usuário pode expandir cada chamada e visualizar:
      - Payload JSON enviado (Input)
      - Resposta JSON bruta recebida (Output)
@@ -52,10 +52,10 @@
   - `matches_applied_count` (integer)
 
 ## Features Existentes Impactadas
-- `src/routes/conciliacao.$lojaId.tsx` (removido botÁo e modal)
-- `src/lib/llm-matcher.ts` (adicionado salvamento de telemetria e aplicaçÁo automática silenciosa)
+- `src/routes/conciliacao.$lojaId.tsx` (removido botão e modal)
+- `src/lib/llm-matcher.ts` (adicionado salvamento de telemetria e aplicação automática silenciosa)
 - `src/routes/configuracoes.tsx` (adicionado painel de telemetria, consumo de tokens e inspector de JSON)
 
 ## Risco Principal
 Exceder limites de cota da API da IA durante chamadas assíncronas repetidas.
-*MitigaçÁo:* Captura graciosa de erros no fetch gravando o status de erro no `ai_execution_logs` sem travar a interface do usuário.
+*Mitigação:* Captura graciosa de erros no fetch gravando o status de erro no `ai_execution_logs` sem travar a interface do usuário.

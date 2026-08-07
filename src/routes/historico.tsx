@@ -63,7 +63,7 @@ function HistoricoPage() {
               Extrato Bancário
             </h1>
             <p className="text-sm text-[var(--text-secondary)] mt-1">
-              ConsolidaçÁo de entradas, saídas e saldo por período.
+              Consolidação de entradas, saídas e saldo por período.
             </p>
           </div>
           <button

@@ -1,11 +1,11 @@
 ﻿# Proposal: Dashboard Gerencial de Lojas (014)
 
 ## Contexto e Problema
-O usuário compartilhou uma planilha manual que a diretoria (Daniel) utilizava para controle, que contém métricas avançadas além do "Entrou/Saiu". Eles querem que a visÁo do sistema seja capaz de mostrar as mesmas informações, mas com a vantagem de ser sistêmico e mais detalhado.
-As informações-chave visualizadas no modelo antigo sÁo:
+O usuário compartilhou uma planilha manual que a diretoria (Daniel) utilizava para controle, que contém métricas avançadas além do "Entrou/Saiu". Eles querem que a visão do sistema seja capaz de mostrar as mesmas informações, mas com a vantagem de ser sistêmico e mais detalhado.
+As informações-chave visualizadas no modelo antigo são:
 - **Saldos Bancários:** Saldo no Banco (ex: Banco Itaú) e Limite da conta.
 - **Métricas de Caixa (Fluxo e Faturamento):** Faturamento Atual, Valor do Fluxo de Caixa, Valor Disponível para Contas, Valor das Contas.
-- O detalhamento do que "Entrou" ou "NÁo Entrou", separado pelas formas de pagamento (Dinheiro, CartÁo Crédito/Débito).
+- O detalhamento do que "Entrou" ou "Não Entrou", separado pelas formas de pagamento (Dinheiro, Cartão Crédito/Débito).
 
 ## Requisitos e User Stories
 - **Eu como gestor financeiro (Daniel)**, quero acessar a página da loja (`/loja/$id`) e ter um "Resumo Gerencial" no topo.
@@ -21,8 +21,8 @@ As informações-chave visualizadas no modelo antigo sÁo:
 - Criar um grande "Painel de Bordo (Resumo Financeiro da Loja)" que agrupe:
   - Saldo Bancário (com badge Negativo/Positivo) e Limite.
   - Faturamento / Fluxo de Caixa / Valores a Pagar.
-- Como esses dados de Saldo e Limite ainda nÁo vêm da base de dados, adicionaremos os blocos de UI (visual) para já preparar a tela para receber essa integraçÁo no futuro ou para digitaçÁo manual, alinhando com a expectativa visual do usuário.
+- Como esses dados de Saldo e Limite ainda não vêm da base de dados, adicionaremos os blocos de UI (visual) para já preparar a tela para receber essa integração no futuro ou para digitação manual, alinhando com a expectativa visual do usuário.
 
 ## Critérios de Aceite
 1. O Painel da Loja deve incorporar a linguagem do Excel enviado (Saldo Banco, Limite, Faturamento, Valor das Contas).
-2. O layout deve manter o padrÁo SDD (Design rico, micro-interações, ícones Lucide) de timeline/cards que já aplicamos antes.
+2. O layout deve manter o padrão SDD (Design rico, micro-interações, ícones Lucide) de timeline/cards que já aplicamos antes.

@@ -1,4 +1,4 @@
-﻿# Design: RestauraçÁo Estética Total e Animações da ConciliaçÁo (conciliacao-visual-restoration)
+﻿# Design: Restauração Estética Total e Animações da Conciliação (conciliacao-visual-restoration)
 
 ## Componente Reconstruído `ResumoDiaPanel.tsx`
 
@@ -44,8 +44,8 @@
 ))}
 ```
 
-## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
+## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
 
 - **Cenário 1 (Entrada e Animações da Tela `/conciliacao`):**
-  - *AçÁo:* Carregar a página principal de conciliaçÁo.
-  - *Resultado Esperado:* O Hero Card principal desliza suavemente com efeito glow ambiente; os cartões de lojas surgem de forma escalonada e respondem ao mouse com elevaçÁo 3D (`scale 1.015`) e brilho.
+  - *Ação:* Carregar a página principal de conciliação.
+  - *Resultado Esperado:* O Hero Card principal desliza suavemente com efeito glow ambiente; os cartões de lojas surgem de forma escalonada e respondem ao mouse com elevação 3D (`scale 1.015`) e brilho.

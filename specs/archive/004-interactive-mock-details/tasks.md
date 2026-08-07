@@ -2,7 +2,7 @@
   - [ ] Adicionar lista de `mechanics` e outros meta-dados em `src/mock/data.ts`.
 - [ ] 2. Ajuste do AnimatedNumber (1x execution)
   - [ ] Criar arquivo `src/hooks/useInitialLoad.ts` ou estado simples usando SessionStorage.
-  - [ ] Modificar `AnimatedNumber.tsx` para respeitar se o firstLoad já ocorreu, removendo a transiçÁo do zero.
+  - [ ] Modificar `AnimatedNumber.tsx` para respeitar se o firstLoad já ocorreu, removendo a transição do zero.
 - [ ] 3. Dashboard Chart
   - [ ] Criar `src/components/dashboard/CashFlowChart.tsx` importando `BarChart` do `recharts`.
   - [ ] Atualizar `index.tsx` substituindo o placeholder pelo gráfico real animado.
@@ -13,7 +13,7 @@
   - [ ] Adicionar dependência para modais/dialogs (se usarmos radix ou construir customizado com Framer Motion). Vamos usar Modais customizados super limpos com Framer Motion.
   - [ ] Criar `AlertResolveDialog` e integrar em `alertas.tsx`.
   - [ ] Criar `StoreDetailsSheet` e integrar no clique das lojas em `lojas.tsx`.
-  - [ ] Criar `ConciliationReportDialog` e plugar no botÁo "Ver Relatório Detalhado" em `conciliacao.tsx`.
-- [ ] 6. RevisÁo Final e Build
+  - [ ] Criar `ConciliationReportDialog` e plugar no botão "Ver Relatório Detalhado" em `conciliacao.tsx`.
+- [ ] 6. Revisão Final e Build
   - [ ] Garantir que o app continua ultra rápido e fluido.
   - [ ] Verificar dark mode e responsividade nos Modais.

@@ -1,4 +1,4 @@
-﻿# Design: RefatoraçÁo do Bot para API de Consulta MCP (bot-mcp-refactor)
+﻿# Design: Refatoração do Bot para API de Consulta MCP (bot-mcp-refactor)
 
 ## Arquitetura Técnica
 
@@ -13,7 +13,7 @@
         |
         | Se a IA decidir invocar 'consulta_os_semana':
         | -> A IA emite a chamada de ferramenta.
-        | -> A funçÁo 'execute' da tool envia o 'bot_url' e 'bot_api_key' repassados por parâmetro para o Bot.
+        | -> A função 'execute' da tool envia o 'bot_url' e 'bot_api_key' repassados por parâmetro para o Bot.
         v
 [ Edge Function: mcp-proxy (ou lógica in-line no ai-chat) ]
         | 4. Dispara POST para '{bot_url}/v1/jobs' passando { action, params } e header 'X-Api-Key'.
@@ -44,6 +44,6 @@ interface InvokeMCPPayload {
 2. **`supabase/functions/ai-chat/index.ts`**: Atualizar as chamadas de `invokeMCP` para injetar `settings.bot_url` e `settings.bot_api_key` se presentes. 
 3. **`supabase/functions/mcp-proxy/index.ts`**: Ler `mcpUrl` e `workerKey` vindos de `req.json()` prioritariamente. Somente recorrer a `Deno.env` como *fallback*.
 
-## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
-- **Cenário 1:** Usuário pergunta no chat "Busque as OS de hoje". A IA chama a tool `consulta_os_semana`. A `mcp-proxy` utiliza a URL e Key customizadas do Supabase para bater na VPS, o crawler roda, e a resposta é devolvida sem intervençÁo de gambiarras em string no frontend.
-- **Cenário 2:** Usuário nÁo cadastrou `bot_url` na tabela `ai_settings`. O `ai-chat` tenta usar o fallback ou exibe erro: "Ferramenta de scraping indisponível: configure a URL do bot na aba 'Bot & MCP'."
+## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
+- **Cenário 1:** Usuário pergunta no chat "Busque as OS de hoje". A IA chama a tool `consulta_os_semana`. A `mcp-proxy` utiliza a URL e Key customizadas do Supabase para bater na VPS, o crawler roda, e a resposta é devolvida sem intervenção de gambiarras em string no frontend.
+- **Cenário 2:** Usuário não cadastrou `bot_url` na tabela `ai_settings`. O `ai-chat` tenta usar o fallback ou exibe erro: "Ferramenta de scraping indisponível: configure a URL do bot na aba 'Bot & MCP'."

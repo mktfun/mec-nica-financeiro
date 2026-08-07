@@ -1,18 +1,18 @@
-﻿# Proposal: Dashboard Fintech V2 — VisÁo Executiva Completa (062)
+﻿# Proposal: Dashboard Fintech V2 — Visão Executiva Completa (062)
 
 ## Problema
 
 O dashboard atual (`/`) é superficial e desordenado para um gestor de rede de oficinas:
 
-1. **`HeroBalance`**: Exibe apenas "Saldo Consolidado Global" calculado de `transactions` (OFX). NÁo mostra caixa real, faturamento, contas, fluxo nem diferença.
+1. **`HeroBalance`**: Exibe apenas "Saldo Consolidado Global" calculado de `transactions` (OFX). Não mostra caixa real, faturamento, contas, fluxo nem diferença.
 2. **`QuickActions`**: Atalhos genéricos que poluem o espaço sem valor analítico.
-3. **`MotorStatus`**: Card redundante — a informaçÁo de divergências pertence à tela de ConciliaçÁo.
-4. **`RecentActivity`**: Lista OS grandes e atrasadas — util mas nÁo faz parte do contexto de dashboard financeiro executivo. Pode ser mantida mas rebaixada.
+3. **`MotorStatus`**: Card redundante — a informação de divergências pertence à tela de Conciliação.
+4. **`RecentActivity`**: Lista OS grandes e atrasadas — util mas não faz parte do contexto de dashboard financeiro executivo. Pode ser mantida mas rebaixada.
 5. **`StoreRankingChart`**: Mostra top 5 saldos bancários por loja — bom dado, mas renderizado sozinho sem contexto de faturamento nem contas.
 
-**Resultado:** O gestor abre o sistema e vê um número grande centralizado que nÁo responde às perguntas reais de negócio: "Quanto tenho disponível? Quanto preciso pagar? O que sobra?".
+**Resultado:** O gestor abre o sistema e vê um número grande centralizado que não responde às perguntas reais de negócio: "Quanto tenho disponível? Quanto preciso pagar? O que sobra?".
 
-## SoluçÁo Proposta
+## Solução Proposta
 
 Reescrever a rota `src/routes/index.tsx` e os componentes de dashboard para uma **grade fintech executiva de 3 faixas**:
 
@@ -33,12 +33,12 @@ Reescrever a rota `src/routes/index.tsx` e os componentes de dashboard para uma 
 | Veículos em Pátio | Count de OS `em_aberto` e valor total retido | `patio_os` |
 
 ### Faixa Base — Tabela Por Loja + Gráfico
-- **Tabela**: Loja | Saldo Atual | Faturamento do Período | Contas do Período | Resultado Líquido | Status ConciliaçÁo
+- **Tabela**: Loja | Saldo Atual | Faturamento do Período | Contas do Período | Resultado Líquido | Status Conciliação
 - **Gráfico**: 1 `BarChart` horizontal por loja — "Faturamento × Contas" (Recharts já disponível)
 
 ## Componentes a DELETAR (sem valor no novo layout)
 - `QuickActions.tsx` — remover do dashboard (pode manter o arquivo para usar em outro lugar)
-- `MotorStatus.tsx` — remover do dashboard (informaçÁo pertence à tela de ConciliaçÁo)
+- `MotorStatus.tsx` — remover do dashboard (informação pertence à tela de Conciliação)
 - `HeroBalance.tsx` — substituído pelos 4 KPI Cards do topo
 
 ## Componentes a CRIAR
@@ -52,7 +52,7 @@ Reescrever a rota `src/routes/index.tsx` e os componentes de dashboard para uma 
 ### Fontes confirmadas (tabelas existentes)
 - `reconciliations` → `store_id`, `date`, `os_total`, `bank_total`, `financial_total`, `divergence`, `status`
 - `patio_os` → `store_id`, `status`, `total_value`, `paid_value`, `payment_method`
-- `oficina_contas` → `store_id`, `valor_em_aberto`, `tipo`, `status` ← tabela nova criada na migraçÁo 20260803
+- `oficina_contas` → `store_id`, `valor_em_aberto`, `tipo`, `status` ← tabela nova criada na migração 20260803
 - `transactions` → `store_id`, `amount`, `type`, `source`, `target_date`
 
 ### Cálculos padronizados
@@ -69,16 +69,16 @@ diferenca = caixa_atual - contas_a_pagar
 ```
 
 ## Features Existentes Impactadas
-- `src/routes/index.tsx` — reescrita completa da composiçÁo visual
+- `src/routes/index.tsx` — reescrita completa da composição visual
 - `HeroBalance.tsx`, `QuickActions.tsx`, `MotorStatus.tsx` — removidos do dashboard (arquivos mantidos)
 - `StoreRankingChart.tsx` — mantido mas integrado à faixa base com dados ampliados
 - `RecentActivity.tsx` — rebaixado para opcional/removido
 - Hook `useDashboardSummary` — mantido mas estendido
 
 ## Risco Principal
-`oficina_contas` depende do cron de sync rodar para ter dados. Se a tabela estiver vazia (usuário novo ou cron nÁo rodou), os cards de "Contas a Pagar" mostrarÁo R$ 0 — o comportamento é correto mas pode confundir. SoluçÁo: tooltip explicativo e estado vazio informativo.
+`oficina_contas` depende do cron de sync rodar para ter dados. Se a tabela estiver vazia (usuário novo ou cron não rodou), os cards de "Contas a Pagar" mostrarão R$ 0 — o comportamento é correto mas pode confundir. Solução: tooltip explicativo e estado vazio informativo.
 
-## NÁo fazer
-- NÁo criar novas tabelas no banco. Todos os dados já existem.
-- NÁo usar TailwindCSS ad-hoc. Usar as CSS vars do design system existente (`--color-primary`, `--bg-surface`, etc.).
-- NÁo criar um gráfico de linha ou pizza. O único gráfico é o bar chart horizontal.
+## Não fazer
+- Não criar novas tabelas no banco. Todos os dados já existem.
+- Não usar TailwindCSS ad-hoc. Usar as CSS vars do design system existente (`--color-primary`, `--bg-surface`, etc.).
+- Não criar um gráfico de linha ou pizza. O único gráfico é o bar chart horizontal.

@@ -9,13 +9,13 @@ interface KpiCardProps {
   label: string;
   value: number;
   format?: 'currency' | 'count';
-  trend?: number;        // % variaçÁo vs mês anterior
+  trend?: number;        // % variação vs mês anterior
   trendLabel?: string;
   icon: LucideIcon;
   color?: KpiColor;
   tooltip?: string;
   isLoading?: boolean;
-  index?: number;        // para delay de animaçÁo
+  index?: number;        // para delay de animação
 }
 
 const COLOR_MAP: Record<KpiColor, { icon: string; bg: string; badge: string }> = {

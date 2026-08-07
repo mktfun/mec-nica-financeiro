@@ -1,7 +1,7 @@
-﻿﻿# Design: AutomaçÁo do Pareamento e Tag de PIX (116)
+﻿﻿# Design: Automação do Pareamento e Tag de PIX (116)
 
-## 1. Módulo: Central de ImportaçÁo (\CentralImportWizard.tsx\)
-**AdiçÁo de PIX:**
+## 1. Módulo: Central de Importação (\CentralImportWizard.tsx\)
+**Adição de PIX:**
 Na montagem do payload 	xsToInsert para iteradores de OFX:
 `	ypescript
     const isPix = tx.title?.toUpperCase().includes('PIX') ? 'pix' : null;
@@ -11,7 +11,7 @@ Na montagem do payload 	xsToInsert para iteradores de OFX:
       ...
     });
 `
-Isso resolverá o fato de payment_method estar sendo deixado para trás ao importar o banco, fazendo com que o dashboard e a conciliaçÁo o contabilizem na variável _pix.
+Isso resolverá o fato de payment_method estar sendo deixado para trás ao importar o banco, fazendo com que o dashboard e a conciliação o contabilizem na variável _pix.
 
 **Disparo de Pareamento:**
 Antes de gravar daily_snapshots, injetaremos a chamada:
@@ -21,6 +21,6 @@ Antes de gravar daily_snapshots, injetaremos a chamada:
     if (matchErr) throw matchErr;
 `
 
-## 2. Módulo: Painel de ConciliaçÁo (\ResumoDiaPanel.tsx\)
-- Remover o botÁo Parear Transações (<Button onClick={handleMatchTransactions} ...>)
-- Remover o state isMatching e a funçÁo handleMatchTransactions.
+## 2. Módulo: Painel de Conciliação (\ResumoDiaPanel.tsx\)
+- Remover o botão Parear Transações (<Button onClick={handleMatchTransactions} ...>)
+- Remover o state isMatching e a função handleMatchTransactions.

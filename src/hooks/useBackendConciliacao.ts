@@ -29,14 +29,14 @@ export function useBackendConciliacao(date: string) {
         effectiveDate = latestLog?.target_date || new Date().toISOString().split('T')[0];
       }
 
-      console.log(`[ConciliaçÁo] Solicitando cálculo via RPC calculate_daily_conciliation para a data: ${effectiveDate}`);
+      console.log(`[Conciliação] Solicitando cálculo via RPC calculate_daily_conciliation para a data: ${effectiveDate}`);
 
       const { data, error } = await supabase.rpc('calculate_daily_conciliation', {
         p_date: effectiveDate
       });
 
       if (error) {
-        console.error("Erro ao calcular conciliaçÁo no backend:", error);
+        console.error("Erro ao calcular conciliação no backend:", error);
         throw error;
       }
 

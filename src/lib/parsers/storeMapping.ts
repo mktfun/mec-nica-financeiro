@@ -19,6 +19,6 @@ export function normalizeRedeStoreName(rawName: string): string {
     return REDE_STORE_MAPPING[normalized];
   }
   
-  // Se nÁo encontrar, retorna o original limpo
+  // Se não encontrar, retorna o original limpo
   return rawName.trim();
 }

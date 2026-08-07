@@ -1,7 +1,7 @@
 ﻿# Design: Global Backend Math Refactor (108-global-backend-math-refactor)
 
 ## Arquitetura Técnica
-(Frontend - Dashboard e ConciliaçÁo)
+(Frontend - Dashboard e Conciliação)
   ↓
 [Hooks Simples e Diretos (`useBackendDashboard`, `useBackendConciliacao`)]
   ↓
@@ -57,8 +57,8 @@ export interface DashboardDailyLog {
    - `src/components/conciliacao/ResumoDiaPanel.tsx`
 
 ## Fluxo de UI
-Toda vez que a tela principal (Dashboard) ou a tela de ConciliaçÁo montar ou alterar a data, os hooks novos buscarÁo o snapshot processado no banco de dados. Os indicadores, gráficos de barra e alertas vermelhos/verdes acenderÁo baseados unicamente no JSON respondido pela RPC, matando a árvore de dependências espaguete do frontend.
+Toda vez que a tela principal (Dashboard) ou a tela de Conciliação montar ou alterar a data, os hooks novos buscarão o snapshot processado no banco de dados. Os indicadores, gráficos de barra e alertas vermelhos/verdes acenderão baseados unicamente no JSON respondido pela RPC, matando a árvore de dependências espaguete do frontend.
 
-## Cenários de VerificaçÁo
+## Cenários de Verificação
 - **Cenário 1**: Faturamento Anterior no Dashboard. O usuário abre o sistema hoje, o SQL calcula as métricas, retroage 1 dia, calcula as do dia anterior, e exibe o `variacao_faturamento` exato no front.
-- **Cenário 2**: ConciliaçÁo individual exibe a Diferença correta de (`Previsto - PIX - Maquininha`). Caso haja falha (ex: Pix = 50, Prev = 60), a tela acusa erro -10. O admin pode auditar na tabela de logs para ver que às 22h os valores bateram exatamente nisso.
+- **Cenário 2**: Conciliação individual exibe a Diferença correta de (`Previsto - PIX - Maquininha`). Caso haja falha (ex: Pix = 50, Prev = 60), a tela acusa erro -10. O admin pode auditar na tabela de logs para ver que às 22h os valores bateram exatamente nisso.

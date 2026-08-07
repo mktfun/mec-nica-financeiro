@@ -31,10 +31,10 @@ export function MotorStatus() {
         </div>
         <div>
           <h3 className="font-display font-semibold text-lg">
-            Motor de ConciliaçÁo
+            Motor de Conciliação
           </h3>
           <p className="text-[var(--text-secondary)] text-sm">
-            {isProcessing ? "Processando remessas bancárias..." : "ConciliaçÁo atualizada às 14:30"}
+            {isProcessing ? "Processando remessas bancárias..." : "Conciliação atualizada às 14:30"}
           </p>
         </div>
       </div>

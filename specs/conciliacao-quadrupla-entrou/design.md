@@ -1,6 +1,6 @@
-﻿# Design: Cadeia de ConciliaçÁo Quádrupla (OS × Maquininha × PIX × Extrato OFX) e Baixa Automática 'ENTROU' (conciliacao-quadrupla-entrou)
+﻿# Design: Cadeia de Conciliação Quádrupla (OS × Maquininha × PIX × Extrato OFX) e Baixa Automática 'ENTROU' (conciliacao-quadrupla-entrou)
 
-## Fluxo da Cadeia de ConciliaçÁo em 4 Pontas
+## Fluxo da Cadeia de Conciliação em 4 Pontas
 
 ```
                      [1. OS Lançada pelo Gerente]
@@ -52,7 +52,7 @@ export interface OsStatusUpdatePayload {
 }
 ```
 
-## Algoritmo de AvaliaçÁo da Baixa Automática
+## Algoritmo de Avaliação da Baixa Automática
 
 ```typescript
 function evaluateQuadrupleMatching(
@@ -63,7 +63,7 @@ function evaluateQuadrupleMatching(
   const osCreditVal = osItem.parsed_credit_debit || 0;
   const osPixVal = osItem.parsed_pix_transfer || 0;
   
-  // 1. Checar se a parcela de cartÁo bateu com a maquininha (Rede)
+  // 1. Checar se a parcela de cartão bateu com a maquininha (Rede)
   const redeMatch = redeMatches.find(r => 
     r.os_number === osItem.os_number || 
     Math.abs(r.rede_bruto - osCreditVal) < 0.5
@@ -98,11 +98,11 @@ function evaluateQuadrupleMatching(
 }
 ```
 
-## AtualizaçÁo nos Componentes de Interface
+## Atualização nos Componentes de Interface
 
 1. **`src/components/conciliacao/OsVsRedeTable.tsx`**:
-   - Exibir a tag de status **`✅ ENTROU`** (verde neon) quando a OS satisfizer as 4 pontas da conciliaçÁo.
-   - Adicionar botÁo/açÁo para disparar a baixa em lote das OSs elegíveis para `ENTROU`.
+   - Exibir a tag de status **`✅ ENTROU`** (verde neon) quando a OS satisfizer as 4 pontas da conciliação.
+   - Adicionar botão/ação para disparar a baixa em lote das OSs elegíveis para `ENTROU`.
 
 2. **`src/components/conciliacao/OsDetailModal.tsx`**:
    - Exibir o indicador visual de fechamento quádruplo:
@@ -114,19 +114,19 @@ function evaluateQuadrupleMatching(
 3. **`src/routes/conciliacao.$lojaId.tsx`**:
    - Exibir o resumo do saldo realizado vs saldo pendente "Na Loja" em alinhamento com a Aba SALDO da planilha `CONCILIACAO-2307.xlsx`.
 
-## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
+## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
 
 - **Cenário 1 (Cadeia Completa 4 Pontas Fechada):**
   - *Dado:* OS #549 (R$ 4.021,50 no Crédito) lançada na loja Dom Pedro I. Venda de R$ 4.021,50 importada na Rede. Depósito de R$ 4.021,50 presente no extrato Itaú (OFX).
-  - *AçÁo:* Executar conciliaçÁo.
+  - *Ação:* Executar conciliação.
   - *Resultado Esperado:* As 3 pontas batem. O sistema atualiza `patio_os.status` para `ENTROU`. A OS sai da lista de pendências "Na Loja" e migra para o saldo realizado.
 
 - **Cenário 2 (OS com Pagamento Fracionado Crédito + PIX):**
   - *Dado:* OS #550 (R$ 1.718,45 no Crédito + R$ 385,00 no PIX).
-  - *AçÁo:* Executar conciliaçÁo.
+  - *Ação:* Executar conciliação.
   - *Resultado Esperado:* O sistema valida R$ 1.718,45 na Rede, R$ 1.718,45 no OFX e R$ 385,00 no PIX do OFX. As 4 pontas fecham -> Status `ENTROU`.
 
-- **Cenário 3 (Ponta Faltando - Maquininha bateu mas Banco nÁo caiu):**
-  - *Dado:* OS #551 (R$ 500,00 no Crédito). Venda de R$ 500,00 na Rede, mas o depósito ainda nÁo caiu no OFX.
-  - *AçÁo:* Executar conciliaçÁo.
-  - *Resultado Esperado:* A ponta 3 (Banco) falha. A OS permanece como `PENDENTE / NÁO ENTROU` e continua listada no saldo "Na Loja".
+- **Cenário 3 (Ponta Faltando - Maquininha bateu mas Banco não caiu):**
+  - *Dado:* OS #551 (R$ 500,00 no Crédito). Venda de R$ 500,00 na Rede, mas o depósito ainda não caiu no OFX.
+  - *Ação:* Executar conciliação.
+  - *Resultado Esperado:* A ponta 3 (Banco) falha. A OS permanece como `PENDENTE / NÃO ENTROU` e continua listada no saldo "Na Loja".

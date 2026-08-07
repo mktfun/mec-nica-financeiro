@@ -113,7 +113,7 @@ export type ReceivableRow = {
   id: string;
   store_id: string | null;
   store_name: string | null;
-  type: 'CartÁo Crédito' | 'CartÁo Débito' | 'PIX' | 'Boleto';
+  type: 'Cartão Crédito' | 'Cartão Débito' | 'PIX' | 'Boleto';
   value: number;
   status: 'pendente' | 'recebido' | 'vencido';
   date: string;

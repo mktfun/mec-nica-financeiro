@@ -1,4 +1,4 @@
-﻿# Design: Motor de ConciliaçÁo em Camadas com Subset-Sum Combinatório e Janela Temporal D-1 (conciliacao-layered-matching)
+﻿# Design: Motor de Conciliação em Camadas com Subset-Sum Combinatório e Janela Temporal D-1 (conciliacao-layered-matching)
 
 ## Arquitetura do Motor de Matching Multicamadas
 
@@ -105,32 +105,32 @@ export interface LayeredMatchResult {
 ## Mudanças nos Componentes Frontend
 
 1. **`src/hooks/useConciliacao.ts`**:
-   - Atualizar a funçÁo `useReconciliationViews` para buscar também as transações do dia anterior (`target_date = date - 1 day`) da mesma loja.
-   - Implementar as 4 camadas de matching na geraçÁo de `redeVsOfx`, `osVsRede` e `pixVsOfx`.
+   - Atualizar a função `useReconciliationViews` para buscar também as transações do dia anterior (`target_date = date - 1 day`) da mesma loja.
+   - Implementar as 4 camadas de matching na geração de `redeVsOfx`, `osVsRede` e `pixVsOfx`.
 
 2. **`src/components/conciliacao/RedeVsOfxTable.tsx`**:
-   - Renderizar os grupos resultantes da Camada 1 e Camada 2 com selo de **"100% PAREADO (Exato)"** ou **"100% PAREADO (CombinaçÁo N:1)"**.
+   - Renderizar os grupos resultantes da Camada 1 e Camada 2 com selo de **"100% PAREADO (Exato)"** ou **"100% PAREADO (Combinação N:1)"**.
    - Indicar claramente quando uma venda foi pareada via janela temporal **"Pareado com Venda de Ontem (D-1)"**.
 
 3. **`src/components/conciliacao/OsVsRedeTable.tsx`**:
-   - Exibir correspondência exata $1:1$ de OS vs Maquininha. OSs que nÁo baterem nÁo sÁo forçadas — exibem tag de alerta.
+   - Exibir correspondência exata $1:1$ de OS vs Maquininha. OSs que não baterem não são forçadas — exibem tag de alerta.
 
 4. **`src/components/conciliacao/ConciliacaoAlertsSection.tsx`**:
-   - Novo componente/seçÁo de **Alertas de Divergência Real**: exibe uma tabela resumida com apenas os lançamentos que nÁo fecharam em nenhuma das 4 camadas, permitindo análise cirúrgica e ajuste manual.
+   - Novo componente/seção de **Alertas de Divergência Real**: exibe uma tabela resumida com apenas os lançamentos que não fecharam em nenhuma das 4 camadas, permitindo análise cirúrgica e ajuste manual.
 
-## Cenários de VerificaçÁo (SCAN → INFER → VERIFY → FIX)
+## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
 
-- **Cenário 1 (Caso "Rei do Módulo" - Exato 1:1 + CombinaçÁo 2:1):**
+- **Cenário 1 (Caso "Rei do Módulo" - Exato 1:1 + Combinação 2:1):**
   - *Dados:* 4 depósitos OFX (R$ 590,52; R$ 2.447,39; R$ 367,11; R$ 446,49) e vendas de maquininha.
-  - *AçÁo:* Processar via motor em camadas.
+  - *Ação:* Processar via motor em camadas.
   - *Resultado Esperado:* A venda de R$ 590,52 pareia 1:1 na Camada 1. As duas vendas que somam R$ 2.447,39 pareiam na Camada 2 (Subset-Sum). NENHUMA divergência falsa é criada no agrupamento.
 
 - **Cenário 2 (Sobras do Dia Anterior D-1):**
-  - *Dados:* Depósito OFX de R$ 1.200,00 cai na segunda-feira. No arquivo da segunda nÁo há vendas da máquina que somem R$ 1.200,00, mas no domingo (D-1) há vendas nÁo conciliadas de R$ 1.200,00.
-  - *AçÁo:* Executar a Camada 3 (Janela Temporal).
+  - *Dados:* Depósito OFX de R$ 1.200,00 cai na segunda-feira. No arquivo da segunda não há vendas da máquina que somem R$ 1.200,00, mas no domingo (D-1) há vendas não conciliadas de R$ 1.200,00.
+  - *Ação:* Executar a Camada 3 (Janela Temporal).
   - *Resultado Esperado:* O sistema localiza as vendas de domingo (D-1) e marca como pareado temporalmente, zerando a divergência falsa.
 
 - **Cenário 3 (Divergência Real enviada para Alertas):**
   - *Dados:* Depósito OFX de R$ 800,00 sem nenhuma venda compatível hoje nem em D-1.
-  - *AçÁo:* Processamento completo das 4 camadas.
-  - *Resultado Esperado:* O depósito cai na seçÁo de **Alertas & Exceções**, indicando "Divergência de R$ 800,00 - Nenhuma venda localizada".
+  - *Ação:* Processamento completo das 4 camadas.
+  - *Resultado Esperado:* O depósito cai na seção de **Alertas & Exceções**, indicando "Divergência de R$ 800,00 - Nenhuma venda localizada".

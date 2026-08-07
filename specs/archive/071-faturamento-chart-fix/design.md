@@ -26,10 +26,10 @@ const CustomYAxisTick = (props: any) => {
 Isso desativa a quebra automática e força a string em uma única linha. O SVG `<text>` cru nunca faz wrap automático.
 
 ## 2. Limpeza Visual (Menos é Mais)
-- Remover os `<LabelList>`. A sobreposiçÁo visual quebrou o princípio de legibilidade.
+- Remover os `<LabelList>`. A sobreposição visual quebrou o princípio de legibilidade.
 - Reduzir o multiplicador de altura da div de `55` para `38` ou `40` (ex: `Math.max(260, chartData.length * 40)`), o que deixará as barras agrupadas numa densidade vertical mais agradável.
 
-## 3. PrevençÁo de Corte no Tooltip
+## 3. Prevenção de Corte no Tooltip
 - Se o Tooltip sai do container `overflow-y-auto`, ele é cortado (overflow clip).
 - Adicionar no Tooltip do Recharts a prop `allowEscapeViewBox={{ x: true, y: true }}` e possivelmente `isAnimationActive={false}` (para evitar bugs de escape).
-- Se ainda cortar, reduziremos a margem direita do gráfico para que o tooltip nÁo bata no limite.
+- Se ainda cortar, reduziremos a margem direita do gráfico para que o tooltip não bata no limite.

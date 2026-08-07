@@ -1,9 +1,9 @@
-﻿# Proposal: Limpeza e ReorganizaçÁo do Dashboard da Loja (016)
+﻿# Proposal: Limpeza e Reorganização do Dashboard da Loja (016)
 
 ## Contexto e Problema
 O usuário identificou vários problemas na tela de Detalhes da Loja (`/loja/$id`):
 
-1. **"Último Fechamento" inútil:** Os cards "Apurado Sistema R$ 0,00" e "Liquidado Conta R$ 0,00" ocupam espaço sem trazer valor. A divergência aparece mas nÁo diz ONDE/COMO resolver.
+1. **"Último Fechamento" inútil:** Os cards "Apurado Sistema R$ 0,00" e "Liquidado Conta R$ 0,00" ocupam espaço sem trazer valor. A divergência aparece mas não diz ONDE/COMO resolver.
 2. **Formas de Pagamento com ponto-e-vírgula:** No extrato, o `payment_method` é exibido cru (ex: `Credito: 8550.00;`), tornando a leitura horrível.
 3. **Consolidado do Sheets vs Sistema:** O consolidado de 89k pode divergir do Sheets (106k) pois o sistema agrupa apenas as OSs finalizadas no período do filtro, enquanto o Sheets pode incluir períodos diferentes.
 
@@ -14,12 +14,12 @@ O usuário identificou vários problemas na tela de Detalhes da Loja (`/loja/$id
 
 ## O que já existe e será reutilizado
 - Componentes `Badge`, `Card`, `AnimatedNumber`.
-- FunçÁo `parsePaymentMethods()` já faz o parse do formato "Credito: 10000.00;" — só precisa usar ela na exibiçÁo também.
+- Função `parsePaymentMethods()` já faz o parse do formato "Credito: 10000.00;" — só precisa usar ela na exibição também.
 - Gráfico de pizza Recharts já funciona.
 
 ## O que precisa ser criado/alterado
 - **Remover** todo o bloco "Último Fechamento" (linhas 234-276).
-- **Criar** uma funçÁo `formatPaymentDisplay(raw)` que transforma "Credito: 8550.00;" em badges visuais como `💳 Crédito R$ 8.550,00`.
+- **Criar** uma função `formatPaymentDisplay(raw)` que transforma "Credito: 8550.00;" em badges visuais como `💳 Crédito R$ 8.550,00`.
 - **Reorganizar** o grid para que o gráfico de pizza e a lista de formas de pagamento tenham mais espaço.
 
 ## Critérios de Aceite

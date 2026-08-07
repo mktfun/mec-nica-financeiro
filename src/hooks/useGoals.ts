@@ -30,11 +30,11 @@ export function useMonthlyGoal(storeId: string = 'GLOBAL') {
         .single();
 
       if (error && error.code !== 'PGRST116') {
-        // Ignora erro de schema caso a migration ainda nÁo tenha rodado
+        // Ignora erro de schema caso a migration ainda não tenha rodado
         console.warn('Failed to fetch goals:', error);
       }
 
-      // Se nÁo houver meta para o mês, retorna valores padrÁo para a UI nÁo quebrar
+      // Se não houver meta para o mês, retorna valores padrão para a UI não quebrar
       if (!data) {
         return {
           target_amount: 0,

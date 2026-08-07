@@ -1,6 +1,6 @@
-﻿# Design: Reset do Banco e Ajuste na ConciliaçÁo (007)
+﻿# Design: Reset do Banco e Ajuste na Conciliação (007)
 
-## 1. Arquitetura UI & IntegraçÁo (Antigravity)
+## 1. Arquitetura UI & Integração (Antigravity)
 - Em `src/hooks/useAuth.ts`, o bloco principal do `signInWithPassword` receberá um `try/catch`. 
   ```typescript
   try {
@@ -13,10 +13,10 @@
   }
   ```
 
-- Em `ImportReportDialog.tsx`, a propriedade `totalDinheiro` será extraída a partir de `payments['Dinheiro'] || 0`. O tipo ou interface `ParsedData` receberá `totalDinheiro` ao invés de usar `totalPaid` para o envio da mutaçÁo de conciliaçÁo diária.
+- Em `ImportReportDialog.tsx`, a propriedade `totalDinheiro` será extraída a partir de `payments['Dinheiro'] || 0`. O tipo ou interface `ParsedData` receberá `totalDinheiro` ao invés de usar `totalPaid` para o envio da mutação de conciliação diária.
 
 ## 2. Modelagem do Banco & Supabase (Supabase MCP)
-- Nenhuma alteraçÁo no Schema de tabelas é necessária, as colunas atuais suprem a necessidade.
+- Nenhuma alteração no Schema de tabelas é necessária, as colunas atuais suprem a necessidade.
 - Limpeza de dados (Executar via SQL `execute_sql` ou Supabase SQL Editor):
   ```sql
   DELETE FROM patio_os;
@@ -28,5 +28,5 @@
 
 ## 3. Mapa de Dependências
 - `useAuth.ts` afeta a rota de `login.tsx`.
-- `ImportReportDialog.tsx` afeta a rota de `dashboard` e a mutaçÁo de importaçÁo.
-- `useImportProcessor.ts` afeta a inserçÁo na tabela `conciliations`.
+- `ImportReportDialog.tsx` afeta a rota de `dashboard` e a mutação de importação.
+- `useImportProcessor.ts` afeta a inserção na tabela `conciliations`.

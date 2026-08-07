@@ -28,7 +28,7 @@ export function parseJurosRede(workbook: XLSX.WorkBook): ParsedExpense[] {
   }
 
   if (headersRowIndex === -1 || storeRowIndex === -1) {
-    throw new Error('Formato inválido: NÁo foi possível localizar o cabeçalho de Juros (Valor Bruto, valor cobrado/juros).');
+    throw new Error('Formato inválido: Não foi possível localizar o cabeçalho de Juros (Valor Bruto, valor cobrado/juros).');
   }
 
   const storeRow = data[storeRowIndex] || [];
@@ -96,7 +96,7 @@ export function parseJurosRede(workbook: XLSX.WorkBook): ParsedExpense[] {
             expenses.push({
               storeName: normalizedStoreName,
               amount: amount,
-              description: `Juros AntecipaçÁo - Tipo: ${extraInfo}`,
+              description: `Juros Antecipação - Tipo: ${extraInfo}`,
               occurredAt: new Date().toISOString().split('T')[0],
               category: 'juros_rede',
               originalStatus: 'PAG'

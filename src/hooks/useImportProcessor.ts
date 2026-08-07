@@ -20,7 +20,7 @@ export interface ParsedOS {
 }
 
 export interface ParsedReceivable {
-  type: 'CartÁo Crédito' | 'CartÁo Débito' | 'PIX' | 'Boleto';
+  type: 'Cartão Crédito' | 'Cartão Débito' | 'PIX' | 'Boleto';
   value: number;
   date: string;
   due_date: string;
@@ -267,7 +267,7 @@ export function useProcessImportedData() {
               target_date: date,
               title: desc,
               os_number: os.os_number,
-              payment_method: os.payment_method || 'NÁo especificado'
+              payment_method: os.payment_method || 'Não especificado'
             });
           }
         }
@@ -368,7 +368,7 @@ export function useDeleteImport() {
         console.warn('RPC delete_import_batch notice:', e);
       }
 
-      // 2. Fallback resiliente via JS Client para garantir que os logs e registros nÁo fiquem órfÁos
+      // 2. Fallback resiliente via JS Client para garantir que os logs e registros não fiquem órfãos
       if (logIds && logIds.length > 0) {
         if (storeId && storeId !== 'GLOBAL' && targetDates && targetDates.length > 0) {
           await supabase.from('conciliation_matches').delete().eq('store_id', storeId).in('target_date', targetDates);
