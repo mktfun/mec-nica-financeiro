@@ -79,7 +79,9 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
     let netIdx = headers.findIndex((h: string) => h.includes('valor líquido') || h.includes('venda liquida') || h.includes('venda líquida') || h.includes('liquido') || h.includes('líquido'));
     if (netIdx === -1) netIdx = 3;
 
-    let storeIdx = headers.findIndex((h: string) => h.includes('nome do estabelecimento') || h.includes('estabelecimento') || h.includes('loja'));
+    let storeIdx = headers.findIndex((h: string) => h === 'nome do estabelecimento' || h === 'nome fantasia' || h === 'loja');
+    if (storeIdx === -1) storeIdx = headers.findIndex((h: string) => h.includes('nome do estabelecimento'));
+    if (storeIdx === -1) storeIdx = headers.findIndex((h: string) => h.includes('estabelecimento') && !h.includes('número') && !h.includes('numero'));
     if (storeIdx === -1) storeIdx = 9;
 
     const transactions: RedeTransaction[] = [];

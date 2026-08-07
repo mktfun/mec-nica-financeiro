@@ -56,3 +56,7 @@
 - **M¢dulo**: Logger (Trace Log Json) (src/lib/logger.ts) - Implementado na Spec 101 
 
 - **Advanced Trace Logging (Spec 102)**: Propagação de sessionId pelo useCentralImport.ts e emissão de array JSON completo para cada parser (ofxParser, redeParser, useOsImportProcessor, maquininha) para viabilizar debug 100% acurado no DevTools.
+# #   D e v   A u t o - I m p o r t   ( F e a t u r e   1 0 5 ) 
+ -   * * S c r i p t * * :   s c r i p t s / g e n e r a t e - m o c k s . m j s   ( C o n v e r t e   e x t r a t o s   e m   B a s e 6 4   p a r a   b y p a s s a r   s e g u r a n a   d o   n a v e g a d o r   v i a   V i t e ) . 
+ -   * * M a p e a m e n t o   d e   L o j a s   ( R e s i l i n c i a ) * * :   u s e U n i f i e d S t o r e M a p p i n g   s a l v a   o   s l u g   n o r m a l i z a d o   d a   l o j a   n o   l o c a l S t o r a g e   e m   v e z   d o   U U I D   q u e b r a d o ,   r e c a r r e g a n d o   a u t o m a t i c a m e n t e   a p s   r e s e t a r   o   b a n c o .  
+ 

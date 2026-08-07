@@ -1,11 +1,11 @@
 # Graph Report - mec-nica-financeiro  (2026-08-06)
 
 ## Corpus Check
-- 1105 files · ~426,417 words
+- 1107 files · ~427,155 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 5937 nodes · 6363 edges · 964 communities (658 shown, 306 thin omitted)
+- 5946 nodes · 6370 edges · 966 communities (659 shown, 307 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 132 edges (avg confidence: 0.5)
 - Token cost: 0 input · 0 output
 
@@ -745,7 +745,7 @@
 - Proposal: Dashboard Fintech V4 — Filtro de Data Dinâmico e UI Ajustada (064)
 - Design: Transparência de Origem de Dados, Isolamento Estrito de Conversas e Raciocínio Adaptativo (fix-ai-provenance-and-conversation-isolation)
 - Spec Plan: Alinhamento de Endpoint e Protocolo AI SDK (fix-endpoint-alignment)
-- @ai-sdk/react
+- Proposal: Advanced Trace Logging (102)
 - Design: Loja Detalhes e Transações (073-loja-detalhes-transacoes)
 - Proposal: Transparência de Origem de Dados, Isolamento Estrito de Conversas e Raciocínio Adaptativo (fix-ai-provenance-and-conversation-isolation)
 - Design: Resiliência Anti-Hang, Consulta Local Inteligente Primeiro e Prova E2E (fix-ai-timeout-and-local-first)
@@ -919,8 +919,8 @@
 - start.ts
 - proposta.tsx
 - __root.tsx
-- Proposal: Advanced Trace Logging (102)
 - Design: Advanced Trace Logging (102)
+- Especificação de Funcionalidade: Correção do Mapeamento de Colunas do Excel de OS (Feature 103)
 - Proposal: Implementação de Trace Logs Estruturados (101)
 - Design: Trace Logs Estruturados (101)
 - login.tsx
@@ -928,6 +928,8 @@
 - Spec Plan: Trace Logs Estruturados (101)
 - ai
 - eslint-config-prettier
+- Plano de Implementa��o: Corre��o Robusta de Colunas (OS e REDE)
+- tailwindcss
 
 ## God Nodes (most connected - your core abstractions)
 1. `Card()` - 36 edges
@@ -956,7 +958,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (964 total, 306 thin omitted)
+## Communities (966 total, 307 thin omitted)
 
 ### Community 0 - "query"
 Cohesion: 0.05
@@ -1140,7 +1142,7 @@ Nodes (11): campoBate(), cronBateAgora(), { Pool }, query(), app, { cronBateAgor
 
 ### Community 45 - "dependencies"
 Cohesion: 0.12
-Nodes (17): @cloudflare/vite-plugin, cmdk, nitro, dependencies, @cloudflare/vite-plugin, cmdk, nitro, @radix-ui/react-collapsible (+9 more)
+Nodes (17): @ai-sdk/react, @cloudflare/vite-plugin, cmdk, nitro, dependencies, @ai-sdk/react, @cloudflare/vite-plugin, cmdk (+9 more)
 
 ### Community 46 - "query"
 Cohesion: 0.24
@@ -2603,8 +2605,8 @@ Cohesion: 0.20
 Nodes (9): 0. ⛔ OVERRIDE SUPREMO (Prioridade Máxima — acima de tudo), 1. Core Principles, 2. ⛔ Regra Anti-Alucinação e Repetição, 3. Workflows Oficiais, 4. Skills Integradas (ClawHub), 5. Regra de Separa��o de Fontes Financeiras (Ledger vs. Receivables), 6. Regra: Inspecionar Antes de Teorizar (Zero Presun��es sobre Estrutura de Arquivos), 7. Regra: git status Obrigat�rio Antes de Qualquer Commit (+1 more)
 
 ### Community 564 - "domain.md"
-Cohesion: 0.22
-Nodes (8): [2026-08-03] — [Feature ID: 059-oficina-bot-automation], [2026-08-03] — [Feature ID: 069-faturamento-recebimentos], [2026-08-03] — [Feature ID: 072-bootstrap-legacy-data], [2026-08-04] � [Feature ID: 075-fix-conciliation-bugs], [2026-08-04] � [Feature ID: 076], [2026-08-04] - [Feature ID: 077], [2026-08-04] - [Feature ID: 078], [2026-08-05] - [Feature ID: 081-stop-maquininha-duplication]
+Cohesion: 0.20
+Nodes (9): [2026-08-03] — [Feature ID: 059-oficina-bot-automation], [2026-08-03] — [Feature ID: 069-faturamento-recebimentos], [2026-08-03] — [Feature ID: 072-bootstrap-legacy-data], [2026-08-04] � [Feature ID: 075-fix-conciliation-bugs], [2026-08-04] � [Feature ID: 076], [2026-08-04] - [Feature ID: 077], [2026-08-04] - [Feature ID: 078], [2026-08-05] - [Feature ID: 081-stop-maquininha-duplication] (+1 more)
 
 ### Community 565 - "ui.md"
 Cohesion: 0.22
@@ -2977,6 +2979,10 @@ Nodes (7): API / Interface, Contratos de Dados, Features Existentes Impactadas, 
 ### Community 758 - "Design: Transparência de Origem de Dados, Isolamento Estrito de Conversas e Raciocínio Adaptativo (fix-ai-provenance-and-conversation-isolation)"
 Cohesion: 0.40
 Nodes (4): Ajustes em `src/routes/agente.tsx` (Isolamento Estrito), Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Design: Transparência de Origem de Dados, Isolamento Estrito de Conversas e Raciocínio Adaptativo (fix-ai-provenance-and-conversation-isolation)
+
+### Community 760 - "Proposal: Advanced Trace Logging (102)"
+Cohesion: 0.33
+Nodes (5): Contratos de Dados, Problema, Proposal: Advanced Trace Logging (102), Risco Principal, Solução Proposta
 
 ### Community 761 - "Design: Loja Detalhes e Transações (073-loja-detalhes-transacoes)"
 Cohesion: 0.25
@@ -3386,13 +3392,13 @@ Nodes (6): attachSupabaseAuth, getRouter(), Register, routeTree, errorMiddleware
 Cohesion: 0.25
 Nodes (3): CostConfig, defaultConfig, Route
 
-### Community 955 - "Proposal: Advanced Trace Logging (102)"
-Cohesion: 0.33
-Nodes (5): Contratos de Dados, Problema, Proposal: Advanced Trace Logging (102), Risco Principal, Solução Proposta
-
-### Community 956 - "Design: Advanced Trace Logging (102)"
+### Community 955 - "Design: Advanced Trace Logging (102)"
 Cohesion: 0.40
 Nodes (4): Arquitetura Técnica, Conteúdo do Log (Cenários de Verificação), Design: Advanced Trace Logging (102), Interfaces TypeScript
+
+### Community 956 - "Especificação de Funcionalidade: Correção do Mapeamento de Colunas do Excel de OS (Feature 103)"
+Cohesion: 0.40
+Nodes (4): 1. Visão Geral, 2. Problema Atual, 3. Escopo da Solução, Especificação de Funcionalidade: Correção do Mapeamento de Colunas do Excel de OS (Feature 103)
 
 ### Community 957 - "Proposal: Implementação de Trace Logs Estruturados (101)"
 Cohesion: 0.40
@@ -3407,9 +3413,9 @@ Cohesion: 0.67
 Nodes (3): useLogin(), LoginPage(), Route
 
 ## Knowledge Gaps
-- **3206 isolated node(s):** `XLSX`, `fs`, `files`, `json`, `statusIdx` (+3201 more)
+- **3211 isolated node(s):** `XLSX`, `fs`, `files`, `json`, `statusIdx` (+3206 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **306 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **307 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -3421,7 +3427,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `LoadingSpinner()` connect `Card.tsx` to `Button.tsx`, `WizardImportacao.tsx`, `CentralImportWizard.tsx`, `supabase.ts`, `loja.$lojaId.tsx`, `useStores`, `AppShell.tsx`, `BankReconciliationDashboard.tsx`, `useConciliacao.ts`?**
   _High betweenness centrality (0.000) - this node is a cross-community bridge._
 - **What connects `XLSX`, `fs`, `files` to the rest of the system?**
-  _3206 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _3211 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `query` be split into smaller, more focused modules?**
   _Cohesion score 0.053551912568306013 - nodes in this community are weakly interconnected._
 - **Should `supabase/types.ts` be split into smaller, more focused modules?**

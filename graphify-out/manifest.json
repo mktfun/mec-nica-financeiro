@@ -140,8 +140,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1785512916.0,
-    "ast_hash": "4001e8438d78d8ed43c65369e000dce3",
+    "mtime": 1786060486.7292871,
+    "ast_hash": "8d10e36f80695160f563004cea306084",
     "semantic_hash": ""
   },
   "patch-alertas.js": {
@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1786049280.7453055,
-    "ast_hash": "cb3d7f042e9224ce31af7c807114c9c6",
+    "mtime": 1786063309.495624,
+    "ast_hash": "e2b1fa41922a178ea717bde4bc9b36bc",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -1150,8 +1150,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useOsImportProcessor.ts": {
-    "mtime": 1786059156.1814663,
-    "ast_hash": "18750c9b57a6a3bc227d3365d86ee899",
+    "mtime": 1786062420.4138923,
+    "ast_hash": "bd2413d14b0e60f55aa0dfc72c46a961",
     "semantic_hash": ""
   },
   "src/hooks/usePatio.ts": {
@@ -1275,8 +1275,8 @@
     "semantic_hash": ""
   },
   "src/lib/parsers/redeParser.ts": {
-    "mtime": 1786059176.149685,
-    "ast_hash": "2c94c989902311f8d56dc94c0ddf6bf5",
+    "mtime": 1786064107.9265912,
+    "ast_hash": "6955600e6d9478125c8209d27d808448",
     "semantic_hash": ""
   },
   "src/lib/storage.ts": {
@@ -1295,8 +1295,8 @@
     "semantic_hash": ""
   },
   "src/routeTree.gen.ts": {
-    "mtime": 1785512916.0,
-    "ast_hash": "f48517773a7d006ac024cf3dc9006079",
+    "mtime": 1786060422.5166054,
+    "ast_hash": "bad9d6103ef0df0aafae85d7a073b036",
     "semantic_hash": ""
   },
   "src/router.tsx": {
@@ -1805,8 +1805,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1786049374.6466537,
-    "ast_hash": "daeb869ec6466ff69a996e6b7d71a3a2",
+    "mtime": 1786064146.6473475,
+    "ast_hash": "ee717ef719a7f665c9ff38f6778089f1",
     "semantic_hash": ""
   },
   "specs/016-loja-cleanup/design.md": {
@@ -4775,8 +4775,8 @@
     "semantic_hash": ""
   },
   ".agents/memory/domain.md": {
-    "mtime": 1786059276.5728981,
-    "ast_hash": "2353bce898de2a839879800ca1a0290f",
+    "mtime": 1786064120.6056173,
+    "ast_hash": "86d9529e2b0045902f9f9d8c6fd2d664",
     "semantic_hash": ""
   },
   ".agents/memory/infra.md": {
@@ -5662,6 +5662,26 @@
   "specs/archive/103-os-parser-column-fix/spec-plan.md": {
     "mtime": 1786059095.53149,
     "ast_hash": "53d71558a49e3495c625efc5096244a5",
+    "semantic_hash": ""
+  },
+  "scripts/generate-mocks.mjs": {
+    "mtime": 1786062793.0509691,
+    "ast_hash": "4871f02c81f1ded778662b947fee394e",
+    "semantic_hash": ""
+  },
+  "src/__mocks__/importFiles.ts": {
+    "mtime": 1786062888.7645595,
+    "ast_hash": "049eef5dbb22393e79de3563b078aee1",
+    "semantic_hash": ""
+  },
+  "specs/104-rede-parser-hotfix/proposal.md": {
+    "mtime": 1786059781.142179,
+    "ast_hash": "ab3f3b99a2d4a77bf64b8132369d07b1",
+    "semantic_hash": ""
+  },
+  "specs/104-rede-parser-hotfix/spec-plan.md": {
+    "mtime": 1786059789.3371246,
+    "ast_hash": "f2b60eb53aa797978146374ec26d9b0c",
     "semantic_hash": ""
   }
 }
