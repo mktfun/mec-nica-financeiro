@@ -1,4 +1,4 @@
-﻿import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase, TransactionRow } from '@/lib/supabase';
 import { getDefaultDate } from '@/lib/utils';
 
@@ -382,7 +382,8 @@ export function useBulkInsertTransactions() {
              counterpart_name: t.counterpart_name || t.subtitle || null,
              cnpj_cpf: t.cnpj_cpf || null,
              matched_os_number: t.os_number || t.matched_os_number || null,
-             import_batch_id: t.import_batch_id || null
+             import_batch_id: t.import_batch_id || null,
+             target_date: t.target_date || null
           })), { onConflict: 'store_id, fitid', ignoreDuplicates: true });
         if (e1) { error = e1; } else { data = d1; }
       }
@@ -397,7 +398,8 @@ export function useBulkInsertTransactions() {
              fee_amount: t.fee_amount || 0,
              occurred_at: t.occurred_at,
              matched_os_number: t.os_number || t.matched_os_number || null,
-             import_batch_id: t.import_batch_id || null
+             import_batch_id: t.import_batch_id || null,
+             target_date: t.target_date || null
         }));
         
         if (posTxs.length > 0) {
