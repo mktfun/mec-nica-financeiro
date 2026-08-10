@@ -3325,8 +3325,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786372727.879454,
-    "ast_hash": "156f01196d90f542eb5a207c427f567a",
+    "mtime": 1786390770.983905,
+    "ast_hash": "5ce319e77414f6565c870be96a05506b",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -5795,8 +5795,8 @@
     "semantic_hash": ""
   },
   ".agents/memory/supabase.md": {
-    "mtime": 1786367126.70181,
-    "ast_hash": "1359bc6c22e0b0a83e2b375c3c17df43",
+    "mtime": 1786390676.0671751,
+    "ast_hash": "dfef1e1c1c8ab3f484bf6f25fde695c4",
     "semantic_hash": ""
   },
   "supabase/migrations/20260807000019_fix_conciliation_matches_fkeys.sql": {
@@ -6069,21 +6069,6 @@
     "ast_hash": "c9033711f2182bc17a2eae9bbb573d58",
     "semantic_hash": ""
   },
-  "specs/153-raw-imports-excel/design.md": {
-    "mtime": 1786387583.0744133,
-    "ast_hash": "d36696ed4791a83405a54219a204dd86",
-    "semantic_hash": ""
-  },
-  "specs/153-raw-imports-excel/proposal.md": {
-    "mtime": 1786387563.1451378,
-    "ast_hash": "9b9c858552ae02c9f117e015a92c1fb9",
-    "semantic_hash": ""
-  },
-  "specs/153-raw-imports-excel/spec-plan.md": {
-    "mtime": 1786387796.1263592,
-    "ast_hash": "4db2a602e191813db9006d4c80597735",
-    "semantic_hash": ""
-  },
   "specs/archive/152-manual-expenses/design.md": {
     "mtime": 1786386730.7446392,
     "ast_hash": "b5caa48443eee9ed5b65ece51f855871",
@@ -6097,6 +6082,61 @@
   "specs/archive/152-manual-expenses/spec-plan.md": {
     "mtime": 1786386945.3924177,
     "ast_hash": "df68ee38a5e16859c33dba03c65dd9d0",
+    "semantic_hash": ""
+  },
+  "apply_migration_155.js": {
+    "mtime": 1786389044.611962,
+    "ast_hash": "bda8caa72e38d8d63a9ef181d2b705ed",
+    "semantic_hash": ""
+  },
+  "run_vps.cjs": {
+    "mtime": 1786390068.2081747,
+    "ast_hash": "1fa2788af04a79c719cdc8a3c35c7d38",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260810190000_historical_patio_os.sql": {
+    "mtime": 1786390267.970182,
+    "ast_hash": "9f7b7f5b3fdbc7d80c31a62edbb2f528",
+    "semantic_hash": ""
+  },
+  "test_rpc.mjs": {
+    "mtime": 1786390160.5623004,
+    "ast_hash": "565ee77cc9abb0d703ccbab131921989",
+    "semantic_hash": ""
+  },
+  "test_ssh.js": {
+    "mtime": 1786389288.5138283,
+    "ast_hash": "c0f2cb0f5728936fc96ef5d3cb05d656",
+    "semantic_hash": ""
+  },
+  "specs/154-bot-patio-automacao/design.md": {
+    "mtime": 1786388387.744413,
+    "ast_hash": "0cc8f01377a34698094ba2bf4465f961",
+    "semantic_hash": ""
+  },
+  "specs/154-bot-patio-automacao/proposal.md": {
+    "mtime": 1786388370.5695796,
+    "ast_hash": "e210e88084ef73114f5d7b05ea787698",
+    "semantic_hash": ""
+  },
+  "specs/154-bot-patio-automacao/spec-plan.md": {
+    "mtime": 1786388398.7090876,
+    "ast_hash": "2466d6a73e1089956edaef875a1e5b83",
+    "semantic_hash": ""
+  },
+  "specs/archive/153-raw-imports-excel/design.md": {
+    "mtime": 1786387583.0744133,
+    "ast_hash": "d36696ed4791a83405a54219a204dd86",
+    "semantic_hash": ""
+  },
+  "specs/archive/153-raw-imports-excel/proposal.md": {
+    "mtime": 1786387563.1451378,
+    "ast_hash": "9b9c858552ae02c9f117e015a92c1fb9",
+    "semantic_hash": ""
+  },
+  "specs/archive/153-raw-imports-excel/spec-plan.md": {
+    "mtime": 1786387796.1263592,
+    "ast_hash": "4db2a602e191813db9006d4c80597735",
     "semantic_hash": ""
   }
 }

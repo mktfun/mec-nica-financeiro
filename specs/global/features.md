@@ -108,3 +108,7 @@ a_loja_os. Bootstrap coleta 'P√°tio Pendente' para preencher caixa_atual e evita
      -   F r o n t e n d   u s a   ` g e n e r a t e D e t e r m i n i s t i c H a s h `   ( n o v o   e m   ` h a s h U t i l s . t s ` )   p a r a   i n j e t a r   i d e n t i d a d e s   d e t e r m i n Ì s t i c a s   b a s e a d a s   e m   ( d a t a + v a l o r + t Ì t u l o )   n o   p a r s e r   O F X ,   p l a n i l h a s   d e   M a q u i n i n h a   e   R e d e ,   i g n o r a n d o   o   p r o b l e m · t i c o   ` < F I T I D > ` . 
      -   M u d a n Á a   m a s s i v a   n o s   p i p e l i n e s   d o   b a c k e n d   q u e   a b a n d o n a r a m   ` i n s e r t `   f r · g i l   p a r a   u t i l i z a r   ` u p s e r t `   i n q u e b r · v e l ,   b l i n d a n d o   o   b a n c o   d e   d a d o s   c o n t r a   r e p e t i Á ı e s   d e   u p l o a d   d a s   m e s m a s   p l a n i l h a s .  
  
+## [155-historical-os-query]
+- **Ac√∫mulo Hist√≥rico de P√°tio OS**: 
+  - As RPCs `get_conciliation_breakdown` e `calculate_daily_conciliation` foram atualizadas na migration `20260810190000_historical_patio_os.sql` para filtrar OS usando `opened_at::date <= p_date` e saldo devedor remanescente, puxando d√≠vidas antigas para a concilia√ß√£o atual.
+  - Remo√ß√£o de anti-patterns de cast de datas no SQL que causavam erro `operator does not exist: date = text`.
