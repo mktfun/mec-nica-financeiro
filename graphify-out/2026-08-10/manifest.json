@@ -3325,8 +3325,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786390770.983905,
-    "ast_hash": "5ce319e77414f6565c870be96a05506b",
+    "mtime": 1786392247.7477877,
+    "ast_hash": "6a06001be955ab5466f9e1597543e431",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -6015,13 +6015,13 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/BreakdownModal.tsx": {
-    "mtime": 1786386456.02709,
-    "ast_hash": "9c85919828bda5c9270a96618c8b1c5c",
+    "mtime": 1786392092.5260139,
+    "ast_hash": "8b47f371359b8fc9a1c71efc6cfd3b41",
     "semantic_hash": ""
   },
   "src/hooks/useConciliationBreakdown.ts": {
-    "mtime": 1786386286.434251,
-    "ast_hash": "2fa0b2de904452cae3043cadd1270361",
+    "mtime": 1786392047.5568464,
+    "ast_hash": "e175f6c07813a94fafe62264f89bf94d",
     "semantic_hash": ""
   },
   "supabase/migrations/20260810180000_conciliation_breakdown_rpc.sql": {
@@ -6084,29 +6084,9 @@
     "ast_hash": "df68ee38a5e16859c33dba03c65dd9d0",
     "semantic_hash": ""
   },
-  "apply_migration_155.js": {
-    "mtime": 1786389044.611962,
-    "ast_hash": "bda8caa72e38d8d63a9ef181d2b705ed",
-    "semantic_hash": ""
-  },
-  "run_vps.cjs": {
-    "mtime": 1786390068.2081747,
-    "ast_hash": "1fa2788af04a79c719cdc8a3c35c7d38",
-    "semantic_hash": ""
-  },
   "supabase/migrations/20260810190000_historical_patio_os.sql": {
     "mtime": 1786390267.970182,
     "ast_hash": "9f7b7f5b3fdbc7d80c31a62edbb2f528",
-    "semantic_hash": ""
-  },
-  "test_rpc.mjs": {
-    "mtime": 1786390160.5623004,
-    "ast_hash": "565ee77cc9abb0d703ccbab131921989",
-    "semantic_hash": ""
-  },
-  "test_ssh.js": {
-    "mtime": 1786389288.5138283,
-    "ast_hash": "c0f2cb0f5728936fc96ef5d3cb05d656",
     "semantic_hash": ""
   },
   "specs/154-bot-patio-automacao/design.md": {
@@ -6137,6 +6117,21 @@
   "specs/archive/153-raw-imports-excel/spec-plan.md": {
     "mtime": 1786387796.1263592,
     "ast_hash": "4db2a602e191813db9006d4c80597735",
+    "semantic_hash": ""
+  },
+  "specs/archive/155-historical-os-query/design.md": {
+    "mtime": 1786388670.056278,
+    "ast_hash": "2957af40b5643fbc3efcf194b1cfb78d",
+    "semantic_hash": ""
+  },
+  "specs/archive/155-historical-os-query/proposal.md": {
+    "mtime": 1786388650.5229533,
+    "ast_hash": "d21e655d745181290bac3fc90ce4fa40",
+    "semantic_hash": ""
+  },
+  "specs/archive/155-historical-os-query/spec-plan.md": {
+    "mtime": 1786390482.4482718,
+    "ast_hash": "f4ebdcadb4b80a9d37e59cc88f252a19",
     "semantic_hash": ""
   }
 }

@@ -5987,8 +5987,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "package_dependencies_ai",
-      "community": 1028,
-      "community_name": "ai",
+      "community": 45,
+      "community_name": "dependencies",
       "norm_label": "ai"
     },
     {
@@ -5998,8 +5998,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "ai",
-      "community": 1028,
-      "community_name": "ai",
+      "community": 45,
+      "community_name": "dependencies",
       "norm_label": "ai"
     },
     {
@@ -6185,8 +6185,8 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "package_dependencies_lucide_react",
-      "community": 45,
-      "community_name": "dependencies",
+      "community": 1032,
+      "community_name": "lucide-react",
       "norm_label": "lucide-react"
     },
     {
@@ -6196,8 +6196,8 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "lucide_react",
-      "community": 45,
-      "community_name": "dependencies",
+      "community": 1032,
+      "community_name": "lucide-react",
       "norm_label": "lucide-react"
     },
     {
@@ -6823,8 +6823,8 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "package_devdependencies_eslint",
-      "community": 1,
-      "community_name": "devDependencies",
+      "community": 1031,
+      "community_name": "eslint",
       "norm_label": "eslint"
     },
     {
@@ -6834,8 +6834,8 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "eslint",
-      "community": 1,
-      "community_name": "devDependencies",
+      "community": 1031,
+      "community_name": "eslint",
       "norm_label": "eslint"
     },
     {
@@ -6845,8 +6845,8 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "package_devdependencies_eslint_config_prettier",
-      "community": 1029,
-      "community_name": "eslint-config-prettier",
+      "community": 1,
+      "community_name": "devDependencies",
       "norm_label": "eslint-config-prettier"
     },
     {
@@ -6856,8 +6856,8 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "eslint_config_prettier",
-      "community": 1029,
-      "community_name": "eslint-config-prettier",
+      "community": 1,
+      "community_name": "devDependencies",
       "norm_label": "eslint-config-prettier"
     },
     {
@@ -14916,8 +14916,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "agenteiaconfigpanel.tsx"
     },
     {
@@ -14927,8 +14927,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_model_options",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "model_options"
     },
     {
@@ -14938,8 +14938,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_provider_labels",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "provider_labels"
     },
     {
@@ -14949,8 +14949,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_agenteiaconfigpanel",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "agenteiaconfigpanel()"
     },
     {
@@ -14982,8 +14982,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "configuracoespanel.tsx"
     },
     {
@@ -14993,8 +14993,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel_configuracoespanel",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "configuracoespanel()"
     },
     {
@@ -15004,8 +15004,8 @@
       "source_location": "L270",
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel_aisettingsform",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "aisettingsform()"
     },
     {
@@ -15059,8 +15059,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel",
-      "community": 3,
-      "community_name": "Card.tsx",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "logsmotorpanel.tsx"
     },
     {
@@ -15070,8 +15070,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel_logsmotorpanel",
-      "community": 3,
-      "community_name": "Card.tsx",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "logsmotorpanel()"
     },
     {
@@ -15720,7 +15720,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "modulo1saldopanel.tsx"
     },
     {
@@ -15731,7 +15731,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel_modulo1saldopanelprops",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "modulo1saldopanelprops"
     },
     {
@@ -15742,7 +15742,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel_modulo1saldopanel",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "modulo1saldopanel()"
     },
     {
@@ -15907,7 +15907,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "resumodiapanel.tsx"
     },
     {
@@ -15918,7 +15918,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel_resumodiapanelprops",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "resumodiapanelprops"
     },
     {
@@ -15929,7 +15929,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel_resumodiapanel",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "resumodiapanel()"
     },
     {
@@ -16369,7 +16369,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storeformdialog",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "storeformdialog.tsx"
     },
     {
@@ -16380,7 +16380,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storeformdialog_storeformdialogprops",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "storeformdialogprops"
     },
     {
@@ -16391,7 +16391,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storeformdialog_storeformdialog",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "storeformdialog()"
     },
     {
@@ -16402,7 +16402,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storerankingchart",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "storerankingchart.tsx"
     },
     {
@@ -16413,7 +16413,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storerankingchart_storerankingchart",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "storerankingchart()"
     },
     {
@@ -17105,8 +17105,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useaisettings",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "useaisettings.ts"
     },
     {
@@ -17116,8 +17116,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_useaisettings_aisettings",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "aisettings"
     },
     {
@@ -17127,8 +17127,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_hooks_useaisettings_useaisettings",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "useaisettings()"
     },
     {
@@ -17138,8 +17138,8 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "src_hooks_useaisettings_usesaveaisettings",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usesaveaisettings()"
     },
     {
@@ -17249,7 +17249,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usebackendconciliacao.ts"
     },
     {
@@ -17260,7 +17260,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_conciliationdailylog",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "conciliationdailylog"
     },
     {
@@ -17271,7 +17271,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_usebackendconciliacao",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usebackendconciliacao()"
     },
     {
@@ -17282,7 +17282,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_useglobalofxout",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "useglobalofxout()"
     },
     {
@@ -17336,8 +17336,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usebotcredentials.ts"
     },
     {
@@ -17347,8 +17347,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_botcredentialrow",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "botcredentialrow"
     },
     {
@@ -17358,8 +17358,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usebotcredentials",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usebotcredentials()"
     },
     {
@@ -17369,8 +17369,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_useupdatebotcredential",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "useupdatebotcredential()"
     },
     {
@@ -17380,8 +17380,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usemarkcredentialvalid",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usemarkcredentialvalid()"
     },
     {
@@ -17391,8 +17391,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotlogs",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usebotlogs.ts"
     },
     {
@@ -17402,8 +17402,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_botauditlog",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "botauditlog"
     },
     {
@@ -17413,8 +17413,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotlogs",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usebotlogs()"
     },
     {
@@ -17424,8 +17424,8 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotauditlogs",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usebotauditlogs()"
     },
     {
@@ -17435,7 +17435,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotruns",
-      "community": 17,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "usebotruns.ts"
     },
@@ -17446,7 +17446,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usebotruns_uselatestbotrun",
-      "community": 17,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "uselatestbotrun()"
     },
@@ -17457,8 +17457,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_hooks_usebotruns_usebotrunhistory",
-      "community": 17,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usebotrunhistory()"
     },
     {
@@ -17579,7 +17579,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usereconciliationsfordate",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usereconciliationsfordate()"
     },
     {
@@ -17590,7 +17590,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useconciliacaoresumo",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "useconciliacaoresumo()"
     },
     {
@@ -17601,7 +17601,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useconciliacaodetalhes",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "useconciliacaodetalhes()"
     },
     {
@@ -17799,7 +17799,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usedailysnapshot.ts"
     },
     {
@@ -17810,7 +17810,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_dailysnapshotrow",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "dailysnapshotrow"
     },
     {
@@ -17821,7 +17821,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usedailysnapshot",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usedailysnapshot()"
     },
     {
@@ -17832,7 +17832,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usepreviousdaysnapshot",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usepreviousdaysnapshot()"
     },
     {
@@ -17843,7 +17843,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usesavedailysnapshot",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usesavedailysnapshot()"
     },
     {
@@ -17854,7 +17854,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_useavailableconciliacaodates",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "useavailableconciliacaodates()"
     },
     {
@@ -17941,7 +17941,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usegoals",
-      "community": 17,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "usegoals.ts"
     },
@@ -17952,7 +17952,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usegoals_goalrow",
-      "community": 17,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "goalrow"
     },
@@ -17963,7 +17963,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_hooks_usegoals_usemonthlygoal",
-      "community": 17,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "usemonthlygoal()"
     },
@@ -17974,7 +17974,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs",
-      "community": 17,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "useimportlogs.ts"
     },
@@ -17985,7 +17985,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlog",
-      "community": 17,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "importlog"
     },
@@ -17996,7 +17996,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlogfilters",
-      "community": 17,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "importlogfilters"
     },
@@ -18007,7 +18007,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogs",
-      "community": 17,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "useimportlogs()"
     },
@@ -18018,7 +18018,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogdetail",
-      "community": 17,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "useimportlogdetail()"
     },
@@ -18404,7 +18404,7 @@
       "_origin": "ast",
       "id": "src_hooks_usestores",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "usestores.ts"
     },
     {
@@ -18415,7 +18415,7 @@
       "_origin": "ast",
       "id": "src_hooks_usestores_sanitizestore",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "sanitizestore()"
     },
     {
@@ -18426,7 +18426,7 @@
       "_origin": "ast",
       "id": "src_hooks_usestores_usestores",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "usestores()"
     },
     {
@@ -18437,7 +18437,7 @@
       "_origin": "ast",
       "id": "src_hooks_usestores_usestore",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "usestore()"
     },
     {
@@ -18448,7 +18448,7 @@
       "_origin": "ast",
       "id": "src_hooks_usestores_useupdatestore",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "useupdatestore()"
     },
     {
@@ -18459,7 +18459,7 @@
       "_origin": "ast",
       "id": "src_hooks_usestores_usecreatestore",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "usecreatestore()"
     },
     {
@@ -18470,7 +18470,7 @@
       "_origin": "ast",
       "id": "src_hooks_usestores_usedeletestore",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "usedeletestore()"
     },
     {
@@ -18558,7 +18558,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useallstoresbalances",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "useallstoresbalances()"
     },
     {
@@ -18755,7 +18755,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_integrations_supabase_client",
-      "community": 17,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "client.ts"
     },
@@ -18766,7 +18766,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_integrations_supabase_client_createsupabaseclient",
-      "community": 17,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "createsupabaseclient()"
     },
@@ -18777,7 +18777,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "src_integrations_supabase_client_supabase",
-      "community": 17,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "supabase"
     },
@@ -19702,7 +19702,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "modulo1calculations.ts"
     },
     {
@@ -19713,7 +19713,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_globalconciliacaoinput",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "globalconciliacaoinput"
     },
     {
@@ -19724,7 +19724,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_globalconciliacaocalculated",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "globalconciliacaocalculated"
     },
     {
@@ -19735,7 +19735,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_calculateglobalconciliacao",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "calculateglobalconciliacao()"
     },
     {
@@ -19746,7 +19746,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_storesaldostate",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "storesaldostate"
     },
     {
@@ -19757,7 +19757,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_modulo1calculated",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "modulo1calculated"
     },
     {
@@ -19768,7 +19768,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_calculatemodulo1saldo",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "calculatemodulo1saldo()"
     },
     {
@@ -20185,7 +20185,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_supabase",
-      "community": 17,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "supabase.ts"
     },
@@ -20197,7 +20197,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_storerow",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "storerow"
     },
     {
@@ -20208,7 +20208,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_reconciliationrow",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "reconciliationrow"
     },
     {
@@ -20240,8 +20240,8 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "src_lib_supabase_cashregisterrow",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 495,
+      "community_name": "supabase.ts",
       "norm_label": "cashregisterrow"
     },
     {
@@ -20273,7 +20273,7 @@
       "source_location": "L125",
       "_origin": "ast",
       "id": "src_lib_supabase_botrunrow",
-      "community": 17,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "botrunrow"
     },
@@ -20284,7 +20284,7 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "src_lib_supabase_profilerow",
-      "community": 17,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "profilerow"
     },
@@ -20295,7 +20295,7 @@
       "source_location": "L144",
       "_origin": "ast",
       "id": "src_lib_supabase_interestraterow",
-      "community": 17,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "interestraterow"
     },
@@ -20824,7 +20824,7 @@
       "_origin": "ast",
       "id": "src_routes_bootstrap",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "bootstrap.tsx"
     },
     {
@@ -20846,7 +20846,7 @@
       "_origin": "ast",
       "id": "src_routes_bootstrap_bootstrappage",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "bootstrappage()"
     },
     {
@@ -20857,7 +20857,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "conciliacao-detalhes.tsx"
     },
     {
@@ -20879,7 +20879,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_tab",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "tab"
     },
     {
@@ -20890,7 +20890,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_statustab",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "statustab"
     },
     {
@@ -20901,7 +20901,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_conciliacaodetalhespage",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "conciliacaodetalhespage()"
     },
     {
@@ -20912,7 +20912,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_row",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "row()"
     },
     {
@@ -20923,7 +20923,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_tabbutton",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "tabbutton()"
     },
     {
@@ -20934,7 +20934,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_lojatable",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "lojatable()"
     },
     {
@@ -21011,7 +21011,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_index",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "conciliacao.index.tsx"
     },
     {
@@ -21033,7 +21033,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_index_conciliacaopage",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "conciliacaopage()"
     },
     {
@@ -21043,8 +21043,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_configuracoes",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "configuracoes.tsx"
     },
     {
@@ -21065,8 +21065,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_routes_configuracoes_configuracoespage",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "configuracoespage()"
     },
     {
@@ -21428,8 +21428,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_logs_motor",
-      "community": 3,
-      "community_name": "Card.tsx",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "logs.motor.tsx"
     },
     {
@@ -21450,8 +21450,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_routes_logs_motor_logsmotorpage",
-      "community": 3,
-      "community_name": "Card.tsx",
+      "community": 930,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "logsmotorpage()"
     },
     {
@@ -21528,7 +21528,7 @@
       "_origin": "ast",
       "id": "src_routes_lojas",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "lojas.tsx"
     },
     {
@@ -21550,7 +21550,7 @@
       "_origin": "ast",
       "id": "src_routes_lojas_lojaspage",
       "community": 17,
-      "community_name": "supabase.ts",
+      "community_name": "useStores",
       "norm_label": "lojaspage()"
     },
     {
@@ -28352,212 +28352,212 @@
       "norm_label": "tasks"
     },
     {
-      "label": "156-fix-breakdown-type/design.md",
+      "label": "157-sync-oficina-button/design.md",
       "file_type": "document",
-      "source_file": "specs/156-fix-breakdown-type/design.md",
+      "source_file": "specs/157-sync-oficina-button/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_156_fix_breakdown_type_design",
-      "community": 930,
-      "community_name": "Design: Fix Breakdown Types and Regressions (156)",
-      "norm_label": "156-fix-breakdown-type/design.md"
+      "id": "specs_157_sync_oficina_button_design",
+      "community": 1007,
+      "community_name": "Design: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
+      "norm_label": "157-sync-oficina-button/design.md"
     },
     {
-      "label": "Design: Fix Breakdown Types and Regressions (156)",
+      "label": "Design: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
       "file_type": "document",
-      "source_file": "specs/156-fix-breakdown-type/design.md",
+      "source_file": "specs/157-sync-oficina-button/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_156_fix_breakdown_type_design_design_fix_breakdown_types_and_regressions_156",
-      "community": 930,
-      "community_name": "Design: Fix Breakdown Types and Regressions (156)",
-      "norm_label": "design: fix breakdown types and regressions (156)"
+      "id": "specs_157_sync_oficina_button_design_design_ativa\u00e7\u00e3o_do_bot_oficina_inteligente_157",
+      "community": 1007,
+      "community_name": "Design: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
+      "norm_label": "design: ativacao do bot oficina inteligente (157)"
     },
     {
       "label": "Arquitetura T\u00e9cnica",
       "file_type": "document",
-      "source_file": "specs/156-fix-breakdown-type/design.md",
+      "source_file": "specs/157-sync-oficina-button/design.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_156_fix_breakdown_type_design_arquitetura_t\u00e9cnica",
-      "community": 930,
-      "community_name": "Design: Fix Breakdown Types and Regressions (156)",
+      "id": "specs_157_sync_oficina_button_design_arquitetura_t\u00e9cnica",
+      "community": 1007,
+      "community_name": "Design: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
       "norm_label": "arquitetura tecnica"
     },
     {
       "label": "Interfaces TypeScript",
       "file_type": "document",
-      "source_file": "specs/156-fix-breakdown-type/design.md",
-      "source_location": "L9",
+      "source_file": "specs/157-sync-oficina-button/design.md",
+      "source_location": "L6",
       "_origin": "ast",
-      "id": "specs_156_fix_breakdown_type_design_interfaces_typescript",
-      "community": 930,
-      "community_name": "Design: Fix Breakdown Types and Regressions (156)",
+      "id": "specs_157_sync_oficina_button_design_interfaces_typescript",
+      "community": 1007,
+      "community_name": "Design: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
       "norm_label": "interfaces typescript"
     },
     {
       "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
       "file_type": "document",
-      "source_file": "specs/156-fix-breakdown-type/design.md",
-      "source_location": "L34",
+      "source_file": "specs/157-sync-oficina-button/design.md",
+      "source_location": "L9",
       "_origin": "ast",
-      "id": "specs_156_fix_breakdown_type_design_componentes_hooks_fun\u00e7\u00f5es",
-      "community": 930,
-      "community_name": "Design: Fix Breakdown Types and Regressions (156)",
+      "id": "specs_157_sync_oficina_button_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 1007,
+      "community_name": "Design: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
       "norm_label": "componentes / hooks / funcoes"
     },
     {
       "label": "Fluxo de UI",
       "file_type": "document",
-      "source_file": "specs/156-fix-breakdown-type/design.md",
-      "source_location": "L40",
+      "source_file": "specs/157-sync-oficina-button/design.md",
+      "source_location": "L12",
       "_origin": "ast",
-      "id": "specs_156_fix_breakdown_type_design_fluxo_de_ui",
-      "community": 930,
-      "community_name": "Design: Fix Breakdown Types and Regressions (156)",
+      "id": "specs_157_sync_oficina_button_design_fluxo_de_ui",
+      "community": 1007,
+      "community_name": "Design: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
       "norm_label": "fluxo de ui"
     },
     {
       "label": "Infra / Deploy",
       "file_type": "document",
-      "source_file": "specs/156-fix-breakdown-type/design.md",
-      "source_location": "L43",
+      "source_file": "specs/157-sync-oficina-button/design.md",
+      "source_location": "L20",
       "_origin": "ast",
-      "id": "specs_156_fix_breakdown_type_design_infra_deploy",
-      "community": 930,
-      "community_name": "Design: Fix Breakdown Types and Regressions (156)",
+      "id": "specs_157_sync_oficina_button_design_infra_deploy",
+      "community": 1007,
+      "community_name": "Design: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
       "norm_label": "infra / deploy"
     },
     {
       "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
       "file_type": "document",
-      "source_file": "specs/156-fix-breakdown-type/design.md",
-      "source_location": "L46",
+      "source_file": "specs/157-sync-oficina-button/design.md",
+      "source_location": "L24",
       "_origin": "ast",
-      "id": "specs_156_fix_breakdown_type_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
-      "community": 930,
-      "community_name": "Design: Fix Breakdown Types and Regressions (156)",
+      "id": "specs_157_sync_oficina_button_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 1007,
+      "community_name": "Design: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
       "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
     },
     {
-      "label": "156-fix-breakdown-type/proposal.md",
+      "label": "157-sync-oficina-button/proposal.md",
       "file_type": "document",
-      "source_file": "specs/156-fix-breakdown-type/proposal.md",
+      "source_file": "specs/157-sync-oficina-button/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_156_fix_breakdown_type_proposal",
-      "community": 1007,
-      "community_name": "Proposal: Fix Breakdown Types and Regressions (156)",
-      "norm_label": "156-fix-breakdown-type/proposal.md"
+      "id": "specs_157_sync_oficina_button_proposal",
+      "community": 1022,
+      "community_name": "Proposal: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
+      "norm_label": "157-sync-oficina-button/proposal.md"
     },
     {
-      "label": "Proposal: Fix Breakdown Types and Regressions (156)",
+      "label": "Proposal: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
       "file_type": "document",
-      "source_file": "specs/156-fix-breakdown-type/proposal.md",
+      "source_file": "specs/157-sync-oficina-button/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_156_fix_breakdown_type_proposal_proposal_fix_breakdown_types_and_regressions_156",
-      "community": 1007,
-      "community_name": "Proposal: Fix Breakdown Types and Regressions (156)",
-      "norm_label": "proposal: fix breakdown types and regressions (156)"
+      "id": "specs_157_sync_oficina_button_proposal_proposal_ativa\u00e7\u00e3o_do_bot_oficina_inteligente_157",
+      "community": 1022,
+      "community_name": "Proposal: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
+      "norm_label": "proposal: ativacao do bot oficina inteligente (157)"
     },
     {
       "label": "Problema",
       "file_type": "document",
-      "source_file": "specs/156-fix-breakdown-type/proposal.md",
+      "source_file": "specs/157-sync-oficina-button/proposal.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_156_fix_breakdown_type_proposal_problema",
-      "community": 1007,
-      "community_name": "Proposal: Fix Breakdown Types and Regressions (156)",
+      "id": "specs_157_sync_oficina_button_proposal_problema",
+      "community": 1022,
+      "community_name": "Proposal: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
       "norm_label": "problema"
     },
     {
       "label": "Solu\u00e7\u00e3o Proposta",
       "file_type": "document",
-      "source_file": "specs/156-fix-breakdown-type/proposal.md",
+      "source_file": "specs/157-sync-oficina-button/proposal.md",
       "source_location": "L6",
       "_origin": "ast",
-      "id": "specs_156_fix_breakdown_type_proposal_solu\u00e7\u00e3o_proposta",
-      "community": 1007,
-      "community_name": "Proposal: Fix Breakdown Types and Regressions (156)",
+      "id": "specs_157_sync_oficina_button_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 1022,
+      "community_name": "Proposal: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
       "norm_label": "solucao proposta"
     },
     {
       "label": "Contratos de Dados",
       "file_type": "document",
-      "source_file": "specs/156-fix-breakdown-type/proposal.md",
+      "source_file": "specs/157-sync-oficina-button/proposal.md",
       "source_location": "L10",
       "_origin": "ast",
-      "id": "specs_156_fix_breakdown_type_proposal_contratos_de_dados",
-      "community": 1007,
-      "community_name": "Proposal: Fix Breakdown Types and Regressions (156)",
+      "id": "specs_157_sync_oficina_button_proposal_contratos_de_dados",
+      "community": 1022,
+      "community_name": "Proposal: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
       "norm_label": "contratos de dados"
     },
     {
       "label": "API / Interface",
       "file_type": "document",
-      "source_file": "specs/156-fix-breakdown-type/proposal.md",
-      "source_location": "L16",
+      "source_file": "specs/157-sync-oficina-button/proposal.md",
+      "source_location": "L14",
       "_origin": "ast",
-      "id": "specs_156_fix_breakdown_type_proposal_api_interface",
-      "community": 1007,
-      "community_name": "Proposal: Fix Breakdown Types and Regressions (156)",
+      "id": "specs_157_sync_oficina_button_proposal_api_interface",
+      "community": 1022,
+      "community_name": "Proposal: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
       "norm_label": "api / interface"
     },
     {
       "label": "Features Existentes Impactadas",
       "file_type": "document",
-      "source_file": "specs/156-fix-breakdown-type/proposal.md",
-      "source_location": "L20",
+      "source_file": "specs/157-sync-oficina-button/proposal.md",
+      "source_location": "L18",
       "_origin": "ast",
-      "id": "specs_156_fix_breakdown_type_proposal_features_existentes_impactadas",
-      "community": 1007,
-      "community_name": "Proposal: Fix Breakdown Types and Regressions (156)",
+      "id": "specs_157_sync_oficina_button_proposal_features_existentes_impactadas",
+      "community": 1022,
+      "community_name": "Proposal: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
       "norm_label": "features existentes impactadas"
     },
     {
       "label": "Risco Principal",
       "file_type": "document",
-      "source_file": "specs/156-fix-breakdown-type/proposal.md",
-      "source_location": "L23",
+      "source_file": "specs/157-sync-oficina-button/proposal.md",
+      "source_location": "L21",
       "_origin": "ast",
-      "id": "specs_156_fix_breakdown_type_proposal_risco_principal",
-      "community": 1007,
-      "community_name": "Proposal: Fix Breakdown Types and Regressions (156)",
+      "id": "specs_157_sync_oficina_button_proposal_risco_principal",
+      "community": 1022,
+      "community_name": "Proposal: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
       "norm_label": "risco principal"
     },
     {
-      "label": "156-fix-breakdown-type/spec-plan.md",
+      "label": "157-sync-oficina-button/spec-plan.md",
       "file_type": "document",
-      "source_file": "specs/156-fix-breakdown-type/spec-plan.md",
+      "source_file": "specs/157-sync-oficina-button/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_156_fix_breakdown_type_spec_plan",
-      "community": 1022,
-      "community_name": "Spec Plan: Fix Breakdown Types and Regressions (156)",
-      "norm_label": "156-fix-breakdown-type/spec-plan.md"
+      "id": "specs_157_sync_oficina_button_spec_plan",
+      "community": 1029,
+      "community_name": "Spec Plan: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
+      "norm_label": "157-sync-oficina-button/spec-plan.md"
     },
     {
-      "label": "Spec Plan: Fix Breakdown Types and Regressions (156)",
+      "label": "Spec Plan: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
       "file_type": "document",
-      "source_file": "specs/156-fix-breakdown-type/spec-plan.md",
+      "source_file": "specs/157-sync-oficina-button/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_156_fix_breakdown_type_spec_plan_spec_plan_fix_breakdown_types_and_regressions_156",
-      "community": 1022,
-      "community_name": "Spec Plan: Fix Breakdown Types and Regressions (156)",
-      "norm_label": "spec plan: fix breakdown types and regressions (156)"
+      "id": "specs_157_sync_oficina_button_spec_plan_spec_plan_ativa\u00e7\u00e3o_do_bot_oficina_inteligente_157",
+      "community": 1029,
+      "community_name": "Spec Plan: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
+      "norm_label": "spec plan: ativacao do bot oficina inteligente (157)"
     },
     {
       "label": "Tasks",
       "file_type": "document",
-      "source_file": "specs/156-fix-breakdown-type/spec-plan.md",
+      "source_file": "specs/157-sync-oficina-button/spec-plan.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_156_fix_breakdown_type_spec_plan_tasks",
-      "community": 1022,
-      "community_name": "Spec Plan: Fix Breakdown Types and Regressions (156)",
+      "id": "specs_157_sync_oficina_button_spec_plan_tasks",
+      "community": 1029,
+      "community_name": "Spec Plan: Ativa\u00e7\u00e3o do Bot Oficina Inteligente (157)",
       "norm_label": "tasks"
     },
     {
@@ -48570,6 +48570,215 @@
       "norm_label": "tasks"
     },
     {
+      "label": "156-fix-breakdown-type/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/156-fix-breakdown-type/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_156_fix_breakdown_type_design",
+      "community": 1027,
+      "community_name": "Design: Fix Breakdown Types and Regressions (156)",
+      "norm_label": "156-fix-breakdown-type/design.md"
+    },
+    {
+      "label": "Design: Fix Breakdown Types and Regressions (156)",
+      "file_type": "document",
+      "source_file": "specs/archive/156-fix-breakdown-type/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_156_fix_breakdown_type_design_design_fix_breakdown_types_and_regressions_156",
+      "community": 1027,
+      "community_name": "Design: Fix Breakdown Types and Regressions (156)",
+      "norm_label": "design: fix breakdown types and regressions (156)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/archive/156-fix-breakdown-type/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_156_fix_breakdown_type_design_arquitetura_t\u00e9cnica",
+      "community": 1027,
+      "community_name": "Design: Fix Breakdown Types and Regressions (156)",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Interfaces TypeScript",
+      "file_type": "document",
+      "source_file": "specs/archive/156-fix-breakdown-type/design.md",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "specs_archive_156_fix_breakdown_type_design_interfaces_typescript",
+      "community": 1027,
+      "community_name": "Design: Fix Breakdown Types and Regressions (156)",
+      "norm_label": "interfaces typescript"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/archive/156-fix-breakdown-type/design.md",
+      "source_location": "L34",
+      "_origin": "ast",
+      "id": "specs_archive_156_fix_breakdown_type_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 1027,
+      "community_name": "Design: Fix Breakdown Types and Regressions (156)",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Fluxo de UI",
+      "file_type": "document",
+      "source_file": "specs/archive/156-fix-breakdown-type/design.md",
+      "source_location": "L40",
+      "_origin": "ast",
+      "id": "specs_archive_156_fix_breakdown_type_design_fluxo_de_ui",
+      "community": 1027,
+      "community_name": "Design: Fix Breakdown Types and Regressions (156)",
+      "norm_label": "fluxo de ui"
+    },
+    {
+      "label": "Infra / Deploy",
+      "file_type": "document",
+      "source_file": "specs/archive/156-fix-breakdown-type/design.md",
+      "source_location": "L43",
+      "_origin": "ast",
+      "id": "specs_archive_156_fix_breakdown_type_design_infra_deploy",
+      "community": 1027,
+      "community_name": "Design: Fix Breakdown Types and Regressions (156)",
+      "norm_label": "infra / deploy"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/archive/156-fix-breakdown-type/design.md",
+      "source_location": "L46",
+      "_origin": "ast",
+      "id": "specs_archive_156_fix_breakdown_type_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 1027,
+      "community_name": "Design: Fix Breakdown Types and Regressions (156)",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "156-fix-breakdown-type/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/156-fix-breakdown-type/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_156_fix_breakdown_type_proposal",
+      "community": 1028,
+      "community_name": "Proposal: Fix Breakdown Types and Regressions (156)",
+      "norm_label": "156-fix-breakdown-type/proposal.md"
+    },
+    {
+      "label": "Proposal: Fix Breakdown Types and Regressions (156)",
+      "file_type": "document",
+      "source_file": "specs/archive/156-fix-breakdown-type/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_156_fix_breakdown_type_proposal_proposal_fix_breakdown_types_and_regressions_156",
+      "community": 1028,
+      "community_name": "Proposal: Fix Breakdown Types and Regressions (156)",
+      "norm_label": "proposal: fix breakdown types and regressions (156)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/archive/156-fix-breakdown-type/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_156_fix_breakdown_type_proposal_problema",
+      "community": 1028,
+      "community_name": "Proposal: Fix Breakdown Types and Regressions (156)",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/archive/156-fix-breakdown-type/proposal.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "specs_archive_156_fix_breakdown_type_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 1028,
+      "community_name": "Proposal: Fix Breakdown Types and Regressions (156)",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/156-fix-breakdown-type/proposal.md",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "specs_archive_156_fix_breakdown_type_proposal_contratos_de_dados",
+      "community": 1028,
+      "community_name": "Proposal: Fix Breakdown Types and Regressions (156)",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/archive/156-fix-breakdown-type/proposal.md",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "specs_archive_156_fix_breakdown_type_proposal_api_interface",
+      "community": 1028,
+      "community_name": "Proposal: Fix Breakdown Types and Regressions (156)",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/archive/156-fix-breakdown-type/proposal.md",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "specs_archive_156_fix_breakdown_type_proposal_features_existentes_impactadas",
+      "community": 1028,
+      "community_name": "Proposal: Fix Breakdown Types and Regressions (156)",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/archive/156-fix-breakdown-type/proposal.md",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "specs_archive_156_fix_breakdown_type_proposal_risco_principal",
+      "community": 1028,
+      "community_name": "Proposal: Fix Breakdown Types and Regressions (156)",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "156-fix-breakdown-type/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/156-fix-breakdown-type/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_156_fix_breakdown_type_spec_plan",
+      "community": 1030,
+      "community_name": "Spec Plan: Fix Breakdown Types and Regressions (156)",
+      "norm_label": "156-fix-breakdown-type/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Fix Breakdown Types and Regressions (156)",
+      "file_type": "document",
+      "source_file": "specs/archive/156-fix-breakdown-type/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_156_fix_breakdown_type_spec_plan_spec_plan_fix_breakdown_types_and_regressions_156",
+      "community": 1030,
+      "community_name": "Spec Plan: Fix Breakdown Types and Regressions (156)",
+      "norm_label": "spec plan: fix breakdown types and regressions (156)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/156-fix-breakdown-type/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_156_fix_breakdown_type_spec_plan_tasks",
+      "community": 1030,
+      "community_name": "Spec Plan: Fix Breakdown Types and Regressions (156)",
+      "norm_label": "tasks"
+    },
+    {
       "label": "agente-fullbleed-layout-and-clean-tabs/design.md",
       "file_type": "document",
       "source_file": "specs/archive/agente-fullbleed-layout-and-clean-tabs/design.md",
@@ -61570,6 +61779,28 @@
       "community": 591,
       "community_name": "specs/global/features.md",
       "norm_label": "[155-historical-os-query]"
+    },
+    {
+      "label": "[156-fix-breakdown-type]",
+      "file_type": "document",
+      "source_file": "specs/global/features.md",
+      "source_location": "L118",
+      "_origin": "ast",
+      "id": "specs_global_features_156_fix_breakdown_type",
+      "community": 591,
+      "community_name": "specs/global/features.md",
+      "norm_label": "[156-fix-breakdown-type]"
+    },
+    {
+      "label": "[157-sync-oficina-button]",
+      "file_type": "document",
+      "source_file": "specs/global/features.md",
+      "source_location": "L121",
+      "_origin": "ast",
+      "id": "specs_global_features_157_sync_oficina_button",
+      "community": 591,
+      "community_name": "specs/global/features.md",
+      "norm_label": "[157-sync-oficina-button]"
     },
     {
       "label": "specs/global/overview.md",
@@ -79822,7 +80053,7 @@
       "deferred": true,
       "confidence": "EXTRACTED",
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L132",
+      "source_location": "L133",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -85716,7 +85947,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L92",
+      "source_location": "L93",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -85729,7 +85960,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L93",
+      "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -85741,7 +85972,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L97",
+      "source_location": "L98",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -85753,7 +85984,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L253",
+      "source_location": "L254",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -85765,7 +85996,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L91",
+      "source_location": "L92",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -85777,7 +86008,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L96",
+      "source_location": "L97",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -85789,7 +86020,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L94",
+      "source_location": "L95",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -85801,7 +86032,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L95",
+      "source_location": "L96",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -85813,7 +86044,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L115",
+      "source_location": "L116",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -85825,7 +86056,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L118",
+      "source_location": "L119",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -85837,7 +86068,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L387",
+      "source_location": "L388",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -103256,177 +103487,177 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/156-fix-breakdown-type/design.md",
+      "source_file": "specs/157-sync-oficina-button/design.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_156_fix_breakdown_type_design",
-      "target": "specs_156_fix_breakdown_type_design_design_fix_breakdown_types_and_regressions_156",
+      "source": "specs_157_sync_oficina_button_design",
+      "target": "specs_157_sync_oficina_button_design_design_ativa\u00e7\u00e3o_do_bot_oficina_inteligente_157",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/156-fix-breakdown-type/design.md",
+      "source_file": "specs/157-sync-oficina-button/design.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_156_fix_breakdown_type_design_design_fix_breakdown_types_and_regressions_156",
-      "target": "specs_156_fix_breakdown_type_design_arquitetura_t\u00e9cnica",
+      "source": "specs_157_sync_oficina_button_design_design_ativa\u00e7\u00e3o_do_bot_oficina_inteligente_157",
+      "target": "specs_157_sync_oficina_button_design_arquitetura_t\u00e9cnica",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/156-fix-breakdown-type/design.md",
-      "source_location": "L46",
+      "source_file": "specs/157-sync-oficina-button/design.md",
+      "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_156_fix_breakdown_type_design_design_fix_breakdown_types_and_regressions_156",
-      "target": "specs_156_fix_breakdown_type_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "source": "specs_157_sync_oficina_button_design_design_ativa\u00e7\u00e3o_do_bot_oficina_inteligente_157",
+      "target": "specs_157_sync_oficina_button_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/156-fix-breakdown-type/design.md",
-      "source_location": "L34",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_156_fix_breakdown_type_design_design_fix_breakdown_types_and_regressions_156",
-      "target": "specs_156_fix_breakdown_type_design_componentes_hooks_fun\u00e7\u00f5es",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/156-fix-breakdown-type/design.md",
-      "source_location": "L40",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_156_fix_breakdown_type_design_design_fix_breakdown_types_and_regressions_156",
-      "target": "specs_156_fix_breakdown_type_design_fluxo_de_ui",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/156-fix-breakdown-type/design.md",
-      "source_location": "L43",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_156_fix_breakdown_type_design_design_fix_breakdown_types_and_regressions_156",
-      "target": "specs_156_fix_breakdown_type_design_infra_deploy",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/156-fix-breakdown-type/design.md",
+      "source_file": "specs/157-sync-oficina-button/design.md",
       "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_156_fix_breakdown_type_design_design_fix_breakdown_types_and_regressions_156",
-      "target": "specs_156_fix_breakdown_type_design_interfaces_typescript",
+      "source": "specs_157_sync_oficina_button_design_design_ativa\u00e7\u00e3o_do_bot_oficina_inteligente_157",
+      "target": "specs_157_sync_oficina_button_design_componentes_hooks_fun\u00e7\u00f5es",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/156-fix-breakdown-type/proposal.md",
-      "source_location": "L1",
+      "source_file": "specs/157-sync-oficina-button/design.md",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_156_fix_breakdown_type_proposal",
-      "target": "specs_156_fix_breakdown_type_proposal_proposal_fix_breakdown_types_and_regressions_156",
+      "source": "specs_157_sync_oficina_button_design_design_ativa\u00e7\u00e3o_do_bot_oficina_inteligente_157",
+      "target": "specs_157_sync_oficina_button_design_fluxo_de_ui",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/156-fix-breakdown-type/proposal.md",
-      "source_location": "L16",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_156_fix_breakdown_type_proposal_proposal_fix_breakdown_types_and_regressions_156",
-      "target": "specs_156_fix_breakdown_type_proposal_api_interface",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/156-fix-breakdown-type/proposal.md",
-      "source_location": "L10",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_156_fix_breakdown_type_proposal_proposal_fix_breakdown_types_and_regressions_156",
-      "target": "specs_156_fix_breakdown_type_proposal_contratos_de_dados",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/156-fix-breakdown-type/proposal.md",
+      "source_file": "specs/157-sync-oficina-button/design.md",
       "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_156_fix_breakdown_type_proposal_proposal_fix_breakdown_types_and_regressions_156",
-      "target": "specs_156_fix_breakdown_type_proposal_features_existentes_impactadas",
+      "source": "specs_157_sync_oficina_button_design_design_ativa\u00e7\u00e3o_do_bot_oficina_inteligente_157",
+      "target": "specs_157_sync_oficina_button_design_infra_deploy",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/156-fix-breakdown-type/proposal.md",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_156_fix_breakdown_type_proposal_proposal_fix_breakdown_types_and_regressions_156",
-      "target": "specs_156_fix_breakdown_type_proposal_problema",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/156-fix-breakdown-type/proposal.md",
-      "source_location": "L23",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_156_fix_breakdown_type_proposal_proposal_fix_breakdown_types_and_regressions_156",
-      "target": "specs_156_fix_breakdown_type_proposal_risco_principal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/156-fix-breakdown-type/proposal.md",
+      "source_file": "specs/157-sync-oficina-button/design.md",
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_156_fix_breakdown_type_proposal_proposal_fix_breakdown_types_and_regressions_156",
-      "target": "specs_156_fix_breakdown_type_proposal_solu\u00e7\u00e3o_proposta",
+      "source": "specs_157_sync_oficina_button_design_design_ativa\u00e7\u00e3o_do_bot_oficina_inteligente_157",
+      "target": "specs_157_sync_oficina_button_design_interfaces_typescript",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/156-fix-breakdown-type/spec-plan.md",
+      "source_file": "specs/157-sync-oficina-button/proposal.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_156_fix_breakdown_type_spec_plan",
-      "target": "specs_156_fix_breakdown_type_spec_plan_spec_plan_fix_breakdown_types_and_regressions_156",
+      "source": "specs_157_sync_oficina_button_proposal",
+      "target": "specs_157_sync_oficina_button_proposal_proposal_ativa\u00e7\u00e3o_do_bot_oficina_inteligente_157",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/156-fix-breakdown-type/spec-plan.md",
+      "source_file": "specs/157-sync-oficina-button/proposal.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_157_sync_oficina_button_proposal_proposal_ativa\u00e7\u00e3o_do_bot_oficina_inteligente_157",
+      "target": "specs_157_sync_oficina_button_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/157-sync-oficina-button/proposal.md",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_157_sync_oficina_button_proposal_proposal_ativa\u00e7\u00e3o_do_bot_oficina_inteligente_157",
+      "target": "specs_157_sync_oficina_button_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/157-sync-oficina-button/proposal.md",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_157_sync_oficina_button_proposal_proposal_ativa\u00e7\u00e3o_do_bot_oficina_inteligente_157",
+      "target": "specs_157_sync_oficina_button_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/157-sync-oficina-button/proposal.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_156_fix_breakdown_type_spec_plan_spec_plan_fix_breakdown_types_and_regressions_156",
-      "target": "specs_156_fix_breakdown_type_spec_plan_tasks",
+      "source": "specs_157_sync_oficina_button_proposal_proposal_ativa\u00e7\u00e3o_do_bot_oficina_inteligente_157",
+      "target": "specs_157_sync_oficina_button_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/157-sync-oficina-button/proposal.md",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_157_sync_oficina_button_proposal_proposal_ativa\u00e7\u00e3o_do_bot_oficina_inteligente_157",
+      "target": "specs_157_sync_oficina_button_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/157-sync-oficina-button/proposal.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_157_sync_oficina_button_proposal_proposal_ativa\u00e7\u00e3o_do_bot_oficina_inteligente_157",
+      "target": "specs_157_sync_oficina_button_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/157-sync-oficina-button/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_157_sync_oficina_button_spec_plan",
+      "target": "specs_157_sync_oficina_button_spec_plan_spec_plan_ativa\u00e7\u00e3o_do_bot_oficina_inteligente_157",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/157-sync-oficina-button/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_157_sync_oficina_button_spec_plan_spec_plan_ativa\u00e7\u00e3o_do_bot_oficina_inteligente_157",
+      "target": "specs_157_sync_oficina_button_spec_plan_tasks",
       "confidence_score": 1.0
     },
     {
@@ -119349,6 +119580,182 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "specs/archive/156-fix-breakdown-type/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_156_fix_breakdown_type_design",
+      "target": "specs_archive_156_fix_breakdown_type_design_design_fix_breakdown_types_and_regressions_156",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/156-fix-breakdown-type/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_156_fix_breakdown_type_design_design_fix_breakdown_types_and_regressions_156",
+      "target": "specs_archive_156_fix_breakdown_type_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/156-fix-breakdown-type/design.md",
+      "source_location": "L46",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_156_fix_breakdown_type_design_design_fix_breakdown_types_and_regressions_156",
+      "target": "specs_archive_156_fix_breakdown_type_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/156-fix-breakdown-type/design.md",
+      "source_location": "L34",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_156_fix_breakdown_type_design_design_fix_breakdown_types_and_regressions_156",
+      "target": "specs_archive_156_fix_breakdown_type_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/156-fix-breakdown-type/design.md",
+      "source_location": "L40",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_156_fix_breakdown_type_design_design_fix_breakdown_types_and_regressions_156",
+      "target": "specs_archive_156_fix_breakdown_type_design_fluxo_de_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/156-fix-breakdown-type/design.md",
+      "source_location": "L43",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_156_fix_breakdown_type_design_design_fix_breakdown_types_and_regressions_156",
+      "target": "specs_archive_156_fix_breakdown_type_design_infra_deploy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/156-fix-breakdown-type/design.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_156_fix_breakdown_type_design_design_fix_breakdown_types_and_regressions_156",
+      "target": "specs_archive_156_fix_breakdown_type_design_interfaces_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/156-fix-breakdown-type/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_156_fix_breakdown_type_proposal",
+      "target": "specs_archive_156_fix_breakdown_type_proposal_proposal_fix_breakdown_types_and_regressions_156",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/156-fix-breakdown-type/proposal.md",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_156_fix_breakdown_type_proposal_proposal_fix_breakdown_types_and_regressions_156",
+      "target": "specs_archive_156_fix_breakdown_type_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/156-fix-breakdown-type/proposal.md",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_156_fix_breakdown_type_proposal_proposal_fix_breakdown_types_and_regressions_156",
+      "target": "specs_archive_156_fix_breakdown_type_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/156-fix-breakdown-type/proposal.md",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_156_fix_breakdown_type_proposal_proposal_fix_breakdown_types_and_regressions_156",
+      "target": "specs_archive_156_fix_breakdown_type_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/156-fix-breakdown-type/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_156_fix_breakdown_type_proposal_proposal_fix_breakdown_types_and_regressions_156",
+      "target": "specs_archive_156_fix_breakdown_type_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/156-fix-breakdown-type/proposal.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_156_fix_breakdown_type_proposal_proposal_fix_breakdown_types_and_regressions_156",
+      "target": "specs_archive_156_fix_breakdown_type_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/156-fix-breakdown-type/proposal.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_156_fix_breakdown_type_proposal_proposal_fix_breakdown_types_and_regressions_156",
+      "target": "specs_archive_156_fix_breakdown_type_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/156-fix-breakdown-type/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_156_fix_breakdown_type_spec_plan",
+      "target": "specs_archive_156_fix_breakdown_type_spec_plan_spec_plan_fix_breakdown_types_and_regressions_156",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/156-fix-breakdown-type/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_156_fix_breakdown_type_spec_plan_spec_plan_fix_breakdown_types_and_regressions_156",
+      "target": "specs_archive_156_fix_breakdown_type_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "specs/archive/agente-fullbleed-layout-and-clean-tabs/design.md",
       "source_location": "L3",
       "weight": 1.0,
@@ -129580,6 +129987,28 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
+      "source_location": "L118",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_global_features",
+      "target": "specs_global_features_156_fix_breakdown_type",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/global/features.md",
+      "source_location": "L121",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_global_features",
+      "target": "specs_global_features_157_sync_oficina_button",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/global/features.md",
       "source_location": "L36",
       "weight": 1.0,
       "_origin": "ast",
@@ -130447,5 +130876,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "f69201e74f0f673addd46723ab7c6c7d0f0b9578"
+  "built_at_commit": "61536244b457f09f12723118853ec80a99139445"
 }

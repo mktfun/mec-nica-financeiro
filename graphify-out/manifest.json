@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1786372431.0634925,
-    "ast_hash": "9e07e4f0ec58f29b4d87a8d1bcabff08",
+    "mtime": 1786392869.789829,
+    "ast_hash": "657cc3d7925d0d5c2064203ea8b1f6d9",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -3325,8 +3325,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786392247.7477877,
-    "ast_hash": "6a06001be955ab5466f9e1597543e431",
+    "mtime": 1786392979.8153858,
+    "ast_hash": "2f2b1df84d817c0ab2c99da5ed248987",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -6132,6 +6132,21 @@
   "specs/archive/155-historical-os-query/spec-plan.md": {
     "mtime": 1786390482.4482718,
     "ast_hash": "f4ebdcadb4b80a9d37e59cc88f252a19",
+    "semantic_hash": ""
+  },
+  "specs/archive/156-fix-breakdown-type/design.md": {
+    "mtime": 1786391806.3764553,
+    "ast_hash": "540ded4c205e26749c72575128efbfad",
+    "semantic_hash": ""
+  },
+  "specs/archive/156-fix-breakdown-type/proposal.md": {
+    "mtime": 1786391780.9583662,
+    "ast_hash": "3262c44c46d4d6d89803385337740182",
+    "semantic_hash": ""
+  },
+  "specs/archive/156-fix-breakdown-type/spec-plan.md": {
+    "mtime": 1786392130.979323,
+    "ast_hash": "89d346f814a6bd4933b15e1519e1810a",
     "semantic_hash": ""
   }
 }

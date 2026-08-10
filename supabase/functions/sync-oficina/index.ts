@@ -4,9 +4,14 @@ import { createClient } from 'npm:@supabase/supabase-js@2.44.2'
 const BOT_URL = Deno.env.get('BOT_URL') || 'https://bot.tork.services';
 const BOT_API_KEY = Deno.env.get('BOT_API_KEY') || '';
 
+export const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: { 'Access-Control-Allow-Origin': '*' } })
+    return new Response('ok', { headers: corsHeaders });
   }
 
   try {
@@ -53,12 +58,12 @@ serve(async (req) => {
 
     return new Response(
       JSON.stringify({ success: true, message: "Sincronização concluída com sucesso." }),
-      { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (err: any) {
     return new Response(
       JSON.stringify({ success: false, error: err.message }),
-      { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }
+      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }
 })
