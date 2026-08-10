@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Button } from '@/components/ui/Button';
@@ -58,6 +58,13 @@ export function ResumoDiaPanel({
   // Faturamento Atual global do sistema (acumulado do mês até hoje) lido das transações
   const faturamentoAtualGlobal = storesData.reduce((acc, st) => acc + (st.faturamento_atual || 0), 0);
 
+  const [manualContas, setManualContas] = useState(0);
+
+  useEffect(() => {
+    // Hidratação do valor manual salvo no banco para o dia correspondente
+    setManualContas(currentSnapshot?.contas_a_pagar || 0);
+  }, [selectedDate, currentSnapshot?.contas_a_pagar]);
+
   // Faturamento Anterior é o Faturamento Acumulado salvo no último fechamento (previousSnapshot)
   const faturamentoAnteriorGlobal = previousSnapshot?.faturamento || 0;
 
@@ -78,7 +85,8 @@ export function ResumoDiaPanel({
 
   // Automáticos via OFX (Outros agora é 0 por padrão, não um residual)
   const faturamentoOutrosAutomatico = 0;
-  const contasAPagarAutomatico = Math.abs(totalOfxOut);
+  // totalOfxOut será usado apenas para fins visuais de Raio-X
+  const contasAPagarAutomatico = manualContas;
 
   // Sum na_loja_os directly from storesData to avoid loop with 0 value
   const dynamicGlobalNaLojaOs = storesData ? Object.values(storesData).reduce((acc: number, s: any) => acc + (s.na_loja_os || 0), 0) : 0;
@@ -98,7 +106,7 @@ export function ResumoDiaPanel({
     faturamento_anterior: faturamentoAnteriorGlobal,
     faturamento_outros: faturamentoOutrosAutomatico,
     juros_rede: currentSnapshot?.juros_rede || dynamicJurosRede,
-    contas_a_pagar: contasAPagarAutomatico,
+    contas_a_pagar: manualContas,
     provisao: 0,
   };
 
@@ -124,12 +132,17 @@ export function ResumoDiaPanel({
         caixa_atual: calculated.caixa_atual,
         // Faturamento salvo deve ser o ATUAL acumulado, para que o dia seguinte use como `faturamento_anterior`
         faturamento: faturamentoAtualGlobal,
+        dinheiro_mp: inputForCalculation.dinheiro_mp,
         total_recebiveis: calculated.a_receber,
         total_patio: calculated.na_loja,
         saldo_bancario: calculated.saldo,
+        a_receber_manual: inputForCalculation.a_receber_manual,
         faturamento_outros_valor: faturamentoOutrosAutomatico,
-        contas_a_pagar: contasAPagarAutomatico,
+        faturamento_outros_desc: null,
+        contas_a_pagar: manualContas,
         provisao: 0,
+        saldo_negativo_itau: inputForCalculation.saldo_negativo_itau,
+        juros_rede: inputForCalculation.juros_rede,
         notes: 'Fechamento salvo com base nos valores lidos da importação automática de OFX.',
       });
     setIsSaved(true);
@@ -283,18 +296,31 @@ export function ResumoDiaPanel({
             <span className="text-[10px] text-[var(--text-tertiary)] block">OSs do Pátio pendentes</span>
           </div>
 
-          <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">DESPESAS / JUROS</span>
+          <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-2">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">CONTAS (MANUAL)</span>
               <Receipt size={15} className="text-[var(--color-accent-danger)]" />
             </div>
-            <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-danger)]">
-              <AnimatedNumber value={inputForCalculation.juros_rede + contasAPagarAutomatico} format="currency" />
-            </p>
-            <span className="text-[10px] text-[var(--text-tertiary)] block">
-              OFX: <AnimatedNumber value={contasAPagarAutomatico} format="currency" /> | Maquininha: <AnimatedNumber value={inputForCalculation.juros_rede} format="currency" />
-            </span>
+            
+            <div className="relative">
+              <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-[var(--text-tertiary)]">R$</span>
+              <input 
+                type="number"
+                value={manualContas || ''}
+                onChange={(e) => setManualContas(Number(e.target.value))}
+                placeholder="0,00"
+                className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg py-1.5 pl-8 pr-3 text-lg font-bold font-sans tabular-nums text-[var(--color-accent-danger)] focus:border-[var(--color-accent-danger)]/50 focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-danger)]/50 transition-all placeholder:text-[var(--text-tertiary)]/50"
+              />
+            </div>
+            
+            <div className="flex justify-between items-center text-[10px] text-[var(--text-tertiary)]">
+              <span>Juros: <AnimatedNumber value={inputForCalculation.juros_rede} format="currency" /></span>
+              <span title="Total de Saídas no Extrato OFX importado" className="border-b border-dashed border-[var(--text-tertiary)]/30 cursor-help text-[var(--text-tertiary)]/70 hover:text-[var(--text-tertiary)]">
+                OFX Out: -{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Math.abs(totalOfxOut))}
+              </span>
+            </div>
           </div>
+
         </div>
 
         {/* Dashboard de Consolidação & Diferença */}
