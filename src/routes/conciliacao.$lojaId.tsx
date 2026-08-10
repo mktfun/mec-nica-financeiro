@@ -8,7 +8,8 @@ import { OsVsRedeTable } from '@/components/conciliacao/OsVsRedeTable';
 import { RedeVsOfxTable } from '@/components/conciliacao/RedeVsOfxTable';
 import { PixVsOfxTable } from '@/components/conciliacao/PixVsOfxTable';
 import { OfxSemMatchTable } from '@/components/conciliacao/OfxSemMatchTable';
-import { ImportSourceBadges } from '@/components/conciliacao/ImportSourceBadges';
+import { ExtratosImportacaoModal } from '@/components/conciliacao/ExtratosImportacaoModal';
+import { TableProperties } from 'lucide-react';
 
 import { useTransactionsPorDataELoja } from '@/hooks/useTransactions';
 import { useReconciliationViews } from '@/hooks/useConciliacao';
@@ -48,6 +49,7 @@ function TabBtn({ active, onClick, children }: { active: boolean, onClick: () =>
 
 function ConciliacaoLojaPage() {
   const [activeTab, setActiveTab] = useState<TabType>('os_rede');
+  const [isExtratosOpen, setIsExtratosOpen] = useState(false);
   const { lojaId } = useParams({ from: '/conciliacao/$lojaId' });
   const { date } = Route.useSearch();
   
@@ -98,7 +100,22 @@ function ConciliacaoLojaPage() {
                   </Badge>
                 )}
               </div>
-              <ImportSourceBadges storeId={lojaId} targetDate={targetDate} />
+              
+              <button
+                onClick={() => setIsExtratosOpen(true)}
+                className="mt-3 flex items-center gap-2 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-md text-xs font-medium text-zinc-200 transition-colors shadow-sm"
+              >
+                <TableProperties size={14} className="text-zinc-400" />
+                📊 Extratos Brutos (Originais)
+              </button>
+              
+              <ExtratosImportacaoModal 
+                isOpen={isExtratosOpen}
+                onClose={() => setIsExtratosOpen(false)}
+                storeId={lojaId}
+                storeName={store.name}
+                targetDate={targetDate}
+              />
             </div>
           </div>
         </div>

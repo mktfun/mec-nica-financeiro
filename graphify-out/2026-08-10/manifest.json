@@ -935,8 +935,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1786367837.2471292,
-    "ast_hash": "290788cc88b64d470e721dfad1337e14",
+    "mtime": 1786386930.949746,
+    "ast_hash": "c4bf5990ef5b39bcf12502ddab27e6f3",
     "semantic_hash": ""
   },
   "src/components/dashboard/AlertResolveDialog.tsx": {
@@ -1315,8 +1315,8 @@
     "semantic_hash": ""
   },
   "src/routes/conciliacao.index.tsx": {
-    "mtime": 1786367835.143377,
-    "ast_hash": "c30403af412bf16117f18fa5e6a548f7",
+    "mtime": 1786386503.5274827,
+    "ast_hash": "23c2cd22d906bdb8f452ec8565f7d173",
     "semantic_hash": ""
   },
   "src/routes/configuracoes.tsx": {
@@ -6017,6 +6017,81 @@
   "specs/archive/149-conciliation-details/spec-plan.md": {
     "mtime": 1786378657.0312712,
     "ast_hash": "456f5f606df8a4e78fc73e24917a4e8f",
+    "semantic_hash": ""
+  },
+  ".tmp_archive.ps1": {
+    "mtime": 1786387078.024936,
+    "ast_hash": "403ced5b39bc93bc13edd90881f2f278",
+    "semantic_hash": ""
+  },
+  ".tmp_diag.sql": {
+    "mtime": 1786386120.9796114,
+    "ast_hash": "007c642afa418dc053bd4a0adb602323",
+    "semantic_hash": ""
+  },
+  ".tmp_push.ps1": {
+    "mtime": 1786386630.8485737,
+    "ast_hash": "99f358ff11439ef4c9e4248b0025fe3c",
+    "semantic_hash": ""
+  },
+  "src/components/conciliacao/BreakdownModal.tsx": {
+    "mtime": 1786386456.02709,
+    "ast_hash": "9c85919828bda5c9270a96618c8b1c5c",
+    "semantic_hash": ""
+  },
+  "src/hooks/useConciliationBreakdown.ts": {
+    "mtime": 1786386286.434251,
+    "ast_hash": "2fa0b2de904452cae3043cadd1270361",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260810180000_conciliation_breakdown_rpc.sql": {
+    "mtime": 1786386260.984393,
+    "ast_hash": "748115d04736aabbb13acbd1c9fd08cf",
+    "semantic_hash": ""
+  },
+  "specs/151-conciliation-transparency/design.md": {
+    "mtime": 1786385808.3049164,
+    "ast_hash": "630777cd244aac4f9d2eb2bcb50f9507",
+    "semantic_hash": ""
+  },
+  "specs/151-conciliation-transparency/proposal.md": {
+    "mtime": 1786385749.524861,
+    "ast_hash": "2ded5df3510c30526afc166c6c91b845",
+    "semantic_hash": ""
+  },
+  "specs/151-conciliation-transparency/spec-plan.md": {
+    "mtime": 1786386176.5442307,
+    "ast_hash": "008345538b0ddbd6465fd123bfe52a29",
+    "semantic_hash": ""
+  },
+  "specs/152-manual-expenses/design.md": {
+    "mtime": 1786386730.7446392,
+    "ast_hash": "b5caa48443eee9ed5b65ece51f855871",
+    "semantic_hash": ""
+  },
+  "specs/152-manual-expenses/proposal.md": {
+    "mtime": 1786386728.6420853,
+    "ast_hash": "41b2bb18a9403aaa5402411bf94636a9",
+    "semantic_hash": ""
+  },
+  "specs/152-manual-expenses/spec-plan.md": {
+    "mtime": 1786386945.3924177,
+    "ast_hash": "df68ee38a5e16859c33dba03c65dd9d0",
+    "semantic_hash": ""
+  },
+  "specs/archive/150-fix-raw-data-modals/design.md": {
+    "mtime": 1786380478.4540682,
+    "ast_hash": "2294c510170f2cc8e6ae7dc82021704a",
+    "semantic_hash": ""
+  },
+  "specs/archive/150-fix-raw-data-modals/proposal.md": {
+    "mtime": 1786380447.8116646,
+    "ast_hash": "f9b7f3eced6a5537dd339203a8273208",
+    "semantic_hash": ""
+  },
+  "specs/archive/150-fix-raw-data-modals/spec-plan.md": {
+    "mtime": 1786383337.868734,
+    "ast_hash": "abf1d6d3528e736228b5937a0ff6873c",
     "semantic_hash": ""
   }
 }

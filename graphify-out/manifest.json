@@ -1310,8 +1310,8 @@
     "semantic_hash": ""
   },
   "src/routes/conciliacao.$lojaId.tsx": {
-    "mtime": 1786378743.3455503,
-    "ast_hash": "15e2c7a889db52bc9162cff1ca904a64",
+    "mtime": 1786387751.916378,
+    "ast_hash": "b38c6e6e91e41afc6f0e7cdcc11025a8",
     "semantic_hash": ""
   },
   "src/routes/conciliacao.index.tsx": {
@@ -5949,26 +5949,6 @@
     "ast_hash": "e15c43abbfb1d01ff5635c555c15e65d",
     "semantic_hash": ""
   },
-  "src/components/conciliacao/ImportSourceBadges.tsx": {
-    "mtime": 1786383199.8408613,
-    "ast_hash": "ed0fc3641610009b7befcdfaa17a941a",
-    "semantic_hash": ""
-  },
-  "src/components/conciliacao/RawOfxTable.tsx": {
-    "mtime": 1786378710.6351826,
-    "ast_hash": "f43a1b9e7abef05a8b1310f792cdef5d",
-    "semantic_hash": ""
-  },
-  "src/components/conciliacao/RawOsTable.tsx": {
-    "mtime": 1786383221.3587902,
-    "ast_hash": "c3e540d3cd1c899c0fa43e664e8747ae",
-    "semantic_hash": ""
-  },
-  "src/components/conciliacao/RawRedeTable.tsx": {
-    "mtime": 1786383242.8552737,
-    "ast_hash": "eb78043c5d102c97b5d03c6915fdef80",
-    "semantic_hash": ""
-  },
   "src/hooks/useRawImportData.ts": {
     "mtime": 1786383181.2178593,
     "ast_hash": "bf7fd540a0f3c5a346a83de10e486c6d",
@@ -6064,21 +6044,6 @@
     "ast_hash": "008345538b0ddbd6465fd123bfe52a29",
     "semantic_hash": ""
   },
-  "specs/152-manual-expenses/design.md": {
-    "mtime": 1786386730.7446392,
-    "ast_hash": "b5caa48443eee9ed5b65ece51f855871",
-    "semantic_hash": ""
-  },
-  "specs/152-manual-expenses/proposal.md": {
-    "mtime": 1786386728.6420853,
-    "ast_hash": "41b2bb18a9403aaa5402411bf94636a9",
-    "semantic_hash": ""
-  },
-  "specs/152-manual-expenses/spec-plan.md": {
-    "mtime": 1786386945.3924177,
-    "ast_hash": "df68ee38a5e16859c33dba03c65dd9d0",
-    "semantic_hash": ""
-  },
   "specs/archive/150-fix-raw-data-modals/design.md": {
     "mtime": 1786380478.4540682,
     "ast_hash": "2294c510170f2cc8e6ae7dc82021704a",
@@ -6092,6 +6057,46 @@
   "specs/archive/150-fix-raw-data-modals/spec-plan.md": {
     "mtime": 1786383337.868734,
     "ast_hash": "abf1d6d3528e736228b5937a0ff6873c",
+    "semantic_hash": ""
+  },
+  ".tmp_archive_153.ps1": {
+    "mtime": 1786388025.6764271,
+    "ast_hash": "7b63d563581e38b9596ee82a7e15b9d3",
+    "semantic_hash": ""
+  },
+  "src/components/conciliacao/ExtratosImportacaoModal.tsx": {
+    "mtime": 1786387694.5821288,
+    "ast_hash": "c9033711f2182bc17a2eae9bbb573d58",
+    "semantic_hash": ""
+  },
+  "specs/153-raw-imports-excel/design.md": {
+    "mtime": 1786387583.0744133,
+    "ast_hash": "d36696ed4791a83405a54219a204dd86",
+    "semantic_hash": ""
+  },
+  "specs/153-raw-imports-excel/proposal.md": {
+    "mtime": 1786387563.1451378,
+    "ast_hash": "9b9c858552ae02c9f117e015a92c1fb9",
+    "semantic_hash": ""
+  },
+  "specs/153-raw-imports-excel/spec-plan.md": {
+    "mtime": 1786387796.1263592,
+    "ast_hash": "4db2a602e191813db9006d4c80597735",
+    "semantic_hash": ""
+  },
+  "specs/archive/152-manual-expenses/design.md": {
+    "mtime": 1786386730.7446392,
+    "ast_hash": "b5caa48443eee9ed5b65ece51f855871",
+    "semantic_hash": ""
+  },
+  "specs/archive/152-manual-expenses/proposal.md": {
+    "mtime": 1786386728.6420853,
+    "ast_hash": "41b2bb18a9403aaa5402411bf94636a9",
+    "semantic_hash": ""
+  },
+  "specs/archive/152-manual-expenses/spec-plan.md": {
+    "mtime": 1786386945.3924177,
+    "ast_hash": "df68ee38a5e16859c33dba03c65dd9d0",
     "semantic_hash": ""
   }
 }
