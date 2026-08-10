@@ -121,3 +121,9 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 
 ## [158-cors-edge-function]
 - **Fix Edge Function CORS**: Adição da constante `corsHeaders` oficial na função `sync-oficina` para suportar requisições OPTIONS originadas pelo client do Supabase (Browser).
+
+## [159-sync-feedback-fix]
+- **Feedback UI (Toast)**: Adição de Toasts Sonner verdes no disparo do bot Cloud no Wizard.
+
+## [160-sync-date-picker]
+- **Seletor de Datas Cloud**: Parâmetro `data` (targetDate) enviado no invoke da edge function para filtrar raspagens do bot PM2 retroativamente.

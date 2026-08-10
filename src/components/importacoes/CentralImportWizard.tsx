@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { toast } from 'sonner';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { 
@@ -841,6 +842,17 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
               <p className="text-[var(--text-secondary)] text-sm text-center max-w-sm mb-6">
                 Busca automaticamente resumos de Ordens de Serviço (Pátio) e Contas a Pagar diretamente do sistema Oficina Inteligente em tempo real.
               </p>
+
+              <div className="w-full mb-6">
+                <label className="block text-xs font-semibold text-[var(--text-tertiary)] uppercase mb-2">Data de Referência (Opcional)</label>
+                <input 
+                  type="date" 
+                  value={targetDate} 
+                  onChange={(e) => setTargetDate(e.target.value)}
+                  className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-lg p-3 text-sm focus:border-[var(--color-primary)] focus:outline-none text-[var(--text-primary)]"
+                />
+              </div>
+
               <Button 
                 disabled={isSyncing}
                 onClick={async () => {
@@ -849,10 +861,11 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                    try {
                      if (!stores || stores.length === 0) {
                        addLog("Nenhuma loja ativa encontrada para sincronizar.", "warning");
+                       toast.error("Nenhuma loja ativa encontrada.");
                        return;
                      }
                      const promises = stores.map(store => 
-                       supabase.functions.invoke('sync-oficina', { body: { loja: store.id } })
+                       supabase.functions.invoke('sync-oficina', { body: { loja: store.id, data: targetDate } })
                      );
                      
                      const results = await Promise.allSettled(promises);
@@ -860,11 +873,18 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                      const successes = results.filter(r => r.status === 'fulfilled' && !r.value.error).length;
                      const errors = results.length - successes;
                      
-                     if (successes > 0) addLog(`Sincronização completa! ${successes} lojas atualizadas via Bot.`, "success");
-                     if (errors > 0) addLog(`${errors} lojas falharam na sincronização (Timeout ou erro na VPS).`, "error");
+                     if (successes > 0) {
+                        addLog(`Sincronização completa! ${successes} lojas atualizadas via Bot.`, "success");
+                        toast.success(`Sincronização ativada com sucesso em ${successes} lojas! (Background)`);
+                     }
+                     if (errors > 0) {
+                        addLog(`${errors} lojas falharam na sincronização (Timeout ou erro na VPS).`, "error");
+                        toast.error(`Falha ao sincronizar ${errors} lojas.`);
+                     }
                      
                    } catch (err: any) {
                      addLog(`Erro crítico ao contatar Cloud: ${err.message}`, "error");
+                     toast.error("Erro crítico ao contatar a nuvem.");
                    } finally {
                      setIsSyncing(false);
                    }

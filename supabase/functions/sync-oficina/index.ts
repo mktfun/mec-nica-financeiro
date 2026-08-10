@@ -15,7 +15,7 @@ serve(async (req) => {
   }
 
   try {
-    const { loja } = await req.json();
+    const { loja, data } = await req.json();
     if (!loja) throw new Error("Parâmetro 'loja' é obrigatório.");
 
     const supabase = createClient(
@@ -24,7 +24,10 @@ serve(async (req) => {
     );
 
     // 1. Sincronizar Contas a Pagar
-    const urlContas = `${BOT_URL}/api/contas-pagar?loja=${encodeURIComponent(loja)}`;
+    let urlContas = `${BOT_URL}/api/contas-pagar?loja=${encodeURIComponent(loja)}`;
+    if (data) {
+      urlContas += `&data=${encodeURIComponent(data)}`;
+    }
     const resContas = await fetch(urlContas, { headers: { 'x-api-key': BOT_API_KEY } });
     
     if (resContas.ok) {
