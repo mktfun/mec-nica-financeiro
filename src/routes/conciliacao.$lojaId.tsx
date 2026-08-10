@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { createFileRoute, Link, useParams } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Badge } from '@/components/ui/Badge';
@@ -8,6 +8,7 @@ import { OsVsRedeTable } from '@/components/conciliacao/OsVsRedeTable';
 import { RedeVsOfxTable } from '@/components/conciliacao/RedeVsOfxTable';
 import { PixVsOfxTable } from '@/components/conciliacao/PixVsOfxTable';
 import { OfxSemMatchTable } from '@/components/conciliacao/OfxSemMatchTable';
+import { ImportSourceBadges } from '@/components/conciliacao/ImportSourceBadges';
 
 import { useTransactionsPorDataELoja } from '@/hooks/useTransactions';
 import { useReconciliationViews } from '@/hooks/useConciliacao';
@@ -97,6 +98,7 @@ function ConciliacaoLojaPage() {
                   </Badge>
                 )}
               </div>
+              <ImportSourceBadges storeId={lojaId} targetDate={targetDate} />
             </div>
           </div>
         </div>

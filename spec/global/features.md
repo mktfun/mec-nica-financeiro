@@ -64,3 +64,6 @@
    
 - [146] [2026-08-07] Restaura‡Æo de import_logs, tipagem de get_store_financial_stats para text, e view transactions baseada em target_date 
 - **Feature 147 (Conciliacao):** Navegacao estrita de datas (bloqueio de dias vazios) usando o novo hook useAvailableConciliacaoDates (src/hooks/useDailySnapshot.ts). 
+
+- **ImportSourceBadges (149-conciliation-details)**: Modal de raio-x de lotes na conciliação que exibe RawOsTable, RawRedeTable e RawOfxTable (src/components/conciliacao/)
+- **useRawImportData (149-conciliation-details)**: Hook para buscar dados limpos vindos das novas RPCs get_raw_os_data, get_raw_rede_data, get_raw_ofx_data (src/hooks/)
