@@ -1,16 +1,16 @@
 # Graph Report - financeiro  (2026-08-10)
 
 ## Corpus Check
-- 1141 files · ~434,080 words
+- 1153 files · ~435,715 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 5323 nodes · 5708 edges · 973 communities (635 shown, 338 thin omitted)
+- 5368 nodes · 5754 edges · 990 communities (645 shown, 345 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 131 edges (avg confidence: 0.5)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `86a27fce`
+- Built from commit: `cf503008`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -18,8 +18,8 @@
 - query
 - devDependencies
 - supabase/types.ts
-- WizardImportacao.tsx
-- CentralImportWizard.tsx
+- FileRoutesByPath
+- useTransactions.ts
 - helpers.js
 - oficina.ts
 - orquestrador/src/index.js
@@ -32,7 +32,7 @@
 - bot-traefik-routing/design.md
 - oficina-system-connector/proposal.md
 - psl-make-dafsa
-- useStores
+- supabase.ts
 - 002-premium-redesign/design.md
 - fix-chat-ui/proposal.md
 - Button.tsx
@@ -49,15 +49,15 @@
 - knowledge-base/package.json
 - scheduler/package.json
 - PromptBox.tsx
-- Card.tsx
+- useConciliacao.ts
 - Modelo de Banco de Dados
 - chat-ui-minimalist/proposal.md
 - fix-sidebar-crash/proposal.md
 - bot-traefik-routing/proposal.md
 - 001-backend-supabase/proposal.md
 - 008-import-history-and-fixes/proposal.md
-- recebiveis.tsx
-- supabase.ts
+- Card.tsx
+- patio.tsx
 - Contexto do Projeto: Sistema de Fechamento de Caixa (Mecânica Financeiro)
 - scheduler/src/index.js
 - dependencies
@@ -69,7 +69,7 @@
 - Design: Restauração de Logs de Importação e Ajuste de RPC (146)
 - 119-database-cleanup-and-split/proposal.md
 - 130-fix-automatch-rpc/proposal.md
-- BankReconciliationDashboard.tsx
+- CentralImportWizard.tsx
 - agent-runtime/src/index.js
 - connectorManager.js
 - 008-import-history-and-fixes/design.md
@@ -420,7 +420,7 @@
 - imports
 - @radix-ui/react-checkbox
 - chat-logic-fix/proposal.md
-- class-variance-authority
+- recebiveis.tsx
 - @cloudflare/vite-plugin
 - check.js
 - check_db.ts
@@ -505,14 +505,14 @@
 - react-dom
 - @radix-ui/react-progress
 - 119-database-cleanup-and-split/spec-plan.md
-- conciliacao.index.tsx
+- supabase
 - loja.$lojaId.tsx
 - react-markdown
 - embla-carousel-react
 - chat-logic-fix/design.md
 - @hookform/resolvers
 - remark-gfm
-- eslint
+- Proposal: ofx-expenses
 - scripts
 - oficina-system-connector/design.md
 - sonner
@@ -676,20 +676,30 @@
 - Proposal: Central de Agentes IAS & Sidebar UI Alignment
 - Spec Plan (Save-State)
 - Spec Plan (Save-State)
+- importacoes.tsx
 - apply-migration.cjs
 - test-os-command.cjs
-- ai
+- FaturamentoVsContasChart.tsx
 - verify-db-ias.cjs
 - Proposed Changes
 - 140-fix-fluxo-caixa-rpc/spec-plan.md
 - 141-fix-conciliacao-valor-contas-fluxo/spec-plan.md
+- BankReconciliationDashboard.tsx
+- Design: Navegação Inteligente de Datas na Conciliação (147-conciliacao-dates)
+- Proposal: Navegação Inteligente de Datas na Conciliação (147-conciliacao-dates)
+- Design: ofx-expenses
+- proposta.tsx
+- Spec Plan: ofx-expenses
 - sidebar-layout/proposal.md
 - sidebar-layout/design.md
+- __root.tsx
+- ai
 - sidebar-layout/spec-plan.md
 - 058-ai-agent-ux-costs/proposal.md
 - fix-chat-ui/design.md
 - fix-chat-ui/spec-plan.md
 - fix-endpoint-alignment/proposal.md
+- custos.tsx
 - fix-ai-sdk-crash/proposal.md
 - fix-chat-ui-layout/proposal.md
 - agente-refinements/design.md
@@ -725,6 +735,7 @@
 - conciliacao-diaria-refactor/spec-plan.md
 - faturamento-pix-refactor/proposal.md
 - fix-chat-ui-layout/spec-plan.md
+- login.tsx
 - 073-loja-detalhes-transacoes/proposal.md
 - faturamento-pix-refactor/design.md
 - 074-fix-bootstrap/proposal.md
@@ -798,6 +809,8 @@
 - 097-saldo-faturamento-fix/design.md
 - 098-conciliacao-bugs-fix/design.md
 - 100-fix-ofx-cents-amounts/proposal.md
+- test_db.js
+- test_db2.js
 - rebaseall
 - 061-fix-ai-chat-settings/spec-plan.md
 - 063-dashboard-fintech-v3/spec-plan.md
@@ -817,6 +830,7 @@
 - 099-revert-manual-and-fix-patio/design.md
 - 099-revert-manual-and-fix-patio/proposal.md
 - 100-fix-ofx-cents-amounts/design.md
+- Spec Plan: Navegação Inteligente de Datas na Conciliação (147-conciliacao-dates)
 - cleanup-duplicates.js
 - 082-fix-ofx-target-date-accumulation/spec-plan.md
 - 093-fix-pix-ofx-match/spec-plan.md
@@ -856,6 +870,10 @@
 - 100-fix-ofx-cents-amounts/spec-plan.md
 - agente-ui-custos/spec-plan.md
 - imports
+- eslint-config-prettier
+- ofx.md
+- eslint-plugin-react-refresh
+- lucide-react
 - Tasks
 - bash_profile.sh
 - lang.sh
@@ -878,7 +896,6 @@
 - 102-advanced-trace-logging/spec-plan.md
 - Spec Plan: Trace Logs Estruturados (101)
 - @ai-sdk/react
-- eslint-config-prettier
 - Plano de Implementa��o: Corre��o Robusta de Colunas (OS e REDE)
 - tailwindcss
 - 108-global-backend-math-refactor/proposal.md
@@ -946,7 +963,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (973 total, 338 thin omitted)
+## Communities (990 total, 345 thin omitted)
 
 ### Community 0 - "query"
 Cohesion: 0.05
@@ -954,19 +971,19 @@ Nodes (48): { Pool }, query(), contextPruning, eventBus, executarProximosSteps()
 
 ### Community 1 - "devDependencies"
 Cohesion: 0.18
-Nodes (11): eslint-plugin-prettier, eslint-plugin-react-hooks, eslint-plugin-react-refresh, @lovable.dev/vite-tanstack-config, devDependencies, eslint-plugin-prettier, eslint-plugin-react-hooks, eslint-plugin-react-refresh (+3 more)
+Nodes (11): eslint, eslint-plugin-prettier, eslint-plugin-react-hooks, @lovable.dev/vite-tanstack-config, devDependencies, eslint, eslint-plugin-prettier, eslint-plugin-react-hooks (+3 more)
 
 ### Community 2 - "supabase/types.ts"
 Cohesion: 0.14
 Nodes (12): requireSupabaseAuth, supabaseAdmin, CompositeTypes, Constants, Database, DatabaseWithoutInternals, DefaultSchema, Enums (+4 more)
 
-### Community 3 - "WizardImportacao.tsx"
-Cohesion: 0.23
-Nodes (9): generateSyntheticFitId(), useStoreMapping(), WizardImportacao(), WizardImportacaoProps, useBulkInsertTransactions(), generateSessionId(), ImportacoesDespesasWizard(), Route (+1 more)
+### Community 3 - "FileRoutesByPath"
+Cohesion: 0.11
+Nodes (18): Route, Route, Route, Route, Route, Route, Route, Route (+10 more)
 
-### Community 4 - "CentralImportWizard.tsx"
-Cohesion: 0.09
-Nodes (25): CashFlowChart(), CentralImportWizard(), ImportLogEntry, useUnifiedStoreMapping(), useSaveImportedReport(), GroupedImportLog, ParsedReceivable, savePatioOsAndReceivables() (+17 more)
+### Community 4 - "useTransactions.ts"
+Cohesion: 0.18
+Nodes (9): CashFlowChart(), useCashFlow(), useExtrato(), useWeeklyRevenueTrend(), TransactionRow, formatDate(), getDefaultPeriod(), getIconForMethod() (+1 more)
 
 ### Community 5 - "helpers.js"
 Cohesion: 0.07
@@ -993,16 +1010,16 @@ Cohesion: 0.07
 Nodes (27): 1.1 Infraestrutura, 1.2 Banco — Migration Fase 1, 1.3 Hook `useAuth`, 1.4 Tela de Login, 1.5 Proteção de Rotas, 1.6 Verificação Fase 1, 2.1 Migration, 2.2 Hook `useStores` (+19 more)
 
 ### Community 11 - "routeTree.gen.ts"
-Cohesion: 0.04
-Nodes (49): useLogin(), getRouter(), Route, BootstrapPage(), Route, Route, Route, Route (+41 more)
+Cohesion: 0.07
+Nodes (30): getRouter(), AlertasRoute, BootstrapRoute, ConciliacaoDetalhesRoute, ConciliacaoIndexRoute, ConciliacaoLojaIdRoute, ConfiguracoesRoute, CustosRoute (+22 more)
 
 ### Community 12 - "compilerOptions"
 Cohesion: 0.07
 Nodes (26): DOM, DOM.Iterable, ES2022, eslint.config.js, src/**/*.ts, src/**/*.tsx, vite/client, vite.config.ts (+18 more)
 
 ### Community 13 - "AppShell.tsx"
-Cohesion: 0.09
-Nodes (17): CustosPanel(), Attachment, AttachmentGalleryModal(), AttachmentThumb(), ModelIcon(), PromptInput, PromptInputProps, AppShell() (+9 more)
+Cohesion: 0.08
+Nodes (18): LogsAgentePanel(), Attachment, AttachmentGalleryModal(), AttachmentThumb(), ModelIcon(), PromptInput, PromptInputProps, AppShell() (+10 more)
 
 ### Community 14 - "bot-traefik-routing/design.md"
 Cohesion: 0.29
@@ -1016,9 +1033,9 @@ Nodes (13): API / Interface, Bot (Express — `bot/src/server.ts`), Config de V�
 Cohesion: 0.07
 Nodes (43): Exception, encode(), encode_label(), encode_links(), encode_prefix(), InputError, join_labels(), join_suffixes() (+35 more)
 
-### Community 17 - "useStores"
+### Community 17 - "supabase.ts"
 Cohesion: 0.11
-Nodes (25): ConfiguracoesPanel(), LogsMotorPanel(), StoreFormDialog(), StoreFormDialogProps, StoreRankingChart(), BotCredentialRow, useBotCredentials(), useUpdateBotCredential() (+17 more)
+Nodes (22): StoreFormDialog(), StoreFormDialogProps, StoreRankingChart(), useConciliacaoDetalhes(), useConciliacaoResumo(), ImportLog, ImportLogFilters, sanitizeStore() (+14 more)
 
 ### Community 18 - "002-premium-redesign/design.md"
 Cohesion: 0.10
@@ -1029,8 +1046,8 @@ Cohesion: 0.29
 Nodes (6): API / Interface, Contratos de Dados, Features Existentes Impactadas, Problema, Risco Principal, Solução Proposta
 
 ### Community 20 - "Button.tsx"
-Cohesion: 0.13
-Nodes (18): AgenteIAConfigPanel(), MODEL_OPTIONS, PROVIDER_LABELS, AiSettingsForm(), AlertResolveDialog(), AlertResolveDialogProps, container, item (+10 more)
+Cohesion: 0.20
+Nodes (11): AlertResolveDialog(), AlertResolveDialogProps, container, item, Button(), ButtonProps, useAlerts(), useResolveAlert() (+3 more)
 
 ### Community 21 - "agent-runtime/package.json"
 Cohesion: 0.10
@@ -1084,9 +1101,9 @@ Nodes (16): dependencies, dotenv, express, node-fetch, pg, description, dotenv, 
 Cohesion: 0.12
 Nodes (8): ClassValue, DialogContent, DialogOverlay, PopoverContent, PromptBox, PromptBoxProps, toolsList, TooltipContent
 
-### Community 34 - "Card.tsx"
-Cohesion: 0.10
-Nodes (31): CacheAgentePanel(), Modulo1SaldoPanel(), Modulo1SaldoPanelProps, OfxSemMatchTable(), OsDetailModal(), OsDetailModalProps, OsVsRedeTable(), PixVsOfxTable() (+23 more)
+### Community 34 - "useConciliacao.ts"
+Cohesion: 0.14
+Nodes (22): OfxSemMatchTable(), OsDetailModal(), OsDetailModalProps, OsVsRedeTable(), PixVsOfxTable(), RedeVsExtratoTable(), RedeVsExtratoTableProps, RedeVsOfxTable() (+14 more)
 
 ### Community 35 - "Modelo de Banco de Dados"
 Cohesion: 0.13
@@ -1112,13 +1129,13 @@ Nodes (13): Arquivos novos, Contexto Atual do Projeto, Critérios de Aceite Gera
 Cohesion: 0.14
 Nodes (13): Banco de Dados, Bug 1 — Recebíveis mostrando R$ 7,7 milhões (valor absurdo), Bug 2 — Saldo Líquido do Dashboard zerado, Bug 3 — Sem histórico de importações rastreável, Bug 4 — Recebíveis: lógica de status incorreta, Contexto e Problemas Identificados, Critérios de Aceite, Hooks (+5 more)
 
-### Community 41 - "recebiveis.tsx"
-Cohesion: 0.29
-Nodes (6): useRecebiveis(), useReceivablesSummary(), ReceivableRow, FilterTab, RecebiveisPage(), Route
+### Community 41 - "Card.tsx"
+Cohesion: 0.10
+Nodes (21): AgenteIAConfigPanel(), MODEL_OPTIONS, PROVIDER_LABELS, CacheAgentePanel(), AiSettingsForm(), ConfiguracoesPanel(), LogsMotorPanel(), Card() (+13 more)
 
-### Community 42 - "supabase.ts"
-Cohesion: 0.08
-Nodes (19): LogsAgentePanel(), RecentActivity(), GoalRow, ImportLog, ImportLogFilters, McpLog, useMcpLogs(), usePatioOS() (+11 more)
+### Community 42 - "patio.tsx"
+Cohesion: 0.23
+Nodes (9): RecentActivity(), usePatioOS(), usePatioSummary(), PatioOSRow, FilterTab, getOsEffectiveValues(), HistoryChange, HistoryLog (+1 more)
 
 ### Community 43 - "Contexto do Projeto: Sistema de Fechamento de Caixa (Mecânica Financeiro)"
 Cohesion: 0.14
@@ -1130,7 +1147,7 @@ Nodes (11): campoBate(), cronBateAgora(), { Pool }, query(), app, { cronBateAgor
 
 ### Community 45 - "dependencies"
 Cohesion: 0.12
-Nodes (17): framer-motion, lucide-react, dependencies, framer-motion, lucide-react, pdfjs-dist, @radix-ui/react-dialog, @radix-ui/react-select (+9 more)
+Nodes (17): class-variance-authority, framer-motion, dependencies, class-variance-authority, framer-motion, pdfjs-dist, @radix-ui/react-dialog, @radix-ui/react-select (+9 more)
 
 ### Community 46 - "query"
 Cohesion: 0.24
@@ -1145,8 +1162,8 @@ Cohesion: 0.15
 Nodes (12): BMF IA OS — Serviços (Release 1, Ambiente Local), Como rodar, Context Compressor — Prevenção de Contexto Sem Limite, Knowledge Base Service — Fechando o Maior Gap Técnico do Projeto, Learning Agent IA — Aprendizagem de Processos (PROC-LEARN-DOC-001), Limites Adicionais de Contexto — Business Memory e Workflow Engine, O que ainda é placeholder ou backlog (por decisão explícita), O que já está validado (+4 more)
 
 ### Community 49 - "AnimatedNumber.tsx"
-Cohesion: 0.06
-Nodes (31): EvolucaoMacroChart(), EvolucaoMacroChartProps, formatCompactCurrency(), formatCurrency(), formatDate(), CustomTooltip(), FaturamentoVsContasChart(), FaturamentoVsContasChartProps (+23 more)
+Cohesion: 0.09
+Nodes (23): EvolucaoMacroChart(), EvolucaoMacroChartProps, formatCompactCurrency(), formatCurrency(), formatDate(), HeroBalance(), COLOR_MAP, KpiCard() (+15 more)
 
 ### Community 50 - "🚀 Resumo das Últimas Implementações (Contexto Técnico)"
 Cohesion: 0.22
@@ -1164,9 +1181,9 @@ Nodes (6): API / Interface, Contratos de Dados, Features Existentes Impactadas, 
 Cohesion: 0.29
 Nodes (6): API / Interface, Contratos de Dados, Features Existentes Impactadas, Problema, Risco Principal, SoluÃ§Ã£o Proposta
 
-### Community 54 - "BankReconciliationDashboard.tsx"
+### Community 54 - "CentralImportWizard.tsx"
 Cohesion: 0.08
-Nodes (40): BankReconciliationDashboard(), ClassifiedFile, classifyFile(), FileTypeCategory, UniversalDropzone(), UniversalDropzoneProps, MaquininhaItem, UnifiedImportResult (+32 more)
+Nodes (41): CentralImportWizard(), ImportLogEntry, useUnifiedStoreMapping(), useStoreMapping(), WizardImportacao(), WizardImportacaoProps, MaquininhaItem, UnifiedImportResult (+33 more)
 
 ### Community 55 - "agent-runtime/src/index.js"
 Cohesion: 0.18
@@ -2328,6 +2345,10 @@ Nodes (3): imports, @supabase/functions-js, @supabase/server
 Cohesion: 0.29
 Nodes (6): API / Interface, Contratos de Dados, Features Existentes Impactadas, Problema, Risco Principal, Solução Proposta
 
+### Community 405 - "recebiveis.tsx"
+Cohesion: 0.33
+Nodes (5): useRecebiveis(), useReceivablesSummary(), ReceivableRow, FilterTab, RecebiveisPage()
+
 ### Community 477 - "bot-live-os-query/proposal.md"
 Cohesion: 0.29
 Nodes (6): API / Interface, Contratos de Dados, Features Existentes Impactadas, Problema, Risco Principal, Solução Proposta
@@ -2336,17 +2357,21 @@ Nodes (6): API / Interface, Contratos de Dados, Features Existentes Impactadas, 
 Cohesion: 0.13
 Nodes (14): Arquivos Modificados, `FaturamentoVsContasChart.tsx`, [KEEP - não deletar, apenas não usar no index], `KpiCard.tsx`, Layout Grid, [MODIFY] `src/routes/index.tsx`, [NEW] `src/components/dashboard/FaturamentoVsContasChart.tsx`, [NEW] `src/components/dashboard/KpiCard.tsx` (+6 more)
 
-### Community 495 - "conciliacao.index.tsx"
-Cohesion: 0.17
-Nodes (17): ResumoDiaPanel(), ResumoDiaPanelProps, ConciliationDailyLog, useBackendConciliacao(), useGlobalOfxOut(), useReconciliationsForDate(), DailySnapshotRow, useAvailableConciliacaoDates() (+9 more)
+### Community 495 - "supabase"
+Cohesion: 0.12
+Nodes (22): Modulo1SaldoPanel(), Modulo1SaldoPanelProps, ResumoDiaPanel(), ResumoDiaPanelProps, ConciliationDailyLog, useBackendConciliacao(), useGlobalOfxOut(), useReconciliationsForDate() (+14 more)
 
 ### Community 496 - "loja.$lojaId.tsx"
-Cohesion: 0.10
-Nodes (25): NewTransactionDialogProps, TODO: Implement transaction creation, TopBar(), Input, InputProps, Modal(), ModalProps, ThemeToggle() (+17 more)
+Cohesion: 0.12
+Nodes (18): NewTransactionDialogProps, TODO: Implement transaction creation, TopBar(), Input, InputProps, Modal(), ModalProps, ThemeToggle() (+10 more)
 
 ### Community 499 - "chat-logic-fix/design.md"
 Cohesion: 0.33
 Nodes (5): Alterações de Prompt (TypeScript), Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Fluxo de UI, Infra / Deploy
+
+### Community 502 - "Proposal: ofx-expenses"
+Cohesion: 0.29
+Nodes (6): API / Interface, Contratos de Dados, Problema, Proposal: ofx-expenses, Risco Principal, Solução Proposta
 
 ### Community 503 - "scripts"
 Cohesion: 0.29
@@ -2425,8 +2450,8 @@ Cohesion: 0.31
 Nodes (4): git-update-git-for-windows script, set_recently_seen(), test_version_compare(), update_git_for_windows()
 
 ### Community 591 - "specs/global/features.md"
-Cohesion: 0.13
-Nodes (14): [092-fix-faturamento-math], [093-fix-faturamento-visor], [094-fix-import-wipeout], [095-fix-pix-match-text], [096-fix-math-rage], [097-saldo-faturamento-fix], [098-conciliacao-bugs-fix], [099-revert-manual-and-fix-patio] (+6 more)
+Cohesion: 0.12
+Nodes (15): [092-fix-faturamento-math], [093-fix-faturamento-visor], [094-fix-import-wipeout], [095-fix-pix-match-text], [096-fix-math-rage], [097-saldo-faturamento-fix], [098-conciliacao-bugs-fix], [099-revert-manual-and-fix-patio] (+7 more)
 
 ### Community 594 - "ai-chat/index.ts"
 Cohesion: 0.43
@@ -2652,6 +2677,10 @@ Nodes (3): Contexto e Entendimento (Revisado), Proposal: Correção de Diferenç
 Cohesion: 0.25
 Nodes (7): 1. Executive Summary, 2. Problem Statement, 3.1 Sidebar & UI Layout Refactor (`src/routes/agente.tsx`), 3.2 IAS Hub Backend & RAG Routing, 3. Proposed Changes, 4. User Impact & Benefits, Proposal: Central de Agentes IAS & Sidebar UI Alignment
 
+### Community 713 - "importacoes.tsx"
+Cohesion: 0.21
+Nodes (15): useSaveImportedReport(), GroupedImportLog, ParsedOS, ParsedReceivable, useClearAllData(), useDeleteImport(), useImportsHistory(), useProcessImportedData() (+7 more)
+
 ### Community 714 - "apply-migration.cjs"
 Cohesion: 0.33
 Nodes (6): fs, main(), path, runSql(), sql, sqlPath
@@ -2660,6 +2689,10 @@ Nodes (6): fs, main(), path, runSql(), sql, sqlPath
 Cohesion: 0.38
 Nodes (6): { createClient }, IAS_STORE_MAPPINGS, main(), resolveStoreSlug(), runControlledTestCommand(), supabase
 
+### Community 716 - "FaturamentoVsContasChart.tsx"
+Cohesion: 0.38
+Nodes (5): CustomTooltip(), FaturamentoVsContasChart(), FaturamentoVsContasChartProps, formatCurrency(), shortenName()
+
 ### Community 717 - "verify-db-ias.cjs"
 Cohesion: 0.40
 Nodes (5): { createClient }, IAS_STORE_MAPPINGS, main(), resolveStoreSlug(), supabase
@@ -2667,6 +2700,26 @@ Nodes (5): { createClient }, IAS_STORE_MAPPINGS, main(), resolveStoreSlug(), sup
 ### Community 718 - "Proposed Changes"
 Cohesion: 0.33
 Nodes (5): Backend & Edge Function Alignments, Proposed Changes, Spec Plan: Central de Agentes IAS & UI Layout Refactor, Task List & Execution Status, UI Modifications (`src/routes/agente.tsx`)
+
+### Community 721 - "BankReconciliationDashboard.tsx"
+Cohesion: 0.23
+Nodes (13): BankReconciliationDashboard(), ClassifiedFile, classifyFile(), FileTypeCategory, UniversalDropzone(), UniversalDropzoneProps, useSaveBankReconciliation(), useSaveMachineTotal() (+5 more)
+
+### Community 722 - "Design: Navegação Inteligente de Datas na Conciliação (147-conciliacao-dates)"
+Cohesion: 0.25
+Nodes (7): Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Componentes / Hooks / Funções, Design: Navegação Inteligente de Datas na Conciliação (147-conciliacao-dates), Fluxo de UI, Infra / Deploy, Interfaces TypeScript
+
+### Community 723 - "Proposal: Navegação Inteligente de Datas na Conciliação (147-conciliacao-dates)"
+Cohesion: 0.25
+Nodes (7): API / Interface, Contratos de Dados, Features Existentes Impactadas, Problema, Proposal: Navegação Inteligente de Datas na Conciliação (147-conciliacao-dates), Risco Principal, Solução Proposta
+
+### Community 724 - "Design: ofx-expenses"
+Cohesion: 0.40
+Nodes (4): Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Componentes / Hooks / Funções, Design: ofx-expenses
+
+### Community 725 - "proposta.tsx"
+Cohesion: 0.25
+Nodes (3): CostConfig, defaultConfig, Route
 
 ### Community 727 - "sidebar-layout/proposal.md"
 Cohesion: 0.29
@@ -2787,6 +2840,10 @@ Nodes (3): Algoritmo de Agrupamento de Turnos (`aggregateAssistantTurns`), Arqui
 ### Community 771 - "faturamento-pix-refactor/proposal.md"
 Cohesion: 0.29
 Nodes (6): API / Interface, Contratos de Dados, Features Existentes Impactadas, Problema, Risco Principal, Solução Proposta
+
+### Community 773 - "login.tsx"
+Cohesion: 0.67
+Nodes (3): useLogin(), LoginPage(), Route
 
 ### Community 775 - "073-loja-detalhes-transacoes/proposal.md"
 Cohesion: 0.29
@@ -3209,24 +3266,24 @@ Cohesion: 0.40
 Nodes (4): Contratos de Dados, Problema, Risco Principal, Solução Proposta
 
 ## Knowledge Gaps
-- **3150 isolated node(s):** `XLSX`, `fs`, `files`, `json`, `statusIdx` (+3145 more)
+- **3176 isolated node(s):** `XLSX`, `fs`, `files`, `json`, `statusIdx` (+3171 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **338 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **345 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `supabase` connect `supabase.ts` to `Card.tsx`, `WizardImportacao.tsx`, `CentralImportWizard.tsx`, `src/server.ts`, `recebiveis.tsx`, `routeTree.gen.ts`, `AppShell.tsx`, `conciliacao.index.tsx`, `loja.$lojaId.tsx`, `AnimatedNumber.tsx`, `useStores`, `Button.tsx`, `BankReconciliationDashboard.tsx`?**
+- **Why does `dependencies` connect `dependencies` to `@radix-ui/react-hover-card`, `dotenv`, `@radix-ui/react-label`, `@radix-ui/react-navigation-menu`, `@radix-ui/react-popover`, `zod`, `@radix-ui/react-radio-group`, `@supabase/supabase-js`, `@radix-ui/react-slider`, `@radix-ui/react-switch`, `@radix-ui/react-tabs`, `@radix-ui/react-toggle-group`, `lucide-react`, `date-fns`, `react-day-picker`, `@radix-ui/react-checkbox`, `@radix-ui/react-scroll-area`, `react-dropzone`, `@cloudflare/vite-plugin`, `react-hook-form`, `react-resizable-panels`, `recharts`, `tailwind-merge`, `@radix-ui/react-menubar`, `package.json`, `@radix-ui/react-toggle`, `@tailwindcss/vite`, `@tanstack/react-start`, `@tanstack/router-plugin`, `tw-animate-css`, `@types/pdfjs-dist`, `vaul`, `xlsx`, `clsx`, `@ai-sdk/react`, `tailwindcss`, `@radix-ui/react-alert-dialog`, `react`, `ai`, `cmdk`, `input-otp`, `nitro`, `@radix-ui/react-collapsible`, `@radix-ui/react-separator`, `react-dom`, `@radix-ui/react-progress`, `react-markdown`, `embla-carousel-react`, `ssh2`, `@hookform/resolvers`, `remark-gfm`, `vite-tsconfig-paths`, `@tanstack/start-server-core`, `@radix-ui/react-avatar`, `sonner`, `@radix-ui/react-accordion`, `@radix-ui/react-aspect-ratio`, `@radix-ui/react-context-menu`, `@tanstack/react-query`, `@radix-ui/react-dropdown-menu`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **Why does `dependencies` connect `dependencies` to `@radix-ui/react-hover-card`, `dotenv`, `@radix-ui/react-label`, `@radix-ui/react-navigation-menu`, `@radix-ui/react-popover`, `zod`, `@radix-ui/react-radio-group`, `@supabase/supabase-js`, `@radix-ui/react-slider`, `@radix-ui/react-switch`, `@radix-ui/react-tabs`, `@radix-ui/react-toggle-group`, `date-fns`, `react-day-picker`, `@radix-ui/react-checkbox`, `@radix-ui/react-scroll-area`, `class-variance-authority`, `@cloudflare/vite-plugin`, `react-dropzone`, `react-hook-form`, `react-resizable-panels`, `recharts`, `@radix-ui/react-menubar`, `package.json`, `@radix-ui/react-toggle`, `tailwind-merge`, `@tailwindcss/vite`, `@tanstack/react-start`, `@tanstack/router-plugin`, `tw-animate-css`, `@types/pdfjs-dist`, `vaul`, `xlsx`, `clsx`, `@ai-sdk/react`, `tailwindcss`, `@radix-ui/react-alert-dialog`, `ai`, `react`, `cmdk`, `input-otp`, `nitro`, `@radix-ui/react-collapsible`, `@radix-ui/react-separator`, `react-dom`, `@radix-ui/react-progress`, `react-markdown`, `embla-carousel-react`, `ssh2`, `@hookform/resolvers`, `remark-gfm`, `vite-tsconfig-paths`, `@tanstack/start-server-core`, `@radix-ui/react-avatar`, `sonner`, `@radix-ui/react-accordion`, `@radix-ui/react-aspect-ratio`, `@radix-ui/react-context-menu`, `@tanstack/react-query`, `@radix-ui/react-dropdown-menu`?**
-  _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **Why does `devDependencies` connect `devDependencies` to `prettier`, `@types/node`, `@types/react`, `eslint-config-prettier`, `typescript`, `typescript-eslint`, `vite`, `@vitejs/plugin-react`, `@eslint/js`, `eslint`, `globals`, `package.json`, `playwright`?**
+- **Why does `cn()` connect `AppShell.tsx` to `useConciliacao.ts`, `MessageList.tsx`, `Card.tsx`, `loja.$lojaId.tsx`, `Button.tsx`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
 - **What connects `XLSX`, `fs`, `files` to the rest of the system?**
-  _3150 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _3176 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `query` be split into smaller, more focused modules?**
   _Cohesion score 0.053551912568306013 - nodes in this community are weakly interconnected._
 - **Should `supabase/types.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.14166666666666666 - nodes in this community are weakly interconnected._
-- **Should `CentralImportWizard.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.08710801393728224 - nodes in this community are weakly interconnected._
+- **Should `FileRoutesByPath` be split into smaller, more focused modules?**
+  _Cohesion score 0.1111111111111111 - nodes in this community are weakly interconnected._
+- **Should `helpers.js` be split into smaller, more focused modules?**
+  _Cohesion score 0.07017543859649122 - nodes in this community are weakly interconnected._

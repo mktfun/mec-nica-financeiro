@@ -995,13 +995,13 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1786367140.3413465,
-    "ast_hash": "247d2ecf5b57a3b793fac487e92fa832",
+    "mtime": 1786372431.0634925,
+    "ast_hash": "9e07e4f0ec58f29b4d87a8d1bcabff08",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
-    "mtime": 1786367140.3427815,
-    "ast_hash": "b31145011e0de7c5fe45a285a435cf77",
+    "mtime": 1786372475.7205503,
+    "ast_hash": "4067d9b19eb96e8c6d75cba6108d8538",
     "semantic_hash": ""
   },
   "src/components/layout/AppShell.tsx": {
@@ -1165,8 +1165,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useTransactions.ts": {
-    "mtime": 1786367140.4205482,
-    "ast_hash": "792216789fad454120639e3db9ecf3ca",
+    "mtime": 1786372390.2904403,
+    "ast_hash": "6fe56f20cd0fc00307fc932045caba6c",
     "semantic_hash": ""
   },
   "src/integrations/supabase/auth-attacher.ts": {
@@ -1260,8 +1260,8 @@
     "semantic_hash": ""
   },
   "src/lib/parsers/ofxParser.ts": {
-    "mtime": 1786367140.4758222,
-    "ast_hash": "39458a8332c7ca95c332b1054bfb0891",
+    "mtime": 1786372378.596224,
+    "ast_hash": "5efea048295399fde999e32a645eb9f0",
     "semantic_hash": ""
   },
   "src/lib/parsers/redeParser.ts": {
@@ -3325,8 +3325,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786367140.2054443,
-    "ast_hash": "2892615b68cd77c917daffdf2439f128",
+    "mtime": 1786372727.879454,
+    "ast_hash": "156f01196d90f542eb5a207c427f567a",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -5817,6 +5817,66 @@
   "specs/archive/146-fix-import-logs-and-rpc/spec-plan.md": {
     "mtime": 1786367139.2706223,
     "ast_hash": "812aacd6981ae9eb5417aa1b2dfc2adc",
+    "semantic_hash": ""
+  },
+  "schema_dump.sql": {
+    "mtime": 1786368995.2067459,
+    "ast_hash": "fc802db88cdc5f6b48aad8fa238d86bb",
+    "semantic_hash": ""
+  },
+  "scratch/test_db.js": {
+    "mtime": 1786369212.1502862,
+    "ast_hash": "e430213a3b78c50a52ebb8a1578fce46",
+    "semantic_hash": ""
+  },
+  "scratch/test_db2.js": {
+    "mtime": 1786369659.5669956,
+    "ast_hash": "e5973255c7f97e1aea54ec8b8ed55db3",
+    "semantic_hash": ""
+  },
+  ".agents/memory/ofx.md": {
+    "mtime": 1786372696.6017337,
+    "ast_hash": "b6459b71176f3a37c95b70827ada9190",
+    "semantic_hash": ""
+  },
+  "specs/archive/147-conciliacao-dates/design.md": {
+    "mtime": 1786367729.4523273,
+    "ast_hash": "14a723132d4c22e1f5c4cafaacc045bd",
+    "semantic_hash": ""
+  },
+  "specs/archive/147-conciliacao-dates/proposal.md": {
+    "mtime": 1786367727.2752006,
+    "ast_hash": "57cf3de2552b264d61c06aa3af7b2683",
+    "semantic_hash": ""
+  },
+  "specs/archive/147-conciliacao-dates/spec-plan.md": {
+    "mtime": 1786367888.6313286,
+    "ast_hash": "2c5459c5e1b6a950c4a3dc68a2a6038e",
+    "semantic_hash": ""
+  },
+  "src/lib/parsers/hashUtils.ts": {
+    "mtime": 1786372356.3443253,
+    "ast_hash": "ed1b33ae2821dc682c73fa314065c869",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260810000000_add_pos_dedup_hash.sql": {
+    "mtime": 1786371002.5687525,
+    "ast_hash": "4a7e84114044c02a13bc7588c7f3e9dc",
+    "semantic_hash": ""
+  },
+  "specs/archive/ofx-expenses/design.md": {
+    "mtime": 1786369348.542789,
+    "ast_hash": "3ee7d38601245a66df5488038c58c927",
+    "semantic_hash": ""
+  },
+  "specs/archive/ofx-expenses/proposal.md": {
+    "mtime": 1786369768.2401583,
+    "ast_hash": "c2f46f6cd8187e5e9082ee287999160d",
+    "semantic_hash": ""
+  },
+  "specs/archive/ofx-expenses/spec-plan.md": {
+    "mtime": 1786370004.4554276,
+    "ast_hash": "96528e200f5e517a46b761cfa58aa55a",
     "semantic_hash": ""
   }
 }

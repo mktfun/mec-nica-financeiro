@@ -1,4 +1,4 @@
-﻿import { useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 
 export interface StoreMetrics {
@@ -198,7 +198,7 @@ export function useDashboardV2(selectedDateStr?: string) {
       const aReceber = aReceberPatio + aReceberManual;
 
       const veiculosPatio = osAbertos.length;
-      const veiculosPatioValor = osAbertos.reduce((acc, os) => acc + Number(os.total_value || 0), 0);
+      const veiculosPatioValor = osAbertos.reduce((acc, os) => acc + Math.max(0, Number(os.total_value || 0) - Number(os.paid_value || 0)), 0);
 
       const patioByStore: Record<string, { qtd: number; valor: number }> = {};
       for (const os of osAbertos) {
@@ -207,7 +207,7 @@ export function useDashboardV2(selectedDateStr?: string) {
           patioByStore[os.store_id] = { qtd: 0, valor: 0 };
         }
         patioByStore[os.store_id].qtd += 1;
-        patioByStore[os.store_id].valor += Number(os.total_value || 0);
+        patioByStore[os.store_id].valor += Math.max(0, Number(os.total_value || 0) - Number(os.paid_value || 0));
       }
 
       // --- Caixa e Diferença ---

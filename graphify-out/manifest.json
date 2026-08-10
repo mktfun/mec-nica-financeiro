@@ -995,13 +995,13 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1786369922.5722196,
-    "ast_hash": "d677f049b5ee49c5bd063c27edc20f5d",
+    "mtime": 1786372431.0634925,
+    "ast_hash": "9e07e4f0ec58f29b4d87a8d1bcabff08",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
-    "mtime": 1786367140.3427815,
-    "ast_hash": "b31145011e0de7c5fe45a285a435cf77",
+    "mtime": 1786372475.7205503,
+    "ast_hash": "4067d9b19eb96e8c6d75cba6108d8538",
     "semantic_hash": ""
   },
   "src/components/layout/AppShell.tsx": {
@@ -1165,8 +1165,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useTransactions.ts": {
-    "mtime": 1786369963.2538323,
-    "ast_hash": "ca74102c760217aa00ba1cf3a6a0d475",
+    "mtime": 1786372390.2904403,
+    "ast_hash": "6fe56f20cd0fc00307fc932045caba6c",
     "semantic_hash": ""
   },
   "src/integrations/supabase/auth-attacher.ts": {
@@ -1260,8 +1260,8 @@
     "semantic_hash": ""
   },
   "src/lib/parsers/ofxParser.ts": {
-    "mtime": 1786367140.4758222,
-    "ast_hash": "39458a8332c7ca95c332b1054bfb0891",
+    "mtime": 1786372378.596224,
+    "ast_hash": "5efea048295399fde999e32a645eb9f0",
     "semantic_hash": ""
   },
   "src/lib/parsers/redeParser.ts": {
@@ -3325,8 +3325,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786367140.2054443,
-    "ast_hash": "2892615b68cd77c917daffdf2439f128",
+    "mtime": 1786372727.879454,
+    "ast_hash": "156f01196d90f542eb5a207c427f567a",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -4430,8 +4430,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useDashboardV2.ts": {
-    "mtime": 1786367140.3750672,
-    "ast_hash": "1c3419fde8e292f20f5a4d06aac6c950",
+    "mtime": 1786374900.9272635,
+    "ast_hash": "f8afd22ce7ff4f80c2d8d390b1ca038c",
     "semantic_hash": ""
   },
   "src/hooks/useMcpLogs.ts": {
@@ -5835,8 +5835,8 @@
     "semantic_hash": ""
   },
   ".agents/memory/ofx.md": {
-    "mtime": 1786370167.2932575,
-    "ast_hash": "6aa4c1dac2bc4a382d7f6828e7ec7061",
+    "mtime": 1786372696.6017337,
+    "ast_hash": "b6459b71176f3a37c95b70827ada9190",
     "semantic_hash": ""
   },
   "specs/archive/147-conciliacao-dates/design.md": {
@@ -5854,19 +5854,89 @@
     "ast_hash": "2c5459c5e1b6a950c4a3dc68a2a6038e",
     "semantic_hash": ""
   },
-  "specs/ofx-expenses/design.md": {
+  "src/lib/parsers/hashUtils.ts": {
+    "mtime": 1786372356.3443253,
+    "ast_hash": "ed1b33ae2821dc682c73fa314065c869",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260810000000_add_pos_dedup_hash.sql": {
+    "mtime": 1786371002.5687525,
+    "ast_hash": "4a7e84114044c02a13bc7588c7f3e9dc",
+    "semantic_hash": ""
+  },
+  "specs/archive/ofx-expenses/design.md": {
     "mtime": 1786369348.542789,
     "ast_hash": "3ee7d38601245a66df5488038c58c927",
     "semantic_hash": ""
   },
-  "specs/ofx-expenses/proposal.md": {
+  "specs/archive/ofx-expenses/proposal.md": {
     "mtime": 1786369768.2401583,
     "ast_hash": "c2f46f6cd8187e5e9082ee287999160d",
     "semantic_hash": ""
   },
-  "specs/ofx-expenses/spec-plan.md": {
+  "specs/archive/ofx-expenses/spec-plan.md": {
     "mtime": 1786370004.4554276,
     "ast_hash": "96528e200f5e517a46b761cfa58aa55a",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260810000001_fix_daily_conciliation_patio.sql": {
+    "mtime": 1786374932.5995479,
+    "ast_hash": "18c03dee58060ab050cdd53b034abbd7",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260810000002_fix_match_engine.sql": {
+    "mtime": 1786376201.5560162,
+    "ast_hash": "59127beaf538cb1dffcbc9716c106116",
+    "semantic_hash": ""
+  },
+  "tmp_schema.sql": {
+    "mtime": 1786376175.5782743,
+    "ast_hash": "fcecee054516a37dcd4740dab12c3d5a",
+    "semantic_hash": ""
+  },
+  "specs/archive/import-dedup-upgrade/design.md": {
+    "mtime": 1786370770.6281064,
+    "ast_hash": "90705b4531143c1f09015dea27af4cc2",
+    "semantic_hash": ""
+  },
+  "specs/archive/import-dedup-upgrade/proposal.md": {
+    "mtime": 1786370749.2178152,
+    "ast_hash": "28bb802a5fc2ddad8cd295dccae29dd6",
+    "semantic_hash": ""
+  },
+  "specs/archive/import-dedup-upgrade/spec-plan.md": {
+    "mtime": 1786372508.0720198,
+    "ast_hash": "4db736e856e474268b5f94d1307c734a",
+    "semantic_hash": ""
+  },
+  "specs/match-audit-and-fix/design.md": {
+    "mtime": 1786375446.3343546,
+    "ast_hash": "e8088207bbcfa515de2adc7c81d99efe",
+    "semantic_hash": ""
+  },
+  "specs/match-audit-and-fix/proposal.md": {
+    "mtime": 1786375431.1434233,
+    "ast_hash": "d91445a1f5c1e8d190550e0f4142d22a",
+    "semantic_hash": ""
+  },
+  "specs/match-audit-and-fix/spec-plan.md": {
+    "mtime": 1786376233.6990356,
+    "ast_hash": "e15c43abbfb1d01ff5635c555c15e65d",
+    "semantic_hash": ""
+  },
+  "specs/patio-math-fix/design.md": {
+    "mtime": 1786374740.4290857,
+    "ast_hash": "1355f8c14fb223f8df826b95dc2af2fe",
+    "semantic_hash": ""
+  },
+  "specs/patio-math-fix/proposal.md": {
+    "mtime": 1786374727.7726,
+    "ast_hash": "e586889c54a7d03b09e829b30326d54b",
+    "semantic_hash": ""
+  },
+  "specs/patio-math-fix/spec-plan.md": {
+    "mtime": 1786375043.4775567,
+    "ast_hash": "f6d4b1d6a7c07e39536ac55bd4ba5d44",
     "semantic_hash": ""
   }
 }
