@@ -131,7 +131,7 @@ export function BreakdownModal({ isOpen, onClose, storeId, storeName, date }: Br
                 </div>
 
                 {/* Tabela de entradas */}
-                {data.ofx_in.length === 0 ? (
+                {data.ofx_in.transactions.length === 0 ? (
                   <EmptyState label="Nenhuma entrada OFX encontrada para este dia." />
                 ) : (
                   <div className="overflow-x-auto rounded-xl border border-[var(--border-subtle)]">
@@ -145,7 +145,7 @@ export function BreakdownModal({ isOpen, onClose, storeId, storeName, date }: Br
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[var(--border-subtle)]">
-                        {data.ofx_in.map((tx) => (
+                        {data.ofx_in.transactions.map((tx) => (
                           <tr key={tx.id} className="hover:bg-[var(--bg-surface-hover)] transition-colors">
                             <td className="px-3 py-2.5 text-xs text-[var(--text-secondary)] whitespace-nowrap">{formatDateTime(tx.occurred_at)}</td>
                             <td className="px-3 py-2.5 text-xs text-[var(--text-primary)] max-w-[160px] truncate" title={tx.description}>{tx.description}</td>
@@ -160,7 +160,7 @@ export function BreakdownModal({ isOpen, onClose, storeId, storeName, date }: Br
                         <tr className="border-t-2 border-[var(--border-subtle)] bg-[var(--bg-canvas)]">
                           <td colSpan={3} className="px-3 py-2 text-xs font-bold text-[var(--text-secondary)]">Total Entradas</td>
                           <td className="px-3 py-2 text-sm font-bold text-[var(--color-accent-light-blue)] text-right tabular-nums">
-                            {formatCurrency(data.ofx_in_total)}
+                            {formatCurrency(data.ofx_in.total)}
                           </td>
                         </tr>
                         {data.bank_total_source === 'snapshot_reconciliations' && (
@@ -181,7 +181,7 @@ export function BreakdownModal({ isOpen, onClose, storeId, storeName, date }: Br
             {/* ABA 2 — SAÍDAS OFX */}
             {activeTab === 'saidas' && (
               <div className="flex flex-col gap-3">
-                {data.ofx_out.length === 0 ? (
+                {data.ofx_out.transactions.length === 0 ? (
                   <EmptyState label="Nenhuma saída OFX encontrada para este dia." />
                 ) : (
                   <div className="overflow-x-auto rounded-xl border border-[var(--border-subtle)]">
@@ -195,7 +195,7 @@ export function BreakdownModal({ isOpen, onClose, storeId, storeName, date }: Br
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[var(--border-subtle)]">
-                        {data.ofx_out.map((tx) => (
+                        {data.ofx_out.transactions.map((tx) => (
                           <tr key={tx.id} className="hover:bg-[var(--bg-surface-hover)] transition-colors">
                             <td className="px-3 py-2.5 text-xs text-[var(--text-secondary)] whitespace-nowrap">{formatDateTime(tx.occurred_at)}</td>
                             <td className="px-3 py-2.5 text-xs text-[var(--text-primary)] max-w-[160px] truncate" title={tx.description}>{tx.description}</td>
@@ -210,7 +210,7 @@ export function BreakdownModal({ isOpen, onClose, storeId, storeName, date }: Br
                         <tr className="border-t-2 border-[var(--border-subtle)] bg-[var(--bg-canvas)]">
                           <td colSpan={3} className="px-3 py-2 text-xs font-bold text-[var(--text-secondary)]">Total Saídas</td>
                           <td className="px-3 py-2 text-sm font-bold text-[var(--color-accent-danger)] text-right tabular-nums">
-                            -{formatCurrency(data.ofx_out_total)}
+                            -{formatCurrency(data.ofx_out.total)}
                           </td>
                         </tr>
                       </tfoot>
@@ -226,31 +226,31 @@ export function BreakdownModal({ isOpen, onClose, storeId, storeName, date }: Br
                 {/* Badge de fonte */}
                 <div className="flex items-center gap-2">
                   <span className={`inline-flex items-center gap-1 text-[10px] font-medium px-2 py-1 rounded-full ${
-                    data.na_loja_os_source === 'snapshot_reconciliations'
+                    data.na_loja.source === 'snapshot_reconciliations'
                       ? 'bg-[var(--color-accent-teal)]/10 text-[var(--color-accent-teal)]'
                       : 'bg-blue-500/10 text-blue-400'
                   }`}>
-                    {data.na_loja_os_source === 'snapshot_reconciliations'
+                    {data.na_loja.source === 'snapshot_reconciliations'
                       ? <><Camera size={10} /> Snapshot Salvo</>
                       : <><Zap size={10} /> Cálculo ao Vivo</>}
                   </span>
                 </div>
 
                 {/* Subtotais */}
-                {(data.na_loja_prev_months > 0 || data.na_loja_current_month > 0) && (
+                {(data.na_loja.previous_month > 0 || data.na_loja.current_month > 0) && (
                   <div className="grid grid-cols-2 gap-2">
                     <div className="bg-[var(--bg-canvas)] rounded-lg p-2 border border-[var(--border-subtle)]">
                       <p className="text-[10px] text-[var(--text-tertiary)]">Mês Atual</p>
-                      <p className="text-sm font-bold text-[var(--color-accent-teal)] tabular-nums">{formatCurrency(data.na_loja_current_month)}</p>
+                      <p className="text-sm font-bold text-[var(--color-accent-teal)] tabular-nums">{formatCurrency(data.na_loja.current_month)}</p>
                     </div>
                     <div className="bg-amber-500/5 rounded-lg p-2 border border-amber-500/20">
                       <p className="text-[10px] text-amber-400">Mês Anterior</p>
-                      <p className="text-sm font-bold text-amber-400 tabular-nums">{formatCurrency(data.na_loja_prev_months)}</p>
+                      <p className="text-sm font-bold text-amber-400 tabular-nums">{formatCurrency(data.na_loja.previous_month)}</p>
                     </div>
                   </div>
                 )}
 
-                {data.na_loja_detail.length === 0 ? (
+                {data.na_loja.transactions.length === 0 ? (
                   <EmptyState label="Nenhuma OS encontrada para este dia." />
                 ) : (
                   <div className="overflow-x-auto rounded-xl border border-[var(--border-subtle)]">
@@ -266,7 +266,7 @@ export function BreakdownModal({ isOpen, onClose, storeId, storeName, date }: Br
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[var(--border-subtle)]">
-                        {data.na_loja_detail.map((os, idx) => (
+                        {data.na_loja.transactions.map((os, idx) => (
                           <tr
                             key={os.os_number + idx}
                             className={`transition-colors ${
@@ -307,7 +307,7 @@ export function BreakdownModal({ isOpen, onClose, storeId, storeName, date }: Br
                         <tr className="border-t-2 border-[var(--border-subtle)] bg-[var(--bg-canvas)]">
                           <td colSpan={5} className="px-3 py-2 text-xs font-bold text-[var(--text-secondary)]">Total Na Loja OS</td>
                           <td className="px-3 py-2 text-sm font-bold text-[var(--color-accent-warning)] text-right tabular-nums">
-                            {formatCurrency(data.na_loja_os)}
+                            {formatCurrency(data.na_loja.total)}
                           </td>
                         </tr>
                       </tfoot>

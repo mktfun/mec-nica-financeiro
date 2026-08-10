@@ -37,15 +37,15 @@ export interface ConciliationBreakdown {
   bank_total: number;
   bank_total_source: 'snapshot_reconciliations' | 'realtime_ofx_transactions';
   bank_total_warning: 'ok' | 'trigger_desatualizado';
-  ofx_in_total: number;
-  ofx_in: OfxTransactionDetail[];
-  ofx_out_total: number;
-  ofx_out: OfxTransactionDetail[];
-  na_loja_os: number;
-  na_loja_os_source: 'snapshot_reconciliations' | 'realtime_patio_os';
-  na_loja_current_month: number;
-  na_loja_prev_months: number;
-  na_loja_detail: OsDetail[];
+  ofx_in: { total: number; transactions: OfxTransactionDetail[] };
+  ofx_out: { total: number; transactions: OfxTransactionDetail[] };
+  na_loja: {
+    total: number;
+    current_month: number;
+    previous_month: number;
+    source: 'snapshot_reconciliations' | 'realtime_patio_os';
+    transactions: OsDetail[];
+  };
   juros_rede: number;
   rede_transactions: RedeTransactionDetail[];
 }

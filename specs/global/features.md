@@ -112,3 +112,6 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - **Acúmulo Histórico de Pátio OS**: 
   - As RPCs `get_conciliation_breakdown` e `calculate_daily_conciliation` foram atualizadas na migration `20260810190000_historical_patio_os.sql` para filtrar OS usando `opened_at::date <= p_date` e saldo devedor remanescente, puxando dívidas antigas para a conciliação atual.
   - Remoção de anti-patterns de cast de datas no SQL que causavam erro `operator does not exist: date = text`.
+
+## [156-fix-breakdown-type]
+- **Bugfix na UI de Conciliação (Raio X)**: Atualização do componente `BreakdownModal.tsx` e da interface `ConciliationBreakdown` no hook `useConciliationBreakdown.ts` para corresponder à estrutura de tipagem aninhada (`total` e `transactions`) que a Spec 155 havia modificado silenciosamente no Supabase. O erro de map foi sanado.

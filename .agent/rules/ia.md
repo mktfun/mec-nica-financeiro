@@ -20,3 +20,10 @@
 **Comportamento proibido:** Usar um componente passando props que n�o existem (ex: className, header manual interno) assumindo analogia com bibliotecas externas como shadcn, MUI ou Radix.
 **Guardrail:** Antes de usar qualquer componente existente no projeto, abrir o arquivo fonte e extrair a interface TypeScript de props. Nunca assumir props por analogia com libs externas � o projeto pode ter wrappers com APIs diferentes.
 **Por qu� universal:** TypeScript n�o captura props extras em runtime em todos os casos. O componente pode simplesmente ignorar a prop ou quebrar visualmente sem erro no console.
+
+## 4. Cast Nativo no PostgreSQL (Supabase)
+
+**Regra:** Cast Nativo no PostgreSQL (Supabase)
+**Comportamento proibido:** Tentar converter parâmetros dinâmicos via `p_date::text` ou usar `TO_CHAR(data, 'YYYY-MM-DD')` para resolver igualdades `=` contra colunas do banco que já são do tipo nativo temporal (`date` ou `timestamp`).
+**Guardrail:** Sempre molde o parâmetro/variável para o tipo nativo da coluna alvo (`::date`), garantindo que a comparação seja feita estritamente entre (Data = Data) ou (Timestamp = Timestamp), sob pena do Postgres matar a RPC com `42883 (operator does not exist)`.
+**Por quê universal:** A matemática e segurança de tipagem do PostgreSQL falha duramente na nuvem se a query depender de conversões texto implícitas com formatos arbitrários. Isso derruba aplicações em produção não importando o projeto.
