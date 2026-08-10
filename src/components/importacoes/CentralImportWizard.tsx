@@ -8,7 +8,7 @@ import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { 
   UploadCloud, CheckCircle2, FileType2, Link as LinkIcon, ArrowRight, ArrowLeft, 
   Database, Search, X, TrendingDown, TrendingUp, AlertCircle, CreditCard, FileText, 
-  Terminal, Sparkles, FileSpreadsheet, Layers, RefreshCcw 
+  Terminal, Sparkles, FileSpreadsheet, Layers, RefreshCcw, Loader2 
 } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
@@ -75,6 +75,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [subStep, setSubStep] = useState<1 | 2 | 3>(1);
   const [isPreparing, setIsPreparing] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [targetDate, setTargetDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [unmappedAliases, setUnmappedAliases] = useState<string[]>([]);
   const [sessionId, setSessionId] = useState<string>('');
@@ -841,15 +842,36 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                 Busca automaticamente resumos de Ordens de Serviço (Pátio) e Contas a Pagar diretamente do sistema Oficina Inteligente em tempo real.
               </p>
               <Button 
+                disabled={isSyncing}
                 onClick={async () => {
-                   addLog("Iniciando Sincronização Cloud via Bot...", "info");
-                   // Em um fluxo real, chamaria a edge function aqui
-                   // supabase.functions.invoke('sync-oficina', { body: { loja: 'st-02' } })
-                   alert('Edge Function sync-oficina acionada. (Mock para demonstração da nova spec)');
+                   setIsSyncing(true);
+                   addLog("Acordando bot na Nuvem (Sincronização Cloud)...", "info");
+                   try {
+                     if (!stores || stores.length === 0) {
+                       addLog("Nenhuma loja ativa encontrada para sincronizar.", "warning");
+                       return;
+                     }
+                     const promises = stores.map(store => 
+                       supabase.functions.invoke('sync-oficina', { body: { loja: store.id } })
+                     );
+                     
+                     const results = await Promise.allSettled(promises);
+                     
+                     const successes = results.filter(r => r.status === 'fulfilled' && !r.value.error).length;
+                     const errors = results.length - successes;
+                     
+                     if (successes > 0) addLog(`Sincronização completa! ${successes} lojas atualizadas via Bot.`, "success");
+                     if (errors > 0) addLog(`${errors} lojas falharam na sincronização (Timeout ou erro na VPS).`, "error");
+                     
+                   } catch (err: any) {
+                     addLog(`Erro crítico ao contatar Cloud: ${err.message}`, "error");
+                   } finally {
+                     setIsSyncing(false);
+                   }
                 }}
                 className="w-full shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.3)] hover:scale-105 transition-transform"
               >
-                Sincronizar Oficina Agora
+                {isSyncing ? <><Loader2 className="animate-spin mr-2" size={16}/> Sincronizando...</> : 'Sincronizar Oficina Agora'}
               </Button>
             </div>
           </div>

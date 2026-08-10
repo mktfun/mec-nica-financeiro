@@ -115,3 +115,6 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 
 ## [156-fix-breakdown-type]
 - **Bugfix na UI de Conciliação (Raio X)**: Atualização do componente `BreakdownModal.tsx` e da interface `ConciliationBreakdown` no hook `useConciliationBreakdown.ts` para corresponder à estrutura de tipagem aninhada (`total` e `transactions`) que a Spec 155 havia modificado silenciosamente no Supabase. O erro de map foi sanado.
+
+## [157-sync-oficina-button]
+- **Botão Sincronizar Oficina Agora**: Agora funcional na UI de Central de Importações. Dispara as rotinas de sincronização na VPS via Edge Function `sync-oficina` de forma paralela para todas as lojas.
