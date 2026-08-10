@@ -5909,21 +5909,6 @@
     "ast_hash": "4db736e856e474268b5f94d1307c734a",
     "semantic_hash": ""
   },
-  "specs/match-audit-and-fix/design.md": {
-    "mtime": 1786375446.3343546,
-    "ast_hash": "e8088207bbcfa515de2adc7c81d99efe",
-    "semantic_hash": ""
-  },
-  "specs/match-audit-and-fix/proposal.md": {
-    "mtime": 1786375431.1434233,
-    "ast_hash": "d91445a1f5c1e8d190550e0f4142d22a",
-    "semantic_hash": ""
-  },
-  "specs/match-audit-and-fix/spec-plan.md": {
-    "mtime": 1786376233.6990356,
-    "ast_hash": "e15c43abbfb1d01ff5635c555c15e65d",
-    "semantic_hash": ""
-  },
   "specs/patio-math-fix/design.md": {
     "mtime": 1786374740.4290857,
     "ast_hash": "1355f8c14fb223f8df826b95dc2af2fe",
@@ -5937,6 +5922,46 @@
   "specs/patio-math-fix/spec-plan.md": {
     "mtime": 1786375043.4775567,
     "ast_hash": "f6d4b1d6a7c07e39536ac55bd4ba5d44",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260810000003_fix_conciliation_math_and_duplicates.sql": {
+    "mtime": 1786377077.2246652,
+    "ast_hash": "6e742a01e6f6fe8b38e13ca84d4bce24",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260810154944_fix_conciliation_math_and_duplicates.sql": {
+    "mtime": 1786376984.3858695,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "specs/148-fix-conciliation-diff/design.md": {
+    "mtime": 1786376705.033105,
+    "ast_hash": "981b94eacf2ee23d1da7d9404e9748f2",
+    "semantic_hash": ""
+  },
+  "specs/148-fix-conciliation-diff/proposal.md": {
+    "mtime": 1786376943.9811735,
+    "ast_hash": "74da28665fc7fd4d295798b41a42d66c",
+    "semantic_hash": ""
+  },
+  "specs/148-fix-conciliation-diff/spec-plan.md": {
+    "mtime": 1786377180.3660724,
+    "ast_hash": "71042aacb84960eac0e6f11ee911661e",
+    "semantic_hash": ""
+  },
+  "specs/archive/match-audit-and-fix/design.md": {
+    "mtime": 1786375446.3343546,
+    "ast_hash": "e8088207bbcfa515de2adc7c81d99efe",
+    "semantic_hash": ""
+  },
+  "specs/archive/match-audit-and-fix/proposal.md": {
+    "mtime": 1786375431.1434233,
+    "ast_hash": "d91445a1f5c1e8d190550e0f4142d22a",
+    "semantic_hash": ""
+  },
+  "specs/archive/match-audit-and-fix/spec-plan.md": {
+    "mtime": 1786376233.6990356,
+    "ast_hash": "e15c43abbfb1d01ff5635c555c15e65d",
     "semantic_hash": ""
   }
 }
