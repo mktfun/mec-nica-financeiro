@@ -352,19 +352,22 @@ export function useBulkInsertTransactions() {
         txs.forEach((t: any) => t.import_batch_id = import_batch_id);
       }
       
-      // 1. Separar OFX (com fitid) de outras transações
-      const ofxTxsRaw = txs.filter((t: any) => t.fitid);
+      // 1. Separar OFX (qualquer source=ofx ou com fitid original) de outras transações
+      const ofxTxsRaw = txs.filter((t: any) => t.source === 'ofx' || t.fitid);
       
       // Deduplicate by store_id + fitid in memory before upsert to avoid 'ON CONFLICT cannot affect row a second time'
       const ofxMap = new Map();
       ofxTxsRaw.forEach((t: any) => {
-        const key = `${t.store_id || 'null'}_${t.fitid}`;
+        const effectiveFitid = t.fitid || t.id;
+        const key = `${t.store_id || 'null'}_${effectiveFitid}`;
         const { id, ...rest } = t;
+        // Assegura que o fitid vai junto para o upsert se estava nulo
+        rest.fitid = effectiveFitid;
         ofxMap.set(key, rest);
       });
       const ofxTxs = Array.from(ofxMap.values());
       
-      const otherTxs = txs.filter((t: any) => !t.fitid);
+      const otherTxs = txs.filter((t: any) => t.source !== 'ofx' && !t.fitid);
 
       let data: any = null;
       let error: any = null;

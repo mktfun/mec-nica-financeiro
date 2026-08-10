@@ -97,3 +97,8 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - **Identificação de PIX**: O parser do Wizard avalia o 	itle das transações do OFX. Se contiver 'PIX', injeta a string pix na coluna payment_method para que o painel diário contabilize corretamente o fluxo.
 
 - **2026-08-07 (118)**: Modificação na RPC get_dashboard_metrics para ignorar dias vazios no cálculo de fluxo de caixa e abranger saldos globais de OFX; ajustes no edeParser.ts para ler juros diretamente da matriz; ajustes no CentralImportWizard para salvar global_account.
+
+## [ofx-expenses]
+- **Deduplicação e Salvamento de Despesas do OFX**: 
+  - Ajuste no useTransactions.ts e CentralImportWizard.tsx para não dropar despesas que vêm do banco sem o campo FITID. Em caso de ausência do ID no arquivo bancário, um hash determinístico (data+valor+título) é injetado.
+  - O mapeamento nativo de matched_store_id (via conta bancária) agora é plenamente mantido para as despesas (out), vinculando-as corretamente às respectivas lojas para contabilização de saldo descentralizada.

@@ -419,7 +419,15 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         if (globalStoreId === 'GLOBAL') globalStoreId = null;
 
         const uniqueOfxTxs = new Map();
-        ofx.transactions.forEach((tx: any) => uniqueOfxTxs.set(tx.fitid || crypto.randomUUID(), tx));
+        ofx.transactions.forEach((tx: any) => {
+          let fitidToUse = tx.fitid;
+          if (!fitidToUse) {
+            const titleStr = tx.title ? tx.title.replace(/\s+/g, '') : 'UNKNOWN';
+            fitidToUse = `hash_${tx.date}_${tx.amount}_${titleStr}`;
+            tx.fitid = fitidToUse;
+          }
+          uniqueOfxTxs.set(fitidToUse, tx);
+        });
         
         Array.from(uniqueOfxTxs.values()).forEach((tx: any) => {
           let matched_store_id = globalStoreId;
