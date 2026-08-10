@@ -67,3 +67,6 @@
 
 - **ImportSourceBadges (149-conciliation-details)**: Modal de raio-x de lotes na conciliação que exibe RawOsTable, RawRedeTable e RawOfxTable (src/components/conciliacao/)
 - **useRawImportData (149-conciliation-details)**: Hook para buscar dados limpos vindos das novas RPCs get_raw_os_data, get_raw_rede_data, get_raw_ofx_data (src/hooks/)
+- **get_raw_os_data(text, date) (150-fix)**: RPC corrigida — p_store_id agora text, filtro por opened_at::date
+- **get_raw_rede_data(text, date) (150-fix)**: RPC corrigida — p_store_id text, filtro target_date, novos campos machine_name/payment_method/occurred_at
+- **get_raw_ofx_data(text, date) (150-fix)**: RPC corrigida — p_store_id text, filtro target_date, cast p_store_id::uuid para stores.id

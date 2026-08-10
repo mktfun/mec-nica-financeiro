@@ -10,15 +10,20 @@ export interface RawOsRecord {
   paid_value: number;
   remaining_value: number;
   payment_method: string | null;
+  credit_debit_value: number | null;
+  pix_transfer_value: number | null;
 }
 
 export interface RawRedeRecord {
   id: string;
+  machine_name: string | null;
+  payment_method: string | null;
   gross_amount: number;
   net_amount: number;
   fee_amount: number;
   fee_percentage: number;
   matched_os_number: string | null;
+  occurred_at: string;
 }
 
 export interface RawOfxTransaction {
@@ -43,12 +48,12 @@ export function useRawOs(storeId: string, date: string, enabled: boolean) {
     queryFn: async () => {
       const { data, error } = await supabase.rpc('get_raw_os_data' as any, {
         p_store_id: storeId,
-        p_date: date
+        p_date: date,
       });
       if (error) throw error;
       return (data || []) as RawOsRecord[];
     },
-    enabled: enabled && !!storeId && !!date
+    enabled: enabled && !!storeId && !!date,
   });
 }
 
@@ -58,12 +63,12 @@ export function useRawRede(storeId: string, date: string, enabled: boolean) {
     queryFn: async () => {
       const { data, error } = await supabase.rpc('get_raw_rede_data' as any, {
         p_store_id: storeId,
-        p_date: date
+        p_date: date,
       });
       if (error) throw error;
       return (data || []) as RawRedeRecord[];
     },
-    enabled: enabled && !!storeId && !!date
+    enabled: enabled && !!storeId && !!date,
   });
 }
 
@@ -73,11 +78,11 @@ export function useRawOfx(storeId: string, date: string, enabled: boolean) {
     queryFn: async () => {
       const { data, error } = await supabase.rpc('get_raw_ofx_data' as any, {
         p_store_id: storeId,
-        p_date: date
+        p_date: date,
       });
       if (error) throw error;
       return data as unknown as RawOfxResponse;
     },
-    enabled: enabled && !!storeId && !!date
+    enabled: enabled && !!storeId && !!date,
   });
 }

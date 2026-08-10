@@ -1,6 +1,6 @@
 import { RawOsRecord } from '@/hooks/useRawImportData';
 import { Badge } from '@/components/ui/Badge';
-import { formatCurrency, formatDate } from '@/lib/utils';
+import { formatCurrency } from '@/lib/utils';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -15,7 +15,11 @@ export function RawOsTable({ data, isLoading }: RawOsTableProps) {
   }
 
   if (!data || data.length === 0) {
-    return <div className="p-8 text-center text-[var(--text-tertiary)]">Nenhuma OS encontrada para esta data.</div>;
+    return (
+      <div className="p-8 text-center text-[var(--text-tertiary)] border border-dashed border-[var(--border-subtle)] rounded-lg">
+        Nenhuma OS encontrada para esta data de abertura.
+      </div>
+    );
   }
 
   const totalValue = data.reduce((acc, row) => acc + (row.total_value || 0), 0);
@@ -42,18 +46,33 @@ export function RawOsTable({ data, isLoading }: RawOsTableProps) {
             <tr key={row.os_number} className="hover:bg-[var(--bg-subtle)] transition-colors">
               <td className="px-4 py-3 font-medium text-[var(--text-primary)]">{row.os_number}</td>
               <td className="px-4 py-3 text-[var(--text-secondary)]">
-                {row.opened_at ? format(new Date(row.opened_at), "dd/MM/yy HH:mm", { locale: ptBR }) : '-'}
+                {row.opened_at
+                  ? format(new Date(row.opened_at), 'dd/MM/yy HH:mm', { locale: ptBR })
+                  : '-'}
               </td>
               <td className="px-4 py-3 text-[var(--text-secondary)]">
-                {row.closed_at ? format(new Date(row.closed_at), "dd/MM/yy HH:mm", { locale: ptBR }) : '-'}
+                {row.closed_at
+                  ? format(new Date(row.closed_at), 'dd/MM/yy HH:mm', { locale: ptBR })
+                  : '-'}
               </td>
               <td className="px-4 py-3">
-                <Badge variant={row.status === 'finalizado' ? 'success' : row.status === 'pago_parcial' ? 'warning' : 'default'} className="text-xs">
+                <Badge
+                  variant={
+                    row.status === 'finalizado'
+                      ? 'success'
+                      : row.status === 'pago_parcial'
+                      ? 'warning'
+                      : 'default'
+                  }
+                  className="text-xs"
+                >
                   {row.status}
                 </Badge>
               </td>
               <td className="px-4 py-3 text-right tabular-nums">{formatCurrency(row.total_value)}</td>
-              <td className="px-4 py-3 text-right tabular-nums text-[var(--color-success)]">{formatCurrency(row.paid_value)}</td>
+              <td className="px-4 py-3 text-right tabular-nums text-[var(--color-success)]">
+                {formatCurrency(row.paid_value)}
+              </td>
               <td className="px-4 py-3 text-right tabular-nums text-[var(--color-accent-danger)]">
                 {formatCurrency(row.remaining_value)}
               </td>
@@ -63,11 +82,17 @@ export function RawOsTable({ data, isLoading }: RawOsTableProps) {
         </tbody>
         <tfoot className="bg-[var(--bg-muted)]/50 border-t border-[var(--border-subtle)] font-medium">
           <tr>
-            <td colSpan={4} className="px-4 py-3 text-right">Totais:</td>
+            <td colSpan={4} className="px-4 py-3 text-right text-[var(--text-tertiary)]">
+              Totais:
+            </td>
             <td className="px-4 py-3 text-right tabular-nums">{formatCurrency(totalValue)}</td>
-            <td className="px-4 py-3 text-right tabular-nums text-[var(--color-success)]">{formatCurrency(totalPaid)}</td>
-            <td className="px-4 py-3 text-right tabular-nums text-[var(--color-accent-danger)]">{formatCurrency(totalRemaining)}</td>
-            <td></td>
+            <td className="px-4 py-3 text-right tabular-nums text-[var(--color-success)]">
+              {formatCurrency(totalPaid)}
+            </td>
+            <td className="px-4 py-3 text-right tabular-nums text-[var(--color-accent-danger)]">
+              {formatCurrency(totalRemaining)}
+            </td>
+            <td />
           </tr>
         </tfoot>
       </table>

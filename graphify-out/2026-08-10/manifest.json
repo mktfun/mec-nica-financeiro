@@ -1310,8 +1310,8 @@
     "semantic_hash": ""
   },
   "src/routes/conciliacao.$lojaId.tsx": {
-    "mtime": 1786367140.52428,
-    "ast_hash": "84121cf24b5dc2df339b90ad43ec1dfc",
+    "mtime": 1786378743.3455503,
+    "ast_hash": "15e2c7a889db52bc9162cff1ca904a64",
     "semantic_hash": ""
   },
   "src/routes/conciliacao.index.tsx": {
@@ -1395,7 +1395,7 @@
     "semantic_hash": ""
   },
   "supabase/.temp/linked-project.json": {
-    "mtime": 1785428874.0,
+    "mtime": 1786378569.7764814,
     "ast_hash": "909b93e98d3011225245726bdc8dbc31",
     "semantic_hash": ""
   },
@@ -1645,8 +1645,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1786367998.8304257,
-    "ast_hash": "0c4f54b7736524e56e84b72e867364bd",
+    "mtime": 1786378866.8441255,
+    "ast_hash": "7fefb90f8811eff96939752da74d6193",
     "semantic_hash": ""
   },
   "specs/016-loja-cleanup/design.md": {
@@ -5820,7 +5820,7 @@
     "semantic_hash": ""
   },
   "schema_dump.sql": {
-    "mtime": 1786368995.2067459,
+    "mtime": 1786378261.830547,
     "ast_hash": "fc802db88cdc5f6b48aad8fa238d86bb",
     "semantic_hash": ""
   },
@@ -5934,21 +5934,6 @@
     "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
     "semantic_hash": ""
   },
-  "specs/148-fix-conciliation-diff/design.md": {
-    "mtime": 1786376705.033105,
-    "ast_hash": "981b94eacf2ee23d1da7d9404e9748f2",
-    "semantic_hash": ""
-  },
-  "specs/148-fix-conciliation-diff/proposal.md": {
-    "mtime": 1786376943.9811735,
-    "ast_hash": "74da28665fc7fd4d295798b41a42d66c",
-    "semantic_hash": ""
-  },
-  "specs/148-fix-conciliation-diff/spec-plan.md": {
-    "mtime": 1786377180.3660724,
-    "ast_hash": "71042aacb84960eac0e6f11ee911661e",
-    "semantic_hash": ""
-  },
   "specs/archive/match-audit-and-fix/design.md": {
     "mtime": 1786375446.3343546,
     "ast_hash": "e8088207bbcfa515de2adc7c81d99efe",
@@ -5962,6 +5947,51 @@
   "specs/archive/match-audit-and-fix/spec-plan.md": {
     "mtime": 1786376233.6990356,
     "ast_hash": "e15c43abbfb1d01ff5635c555c15e65d",
+    "semantic_hash": ""
+  },
+  "src/components/conciliacao/ImportSourceBadges.tsx": {
+    "mtime": 1786378728.1669836,
+    "ast_hash": "5b2cc96dcea95f3d84d08ea4463f91b9",
+    "semantic_hash": ""
+  },
+  "src/components/conciliacao/RawOfxTable.tsx": {
+    "mtime": 1786378710.6351826,
+    "ast_hash": "f43a1b9e7abef05a8b1310f792cdef5d",
+    "semantic_hash": ""
+  },
+  "src/components/conciliacao/RawOsTable.tsx": {
+    "mtime": 1786378674.265993,
+    "ast_hash": "3e35b9e795b19debe90192c7711260cd",
+    "semantic_hash": ""
+  },
+  "src/components/conciliacao/RawRedeTable.tsx": {
+    "mtime": 1786378692.0455012,
+    "ast_hash": "f4e8ab1f228227d447327d75eb4861a0",
+    "semantic_hash": ""
+  },
+  "src/hooks/useRawImportData.ts": {
+    "mtime": 1786378644.9938455,
+    "ast_hash": "b93f8e1baaf719e53ff74e6820d85a07",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260810165000_raw_data_rpcs.sql": {
+    "mtime": 1786378488.360656,
+    "ast_hash": "fc1571a89676235692af830d2018ece9",
+    "semantic_hash": ""
+  },
+  "specs/archive/148-fix-conciliation-diff/design.md": {
+    "mtime": 1786376705.033105,
+    "ast_hash": "981b94eacf2ee23d1da7d9404e9748f2",
+    "semantic_hash": ""
+  },
+  "specs/archive/148-fix-conciliation-diff/proposal.md": {
+    "mtime": 1786376943.9811735,
+    "ast_hash": "74da28665fc7fd4d295798b41a42d66c",
+    "semantic_hash": ""
+  },
+  "specs/archive/148-fix-conciliation-diff/spec-plan.md": {
+    "mtime": 1786377180.3660724,
+    "ast_hash": "71042aacb84960eac0e6f11ee911661e",
     "semantic_hash": ""
   }
 }

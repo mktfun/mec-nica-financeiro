@@ -6812,8 +6812,8 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "package_devdependencies_eslint_config_prettier",
-      "community": 909,
-      "community_name": "eslint-config-prettier",
+      "community": 1,
+      "community_name": "devDependencies",
       "norm_label": "eslint-config-prettier"
     },
     {
@@ -6823,8 +6823,8 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "eslint_config_prettier",
-      "community": 909,
-      "community_name": "eslint-config-prettier",
+      "community": 1,
+      "community_name": "devDependencies",
       "norm_label": "eslint-config-prettier"
     },
     {
@@ -6878,8 +6878,8 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "package_devdependencies_eslint_plugin_react_refresh",
-      "community": 1,
-      "community_name": "devDependencies",
+      "community": 938,
+      "community_name": "eslint-plugin-react-refresh",
       "norm_label": "eslint-plugin-react-refresh"
     },
     {
@@ -6889,8 +6889,8 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "eslint_plugin_react_refresh",
-      "community": 1,
-      "community_name": "devDependencies",
+      "community": 938,
+      "community_name": "eslint-plugin-react-refresh",
       "norm_label": "eslint-plugin-react-refresh"
     },
     {
@@ -14884,7 +14884,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel",
       "community": 41,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "agenteiaconfigpanel.tsx"
     },
     {
@@ -14895,7 +14895,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_model_options",
       "community": 41,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "model_options"
     },
     {
@@ -14906,7 +14906,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_provider_labels",
       "community": 41,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "provider_labels"
     },
     {
@@ -14917,7 +14917,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_agenteiaconfigpanel",
       "community": 41,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "agenteiaconfigpanel()"
     },
     {
@@ -14928,7 +14928,7 @@
       "_origin": "ast",
       "id": "src_components_agente_cacheagentepanel",
       "community": 41,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "cacheagentepanel.tsx"
     },
     {
@@ -14939,7 +14939,7 @@
       "_origin": "ast",
       "id": "src_components_agente_cacheagentepanel_cacheagentepanel",
       "community": 41,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "cacheagentepanel()"
     },
     {
@@ -14949,8 +14949,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 41,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "configuracoespanel.tsx"
     },
     {
@@ -14960,8 +14960,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel_configuracoespanel",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 41,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "configuracoespanel()"
     },
     {
@@ -14972,7 +14972,7 @@
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel_aisettingsform",
       "community": 41,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "aisettingsform()"
     },
     {
@@ -14982,8 +14982,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_custospanel",
-      "community": 41,
-      "community_name": "Card.tsx",
+      "community": 4,
+      "community_name": "supabase.ts",
       "norm_label": "custospanel.tsx"
     },
     {
@@ -15004,8 +15004,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_logsagentepanel",
-      "community": 730,
-      "community_name": "LogsAgentePanel.tsx",
+      "community": 13,
+      "community_name": "AppShell.tsx",
       "norm_label": "logsagentepanel.tsx"
     },
     {
@@ -15015,8 +15015,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_agente_logsagentepanel_logsagentepanel",
-      "community": 730,
-      "community_name": "LogsAgentePanel.tsx",
+      "community": 13,
+      "community_name": "AppShell.tsx",
       "norm_label": "logsagentepanel()"
     },
     {
@@ -15026,8 +15026,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 41,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "logsmotorpanel.tsx"
     },
     {
@@ -15037,8 +15037,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel_logsmotorpanel",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 41,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "logsmotorpanel()"
     },
     {
@@ -15357,7 +15357,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput",
       "community": 405,
-      "community_name": "PromptInput.tsx",
+      "community_name": "Button.tsx",
       "norm_label": "promptinput.tsx"
     },
     {
@@ -15368,7 +15368,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_attachment",
       "community": 405,
-      "community_name": "PromptInput.tsx",
+      "community_name": "Button.tsx",
       "norm_label": "attachment"
     },
     {
@@ -15379,7 +15379,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_morphingtext",
       "community": 405,
-      "community_name": "PromptInput.tsx",
+      "community_name": "Button.tsx",
       "norm_label": "morphingtext()"
     },
     {
@@ -15390,7 +15390,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_modelicon",
       "community": 405,
-      "community_name": "PromptInput.tsx",
+      "community_name": "Button.tsx",
       "norm_label": "modelicon()"
     },
     {
@@ -15401,7 +15401,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_arrowupicon",
       "community": 405,
-      "community_name": "PromptInput.tsx",
+      "community_name": "Button.tsx",
       "norm_label": "arrowupicon()"
     },
     {
@@ -15412,7 +15412,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_micicon",
       "community": 405,
-      "community_name": "PromptInput.tsx",
+      "community_name": "Button.tsx",
       "norm_label": "micicon()"
     },
     {
@@ -15423,7 +15423,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_stopicon",
       "community": 405,
-      "community_name": "PromptInput.tsx",
+      "community_name": "Button.tsx",
       "norm_label": "stopicon()"
     },
     {
@@ -15434,7 +15434,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_plusicon",
       "community": 405,
-      "community_name": "PromptInput.tsx",
+      "community_name": "Button.tsx",
       "norm_label": "plusicon()"
     },
     {
@@ -15445,7 +15445,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_closeicon",
       "community": 405,
-      "community_name": "PromptInput.tsx",
+      "community_name": "Button.tsx",
       "norm_label": "closeicon()"
     },
     {
@@ -15456,7 +15456,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_dynamicbarsicon",
       "community": 405,
-      "community_name": "PromptInput.tsx",
+      "community_name": "Button.tsx",
       "norm_label": "dynamicbarsicon()"
     },
     {
@@ -15467,7 +15467,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_attachmentthumb",
       "community": 405,
-      "community_name": "PromptInput.tsx",
+      "community_name": "Button.tsx",
       "norm_label": "attachmentthumb()"
     },
     {
@@ -15478,7 +15478,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_attachmentgallerymodal",
       "community": 405,
-      "community_name": "PromptInput.tsx",
+      "community_name": "Button.tsx",
       "norm_label": "attachmentgallerymodal()"
     },
     {
@@ -15489,7 +15489,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_promptinputprops",
       "community": 405,
-      "community_name": "PromptInput.tsx",
+      "community_name": "Button.tsx",
       "norm_label": "promptinputprops"
     },
     {
@@ -15500,8 +15500,52 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_promptinput",
       "community": 405,
-      "community_name": "PromptInput.tsx",
+      "community_name": "Button.tsx",
       "norm_label": "promptinput"
+    },
+    {
+      "label": "ImportSourceBadges.tsx",
+      "file_type": "code",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_components_conciliacao_importsourcebadges",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "importsourcebadges.tsx"
+    },
+    {
+      "label": "ImportSourceBadgesProps",
+      "file_type": "code",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "src_components_conciliacao_importsourcebadges_importsourcebadgesprops",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "importsourcebadgesprops"
+    },
+    {
+      "label": "ModalType",
+      "file_type": "code",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "src_components_conciliacao_importsourcebadges_modaltype",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "modaltype"
+    },
+    {
+      "label": "ImportSourceBadges()",
+      "file_type": "code",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "src_components_conciliacao_importsourcebadges_importsourcebadges",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "importsourcebadges()"
     },
     {
       "label": "Modulo1SaldoPanel.tsx",
@@ -15511,7 +15555,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "modulo1saldopanel.tsx"
     },
     {
@@ -15522,7 +15566,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel_modulo1saldopanelprops",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "modulo1saldopanelprops"
     },
     {
@@ -15533,7 +15577,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel_modulo1saldopanel",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "modulo1saldopanel()"
     },
     {
@@ -15544,7 +15588,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_ofxsemmatchtable",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "ofxsemmatchtable.tsx"
     },
     {
@@ -15555,7 +15599,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_ofxsemmatchtable_ofxsemmatchtable",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "ofxsemmatchtable()"
     },
     {
@@ -15566,7 +15610,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_osdetailmodal",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "osdetailmodal.tsx"
     },
     {
@@ -15577,7 +15621,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_osdetailmodal_osdetailmodalprops",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "osdetailmodalprops"
     },
     {
@@ -15588,7 +15632,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_osdetailmodal_osdetailmodal",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "osdetailmodal()"
     },
     {
@@ -15599,7 +15643,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_osvsredetable",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "osvsredetable.tsx"
     },
     {
@@ -15610,7 +15654,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_osvsredetable_osvsredetable",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "osvsredetable()"
     },
     {
@@ -15621,7 +15665,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_pixvsofxtable",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "pixvsofxtable.tsx"
     },
     {
@@ -15632,8 +15676,107 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_pixvsofxtable_pixvsofxtable",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "pixvsofxtable()"
+    },
+    {
+      "label": "RawOfxTable.tsx",
+      "file_type": "code",
+      "source_file": "src/components/conciliacao/RawOfxTable.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_components_conciliacao_rawofxtable",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "rawofxtable.tsx"
+    },
+    {
+      "label": "RawOfxTableProps",
+      "file_type": "code",
+      "source_file": "src/components/conciliacao/RawOfxTable.tsx",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "src_components_conciliacao_rawofxtable_rawofxtableprops",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "rawofxtableprops"
+    },
+    {
+      "label": "RawOfxTable()",
+      "file_type": "code",
+      "source_file": "src/components/conciliacao/RawOfxTable.tsx",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "src_components_conciliacao_rawofxtable_rawofxtable",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "rawofxtable()"
+    },
+    {
+      "label": "RawOsTable.tsx",
+      "file_type": "code",
+      "source_file": "src/components/conciliacao/RawOsTable.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_components_conciliacao_rawostable",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "rawostable.tsx"
+    },
+    {
+      "label": "RawOsTableProps",
+      "file_type": "code",
+      "source_file": "src/components/conciliacao/RawOsTable.tsx",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "src_components_conciliacao_rawostable_rawostableprops",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "rawostableprops"
+    },
+    {
+      "label": "RawOsTable()",
+      "file_type": "code",
+      "source_file": "src/components/conciliacao/RawOsTable.tsx",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "src_components_conciliacao_rawostable_rawostable",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "rawostable()"
+    },
+    {
+      "label": "RawRedeTable.tsx",
+      "file_type": "code",
+      "source_file": "src/components/conciliacao/RawRedeTable.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_components_conciliacao_rawredetable",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "rawredetable.tsx"
+    },
+    {
+      "label": "RawRedeTableProps",
+      "file_type": "code",
+      "source_file": "src/components/conciliacao/RawRedeTable.tsx",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "src_components_conciliacao_rawredetable_rawredetableprops",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "rawredetableprops"
+    },
+    {
+      "label": "RawRedeTable()",
+      "file_type": "code",
+      "source_file": "src/components/conciliacao/RawRedeTable.tsx",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "src_components_conciliacao_rawredetable_rawredetable",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "rawredetable()"
     },
     {
       "label": "RedeVsExtratoTable.tsx",
@@ -15643,7 +15786,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsextratotable",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "redevsextratotable.tsx"
     },
     {
@@ -15654,7 +15797,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsextratotable_redevsextratotableprops",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "redevsextratotableprops"
     },
     {
@@ -15665,7 +15808,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsextratotable_redevsextratotable",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "redevsextratotable()"
     },
     {
@@ -15676,7 +15819,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsofxtable",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "redevsofxtable.tsx"
     },
     {
@@ -15687,7 +15830,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsofxtable_redevsofxtable",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "redevsofxtable()"
     },
     {
@@ -15698,7 +15841,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "resumodiapanel.tsx"
     },
     {
@@ -15709,7 +15852,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel_resumodiapanelprops",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "resumodiapanelprops"
     },
     {
@@ -15720,7 +15863,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel_resumodiapanel",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "resumodiapanel()"
     },
     {
@@ -15730,8 +15873,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog",
-      "community": 20,
-      "community_name": "supabase.ts",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "alertresolvedialog.tsx"
     },
     {
@@ -15741,8 +15884,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog_alertresolvedialogprops",
-      "community": 20,
-      "community_name": "supabase.ts",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "alertresolvedialogprops"
     },
     {
@@ -15752,8 +15895,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog_alertresolvedialog",
-      "community": 20,
-      "community_name": "supabase.ts",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "alertresolvedialog()"
     },
     {
@@ -15786,7 +15929,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_cashflowchart",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "cashflowchart.tsx"
     },
     {
@@ -15797,7 +15940,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_cashflowchart_cashflowchart",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "cashflowchart()"
     },
     {
@@ -15873,8 +16016,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart",
-      "community": 41,
-      "community_name": "Card.tsx",
+      "community": 49,
+      "community_name": "AnimatedNumber.tsx",
       "norm_label": "faturamentovscontaschart.tsx"
     },
     {
@@ -15884,8 +16027,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_faturamentovscontaschartprops",
-      "community": 41,
-      "community_name": "Card.tsx",
+      "community": 49,
+      "community_name": "AnimatedNumber.tsx",
       "norm_label": "faturamentovscontaschartprops"
     },
     {
@@ -15895,8 +16038,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_formatcurrency",
-      "community": 41,
-      "community_name": "Card.tsx",
+      "community": 49,
+      "community_name": "AnimatedNumber.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -15906,8 +16049,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_shortenname",
-      "community": 41,
-      "community_name": "Card.tsx",
+      "community": 49,
+      "community_name": "AnimatedNumber.tsx",
       "norm_label": "shortenname()"
     },
     {
@@ -15917,8 +16060,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_customyaxistick",
-      "community": 41,
-      "community_name": "Card.tsx",
+      "community": 49,
+      "community_name": "AnimatedNumber.tsx",
       "norm_label": "customyaxistick()"
     },
     {
@@ -15928,8 +16071,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_customtooltip",
-      "community": 41,
-      "community_name": "Card.tsx",
+      "community": 49,
+      "community_name": "AnimatedNumber.tsx",
       "norm_label": "customtooltip()"
     },
     {
@@ -15939,8 +16082,8 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_faturamentovscontaschart",
-      "community": 41,
-      "community_name": "Card.tsx",
+      "community": 49,
+      "community_name": "AnimatedNumber.tsx",
       "norm_label": "faturamentovscontaschart()"
     },
     {
@@ -16049,8 +16192,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog",
-      "community": 42,
-      "community_name": "patio.tsx",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "newtransactiondialog.tsx"
     },
     {
@@ -16060,8 +16203,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialogprops",
-      "community": 42,
-      "community_name": "patio.tsx",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "newtransactiondialogprops"
     },
     {
@@ -16071,8 +16214,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialog",
-      "community": 42,
-      "community_name": "patio.tsx",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "newtransactiondialog()"
     },
     {
@@ -16082,8 +16225,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_rationale_17",
-      "community": 42,
-      "community_name": "patio.tsx",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "todo: implement transaction creation"
     },
     {
@@ -16093,8 +16236,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "quickactions.tsx"
     },
     {
@@ -16104,8 +16247,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_container",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "container"
     },
     {
@@ -16115,8 +16258,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_item",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "item"
     },
     {
@@ -16126,8 +16269,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_quickactions",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "quickactions()"
     },
     {
@@ -16467,8 +16610,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_bottomnav",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "bottomnav.tsx"
     },
     {
@@ -16478,8 +16621,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_layout_bottomnav_navitems",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "navitems"
     },
     {
@@ -16489,8 +16632,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_components_layout_bottomnav_bottomnav",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "bottomnav()"
     },
     {
@@ -16500,8 +16643,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_sidebar",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "sidebar.tsx"
     },
     {
@@ -16511,8 +16654,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_layout_sidebar_navitems",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "navitems"
     },
     {
@@ -16522,8 +16665,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_components_layout_sidebar_sidebar",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "sidebar()"
     },
     {
@@ -16589,7 +16732,7 @@
       "_origin": "ast",
       "id": "src_components_ui_badge",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "badge.tsx"
     },
     {
@@ -16600,7 +16743,7 @@
       "_origin": "ast",
       "id": "src_components_ui_badge_badgeprops",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "badgeprops"
     },
     {
@@ -16611,7 +16754,7 @@
       "_origin": "ast",
       "id": "src_components_ui_badge_badge",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "badge()"
     },
     {
@@ -16621,8 +16764,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_button",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "button.tsx"
     },
     {
@@ -16632,8 +16775,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_ui_button_buttonprops",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "buttonprops"
     },
     {
@@ -16643,8 +16786,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_ui_button_button",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "button()"
     },
     {
@@ -16654,7 +16797,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_card",
-      "community": 41,
+      "community": 34,
       "community_name": "Card.tsx",
       "norm_label": "card.tsx"
     },
@@ -16665,7 +16808,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_ui_card_cardprops",
-      "community": 41,
+      "community": 34,
       "community_name": "Card.tsx",
       "norm_label": "cardprops"
     },
@@ -16676,7 +16819,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_ui_card_card",
-      "community": 41,
+      "community": 34,
       "community_name": "Card.tsx",
       "norm_label": "card()"
     },
@@ -16720,8 +16863,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_loadingspinner",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 41,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "loadingspinner.tsx"
     },
     {
@@ -16731,8 +16874,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_components_ui_loadingspinner_loadingspinnerprops",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 41,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "loadingspinnerprops"
     },
     {
@@ -16742,8 +16885,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_ui_loadingspinner_loadingspinner",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 41,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "loadingspinner()"
     },
     {
@@ -16753,8 +16896,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_modal",
-      "community": 42,
-      "community_name": "patio.tsx",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "modal.tsx"
     },
     {
@@ -16764,8 +16907,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_ui_modal_modalprops",
-      "community": 42,
-      "community_name": "patio.tsx",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "modalprops"
     },
     {
@@ -16775,8 +16918,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_components_ui_modal_modal",
-      "community": 42,
-      "community_name": "patio.tsx",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "modal()"
     },
     {
@@ -16897,7 +17040,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings",
       "community": 41,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "useaisettings.ts"
     },
     {
@@ -16908,7 +17051,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_aisettings",
       "community": 41,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "aisettings"
     },
     {
@@ -16919,7 +17062,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_useaisettings",
       "community": 41,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "useaisettings()"
     },
     {
@@ -16930,7 +17073,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_usesaveaisettings",
       "community": 41,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usesaveaisettings()"
     },
     {
@@ -16940,8 +17083,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usealerts",
-      "community": 20,
-      "community_name": "supabase.ts",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "usealerts.ts"
     },
     {
@@ -16951,8 +17094,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_usealerts_usealerts",
-      "community": 20,
-      "community_name": "supabase.ts",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "usealerts()"
     },
     {
@@ -16962,8 +17105,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_hooks_usealerts_useallalerts",
-      "community": 20,
-      "community_name": "supabase.ts",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "useallalerts()"
     },
     {
@@ -16973,8 +17116,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "src_hooks_usealerts_useresolvealert",
-      "community": 20,
-      "community_name": "supabase.ts",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "useresolvealert()"
     },
     {
@@ -16984,8 +17127,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useauth",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 773,
+      "community_name": "useAuth.ts",
       "norm_label": "useauth.ts"
     },
     {
@@ -16995,8 +17138,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_hooks_useauth_listeners",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 773,
+      "community_name": "useAuth.ts",
       "norm_label": "listeners"
     },
     {
@@ -17018,7 +17161,7 @@
       "_origin": "ast",
       "id": "src_hooks_useauth_uselogin",
       "community": 773,
-      "community_name": "login.tsx",
+      "community_name": "useAuth.ts",
       "norm_label": "uselogin()"
     },
     {
@@ -17028,8 +17171,8 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "src_hooks_useauth_uselogout",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "uselogout()"
     },
     {
@@ -17040,7 +17183,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "usebackendconciliacao.ts"
     },
     {
@@ -17051,7 +17194,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_conciliationdailylog",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "conciliationdailylog"
     },
     {
@@ -17062,7 +17205,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_usebackendconciliacao",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "usebackendconciliacao()"
     },
     {
@@ -17073,7 +17216,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_useglobalofxout",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "useglobalofxout()"
     },
     {
@@ -17127,8 +17270,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 41,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usebotcredentials.ts"
     },
     {
@@ -17138,8 +17281,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_botcredentialrow",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 41,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "botcredentialrow"
     },
     {
@@ -17149,8 +17292,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usebotcredentials",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 41,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usebotcredentials()"
     },
     {
@@ -17160,8 +17303,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_useupdatebotcredential",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 41,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "useupdatebotcredential()"
     },
     {
@@ -17171,8 +17314,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usemarkcredentialvalid",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 41,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usemarkcredentialvalid()"
     },
     {
@@ -17182,8 +17325,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotlogs",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 41,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usebotlogs.ts"
     },
     {
@@ -17193,8 +17336,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_botauditlog",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 41,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "botauditlog"
     },
     {
@@ -17204,8 +17347,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotlogs",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 41,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usebotlogs()"
     },
     {
@@ -17215,8 +17358,8 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotauditlogs",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 41,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usebotauditlogs()"
     },
     {
@@ -17226,7 +17369,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotruns",
-      "community": 20,
+      "community": 4,
       "community_name": "supabase.ts",
       "norm_label": "usebotruns.ts"
     },
@@ -17237,7 +17380,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usebotruns_uselatestbotrun",
-      "community": 20,
+      "community": 4,
       "community_name": "supabase.ts",
       "norm_label": "uselatestbotrun()"
     },
@@ -17248,8 +17391,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_hooks_usebotruns_usebotrunhistory",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "supabase.ts",
       "norm_label": "usebotrunhistory()"
     },
     {
@@ -17260,7 +17403,7 @@
       "_origin": "ast",
       "id": "src_hooks_usecashregisters",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usecashregisters.ts"
     },
     {
@@ -17271,7 +17414,7 @@
       "_origin": "ast",
       "id": "src_hooks_usecashregisters_usecashregisters",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usecashregisters()"
     },
     {
@@ -17282,7 +17425,7 @@
       "_origin": "ast",
       "id": "src_hooks_usecashregisters_useclosecashregister",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "useclosecashregister()"
     },
     {
@@ -17337,7 +17480,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "useconciliacao.ts"
     },
     {
@@ -17348,7 +17491,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_isvaliduuid",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "isvaliduuid()"
     },
     {
@@ -17359,7 +17502,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_conciliacaoresumo",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "conciliacaoresumo"
     },
     {
@@ -17370,7 +17513,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usereconciliationsfordate",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "usereconciliationsfordate()"
     },
     {
@@ -17414,7 +17557,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usestorehistory",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usestorehistory()"
     },
     {
@@ -17425,7 +17568,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesystemtransactions",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "usesystemtransactions()"
     },
     {
@@ -17436,7 +17579,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usedailyreconciliationdelta",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "usedailyreconciliationdelta()"
     },
     {
@@ -17447,7 +17590,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usereconciliationviews",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "usereconciliationviews()"
     },
     {
@@ -17458,7 +17601,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usemodulo1storesdata",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "usemodulo1storesdata()"
     },
     {
@@ -17469,7 +17612,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useupdateosstatus",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "useupdateosstatus()"
     },
     {
@@ -17480,7 +17623,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useresolveunmatchedalert",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "useresolveunmatchedalert()"
     },
     {
@@ -17491,7 +17634,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useredevsextrato",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "useredevsextrato()"
     },
     {
@@ -17524,7 +17667,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "usedailysnapshot.ts"
     },
     {
@@ -17535,7 +17678,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_dailysnapshotrow",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "dailysnapshotrow"
     },
     {
@@ -17546,7 +17689,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usedailysnapshot",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "usedailysnapshot()"
     },
     {
@@ -17557,7 +17700,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usepreviousdaysnapshot",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "usepreviousdaysnapshot()"
     },
     {
@@ -17568,7 +17711,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usesavedailysnapshot",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "usesavedailysnapshot()"
     },
     {
@@ -17579,7 +17722,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_useavailableconciliacaodates",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "useavailableconciliacaodates()"
     },
     {
@@ -17666,7 +17809,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usegoals",
-      "community": 20,
+      "community": 4,
       "community_name": "supabase.ts",
       "norm_label": "usegoals.ts"
     },
@@ -17677,7 +17820,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usegoals_goalrow",
-      "community": 20,
+      "community": 4,
       "community_name": "supabase.ts",
       "norm_label": "goalrow"
     },
@@ -17688,7 +17831,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_hooks_usegoals_usemonthlygoal",
-      "community": 20,
+      "community": 4,
       "community_name": "supabase.ts",
       "norm_label": "usemonthlygoal()"
     },
@@ -17699,8 +17842,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "supabase.ts",
       "norm_label": "useimportlogs.ts"
     },
     {
@@ -17710,8 +17853,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlog",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "supabase.ts",
       "norm_label": "importlog"
     },
     {
@@ -17721,8 +17864,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlogfilters",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "supabase.ts",
       "norm_label": "importlogfilters"
     },
     {
@@ -17732,8 +17875,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogs",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "supabase.ts",
       "norm_label": "useimportlogs()"
     },
     {
@@ -17743,8 +17886,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogdetail",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "supabase.ts",
       "norm_label": "useimportlogdetail()"
     },
     {
@@ -17787,8 +17930,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_savepatioosandreceivables",
-      "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 713,
+      "community_name": "importacoes.tsx",
       "norm_label": "savepatioosandreceivables()"
     },
     {
@@ -17853,8 +17996,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usemcplogs",
-      "community": 730,
-      "community_name": "LogsAgentePanel.tsx",
+      "community": 13,
+      "community_name": "AppShell.tsx",
       "norm_label": "usemcplogs.ts"
     },
     {
@@ -17864,8 +18007,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usemcplogs_mcplog",
-      "community": 730,
-      "community_name": "LogsAgentePanel.tsx",
+      "community": 13,
+      "community_name": "AppShell.tsx",
       "norm_label": "mcplog"
     },
     {
@@ -17875,8 +18018,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_hooks_usemcplogs_usemcplogs",
-      "community": 730,
-      "community_name": "LogsAgentePanel.tsx",
+      "community": 13,
+      "community_name": "AppShell.tsx",
       "norm_label": "usemcplogs()"
     },
     {
@@ -17887,7 +18030,7 @@
       "_origin": "ast",
       "id": "src_hooks_useoscache",
       "community": 41,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "useoscache.ts"
     },
     {
@@ -17898,7 +18041,7 @@
       "_origin": "ast",
       "id": "src_hooks_useoscache_oficinaoscache",
       "community": 41,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "oficinaoscache"
     },
     {
@@ -17909,7 +18052,7 @@
       "_origin": "ast",
       "id": "src_hooks_useoscache_useoscache",
       "community": 41,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "useoscache()"
     },
     {
@@ -17919,8 +18062,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor",
-      "community": 713,
-      "community_name": "importacoes.tsx",
+      "community": 54,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "useosimportprocessor.ts"
     },
     {
@@ -17930,8 +18073,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor_osimportresult",
-      "community": 713,
-      "community_name": "importacoes.tsx",
+      "community": 54,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "osimportresult"
     },
     {
@@ -17941,8 +18084,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor_processosfiles",
-      "community": 713,
-      "community_name": "importacoes.tsx",
+      "community": 54,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "processosfiles()"
     },
     {
@@ -17990,14 +18133,102 @@
       "norm_label": "usepatiosummary()"
     },
     {
+      "label": "useRawImportData.ts",
+      "file_type": "code",
+      "source_file": "src/hooks/useRawImportData.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_hooks_userawimportdata",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "userawimportdata.ts"
+    },
+    {
+      "label": "RawOsRecord",
+      "file_type": "code",
+      "source_file": "src/hooks/useRawImportData.ts",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "src_hooks_userawimportdata_rawosrecord",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "rawosrecord"
+    },
+    {
+      "label": "RawRedeRecord",
+      "file_type": "code",
+      "source_file": "src/hooks/useRawImportData.ts",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "src_hooks_userawimportdata_rawrederecord",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "rawrederecord"
+    },
+    {
+      "label": "RawOfxTransaction",
+      "file_type": "code",
+      "source_file": "src/hooks/useRawImportData.ts",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "src_hooks_userawimportdata_rawofxtransaction",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "rawofxtransaction"
+    },
+    {
+      "label": "RawOfxResponse",
+      "file_type": "code",
+      "source_file": "src/hooks/useRawImportData.ts",
+      "source_location": "L34",
+      "_origin": "ast",
+      "id": "src_hooks_userawimportdata_rawofxresponse",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "rawofxresponse"
+    },
+    {
+      "label": "useRawOs()",
+      "file_type": "code",
+      "source_file": "src/hooks/useRawImportData.ts",
+      "source_location": "L40",
+      "_origin": "ast",
+      "id": "src_hooks_userawimportdata_userawos",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "userawos()"
+    },
+    {
+      "label": "useRawRede()",
+      "file_type": "code",
+      "source_file": "src/hooks/useRawImportData.ts",
+      "source_location": "L55",
+      "_origin": "ast",
+      "id": "src_hooks_userawimportdata_userawrede",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "userawrede()"
+    },
+    {
+      "label": "useRawOfx()",
+      "file_type": "code",
+      "source_file": "src/hooks/useRawImportData.ts",
+      "source_location": "L70",
+      "_origin": "ast",
+      "id": "src_hooks_userawimportdata_userawofx",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
+      "norm_label": "userawofx()"
+    },
+    {
       "label": "useRecebiveis.ts",
       "file_type": "code",
       "source_file": "src/hooks/useRecebiveis.ts",
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_userecebiveis",
-      "community": 20,
-      "community_name": "supabase.ts",
+      "community": 13,
+      "community_name": "AppShell.tsx",
       "norm_label": "userecebiveis.ts"
     },
     {
@@ -18007,8 +18238,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_userecebiveis",
-      "community": 20,
-      "community_name": "supabase.ts",
+      "community": 13,
+      "community_name": "AppShell.tsx",
       "norm_label": "userecebiveis()"
     },
     {
@@ -18018,8 +18249,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_usemarkreceived",
-      "community": 20,
-      "community_name": "supabase.ts",
+      "community": 13,
+      "community_name": "AppShell.tsx",
       "norm_label": "usemarkreceived()"
     },
     {
@@ -18029,8 +18260,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_usereceivablessummary",
-      "community": 20,
-      "community_name": "supabase.ts",
+      "community": 13,
+      "community_name": "AppShell.tsx",
       "norm_label": "usereceivablessummary()"
     },
     {
@@ -18118,7 +18349,7 @@
       "_origin": "ast",
       "id": "src_hooks_usestores_usestorefinancialstats",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usestorefinancialstats()"
     },
     {
@@ -18129,7 +18360,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usetransactions.ts"
     },
     {
@@ -18140,7 +18371,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactions",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usetransactions()"
     },
     {
@@ -18151,7 +18382,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactionsbystore",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usetransactionsbystore()"
     },
     {
@@ -18173,7 +18404,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usecashflow",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usecashflow()"
     },
     {
@@ -18184,7 +18415,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useextrato",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "useextrato()"
     },
     {
@@ -18206,7 +18437,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactionspordataeloja",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "usetransactionspordataeloja()"
     },
     {
@@ -18216,8 +18447,8 @@
       "source_location": "L259",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useweeklyrevenuetrend",
-      "community": 713,
-      "community_name": "importacoes.tsx",
+      "community": 4,
+      "community_name": "supabase.ts",
       "norm_label": "useweeklyrevenuetrend()"
     },
     {
@@ -18261,7 +18492,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedailysystembalance",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usedailysystembalance()"
     },
     {
@@ -18272,7 +18503,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_uselatestbankbalance",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "uselatestbankbalance()"
     },
     {
@@ -18283,7 +18514,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedailybankbalance",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usedailybankbalance()"
     },
     {
@@ -18294,7 +18525,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetriplematch",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usetriplematch.ts"
     },
     {
@@ -18305,7 +18536,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetriplematch_usetriplematch",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usetriplematch()"
     },
     {
@@ -18392,7 +18623,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_integrations_supabase_client",
-      "community": 20,
+      "community": 4,
       "community_name": "supabase.ts",
       "norm_label": "client.ts"
     },
@@ -18403,7 +18634,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_integrations_supabase_client_createsupabaseclient",
-      "community": 20,
+      "community": 4,
       "community_name": "supabase.ts",
       "norm_label": "createsupabaseclient()"
     },
@@ -18414,8 +18645,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "src_integrations_supabase_client_supabase",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 4,
+      "community_name": "supabase.ts",
       "norm_label": "supabase"
     },
     {
@@ -19339,7 +19570,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "modulo1calculations.ts"
     },
     {
@@ -19350,7 +19581,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_globalconciliacaoinput",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "globalconciliacaoinput"
     },
     {
@@ -19361,7 +19592,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_globalconciliacaocalculated",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "globalconciliacaocalculated"
     },
     {
@@ -19372,7 +19603,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_calculateglobalconciliacao",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "calculateglobalconciliacao()"
     },
     {
@@ -19383,7 +19614,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_storesaldostate",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "storesaldostate"
     },
     {
@@ -19394,7 +19625,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_modulo1calculated",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "modulo1calculated"
     },
     {
@@ -19405,7 +19636,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_calculatemodulo1saldo",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "calculatemodulo1saldo()"
     },
     {
@@ -19822,7 +20053,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_supabase",
-      "community": 20,
+      "community": 4,
       "community_name": "supabase.ts",
       "norm_label": "supabase.ts"
     },
@@ -19855,8 +20086,8 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "src_lib_supabase_alertrow",
-      "community": 20,
-      "community_name": "supabase.ts",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "alertrow"
     },
     {
@@ -19867,7 +20098,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_transactionrow",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "transactionrow"
     },
     {
@@ -19878,7 +20109,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_cashregisterrow",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "cashregisterrow"
     },
     {
@@ -19899,8 +20130,8 @@
       "source_location": "L112",
       "_origin": "ast",
       "id": "src_lib_supabase_receivablerow",
-      "community": 20,
-      "community_name": "supabase.ts",
+      "community": 13,
+      "community_name": "AppShell.tsx",
       "norm_label": "receivablerow"
     },
     {
@@ -19910,7 +20141,7 @@
       "source_location": "L125",
       "_origin": "ast",
       "id": "src_lib_supabase_botrunrow",
-      "community": 20,
+      "community": 4,
       "community_name": "supabase.ts",
       "norm_label": "botrunrow"
     },
@@ -19921,7 +20152,7 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "src_lib_supabase_profilerow",
-      "community": 20,
+      "community": 4,
       "community_name": "supabase.ts",
       "norm_label": "profilerow"
     },
@@ -19932,7 +20163,7 @@
       "source_location": "L144",
       "_origin": "ast",
       "id": "src_lib_supabase_interestraterow",
-      "community": 20,
+      "community": 4,
       "community_name": "supabase.ts",
       "norm_label": "interestraterow"
     },
@@ -19943,8 +20174,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_utils",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "utils.ts"
     },
     {
@@ -19954,8 +20185,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_lib_utils_cn",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "cn()"
     },
     {
@@ -19965,8 +20196,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_lib_utils_getdefaultdate",
-      "community": 713,
-      "community_name": "importacoes.tsx",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "getdefaultdate()"
     },
     {
@@ -19976,8 +20207,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_lib_utils_formatcurrency",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 20,
+      "community_name": "ImportSourceBadges.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -20416,8 +20647,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_alertas",
-      "community": 20,
-      "community_name": "supabase.ts",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "alertas.tsx"
     },
     {
@@ -20438,8 +20669,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_routes_alertas_filtertype",
-      "community": 20,
-      "community_name": "supabase.ts",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "filtertype"
     },
     {
@@ -20449,8 +20680,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_routes_alertas_alertaspage",
-      "community": 20,
-      "community_name": "supabase.ts",
+      "community": 405,
+      "community_name": "Button.tsx",
       "norm_label": "alertaspage()"
     },
     {
@@ -20582,14 +20813,14 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "conciliacao.$lojaid.tsx"
     },
     {
       "label": "Route",
       "file_type": "code",
       "source_file": "src/routes/conciliacao.$lojaId.tsx",
-      "source_location": "L16",
+      "source_location": "L17",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_route",
       "community": 3,
@@ -20600,44 +20831,44 @@
       "label": "formatDate()",
       "file_type": "code",
       "source_file": "src/routes/conciliacao.$lojaId.tsx",
-      "source_location": "L25",
+      "source_location": "L26",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_formatdate",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "formatdate()"
     },
     {
       "label": "TabType",
       "file_type": "code",
       "source_file": "src/routes/conciliacao.$lojaId.tsx",
-      "source_location": "L31",
+      "source_location": "L32",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_tabtype",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "tabtype"
     },
     {
       "label": "TabBtn()",
       "file_type": "code",
       "source_file": "src/routes/conciliacao.$lojaId.tsx",
-      "source_location": "L33",
+      "source_location": "L34",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_tabbtn",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "tabbtn()"
     },
     {
       "label": "ConciliacaoLojaPage()",
       "file_type": "code",
       "source_file": "src/routes/conciliacao.$lojaId.tsx",
-      "source_location": "L48",
+      "source_location": "L49",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_conciliacaolojapage",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "conciliacaolojapage()"
     },
     {
@@ -20648,7 +20879,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_index",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "conciliacao.index.tsx"
     },
     {
@@ -20670,7 +20901,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_index_conciliacaopage",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "conciliacaopage()"
     },
     {
@@ -20747,7 +20978,7 @@
       "_origin": "ast",
       "id": "src_routes_historico",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "historico.tsx"
     },
     {
@@ -20769,7 +21000,7 @@
       "_origin": "ast",
       "id": "src_routes_historico_getdefaultperiod",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "getdefaultperiod()"
     },
     {
@@ -20780,7 +21011,7 @@
       "_origin": "ast",
       "id": "src_routes_historico_formatdate",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "formatdate()"
     },
     {
@@ -20791,7 +21022,7 @@
       "_origin": "ast",
       "id": "src_routes_historico_geticonformethod",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "geticonformethod()"
     },
     {
@@ -20802,7 +21033,7 @@
       "_origin": "ast",
       "id": "src_routes_historico_historicopage",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "historicopage()"
     },
     {
@@ -21000,7 +21231,7 @@
       "_origin": "ast",
       "id": "src_routes_login",
       "community": 773,
-      "community_name": "login.tsx",
+      "community_name": "useAuth.ts",
       "norm_label": "login.tsx"
     },
     {
@@ -21011,7 +21242,7 @@
       "_origin": "ast",
       "id": "src_routes_login_route",
       "community": 773,
-      "community_name": "login.tsx",
+      "community_name": "useAuth.ts",
       "norm_label": "route"
     },
     {
@@ -21022,7 +21253,7 @@
       "_origin": "ast",
       "id": "src_routes_login_loginpage",
       "community": 773,
-      "community_name": "login.tsx",
+      "community_name": "useAuth.ts",
       "norm_label": "loginpage()"
     },
     {
@@ -21032,8 +21263,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_logs_agente",
-      "community": 730,
-      "community_name": "LogsAgentePanel.tsx",
+      "community": 13,
+      "community_name": "AppShell.tsx",
       "norm_label": "logs.agente.tsx"
     },
     {
@@ -21043,8 +21274,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_routes_logs_agente_route",
-      "community": 730,
-      "community_name": "LogsAgentePanel.tsx",
+      "community": 3,
+      "community_name": "FileRoutesByPath",
       "norm_label": "route"
     },
     {
@@ -21054,8 +21285,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_routes_logs_agente_logsagentepage",
-      "community": 730,
-      "community_name": "LogsAgentePanel.tsx",
+      "community": 13,
+      "community_name": "AppShell.tsx",
       "norm_label": "logsagentepage()"
     },
     {
@@ -21065,8 +21296,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_logs_motor",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 41,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "logs.motor.tsx"
     },
     {
@@ -21087,8 +21318,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_routes_logs_motor_logsmotorpage",
-      "community": 13,
-      "community_name": "AppShell.tsx",
+      "community": 41,
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "logsmotorpage()"
     },
     {
@@ -21099,7 +21330,7 @@
       "_origin": "ast",
       "id": "src_routes_loja_lojaid",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "loja.$lojaid.tsx"
     },
     {
@@ -21121,7 +21352,7 @@
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_getdefaultperiod",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "getdefaultperiod()"
     },
     {
@@ -21132,7 +21363,7 @@
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_formatdate",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "formatdate()"
     },
     {
@@ -21143,7 +21374,7 @@
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_geticonformethod",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "geticonformethod()"
     },
     {
@@ -21154,7 +21385,7 @@
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_lojadashboardpage",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "lojadashboardpage()"
     },
     {
@@ -21373,8 +21604,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_recebiveis",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 13,
+      "community_name": "AppShell.tsx",
       "norm_label": "recebiveis.tsx"
     },
     {
@@ -21395,8 +21626,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_routes_recebiveis_filtertab",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 13,
+      "community_name": "AppShell.tsx",
       "norm_label": "filtertab"
     },
     {
@@ -21406,8 +21637,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_routes_recebiveis_recebiveispage",
-      "community": 20,
-      "community_name": "supabase.ts",
+      "community": 13,
+      "community_name": "AppShell.tsx",
       "norm_label": "recebiveispage()"
     },
     {
@@ -21417,8 +21648,8 @@
       "source_location": "L294",
       "_origin": "ast",
       "id": "src_routes_recebiveis_tabbtn",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 13,
+      "community_name": "AppShell.tsx",
       "norm_label": "tabbtn()"
     },
     {
@@ -27428,179 +27659,212 @@
       "norm_label": "current status"
     },
     {
-      "label": "148-fix-conciliation-diff/design.md",
+      "label": "149-conciliation-details/design.md",
       "file_type": "document",
-      "source_file": "specs/148-fix-conciliation-diff/design.md",
+      "source_file": "specs/149-conciliation-details/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_148_fix_conciliation_diff_design",
-      "community": 911,
-      "community_name": "Design: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
-      "norm_label": "148-fix-conciliation-diff/design.md"
+      "id": "specs_149_conciliation_details_design",
+      "community": 496,
+      "community_name": "Design: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
+      "norm_label": "149-conciliation-details/design.md"
     },
     {
-      "label": "Design: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "label": "Design: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
       "file_type": "document",
-      "source_file": "specs/148-fix-conciliation-diff/design.md",
+      "source_file": "specs/149-conciliation-details/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_148_fix_conciliation_diff_design_design_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
-      "community": 911,
-      "community_name": "Design: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
-      "norm_label": "design: corrigir matematica da conciliacao e restaurar historico de os (148-fix-conciliation-diff)"
+      "id": "specs_149_conciliation_details_design_design_painel_detalhado_de_fontes_de_dados_149_conciliation_details",
+      "community": 496,
+      "community_name": "Design: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
+      "norm_label": "design: painel detalhado de fontes de dados (149-conciliation-details)"
     },
     {
       "label": "Arquitetura T\u00e9cnica",
       "file_type": "document",
-      "source_file": "specs/148-fix-conciliation-diff/design.md",
+      "source_file": "specs/149-conciliation-details/design.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_148_fix_conciliation_diff_design_arquitetura_t\u00e9cnica",
-      "community": 911,
-      "community_name": "Design: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "id": "specs_149_conciliation_details_design_arquitetura_t\u00e9cnica",
+      "community": 496,
+      "community_name": "Design: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
       "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Interfaces TypeScript",
+      "file_type": "document",
+      "source_file": "specs/149-conciliation-details/design.md",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "specs_149_conciliation_details_design_interfaces_typescript",
+      "community": 496,
+      "community_name": "Design: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
+      "norm_label": "interfaces typescript"
     },
     {
       "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
       "file_type": "document",
-      "source_file": "specs/148-fix-conciliation-diff/design.md",
-      "source_location": "L20",
+      "source_file": "specs/149-conciliation-details/design.md",
+      "source_location": "L53",
       "_origin": "ast",
-      "id": "specs_148_fix_conciliation_diff_design_componentes_hooks_fun\u00e7\u00f5es",
-      "community": 911,
-      "community_name": "Design: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "id": "specs_149_conciliation_details_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 496,
+      "community_name": "Design: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
       "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Fluxo de UI",
+      "file_type": "document",
+      "source_file": "specs/149-conciliation-details/design.md",
+      "source_location": "L62",
+      "_origin": "ast",
+      "id": "specs_149_conciliation_details_design_fluxo_de_ui",
+      "community": 496,
+      "community_name": "Design: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
+      "norm_label": "fluxo de ui"
+    },
+    {
+      "label": "Infra / Deploy",
+      "file_type": "document",
+      "source_file": "specs/149-conciliation-details/design.md",
+      "source_location": "L69",
+      "_origin": "ast",
+      "id": "specs_149_conciliation_details_design_infra_deploy",
+      "community": 496,
+      "community_name": "Design: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
+      "norm_label": "infra / deploy"
     },
     {
       "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
       "file_type": "document",
-      "source_file": "specs/148-fix-conciliation-diff/design.md",
-      "source_location": "L23",
+      "source_file": "specs/149-conciliation-details/design.md",
+      "source_location": "L72",
       "_origin": "ast",
-      "id": "specs_148_fix_conciliation_diff_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
-      "community": 911,
-      "community_name": "Design: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "id": "specs_149_conciliation_details_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 496,
+      "community_name": "Design: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
       "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
     },
     {
-      "label": "148-fix-conciliation-diff/proposal.md",
+      "label": "149-conciliation-details/proposal.md",
       "file_type": "document",
-      "source_file": "specs/148-fix-conciliation-diff/proposal.md",
+      "source_file": "specs/149-conciliation-details/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_148_fix_conciliation_diff_proposal",
-      "community": 496,
-      "community_name": "Proposal: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
-      "norm_label": "148-fix-conciliation-diff/proposal.md"
+      "id": "specs_149_conciliation_details_proposal",
+      "community": 730,
+      "community_name": "Proposal: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
+      "norm_label": "149-conciliation-details/proposal.md"
     },
     {
-      "label": "Proposal: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "label": "Proposal: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
       "file_type": "document",
-      "source_file": "specs/148-fix-conciliation-diff/proposal.md",
+      "source_file": "specs/149-conciliation-details/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_148_fix_conciliation_diff_proposal_proposal_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
-      "community": 496,
-      "community_name": "Proposal: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
-      "norm_label": "proposal: corrigir matematica da conciliacao e restaurar historico de os (148-fix-conciliation-diff)"
+      "id": "specs_149_conciliation_details_proposal_proposal_painel_detalhado_de_fontes_de_dados_149_conciliation_details",
+      "community": 730,
+      "community_name": "Proposal: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
+      "norm_label": "proposal: painel detalhado de fontes de dados (149-conciliation-details)"
     },
     {
       "label": "Problema",
       "file_type": "document",
-      "source_file": "specs/148-fix-conciliation-diff/proposal.md",
+      "source_file": "specs/149-conciliation-details/proposal.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_148_fix_conciliation_diff_proposal_problema",
-      "community": 496,
-      "community_name": "Proposal: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "id": "specs_149_conciliation_details_proposal_problema",
+      "community": 730,
+      "community_name": "Proposal: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
       "norm_label": "problema"
     },
     {
       "label": "Solu\u00e7\u00e3o Proposta",
       "file_type": "document",
-      "source_file": "specs/148-fix-conciliation-diff/proposal.md",
-      "source_location": "L10",
+      "source_file": "specs/149-conciliation-details/proposal.md",
+      "source_location": "L7",
       "_origin": "ast",
-      "id": "specs_148_fix_conciliation_diff_proposal_solu\u00e7\u00e3o_proposta",
-      "community": 496,
-      "community_name": "Proposal: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "id": "specs_149_conciliation_details_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 730,
+      "community_name": "Proposal: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
       "norm_label": "solucao proposta"
     },
     {
       "label": "Contratos de Dados",
       "file_type": "document",
-      "source_file": "specs/148-fix-conciliation-diff/proposal.md",
-      "source_location": "L15",
+      "source_file": "specs/149-conciliation-details/proposal.md",
+      "source_location": "L13",
       "_origin": "ast",
-      "id": "specs_148_fix_conciliation_diff_proposal_contratos_de_dados",
-      "community": 496,
-      "community_name": "Proposal: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "id": "specs_149_conciliation_details_proposal_contratos_de_dados",
+      "community": 730,
+      "community_name": "Proposal: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
       "norm_label": "contratos de dados"
     },
     {
       "label": "API / Interface",
       "file_type": "document",
-      "source_file": "specs/148-fix-conciliation-diff/proposal.md",
+      "source_file": "specs/149-conciliation-details/proposal.md",
       "source_location": "L19",
       "_origin": "ast",
-      "id": "specs_148_fix_conciliation_diff_proposal_api_interface",
-      "community": 496,
-      "community_name": "Proposal: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "id": "specs_149_conciliation_details_proposal_api_interface",
+      "community": 730,
+      "community_name": "Proposal: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
       "norm_label": "api / interface"
     },
     {
       "label": "Features Existentes Impactadas",
       "file_type": "document",
-      "source_file": "specs/148-fix-conciliation-diff/proposal.md",
-      "source_location": "L23",
+      "source_file": "specs/149-conciliation-details/proposal.md",
+      "source_location": "L24",
       "_origin": "ast",
-      "id": "specs_148_fix_conciliation_diff_proposal_features_existentes_impactadas",
-      "community": 496,
-      "community_name": "Proposal: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "id": "specs_149_conciliation_details_proposal_features_existentes_impactadas",
+      "community": 730,
+      "community_name": "Proposal: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
       "norm_label": "features existentes impactadas"
     },
     {
       "label": "Risco Principal",
       "file_type": "document",
-      "source_file": "specs/148-fix-conciliation-diff/proposal.md",
-      "source_location": "L26",
+      "source_file": "specs/149-conciliation-details/proposal.md",
+      "source_location": "L28",
       "_origin": "ast",
-      "id": "specs_148_fix_conciliation_diff_proposal_risco_principal",
-      "community": 496,
-      "community_name": "Proposal: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "id": "specs_149_conciliation_details_proposal_risco_principal",
+      "community": 730,
+      "community_name": "Proposal: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
       "norm_label": "risco principal"
     },
     {
-      "label": "148-fix-conciliation-diff/spec-plan.md",
+      "label": "149-conciliation-details/spec-plan.md",
       "file_type": "document",
-      "source_file": "specs/148-fix-conciliation-diff/spec-plan.md",
+      "source_file": "specs/149-conciliation-details/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_148_fix_conciliation_diff_spec_plan",
+      "id": "specs_149_conciliation_details_spec_plan",
       "community": 917,
-      "community_name": "Spec Plan: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
-      "norm_label": "148-fix-conciliation-diff/spec-plan.md"
+      "community_name": "Spec Plan: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
+      "norm_label": "149-conciliation-details/spec-plan.md"
     },
     {
-      "label": "Spec Plan: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "label": "Spec Plan: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
       "file_type": "document",
-      "source_file": "specs/148-fix-conciliation-diff/spec-plan.md",
+      "source_file": "specs/149-conciliation-details/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_148_fix_conciliation_diff_spec_plan_spec_plan_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
+      "id": "specs_149_conciliation_details_spec_plan_spec_plan_painel_detalhado_de_fontes_de_dados_149_conciliation_details",
       "community": 917,
-      "community_name": "Spec Plan: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
-      "norm_label": "spec plan: corrigir matematica da conciliacao e restaurar historico de os (148-fix-conciliation-diff)"
+      "community_name": "Spec Plan: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
+      "norm_label": "spec plan: painel detalhado de fontes de dados (149-conciliation-details)"
     },
     {
       "label": "Tasks",
       "file_type": "document",
-      "source_file": "specs/148-fix-conciliation-diff/spec-plan.md",
+      "source_file": "specs/149-conciliation-details/spec-plan.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_148_fix_conciliation_diff_spec_plan_tasks",
+      "id": "specs_149_conciliation_details_spec_plan_tasks",
       "community": 917,
-      "community_name": "Spec Plan: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "community_name": "Spec Plan: Painel Detalhado de Fontes de Dados (149-conciliation-details)",
       "norm_label": "tasks"
     },
     {
@@ -46279,6 +46543,182 @@
       "id": "specs_archive_147_conciliacao_dates_spec_plan_tasks",
       "community": 869,
       "community_name": "Spec Plan: Navega\u00e7\u00e3o Inteligente de Datas na Concilia\u00e7\u00e3o (147-conciliacao-dates)",
+      "norm_label": "tasks"
+    },
+    {
+      "label": "148-fix-conciliation-diff/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/148-fix-conciliation-diff/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_148_fix_conciliation_diff_design",
+      "community": 911,
+      "community_name": "Design: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "norm_label": "148-fix-conciliation-diff/design.md"
+    },
+    {
+      "label": "Design: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "file_type": "document",
+      "source_file": "specs/archive/148-fix-conciliation-diff/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_148_fix_conciliation_diff_design_design_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
+      "community": 911,
+      "community_name": "Design: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "norm_label": "design: corrigir matematica da conciliacao e restaurar historico de os (148-fix-conciliation-diff)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/archive/148-fix-conciliation-diff/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_148_fix_conciliation_diff_design_arquitetura_t\u00e9cnica",
+      "community": 911,
+      "community_name": "Design: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/archive/148-fix-conciliation-diff/design.md",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "specs_archive_148_fix_conciliation_diff_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 911,
+      "community_name": "Design: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/archive/148-fix-conciliation-diff/design.md",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "specs_archive_148_fix_conciliation_diff_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 911,
+      "community_name": "Design: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "148-fix-conciliation-diff/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/148-fix-conciliation-diff/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_148_fix_conciliation_diff_proposal",
+      "community": 909,
+      "community_name": "Proposal: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "norm_label": "148-fix-conciliation-diff/proposal.md"
+    },
+    {
+      "label": "Proposal: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "file_type": "document",
+      "source_file": "specs/archive/148-fix-conciliation-diff/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_148_fix_conciliation_diff_proposal_proposal_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
+      "community": 909,
+      "community_name": "Proposal: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "norm_label": "proposal: corrigir matematica da conciliacao e restaurar historico de os (148-fix-conciliation-diff)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/archive/148-fix-conciliation-diff/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_148_fix_conciliation_diff_proposal_problema",
+      "community": 909,
+      "community_name": "Proposal: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/archive/148-fix-conciliation-diff/proposal.md",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "specs_archive_148_fix_conciliation_diff_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 909,
+      "community_name": "Proposal: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/148-fix-conciliation-diff/proposal.md",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "specs_archive_148_fix_conciliation_diff_proposal_contratos_de_dados",
+      "community": 909,
+      "community_name": "Proposal: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/archive/148-fix-conciliation-diff/proposal.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "specs_archive_148_fix_conciliation_diff_proposal_api_interface",
+      "community": 909,
+      "community_name": "Proposal: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/archive/148-fix-conciliation-diff/proposal.md",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "specs_archive_148_fix_conciliation_diff_proposal_features_existentes_impactadas",
+      "community": 909,
+      "community_name": "Proposal: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/archive/148-fix-conciliation-diff/proposal.md",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "specs_archive_148_fix_conciliation_diff_proposal_risco_principal",
+      "community": 909,
+      "community_name": "Proposal: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "148-fix-conciliation-diff/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/148-fix-conciliation-diff/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_148_fix_conciliation_diff_spec_plan",
+      "community": 937,
+      "community_name": "Spec Plan: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "norm_label": "148-fix-conciliation-diff/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "file_type": "document",
+      "source_file": "specs/archive/148-fix-conciliation-diff/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_148_fix_conciliation_diff_spec_plan_spec_plan_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
+      "community": 937,
+      "community_name": "Spec Plan: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
+      "norm_label": "spec plan: corrigir matematica da conciliacao e restaurar historico de os (148-fix-conciliation-diff)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/148-fix-conciliation-diff/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_148_fix_conciliation_diff_spec_plan_tasks",
+      "community": 937,
+      "community_name": "Spec Plan: Corrigir Matem\u00e1tica da Concilia\u00e7\u00e3o e Restaurar Hist\u00f3rico de OS (148-fix-conciliation-diff)",
       "norm_label": "tasks"
     },
     {
@@ -79164,6 +79604,267 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_importsourcebadges",
+      "target": "src_components_conciliacao_importsourcebadges_importsourcebadges",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_importsourcebadges",
+      "target": "src_components_conciliacao_importsourcebadges_importsourcebadgesprops",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_importsourcebadges",
+      "target": "src_components_conciliacao_importsourcebadges_modaltype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_importsourcebadges",
+      "target": "src_components_conciliacao_rawofxtable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_importsourcebadges",
+      "target": "src_components_conciliacao_rawofxtable_rawofxtable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_importsourcebadges",
+      "target": "src_components_conciliacao_rawostable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_importsourcebadges",
+      "target": "src_components_conciliacao_rawostable_rawostable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_importsourcebadges",
+      "target": "src_components_conciliacao_rawredetable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_importsourcebadges",
+      "target": "src_components_conciliacao_rawredetable_rawredetable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_importsourcebadges",
+      "target": "src_components_ui_badge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_importsourcebadges",
+      "target": "src_components_ui_badge_badge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_importsourcebadges",
+      "target": "src_components_ui_modal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_importsourcebadges",
+      "target": "src_components_ui_modal_modal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_importsourcebadges",
+      "target": "src_hooks_userawimportdata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_importsourcebadges",
+      "target": "src_hooks_userawimportdata_userawofx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_importsourcebadges",
+      "target": "src_hooks_userawimportdata_userawos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_importsourcebadges",
+      "target": "src_hooks_userawimportdata_userawrede",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/conciliacao.$lojaId.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_routes_conciliacao_lojaid",
+      "target": "src_components_conciliacao_importsourcebadges",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_importsourcebadges_importsourcebadges",
+      "target": "src_hooks_userawimportdata_userawofx"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_importsourcebadges_importsourcebadges",
+      "target": "src_hooks_userawimportdata_userawos"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/conciliacao/ImportSourceBadges.tsx",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_importsourcebadges_importsourcebadges",
+      "target": "src_hooks_userawimportdata_userawrede"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/conciliacao.$lojaId.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_routes_conciliacao_lojaid",
+      "target": "src_components_conciliacao_importsourcebadges_importsourcebadges",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "src/components/conciliacao/Modulo1SaldoPanel.tsx",
       "source_location": "L14",
       "weight": 1.0,
@@ -79969,6 +80670,360 @@
       "source": "src_routes_conciliacao_lojaid",
       "target": "src_components_conciliacao_pixvsofxtable_pixvsofxtable",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawOfxTable.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawofxtable",
+      "target": "src_components_conciliacao_rawofxtable_rawofxtable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawOfxTable.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawofxtable",
+      "target": "src_components_conciliacao_rawofxtable_rawofxtableprops",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawOfxTable.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawofxtable",
+      "target": "src_components_ui_badge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawOfxTable.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawofxtable",
+      "target": "src_components_ui_badge_badge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawOfxTable.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawofxtable",
+      "target": "src_hooks_userawimportdata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawOfxTable.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawofxtable",
+      "target": "src_hooks_userawimportdata_rawofxresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawOfxTable.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawofxtable",
+      "target": "src_lib_utils",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawOfxTable.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawofxtable",
+      "target": "src_lib_utils_formatcurrency",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "field",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawOfxTable.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawofxtable_rawofxtableprops",
+      "target": "src_hooks_userawimportdata_rawofxresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/conciliacao/RawOfxTable.tsx",
+      "source_location": "L34",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawofxtable_rawofxtable",
+      "target": "src_lib_utils_formatcurrency"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawOsTable.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawostable",
+      "target": "src_components_conciliacao_rawostable_rawostable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawOsTable.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawostable",
+      "target": "src_components_conciliacao_rawostable_rawostableprops",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawOsTable.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawostable",
+      "target": "src_components_ui_badge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawOsTable.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawostable",
+      "target": "src_components_ui_badge_badge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawOsTable.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawostable",
+      "target": "src_hooks_userawimportdata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawOsTable.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawostable",
+      "target": "src_hooks_userawimportdata_rawosrecord",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawOsTable.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawostable",
+      "target": "src_lib_utils",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawOsTable.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawostable",
+      "target": "src_lib_utils_formatcurrency",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "field",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawOsTable.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawostable_rawostableprops",
+      "target": "src_hooks_userawimportdata_rawosrecord",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/conciliacao/RawOsTable.tsx",
+      "source_location": "L55",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawostable_rawostable",
+      "target": "src_lib_utils_formatcurrency"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawRedeTable.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawredetable",
+      "target": "src_components_conciliacao_rawredetable_rawredetable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawRedeTable.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawredetable",
+      "target": "src_components_conciliacao_rawredetable_rawredetableprops",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawRedeTable.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawredetable",
+      "target": "src_components_ui_badge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawRedeTable.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawredetable",
+      "target": "src_components_ui_badge_badge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawRedeTable.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawredetable",
+      "target": "src_hooks_userawimportdata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawRedeTable.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawredetable",
+      "target": "src_hooks_userawimportdata_rawrederecord",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawRedeTable.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawredetable",
+      "target": "src_lib_utils",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawRedeTable.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawredetable",
+      "target": "src_lib_utils_formatcurrency",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "field",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/conciliacao/RawRedeTable.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawredetable_rawredetableprops",
+      "target": "src_hooks_userawimportdata_rawrederecord",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/conciliacao/RawRedeTable.tsx",
+      "source_location": "L43",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_conciliacao_rawredetable_rawredetable",
+      "target": "src_lib_utils_formatcurrency"
     },
     {
       "relation": "contains",
@@ -87565,7 +88620,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/conciliacao.$lojaId.tsx",
-      "source_location": "L13",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_routes_conciliacao_lojaid",
@@ -87733,7 +88788,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/conciliacao.$lojaId.tsx",
-      "source_location": "L13",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_routes_conciliacao_lojaid",
@@ -87745,7 +88800,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/conciliacao.$lojaId.tsx",
-      "source_location": "L58",
+      "source_location": "L59",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_routes_conciliacao_lojaid_conciliacaolojapage",
@@ -88910,6 +89965,107 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useRawImportData.ts",
+      "source_location": "L34",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_hooks_userawimportdata",
+      "target": "src_hooks_userawimportdata_rawofxresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useRawImportData.ts",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_hooks_userawimportdata",
+      "target": "src_hooks_userawimportdata_rawofxtransaction",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useRawImportData.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_hooks_userawimportdata",
+      "target": "src_hooks_userawimportdata_rawosrecord",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useRawImportData.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_hooks_userawimportdata",
+      "target": "src_hooks_userawimportdata_rawrederecord",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useRawImportData.ts",
+      "source_location": "L70",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_hooks_userawimportdata",
+      "target": "src_hooks_userawimportdata_userawofx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useRawImportData.ts",
+      "source_location": "L40",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_hooks_userawimportdata",
+      "target": "src_hooks_userawimportdata_userawos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useRawImportData.ts",
+      "source_location": "L55",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_hooks_userawimportdata",
+      "target": "src_hooks_userawimportdata_userawrede",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useRawImportData.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_hooks_userawimportdata",
+      "target": "src_integrations_supabase_client_supabase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useRawImportData.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_hooks_userawimportdata",
+      "target": "src_lib_supabase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "src/hooks/useRecebiveis.ts",
       "source_location": "L21",
       "weight": 1.0,
@@ -89382,7 +90538,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/conciliacao.$lojaId.tsx",
-      "source_location": "L55",
+      "source_location": "L56",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_routes_conciliacao_lojaid_conciliacaolojapage",
@@ -89824,7 +90980,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/conciliacao.$lojaId.tsx",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_routes_conciliacao_lojaid",
@@ -89968,7 +91124,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/conciliacao.$lojaId.tsx",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_routes_conciliacao_lojaid",
@@ -89980,7 +91136,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/conciliacao.$lojaId.tsx",
-      "source_location": "L57",
+      "source_location": "L58",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_routes_conciliacao_lojaid_conciliacaolojapage",
@@ -94207,7 +95363,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "src/routes/conciliacao.$lojaId.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
       "context": "collection",
@@ -94219,7 +95375,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/conciliacao.$lojaId.tsx",
-      "source_location": "L25",
+      "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_routes_conciliacao_lojaid",
@@ -94230,7 +95386,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/conciliacao.$lojaId.tsx",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_routes_conciliacao_lojaid",
@@ -94241,7 +95397,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/conciliacao.$lojaId.tsx",
-      "source_location": "L33",
+      "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_routes_conciliacao_lojaid",
@@ -94252,7 +95408,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/conciliacao.$lojaId.tsx",
-      "source_location": "L31",
+      "source_location": "L32",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_routes_conciliacao_lojaid",
@@ -94264,7 +95420,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/conciliacao.$lojaId.tsx",
-      "source_location": "L93",
+      "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_routes_conciliacao_lojaid_conciliacaolojapage",
@@ -99840,144 +100996,177 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/148-fix-conciliation-diff/design.md",
+      "source_file": "specs/149-conciliation-details/design.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_148_fix_conciliation_diff_design",
-      "target": "specs_148_fix_conciliation_diff_design_design_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
+      "source": "specs_149_conciliation_details_design",
+      "target": "specs_149_conciliation_details_design_design_painel_detalhado_de_fontes_de_dados_149_conciliation_details",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/148-fix-conciliation-diff/design.md",
+      "source_file": "specs/149-conciliation-details/design.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_148_fix_conciliation_diff_design_design_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
-      "target": "specs_148_fix_conciliation_diff_design_arquitetura_t\u00e9cnica",
+      "source": "specs_149_conciliation_details_design_design_painel_detalhado_de_fontes_de_dados_149_conciliation_details",
+      "target": "specs_149_conciliation_details_design_arquitetura_t\u00e9cnica",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/148-fix-conciliation-diff/design.md",
-      "source_location": "L23",
+      "source_file": "specs/149-conciliation-details/design.md",
+      "source_location": "L72",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_148_fix_conciliation_diff_design_design_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
-      "target": "specs_148_fix_conciliation_diff_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "source": "specs_149_conciliation_details_design_design_painel_detalhado_de_fontes_de_dados_149_conciliation_details",
+      "target": "specs_149_conciliation_details_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/148-fix-conciliation-diff/design.md",
-      "source_location": "L20",
+      "source_file": "specs/149-conciliation-details/design.md",
+      "source_location": "L53",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_148_fix_conciliation_diff_design_design_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
-      "target": "specs_148_fix_conciliation_diff_design_componentes_hooks_fun\u00e7\u00f5es",
+      "source": "specs_149_conciliation_details_design_design_painel_detalhado_de_fontes_de_dados_149_conciliation_details",
+      "target": "specs_149_conciliation_details_design_componentes_hooks_fun\u00e7\u00f5es",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/148-fix-conciliation-diff/proposal.md",
+      "source_file": "specs/149-conciliation-details/design.md",
+      "source_location": "L62",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_149_conciliation_details_design_design_painel_detalhado_de_fontes_de_dados_149_conciliation_details",
+      "target": "specs_149_conciliation_details_design_fluxo_de_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/149-conciliation-details/design.md",
+      "source_location": "L69",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_149_conciliation_details_design_design_painel_detalhado_de_fontes_de_dados_149_conciliation_details",
+      "target": "specs_149_conciliation_details_design_infra_deploy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/149-conciliation-details/design.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_149_conciliation_details_design_design_painel_detalhado_de_fontes_de_dados_149_conciliation_details",
+      "target": "specs_149_conciliation_details_design_interfaces_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/149-conciliation-details/proposal.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_148_fix_conciliation_diff_proposal",
-      "target": "specs_148_fix_conciliation_diff_proposal_proposal_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
+      "source": "specs_149_conciliation_details_proposal",
+      "target": "specs_149_conciliation_details_proposal_proposal_painel_detalhado_de_fontes_de_dados_149_conciliation_details",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/148-fix-conciliation-diff/proposal.md",
+      "source_file": "specs/149-conciliation-details/proposal.md",
       "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_148_fix_conciliation_diff_proposal_proposal_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
-      "target": "specs_148_fix_conciliation_diff_proposal_api_interface",
+      "source": "specs_149_conciliation_details_proposal_proposal_painel_detalhado_de_fontes_de_dados_149_conciliation_details",
+      "target": "specs_149_conciliation_details_proposal_api_interface",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/148-fix-conciliation-diff/proposal.md",
-      "source_location": "L15",
+      "source_file": "specs/149-conciliation-details/proposal.md",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_148_fix_conciliation_diff_proposal_proposal_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
-      "target": "specs_148_fix_conciliation_diff_proposal_contratos_de_dados",
+      "source": "specs_149_conciliation_details_proposal_proposal_painel_detalhado_de_fontes_de_dados_149_conciliation_details",
+      "target": "specs_149_conciliation_details_proposal_contratos_de_dados",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/148-fix-conciliation-diff/proposal.md",
-      "source_location": "L23",
+      "source_file": "specs/149-conciliation-details/proposal.md",
+      "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_148_fix_conciliation_diff_proposal_proposal_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
-      "target": "specs_148_fix_conciliation_diff_proposal_features_existentes_impactadas",
+      "source": "specs_149_conciliation_details_proposal_proposal_painel_detalhado_de_fontes_de_dados_149_conciliation_details",
+      "target": "specs_149_conciliation_details_proposal_features_existentes_impactadas",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/148-fix-conciliation-diff/proposal.md",
+      "source_file": "specs/149-conciliation-details/proposal.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_148_fix_conciliation_diff_proposal_proposal_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
-      "target": "specs_148_fix_conciliation_diff_proposal_problema",
+      "source": "specs_149_conciliation_details_proposal_proposal_painel_detalhado_de_fontes_de_dados_149_conciliation_details",
+      "target": "specs_149_conciliation_details_proposal_problema",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/148-fix-conciliation-diff/proposal.md",
-      "source_location": "L26",
+      "source_file": "specs/149-conciliation-details/proposal.md",
+      "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_148_fix_conciliation_diff_proposal_proposal_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
-      "target": "specs_148_fix_conciliation_diff_proposal_risco_principal",
+      "source": "specs_149_conciliation_details_proposal_proposal_painel_detalhado_de_fontes_de_dados_149_conciliation_details",
+      "target": "specs_149_conciliation_details_proposal_risco_principal",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/148-fix-conciliation-diff/proposal.md",
-      "source_location": "L10",
+      "source_file": "specs/149-conciliation-details/proposal.md",
+      "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_148_fix_conciliation_diff_proposal_proposal_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
-      "target": "specs_148_fix_conciliation_diff_proposal_solu\u00e7\u00e3o_proposta",
+      "source": "specs_149_conciliation_details_proposal_proposal_painel_detalhado_de_fontes_de_dados_149_conciliation_details",
+      "target": "specs_149_conciliation_details_proposal_solu\u00e7\u00e3o_proposta",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/148-fix-conciliation-diff/spec-plan.md",
+      "source_file": "specs/149-conciliation-details/spec-plan.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_148_fix_conciliation_diff_spec_plan",
-      "target": "specs_148_fix_conciliation_diff_spec_plan_spec_plan_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
+      "source": "specs_149_conciliation_details_spec_plan",
+      "target": "specs_149_conciliation_details_spec_plan_spec_plan_painel_detalhado_de_fontes_de_dados_149_conciliation_details",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/148-fix-conciliation-diff/spec-plan.md",
+      "source_file": "specs/149-conciliation-details/spec-plan.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_148_fix_conciliation_diff_spec_plan_spec_plan_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
-      "target": "specs_148_fix_conciliation_diff_spec_plan_tasks",
+      "source": "specs_149_conciliation_details_spec_plan_spec_plan_painel_detalhado_de_fontes_de_dados_149_conciliation_details",
+      "target": "specs_149_conciliation_details_spec_plan_tasks",
       "confidence_score": 1.0
     },
     {
@@ -114767,6 +115956,149 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "specs/archive/148-fix-conciliation-diff/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_148_fix_conciliation_diff_design",
+      "target": "specs_archive_148_fix_conciliation_diff_design_design_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/148-fix-conciliation-diff/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_148_fix_conciliation_diff_design_design_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
+      "target": "specs_archive_148_fix_conciliation_diff_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/148-fix-conciliation-diff/design.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_148_fix_conciliation_diff_design_design_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
+      "target": "specs_archive_148_fix_conciliation_diff_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/148-fix-conciliation-diff/design.md",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_148_fix_conciliation_diff_design_design_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
+      "target": "specs_archive_148_fix_conciliation_diff_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/148-fix-conciliation-diff/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_148_fix_conciliation_diff_proposal",
+      "target": "specs_archive_148_fix_conciliation_diff_proposal_proposal_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/148-fix-conciliation-diff/proposal.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_148_fix_conciliation_diff_proposal_proposal_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
+      "target": "specs_archive_148_fix_conciliation_diff_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/148-fix-conciliation-diff/proposal.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_148_fix_conciliation_diff_proposal_proposal_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
+      "target": "specs_archive_148_fix_conciliation_diff_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/148-fix-conciliation-diff/proposal.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_148_fix_conciliation_diff_proposal_proposal_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
+      "target": "specs_archive_148_fix_conciliation_diff_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/148-fix-conciliation-diff/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_148_fix_conciliation_diff_proposal_proposal_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
+      "target": "specs_archive_148_fix_conciliation_diff_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/148-fix-conciliation-diff/proposal.md",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_148_fix_conciliation_diff_proposal_proposal_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
+      "target": "specs_archive_148_fix_conciliation_diff_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/148-fix-conciliation-diff/proposal.md",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_148_fix_conciliation_diff_proposal_proposal_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
+      "target": "specs_archive_148_fix_conciliation_diff_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/148-fix-conciliation-diff/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_148_fix_conciliation_diff_spec_plan",
+      "target": "specs_archive_148_fix_conciliation_diff_spec_plan_spec_plan_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/148-fix-conciliation-diff/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_148_fix_conciliation_diff_spec_plan_spec_plan_corrigir_matem\u00e1tica_da_concilia\u00e7\u00e3o_e_restaurar_hist\u00f3rico_de_os_148_fix_conciliation_diff",
+      "target": "specs_archive_148_fix_conciliation_diff_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "specs/archive/agente-fullbleed-layout-and-clean-tabs/design.md",
       "source_location": "L3",
       "weight": 1.0,
@@ -125854,5 +127186,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "69886b15bee5549550224157d94efe951a68ba96"
+  "built_at_commit": "37f0d307a027a68e8afcd991a7d0e7413ef66e2a"
 }
