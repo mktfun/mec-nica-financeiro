@@ -76,3 +76,37 @@ export function useSaveDailySnapshot() {
     },
   });
 }
+
+export function useAvailableConciliacaoDates() {
+  return useQuery({
+    queryKey: ['available_conciliacao_dates'],
+    queryFn: async () => {
+      // Busca datas de daily_snapshots
+      const { data: snapshotsData, error: snapshotsError } = await supabase
+        .from('daily_snapshots')
+        .select('date');
+      
+      if (snapshotsError) throw snapshotsError;
+
+      // Busca datas de import_logs
+      const { data: logsData, error: logsError } = await supabase
+        .from('import_logs')
+        .select('target_date');
+        
+      if (logsError) throw logsError;
+
+      const dates = new Set<string>();
+      
+      snapshotsData?.forEach(row => {
+        if (row.date) dates.add(row.date);
+      });
+      
+      logsData?.forEach(row => {
+        if (row.target_date) dates.add(row.target_date);
+      });
+
+      // Retorna array ordenado de forma ascendente
+      return Array.from(dates).sort();
+    }
+  });
+}

@@ -28,6 +28,7 @@ interface ResumoDiaPanelProps {
   totalOfxIn?: number;
   totalOfxOut?: number;
   storesData?: any[]; // We just need it to get faturamento_atual from index
+  availableDates?: string[];
 }
 
 export function ResumoDiaPanel({
@@ -42,7 +43,8 @@ export function ResumoDiaPanel({
   totalBancarioRaw,
   totalOfxIn = 0,
   totalOfxOut = 0,
-  storesData = []
+  storesData = [],
+  availableDates = []
 }: ResumoDiaPanelProps) {
   const [isSaved, setIsSaved] = useState(false);
   const queryClient = useQueryClient();
@@ -181,7 +183,11 @@ export function ResumoDiaPanel({
           <div className="flex items-center gap-3">
             {/* Date Picker */}
             <div className="flex items-center gap-1 bg-[var(--bg-canvas)] rounded-lg p-1 border border-[var(--border-subtle)]">
-              <button onClick={() => onDayChange(-1)} className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)]">
+              <button 
+                onClick={() => onDayChange(-1)} 
+                disabled={availableDates.length > 0 && selectedDate === availableDates[0]}
+                className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)] disabled:opacity-30"
+              >
                 <ChevronRight size={16} className="rotate-180" />
               </button>
               <div className="flex items-center gap-2 px-2">
@@ -189,13 +195,25 @@ export function ResumoDiaPanel({
                 <input
                   type="date"
                   value={selectedDate}
-                  onChange={(e) => onDateSelect(e.target.value)}
+                  min={availableDates[0]}
+                  max={availableDates[availableDates.length - 1]}
+                  onChange={(e) => {
+                     if (availableDates.includes(e.target.value) || availableDates.length === 0) {
+                        onDateSelect(e.target.value);
+                     } else {
+                        // Encontra a data válida mais próxima se digitar algo fora do permitido
+                        const closest = availableDates.reduce((prev, curr) => 
+                           Math.abs(new Date(curr).getTime() - new Date(e.target.value).getTime()) < Math.abs(new Date(prev).getTime() - new Date(e.target.value).getTime()) ? curr : prev
+                        );
+                        onDateSelect(closest);
+                     }
+                  }}
                   className="bg-transparent text-sm font-medium text-[var(--text-secondary)] focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert opacity-80 hover:opacity-100"
                 />
               </div>
               <button 
                 onClick={() => onDayChange(1)} 
-                disabled={selectedDate === new Date().toISOString().substring(0, 10)}
+                disabled={availableDates.length > 0 && selectedDate === availableDates[availableDates.length - 1]}
                 className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)] disabled:opacity-30"
               >
                 <ChevronRight size={16} />

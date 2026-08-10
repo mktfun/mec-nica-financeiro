@@ -3,9 +3,10 @@ import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Store } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useStores } from '@/hooks/useStores';
 import { useBackendConciliacao, useGlobalOfxOut } from '@/hooks/useBackendConciliacao';
+import { useAvailableConciliacaoDates } from '@/hooks/useDailySnapshot';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { ResumoDiaPanel } from '@/components/conciliacao/ResumoDiaPanel';
 import { StoreSaldoState } from '@/lib/modulo1Calculations';
@@ -15,21 +16,39 @@ export const Route = createFileRoute('/conciliacao/')({
 });
 
 function ConciliacaoPage() {
-  const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().substring(0, 10));
+  const [selectedDate, setSelectedDate] = useState('');
 
+  const { data: availableDates = [], isLoading: loadingDates } = useAvailableConciliacaoDates();
   const { data: stores = [], isLoading: loadingStores } = useStores();
   const { data: logsData = [], isLoading: loadingLogs } = useBackendConciliacao(selectedDate);
   const { data: globalOfxOut = 0, isLoading: loadingOfxOut } = useGlobalOfxOut(selectedDate);
 
-  const isLoading = loadingStores || loadingLogs || loadingOfxOut;
+  useEffect(() => {
+    if (!selectedDate && availableDates.length > 0) {
+      setSelectedDate(availableDates[availableDates.length - 1]);
+    } else if (!selectedDate && !loadingDates) {
+      setSelectedDate(new Date().toISOString().substring(0, 10));
+    }
+  }, [availableDates, loadingDates, selectedDate]);
+
+  const isLoading = loadingStores || loadingLogs || loadingOfxOut || loadingDates || !selectedDate;
 
   const resultado = logsData.reduce((acc, log) => acc + log.diferenca, 0);
   const isApproved = logsData.every(log => log.status === 'approved');
 
   const handleDayChange = (offset: number) => {
-    const d = new Date(selectedDate + 'T12:00:00');
-    d.setDate(d.getDate() + offset);
-    setSelectedDate(d.toISOString().substring(0, 10));
+    if (availableDates.length === 0) return;
+    
+    const currentIndex = availableDates.indexOf(selectedDate);
+    if (currentIndex === -1) {
+      setSelectedDate(availableDates[availableDates.length - 1]);
+      return;
+    }
+    
+    const newIndex = currentIndex + offset;
+    if (newIndex >= 0 && newIndex < availableDates.length) {
+      setSelectedDate(availableDates[newIndex]);
+    }
   };
 
   const totalSistema = logsData.reduce((acc, log) => acc + log.previsto_ofx, 0);
@@ -84,6 +103,7 @@ function ConciliacaoPage() {
               totalOfxIn={totalBancarioIn}
               totalOfxOut={globalOfxOut}
               storesData={storesState}
+              availableDates={availableDates}
             />
 
             {/* Lista de Lojas Visual Original */}
