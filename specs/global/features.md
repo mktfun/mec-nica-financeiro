@@ -102,3 +102,9 @@ a_loja_os. Bootstrap coleta 'P√°tio Pendente' para preencher caixa_atual e evita
 - **Deduplica√ß√£o e Salvamento de Despesas do OFX**: 
   - Ajuste no useTransactions.ts e CentralImportWizard.tsx para n√£o dropar despesas que v√™m do banco sem o campo FITID. Em caso de aus√™ncia do ID no arquivo banc√°rio, um hash determin√≠stico (data+valor+t√≠tulo) √© injetado.
   - O mapeamento nativo de matched_store_id (via conta banc√°ria) agora √© plenamente mantido para as despesas (out), vinculando-as corretamente √†s respectivas lojas para contabiliza√ß√£o de saldo descentralizada.
+# #   [ i m p o r t - d e d u p - u p g r a d e ] 
+ -   * * D e d u p l i c a Á „ o   G l o b a l   d e   I m p o r t a Á ı e s * * : 
+     -   T a b e l a   ` p o s _ t r a n s a c t i o n s `   a t u a l i z a d a   p a r a   p o s s u i r   a   c o l u n a   ` d e d u p _ h a s h `   c o m   c o n s t r a i n t   ` U N I Q U E ` . 
+     -   F r o n t e n d   u s a   ` g e n e r a t e D e t e r m i n i s t i c H a s h `   ( n o v o   e m   ` h a s h U t i l s . t s ` )   p a r a   i n j e t a r   i d e n t i d a d e s   d e t e r m i n Ì s t i c a s   b a s e a d a s   e m   ( d a t a + v a l o r + t Ì t u l o )   n o   p a r s e r   O F X ,   p l a n i l h a s   d e   M a q u i n i n h a   e   R e d e ,   i g n o r a n d o   o   p r o b l e m · t i c o   ` < F I T I D > ` . 
+     -   M u d a n Á a   m a s s i v a   n o s   p i p e l i n e s   d o   b a c k e n d   q u e   a b a n d o n a r a m   ` i n s e r t `   f r · g i l   p a r a   u t i l i z a r   ` u p s e r t `   i n q u e b r · v e l ,   b l i n d a n d o   o   b a n c o   d e   d a d o s   c o n t r a   r e p e t i Á ı e s   d e   u p l o a d   d a s   m e s m a s   p l a n i l h a s .  
+ 

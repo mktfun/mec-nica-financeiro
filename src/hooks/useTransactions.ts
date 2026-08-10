@@ -402,13 +402,14 @@ export function useBulkInsertTransactions() {
              occurred_at: t.occurred_at,
              matched_os_number: t.os_number || t.matched_os_number || null,
              import_batch_id: t.import_batch_id || null,
-             target_date: t.target_date || null
+             target_date: t.target_date || null,
+             dedup_hash: t.dedup_hash || null
         }));
         
         if (posTxs.length > 0) {
           const { data: d2, error: e2 } = await supabase
             .from('pos_transactions' as any)
-            .insert(posTxs);
+            .upsert(posTxs, { onConflict: 'store_id, dedup_hash', ignoreDuplicates: true });
           if (e2) { error = e2; } else { data = data || d2; }
         }
       }

@@ -1,4 +1,4 @@
-﻿export interface OfxTransaction {
+export interface OfxTransaction {
   storeName: string;
   amount: number;
   type: 'in' | 'out';
@@ -19,6 +19,7 @@ export interface OfxParseResult {
 }
 
 import { traceLog } from '../logger';
+import { generateDeterministicHash } from './hashUtils';
 
 // Extracts CPF (000.000.000-00) or CNPJ (00.000.000/0000-00) from the end of a MEMO string
 function extractDocument(memo: string): { doc: string | undefined; name: string | undefined } {
@@ -72,9 +73,9 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
     
     if (isNaN(amount)) continue;
     
-    // Extract FITID (unique transaction ID from bank)
+    // Extract FITID (unique transaction ID from bank) - Ignore it and use deterministic hash
     const fitidMatch = trnBlock.match(/<FITID>([^\r\n<]+)/);
-    const fitid = fitidMatch ? fitidMatch[1].trim() : undefined;
+    const originalFitid = fitidMatch ? fitidMatch[1].trim() : undefined;
     
     // Extract DTPOSTED
     const dtMatch = trnBlock.match(/<DTPOSTED>([^\r\n<]+)/);
@@ -124,13 +125,15 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
       parsedType = 'in';
     }
     
+    const deterministicFitid = generateDeterministicHash(dateStr, amount, rawMemo, 'ofx');
+    
     transactions.push({
       storeName: alias,
       amount: amount,
       type: parsedType,
       date: dateStr,
       title: rawMemo,
-      fitid,
+      fitid: deterministicFitid,
       cnpj_cpf: doc,
       counterpart_name: name,
     });

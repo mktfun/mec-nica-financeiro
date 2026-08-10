@@ -1,4 +1,4 @@
-﻿import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
 import { Card } from '@/components/ui/Card';
@@ -11,6 +11,9 @@ import * as XLSX from 'xlsx';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { extractNumber } from '@/lib/parsers/numberUtils';
 import { parseOFXFile } from '@/lib/parsers/ofxParser';
+import { useCentralImport } from '@/hooks/useCentralImport';
+import { generateDeterministicHash } from '@/lib/parsers/hashUtils';
+import { parseRede } from '@/lib/parsers/redeParser';
 import { traceLog, generateSessionId } from '@/lib/logger';
 import { useBulkInsertTransactions } from '@/hooks/useTransactions';
 import { supabase } from '@/lib/supabase';
@@ -86,7 +89,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
           target_date: targetDate,
           icon_type: isOfx ? 'bank' : 'card',
           source: category === 'OFX' ? 'ofx' : (category === 'MAQUININHA' ? 'maquininha' : 'sistema'),
-          ...(category === 'MAQUININHA' ? { fitid: generateSyntheticFitId('maquininha', item.storeName, targetDate, item.amount || 0) } : {})
+          ...(category === 'MAQUININHA' ? { dedup_hash: generateDeterministicHash(targetDate, item.amount || 0, item.storeName || 'Maquininha', 'pos') } : {})
         };
       });
       const storeBankBalances: Record<string, number> = {};
