@@ -1518,6 +1518,17 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           </motion.div>
         );
       })()}
+
+      <AgentRunnerModal
+        isOpen={isAgentModalOpen}
+        onClose={() => setIsAgentModalOpen(false)}
+        onSuccess={handleCloudDataSuccess}
+        runLocalFiles={async () => {
+          if (pendingFiles.length > 0) {
+            await processFiles(pendingFiles);
+          }
+        }}
+      />
     </div>
   );
 }
