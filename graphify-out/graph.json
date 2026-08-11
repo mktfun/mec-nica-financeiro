@@ -6805,8 +6805,8 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "package_devdependencies_eslint_js",
-      "community": 1,
-      "community_name": "devDependencies",
+      "community": 1068,
+      "community_name": "@eslint/js",
       "norm_label": "@eslint/js"
     },
     {
@@ -6816,8 +6816,8 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "eslint_js",
-      "community": 1,
-      "community_name": "devDependencies",
+      "community": 1068,
+      "community_name": "@eslint/js",
       "norm_label": "@eslint/js"
     },
     {
@@ -7025,8 +7025,8 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "package_devdependencies_eslint_plugin_react_refresh",
-      "community": 1017,
-      "community_name": "eslint-plugin-react-refresh",
+      "community": 1,
+      "community_name": "devDependencies",
       "norm_label": "eslint-plugin-react-refresh"
     },
     {
@@ -7036,8 +7036,8 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "eslint_plugin_react_refresh",
-      "community": 1017,
-      "community_name": "eslint-plugin-react-refresh",
+      "community": 1,
+      "community_name": "devDependencies",
       "norm_label": "eslint-plugin-react-refresh"
     },
     {
@@ -15190,7 +15190,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_mocks_importfiles",
-      "community": 54,
+      "community": 930,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "importfiles.ts"
     },
@@ -15201,7 +15201,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_mocks_importfiles_mockfiles",
-      "community": 54,
+      "community": 930,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "mockfiles"
     },
@@ -15236,7 +15236,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "agenteiaconfigpanel.tsx"
     },
     {
@@ -15247,7 +15247,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_model_options",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "model_options"
     },
     {
@@ -15258,7 +15258,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_provider_labels",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "provider_labels"
     },
     {
@@ -15270,7 +15270,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_agenteiaconfigpanel",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "agenteiaconfigpanel()"
     },
     {
@@ -15281,7 +15281,7 @@
       "_origin": "ast",
       "id": "src_components_agente_cacheagentepanel",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "cacheagentepanel.tsx"
     },
     {
@@ -15293,7 +15293,7 @@
       "_origin": "ast",
       "id": "src_components_agente_cacheagentepanel_cacheagentepanel",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "cacheagentepanel()"
     },
     {
@@ -15304,7 +15304,7 @@
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "configuracoespanel.tsx"
     },
     {
@@ -15316,7 +15316,7 @@
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel_configuracoespanel",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "configuracoespanel()"
     },
     {
@@ -15328,7 +15328,7 @@
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel_aisettingsform",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "aisettingsform()"
     },
     {
@@ -15339,7 +15339,7 @@
       "_origin": "ast",
       "id": "src_components_agente_custospanel",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "custospanel.tsx"
     },
     {
@@ -15385,7 +15385,7 @@
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "logsmotorpanel.tsx"
     },
     {
@@ -15397,7 +15397,7 @@
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel_logsmotorpanel",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "logsmotorpanel()"
     },
     {
@@ -16102,7 +16102,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "modulo1saldopanel.tsx"
     },
     {
@@ -16115,7 +16115,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel_modulo1saldopanelprops",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "modulo1saldopanelprops"
     },
     {
@@ -16127,7 +16127,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel_modulo1saldopanel",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "modulo1saldopanel()"
     },
     {
@@ -16302,7 +16302,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "resumodiapanel.tsx"
     },
     {
@@ -16315,7 +16315,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel_resumodiapanelprops",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "resumodiapanelprops"
     },
     {
@@ -16327,7 +16327,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel_resumodiapanel",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "resumodiapanel()"
     },
     {
@@ -16337,7 +16337,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog",
-      "community": 496,
+      "community": 1017,
       "community_name": "supabase.ts",
       "norm_label": "alertresolvedialog.tsx"
     },
@@ -16350,7 +16350,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog_alertresolvedialogprops",
-      "community": 496,
+      "community": 1017,
       "community_name": "supabase.ts",
       "norm_label": "alertresolvedialogprops"
     },
@@ -16362,7 +16362,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog_alertresolvedialog",
-      "community": 496,
+      "community": 1017,
       "community_name": "supabase.ts",
       "norm_label": "alertresolvedialog()"
     },
@@ -16396,8 +16396,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_cashflowchart",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 49,
+      "community_name": "useTransactions.ts",
       "norm_label": "cashflowchart.tsx"
     },
     {
@@ -16408,8 +16408,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_cashflowchart_cashflowchart",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 49,
+      "community_name": "useTransactions.ts",
       "norm_label": "cashflowchart()"
     },
     {
@@ -16419,8 +16419,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 1041,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "evolucaomacrochart.tsx"
     },
     {
@@ -16432,8 +16432,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_evolucaomacrochartprops",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 1041,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "evolucaomacrochartprops"
     },
     {
@@ -16444,8 +16444,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatcurrency",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 1041,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -16456,8 +16456,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatdate",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 1041,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "formatdate()"
     },
     {
@@ -16468,8 +16468,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatcompactcurrency",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 1041,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "formatcompactcurrency()"
     },
     {
@@ -16480,8 +16480,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_evolucaomacrochart",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 1041,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "evolucaomacrochart()"
     },
     {
@@ -16492,7 +16492,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "faturamentovscontaschart.tsx"
     },
     {
@@ -16505,7 +16505,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_faturamentovscontaschartprops",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "faturamentovscontaschartprops"
     },
     {
@@ -16517,7 +16517,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_formatcurrency",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "formatcurrency()"
     },
     {
@@ -16529,7 +16529,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_shortenname",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "shortenname()"
     },
     {
@@ -16541,7 +16541,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_customyaxistick",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "customyaxistick()"
     },
     {
@@ -16553,7 +16553,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_customtooltip",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "customtooltip()"
     },
     {
@@ -16565,7 +16565,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_faturamentovscontaschart",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "faturamentovscontaschart()"
     },
     {
@@ -16576,7 +16576,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "herobalance.tsx"
     },
     {
@@ -16588,7 +16588,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance_herobalance",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "herobalance()"
     },
     {
@@ -16599,7 +16599,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "kpicard.tsx"
     },
     {
@@ -16612,7 +16612,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicolor",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "kpicolor"
     },
     {
@@ -16625,7 +16625,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicardprops",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "kpicardprops"
     },
     {
@@ -16636,7 +16636,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_color_map",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "color_map"
     },
     {
@@ -16648,7 +16648,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicard",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "kpicard()"
     },
     {
@@ -16659,7 +16659,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "motorstatus.tsx"
     },
     {
@@ -16671,7 +16671,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus_motorstatus",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "motorstatus()"
     },
     {
@@ -16681,8 +16681,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "newtransactiondialog.tsx"
     },
     {
@@ -16694,8 +16694,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialogprops",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "newtransactiondialogprops"
     },
     {
@@ -16706,8 +16706,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialog",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "newtransactiondialog()"
     },
     {
@@ -16717,8 +16717,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_rationale_17",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "todo: implement transaction creation"
     },
     {
@@ -16855,8 +16855,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 1041,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "storetabledashboard.tsx"
     },
     {
@@ -16868,8 +16868,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_storetabledashboardprops",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 1041,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "storetabledashboardprops"
     },
     {
@@ -16880,8 +16880,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_fmt",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 1041,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "fmt()"
     },
     {
@@ -16892,8 +16892,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_statusvariant",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 1041,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "statusvariant()"
     },
     {
@@ -16904,8 +16904,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_statuslabel",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 1041,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "statuslabel()"
     },
     {
@@ -16916,8 +16916,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_storetabledashboard",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 1041,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "storetabledashboard()"
     },
     {
@@ -16928,7 +16928,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_agentrunnermodal",
       "community": 930,
-      "community_name": "AgentRunnerModal.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentrunnermodal.tsx"
     },
     {
@@ -16941,7 +16941,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_agentrunnermodal_agentrunnermodalprops",
       "community": 930,
-      "community_name": "AgentRunnerModal.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentrunnermodalprops"
     },
     {
@@ -16952,7 +16952,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_agentrunnermodal_initial_stages",
       "community": 930,
-      "community_name": "AgentRunnerModal.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "initial_stages"
     },
     {
@@ -16964,7 +16964,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_agentrunnermodal_agentrunnermodal",
       "community": 930,
-      "community_name": "AgentRunnerModal.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentrunnermodal()"
     },
     {
@@ -16975,7 +16975,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem",
       "community": 930,
-      "community_name": "AgentRunnerModal.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentstageitem.tsx"
     },
     {
@@ -16988,7 +16988,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem_substep",
       "community": 930,
-      "community_name": "AgentRunnerModal.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "substep"
     },
     {
@@ -17001,7 +17001,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem_agentstage",
       "community": 930,
-      "community_name": "AgentRunnerModal.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentstage"
     },
     {
@@ -17014,7 +17014,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem_agentstageitemprops",
       "community": 930,
-      "community_name": "AgentRunnerModal.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentstageitemprops"
     },
     {
@@ -17026,7 +17026,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem_agentstageitem",
       "community": 930,
-      "community_name": "AgentRunnerModal.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentstageitem()"
     },
     {
@@ -17036,8 +17036,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "auditoriapassivowizard.tsx"
     },
     {
@@ -17049,8 +17049,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard_auditoriapassivowizardprops",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "auditoriapassivowizardprops"
     },
     {
@@ -17061,8 +17061,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard_auditoriapassivowizard",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "auditoriapassivowizard()"
     },
     {
@@ -17119,7 +17119,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard",
-      "community": 54,
+      "community": 930,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportwizard.tsx"
     },
@@ -17132,7 +17132,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_importlogentry",
-      "community": 54,
+      "community": 930,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "importlogentry"
     },
@@ -17144,7 +17144,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_useunifiedstoremapping",
-      "community": 54,
+      "community": 930,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "useunifiedstoremapping()"
     },
@@ -17156,7 +17156,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_stepindicator",
-      "community": 54,
+      "community": 930,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "stepindicator()"
     },
@@ -17168,7 +17168,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_centralimportwizard",
-      "community": 54,
+      "community": 930,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportwizard()"
     },
@@ -17228,8 +17228,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_marcozerowizard",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "marcozerowizard.tsx"
     },
     {
@@ -17240,8 +17240,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_marcozerowizard_marcozerowizard",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "marcozerowizard()"
     },
     {
@@ -17251,8 +17251,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "matchmanualospendente.tsx"
     },
     {
@@ -17264,8 +17264,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente_matchmanualosprops",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "matchmanualosprops"
     },
     {
@@ -17276,8 +17276,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente_matchmanualospendente",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 930,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "matchmanualospendente()"
     },
     {
@@ -17288,7 +17288,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "wizardimportacao.tsx"
     },
     {
@@ -17301,7 +17301,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_wizardimportacaoprops",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "wizardimportacaoprops"
     },
     {
@@ -17313,7 +17313,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_usestoremapping",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "usestoremapping()"
     },
     {
@@ -17325,7 +17325,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_generatesyntheticfitid",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "generatesyntheticfitid()"
     },
     {
@@ -17337,7 +17337,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_wizardimportacao",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "wizardimportacao()"
     },
     {
@@ -17349,7 +17349,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_stepindicator",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "stepindicator()"
     },
     {
@@ -17450,8 +17450,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_topbar",
-      "community": 41,
-      "community_name": "AppShell.tsx",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "topbar.tsx"
     },
     {
@@ -17462,8 +17462,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_layout_topbar_topbar",
-      "community": 41,
-      "community_name": "AppShell.tsx",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "topbar()"
     },
     {
@@ -17474,7 +17474,7 @@
       "_origin": "ast",
       "id": "src_components_ui_animatednumber",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "animatednumber.tsx"
     },
     {
@@ -17487,7 +17487,7 @@
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumberprops",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "animatednumberprops"
     },
     {
@@ -17499,7 +17499,7 @@
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumber",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "animatednumber()"
     },
     {
@@ -17582,7 +17582,7 @@
       "_origin": "ast",
       "id": "src_components_ui_card",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "card.tsx"
     },
     {
@@ -17595,7 +17595,7 @@
       "_origin": "ast",
       "id": "src_components_ui_card_cardprops",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "cardprops"
     },
     {
@@ -17607,7 +17607,7 @@
       "_origin": "ast",
       "id": "src_components_ui_card_card",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "card()"
     },
     {
@@ -17617,8 +17617,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_input",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "input.tsx"
     },
     {
@@ -17630,8 +17630,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_input_inputprops",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "inputprops"
     },
     {
@@ -17641,8 +17641,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_ui_input_input",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "input"
     },
     {
@@ -17688,8 +17688,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_modal",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "modal.tsx"
     },
     {
@@ -17701,8 +17701,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_modal_modalprops",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "modalprops"
     },
     {
@@ -17713,8 +17713,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_modal_modal",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "modal()"
     },
     {
@@ -17724,8 +17724,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_themetoggle",
-      "community": 41,
-      "community_name": "AppShell.tsx",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "themetoggle.tsx"
     },
     {
@@ -17736,8 +17736,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_themetoggle_themetoggle",
-      "community": 41,
-      "community_name": "AppShell.tsx",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "themetoggle()"
     },
     {
@@ -17845,7 +17845,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "useaisettings.ts"
     },
     {
@@ -17858,7 +17858,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_aisettings",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "aisettings"
     },
     {
@@ -17870,7 +17870,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_useaisettings",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "useaisettings()"
     },
     {
@@ -17882,7 +17882,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_usesaveaisettings",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "usesaveaisettings()"
     },
     {
@@ -17892,7 +17892,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usealerts",
-      "community": 496,
+      "community": 1017,
       "community_name": "supabase.ts",
       "norm_label": "usealerts.ts"
     },
@@ -17904,7 +17904,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usealerts_usealerts",
-      "community": 496,
+      "community": 1017,
       "community_name": "supabase.ts",
       "norm_label": "usealerts()"
     },
@@ -17916,7 +17916,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usealerts_useallalerts",
-      "community": 496,
+      "community": 1017,
       "community_name": "supabase.ts",
       "norm_label": "useallalerts()"
     },
@@ -17928,7 +17928,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usealerts_useresolvealert",
-      "community": 496,
+      "community": 1017,
       "community_name": "supabase.ts",
       "norm_label": "useresolvealert()"
     },
@@ -17998,7 +17998,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "usebackendconciliacao.ts"
     },
     {
@@ -18011,7 +18011,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_conciliationdailylog",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "conciliationdailylog"
     },
     {
@@ -18023,7 +18023,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_usebackendconciliacao",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "usebackendconciliacao()"
     },
     {
@@ -18035,7 +18035,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_useglobalofxout",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "useglobalofxout()"
     },
     {
@@ -18046,7 +18046,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "usebackenddashboard.ts"
     },
     {
@@ -18059,7 +18059,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_storemetrics",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "storemetrics"
     },
     {
@@ -18072,7 +18072,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_dashboardmetrics",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "dashboardmetrics"
     },
     {
@@ -18084,7 +18084,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_usebackenddashboard",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "usebackenddashboard()"
     },
     {
@@ -18095,7 +18095,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "usebotcredentials.ts"
     },
     {
@@ -18108,7 +18108,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_botcredentialrow",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "botcredentialrow"
     },
     {
@@ -18120,7 +18120,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usebotcredentials",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "usebotcredentials()"
     },
     {
@@ -18132,7 +18132,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_useupdatebotcredential",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "useupdatebotcredential()"
     },
     {
@@ -18144,7 +18144,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usemarkcredentialvalid",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "usemarkcredentialvalid()"
     },
     {
@@ -18155,7 +18155,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotlogs",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "usebotlogs.ts"
     },
     {
@@ -18168,7 +18168,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_botauditlog",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "botauditlog"
     },
     {
@@ -18180,7 +18180,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotlogs",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "usebotlogs()"
     },
     {
@@ -18192,7 +18192,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotauditlogs",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "usebotauditlogs()"
     },
     {
@@ -18203,7 +18203,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotruns",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "usebotruns.ts"
     },
     {
@@ -18215,7 +18215,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotruns_uselatestbotrun",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "uselatestbotrun()"
     },
     {
@@ -18227,7 +18227,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotruns_usebotrunhistory",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "usebotrunhistory()"
     },
     {
@@ -18273,7 +18273,7 @@
       "_origin": "ast",
       "id": "src_hooks_usecentralimport",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "usecentralimport.ts"
     },
     {
@@ -18285,7 +18285,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usecentralimport_unifiedimportresult",
-      "community": 54,
+      "community": 930,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "unifiedimportresult"
     },
@@ -18299,7 +18299,7 @@
       "_origin": "ast",
       "id": "src_hooks_usecentralimport_maquininhaitem",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "maquininhaitem"
     },
     {
@@ -18311,7 +18311,7 @@
       "_origin": "ast",
       "id": "src_hooks_usecentralimport_usecentralimport",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "usecentralimport()"
     },
     {
@@ -18359,7 +18359,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usereconciliationsfordate",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "usereconciliationsfordate()"
     },
     {
@@ -18601,7 +18601,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "usedailysnapshot.ts"
     },
     {
@@ -18614,7 +18614,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_dailysnapshotrow",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "dailysnapshotrow"
     },
     {
@@ -18626,7 +18626,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usedailysnapshot",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "usedailysnapshot()"
     },
     {
@@ -18638,7 +18638,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usepreviousdaysnapshot",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "usepreviousdaysnapshot()"
     },
     {
@@ -18650,7 +18650,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usesavedailysnapshot",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "usesavedailysnapshot()"
     },
     {
@@ -18662,7 +18662,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_useavailableconciliacaodates",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "useavailableconciliacaodates()"
     },
     {
@@ -18672,8 +18672,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 1041,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "usedashboardv2.ts"
     },
     {
@@ -18685,8 +18685,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_storemetrics",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 1041,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "storemetrics"
     },
     {
@@ -18698,8 +18698,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_dashboardv2data",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 1041,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "dashboardv2data"
     },
     {
@@ -18710,8 +18710,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_usedashboardv2",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 1041,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "usedashboardv2()"
     },
     {
@@ -18721,8 +18721,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useexpenseimportprocessor",
-      "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "useexpenseimportprocessor.ts"
     },
     {
@@ -18734,8 +18734,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useexpenseimportprocessor_expenseimportresult",
-      "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "expenseimportresult"
     },
     {
@@ -18746,8 +18746,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useexpenseimportprocessor_processexpensefiles",
-      "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "processexpensefiles()"
     },
     {
@@ -18757,7 +18757,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usegoals",
-      "community": 496,
+      "community": 1017,
       "community_name": "supabase.ts",
       "norm_label": "usegoals.ts"
     },
@@ -18770,7 +18770,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usegoals_goalrow",
-      "community": 496,
+      "community": 1017,
       "community_name": "supabase.ts",
       "norm_label": "goalrow"
     },
@@ -18782,7 +18782,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usegoals_usemonthlygoal",
-      "community": 496,
+      "community": 1017,
       "community_name": "supabase.ts",
       "norm_label": "usemonthlygoal()"
     },
@@ -18793,8 +18793,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "useimportlogs.ts"
     },
     {
@@ -18806,8 +18806,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlog",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "importlog"
     },
     {
@@ -18819,8 +18819,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlogfilters",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "importlogfilters"
     },
     {
@@ -18831,8 +18831,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogs",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "useimportlogs()"
     },
     {
@@ -18843,8 +18843,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogdetail",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "useimportlogdetail()"
     },
     {
@@ -19001,7 +19001,7 @@
       "_origin": "ast",
       "id": "src_hooks_useoscache",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "useoscache.ts"
     },
     {
@@ -19014,7 +19014,7 @@
       "_origin": "ast",
       "id": "src_hooks_useoscache_oficinaoscache",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "oficinaoscache"
     },
     {
@@ -19026,7 +19026,7 @@
       "_origin": "ast",
       "id": "src_hooks_useoscache_useoscache",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "useoscache()"
     },
     {
@@ -19036,8 +19036,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "useosimportprocessor.ts"
     },
     {
@@ -19049,8 +19049,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor_osimportresult",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "osimportresult"
     },
     {
@@ -19061,8 +19061,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor_processosfiles",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "processosfiles()"
     },
     {
@@ -19360,8 +19360,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usetransactions",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 49,
+      "community_name": "useTransactions.ts",
       "norm_label": "usetransactions.ts"
     },
     {
@@ -19372,8 +19372,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactions",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 49,
+      "community_name": "useTransactions.ts",
       "norm_label": "usetransactions()"
     },
     {
@@ -19384,8 +19384,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactionsbystore",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 49,
+      "community_name": "useTransactions.ts",
       "norm_label": "usetransactionsbystore()"
     },
     {
@@ -19397,7 +19397,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedashboardsummary",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "usedashboardsummary()"
     },
     {
@@ -19408,8 +19408,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usecashflow",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 49,
+      "community_name": "useTransactions.ts",
       "norm_label": "usecashflow()"
     },
     {
@@ -19420,8 +19420,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useextrato",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 49,
+      "community_name": "useTransactions.ts",
       "norm_label": "useextrato()"
     },
     {
@@ -19456,8 +19456,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useweeklyrevenuetrend",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 49,
+      "community_name": "useTransactions.ts",
       "norm_label": "useweeklyrevenuetrend()"
     },
     {
@@ -19468,8 +19468,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usecreateimportbatch",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 930,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usecreateimportbatch()"
     },
     {
@@ -19480,8 +19480,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usebulkinsertconciliationmatches",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 930,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usebulkinsertconciliationmatches()"
     },
     {
@@ -19492,8 +19492,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usebulkinserttransactions",
-      "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "usebulkinserttransactions()"
     },
     {
@@ -19504,8 +19504,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedailysystembalance",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 49,
+      "community_name": "useTransactions.ts",
       "norm_label": "usedailysystembalance()"
     },
     {
@@ -19516,8 +19516,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_uselatestbankbalance",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 49,
+      "community_name": "useTransactions.ts",
       "norm_label": "uselatestbankbalance()"
     },
     {
@@ -19528,8 +19528,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedailybankbalance",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 49,
+      "community_name": "useTransactions.ts",
       "norm_label": "usedailybankbalance()"
     },
     {
@@ -19562,8 +19562,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher",
-      "community": 680,
-      "community_name": "src/server.ts",
+      "community": 1046,
+      "community_name": "start.ts",
       "norm_label": "auth-attacher.ts"
     },
     {
@@ -19573,8 +19573,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher_attachsupabaseauth",
-      "community": 680,
-      "community_name": "src/server.ts",
+      "community": 1046,
+      "community_name": "start.ts",
       "norm_label": "attachsupabaseauth"
     },
     {
@@ -19640,7 +19640,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_integrations_supabase_client",
-      "community": 496,
+      "community": 1017,
       "community_name": "supabase.ts",
       "norm_label": "client.ts"
     },
@@ -19652,7 +19652,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_integrations_supabase_client_createsupabaseclient",
-      "community": 496,
+      "community": 1017,
       "community_name": "supabase.ts",
       "norm_label": "createsupabaseclient()"
     },
@@ -19663,8 +19663,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "src_integrations_supabase_client_supabase",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 495,
+      "community_name": "supabase",
       "norm_label": "supabase"
     },
     {
@@ -20436,7 +20436,7 @@
       "_origin": "ast",
       "id": "src_lib_logger",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "logger.ts"
     },
     {
@@ -20449,7 +20449,7 @@
       "_origin": "ast",
       "id": "src_lib_logger_loglevel",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "loglevel"
     },
     {
@@ -20462,7 +20462,7 @@
       "_origin": "ast",
       "id": "src_lib_logger_logstage",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "logstage"
     },
     {
@@ -20474,7 +20474,7 @@
       "_origin": "ast",
       "id": "src_lib_logger_tracelog",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "tracelog()"
     },
     {
@@ -20486,7 +20486,7 @@
       "_origin": "ast",
       "id": "src_lib_logger_generatesessionid",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "generatesessionid()"
     },
     {
@@ -20688,7 +20688,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "modulo1calculations.ts"
     },
     {
@@ -20701,7 +20701,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_globalconciliacaoinput",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "globalconciliacaoinput"
     },
     {
@@ -20714,7 +20714,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_globalconciliacaocalculated",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "globalconciliacaocalculated"
     },
     {
@@ -20726,7 +20726,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_calculateglobalconciliacao",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "calculateglobalconciliacao()"
     },
     {
@@ -20739,7 +20739,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_storesaldostate",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "storesaldostate"
     },
     {
@@ -20752,7 +20752,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_modulo1calculated",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "modulo1calculated"
     },
     {
@@ -20764,7 +20764,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_calculatemodulo1saldo",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "calculatemodulo1saldo()"
     },
     {
@@ -20848,7 +20848,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_centralimportmanager",
-      "community": 54,
+      "community": 930,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportmanager.ts"
     },
@@ -20861,7 +20861,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_parsers_centralimportmanager_centralimportresults",
-      "community": 54,
+      "community": 930,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportresults"
     },
@@ -20873,7 +20873,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_centralimportmanager_parsecentralimports",
-      "community": 54,
+      "community": 930,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "parsecentralimports()"
     },
@@ -20884,8 +20884,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_contasapagarparser",
-      "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "contasapagarparser.ts"
     },
     {
@@ -20897,8 +20897,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_parsers_contasapagarparser_parsedexpense",
-      "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "parsedexpense"
     },
     {
@@ -20909,8 +20909,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_contasapagarparser_parsecontasapagar",
-      "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "parsecontasapagar()"
     },
     {
@@ -20921,7 +20921,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_hashutils",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "hashutils.ts"
     },
     {
@@ -20933,7 +20933,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_hashutils_generatedeterministichash",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "generatedeterministichash()"
     },
     {
@@ -20943,8 +20943,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_jurosredeparser",
-      "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "jurosredeparser.ts"
     },
     {
@@ -20955,8 +20955,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_jurosredeparser_parsejurosrede",
-      "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "parsejurosrede()"
     },
     {
@@ -20967,7 +20967,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_mapametasparser",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "mapametasparser.ts"
     },
     {
@@ -20980,7 +20980,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_mapametasparser_mapametasstore",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "mapametasstore"
     },
     {
@@ -20993,7 +20993,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_mapametasparser_mapametasresult",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "mapametasresult"
     },
     {
@@ -21005,7 +21005,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_mapametasparser_parsemapametaspdf",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "parsemapametaspdf()"
     },
     {
@@ -21015,57 +21015,57 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "marcozeroparser.ts"
     },
     {
       "label": "MarcoZeroExtraction",
       "file_type": "code",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L4",
+      "source_location": "L5",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_marcozeroextraction",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "marcozeroextraction"
     },
     {
       "label": "cleanNumber()",
       "file_type": "code",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L14",
+      "source_location": "L15",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_cleannumber",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "cleannumber()"
     },
     {
       "label": "parseDate()",
       "file_type": "code",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L23",
+      "source_location": "L24",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_parsedate",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "parsedate()"
     },
     {
       "label": "parseMarcoZeroPlanilha()",
       "file_type": "code",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L47",
+      "source_location": "L48",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_parsemarcozeroplanilha",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "parsemarcozeroplanilha()"
     },
     {
@@ -21076,7 +21076,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_numberutils",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "numberutils.ts"
     },
     {
@@ -21088,7 +21088,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_numberutils_extractnumber",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "extractnumber()"
     },
     {
@@ -21099,7 +21099,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "parsers/ofxparser.ts"
     },
     {
@@ -21112,7 +21112,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser_ofxtransaction",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "ofxtransaction"
     },
     {
@@ -21125,7 +21125,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser_ofxparseresult",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "ofxparseresult"
     },
     {
@@ -21137,7 +21137,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser_extractdocument",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "extractdocument()"
     },
     {
@@ -21149,7 +21149,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser_parseofxfile",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "parseofxfile()"
     },
     {
@@ -21160,7 +21160,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_redeparser",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "redeparser.ts"
     },
     {
@@ -21173,7 +21173,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_redeparser_redetransaction",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "redetransaction"
     },
     {
@@ -21186,7 +21186,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_redeparser_rederesult",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "rederesult"
     },
     {
@@ -21198,7 +21198,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_redeparser_parseredefile",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "parseredefile()"
     },
     {
@@ -21208,8 +21208,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_storemapping",
-      "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "storemapping.ts"
     },
     {
@@ -21219,8 +21219,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_storemapping_rede_store_mapping",
-      "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "rede_store_mapping"
     },
     {
@@ -21231,8 +21231,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_storemapping_normalizeredestorename",
-      "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "normalizeredestorename()"
     },
     {
@@ -21277,7 +21277,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_supabase",
-      "community": 496,
+      "community": 1017,
       "community_name": "supabase.ts",
       "norm_label": "supabase.ts"
     },
@@ -21316,7 +21316,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_alertrow",
-      "community": 496,
+      "community": 1017,
       "community_name": "supabase.ts",
       "norm_label": "alertrow"
     },
@@ -21329,8 +21329,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_transactionrow",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 49,
+      "community_name": "useTransactions.ts",
       "norm_label": "transactionrow"
     },
     {
@@ -21382,7 +21382,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_botrunrow",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "Card.tsx",
       "norm_label": "botrunrow"
     },
     {
@@ -21394,7 +21394,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_profilerow",
-      "community": 496,
+      "community": 1017,
       "community_name": "supabase.ts",
       "norm_label": "profilerow"
     },
@@ -21407,7 +21407,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_interestraterow",
-      "community": 496,
+      "community": 1017,
       "community_name": "supabase.ts",
       "norm_label": "interestraterow"
     },
@@ -21418,8 +21418,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_utils",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 41,
+      "community_name": "AppShell.tsx",
       "norm_label": "utils.ts"
     },
     {
@@ -21454,8 +21454,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_utils_formatcurrency",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 41,
+      "community_name": "AppShell.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -21785,8 +21785,8 @@
       "source_location": "L460",
       "_origin": "ast",
       "id": "src_routetree_gen_routetree",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 1046,
+      "community_name": "start.ts",
       "norm_label": "routetree"
     },
     {
@@ -21809,8 +21809,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routetree_gen_register",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 1046,
+      "community_name": "start.ts",
       "norm_label": "register"
     },
     {
@@ -21820,8 +21820,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_router",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 1046,
+      "community_name": "start.ts",
       "norm_label": "router.tsx"
     },
     {
@@ -21832,8 +21832,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_router_getrouter",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 1046,
+      "community_name": "start.ts",
       "norm_label": "getrouter()"
     },
     {
@@ -21913,7 +21913,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_alertas",
-      "community": 496,
+      "community": 1017,
       "community_name": "supabase.ts",
       "norm_label": "alertas.tsx"
     },
@@ -21937,7 +21937,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_alertas_filtertype",
-      "community": 496,
+      "community": 1017,
       "community_name": "supabase.ts",
       "norm_label": "filtertype"
     },
@@ -21949,7 +21949,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_alertas_alertaspage",
-      "community": 496,
+      "community": 1017,
       "community_name": "supabase.ts",
       "norm_label": "alertaspage()"
     },
@@ -22162,7 +22162,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_index",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "conciliacao.index.tsx"
     },
     {
@@ -22185,7 +22185,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_index_conciliacaopage",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase",
       "norm_label": "conciliacaopage()"
     },
     {
@@ -22263,8 +22263,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_historico",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 49,
+      "community_name": "useTransactions.ts",
       "norm_label": "historico.tsx"
     },
     {
@@ -22286,8 +22286,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_historico_getdefaultperiod",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 49,
+      "community_name": "useTransactions.ts",
       "norm_label": "getdefaultperiod()"
     },
     {
@@ -22298,8 +22298,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_historico_formatdate",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 49,
+      "community_name": "useTransactions.ts",
       "norm_label": "formatdate()"
     },
     {
@@ -22310,8 +22310,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_historico_geticonformethod",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 49,
+      "community_name": "useTransactions.ts",
       "norm_label": "geticonformethod()"
     },
     {
@@ -22322,8 +22322,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_historico_historicopage",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 49,
+      "community_name": "useTransactions.ts",
       "norm_label": "historicopage()"
     },
     {
@@ -22333,8 +22333,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas",
-      "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "importacoes-despesas.tsx"
     },
     {
@@ -22356,8 +22356,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_usestoremapping",
-      "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "usestoremapping()"
     },
     {
@@ -22368,8 +22368,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_importacoesdespesaswizard",
-      "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "importacoesdespesaswizard()"
     },
     {
@@ -22380,8 +22380,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_stepindicator",
-      "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 13,
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "stepindicator()"
     },
     {
@@ -22437,8 +22437,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_importar_os",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "importar-os.tsx"
     },
     {
@@ -22460,8 +22460,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importar_os_useosstoremapping",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "useosstoremapping()"
     },
     {
@@ -22472,8 +22472,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importar_os_stepindicator",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "stepindicator()"
     },
     {
@@ -22484,8 +22484,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importar_os_importaroswizard",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "importaroswizard()"
     },
     {
@@ -22496,7 +22496,7 @@
       "_origin": "ast",
       "id": "src_routes_index",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "index.tsx"
     },
     {
@@ -22519,7 +22519,7 @@
       "_origin": "ast",
       "id": "src_routes_index_dashboardpage",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "dashboardpage()"
     },
     {
@@ -22597,8 +22597,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_logs_motor",
-      "community": 1051,
-      "community_name": "logs.motor.tsx",
+      "community": 41,
+      "community_name": "AppShell.tsx",
       "norm_label": "logs.motor.tsx"
     },
     {
@@ -22608,8 +22608,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_routes_logs_motor_route",
-      "community": 1051,
-      "community_name": "logs.motor.tsx",
+      "community": 41,
+      "community_name": "AppShell.tsx",
       "norm_label": "route"
     },
     {
@@ -22620,8 +22620,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_logs_motor_logsmotorpage",
-      "community": 1051,
-      "community_name": "logs.motor.tsx",
+      "community": 41,
+      "community_name": "AppShell.tsx",
       "norm_label": "logsmotorpage()"
     },
     {
@@ -23069,8 +23069,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_start",
-      "community": 680,
-      "community_name": "src/server.ts",
+      "community": 1046,
+      "community_name": "start.ts",
       "norm_label": "start.ts"
     },
     {
@@ -23080,8 +23080,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_start_errormiddleware",
-      "community": 680,
-      "community_name": "src/server.ts",
+      "community": 1046,
+      "community_name": "start.ts",
       "norm_label": "errormiddleware"
     },
     {
@@ -23091,8 +23091,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_start_startinstance",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 1046,
+      "community_name": "start.ts",
       "norm_label": "startinstance"
     },
     {
@@ -25265,6 +25265,17 @@
       "community": 354,
       "community_name": "Features e M\u00c3\u0192\u00c2\u00b3dulos Existentes (Mapa Vivo Anti-Duplica\u00c3\u0192\u00c2\u00a7\u00c3\u0192\u00c2\u00a3o)",
       "norm_label": "dashboard executivo (fintech v5)"
+    },
+    {
+      "label": "Marco Zero Global e Auditoria (11/08/2026)",
+      "file_type": "document",
+      "source_file": "spec/global/features.md",
+      "source_location": "L76",
+      "_origin": "ast",
+      "id": "spec_global_features_marco_zero_global_e_auditoria_11_08_2026",
+      "community": 354,
+      "community_name": "Features e M\u00c3\u0192\u00c2\u00b3dulos Existentes (Mapa Vivo Anti-Duplica\u00c3\u0192\u00c2\u00a7\u00c3\u0192\u00c2\u00a3o)",
+      "norm_label": "marco zero global e auditoria (11/08/2026)"
     },
     {
       "label": "spec/global/overview.md",
@@ -30052,201 +30063,201 @@
       "norm_label": "tasks"
     },
     {
-      "label": "165-marco-zero-completo/design.md",
+      "label": "166-marco-zero-autostore/design.md",
       "file_type": "document",
-      "source_file": "specs/165-marco-zero-completo/design.md",
+      "source_file": "specs/166-marco-zero-autostore/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_165_marco_zero_completo_design",
-      "community": 1041,
-      "community_name": "Design: Marco Zero Global & Auditoria do Passivo (165)",
-      "norm_label": "165-marco-zero-completo/design.md"
+      "id": "specs_166_marco_zero_autostore_design",
+      "community": 1064,
+      "community_name": "Design: Marco Zero Auto-Store Mapping (166)",
+      "norm_label": "166-marco-zero-autostore/design.md"
     },
     {
-      "label": "Design: Marco Zero Global & Auditoria do Passivo (165)",
+      "label": "Design: Marco Zero Auto-Store Mapping (166)",
       "file_type": "document",
-      "source_file": "specs/165-marco-zero-completo/design.md",
+      "source_file": "specs/166-marco-zero-autostore/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_165_marco_zero_completo_design_design_marco_zero_global_auditoria_do_passivo_165",
-      "community": 1041,
-      "community_name": "Design: Marco Zero Global & Auditoria do Passivo (165)",
-      "norm_label": "design: marco zero global & auditoria do passivo (165)"
+      "id": "specs_166_marco_zero_autostore_design_design_marco_zero_auto_store_mapping_166",
+      "community": 1064,
+      "community_name": "Design: Marco Zero Auto-Store Mapping (166)",
+      "norm_label": "design: marco zero auto-store mapping (166)"
     },
     {
       "label": "Arquitetura T\u00e9cnica",
       "file_type": "document",
-      "source_file": "specs/165-marco-zero-completo/design.md",
+      "source_file": "specs/166-marco-zero-autostore/design.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_165_marco_zero_completo_design_arquitetura_t\u00e9cnica",
-      "community": 1041,
-      "community_name": "Design: Marco Zero Global & Auditoria do Passivo (165)",
+      "id": "specs_166_marco_zero_autostore_design_arquitetura_t\u00e9cnica",
+      "community": 1064,
+      "community_name": "Design: Marco Zero Auto-Store Mapping (166)",
       "norm_label": "arquitetura tecnica"
     },
     {
       "label": "Interfaces TypeScript",
       "file_type": "document",
-      "source_file": "specs/165-marco-zero-completo/design.md",
-      "source_location": "L8",
+      "source_file": "specs/166-marco-zero-autostore/design.md",
+      "source_location": "L6",
       "_origin": "ast",
-      "id": "specs_165_marco_zero_completo_design_interfaces_typescript",
-      "community": 1041,
-      "community_name": "Design: Marco Zero Global & Auditoria do Passivo (165)",
+      "id": "specs_166_marco_zero_autostore_design_interfaces_typescript",
+      "community": 1064,
+      "community_name": "Design: Marco Zero Auto-Store Mapping (166)",
       "norm_label": "interfaces typescript"
     },
     {
       "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
       "file_type": "document",
-      "source_file": "specs/165-marco-zero-completo/design.md",
-      "source_location": "L24",
+      "source_file": "specs/166-marco-zero-autostore/design.md",
+      "source_location": "L18",
       "_origin": "ast",
-      "id": "specs_165_marco_zero_completo_design_componentes_hooks_fun\u00e7\u00f5es",
-      "community": 1041,
-      "community_name": "Design: Marco Zero Global & Auditoria do Passivo (165)",
+      "id": "specs_166_marco_zero_autostore_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 1064,
+      "community_name": "Design: Marco Zero Auto-Store Mapping (166)",
       "norm_label": "componentes / hooks / funcoes"
     },
     {
       "label": "Fluxo de UI",
       "file_type": "document",
-      "source_file": "specs/165-marco-zero-completo/design.md",
-      "source_location": "L29",
+      "source_file": "specs/166-marco-zero-autostore/design.md",
+      "source_location": "L22",
       "_origin": "ast",
-      "id": "specs_165_marco_zero_completo_design_fluxo_de_ui",
-      "community": 1041,
-      "community_name": "Design: Marco Zero Global & Auditoria do Passivo (165)",
+      "id": "specs_166_marco_zero_autostore_design_fluxo_de_ui",
+      "community": 1064,
+      "community_name": "Design: Marco Zero Auto-Store Mapping (166)",
       "norm_label": "fluxo de ui"
     },
     {
       "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
       "file_type": "document",
-      "source_file": "specs/165-marco-zero-completo/design.md",
-      "source_location": "L33",
+      "source_file": "specs/166-marco-zero-autostore/design.md",
+      "source_location": "L28",
       "_origin": "ast",
-      "id": "specs_165_marco_zero_completo_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
-      "community": 1041,
-      "community_name": "Design: Marco Zero Global & Auditoria do Passivo (165)",
+      "id": "specs_166_marco_zero_autostore_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 1064,
+      "community_name": "Design: Marco Zero Auto-Store Mapping (166)",
       "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
     },
     {
-      "label": "165-marco-zero-completo/proposal.md",
+      "label": "166-marco-zero-autostore/proposal.md",
       "file_type": "document",
-      "source_file": "specs/165-marco-zero-completo/proposal.md",
+      "source_file": "specs/166-marco-zero-autostore/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_165_marco_zero_completo_proposal",
-      "community": 13,
-      "community_name": "Proposal: Marco Zero Global & Auditoria do Passivo (165)",
-      "norm_label": "165-marco-zero-completo/proposal.md"
+      "id": "specs_166_marco_zero_autostore_proposal",
+      "community": 1051,
+      "community_name": "Proposal: Marco Zero Auto-Store Mapping (166)",
+      "norm_label": "166-marco-zero-autostore/proposal.md"
     },
     {
-      "label": "Proposal: Marco Zero Global & Auditoria do Passivo (165)",
+      "label": "Proposal: Marco Zero Auto-Store Mapping (166)",
       "file_type": "document",
-      "source_file": "specs/165-marco-zero-completo/proposal.md",
+      "source_file": "specs/166-marco-zero-autostore/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_165_marco_zero_completo_proposal_proposal_marco_zero_global_auditoria_do_passivo_165",
-      "community": 13,
-      "community_name": "Proposal: Marco Zero Global & Auditoria do Passivo (165)",
-      "norm_label": "proposal: marco zero global & auditoria do passivo (165)"
+      "id": "specs_166_marco_zero_autostore_proposal_proposal_marco_zero_auto_store_mapping_166",
+      "community": 1051,
+      "community_name": "Proposal: Marco Zero Auto-Store Mapping (166)",
+      "norm_label": "proposal: marco zero auto-store mapping (166)"
     },
     {
       "label": "Problema",
       "file_type": "document",
-      "source_file": "specs/165-marco-zero-completo/proposal.md",
+      "source_file": "specs/166-marco-zero-autostore/proposal.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_165_marco_zero_completo_proposal_problema",
-      "community": 13,
-      "community_name": "Proposal: Marco Zero Global & Auditoria do Passivo (165)",
+      "id": "specs_166_marco_zero_autostore_proposal_problema",
+      "community": 1051,
+      "community_name": "Proposal: Marco Zero Auto-Store Mapping (166)",
       "norm_label": "problema"
     },
     {
       "label": "Solu\u00e7\u00e3o Proposta",
       "file_type": "document",
-      "source_file": "specs/165-marco-zero-completo/proposal.md",
-      "source_location": "L7",
+      "source_file": "specs/166-marco-zero-autostore/proposal.md",
+      "source_location": "L6",
       "_origin": "ast",
-      "id": "specs_165_marco_zero_completo_proposal_solu\u00e7\u00e3o_proposta",
-      "community": 13,
-      "community_name": "Proposal: Marco Zero Global & Auditoria do Passivo (165)",
+      "id": "specs_166_marco_zero_autostore_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 1051,
+      "community_name": "Proposal: Marco Zero Auto-Store Mapping (166)",
       "norm_label": "solucao proposta"
     },
     {
       "label": "Contratos de Dados",
       "file_type": "document",
-      "source_file": "specs/165-marco-zero-completo/proposal.md",
-      "source_location": "L12",
+      "source_file": "specs/166-marco-zero-autostore/proposal.md",
+      "source_location": "L9",
       "_origin": "ast",
-      "id": "specs_165_marco_zero_completo_proposal_contratos_de_dados",
-      "community": 13,
-      "community_name": "Proposal: Marco Zero Global & Auditoria do Passivo (165)",
+      "id": "specs_166_marco_zero_autostore_proposal_contratos_de_dados",
+      "community": 1051,
+      "community_name": "Proposal: Marco Zero Auto-Store Mapping (166)",
       "norm_label": "contratos de dados"
     },
     {
       "label": "API / Interface",
       "file_type": "document",
-      "source_file": "specs/165-marco-zero-completo/proposal.md",
-      "source_location": "L16",
+      "source_file": "specs/166-marco-zero-autostore/proposal.md",
+      "source_location": "L12",
       "_origin": "ast",
-      "id": "specs_165_marco_zero_completo_proposal_api_interface",
-      "community": 13,
-      "community_name": "Proposal: Marco Zero Global & Auditoria do Passivo (165)",
+      "id": "specs_166_marco_zero_autostore_proposal_api_interface",
+      "community": 1051,
+      "community_name": "Proposal: Marco Zero Auto-Store Mapping (166)",
       "norm_label": "api / interface"
     },
     {
       "label": "Features Existentes Impactadas",
       "file_type": "document",
-      "source_file": "specs/165-marco-zero-completo/proposal.md",
-      "source_location": "L21",
+      "source_file": "specs/166-marco-zero-autostore/proposal.md",
+      "source_location": "L16",
       "_origin": "ast",
-      "id": "specs_165_marco_zero_completo_proposal_features_existentes_impactadas",
-      "community": 13,
-      "community_name": "Proposal: Marco Zero Global & Auditoria do Passivo (165)",
+      "id": "specs_166_marco_zero_autostore_proposal_features_existentes_impactadas",
+      "community": 1051,
+      "community_name": "Proposal: Marco Zero Auto-Store Mapping (166)",
       "norm_label": "features existentes impactadas"
     },
     {
       "label": "Risco Principal",
       "file_type": "document",
-      "source_file": "specs/165-marco-zero-completo/proposal.md",
-      "source_location": "L25",
+      "source_file": "specs/166-marco-zero-autostore/proposal.md",
+      "source_location": "L19",
       "_origin": "ast",
-      "id": "specs_165_marco_zero_completo_proposal_risco_principal",
-      "community": 13,
-      "community_name": "Proposal: Marco Zero Global & Auditoria do Passivo (165)",
+      "id": "specs_166_marco_zero_autostore_proposal_risco_principal",
+      "community": 1051,
+      "community_name": "Proposal: Marco Zero Auto-Store Mapping (166)",
       "norm_label": "risco principal"
     },
     {
-      "label": "165-marco-zero-completo/spec-plan.md",
+      "label": "166-marco-zero-autostore/spec-plan.md",
       "file_type": "document",
-      "source_file": "specs/165-marco-zero-completo/spec-plan.md",
+      "source_file": "specs/166-marco-zero-autostore/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_165_marco_zero_completo_spec_plan",
-      "community": 1046,
-      "community_name": "Spec Plan: Marco Zero Global & Auditoria do Passivo (165)",
-      "norm_label": "165-marco-zero-completo/spec-plan.md"
+      "id": "specs_166_marco_zero_autostore_spec_plan",
+      "community": 1066,
+      "community_name": "Spec Plan: Marco Zero Auto-Store Mapping (166)",
+      "norm_label": "166-marco-zero-autostore/spec-plan.md"
     },
     {
-      "label": "Spec Plan: Marco Zero Global & Auditoria do Passivo (165)",
+      "label": "Spec Plan: Marco Zero Auto-Store Mapping (166)",
       "file_type": "document",
-      "source_file": "specs/165-marco-zero-completo/spec-plan.md",
+      "source_file": "specs/166-marco-zero-autostore/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_165_marco_zero_completo_spec_plan_spec_plan_marco_zero_global_auditoria_do_passivo_165",
-      "community": 1046,
-      "community_name": "Spec Plan: Marco Zero Global & Auditoria do Passivo (165)",
-      "norm_label": "spec plan: marco zero global & auditoria do passivo (165)"
+      "id": "specs_166_marco_zero_autostore_spec_plan_spec_plan_marco_zero_auto_store_mapping_166",
+      "community": 1066,
+      "community_name": "Spec Plan: Marco Zero Auto-Store Mapping (166)",
+      "norm_label": "spec plan: marco zero auto-store mapping (166)"
     },
     {
       "label": "Tasks",
       "file_type": "document",
-      "source_file": "specs/165-marco-zero-completo/spec-plan.md",
+      "source_file": "specs/166-marco-zero-autostore/spec-plan.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_165_marco_zero_completo_spec_plan_tasks",
-      "community": 1046,
-      "community_name": "Spec Plan: Marco Zero Global & Auditoria do Passivo (165)",
+      "id": "specs_166_marco_zero_autostore_spec_plan_tasks",
+      "community": 1066,
+      "community_name": "Spec Plan: Marco Zero Auto-Store Mapping (166)",
       "norm_label": "tasks"
     },
     {
@@ -51686,6 +51697,204 @@
       "id": "specs_archive_162_bot_fallback_and_history_spec_plan_tasks",
       "community": 1062,
       "community_name": "Spec Plan: Cloud Sync Imersivo e Auto-Fallback do P\u00e1tio (162)",
+      "norm_label": "tasks"
+    },
+    {
+      "label": "165-marco-zero-completo/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/165-marco-zero-completo/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_165_marco_zero_completo_design",
+      "community": 1065,
+      "community_name": "Design: Marco Zero Global & Auditoria do Passivo (165)",
+      "norm_label": "165-marco-zero-completo/design.md"
+    },
+    {
+      "label": "Design: Marco Zero Global & Auditoria do Passivo (165)",
+      "file_type": "document",
+      "source_file": "specs/archive/165-marco-zero-completo/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_165_marco_zero_completo_design_design_marco_zero_global_auditoria_do_passivo_165",
+      "community": 1065,
+      "community_name": "Design: Marco Zero Global & Auditoria do Passivo (165)",
+      "norm_label": "design: marco zero global & auditoria do passivo (165)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/archive/165-marco-zero-completo/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_165_marco_zero_completo_design_arquitetura_t\u00e9cnica",
+      "community": 1065,
+      "community_name": "Design: Marco Zero Global & Auditoria do Passivo (165)",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Interfaces TypeScript",
+      "file_type": "document",
+      "source_file": "specs/archive/165-marco-zero-completo/design.md",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "specs_archive_165_marco_zero_completo_design_interfaces_typescript",
+      "community": 1065,
+      "community_name": "Design: Marco Zero Global & Auditoria do Passivo (165)",
+      "norm_label": "interfaces typescript"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/archive/165-marco-zero-completo/design.md",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "specs_archive_165_marco_zero_completo_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 1065,
+      "community_name": "Design: Marco Zero Global & Auditoria do Passivo (165)",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Fluxo de UI",
+      "file_type": "document",
+      "source_file": "specs/archive/165-marco-zero-completo/design.md",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "specs_archive_165_marco_zero_completo_design_fluxo_de_ui",
+      "community": 1065,
+      "community_name": "Design: Marco Zero Global & Auditoria do Passivo (165)",
+      "norm_label": "fluxo de ui"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/archive/165-marco-zero-completo/design.md",
+      "source_location": "L33",
+      "_origin": "ast",
+      "id": "specs_archive_165_marco_zero_completo_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 1065,
+      "community_name": "Design: Marco Zero Global & Auditoria do Passivo (165)",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "165-marco-zero-completo/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/165-marco-zero-completo/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_165_marco_zero_completo_proposal",
+      "community": 1063,
+      "community_name": "Proposal: Marco Zero Global & Auditoria do Passivo (165)",
+      "norm_label": "165-marco-zero-completo/proposal.md"
+    },
+    {
+      "label": "Proposal: Marco Zero Global & Auditoria do Passivo (165)",
+      "file_type": "document",
+      "source_file": "specs/archive/165-marco-zero-completo/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_165_marco_zero_completo_proposal_proposal_marco_zero_global_auditoria_do_passivo_165",
+      "community": 1063,
+      "community_name": "Proposal: Marco Zero Global & Auditoria do Passivo (165)",
+      "norm_label": "proposal: marco zero global & auditoria do passivo (165)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/archive/165-marco-zero-completo/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_165_marco_zero_completo_proposal_problema",
+      "community": 1063,
+      "community_name": "Proposal: Marco Zero Global & Auditoria do Passivo (165)",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/archive/165-marco-zero-completo/proposal.md",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "specs_archive_165_marco_zero_completo_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 1063,
+      "community_name": "Proposal: Marco Zero Global & Auditoria do Passivo (165)",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/165-marco-zero-completo/proposal.md",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "specs_archive_165_marco_zero_completo_proposal_contratos_de_dados",
+      "community": 1063,
+      "community_name": "Proposal: Marco Zero Global & Auditoria do Passivo (165)",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/archive/165-marco-zero-completo/proposal.md",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "specs_archive_165_marco_zero_completo_proposal_api_interface",
+      "community": 1063,
+      "community_name": "Proposal: Marco Zero Global & Auditoria do Passivo (165)",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/archive/165-marco-zero-completo/proposal.md",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "specs_archive_165_marco_zero_completo_proposal_features_existentes_impactadas",
+      "community": 1063,
+      "community_name": "Proposal: Marco Zero Global & Auditoria do Passivo (165)",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/archive/165-marco-zero-completo/proposal.md",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "specs_archive_165_marco_zero_completo_proposal_risco_principal",
+      "community": 1063,
+      "community_name": "Proposal: Marco Zero Global & Auditoria do Passivo (165)",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "165-marco-zero-completo/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/165-marco-zero-completo/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_165_marco_zero_completo_spec_plan",
+      "community": 1067,
+      "community_name": "Spec Plan: Marco Zero Global & Auditoria do Passivo (165)",
+      "norm_label": "165-marco-zero-completo/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Marco Zero Global & Auditoria do Passivo (165)",
+      "file_type": "document",
+      "source_file": "specs/archive/165-marco-zero-completo/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_165_marco_zero_completo_spec_plan_spec_plan_marco_zero_global_auditoria_do_passivo_165",
+      "community": 1067,
+      "community_name": "Spec Plan: Marco Zero Global & Auditoria do Passivo (165)",
+      "norm_label": "spec plan: marco zero global & auditoria do passivo (165)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/165-marco-zero-completo/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_165_marco_zero_completo_spec_plan_tasks",
+      "community": 1067,
+      "community_name": "Spec Plan: Marco Zero Global & Auditoria do Passivo (165)",
       "norm_label": "tasks"
     },
     {
@@ -99500,7 +99709,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser",
@@ -99511,7 +99720,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L4",
+      "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser",
@@ -99522,7 +99731,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L23",
+      "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser",
@@ -99533,7 +99742,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser",
@@ -99541,11 +99750,35 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/parsers/marcoZeroParser.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_parsers_marcozeroparser",
+      "target": "src_lib_parsers_storemapping",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/parsers/marcoZeroParser.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_parsers_marcozeroparser",
+      "target": "src_lib_parsers_storemapping_normalizeredestorename",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L76",
+      "source_location": "L115",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser_parsemarcozeroplanilha",
@@ -99557,12 +99790,24 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L128",
+      "source_location": "L163",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser_parsemarcozeroplanilha",
       "target": "src_lib_parsers_marcozeroparser_parsedate",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/parsers/marcoZeroParser.ts",
+      "source_location": "L60",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_parsers_marcozeroparser_parsemarcozeroplanilha",
+      "target": "src_lib_parsers_storemapping_normalizeredestorename"
     },
     {
       "relation": "contains",
@@ -104351,6 +104596,17 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "spec/global/features.md",
+      "source_location": "L76",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "spec_global_features_dashboard_executivo_fintech_v5",
+      "target": "spec_global_features_marco_zero_global_e_auditoria_11_08_2026",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "spec/global/overview.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -108113,166 +108369,166 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/165-marco-zero-completo/design.md",
+      "source_file": "specs/166-marco-zero-autostore/design.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_165_marco_zero_completo_design",
-      "target": "specs_165_marco_zero_completo_design_design_marco_zero_global_auditoria_do_passivo_165",
+      "source": "specs_166_marco_zero_autostore_design",
+      "target": "specs_166_marco_zero_autostore_design_design_marco_zero_auto_store_mapping_166",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/165-marco-zero-completo/design.md",
+      "source_file": "specs/166-marco-zero-autostore/design.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_165_marco_zero_completo_design_design_marco_zero_global_auditoria_do_passivo_165",
-      "target": "specs_165_marco_zero_completo_design_arquitetura_t\u00e9cnica",
+      "source": "specs_166_marco_zero_autostore_design_design_marco_zero_auto_store_mapping_166",
+      "target": "specs_166_marco_zero_autostore_design_arquitetura_t\u00e9cnica",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/165-marco-zero-completo/design.md",
-      "source_location": "L33",
+      "source_file": "specs/166-marco-zero-autostore/design.md",
+      "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_165_marco_zero_completo_design_design_marco_zero_global_auditoria_do_passivo_165",
-      "target": "specs_165_marco_zero_completo_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "source": "specs_166_marco_zero_autostore_design_design_marco_zero_auto_store_mapping_166",
+      "target": "specs_166_marco_zero_autostore_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/165-marco-zero-completo/design.md",
-      "source_location": "L24",
+      "source_file": "specs/166-marco-zero-autostore/design.md",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_165_marco_zero_completo_design_design_marco_zero_global_auditoria_do_passivo_165",
-      "target": "specs_165_marco_zero_completo_design_componentes_hooks_fun\u00e7\u00f5es",
+      "source": "specs_166_marco_zero_autostore_design_design_marco_zero_auto_store_mapping_166",
+      "target": "specs_166_marco_zero_autostore_design_componentes_hooks_fun\u00e7\u00f5es",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/165-marco-zero-completo/design.md",
-      "source_location": "L29",
+      "source_file": "specs/166-marco-zero-autostore/design.md",
+      "source_location": "L22",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_165_marco_zero_completo_design_design_marco_zero_global_auditoria_do_passivo_165",
-      "target": "specs_165_marco_zero_completo_design_fluxo_de_ui",
+      "source": "specs_166_marco_zero_autostore_design_design_marco_zero_auto_store_mapping_166",
+      "target": "specs_166_marco_zero_autostore_design_fluxo_de_ui",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/165-marco-zero-completo/design.md",
-      "source_location": "L8",
+      "source_file": "specs/166-marco-zero-autostore/design.md",
+      "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_165_marco_zero_completo_design_design_marco_zero_global_auditoria_do_passivo_165",
-      "target": "specs_165_marco_zero_completo_design_interfaces_typescript",
+      "source": "specs_166_marco_zero_autostore_design_design_marco_zero_auto_store_mapping_166",
+      "target": "specs_166_marco_zero_autostore_design_interfaces_typescript",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/165-marco-zero-completo/proposal.md",
+      "source_file": "specs/166-marco-zero-autostore/proposal.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_165_marco_zero_completo_proposal",
-      "target": "specs_165_marco_zero_completo_proposal_proposal_marco_zero_global_auditoria_do_passivo_165",
+      "source": "specs_166_marco_zero_autostore_proposal",
+      "target": "specs_166_marco_zero_autostore_proposal_proposal_marco_zero_auto_store_mapping_166",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/165-marco-zero-completo/proposal.md",
-      "source_location": "L16",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_165_marco_zero_completo_proposal_proposal_marco_zero_global_auditoria_do_passivo_165",
-      "target": "specs_165_marco_zero_completo_proposal_api_interface",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/165-marco-zero-completo/proposal.md",
+      "source_file": "specs/166-marco-zero-autostore/proposal.md",
       "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_165_marco_zero_completo_proposal_proposal_marco_zero_global_auditoria_do_passivo_165",
-      "target": "specs_165_marco_zero_completo_proposal_contratos_de_dados",
+      "source": "specs_166_marco_zero_autostore_proposal_proposal_marco_zero_auto_store_mapping_166",
+      "target": "specs_166_marco_zero_autostore_proposal_api_interface",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/165-marco-zero-completo/proposal.md",
-      "source_location": "L21",
+      "source_file": "specs/166-marco-zero-autostore/proposal.md",
+      "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_165_marco_zero_completo_proposal_proposal_marco_zero_global_auditoria_do_passivo_165",
-      "target": "specs_165_marco_zero_completo_proposal_features_existentes_impactadas",
+      "source": "specs_166_marco_zero_autostore_proposal_proposal_marco_zero_auto_store_mapping_166",
+      "target": "specs_166_marco_zero_autostore_proposal_contratos_de_dados",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/165-marco-zero-completo/proposal.md",
+      "source_file": "specs/166-marco-zero-autostore/proposal.md",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_166_marco_zero_autostore_proposal_proposal_marco_zero_auto_store_mapping_166",
+      "target": "specs_166_marco_zero_autostore_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/166-marco-zero-autostore/proposal.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_165_marco_zero_completo_proposal_proposal_marco_zero_global_auditoria_do_passivo_165",
-      "target": "specs_165_marco_zero_completo_proposal_problema",
+      "source": "specs_166_marco_zero_autostore_proposal_proposal_marco_zero_auto_store_mapping_166",
+      "target": "specs_166_marco_zero_autostore_proposal_problema",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/165-marco-zero-completo/proposal.md",
-      "source_location": "L25",
+      "source_file": "specs/166-marco-zero-autostore/proposal.md",
+      "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_165_marco_zero_completo_proposal_proposal_marco_zero_global_auditoria_do_passivo_165",
-      "target": "specs_165_marco_zero_completo_proposal_risco_principal",
+      "source": "specs_166_marco_zero_autostore_proposal_proposal_marco_zero_auto_store_mapping_166",
+      "target": "specs_166_marco_zero_autostore_proposal_risco_principal",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/165-marco-zero-completo/proposal.md",
-      "source_location": "L7",
+      "source_file": "specs/166-marco-zero-autostore/proposal.md",
+      "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_165_marco_zero_completo_proposal_proposal_marco_zero_global_auditoria_do_passivo_165",
-      "target": "specs_165_marco_zero_completo_proposal_solu\u00e7\u00e3o_proposta",
+      "source": "specs_166_marco_zero_autostore_proposal_proposal_marco_zero_auto_store_mapping_166",
+      "target": "specs_166_marco_zero_autostore_proposal_solu\u00e7\u00e3o_proposta",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/165-marco-zero-completo/spec-plan.md",
+      "source_file": "specs/166-marco-zero-autostore/spec-plan.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_165_marco_zero_completo_spec_plan",
-      "target": "specs_165_marco_zero_completo_spec_plan_spec_plan_marco_zero_global_auditoria_do_passivo_165",
+      "source": "specs_166_marco_zero_autostore_spec_plan",
+      "target": "specs_166_marco_zero_autostore_spec_plan_spec_plan_marco_zero_auto_store_mapping_166",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/165-marco-zero-completo/spec-plan.md",
+      "source_file": "specs/166-marco-zero-autostore/spec-plan.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_165_marco_zero_completo_spec_plan_spec_plan_marco_zero_global_auditoria_do_passivo_165",
-      "target": "specs_165_marco_zero_completo_spec_plan_tasks",
+      "source": "specs_166_marco_zero_autostore_spec_plan_spec_plan_marco_zero_auto_store_mapping_166",
+      "target": "specs_166_marco_zero_autostore_spec_plan_tasks",
       "confidence_score": 1.0
     },
     {
@@ -125389,6 +125645,171 @@
       "_origin": "ast",
       "source": "specs_archive_162_bot_fallback_and_history_spec_plan_spec_plan_cloud_sync_imersivo_e_auto_fallback_do_p\u00e1tio_162",
       "target": "specs_archive_162_bot_fallback_and_history_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/165-marco-zero-completo/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_165_marco_zero_completo_design",
+      "target": "specs_archive_165_marco_zero_completo_design_design_marco_zero_global_auditoria_do_passivo_165",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/165-marco-zero-completo/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_165_marco_zero_completo_design_design_marco_zero_global_auditoria_do_passivo_165",
+      "target": "specs_archive_165_marco_zero_completo_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/165-marco-zero-completo/design.md",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_165_marco_zero_completo_design_design_marco_zero_global_auditoria_do_passivo_165",
+      "target": "specs_archive_165_marco_zero_completo_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/165-marco-zero-completo/design.md",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_165_marco_zero_completo_design_design_marco_zero_global_auditoria_do_passivo_165",
+      "target": "specs_archive_165_marco_zero_completo_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/165-marco-zero-completo/design.md",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_165_marco_zero_completo_design_design_marco_zero_global_auditoria_do_passivo_165",
+      "target": "specs_archive_165_marco_zero_completo_design_fluxo_de_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/165-marco-zero-completo/design.md",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_165_marco_zero_completo_design_design_marco_zero_global_auditoria_do_passivo_165",
+      "target": "specs_archive_165_marco_zero_completo_design_interfaces_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/165-marco-zero-completo/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_165_marco_zero_completo_proposal",
+      "target": "specs_archive_165_marco_zero_completo_proposal_proposal_marco_zero_global_auditoria_do_passivo_165",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/165-marco-zero-completo/proposal.md",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_165_marco_zero_completo_proposal_proposal_marco_zero_global_auditoria_do_passivo_165",
+      "target": "specs_archive_165_marco_zero_completo_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/165-marco-zero-completo/proposal.md",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_165_marco_zero_completo_proposal_proposal_marco_zero_global_auditoria_do_passivo_165",
+      "target": "specs_archive_165_marco_zero_completo_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/165-marco-zero-completo/proposal.md",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_165_marco_zero_completo_proposal_proposal_marco_zero_global_auditoria_do_passivo_165",
+      "target": "specs_archive_165_marco_zero_completo_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/165-marco-zero-completo/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_165_marco_zero_completo_proposal_proposal_marco_zero_global_auditoria_do_passivo_165",
+      "target": "specs_archive_165_marco_zero_completo_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/165-marco-zero-completo/proposal.md",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_165_marco_zero_completo_proposal_proposal_marco_zero_global_auditoria_do_passivo_165",
+      "target": "specs_archive_165_marco_zero_completo_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/165-marco-zero-completo/proposal.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_165_marco_zero_completo_proposal_proposal_marco_zero_global_auditoria_do_passivo_165",
+      "target": "specs_archive_165_marco_zero_completo_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/165-marco-zero-completo/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_165_marco_zero_completo_spec_plan",
+      "target": "specs_archive_165_marco_zero_completo_spec_plan_spec_plan_marco_zero_global_auditoria_do_passivo_165",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/165-marco-zero-completo/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_165_marco_zero_completo_spec_plan_spec_plan_marco_zero_global_auditoria_do_passivo_165",
+      "target": "specs_archive_165_marco_zero_completo_spec_plan_tasks",
       "confidence_score": 1.0
     },
     {

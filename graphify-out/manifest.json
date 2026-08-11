@@ -1645,8 +1645,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1786447323.0357466,
-    "ast_hash": "8afecae16e859a16fe1c2fca5aa473e1",
+    "mtime": 1786455957.3348372,
+    "ast_hash": "daeed73ef8670d42b54f99d9888aa60e",
     "semantic_hash": ""
   },
   "specs/016-loja-cleanup/design.md": {
@@ -6285,8 +6285,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/MarcoZeroWizard.tsx": {
-    "mtime": 1786455553.2411742,
-    "ast_hash": "5faec32e3350793bd30f1e5b04eef87e",
+    "mtime": 1786457507.4162161,
+    "ast_hash": "e0f1ce4bf20184e6c3bcec412765fc35",
     "semantic_hash": ""
   },
   "src/components/importacoes/MatchManualOsPendente.tsx": {
@@ -6295,8 +6295,8 @@
     "semantic_hash": ""
   },
   "src/lib/parsers/marcoZeroParser.ts": {
-    "mtime": 1786455496.389091,
-    "ast_hash": "dea1899142f8a4682ebd2793577b6e33",
+    "mtime": 1786457471.867735,
+    "ast_hash": "7a68f1b7a8d2903e7420f69321e0be40",
     "semantic_hash": ""
   },
   "supabase/migrations/20260811124024_create_estoque_os_pendente.sql": {
@@ -6344,17 +6344,32 @@
     "ast_hash": "fc802db88cdc5f6b48aad8fa238d86bb",
     "semantic_hash": ""
   },
-  "specs/165-marco-zero-completo/design.md": {
+  "specs/166-marco-zero-autostore/design.md": {
+    "mtime": 1786456781.110371,
+    "ast_hash": "0c47de3ad98453373ea4f5e563c8b720",
+    "semantic_hash": ""
+  },
+  "specs/166-marco-zero-autostore/proposal.md": {
+    "mtime": 1786456767.250007,
+    "ast_hash": "48644a86f1ba305640c3263aeca5587a",
+    "semantic_hash": ""
+  },
+  "specs/166-marco-zero-autostore/spec-plan.md": {
+    "mtime": 1786457520.2525413,
+    "ast_hash": "ff0613581cc62b89758ab6af54cd52ab",
+    "semantic_hash": ""
+  },
+  "specs/archive/165-marco-zero-completo/design.md": {
     "mtime": 1786455369.152913,
     "ast_hash": "f416aedfc403714352ea69ff800c5894",
     "semantic_hash": ""
   },
-  "specs/165-marco-zero-completo/proposal.md": {
+  "specs/archive/165-marco-zero-completo/proposal.md": {
     "mtime": 1786455352.673617,
     "ast_hash": "9232906e6204ac3b6bc08cd0e3446aba",
     "semantic_hash": ""
   },
-  "specs/165-marco-zero-completo/spec-plan.md": {
+  "specs/archive/165-marco-zero-completo/spec-plan.md": {
     "mtime": 1786455743.1001475,
     "ast_hash": "a9ea5dc0fddca718347e95ea4a9b7b65",
     "semantic_hash": ""

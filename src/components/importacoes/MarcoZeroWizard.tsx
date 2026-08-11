@@ -32,16 +32,20 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
           const extracted = await parseMarcoZeroPlanilha(acceptedFiles[0]);
           setData(extracted);
           
-          // Auto-mapear se possível (tentando bater o nome da aba com o nome da loja)
-          // Mas inicializa vazio
+          // Auto-mapear se possível cruzando storeName extraído com as lojas do banco
           const initialMapping: Record<string, string> = {};
           extracted.forEach(ext => {
-             initialMapping[ext.sheetName] = ''; 
+             const lowerExt = ext.storeName.toLowerCase();
+             const matchedStore = stores.find(s => {
+               const sName = (s.name || '').toLowerCase();
+               return sName === lowerExt || sName.includes(lowerExt) || lowerExt.includes(sName);
+             });
+             initialMapping[ext.storeName] = matchedStore ? matchedStore.id : ''; 
           });
           setStoreMapping(initialMapping);
 
           const totalOs = extracted.reduce((acc, curr) => acc + curr.osPendentes.length, 0);
-          toast.success(`Planilha processada! ${extracted.length} abas válidas e ${totalOs} OSs pendentes encontradas.`);
+          toast.success(`Planilha processada! ${extracted.length} lojas válidas e ${totalOs} OSs pendentes encontradas.`);
         } catch (error: any) {
           toast.error(error.message);
           setFile(null);
@@ -68,10 +72,10 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
       yesterday.setDate(yesterday.getDate() - 1);
       const targetDateStr = yesterday.toISOString().split('T')[0];
 
-      // Iterar sobre cada aba extraída
+      // Iterar sobre cada loja extraída
       for (const ext of data) {
-        const storeId = storeMapping[ext.sheetName];
-        if (!storeId) continue; // Pular abas não vinculadas
+        const storeId = storeMapping[ext.storeName];
+        if (!storeId) continue; // Pular lojas não vinculadas
 
         // 1. Inserir OSs no estoque_os_pendente
         if (ext.osPendentes.length > 0) {
@@ -87,7 +91,7 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
             .from('estoque_os_pendente')
             .insert(payload);
 
-          if (osError) throw new Error(`Erro ao salvar OSs da aba ${ext.sheetName}: ` + osError.message);
+          if (osError) throw new Error(`Erro ao salvar OSs da loja ${ext.storeName}: ` + osError.message);
         }
 
         // 2. Injetar o Caixa Anterior (previous_balance) na reconciliations de D-1 (ontem)
@@ -161,11 +165,11 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
               {isDragActive ? 'Solte a Planilha aqui' : 'Arraste a Planilha Antiga de Conciliação'}
             </h3>
             <p className="text-[var(--text-tertiary)] text-sm text-center max-w-sm">
-              Formato .xlsx com as abas "SALDO" e "OS". O sistema extrairá o passivo e o caixa anterior.
+              Formato .xlsx com as abas "SALDO" e "OS". O sistema agrupará os dados por Loja.
             </p>
             {isProcessing && (
               <div className="mt-4 text-[var(--color-primary)] flex items-center gap-2">
-                <LoadingSpinner size="sm" /> Analisando abas...
+                <LoadingSpinner size="sm" /> Extraindo lojas...
               </div>
             )}
           </div>
@@ -189,16 +193,16 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
               <div key={index} className="bg-[var(--bg-surface-elevated)] p-5 rounded-2xl border border-[var(--border-subtle)] shadow-sm space-y-5">
                 <div className="flex items-center justify-between">
                   <h4 className="font-display font-semibold text-base text-[var(--text-primary)]">
-                    Aba: <span className="text-[var(--color-primary)]">{ext.sheetName}</span>
+                    Loja: <span className="text-[var(--color-primary)]">{ext.storeName}</span>
                   </h4>
                   <div className="flex items-center gap-2">
                     <label className="text-xs font-semibold text-[var(--text-secondary)] uppercase">Vincular Loja:</label>
                     <select 
-                      value={storeMapping[ext.sheetName] || ''} 
-                      onChange={(e) => setStoreMapping(prev => ({ ...prev, [ext.sheetName]: e.target.value }))}
+                      value={storeMapping[ext.storeName] || ''} 
+                      onChange={(e) => setStoreMapping(prev => ({ ...prev, [ext.storeName]: e.target.value }))}
                       className="bg-[var(--bg-canvas)] border border-[var(--color-primary)]/50 text-[var(--text-primary)] rounded p-2 text-sm focus:outline-none min-w-[200px]"
                     >
-                      <option value="">Não importar esta aba</option>
+                      <option value="">Não importar esta loja</option>
                       {stores.map((s: any) => (
                         <option key={s.id} value={s.id}>{s.name}</option>
                       ))}
@@ -247,7 +251,7 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
                       ))}
                     </div>
                   ) : (
-                    <div className="text-xs text-[var(--text-tertiary)] italic py-2">Nenhuma OS pendente detectada nesta aba.</div>
+                    <div className="text-xs text-[var(--text-tertiary)] italic py-2">Nenhuma OS pendente detectada para esta loja.</div>
                   )}
                 </div>
               </div>

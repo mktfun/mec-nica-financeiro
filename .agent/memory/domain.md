@@ -1,20 +1,52 @@
-## [2026-08-07] — [Feature ID: 141-fix-conciliacao-valor-contas-fluxo]
+## [2026-08-07] â€” [Feature ID: 141-fix-conciliacao-valor-contas-fluxo]
 
-**Contexto:** O painel global de Conciliação Diária estava com a matemática quebrada, ignorando contas originárias de OFX e não calculando o Fluxo de Caixa histórico. A RPC do Supabase (`get_dashboard_metrics`) desviava das fórmulas aplicadas no React.
+**Contexto:** O painel global de ConciliaÃ§Ã£o DiÃ¡ria estava com a matemÃ¡tica quebrada, ignorando contas originÃ¡rias de OFX e nÃ£o calculando o Fluxo de Caixa histÃ³rico. A RPC do Supabase (`get_dashboard_metrics`) desviava das fÃ³rmulas aplicadas no React.
 
-**Regra aprendida:** The Single Source of Truth matemática. Para a conciliação:
-1. "Valor Contas" DEVE abrigar as saídas (type=out) do banco de dados onde `source = 'ofx'`, pois representam despesas não mapeadas pelo sistema interno.
-2. "Fluxo de Caixa" DEVE ser obrigatoriamente a diferença entre `Caixa Atual (hoje)` e `Caixa Atual (ontem / snapshot fechado anterior)`. O cálculo nunca deve ser `Faturamento Líquido - Contas`, pois a variação patrimonial é a única métrica que importa para o usuário.
+**Regra aprendida:** The Single Source of Truth matemÃ¡tica. Para a conciliaÃ§Ã£o:
+1. "Valor Contas" DEVE abrigar as saÃ­das (type=out) do banco de dados onde `source = 'ofx'`, pois representam despesas nÃ£o mapeadas pelo sistema interno.
+2. "Fluxo de Caixa" DEVE ser obrigatoriamente a diferenÃ§a entre `Caixa Atual (hoje)` e `Caixa Atual (ontem / snapshot fechado anterior)`. O cÃ¡lculo nunca deve ser `Faturamento LÃ­quido - Contas`, pois a variaÃ§Ã£o patrimonial Ã© a Ãºnica mÃ©trica que importa para o usuÃ¡rio.
 
-**Risco identificado:** Matemática em duplicidade. O frontend e o backend devem sempre utilizar a mesma fórmula para compor fluxos, caso contrário o cliente vê um valor na tela principal e outro no breakdown detalhado.
+**Risco identificado:** MatemÃ¡tica em duplicidade. O frontend e o backend devem sempre utilizar a mesma fÃ³rmula para compor fluxos, caso contrÃ¡rio o cliente vÃª um valor na tela principal e outro no breakdown detalhado.
 
-**Não fazer:** Nunca preencher propriedades matemáticas reativas com variáveis hardcoded (ex: `totalOfxOut={0}`) em componentes vitais como o dashboard, ocultando bugs do backend no layout.
+**NÃ£o fazer:** Nunca preencher propriedades matemÃ¡ticas reativas com variÃ¡veis hardcoded (ex: `totalOfxOut={0}`) em componentes vitais como o dashboard, ocultando bugs do backend no layout.
 
-## [2026-08-07] — [Feature ID: 145-fix-fluxo-and-autosave]
+## [2026-08-07] â€” [Feature ID: 145-fix-fluxo-and-autosave]
 
-**Contexto:** Correção avançada na matemática do fluxo de caixa e automação do autosave no `CentralImportWizard.tsx`.
+**Contexto:** CorreÃ§Ã£o avanÃ§ada na matemÃ¡tica do fluxo de caixa e automaÃ§Ã£o do autosave no `CentralImportWizard.tsx`.
 
 **Regra aprendida:** 
+1. "Valor DisponÃ­vel" DEVE ser calculado como `Faturamento - Fluxo de Caixa`, nunca somado.
+2. "DiferenÃ§a" DEVE ser `(Faturamento - Fluxo de Caixa) - Valor Contas`, fechando o saldo zero exato.
+3. Snapshots DiÃ¡rios (`daily_snapshots`) devem ser auto-salvos assim que uma importaÃ§Ã£o de lote Ã© confirmada via RPC `get_dashboard_metrics` para garantir que o "Caixa Anterior" (o lastro do fluxo de caixa) sempre exista para o prÃ³ximo dia.
+
+**Risco identificado:** Ficar dependendo de interaÃ§Ã£o humana (clique manual de "Salvar Fechamento DiÃ¡rio") impede que conciliaÃ§Ãµes de dias passados fechem a matemÃ¡tica do fluxo de caixa porque o "Caixa Anterior" se perde no banco.
+
+**NÃ£o fazer:** Nunca calcular Fluxo de Caixa sem ter um snapshot gravado do Ãºltimo estado, pois o lastro financeiro se torna inexistente.
+
+## [2026-08-10] â€” [Feature ID: match-audit-and-fix]
+
+**Contexto:** CorreÃ§Ã£o da engine de Auto-Match (RPC `auto_match_transactions`) para respeitar regras de escopo global vs local (loja) durante o pareamento de OFX, Maquininha e OS.
+
+**Regra aprendida:** O OFX bancÃ¡rio Ã© global (`store_id` Ã© nulo). Maquininhas (POS) e Ordens de ServiÃ§o (OS) sÃ£o locais (`store_id` definido). O pareamento exige 3 pipelines distintos: 1) PIX (OFX Global vs OS Local - busca transversal); 2) Maquininha LÃ­quida vs OFX Rede (Soma de POS local vs entrada OFX global); 3) Maquininha Bruta vs OS CartÃ£o (POS local vs OS local no cartÃ£o).
+
+**Risco identificado:** Tentar fazer `WHERE store_id = ofx.store_id` quebra silenciosamente qualquer match porque `NULL = DP` avalia como falso. AlÃ©m disso, esquecer do LIMIT 1 nas associaÃ§Ãµes pode causar N matches para a mesma OS caso hajam valores repetidos no mesmo dia.
+
+**NÃ£o fazer:** Nunca assuma que transaÃ§Ãµes bancÃ¡rias (OFX) terÃ£o `store_id` populado, e nunca ignore o valor bruto da maquininha no pareamento direto com a OS (pÃ¡tio).
+
+## [2026-08-10] â€” [Feature ID: 148-fix-conciliation-diff]
+
+**Contexto:** CorreÃ§Ã£o do apagÃ£o do histÃ³rico de 'Na Loja OS' e da diferenÃ§a astronÃ´mica (ex: -120k) causados por falha ao reimportar histÃ³ricos e pela premissa errada de que OFX nÃ£o tinha loja.
+
+**Regra aprendida:** O cliente **SOBE UM OFX PARA CADA LOJA**, logo as transaÃ§Ãµes do ItaÃº possuem sim `store_id` mapeado no momento da importaÃ§Ã£o! A RPC `auto_match_transactions` DEVE filtrar o OFX por `store_id` para nÃ£o misturar dinheiros de filiais diferentes. AlÃ©m disso, o motor `calculate_daily_conciliation` precisa ler `reconciliations.na_loja_os` como snapshot histÃ³rico para dias fechados (pois a OS atual jÃ¡ consta como paga e seu saldo 'restante' real Ã© 0).
+
+**Risco identificado:** Mudar a estrutura de tabelas antigas (como adicionar `dedup_hash`) e permitir que registros histÃ³ricos fiquem com `NULL`. Quando o usuÃ¡rio re-importa o passado, o `NULL` permite duplicaÃ§Ã£o, inflando absurdamente totais como o de Maquininha.
+
+**NÃ£o fazer:** Nunca assumir que um arquivo OFX Ã© 'global' apenas por ser extrato bancÃ¡rio sem antes verificar a rotina de importaÃ§Ã£o. Nunca recalcular 'saldo devedor/restante' de dias passados lendo o status da OS hoje.
+
+## [2026-08-10] â€” [Feature ID: 152-manual-expenses]
+
+**Contexto:** Desacoplamento da matemÃ¡tica de "Contas a Pagar" da importaÃ§Ã£o bruta do OFX_out. O arquivo importado trazia despesas de dias correntes que quebravam a matemÃ¡tica da conciliaÃ§Ã£o do dia anterior.
+
 1. "Valor Disponível" DEVE ser calculado como `Faturamento - Fluxo de Caixa`, nunca somado.
 2. "Diferença" DEVE ser `(Faturamento - Fluxo de Caixa) - Valor Contas`, fechando o saldo zero exato.
 3. Snapshots Diários (`daily_snapshots`) devem ser auto-salvos assim que uma importação de lote é confirmada via RPC `get_dashboard_metrics` para garantir que o "Caixa Anterior" (o lastro do fluxo de caixa) sempre exista para o próximo dia.
@@ -53,12 +85,12 @@
 
 **Não fazer:** Nunca misturar o valor brutamente somado do extrato `ofx_out_total` com a "Diferença" final do sistema. O extrato só serve como Raio-X ou auditoria, e o `inputForCalculation` obedece apenas a variáveis controladas.
   
-## [2026-08-11] - [Feature ID: 165]  
-  
-**Contexto:** Implanta��o de Saldo Inicial (Marco Zero Global) multiloja lido direto da planilha Excel, substituindo a depend�ncia do scraping rob�tico falho de OSs do passado e for�ando a auditoria manual di�ria de passivos pendentes.  
-  
-**Regra aprendida:** O Excel de " Implanta��o/Marco "Zero � um banco de dados relacional disfar�ado. O parser deve varrer *todas* as abas dinamicamente, permitindo que a interface da UI mapeie cada aba encontrada para um Store ID espec�fico do banco antes de salvar, rodando um loop ass�ncrono para inserir os passivos no estoque_os_pendente. A limpeza do passivo deve ser feita como um Gargalo de auditoria OBRIGAT�RIA no Wizard de Importa��o, logo ap�s carregar os arquivos e identificar as lojas.  
-  
-**Risco identificado:** Tentar extrair apenas uma aba r�gida da planilha ignorando as filiais, o que destr�i o conceito de multi-tenant do aplicativo, ou permitir que o usu�rio pule as baixas do estoque pendente, o que empurraria OSs mortas eternamente para frente.  
-  
-**N�o fazer:** Nunca reescrever uma interface de inser��o em massa focada apenas em 1 item por vez, o loop de promises deve lidar com a itera��o multiloja usando mapping din�mico, e nunca esconder passivos antigos sob o tapete sem obrigar revis�o. 
+## [2026-08-11] - [Feature ID: 165/166]
+
+**Contexto:** Implantação de Saldo Inicial (Marco Zero Global) lido de planilha Excel, forçando a auditoria manual diária de passivos pendentes.
+
+**Regra aprendida:** O Excel do "Marco Zero" não agrupa lojas por aba, mas sim por linha dentro das abas globais (SALDO, OS). O parser deve ler a planilha linha a linha, identificar o nome da loja na Coluna A e usar dicionários para agrupar saldos e OSs extraídas por `storeName`. A UI deve, através do `storeName`, usar fuzzy matching para auto-selecionar o Store ID sem obrigar cliques manuais, enquanto exibe blocos isolados por loja.
+
+**Risco identificado:** Assumir que o nome da aba representa o bloco de dados (ex: Aba SALDO). Isso mistura saldos de filiais diferentes. Além disso, ocultar as baixas de OSs antigas sem obrigar auditoria criaria um passivo infinito.
+
+**Não fazer:** Nunca parsear Excel de múltiplas filiais assumindo que 1 aba = 1 entidade sem antes inspecionar os dados. Nunca permitir importação diária de conciliação sem forçar a resolução do estoque passivo pendente (step 2.5).
