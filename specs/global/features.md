@@ -127,3 +127,7 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 
 ## [160-sync-date-picker]
 - **Seletor de Datas Cloud**: Parâmetro `data` (targetDate) enviado no invoke da edge function para filtrar raspagens do bot PM2 retroativamente.
+
+## [161-cloud-sync-live-preview]
+- **Agent UI Runner**: Componente `AgentRunnerModal` e `AgentStageItem` que criam a experiência de terminal de bot expansível com Framer Motion. 
+- **Auto-Injection (Polling)**: O Frontend faz polling de `oficina_contas` e injeta automaticamente os dados no Step 3 do Wizard após a Edge Function ser processada, substituindo a UX cega do sistema anterior.

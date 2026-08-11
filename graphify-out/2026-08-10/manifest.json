@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1786392869.789829,
-    "ast_hash": "657cc3d7925d0d5c2064203ea8b1f6d9",
+    "mtime": 1786394568.4198759,
+    "ast_hash": "5bc448b9645e9a4713761496a73ca0bf",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -3325,8 +3325,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786392979.8153858,
-    "ast_hash": "2f2b1df84d817c0ab2c99da5ed248987",
+    "mtime": 1786394662.27808,
+    "ast_hash": "7fcdcc3f9feca9dc84426800e4455738",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -4470,8 +4470,8 @@
     "semantic_hash": ""
   },
   "supabase/functions/sync-oficina/index.ts": {
-    "mtime": 1786367140.628566,
-    "ast_hash": "f86883bdc285ed8049afeb9681d04000",
+    "mtime": 1786394535.8357568,
+    "ast_hash": "6ad1aee6575fda0a196e375b32e9db9a",
     "semantic_hash": ""
   },
   "supabase/migrations/20260803000000_oficina_bot_automation.sql": {
@@ -6147,6 +6147,41 @@
   "specs/archive/156-fix-breakdown-type/spec-plan.md": {
     "mtime": 1786392130.979323,
     "ast_hash": "89d346f814a6bd4933b15e1519e1810a",
+    "semantic_hash": ""
+  },
+  "specs/archive/157-sync-oficina-button/design.md": {
+    "mtime": 1786392769.0812583,
+    "ast_hash": "9171542612069e9c971a9af01a2acec8",
+    "semantic_hash": ""
+  },
+  "specs/archive/157-sync-oficina-button/proposal.md": {
+    "mtime": 1786392767.046552,
+    "ast_hash": "062810b5d44dc6c1415226d64d990136",
+    "semantic_hash": ""
+  },
+  "specs/archive/157-sync-oficina-button/spec-plan.md": {
+    "mtime": 1786392923.5491652,
+    "ast_hash": "737e489368b76c8bd36db689185b8100",
+    "semantic_hash": ""
+  },
+  "test_ssh.cjs": {
+    "mtime": 1786393828.929491,
+    "ast_hash": "69ba5dce33648f5997d00c7a74839eff",
+    "semantic_hash": ""
+  },
+  "specs/archive/158-cors-edge-function/design.md": {
+    "mtime": 1786393245.1222775,
+    "ast_hash": "64ddb3ce5d54fb39100fd8b7b078ba72",
+    "semantic_hash": ""
+  },
+  "specs/archive/158-cors-edge-function/proposal.md": {
+    "mtime": 1786393242.7297077,
+    "ast_hash": "f61b20c81b836b4caf90d36b3f5e6abc",
+    "semantic_hash": ""
+  },
+  "specs/archive/158-cors-edge-function/spec-plan.md": {
+    "mtime": 1786393337.0270343,
+    "ast_hash": "efb53602608f4dab6c2ee2dbd1d1c91f",
     "semantic_hash": ""
   }
 }
