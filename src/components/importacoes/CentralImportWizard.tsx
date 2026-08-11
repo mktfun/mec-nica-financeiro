@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { AgentRunnerModal } from './AgentRunnerModal';
 import { MatchManualOsPendente } from './MatchManualOsPendente';
 import { MarcoZeroWizard } from './MarcoZeroWizard';
+import { AuditoriaPassivoWizard } from './AuditoriaPassivoWizard';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
@@ -76,7 +77,7 @@ function StepIndicator({ current, step, title }: { current: number, step: number
 }
 
 export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
-  const [step, setStep] = useState<1 | 2 | 3 | 3.5 | 4>(1);
+  const [step, setStep] = useState<1 | 2 | 2.5 | 3 | 3.5 | 4>(1);
   const [subStep, setSubStep] = useState<1 | 2 | 3>(1);
   const [isPreparing, setIsPreparing] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -1117,7 +1118,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
                   <div className="flex justify-between mt-6">
                     <Button variant="ghost" onClick={() => setSubStep(2)}>â† Voltar para OS</Button>
-                    <Button onClick={() => setStep(3)}>Avançar para Preview â†’</Button>
+                    <Button onClick={() => setStep(2.5 as any)}>Avançar para Auditoria</Button>
                   </div>
                 </div>
               );
@@ -1125,6 +1126,19 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           </Card>
         </motion.div>
       )}
+
+      {step === 2.5 && (() => {
+        const firstStoreId = Object.values(mapping).find(id => id && id !== 'GLOBAL');
+        return (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <AuditoriaPassivoWizard 
+              storeId={firstStoreId || ''} 
+              onComplete={() => setStep(3)}
+              onCancel={() => setStep(2)}
+            />
+          </div>
+        );
+      })()}
 
       
         {step === 3.5 && (() => {

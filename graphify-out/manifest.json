@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1786452624.5705225,
-    "ast_hash": "e9d8bc3e4fbd440530a2d0731fadfd24",
+    "mtime": 1786455734.4593434,
+    "ast_hash": "b9ba87b56a4fbb8f8028a39945a2f56c",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -1190,8 +1190,8 @@
     "semantic_hash": ""
   },
   "src/integrations/supabase/types.ts": {
-    "mtime": 1786143716.4260163,
-    "ast_hash": "e44ded53f691e5389bc83348a7279bdd",
+    "mtime": 1786453834.1820724,
+    "ast_hash": "a9723336b351e518a2efed73e9baec48",
     "semantic_hash": ""
   },
   "src/lib/database.types.ts": {
@@ -6285,8 +6285,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/MarcoZeroWizard.tsx": {
-    "mtime": 1786452231.3756514,
-    "ast_hash": "76d9d5c3baf5d984afd8c78991639654",
+    "mtime": 1786455553.2411742,
+    "ast_hash": "5faec32e3350793bd30f1e5b04eef87e",
     "semantic_hash": ""
   },
   "src/components/importacoes/MatchManualOsPendente.tsx": {
@@ -6295,8 +6295,8 @@
     "semantic_hash": ""
   },
   "src/lib/parsers/marcoZeroParser.ts": {
-    "mtime": 1786452174.723253,
-    "ast_hash": "f4be3414800cdfe1b47d1030c8cddf6e",
+    "mtime": 1786455496.389091,
+    "ast_hash": "dea1899142f8a4682ebd2793577b6e33",
     "semantic_hash": ""
   },
   "supabase/migrations/20260811124024_create_estoque_os_pendente.sql": {
@@ -6332,6 +6332,31 @@
   "specs/archive/162-bot-fallback-and-history/spec-plan.md": {
     "mtime": 1786448358.7942114,
     "ast_hash": "54a1d655991dcf3f460d01650528e08e",
+    "semantic_hash": ""
+  },
+  "src/components/importacoes/AuditoriaPassivoWizard.tsx": {
+    "mtime": 1786455597.2115593,
+    "ast_hash": "ba7c1094ae7cb8ed9b93780ae686c703",
+    "semantic_hash": ""
+  },
+  "tmp_schema_dump.sql": {
+    "mtime": 1786455251.0736244,
+    "ast_hash": "fc802db88cdc5f6b48aad8fa238d86bb",
+    "semantic_hash": ""
+  },
+  "specs/165-marco-zero-completo/design.md": {
+    "mtime": 1786455369.152913,
+    "ast_hash": "f416aedfc403714352ea69ff800c5894",
+    "semantic_hash": ""
+  },
+  "specs/165-marco-zero-completo/proposal.md": {
+    "mtime": 1786455352.673617,
+    "ast_hash": "9232906e6204ac3b6bc08cd0e3446aba",
+    "semantic_hash": ""
+  },
+  "specs/165-marco-zero-completo/spec-plan.md": {
+    "mtime": 1786455743.1001475,
+    "ast_hash": "a9ea5dc0fddca718347e95ea4a9b7b65",
     "semantic_hash": ""
   }
 }

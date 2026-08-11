@@ -13,8 +13,8 @@ import { useStores } from '@/hooks/useStores';
 export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => void, onCancel: () => void }) {
   const [file, setFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [data, setData] = useState<MarcoZeroExtraction | null>(null);
-  const [targetStoreId, setTargetStoreId] = useState<string>('');
+  const [data, setData] = useState<MarcoZeroExtraction[] | null>(null);
+  const [storeMapping, setStoreMapping] = useState<Record<string, string>>({});
   const [isSaving, setIsSaving] = useState(false);
   const { data: stores = [] } = useStores();
 
@@ -31,7 +31,17 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
         try {
           const extracted = await parseMarcoZeroPlanilha(acceptedFiles[0]);
           setData(extracted);
-          toast.success(`Planilha processada! ${extracted.osPendentes.length} OSs pendentes encontradas.`);
+          
+          // Auto-mapear se possível (tentando bater o nome da aba com o nome da loja)
+          // Mas inicializa vazio
+          const initialMapping: Record<string, string> = {};
+          extracted.forEach(ext => {
+             initialMapping[ext.sheetName] = ''; 
+          });
+          setStoreMapping(initialMapping);
+
+          const totalOs = extracted.reduce((acc, curr) => acc + curr.osPendentes.length, 0);
+          toast.success(`Planilha processada! ${extracted.length} abas válidas e ${totalOs} OSs pendentes encontradas.`);
         } catch (error: any) {
           toast.error(error.message);
           setFile(null);
@@ -43,65 +53,73 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
   });
 
   const handleSave = async () => {
-    if (!data || !targetStoreId) {
-      toast.error("Selecione uma loja para vincular o Marco Zero.");
+    if (!data) return;
+
+    // Verificar se pelo menos uma aba tem loja vinculada
+    const hasAnyMapping = Object.values(storeMapping).some(val => val !== '');
+    if (!hasAnyMapping) {
+      toast.error("Vincule pelo menos uma aba a uma loja para implantar o Marco Zero.");
       return;
     }
 
     setIsSaving(true);
     try {
-      // 1. Inserir OSs no estoque_os_pendente
-      if (data.osPendentes.length > 0) {
-        const payload = data.osPendentes.map(os => ({
-          store_id: targetStoreId,
-          numero_os: os.numero_os,
-          data_os: os.data_os,
-          valor_os: os.valor_os,
-          status: 'PENDENTE'
-        }));
-
-        const { error: osError } = await supabase
-          .from('estoque_os_pendente')
-          .insert(payload);
-
-        if (osError) throw new Error("Erro ao salvar OSs: " + osError.message);
-      }
-
-      // 2. Injetar o Caixa Anterior (previous_balance) na reconciliations de D-1 (ontem)
-      // Para simplificar, o Marco Zero criará ou atualizará o fechamento de "ontem" da loja escolhida.
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
       const targetDateStr = yesterday.toISOString().split('T')[0];
 
-      // Pegar reconciliations de ontem (se existir)
-      const { data: recData } = await supabase
-        .from('reconciliations')
-        .select('id')
-        .eq('store_id', targetStoreId)
-        .eq('date', targetDateStr)
-        .maybeSingle();
+      // Iterar sobre cada aba extraída
+      for (const ext of data) {
+        const storeId = storeMapping[ext.sheetName];
+        if (!storeId) continue; // Pular abas não vinculadas
 
-      if (recData) {
-        await supabase
+        // 1. Inserir OSs no estoque_os_pendente
+        if (ext.osPendentes.length > 0) {
+          const payload = ext.osPendentes.map(os => ({
+            store_id: storeId,
+            numero_os: os.numero_os,
+            data_os: os.data_os,
+            valor_os: os.valor_os,
+            status: 'PENDENTE'
+          }));
+
+          const { error: osError } = await supabase
+            .from('estoque_os_pendente')
+            .insert(payload);
+
+          if (osError) throw new Error(`Erro ao salvar OSs da aba ${ext.sheetName}: ` + osError.message);
+        }
+
+        // 2. Injetar o Caixa Anterior (previous_balance) na reconciliations de D-1 (ontem)
+        const { data: recData } = await supabase
           .from('reconciliations')
-          .update({
-            previous_balance: data.caixaAnterior,
-            manual_dinheiro_mp: data.dinheiroMp,
-            manual_a_receber: data.aReceber
-          })
-          .eq('id', recData.id);
-      } else {
-        await supabase
-          .from('reconciliations')
-          .insert({
-            store_id: targetStoreId,
-            date: targetDateStr,
-            previous_balance: data.caixaAnterior,
-            manual_dinheiro_mp: data.dinheiroMp,
-            manual_a_receber: data.aReceber,
-            status: 'completed',
-            is_closed: true
-          });
+          .select('id')
+          .eq('store_id', storeId)
+          .eq('date', targetDateStr)
+          .maybeSingle();
+
+        if (recData) {
+          await supabase
+            .from('reconciliations')
+            .update({
+              previous_balance: ext.caixaAnterior,
+              manual_dinheiro_mp: ext.dinheiroMp,
+              manual_a_receber: ext.aReceber
+            })
+            .eq('id', recData.id);
+        } else {
+          await supabase
+            .from('reconciliations')
+            .insert({
+              store_id: storeId,
+              date: targetDateStr,
+              previous_balance: ext.caixaAnterior,
+              manual_dinheiro_mp: ext.dinheiroMp,
+              manual_a_receber: ext.aReceber,
+              status: 'completed',
+              is_closed: true
+            });
+        }
       }
 
       toast.success("Marco Zero implantado com sucesso!");
@@ -158,73 +176,94 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
       )}
 
       {data && (
-        <Card className="p-6 md:p-8 space-y-6 bg-[var(--bg-canvas)] border border-[var(--color-primary)]/30">
+        <Card className="p-6 md:p-8 space-y-8 bg-[var(--bg-canvas)] border border-[var(--color-primary)]/30">
           <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-4">
             <h3 className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2">
-              <CheckCircle2 className="text-emerald-500" /> Planilha Processada
+              <CheckCircle2 className="text-emerald-500" /> Planilha Global Processada
             </h3>
-            <div className="flex items-center gap-2">
-              <label className="text-xs font-semibold text-[var(--text-secondary)] uppercase">Loja Alvo:</label>
-              <select 
-                value={targetStoreId} 
-                onChange={(e) => setTargetStoreId(e.target.value)}
-                className="bg-[var(--bg-surface-elevated)] border border-[var(--color-primary)] text-[var(--text-primary)] rounded p-2 text-sm focus:outline-none"
-              >
-                <option value="">Selecione a Loja...</option>
-                {stores.map((s: any) => (
-                  <option key={s.id} value={s.id}>{s.name}</option>
-                ))}
-              </select>
-            </div>
+            <span className="text-sm text-[var(--text-secondary)]">{data.length} blocos de dados encontrados</span>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-4 bg-[var(--bg-surface-elevated)] rounded-xl border border-[var(--border-subtle)]">
-              <p className="text-[10px] text-[var(--text-tertiary)] uppercase font-bold tracking-wider mb-1">Dinheiro MP</p>
-              <p className="text-lg font-semibold text-[var(--text-primary)]"><AnimatedNumber value={data.dinheiroMp} format="currency" /></p>
-            </div>
-            <div className="p-4 bg-[var(--bg-surface-elevated)] rounded-xl border border-[var(--border-subtle)]">
-              <p className="text-[10px] text-[var(--text-tertiary)] uppercase font-bold tracking-wider mb-1">A Receber</p>
-              <p className="text-lg font-semibold text-[var(--text-primary)]"><AnimatedNumber value={data.aReceber} format="currency" /></p>
-            </div>
-            <div className="p-4 bg-[var(--bg-surface-elevated)] rounded-xl border border-[var(--border-subtle)]">
-              <p className="text-[10px] text-[var(--text-tertiary)] uppercase font-bold tracking-wider mb-1">Negativo</p>
-              <p className="text-lg font-semibold text-red-400"><AnimatedNumber value={data.negativo} format="currency" /></p>
-            </div>
-            <div className="p-4 bg-[var(--color-primary)]/10 rounded-xl border border-[var(--color-primary)]/30">
-              <p className="text-[10px] text-[var(--color-primary)] uppercase font-bold tracking-wider mb-1">Caixa Anterior</p>
-              <p className="text-lg font-semibold text-[var(--color-primary)]"><AnimatedNumber value={data.caixaAnterior} format="currency" /></p>
-            </div>
-          </div>
-
-          <div className="bg-[var(--bg-surface-elevated)] p-4 rounded-xl border border-[var(--border-subtle)]">
-            <h4 className="font-semibold text-sm mb-3 flex items-center justify-between">
-              <span>Passivo (Estoque de OSs Pendentes)</span>
-              <span className="bg-[var(--color-accent-teal)]/20 text-[var(--color-accent-teal)] px-2 py-1 rounded text-xs">
-                {data.osPendentes.length} OSs encontradas
-              </span>
-            </h4>
-            <div className="max-h-60 overflow-y-auto custom-scrollbar space-y-2 pr-2">
-              {data.osPendentes.map((os, idx) => (
-                <div key={idx} className="flex justify-between items-center p-2 hover:bg-[var(--bg-canvas)] rounded border border-transparent hover:border-[var(--border-subtle)] transition-colors">
-                  <span className="font-mono text-xs font-semibold text-[var(--text-primary)]">OS {os.numero_os}</span>
-                  <div className="flex gap-4">
-                    <span className="text-xs text-[var(--text-tertiary)]">{new Date(os.data_os).toLocaleDateString('pt-BR')}</span>
-                    <span className="text-xs font-semibold text-sky-400">
-                      {os.valor_os.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                    </span>
+          <div className="space-y-6 max-h-[600px] overflow-y-auto custom-scrollbar pr-2">
+            {data.map((ext, index) => (
+              <div key={index} className="bg-[var(--bg-surface-elevated)] p-5 rounded-2xl border border-[var(--border-subtle)] shadow-sm space-y-5">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-display font-semibold text-base text-[var(--text-primary)]">
+                    Aba: <span className="text-[var(--color-primary)]">{ext.sheetName}</span>
+                  </h4>
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs font-semibold text-[var(--text-secondary)] uppercase">Vincular Loja:</label>
+                    <select 
+                      value={storeMapping[ext.sheetName] || ''} 
+                      onChange={(e) => setStoreMapping(prev => ({ ...prev, [ext.sheetName]: e.target.value }))}
+                      className="bg-[var(--bg-canvas)] border border-[var(--color-primary)]/50 text-[var(--text-primary)] rounded p-2 text-sm focus:outline-none min-w-[200px]"
+                    >
+                      <option value="">Não importar esta aba</option>
+                      {stores.map((s: any) => (
+                        <option key={s.id} value={s.id}>{s.name}</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
-              ))}
-            </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div className="p-3 bg-[var(--bg-canvas)] rounded-lg border border-[var(--border-subtle)]/50">
+                    <p className="text-[10px] text-[var(--text-tertiary)] uppercase font-bold tracking-wider mb-1">Dinheiro MP</p>
+                    <p className="text-base font-semibold text-[var(--text-primary)]"><AnimatedNumber value={ext.dinheiroMp} format="currency" /></p>
+                  </div>
+                  <div className="p-3 bg-[var(--bg-canvas)] rounded-lg border border-[var(--border-subtle)]/50">
+                    <p className="text-[10px] text-[var(--text-tertiary)] uppercase font-bold tracking-wider mb-1">A Receber</p>
+                    <p className="text-base font-semibold text-[var(--text-primary)]"><AnimatedNumber value={ext.aReceber} format="currency" /></p>
+                  </div>
+                  <div className="p-3 bg-[var(--bg-canvas)] rounded-lg border border-[var(--border-subtle)]/50">
+                    <p className="text-[10px] text-[var(--text-tertiary)] uppercase font-bold tracking-wider mb-1">Negativo</p>
+                    <p className="text-base font-semibold text-red-400"><AnimatedNumber value={ext.negativo} format="currency" /></p>
+                  </div>
+                  <div className="p-3 bg-[var(--color-primary)]/5 rounded-lg border border-[var(--color-primary)]/20">
+                    <p className="text-[10px] text-[var(--color-primary)] uppercase font-bold tracking-wider mb-1">Caixa Anterior</p>
+                    <p className="text-base font-semibold text-[var(--color-primary)]"><AnimatedNumber value={ext.caixaAnterior} format="currency" /></p>
+                  </div>
+                </div>
+
+                <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]/50">
+                  <h5 className="font-semibold text-xs mb-2 flex items-center justify-between">
+                    <span className="text-[var(--text-secondary)]">OSs Pendentes</span>
+                    <span className="bg-[var(--color-accent-teal)]/20 text-[var(--color-accent-teal)] px-2 py-0.5 rounded text-[10px] font-bold">
+                      {ext.osPendentes.length}
+                    </span>
+                  </h5>
+                  {ext.osPendentes.length > 0 ? (
+                    <div className="max-h-32 overflow-y-auto custom-scrollbar space-y-1 pr-2">
+                      {ext.osPendentes.map((os, idx) => (
+                        <div key={idx} className="flex justify-between items-center py-1 border-b border-[var(--border-subtle)]/30 last:border-0">
+                          <span className="font-mono text-[10px] font-medium text-[var(--text-primary)]">OS {os.numero_os}</span>
+                          <div className="flex gap-3">
+                            <span className="text-[10px] text-[var(--text-tertiary)]">{new Date(os.data_os).toLocaleDateString('pt-BR')}</span>
+                            <span className="text-[10px] font-semibold text-sky-400">
+                              {os.valor_os.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-xs text-[var(--text-tertiary)] italic py-2">Nenhuma OS pendente detectada nesta aba.</div>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
 
           <div className="flex justify-between items-center pt-4 border-t border-[var(--border-subtle)]">
             <Button variant="secondary" onClick={() => { setFile(null); setData(null); }}>
               Refazer Upload
             </Button>
-            <Button onClick={handleSave} disabled={isSaving || !targetStoreId} className="bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 px-8 py-6 text-base shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.3)]">
-              {isSaving ? <LoadingSpinner size="sm" text="Implantando..." /> : <Sparkles className="mr-2" />} Implantar Marco Zero
+            <Button 
+              onClick={handleSave} 
+              disabled={isSaving || !Object.values(storeMapping).some(val => val !== '')} 
+              className="bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 px-8 py-6 text-base shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.3)]"
+            >
+              {isSaving ? <LoadingSpinner size="sm" text="Implantando..." /> : <Sparkles className="mr-2" />} Implantar Base Global
             </Button>
           </div>
         </Card>

@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1786448306.176869,
-    "ast_hash": "b256cfb6694bcbf3c93c8c09bf491bd7",
+    "mtime": 1786452624.5705225,
+    "ast_hash": "e9d8bc3e4fbd440530a2d0731fadfd24",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -1115,8 +1115,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useConciliacao.ts": {
-    "mtime": 1786143715.9442134,
-    "ast_hash": "9d34fe3655ba910e59b97f8e60c7f2f0",
+    "mtime": 1786452594.7104626,
+    "ast_hash": "376253af9d6d04dfcb6aa79b645f9fa1",
     "semantic_hash": ""
   },
   "src/hooks/useDailySnapshot.ts": {
@@ -3325,8 +3325,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786447323.0795362,
-    "ast_hash": "e08d1b4eec2cd445a2478ad2ea96f163",
+    "mtime": 1786453215.2122257,
+    "ast_hash": "3da741288647451fef2fe36143621a68",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -5790,8 +5790,8 @@
     "semantic_hash": ""
   },
   ".agents/memory/domain.md": {
-    "mtime": 1786448661.2331462,
-    "ast_hash": "9ce8c21547c19ae870f391917a52f94b",
+    "mtime": 1786453170.1270292,
+    "ast_hash": "882b7340e5992e881b727c268890b7f1",
     "semantic_hash": ""
   },
   ".agents/memory/supabase.md": {
@@ -6264,21 +6264,6 @@
     "ast_hash": "5e0311ba65dbb74fe8e9ecbbfeae61cc",
     "semantic_hash": ""
   },
-  "specs/162-bot-fallback-and-history/design.md": {
-    "mtime": 1786447681.3258753,
-    "ast_hash": "d784f3911e6986c18271317c6dd5badc",
-    "semantic_hash": ""
-  },
-  "specs/162-bot-fallback-and-history/proposal.md": {
-    "mtime": 1786447662.8411596,
-    "ast_hash": "978b771742118db8aa04f6a2adfee32d",
-    "semantic_hash": ""
-  },
-  "specs/162-bot-fallback-and-history/spec-plan.md": {
-    "mtime": 1786448358.7942114,
-    "ast_hash": "54a1d655991dcf3f460d01650528e08e",
-    "semantic_hash": ""
-  },
   "specs/archive/161-cloud-sync-live-preview/design.md": {
     "mtime": 1786447323.070246,
     "ast_hash": "0143407d53cf90e46ccc48396f2dc28a",
@@ -6295,8 +6280,58 @@
     "semantic_hash": ""
   },
   "specs/global/features_clean.md": {
-    "mtime": 1786447624.0686002,
+    "mtime": 1786448783.2145193,
     "ast_hash": "79794134c2911ade268c231c06eebc60",
+    "semantic_hash": ""
+  },
+  "src/components/importacoes/MarcoZeroWizard.tsx": {
+    "mtime": 1786452231.3756514,
+    "ast_hash": "76d9d5c3baf5d984afd8c78991639654",
+    "semantic_hash": ""
+  },
+  "src/components/importacoes/MatchManualOsPendente.tsx": {
+    "mtime": 1786452335.2643776,
+    "ast_hash": "ad6ca5441a61fcee9c6c0e1f77802d5e",
+    "semantic_hash": ""
+  },
+  "src/lib/parsers/marcoZeroParser.ts": {
+    "mtime": 1786452174.723253,
+    "ast_hash": "f4be3414800cdfe1b47d1030c8cddf6e",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260811124024_create_estoque_os_pendente.sql": {
+    "mtime": 1786452132.0239136,
+    "ast_hash": "df7f8d56de726511964646fb5be85399",
+    "semantic_hash": ""
+  },
+  "specs/164-fim-do-robo/design.md": {
+    "mtime": 1786451874.5527632,
+    "ast_hash": "7872394914dae1cdd8d9772cc4da1403",
+    "semantic_hash": ""
+  },
+  "specs/164-fim-do-robo/proposal.md": {
+    "mtime": 1786451845.22608,
+    "ast_hash": "0c13d7f61750ed1b93f4ae6e6070af0b",
+    "semantic_hash": ""
+  },
+  "specs/164-fim-do-robo/spec-plan.md": {
+    "mtime": 1786452636.9555018,
+    "ast_hash": "e8cdb321eabbbaa9abfaf946d32396ce",
+    "semantic_hash": ""
+  },
+  "specs/archive/162-bot-fallback-and-history/design.md": {
+    "mtime": 1786447681.3258753,
+    "ast_hash": "d784f3911e6986c18271317c6dd5badc",
+    "semantic_hash": ""
+  },
+  "specs/archive/162-bot-fallback-and-history/proposal.md": {
+    "mtime": 1786447662.8411596,
+    "ast_hash": "978b771742118db8aa04f6a2adfee32d",
+    "semantic_hash": ""
+  },
+  "specs/archive/162-bot-fallback-and-history/spec-plan.md": {
+    "mtime": 1786448358.7942114,
+    "ast_hash": "54a1d655991dcf3f460d01650528e08e",
     "semantic_hash": ""
   }
 }

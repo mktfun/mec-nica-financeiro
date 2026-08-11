@@ -52,3 +52,13 @@
 **Risco identificado:** Hidrata√ß√£o de valores. A interface precisa for√ßar o React a carregar o valor hist√≥rico salvo para aquela data toda vez que o `selectedDate` mudar, caso contr√°rio o valor de hoje transborda acidentalmente para dias j√° fechados do passado.
 
 **N√£o fazer:** Nunca misturar o valor brutamente somado do extrato `ofx_out_total` com a "Diferen√ßa" final do sistema. O extrato s√≥ serve como Raio-X ou auditoria, e o `inputForCalculation` obedece apenas a vari√°veis controladas.
+  
+## [2026-08-11] - [Feature ID: 165]  
+  
+**Contexto:** Implantaá∆o de Saldo Inicial (Marco Zero Global) multiloja lido direto da planilha Excel, substituindo a dependància do scraping rob¢tico falho de OSs do passado e foráando a auditoria manual di†ria de passivos pendentes.  
+  
+**Regra aprendida:** O Excel de " Implantaá∆o/Marco "Zero Ç um banco de dados relacional disfaráado. O parser deve varrer *todas* as abas dinamicamente, permitindo que a interface da UI mapeie cada aba encontrada para um Store ID espec°fico do banco antes de salvar, rodando um loop ass°ncrono para inserir os passivos no estoque_os_pendente. A limpeza do passivo deve ser feita como um Gargalo de auditoria OBRIGAT‡RIA no Wizard de Importaá∆o, logo ap¢s carregar os arquivos e identificar as lojas.  
+  
+**Risco identificado:** Tentar extrair apenas uma aba r°gida da planilha ignorando as filiais, o que destr¢i o conceito de multi-tenant do aplicativo, ou permitir que o usu†rio pule as baixas do estoque pendente, o que empurraria OSs mortas eternamente para frente.  
+  
+**N∆o fazer:** Nunca reescrever uma interface de inserá∆o em massa focada apenas em 1 item por vez, o loop de promises deve lidar com a iteraá∆o multiloja usando mapping dinÉmico, e nunca esconder passivos antigos sob o tapete sem obrigar revis∆o. 

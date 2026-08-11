@@ -70,3 +70,8 @@
 - **get_raw_os_data(text, date) (150-fix)**: RPC corrigida ó p_store_id agora text, filtro por opened_at::date
 - **get_raw_rede_data(text, date) (150-fix)**: RPC corrigida ó p_store_id text, filtro target_date, novos campos machine_name/payment_method/occurred_at
 - **get_raw_ofx_data(text, date) (150-fix)**: RPC corrigida ó p_store_id text, filtro target_date, cast p_store_id::uuid para stores.id
+  
+### Marco Zero Global e Auditoria (11/08/2026)  
+- **MarcoZeroWizard.tsx**: Modificado para parsear todas as abas dinamicamente da planilha e renderizar cards de visualizaá∆o para cada uma, suportando multiplas inserá‰es.  
+- **AuditoriaPassivoWizard.tsx**: Novo wizard estilo checklist para aprovaá∆o/baixa manual das OSs que est∆o em estoque_os_pendente com status PENDENTE. Foi inserido em CentralImportWizard (passo 2.5).  
+- **marcoZeroParser.ts**: Modificado para extrair MarcoZeroExtraction[] iterando sobre todas as SheetNames do workbook xlsx. 
