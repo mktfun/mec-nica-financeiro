@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Link } from '@tanstack/react-router';
 import {
   AlertOctagon, Save, AlertTriangle, CheckCircle2,
-  CalendarDays, ChevronRight, Landmark, Wallet, Receipt, ShoppingBag
+  CalendarDays, ChevronRight, Landmark, Wallet, Receipt, ShoppingBag, Edit2
 } from 'lucide-react';
 import { useDailySnapshot, usePreviousDaySnapshot, useSaveDailySnapshot } from '@/hooks/useDailySnapshot';
 import { getDefaultDate } from '@/lib/utils';
@@ -406,11 +406,11 @@ export function ResumoDiaPanel({
           <Button
             variant="primary"
             onClick={handleSave}
-            disabled={saveSnapshot.isPending || !currentSnapshot}
+            disabled={saveSnapshot.isPending}
             className="gap-2 px-6 py-2 text-sm"
           >
-            <Save size={16} />
-            {isSaved ? 'Salvo!' : 'Gravar Fechamento Diário'}
+            {currentSnapshot ? <Edit2 size={16} /> : <Save size={16} />}
+            {isSaved ? 'Salvo!' : (currentSnapshot ? 'Editar Fechamento' : 'Gravar Fechamento Diário')}
           </Button>
         </div>
       </div>

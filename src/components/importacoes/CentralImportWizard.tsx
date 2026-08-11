@@ -4,6 +4,7 @@ import { useDropzone } from 'react-dropzone';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { AgentRunnerModal } from './AgentRunnerModal';
+import { ManualOsFallbackForm, ManualOsEntry } from './ManualOsFallbackForm';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
@@ -74,19 +75,45 @@ function StepIndicator({ current, step, title }: { current: number, step: number
 }
 
 export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
-  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 3.5 | 4>(1);
   const [subStep, setSubStep] = useState<1 | 2 | 3>(1);
   const [isPreparing, setIsPreparing] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [targetDate, setTargetDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [isAgentModalOpen, setIsAgentModalOpen] = useState(false);
+  const [needsFallback, setNeedsFallback] = useState(false);
+  const [manualOsData, setManualOsData] = useState<ManualOsEntry[]>([]);
+  const [cloudOsData, setCloudOsData] = useState<any[]>([]);
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+
   
-  const handleCloudDataSuccess = (cloudData: any[]) => {
+  
+  const handleCloudDataSuccess = (cloudData: any[], fallback: boolean) => {
     setIsAgentModalOpen(false);
-    toast.success(`${cloudData.length} faturamentos encontrados e processados.`);
-    // Passa pro Preview com dados fictícios caso vazios só para demonstrar o Vibe
-    setStep(3); 
+    setCloudOsData(cloudData);
+    setNeedsFallback(fallback);
+    
+    if (fallback) {
+      setStep(3.5 as any);
+    } else {
+      toast.success(`${cloudData.length} faturamentos encontrados e processados.`);
+      
+      const aliases = new Set<string>();
+      results.osFiles.filter(r => r.success).forEach(r => aliases.add(r.storeAlias));
+      results.maquininhaItems.forEach(i => aliases.add(i.storeName));
+      results.ofxResults.forEach(o => aliases.add(o.alias));
+      results.redeResults.filter(r => r.success).forEach(r => {
+        r.transactions.forEach(t => aliases.add(t.storeName));
+      });
+      
+      if (Array.from(aliases).length > 0) {
+        setStep(2);
+      } else {
+        setStep(3);
+      }
+    }
   };
+
   const [unmappedAliases, setUnmappedAliases] = useState<string[]>([]);
   const [sessionId, setSessionId] = useState<string>('');
   
@@ -120,6 +147,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
     }
   }, [importLogs]);
 
+  
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
     
@@ -130,13 +158,10 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       files_received: acceptedFiles.map(f => ({ filename: f.name, size_bytes: f.size }))
     });
 
-    try {
-      await processFiles(acceptedFiles, { sessionId: newSessionId });
-      // Aqui após o processamento (sucesso ou não) poderemos logar 6_STAGING_READY
-    } catch (e: any) {
-      traceLog('1_UPLOAD', 'ERROR', 'Falha no processamento centralizado', newSessionId, { error: e.message });
-    }
-  }, [processFiles]);
+    setPendingFiles(acceptedFiles);
+    setIsAgentModalOpen(true);
+  }, []);
+
 
   const handleDevAutoLoad = async () => {
     try {
@@ -160,73 +185,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
     }
   };
 
-  useEffect(() => {
-    if (isProcessing) return;
-    if (results.osFiles.length === 0 && results.maquininhaItems.length === 0 && results.ofxResults.length === 0 && results.redeResults.length === 0 && results.mapaMetasResults.length === 0) return;
-
-    // Coletar todos os aliases únicos
-    const aliases = new Set<string>();
-    results.osFiles.filter(r => r.success).forEach(r => aliases.add(r.storeAlias));
-    results.maquininhaItems.forEach(i => aliases.add(i.storeName));
-    results.ofxResults.forEach(o => aliases.add(o.alias));
-    results.redeResults.filter(r => r.success).forEach(r => {
-      r.transactions.forEach(t => aliases.add(t.storeName));
-    });
-
-    const aliasArray = Array.from(aliases);
-    const normalizeString = (str: string) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
-    
-    // Lê os slugs salvos do localStorage
-    const savedStr = localStorage.getItem('@mecanica/unified-mappings');
-    const savedSlugs = savedStr ? JSON.parse(savedStr) : {};
-
-    let currentMapping = { ...mapping };
-
-    aliasArray.forEach(alias => {
-      const mappedId = currentMapping[alias];
-      const stillExists = mappedId ? stores.find(s => s.id === mappedId) : null;
-      
-      if (!stillExists) {
-        let match = null;
-        const savedSlug = savedSlugs[alias];
-        
-        if (savedSlug) {
-          match = stores.find(s => normalizeString(s.name) === savedSlug);
-        }
-        
-        if (!match) {
-          const normalizedAlias = normalizeString(alias);
-          match = stores.find(s => 
-            normalizeString(s.name) === normalizedAlias || 
-            normalizedAlias.includes(normalizeString(s.name)) || 
-            normalizeString(s.name).includes(normalizedAlias)
-          );
-        }
-
-        if (match) {
-          currentMapping[alias] = match.id;
-        } else {
-          delete currentMapping[alias]; // Força a ficar vazio se não encontrar
-        }
-      }
-    });
-
-    setMapping(currentMapping);
-    
-    // Log de Staging Ready
-    traceLog('6_STAGING_READY', 'INFO', 'Payload gerado e aguardando confirmação do usuário', sessionId, {
-      total_os_files: results.osFiles.length,
-      total_rede_files: results.redeResults.length,
-      total_ofx_files: results.ofxResults.length,
-      total_maquininha_items: results.maquininhaItems.length
-    });
-
-    if (aliasArray.length > 0) {
-      setStep(2);
-    } else {
-      setStep(3);
-    }
-  }, [isProcessing, results, stores]);
+  
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -647,13 +606,20 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       if (upsertErr) console.warn("Erro ao registrar import log", upsertErr);
 
       // 4. Salvar Daily Snapshot (Valores Globais)
-      addLog("ðŸ“ Gravando fechamento diário (daily_snapshots)...", "info");
+      addLog("Calculando fechamento diario (auto-save)...", "info");
       
       let saldoNegativoItau = 0;
+      let totalBancarioIn = 0;
+      let totalOfxOut = 0;
+
       results.ofxResults.forEach(ofx => {
         if (ofx.bankBalance !== undefined && ofx.bankBalance < 0) {
-          saldoNegativoItau += Math.abs(ofx.bankBalance); // Somamos o valor absoluto do negativo
+          saldoNegativoItau += Math.abs(ofx.bankBalance);
         }
+        ofx.transactions.forEach((t: any) => {
+          if (t.type === 'in') totalBancarioIn += t.amount;
+          if (t.type === 'out') totalOfxOut += Math.abs(t.amount);
+        });
       });
 
       let jurosRedeTotal = 0;
@@ -665,27 +631,108 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         }
       });
 
+      
+      let faturamentoAtual = 0;
+      let veiculosPatioValor = 0;
+      let reconciliationsToUpsert: any[] = [];
+      
+      // Process manual and cloud OS data for Patio & Faturamento
+      const processOsItems = (items: any[], isManualFallback: boolean) => {
+        items.forEach(c => {
+          let sId = c.store_id || 'GLOBAL';
+          const totalValue = Number(c.valor_original) || Number(c.valor_total) || 0;
+          const openValue = Number(c.valor_em_aberto) || 0;
+          const paidValue = isManualFallback ? (Number(c.valor_pago) || 0) : (totalValue - openValue);
+          
+          if (paidValue > 0) faturamentoAtual += paidValue;
+          
+          const isPendente = isManualFallback ? (openValue > 0 || (totalValue > paidValue)) : (c.status !== 'FIN' && c.status !== 'CAN');
+          if (isPendente) {
+            const pendente = isManualFallback ? (totalValue - paidValue) : openValue;
+            if (pendente > 0) {
+              veiculosPatioValor += pendente;
+              if (sId !== 'GLOBAL') {
+                const existing = reconciliationsToUpsert.find(r => r.store_id === sId);
+                if (existing) {
+                  existing.na_loja_os = (existing.na_loja_os || 0) + pendente;
+                } else {
+                  reconciliationsToUpsert.push({
+                    store_id: sId,
+                    date: targetDate,
+                    na_loja_os: pendente,
+                    status: 'validated'
+                  });
+                }
+              }
+            }
+          }
+        });
+      };
+
+      if (needsFallback && manualOsData.length > 0) {
+         processOsItems(manualOsData, true);
+      } else if (!needsFallback && cloudOsData.length > 0) {
+         processOsItems(cloudOsData, false);
+      }
+
+      
+      results.osFiles.filter(r => r.success).forEach(r => {
+        let storePatioValor = 0;
+        let sId = mapping[r.storeAlias] || 'GLOBAL';
+
+        r.osArray.forEach(os => {
+           const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
+           if (delta > 0) faturamentoAtual += delta;
+           
+           const isPendente = os.status?.toLowerCase().includes('em_aberto') || os.status?.toLowerCase().includes('pago_parcial');
+           if (isPendente) {
+              const valorPendente = (os.total_value || 0) - (os.paid_value || 0);
+              if (valorPendente > 0) storePatioValor += valorPendente;
+           }
+        });
+        
+        veiculosPatioValor += storePatioValor;
+        if (sId !== 'GLOBAL') {
+          reconciliationsToUpsert.push({
+            store_id: sId,
+            date: targetDate,
+            na_loja_os: storePatioValor,
+            status: 'validated'
+          });
+        }
+      });
+
+      if (reconciliationsToUpsert.length > 0) {
+        addLog("Gravando valores de patio (reconciliations)...", "info");
+        await supabase.from('reconciliations').upsert(reconciliationsToUpsert, { onConflict: 'store_id,date' });
+      }
+
+      const totalRecebiveis = manualDinheiroMp + manualAReceber;
+      const caixaAtual = totalBancarioIn + totalRecebiveis;
+
+      addLog("Auto-salvando Fechamento do Dia...", "info");
       try {
-        await saveSnapshot.mutateAsync({
+        const payload = {
           date: targetDate,
-          caixa_atual: 0, // Será preenchido via conciliação
-          faturamento: 0, // Será preenchido via conciliação
-          total_recebiveis: 0,
-          total_patio: 0,
-          saldo_bancario: 0,
+          caixa_atual: caixaAtual,
+          faturamento: faturamentoAtual,
           dinheiro_mp: manualDinheiroMp,
+          total_recebiveis: totalRecebiveis,
+          total_patio: veiculosPatioValor,
+          saldo_bancario: totalBancarioIn,
           a_receber_manual: manualAReceber,
           faturamento_outros_valor: 0,
-          contas_a_pagar: 0,
+          contas_a_pagar: totalOfxOut,
           provisao: 0,
           saldo_negativo_itau: saldoNegativoItau,
           juros_rede: jurosRedeTotal,
-          notes: 'Valores gerados via Importação',
-        });
-        addLog("âœ… Valores manuais globais salvos com sucesso!", "success");
+          notes: 'Valores calculados via Importacao',
+        };
+        await saveSnapshot.mutateAsync(payload);
+        addLog("Historico de conciliacao atualizado automaticamente!", "success");
       } catch (snapErr) {
         console.warn("Erro ao salvar daily_snapshot:", snapErr);
-        addLog("âš ï¸  Aviso: Falha ao gravar valores manuais do dia.", "warning");
+        addLog("Aviso: Falha ao gravar fechamento do dia.", "warning");
       }
 
       addLog("ðŸ”§ Pareando transações importadas com Ordens de Serviço...", "info");
@@ -1055,7 +1102,22 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         </motion.div>
       )}
 
-      {step === 3 && (
+      
+        {step === 3.5 && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <ManualOsFallbackForm 
+              onSubmit={(entries) => {
+                setManualOsData(entries);
+                setStep(3); // volta pro step de preview pra mapear e ver faturamento
+              }}
+              onCancel={() => {
+                setStep(3); // Pula
+              }}
+            />
+          </div>
+        )}
+
+        {step === 3 && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
           {/* Header de Resumo */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

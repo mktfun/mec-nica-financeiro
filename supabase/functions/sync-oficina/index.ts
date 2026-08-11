@@ -15,7 +15,7 @@ serve(async (req) => {
   }
 
   try {
-    const { loja, data } = await req.json();
+    const { loja, dataInicio, dataFim } = await req.json();
     if (!loja) throw new Error("Parâmetro 'loja' é obrigatório.");
 
     const supabase = createClient(
@@ -25,8 +25,8 @@ serve(async (req) => {
 
     // 1. Sincronizar Contas a Pagar
     let urlContas = `${BOT_URL}/api/contas-pagar?loja=${encodeURIComponent(loja)}`;
-    if (data) {
-      urlContas += `&data=${encodeURIComponent(data)}`;
+    if (dataInicio && dataFim) {
+      urlContas += `&data_inicio=${encodeURIComponent(dataInicio)}&data_fim=${encodeURIComponent(dataFim)}`;
     }
     const resContas = await fetch(urlContas, { headers: { 'x-api-key': BOT_API_KEY } });
     
@@ -51,13 +51,33 @@ serve(async (req) => {
       }
     }
 
-    // 2. Sincronizar OSs (Resumo) - Se existir endpoint
-    // Placeholder para futuro endpoint /api/os-lista
-    /*
-    const urlOS = `${BOT_URL}/api/os-lista?loja=${encodeURIComponent(loja)}`;
+    // 2. Sincronizar OSs / Contas a Receber
+    let urlOS = `${BOT_URL}/api/contas-receber?loja=${encodeURIComponent(loja)}`;
+    if (dataInicio && dataFim) {
+      urlOS += `&data_inicio=${encodeURIComponent(dataInicio)}&data_fim=${encodeURIComponent(dataFim)}`;
+    }
     const resOS = await fetch(urlOS, { headers: { 'x-api-key': BOT_API_KEY } });
-    ... upsert em oficina_os_cache
-    */
+    
+    if (resOS.ok) {
+      const jsonOS = await resOS.json();
+      if (jsonOS.success && Array.isArray(jsonOS.data)) {
+        const rows = jsonOS.data.map((c: any) => ({
+          store_id: loja,
+          id_interno: c.id_interno,
+          fornecedor: c.fornecedor || c.cliente || 'CLIENTE',
+          valor_original: Number(c.valor_original) || 0,
+          valor_em_aberto: Number(c.valor_em_aberto) || 0,
+          vencimento: c.vencimento || null,
+          status: c.status || 'AND',
+          tipo: 'RECEBER',
+          updated_at: new Date().toISOString()
+        }));
+
+        if (rows.length > 0) {
+          await supabase.from('oficina_contas').upsert(rows, { onConflict: 'store_id, id_interno, tipo' });
+        }
+      }
+    }
 
     return new Response(
       JSON.stringify({ success: true, message: "Sincronização concluída com sucesso." }),

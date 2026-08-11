@@ -17,3 +17,13 @@
 **Risco identificado:** Forçar o `target_date` como sendo o `TO_CHAR(occurred_at, 'YYYY-MM-DD')` diretamente na View quebra a lógica de retroatividade de arquivos OFX que agrupam lançamentos passados.
 
 **Não fazer:** Nunca crie views contábeis ou de transações que removam a data de contexto da importação, mantendo apenas a data da ocorrência original. A contabilidade da loja é fechada no "caixa", logo a transação passa a valer na data em que o fluxo foi consolidado.
+
+## [2026-08-11] — [Feature ID: 162]
+
+**Contexto:** A extração automatizada (via Playwright) de faturamentos/OS pode falhar se o portal da oficina inteligente ficar fora do ar, travando toda a conciliação diária da loja se não houver um fallback de inserção manual flexível.
+
+**Regra aprendida:** Motores de sincronização em nuvem e scrapers *devem sempre* prever um fluxo secundário manual (Fallback UI) que assuma a injeção daquele tipo de dado no cálculo final quando o scraper exaure suas tentativas (retries). O cálculo e o Auto-Save devem ser polimórficos, operando da mesma forma quer o array de dados venha do Scraper Automático ou do Input Manual de Fallback.
+
+**Risco identificado:** Bot não responder por horas e bloquear 100% das conciliações financeiras da franqueadora.
+
+**Não fazer:** Nunca construa integrações vitais sem rotas de fallback e nunca faça funções de cálculo contábil dependerem estritamente do formato da API, abstraia antes.
