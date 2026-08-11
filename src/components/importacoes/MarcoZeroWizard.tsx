@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FileSpreadsheet, UploadCloud, CheckCircle2, AlertCircle, Sparkles, Database } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Card } from '../ui/card';
+import { Button } from '../ui/Button';
+import { Card } from '../ui/Card';
 import { parseMarcoZeroPlanilha, MarcoZeroExtraction } from '@/lib/parsers/marcoZeroParser';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
