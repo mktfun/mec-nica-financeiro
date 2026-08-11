@@ -14,131 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      agent_reflections: {
-        Row: {
-          conversation_id: string
-          created_at: string
-          id: string
-          outcome_success: boolean
-          policy_evaluations: Json | null
-          reflection_notes: string
-          tool_used: string | null
-        }
-        Insert: {
-          conversation_id: string
-          created_at?: string
-          id?: string
-          outcome_success: boolean
-          policy_evaluations?: Json | null
-          reflection_notes: string
-          tool_used?: string | null
-        }
-        Update: {
-          conversation_id?: string
-          created_at?: string
-          id?: string
-          outcome_success?: boolean
-          policy_evaluations?: Json | null
-          reflection_notes?: string
-          tool_used?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "agent_reflections_conversation_id_fkey"
-            columns: ["conversation_id"]
-            isOneToOne: false
-            referencedRelation: "conversations"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      ai_execution_logs: {
-        Row: {
-          completion_tokens: number | null
-          created_at: string | null
-          estimated_cost: number | null
-          execution_time_ms: number | null
-          id: string
-          matches_applied_count: number | null
-          model: string | null
-          prompt_tokens: number | null
-          provider: string | null
-          raw_payload_json: Json | null
-          raw_response_json: Json | null
-          reasoning_steps_json: Json | null
-          store_id: string | null
-          total_tokens: number | null
-        }
-        Insert: {
-          completion_tokens?: number | null
-          created_at?: string | null
-          estimated_cost?: number | null
-          execution_time_ms?: number | null
-          id?: string
-          matches_applied_count?: number | null
-          model?: string | null
-          prompt_tokens?: number | null
-          provider?: string | null
-          raw_payload_json?: Json | null
-          raw_response_json?: Json | null
-          reasoning_steps_json?: Json | null
-          store_id?: string | null
-          total_tokens?: number | null
-        }
-        Update: {
-          completion_tokens?: number | null
-          created_at?: string | null
-          estimated_cost?: number | null
-          execution_time_ms?: number | null
-          id?: string
-          matches_applied_count?: number | null
-          model?: string | null
-          prompt_tokens?: number | null
-          provider?: string | null
-          raw_payload_json?: Json | null
-          raw_response_json?: Json | null
-          reasoning_steps_json?: Json | null
-          store_id?: string | null
-          total_tokens?: number | null
-        }
-        Relationships: []
-      }
-      ai_settings: {
-        Row: {
-          api_key: string | null
-          bot_api_key: string | null
-          bot_url: string | null
-          created_at: string | null
-          id: string
-          model: string
-          provider: string
-          updated_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          api_key?: string | null
-          bot_api_key?: string | null
-          bot_url?: string | null
-          created_at?: string | null
-          id?: string
-          model?: string
-          provider?: string
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          api_key?: string | null
-          bot_api_key?: string | null
-          bot_url?: string | null
-          created_at?: string | null
-          id?: string
-          model?: string
-          provider?: string
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       alerts: {
         Row: {
           amount: number | null
@@ -198,108 +73,6 @@ export type Database = {
           },
         ]
       }
-      bot_audit_logs: {
-        Row: {
-          bot_name: string
-          created_at: string | null
-          id: string
-          message: string
-          payload: Json | null
-          status: string
-        }
-        Insert: {
-          bot_name: string
-          created_at?: string | null
-          id?: string
-          message: string
-          payload?: Json | null
-          status: string
-        }
-        Update: {
-          bot_name?: string
-          created_at?: string | null
-          id?: string
-          message?: string
-          payload?: Json | null
-          status?: string
-        }
-        Relationships: []
-      }
-      bot_credentials: {
-        Row: {
-          id: string
-          is_valid: boolean | null
-          last_validated_at: string | null
-          password: string
-          portal: string
-          portal_label: string
-          updated_at: string | null
-          url: string
-          username: string
-          validation_error: string | null
-        }
-        Insert: {
-          id?: string
-          is_valid?: boolean | null
-          last_validated_at?: string | null
-          password: string
-          portal: string
-          portal_label: string
-          updated_at?: string | null
-          url: string
-          username: string
-          validation_error?: string | null
-        }
-        Update: {
-          id?: string
-          is_valid?: boolean | null
-          last_validated_at?: string | null
-          password?: string
-          portal?: string
-          portal_label?: string
-          updated_at?: string | null
-          url?: string
-          username?: string
-          validation_error?: string | null
-        }
-        Relationships: []
-      }
-      bot_runs: {
-        Row: {
-          errors: Json | null
-          finished_at: string | null
-          id: string
-          log_text: string | null
-          screenshot_urls: string[] | null
-          started_at: string
-          status: string
-          stores_processed: number | null
-          triggered_by: string | null
-        }
-        Insert: {
-          errors?: Json | null
-          finished_at?: string | null
-          id?: string
-          log_text?: string | null
-          screenshot_urls?: string[] | null
-          started_at?: string
-          status?: string
-          stores_processed?: number | null
-          triggered_by?: string | null
-        }
-        Update: {
-          errors?: Json | null
-          finished_at?: string | null
-          id?: string
-          log_text?: string | null
-          screenshot_urls?: string[] | null
-          started_at?: string
-          status?: string
-          stores_processed?: number | null
-          triggered_by?: string | null
-        }
-        Relationships: []
-      }
       cash_registers: {
         Row: {
           created_at: string | null
@@ -343,57 +116,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      claritas_policies: {
-        Row: {
-          created_at: string
-          id: string
-          policy_name: string
-          rule_definition: string
-          severity: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          policy_name: string
-          rule_definition: string
-          severity: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          policy_name?: string
-          rule_definition?: string
-          severity?: string
-        }
-        Relationships: []
-      }
-      claritas_prompts: {
-        Row: {
-          agent_role: string
-          content: string
-          created_at: string
-          id: string
-          is_active: boolean
-          version: string
-        }
-        Insert: {
-          agent_role: string
-          content: string
-          created_at?: string
-          id?: string
-          is_active?: boolean
-          version?: string
-        }
-        Update: {
-          agent_role?: string
-          content?: string
-          created_at?: string
-          id?: string
-          is_active?: boolean
-          version?: string
-        }
-        Relationships: []
       }
       conciliation_daily_logs: {
         Row: {
@@ -479,14 +201,14 @@ export type Database = {
             foreignKeyName: "conciliation_matches_ofx_transaction_id_fkey"
             columns: ["ofx_transaction_id"]
             isOneToOne: false
-            referencedRelation: "transactions"
+            referencedRelation: "ofx_transactions"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "conciliation_matches_rede_transaction_id_fkey"
             columns: ["rede_transaction_id"]
             isOneToOne: false
-            referencedRelation: "transactions"
+            referencedRelation: "pos_transactions"
             referencedColumns: ["id"]
           },
           {
@@ -497,30 +219,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      conversations: {
-        Row: {
-          created_at: string | null
-          id: string
-          title: string | null
-          updated_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          title?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          title?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
       }
       daily_snapshots: {
         Row: {
@@ -645,6 +343,47 @@ export type Database = {
         }
         Relationships: []
       }
+      estoque_os_pendente: {
+        Row: {
+          created_at: string
+          data_baixa: string | null
+          data_os: string
+          id: string
+          numero_os: string
+          status: string
+          store_id: string
+          valor_os: number
+        }
+        Insert: {
+          created_at?: string
+          data_baixa?: string | null
+          data_os: string
+          id?: string
+          numero_os: string
+          status: string
+          store_id: string
+          valor_os: number
+        }
+        Update: {
+          created_at?: string
+          data_baixa?: string | null
+          data_os?: string
+          id?: string
+          numero_os?: string
+          status?: string
+          store_id?: string
+          valor_os?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estoque_os_pendente_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       goals: {
         Row: {
           created_at: string | null
@@ -740,138 +479,157 @@ export type Database = {
         }
         Relationships: []
       }
-      mcp_logs: {
+      manual_transactions: {
         Row: {
-          action: string
-          conversation_id: string | null
-          created_at: string | null
+          amount: number
+          cnpj_cpf: string | null
+          counterpart_name: string | null
+          created_at: string
+          external_id: string | null
+          fee_amount: number | null
+          fitid: string | null
+          gross_amount: number | null
+          icon_type: string | null
           id: string
-          params: Json | null
-          result: Json | null
+          import_batch_id: string | null
+          match_status: string | null
+          matched_ofx_id: string | null
+          occurred_at: string
+          os_number: string | null
+          payment_method: string | null
+          previous_balance: number | null
+          source: string | null
+          store_id: string | null
+          store_name: string | null
+          subtitle: string | null
+          target_date: string | null
+          title: string
+          type: string
         }
         Insert: {
-          action: string
-          conversation_id?: string | null
-          created_at?: string | null
+          amount: number
+          cnpj_cpf?: string | null
+          counterpart_name?: string | null
+          created_at?: string
+          external_id?: string | null
+          fee_amount?: number | null
+          fitid?: string | null
+          gross_amount?: number | null
+          icon_type?: string | null
           id?: string
-          params?: Json | null
-          result?: Json | null
+          import_batch_id?: string | null
+          match_status?: string | null
+          matched_ofx_id?: string | null
+          occurred_at?: string
+          os_number?: string | null
+          payment_method?: string | null
+          previous_balance?: number | null
+          source?: string | null
+          store_id?: string | null
+          store_name?: string | null
+          subtitle?: string | null
+          target_date?: string | null
+          title: string
+          type: string
         }
         Update: {
-          action?: string
-          conversation_id?: string | null
-          created_at?: string | null
+          amount?: number
+          cnpj_cpf?: string | null
+          counterpart_name?: string | null
+          created_at?: string
+          external_id?: string | null
+          fee_amount?: number | null
+          fitid?: string | null
+          gross_amount?: number | null
+          icon_type?: string | null
           id?: string
-          params?: Json | null
-          result?: Json | null
+          import_batch_id?: string | null
+          match_status?: string | null
+          matched_ofx_id?: string | null
+          occurred_at?: string
+          os_number?: string | null
+          payment_method?: string | null
+          previous_balance?: number | null
+          source?: string | null
+          store_id?: string | null
+          store_name?: string | null
+          subtitle?: string | null
+          target_date?: string | null
+          title?: string
+          type?: string
         }
         Relationships: [
           {
-            foreignKeyName: "mcp_logs_conversation_id_fkey"
-            columns: ["conversation_id"]
+            foreignKeyName: "transactions_import_batch_id_fkey"
+            columns: ["import_batch_id"]
             isOneToOne: false
-            referencedRelation: "conversations"
+            referencedRelation: "import_batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
             referencedColumns: ["id"]
           },
         ]
       }
-      messages: {
+      ofx_transactions: {
         Row: {
-          content: string
-          conversation_id: string | null
+          amount: number
+          bank_name: string
+          cnpj_cpf: string | null
+          counterpart_name: string | null
           created_at: string | null
+          fitid: string
           id: string
-          role: string
+          import_batch_id: string | null
+          matched_os_number: string | null
+          occurred_at: string
+          store_id: string | null
+          target_date: string | null
+          type: string | null
         }
         Insert: {
-          content: string
-          conversation_id?: string | null
+          amount: number
+          bank_name: string
+          cnpj_cpf?: string | null
+          counterpart_name?: string | null
           created_at?: string | null
+          fitid: string
           id?: string
-          role: string
+          import_batch_id?: string | null
+          matched_os_number?: string | null
+          occurred_at: string
+          store_id?: string | null
+          target_date?: string | null
+          type?: string | null
         }
         Update: {
-          content?: string
-          conversation_id?: string | null
+          amount?: number
+          bank_name?: string
+          cnpj_cpf?: string | null
+          counterpart_name?: string | null
           created_at?: string | null
+          fitid?: string
           id?: string
-          role?: string
+          import_batch_id?: string | null
+          matched_os_number?: string | null
+          occurred_at?: string
+          store_id?: string | null
+          target_date?: string | null
+          type?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "messages_conversation_id_fkey"
-            columns: ["conversation_id"]
+            foreignKeyName: "ofx_transactions_store_id_fkey"
+            columns: ["store_id"]
             isOneToOne: false
-            referencedRelation: "conversations"
+            referencedRelation: "stores"
             referencedColumns: ["id"]
           },
         ]
-      }
-      oficina_contas: {
-        Row: {
-          fornecedor: string | null
-          id: string
-          id_interno: string
-          status: string | null
-          store_id: string
-          tipo: string | null
-          updated_at: string | null
-          valor_em_aberto: number | null
-          valor_original: number | null
-          vencimento: string | null
-        }
-        Insert: {
-          fornecedor?: string | null
-          id?: string
-          id_interno: string
-          status?: string | null
-          store_id: string
-          tipo?: string | null
-          updated_at?: string | null
-          valor_em_aberto?: number | null
-          valor_original?: number | null
-          vencimento?: string | null
-        }
-        Update: {
-          fornecedor?: string | null
-          id?: string
-          id_interno?: string
-          status?: string | null
-          store_id?: string
-          tipo?: string | null
-          updated_at?: string | null
-          valor_em_aberto?: number | null
-          valor_original?: number | null
-          vencimento?: string | null
-        }
-        Relationships: []
-      }
-      oficina_os_cache: {
-        Row: {
-          id: string
-          os_number: string
-          payload_completo: Json | null
-          status_cache: string | null
-          store_id: string
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          os_number: string
-          payload_completo?: Json | null
-          status_cache?: string | null
-          store_id: string
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          os_number?: string
-          payload_completo?: Json | null
-          status_cache?: string | null
-          store_id?: string
-          updated_at?: string | null
-        }
-        Relationships: []
       }
       patio_os: {
         Row: {
@@ -946,6 +704,62 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "patio_os_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pos_transactions: {
+        Row: {
+          created_at: string | null
+          dedup_hash: string | null
+          fee_amount: number
+          gross_amount: number
+          id: string
+          import_batch_id: string | null
+          machine_name: string
+          matched_os_number: string | null
+          net_amount: number
+          occurred_at: string
+          payment_method: string
+          store_id: string | null
+          target_date: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          dedup_hash?: string | null
+          fee_amount: number
+          gross_amount: number
+          id?: string
+          import_batch_id?: string | null
+          machine_name: string
+          matched_os_number?: string | null
+          net_amount: number
+          occurred_at: string
+          payment_method: string
+          store_id?: string | null
+          target_date?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          dedup_hash?: string | null
+          fee_amount?: number
+          gross_amount?: number
+          id?: string
+          import_batch_id?: string | null
+          machine_name?: string
+          matched_os_number?: string | null
+          net_amount?: number
+          occurred_at?: string
+          payment_method?: string
+          store_id?: string | null
+          target_date?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pos_transactions_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
             referencedRelation: "stores"
@@ -1198,105 +1012,62 @@ export type Database = {
         }
         Relationships: []
       }
+      system_logs: {
+        Row: {
+          context: string
+          created_at: string | null
+          id: string
+          level: string
+          message: string
+          metadata: Json | null
+        }
+        Insert: {
+          context: string
+          created_at?: string | null
+          id?: string
+          level: string
+          message: string
+          metadata?: Json | null
+        }
+        Update: {
+          context?: string
+          created_at?: string | null
+          id?: string
+          level?: string
+          message?: string
+          metadata?: Json | null
+        }
+        Relationships: []
+      }
+    }
+    Views: {
       transactions: {
         Row: {
-          amount: number
+          amount: number | null
           cnpj_cpf: string | null
           counterpart_name: string | null
-          created_at: string
-          external_id: string | null
+          created_at: string | null
           fee_amount: number | null
           fitid: string | null
           gross_amount: number | null
           icon_type: string | null
-          id: string
+          id: string | null
           import_batch_id: string | null
-          match_status: string | null
-          matched_ofx_id: string | null
-          occurred_at: string
+          occurred_at: string | null
           os_number: string | null
           payment_method: string | null
           previous_balance: number | null
           source: string | null
+          status: string | null
           store_id: string | null
           store_name: string | null
           subtitle: string | null
           target_date: string | null
-          title: string
-          type: string
+          title: string | null
+          type: string | null
         }
-        Insert: {
-          amount: number
-          cnpj_cpf?: string | null
-          counterpart_name?: string | null
-          created_at?: string
-          external_id?: string | null
-          fee_amount?: number | null
-          fitid?: string | null
-          gross_amount?: number | null
-          icon_type?: string | null
-          id?: string
-          import_batch_id?: string | null
-          match_status?: string | null
-          matched_ofx_id?: string | null
-          occurred_at?: string
-          os_number?: string | null
-          payment_method?: string | null
-          previous_balance?: number | null
-          source?: string | null
-          store_id?: string | null
-          store_name?: string | null
-          subtitle?: string | null
-          target_date?: string | null
-          title: string
-          type: string
-        }
-        Update: {
-          amount?: number
-          cnpj_cpf?: string | null
-          counterpart_name?: string | null
-          created_at?: string
-          external_id?: string | null
-          fee_amount?: number | null
-          fitid?: string | null
-          gross_amount?: number | null
-          icon_type?: string | null
-          id?: string
-          import_batch_id?: string | null
-          match_status?: string | null
-          matched_ofx_id?: string | null
-          occurred_at?: string
-          os_number?: string | null
-          payment_method?: string | null
-          previous_balance?: number | null
-          source?: string | null
-          store_id?: string | null
-          store_name?: string | null
-          subtitle?: string | null
-          target_date?: string | null
-          title?: string
-          type?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "transactions_import_batch_id_fkey"
-            columns: ["import_batch_id"]
-            isOneToOne: false
-            referencedRelation: "import_batches"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "transactions_store_id_fkey"
-            columns: ["store_id"]
-            isOneToOne: false
-            referencedRelation: "stores"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
-    }
-    Views: {
-      [_ in never]: never
     }
     Functions: {
       auto_match_transactions: { Args: { p_date: string }; Returns: undefined }
@@ -1311,8 +1082,59 @@ export type Database = {
         }
         Returns: undefined
       }
+      get_conciliation_breakdown: {
+        Args: { p_date: string; p_store_id: string }
+        Returns: Json
+      }
       get_dashboard_metrics: { Args: { p_date: string }; Returns: Json }
       get_patio_summary: { Args: never; Returns: Json }
+      get_raw_ofx_data: {
+        Args: { p_date: string; p_store_id: string }
+        Returns: Json
+      }
+      get_raw_os_data:
+        | {
+            Args: { p_date: string; p_store_id: string }
+            Returns: {
+              closed_at: string
+              credit_debit_value: number
+              opened_at: string
+              os_number: string
+              paid_value: number
+              payment_method: string
+              pix_transfer_value: number
+              remaining_value: number
+              status: string
+              total_value: number
+            }[]
+          }
+        | {
+            Args: { p_date: string; p_store_id: string }
+            Returns: {
+              closed_at: string
+              opened_at: string
+              os_number: string
+              paid_value: number
+              payment_method: string
+              remaining_value: number
+              status: string
+              total_value: number
+            }[]
+          }
+      get_raw_rede_data: {
+        Args: { p_date: string; p_store_id: string }
+        Returns: {
+          fee_amount: number
+          fee_percentage: number
+          gross_amount: number
+          id: string
+          machine_name: string
+          matched_os_number: string
+          net_amount: number
+          occurred_at: string
+          payment_method: string
+        }[]
+      }
       get_receivables_summary: { Args: never; Returns: Json }
       get_store_financial_stats: {
         Args: { p_end_date: string; p_start_date: string; p_store_id: string }
