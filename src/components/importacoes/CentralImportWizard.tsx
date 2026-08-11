@@ -4,7 +4,8 @@ import { useDropzone } from 'react-dropzone';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { AgentRunnerModal } from './AgentRunnerModal';
-import { ManualOsFallbackForm, ManualOsEntry } from './ManualOsFallbackForm';
+import { MatchManualOsPendente } from './MatchManualOsPendente';
+import { MarcoZeroWizard } from './MarcoZeroWizard';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
@@ -82,7 +83,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const [targetDate, setTargetDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [isAgentModalOpen, setIsAgentModalOpen] = useState(false);
   const [needsFallback, setNeedsFallback] = useState(false);
-  const [manualOsData, setManualOsData] = useState<ManualOsEntry[]>([]);
+  const [showMarcoZero, setShowMarcoZero] = useState(false);
+  const [manualOsMatches, setManualOsMatches] = useState<{ ofxTx: any, osId: string }[]>([]);
   const [cloudOsData, setCloudOsData] = useState<any[]>([]);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
 
@@ -284,15 +286,15 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       
       if (allStoreIds.size > 0) {
          const { data: activeOs } = await supabase
-           .from('patio_os')
-           .select('store_id, total_value, paid_value')
-           .in('status', ['em_aberto', 'pago_parcial']);
+           .from('estoque_os_pendente')
+           .select('store_id, valor_os')
+           .eq('status', 'PENDENTE');
            
          if (activeOs) {
            const snapshotPromises = Array.from(allStoreIds).map(sid => {
               const naLojaOs = activeOs
                 .filter(o => o.store_id === sid)
-                .reduce((acc, o) => acc + Math.max(0, Number(o.total_value || 0) - Number(o.paid_value || 0)), 0);
+                .reduce((acc, o) => acc + Number(o.valor_os || 0), 0);
                 
               return supabase.from('reconciliations').upsert({
                  store_id: sid,
@@ -540,6 +542,21 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         } catch (matchErr: any) {
           console.warn("Aviso ao salvar pares de conciliação:", matchErr);
           addLog(`âš ï¸ Pares de conciliação salvos parcialmente (transações garantidas no banco).`, "warning");
+        }
+      }
+
+      if (manualOsMatches.length > 0) {
+        addLog(`🔧 Dando baixa em ${manualOsMatches.length} OSs do Estoque Passivo...`, "info");
+        try {
+          const osIds = manualOsMatches.map(m => m.osId);
+          await supabase
+            .from('estoque_os_pendente')
+            .update({ status: 'PAGA', data_baixa: new Date().toISOString() })
+            .in('id', osIds);
+          addLog("✅ OSs do passivo baixadas com sucesso!", "success");
+        } catch (err: any) {
+          console.error("Erro ao baixar OS passiva", err);
+          addLog("⚠️ Erro ao dar baixa em OSs do passivo.", "warning");
         }
       }
 
@@ -854,7 +871,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         <StepIndicator current={step} step={4} title="Processando & Logs" />
       </div>
 
-      {step === 1 && (
+      {step === 1 && !showMarcoZero && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Esquerda: Upload Manual (Planilhas) */}
@@ -884,28 +901,28 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
               </p>
             </div>
             
-            {/* Direita: Sincronização Automática Bot (Novo Fluxo Híbrido) */}
+            {/* Direita: Implantação de Saldo (Marco Zero) */}
             <div className="border border-[var(--border-subtle)] bg-[var(--bg-surface)] rounded-3xl p-10 flex flex-col items-center justify-center transition-all duration-300 hover:border-[var(--color-primary)]/50 relative overflow-hidden">
-              <div className="absolute top-0 right-0 bg-[var(--color-primary)]/20 text-[var(--color-primary)] text-xs px-3 py-1 font-bold rounded-bl-xl border-l border-b border-[var(--color-primary)]/20 flex items-center gap-1">
-                <Sparkles size={12} /> RECOMENDADO
+              <div className="absolute top-0 right-0 bg-[var(--color-accent-warning)]/20 text-[var(--color-accent-warning)] text-xs px-3 py-1 font-bold rounded-bl-xl border-l border-b border-[var(--color-accent-warning)]/20 flex items-center gap-1">
+                <AlertCircle size={12} /> AVISO
               </div>
-              <div className="bg-[var(--color-primary)]/10 p-5 rounded-full shadow-xl border border-[var(--color-primary)]/20 text-[var(--color-primary)] mb-6 animate-pulse">
-                <RefreshCcw />
+              <div className="bg-[var(--color-accent-warning)]/10 p-5 rounded-full shadow-xl border border-[var(--color-accent-warning)]/20 text-[var(--color-accent-warning)] mb-6">
+                <Database />
               </div>
               <h3 className="font-display font-semibold text-xl mb-2 text-center text-[var(--text-primary)]">
-                Sincronização Cloud (Bot)
+                Implantação de Saldo Inicial
               </h3>
               <p className="text-[var(--text-secondary)] text-sm text-center max-w-sm mb-6">
-                Busca automaticamente resumos de Ordens de Serviço (Pátio) e Contas a Pagar diretamente do sistema Oficina Inteligente em tempo real.
+                Inicie o Estoque de OSs Pendentes carregando a planilha antiga de conciliação diária. Faça isso apenas uma vez por loja.
               </p>
-
 
               <div className="mt-4 w-full">
                 <Button 
-                  onClick={() => setIsAgentModalOpen(true)}
-                  className="w-full shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.3)] hover:scale-105 transition-transform h-12"
+                  onClick={() => setShowMarcoZero(true)}
+                  variant="outline"
+                  className="w-full h-12 border-[var(--color-accent-warning)] text-[var(--color-accent-warning)] hover:bg-[var(--color-accent-warning)]/10"
                 >
-                  <Sparkles className="mr-2" size={16}/> Iniciar Bot de Integração
+                  <FileSpreadsheet className="mr-2" size={16}/> Abrir Marco Zero
                 </Button>
               </div>
             </div>
@@ -920,6 +937,13 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             </div>
           )}
         </motion.div>
+      )}
+
+      {showMarcoZero && (
+        <MarcoZeroWizard 
+          onComplete={() => setShowMarcoZero(false)}
+          onCancel={() => setShowMarcoZero(false)}
+        />
       )}
 
       {step === 2 && (
@@ -1103,19 +1127,26 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       )}
 
       
-        {step === 3.5 && (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <ManualOsFallbackForm 
-              onSubmit={(entries) => {
-                setManualOsData(entries);
-                setStep(3); // volta pro step de preview pra mapear e ver faturamento
-              }}
-              onCancel={() => {
-                setStep(3); // Pula
-              }}
-            />
-          </div>
-        )}
+        {step === 3.5 && (() => {
+          const firstStoreId = Object.values(mapping).find(id => id && id !== 'GLOBAL');
+          const allOfx = results.ofxResults.flatMap(r => r.transactions);
+          
+          return (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <MatchManualOsPendente 
+                storeId={firstStoreId || ''} 
+                ofxTransactions={allOfx}
+                onComplete={(matchedPairs) => {
+                  setManualOsMatches(matchedPairs);
+                  setStep(3); // volta pro step de preview
+                }}
+                onSkip={() => {
+                  setStep(3);
+                }}
+              />
+            </div>
+          );
+        })()}
 
         {step === 3 && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">

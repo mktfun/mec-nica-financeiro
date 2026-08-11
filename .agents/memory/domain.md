@@ -27,3 +27,9 @@
 **Risco identificado:** Bot não responder por horas e bloquear 100% das conciliações financeiras da franqueadora.
 
 **Não fazer:** Nunca construa integrações vitais sem rotas de fallback e nunca faça funções de cálculo contábil dependerem estritamente do formato da API, abstraia antes.
+  
+## [2026-08-11] — [Feature ID: 164]  
+**Contexto:** Remoção do robô de scraping e transição para o modelo de conciliação híbrida usando a tabela estoque_os_pendente.  
+**Regra aprendida:** O robô de scraping falha em capturar o longo prazo. O controle de OSs não pagas no momento da abertura (Estoque Passivo) deve ser feito inserindo OSs em estoque_os_pendente com status PENDENTE. O " Na "Loja é a soma do valor_os dessa tabela. O Wizard agora possui o Passo 3.5 que cruza OFX (sem pai) contra o estoque_os_pendente, dando baixa mudando status para PAGA e data_baixa.  
+**Risco identificado:** Consultar a tabela patio_os para dados atualizados trará dados congelados e causará divergências na conciliação, pois o bot foi aposentado.  
+**Não fazer:** NÃO recriar componentes atrelados à edge function/AgentRunnerModal. A importação diária não depende mais do scraping cloud. 

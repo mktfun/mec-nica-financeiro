@@ -1,4 +1,4 @@
-﻿import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { StoreSaldoState } from '@/lib/modulo1Calculations';
 
@@ -46,14 +46,14 @@ export function useConciliacaoResumo(date: string) {
       if (txsErr) throw txsErr;
 
       const { data: patioOs, error: patioErr } = await supabase
-        .from('patio_os')
-        .select('*');
+        .from('estoque_os_pendente')
+        .select('*')
+        .eq('status', 'PENDENTE');
 
-      if (patioErr) console.warn("Aviso ao carregar patio_os:", patioErr);
+      if (patioErr) console.warn("Aviso ao carregar estoque_os_pendente:", patioErr);
 
       const totalSystemOS = patioOs?.reduce((acc, os) => {
-        const val = os.paid_value !== undefined && os.paid_value !== null ? os.paid_value : (os.total_value || 0);
-        return acc + Number(val);
+        return acc + Number(os.valor_os || 0);
       }, 0) || 0;
 
       const totalRedeGross = txs
@@ -213,11 +213,12 @@ export function useReconciliationViews(storeId: string, date: string) {
 
       // 2. Buscar OSs do pátio
       const { data: patioOs, error: patioErr } = await supabase
-        .from('patio_os')
+        .from('estoque_os_pendente')
         .select('*')
-        .eq('store_id', storeId);
+        .eq('store_id', storeId)
+        .eq('status', 'PENDENTE');
 
-      if (patioErr) console.warn("Aviso patio_os:", patioErr);
+      if (patioErr) console.warn("Aviso estoque_os_pendente:", patioErr);
 
       // --- Maquininhas (Rede) ---
       const redeTxs = txs?.filter(t => t.source === 'rede' || t.source === 'maquininha') || [];
@@ -344,8 +345,9 @@ export function useModulo1StoresData(date: string) {
         .eq('target_date', date);
 
       const { data: patioOs } = await supabase
-        .from('patio_os')
-        .select('*');
+        .from('estoque_os_pendente')
+        .select('*')
+        .eq('status', 'PENDENTE');
 
       const { data: receivables } = await supabase
         .from('receivables')
@@ -393,6 +395,8 @@ export function useModulo1StoresData(date: string) {
               .reduce((acc, o) => {
                 return acc + Math.max(0, Number(o.total_value || 0) - Number(o.paid_value || 0));
               }, 0);
+
+
 
         // 1. Extrair transações de entrada do OFX (sem filtro restrito de texto como 'PIX', pois cada banco tem uma sigla)
         const ofxPixTxs = storeTxs.filter(t => t.source === 'ofx' && t.type === 'in');
@@ -476,9 +480,10 @@ export function useUpdateOsStatus() {
       targetDate: string;
       newStatus: 'ENTROU' | 'finalizado' | 'em_aberto';
     }) => {
+      const resolvedStatus = newStatus === 'em_aberto' ? 'PENDENTE' : 'PAGA';
       const { data, error } = await supabase
-        .from('patio_os')
-        .update({ status: newStatus, updated_at: new Date().toISOString() })
+        .from('estoque_os_pendente')
+        .update({ status: resolvedStatus, data_baixa: new Date().toISOString() })
         .eq('id', osId);
 
       if (error) throw error;
@@ -503,7 +508,7 @@ export function useUpdateOsStatus() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] });
       queryClient.invalidateQueries({ queryKey: ['modulo1_stores_data'] });
-      queryClient.invalidateQueries({ queryKey: ['patio_os'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque_os_pendente'] });
       queryClient.invalidateQueries({ queryKey: ['conciliacao_resumo'] });
     }
   });

@@ -131,3 +131,10 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 ## [161-cloud-sync-live-preview]
 - **Agent UI Runner**: Componente `AgentRunnerModal` e `AgentStageItem` que criam a experiência de terminal de bot expansível com Framer Motion. 
 - **Auto-Injection (Polling)**: O Frontend faz polling de `oficina_contas` e injeta automaticamente os dados no Step 3 do Wizard após a Edge Function ser processada, substituindo a UX cega do sistema anterior.
+  
+### Feature 164: O Fim do Robô e Conciliação Híbrida  
+- Nova tabela Supabase: estoque_os_pendente  
+- Novo parser: src/lib/parsers/marcoZeroParser.ts (lê saldo e OS da planilha legada)  
+- Novo componente React: src/components/importacoes/MarcoZeroWizard.tsx  
+- Novo componente React: src/components/importacoes/MatchManualOsPendente.tsx (Passo 3.5 do Wizard)  
+- Refatoração do useConciliacao.ts para usar estoque_os_pendente em vez de patio_os 
