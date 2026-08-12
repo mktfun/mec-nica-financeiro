@@ -12,6 +12,8 @@ CREATE TABLE IF NOT EXISTS reconciliacoes_triplas (
 
 ALTER TABLE reconciliacoes_triplas ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can manage reconciliations for their stores" ON reconciliacoes_triplas;
+
 CREATE POLICY "Users can manage reconciliations for their stores"
 ON reconciliacoes_triplas FOR ALL
 TO authenticated

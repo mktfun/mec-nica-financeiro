@@ -37,9 +37,36 @@ export interface ImportLogEntry {
 
 
 // Hook para gerenciar mapeamento de lojas
-function useUnifiedStoreMapping() {
+function useUnifiedStoreMapping(stores: any[]) {
   const [mapping, setMapping] = useState<Record<string, string>>({});
+  const [initialized, setInitialized] = useState(false);
   
+  useEffect(() => {
+    if (stores.length === 0 || initialized) return;
+    
+    const savedStr = localStorage.getItem('@mecanica/unified-mappings');
+    if (savedStr) {
+      try {
+        const savedSlugs = JSON.parse(savedStr);
+        const initialMapping: Record<string, string> = {};
+        
+        Object.keys(savedSlugs).forEach(alias => {
+           const slugName = savedSlugs[alias];
+           const foundStore = stores.find((s: any) => 
+              s.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim() === slugName
+           );
+           if (foundStore) {
+             initialMapping[alias] = foundStore.id;
+           }
+        });
+        setMapping(initialMapping);
+      } catch (e) {
+        console.error("Failed to parse mappings", e);
+      }
+    }
+    setInitialized(true);
+  }, [stores, initialized]);
+
   const updateMapping = (alias: string, storeId: string, storeName?: string) => {
     setMapping(prev => {
       const next = { ...prev, [alias]: storeId };
@@ -98,23 +125,23 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
     setNeedsFallback(fallback);
     
     if (fallback) {
-      setStep(3.5 as any);
+      toast.success(`${cloudData.length} faturamentos extraídos via OCR/LLM.`);
     } else {
       toast.success(`${cloudData.length} faturamentos encontrados e processados.`);
-      
-      const aliases = new Set<string>();
-      results.osFiles.filter(r => r.success).forEach(r => aliases.add(r.storeAlias));
-      results.maquininhaItems.forEach(i => aliases.add(i.storeName));
-      results.ofxResults.forEach(o => aliases.add(o.alias));
-      results.redeResults.filter(r => r.success).forEach(r => {
-        r.transactions.forEach(t => aliases.add(t.storeName));
-      });
-      
-      if (Array.from(aliases).length > 0) {
-        setStep(2);
-      } else {
-        setStep(3);
-      }
+    }
+    
+    const aliases = new Set<string>();
+    results.osFiles.filter(r => r.success).forEach(r => aliases.add(r.storeAlias));
+    results.maquininhaItems.forEach(i => aliases.add(i.storeName));
+    results.ofxResults.forEach(o => aliases.add(o.alias));
+    results.redeResults.filter(r => r.success).forEach(r => {
+      r.transactions.forEach(t => aliases.add(t.storeName));
+    });
+    
+    if (Array.from(aliases).length > 0) {
+      setStep(2); // NUNCA pular o mapeamento se houver lojas para mapear
+    } else {
+      setStep(fallback ? 3.5 : 3);
     }
   };
 
@@ -131,7 +158,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const logsEndRef = useRef<HTMLDivElement>(null);
 
   const { data: stores = [] } = useStores();
-  const { mapping, updateMapping, setMapping } = useUnifiedStoreMapping();
+  const { mapping, updateMapping, setMapping } = useUnifiedStoreMapping(stores);
   const { processFiles, isProcessing, results } = useCentralImport();
   const { mutateAsync: saveTransactions } = useBulkInsertTransactions();
   const { mutateAsync: createImportBatch } = useCreateImportBatch();
@@ -700,8 +727,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         });
       };
 
-      if (needsFallback && manualOsData.length > 0) {
-         processOsItems(manualOsData, true);
+      if (needsFallback && cloudOsData.length > 0) {
+         processOsItems(cloudOsData, true);
       } else if (!needsFallback && cloudOsData.length > 0) {
          processOsItems(cloudOsData, false);
       }
@@ -1062,7 +1089,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                                 ${mapping[alias] ? 'border-[var(--color-accent-teal)] text-[var(--text-primary)]' : 'border-[var(--color-accent-warning)] text-[var(--text-secondary)]'}`}
                             >
                               <option value="">-- Selecione a Loja Correspondente --</option>
-                              <option value="GLOBAL">-- NÁƒO VINCULAR / IGNORAR --</option>
+                              <option value="GLOBAL">-- NÃO VINCULAR / IGNORAR --</option>
                               {stores.map(s => (
                                 <option key={s.id} value={s.id}>{s.name}</option>
                               ))}
@@ -1074,8 +1101,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                   )}
 
                   <div className="flex justify-between mt-6">
-                    <Button variant="ghost" onClick={() => setSubStep(1)}>â† Voltar para OFX</Button>
-                    <Button onClick={() => setSubStep(3)}>Próximo: Maquininhas (Rede) â†’</Button>
+                    <Button variant="ghost" onClick={() => setSubStep(1)}>← Voltar para OFX</Button>
+                    <Button onClick={() => setSubStep(3)}>Próximo: Maquininhas (Rede) →</Button>
                   </div>
                 </div>
               );
@@ -1105,7 +1132,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                       {aliasArray.map(alias => (
                         <div key={`rede-${alias}`} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
                           <div className="flex-1">
-                            <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase">NÂº de Estabelecimento / Loja</span><br/>
+                            <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase">Nº de Estabelecimento / Loja</span><br/>
                             <span className="font-mono text-lg font-semibold text-[var(--text-primary)]">{alias}</span>
                           </div>
                           <LinkIcon className="text-[var(--color-accent-warning)]/50 shrink-0" size={24} />
@@ -1120,7 +1147,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                                 ${mapping[alias] ? 'border-[var(--color-accent-warning)] text-[var(--text-primary)]' : 'border-red-500/50 text-[var(--text-secondary)]'}`}
                             >
                               <option value="">-- Selecione a Loja Correspondente --</option>
-                              <option value="GLOBAL">-- NÁƒO VINCULAR / IGNORAR --</option>
+                              <option value="GLOBAL">-- NÃO VINCULAR / IGNORAR --</option>
                               {stores.map(s => (
                                 <option key={s.id} value={s.id}>{s.name}</option>
                               ))}
@@ -1132,8 +1159,12 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                   )}
 
                   <div className="flex justify-between mt-6">
-                    <Button variant="ghost" onClick={() => setSubStep(2)}>â† Voltar para OS</Button>
-                    <Button onClick={() => setStep(2.5 as any)}>Avançar para Auditoria</Button>
+                    <Button variant="ghost" onClick={() => setSubStep(2)}>← Voltar para OS</Button>
+                    <Button 
+                      onClick={() => setStep(needsFallback ? 3.5 : (cloudOsData.length > 0 ? 2.5 : 3))}
+                    >
+                      Avançar para Auditoria / Preview →
+                    </Button>
                   </div>
                 </div>
               );
@@ -1217,6 +1248,28 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
           <Card className="p-8 space-y-6">
             <h3 className="font-display text-xl font-semibold">Previsão por Loja</h3>
+            
+            {/* Aviso Anti-Zero */}
+            {Object.keys(mapping).length === 0 && (results.osFiles.length > 0 || results.ofxResults.length > 0) && (
+              <div className="p-4 bg-[var(--color-accent-warning)]/10 border border-[var(--color-accent-warning)] rounded-xl flex items-start gap-3">
+                <AlertCircle className="text-[var(--color-accent-warning)] shrink-0 mt-0.5" size={20} />
+                <div>
+                  <p className="text-sm font-semibold text-[var(--color-accent-warning)]">
+                    Alerta Crítico: Nenhuma loja foi mapeada!
+                  </p>
+                  <p className="text-xs text-[var(--text-secondary)] mt-1">
+                    Você está prestes a concluir uma conciliação com todas as vendas ignoradas. Volte para a aba "Mapeamento" e defina a loja correta para cada arquivo, senão todas as lojas ficarão com faturamento zerado no fechamento.
+                  </p>
+                  <Button 
+                    variant="outline" 
+                    className="mt-3 text-xs border-[var(--color-accent-warning)] text-[var(--color-accent-warning)] hover:bg-[var(--color-accent-warning)]/20"
+                    onClick={() => setStep(2)}
+                  >
+                    Voltar e Mapear Lojas
+                  </Button>
+                </div>
+              </div>
+            )}
             
             <div className="space-y-4">
               {stores.map(store => {

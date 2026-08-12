@@ -1,7 +1,7 @@
 {
   ".council/shared_memory.json": {
-    "mtime": 1785512916.0,
-    "ast_hash": "2e7f233e7cbbb0b3b0e5c9458b60497c",
+    "mtime": 1786540991.777654,
+    "ast_hash": "9b92332fe966d04a9bf04257a21aae77",
     "semantic_hash": ""
   },
   ".lovable/project.json": {
@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1786537500.743788,
-    "ast_hash": "265f72717b992c8a4bcd0e9c20e7f437",
+    "mtime": 1786544198.3782043,
+    "ast_hash": "c96af9eca7f177c8fd99710bcb680d7b",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -1395,7 +1395,7 @@
     "semantic_hash": ""
   },
   "supabase/.temp/linked-project.json": {
-    "mtime": 1785512916.0,
+    "mtime": 1786542291.0079453,
     "ast_hash": "909b93e98d3011225245726bdc8dbc31",
     "semantic_hash": ""
   },
@@ -1520,13 +1520,13 @@
     "semantic_hash": ""
   },
   "supabase/migrations/20260720100000_reconciliacoes_triplas.sql": {
-    "mtime": 1785512916.0,
-    "ast_hash": "5256db6c0c380a13302712eb04fe0d27",
+    "mtime": 1786542326.8813853,
+    "ast_hash": "4d0bf3e16c72dcdf0a923a0a217e81a9",
     "semantic_hash": ""
   },
   "supabase/migrations/20260720140922_fix_delete_import_remnants.sql": {
-    "mtime": 1785512916.0,
-    "ast_hash": "8415d37b7b41b17bc48b02f23ff32eaa",
+    "mtime": 1786542375.147945,
+    "ast_hash": "28d9f34eb5970aa53d459ee07a18c180",
     "semantic_hash": ""
   },
   "supabase/migrations/20260720180000_enrich_patio_os.sql": {
@@ -3325,8 +3325,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786537901.451509,
-    "ast_hash": "8c052186daa4b28a445122be829d0d83",
+    "mtime": 1786539941.4857576,
+    "ast_hash": "44ea5e55ec4625622b7bd9a9f0f95670",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -3340,8 +3340,8 @@
     "semantic_hash": ""
   },
   "supabase/migrations/20260728000000_add_bot_settings.sql": {
-    "mtime": 1785512916.0,
-    "ast_hash": "b6f358b6c78fa4a428927047322ee701",
+    "mtime": 1786542432.298734,
+    "ast_hash": "c537d8ea3881569906220b2e48fd7c03",
     "semantic_hash": ""
   },
   "specs/archive/bot-traefik-routing/design.md": {
@@ -6295,8 +6295,8 @@
     "semantic_hash": ""
   },
   "src/lib/parsers/marcoZeroParser.ts": {
-    "mtime": 1786539692.0411975,
-    "ast_hash": "326a0449ee858bd7452be060f443e9b0",
+    "mtime": 1786541466.158641,
+    "ast_hash": "1feed57b8192c698b3b4b1eb4fca7232",
     "semantic_hash": ""
   },
   "supabase/migrations/20260811124024_create_estoque_os_pendente.sql": {
@@ -6419,21 +6419,6 @@
     "ast_hash": "612ac189538571465a3025939e9eb0eb",
     "semantic_hash": ""
   },
-  "specs/169-marco-zero-globals/design.md": {
-    "mtime": 1786539581.550668,
-    "ast_hash": "188728773ee67dc572c249661fa83294",
-    "semantic_hash": ""
-  },
-  "specs/169-marco-zero-globals/proposal.md": {
-    "mtime": 1786539564.9243371,
-    "ast_hash": "ec81d98168c362c747d459c7087dc797",
-    "semantic_hash": ""
-  },
-  "specs/169-marco-zero-globals/spec-plan.md": {
-    "mtime": 1786539788.220178,
-    "ast_hash": "eb820587ecf09a34a8527ad3bd1615a9",
-    "semantic_hash": ""
-  },
   "specs/archive/168-marco-zero-columns/design.md": {
     "mtime": 1786536791.6149597,
     "ast_hash": "fb94dc018863b40d21468654d2372a32",
@@ -6447,6 +6432,46 @@
   "specs/archive/168-marco-zero-columns/spec-plan.md": {
     "mtime": 1786537517.4286366,
     "ast_hash": "1f09224a34cbaa38626bc4d824da6936",
+    "semantic_hash": ""
+  },
+  "test.js": {
+    "mtime": 1786541357.394253,
+    "ast_hash": "771733fcd75e1516f40e74479006c379",
+    "semantic_hash": ""
+  },
+  "test_raw.js": {
+    "mtime": 1786541432.1751935,
+    "ast_hash": "55b8977de348e587a7ffb2289a1bc646",
+    "semantic_hash": ""
+  },
+  "specs/170-fix-central-import/design.md": {
+    "mtime": 1786543694.9588292,
+    "ast_hash": "0d39c3705af40c45424633389dfc7ad9",
+    "semantic_hash": ""
+  },
+  "specs/170-fix-central-import/proposal.md": {
+    "mtime": 1786543680.033473,
+    "ast_hash": "4782f51a9f67979a919e78b183770b02",
+    "semantic_hash": ""
+  },
+  "specs/170-fix-central-import/spec-plan.md": {
+    "mtime": 1786544212.1754055,
+    "ast_hash": "0f9ee65fbfb33dca90824868b5b9ff8c",
+    "semantic_hash": ""
+  },
+  "specs/archive/169-marco-zero-globals/design.md": {
+    "mtime": 1786539581.550668,
+    "ast_hash": "188728773ee67dc572c249661fa83294",
+    "semantic_hash": ""
+  },
+  "specs/archive/169-marco-zero-globals/proposal.md": {
+    "mtime": 1786539564.9243371,
+    "ast_hash": "ec81d98168c362c747d459c7087dc797",
+    "semantic_hash": ""
+  },
+  "specs/archive/169-marco-zero-globals/spec-plan.md": {
+    "mtime": 1786539788.220178,
+    "ast_hash": "eb820587ecf09a34a8527ad3bd1615a9",
     "semantic_hash": ""
   }
 }

@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION delete_import_batch(
     p_log_ids UUID[],
     p_batch_created_ats TIMESTAMPTZ[] DEFAULT '{}'::TIMESTAMPTZ[]
 )
-RETURNS VOID AS \$\$
+RETURNS VOID AS $$
 BEGIN
     IF p_is_expense THEN
         IF p_store_id IS NULL THEN
@@ -66,4 +66,4 @@ BEGIN
     END IF;
 
 END;
-\$\$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
