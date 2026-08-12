@@ -87,9 +87,20 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
         dinheiro_mp: data.global.dinheiroMp,
         total_recebiveis: data.global.aReceber,
         saldo_bancario: data.global.negativo,
-        faturamento: 0,
+        faturamento: data.global.faturamentoAtual,
         total_patio: 0,
-        notes: 'Implantação de Saldo Inicial (Marco Zero)'
+        notes: 'Implantação de Saldo Inicial (Marco Zero)',
+        metadata: {
+          fluxo_caixa: data.global.fluxoCaixa,
+          faturamento_anterior: data.global.faturamentoAnterior,
+          valor_disponivel_contas: data.global.valorDisponivelContas,
+          valor_das_contas: data.global.valorDasContas,
+          diferenca: data.global.diferenca,
+          juros_atual: data.global.jurosAtual,
+          contas: data.global.contas,
+          prolabore_daniel: data.global.prolaboreDaniel,
+          prolabore_henrique: data.global.prolaboreHenrique
+        }
       }, { onConflict: 'date' });
 
       if (snapError) throw new Error("Erro ao salvar snapshot global: " + snapError.message);
@@ -220,12 +231,18 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
 
             {/* Resumo Global */}
             <div className="mb-8">
-              <h4 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4">Métricas Globais da Rede</h4>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <h4 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4">Saldos Principais</h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                 <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4">
                   <p className="text-xs text-[var(--text-tertiary)] mb-1">Caixa Anterior</p>
                   <p className="text-lg font-semibold text-[var(--text-primary)]">
                     <AnimatedNumber value={data.global.caixaAnterior} prefix="R$ " />
+                  </p>
+                </div>
+                <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">Caixa Atual</p>
+                  <p className="text-lg font-semibold text-emerald-500">
+                    <AnimatedNumber value={data.global.caixaAtual} prefix="R$ " />
                   </p>
                 </div>
                 <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4">
@@ -240,10 +257,54 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
                     <AnimatedNumber value={data.global.aReceber} prefix="R$ " />
                   </p>
                 </div>
+              </div>
+
+              <h4 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4">Fluxo e Faturamento</h4>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
                 <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4">
-                  <p className="text-xs text-[var(--text-tertiary)] mb-1">Negativo (Itaú)</p>
-                  <p className="text-lg font-semibold text-rose-500">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">Faturamento Atual</p>
+                  <p className="text-md font-semibold text-[var(--text-primary)]">
+                    <AnimatedNumber value={data.global.faturamentoAtual} prefix="R$ " />
+                  </p>
+                </div>
+                <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">Faturamento Ant.</p>
+                  <p className="text-md font-semibold text-[var(--text-primary)]">
+                    <AnimatedNumber value={data.global.faturamentoAnterior} prefix="R$ " />
+                  </p>
+                </div>
+                <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">Fluxo Caixa</p>
+                  <p className="text-md font-semibold text-[var(--text-primary)]">
+                    <AnimatedNumber value={data.global.fluxoCaixa} prefix="R$ " />
+                  </p>
+                </div>
+              </div>
+
+              <h4 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4">Despesas e Ajustes</h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">Saldo Itaú (Neg)</p>
+                  <p className="text-md font-semibold text-rose-500">
                     <AnimatedNumber value={data.global.negativo} prefix="R$ " />
+                  </p>
+                </div>
+                <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">Total Contas</p>
+                  <p className="text-md font-semibold text-[var(--text-primary)]">
+                    <AnimatedNumber value={data.global.valorDasContas} prefix="R$ " />
+                  </p>
+                </div>
+                <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">Prolabore D.</p>
+                  <p className="text-md font-semibold text-[var(--text-primary)]">
+                    <AnimatedNumber value={data.global.prolaboreDaniel} prefix="R$ " />
+                  </p>
+                </div>
+                <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">Diferença</p>
+                  <p className={`text-md font-semibold ${data.global.diferenca !== 0 ? 'text-amber-500' : 'text-emerald-500'}`}>
+                    <AnimatedNumber value={data.global.diferenca} prefix="R$ " />
                   </p>
                 </div>
               </div>

@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1786455734.4593434,
-    "ast_hash": "b9ba87b56a4fbb8f8028a39945a2f56c",
+    "mtime": 1786537500.743788,
+    "ast_hash": "265f72717b992c8a4bcd0e9c20e7f437",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -6285,8 +6285,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/MarcoZeroWizard.tsx": {
-    "mtime": 1786457507.4162161,
-    "ast_hash": "e0f1ce4bf20184e6c3bcec412765fc35",
+    "mtime": 1786537141.9622512,
+    "ast_hash": "51461c080c79b2de995baa1adb3f0311",
     "semantic_hash": ""
   },
   "src/components/importacoes/MatchManualOsPendente.tsx": {
@@ -6295,8 +6295,8 @@
     "semantic_hash": ""
   },
   "src/lib/parsers/marcoZeroParser.ts": {
-    "mtime": 1786535444.957513,
-    "ast_hash": "3dca72d75670ac4b4ae839e626e2f21f",
+    "mtime": 1786537046.484367,
+    "ast_hash": "a2b40b28beea377300035e34fb0b4a76",
     "semantic_hash": ""
   },
   "supabase/migrations/20260811124024_create_estoque_os_pendente.sql": {
@@ -6359,21 +6359,6 @@
     "ast_hash": "a9ea5dc0fddca718347e95ea4a9b7b65",
     "semantic_hash": ""
   },
-  "specs/167-marco-zero-parser-fix/design.md": {
-    "mtime": 1786535346.2893164,
-    "ast_hash": "6999ce770182538e611ffa38eb46fe21",
-    "semantic_hash": ""
-  },
-  "specs/167-marco-zero-parser-fix/proposal.md": {
-    "mtime": 1786535331.429564,
-    "ast_hash": "f7696abc699cb993bf2d96b4d3feb0f5",
-    "semantic_hash": ""
-  },
-  "specs/167-marco-zero-parser-fix/spec-plan.md": {
-    "mtime": 1786535458.2880714,
-    "ast_hash": "6ea11e6bf20696996a904701856f7a2d",
-    "semantic_hash": ""
-  },
   "specs/archive/166-marco-zero-autostore/design.md": {
     "mtime": 1786456781.110371,
     "ast_hash": "0c47de3ad98453373ea4f5e563c8b720",
@@ -6387,6 +6372,36 @@
   "specs/archive/166-marco-zero-autostore/spec-plan.md": {
     "mtime": 1786457520.2525413,
     "ast_hash": "ff0613581cc62b89758ab6af54cd52ab",
+    "semantic_hash": ""
+  },
+  "specs/168-marco-zero-columns/design.md": {
+    "mtime": 1786536791.6149597,
+    "ast_hash": "fb94dc018863b40d21468654d2372a32",
+    "semantic_hash": ""
+  },
+  "specs/168-marco-zero-columns/proposal.md": {
+    "mtime": 1786536734.9162488,
+    "ast_hash": "dbabb9edd912e6f756681ee6789af96c",
+    "semantic_hash": ""
+  },
+  "specs/168-marco-zero-columns/spec-plan.md": {
+    "mtime": 1786537517.4286366,
+    "ast_hash": "1f09224a34cbaa38626bc4d824da6936",
+    "semantic_hash": ""
+  },
+  "specs/archive/167-marco-zero-parser-fix/design.md": {
+    "mtime": 1786535346.2893164,
+    "ast_hash": "6999ce770182538e611ffa38eb46fe21",
+    "semantic_hash": ""
+  },
+  "specs/archive/167-marco-zero-parser-fix/proposal.md": {
+    "mtime": 1786535331.429564,
+    "ast_hash": "f7696abc699cb993bf2d96b4d3feb0f5",
+    "semantic_hash": ""
+  },
+  "specs/archive/167-marco-zero-parser-fix/spec-plan.md": {
+    "mtime": 1786535458.2880714,
+    "ast_hash": "6ea11e6bf20696996a904701856f7a2d",
     "semantic_hash": ""
   }
 }

@@ -1,0 +1,896 @@
+--- SHEET: SALDO ---
+Row 0:
+  Unnamed: 1: Saldos 
+Row 1:
+  Unnamed: 1: PLANALTO 
+Row 2:
+  Unnamed: 1: Saldo Banco Itaú:
+  Unnamed: 4: 6237.77
+Row 3:
+  Unnamed: 1: Limite:
+  Unnamed: 4: 87400
+Row 4:
+  Unnamed: 2: Data
+  Unnamed: 3: Valor:
+  Unnamed: 4: Status:
+Row 5:
+  Unnamed: 1: Cartão Débito
+  Unnamed: 3: 1519.62
+  Unnamed: 4: ENTROU 
+Row 6:
+  Unnamed: 1: Cartão Crédito
+  Unnamed: 3: 4557.3
+  Unnamed: 4: ENTROU 
+Row 7:
+  Unnamed: 1: Cartão Crédito
+  Unnamed: 3: 2948.06
+  Unnamed: 4: ENTROU 
+Row 8:
+  Unnamed: 1: Cartão Débito
+Row 9:
+  Unnamed: 1: Dinheiro: 
+  Unnamed: 6: 138228.75
+  Unnamed: 7: SALDO
+Row 10:
+  Unnamed: 1: Dinheiro: 
+  Unnamed: 6: 38681.0
+  Unnamed: 7: DINHEIRO MP
+Row 11:
+  Unnamed: 6: 10694.5
+  Unnamed: 7: A RECEBER 
+Row 12:
+  Unnamed: 1: PIRAPORINHA 
+  Unnamed: 6: 37828.63
+  Unnamed: 7: NA LOJA
+Row 13:
+  Unnamed: 1: Saldo Banco Itaú:
+  Unnamed: 4: 11357.74
+  Unnamed: 6: 225432.88
+Row 14:
+  Unnamed: 1: Limite:
+  Unnamed: 4: 90000
+  Unnamed: 6: 2634.23
+  Unnamed: 7: NEGATIVO
+Row 15:
+  Unnamed: 2: Data
+  Unnamed: 3: Valor:
+  Unnamed: 4: Status:
+Row 16:
+  Unnamed: 1: Cartão Debito
+  Unnamed: 3: 1181.04
+  Unnamed: 4: ENTROU 
+Row 17:
+  Unnamed: 1: Cartão Credito : 
+  Unnamed: 3: 2615.11
+  Unnamed: 4: ENTROU 
+  Unnamed: 6: 222798.65
+  Unnamed: 7: CAIXA ATUAL 
+Row 18:
+  Unnamed: 1: Cartão Credito : 
+  Unnamed: 6: 186395.74
+  Unnamed: 7: CAIXA ANTERIOR   
+Row 19:
+  Unnamed: 1: Dinheiro: 
+  Unnamed: 6: 36402.91
+  Unnamed: 7: FLUXO CAIXA 
+Row 20:
+  Unnamed: 1: Dinheiro: 
+Row 21:
+  Unnamed: 4:  
+Row 22:
+  Unnamed: 1: MAUÁ
+  Unnamed: 6: 48742.94
+  Unnamed: 7: VALOR FATURAMENTO
+Row 23:
+  Unnamed: 1: Saldo Banco Itaú:
+  Unnamed: 3: NEGATIVO 
+  Unnamed: 4: 2634.23
+  Unnamed: 9: 1873.26
+Row 24:
+  Unnamed: 1: Limite:
+  Unnamed: 4: 33065.77
+  Unnamed: 6: 48742.94
+  Unnamed: 7: FATURAMENTO ATUAL
+Row 25:
+  Unnamed: 2: Data
+  Unnamed: 3: Valor:
+  Unnamed: 4: Status:
+  Unnamed: 6: 36402.91
+  Unnamed: 7: VALOR FLUXO DE CAIXA
+Row 26:
+  Unnamed: 1: Cartão Débito
+  Unnamed: 3: 490.55
+  Unnamed: 4: ENTROU 
+  Unnamed: 6: 12340.029999999999
+  Unnamed: 7: VALOR DISPONIVEL PARA O PAGAMENTO DE CONTAS
+Row 27:
+  Unnamed: 1: Cartão Credito : 
+  Unnamed: 3: 1543.94
+  Unnamed: 4: ENTROU 
+  Unnamed: 6: 12340.300000000001
+  Unnamed: 7: VALOR DAS CONTAS
+Row 28:
+  Unnamed: 1: Cartão Credito : 
+  Unnamed: 3: 2522.82
+  Unnamed: 4: ENTROU 
+  Unnamed: 6: -0.27000000000225555
+Row 29:
+  Unnamed: 1: Dinheiro:
+Row 30:
+  Unnamed: 1: Dinheiro:
+Row 31:
+  Unnamed: 1: Dinheiro:
+Row 32:
+  Unnamed: 2:  
+  Unnamed: 3:  
+Row 33:
+  Unnamed: 1: KENNEDY
+Row 34:
+  Unnamed: 1: Saldo Banco Itaú:
+  Unnamed: 4: 4354.75
+Row 35:
+  Unnamed: 1: Limite:
+  Unnamed: 4: 30000
+Row 36:
+  Unnamed: 2: Data
+  Unnamed: 3: Valor:
+  Unnamed: 4: Status:
+Row 37:
+  Unnamed: 1: Cartão Débito
+  Unnamed: 3: 2696.95
+  Unnamed: 4: ENTROU 
+  Unnamed: 6: 257011.03
+  Unnamed: 7: FATURAMENTO ATUAL  
+  Unnamed: 9: 1149715.82
+  Unnamed: 10: 50.0
+Row 38:
+  Unnamed: 1: Cartão Crédito
+  Unnamed: 3: 194.37
+  Unnamed: 4: ENTROU 
+  Unnamed: 6: 208268.09
+  Unnamed: 7: FATURAMENTO ANTERIOR  
+  Unnamed: 9: 1149665.81
+  Unnamed: 10: 48742.94
+Row 39:
+  Unnamed: 1: Cartão Crédito
+  Unnamed: 10: 48692.94
+Row 40:
+  Unnamed: 1: Cartão Débito
+Row 41:
+  Unnamed: 1: Dinheiro: 
+Row 42:
+  Unnamed: 1: Dinheiro: 
+Row 43:
+  Unnamed: 1: RUDGE
+  Unnamed: 6: 2921.68
+  Unnamed: 7: JUROS ATUAL 
+Row 44:
+  Unnamed: 1: Saldo Banco Itaú:
+  Unnamed: 4: 9405.64
+  Unnamed: 6: 9418.62
+  Unnamed: 7: CONTAS
+Row 45:
+  Unnamed: 1: Limite:
+  Unnamed: 4: 64000
+  Unnamed: 6: 0.0
+  Unnamed: 7: PROLABORE DANIEL  
+Row 46:
+  Unnamed: 1: ,
+  Unnamed: 2: Data
+  Unnamed: 3: Valor:
+  Unnamed: 4: Status:
+  Unnamed: 6: 0.0
+  Unnamed: 7: PROLABORE HENRIQUE   
+  Unnamed: 16381: ,
+Row 47:
+  Unnamed: 1: Cartão Débito
+  Unnamed: 3: 635.01
+  Unnamed: 4: ENTROU
+Row 48:
+  Unnamed: 1: Cartão Crédito
+  Unnamed: 3: 490.05
+  Unnamed: 4: ENTROU
+Row 49:
+  Unnamed: 1: Cartão Crédito
+  Unnamed: 3: 2404.46
+  Unnamed: 4: ENTROU
+Row 50:
+  Unnamed: 1: Cartão Crédito
+Row 51:
+  Unnamed: 1: Cartão Débito
+Row 52:
+  Unnamed: 1: Dinheiro 
+Row 53:
+  Unnamed: 1: Dinheiro 
+Row 54:
+  Unnamed: 1: SANTO ANDRÉ
+Row 55:
+  Unnamed: 1: Saldo Banco Itaú:
+  Unnamed: 4: 5577.92
+Row 56:
+  Unnamed: 1: Limite:
+  Unnamed: 4: 28100
+Row 57:
+  Unnamed: 2: Data
+  Unnamed: 3: Valor:
+  Unnamed: 4: Status:
+Row 58:
+  Unnamed: 1: Cartão Debito 
+Row 59:
+  Unnamed: 1: Cartão Crédito
+  Unnamed: 3: 335.97
+  Unnamed: 4: ENTROU 
+  Unnamed: 12:  
+Row 60:
+  Unnamed: 1: Cartão Debito 
+Row 61:
+  Unnamed: 1: Dinheiro: 
+Row 62:
+  Unnamed: 1: Dinheiro: 
+Row 63:
+  Unnamed: 1: REI DO MODULO
+Row 64:
+  Unnamed: 1: Saldo Banco Itaú:
+  Unnamed: 4: 15398.33
+  Unnamed: 5:  
+Row 65:
+  Unnamed: 1: Limite:
+  Unnamed: 4: 27000
+Row 66:
+  Unnamed: 2: Data
+  Unnamed: 3: Valor:
+  Unnamed: 4: Status:
+Row 67:
+  Unnamed: 1: Cartão Débito
+  Unnamed: 3: 192.2
+  Unnamed: 4: ENTROU
+Row 68:
+  Unnamed: 1: Cartão Crédito 
+  Unnamed: 3: 2179.68
+  Unnamed: 4: ENTROU
+Row 69:
+  Unnamed: 1: Cartão Crédito 
+Row 70:
+  Unnamed: 1: Dinheiro: 
+  Unnamed: 3: 190
+  Unnamed: 4: NÃO ENTROU 1813
+Row 71:
+  Unnamed: 1: Dinheiro: 
+  Unnamed: 3: 50
+  Unnamed: 4: NÃO ENTROU 1819
+Row 72:
+  Unnamed: 1: Dinheiro: 
+Row 73:
+  Unnamed: 1: Saldos 
+Row 74:
+  Unnamed: 1: JORGE BERETTA
+Row 75:
+  Unnamed: 1: Saldo Banco Itaú
+  Unnamed: 4: 25659.44
+Row 76:
+  Unnamed: 1: Limite:
+  Unnamed: 4: 30000
+Row 77:
+  Unnamed: 1: Investimento CDB
+  Unnamed: 4: 80000
+Row 78:
+  Unnamed: 2: Data
+  Unnamed: 3: Valor:
+  Unnamed: 4: Status:
+Row 79:
+  Unnamed: 1: Cartão Débito
+  Unnamed: 3: 2364.34
+  Unnamed: 4: ENTROU 
+Row 80:
+  Unnamed: 1: Cartão Crédito
+  Unnamed: 3: 3671.41
+  Unnamed: 4: ENTROU 
+Row 81:
+  Unnamed: 1: Cartão Crédito
+Row 82:
+  Unnamed: 1: Cartão Débito
+Row 83:
+  Unnamed: 1: Dinheiro: 
+Row 84:
+  Unnamed: 1: Dinheiro: 
+Row 85:
+  Unnamed: 1: Saldos 
+Row 86:
+  Unnamed: 6: 156152.24
+Row 87:
+  Unnamed: 1: DOM PEDRO I
+Row 88:
+  Unnamed: 1: Saldo Banco Itaú
+  Unnamed: 4: 12224.02
+Row 89:
+  Unnamed: 1: Limite:
+  Unnamed: 4: 15000
+Row 90:
+  Unnamed: 2: Data
+  Unnamed: 3: Valor:
+  Unnamed: 4: Status:
+Row 91:
+  Unnamed: 1: Cartão Débito
+  Unnamed: 3: 4949.74
+  Unnamed: 4: ENTROU 
+Row 92:
+  Unnamed: 1: Cartão Crédito
+  Unnamed: 3: 1252.02
+  Unnamed: 4: NÃO ENTROU 
+Row 93:
+  Unnamed: 1: Cartão Crédito
+Row 94:
+  Unnamed: 1: Dinheiro: 
+Row 95:
+  Unnamed: 1: Dinheiro: 
+Row 96:
+  Unnamed: 1: Dinheiro: 
+Row 97:
+  Unnamed: 1: Saldos 
+Row 98:
+  Unnamed: 1: JABAQUARA 
+Row 99:
+  Unnamed: 1: Saldo Banco Itaú
+  Unnamed: 4: 46521.12
+Row 100:
+  Unnamed: 1: Limite:
+  Unnamed: 4: 8000
+Row 101:
+  Unnamed: 2: Data
+  Unnamed: 3: Valor:
+  Unnamed: 4: Status:
+Row 102:
+  Unnamed: 1: Cartão Débito
+  Unnamed: 3: 1907.22
+  Unnamed: 4: ENTROU 
+Row 103:
+  Unnamed: 1: Cartão Crédito
+  Unnamed: 3: 4460.8
+  Unnamed: 4: ENTROU 
+Row 104:
+  Unnamed: 1: Cartão Crédito
+Row 105:
+  Unnamed: 1: Dinheiro: 
+Row 106:
+  Unnamed: 1: Dinheiro: 
+Row 107:
+  Unnamed: 1: Dinheiro: 
+
+--- SHEET: OS ---
+Row 0:
+  Ordem de Serviço: 2026-08-10 00:00:00
+Row 1:
+  Ordem de Serviço: Planalto 
+Row 2:
+  Ordem de Serviço: OS:
+  Unnamed: 2: Data:
+  Unnamed: 3: Valor:
+  Unnamed: 4: PAGAMENTOS 
+Row 3:
+  Ordem de Serviço: 18431
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 6492.1
+  Unnamed: 4: Credito: 6492.10; 
+Row 4:
+  Ordem de Serviço: 18430
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 1707.6
+  Unnamed: 4: Credito: 1707.60; 
+Row 5:
+  Ordem de Serviço: 18429
+  Unnamed: 2: 2026-08-07 00:00:00
+  Unnamed: 3: 1767.2
+  Unnamed: 4: PIX: 1767.20; 
+Row 6:
+  Ordem de Serviço: 18428
+  Unnamed: 2: 2026-08-07 00:00:00
+  Unnamed: 3: 425
+  Unnamed: 4: PIX: 425.00; 
+Row 7:
+  Ordem de Serviço: 18427
+  Unnamed: 2: 2026-08-05 00:00:00
+  Unnamed: 3: 1500.5
+Row 8:
+  Ordem de Serviço: 18420
+  Unnamed: 2: 2026-07-31 00:00:00
+  Unnamed: 3: 1630
+Row 9:
+  Ordem de Serviço: 18412
+  Unnamed: 2: 2026-07-27 00:00:00
+  Unnamed: 3: 436.6
+Row 10:
+  Unnamed: 3: 3567.1
+Row 11:
+  Ordem de Serviço: Piraporinha
+Row 12:
+  Ordem de Serviço: OS:
+  Unnamed: 2: Data:
+  Unnamed: 3: Valor:
+Row 13:
+  Ordem de Serviço: 40301
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 1200
+  Unnamed: 4: Debito: 1200.00; 
+Row 14:
+  Ordem de Serviço: 40300
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 410
+  Unnamed: 4: Credito: 410.00; 
+Row 15:
+  Ordem de Serviço: 40299
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 738
+  Unnamed: 4: Credito: 738.00; 
+Row 16:
+  Ordem de Serviço: 40298
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 385
+  Unnamed: 4: Credito: 385.00; 
+Row 17:
+  Ordem de Serviço: 40297
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 2451.2
+  Unnamed: 4: Credito: 2451.20; 
+Row 18:
+  Ordem de Serviço: 40296
+  Unnamed: 2: 2026-08-07 00:00:00
+  Unnamed: 3: 780
+  Unnamed: 4: PIX: 780.00; 
+Row 19:
+  Ordem de Serviço: 40287
+  Unnamed: 2: 2026-07-31 00:00:00
+  Unnamed: 3: 4400
+  Unnamed: 4: PIX 4400,00
+Row 20:
+  Unnamed: 3: 0
+Row 21:
+  Ordem de Serviço: Mauá
+Row 22:
+  Ordem de Serviço: OS:
+  Unnamed: 2: Data:
+  Unnamed: 3: Valor:
+Row 23:
+  Ordem de Serviço: 22559
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 0
+  Unnamed: 4: Debito: 385.00; 
+Row 24:
+  Ordem de Serviço: 22558
+  Unnamed: 2: 2026-08-07 00:00:00
+  Unnamed: 3: 217.97
+  Unnamed: 4: PIX: 217.97; 
+Row 25:
+  Ordem de Serviço: 22557
+  Unnamed: 2: 2026-08-06 00:00:00
+  Unnamed: 3: 1881.88
+  Unnamed: 4: Credito: 2777.82; 
+Row 26:
+  Ordem de Serviço: 22556
+  Unnamed: 2: 2026-08-06 00:00:00
+  Unnamed: 3: 109.4
+  Unnamed: 4: Debito: 109.40; 
+Row 27:
+  Ordem de Serviço: 22555
+  Unnamed: 2: 2026-08-05 00:00:00
+  Unnamed: 3: 800
+  Unnamed: 4: PIX 600,00|200,00
+Row 28:
+  Ordem de Serviço: 22521
+  Unnamed: 2: 2026-07-06 00:00:00
+  Unnamed: 3: 0
+Row 29:
+  Unnamed: 3: 1881.88
+Row 30:
+  Ordem de Serviço: Kennedy
+Row 31:
+  Ordem de Serviço: OS:
+  Unnamed: 2: Data:
+  Unnamed: 3: Valor:
+Row 32:
+  Ordem de Serviço: 4393
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 670.59
+  Unnamed: 4: PIX: 670.59; 
+Row 33:
+  Ordem de Serviço: 4392
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 195.9
+  Unnamed: 4: Debito: 195.90; 
+Row 34:
+  Ordem de Serviço: 4391
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 625.7
+  Unnamed: 4: Debito: 625.70; 
+Row 35:
+  Ordem de Serviço: 4390
+  Unnamed: 2: 2026-08-06 00:00:00
+  Unnamed: 3: 2740.25
+  Unnamed: 4: Debito: 2740.25; 
+Row 36:
+  Ordem de Serviço: 4388
+  Unnamed: 2: 2026-08-04 00:00:00
+  Unnamed: 3: 0
+Row 37:
+  Ordem de Serviço: 4387
+  Unnamed: 2: 2026-08-01 00:00:00
+  Unnamed: 3: 1968.3
+Row 38:
+  Unnamed: 3: 1968.3
+Row 39:
+  Ordem de Serviço: Rudge Ramos
+Row 40:
+  Ordem de Serviço: OS:
+  Unnamed: 2: Data:
+  Unnamed: 3: Valor:
+Row 41:
+  Ordem de Serviço: 8727
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 640
+  Unnamed: 4: Debito: 640.00; 
+Row 42:
+  Ordem de Serviço: 8726
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 789.04
+  Unnamed: 4: PIX: 789.04; 
+Row 43:
+  Ordem de Serviço: 8725
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 1150
+  Unnamed: 4: PIX: 1150.00; 
+Row 44:
+  Ordem de Serviço: 8721
+  Unnamed: 2: 2026-08-04 00:00:00
+  Unnamed: 3: 1957.5
+  Unnamed: 4: Credito: 2647.50; 
+Row 45:
+  Ordem de Serviço: 8720
+  Unnamed: 2: 2026-08-04 00:00:00
+  Unnamed: 3: 0
+Row 46:
+  Ordem de Serviço: 8719
+  Unnamed: 2: 2026-08-04 00:00:00
+  Unnamed: 3: 2358.55
+  Unnamed: 4: PIX: 2358.55; 
+Row 47:
+  Ordem de Serviço: 8714
+  Unnamed: 2: 2026-07-31 00:00:00
+  Unnamed: 3: 1040
+Row 48:
+  Ordem de Serviço: 8689
+  Unnamed: 2: 2026-07-14 00:00:00
+  Unnamed: 3: 4140
+Row 49:
+  Ordem de Serviço: 8659
+  Unnamed: 2: 2026-06-29 00:00:00
+  Unnamed: 3: 1200
+Row 50:
+  Unnamed: 3: 8337.5
+Row 51:
+  Ordem de Serviço: Santo André
+Row 52:
+  Ordem de Serviço: OS:
+  Unnamed: 2: Data:
+  Unnamed: 3: Valor:
+Row 53:
+  Ordem de Serviço: 2371
+  Unnamed: 2: 2026-08-07 00:00:00
+  Unnamed: 3: 736.96
+  Unnamed: 4: PIX: 736.96; 
+Row 54:
+  Ordem de Serviço: 2370
+  Unnamed: 2: 2026-08-06 00:00:00
+  Unnamed: 3: 2087.4
+  Unnamed: 4: PIX: 2087,40
+Row 55:
+  Ordem de Serviço: 2368
+  Unnamed: 2: 2026-08-05 00:00:00
+  Unnamed: 3: 0
+Row 56:
+  Ordem de Serviço: 2367
+  Unnamed: 2: 2026-08-04 00:00:00
+  Unnamed: 3: 1344
+  Unnamed: 4: PIX 1344,00
+Row 57:
+  Ordem de Serviço: 2326
+  Unnamed: 2: 2026-07-10 00:00:00
+  Unnamed: 3: 9218.73
+  Unnamed: 5: ?
+Row 58:
+  Unnamed: 3: 9218.73
+Row 59:
+  Ordem de Serviço: Rei do Modulo 
+Row 60:
+  Ordem de Serviço: 1818
+  Unnamed: 2: 2026-08-06 00:00:00
+  Unnamed: 3: 2800
+Row 61:
+  Ordem de Serviço: 1817
+  Unnamed: 2: 2026-08-06 00:00:00
+  Unnamed: 3: 0
+  Unnamed: 4: PIX: 2990.00; 
+Row 62:
+  Ordem de Serviço: 1814
+  Unnamed: 2: 2026-08-04 00:00:00
+  Unnamed: 3: 0
+Row 63:
+  Ordem de Serviço: 1810
+  Unnamed: 2: 2026-08-03 00:00:00
+  Unnamed: 3: 0
+Row 64:
+  Ordem de Serviço: 1808
+  Unnamed: 2: 2026-08-01 00:00:00
+  Unnamed: 3: 500
+  Unnamed: 4: C 200,00
+Row 65:
+  Unnamed: 3: 3300
+Row 66:
+  Ordem de Serviço: Jorge Beretta
+Row 67:
+  Ordem de Serviço: OS:
+  Unnamed: 2: Data:
+  Unnamed: 3: Valor:
+Row 68:
+  Ordem de Serviço: 1079
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 2136.67
+  Unnamed: 4: Credito: 2136.67; 
+Row 69:
+  Ordem de Serviço: 1078
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 2603.32
+  Unnamed: 4: Credito: 2603.32; 
+Row 70:
+  Ordem de Serviço: 1077
+  Unnamed: 2: 2026-08-06 00:00:00
+  Unnamed: 3: 1306
+  Unnamed: 4: c 1839,00
+Row 71:
+  Ordem de Serviço: 1076
+  Unnamed: 2: 2026-08-05 00:00:00
+  Unnamed: 3: 1325
+Row 72:
+  Ordem de Serviço: 1075
+  Unnamed: 2: 2026-08-04 00:00:00
+  Unnamed: 3: 190
+Row 73:
+  Ordem de Serviço: 1037
+  Unnamed: 2: 2026-07-03 00:00:00
+  Unnamed: 3: 3269.2
+  Unnamed: 4: pix 3269,2
+Row 74:
+  Unnamed: 3: 2821
+Row 75:
+  Ordem de Serviço: Dom Pedro I
+Row 76:
+  Ordem de Serviço: 575
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 687
+  Unnamed: 4: Credito: 300.00; Debito: 387.00; 
+Row 77:
+  Ordem de Serviço: 574
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 640
+Row 78:
+  Ordem de Serviço: 573
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 580
+  Unnamed: 4: Credito: 580.00; 
+Row 79:
+  Ordem de Serviço: 572
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 385
+Row 80:
+  Ordem de Serviço: 571
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 950
+  Unnamed: 4: Debito: 950.00; 
+Row 81:
+  Ordem de Serviço: 570
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 1614.5
+  Unnamed: 4: Credito: 1614.50; 
+Row 82:
+  Ordem de Serviço: 566
+  Unnamed: 2: 2026-08-03 00:00:00
+  Unnamed: 3: 2712.3999999999996
+  Unnamed: 4: Credito: 1352,40|1360,00
+Row 83:
+  Ordem de Serviço: 565
+  Unnamed: 2: 2026-08-03 00:00:00
+  Unnamed: 3: 3954.52
+Row 84:
+  Unnamed: 3: 4979.52
+Row 85:
+  Ordem de Serviço: Jabaquara
+Row 86:
+  Ordem de Serviço: OS:
+  Unnamed: 2: Data:
+  Unnamed: 3: Valor:
+Row 87:
+  Ordem de Serviço: 379
+  Unnamed: 2: 2026-08-08 00:00:00
+  Unnamed: 3: 463.89
+  Unnamed: 4: PIX: 463.89; 
+Row 88:
+  Ordem de Serviço: 378
+  Unnamed: 2: 2026-08-06 00:00:00
+  Unnamed: 3: 1400
+Row 89:
+  Ordem de Serviço: 376
+  Unnamed: 2: 2026-08-06 00:00:00
+  Unnamed: 3: 950
+  Unnamed: 4: PIX: 950.00; 
+Row 90:
+  Ordem de Serviço: 375
+  Unnamed: 2: 2026-08-05 00:00:00
+  Unnamed: 3: 3513.9
+  Unnamed: 4: C 1733,90|1780,00
+Row 91:
+  Ordem de Serviço: 372
+  Unnamed: 2: 2026-08-04 00:00:00
+  Unnamed: 3: 140
+  Unnamed: 4: Credito: 140.00; 
+Row 92:
+  Ordem de Serviço: 370
+  Unnamed: 2: 2026-08-03 00:00:00
+  Unnamed: 3: 1248
+  Unnamed: 4: Credito: 1248.00; 
+Row 93:
+  Ordem de Serviço: 368
+  Unnamed: 2: 2026-08-01 00:00:00
+  Unnamed: 3: 354.6
+Row 94:
+  Unnamed: 3: 1754.6
+
+--- SHEET: RECEBIVEIS  ---
+Row 0:
+  Recebiveis BRASICAR: TOTAL
+  VALOR: 0
+Row 1:
+  Recebiveis BRASICAR: Recebiveis EMPORIO
+  VALOR: VALOR
+  VENC: VENC
+Row 2:
+  Recebiveis BRASICAR: BOLETO MASSIMO PEDRAS OS 40235
+  VALOR: 300
+  VENC: 2026-08-27 00:00:00
+Row 3:
+  Recebiveis BRASICAR: TOTAL
+  VALOR: 300
+Row 4:
+  Recebiveis BRASICAR: Recebiveis MHE
+  VALOR: VALOR
+  VENC: VENC
+Row 5:
+  Recebiveis BRASICAR: BOLETO ORION OS 22529 1/3
+  VALOR: 3464.83
+  VENC: 2026-08-24 00:00:00
+Row 6:
+  Recebiveis BRASICAR: BOLETO ORION OS 22530 2/3
+  VALOR: 3464.83
+  VENC: 2026-09-22 00:00:00
+Row 7:
+  Recebiveis BRASICAR: BOLETO ORION OS 22531 3/3
+  VALOR: 3464.84
+  VENC: 2026-10-22 00:00:00
+Row 8:
+  Recebiveis BRASICAR: TOTAL
+  VALOR: 10394.5
+  Unnamed: 4:  
+Row 9:
+  Recebiveis BRASICAR: Recebiveis MP
+  VALOR: VALOR
+  VENC: VENC
+Row 10:
+  Recebiveis BRASICAR: TOTAL
+  VALOR: 0
+Row 11:
+  Recebiveis BRASICAR: Recebiveis CAP
+  VALOR: VALOR
+  VENC: VENC
+Row 12:
+  Recebiveis BRASICAR: TOTAL
+  VALOR: 0
+Row 13:
+  Recebiveis BRASICAR: Recebiveis SANTO ANDRÉ
+  VALOR: VALOR
+  VENC: VENC
+Row 14:
+  Recebiveis BRASICAR: TOTAL
+  VALOR: 0
+Row 15:
+  Recebiveis BRASICAR: Recebiveis JORGE BERETTA
+  VALOR: VALOR
+  VENC: VENC
+Row 16:
+  Recebiveis BRASICAR: TOTAL
+  VALOR: 0
+Row 17:
+  Recebiveis BRASICAR: Recebiveis REI DO MODULO 
+  VALOR: VALOR
+  VENC: VENC
+Row 18:
+  Recebiveis BRASICAR: TOTAL
+  VALOR: 0
+Row 19:
+  Recebiveis BRASICAR: Recebiveis DOM PEDRO 
+  VALOR: VALOR
+  VENC: VENC
+Row 20:
+  Recebiveis BRASICAR: TOTAL
+  VALOR: 0
+Row 21:
+  Recebiveis BRASICAR: Recebiveis JABAQUARA
+  VALOR: VALOR
+  VENC: VENC
+Row 22:
+  Recebiveis BRASICAR: TOTAL
+  VALOR: 0
+
+--- SHEET: CARTORIO ---
+Row 0:
+  Unnamed: 1: Recebiveis REI DO MODULO 
+  Unnamed: 2: VALOR
+  Unnamed: 3: VENC
+Row 1:
+  Unnamed: 1: BOLETO OS 902 JOAO PAULO 1/1
+  Unnamed: 2: 700
+  Unnamed: 3: 2025-02-17 00:00:00
+  Unnamed: 4: Bloqueado...
+Row 2:
+  Unnamed: 1: BOLETO OS 379 ROBSON
+  Unnamed: 2: 5212.45
+  Unnamed: 3: 2025-02-25 00:00:00
+  Unnamed: 4: Bloqueado...
+Row 3:
+  Unnamed: 1: BOLETO OS 387 ADILSON 
+  Unnamed: 2: 2160
+  Unnamed: 3: 2025-03-04 00:00:00
+  Unnamed: 4: Bloqueado...
+Row 4:
+  Unnamed: 1: BOLETO OS 553 ROBSON TADEU 
+  Unnamed: 2: 2200
+  Unnamed: 3: 2025-06-20 00:00:00
+  Unnamed: 4: Bloqueado...
+Row 5:
+  Unnamed: 1: BOLETO OS 626 CARLOS EDUARDO 
+  Unnamed: 2: 2150
+  Unnamed: 3: 2025-08-09 00:00:00
+  Unnamed: 4: Bloqueado...
+  Unnamed: 5: FOI PAGO 
+Row 6:
+  Unnamed: 1: BOLETO OS 52 ADRIANO ALVES 
+  Unnamed: 2: 480
+  Unnamed: 3: 2025-09-16 00:00:00
+  Unnamed: 4: Bloqueado...
+Row 7:
+  Unnamed: 1: BOLETO OS 675 DECIO PEREIRA 
+  Unnamed: 2: 480
+  Unnamed: 3: 2025-09-12 00:00:00
+  Unnamed: 4: Bloqueado...
+Row 8:
+  Unnamed: 1: BOLETO OS 22183
+  Unnamed: 2: 3730.7
+  Unnamed: 3: 2026-01-18 00:00:00
+  Unnamed: 4: Bloqueado...
+Row 9:
+  Unnamed: 1: BOLETO OS 22323
+  Unnamed: 2: 2192.5
+  Unnamed: 3: 2026-03-14 00:00:00
+  Unnamed: 4: Bloqueado...
+Row 10:
+  Unnamed: 1: BOLETO OS 22346
+  Unnamed: 2: 385
+  Unnamed: 3: 2026-03-27 00:00:00
+  Unnamed: 4: Bloqueado...
+Row 11:
+  Unnamed: 1: BOLETO OS 40055
+  Unnamed: 2: 385
+  Unnamed: 3: 2026-03-24 00:00:00
+  Unnamed: 4: Bloqueado...
+Row 12:
+  Unnamed: 1: BOLETO OS 81 
+  Unnamed: 2: 1860
+  Unnamed: 3: 2026-03-26 00:00:00
+  Unnamed: 4: Bloqueado...
+

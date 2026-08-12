@@ -140,3 +140,8 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - Refatoração do useConciliacao.ts para usar estoque_os_pendente em vez de patio_os 
   
 - **[168] Refatoracao do Marco Zero (2026-08-12):** Nova estrutura no marcoZeroParser.ts para separar extracao global de OSs locais. MarcoZeroWizard.tsx passou a exigir 'Data da Implantacao' e agora insere retroativamente os totais do saldo inicial na tabela daily_snapshots. O botao de Marco Zero na tela central foi condicionado a ausencia de snapshots na base. 
+## [169-marco-zero-globals]
+- **Extração Expandida do Marco Zero Global**: O parser e a UI foram refatorados para extrair 15+ variáveis financeiras (Faturamento, Juros, Prolabore, Diferença, etc).
+- **Modificado**: `src/lib/parsers/marcoZeroParser.ts` (Implementado um varredor de linhas para fuzzy-matching de rótulos em qualquer coluna).
+- **Modificado**: `src/components/importacoes/MarcoZeroWizard.tsx` (Dashboard 3x4 Expandido com 15 variáveis; inserção destas variáveis na nova coluna `metadata`).
+- **Modificado (Banco de Dados)**: Migration `20260812100300_add_metadata_to_daily_snapshots.sql` (Adicionado `metadata JSONB` à tabela `daily_snapshots`).

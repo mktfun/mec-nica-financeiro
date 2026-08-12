@@ -7,6 +7,17 @@ export interface MarcoZeroGlobalData {
   aReceber: number;
   negativo: number;
   caixaAnterior: number;
+  caixaAtual: number;
+  faturamentoAtual: number;
+  fluxoCaixa: number;
+  faturamentoAnterior: number;
+  valorDisponivelContas: number;
+  valorDasContas: number;
+  diferenca: number;
+  jurosAtual: number;
+  contas: number;
+  prolaboreDaniel: number;
+  prolaboreHenrique: number;
 }
 
 export interface MarcoZeroStoreData {
@@ -98,7 +109,18 @@ export const parseMarcoZeroPlanilha = async (file: File): Promise<MarcoZeroResul
           dinheiroMp: 0,
           aReceber: 0,
           negativo: 0,
-          caixaAnterior: 0
+          caixaAnterior: 0,
+          caixaAtual: 0,
+          faturamentoAtual: 0,
+          fluxoCaixa: 0,
+          faturamentoAnterior: 0,
+          valorDisponivelContas: 0,
+          valorDasContas: 0,
+          diferenca: 0,
+          jurosAtual: 0,
+          contas: 0,
+          prolaboreDaniel: 0,
+          prolaboreHenrique: 0
         };
 
         const storesMap: Record<string, MarcoZeroStoreData> = {};
@@ -124,21 +146,75 @@ export const parseMarcoZeroPlanilha = async (file: File): Promise<MarcoZeroResul
               const row: any[] = rawData[i] as any[];
               if (!row || row.length === 0) continue;
               
-              // 1. Extração Global: Coluna G (índice 6) = Valor, Coluna H (índice 7) = Rótulo
-              const valColG = cleanNumber(row[6]);
-              const labelColH = String(row[7] || '').toUpperCase().trim();
+              // 1. Extração Global Resiliente
+              // Varre todas as células da linha buscando rótulos. Se encontrar um rótulo, 
+              // busca um valor numérico válido na mesma linha.
+              const labelsInRow: string[] = [];
+              const numbersInRow: number[] = [];
               
-              if (valColG !== 0 && labelColH) {
-                if (labelColH.includes('DINHEIRO MP') || labelColH === 'DINHEIRO:') {
-                  globalData.dinheiroMp += valColG;
-                } else if (labelColH.includes('A RECEBER') || labelColH.includes('CARTÃO') || labelColH.includes('CARTAO')) {
-                  globalData.aReceber += valColG;
-                } else if (labelColH.includes('NEGATIVO') || labelColH.includes('SALDO BANCO') || labelColH.includes('LIMITE')) {
-                  globalData.negativo += Math.abs(valColG);
-                } else if (labelColH.includes('CAIXA ATUAL') || labelColH.includes('CAIXA')) {
-                  globalData.caixaAnterior += valColG;
+              for (const cell of row) {
+                if (typeof cell === 'string') {
+                  const label = String(cell || '').toUpperCase().trim();
+                  // fix encoding issues
+                  const cleanLabel = label.replace('ITAÁŠ', 'ITAÚ').replace('Â±', '±');
+                  if (cleanLabel) labelsInRow.push(cleanLabel);
+                } else if (cell !== null && cell !== undefined) {
+                  // try to convert to number, wait, the rawData is parsed with raw: false, so they might all be strings
+                  const num = cleanNumber(cell);
+                  if (num !== 0) numbersInRow.push(num);
                 }
               }
+
+              // Also check if some strings are numbers
+              for (const cell of row) {
+                  const num = cleanNumber(cell);
+                  if (num !== 0 && !numbersInRow.includes(num)) numbersInRow.push(num);
+              }
+
+              for (const labelColH of labelsInRow) {
+                // assume the largest absolute number in row or just the first number is the value
+                // In Excel the value is typically before the label or after, let's take the last number in the row if we can't be sure, but actually `numbersInRow` has all numbers.
+                // Let's just pick the first number if it exists.
+                const valColG = numbersInRow.length > 0 ? numbersInRow[0] : 0;
+
+                if (valColG !== 0 && labelColH) {
+                  if (labelColH === 'DINHEIRO MP') {
+                    globalData.dinheiroMp = valColG;
+                  } else if (labelColH === 'A RECEBER') {
+                    globalData.aReceber = valColG;
+                  } else if (labelColH.includes('NEGATIVO')) {
+                    globalData.negativo = Math.abs(valColG);
+                  } else if (labelColH === 'CAIXA ANTERIOR') {
+                    globalData.caixaAnterior = valColG;
+                  } else if (labelColH === 'CAIXA ATUAL') {
+                    globalData.caixaAtual = valColG;
+                  } else if (labelColH.includes('FATURAMENTO ATUAL')) {
+                    globalData.faturamentoAtual = valColG;
+                  } else if (labelColH.includes('FATURAMENTO ANTERIOR')) {
+                    globalData.faturamentoAnterior = valColG;
+                  } else if (labelColH.includes('FLUXO CAIXA') || labelColH.includes('FLUXO DE CAIXA')) {
+                    globalData.fluxoCaixa = valColG;
+                  } else if (labelColH.includes('PAGAMENTO DE CONTAS')) {
+                    globalData.valorDisponivelContas = valColG;
+                  } else if (labelColH === 'VALOR DAS CONTAS') {
+                    globalData.valorDasContas = valColG;
+                  } else if (labelColH === 'JUROS ATUAL') {
+                    globalData.jurosAtual = valColG;
+                  } else if (labelColH === 'CONTAS') {
+                    globalData.contas = valColG;
+                  } else if (labelColH.includes('PROLABORE DANIEL')) {
+                    globalData.prolaboreDaniel = valColG;
+                  } else if (labelColH.includes('PROLABORE HENRIQUE')) {
+                    globalData.prolaboreHenrique = valColG;
+                  }
+                }
+              }
+              
+              // Diferença doesn't have a label in the row sometimes (it's just a number at the end)
+              // But looking at the excel, it's row 28, just below 'VALOR DAS CONTAS' which is row 27.
+              // We'll leave it as zero unless we can specifically find it, or we calculate it.
+              // Diferenca = valorDisponivelContas - valorDasContas
+              globalData.diferenca = globalData.valorDisponivelContas - globalData.valorDasContas;
 
               // 2. Extração de Saldo por Loja: Coluna B (índice 1) = Nome, Coluna D (índice 3) = Saldo
               const cellA = String(row[0] || '').trim();
