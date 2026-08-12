@@ -1,10 +1,10 @@
-﻿import { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import * as XLSX from 'xlsx';
 import { parseOFXFile, OfxParseResult } from '@/lib/parsers/ofxParser';
 import { processOsFiles, OsImportResult } from '@/hooks/useOsImportProcessor';
 import { extractNumber } from '@/lib/parsers/numberUtils';
 import { parseRedeFile, RedeResult } from '@/lib/parsers/redeParser';
-import { parseMapaMetasPDF, MapaMetasResult } from '@/lib/parsers/mapaMetasParser';
+import type { MapaMetasResult } from '@/lib/parsers/mapaMetasParser';
 import { supabase } from '@/lib/supabase';
 import { traceLog } from '@/lib/logger';
 
@@ -133,8 +133,9 @@ export function useCentralImport() {
         await new Promise(r => setTimeout(r, 0));
       }
       
-      // Processa PDF
+      // Processa PDF — lazy import para evitar SSR crash (DOMMatrix is not defined)
       for (const file of pdfFiles) {
+        const { parseMapaMetasPDF } = await import('@/lib/parsers/mapaMetasParser');
         const result = await parseMapaMetasPDF(file);
         newResults.mapaMetasResults.push(result);
         await new Promise(r => setTimeout(r, 0));

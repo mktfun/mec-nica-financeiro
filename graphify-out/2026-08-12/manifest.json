@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1786544198.3782043,
-    "ast_hash": "c96af9eca7f177c8fd99710bcb680d7b",
+    "mtime": 1786547534.523817,
+    "ast_hash": "9c989eb2a77dfe37ba5639f48add0c78",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -3325,8 +3325,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786545807.6021893,
-    "ast_hash": "3241e736cde6de9eaa1ae4ed85550961",
+    "mtime": 1786547713.0604887,
+    "ast_hash": "5a8663a199b96955b22513ffb3790057",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -6487,6 +6487,21 @@
   "specs/archive/170-fix-central-import/spec-plan.md": {
     "mtime": 1786544212.1754055,
     "ast_hash": "0f9ee65fbfb33dca90824868b5b9ff8c",
+    "semantic_hash": ""
+  },
+  "append_memory.py": {
+    "mtime": 1786547659.4814494,
+    "ast_hash": "c3f71f0725be4733e2c1a7b27e01232b",
+    "semantic_hash": ""
+  },
+  "refactor.py": {
+    "mtime": 1786547451.1359012,
+    "ast_hash": "1ac9d59d39770e8f7098c530e2a2e7c0",
+    "semantic_hash": ""
+  },
+  "scratch/ciw.txt": {
+    "mtime": 1786547267.710239,
+    "ast_hash": "c96af9eca7f177c8fd99710bcb680d7b",
     "semantic_hash": ""
   }
 }

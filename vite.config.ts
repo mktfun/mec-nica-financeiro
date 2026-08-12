@@ -12,4 +12,14 @@ export default defineConfig({
   tanstackStart: {
     server: { entry: "server" },
   },
+  vite: {
+    // Exclui pdfjs-dist do SSR: a lib acessa APIs do browser (DOMMatrix, canvas)
+    // no momento do carregamento do módulo, derrubando o renderer do Vite/Node.
+    ssr: {
+      external: ['pdfjs-dist'],
+    },
+    optimizeDeps: {
+      exclude: ['pdfjs-dist'],
+    },
+  },
 });
