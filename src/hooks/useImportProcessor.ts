@@ -1,4 +1,4 @@
-﻿﻿import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+﻿import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { getDefaultDate } from '@/lib/utils';
 import { useSaveImportedReport } from './useConciliacao';
@@ -17,6 +17,8 @@ export interface ParsedOS {
   parsed_debit?: number;
   parsed_pix_transfer?: number;
   is_new_os?: boolean;
+  days_open?: number;
+  pending_value?: number;
 }
 
 export interface ParsedReceivable {
@@ -25,6 +27,7 @@ export interface ParsedReceivable {
   date: string;
   due_date: string;
   status: 'pendente' | 'recebido';
+  os_number?: string;
 }
 
 

@@ -145,3 +145,10 @@ a_loja_os. Bootstrap coleta 'P√°tio Pendente' para preencher caixa_atual e evita
 - **Modificado**: `src/lib/parsers/marcoZeroParser.ts` (Implementado um varredor de linhas para fuzzy-matching de r√≥tulos em qualquer coluna).
 - **Modificado**: `src/components/importacoes/MarcoZeroWizard.tsx` (Dashboard 3x4 Expandido com 15 vari√°veis; inser√ß√£o destas vari√°veis na nova coluna `metadata`).
 - **Modificado (Banco de Dados)**: Migration `20260812100300_add_metadata_to_daily_snapshots.sql` (Adicionado `metadata JSONB` √† tabela `daily_snapshots`).
+  
+## [171-os-mixed-cell-parser]  
+- **Parser Misto Resiliente (XLSX)**:  
+  - Modificado: src/hooks/useOsImportProcessor.ts (Substitu°do parse numÇrico fr†gil por extraá∆o avanáada com Regex extractNumber de numberUtils.ts).  
+  - Modificado: src/hooks/useImportProcessor.ts (Corrigidas tipagens omissas de ParsedOS e ParsedReceivable).  
+  - As formas de pagamento e valores lidos da planilha de OS agora resistem a cÇlulas preenchidas de forma mista por usu†rios humanos (ex: \" PIX R$ 1.5,"00\ no campo de valor).  
+ 

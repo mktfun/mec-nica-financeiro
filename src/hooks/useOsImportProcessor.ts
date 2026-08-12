@@ -1,7 +1,8 @@
-﻿import * as XLSX from 'xlsx';
+import * as XLSX from 'xlsx';
 import { ParsedOS, ParsedReceivable } from './useImportProcessor';
 import { getDefaultDate } from '@/lib/utils';
 import { traceLog } from '@/lib/logger';
+import { extractNumber } from '@/lib/parsers/numberUtils';
 
 export type OsImportResult = {
   fileName: string;
@@ -69,17 +70,7 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
       };
 
       const parseValue = (val: any) => {
-        if (!val) return 0;
-        if (typeof val === 'number') return val;
-        if (typeof val === 'string') {
-          let cleaned = val.replace(/R\$/g, '').trim();
-          if (cleaned.includes(',')) {
-            cleaned = cleaned.replace(/\./g, '').replace(/,/g, '.');
-          }
-          const parsed = parseFloat(cleaned);
-          return isNaN(parsed) ? 0 : parsed;
-        }
-        return 0;
+        return extractNumber(val);
       };
 
       let headerRowIndex = -1;
@@ -150,7 +141,9 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
         const days_open = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24))) || 0;
 
         // 1. Extração antecipada das formas de pagamento (Crédito, Débito, PIX)
-        const payment_method_str = String(row[colMap.paymentMethod] || '').trim();
+        const rawPaymentMethodStr = String(row[colMap.paymentMethod] || '').trim();
+        const rawPaidStr = String(row[colMap.paidValue] || '').trim();
+        const payment_method_str = `${rawPaymentMethodStr} ${rawPaidStr}`.trim();
         let parsed_credit = 0;
         let parsed_debit = 0;
         let parsed_pix_transfer = 0;
