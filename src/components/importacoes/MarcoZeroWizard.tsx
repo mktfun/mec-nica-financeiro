@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { FileSpreadsheet, UploadCloud, CheckCircle2, AlertCircle, Sparkles, Database } from 'lucide-react';
+import { FileSpreadsheet, UploadCloud, CheckCircle2, Database, Calendar } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
-import { parseMarcoZeroPlanilha, MarcoZeroExtraction } from '@/lib/parsers/marcoZeroParser';
+import { parseMarcoZeroPlanilha, MarcoZeroResult } from '@/lib/parsers/marcoZeroParser';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
@@ -13,10 +13,19 @@ import { useStores } from '@/hooks/useStores';
 export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => void, onCancel: () => void }) {
   const [file, setFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [data, setData] = useState<MarcoZeroExtraction[] | null>(null);
+  const [data, setData] = useState<MarcoZeroResult | null>(null);
   const [storeMapping, setStoreMapping] = useState<Record<string, string>>({});
+  const [targetDate, setTargetDate] = useState<string>('');
   const [isSaving, setIsSaving] = useState(false);
+  
   const { data: stores = [] } = useStores();
+
+  // Set default target date to yesterday
+  useEffect(() => {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    setTargetDate(yesterday.toISOString().split('T')[0]);
+  }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
@@ -32,9 +41,9 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
           const extracted = await parseMarcoZeroPlanilha(acceptedFiles[0]);
           setData(extracted);
           
-          // Auto-mapear se possível cruzando storeName extraído com as lojas do banco
+          // Auto-mapear
           const initialMapping: Record<string, string> = {};
-          extracted.forEach(ext => {
+          extracted.stores.forEach(ext => {
              const lowerExt = ext.storeName.toLowerCase();
              const matchedStore = stores.find(s => {
                const sName = (s.name || '').toLowerCase();
@@ -44,8 +53,8 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
           });
           setStoreMapping(initialMapping);
 
-          const totalOs = extracted.reduce((acc, curr) => acc + curr.osPendentes.length, 0);
-          toast.success(`Planilha processada! ${extracted.length} lojas válidas e ${totalOs} OSs pendentes encontradas.`);
+          const totalOs = extracted.stores.reduce((acc, curr) => acc + curr.osPendentes.length, 0);
+          toast.success(`Planilha processada! ${extracted.stores.length} lojas e ${totalOs} OSs encontradas.`);
         } catch (error: any) {
           toast.error(error.message);
           setFile(null);
@@ -58,26 +67,39 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
 
   const handleSave = async () => {
     if (!data) return;
+    if (!targetDate) {
+      toast.error("Por favor, selecione a Data de Implantação.");
+      return;
+    }
 
-    // Verificar se pelo menos uma aba tem loja vinculada
     const hasAnyMapping = Object.values(storeMapping).some(val => val !== '');
-    if (!hasAnyMapping) {
+    if (!hasAnyMapping && data.stores.length > 0) {
       toast.error("Vincule pelo menos uma aba a uma loja para implantar o Marco Zero.");
       return;
     }
 
     setIsSaving(true);
     try {
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      const targetDateStr = yesterday.toISOString().split('T')[0];
+      // 1. Inserir daily_snapshots (Snapshot Global do Marco Zero)
+      const { error: snapError } = await supabase.from('daily_snapshots').upsert({
+        date: targetDate,
+        caixa_atual: data.global.caixaAnterior,
+        dinheiro_mp: data.global.dinheiroMp,
+        total_recebiveis: data.global.aReceber,
+        saldo_bancario: data.global.negativo,
+        faturamento: 0,
+        total_patio: 0,
+        notes: 'Implantação de Saldo Inicial (Marco Zero)'
+      }, { onConflict: 'date' });
 
-      // Iterar sobre cada loja extraída
-      for (const ext of data) {
+      if (snapError) throw new Error("Erro ao salvar snapshot global: " + snapError.message);
+
+      // 2. Inserir OSs e Saldo por Loja
+      for (const ext of data.stores) {
         const storeId = storeMapping[ext.storeName];
-        if (!storeId) continue; // Pular lojas não vinculadas
+        if (!storeId) continue;
 
-        // 1. Inserir OSs no estoque_os_pendente
+        // OSs Pendentes
         if (ext.osPendentes.length > 0) {
           const payload = ext.osPendentes.map(os => ({
             store_id: storeId,
@@ -94,35 +116,27 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
           if (osError) throw new Error(`Erro ao salvar OSs da loja ${ext.storeName}: ` + osError.message);
         }
 
-        // 2. Injetar o Caixa Anterior (previous_balance) na reconciliations de D-1 (ontem)
-        const { data: recData } = await supabase
-          .from('reconciliations')
-          .select('id')
-          .eq('store_id', storeId)
-          .eq('date', targetDateStr)
-          .maybeSingle();
+        // Caso a loja tenha um "saldo_loja" extraído (ex: Gaveta/Caixa local), 
+        // inserimos retroativamente na conciliação da loja para aquele dia para constar no histórico.
+        if (ext.saldoLoja > 0) {
+          const { data: recData } = await supabase
+            .from('reconciliations')
+            .select('id')
+            .eq('store_id', storeId)
+            .eq('date', targetDate)
+            .maybeSingle();
 
-        if (recData) {
-          await supabase
-            .from('reconciliations')
-            .update({
-              previous_balance: ext.caixaAnterior,
-              manual_dinheiro_mp: ext.dinheiroMp,
-              manual_a_receber: ext.aReceber
-            })
-            .eq('id', recData.id);
-        } else {
-          await supabase
-            .from('reconciliations')
-            .insert({
-              store_id: storeId,
-              date: targetDateStr,
-              previous_balance: ext.caixaAnterior,
-              manual_dinheiro_mp: ext.dinheiroMp,
-              manual_a_receber: ext.aReceber,
-              status: 'completed',
-              is_closed: true
-            });
+          if (recData) {
+             await supabase.from('reconciliations').update({ daily_cash: ext.saldoLoja }).eq('id', recData.id);
+          } else {
+             await supabase.from('reconciliations').insert({
+               store_id: storeId,
+               date: targetDate,
+               daily_cash: ext.saldoLoja,
+               status: 'completed',
+               is_closed: true
+             });
+          }
         }
       }
 
@@ -142,7 +156,7 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
           <h2 className="text-2xl font-display font-bold text-[var(--text-primary)] flex items-center gap-2">
             <Database className="text-[var(--color-primary)]" /> Implantação de Saldo (Marco Zero)
           </h2>
-          <p className="text-sm text-[var(--text-secondary)]">Importe a planilha legada para inicializar o estoque de OSs pendentes e o Caixa Anterior do sistema.</p>
+          <p className="text-sm text-[var(--text-secondary)]">Importe a planilha legada para inicializar o estoque de OSs pendentes e o Saldo Global do sistema.</p>
         </div>
       </div>
 
@@ -165,11 +179,11 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
               {isDragActive ? 'Solte a Planilha aqui' : 'Arraste a Planilha Antiga de Conciliação'}
             </h3>
             <p className="text-[var(--text-tertiary)] text-sm text-center max-w-sm">
-              Formato .xlsx com as abas "SALDO" e "OS". O sistema agrupará os dados por Loja.
+              O sistema agrupará os saldos em formato Global e as OSs por Loja.
             </p>
             {isProcessing && (
               <div className="mt-4 text-[var(--color-primary)] flex items-center gap-2">
-                <LoadingSpinner size="sm" /> Extraindo lojas...
+                <LoadingSpinner size="sm" /> Processando arquivo...
               </div>
             )}
           </div>
@@ -180,97 +194,101 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
       )}
 
       {data && (
-        <Card className="p-6 md:p-8 space-y-8 bg-[var(--bg-canvas)] border border-[var(--color-primary)]/30">
-          <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-4">
-            <h3 className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2">
-              <CheckCircle2 className="text-emerald-500" /> Planilha Global Processada
-            </h3>
-            <span className="text-sm text-[var(--text-secondary)]">{data.length} blocos de dados encontrados</span>
-          </div>
+        <div className="space-y-6">
+          <Card className="p-6 md:p-8 bg-[var(--bg-canvas)] border border-[var(--color-primary)]/30">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--border-subtle)] pb-6 mb-6">
+              <div>
+                <h3 className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2">
+                  <CheckCircle2 className="text-emerald-500" /> Planilha Processada
+                </h3>
+                <p className="text-sm text-[var(--text-secondary)] mt-1">Revise os dados abaixo e defina a data da implantação retroativa.</p>
+              </div>
+              <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl p-3 flex items-center gap-3 w-full md:w-auto shadow-sm">
+                <Calendar className="text-[var(--color-primary)] shrink-0" size={20} />
+                <div className="flex flex-col flex-1">
+                  <label className="text-[10px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Data da Implantação (Marco Zero)</label>
+                  <input 
+                    type="date"
+                    value={targetDate}
+                    onChange={e => setTargetDate(e.target.value)}
+                    className="bg-transparent border-none p-0 text-sm font-semibold text-[var(--text-primary)] focus:ring-0 focus:outline-none"
+                    title="A data retroativa para este saldo"
+                  />
+                </div>
+              </div>
+            </div>
 
-          <div className="space-y-6 max-h-[600px] overflow-y-auto custom-scrollbar pr-2">
-            {data.map((ext, index) => (
-              <div key={index} className="bg-[var(--bg-surface-elevated)] p-5 rounded-2xl border border-[var(--border-subtle)] shadow-sm space-y-5">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-display font-semibold text-base text-[var(--text-primary)]">
-                    Loja: <span className="text-[var(--color-primary)]">{ext.storeName}</span>
-                  </h4>
-                  <div className="flex items-center gap-2">
-                    <label className="text-xs font-semibold text-[var(--text-secondary)] uppercase">Vincular Loja:</label>
+            {/* Resumo Global */}
+            <div className="mb-8">
+              <h4 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4">Métricas Globais da Rede</h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">Caixa Anterior</p>
+                  <p className="text-lg font-semibold text-[var(--text-primary)]">
+                    <AnimatedNumber value={data.global.caixaAnterior} prefix="R$ " />
+                  </p>
+                </div>
+                <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">Dinheiro MP</p>
+                  <p className="text-lg font-semibold text-[var(--text-primary)]">
+                    <AnimatedNumber value={data.global.dinheiroMp} prefix="R$ " />
+                  </p>
+                </div>
+                <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">A Receber</p>
+                  <p className="text-lg font-semibold text-[var(--text-primary)]">
+                    <AnimatedNumber value={data.global.aReceber} prefix="R$ " />
+                  </p>
+                </div>
+                <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4">
+                  <p className="text-xs text-[var(--text-tertiary)] mb-1">Negativo (Itaú)</p>
+                  <p className="text-lg font-semibold text-rose-500">
+                    <AnimatedNumber value={data.global.negativo} prefix="R$ " />
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <h4 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4">Filiais Encontradas ({data.stores.length})</h4>
+            <div className="space-y-4 max-h-[400px] overflow-y-auto custom-scrollbar pr-2">
+              {data.stores.map((ext, index) => (
+                <div key={index} className="bg-[var(--bg-surface-elevated)] p-4 rounded-xl border border-[var(--border-subtle)] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <h4 className="font-display font-semibold text-sm text-[var(--text-primary)] flex items-center gap-2">
+                      Loja: <span className="text-[var(--color-primary)]">{ext.storeName}</span>
+                    </h4>
+                    <p className="text-xs text-[var(--text-secondary)] mt-1">
+                      {ext.osPendentes.length} OSs pendentes • Saldo Gaveta: R$ {ext.saldoLoja.toFixed(2)}
+                    </p>
+                  </div>
+                  
+                  <div className="flex flex-col min-w-[250px]">
+                    <label className="text-[10px] font-semibold text-[var(--text-secondary)] uppercase mb-1">Vincular Loja no Sistema:</label>
                     <select 
-                      value={storeMapping[ext.storeName] || ''} 
+                      value={storeMapping[ext.storeName] || ''}
                       onChange={(e) => setStoreMapping(prev => ({ ...prev, [ext.storeName]: e.target.value }))}
-                      className="bg-[var(--bg-canvas)] border border-[var(--color-primary)]/50 text-[var(--text-primary)] rounded p-2 text-sm focus:outline-none min-w-[200px]"
+                      className="bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-lg px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none w-full"
                     >
                       <option value="">Não importar esta loja</option>
-                      {stores.map((s: any) => (
+                      {stores.map(s => (
                         <option key={s.id} value={s.id}>{s.name}</option>
                       ))}
                     </select>
                   </div>
                 </div>
+              ))}
+            </div>
+          </Card>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <div className="p-3 bg-[var(--bg-canvas)] rounded-lg border border-[var(--border-subtle)]/50">
-                    <p className="text-[10px] text-[var(--text-tertiary)] uppercase font-bold tracking-wider mb-1">Dinheiro MP</p>
-                    <p className="text-base font-semibold text-[var(--text-primary)]"><AnimatedNumber value={ext.dinheiroMp} format="currency" /></p>
-                  </div>
-                  <div className="p-3 bg-[var(--bg-canvas)] rounded-lg border border-[var(--border-subtle)]/50">
-                    <p className="text-[10px] text-[var(--text-tertiary)] uppercase font-bold tracking-wider mb-1">A Receber</p>
-                    <p className="text-base font-semibold text-[var(--text-primary)]"><AnimatedNumber value={ext.aReceber} format="currency" /></p>
-                  </div>
-                  <div className="p-3 bg-[var(--bg-canvas)] rounded-lg border border-[var(--border-subtle)]/50">
-                    <p className="text-[10px] text-[var(--text-tertiary)] uppercase font-bold tracking-wider mb-1">Negativo</p>
-                    <p className="text-base font-semibold text-red-400"><AnimatedNumber value={ext.negativo} format="currency" /></p>
-                  </div>
-                  <div className="p-3 bg-[var(--color-primary)]/5 rounded-lg border border-[var(--color-primary)]/20">
-                    <p className="text-[10px] text-[var(--color-primary)] uppercase font-bold tracking-wider mb-1">Caixa Anterior</p>
-                    <p className="text-base font-semibold text-[var(--color-primary)]"><AnimatedNumber value={ext.caixaAnterior} format="currency" /></p>
-                  </div>
-                </div>
-
-                <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]/50">
-                  <h5 className="font-semibold text-xs mb-2 flex items-center justify-between">
-                    <span className="text-[var(--text-secondary)]">OSs Pendentes</span>
-                    <span className="bg-[var(--color-accent-teal)]/20 text-[var(--color-accent-teal)] px-2 py-0.5 rounded text-[10px] font-bold">
-                      {ext.osPendentes.length}
-                    </span>
-                  </h5>
-                  {ext.osPendentes.length > 0 ? (
-                    <div className="max-h-32 overflow-y-auto custom-scrollbar space-y-1 pr-2">
-                      {ext.osPendentes.map((os, idx) => (
-                        <div key={idx} className="flex justify-between items-center py-1 border-b border-[var(--border-subtle)]/30 last:border-0">
-                          <span className="font-mono text-[10px] font-medium text-[var(--text-primary)]">OS {os.numero_os}</span>
-                          <div className="flex gap-3">
-                            <span className="text-[10px] text-[var(--text-tertiary)]">{new Date(os.data_os).toLocaleDateString('pt-BR')}</span>
-                            <span className="text-[10px] font-semibold text-sky-400">
-                              {os.valor_os.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-xs text-[var(--text-tertiary)] italic py-2">Nenhuma OS pendente detectada para esta loja.</div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex justify-between items-center pt-4 border-t border-[var(--border-subtle)]">
-            <Button variant="secondary" onClick={() => { setFile(null); setData(null); }}>
-              Refazer Upload
+          <div className="flex items-center justify-between mt-6">
+            <Button variant="ghost" onClick={() => setData(null)} disabled={isSaving}>
+              Voltar
             </Button>
-            <Button 
-              onClick={handleSave} 
-              disabled={isSaving || !Object.values(storeMapping).some(val => val !== '')} 
-              className="bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 px-8 py-6 text-base shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.3)]"
-            >
-              {isSaving ? <LoadingSpinner size="sm" text="Implantando..." /> : <Sparkles className="mr-2" />} Implantar Base Global
+            <Button onClick={handleSave} isLoading={isSaving} disabled={!targetDate}>
+              Implantar Base Global
             </Button>
           </div>
-        </Card>
+        </div>
       )}
     </div>
   );

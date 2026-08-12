@@ -6101,8 +6101,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "package_dependencies_ai",
-      "community": 45,
-      "community_name": "dependencies",
+      "community": 1051,
+      "community_name": "ai",
       "norm_label": "ai"
     },
     {
@@ -6112,8 +6112,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "ai",
-      "community": 45,
-      "community_name": "dependencies",
+      "community": 1051,
+      "community_name": "ai",
       "norm_label": "ai"
     },
     {
@@ -6299,8 +6299,8 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "package_dependencies_lucide_react",
-      "community": 1032,
-      "community_name": "lucide-react",
+      "community": 45,
+      "community_name": "dependencies",
       "norm_label": "lucide-react"
     },
     {
@@ -6310,8 +6310,8 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "lucide_react",
-      "community": 1032,
-      "community_name": "lucide-react",
+      "community": 45,
+      "community_name": "dependencies",
       "norm_label": "lucide-react"
     },
     {
@@ -6805,8 +6805,8 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "package_devdependencies_eslint_js",
-      "community": 1068,
-      "community_name": "@eslint/js",
+      "community": 1,
+      "community_name": "devDependencies",
       "norm_label": "@eslint/js"
     },
     {
@@ -6816,8 +6816,8 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "eslint_js",
-      "community": 1068,
-      "community_name": "@eslint/js",
+      "community": 1,
+      "community_name": "devDependencies",
       "norm_label": "@eslint/js"
     },
     {
@@ -6937,8 +6937,8 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "package_devdependencies_eslint",
-      "community": 1,
-      "community_name": "devDependencies",
+      "community": 1059,
+      "community_name": "eslint",
       "norm_label": "eslint"
     },
     {
@@ -6948,8 +6948,8 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "eslint",
-      "community": 1,
-      "community_name": "devDependencies",
+      "community": 1059,
+      "community_name": "eslint",
       "norm_label": "eslint"
     },
     {
@@ -15190,7 +15190,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_mocks_importfiles",
-      "community": 930,
+      "community": 42,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "importfiles.ts"
     },
@@ -15201,7 +15201,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_mocks_importfiles_mockfiles",
-      "community": 930,
+      "community": 42,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "mockfiles"
     },
@@ -15236,7 +15236,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "useStores.ts",
       "norm_label": "agenteiaconfigpanel.tsx"
     },
     {
@@ -15247,7 +15247,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_model_options",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "useStores.ts",
       "norm_label": "model_options"
     },
     {
@@ -15258,7 +15258,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_provider_labels",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "useStores.ts",
       "norm_label": "provider_labels"
     },
     {
@@ -15270,7 +15270,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_agenteiaconfigpanel",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "useStores.ts",
       "norm_label": "agenteiaconfigpanel()"
     },
     {
@@ -15280,8 +15280,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_cacheagentepanel",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 495,
+      "community_name": "supabase.ts",
       "norm_label": "cacheagentepanel.tsx"
     },
     {
@@ -15292,8 +15292,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_cacheagentepanel_cacheagentepanel",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 495,
+      "community_name": "supabase.ts",
       "norm_label": "cacheagentepanel()"
     },
     {
@@ -15304,7 +15304,7 @@
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "useStores.ts",
       "norm_label": "configuracoespanel.tsx"
     },
     {
@@ -15316,7 +15316,7 @@
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel_configuracoespanel",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "useStores.ts",
       "norm_label": "configuracoespanel()"
     },
     {
@@ -15328,7 +15328,7 @@
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel_aisettingsform",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "useStores.ts",
       "norm_label": "aisettingsform()"
     },
     {
@@ -15361,8 +15361,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_logsagentepanel",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 495,
+      "community_name": "supabase.ts",
       "norm_label": "logsagentepanel.tsx"
     },
     {
@@ -15373,8 +15373,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_logsagentepanel_logsagentepanel",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 495,
+      "community_name": "supabase.ts",
       "norm_label": "logsagentepanel()"
     },
     {
@@ -15384,8 +15384,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel",
-      "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "logsmotorpanel.tsx"
     },
     {
@@ -15396,8 +15396,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel_logsmotorpanel",
-      "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "logsmotorpanel()"
     },
     {
@@ -16102,7 +16102,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "modulo1saldopanel.tsx"
     },
     {
@@ -16115,7 +16115,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel_modulo1saldopanelprops",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "modulo1saldopanelprops"
     },
     {
@@ -16127,7 +16127,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel_modulo1saldopanel",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "modulo1saldopanel()"
     },
     {
@@ -16138,7 +16138,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_ofxsemmatchtable",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "ofxsemmatchtable.tsx"
     },
     {
@@ -16150,7 +16150,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_ofxsemmatchtable_ofxsemmatchtable",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "ofxsemmatchtable()"
     },
     {
@@ -16161,7 +16161,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_osdetailmodal",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "osdetailmodal.tsx"
     },
     {
@@ -16174,7 +16174,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_osdetailmodal_osdetailmodalprops",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "osdetailmodalprops"
     },
     {
@@ -16186,7 +16186,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_osdetailmodal_osdetailmodal",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "osdetailmodal()"
     },
     {
@@ -16197,7 +16197,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_osvsredetable",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "osvsredetable.tsx"
     },
     {
@@ -16209,7 +16209,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_osvsredetable_osvsredetable",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "osvsredetable()"
     },
     {
@@ -16220,7 +16220,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_pixvsofxtable",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "pixvsofxtable.tsx"
     },
     {
@@ -16232,7 +16232,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_pixvsofxtable_pixvsofxtable",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "pixvsofxtable()"
     },
     {
@@ -16243,7 +16243,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsextratotable",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "redevsextratotable.tsx"
     },
     {
@@ -16256,7 +16256,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsextratotable_redevsextratotableprops",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "redevsextratotableprops"
     },
     {
@@ -16268,7 +16268,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsextratotable_redevsextratotable",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "redevsextratotable()"
     },
     {
@@ -16279,7 +16279,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsofxtable",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "redevsofxtable.tsx"
     },
     {
@@ -16291,7 +16291,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsofxtable_redevsofxtable",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "redevsofxtable()"
     },
     {
@@ -16302,7 +16302,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "resumodiapanel.tsx"
     },
     {
@@ -16315,7 +16315,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel_resumodiapanelprops",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "resumodiapanelprops"
     },
     {
@@ -16327,7 +16327,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel_resumodiapanel",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "resumodiapanel()"
     },
     {
@@ -16338,7 +16338,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog",
       "community": 1017,
-      "community_name": "supabase.ts",
+      "community_name": "alertas.tsx",
       "norm_label": "alertresolvedialog.tsx"
     },
     {
@@ -16351,7 +16351,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog_alertresolvedialogprops",
       "community": 1017,
-      "community_name": "supabase.ts",
+      "community_name": "alertas.tsx",
       "norm_label": "alertresolvedialogprops"
     },
     {
@@ -16363,7 +16363,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog_alertresolvedialog",
       "community": 1017,
-      "community_name": "supabase.ts",
+      "community_name": "alertas.tsx",
       "norm_label": "alertresolvedialog()"
     },
     {
@@ -16373,8 +16373,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_bankreconciliationdashboard",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 634,
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "bankreconciliationdashboard.tsx"
     },
     {
@@ -16385,8 +16385,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_bankreconciliationdashboard_bankreconciliationdashboard",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 634,
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "bankreconciliationdashboard()"
     },
     {
@@ -16397,7 +16397,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_cashflowchart",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "cashflowchart.tsx"
     },
     {
@@ -16409,7 +16409,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_cashflowchart_cashflowchart",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "cashflowchart()"
     },
     {
@@ -16420,7 +16420,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "evolucaomacrochart.tsx"
     },
     {
@@ -16433,7 +16433,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_evolucaomacrochartprops",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "evolucaomacrochartprops"
     },
     {
@@ -16445,7 +16445,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatcurrency",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -16457,7 +16457,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatdate",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "formatdate()"
     },
     {
@@ -16469,7 +16469,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatcompactcurrency",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "formatcompactcurrency()"
     },
     {
@@ -16481,7 +16481,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_evolucaomacrochart",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "evolucaomacrochart()"
     },
     {
@@ -16492,7 +16492,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "faturamentovscontaschart.tsx"
     },
     {
@@ -16505,7 +16505,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_faturamentovscontaschartprops",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "faturamentovscontaschartprops"
     },
     {
@@ -16517,7 +16517,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_formatcurrency",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -16529,7 +16529,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_shortenname",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "shortenname()"
     },
     {
@@ -16541,7 +16541,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_customyaxistick",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "customyaxistick()"
     },
     {
@@ -16553,7 +16553,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_customtooltip",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "customtooltip()"
     },
     {
@@ -16565,7 +16565,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_faturamentovscontaschart",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "faturamentovscontaschart()"
     },
     {
@@ -16575,8 +16575,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 4,
+      "community_name": "useTransactions.ts",
       "norm_label": "herobalance.tsx"
     },
     {
@@ -16587,8 +16587,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance_herobalance",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 4,
+      "community_name": "useTransactions.ts",
       "norm_label": "herobalance()"
     },
     {
@@ -16599,7 +16599,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "kpicard.tsx"
     },
     {
@@ -16612,7 +16612,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicolor",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "kpicolor"
     },
     {
@@ -16625,7 +16625,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicardprops",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "kpicardprops"
     },
     {
@@ -16636,7 +16636,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_color_map",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "color_map"
     },
     {
@@ -16648,7 +16648,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicard",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "kpicard()"
     },
     {
@@ -16658,8 +16658,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 4,
+      "community_name": "useTransactions.ts",
       "norm_label": "motorstatus.tsx"
     },
     {
@@ -16670,8 +16670,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus_motorstatus",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 4,
+      "community_name": "useTransactions.ts",
       "norm_label": "motorstatus()"
     },
     {
@@ -16681,8 +16681,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "newtransactiondialog.tsx"
     },
     {
@@ -16694,8 +16694,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialogprops",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "newtransactiondialogprops"
     },
     {
@@ -16706,8 +16706,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialog",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "newtransactiondialog()"
     },
     {
@@ -16717,8 +16717,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_rationale_17",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "todo: implement transaction creation"
     },
     {
@@ -16728,8 +16728,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions",
-      "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "quickactions.tsx"
     },
     {
@@ -16739,8 +16739,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_container",
-      "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "container"
     },
     {
@@ -16750,8 +16750,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_item",
-      "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "item"
     },
     {
@@ -16762,8 +16762,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_quickactions",
-      "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "quickactions()"
     },
     {
@@ -16796,8 +16796,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_storeformdialog",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 496,
+      "community_name": "useStores.ts",
       "norm_label": "storeformdialog.tsx"
     },
     {
@@ -16809,8 +16809,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storeformdialog_storeformdialogprops",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 496,
+      "community_name": "useStores.ts",
       "norm_label": "storeformdialogprops"
     },
     {
@@ -16821,8 +16821,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storeformdialog_storeformdialog",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 496,
+      "community_name": "useStores.ts",
       "norm_label": "storeformdialog()"
     },
     {
@@ -16832,8 +16832,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_storerankingchart",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "storerankingchart.tsx"
     },
     {
@@ -16844,8 +16844,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storerankingchart_storerankingchart",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "storerankingchart()"
     },
     {
@@ -16856,7 +16856,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "storetabledashboard.tsx"
     },
     {
@@ -16869,7 +16869,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_storetabledashboardprops",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "storetabledashboardprops"
     },
     {
@@ -16881,7 +16881,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_fmt",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "fmt()"
     },
     {
@@ -16893,7 +16893,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_statusvariant",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "statusvariant()"
     },
     {
@@ -16905,7 +16905,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_statuslabel",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "statuslabel()"
     },
     {
@@ -16917,7 +16917,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_storetabledashboard",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "storetabledashboard()"
     },
     {
@@ -16928,7 +16928,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_agentrunnermodal",
       "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "AgentRunnerModal.tsx",
       "norm_label": "agentrunnermodal.tsx"
     },
     {
@@ -16941,7 +16941,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_agentrunnermodal_agentrunnermodalprops",
       "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "AgentRunnerModal.tsx",
       "norm_label": "agentrunnermodalprops"
     },
     {
@@ -16952,7 +16952,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_agentrunnermodal_initial_stages",
       "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "AgentRunnerModal.tsx",
       "norm_label": "initial_stages"
     },
     {
@@ -16964,7 +16964,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_agentrunnermodal_agentrunnermodal",
       "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "AgentRunnerModal.tsx",
       "norm_label": "agentrunnermodal()"
     },
     {
@@ -16975,7 +16975,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem",
       "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "AgentRunnerModal.tsx",
       "norm_label": "agentstageitem.tsx"
     },
     {
@@ -16988,7 +16988,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem_substep",
       "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "AgentRunnerModal.tsx",
       "norm_label": "substep"
     },
     {
@@ -17001,7 +17001,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem_agentstage",
       "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "AgentRunnerModal.tsx",
       "norm_label": "agentstage"
     },
     {
@@ -17014,7 +17014,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem_agentstageitemprops",
       "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "AgentRunnerModal.tsx",
       "norm_label": "agentstageitemprops"
     },
     {
@@ -17026,7 +17026,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem_agentstageitem",
       "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "AgentRunnerModal.tsx",
       "norm_label": "agentstageitem()"
     },
     {
@@ -17036,8 +17036,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard",
-      "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "auditoriapassivowizard.tsx"
     },
     {
@@ -17049,8 +17049,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard_auditoriapassivowizardprops",
-      "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "auditoriapassivowizardprops"
     },
     {
@@ -17061,7 +17061,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard_auditoriapassivowizard",
-      "community": 930,
+      "community": 42,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "auditoriapassivowizard()"
     },
@@ -17119,7 +17119,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard",
-      "community": 930,
+      "community": 42,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportwizard.tsx"
     },
@@ -17132,7 +17132,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_importlogentry",
-      "community": 930,
+      "community": 42,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "importlogentry"
     },
@@ -17144,7 +17144,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_useunifiedstoremapping",
-      "community": 930,
+      "community": 42,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "useunifiedstoremapping()"
     },
@@ -17156,7 +17156,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_stepindicator",
-      "community": 930,
+      "community": 42,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "stepindicator()"
     },
@@ -17168,7 +17168,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_centralimportwizard",
-      "community": 930,
+      "community": 42,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportwizard()"
     },
@@ -17228,8 +17228,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_marcozerowizard",
-      "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "marcozerowizard.tsx"
     },
     {
@@ -17240,8 +17240,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_marcozerowizard_marcozerowizard",
-      "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "marcozerowizard()"
     },
     {
@@ -17251,8 +17251,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente",
-      "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "matchmanualospendente.tsx"
     },
     {
@@ -17264,8 +17264,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente_matchmanualosprops",
-      "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "matchmanualosprops"
     },
     {
@@ -17276,7 +17276,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente_matchmanualospendente",
-      "community": 930,
+      "community": 42,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "matchmanualospendente()"
     },
@@ -17287,8 +17287,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "wizardimportacao.tsx"
     },
     {
@@ -17300,8 +17300,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_wizardimportacaoprops",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "wizardimportacaoprops"
     },
     {
@@ -17313,7 +17313,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_usestoremapping",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "usestoremapping()"
     },
     {
@@ -17324,8 +17324,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_generatesyntheticfitid",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "generatesyntheticfitid()"
     },
     {
@@ -17337,7 +17337,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_wizardimportacao",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "wizardimportacao()"
     },
     {
@@ -17348,8 +17348,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_stepindicator",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "stepindicator()"
     },
     {
@@ -17473,8 +17473,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_animatednumber",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 4,
+      "community_name": "useTransactions.ts",
       "norm_label": "animatednumber.tsx"
     },
     {
@@ -17486,8 +17486,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumberprops",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 4,
+      "community_name": "useTransactions.ts",
       "norm_label": "animatednumberprops"
     },
     {
@@ -17498,8 +17498,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumber",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 4,
+      "community_name": "useTransactions.ts",
       "norm_label": "animatednumber()"
     },
     {
@@ -17510,7 +17510,7 @@
       "_origin": "ast",
       "id": "src_components_ui_badge",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "badge.tsx"
     },
     {
@@ -17523,7 +17523,7 @@
       "_origin": "ast",
       "id": "src_components_ui_badge_badgeprops",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "badgeprops"
     },
     {
@@ -17535,7 +17535,7 @@
       "_origin": "ast",
       "id": "src_components_ui_badge_badge",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "badge()"
     },
     {
@@ -17545,8 +17545,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_button",
-      "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "button.tsx"
     },
     {
@@ -17558,8 +17558,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_button_buttonprops",
-      "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "buttonprops"
     },
     {
@@ -17570,8 +17570,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_button_button",
-      "community": 930,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "button()"
     },
     {
@@ -17581,7 +17581,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_card",
-      "community": 49,
+      "community": 34,
       "community_name": "Card.tsx",
       "norm_label": "card.tsx"
     },
@@ -17594,7 +17594,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_card_cardprops",
-      "community": 49,
+      "community": 34,
       "community_name": "Card.tsx",
       "norm_label": "cardprops"
     },
@@ -17606,7 +17606,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_card_card",
-      "community": 49,
+      "community": 34,
       "community_name": "Card.tsx",
       "norm_label": "card()"
     },
@@ -17617,8 +17617,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_input",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "input.tsx"
     },
     {
@@ -17630,8 +17630,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_input_inputprops",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "inputprops"
     },
     {
@@ -17641,8 +17641,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_ui_input_input",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "input"
     },
     {
@@ -17653,7 +17653,7 @@
       "_origin": "ast",
       "id": "src_components_ui_loadingspinner",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "loadingspinner.tsx"
     },
     {
@@ -17666,7 +17666,7 @@
       "_origin": "ast",
       "id": "src_components_ui_loadingspinner_loadingspinnerprops",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "loadingspinnerprops"
     },
     {
@@ -17678,7 +17678,7 @@
       "_origin": "ast",
       "id": "src_components_ui_loadingspinner_loadingspinner",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "loadingspinner()"
     },
     {
@@ -17688,8 +17688,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_modal",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "modal.tsx"
     },
     {
@@ -17701,8 +17701,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_modal_modalprops",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "modalprops"
     },
     {
@@ -17713,8 +17713,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_modal_modal",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "modal()"
     },
     {
@@ -17747,8 +17747,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 634,
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "universaldropzone.tsx"
     },
     {
@@ -17760,8 +17760,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_filetypecategory",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 634,
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "filetypecategory"
     },
     {
@@ -17773,8 +17773,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_classifiedfile",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 634,
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "classifiedfile"
     },
     {
@@ -17785,8 +17785,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_classifyfile",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 634,
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "classifyfile()"
     },
     {
@@ -17798,8 +17798,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_universaldropzoneprops",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 634,
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "universaldropzoneprops"
     },
     {
@@ -17810,8 +17810,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_universaldropzone",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 634,
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "universaldropzone()"
     },
     {
@@ -17845,7 +17845,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "useStores.ts",
       "norm_label": "useaisettings.ts"
     },
     {
@@ -17858,7 +17858,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_aisettings",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "useStores.ts",
       "norm_label": "aisettings"
     },
     {
@@ -17870,7 +17870,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_useaisettings",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "useStores.ts",
       "norm_label": "useaisettings()"
     },
     {
@@ -17882,7 +17882,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_usesaveaisettings",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "useStores.ts",
       "norm_label": "usesaveaisettings()"
     },
     {
@@ -17893,7 +17893,7 @@
       "_origin": "ast",
       "id": "src_hooks_usealerts",
       "community": 1017,
-      "community_name": "supabase.ts",
+      "community_name": "alertas.tsx",
       "norm_label": "usealerts.ts"
     },
     {
@@ -17905,7 +17905,7 @@
       "_origin": "ast",
       "id": "src_hooks_usealerts_usealerts",
       "community": 1017,
-      "community_name": "supabase.ts",
+      "community_name": "alertas.tsx",
       "norm_label": "usealerts()"
     },
     {
@@ -17917,7 +17917,7 @@
       "_origin": "ast",
       "id": "src_hooks_usealerts_useallalerts",
       "community": 1017,
-      "community_name": "supabase.ts",
+      "community_name": "alertas.tsx",
       "norm_label": "useallalerts()"
     },
     {
@@ -17929,7 +17929,7 @@
       "_origin": "ast",
       "id": "src_hooks_usealerts_useresolvealert",
       "community": 1017,
-      "community_name": "supabase.ts",
+      "community_name": "alertas.tsx",
       "norm_label": "useresolvealert()"
     },
     {
@@ -17974,8 +17974,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useauth_uselogin",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 1048,
+      "community_name": "AppShell.tsx",
       "norm_label": "uselogin()"
     },
     {
@@ -17998,7 +17998,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usebackendconciliacao.ts"
     },
     {
@@ -18011,7 +18011,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_conciliationdailylog",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "conciliationdailylog"
     },
     {
@@ -18023,7 +18023,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_usebackendconciliacao",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usebackendconciliacao()"
     },
     {
@@ -18035,7 +18035,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_useglobalofxout",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "useglobalofxout()"
     },
     {
@@ -18045,8 +18045,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard",
-      "community": 1017,
-      "community_name": "supabase.ts",
+      "community": 49,
+      "community_name": "index.tsx",
       "norm_label": "usebackenddashboard.ts"
     },
     {
@@ -18058,8 +18058,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_storemetrics",
-      "community": 1017,
-      "community_name": "supabase.ts",
+      "community": 49,
+      "community_name": "index.tsx",
       "norm_label": "storemetrics"
     },
     {
@@ -18071,8 +18071,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_dashboardmetrics",
-      "community": 1017,
-      "community_name": "supabase.ts",
+      "community": 49,
+      "community_name": "index.tsx",
       "norm_label": "dashboardmetrics"
     },
     {
@@ -18084,7 +18084,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_usebackenddashboard",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "usebackenddashboard()"
     },
     {
@@ -18095,7 +18095,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "useStores.ts",
       "norm_label": "usebotcredentials.ts"
     },
     {
@@ -18108,7 +18108,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_botcredentialrow",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "useStores.ts",
       "norm_label": "botcredentialrow"
     },
     {
@@ -18120,7 +18120,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usebotcredentials",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "useStores.ts",
       "norm_label": "usebotcredentials()"
     },
     {
@@ -18132,7 +18132,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_useupdatebotcredential",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "useStores.ts",
       "norm_label": "useupdatebotcredential()"
     },
     {
@@ -18144,7 +18144,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usemarkcredentialvalid",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "useStores.ts",
       "norm_label": "usemarkcredentialvalid()"
     },
     {
@@ -18154,8 +18154,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotlogs",
-      "community": 1017,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores.ts",
       "norm_label": "usebotlogs.ts"
     },
     {
@@ -18167,8 +18167,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_botauditlog",
-      "community": 1017,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores.ts",
       "norm_label": "botauditlog"
     },
     {
@@ -18180,7 +18180,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotlogs",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "useStores.ts",
       "norm_label": "usebotlogs()"
     },
     {
@@ -18191,8 +18191,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotauditlogs",
-      "community": 1017,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores.ts",
       "norm_label": "usebotauditlogs()"
     },
     {
@@ -18202,7 +18202,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotruns",
-      "community": 1017,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "usebotruns.ts"
     },
@@ -18214,7 +18214,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebotruns_uselatestbotrun",
-      "community": 1017,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "uselatestbotrun()"
     },
@@ -18227,7 +18227,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotruns_usebotrunhistory",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "useStores.ts",
       "norm_label": "usebotrunhistory()"
     },
     {
@@ -18237,7 +18237,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usecashregisters",
-      "community": 4,
+      "community": 13,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "usecashregisters.ts"
     },
@@ -18249,7 +18249,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usecashregisters_usecashregisters",
-      "community": 4,
+      "community": 13,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "usecashregisters()"
     },
@@ -18261,7 +18261,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usecashregisters_useclosecashregister",
-      "community": 4,
+      "community": 13,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "useclosecashregister()"
     },
@@ -18273,7 +18273,7 @@
       "_origin": "ast",
       "id": "src_hooks_usecentralimport",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "usecentralimport.ts"
     },
     {
@@ -18286,7 +18286,7 @@
       "_origin": "ast",
       "id": "src_hooks_usecentralimport_unifiedimportresult",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "unifiedimportresult"
     },
     {
@@ -18299,7 +18299,7 @@
       "_origin": "ast",
       "id": "src_hooks_usecentralimport_maquininhaitem",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "maquininhaitem"
     },
     {
@@ -18311,7 +18311,7 @@
       "_origin": "ast",
       "id": "src_hooks_usecentralimport_usecentralimport",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "usecentralimport()"
     },
     {
@@ -18322,7 +18322,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "useconciliacao.ts"
     },
     {
@@ -18334,7 +18334,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_isvaliduuid",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "isvaliduuid()"
     },
     {
@@ -18347,7 +18347,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_conciliacaoresumo",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "conciliacaoresumo"
     },
     {
@@ -18359,7 +18359,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usereconciliationsfordate",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usereconciliationsfordate()"
     },
     {
@@ -18370,8 +18370,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useconciliacaoresumo",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "useconciliacaoresumo()"
     },
     {
@@ -18382,8 +18382,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useconciliacaodetalhes",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "useconciliacaodetalhes()"
     },
     {
@@ -18395,7 +18395,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesaveimportedreport",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usesaveimportedreport()"
     },
     {
@@ -18406,7 +18406,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usestorehistory",
-      "community": 4,
+      "community": 13,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "usestorehistory()"
     },
@@ -18419,7 +18419,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesystemtransactions",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "usesystemtransactions()"
     },
     {
@@ -18431,7 +18431,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usedailyreconciliationdelta",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "usedailyreconciliationdelta()"
     },
     {
@@ -18443,7 +18443,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usereconciliationviews",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "usereconciliationviews()"
     },
     {
@@ -18455,7 +18455,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usemodulo1storesdata",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "usemodulo1storesdata()"
     },
     {
@@ -18467,7 +18467,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useupdateosstatus",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "useupdateosstatus()"
     },
     {
@@ -18479,7 +18479,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useresolveunmatchedalert",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "useresolveunmatchedalert()"
     },
     {
@@ -18491,7 +18491,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useredevsextrato",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "useredevsextrato()"
     },
     {
@@ -18502,8 +18502,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesavebankreconciliation",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 634,
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "usesavebankreconciliation()"
     },
     {
@@ -18514,8 +18514,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesavemachinetotal",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 634,
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "usesavemachinetotal()"
     },
     {
@@ -18601,7 +18601,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usedailysnapshot.ts"
     },
     {
@@ -18614,7 +18614,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_dailysnapshotrow",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "dailysnapshotrow"
     },
     {
@@ -18626,7 +18626,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usedailysnapshot",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usedailysnapshot()"
     },
     {
@@ -18638,7 +18638,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usepreviousdaysnapshot",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usepreviousdaysnapshot()"
     },
     {
@@ -18650,7 +18650,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usesavedailysnapshot",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usesavedailysnapshot()"
     },
     {
@@ -18662,7 +18662,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_useavailableconciliacaodates",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "useavailableconciliacaodates()"
     },
     {
@@ -18672,8 +18672,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2",
-      "community": 1017,
-      "community_name": "supabase.ts",
+      "community": 49,
+      "community_name": "index.tsx",
       "norm_label": "usedashboardv2.ts"
     },
     {
@@ -18686,7 +18686,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_storemetrics",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "storemetrics"
     },
     {
@@ -18699,7 +18699,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_dashboardv2data",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "dashboardv2data"
     },
     {
@@ -18710,8 +18710,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_usedashboardv2",
-      "community": 1017,
-      "community_name": "supabase.ts",
+      "community": 49,
+      "community_name": "index.tsx",
       "norm_label": "usedashboardv2()"
     },
     {
@@ -18722,7 +18722,7 @@
       "_origin": "ast",
       "id": "src_hooks_useexpenseimportprocessor",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "useexpenseimportprocessor.ts"
     },
     {
@@ -18735,7 +18735,7 @@
       "_origin": "ast",
       "id": "src_hooks_useexpenseimportprocessor_expenseimportresult",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "expenseimportresult"
     },
     {
@@ -18747,7 +18747,7 @@
       "_origin": "ast",
       "id": "src_hooks_useexpenseimportprocessor_processexpensefiles",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "processexpensefiles()"
     },
     {
@@ -18757,7 +18757,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usegoals",
-      "community": 1017,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "usegoals.ts"
     },
@@ -18770,7 +18770,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usegoals_goalrow",
-      "community": 1017,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "goalrow"
     },
@@ -18782,7 +18782,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usegoals_usemonthlygoal",
-      "community": 1017,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "usemonthlygoal()"
     },
@@ -18793,8 +18793,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs",
-      "community": 1017,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "useimportlogs.ts"
     },
     {
@@ -18806,8 +18806,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlog",
-      "community": 1017,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "importlog"
     },
     {
@@ -18819,8 +18819,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlogfilters",
-      "community": 1017,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "importlogfilters"
     },
     {
@@ -18831,8 +18831,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogs",
-      "community": 1017,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "useimportlogs()"
     },
     {
@@ -18843,8 +18843,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogdetail",
-      "community": 1017,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "useimportlogdetail()"
     },
     {
@@ -18855,7 +18855,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "useimportprocessor.ts"
     },
     {
@@ -18868,7 +18868,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_parsedos",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "parsedos"
     },
     {
@@ -18881,7 +18881,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_parsedreceivable",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "parsedreceivable"
     },
     {
@@ -18893,7 +18893,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_savepatioosandreceivables",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "savepatioosandreceivables()"
     },
     {
@@ -18905,7 +18905,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useprocessimporteddata",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "useprocessimporteddata()"
     },
     {
@@ -18918,7 +18918,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_groupedimportlog",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "groupedimportlog"
     },
     {
@@ -18930,7 +18930,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useimportshistory",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "useimportshistory()"
     },
     {
@@ -18942,7 +18942,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_usedeleteimport",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usedeleteimport()"
     },
     {
@@ -18954,7 +18954,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useclearalldata",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "useclearalldata()"
     },
     {
@@ -18964,7 +18964,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usemcplogs",
-      "community": 1017,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "usemcplogs.ts"
     },
@@ -18977,7 +18977,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usemcplogs_mcplog",
-      "community": 1017,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "mcplog"
     },
@@ -18989,8 +18989,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usemcplogs_usemcplogs",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 495,
+      "community_name": "supabase.ts",
       "norm_label": "usemcplogs()"
     },
     {
@@ -19000,7 +19000,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useoscache",
-      "community": 1017,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "useoscache.ts"
     },
@@ -19013,7 +19013,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useoscache_oficinaoscache",
-      "community": 1017,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "oficinaoscache"
     },
@@ -19025,8 +19025,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useoscache_useoscache",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 495,
+      "community_name": "supabase.ts",
       "norm_label": "useoscache()"
     },
     {
@@ -19037,7 +19037,7 @@
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "useosimportprocessor.ts"
     },
     {
@@ -19050,7 +19050,7 @@
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor_osimportresult",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "osimportresult"
     },
     {
@@ -19062,7 +19062,7 @@
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor_processosfiles",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "processosfiles()"
     },
     {
@@ -19072,8 +19072,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usepatio",
-      "community": 1017,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "usepatio.ts"
     },
     {
@@ -19096,8 +19096,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usepatio_useupdatepatioos",
-      "community": 1017,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "useupdatepatioos()"
     },
     {
@@ -19219,7 +19219,7 @@
       "_origin": "ast",
       "id": "src_hooks_userecebiveis",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "userecebiveis.ts"
     },
     {
@@ -19231,7 +19231,7 @@
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_userecebiveis",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "userecebiveis()"
     },
     {
@@ -19243,7 +19243,7 @@
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_usemarkreceived",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usemarkreceived()"
     },
     {
@@ -19255,7 +19255,7 @@
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_usereceivablessummary",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usereceivablessummary()"
     },
     {
@@ -19265,8 +19265,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usestores",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 496,
+      "community_name": "useStores.ts",
       "norm_label": "usestores.ts"
     },
     {
@@ -19301,8 +19301,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usestores_usestore",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 496,
+      "community_name": "useStores.ts",
       "norm_label": "usestore()"
     },
     {
@@ -19313,8 +19313,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usestores_useupdatestore",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 496,
+      "community_name": "useStores.ts",
       "norm_label": "useupdatestore()"
     },
     {
@@ -19325,8 +19325,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usestores_usecreatestore",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 496,
+      "community_name": "useStores.ts",
       "norm_label": "usecreatestore()"
     },
     {
@@ -19338,7 +19338,7 @@
       "_origin": "ast",
       "id": "src_hooks_usestores_usedeletestore",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "useStores.ts",
       "norm_label": "usedeletestore()"
     },
     {
@@ -19349,7 +19349,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usestores_usestorefinancialstats",
-      "community": 4,
+      "community": 13,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "usestorefinancialstats()"
     },
@@ -19361,7 +19361,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "usetransactions.ts"
     },
     {
@@ -19373,7 +19373,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactions",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "usetransactions()"
     },
     {
@@ -19385,7 +19385,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactionsbystore",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "usetransactionsbystore()"
     },
     {
@@ -19396,8 +19396,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedashboardsummary",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 4,
+      "community_name": "useTransactions.ts",
       "norm_label": "usedashboardsummary()"
     },
     {
@@ -19409,7 +19409,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usecashflow",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "usecashflow()"
     },
     {
@@ -19421,7 +19421,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useextrato",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "useextrato()"
     },
     {
@@ -19432,8 +19432,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useallstoresbalances",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "useallstoresbalances()"
     },
     {
@@ -19445,7 +19445,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactionspordataeloja",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "usetransactionspordataeloja()"
     },
     {
@@ -19457,7 +19457,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useweeklyrevenuetrend",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "useweeklyrevenuetrend()"
     },
     {
@@ -19468,7 +19468,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usecreateimportbatch",
-      "community": 930,
+      "community": 42,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "usecreateimportbatch()"
     },
@@ -19480,7 +19480,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usebulkinsertconciliationmatches",
-      "community": 930,
+      "community": 42,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "usebulkinsertconciliationmatches()"
     },
@@ -19493,7 +19493,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usebulkinserttransactions",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "usebulkinserttransactions()"
     },
     {
@@ -19505,7 +19505,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedailysystembalance",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "usedailysystembalance()"
     },
     {
@@ -19517,7 +19517,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_uselatestbankbalance",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "uselatestbankbalance()"
     },
     {
@@ -19529,7 +19529,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedailybankbalance",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "usedailybankbalance()"
     },
     {
@@ -19539,7 +19539,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usetriplematch",
-      "community": 4,
+      "community": 13,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "usetriplematch.ts"
     },
@@ -19551,7 +19551,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetriplematch_usetriplematch",
-      "community": 4,
+      "community": 13,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "usetriplematch()"
     },
@@ -19640,7 +19640,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_integrations_supabase_client",
-      "community": 1017,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "client.ts"
     },
@@ -19652,7 +19652,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_integrations_supabase_client_createsupabaseclient",
-      "community": 1017,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "createsupabaseclient()"
     },
@@ -19663,7 +19663,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "src_integrations_supabase_client_supabase",
-      "community": 1017,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "supabase"
     },
@@ -20436,7 +20436,7 @@
       "_origin": "ast",
       "id": "src_lib_logger",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "logger.ts"
     },
     {
@@ -20449,7 +20449,7 @@
       "_origin": "ast",
       "id": "src_lib_logger_loglevel",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "loglevel"
     },
     {
@@ -20462,7 +20462,7 @@
       "_origin": "ast",
       "id": "src_lib_logger_logstage",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "logstage"
     },
     {
@@ -20474,7 +20474,7 @@
       "_origin": "ast",
       "id": "src_lib_logger_tracelog",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "tracelog()"
     },
     {
@@ -20485,8 +20485,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_logger_generatesessionid",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 42,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "generatesessionid()"
     },
     {
@@ -20688,7 +20688,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "modulo1calculations.ts"
     },
     {
@@ -20701,7 +20701,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_globalconciliacaoinput",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "globalconciliacaoinput"
     },
     {
@@ -20714,7 +20714,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_globalconciliacaocalculated",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "globalconciliacaocalculated"
     },
     {
@@ -20726,7 +20726,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_calculateglobalconciliacao",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "calculateglobalconciliacao()"
     },
     {
@@ -20739,7 +20739,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_storesaldostate",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "storesaldostate"
     },
     {
@@ -20752,7 +20752,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_modulo1calculated",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "modulo1calculated"
     },
     {
@@ -20764,7 +20764,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_calculatemodulo1saldo",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "calculatemodulo1saldo()"
     },
     {
@@ -20774,8 +20774,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_ofxparser",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 634,
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "lib/ofxparser.ts"
     },
     {
@@ -20787,8 +20787,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_ofxparser_ofxtransaction",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 634,
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "ofxtransaction"
     },
     {
@@ -20799,8 +20799,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_ofxparser_parseofx",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 634,
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "parseofx()"
     },
     {
@@ -20812,8 +20812,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_ofxparser_systemtransaction",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 634,
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "systemtransaction"
     },
     {
@@ -20825,8 +20825,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_ofxparser_matchresult",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 634,
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "matchresult"
     },
     {
@@ -20837,8 +20837,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_ofxparser_matchtransactions",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 634,
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "matchtransactions()"
     },
     {
@@ -20848,7 +20848,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_centralimportmanager",
-      "community": 930,
+      "community": 42,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportmanager.ts"
     },
@@ -20861,7 +20861,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_parsers_centralimportmanager_centralimportresults",
-      "community": 930,
+      "community": 42,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportresults"
     },
@@ -20873,7 +20873,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_centralimportmanager_parsecentralimports",
-      "community": 930,
+      "community": 42,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "parsecentralimports()"
     },
@@ -20885,7 +20885,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_contasapagarparser",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "contasapagarparser.ts"
     },
     {
@@ -20898,7 +20898,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_contasapagarparser_parsedexpense",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "parsedexpense"
     },
     {
@@ -20910,7 +20910,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_contasapagarparser_parsecontasapagar",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "parsecontasapagar()"
     },
     {
@@ -20921,7 +20921,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_hashutils",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "hashutils.ts"
     },
     {
@@ -20933,7 +20933,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_hashutils_generatedeterministichash",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "generatedeterministichash()"
     },
     {
@@ -20944,7 +20944,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_jurosredeparser",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "jurosredeparser.ts"
     },
     {
@@ -20956,7 +20956,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_jurosredeparser_parsejurosrede",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "parsejurosrede()"
     },
     {
@@ -20967,7 +20967,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_mapametasparser",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "mapametasparser.ts"
     },
     {
@@ -20980,7 +20980,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_mapametasparser_mapametasstore",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "mapametasstore"
     },
     {
@@ -20993,7 +20993,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_mapametasparser_mapametasresult",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "mapametasresult"
     },
     {
@@ -21005,7 +21005,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_mapametasparser_parsemapametaspdf",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "parsemapametaspdf()"
     },
     {
@@ -21016,68 +21016,94 @@
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "marcozeroparser.ts"
     },
     {
-      "label": "MarcoZeroExtraction",
+      "label": "MarcoZeroGlobalData",
       "file_type": "code",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
       "source_location": "L5",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "src_lib_parsers_marcozeroparser_marcozeroextraction",
+      "id": "src_lib_parsers_marcozeroparser_marcozeroglobaldata",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
-      "norm_label": "marcozeroextraction"
+      "community_name": "useCentralImport.ts",
+      "norm_label": "marcozeroglobaldata"
+    },
+    {
+      "label": "MarcoZeroStoreData",
+      "file_type": "code",
+      "source_file": "src/lib/parsers/marcoZeroParser.ts",
+      "source_location": "L12",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_lib_parsers_marcozeroparser_marcozerostoredata",
+      "community": 54,
+      "community_name": "useCentralImport.ts",
+      "norm_label": "marcozerostoredata"
+    },
+    {
+      "label": "MarcoZeroResult",
+      "file_type": "code",
+      "source_file": "src/lib/parsers/marcoZeroParser.ts",
+      "source_location": "L18",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_lib_parsers_marcozeroparser_marcozeroresult",
+      "community": 54,
+      "community_name": "useCentralImport.ts",
+      "norm_label": "marcozeroresult"
     },
     {
       "label": "cleanNumber()",
       "file_type": "code",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L15",
+      "source_location": "L24",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_cleannumber",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "cleannumber()"
     },
     {
       "label": "parseDate()",
       "file_type": "code",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L24",
+      "source_location": "L33",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_parsedate",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "parsedate()"
     },
     {
       "label": "isKnownStore()",
       "file_type": "code",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L43",
+      "source_location": "L52",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_isknownstore",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "isknownstore()"
     },
     {
       "label": "parseMarcoZeroPlanilha()",
       "file_type": "code",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L79",
+      "source_location": "L88",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_parsemarcozeroplanilha",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "parsemarcozeroplanilha()"
     },
     {
@@ -21088,7 +21114,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_numberutils",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "numberutils.ts"
     },
     {
@@ -21100,7 +21126,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_numberutils_extractnumber",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "extractnumber()"
     },
     {
@@ -21111,7 +21137,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "parsers/ofxparser.ts"
     },
     {
@@ -21124,7 +21150,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser_ofxtransaction",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "ofxtransaction"
     },
     {
@@ -21137,7 +21163,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser_ofxparseresult",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "ofxparseresult"
     },
     {
@@ -21149,7 +21175,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser_extractdocument",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "extractdocument()"
     },
     {
@@ -21161,7 +21187,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser_parseofxfile",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "parseofxfile()"
     },
     {
@@ -21172,7 +21198,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_redeparser",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "redeparser.ts"
     },
     {
@@ -21185,7 +21211,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_redeparser_redetransaction",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "redetransaction"
     },
     {
@@ -21198,7 +21224,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_redeparser_rederesult",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "rederesult"
     },
     {
@@ -21210,7 +21236,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_redeparser_parseredefile",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "parseredefile()"
     },
     {
@@ -21221,7 +21247,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_storemapping",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "storemapping.ts"
     },
     {
@@ -21232,7 +21258,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_storemapping_rede_store_mapping",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "rede_store_mapping"
     },
     {
@@ -21244,7 +21270,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_storemapping_normalizeredestorename",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "useCentralImport.ts",
       "norm_label": "normalizeredestorename()"
     },
     {
@@ -21289,7 +21315,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_supabase",
-      "community": 1017,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "supabase.ts"
     },
@@ -21302,8 +21328,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_storerow",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 496,
+      "community_name": "useStores.ts",
       "norm_label": "storerow"
     },
     {
@@ -21315,8 +21341,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_reconciliationrow",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "reconciliationrow"
     },
     {
@@ -21329,7 +21355,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_alertrow",
       "community": 1017,
-      "community_name": "supabase.ts",
+      "community_name": "alertas.tsx",
       "norm_label": "alertrow"
     },
     {
@@ -21342,7 +21368,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_transactionrow",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "transactionrow"
     },
     {
@@ -21354,8 +21380,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_cashregisterrow",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 495,
+      "community_name": "supabase.ts",
       "norm_label": "cashregisterrow"
     },
     {
@@ -21367,8 +21393,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_patioosrow",
-      "community": 1017,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "patioosrow"
     },
     {
@@ -21380,8 +21406,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_receivablerow",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 495,
+      "community_name": "supabase.ts",
       "norm_label": "receivablerow"
     },
     {
@@ -21393,7 +21419,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_botrunrow",
-      "community": 1017,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "botrunrow"
     },
@@ -21406,7 +21432,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_profilerow",
-      "community": 1017,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "profilerow"
     },
@@ -21419,7 +21445,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_interestraterow",
-      "community": 1017,
+      "community": 495,
       "community_name": "supabase.ts",
       "norm_label": "interestraterow"
     },
@@ -21431,7 +21457,7 @@
       "_origin": "ast",
       "id": "src_lib_utils",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "utils.ts"
     },
     {
@@ -21455,7 +21481,7 @@
       "_origin": "ast",
       "id": "src_lib_utils_getdefaultdate",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "getdefaultdate()"
     },
     {
@@ -21467,7 +21493,7 @@
       "_origin": "ast",
       "id": "src_lib_utils_formatcurrency",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -21926,7 +21952,7 @@
       "_origin": "ast",
       "id": "src_routes_alertas",
       "community": 1017,
-      "community_name": "supabase.ts",
+      "community_name": "alertas.tsx",
       "norm_label": "alertas.tsx"
     },
     {
@@ -21936,8 +21962,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_routes_alertas_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 1017,
+      "community_name": "alertas.tsx",
       "norm_label": "route"
     },
     {
@@ -21950,7 +21976,7 @@
       "_origin": "ast",
       "id": "src_routes_alertas_filtertype",
       "community": 1017,
-      "community_name": "supabase.ts",
+      "community_name": "alertas.tsx",
       "norm_label": "filtertype"
     },
     {
@@ -21962,7 +21988,7 @@
       "_origin": "ast",
       "id": "src_routes_alertas_alertaspage",
       "community": 1017,
-      "community_name": "supabase.ts",
+      "community_name": "alertas.tsx",
       "norm_label": "alertaspage()"
     },
     {
@@ -21972,7 +21998,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_bootstrap",
-      "community": 49,
+      "community": 34,
       "community_name": "Card.tsx",
       "norm_label": "bootstrap.tsx"
     },
@@ -21983,8 +22009,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_routes_bootstrap_route",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -21995,8 +22021,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_bootstrap_bootstrappage",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "bootstrappage()"
     },
     {
@@ -22006,8 +22032,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "conciliacao-detalhes.tsx"
     },
     {
@@ -22017,8 +22043,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_route",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "route"
     },
     {
@@ -22030,8 +22056,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_tab",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "tab"
     },
     {
@@ -22043,8 +22069,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_statustab",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "statustab"
     },
     {
@@ -22055,8 +22081,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_conciliacaodetalhespage",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "conciliacaodetalhespage()"
     },
     {
@@ -22067,8 +22093,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_row",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "row()"
     },
     {
@@ -22079,8 +22105,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_tabbutton",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "tabbutton()"
     },
     {
@@ -22091,8 +22117,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_conciliacao_detalhes_lojatable",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "lojatable()"
     },
     {
@@ -22103,7 +22129,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "conciliacao.$lojaid.tsx"
     },
     {
@@ -22126,7 +22152,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_formatdate",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "formatdate()"
     },
     {
@@ -22139,7 +22165,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_tabtype",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "tabtype"
     },
     {
@@ -22151,7 +22177,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_tabbtn",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "tabbtn()"
     },
     {
@@ -22163,7 +22189,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_conciliacaolojapage",
       "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Card.tsx",
       "norm_label": "conciliacaolojapage()"
     },
     {
@@ -22174,7 +22200,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_index",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "conciliacao.index.tsx"
     },
     {
@@ -22197,7 +22223,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_index_conciliacaopage",
       "community": 495,
-      "community_name": "conciliacao.index.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "conciliacaopage()"
     },
     {
@@ -22276,7 +22302,7 @@
       "_origin": "ast",
       "id": "src_routes_historico",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "historico.tsx"
     },
     {
@@ -22286,8 +22312,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_historico_route",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -22299,7 +22325,7 @@
       "_origin": "ast",
       "id": "src_routes_historico_getdefaultperiod",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "getdefaultperiod()"
     },
     {
@@ -22311,7 +22337,7 @@
       "_origin": "ast",
       "id": "src_routes_historico_formatdate",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "formatdate()"
     },
     {
@@ -22323,7 +22349,7 @@
       "_origin": "ast",
       "id": "src_routes_historico_geticonformethod",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "geticonformethod()"
     },
     {
@@ -22335,7 +22361,7 @@
       "_origin": "ast",
       "id": "src_routes_historico_historicopage",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "historicopage()"
     },
     {
@@ -22346,7 +22372,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "importacoes-despesas.tsx"
     },
     {
@@ -22357,7 +22383,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_route",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "route"
     },
     {
@@ -22369,7 +22395,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_usestoremapping",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "usestoremapping()"
     },
     {
@@ -22381,7 +22407,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_importacoesdespesaswizard",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "importacoesdespesaswizard()"
     },
     {
@@ -22393,7 +22419,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_stepindicator",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "stepindicator()"
     },
     {
@@ -22404,7 +22430,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "importacoes.tsx"
     },
     {
@@ -22427,7 +22453,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes_formatdate",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "formatdate()"
     },
     {
@@ -22439,7 +22465,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes_importacoespage",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "importacoespage()"
     },
     {
@@ -22449,8 +22475,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_importar_os",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "importar-os.tsx"
     },
     {
@@ -22460,8 +22486,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_routes_importar_os_route",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -22472,8 +22498,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importar_os_useosstoremapping",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "useosstoremapping()"
     },
     {
@@ -22484,8 +22510,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importar_os_stepindicator",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "stepindicator()"
     },
     {
@@ -22496,8 +22522,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importar_os_importaroswizard",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 17,
+      "community_name": "useStores",
       "norm_label": "importaroswizard()"
     },
     {
@@ -22508,7 +22534,7 @@
       "_origin": "ast",
       "id": "src_routes_index",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "index.tsx"
     },
     {
@@ -22519,7 +22545,7 @@
       "_origin": "ast",
       "id": "src_routes_index_route",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "route"
     },
     {
@@ -22531,7 +22557,7 @@
       "_origin": "ast",
       "id": "src_routes_index_dashboardpage",
       "community": 49,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "dashboardpage()"
     },
     {
@@ -22541,8 +22567,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_login",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 1048,
+      "community_name": "AppShell.tsx",
       "norm_label": "login.tsx"
     },
     {
@@ -22552,8 +22578,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_routes_login_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 1048,
+      "community_name": "AppShell.tsx",
       "norm_label": "route"
     },
     {
@@ -22564,8 +22590,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_login_loginpage",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 1048,
+      "community_name": "AppShell.tsx",
       "norm_label": "loginpage()"
     },
     {
@@ -22643,7 +22669,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_loja_lojaid",
-      "community": 4,
+      "community": 13,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "loja.$lojaid.tsx"
     },
@@ -22666,7 +22692,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_getdefaultperiod",
-      "community": 4,
+      "community": 13,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "getdefaultperiod()"
     },
@@ -22678,7 +22704,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_formatdate",
-      "community": 4,
+      "community": 13,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "formatdate()"
     },
@@ -22690,7 +22716,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_geticonformethod",
-      "community": 4,
+      "community": 13,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "geticonformethod()"
     },
@@ -22702,7 +22728,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_lojadashboardpage",
-      "community": 4,
+      "community": 13,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "lojadashboardpage()"
     },
@@ -22713,8 +22739,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_lojas",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "lojas.tsx"
     },
     {
@@ -22736,8 +22762,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_lojas_lojaspage",
-      "community": 17,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "Card.tsx",
       "norm_label": "lojaspage()"
     },
     {
@@ -22844,8 +22870,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_proposta",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "proposta.tsx"
     },
     {
@@ -22855,8 +22881,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_routes_proposta_route",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -22868,8 +22894,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_proposta_costconfig",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "costconfig"
     },
     {
@@ -22879,8 +22905,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_routes_proposta_defaultconfig",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "defaultconfig"
     },
     {
@@ -22891,8 +22917,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_proposta_propostapage",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "propostapage()"
     },
     {
@@ -22903,8 +22929,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_proposta_costrow",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "costrow()"
     },
     {
@@ -22915,8 +22941,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_proposta_editfield",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "editfield()"
     },
     {
@@ -22927,8 +22953,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_proposta_editstringfield",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "editstringfield()"
     },
     {
@@ -22939,7 +22965,7 @@
       "_origin": "ast",
       "id": "src_routes_recebiveis",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "recebiveis.tsx"
     },
     {
@@ -22963,7 +22989,7 @@
       "_origin": "ast",
       "id": "src_routes_recebiveis_filtertab",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "filtertab"
     },
     {
@@ -22975,7 +23001,7 @@
       "_origin": "ast",
       "id": "src_routes_recebiveis_recebiveispage",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "recebiveispage()"
     },
     {
@@ -22987,7 +23013,7 @@
       "_origin": "ast",
       "id": "src_routes_recebiveis_tabbtn",
       "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "tabbtn()"
     },
     {
@@ -30075,190 +30101,168 @@
       "norm_label": "tasks"
     },
     {
-      "label": "167-marco-zero-parser-fix/design.md",
+      "label": "168-marco-zero-columns/design.md",
       "file_type": "document",
-      "source_file": "specs/167-marco-zero-parser-fix/design.md",
+      "source_file": "specs/168-marco-zero-columns/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_167_marco_zero_parser_fix_design",
-      "community": 634,
-      "community_name": "Design: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
-      "norm_label": "167-marco-zero-parser-fix/design.md"
+      "id": "specs_168_marco_zero_columns_design",
+      "community": 1032,
+      "community_name": "Design: Marco Zero Definitivo (168)",
+      "norm_label": "168-marco-zero-columns/design.md"
     },
     {
-      "label": "Design: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "label": "Design: Marco Zero Definitivo (168)",
       "file_type": "document",
-      "source_file": "specs/167-marco-zero-parser-fix/design.md",
+      "source_file": "specs/168-marco-zero-columns/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_167_marco_zero_parser_fix_design_design_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
-      "community": 634,
-      "community_name": "Design: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
-      "norm_label": "design: correcao estrutural do parser marco zero (167)"
+      "id": "specs_168_marco_zero_columns_design_design_marco_zero_definitivo_168",
+      "community": 1032,
+      "community_name": "Design: Marco Zero Definitivo (168)",
+      "norm_label": "design: marco zero definitivo (168)"
     },
     {
       "label": "Arquitetura T\u00e9cnica",
       "file_type": "document",
-      "source_file": "specs/167-marco-zero-parser-fix/design.md",
+      "source_file": "specs/168-marco-zero-columns/design.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_167_marco_zero_parser_fix_design_arquitetura_t\u00e9cnica",
-      "community": 634,
-      "community_name": "Design: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "id": "specs_168_marco_zero_columns_design_arquitetura_t\u00e9cnica",
+      "community": 1032,
+      "community_name": "Design: Marco Zero Definitivo (168)",
       "norm_label": "arquitetura tecnica"
     },
     {
       "label": "Interfaces TypeScript",
       "file_type": "document",
-      "source_file": "specs/167-marco-zero-parser-fix/design.md",
-      "source_location": "L7",
+      "source_file": "specs/168-marco-zero-columns/design.md",
+      "source_location": "L15",
       "_origin": "ast",
-      "id": "specs_167_marco_zero_parser_fix_design_interfaces_typescript",
-      "community": 634,
-      "community_name": "Design: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "id": "specs_168_marco_zero_columns_design_interfaces_typescript",
+      "community": 1032,
+      "community_name": "Design: Marco Zero Definitivo (168)",
       "norm_label": "interfaces typescript"
     },
     {
-      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o",
       "file_type": "document",
-      "source_file": "specs/167-marco-zero-parser-fix/design.md",
-      "source_location": "L32",
-      "_origin": "ast",
-      "id": "specs_167_marco_zero_parser_fix_design_componentes_hooks_fun\u00e7\u00f5es",
-      "community": 634,
-      "community_name": "Design: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
-      "norm_label": "componentes / hooks / funcoes"
-    },
-    {
-      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
-      "file_type": "document",
-      "source_file": "specs/167-marco-zero-parser-fix/design.md",
+      "source_file": "specs/168-marco-zero-columns/design.md",
       "source_location": "L36",
       "_origin": "ast",
-      "id": "specs_167_marco_zero_parser_fix_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
-      "community": 634,
-      "community_name": "Design: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
-      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+      "id": "specs_168_marco_zero_columns_design_cen\u00e1rios_de_verifica\u00e7\u00e3o",
+      "community": 1032,
+      "community_name": "Design: Marco Zero Definitivo (168)",
+      "norm_label": "cenarios de verificacao"
     },
     {
-      "label": "167-marco-zero-parser-fix/proposal.md",
+      "label": "168-marco-zero-columns/proposal.md",
       "file_type": "document",
-      "source_file": "specs/167-marco-zero-parser-fix/proposal.md",
+      "source_file": "specs/168-marco-zero-columns/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_167_marco_zero_parser_fix_proposal",
-      "community": 13,
-      "community_name": "Proposal: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
-      "norm_label": "167-marco-zero-parser-fix/proposal.md"
+      "id": "specs_168_marco_zero_columns_proposal",
+      "community": 773,
+      "community_name": "Proposal: Marco Zero Definitivo (Global + Data de Implanta\u00e7\u00e3o) (168)",
+      "norm_label": "168-marco-zero-columns/proposal.md"
     },
     {
-      "label": "Proposal: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "label": "Proposal: Marco Zero Definitivo (Global + Data de Implanta\u00e7\u00e3o) (168)",
       "file_type": "document",
-      "source_file": "specs/167-marco-zero-parser-fix/proposal.md",
+      "source_file": "specs/168-marco-zero-columns/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_167_marco_zero_parser_fix_proposal_proposal_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
-      "community": 13,
-      "community_name": "Proposal: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
-      "norm_label": "proposal: correcao estrutural do parser marco zero (167)"
+      "id": "specs_168_marco_zero_columns_proposal_proposal_marco_zero_definitivo_global_data_de_implanta\u00e7\u00e3o_168",
+      "community": 773,
+      "community_name": "Proposal: Marco Zero Definitivo (Global + Data de Implanta\u00e7\u00e3o) (168)",
+      "norm_label": "proposal: marco zero definitivo (global + data de implantacao) (168)"
     },
     {
       "label": "Problema",
       "file_type": "document",
-      "source_file": "specs/167-marco-zero-parser-fix/proposal.md",
+      "source_file": "specs/168-marco-zero-columns/proposal.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_167_marco_zero_parser_fix_proposal_problema",
-      "community": 13,
-      "community_name": "Proposal: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "id": "specs_168_marco_zero_columns_proposal_problema",
+      "community": 773,
+      "community_name": "Proposal: Marco Zero Definitivo (Global + Data de Implanta\u00e7\u00e3o) (168)",
       "norm_label": "problema"
     },
     {
       "label": "Solu\u00e7\u00e3o Proposta",
       "file_type": "document",
-      "source_file": "specs/167-marco-zero-parser-fix/proposal.md",
-      "source_location": "L7",
+      "source_file": "specs/168-marco-zero-columns/proposal.md",
+      "source_location": "L8",
       "_origin": "ast",
-      "id": "specs_167_marco_zero_parser_fix_proposal_solu\u00e7\u00e3o_proposta",
-      "community": 13,
-      "community_name": "Proposal: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "id": "specs_168_marco_zero_columns_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 773,
+      "community_name": "Proposal: Marco Zero Definitivo (Global + Data de Implanta\u00e7\u00e3o) (168)",
       "norm_label": "solucao proposta"
     },
     {
       "label": "Contratos de Dados",
       "file_type": "document",
-      "source_file": "specs/167-marco-zero-parser-fix/proposal.md",
-      "source_location": "L13",
+      "source_file": "specs/168-marco-zero-columns/proposal.md",
+      "source_location": "L22",
       "_origin": "ast",
-      "id": "specs_167_marco_zero_parser_fix_proposal_contratos_de_dados",
-      "community": 13,
-      "community_name": "Proposal: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "id": "specs_168_marco_zero_columns_proposal_contratos_de_dados",
+      "community": 773,
+      "community_name": "Proposal: Marco Zero Definitivo (Global + Data de Implanta\u00e7\u00e3o) (168)",
       "norm_label": "contratos de dados"
     },
     {
-      "label": "API / Interface",
+      "label": "Open Questions (D\u00favidas para o Usu\u00e1rio)",
       "file_type": "document",
-      "source_file": "specs/167-marco-zero-parser-fix/proposal.md",
-      "source_location": "L16",
+      "source_file": "specs/168-marco-zero-columns/proposal.md",
+      "source_location": "L26",
       "_origin": "ast",
-      "id": "specs_167_marco_zero_parser_fix_proposal_api_interface",
-      "community": 13,
-      "community_name": "Proposal: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
-      "norm_label": "api / interface"
-    },
-    {
-      "label": "Features Existentes Impactadas",
-      "file_type": "document",
-      "source_file": "specs/167-marco-zero-parser-fix/proposal.md",
-      "source_location": "L19",
-      "_origin": "ast",
-      "id": "specs_167_marco_zero_parser_fix_proposal_features_existentes_impactadas",
-      "community": 13,
-      "community_name": "Proposal: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
-      "norm_label": "features existentes impactadas"
+      "id": "specs_168_marco_zero_columns_proposal_open_questions_d\u00favidas_para_o_usu\u00e1rio",
+      "community": 773,
+      "community_name": "Proposal: Marco Zero Definitivo (Global + Data de Implanta\u00e7\u00e3o) (168)",
+      "norm_label": "open questions (duvidas para o usuario)"
     },
     {
       "label": "Risco Principal",
       "file_type": "document",
-      "source_file": "specs/167-marco-zero-parser-fix/proposal.md",
-      "source_location": "L22",
+      "source_file": "specs/168-marco-zero-columns/proposal.md",
+      "source_location": "L31",
       "_origin": "ast",
-      "id": "specs_167_marco_zero_parser_fix_proposal_risco_principal",
-      "community": 13,
-      "community_name": "Proposal: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "id": "specs_168_marco_zero_columns_proposal_risco_principal",
+      "community": 773,
+      "community_name": "Proposal: Marco Zero Definitivo (Global + Data de Implanta\u00e7\u00e3o) (168)",
       "norm_label": "risco principal"
     },
     {
-      "label": "167-marco-zero-parser-fix/spec-plan.md",
+      "label": "168-marco-zero-columns/spec-plan.md",
       "file_type": "document",
-      "source_file": "specs/167-marco-zero-parser-fix/spec-plan.md",
+      "source_file": "specs/168-marco-zero-columns/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_167_marco_zero_parser_fix_spec_plan",
-      "community": 721,
-      "community_name": "Spec Plan: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
-      "norm_label": "167-marco-zero-parser-fix/spec-plan.md"
+      "id": "specs_168_marco_zero_columns_spec_plan",
+      "community": 1041,
+      "community_name": "Spec Plan: Marco Zero Definitivo (168)",
+      "norm_label": "168-marco-zero-columns/spec-plan.md"
     },
     {
-      "label": "Spec Plan: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "label": "Spec Plan: Marco Zero Definitivo (168)",
       "file_type": "document",
-      "source_file": "specs/167-marco-zero-parser-fix/spec-plan.md",
+      "source_file": "specs/168-marco-zero-columns/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_167_marco_zero_parser_fix_spec_plan_spec_plan_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
-      "community": 721,
-      "community_name": "Spec Plan: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
-      "norm_label": "spec plan: correcao estrutural do parser marco zero (167)"
+      "id": "specs_168_marco_zero_columns_spec_plan_spec_plan_marco_zero_definitivo_168",
+      "community": 1041,
+      "community_name": "Spec Plan: Marco Zero Definitivo (168)",
+      "norm_label": "spec plan: marco zero definitivo (168)"
     },
     {
       "label": "Tasks",
       "file_type": "document",
-      "source_file": "specs/167-marco-zero-parser-fix/spec-plan.md",
+      "source_file": "specs/168-marco-zero-columns/spec-plan.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_167_marco_zero_parser_fix_spec_plan_tasks",
-      "community": 721,
-      "community_name": "Spec Plan: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "id": "specs_168_marco_zero_columns_spec_plan_tasks",
+      "community": 1041,
+      "community_name": "Spec Plan: Marco Zero Definitivo (168)",
       "norm_label": "tasks"
     },
     {
@@ -52094,6 +52098,193 @@
       "id": "specs_archive_166_marco_zero_autostore_spec_plan_tasks",
       "community": 725,
       "community_name": "Spec Plan: Marco Zero Auto-Store Mapping (166)",
+      "norm_label": "tasks"
+    },
+    {
+      "label": "167-marco-zero-parser-fix/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_167_marco_zero_parser_fix_design",
+      "community": 1021,
+      "community_name": "Design: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "norm_label": "167-marco-zero-parser-fix/design.md"
+    },
+    {
+      "label": "Design: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "file_type": "document",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_167_marco_zero_parser_fix_design_design_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
+      "community": 1021,
+      "community_name": "Design: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "norm_label": "design: correcao estrutural do parser marco zero (167)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_167_marco_zero_parser_fix_design_arquitetura_t\u00e9cnica",
+      "community": 1021,
+      "community_name": "Design: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Interfaces TypeScript",
+      "file_type": "document",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/design.md",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "specs_archive_167_marco_zero_parser_fix_design_interfaces_typescript",
+      "community": 1021,
+      "community_name": "Design: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "norm_label": "interfaces typescript"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/design.md",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "specs_archive_167_marco_zero_parser_fix_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 1021,
+      "community_name": "Design: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/design.md",
+      "source_location": "L36",
+      "_origin": "ast",
+      "id": "specs_archive_167_marco_zero_parser_fix_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 1021,
+      "community_name": "Design: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "167-marco-zero-parser-fix/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_167_marco_zero_parser_fix_proposal",
+      "community": 721,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "norm_label": "167-marco-zero-parser-fix/proposal.md"
+    },
+    {
+      "label": "Proposal: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "file_type": "document",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_167_marco_zero_parser_fix_proposal_proposal_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
+      "community": 721,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "norm_label": "proposal: correcao estrutural do parser marco zero (167)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_167_marco_zero_parser_fix_proposal_problema",
+      "community": 721,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/proposal.md",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "specs_archive_167_marco_zero_parser_fix_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 721,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/proposal.md",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "specs_archive_167_marco_zero_parser_fix_proposal_contratos_de_dados",
+      "community": 721,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/proposal.md",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "specs_archive_167_marco_zero_parser_fix_proposal_api_interface",
+      "community": 721,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/proposal.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "specs_archive_167_marco_zero_parser_fix_proposal_features_existentes_impactadas",
+      "community": 721,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/proposal.md",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "specs_archive_167_marco_zero_parser_fix_proposal_risco_principal",
+      "community": 721,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "167-marco-zero-parser-fix/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_167_marco_zero_parser_fix_spec_plan",
+      "community": 1046,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "norm_label": "167-marco-zero-parser-fix/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "file_type": "document",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_167_marco_zero_parser_fix_spec_plan_spec_plan_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
+      "community": 1046,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
+      "norm_label": "spec plan: correcao estrutural do parser marco zero (167)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_167_marco_zero_parser_fix_spec_plan_tasks",
+      "community": 1046,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o Estrutural do Parser Marco Zero (167)",
       "norm_label": "tasks"
     },
     {
@@ -83811,7 +84002,7 @@
       "deferred": true,
       "confidence": "EXTRACTED",
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L171",
+      "source_location": "L184",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -90080,7 +90271,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L133",
+      "source_location": "L134",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -90093,7 +90284,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L134",
+      "source_location": "L135",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -90105,7 +90296,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L138",
+      "source_location": "L139",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -90117,7 +90308,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L226",
+      "source_location": "L239",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -90129,7 +90320,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L132",
+      "source_location": "L133",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -90141,7 +90332,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L137",
+      "source_location": "L138",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -90153,7 +90344,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L135",
+      "source_location": "L136",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -90165,7 +90356,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L136",
+      "source_location": "L137",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -90177,7 +90368,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L157",
+      "source_location": "L170",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -90189,7 +90380,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L160",
+      "source_location": "L173",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -90201,7 +90392,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L360",
+      "source_location": "L373",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -90476,7 +90667,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_marcozerowizard",
-      "target": "src_lib_parsers_marcozeroparser_marcozeroextraction",
+      "target": "src_lib_parsers_marcozeroparser_marcozeroresult",
       "confidence_score": 1.0
     },
     {
@@ -90509,7 +90700,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/MarcoZeroWizard.tsx",
-      "source_location": "L19",
+      "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_marcozerowizard_marcozerowizard",
@@ -90521,7 +90712,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/MarcoZeroWizard.tsx",
-      "source_location": "L32",
+      "source_location": "L41",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_marcozerowizard_marcozerowizard",
@@ -99908,7 +100099,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L15",
+      "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser",
@@ -99919,7 +100110,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L43",
+      "source_location": "L52",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser",
@@ -99934,14 +100125,36 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser",
-      "target": "src_lib_parsers_marcozeroparser_marcozeroextraction",
+      "target": "src_lib_parsers_marcozeroparser_marcozeroglobaldata",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L24",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_parsers_marcozeroparser",
+      "target": "src_lib_parsers_marcozeroparser_marcozeroresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/parsers/marcoZeroParser.ts",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_parsers_marcozeroparser",
+      "target": "src_lib_parsers_marcozeroparser_marcozerostoredata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/parsers/marcoZeroParser.ts",
+      "source_location": "L33",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser",
@@ -99952,7 +100165,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L79",
+      "source_location": "L88",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser",
@@ -100000,7 +100213,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L134",
+      "source_location": "L128",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser_parsemarcozeroplanilha",
@@ -100012,7 +100225,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L188",
+      "source_location": "L190",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser_parsemarcozeroplanilha",
@@ -100024,7 +100237,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L119",
+      "source_location": "L147",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser_parsemarcozeroplanilha",
@@ -108591,155 +108804,133 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/167-marco-zero-parser-fix/design.md",
+      "source_file": "specs/168-marco-zero-columns/design.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_167_marco_zero_parser_fix_design",
-      "target": "specs_167_marco_zero_parser_fix_design_design_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
+      "source": "specs_168_marco_zero_columns_design",
+      "target": "specs_168_marco_zero_columns_design_design_marco_zero_definitivo_168",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/167-marco-zero-parser-fix/design.md",
+      "source_file": "specs/168-marco-zero-columns/design.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_167_marco_zero_parser_fix_design_design_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
-      "target": "specs_167_marco_zero_parser_fix_design_arquitetura_t\u00e9cnica",
+      "source": "specs_168_marco_zero_columns_design_design_marco_zero_definitivo_168",
+      "target": "specs_168_marco_zero_columns_design_arquitetura_t\u00e9cnica",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/167-marco-zero-parser-fix/design.md",
+      "source_file": "specs/168-marco-zero-columns/design.md",
       "source_location": "L36",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_167_marco_zero_parser_fix_design_design_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
-      "target": "specs_167_marco_zero_parser_fix_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "source": "specs_168_marco_zero_columns_design_design_marco_zero_definitivo_168",
+      "target": "specs_168_marco_zero_columns_design_cen\u00e1rios_de_verifica\u00e7\u00e3o",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/167-marco-zero-parser-fix/design.md",
-      "source_location": "L32",
+      "source_file": "specs/168-marco-zero-columns/design.md",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_167_marco_zero_parser_fix_design_design_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
-      "target": "specs_167_marco_zero_parser_fix_design_componentes_hooks_fun\u00e7\u00f5es",
+      "source": "specs_168_marco_zero_columns_design_design_marco_zero_definitivo_168",
+      "target": "specs_168_marco_zero_columns_design_interfaces_typescript",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/167-marco-zero-parser-fix/design.md",
-      "source_location": "L7",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_167_marco_zero_parser_fix_design_design_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
-      "target": "specs_167_marco_zero_parser_fix_design_interfaces_typescript",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/167-marco-zero-parser-fix/proposal.md",
+      "source_file": "specs/168-marco-zero-columns/proposal.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_167_marco_zero_parser_fix_proposal",
-      "target": "specs_167_marco_zero_parser_fix_proposal_proposal_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
+      "source": "specs_168_marco_zero_columns_proposal",
+      "target": "specs_168_marco_zero_columns_proposal_proposal_marco_zero_definitivo_global_data_de_implanta\u00e7\u00e3o_168",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/167-marco-zero-parser-fix/proposal.md",
-      "source_location": "L16",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_167_marco_zero_parser_fix_proposal_proposal_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
-      "target": "specs_167_marco_zero_parser_fix_proposal_api_interface",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/167-marco-zero-parser-fix/proposal.md",
-      "source_location": "L13",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_167_marco_zero_parser_fix_proposal_proposal_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
-      "target": "specs_167_marco_zero_parser_fix_proposal_contratos_de_dados",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/167-marco-zero-parser-fix/proposal.md",
-      "source_location": "L19",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_167_marco_zero_parser_fix_proposal_proposal_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
-      "target": "specs_167_marco_zero_parser_fix_proposal_features_existentes_impactadas",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/167-marco-zero-parser-fix/proposal.md",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_167_marco_zero_parser_fix_proposal_proposal_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
-      "target": "specs_167_marco_zero_parser_fix_proposal_problema",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/167-marco-zero-parser-fix/proposal.md",
+      "source_file": "specs/168-marco-zero-columns/proposal.md",
       "source_location": "L22",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_167_marco_zero_parser_fix_proposal_proposal_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
-      "target": "specs_167_marco_zero_parser_fix_proposal_risco_principal",
+      "source": "specs_168_marco_zero_columns_proposal_proposal_marco_zero_definitivo_global_data_de_implanta\u00e7\u00e3o_168",
+      "target": "specs_168_marco_zero_columns_proposal_contratos_de_dados",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/167-marco-zero-parser-fix/proposal.md",
-      "source_location": "L7",
+      "source_file": "specs/168-marco-zero-columns/proposal.md",
+      "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_167_marco_zero_parser_fix_proposal_proposal_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
-      "target": "specs_167_marco_zero_parser_fix_proposal_solu\u00e7\u00e3o_proposta",
+      "source": "specs_168_marco_zero_columns_proposal_proposal_marco_zero_definitivo_global_data_de_implanta\u00e7\u00e3o_168",
+      "target": "specs_168_marco_zero_columns_proposal_open_questions_d\u00favidas_para_o_usu\u00e1rio",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/167-marco-zero-parser-fix/spec-plan.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_167_marco_zero_parser_fix_spec_plan",
-      "target": "specs_167_marco_zero_parser_fix_spec_plan_spec_plan_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/167-marco-zero-parser-fix/spec-plan.md",
+      "source_file": "specs/168-marco-zero-columns/proposal.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_167_marco_zero_parser_fix_spec_plan_spec_plan_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
-      "target": "specs_167_marco_zero_parser_fix_spec_plan_tasks",
+      "source": "specs_168_marco_zero_columns_proposal_proposal_marco_zero_definitivo_global_data_de_implanta\u00e7\u00e3o_168",
+      "target": "specs_168_marco_zero_columns_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/168-marco-zero-columns/proposal.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_168_marco_zero_columns_proposal_proposal_marco_zero_definitivo_global_data_de_implanta\u00e7\u00e3o_168",
+      "target": "specs_168_marco_zero_columns_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/168-marco-zero-columns/proposal.md",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_168_marco_zero_columns_proposal_proposal_marco_zero_definitivo_global_data_de_implanta\u00e7\u00e3o_168",
+      "target": "specs_168_marco_zero_columns_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/168-marco-zero-columns/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_168_marco_zero_columns_spec_plan",
+      "target": "specs_168_marco_zero_columns_spec_plan_spec_plan_marco_zero_definitivo_168",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/168-marco-zero-columns/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_168_marco_zero_columns_spec_plan_spec_plan_marco_zero_definitivo_168",
+      "target": "specs_168_marco_zero_columns_spec_plan_tasks",
       "confidence_score": 1.0
     },
     {
@@ -126186,6 +126377,160 @@
       "_origin": "ast",
       "source": "specs_archive_166_marco_zero_autostore_spec_plan_spec_plan_marco_zero_auto_store_mapping_166",
       "target": "specs_archive_166_marco_zero_autostore_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_167_marco_zero_parser_fix_design",
+      "target": "specs_archive_167_marco_zero_parser_fix_design_design_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_167_marco_zero_parser_fix_design_design_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
+      "target": "specs_archive_167_marco_zero_parser_fix_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/design.md",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_167_marco_zero_parser_fix_design_design_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
+      "target": "specs_archive_167_marco_zero_parser_fix_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/design.md",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_167_marco_zero_parser_fix_design_design_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
+      "target": "specs_archive_167_marco_zero_parser_fix_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/design.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_167_marco_zero_parser_fix_design_design_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
+      "target": "specs_archive_167_marco_zero_parser_fix_design_interfaces_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_167_marco_zero_parser_fix_proposal",
+      "target": "specs_archive_167_marco_zero_parser_fix_proposal_proposal_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/proposal.md",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_167_marco_zero_parser_fix_proposal_proposal_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
+      "target": "specs_archive_167_marco_zero_parser_fix_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/proposal.md",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_167_marco_zero_parser_fix_proposal_proposal_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
+      "target": "specs_archive_167_marco_zero_parser_fix_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/proposal.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_167_marco_zero_parser_fix_proposal_proposal_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
+      "target": "specs_archive_167_marco_zero_parser_fix_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_167_marco_zero_parser_fix_proposal_proposal_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
+      "target": "specs_archive_167_marco_zero_parser_fix_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/proposal.md",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_167_marco_zero_parser_fix_proposal_proposal_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
+      "target": "specs_archive_167_marco_zero_parser_fix_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/proposal.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_167_marco_zero_parser_fix_proposal_proposal_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
+      "target": "specs_archive_167_marco_zero_parser_fix_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_167_marco_zero_parser_fix_spec_plan",
+      "target": "specs_archive_167_marco_zero_parser_fix_spec_plan_spec_plan_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/167-marco-zero-parser-fix/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_167_marco_zero_parser_fix_spec_plan_spec_plan_corre\u00e7\u00e3o_estrutural_do_parser_marco_zero_167",
+      "target": "specs_archive_167_marco_zero_parser_fix_spec_plan_tasks",
       "confidence_score": 1.0
     },
     {

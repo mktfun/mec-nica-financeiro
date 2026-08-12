@@ -85,6 +85,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const [isAgentModalOpen, setIsAgentModalOpen] = useState(false);
   const [needsFallback, setNeedsFallback] = useState(false);
   const [showMarcoZero, setShowMarcoZero] = useState(false);
+  const [hasDailySnapshots, setHasDailySnapshots] = useState(false);
   const [manualOsMatches, setManualOsMatches] = useState<{ ofxTx: any, osId: string }[]>([]);
   const [cloudOsData, setCloudOsData] = useState<any[]>([]);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
@@ -149,6 +150,18 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       logsEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [importLogs]);
+
+  useEffect(() => {
+    const checkSnapshots = async () => {
+      const { count } = await supabase
+        .from('daily_snapshots')
+        .select('*', { count: 'exact', head: true });
+      if (count && count > 0) {
+        setHasDailySnapshots(true);
+      }
+    };
+    checkSnapshots();
+  }, []);
 
   
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
@@ -903,30 +916,32 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             </div>
             
             {/* Direita: Implantação de Saldo (Marco Zero) */}
-            <div className="border border-[var(--border-subtle)] bg-[var(--bg-surface)] rounded-3xl p-10 flex flex-col items-center justify-center transition-all duration-300 hover:border-[var(--color-primary)]/50 relative overflow-hidden">
-              <div className="absolute top-0 right-0 bg-[var(--color-accent-warning)]/20 text-[var(--color-accent-warning)] text-xs px-3 py-1 font-bold rounded-bl-xl border-l border-b border-[var(--color-accent-warning)]/20 flex items-center gap-1">
-                <AlertCircle size={12} /> AVISO
-              </div>
-              <div className="bg-[var(--color-accent-warning)]/10 p-5 rounded-full shadow-xl border border-[var(--color-accent-warning)]/20 text-[var(--color-accent-warning)] mb-6">
-                <Database />
-              </div>
-              <h3 className="font-display font-semibold text-xl mb-2 text-center text-[var(--text-primary)]">
-                Implantação de Saldo Inicial
-              </h3>
-              <p className="text-[var(--text-secondary)] text-sm text-center max-w-sm mb-6">
-                Inicie o Estoque de OSs Pendentes carregando a planilha antiga de conciliação diária. Faça isso apenas uma vez por loja.
-              </p>
+            {!hasDailySnapshots && (
+              <div className="border border-[var(--border-subtle)] bg-[var(--bg-surface)] rounded-3xl p-10 flex flex-col items-center justify-center transition-all duration-300 hover:border-[var(--color-primary)]/50 relative overflow-hidden">
+                <div className="absolute top-0 right-0 bg-[var(--color-accent-warning)]/20 text-[var(--color-accent-warning)] text-xs px-3 py-1 font-bold rounded-bl-xl border-l border-b border-[var(--color-accent-warning)]/20 flex items-center gap-1">
+                  <AlertCircle size={12} /> AVISO
+                </div>
+                <div className="bg-[var(--color-accent-warning)]/10 p-5 rounded-full shadow-xl border border-[var(--color-accent-warning)]/20 text-[var(--color-accent-warning)] mb-6">
+                  <Database />
+                </div>
+                <h3 className="font-display font-semibold text-xl mb-2 text-center text-[var(--text-primary)]">
+                  Implantação de Saldo Inicial
+                </h3>
+                <p className="text-[var(--text-secondary)] text-sm text-center max-w-sm mb-6">
+                  Inicie o Estoque de OSs Pendentes carregando a planilha antiga de conciliação diária. Faça isso apenas uma vez por loja.
+                </p>
 
-              <div className="mt-4 w-full">
-                <Button 
-                  onClick={() => setShowMarcoZero(true)}
-                  variant="outline"
-                  className="w-full h-12 border-[var(--color-accent-warning)] text-[var(--color-accent-warning)] hover:bg-[var(--color-accent-warning)]/10"
-                >
-                  <FileSpreadsheet className="mr-2" size={16}/> Abrir Marco Zero
-                </Button>
+                <div className="mt-4 w-full">
+                  <Button 
+                    onClick={() => setShowMarcoZero(true)}
+                    variant="outline"
+                    className="w-full h-12 border-[var(--color-accent-warning)] text-[var(--color-accent-warning)] hover:bg-[var(--color-accent-warning)]/10"
+                  >
+                    <FileSpreadsheet className="mr-2" size={16}/> Abrir Marco Zero
+                  </Button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
           
           {isProcessing && (

@@ -138,3 +138,5 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - Novo componente React: src/components/importacoes/MarcoZeroWizard.tsx  
 - Novo componente React: src/components/importacoes/MatchManualOsPendente.tsx (Passo 3.5 do Wizard)  
 - Refatoração do useConciliacao.ts para usar estoque_os_pendente em vez de patio_os 
+  
+- **[168] Refatoracao do Marco Zero (2026-08-12):** Nova estrutura no marcoZeroParser.ts para separar extracao global de OSs locais. MarcoZeroWizard.tsx passou a exigir 'Data da Implantacao' e agora insere retroativamente os totais do saldo inicial na tabela daily_snapshots. O botao de Marco Zero na tela central foi condicionado a ausencia de snapshots na base. 
