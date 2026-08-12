@@ -27,3 +27,10 @@
 **Comportamento proibido:** Tentar converter parâmetros dinâmicos via `p_date::text` ou usar `TO_CHAR(data, 'YYYY-MM-DD')` para resolver igualdades `=` contra colunas do banco que já são do tipo nativo temporal (`date` ou `timestamp`).
 **Guardrail:** Sempre molde o parâmetro/variável para o tipo nativo da coluna alvo (`::date`), garantindo que a comparação seja feita estritamente entre (Data = Data) ou (Timestamp = Timestamp), sob pena do Postgres matar a RPC com `42883 (operator does not exist)`.
 **Por quê universal:** A matemática e segurança de tipagem do PostgreSQL falha duramente na nuvem se a query depender de conversões texto implícitas com formatos arbitrários. Isso derruba aplicações em produção não importando o projeto.
+
+## 5. Parser Resiliente de Arquivos Customizados (Excel)
+
+**Regra:** Não confiar em índices fixos ao extrair dados de planilhas customizadas/manuais.
+**Comportamento proibido:** Extrair dados de planilhas legadas (ex: conciliação) fixando o index de colunas (`row[6]`) ou forçando chaves `__EMPTY_6` via JSON parser.
+**Guardrail:** Em planilhas geradas/editadas por humanos, implemente um parser resiliente que varre as células da linha (Row) através de *fuzzy matching* (includes ou replace) para encontrar o rótulo da variável, e pesque o valor numérico vizinho na mesma linha usando validação forte (`cleanNumber`). 
+**Por quê universal:** Arquivos legados ou criados manualmente no Excel ou planilhas do Google invariavelmente sofrerão com mesclagens de colunas, espaços em branco invisíveis e quebras de codificação (ex: UTF-8 vs Latin-1). Depender de um grid posicional fixo é receita infalível para quebrar integrações financeiras quando a planilha sofrer a mínima alteração estética.

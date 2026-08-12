@@ -138,7 +138,7 @@ export const parseMarcoZeroPlanilha = async (file: File): Promise<MarcoZeroResul
 
         workbook.SheetNames.forEach(sheetName => {
           const sheet = workbook.Sheets[sheetName];
-          const rawData = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false });
+          const rawData = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: true });
           const upperSheet = sheetName.toUpperCase();
 
           if (upperSheet.includes('SALDO') || upperSheet.includes('PLAN1')) {
@@ -146,67 +146,82 @@ export const parseMarcoZeroPlanilha = async (file: File): Promise<MarcoZeroResul
               const row: any[] = rawData[i] as any[];
               if (!row || row.length === 0) continue;
               
-              // 1. Extração Global Resiliente
-              // Varre todas as células da linha buscando rótulos. Se encontrar um rótulo, 
-              // busca um valor numérico válido na mesma linha.
-              const labelsInRow: string[] = [];
-              const numbersInRow: number[] = [];
+              // 1. Extração Global Resiliente (Regra 5)
+              // Varre todas as células da linha buscando rótulos. Se encontrar um rótulo financeiro,
+              // busca o valor numérico vizinho mais próximo na mesma linha (priorizando a esquerda).
+              let labelColH = '';
+              let valColG = 0;
               
-              for (const cell of row) {
+              for (let j = 0; j < row.length; j++) {
+                const cell = row[j];
                 if (typeof cell === 'string') {
                   const label = String(cell || '').toUpperCase().trim();
                   // fix encoding issues
                   const cleanLabel = label.replace('ITAÁŠ', 'ITAÚ').replace('Â±', '±');
-                  if (cleanLabel) labelsInRow.push(cleanLabel);
-                } else if (cell !== null && cell !== undefined) {
-                  // try to convert to number, wait, the rawData is parsed with raw: false, so they might all be strings
-                  const num = cleanNumber(cell);
-                  if (num !== 0) numbersInRow.push(num);
+                  
+                  if (cleanLabel && (
+                    cleanLabel.includes('FATURAMENTO') || 
+                    cleanLabel.includes('CAIXA') || 
+                    cleanLabel.includes('DINHEIRO') || 
+                    cleanLabel.includes('CONTAS') || 
+                    cleanLabel.includes('NEGATIVO') || 
+                    cleanLabel.includes('A RECEBER') || 
+                    cleanLabel.includes('PROLABORE') || 
+                    cleanLabel.includes('JUROS')
+                  )) {
+                    labelColH = cleanLabel;
+                    // Procura número à esquerda
+                    for (let k = j - 1; k >= 0; k--) {
+                      const possibleNum = cleanNumber(row[k]);
+                      if (possibleNum !== 0 || row[k] === 0 || row[k] === '0' || row[k] === '0.00' || row[k] === '0,00') {
+                        valColG = possibleNum;
+                        break;
+                      }
+                    }
+                    // Se não achar à esquerda, procura à direita
+                    if (valColG === 0) {
+                      for (let k = j + 1; k < row.length; k++) {
+                        const possibleNum = cleanNumber(row[k]);
+                        if (possibleNum !== 0 || row[k] === 0 || row[k] === '0' || row[k] === '0.00' || row[k] === '0,00') {
+                          valColG = possibleNum;
+                          break;
+                        }
+                      }
+                    }
+                    break;
+                  }
                 }
               }
 
-              // Also check if some strings are numbers
-              for (const cell of row) {
-                  const num = cleanNumber(cell);
-                  if (num !== 0 && !numbersInRow.includes(num)) numbersInRow.push(num);
-              }
-
-              for (const labelColH of labelsInRow) {
-                // assume the largest absolute number in row or just the first number is the value
-                // In Excel the value is typically before the label or after, let's take the last number in the row if we can't be sure, but actually `numbersInRow` has all numbers.
-                // Let's just pick the first number if it exists.
-                const valColG = numbersInRow.length > 0 ? numbersInRow[0] : 0;
-
-                if (valColG !== 0 && labelColH) {
-                  if (labelColH === 'DINHEIRO MP') {
-                    globalData.dinheiroMp = valColG;
-                  } else if (labelColH === 'A RECEBER') {
-                    globalData.aReceber = valColG;
-                  } else if (labelColH.includes('NEGATIVO')) {
-                    globalData.negativo = Math.abs(valColG);
-                  } else if (labelColH === 'CAIXA ANTERIOR') {
-                    globalData.caixaAnterior = valColG;
-                  } else if (labelColH === 'CAIXA ATUAL') {
-                    globalData.caixaAtual = valColG;
-                  } else if (labelColH.includes('FATURAMENTO ATUAL')) {
-                    globalData.faturamentoAtual = valColG;
-                  } else if (labelColH.includes('FATURAMENTO ANTERIOR')) {
-                    globalData.faturamentoAnterior = valColG;
-                  } else if (labelColH.includes('FLUXO CAIXA') || labelColH.includes('FLUXO DE CAIXA')) {
-                    globalData.fluxoCaixa = valColG;
-                  } else if (labelColH.includes('PAGAMENTO DE CONTAS')) {
-                    globalData.valorDisponivelContas = valColG;
-                  } else if (labelColH === 'VALOR DAS CONTAS') {
-                    globalData.valorDasContas = valColG;
-                  } else if (labelColH === 'JUROS ATUAL') {
-                    globalData.jurosAtual = valColG;
-                  } else if (labelColH === 'CONTAS') {
-                    globalData.contas = valColG;
-                  } else if (labelColH.includes('PROLABORE DANIEL')) {
-                    globalData.prolaboreDaniel = valColG;
-                  } else if (labelColH.includes('PROLABORE HENRIQUE')) {
-                    globalData.prolaboreHenrique = valColG;
-                  }
+              if (labelColH) {
+                if (labelColH === 'DINHEIRO MP') {
+                  globalData.dinheiroMp = valColG;
+                } else if (labelColH === 'A RECEBER') {
+                  globalData.aReceber = valColG;
+                } else if (labelColH.includes('NEGATIVO')) {
+                  globalData.negativo = Math.abs(valColG);
+                } else if (labelColH === 'CAIXA ANTERIOR') {
+                  globalData.caixaAnterior = valColG;
+                } else if (labelColH === 'CAIXA ATUAL') {
+                  globalData.caixaAtual = valColG;
+                } else if (labelColH.includes('FATURAMENTO ATUAL')) {
+                  globalData.faturamentoAtual = valColG;
+                } else if (labelColH.includes('FATURAMENTO ANTERIOR')) {
+                  globalData.faturamentoAnterior = valColG;
+                } else if (labelColH.includes('FLUXO CAIXA') || labelColH.includes('FLUXO DE CAIXA')) {
+                  globalData.fluxoCaixa = valColG;
+                } else if (labelColH.includes('PAGAMENTO DE CONTAS')) {
+                  globalData.valorDisponivelContas = valColG;
+                } else if (labelColH === 'VALOR DAS CONTAS') {
+                  globalData.valorDasContas = valColG;
+                } else if (labelColH === 'JUROS ATUAL') {
+                  globalData.jurosAtual = valColG;
+                } else if (labelColH === 'CONTAS') {
+                  globalData.contas = valColG;
+                } else if (labelColH.includes('PROLABORE DANIEL')) {
+                  globalData.prolaboreDaniel = valColG;
+                } else if (labelColH.includes('PROLABORE HENRIQUE')) {
+                  globalData.prolaboreHenrique = valColG;
                 }
               }
               
