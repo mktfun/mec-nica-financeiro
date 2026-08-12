@@ -162,3 +162,4 @@ a_loja_os. Bootstrap coleta 'PÃ¡tio Pendente' para preencher caixa_atual e evita
 - **Arquivo Modificado:** `src/lib/parsers/mapaMetasParser.ts`
 - **Mudanca:** Import estatico `import * as pdfjsLib from 'pdfjs-dist'` removido do escopo global. Substituido por Dynamic Import (`await import('pdfjs-dist')`) dentro da funcao `parseMapaMetasPDF`.
 - **Efeito:** Elimina crash SSR `DOMMatrix is not defined` ao carregar telas de Dashboard e Importacao.
+- (174) Redesign Central Import Wizard: Refatorado Step 4 do Wizard para substituir o importLogs por AgentStageItem, refinando o aspecto premium e ocultando logs t‚cnicos atr s de export JSON. 

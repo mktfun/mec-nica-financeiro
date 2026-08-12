@@ -1628,29 +1628,15 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
               </div>
 
-              {/* Feed de Atividades Limpo */}
-              <div className="space-y-2">
+              {/* Acompanhamento Visual de Execução */}
+              <div className="space-y-3 mt-6">
                 <span className="text-[10px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider block">
-                  Diário de Operações
+                  Progresso da Conciliação
                 </span>
-                <div className="p-4 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
-                  {importLogs.map((log) => (
-                    <div key={log.id} className="flex items-center gap-2.5 text-xs">
-                      {log.type === 'success' ? <CheckCircle2 size={14} className="text-emerald-400 shrink-0" /> :
-                       log.type === 'warning' ? <AlertCircle size={14} className="text-amber-400 shrink-0" /> :
-                       log.type === 'error' ? <AlertCircle size={14} className="text-red-400 shrink-0" /> :
-                       <Sparkles size={14} className="text-sky-400 shrink-0" />}
-                      <span className={
-                        log.type === 'success' ? 'text-emerald-300 font-medium' :
-                        log.type === 'warning' ? 'text-amber-300 font-medium' :
-                        log.type === 'error' ? 'text-red-400 font-semibold' :
-                        'text-[var(--text-secondary)]'
-                      }>
-                        {log.message}
-                      </span>
-                    </div>
+                <div className="flex flex-col gap-3">
+                  {importStages.map((stage) => (
+                    <AgentStageItem key={stage.id} stage={stage} />
                   ))}
-                  <div ref={logsEndRef} />
                 </div>
               </div>
 

@@ -226,17 +226,6 @@
       "norm_label": "featurespath"
     },
     {
-      "label": "append_mem173.py",
-      "file_type": "code",
-      "source_file": "append_mem173.py",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "append_mem173",
-      "community": 1090,
-      "community_name": "append_mem173.py",
-      "norm_label": "append_mem173.py"
-    },
-    {
       "label": "apply-migration-115.cjs",
       "file_type": "code",
       "source_file": "apply-migration-115.cjs",
@@ -5298,8 +5287,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "package_dependencies_ai_sdk_react",
-      "community": 962,
-      "community_name": "@ai-sdk/react",
+      "community": 45,
+      "community_name": "dependencies",
       "norm_label": "@ai-sdk/react"
     },
     {
@@ -5309,8 +5298,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "ai_sdk_react",
-      "community": 962,
-      "community_name": "@ai-sdk/react",
+      "community": 45,
+      "community_name": "dependencies",
       "norm_label": "@ai-sdk/react"
     },
     {
@@ -6112,8 +6101,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "package_dependencies_ai",
-      "community": 45,
-      "community_name": "dependencies",
+      "community": 1091,
+      "community_name": "ai",
       "norm_label": "ai"
     },
     {
@@ -6123,8 +6112,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "ai",
-      "community": 45,
-      "community_name": "dependencies",
+      "community": 1091,
+      "community_name": "ai",
       "norm_label": "ai"
     },
     {
@@ -6948,8 +6937,8 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "package_devdependencies_eslint",
-      "community": 1088,
-      "community_name": "eslint",
+      "community": 1,
+      "community_name": "devDependencies",
       "norm_label": "eslint"
     },
     {
@@ -6959,8 +6948,8 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "eslint",
-      "community": 1088,
-      "community_name": "eslint",
+      "community": 1,
+      "community_name": "devDependencies",
       "norm_label": "eslint"
     },
     {
@@ -7168,8 +7157,8 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "package_devdependencies_vite",
-      "community": 1,
-      "community_name": "devDependencies",
+      "community": 1092,
+      "community_name": "vite",
       "norm_label": "vite"
     },
     {
@@ -7179,8 +7168,8 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "vite",
-      "community": 1,
-      "community_name": "devDependencies",
+      "community": 1092,
+      "community_name": "vite",
       "norm_label": "vite"
     },
     {
@@ -15269,7 +15258,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel",
       "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "AgenteIAConfigPanel.tsx",
       "norm_label": "agenteiaconfigpanel.tsx"
     },
     {
@@ -15280,7 +15269,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_model_options",
       "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "AgenteIAConfigPanel.tsx",
       "norm_label": "model_options"
     },
     {
@@ -15291,7 +15280,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_provider_labels",
       "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "AgenteIAConfigPanel.tsx",
       "norm_label": "provider_labels"
     },
     {
@@ -15303,7 +15292,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_agenteiaconfigpanel",
       "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "AgenteIAConfigPanel.tsx",
       "norm_label": "agenteiaconfigpanel()"
     },
     {
@@ -15336,8 +15325,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel",
-      "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "configuracoespanel.tsx"
     },
     {
@@ -15348,8 +15337,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel_configuracoespanel",
-      "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "configuracoespanel()"
     },
     {
@@ -15361,7 +15350,7 @@
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel_aisettingsform",
       "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "AgenteIAConfigPanel.tsx",
       "norm_label": "aisettingsform()"
     },
     {
@@ -15417,8 +15406,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel",
-      "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 1073,
+      "community_name": "LogsMotorPanel.tsx",
       "norm_label": "logsmotorpanel.tsx"
     },
     {
@@ -15429,8 +15418,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel_logsmotorpanel",
-      "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 1073,
+      "community_name": "LogsMotorPanel.tsx",
       "norm_label": "logsmotorpanel()"
     },
     {
@@ -16608,8 +16597,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "herobalance.tsx"
     },
     {
@@ -16620,8 +16609,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance_herobalance",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "herobalance()"
     },
     {
@@ -16691,8 +16680,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "motorstatus.tsx"
     },
     {
@@ -16703,8 +16692,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus_motorstatus",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "motorstatus()"
     },
     {
@@ -16714,8 +16703,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "newtransactiondialog.tsx"
     },
     {
@@ -16727,8 +16716,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialogprops",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "newtransactiondialogprops"
     },
     {
@@ -16739,8 +16728,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialog",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "newtransactiondialog()"
     },
     {
@@ -16750,8 +16739,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_rationale_17",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "todo: implement transaction creation"
     },
     {
@@ -16761,8 +16750,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "quickactions.tsx"
     },
     {
@@ -16772,8 +16761,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_container",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "container"
     },
     {
@@ -16783,8 +16772,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_item",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "item"
     },
     {
@@ -16795,8 +16784,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_quickactions",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "quickactions()"
     },
     {
@@ -16806,8 +16795,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_recentactivity",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "recentactivity.tsx"
     },
     {
@@ -16818,8 +16807,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_recentactivity_recentactivity",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "recentactivity()"
     },
     {
@@ -17170,10 +17159,21 @@
       "norm_label": "importlogentry"
     },
     {
+      "label": "INITIAL_STAGES",
+      "file_type": "code",
+      "source_file": "src/components/importacoes/CentralImportWizard.tsx",
+      "source_location": "L40",
+      "_origin": "ast",
+      "id": "src_components_importacoes_centralimportwizard_initial_stages",
+      "community": 54,
+      "community_name": "CentralImportWizard.tsx",
+      "norm_label": "initial_stages"
+    },
+    {
       "label": "useUnifiedStoreMapping()",
       "file_type": "code",
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L42",
+      "source_location": "L50",
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_useunifiedstoremapping",
@@ -17185,7 +17185,7 @@
       "label": "StepIndicator()",
       "file_type": "code",
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L89",
+      "source_location": "L97",
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_stepindicator",
@@ -17197,7 +17197,7 @@
       "label": "CentralImportWizard()",
       "file_type": "code",
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L108",
+      "source_location": "L116",
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -17262,7 +17262,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_marcozerowizard",
       "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "MarcoZeroWizard.tsx",
       "norm_label": "marcozerowizard.tsx"
     },
     {
@@ -17274,7 +17274,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_marcozerowizard_marcozerowizard",
       "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "MarcoZeroWizard.tsx",
       "norm_label": "marcozerowizard()"
     },
     {
@@ -17284,8 +17284,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "matchmanualospendente.tsx"
     },
     {
@@ -17297,8 +17297,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente_matchmanualosprops",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "matchmanualosprops"
     },
     {
@@ -17309,8 +17309,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente_matchmanualospendente",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "matchmanualospendente()"
     },
     {
@@ -17483,8 +17483,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_topbar",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "topbar.tsx"
     },
     {
@@ -17495,8 +17495,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_layout_topbar_topbar",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "topbar()"
     },
     {
@@ -17506,8 +17506,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_animatednumber",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 495,
+      "community_name": "supabase",
       "norm_label": "animatednumber.tsx"
     },
     {
@@ -17519,8 +17519,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumberprops",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 495,
+      "community_name": "supabase",
       "norm_label": "animatednumberprops"
     },
     {
@@ -17531,8 +17531,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumber",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 495,
+      "community_name": "supabase",
       "norm_label": "animatednumber()"
     },
     {
@@ -17578,8 +17578,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_button",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "button.tsx"
     },
     {
@@ -17591,8 +17591,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_button_buttonprops",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "buttonprops"
     },
     {
@@ -17603,8 +17603,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_button_button",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "button()"
     },
     {
@@ -17721,8 +17721,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_modal",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "modal.tsx"
     },
     {
@@ -17734,8 +17734,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_modal_modalprops",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "modalprops"
     },
     {
@@ -17746,8 +17746,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_modal_modal",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "modal()"
     },
     {
@@ -17757,8 +17757,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_themetoggle",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "themetoggle.tsx"
     },
     {
@@ -17769,8 +17769,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_themetoggle_themetoggle",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "themetoggle()"
     },
     {
@@ -17878,7 +17878,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings",
       "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "AgenteIAConfigPanel.tsx",
       "norm_label": "useaisettings.ts"
     },
     {
@@ -17891,7 +17891,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_aisettings",
       "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "AgenteIAConfigPanel.tsx",
       "norm_label": "aisettings"
     },
     {
@@ -17903,7 +17903,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_useaisettings",
       "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "AgenteIAConfigPanel.tsx",
       "norm_label": "useaisettings()"
     },
     {
@@ -17915,7 +17915,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_usesaveaisettings",
       "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "AgenteIAConfigPanel.tsx",
       "norm_label": "usesaveaisettings()"
     },
     {
@@ -17972,8 +17972,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useauth",
-      "community": 773,
-      "community_name": "AppShell.tsx",
+      "community": 1069,
+      "community_name": "useAuth.ts",
       "norm_label": "useauth.ts"
     },
     {
@@ -17983,8 +17983,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_hooks_useauth_listeners",
-      "community": 773,
-      "community_name": "AppShell.tsx",
+      "community": 1069,
+      "community_name": "useAuth.ts",
       "norm_label": "listeners"
     },
     {
@@ -18008,7 +18008,7 @@
       "_origin": "ast",
       "id": "src_hooks_useauth_uselogin",
       "community": 1069,
-      "community_name": "login.tsx",
+      "community_name": "useAuth.ts",
       "norm_label": "uselogin()"
     },
     {
@@ -18127,8 +18127,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials",
-      "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "usebotcredentials.ts"
     },
     {
@@ -18140,8 +18140,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_botcredentialrow",
-      "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "botcredentialrow"
     },
     {
@@ -18152,8 +18152,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usebotcredentials",
-      "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "usebotcredentials()"
     },
     {
@@ -18164,8 +18164,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_useupdatebotcredential",
-      "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "useupdatebotcredential()"
     },
     {
@@ -18176,8 +18176,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usemarkcredentialvalid",
-      "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "usemarkcredentialvalid()"
     },
     {
@@ -18187,8 +18187,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotlogs",
-      "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 1073,
+      "community_name": "LogsMotorPanel.tsx",
       "norm_label": "usebotlogs.ts"
     },
     {
@@ -18200,8 +18200,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_botauditlog",
-      "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 1073,
+      "community_name": "LogsMotorPanel.tsx",
       "norm_label": "botauditlog"
     },
     {
@@ -18212,8 +18212,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotlogs",
-      "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 1073,
+      "community_name": "LogsMotorPanel.tsx",
       "norm_label": "usebotlogs()"
     },
     {
@@ -18224,8 +18224,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotauditlogs",
-      "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 1073,
+      "community_name": "LogsMotorPanel.tsx",
       "norm_label": "usebotauditlogs()"
     },
     {
@@ -18235,8 +18235,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotruns",
-      "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "usebotruns.ts"
     },
     {
@@ -18247,8 +18247,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebotruns_uselatestbotrun",
-      "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "uselatestbotrun()"
     },
     {
@@ -18259,8 +18259,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebotruns_usebotrunhistory",
-      "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "usebotrunhistory()"
     },
     {
@@ -18427,8 +18427,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesaveimportedreport",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "usesaveimportedreport()"
     },
     {
@@ -18754,8 +18754,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useexpenseimportprocessor",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "useexpenseimportprocessor.ts"
     },
     {
@@ -18767,8 +18767,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useexpenseimportprocessor_expenseimportresult",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "expenseimportresult"
     },
     {
@@ -18779,8 +18779,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useexpenseimportprocessor_processexpensefiles",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "processexpensefiles()"
     },
     {
@@ -18826,8 +18826,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "useimportlogs.ts"
     },
     {
@@ -18839,8 +18839,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlog",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "importlog"
     },
     {
@@ -18852,8 +18852,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlogfilters",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "importlogfilters"
     },
     {
@@ -18864,8 +18864,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogs",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "useimportlogs()"
     },
     {
@@ -18876,8 +18876,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogdetail",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "useimportlogdetail()"
     },
     {
@@ -18887,8 +18887,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "useimportprocessor.ts"
     },
     {
@@ -18900,8 +18900,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_parsedos",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "parsedos"
     },
     {
@@ -18913,8 +18913,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_parsedreceivable",
-      "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "parsedreceivable"
     },
     {
@@ -18925,8 +18925,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_savepatioosandreceivables",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "savepatioosandreceivables()"
     },
     {
@@ -18937,8 +18937,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useprocessimporteddata",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "useprocessimporteddata()"
     },
     {
@@ -18950,8 +18950,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_groupedimportlog",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "groupedimportlog"
     },
     {
@@ -18962,8 +18962,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useimportshistory",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "useimportshistory()"
     },
     {
@@ -18974,8 +18974,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_usedeleteimport",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "usedeleteimport()"
     },
     {
@@ -18986,8 +18986,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useclearalldata",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "useclearalldata()"
     },
     {
@@ -19105,8 +19105,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usepatio",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "usepatio.ts"
     },
     {
@@ -19117,8 +19117,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usepatio_usepatioos",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "usepatioos()"
     },
     {
@@ -19129,8 +19129,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usepatio_useupdatepatioos",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "useupdatepatioos()"
     },
     {
@@ -19141,8 +19141,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usepatio_usepatiosummary",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "usepatiosummary()"
     },
     {
@@ -19251,8 +19251,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_userecebiveis",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "userecebiveis.ts"
     },
     {
@@ -19263,8 +19263,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_userecebiveis",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "userecebiveis()"
     },
     {
@@ -19275,8 +19275,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_usemarkreceived",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "usemarkreceived()"
     },
     {
@@ -19287,8 +19287,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_usereceivablessummary",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "usereceivablessummary()"
     },
     {
@@ -19429,8 +19429,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedashboardsummary",
-      "community": 49,
-      "community_name": "Card.tsx",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usedashboardsummary()"
     },
     {
@@ -19595,8 +19595,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher",
-      "community": 677,
-      "community_name": "start.ts",
+      "community": 680,
+      "community_name": "src/server.ts",
       "norm_label": "auth-attacher.ts"
     },
     {
@@ -19606,8 +19606,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher_attachsupabaseauth",
-      "community": 677,
-      "community_name": "start.ts",
+      "community": 680,
+      "community_name": "src/server.ts",
       "norm_label": "attachsupabaseauth"
     },
     {
@@ -20917,8 +20917,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_contasapagarparser",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "contasapagarparser.ts"
     },
     {
@@ -20930,8 +20930,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_parsers_contasapagarparser_parsedexpense",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "parsedexpense"
     },
     {
@@ -20942,8 +20942,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_contasapagarparser_parsecontasapagar",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "parsecontasapagar()"
     },
     {
@@ -20976,8 +20976,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_jurosredeparser",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "jurosredeparser.ts"
     },
     {
@@ -20988,8 +20988,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_jurosredeparser_parsejurosrede",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "parsejurosrede()"
     },
     {
@@ -21049,7 +21049,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser",
       "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "MarcoZeroWizard.tsx",
       "norm_label": "marcozeroparser.ts"
     },
     {
@@ -21062,7 +21062,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_marcozeroglobaldata",
       "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "MarcoZeroWizard.tsx",
       "norm_label": "marcozeroglobaldata"
     },
     {
@@ -21075,7 +21075,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_marcozerostoredata",
       "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "MarcoZeroWizard.tsx",
       "norm_label": "marcozerostoredata"
     },
     {
@@ -21088,7 +21088,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_marcozeroresult",
       "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "MarcoZeroWizard.tsx",
       "norm_label": "marcozeroresult"
     },
     {
@@ -21100,7 +21100,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_cleannumber",
       "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "MarcoZeroWizard.tsx",
       "norm_label": "cleannumber()"
     },
     {
@@ -21112,7 +21112,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_parsedate",
       "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "MarcoZeroWizard.tsx",
       "norm_label": "parsedate()"
     },
     {
@@ -21124,7 +21124,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_isknownstore",
       "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "MarcoZeroWizard.tsx",
       "norm_label": "isknownstore()"
     },
     {
@@ -21136,7 +21136,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_parsemarcozeroplanilha",
       "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "MarcoZeroWizard.tsx",
       "norm_label": "parsemarcozeroplanilha()"
     },
     {
@@ -21279,8 +21279,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_storemapping",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "storemapping.ts"
     },
     {
@@ -21291,7 +21291,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_storemapping_rede_store_mapping",
       "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "MarcoZeroWizard.tsx",
       "norm_label": "rede_store_mapping"
     },
     {
@@ -21302,8 +21302,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_storemapping_normalizeredestorename",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "normalizeredestorename()"
     },
     {
@@ -21413,8 +21413,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_cashregisterrow",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "cashregisterrow"
     },
     {
@@ -21426,8 +21426,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_patioosrow",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "patioosrow"
     },
     {
@@ -21439,8 +21439,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_receivablerow",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "receivablerow"
     },
     {
@@ -21452,8 +21452,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_botrunrow",
-      "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "botrunrow"
     },
     {
@@ -21489,8 +21489,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_utils",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "utils.ts"
     },
     {
@@ -21513,8 +21513,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_utils_getdefaultdate",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "getdefaultdate()"
     },
     {
@@ -21525,8 +21525,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_utils_formatcurrency",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -21856,8 +21856,8 @@
       "source_location": "L460",
       "_origin": "ast",
       "id": "src_routetree_gen_routetree",
-      "community": 677,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "routetree"
     },
     {
@@ -21880,8 +21880,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routetree_gen_register",
-      "community": 677,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "register"
     },
     {
@@ -21891,8 +21891,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_router",
-      "community": 677,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "router.tsx"
     },
     {
@@ -21903,8 +21903,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_router_getrouter",
-      "community": 677,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "getrouter()"
     },
     {
@@ -22031,8 +22031,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_bootstrap",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "bootstrap.tsx"
     },
     {
@@ -22054,8 +22054,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_bootstrap_bootstrappage",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "bootstrappage()"
     },
     {
@@ -22172,8 +22172,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_route",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 1017,
+      "community_name": "FileRoutesByPath",
       "norm_label": "route"
     },
     {
@@ -22266,8 +22266,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_configuracoes",
-      "community": 773,
-      "community_name": "AppShell.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "configuracoes.tsx"
     },
     {
@@ -22289,8 +22289,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_configuracoes_configuracoespage",
-      "community": 773,
-      "community_name": "AppShell.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "configuracoespage()"
     },
     {
@@ -22404,8 +22404,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "importacoes-despesas.tsx"
     },
     {
@@ -22427,8 +22427,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_usestoremapping",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usestoremapping()"
     },
     {
@@ -22439,8 +22439,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_importacoesdespesaswizard",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "importacoesdespesaswizard()"
     },
     {
@@ -22451,8 +22451,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_stepindicator",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "stepindicator()"
     },
     {
@@ -22462,8 +22462,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_importacoes",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "importacoes.tsx"
     },
     {
@@ -22485,8 +22485,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_formatdate",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "formatdate()"
     },
     {
@@ -22497,8 +22497,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_importacoespage",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "importacoespage()"
     },
     {
@@ -22508,8 +22508,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_importar_os",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "importar-os.tsx"
     },
     {
@@ -22531,8 +22531,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importar_os_useosstoremapping",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "useosstoremapping()"
     },
     {
@@ -22543,8 +22543,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importar_os_stepindicator",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "stepindicator()"
     },
     {
@@ -22555,8 +22555,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importar_os_importaroswizard",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "importaroswizard()"
     },
     {
@@ -22601,7 +22601,7 @@
       "_origin": "ast",
       "id": "src_routes_login",
       "community": 1069,
-      "community_name": "login.tsx",
+      "community_name": "useAuth.ts",
       "norm_label": "login.tsx"
     },
     {
@@ -22612,7 +22612,7 @@
       "_origin": "ast",
       "id": "src_routes_login_route",
       "community": 1069,
-      "community_name": "login.tsx",
+      "community_name": "useAuth.ts",
       "norm_label": "route"
     },
     {
@@ -22624,7 +22624,7 @@
       "_origin": "ast",
       "id": "src_routes_login_loginpage",
       "community": 1069,
-      "community_name": "login.tsx",
+      "community_name": "useAuth.ts",
       "norm_label": "loginpage()"
     },
     {
@@ -22668,8 +22668,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_logs_motor",
-      "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 1073,
+      "community_name": "LogsMotorPanel.tsx",
       "norm_label": "logs.motor.tsx"
     },
     {
@@ -22691,8 +22691,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_logs_motor_logsmotorpage",
-      "community": 406,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 1073,
+      "community_name": "LogsMotorPanel.tsx",
       "norm_label": "logsmotorpage()"
     },
     {
@@ -22806,8 +22806,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_patio",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "patio.tsx"
     },
     {
@@ -22819,8 +22819,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_patio_historychange",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "historychange"
     },
     {
@@ -22832,8 +22832,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_patio_historylog",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "historylog"
     },
     {
@@ -22856,8 +22856,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_patio_filtertab",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "filtertab"
     },
     {
@@ -22868,8 +22868,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_patio_getoseffectivevalues",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "getoseffectivevalues()"
     },
     {
@@ -22880,8 +22880,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_patio_patiopage",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "patiopage()"
     },
     {
@@ -22892,8 +22892,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_patio_tabbtn",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "Button.tsx",
       "norm_label": "tabbtn()"
     },
     {
@@ -22997,8 +22997,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_recebiveis",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "recebiveis.tsx"
     },
     {
@@ -23021,8 +23021,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_recebiveis_filtertab",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "filtertab"
     },
     {
@@ -23033,8 +23033,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_recebiveis_recebiveispage",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "recebiveispage()"
     },
     {
@@ -23045,8 +23045,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_recebiveis_tabbtn",
-      "community": 42,
-      "community_name": "recebiveis.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "tabbtn()"
     },
     {
@@ -23140,8 +23140,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_start",
-      "community": 677,
-      "community_name": "start.ts",
+      "community": 680,
+      "community_name": "src/server.ts",
       "norm_label": "start.ts"
     },
     {
@@ -23151,8 +23151,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_start_errormiddleware",
-      "community": 677,
-      "community_name": "start.ts",
+      "community": 680,
+      "community_name": "src/server.ts",
       "norm_label": "errormiddleware"
     },
     {
@@ -23162,8 +23162,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_start_startinstance",
-      "community": 677,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "startinstance"
     },
     {
@@ -30387,190 +30387,212 @@
       "norm_label": "tasks"
     },
     {
-      "label": "173-fix-pdfjs-ssr-crash/design.md",
+      "label": "174-redesign-central-import-wizard/design.md",
       "file_type": "document",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
+      "source_file": "specs/174-redesign-central-import-wizard/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_173_fix_pdfjs_ssr_crash_design",
-      "community": 1073,
-      "community_name": "Design: Fix PDF.js SSR Crash no Vite (173)",
-      "norm_label": "173-fix-pdfjs-ssr-crash/design.md"
+      "id": "specs_174_redesign_central_import_wizard_design",
+      "community": 677,
+      "community_name": "Design: Redesign Central Import Wizard (174)",
+      "norm_label": "174-redesign-central-import-wizard/design.md"
     },
     {
-      "label": "Design: Fix PDF.js SSR Crash no Vite (173)",
+      "label": "Design: Redesign Central Import Wizard (174)",
       "file_type": "document",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
+      "source_file": "specs/174-redesign-central-import-wizard/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_173_fix_pdfjs_ssr_crash_design_design_fix_pdf_js_ssr_crash_no_vite_173",
-      "community": 1073,
-      "community_name": "Design: Fix PDF.js SSR Crash no Vite (173)",
-      "norm_label": "design: fix pdf.js ssr crash no vite (173)"
+      "id": "specs_174_redesign_central_import_wizard_design_design_redesign_central_import_wizard_174",
+      "community": 677,
+      "community_name": "Design: Redesign Central Import Wizard (174)",
+      "norm_label": "design: redesign central import wizard (174)"
     },
     {
       "label": "Arquitetura T\u00e9cnica",
       "file_type": "document",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
+      "source_file": "specs/174-redesign-central-import-wizard/design.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_173_fix_pdfjs_ssr_crash_design_arquitetura_t\u00e9cnica",
-      "community": 1073,
-      "community_name": "Design: Fix PDF.js SSR Crash no Vite (173)",
+      "id": "specs_174_redesign_central_import_wizard_design_arquitetura_t\u00e9cnica",
+      "community": 677,
+      "community_name": "Design: Redesign Central Import Wizard (174)",
       "norm_label": "arquitetura tecnica"
     },
     {
       "label": "Interfaces TypeScript",
       "file_type": "document",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
-      "source_location": "L11",
+      "source_file": "specs/174-redesign-central-import-wizard/design.md",
+      "source_location": "L7",
       "_origin": "ast",
-      "id": "specs_173_fix_pdfjs_ssr_crash_design_interfaces_typescript",
-      "community": 1073,
-      "community_name": "Design: Fix PDF.js SSR Crash no Vite (173)",
+      "id": "specs_174_redesign_central_import_wizard_design_interfaces_typescript",
+      "community": 677,
+      "community_name": "Design: Redesign Central Import Wizard (174)",
       "norm_label": "interfaces typescript"
     },
     {
-      "label": "Fluxo de UI",
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
       "file_type": "document",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
-      "source_location": "L14",
+      "source_file": "specs/174-redesign-central-import-wizard/design.md",
+      "source_location": "L10",
       "_origin": "ast",
-      "id": "specs_173_fix_pdfjs_ssr_crash_design_fluxo_de_ui",
-      "community": 1073,
-      "community_name": "Design: Fix PDF.js SSR Crash no Vite (173)",
-      "norm_label": "fluxo de ui"
+      "id": "specs_174_redesign_central_import_wizard_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 677,
+      "community_name": "Design: Redesign Central Import Wizard (174)",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Fluxo de UI (se frontend)",
+      "file_type": "document",
+      "source_file": "specs/174-redesign-central-import-wizard/design.md",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "specs_174_redesign_central_import_wizard_design_fluxo_de_ui_se_frontend",
+      "community": 677,
+      "community_name": "Design: Redesign Central Import Wizard (174)",
+      "norm_label": "fluxo de ui (se frontend)"
+    },
+    {
+      "label": "Infra / Deploy",
+      "file_type": "document",
+      "source_file": "specs/174-redesign-central-import-wizard/design.md",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "specs_174_redesign_central_import_wizard_design_infra_deploy",
+      "community": 677,
+      "community_name": "Design: Redesign Central Import Wizard (174)",
+      "norm_label": "infra / deploy"
     },
     {
       "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
       "file_type": "document",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
-      "source_location": "L17",
+      "source_file": "specs/174-redesign-central-import-wizard/design.md",
+      "source_location": "L23",
       "_origin": "ast",
-      "id": "specs_173_fix_pdfjs_ssr_crash_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
-      "community": 1073,
-      "community_name": "Design: Fix PDF.js SSR Crash no Vite (173)",
+      "id": "specs_174_redesign_central_import_wizard_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 677,
+      "community_name": "Design: Redesign Central Import Wizard (174)",
       "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
     },
     {
-      "label": "173-fix-pdfjs-ssr-crash/proposal.md",
+      "label": "174-redesign-central-import-wizard/proposal.md",
       "file_type": "document",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_file": "specs/174-redesign-central-import-wizard/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_173_fix_pdfjs_ssr_crash_proposal",
+      "id": "specs_174_redesign_central_import_wizard_proposal",
       "community": 930,
-      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
-      "norm_label": "173-fix-pdfjs-ssr-crash/proposal.md"
+      "community_name": "Proposal: Redesign Central Import Wizard (174)",
+      "norm_label": "174-redesign-central-import-wizard/proposal.md"
     },
     {
-      "label": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
+      "label": "Proposal: Redesign Central Import Wizard (174)",
       "file_type": "document",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_file": "specs/174-redesign-central-import-wizard/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
+      "id": "specs_174_redesign_central_import_wizard_proposal_proposal_redesign_central_import_wizard_174",
       "community": 930,
-      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
-      "norm_label": "proposal: fix pdf.js ssr crash no vite (173)"
+      "community_name": "Proposal: Redesign Central Import Wizard (174)",
+      "norm_label": "proposal: redesign central import wizard (174)"
     },
     {
       "label": "Problema",
       "file_type": "document",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_file": "specs/174-redesign-central-import-wizard/proposal.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_173_fix_pdfjs_ssr_crash_proposal_problema",
+      "id": "specs_174_redesign_central_import_wizard_proposal_problema",
       "community": 930,
-      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
+      "community_name": "Proposal: Redesign Central Import Wizard (174)",
       "norm_label": "problema"
     },
     {
       "label": "Solu\u00e7\u00e3o Proposta",
       "file_type": "document",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_file": "specs/174-redesign-central-import-wizard/proposal.md",
       "source_location": "L6",
       "_origin": "ast",
-      "id": "specs_173_fix_pdfjs_ssr_crash_proposal_solu\u00e7\u00e3o_proposta",
+      "id": "specs_174_redesign_central_import_wizard_proposal_solu\u00e7\u00e3o_proposta",
       "community": 930,
-      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
+      "community_name": "Proposal: Redesign Central Import Wizard (174)",
       "norm_label": "solucao proposta"
     },
     {
       "label": "Contratos de Dados",
       "file_type": "document",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_file": "specs/174-redesign-central-import-wizard/proposal.md",
       "source_location": "L12",
       "_origin": "ast",
-      "id": "specs_173_fix_pdfjs_ssr_crash_proposal_contratos_de_dados",
+      "id": "specs_174_redesign_central_import_wizard_proposal_contratos_de_dados",
       "community": 930,
-      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
+      "community_name": "Proposal: Redesign Central Import Wizard (174)",
       "norm_label": "contratos de dados"
     },
     {
       "label": "API / Interface",
       "file_type": "document",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_file": "specs/174-redesign-central-import-wizard/proposal.md",
       "source_location": "L15",
       "_origin": "ast",
-      "id": "specs_173_fix_pdfjs_ssr_crash_proposal_api_interface",
+      "id": "specs_174_redesign_central_import_wizard_proposal_api_interface",
       "community": 930,
-      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
+      "community_name": "Proposal: Redesign Central Import Wizard (174)",
       "norm_label": "api / interface"
     },
     {
       "label": "Features Existentes Impactadas",
       "file_type": "document",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
-      "source_location": "L18",
+      "source_file": "specs/174-redesign-central-import-wizard/proposal.md",
+      "source_location": "L19",
       "_origin": "ast",
-      "id": "specs_173_fix_pdfjs_ssr_crash_proposal_features_existentes_impactadas",
+      "id": "specs_174_redesign_central_import_wizard_proposal_features_existentes_impactadas",
       "community": 930,
-      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
+      "community_name": "Proposal: Redesign Central Import Wizard (174)",
       "norm_label": "features existentes impactadas"
     },
     {
       "label": "Risco Principal",
       "file_type": "document",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
-      "source_location": "L21",
+      "source_file": "specs/174-redesign-central-import-wizard/proposal.md",
+      "source_location": "L22",
       "_origin": "ast",
-      "id": "specs_173_fix_pdfjs_ssr_crash_proposal_risco_principal",
+      "id": "specs_174_redesign_central_import_wizard_proposal_risco_principal",
       "community": 930,
-      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
+      "community_name": "Proposal: Redesign Central Import Wizard (174)",
       "norm_label": "risco principal"
     },
     {
-      "label": "173-fix-pdfjs-ssr-crash/spec-plan.md",
+      "label": "174-redesign-central-import-wizard/spec-plan.md",
       "file_type": "document",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/spec-plan.md",
+      "source_file": "specs/174-redesign-central-import-wizard/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_173_fix_pdfjs_ssr_crash_spec_plan",
-      "community": 1086,
-      "community_name": "Spec Plan: Fix PDF.js SSR Crash no Vite (173)",
-      "norm_label": "173-fix-pdfjs-ssr-crash/spec-plan.md"
+      "id": "specs_174_redesign_central_import_wizard_spec_plan",
+      "community": 1088,
+      "community_name": "Spec Plan: Redesign Central Import Wizard (174)",
+      "norm_label": "174-redesign-central-import-wizard/spec-plan.md"
     },
     {
-      "label": "Spec Plan: Fix PDF.js SSR Crash no Vite (173)",
+      "label": "Spec Plan: Redesign Central Import Wizard (174)",
       "file_type": "document",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/spec-plan.md",
+      "source_file": "specs/174-redesign-central-import-wizard/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_173_fix_pdfjs_ssr_crash_spec_plan_spec_plan_fix_pdf_js_ssr_crash_no_vite_173",
-      "community": 1086,
-      "community_name": "Spec Plan: Fix PDF.js SSR Crash no Vite (173)",
-      "norm_label": "spec plan: fix pdf.js ssr crash no vite (173)"
+      "id": "specs_174_redesign_central_import_wizard_spec_plan_spec_plan_redesign_central_import_wizard_174",
+      "community": 1088,
+      "community_name": "Spec Plan: Redesign Central Import Wizard (174)",
+      "norm_label": "spec plan: redesign central import wizard (174)"
     },
     {
       "label": "Tasks",
       "file_type": "document",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/spec-plan.md",
+      "source_file": "specs/174-redesign-central-import-wizard/spec-plan.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_173_fix_pdfjs_ssr_crash_spec_plan_tasks",
-      "community": 1086,
-      "community_name": "Spec Plan: Fix PDF.js SSR Crash no Vite (173)",
+      "id": "specs_174_redesign_central_import_wizard_spec_plan_tasks",
+      "community": 1088,
+      "community_name": "Spec Plan: Redesign Central Import Wizard (174)",
       "norm_label": "tasks"
     },
     {
@@ -53289,6 +53311,193 @@
       "norm_label": "tasks"
     },
     {
+      "label": "173-fix-pdfjs-ssr-crash/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_173_fix_pdfjs_ssr_crash_design",
+      "community": 1086,
+      "community_name": "Design: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "173-fix-pdfjs-ssr-crash/design.md"
+    },
+    {
+      "label": "Design: Fix PDF.js SSR Crash no Vite (173)",
+      "file_type": "document",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_173_fix_pdfjs_ssr_crash_design_design_fix_pdf_js_ssr_crash_no_vite_173",
+      "community": 1086,
+      "community_name": "Design: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "design: fix pdf.js ssr crash no vite (173)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_173_fix_pdfjs_ssr_crash_design_arquitetura_t\u00e9cnica",
+      "community": 1086,
+      "community_name": "Design: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Interfaces TypeScript",
+      "file_type": "document",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/design.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "specs_archive_173_fix_pdfjs_ssr_crash_design_interfaces_typescript",
+      "community": 1086,
+      "community_name": "Design: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "interfaces typescript"
+    },
+    {
+      "label": "Fluxo de UI",
+      "file_type": "document",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/design.md",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "specs_archive_173_fix_pdfjs_ssr_crash_design_fluxo_de_ui",
+      "community": 1086,
+      "community_name": "Design: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "fluxo de ui"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/design.md",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "specs_archive_173_fix_pdfjs_ssr_crash_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 1086,
+      "community_name": "Design: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "173-fix-pdfjs-ssr-crash/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_173_fix_pdfjs_ssr_crash_proposal",
+      "community": 962,
+      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "173-fix-pdfjs-ssr-crash/proposal.md"
+    },
+    {
+      "label": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
+      "file_type": "document",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
+      "community": 962,
+      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "proposal: fix pdf.js ssr crash no vite (173)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_173_fix_pdfjs_ssr_crash_proposal_problema",
+      "community": 962,
+      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "specs_archive_173_fix_pdfjs_ssr_crash_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 962,
+      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "specs_archive_173_fix_pdfjs_ssr_crash_proposal_contratos_de_dados",
+      "community": 962,
+      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "specs_archive_173_fix_pdfjs_ssr_crash_proposal_api_interface",
+      "community": 962,
+      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "specs_archive_173_fix_pdfjs_ssr_crash_proposal_features_existentes_impactadas",
+      "community": 962,
+      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "specs_archive_173_fix_pdfjs_ssr_crash_proposal_risco_principal",
+      "community": 962,
+      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "173-fix-pdfjs-ssr-crash/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_173_fix_pdfjs_ssr_crash_spec_plan",
+      "community": 1090,
+      "community_name": "Spec Plan: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "173-fix-pdfjs-ssr-crash/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Fix PDF.js SSR Crash no Vite (173)",
+      "file_type": "document",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_173_fix_pdfjs_ssr_crash_spec_plan_spec_plan_fix_pdf_js_ssr_crash_no_vite_173",
+      "community": 1090,
+      "community_name": "Spec Plan: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "spec plan: fix pdf.js ssr crash no vite (173)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_173_fix_pdfjs_ssr_crash_spec_plan_tasks",
+      "community": 1090,
+      "community_name": "Spec Plan: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "tasks"
+    },
+    {
       "label": "agente-fullbleed-layout-and-clean-tabs/design.md",
       "file_type": "document",
       "source_file": "specs/archive/agente-fullbleed-layout-and-clean-tabs/design.md",
@@ -66399,6 +66608,17 @@
       "community": 591,
       "community_name": "specs/global/features.md",
       "norm_label": "feature 172: refatoracao de ui/ux do wizard e json trail"
+    },
+    {
+      "label": "Feature 173: Fix PDF.js SSR Crash no Vite",
+      "file_type": "document",
+      "source_file": "specs/global/features.md",
+      "source_location": "L163",
+      "_origin": "ast",
+      "id": "specs_global_features_feature_173_fix_pdf_js_ssr_crash_no_vite",
+      "community": 591,
+      "community_name": "specs/global/features.md",
+      "norm_label": "feature 173: fix pdf.js ssr crash no vite"
     },
     {
       "label": "features_clean.md",
@@ -85036,7 +85256,7 @@
       "deferred": true,
       "confidence": "EXTRACTED",
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L226",
+      "source_location": "L258",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -90804,7 +91024,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L108",
+      "source_location": "L116",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard",
@@ -90826,7 +91046,18 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L89",
+      "source_location": "L40",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_importacoes_centralimportwizard",
+      "target": "src_components_importacoes_centralimportwizard_initial_stages",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/importacoes/CentralImportWizard.tsx",
+      "source_location": "L97",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard",
@@ -90837,7 +91068,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L42",
+      "source_location": "L50",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard",
@@ -91341,7 +91572,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L164",
+      "source_location": "L173",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -91354,7 +91585,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L165",
+      "source_location": "L174",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -91366,7 +91597,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L169",
+      "source_location": "L178",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -91378,7 +91609,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L282",
+      "source_location": "L314",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -91390,7 +91621,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L163",
+      "source_location": "L172",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -91402,7 +91633,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L168",
+      "source_location": "L177",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -91414,7 +91645,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L166",
+      "source_location": "L175",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -91426,7 +91657,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L167",
+      "source_location": "L176",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -91438,7 +91669,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L212",
+      "source_location": "L222",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -91450,7 +91681,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L215",
+      "source_location": "L225",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -91462,7 +91693,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/importacoes/CentralImportWizard.tsx",
-      "source_location": "L417",
+      "source_location": "L449",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_importacoes_centralimportwizard_centralimportwizard",
@@ -95889,18 +96120,6 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useCentralImport.ts",
-      "source_location": "L7",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_hooks_usecentralimport",
-      "target": "src_lib_parsers_mapametasparser_parsemapametaspdf",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -96014,7 +96233,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/hooks/useCentralImport.ts",
-      "source_location": "L146",
+      "source_location": "L147",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_hooks_usecentralimport_usecentralimport",
@@ -96033,12 +96252,25 @@
       "target": "src_lib_logger_tracelog"
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "deferred": true,
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useCentralImport.ts",
+      "source_location": "L138",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_hooks_usecentralimport_usecentralimport",
+      "target": "src_lib_parsers_mapametasparser",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/hooks/useCentralImport.ts",
-      "source_location": "L138",
+      "source_location": "L139",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_hooks_usecentralimport_usecentralimport",
@@ -96074,7 +96306,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/hooks/useCentralImport.ts",
-      "source_location": "L153",
+      "source_location": "L154",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_hooks_usecentralimport_usecentralimport",
@@ -110108,155 +110340,177 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
+      "source_file": "specs/174-redesign-central-import-wizard/design.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_173_fix_pdfjs_ssr_crash_design",
-      "target": "specs_173_fix_pdfjs_ssr_crash_design_design_fix_pdf_js_ssr_crash_no_vite_173",
+      "source": "specs_174_redesign_central_import_wizard_design",
+      "target": "specs_174_redesign_central_import_wizard_design_design_redesign_central_import_wizard_174",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
+      "source_file": "specs/174-redesign-central-import-wizard/design.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_173_fix_pdfjs_ssr_crash_design_design_fix_pdf_js_ssr_crash_no_vite_173",
-      "target": "specs_173_fix_pdfjs_ssr_crash_design_arquitetura_t\u00e9cnica",
+      "source": "specs_174_redesign_central_import_wizard_design_design_redesign_central_import_wizard_174",
+      "target": "specs_174_redesign_central_import_wizard_design_arquitetura_t\u00e9cnica",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
-      "source_location": "L17",
+      "source_file": "specs/174-redesign-central-import-wizard/design.md",
+      "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_173_fix_pdfjs_ssr_crash_design_design_fix_pdf_js_ssr_crash_no_vite_173",
-      "target": "specs_173_fix_pdfjs_ssr_crash_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "source": "specs_174_redesign_central_import_wizard_design_design_redesign_central_import_wizard_174",
+      "target": "specs_174_redesign_central_import_wizard_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
-      "source_location": "L14",
+      "source_file": "specs/174-redesign-central-import-wizard/design.md",
+      "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_173_fix_pdfjs_ssr_crash_design_design_fix_pdf_js_ssr_crash_no_vite_173",
-      "target": "specs_173_fix_pdfjs_ssr_crash_design_fluxo_de_ui",
+      "source": "specs_174_redesign_central_import_wizard_design_design_redesign_central_import_wizard_174",
+      "target": "specs_174_redesign_central_import_wizard_design_componentes_hooks_fun\u00e7\u00f5es",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
-      "source_location": "L11",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_173_fix_pdfjs_ssr_crash_design_design_fix_pdf_js_ssr_crash_no_vite_173",
-      "target": "specs_173_fix_pdfjs_ssr_crash_design_interfaces_typescript",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_173_fix_pdfjs_ssr_crash_proposal",
-      "target": "specs_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_file": "specs/174-redesign-central-import-wizard/design.md",
       "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
-      "target": "specs_173_fix_pdfjs_ssr_crash_proposal_api_interface",
+      "source": "specs_174_redesign_central_import_wizard_design_design_redesign_central_import_wizard_174",
+      "target": "specs_174_redesign_central_import_wizard_design_fluxo_de_ui_se_frontend",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
-      "source_location": "L12",
+      "source_file": "specs/174-redesign-central-import-wizard/design.md",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
-      "target": "specs_173_fix_pdfjs_ssr_crash_proposal_contratos_de_dados",
+      "source": "specs_174_redesign_central_import_wizard_design_design_redesign_central_import_wizard_174",
+      "target": "specs_174_redesign_central_import_wizard_design_infra_deploy",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
-      "source_location": "L18",
+      "source_file": "specs/174-redesign-central-import-wizard/design.md",
+      "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
-      "target": "specs_173_fix_pdfjs_ssr_crash_proposal_features_existentes_impactadas",
+      "source": "specs_174_redesign_central_import_wizard_design_design_redesign_central_import_wizard_174",
+      "target": "specs_174_redesign_central_import_wizard_design_interfaces_typescript",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
-      "target": "specs_173_fix_pdfjs_ssr_crash_proposal_problema",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
-      "source_location": "L21",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
-      "target": "specs_173_fix_pdfjs_ssr_crash_proposal_risco_principal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
-      "source_location": "L6",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
-      "target": "specs_173_fix_pdfjs_ssr_crash_proposal_solu\u00e7\u00e3o_proposta",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/spec-plan.md",
+      "source_file": "specs/174-redesign-central-import-wizard/proposal.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_173_fix_pdfjs_ssr_crash_spec_plan",
-      "target": "specs_173_fix_pdfjs_ssr_crash_spec_plan_spec_plan_fix_pdf_js_ssr_crash_no_vite_173",
+      "source": "specs_174_redesign_central_import_wizard_proposal",
+      "target": "specs_174_redesign_central_import_wizard_proposal_proposal_redesign_central_import_wizard_174",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/173-fix-pdfjs-ssr-crash/spec-plan.md",
+      "source_file": "specs/174-redesign-central-import-wizard/proposal.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_174_redesign_central_import_wizard_proposal_proposal_redesign_central_import_wizard_174",
+      "target": "specs_174_redesign_central_import_wizard_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/174-redesign-central-import-wizard/proposal.md",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_174_redesign_central_import_wizard_proposal_proposal_redesign_central_import_wizard_174",
+      "target": "specs_174_redesign_central_import_wizard_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/174-redesign-central-import-wizard/proposal.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_174_redesign_central_import_wizard_proposal_proposal_redesign_central_import_wizard_174",
+      "target": "specs_174_redesign_central_import_wizard_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/174-redesign-central-import-wizard/proposal.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_173_fix_pdfjs_ssr_crash_spec_plan_spec_plan_fix_pdf_js_ssr_crash_no_vite_173",
-      "target": "specs_173_fix_pdfjs_ssr_crash_spec_plan_tasks",
+      "source": "specs_174_redesign_central_import_wizard_proposal_proposal_redesign_central_import_wizard_174",
+      "target": "specs_174_redesign_central_import_wizard_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/174-redesign-central-import-wizard/proposal.md",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_174_redesign_central_import_wizard_proposal_proposal_redesign_central_import_wizard_174",
+      "target": "specs_174_redesign_central_import_wizard_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/174-redesign-central-import-wizard/proposal.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_174_redesign_central_import_wizard_proposal_proposal_redesign_central_import_wizard_174",
+      "target": "specs_174_redesign_central_import_wizard_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/174-redesign-central-import-wizard/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_174_redesign_central_import_wizard_spec_plan",
+      "target": "specs_174_redesign_central_import_wizard_spec_plan_spec_plan_redesign_central_import_wizard_174",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/174-redesign-central-import-wizard/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_174_redesign_central_import_wizard_spec_plan_spec_plan_redesign_central_import_wizard_174",
+      "target": "specs_174_redesign_central_import_wizard_spec_plan_tasks",
       "confidence_score": 1.0
     },
     {
@@ -128423,6 +128677,160 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_173_fix_pdfjs_ssr_crash_design",
+      "target": "specs_archive_173_fix_pdfjs_ssr_crash_design_design_fix_pdf_js_ssr_crash_no_vite_173",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_173_fix_pdfjs_ssr_crash_design_design_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_archive_173_fix_pdfjs_ssr_crash_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/design.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_173_fix_pdfjs_ssr_crash_design_design_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_archive_173_fix_pdfjs_ssr_crash_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/design.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_173_fix_pdfjs_ssr_crash_design_design_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_archive_173_fix_pdfjs_ssr_crash_design_fluxo_de_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/design.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_173_fix_pdfjs_ssr_crash_design_design_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_archive_173_fix_pdfjs_ssr_crash_design_interfaces_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_173_fix_pdfjs_ssr_crash_proposal",
+      "target": "specs_archive_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_archive_173_fix_pdfjs_ssr_crash_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_archive_173_fix_pdfjs_ssr_crash_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_archive_173_fix_pdfjs_ssr_crash_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_archive_173_fix_pdfjs_ssr_crash_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_archive_173_fix_pdfjs_ssr_crash_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_archive_173_fix_pdfjs_ssr_crash_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_173_fix_pdfjs_ssr_crash_spec_plan",
+      "target": "specs_archive_173_fix_pdfjs_ssr_crash_spec_plan_spec_plan_fix_pdf_js_ssr_crash_no_vite_173",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/173-fix-pdfjs-ssr-crash/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_173_fix_pdfjs_ssr_crash_spec_plan_spec_plan_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_archive_173_fix_pdfjs_ssr_crash_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "specs/archive/agente-fullbleed-layout-and-clean-tabs/design.md",
       "source_location": "L3",
       "weight": 1.0,
@@ -138769,6 +139177,17 @@
       "_origin": "ast",
       "source": "specs_global_features",
       "target": "specs_global_features_feature_172_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/global/features.md",
+      "source_location": "L163",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_global_features",
+      "target": "specs_global_features_feature_173_fix_pdf_js_ssr_crash_no_vite",
       "confidence_score": 1.0
     },
     {

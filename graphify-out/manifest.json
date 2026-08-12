@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1786547534.523817,
-    "ast_hash": "9c989eb2a77dfe37ba5639f48add0c78",
+    "mtime": 1786556061.229887,
+    "ast_hash": "3e560cc0a6a978884024720c05620810",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -1110,8 +1110,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useCentralImport.ts": {
-    "mtime": 1786143715.9426434,
-    "ast_hash": "216e0b06cdd72a5a799b629187e2cfe5",
+    "mtime": 1786548650.1009438,
+    "ast_hash": "13e4b7f636b1fa577d34aee4c4d3bae3",
     "semantic_hash": ""
   },
   "src/hooks/useConciliacao.ts": {
@@ -1550,8 +1550,8 @@
     "semantic_hash": ""
   },
   "vite.config.ts": {
-    "mtime": 1785512916.0,
-    "ast_hash": "b34d45c1ec804af27126cb2a0af9d295",
+    "mtime": 1786548683.0651653,
+    "ast_hash": "895cb08406ddb7a3671e7f7adb9c648e",
     "semantic_hash": ""
   },
   ".antigravity/rules.md": {
@@ -6502,6 +6502,36 @@
   "specs/archive/172-refactor-import-wizard/spec-plan.md": {
     "mtime": 1786546612.3540678,
     "ast_hash": "0491c0f33f815baccdd7c2a6d9c791a9",
+    "semantic_hash": ""
+  },
+  "specs/174-redesign-central-import-wizard/design.md": {
+    "mtime": 1786555983.4069493,
+    "ast_hash": "88916feb2bb92f2c694f31af64092472",
+    "semantic_hash": ""
+  },
+  "specs/174-redesign-central-import-wizard/proposal.md": {
+    "mtime": 1786555968.9612927,
+    "ast_hash": "c660f5da60968f0224dacf3d83356018",
+    "semantic_hash": ""
+  },
+  "specs/174-redesign-central-import-wizard/spec-plan.md": {
+    "mtime": 1786556197.8040233,
+    "ast_hash": "411198c15ea7a75bd51875ead8413d30",
+    "semantic_hash": ""
+  },
+  "specs/archive/173-fix-pdfjs-ssr-crash/design.md": {
+    "mtime": 1786548087.7298565,
+    "ast_hash": "4239ca7b386a3986e3980eb1935651e0",
+    "semantic_hash": ""
+  },
+  "specs/archive/173-fix-pdfjs-ssr-crash/proposal.md": {
+    "mtime": 1786548075.0314074,
+    "ast_hash": "33dd91e34ec8bbf2cadb1a3587c50837",
+    "semantic_hash": ""
+  },
+  "specs/archive/173-fix-pdfjs-ssr-crash/spec-plan.md": {
+    "mtime": 1786548099.9576378,
+    "ast_hash": "531e57a2734d1b9c012e905b38251474",
     "semantic_hash": ""
   }
 }

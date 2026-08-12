@@ -165,7 +165,7 @@
       "source_file": "append-memory.cjs",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "append_memory_cjs_append_memory",
+      "id": "append_memory",
       "community": 83,
       "community_name": "append-memory.cjs",
       "norm_label": "append-memory.cjs"
@@ -226,15 +226,15 @@
       "norm_label": "featurespath"
     },
     {
-      "label": "append_memory.py",
+      "label": "append_mem173.py",
       "file_type": "code",
-      "source_file": "append_memory.py",
+      "source_file": "append_mem173.py",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "append_memory_py_append_memory",
+      "id": "append_mem173",
       "community": 1090,
-      "community_name": "append_memory.py",
-      "norm_label": "append_memory.py"
+      "community_name": "append_mem173.py",
+      "norm_label": "append_mem173.py"
     },
     {
       "label": "apply-migration-115.cjs",
@@ -6112,8 +6112,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "package_dependencies_ai",
-      "community": 1089,
-      "community_name": "ai",
+      "community": 45,
+      "community_name": "dependencies",
       "norm_label": "ai"
     },
     {
@@ -6123,8 +6123,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "ai",
-      "community": 1089,
-      "community_name": "ai",
+      "community": 45,
+      "community_name": "dependencies",
       "norm_label": "ai"
     },
     {
@@ -6310,8 +6310,8 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "package_dependencies_lucide_react",
-      "community": 45,
-      "community_name": "dependencies",
+      "community": 1089,
+      "community_name": "lucide-react",
       "norm_label": "lucide-react"
     },
     {
@@ -6321,8 +6321,8 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "lucide_react",
-      "community": 45,
-      "community_name": "dependencies",
+      "community": 1089,
+      "community_name": "lucide-react",
       "norm_label": "lucide-react"
     },
     {
@@ -6948,8 +6948,8 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "package_devdependencies_eslint",
-      "community": 1,
-      "community_name": "devDependencies",
+      "community": 1088,
+      "community_name": "eslint",
       "norm_label": "eslint"
     },
     {
@@ -6959,8 +6959,8 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "eslint",
-      "community": 1,
-      "community_name": "devDependencies",
+      "community": 1088,
+      "community_name": "eslint",
       "norm_label": "eslint"
     },
     {
@@ -7168,8 +7168,8 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "package_devdependencies_vite",
-      "community": 677,
-      "community_name": "vite",
+      "community": 1,
+      "community_name": "devDependencies",
       "norm_label": "vite"
     },
     {
@@ -7179,8 +7179,8 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "vite",
-      "community": 677,
-      "community_name": "vite",
+      "community": 1,
+      "community_name": "devDependencies",
       "norm_label": "vite"
     },
     {
@@ -7457,17 +7457,6 @@
       "community": 547,
       "community_name": "read_xls.cjs",
       "norm_label": "xlsx"
-    },
-    {
-      "label": "refactor.py",
-      "file_type": "code",
-      "source_file": "refactor.py",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "refactor",
-      "community": 1091,
-      "community_name": "refactor.py",
-      "norm_label": "refactor.py"
     },
     {
       "label": "replace-useTransactions.cjs",
@@ -15234,7 +15223,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_mocks_importfiles",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "importfiles.ts"
     },
@@ -15245,7 +15234,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_mocks_importfiles_mockfiles",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "mockfiles"
     },
@@ -15280,7 +15269,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "agenteiaconfigpanel.tsx"
     },
     {
@@ -15291,7 +15280,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_model_options",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "model_options"
     },
     {
@@ -15302,7 +15291,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_provider_labels",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "provider_labels"
     },
     {
@@ -15314,7 +15303,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_agenteiaconfigpanel",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "agenteiaconfigpanel()"
     },
     {
@@ -15324,7 +15313,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_cacheagentepanel",
-      "community": 406,
+      "community": 49,
       "community_name": "Card.tsx",
       "norm_label": "cacheagentepanel.tsx"
     },
@@ -15336,7 +15325,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_cacheagentepanel_cacheagentepanel",
-      "community": 406,
+      "community": 49,
       "community_name": "Card.tsx",
       "norm_label": "cacheagentepanel()"
     },
@@ -15348,7 +15337,7 @@
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "configuracoespanel.tsx"
     },
     {
@@ -15360,7 +15349,7 @@
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel_configuracoespanel",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "configuracoespanel()"
     },
     {
@@ -15372,7 +15361,7 @@
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel_aisettingsform",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "aisettingsform()"
     },
     {
@@ -15382,7 +15371,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_custospanel",
-      "community": 406,
+      "community": 49,
       "community_name": "Card.tsx",
       "norm_label": "custospanel.tsx"
     },
@@ -15405,8 +15394,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_logsagentepanel",
-      "community": 1086,
-      "community_name": "LogsAgentePanel.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "logsagentepanel.tsx"
     },
     {
@@ -15417,8 +15406,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_logsagentepanel_logsagentepanel",
-      "community": 1086,
-      "community_name": "LogsAgentePanel.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "logsagentepanel()"
     },
     {
@@ -15429,7 +15418,7 @@
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "logsmotorpanel.tsx"
     },
     {
@@ -15441,7 +15430,7 @@
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel_logsmotorpanel",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "logsmotorpanel()"
     },
     {
@@ -15785,7 +15774,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "promptinput.tsx"
     },
     {
@@ -15798,7 +15787,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_attachment",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "attachment"
     },
     {
@@ -15810,7 +15799,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_morphingtext",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "morphingtext()"
     },
     {
@@ -15822,7 +15811,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_modelicon",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "modelicon()"
     },
     {
@@ -15834,7 +15823,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_arrowupicon",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "arrowupicon()"
     },
     {
@@ -15846,7 +15835,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_micicon",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "micicon()"
     },
     {
@@ -15858,7 +15847,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_stopicon",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "stopicon()"
     },
     {
@@ -15870,7 +15859,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_plusicon",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "plusicon()"
     },
     {
@@ -15882,7 +15871,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_closeicon",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "closeicon()"
     },
     {
@@ -15894,7 +15883,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_dynamicbarsicon",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "dynamicbarsicon()"
     },
     {
@@ -15906,7 +15895,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_attachmentthumb",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "attachmentthumb()"
     },
     {
@@ -15918,7 +15907,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_attachmentgallerymodal",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "attachmentgallerymodal()"
     },
     {
@@ -15931,7 +15920,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_promptinputprops",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "promptinputprops"
     },
     {
@@ -15942,7 +15931,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_promptinput",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "promptinput"
     },
     {
@@ -16441,7 +16430,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_cashflowchart",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "cashflowchart.tsx"
     },
     {
@@ -16453,7 +16442,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_cashflowchart_cashflowchart",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "cashflowchart()"
     },
     {
@@ -16464,7 +16453,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "evolucaomacrochart.tsx"
     },
     {
@@ -16477,7 +16466,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_evolucaomacrochartprops",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "evolucaomacrochartprops"
     },
     {
@@ -16489,7 +16478,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatcurrency",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -16501,7 +16490,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatdate",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "formatdate()"
     },
     {
@@ -16513,7 +16502,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatcompactcurrency",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "formatcompactcurrency()"
     },
     {
@@ -16525,7 +16514,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_evolucaomacrochart",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "evolucaomacrochart()"
     },
     {
@@ -16536,7 +16525,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "faturamentovscontaschart.tsx"
     },
     {
@@ -16549,7 +16538,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_faturamentovscontaschartprops",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "faturamentovscontaschartprops"
     },
     {
@@ -16561,7 +16550,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_formatcurrency",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -16573,7 +16562,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_shortenname",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "shortenname()"
     },
     {
@@ -16585,7 +16574,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_customyaxistick",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "customyaxistick()"
     },
     {
@@ -16597,7 +16586,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_customtooltip",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "customtooltip()"
     },
     {
@@ -16609,7 +16598,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_faturamentovscontaschart",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "faturamentovscontaschart()"
     },
     {
@@ -16619,8 +16608,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 49,
+      "community_name": "Card.tsx",
       "norm_label": "herobalance.tsx"
     },
     {
@@ -16631,8 +16620,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance_herobalance",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 49,
+      "community_name": "Card.tsx",
       "norm_label": "herobalance()"
     },
     {
@@ -16643,7 +16632,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "kpicard.tsx"
     },
     {
@@ -16656,7 +16645,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicolor",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "kpicolor"
     },
     {
@@ -16669,7 +16658,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicardprops",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "kpicardprops"
     },
     {
@@ -16680,7 +16669,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_color_map",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "color_map"
     },
     {
@@ -16692,7 +16681,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicard",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "kpicard()"
     },
     {
@@ -16702,8 +16691,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 49,
+      "community_name": "Card.tsx",
       "norm_label": "motorstatus.tsx"
     },
     {
@@ -16714,8 +16703,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus_motorstatus",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 49,
+      "community_name": "Card.tsx",
       "norm_label": "motorstatus()"
     },
     {
@@ -16725,8 +16714,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "newtransactiondialog.tsx"
     },
     {
@@ -16738,8 +16727,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialogprops",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "newtransactiondialogprops"
     },
     {
@@ -16750,8 +16739,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialog",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "newtransactiondialog()"
     },
     {
@@ -16761,8 +16750,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_rationale_17",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "todo: implement transaction creation"
     },
     {
@@ -16772,8 +16761,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "quickactions.tsx"
     },
     {
@@ -16783,8 +16772,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_container",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "container"
     },
     {
@@ -16794,8 +16783,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_item",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "item"
     },
     {
@@ -16806,8 +16795,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_quickactions",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "quickactions()"
     },
     {
@@ -16817,8 +16806,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_recentactivity",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "recentactivity.tsx"
     },
     {
@@ -16829,8 +16818,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_recentactivity_recentactivity",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "recentactivity()"
     },
     {
@@ -16900,7 +16889,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "storetabledashboard.tsx"
     },
     {
@@ -16913,7 +16902,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_storetabledashboardprops",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "storetabledashboardprops"
     },
     {
@@ -16925,7 +16914,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_fmt",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "fmt()"
     },
     {
@@ -16937,7 +16926,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_statusvariant",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "statusvariant()"
     },
     {
@@ -16949,7 +16938,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_statuslabel",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "statuslabel()"
     },
     {
@@ -16961,7 +16950,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_storetabledashboard",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "storetabledashboard()"
     },
     {
@@ -16971,7 +16960,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_agentrunnermodal",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentrunnermodal.tsx"
     },
@@ -16984,7 +16973,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_agentrunnermodal_agentrunnermodalprops",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentrunnermodalprops"
     },
@@ -16995,7 +16984,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_components_importacoes_agentrunnermodal_initial_stages",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "initial_stages"
     },
@@ -17007,7 +16996,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_agentrunnermodal_agentrunnermodal",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentrunnermodal()"
     },
@@ -17018,7 +17007,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentstageitem.tsx"
     },
@@ -17031,7 +17020,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem_substep",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "substep"
     },
@@ -17044,7 +17033,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem_agentstage",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentstage"
     },
@@ -17057,7 +17046,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem_agentstageitemprops",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentstageitemprops"
     },
@@ -17069,7 +17058,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem_agentstageitem",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentstageitem()"
     },
@@ -17080,7 +17069,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard",
-      "community": 406,
+      "community": 49,
       "community_name": "Card.tsx",
       "norm_label": "auditoriapassivowizard.tsx"
     },
@@ -17093,7 +17082,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard_auditoriapassivowizardprops",
-      "community": 406,
+      "community": 49,
       "community_name": "Card.tsx",
       "norm_label": "auditoriapassivowizardprops"
     },
@@ -17105,7 +17094,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard_auditoriapassivowizard",
-      "community": 406,
+      "community": 49,
       "community_name": "Card.tsx",
       "norm_label": "auditoriapassivowizard()"
     },
@@ -17163,7 +17152,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportwizard.tsx"
     },
@@ -17176,7 +17165,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_importlogentry",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "importlogentry"
     },
@@ -17188,7 +17177,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_useunifiedstoremapping",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "useunifiedstoremapping()"
     },
@@ -17200,7 +17189,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_stepindicator",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "stepindicator()"
     },
@@ -17212,7 +17201,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_centralimportwizard",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportwizard()"
     },
@@ -17295,7 +17284,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente",
-      "community": 406,
+      "community": 49,
       "community_name": "Card.tsx",
       "norm_label": "matchmanualospendente.tsx"
     },
@@ -17308,7 +17297,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente_matchmanualosprops",
-      "community": 406,
+      "community": 49,
       "community_name": "Card.tsx",
       "norm_label": "matchmanualosprops"
     },
@@ -17320,7 +17309,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente_matchmanualospendente",
-      "community": 406,
+      "community": 49,
       "community_name": "Card.tsx",
       "norm_label": "matchmanualospendente()"
     },
@@ -17332,7 +17321,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "wizardimportacao.tsx"
     },
     {
@@ -17345,7 +17334,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_wizardimportacaoprops",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "wizardimportacaoprops"
     },
     {
@@ -17357,7 +17346,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_usestoremapping",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usestoremapping()"
     },
     {
@@ -17369,7 +17358,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_generatesyntheticfitid",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "generatesyntheticfitid()"
     },
     {
@@ -17381,7 +17370,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_wizardimportacao",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "wizardimportacao()"
     },
     {
@@ -17393,7 +17382,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_stepindicator",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "stepindicator()"
     },
     {
@@ -17403,7 +17392,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_appshell",
-      "community": 1048,
+      "community": 773,
       "community_name": "AppShell.tsx",
       "norm_label": "appshell.tsx"
     },
@@ -17415,7 +17404,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_layout_appshell_appshell",
-      "community": 1048,
+      "community": 773,
       "community_name": "AppShell.tsx",
       "norm_label": "appshell()"
     },
@@ -17426,7 +17415,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_bottomnav",
-      "community": 1048,
+      "community": 773,
       "community_name": "AppShell.tsx",
       "norm_label": "bottomnav.tsx"
     },
@@ -17437,7 +17426,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_layout_bottomnav_navitems",
-      "community": 1048,
+      "community": 773,
       "community_name": "AppShell.tsx",
       "norm_label": "navitems"
     },
@@ -17449,7 +17438,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_layout_bottomnav_bottomnav",
-      "community": 1048,
+      "community": 773,
       "community_name": "AppShell.tsx",
       "norm_label": "bottomnav()"
     },
@@ -17460,7 +17449,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_sidebar",
-      "community": 1048,
+      "community": 773,
       "community_name": "AppShell.tsx",
       "norm_label": "sidebar.tsx"
     },
@@ -17471,7 +17460,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_layout_sidebar_navitems",
-      "community": 1048,
+      "community": 773,
       "community_name": "AppShell.tsx",
       "norm_label": "navitems"
     },
@@ -17483,7 +17472,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_layout_sidebar_sidebar",
-      "community": 1048,
+      "community": 773,
       "community_name": "AppShell.tsx",
       "norm_label": "sidebar()"
     },
@@ -17494,8 +17483,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_topbar",
-      "community": 1048,
-      "community_name": "AppShell.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "topbar.tsx"
     },
     {
@@ -17506,8 +17495,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_layout_topbar_topbar",
-      "community": 1048,
-      "community_name": "AppShell.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "topbar()"
     },
     {
@@ -17517,8 +17506,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_animatednumber",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 49,
+      "community_name": "Card.tsx",
       "norm_label": "animatednumber.tsx"
     },
     {
@@ -17530,8 +17519,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumberprops",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 49,
+      "community_name": "Card.tsx",
       "norm_label": "animatednumberprops"
     },
     {
@@ -17542,8 +17531,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumber",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 49,
+      "community_name": "Card.tsx",
       "norm_label": "animatednumber()"
     },
     {
@@ -17589,8 +17578,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_button",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "button.tsx"
     },
     {
@@ -17602,8 +17591,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_button_buttonprops",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "buttonprops"
     },
     {
@@ -17614,8 +17603,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_button_button",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "button()"
     },
     {
@@ -17625,7 +17614,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_card",
-      "community": 406,
+      "community": 49,
       "community_name": "Card.tsx",
       "norm_label": "card.tsx"
     },
@@ -17638,7 +17627,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_card_cardprops",
-      "community": 406,
+      "community": 49,
       "community_name": "Card.tsx",
       "norm_label": "cardprops"
     },
@@ -17650,7 +17639,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_card_card",
-      "community": 406,
+      "community": 49,
       "community_name": "Card.tsx",
       "norm_label": "card()"
     },
@@ -17696,8 +17685,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_loadingspinner",
-      "community": 406,
-      "community_name": "Card.tsx",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "loadingspinner.tsx"
     },
     {
@@ -17709,8 +17698,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_loadingspinner_loadingspinnerprops",
-      "community": 406,
-      "community_name": "Card.tsx",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "loadingspinnerprops"
     },
     {
@@ -17721,8 +17710,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_loadingspinner_loadingspinner",
-      "community": 406,
-      "community_name": "Card.tsx",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "loadingspinner()"
     },
     {
@@ -17732,8 +17721,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_modal",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "modal.tsx"
     },
     {
@@ -17745,8 +17734,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_modal_modalprops",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "modalprops"
     },
     {
@@ -17757,8 +17746,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_modal_modal",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "modal()"
     },
     {
@@ -17768,8 +17757,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_themetoggle",
-      "community": 1048,
-      "community_name": "AppShell.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "themetoggle.tsx"
     },
     {
@@ -17780,8 +17769,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_themetoggle_themetoggle",
-      "community": 1048,
-      "community_name": "AppShell.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "themetoggle()"
     },
     {
@@ -17889,7 +17878,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "useaisettings.ts"
     },
     {
@@ -17902,7 +17891,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_aisettings",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "aisettings"
     },
     {
@@ -17914,7 +17903,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_useaisettings",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "useaisettings()"
     },
     {
@@ -17926,7 +17915,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_usesaveaisettings",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usesaveaisettings()"
     },
     {
@@ -17983,7 +17972,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useauth",
-      "community": 1048,
+      "community": 773,
       "community_name": "AppShell.tsx",
       "norm_label": "useauth.ts"
     },
@@ -17994,7 +17983,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_hooks_useauth_listeners",
-      "community": 1048,
+      "community": 773,
       "community_name": "AppShell.tsx",
       "norm_label": "listeners"
     },
@@ -18006,7 +17995,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useauth_usesession",
-      "community": 1048,
+      "community": 773,
       "community_name": "AppShell.tsx",
       "norm_label": "usesession()"
     },
@@ -18030,7 +18019,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useauth_uselogout",
-      "community": 1048,
+      "community": 773,
       "community_name": "AppShell.tsx",
       "norm_label": "uselogout()"
     },
@@ -18090,7 +18079,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "usebackenddashboard.ts"
     },
     {
@@ -18103,7 +18092,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_storemetrics",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "storemetrics"
     },
     {
@@ -18116,7 +18105,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_dashboardmetrics",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "dashboardmetrics"
     },
     {
@@ -18128,7 +18117,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_usebackenddashboard",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "usebackenddashboard()"
     },
     {
@@ -18139,7 +18128,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usebotcredentials.ts"
     },
     {
@@ -18152,7 +18141,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_botcredentialrow",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "botcredentialrow"
     },
     {
@@ -18164,7 +18153,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usebotcredentials",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usebotcredentials()"
     },
     {
@@ -18176,7 +18165,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_useupdatebotcredential",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "useupdatebotcredential()"
     },
     {
@@ -18188,7 +18177,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usemarkcredentialvalid",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usemarkcredentialvalid()"
     },
     {
@@ -18199,7 +18188,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotlogs",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usebotlogs.ts"
     },
     {
@@ -18212,7 +18201,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_botauditlog",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "botauditlog"
     },
     {
@@ -18224,7 +18213,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotlogs",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usebotlogs()"
     },
     {
@@ -18236,7 +18225,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotauditlogs",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usebotauditlogs()"
     },
     {
@@ -18247,7 +18236,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotruns",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usebotruns.ts"
     },
     {
@@ -18259,7 +18248,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotruns_uselatestbotrun",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "uselatestbotrun()"
     },
     {
@@ -18271,7 +18260,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotruns_usebotrunhistory",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "usebotrunhistory()"
     },
     {
@@ -18281,7 +18270,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usecashregisters",
-      "community": 1073,
+      "community": 4,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "usecashregisters.ts"
     },
@@ -18293,7 +18282,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usecashregisters_usecashregisters",
-      "community": 1073,
+      "community": 4,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "usecashregisters()"
     },
@@ -18305,7 +18294,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usecashregisters_useclosecashregister",
-      "community": 1073,
+      "community": 4,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "useclosecashregister()"
     },
@@ -18317,7 +18306,7 @@
       "_origin": "ast",
       "id": "src_hooks_usecentralimport",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usecentralimport.ts"
     },
     {
@@ -18329,7 +18318,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usecentralimport_unifiedimportresult",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "unifiedimportresult"
     },
@@ -18343,7 +18332,7 @@
       "_origin": "ast",
       "id": "src_hooks_usecentralimport_maquininhaitem",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "maquininhaitem"
     },
     {
@@ -18355,7 +18344,7 @@
       "_origin": "ast",
       "id": "src_hooks_usecentralimport_usecentralimport",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usecentralimport()"
     },
     {
@@ -18439,7 +18428,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesaveimportedreport",
       "community": 42,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "recebiveis.tsx",
       "norm_label": "usesaveimportedreport()"
     },
     {
@@ -18450,7 +18439,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usestorehistory",
-      "community": 1073,
+      "community": 4,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "usestorehistory()"
     },
@@ -18717,7 +18706,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "usedashboardv2.ts"
     },
     {
@@ -18730,7 +18719,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_storemetrics",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "storemetrics"
     },
     {
@@ -18743,7 +18732,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_dashboardv2data",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "dashboardv2data"
     },
     {
@@ -18755,7 +18744,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_usedashboardv2",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "usedashboardv2()"
     },
     {
@@ -18837,8 +18826,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "useimportlogs.ts"
     },
     {
@@ -18850,8 +18839,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlog",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "importlog"
     },
     {
@@ -18863,8 +18852,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlogfilters",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "importlogfilters"
     },
     {
@@ -18875,8 +18864,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogs",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "useimportlogs()"
     },
     {
@@ -18887,8 +18876,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogdetail",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "useimportlogdetail()"
     },
     {
@@ -18899,7 +18888,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor",
       "community": 42,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "recebiveis.tsx",
       "norm_label": "useimportprocessor.ts"
     },
     {
@@ -18912,7 +18901,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_parsedos",
       "community": 42,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "recebiveis.tsx",
       "norm_label": "parsedos"
     },
     {
@@ -18924,7 +18913,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_parsedreceivable",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "parsedreceivable"
     },
@@ -18937,7 +18926,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_savepatioosandreceivables",
       "community": 42,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "recebiveis.tsx",
       "norm_label": "savepatioosandreceivables()"
     },
     {
@@ -18949,7 +18938,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useprocessimporteddata",
       "community": 42,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "recebiveis.tsx",
       "norm_label": "useprocessimporteddata()"
     },
     {
@@ -18962,7 +18951,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_groupedimportlog",
       "community": 42,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "recebiveis.tsx",
       "norm_label": "groupedimportlog"
     },
     {
@@ -18974,7 +18963,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useimportshistory",
       "community": 42,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "recebiveis.tsx",
       "norm_label": "useimportshistory()"
     },
     {
@@ -18986,7 +18975,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_usedeleteimport",
       "community": 42,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "recebiveis.tsx",
       "norm_label": "usedeleteimport()"
     },
     {
@@ -18998,7 +18987,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useclearalldata",
       "community": 42,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "recebiveis.tsx",
       "norm_label": "useclearalldata()"
     },
     {
@@ -19008,8 +18997,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usemcplogs",
-      "community": 1086,
-      "community_name": "LogsAgentePanel.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "usemcplogs.ts"
     },
     {
@@ -19021,8 +19010,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usemcplogs_mcplog",
-      "community": 1086,
-      "community_name": "LogsAgentePanel.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "mcplog"
     },
     {
@@ -19033,8 +19022,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usemcplogs_usemcplogs",
-      "community": 1086,
-      "community_name": "LogsAgentePanel.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "usemcplogs()"
     },
     {
@@ -19044,7 +19033,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useoscache",
-      "community": 406,
+      "community": 49,
       "community_name": "Card.tsx",
       "norm_label": "useoscache.ts"
     },
@@ -19057,7 +19046,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useoscache_oficinaoscache",
-      "community": 406,
+      "community": 49,
       "community_name": "Card.tsx",
       "norm_label": "oficinaoscache"
     },
@@ -19069,7 +19058,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useoscache_useoscache",
-      "community": 406,
+      "community": 49,
       "community_name": "Card.tsx",
       "norm_label": "useoscache()"
     },
@@ -19081,7 +19070,7 @@
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "useosimportprocessor.ts"
     },
     {
@@ -19094,7 +19083,7 @@
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor_osimportresult",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "osimportresult"
     },
     {
@@ -19106,7 +19095,7 @@
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor_processosfiles",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "processosfiles()"
     },
     {
@@ -19116,8 +19105,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usepatio",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "usepatio.ts"
     },
     {
@@ -19128,8 +19117,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usepatio_usepatioos",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "usepatioos()"
     },
     {
@@ -19140,8 +19129,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usepatio_useupdatepatioos",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "useupdatepatioos()"
     },
     {
@@ -19152,8 +19141,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usepatio_usepatiosummary",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "usepatiosummary()"
     },
     {
@@ -19262,8 +19251,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_userecebiveis",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 42,
+      "community_name": "recebiveis.tsx",
       "norm_label": "userecebiveis.ts"
     },
     {
@@ -19274,8 +19263,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_userecebiveis",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 42,
+      "community_name": "recebiveis.tsx",
       "norm_label": "userecebiveis()"
     },
     {
@@ -19286,8 +19275,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_usemarkreceived",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 42,
+      "community_name": "recebiveis.tsx",
       "norm_label": "usemarkreceived()"
     },
     {
@@ -19298,8 +19287,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_usereceivablessummary",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 42,
+      "community_name": "recebiveis.tsx",
       "norm_label": "usereceivablessummary()"
     },
     {
@@ -19393,7 +19382,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usestores_usestorefinancialstats",
-      "community": 1073,
+      "community": 4,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "usestorefinancialstats()"
     },
@@ -19405,7 +19394,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usetransactions.ts"
     },
     {
@@ -19417,7 +19406,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactions",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usetransactions()"
     },
     {
@@ -19429,7 +19418,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactionsbystore",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usetransactionsbystore()"
     },
     {
@@ -19440,8 +19429,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedashboardsummary",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 49,
+      "community_name": "Card.tsx",
       "norm_label": "usedashboardsummary()"
     },
     {
@@ -19453,7 +19442,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usecashflow",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usecashflow()"
     },
     {
@@ -19465,7 +19454,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useextrato",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "useextrato()"
     },
     {
@@ -19501,7 +19490,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useweeklyrevenuetrend",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "useweeklyrevenuetrend()"
     },
     {
@@ -19512,7 +19501,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usecreateimportbatch",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "usecreateimportbatch()"
     },
@@ -19524,7 +19513,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usebulkinsertconciliationmatches",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "usebulkinsertconciliationmatches()"
     },
@@ -19536,8 +19525,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usebulkinserttransactions",
-      "community": 1073,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 54,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usebulkinserttransactions()"
     },
     {
@@ -19549,7 +19538,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedailysystembalance",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usedailysystembalance()"
     },
     {
@@ -19561,7 +19550,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_uselatestbankbalance",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "uselatestbankbalance()"
     },
     {
@@ -19573,7 +19562,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedailybankbalance",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usedailybankbalance()"
     },
     {
@@ -19583,7 +19572,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usetriplematch",
-      "community": 1073,
+      "community": 4,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "usetriplematch.ts"
     },
@@ -19595,7 +19584,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetriplematch_usetriplematch",
-      "community": 1073,
+      "community": 4,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "usetriplematch()"
     },
@@ -19606,8 +19595,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher",
-      "community": 680,
-      "community_name": "src/server.ts",
+      "community": 677,
+      "community_name": "start.ts",
       "norm_label": "auth-attacher.ts"
     },
     {
@@ -19617,8 +19606,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher_attachsupabaseauth",
-      "community": 680,
-      "community_name": "src/server.ts",
+      "community": 677,
+      "community_name": "start.ts",
       "norm_label": "attachsupabaseauth"
     },
     {
@@ -20480,7 +20469,7 @@
       "_origin": "ast",
       "id": "src_lib_logger",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "logger.ts"
     },
     {
@@ -20493,7 +20482,7 @@
       "_origin": "ast",
       "id": "src_lib_logger_loglevel",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "loglevel"
     },
     {
@@ -20506,7 +20495,7 @@
       "_origin": "ast",
       "id": "src_lib_logger_logstage",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "logstage"
     },
     {
@@ -20518,7 +20507,7 @@
       "_origin": "ast",
       "id": "src_lib_logger_tracelog",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "tracelog()"
     },
     {
@@ -20530,7 +20519,7 @@
       "_origin": "ast",
       "id": "src_lib_logger_generatesessionid",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "generatesessionid()"
     },
     {
@@ -20892,7 +20881,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_centralimportmanager",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportmanager.ts"
     },
@@ -20905,7 +20894,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_parsers_centralimportmanager_centralimportresults",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportresults"
     },
@@ -20917,7 +20906,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_centralimportmanager_parsecentralimports",
-      "community": 42,
+      "community": 54,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "parsecentralimports()"
     },
@@ -20965,7 +20954,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_hashutils",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "hashutils.ts"
     },
     {
@@ -20977,7 +20966,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_hashutils_generatedeterministichash",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "generatedeterministichash()"
     },
     {
@@ -21011,45 +21000,45 @@
       "_origin": "ast",
       "id": "src_lib_parsers_mapametasparser",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "mapametasparser.ts"
     },
     {
       "label": "MapaMetasStore",
       "file_type": "code",
       "source_file": "src/lib/parsers/mapaMetasParser.ts",
-      "source_location": "L6",
+      "source_location": "L3",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_parsers_mapametasparser_mapametasstore",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "mapametasstore"
     },
     {
       "label": "MapaMetasResult",
       "file_type": "code",
       "source_file": "src/lib/parsers/mapaMetasParser.ts",
-      "source_location": "L12",
+      "source_location": "L9",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_parsers_mapametasparser_mapametasresult",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "mapametasresult"
     },
     {
       "label": "parseMapaMetasPDF()",
       "file_type": "code",
       "source_file": "src/lib/parsers/mapaMetasParser.ts",
-      "source_location": "L20",
+      "source_location": "L17",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_mapametasparser_parsemapametaspdf",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "parsemapametaspdf()"
     },
     {
@@ -21158,7 +21147,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_numberutils",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "numberutils.ts"
     },
     {
@@ -21170,7 +21159,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_numberutils_extractnumber",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "extractnumber()"
     },
     {
@@ -21181,7 +21170,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "parsers/ofxparser.ts"
     },
     {
@@ -21194,7 +21183,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser_ofxtransaction",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "ofxtransaction"
     },
     {
@@ -21207,7 +21196,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser_ofxparseresult",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "ofxparseresult"
     },
     {
@@ -21219,7 +21208,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser_extractdocument",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "extractdocument()"
     },
     {
@@ -21231,7 +21220,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser_parseofxfile",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "parseofxfile()"
     },
     {
@@ -21242,7 +21231,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_redeparser",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "redeparser.ts"
     },
     {
@@ -21255,7 +21244,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_redeparser_redetransaction",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "redetransaction"
     },
     {
@@ -21268,7 +21257,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_redeparser_rederesult",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "rederesult"
     },
     {
@@ -21280,7 +21269,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_redeparser_parseredefile",
       "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "parseredefile()"
     },
     {
@@ -21412,7 +21401,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_transactionrow",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "transactionrow"
     },
     {
@@ -21424,7 +21413,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_cashregisterrow",
-      "community": 1073,
+      "community": 4,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "cashregisterrow"
     },
@@ -21437,8 +21426,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_patioosrow",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "patioosrow"
     },
     {
@@ -21450,8 +21439,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_receivablerow",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 42,
+      "community_name": "recebiveis.tsx",
       "norm_label": "receivablerow"
     },
     {
@@ -21464,7 +21453,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_botrunrow",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "botrunrow"
     },
     {
@@ -21500,8 +21489,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_utils",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 42,
+      "community_name": "recebiveis.tsx",
       "norm_label": "utils.ts"
     },
     {
@@ -21512,8 +21501,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_utils_cn",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "cn()"
     },
     {
@@ -21524,8 +21513,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_utils_getdefaultdate",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 42,
+      "community_name": "recebiveis.tsx",
       "norm_label": "getdefaultdate()"
     },
     {
@@ -21536,8 +21525,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_utils_formatcurrency",
-      "community": 34,
-      "community_name": "useConciliacao.ts",
+      "community": 42,
+      "community_name": "recebiveis.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -21867,8 +21856,8 @@
       "source_location": "L460",
       "_origin": "ast",
       "id": "src_routetree_gen_routetree",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 677,
+      "community_name": "start.ts",
       "norm_label": "routetree"
     },
     {
@@ -21891,8 +21880,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routetree_gen_register",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 677,
+      "community_name": "start.ts",
       "norm_label": "register"
     },
     {
@@ -21902,8 +21891,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_router",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 677,
+      "community_name": "start.ts",
       "norm_label": "router.tsx"
     },
     {
@@ -21914,8 +21903,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_router_getrouter",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 677,
+      "community_name": "start.ts",
       "norm_label": "getrouter()"
     },
     {
@@ -22183,8 +22172,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_route",
-      "community": 1017,
-      "community_name": "FileRoutesByPath",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "route"
     },
     {
@@ -22277,7 +22266,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_configuracoes",
-      "community": 1048,
+      "community": 773,
       "community_name": "AppShell.tsx",
       "norm_label": "configuracoes.tsx"
     },
@@ -22300,7 +22289,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_configuracoes_configuracoespage",
-      "community": 1048,
+      "community": 773,
       "community_name": "AppShell.tsx",
       "norm_label": "configuracoespage()"
     },
@@ -22346,7 +22335,7 @@
       "_origin": "ast",
       "id": "src_routes_historico",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "historico.tsx"
     },
     {
@@ -22369,7 +22358,7 @@
       "_origin": "ast",
       "id": "src_routes_historico_getdefaultperiod",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "getdefaultperiod()"
     },
     {
@@ -22381,7 +22370,7 @@
       "_origin": "ast",
       "id": "src_routes_historico_formatdate",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "formatdate()"
     },
     {
@@ -22393,7 +22382,7 @@
       "_origin": "ast",
       "id": "src_routes_historico_geticonformethod",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "geticonformethod()"
     },
     {
@@ -22405,7 +22394,7 @@
       "_origin": "ast",
       "id": "src_routes_historico_historicopage",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "historicopage()"
     },
     {
@@ -22474,7 +22463,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes",
       "community": 42,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "recebiveis.tsx",
       "norm_label": "importacoes.tsx"
     },
     {
@@ -22497,7 +22486,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes_formatdate",
       "community": 42,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "recebiveis.tsx",
       "norm_label": "formatdate()"
     },
     {
@@ -22509,7 +22498,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes_importacoespage",
       "community": 42,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "recebiveis.tsx",
       "norm_label": "importacoespage()"
     },
     {
@@ -22519,8 +22508,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_importar_os",
-      "community": 42,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "importar-os.tsx"
     },
     {
@@ -22542,8 +22531,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importar_os_useosstoremapping",
-      "community": 42,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "useosstoremapping()"
     },
     {
@@ -22554,8 +22543,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importar_os_stepindicator",
-      "community": 42,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "stepindicator()"
     },
     {
@@ -22566,8 +22555,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importar_os_importaroswizard",
-      "community": 42,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "importaroswizard()"
     },
     {
@@ -22578,7 +22567,7 @@
       "_origin": "ast",
       "id": "src_routes_index",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "index.tsx"
     },
     {
@@ -22601,7 +22590,7 @@
       "_origin": "ast",
       "id": "src_routes_index_dashboardpage",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "dashboardpage()"
     },
     {
@@ -22645,8 +22634,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_logs_agente",
-      "community": 1086,
-      "community_name": "LogsAgentePanel.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "logs.agente.tsx"
     },
     {
@@ -22656,8 +22645,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_routes_logs_agente_route",
-      "community": 1086,
-      "community_name": "LogsAgentePanel.tsx",
+      "community": 1017,
+      "community_name": "FileRoutesByPath",
       "norm_label": "route"
     },
     {
@@ -22668,8 +22657,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_logs_agente_logsagentepage",
-      "community": 1086,
-      "community_name": "LogsAgentePanel.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "logsagentepage()"
     },
     {
@@ -22680,7 +22669,7 @@
       "_origin": "ast",
       "id": "src_routes_logs_motor",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "logs.motor.tsx"
     },
     {
@@ -22690,8 +22679,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_routes_logs_motor_route",
-      "community": 406,
-      "community_name": "Card.tsx",
+      "community": 1017,
+      "community_name": "FileRoutesByPath",
       "norm_label": "route"
     },
     {
@@ -22703,7 +22692,7 @@
       "_origin": "ast",
       "id": "src_routes_logs_motor_logsmotorpage",
       "community": 406,
-      "community_name": "Card.tsx",
+      "community_name": "ConfiguracoesPanel.tsx",
       "norm_label": "logsmotorpage()"
     },
     {
@@ -22713,7 +22702,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_loja_lojaid",
-      "community": 1073,
+      "community": 4,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "loja.$lojaid.tsx"
     },
@@ -22736,7 +22725,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_getdefaultperiod",
-      "community": 1073,
+      "community": 4,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "getdefaultperiod()"
     },
@@ -22748,7 +22737,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_formatdate",
-      "community": 1073,
+      "community": 4,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "formatdate()"
     },
@@ -22760,7 +22749,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_geticonformethod",
-      "community": 1073,
+      "community": 4,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "geticonformethod()"
     },
@@ -22772,7 +22761,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_lojadashboardpage",
-      "community": 1073,
+      "community": 4,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "lojadashboardpage()"
     },
@@ -22817,8 +22806,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_patio",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "patio.tsx"
     },
     {
@@ -22830,8 +22819,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_patio_historychange",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "historychange"
     },
     {
@@ -22843,8 +22832,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_patio_historylog",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "historylog"
     },
     {
@@ -22867,8 +22856,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_patio_filtertab",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "filtertab"
     },
     {
@@ -22879,8 +22868,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_patio_getoseffectivevalues",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "getoseffectivevalues()"
     },
     {
@@ -22891,8 +22880,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_patio_patiopage",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "patiopage()"
     },
     {
@@ -22903,8 +22892,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_patio_tabbtn",
-      "community": 930,
-      "community_name": "patio.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "tabbtn()"
     },
     {
@@ -23008,8 +22997,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_recebiveis",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 42,
+      "community_name": "recebiveis.tsx",
       "norm_label": "recebiveis.tsx"
     },
     {
@@ -23032,8 +23021,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_recebiveis_filtertab",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 42,
+      "community_name": "recebiveis.tsx",
       "norm_label": "filtertab"
     },
     {
@@ -23044,8 +23033,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_recebiveis_recebiveispage",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 42,
+      "community_name": "recebiveis.tsx",
       "norm_label": "recebiveispage()"
     },
     {
@@ -23056,8 +23045,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_recebiveis_tabbtn",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 42,
+      "community_name": "recebiveis.tsx",
       "norm_label": "tabbtn()"
     },
     {
@@ -23151,8 +23140,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_start",
-      "community": 680,
-      "community_name": "src/server.ts",
+      "community": 677,
+      "community_name": "start.ts",
       "norm_label": "start.ts"
     },
     {
@@ -23162,8 +23151,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_start_errormiddleware",
-      "community": 680,
-      "community_name": "src/server.ts",
+      "community": 677,
+      "community_name": "start.ts",
       "norm_label": "errormiddleware"
     },
     {
@@ -23173,8 +23162,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_start_startinstance",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 677,
+      "community_name": "start.ts",
       "norm_label": "startinstance"
     },
     {
@@ -30398,190 +30387,190 @@
       "norm_label": "tasks"
     },
     {
-      "label": "172-refactor-import-wizard/design.md",
+      "label": "173-fix-pdfjs-ssr-crash/design.md",
       "file_type": "document",
-      "source_file": "specs/172-refactor-import-wizard/design.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_172_refactor_import_wizard_design",
-      "community": 1087,
-      "community_name": "Design: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
-      "norm_label": "172-refactor-import-wizard/design.md"
+      "id": "specs_173_fix_pdfjs_ssr_crash_design",
+      "community": 1073,
+      "community_name": "Design: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "173-fix-pdfjs-ssr-crash/design.md"
     },
     {
-      "label": "Design: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "label": "Design: Fix PDF.js SSR Crash no Vite (173)",
       "file_type": "document",
-      "source_file": "specs/172-refactor-import-wizard/design.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_172_refactor_import_wizard_design_design_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
-      "community": 1087,
-      "community_name": "Design: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
-      "norm_label": "design: refatoracao de ui/ux do wizard e json trail (172)"
+      "id": "specs_173_fix_pdfjs_ssr_crash_design_design_fix_pdf_js_ssr_crash_no_vite_173",
+      "community": 1073,
+      "community_name": "Design: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "design: fix pdf.js ssr crash no vite (173)"
     },
     {
       "label": "Arquitetura T\u00e9cnica",
       "file_type": "document",
-      "source_file": "specs/172-refactor-import-wizard/design.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_172_refactor_import_wizard_design_arquitetura_t\u00e9cnica",
-      "community": 1087,
-      "community_name": "Design: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "id": "specs_173_fix_pdfjs_ssr_crash_design_arquitetura_t\u00e9cnica",
+      "community": 1073,
+      "community_name": "Design: Fix PDF.js SSR Crash no Vite (173)",
       "norm_label": "arquitetura tecnica"
     },
     {
-      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "label": "Interfaces TypeScript",
       "file_type": "document",
-      "source_file": "specs/172-refactor-import-wizard/design.md",
-      "source_location": "L9",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
+      "source_location": "L11",
       "_origin": "ast",
-      "id": "specs_172_refactor_import_wizard_design_componentes_hooks_fun\u00e7\u00f5es",
-      "community": 1087,
-      "community_name": "Design: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
-      "norm_label": "componentes / hooks / funcoes"
+      "id": "specs_173_fix_pdfjs_ssr_crash_design_interfaces_typescript",
+      "community": 1073,
+      "community_name": "Design: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "interfaces typescript"
     },
     {
-      "label": "Fluxo de UI (Frontend)",
+      "label": "Fluxo de UI",
       "file_type": "document",
-      "source_file": "specs/172-refactor-import-wizard/design.md",
-      "source_location": "L18",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
+      "source_location": "L14",
       "_origin": "ast",
-      "id": "specs_172_refactor_import_wizard_design_fluxo_de_ui_frontend",
-      "community": 1087,
-      "community_name": "Design: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
-      "norm_label": "fluxo de ui (frontend)"
+      "id": "specs_173_fix_pdfjs_ssr_crash_design_fluxo_de_ui",
+      "community": 1073,
+      "community_name": "Design: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "fluxo de ui"
     },
     {
       "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
       "file_type": "document",
-      "source_file": "specs/172-refactor-import-wizard/design.md",
-      "source_location": "L25",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
+      "source_location": "L17",
       "_origin": "ast",
-      "id": "specs_172_refactor_import_wizard_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
-      "community": 1087,
-      "community_name": "Design: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "id": "specs_173_fix_pdfjs_ssr_crash_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 1073,
+      "community_name": "Design: Fix PDF.js SSR Crash no Vite (173)",
       "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
     },
     {
-      "label": "172-refactor-import-wizard/proposal.md",
+      "label": "173-fix-pdfjs-ssr-crash/proposal.md",
       "file_type": "document",
-      "source_file": "specs/172-refactor-import-wizard/proposal.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_172_refactor_import_wizard_proposal",
-      "community": 1085,
-      "community_name": "Proposal: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
-      "norm_label": "172-refactor-import-wizard/proposal.md"
+      "id": "specs_173_fix_pdfjs_ssr_crash_proposal",
+      "community": 930,
+      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "173-fix-pdfjs-ssr-crash/proposal.md"
     },
     {
-      "label": "Proposal: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "label": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
       "file_type": "document",
-      "source_file": "specs/172-refactor-import-wizard/proposal.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_172_refactor_import_wizard_proposal_proposal_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
-      "community": 1085,
-      "community_name": "Proposal: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
-      "norm_label": "proposal: refatoracao de ui/ux do wizard e json trail (172)"
+      "id": "specs_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
+      "community": 930,
+      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "proposal: fix pdf.js ssr crash no vite (173)"
     },
     {
       "label": "Problema",
       "file_type": "document",
-      "source_file": "specs/172-refactor-import-wizard/proposal.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_172_refactor_import_wizard_proposal_problema",
-      "community": 1085,
-      "community_name": "Proposal: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "id": "specs_173_fix_pdfjs_ssr_crash_proposal_problema",
+      "community": 930,
+      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
       "norm_label": "problema"
     },
     {
       "label": "Solu\u00e7\u00e3o Proposta",
       "file_type": "document",
-      "source_file": "specs/172-refactor-import-wizard/proposal.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
       "source_location": "L6",
       "_origin": "ast",
-      "id": "specs_172_refactor_import_wizard_proposal_solu\u00e7\u00e3o_proposta",
-      "community": 1085,
-      "community_name": "Proposal: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "id": "specs_173_fix_pdfjs_ssr_crash_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 930,
+      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
       "norm_label": "solucao proposta"
     },
     {
       "label": "Contratos de Dados",
       "file_type": "document",
-      "source_file": "specs/172-refactor-import-wizard/proposal.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
       "source_location": "L12",
       "_origin": "ast",
-      "id": "specs_172_refactor_import_wizard_proposal_contratos_de_dados",
-      "community": 1085,
-      "community_name": "Proposal: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "id": "specs_173_fix_pdfjs_ssr_crash_proposal_contratos_de_dados",
+      "community": 930,
+      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
       "norm_label": "contratos de dados"
     },
     {
       "label": "API / Interface",
       "file_type": "document",
-      "source_file": "specs/172-refactor-import-wizard/proposal.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
       "source_location": "L15",
       "_origin": "ast",
-      "id": "specs_172_refactor_import_wizard_proposal_api_interface",
-      "community": 1085,
-      "community_name": "Proposal: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "id": "specs_173_fix_pdfjs_ssr_crash_proposal_api_interface",
+      "community": 930,
+      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
       "norm_label": "api / interface"
     },
     {
       "label": "Features Existentes Impactadas",
       "file_type": "document",
-      "source_file": "specs/172-refactor-import-wizard/proposal.md",
-      "source_location": "L19",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_location": "L18",
       "_origin": "ast",
-      "id": "specs_172_refactor_import_wizard_proposal_features_existentes_impactadas",
-      "community": 1085,
-      "community_name": "Proposal: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "id": "specs_173_fix_pdfjs_ssr_crash_proposal_features_existentes_impactadas",
+      "community": 930,
+      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
       "norm_label": "features existentes impactadas"
     },
     {
       "label": "Risco Principal",
       "file_type": "document",
-      "source_file": "specs/172-refactor-import-wizard/proposal.md",
-      "source_location": "L23",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_location": "L21",
       "_origin": "ast",
-      "id": "specs_172_refactor_import_wizard_proposal_risco_principal",
-      "community": 1085,
-      "community_name": "Proposal: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "id": "specs_173_fix_pdfjs_ssr_crash_proposal_risco_principal",
+      "community": 930,
+      "community_name": "Proposal: Fix PDF.js SSR Crash no Vite (173)",
       "norm_label": "risco principal"
     },
     {
-      "label": "172-refactor-import-wizard/spec-plan.md",
+      "label": "173-fix-pdfjs-ssr-crash/spec-plan.md",
       "file_type": "document",
-      "source_file": "specs/172-refactor-import-wizard/spec-plan.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_172_refactor_import_wizard_spec_plan",
-      "community": 1088,
-      "community_name": "Spec Plan: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
-      "norm_label": "172-refactor-import-wizard/spec-plan.md"
+      "id": "specs_173_fix_pdfjs_ssr_crash_spec_plan",
+      "community": 1086,
+      "community_name": "Spec Plan: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "173-fix-pdfjs-ssr-crash/spec-plan.md"
     },
     {
-      "label": "Spec Plan: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "label": "Spec Plan: Fix PDF.js SSR Crash no Vite (173)",
       "file_type": "document",
-      "source_file": "specs/172-refactor-import-wizard/spec-plan.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_172_refactor_import_wizard_spec_plan_spec_plan_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
-      "community": 1088,
-      "community_name": "Spec Plan: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
-      "norm_label": "spec plan: refatoracao de ui/ux do wizard e json trail (172)"
+      "id": "specs_173_fix_pdfjs_ssr_crash_spec_plan_spec_plan_fix_pdf_js_ssr_crash_no_vite_173",
+      "community": 1086,
+      "community_name": "Spec Plan: Fix PDF.js SSR Crash no Vite (173)",
+      "norm_label": "spec plan: fix pdf.js ssr crash no vite (173)"
     },
     {
       "label": "Tasks",
       "file_type": "document",
-      "source_file": "specs/172-refactor-import-wizard/spec-plan.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/spec-plan.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_172_refactor_import_wizard_spec_plan_tasks",
-      "community": 1088,
-      "community_name": "Spec Plan: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "id": "specs_173_fix_pdfjs_ssr_crash_spec_plan_tasks",
+      "community": 1086,
+      "community_name": "Spec Plan: Fix PDF.js SSR Crash no Vite (173)",
       "norm_label": "tasks"
     },
     {
@@ -53113,6 +53102,193 @@
       "norm_label": "fases de implementacao"
     },
     {
+      "label": "172-refactor-import-wizard/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/172-refactor-import-wizard/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_172_refactor_import_wizard_design",
+      "community": 1085,
+      "community_name": "Design: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "norm_label": "172-refactor-import-wizard/design.md"
+    },
+    {
+      "label": "Design: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "file_type": "document",
+      "source_file": "specs/archive/172-refactor-import-wizard/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_172_refactor_import_wizard_design_design_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
+      "community": 1085,
+      "community_name": "Design: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "norm_label": "design: refatoracao de ui/ux do wizard e json trail (172)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/archive/172-refactor-import-wizard/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_172_refactor_import_wizard_design_arquitetura_t\u00e9cnica",
+      "community": 1085,
+      "community_name": "Design: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/archive/172-refactor-import-wizard/design.md",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "specs_archive_172_refactor_import_wizard_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 1085,
+      "community_name": "Design: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Fluxo de UI (Frontend)",
+      "file_type": "document",
+      "source_file": "specs/archive/172-refactor-import-wizard/design.md",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "specs_archive_172_refactor_import_wizard_design_fluxo_de_ui_frontend",
+      "community": 1085,
+      "community_name": "Design: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "norm_label": "fluxo de ui (frontend)"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/archive/172-refactor-import-wizard/design.md",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "specs_archive_172_refactor_import_wizard_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 1085,
+      "community_name": "Design: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "172-refactor-import-wizard/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/172-refactor-import-wizard/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_172_refactor_import_wizard_proposal",
+      "community": 1048,
+      "community_name": "Proposal: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "norm_label": "172-refactor-import-wizard/proposal.md"
+    },
+    {
+      "label": "Proposal: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "file_type": "document",
+      "source_file": "specs/archive/172-refactor-import-wizard/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_172_refactor_import_wizard_proposal_proposal_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
+      "community": 1048,
+      "community_name": "Proposal: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "norm_label": "proposal: refatoracao de ui/ux do wizard e json trail (172)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/archive/172-refactor-import-wizard/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_172_refactor_import_wizard_proposal_problema",
+      "community": 1048,
+      "community_name": "Proposal: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/archive/172-refactor-import-wizard/proposal.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "specs_archive_172_refactor_import_wizard_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 1048,
+      "community_name": "Proposal: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/172-refactor-import-wizard/proposal.md",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "specs_archive_172_refactor_import_wizard_proposal_contratos_de_dados",
+      "community": 1048,
+      "community_name": "Proposal: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/archive/172-refactor-import-wizard/proposal.md",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "specs_archive_172_refactor_import_wizard_proposal_api_interface",
+      "community": 1048,
+      "community_name": "Proposal: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/archive/172-refactor-import-wizard/proposal.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "specs_archive_172_refactor_import_wizard_proposal_features_existentes_impactadas",
+      "community": 1048,
+      "community_name": "Proposal: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/archive/172-refactor-import-wizard/proposal.md",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "specs_archive_172_refactor_import_wizard_proposal_risco_principal",
+      "community": 1048,
+      "community_name": "Proposal: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "172-refactor-import-wizard/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/172-refactor-import-wizard/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_172_refactor_import_wizard_spec_plan",
+      "community": 1087,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "norm_label": "172-refactor-import-wizard/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "file_type": "document",
+      "source_file": "specs/archive/172-refactor-import-wizard/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_172_refactor_import_wizard_spec_plan_spec_plan_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
+      "community": 1087,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "norm_label": "spec plan: refatoracao de ui/ux do wizard e json trail (172)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/172-refactor-import-wizard/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_172_refactor_import_wizard_spec_plan_tasks",
+      "community": 1087,
+      "community_name": "Spec Plan: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail (172)",
+      "norm_label": "tasks"
+    },
+    {
       "label": "agente-fullbleed-layout-and-clean-tabs/design.md",
       "file_type": "document",
       "source_file": "specs/archive/agente-fullbleed-layout-and-clean-tabs/design.md",
@@ -66214,6 +66390,17 @@
       "norm_label": "[171-os-mixed-cell-parser]"
     },
     {
+      "label": "Feature 172: Refatora\u00e7\u00e3o de UI/UX do Wizard e JSON Trail",
+      "file_type": "document",
+      "source_file": "specs/global/features.md",
+      "source_location": "L158",
+      "_origin": "ast",
+      "id": "specs_global_features_feature_172_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail",
+      "community": 591,
+      "community_name": "specs/global/features.md",
+      "norm_label": "feature 172: refatoracao de ui/ux do wizard e json trail"
+    },
+    {
       "label": "features_clean.md",
       "file_type": "document",
       "source_file": "specs/global/features_clean.md",
@@ -67564,7 +67751,7 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "append_memory_cjs_append_memory",
+      "source": "append_memory",
       "target": "append_memory_featurespath",
       "confidence_score": 1.0
     },
@@ -67575,7 +67762,7 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "append_memory_cjs_append_memory",
+      "source": "append_memory",
       "target": "append_memory_fs",
       "confidence_score": 1.0
     },
@@ -67586,7 +67773,7 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "append_memory_cjs_append_memory",
+      "source": "append_memory",
       "target": "append_memory_path",
       "confidence_score": 1.0
     },
@@ -67597,7 +67784,7 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "append_memory_cjs_append_memory",
+      "source": "append_memory",
       "target": "append_memory_supabasepath",
       "confidence_score": 1.0
     },
@@ -67608,7 +67795,7 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "append_memory_cjs_append_memory",
+      "source": "append_memory",
       "target": "append_memory_uipath",
       "confidence_score": 1.0
     },
@@ -100985,7 +101172,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/mapaMetasParser.ts",
-      "source_location": "L12",
+      "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_mapametasparser",
@@ -100996,7 +101183,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/mapaMetasParser.ts",
-      "source_location": "L6",
+      "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_mapametasparser",
@@ -101007,7 +101194,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/mapaMetasParser.ts",
-      "source_location": "L20",
+      "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_mapametasparser",
@@ -109921,155 +110108,155 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/172-refactor-import-wizard/design.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_172_refactor_import_wizard_design",
-      "target": "specs_172_refactor_import_wizard_design_design_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
+      "source": "specs_173_fix_pdfjs_ssr_crash_design",
+      "target": "specs_173_fix_pdfjs_ssr_crash_design_design_fix_pdf_js_ssr_crash_no_vite_173",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/172-refactor-import-wizard/design.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_172_refactor_import_wizard_design_design_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
-      "target": "specs_172_refactor_import_wizard_design_arquitetura_t\u00e9cnica",
+      "source": "specs_173_fix_pdfjs_ssr_crash_design_design_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_173_fix_pdfjs_ssr_crash_design_arquitetura_t\u00e9cnica",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/172-refactor-import-wizard/design.md",
-      "source_location": "L25",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
+      "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_172_refactor_import_wizard_design_design_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
-      "target": "specs_172_refactor_import_wizard_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "source": "specs_173_fix_pdfjs_ssr_crash_design_design_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_173_fix_pdfjs_ssr_crash_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/172-refactor-import-wizard/design.md",
-      "source_location": "L9",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_172_refactor_import_wizard_design_design_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
-      "target": "specs_172_refactor_import_wizard_design_componentes_hooks_fun\u00e7\u00f5es",
+      "source": "specs_173_fix_pdfjs_ssr_crash_design_design_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_173_fix_pdfjs_ssr_crash_design_fluxo_de_ui",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/172-refactor-import-wizard/design.md",
-      "source_location": "L18",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/design.md",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_172_refactor_import_wizard_design_design_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
-      "target": "specs_172_refactor_import_wizard_design_fluxo_de_ui_frontend",
+      "source": "specs_173_fix_pdfjs_ssr_crash_design_design_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_173_fix_pdfjs_ssr_crash_design_interfaces_typescript",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/172-refactor-import-wizard/proposal.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_172_refactor_import_wizard_proposal",
-      "target": "specs_172_refactor_import_wizard_proposal_proposal_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
+      "source": "specs_173_fix_pdfjs_ssr_crash_proposal",
+      "target": "specs_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/172-refactor-import-wizard/proposal.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
       "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_172_refactor_import_wizard_proposal_proposal_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
-      "target": "specs_172_refactor_import_wizard_proposal_api_interface",
+      "source": "specs_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_173_fix_pdfjs_ssr_crash_proposal_api_interface",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/172-refactor-import-wizard/proposal.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
       "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_172_refactor_import_wizard_proposal_proposal_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
-      "target": "specs_172_refactor_import_wizard_proposal_contratos_de_dados",
+      "source": "specs_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_173_fix_pdfjs_ssr_crash_proposal_contratos_de_dados",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/172-refactor-import-wizard/proposal.md",
-      "source_location": "L19",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_172_refactor_import_wizard_proposal_proposal_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
-      "target": "specs_172_refactor_import_wizard_proposal_features_existentes_impactadas",
+      "source": "specs_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_173_fix_pdfjs_ssr_crash_proposal_features_existentes_impactadas",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/172-refactor-import-wizard/proposal.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_172_refactor_import_wizard_proposal_proposal_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
-      "target": "specs_172_refactor_import_wizard_proposal_problema",
+      "source": "specs_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_173_fix_pdfjs_ssr_crash_proposal_problema",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/172-refactor-import-wizard/proposal.md",
-      "source_location": "L23",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
+      "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_172_refactor_import_wizard_proposal_proposal_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
-      "target": "specs_172_refactor_import_wizard_proposal_risco_principal",
+      "source": "specs_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_173_fix_pdfjs_ssr_crash_proposal_risco_principal",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/172-refactor-import-wizard/proposal.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/proposal.md",
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_172_refactor_import_wizard_proposal_proposal_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
-      "target": "specs_172_refactor_import_wizard_proposal_solu\u00e7\u00e3o_proposta",
+      "source": "specs_173_fix_pdfjs_ssr_crash_proposal_proposal_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_173_fix_pdfjs_ssr_crash_proposal_solu\u00e7\u00e3o_proposta",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/172-refactor-import-wizard/spec-plan.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/spec-plan.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_172_refactor_import_wizard_spec_plan",
-      "target": "specs_172_refactor_import_wizard_spec_plan_spec_plan_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
+      "source": "specs_173_fix_pdfjs_ssr_crash_spec_plan",
+      "target": "specs_173_fix_pdfjs_ssr_crash_spec_plan_spec_plan_fix_pdf_js_ssr_crash_no_vite_173",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/172-refactor-import-wizard/spec-plan.md",
+      "source_file": "specs/173-fix-pdfjs-ssr-crash/spec-plan.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_172_refactor_import_wizard_spec_plan_spec_plan_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
-      "target": "specs_172_refactor_import_wizard_spec_plan_tasks",
+      "source": "specs_173_fix_pdfjs_ssr_crash_spec_plan_spec_plan_fix_pdf_js_ssr_crash_no_vite_173",
+      "target": "specs_173_fix_pdfjs_ssr_crash_spec_plan_tasks",
       "confidence_score": 1.0
     },
     {
@@ -128082,6 +128269,160 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "specs/archive/172-refactor-import-wizard/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_172_refactor_import_wizard_design",
+      "target": "specs_archive_172_refactor_import_wizard_design_design_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/172-refactor-import-wizard/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_172_refactor_import_wizard_design_design_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
+      "target": "specs_archive_172_refactor_import_wizard_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/172-refactor-import-wizard/design.md",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_172_refactor_import_wizard_design_design_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
+      "target": "specs_archive_172_refactor_import_wizard_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/172-refactor-import-wizard/design.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_172_refactor_import_wizard_design_design_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
+      "target": "specs_archive_172_refactor_import_wizard_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/172-refactor-import-wizard/design.md",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_172_refactor_import_wizard_design_design_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
+      "target": "specs_archive_172_refactor_import_wizard_design_fluxo_de_ui_frontend",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/172-refactor-import-wizard/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_172_refactor_import_wizard_proposal",
+      "target": "specs_archive_172_refactor_import_wizard_proposal_proposal_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/172-refactor-import-wizard/proposal.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_172_refactor_import_wizard_proposal_proposal_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
+      "target": "specs_archive_172_refactor_import_wizard_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/172-refactor-import-wizard/proposal.md",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_172_refactor_import_wizard_proposal_proposal_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
+      "target": "specs_archive_172_refactor_import_wizard_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/172-refactor-import-wizard/proposal.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_172_refactor_import_wizard_proposal_proposal_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
+      "target": "specs_archive_172_refactor_import_wizard_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/172-refactor-import-wizard/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_172_refactor_import_wizard_proposal_proposal_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
+      "target": "specs_archive_172_refactor_import_wizard_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/172-refactor-import-wizard/proposal.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_172_refactor_import_wizard_proposal_proposal_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
+      "target": "specs_archive_172_refactor_import_wizard_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/172-refactor-import-wizard/proposal.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_172_refactor_import_wizard_proposal_proposal_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
+      "target": "specs_archive_172_refactor_import_wizard_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/172-refactor-import-wizard/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_172_refactor_import_wizard_spec_plan",
+      "target": "specs_archive_172_refactor_import_wizard_spec_plan_spec_plan_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/172-refactor-import-wizard/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_172_refactor_import_wizard_spec_plan_spec_plan_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail_172",
+      "target": "specs_archive_172_refactor_import_wizard_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "specs/archive/agente-fullbleed-layout-and-clean-tabs/design.md",
       "source_location": "L3",
       "weight": 1.0,
@@ -138417,6 +138758,17 @@
       "_origin": "ast",
       "source": "specs_global_features",
       "target": "specs_global_features_bugfix_ofx_import_fk",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/global/features.md",
+      "source_location": "L158",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_global_features",
+      "target": "specs_global_features_feature_172_refatora\u00e7\u00e3o_de_ui_ux_do_wizard_e_json_trail",
       "confidence_score": 1.0
     },
     {
