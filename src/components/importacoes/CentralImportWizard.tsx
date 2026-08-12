@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
 import { Card } from '@/components/ui/Card';
+import { AgentStage, AgentStageItem } from './AgentStageItem';
+import { Download } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { AgentRunnerModal } from './AgentRunnerModal';
 import { MatchManualOsPendente } from './MatchManualOsPendente';
@@ -153,7 +155,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const [manualAReceber, setManualAReceber] = useState<number>(0);
 
   // Terminal logs state
-  const [importLogs, setImportLogs] = useState<ImportLogEntry[]>([]);
+  const [importStages, setImportStages] = useState<AgentStage[]>(INITIAL_STAGES);
+  const [auditTrailUrl, setAuditTrailUrl] = useState<string | null>(null);
   const [saveFinished, setSaveFinished] = useState(false);
   const logsEndRef = useRef<HTMLDivElement>(null);
 
@@ -166,6 +169,18 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const saveSnapshot = useSaveDailySnapshot();
   const [isSaving, setIsSaving] = useState(false);
   const navigate = useNavigate();
+
+  
+  const updateStage = (stageIdx: number, status: 'pending'|'running'|'success'|'error', subLabel?: string) => {
+    setImportStages(prev => {
+      const newStages = [...prev];
+      newStages[stageIdx].status = status;
+      if (subLabel) {
+        newStages[stageIdx].subSteps.push({ id: crypto.randomUUID(), label: subLabel, status });
+      }
+      return newStages;
+    });
+  };
 
   const addLog = (message: string, type: 'info' | 'success' | 'warning' | 'error' = 'info') => {
     const timestamp = new Date().toLocaleTimeString('pt-BR');
@@ -202,8 +217,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
     });
 
     setPendingFiles(acceptedFiles);
-    setIsAgentModalOpen(true);
-  }, []);
+    await processFiles(acceptedFiles);
+  }, [processFiles]);
 
 
   const handleDevAutoLoad = async () => {
@@ -244,11 +259,12 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const handleConfirm = async () => {
     setIsSaving(true);
     setStep(4);
-    setImportLogs([]);
+    setImportStages(JSON.parse(JSON.stringify(INITIAL_STAGES)));
+    setAuditTrailUrl(null);
     setSaveFinished(false);
 
     try {
-      addLog("ðŸš€ Iniciando gravação do lote de conciliação...", "info");
+      updateStage(0, 'running', 'Iniciando gravação...');
       await new Promise(r => setTimeout(r, 200));
 
       const txsToInsert: any[] = [];
@@ -257,7 +273,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
       // 1. OSs do Pátio e Recebíveis
       const osCountTotal = results.osFiles.filter(r => r.success).reduce((acc, curr) => acc + curr.osArray.length, 0);
-      addLog(`ðŸ“¦ Registrando OSs do Pátio (${osCountTotal} ordens identificadas)...`, "info");
+      updateStage(0, 'running', `Registrando OSs (${osCountTotal} ordens)...`);
       
       const osPromises = results.osFiles.filter(r => r.success).map(osResult => {
         let store_id: string | null = mapping[osResult.storeAlias];
@@ -290,7 +306,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
       // Rede
       const redeCount = results.redeResults.filter(r => r.success).reduce((acc, curr) => acc + curr.transactions.length, 0);
-      addLog(`ðŸ’³ Processando relatórios da Rede (${redeCount} transações da maquininha)...`, "info");
+      updateStage(1, 'running', `Processando Rede (${redeCount} transações)...`);
 
       const redeByStore: Record<string, any[]> = {};
       results.redeResults.filter(r => r.success).forEach(r => {
@@ -316,10 +332,11 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       });
 
       await Promise.all([...osPromises, ...maqPromises, ...redePromises]);
-      addLog("âœ… OSs e Recebíveis salvos nas tabelas de origem!", "success");
+      updateStage(0, 'success', 'OSs e Recebíveis salvos!');
+      updateStage(1, 'success', 'Maquininhas processadas!');
       
       // Snapshot Na Loja OS
-      addLog(`ðŸ“¸ Gerando snapshot de OSs ativas no pátio...`, "info");
+      updateStage(4, 'running', 'Gerando snapshot de OSs...');
       const allStoreIds = new Set<string>();
       Object.values(mapping).forEach(v => {
         if (v && v !== 'GLOBAL') allStoreIds.add(v);
@@ -825,6 +842,22 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       }
 
       addLog("âœ… TODAS AS ETAPAS FORAM CONCLUÁ DAS COM SUCESSO!", "success");
+      
+      // Generate JSON Trail
+      const auditData = {
+        timestamp: new Date().toISOString(),
+        targetDate,
+        mapping,
+        manualInputs: { manualDinheiroMp, manualAReceber },
+        results,
+        insertedData: {
+          txsToInsert,
+          matchesToInsert
+        }
+      };
+      const blob = new Blob([JSON.stringify(auditData, null, 2)], { type: 'application/json' });
+      setAuditTrailUrl(URL.createObjectURL(blob));
+
       setSaveFinished(true);
 
     } catch(e: any) {
@@ -918,53 +951,55 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             {/* Esquerda: Upload Manual (Planilhas) */}
             <div 
               {...getRootProps()} 
-              className={`border-2 border-dashed rounded-3xl p-10 flex flex-col items-center justify-center cursor-pointer transition-all duration-300
+              className={`group relative overflow-hidden border-2 border-dashed rounded-3xl p-10 flex flex-col items-center justify-center cursor-pointer transition-all duration-500
                 ${isDragActive 
-                  ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/5 scale-[1.02]' 
-                  : 'border-[var(--border-strong)] hover:border-[var(--color-primary)]/50 hover:bg-[var(--bg-surface-hover)]'
+                  ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/10 scale-[1.02] shadow-[0_0_30px_rgba(var(--color-primary-rgb),0.15)]' 
+                  : 'border-[var(--border-strong)] bg-gradient-to-b from-[var(--bg-surface)] to-[var(--bg-canvas)] hover:border-[var(--color-primary)]/60 hover:shadow-2xl'
                 }
               `}
             >
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--color-primary)_0%,transparent_70%)] opacity-0 group-hover:opacity-[0.03] transition-opacity duration-700 pointer-events-none"></div>
               <input {...getInputProps()} />
-              <div className="flex gap-4 mb-6">
-                 <div className="bg-[var(--color-primary)]/20 p-4 rounded-full shadow-xl border border-[var(--border-subtle)] text-[var(--color-primary)]">
-                   <Database size={32} />
+              <div className="flex gap-4 mb-8 relative z-10">
+                 <div className="bg-gradient-to-br from-[var(--color-primary)]/20 to-transparent p-5 rounded-2xl shadow-lg border border-[var(--color-primary)]/20 text-[var(--color-primary)] group-hover:-translate-y-1 group-hover:scale-105 transition-all duration-300 backdrop-blur-sm">
+                   <Database size={32} strokeWidth={1.5} />
                  </div>
-                 <div className="bg-[var(--color-accent-teal)]/20 p-4 rounded-full shadow-xl border border-[var(--border-subtle)] text-[var(--color-accent-teal)]">
-                   <UploadCloud size={32} />
+                 <div className="bg-gradient-to-br from-[var(--color-accent-teal)]/20 to-transparent p-5 rounded-2xl shadow-lg border border-[var(--color-accent-teal)]/20 text-[var(--color-accent-teal)] group-hover:translate-y-1 group-hover:scale-105 transition-all duration-300 backdrop-blur-sm">
+                   <UploadCloud size={32} strokeWidth={1.5} />
                  </div>
               </div>
-              <h3 className="font-display font-semibold text-xl mb-2 text-center">
-                {isDragActive ? 'Solte os arquivos aqui' : 'Planilhas Manuais (Fallback)'}
+              <h3 className="font-display font-semibold text-2xl mb-3 text-center text-[var(--text-primary)] relative z-10 tracking-tight">
+                {isDragActive ? 'Solte os arquivos para processar' : 'Processamento Local de Planilhas'}
               </h3>
-              <p className="text-[var(--text-tertiary)] text-sm text-center max-w-sm">
-                Arraste Planilhas OS, Rede e Extratos OFX (.xls, .xlsx, .ofx) caso precise importar manualmente.
+              <p className="text-[var(--text-secondary)] text-sm text-center max-w-md leading-relaxed relative z-10">
+                Arraste arquivos de <span className="text-[var(--text-primary)] font-medium">OS do Pátio</span>, <span className="text-[var(--text-primary)] font-medium">Vendas Rede</span> e <span className="text-[var(--text-primary)] font-medium">Extratos OFX</span>. O sistema fará o parsing e a conciliação automática.
               </p>
             </div>
             
             {/* Direita: Implantação de Saldo (Marco Zero) */}
             {!hasDailySnapshots && (
-              <div className="border border-[var(--border-subtle)] bg-[var(--bg-surface)] rounded-3xl p-10 flex flex-col items-center justify-center transition-all duration-300 hover:border-[var(--color-primary)]/50 relative overflow-hidden">
-                <div className="absolute top-0 right-0 bg-[var(--color-accent-warning)]/20 text-[var(--color-accent-warning)] text-xs px-3 py-1 font-bold rounded-bl-xl border-l border-b border-[var(--color-accent-warning)]/20 flex items-center gap-1">
-                  <AlertCircle size={12} /> AVISO
+              <div className="group border border-[var(--border-subtle)] bg-gradient-to-br from-[var(--bg-surface)] to-[var(--bg-canvas)] rounded-3xl p-10 flex flex-col items-center justify-center transition-all duration-500 hover:border-[var(--color-primary)]/40 hover:shadow-2xl relative overflow-hidden">
+                <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.03)_50%,transparent_75%,transparent_100%)] bg-[length:250%_250%] opacity-0 group-hover:opacity-100 group-hover:animate-[shimmer_3s_infinite] pointer-events-none"></div>
+                <div className="absolute top-0 right-0 bg-[var(--color-accent-warning)]/10 text-[var(--color-accent-warning)] text-xs px-4 py-1.5 font-bold rounded-bl-2xl border-l border-b border-[var(--color-accent-warning)]/20 flex items-center gap-1.5 shadow-sm">
+                  <AlertCircle size={14} /> AVISO
                 </div>
-                <div className="bg-[var(--color-accent-warning)]/10 p-5 rounded-full shadow-xl border border-[var(--color-accent-warning)]/20 text-[var(--color-accent-warning)] mb-6">
-                  <Database />
+                <div className="bg-gradient-to-br from-[var(--color-accent-warning)]/20 to-[var(--color-accent-warning)]/5 p-6 rounded-2xl shadow-lg border border-[var(--color-accent-warning)]/30 text-[var(--color-accent-warning)] mb-8 group-hover:scale-110 transition-transform duration-500">
+                  <Database size={32} strokeWidth={1.5} />
                 </div>
-                <h3 className="font-display font-semibold text-xl mb-2 text-center text-[var(--text-primary)]">
+                <h3 className="font-display font-semibold text-2xl mb-3 text-center text-[var(--text-primary)] tracking-tight relative z-10">
                   Implantação de Saldo Inicial
                 </h3>
-                <p className="text-[var(--text-secondary)] text-sm text-center max-w-sm mb-6">
+                <p className="text-[var(--text-secondary)] text-sm text-center max-w-sm mb-8 leading-relaxed relative z-10">
                   Inicie o Estoque de OSs Pendentes carregando a planilha antiga de conciliação diária. Faça isso apenas uma vez por loja.
                 </p>
 
-                <div className="mt-4 w-full">
+                <div className="mt-auto w-full relative z-10">
                   <Button 
                     onClick={() => setShowMarcoZero(true)}
                     variant="outline"
-                    className="w-full h-12 border-[var(--color-accent-warning)] text-[var(--color-accent-warning)] hover:bg-[var(--color-accent-warning)]/10"
+                    className="w-full h-12 border-[var(--border-strong)] text-[var(--text-primary)] hover:border-[var(--color-accent-warning)] hover:text-[var(--color-accent-warning)] hover:bg-[var(--color-accent-warning)]/10 transition-all duration-300"
                   >
-                    <FileSpreadsheet className="mr-2" size={16}/> Abrir Marco Zero
+                    <FileSpreadsheet className="mr-2" size={18} strokeWidth={2}/> Abrir Marco Zero
                   </Button>
                 </div>
               </div>
@@ -1608,6 +1643,14 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                   </div>
 
                   <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-2">
+                    {auditTrailUrl && (
+                      <a href={auditTrailUrl} download={`auditoria-conciliacao-${new Date().getTime()}.json`}>
+                        <Button variant="secondary" className="w-full sm:w-auto text-xs px-4 py-2.5 bg-[var(--bg-canvas)] border border-[var(--border-strong)]">
+                          <Download size={16} className="mr-2" />
+                          Baixar Auditoria (JSON)
+                        </Button>
+                      </a>
+                    )}
                     <Button
                       onClick={onCancel}
                       variant="secondary"

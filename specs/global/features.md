@@ -152,3 +152,7 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
   - Modificado: src/hooks/useImportProcessor.ts (Corrigidas tipagens omissas de ParsedOS e ParsedReceivable).  
   - As formas de pagamento e valores lidos da planilha de OS agora resistem a c�lulas preenchidas de forma mista por usu�rios humanos (ex: \" PIX R$ 1.5,"00\ no campo de valor).  
  
+
+## Feature 172: Refatoração de UI/UX do Wizard e JSON Trail
+- **Componentes Alterados:** `CentralImportWizard` (Dropzone unificado visualmente sem abrir janela paralela, design modernizado, botão de download JSON e console de log visual animado embutido), `AgentRunnerModal` (adaptado apenas para fluxos em nuvem reais).
+- **Tipos/Hooks Adicionados:** Adicionado state mapping para `AgentStageItem` e Blob payload generator para `auditTrailUrl`.
