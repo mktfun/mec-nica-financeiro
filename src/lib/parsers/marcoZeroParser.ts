@@ -1,6 +1,6 @@
 import * as XLSX from 'xlsx';
 import { parseISO, isValid, parse } from 'date-fns';
-import { normalizeRedeStoreName } from './storeMapping';
+import { normalizeRedeStoreName, REDE_STORE_MAPPING } from './storeMapping';
 
 export interface MarcoZeroExtraction {
   storeName: string;
@@ -23,25 +23,56 @@ const cleanNumber = (val: any): number => {
 // Helpers para parse de data
 const parseDate = (val: any): string | null => {
   if (!val) return null;
-  // Se já for objeto Date do JS
   if (val instanceof Date) return val.toISOString();
   
-  // Se for número de série do Excel (ex: 45123)
   if (typeof val === 'number') {
-    // Excel base date is 1899-12-30
     const date = new Date(Math.round((val - 25569) * 86400 * 1000));
     return isValid(date) ? date.toISOString() : null;
   }
 
-  // Se for string no formato pt-BR
   const str = String(val).trim();
   const dateStr = parse(str, 'dd/MM/yyyy', new Date());
   if (isValid(dateStr)) return dateStr.toISOString();
   
-  // Se for string ISO
   const isoDate = parseISO(str);
   if (isValid(isoDate)) return isoDate.toISOString();
 
+  return null;
+};
+
+const isKnownStore = (rawName: string): string | null => {
+  if (!rawName) return null;
+  const norm = rawName.trim().toLowerCase();
+  
+  // Ignora palavras comuns de rótulos de saldo
+  if (
+    norm.length < 3 || 
+    norm.includes('saldo') || 
+    norm.includes('limite') || 
+    norm.includes('cartão') || 
+    norm.includes('cartao') || 
+    norm.includes('dinheiro') ||
+    norm.includes('investimento') ||
+    norm.includes('taxa')
+  ) return null;
+  
+  if (REDE_STORE_MAPPING[norm]) return REDE_STORE_MAPPING[norm];
+  
+  const val = Object.values(REDE_STORE_MAPPING).find(v => v.toLowerCase() === norm);
+  if (val) return val;
+  
+  // Fuzzy match estrito
+  if (norm.includes('santo andr')) return REDE_STORE_MAPPING['mpsantoandre'];
+  if (norm.includes('kennedy')) return REDE_STORE_MAPPING['mpkennedy'];
+  if (norm.includes('jabaquara')) return REDE_STORE_MAPPING['mpjabaquara'];
+  if (norm.includes('maua') || norm.includes('mauá')) return REDE_STORE_MAPPING['reidooleomaua'];
+  if (norm.includes('piraporinha')) return REDE_STORE_MAPPING['mppiraporinha'];
+  if (norm.includes('planalto')) return REDE_STORE_MAPPING['mpplanalto'];
+  if (norm.includes('rudge')) return REDE_STORE_MAPPING['mprudge'];
+  if (norm.includes('beretta')) return REDE_STORE_MAPPING['mpjorgeberetta'];
+  if (norm.includes('módulo') || norm.includes('modulo')) return REDE_STORE_MAPPING['reidomodulo'];
+  if (norm.includes('pedro') || norm === 'dp') return REDE_STORE_MAPPING['mpdompedro1'];
+  
   return null;
 };
 
@@ -56,9 +87,7 @@ export const parseMarcoZeroPlanilha = async (file: File): Promise<MarcoZeroExtra
         
         const storesMap: Record<string, MarcoZeroExtraction> = {};
 
-        const getOrCreateStore = (rawName: string) => {
-          const name = normalizeRedeStoreName(rawName) || rawName.trim();
-          if (!name) return null;
+        const getOrCreateStore = (name: string) => {
           if (!storesMap[name]) {
             storesMap[name] = {
               storeName: name,
@@ -75,93 +104,105 @@ export const parseMarcoZeroPlanilha = async (file: File): Promise<MarcoZeroExtra
         workbook.SheetNames.forEach(sheetName => {
           const sheet = workbook.Sheets[sheetName];
           const rawData = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false });
-
           const upperSheet = sheetName.toUpperCase();
 
           if (upperSheet.includes('SALDO') || upperSheet.includes('PLAN1')) {
-            // Find columns
-            let colMp = -1, colReceber = -1, colNegativo = -1, colCaixa = -1;
+            let activeStore: MarcoZeroExtraction | null = null;
             
-            // Try to find headers
-            for (let i = 0; i < Math.min(10, rawData.length); i++) {
-              if (!rawData[i]) continue;
-              const row: any[] = rawData[i] as any[];
-              row.forEach((cell, idx) => {
-                const val = String(cell || '').toUpperCase().trim();
-                if (val.includes('DINHEIRO MP')) colMp = idx;
-                if (val.includes('A RECEBER')) colReceber = idx;
-                if (val === 'NEGATIVO') colNegativo = idx;
-                if (val.includes('CAIXA ATUAL') || val.includes('CAIXA')) colCaixa = idx;
-              });
-              if (colMp !== -1) break;
-            }
-
-            // Fallback column indexes se não achar os cabeçalhos exatos
-            if (colMp === -1) colMp = 1;
-            if (colReceber === -1) colReceber = 2;
-            if (colNegativo === -1) colNegativo = 3;
-            if (colCaixa === -1) colCaixa = 4;
-
-            // Read rows
             for (let i = 0; i < rawData.length; i++) {
               const row: any[] = rawData[i] as any[];
-              const storeRaw = String(row[0] || '').trim();
+              if (!row || row.length === 0) continue;
               
-              if (!storeRaw || storeRaw.toUpperCase().includes('LOJA') || storeRaw.toUpperCase() === 'TOTAIS' || storeRaw.length < 3) continue;
+              const cellA = String(row[0] || '').trim();
+              const cellB = String(row[1] || '').trim();
+              
+              const storeA = isKnownStore(cellA);
+              const storeB = isKnownStore(cellB);
+              
+              if (storeA) {
+                activeStore = getOrCreateStore(storeA);
+                continue;
+              } else if (storeB) {
+                activeStore = getOrCreateStore(storeB);
+                continue;
+              }
 
-              const storeExt = getOrCreateStore(storeRaw);
-              if (!storeExt) continue;
+              if (activeStore) {
+                const label = (cellA + ' ' + cellB).toUpperCase();
+                
+                // O usuário relatou que os valores financeiros tendem a estar na coluna D (index 3) ou C (index 2)
+                const valD = cleanNumber(row[3]);
+                const valC = cleanNumber(row[2]);
+                const fallbackVal = valD !== 0 ? valD : valC;
 
-              if (colMp !== -1 && row[colMp] !== undefined) storeExt.dinheiroMp = cleanNumber(row[colMp]);
-              if (colReceber !== -1 && row[colReceber] !== undefined) storeExt.aReceber = cleanNumber(row[colReceber]);
-              if (colNegativo !== -1 && row[colNegativo] !== undefined) storeExt.negativo = cleanNumber(row[colNegativo]);
-              if (colCaixa !== -1 && row[colCaixa] !== undefined) storeExt.caixaAnterior = cleanNumber(row[colCaixa]);
+                if (fallbackVal !== 0) {
+                  if (label.includes('DINHEIRO MP') || label === 'DINHEIRO:') {
+                    activeStore.dinheiroMp += fallbackVal;
+                  } else if (label.includes('A RECEBER') || label.includes('CARTÃO') || label.includes('CARTAO')) {
+                    activeStore.aReceber += fallbackVal;
+                  } else if (label.includes('NEGATIVO') || label.includes('SALDO BANCO') || label.includes('LIMITE')) {
+                    activeStore.negativo += Math.abs(fallbackVal);
+                  } else if (label.includes('CAIXA ATUAL') || label.includes('CAIXA')) {
+                    activeStore.caixaAnterior += fallbackVal;
+                  }
+                }
+              }
             }
           }
 
           if (upperSheet.includes('OS') || upperSheet.includes('PENDENTE')) {
-            // Find columns
-            let osColIdx = -1, dataColIdx = -1, valorColIdx = -1, pagamentosColIdx = -1;
-
-            for (let i = 0; i < Math.min(10, rawData.length); i++) {
-              if (!rawData[i]) continue;
-              const row: any[] = rawData[i] as any[];
-              row.forEach((cell, idx) => {
-                const val = String(cell || '').toUpperCase().trim();
-                if (val.includes('OS:') || val === 'OS' || val === 'O.S') osColIdx = idx;
-                if (val === 'DATA:' || val === 'DATA') dataColIdx = idx;
-                if (val.includes('VALOR:') || val === 'VALOR') valorColIdx = idx;
-                if (val.includes('PAGAMENTOS') || val === 'STATUS') pagamentosColIdx = idx;
-              });
-              if (osColIdx !== -1 && dataColIdx !== -1 && valorColIdx !== -1) break;
-            }
-
-            // Fallback column indexes
-            if (osColIdx === -1) osColIdx = 1;
-            if (dataColIdx === -1) dataColIdx = 2;
-            if (valorColIdx === -1) valorColIdx = 3;
-
+            let activeStoreOS: MarcoZeroExtraction | null = null;
+            
             for (let i = 0; i < rawData.length; i++) {
               const row: any[] = rawData[i] as any[];
-              const storeRaw = String(row[0] || '').trim();
-              
-              // Verifica se a primeira coluna parece ser nome de loja válido
-              if (!storeRaw || storeRaw.toUpperCase().includes('LOJA') || storeRaw.toUpperCase() === 'TOTAIS' || storeRaw.length < 3) continue;
-              
-              const osStr = String(row[osColIdx] || '').trim();
-              if (!osStr || !/^\d+$/.test(osStr)) continue;
+              if (!row || row.length === 0) continue;
 
-              const valorVal = cleanNumber(row[valorColIdx]);
-              if (valorVal <= 0) continue;
+              const cellA = String(row[0] || '').trim();
+              const cellB = String(row[1] || '').trim();
+              
+              const storeA = isKnownStore(cellA);
+              const storeB = isKnownStore(cellB);
+              
+              if (storeA) {
+                activeStoreOS = getOrCreateStore(storeA);
+                continue;
+              } else if (storeB) {
+                activeStoreOS = getOrCreateStore(storeB);
+                continue;
+              }
+              
+              if (activeStoreOS) {
+                let osStr = '';
+                let osDataStr = '';
+                let osValor = 0;
+                let statusPagamento = '';
 
-              const pagamentosVal = pagamentosColIdx !== -1 ? String(row[pagamentosColIdx] || '').trim() : '';
-              if (!pagamentosVal || pagamentosVal === 'null' || pagamentosVal === 'undefined' || pagamentosVal === '') {
-                const storeExt = getOrCreateStore(storeRaw);
-                if (storeExt) {
-                  storeExt.osPendentes.push({
+                // Escaneia a linha buscando padrões de OS
+                row.forEach((cell, idx) => {
+                  const val = String(cell || '').trim();
+                  const upVal = val.toUpperCase();
+                  
+                  if (/^\d{3,6}$/.test(val) && !osStr) {
+                    osStr = val; 
+                  } else if ((upVal.includes('/') || upVal.includes('-') || cell instanceof Date) && !osDataStr) {
+                    const d = parseDate(cell);
+                    if (d) osDataStr = d;
+                  } else if (cleanNumber(cell) > 0 && !osValor) {
+                    // Para evitar pegar valores aleatórios que não sejam o valor da OS, assumimos que o valor da OS é o primeiro número > 0 lido após a OS, ou o maior.
+                    // Aqui pegamos o primeiro positivo que encontrar.
+                    osValor = cleanNumber(cell);
+                  }
+                  
+                  if (upVal === 'PAGO' || upVal === 'OK' || upVal.includes('PAGAMENTO')) {
+                    statusPagamento = upVal;
+                  }
+                });
+
+                if (osStr && osValor > 0 && !statusPagamento) {
+                  activeStoreOS.osPendentes.push({
                     numero_os: osStr,
-                    data_os: parseDate(row[dataColIdx]) || new Date().toISOString(),
-                    valor_os: valorVal
+                    data_os: osDataStr || new Date().toISOString(),
+                    valor_os: osValor
                   });
                 }
               }
@@ -169,6 +210,7 @@ export const parseMarcoZeroPlanilha = async (file: File): Promise<MarcoZeroExtra
           }
         });
 
+        // Filtra para manter apenas lojas que de fato tiveram valores lidos
         const result = Object.values(storesMap).filter(ext => 
           ext.dinheiroMp !== 0 || ext.aReceber !== 0 || ext.negativo !== 0 || ext.caixaAnterior !== 0 || ext.osPendentes.length > 0
         );
