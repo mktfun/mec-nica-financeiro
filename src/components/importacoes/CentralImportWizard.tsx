@@ -828,6 +828,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           saldo_bancario: totalBancarioIn,
           a_receber_manual: manualAReceber,
           faturamento_outros_valor: 0,
+          faturamento_outros_desc: null,
           contas_a_pagar: totalOfxOut,
           provisao: 0,
           saldo_negativo_itau: saldoNegativoItau,
@@ -841,11 +842,21 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         addLog("Aviso: Falha ao gravar fechamento do dia.", "warning");
       }
 
-      addLog("ðŸ”§ Pareando transações importadas com Ordens de Serviço...", "info");
-      const { error: matchErr } = await supabase.rpc('auto_match_transactions', { p_date: targetDate });
-      if (matchErr) throw matchErr;
+      addLog("Pareando transacoes importadas com Ordens de Servico...", "info");
+      try {
+        const { error: matchErr } = await supabase.rpc('auto_match_transactions', { p_date: targetDate });
+        if (matchErr) {
+          console.warn("auto_match_transactions retornou erro (nao critico):", matchErr);
+          addLog(`Pareamento automatico parcial: ${matchErr.message}`, "warning");
+        } else {
+          addLog("Pareamento automatico concluido!", "success");
+        }
+      } catch (rpcErr: any) {
+        console.warn("Erro ao chamar auto_match_transactions:", rpcErr);
+        addLog("Pareamento automatico falhou mas dados foram salvos.", "warning");
+      }
 
-      addLog("ðŸ“¸ Auto-salvando Fechamento do Dia...", "info");
+      addLog("📸 Auto-salvando Fechamento do Dia...", "info");
       try {
         const { data: metrics } = await supabase.rpc('get_dashboard_metrics', { p_date: targetDate });
         if (metrics) {
