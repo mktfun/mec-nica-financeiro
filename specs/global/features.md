@@ -156,3 +156,9 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 ## Feature 172: Refatoração de UI/UX do Wizard e JSON Trail
 - **Componentes Alterados:** `CentralImportWizard` (Dropzone unificado visualmente sem abrir janela paralela, design modernizado, botão de download JSON e console de log visual animado embutido), `AgentRunnerModal` (adaptado apenas para fluxos em nuvem reais).
 - **Tipos/Hooks Adicionados:** Adicionado state mapping para `AgentStageItem` e Blob payload generator para `auditTrailUrl`.
+
+
+## Feature 173: Fix PDF.js SSR Crash no Vite
+- **Arquivo Modificado:** `src/lib/parsers/mapaMetasParser.ts`
+- **Mudanca:** Import estatico `import * as pdfjsLib from 'pdfjs-dist'` removido do escopo global. Substituido por Dynamic Import (`await import('pdfjs-dist')`) dentro da funcao `parseMapaMetasPDF`.
+- **Efeito:** Elimina crash SSR `DOMMatrix is not defined` ao carregar telas de Dashboard e Importacao.

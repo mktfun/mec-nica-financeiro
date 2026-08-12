@@ -1,8 +1,5 @@
-﻿import * as pdfjsLib from 'pdfjs-dist';
-
-// Configurar o worker do PDF.js (necessário no client-side / Vite)
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
-
+// Import removido do topo para evitar SSR crash (DOMMatrix is not defined)
+// O import dinâmico foi movido para dentro da função parseMapaMetasPDF
 export interface MapaMetasStore {
   storeName: string;
   faturamentoBruto: number;
@@ -19,6 +16,9 @@ export interface MapaMetasResult {
 
 export async function parseMapaMetasPDF(file: File): Promise<MapaMetasResult> {
   try {
+    const pdfjsLib = await import('pdfjs-dist');
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     
