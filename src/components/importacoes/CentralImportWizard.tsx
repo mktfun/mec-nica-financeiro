@@ -182,7 +182,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   
   const updateStage = (stageIdx: number, status: 'pending'|'running'|'success'|'error', subLabel?: string) => {
     setImportStages(prev => {
-      const newStages = [...prev];
+      if (stageIdx < 0 || stageIdx >= prev.length) return prev; // guard: índice fora do range
+      const newStages = prev.map(s => ({ ...s, subSteps: [...s.subSteps] })); // deep clone seguro
       newStages[stageIdx].status = status;
       if (subLabel) {
         newStages[stageIdx].subSteps.push({ id: crypto.randomUUID(), label: subLabel, status });
@@ -367,7 +368,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       updateStage(1, 'success', 'Maquininhas processadas!');
       
       // Snapshot Na Loja OS
-      updateStage(4, 'running', 'Gerando snapshot de OSs...');
+      updateStage(2, 'running', 'Gerando snapshot de OSs...');
       const allStoreIds = new Set<string>();
       Object.values(mapping).forEach(v => {
         if (v && v !== 'GLOBAL') allStoreIds.add(v);
