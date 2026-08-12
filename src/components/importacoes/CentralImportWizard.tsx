@@ -37,6 +37,14 @@ export interface ImportLogEntry {
   message: string;
 }
 
+const INITIAL_STAGES: AgentStage[] = [
+  { id: 'ofx',        title: 'Processando extratos OFX',           status: 'pending', subSteps: [] },
+  { id: 'os',         title: 'Importando OS do pátio',             status: 'pending', subSteps: [] },
+  { id: 'maquininha', title: 'Lendo maquininha / Rede',            status: 'pending', subSteps: [] },
+  { id: 'salvar',     title: 'Salvando conciliação no banco',      status: 'pending', subSteps: [] },
+];
+
+
 
 // Hook para gerenciar mapeamento de lojas
 function useUnifiedStoreMapping(stores: any[]) {
@@ -155,6 +163,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const [manualAReceber, setManualAReceber] = useState<number>(0);
 
   // Terminal logs state
+  const [importLogs, setImportLogs] = useState<ImportLogEntry[]>([]);
   const [importStages, setImportStages] = useState<AgentStage[]>(INITIAL_STAGES);
   const [auditTrailUrl, setAuditTrailUrl] = useState<string | null>(null);
   const [saveFinished, setSaveFinished] = useState(false);
