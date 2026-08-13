@@ -186,3 +186,9 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
   - **RPC SQL:** `supabase/migrations/20260813113000_process_marco_zero_rpc.sql` (RPC atômica idempotente `process_marco_zero_import` com tenant isolation por `store_id`).
   - **Wizard & Download Logs:** `MarcoZeroWizard.tsx` chama a RPC PostgreSQL atômica, exibe a tela de sucesso e disponibiliza o botão "Baixar Logs de Execução (.JSON)".
   - **UI Dedicada de Estado Inicial:** `ResumoDiaPanel.tsx` detecta `metadata.is_marco_zero === true` e renderiza a UI simplificada de Estado Inicial do Marco Zero sem a complexidade dos blocos de conciliação bancária padrão.
+  
+### 2026-08-13: Refatoracao CTEs Conciliacao (189)  
+- **Status:** Implementado  
+- **Modulos:** Backend RPC  
+- **Supabase RPC:** calculate_daily_conciliation(p_date date) - Reescrita completa sem cursores iterativos (Early Aggregation com CTEs).  
+- **Supabase RPC:** get_dashboard_metrics(p_date date) - Reescrita completa com isolamento CTE para aniquilar cartesian products. 

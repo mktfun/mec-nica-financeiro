@@ -5287,8 +5287,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "package_dependencies_ai_sdk_react",
-      "community": 1109,
-      "community_name": "@ai-sdk/react",
+      "community": 45,
+      "community_name": "dependencies",
       "norm_label": "@ai-sdk/react"
     },
     {
@@ -5298,8 +5298,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "ai_sdk_react",
-      "community": 1109,
-      "community_name": "@ai-sdk/react",
+      "community": 45,
+      "community_name": "dependencies",
       "norm_label": "@ai-sdk/react"
     },
     {
@@ -6101,8 +6101,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "package_dependencies_ai",
-      "community": 45,
-      "community_name": "dependencies",
+      "community": 1138,
+      "community_name": "ai",
       "norm_label": "ai"
     },
     {
@@ -6112,8 +6112,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "ai",
-      "community": 45,
-      "community_name": "dependencies",
+      "community": 1138,
+      "community_name": "ai",
       "norm_label": "ai"
     },
     {
@@ -6937,8 +6937,8 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "package_devdependencies_eslint",
-      "community": 1134,
-      "community_name": "eslint",
+      "community": 1,
+      "community_name": "devDependencies",
       "norm_label": "eslint"
     },
     {
@@ -6948,8 +6948,8 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "eslint",
-      "community": 1134,
-      "community_name": "eslint",
+      "community": 1,
+      "community_name": "devDependencies",
       "norm_label": "eslint"
     },
     {
@@ -6959,8 +6959,8 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "package_devdependencies_eslint_config_prettier",
-      "community": 1,
-      "community_name": "devDependencies",
+      "community": 1132,
+      "community_name": "eslint-config-prettier",
       "norm_label": "eslint-config-prettier"
     },
     {
@@ -6970,8 +6970,8 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "eslint_config_prettier",
-      "community": 1,
-      "community_name": "devDependencies",
+      "community": 1132,
+      "community_name": "eslint-config-prettier",
       "norm_label": "eslint-config-prettier"
     },
     {
@@ -7157,7 +7157,7 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "package_devdependencies_vite",
-      "community": 1092,
+      "community": 1139,
       "community_name": "vite",
       "norm_label": "vite"
     },
@@ -7168,7 +7168,7 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "vite",
-      "community": 1092,
+      "community": 1139,
       "community_name": "vite",
       "norm_label": "vite"
     },
@@ -15302,7 +15302,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_mocks_importfiles",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "importfiles.ts"
     },
@@ -15313,7 +15313,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_mocks_importfiles_mockfiles",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "mockfiles"
     },
@@ -15347,8 +15347,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "agenteiaconfigpanel.tsx"
     },
     {
@@ -15358,8 +15358,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_model_options",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "model_options"
     },
     {
@@ -15369,8 +15369,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_provider_labels",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "provider_labels"
     },
     {
@@ -15381,8 +15381,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_agenteiaconfigpanel",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "agenteiaconfigpanel()"
     },
     {
@@ -15392,8 +15392,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_cacheagentepanel",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "cacheagentepanel.tsx"
     },
     {
@@ -15404,8 +15404,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_cacheagentepanel_cacheagentepanel",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "cacheagentepanel()"
     },
     {
@@ -15439,8 +15439,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel_aisettingsform",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "aisettingsform()"
     },
     {
@@ -15450,8 +15450,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_custospanel",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "custospanel.tsx"
     },
     {
@@ -15462,7 +15462,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_custospanel_custospanel",
-      "community": 1076,
+      "community": 1134,
       "community_name": "custos.tsx",
       "norm_label": "custospanel()"
     },
@@ -15473,8 +15473,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_logsagentepanel",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "logsagentepanel.tsx"
     },
     {
@@ -15485,8 +15485,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_logsagentepanel_logsagentepanel",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "logsagentepanel()"
     },
     {
@@ -15496,7 +15496,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel",
-      "community": 406,
+      "community": 1092,
       "community_name": "LogsMotorPanel.tsx",
       "norm_label": "logsmotorpanel.tsx"
     },
@@ -15508,7 +15508,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel_logsmotorpanel",
-      "community": 406,
+      "community": 1092,
       "community_name": "LogsMotorPanel.tsx",
       "norm_label": "logsmotorpanel()"
     },
@@ -16213,8 +16213,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_legacyostable",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "legacyostable.tsx"
     },
     {
@@ -16226,8 +16226,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_conciliacao_legacyostable_legacyos",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "legacyos"
     },
     {
@@ -16238,8 +16238,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_conciliacao_legacyostable_legacyostable",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "legacyostable()"
     },
     {
@@ -16569,7 +16569,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_bankreconciliationdashboard",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "bankreconciliationdashboard.tsx"
     },
     {
@@ -16581,7 +16581,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_bankreconciliationdashboard_bankreconciliationdashboard",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "bankreconciliationdashboard()"
     },
     {
@@ -16614,8 +16614,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "evolucaomacrochart.tsx"
     },
     {
@@ -16627,8 +16627,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_evolucaomacrochartprops",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "evolucaomacrochartprops"
     },
     {
@@ -16639,8 +16639,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatcurrency",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -16651,8 +16651,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatdate",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "formatdate()"
     },
     {
@@ -16663,8 +16663,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatcompactcurrency",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "formatcompactcurrency()"
     },
     {
@@ -16675,8 +16675,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_evolucaomacrochart",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "evolucaomacrochart()"
     },
     {
@@ -16686,8 +16686,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 49,
+      "community_name": "patio.tsx",
       "norm_label": "faturamentovscontaschart.tsx"
     },
     {
@@ -16699,8 +16699,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_faturamentovscontaschartprops",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 49,
+      "community_name": "patio.tsx",
       "norm_label": "faturamentovscontaschartprops"
     },
     {
@@ -16711,8 +16711,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_formatcurrency",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 49,
+      "community_name": "patio.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -16723,8 +16723,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_shortenname",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 49,
+      "community_name": "patio.tsx",
       "norm_label": "shortenname()"
     },
     {
@@ -16735,8 +16735,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_customyaxistick",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 49,
+      "community_name": "patio.tsx",
       "norm_label": "customyaxistick()"
     },
     {
@@ -16747,8 +16747,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_customtooltip",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 49,
+      "community_name": "patio.tsx",
       "norm_label": "customtooltip()"
     },
     {
@@ -16759,8 +16759,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_faturamentovscontaschart",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 49,
+      "community_name": "patio.tsx",
       "norm_label": "faturamentovscontaschart()"
     },
     {
@@ -16771,7 +16771,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "herobalance.tsx"
     },
     {
@@ -16783,7 +16783,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance_herobalance",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "herobalance()"
     },
     {
@@ -16794,7 +16794,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "kpicard.tsx"
     },
     {
@@ -16807,7 +16807,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicolor",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "kpicolor"
     },
     {
@@ -16820,7 +16820,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicardprops",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "kpicardprops"
     },
     {
@@ -16831,7 +16831,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_color_map",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "color_map"
     },
     {
@@ -16843,7 +16843,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicard",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "kpicard()"
     },
     {
@@ -16854,7 +16854,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "motorstatus.tsx"
     },
     {
@@ -16866,7 +16866,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus_motorstatus",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "motorstatus()"
     },
     {
@@ -16876,8 +16876,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "newtransactiondialog.tsx"
     },
     {
@@ -16889,8 +16889,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialogprops",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "newtransactiondialogprops"
     },
     {
@@ -16901,8 +16901,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialog",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "newtransactiondialog()"
     },
     {
@@ -16912,8 +16912,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_rationale_17",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "todo: implement transaction creation"
     },
     {
@@ -16923,8 +16923,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "quickactions.tsx"
     },
     {
@@ -16934,8 +16934,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_container",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "container"
     },
     {
@@ -16945,8 +16945,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_item",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "item"
     },
     {
@@ -16957,8 +16957,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_quickactions",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "quickactions()"
     },
     {
@@ -16968,7 +16968,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_recentactivity",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "recentactivity.tsx"
     },
@@ -16980,7 +16980,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_recentactivity_recentactivity",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "recentactivity()"
     },
@@ -17050,8 +17050,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "storetabledashboard.tsx"
     },
     {
@@ -17063,8 +17063,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_storetabledashboardprops",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "storetabledashboardprops"
     },
     {
@@ -17075,8 +17075,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_fmt",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "fmt()"
     },
     {
@@ -17087,8 +17087,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_statusvariant",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "statusvariant()"
     },
     {
@@ -17099,8 +17099,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_statuslabel",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "statuslabel()"
     },
     {
@@ -17111,8 +17111,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_storetabledashboard",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "storetabledashboard()"
     },
     {
@@ -17122,7 +17122,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_agentrunnermodal",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentrunnermodal.tsx"
     },
@@ -17135,7 +17135,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_agentrunnermodal_agentrunnermodalprops",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentrunnermodalprops"
     },
@@ -17146,7 +17146,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_components_importacoes_agentrunnermodal_initial_stages",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "initial_stages"
     },
@@ -17158,7 +17158,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_agentrunnermodal_agentrunnermodal",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentrunnermodal()"
     },
@@ -17169,7 +17169,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentstageitem.tsx"
     },
@@ -17182,7 +17182,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem_substep",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "substep"
     },
@@ -17195,7 +17195,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem_agentstage",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentstage"
     },
@@ -17208,7 +17208,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem_agentstageitemprops",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentstageitemprops"
     },
@@ -17220,7 +17220,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem_agentstageitem",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentstageitem()"
     },
@@ -17231,8 +17231,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "auditoriapassivowizard.tsx"
     },
     {
@@ -17244,8 +17244,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard_auditoriapassivowizardprops",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "auditoriapassivowizardprops"
     },
     {
@@ -17257,8 +17257,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard_osstatus",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "osstatus"
     },
     {
@@ -17270,8 +17270,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard_unifiedos",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "unifiedos"
     },
     {
@@ -17282,8 +17282,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard_auditoriapassivowizard",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "auditoriapassivowizard()"
     },
     {
@@ -17340,7 +17340,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportwizard.tsx"
     },
@@ -17353,7 +17353,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_importlogentry",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "importlogentry"
     },
@@ -17364,7 +17364,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_initial_stages",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "initial_stages"
     },
@@ -17376,7 +17376,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_useunifiedstoremapping",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "useunifiedstoremapping()"
     },
@@ -17388,7 +17388,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_stepindicator",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "stepindicator()"
     },
@@ -17400,7 +17400,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_centralimportwizard",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportwizard()"
     },
@@ -17461,7 +17461,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_marcozerowizard",
       "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "marcozerowizard.tsx"
     },
     {
@@ -17473,7 +17473,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_marcozerowizard_marcozerowizard",
       "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "marcozerowizard()"
     },
     {
@@ -17483,8 +17483,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "matchmanualospendente.tsx"
     },
     {
@@ -17496,8 +17496,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente_matchmanualosprops",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "matchmanualosprops"
     },
     {
@@ -17508,8 +17508,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente_matchmanualospendente",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "matchmanualospendente()"
     },
     {
@@ -17682,8 +17682,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_topbar",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "topbar.tsx"
     },
     {
@@ -17694,8 +17694,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_layout_topbar_topbar",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "topbar()"
     },
     {
@@ -17706,7 +17706,7 @@
       "_origin": "ast",
       "id": "src_components_ui_animatednumber",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "animatednumber.tsx"
     },
     {
@@ -17719,7 +17719,7 @@
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumberprops",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "animatednumberprops"
     },
     {
@@ -17731,7 +17731,7 @@
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumber",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "animatednumber()"
     },
     {
@@ -17777,8 +17777,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_button",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "button.tsx"
     },
     {
@@ -17790,8 +17790,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_button_buttonprops",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "buttonprops"
     },
     {
@@ -17802,8 +17802,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_button_button",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "button()"
     },
     {
@@ -17813,8 +17813,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_card",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "card.tsx"
     },
     {
@@ -17826,8 +17826,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_card_cardprops",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "cardprops"
     },
     {
@@ -17838,8 +17838,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_card_card",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "card()"
     },
     {
@@ -17849,8 +17849,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_input",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "input.tsx"
     },
     {
@@ -17862,8 +17862,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_input_inputprops",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "inputprops"
     },
     {
@@ -17873,8 +17873,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_ui_input_input",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "input"
     },
     {
@@ -17920,8 +17920,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_modal",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "modal.tsx"
     },
     {
@@ -17933,8 +17933,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_modal_modalprops",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "modalprops"
     },
     {
@@ -17945,8 +17945,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_modal_modal",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "modal()"
     },
     {
@@ -17956,8 +17956,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_themetoggle",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "themetoggle.tsx"
     },
     {
@@ -17968,8 +17968,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_themetoggle_themetoggle",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "themetoggle()"
     },
     {
@@ -17980,7 +17980,7 @@
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "universaldropzone.tsx"
     },
     {
@@ -17993,7 +17993,7 @@
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_filetypecategory",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "filetypecategory"
     },
     {
@@ -18006,7 +18006,7 @@
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_classifiedfile",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "classifiedfile"
     },
     {
@@ -18018,7 +18018,7 @@
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_classifyfile",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "classifyfile()"
     },
     {
@@ -18031,7 +18031,7 @@
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_universaldropzoneprops",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "universaldropzoneprops"
     },
     {
@@ -18043,7 +18043,7 @@
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_universaldropzone",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "universaldropzone()"
     },
     {
@@ -18076,8 +18076,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useaisettings",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "useaisettings.ts"
     },
     {
@@ -18089,8 +18089,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useaisettings_aisettings",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "aisettings"
     },
     {
@@ -18101,8 +18101,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useaisettings_useaisettings",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "useaisettings()"
     },
     {
@@ -18113,8 +18113,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useaisettings_usesaveaisettings",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "usesaveaisettings()"
     },
     {
@@ -18278,7 +18278,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "usebackenddashboard.ts"
     },
     {
@@ -18291,7 +18291,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_storemetrics",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "storemetrics"
     },
     {
@@ -18304,7 +18304,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_dashboardmetrics",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "dashboardmetrics"
     },
     {
@@ -18316,7 +18316,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_usebackenddashboard",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "usebackenddashboard()"
     },
     {
@@ -18386,7 +18386,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotlogs",
-      "community": 406,
+      "community": 1092,
       "community_name": "LogsMotorPanel.tsx",
       "norm_label": "usebotlogs.ts"
     },
@@ -18399,7 +18399,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_botauditlog",
-      "community": 406,
+      "community": 1092,
       "community_name": "LogsMotorPanel.tsx",
       "norm_label": "botauditlog"
     },
@@ -18411,7 +18411,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotlogs",
-      "community": 406,
+      "community": 1092,
       "community_name": "LogsMotorPanel.tsx",
       "norm_label": "usebotlogs()"
     },
@@ -18423,7 +18423,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotauditlogs",
-      "community": 406,
+      "community": 1092,
       "community_name": "LogsMotorPanel.tsx",
       "norm_label": "usebotauditlogs()"
     },
@@ -18540,7 +18540,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usecentralimport_unifiedimportresult",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "unifiedimportresult"
     },
@@ -18650,7 +18650,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesaveimportedreport",
       "community": 513,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "usesaveimportedreport()"
     },
     {
@@ -18758,7 +18758,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesavebankreconciliation",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "usesavebankreconciliation()"
     },
     {
@@ -18770,7 +18770,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesavemachinetotal",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "usesavemachinetotal()"
     },
     {
@@ -18927,8 +18927,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "usedashboardv2.ts"
     },
     {
@@ -18940,8 +18940,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_storemetrics",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "storemetrics"
     },
     {
@@ -18953,8 +18953,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_dashboardv2data",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "dashboardv2data"
     },
     {
@@ -18965,8 +18965,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_usedashboardv2",
-      "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "usedashboardv2()"
     },
     {
@@ -18976,7 +18976,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useexpenseimportprocessor",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "useexpenseimportprocessor.ts"
     },
@@ -18989,7 +18989,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useexpenseimportprocessor_expenseimportresult",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "expenseimportresult"
     },
@@ -19001,7 +19001,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useexpenseimportprocessor_processexpensefiles",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "processexpensefiles()"
     },
@@ -19012,8 +19012,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usegoals",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "usegoals.ts"
     },
     {
@@ -19025,8 +19025,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usegoals_goalrow",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "goalrow"
     },
     {
@@ -19037,8 +19037,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usegoals_usemonthlygoal",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "usemonthlygoal()"
     },
     {
@@ -19048,8 +19048,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "useimportlogs.ts"
     },
     {
@@ -19061,8 +19061,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlog",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "importlog"
     },
     {
@@ -19074,8 +19074,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlogfilters",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "importlogfilters"
     },
     {
@@ -19086,8 +19086,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogs",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "useimportlogs()"
     },
     {
@@ -19098,8 +19098,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogdetail",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "useimportlogdetail()"
     },
     {
@@ -19110,7 +19110,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor",
       "community": 513,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "useimportprocessor.ts"
     },
     {
@@ -19123,7 +19123,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_parsedos",
       "community": 513,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "parsedos"
     },
     {
@@ -19136,7 +19136,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_parsedreceivable",
       "community": 513,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "parsedreceivable"
     },
     {
@@ -19147,7 +19147,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_savepatioosandreceivables",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "savepatioosandreceivables()"
     },
@@ -19160,7 +19160,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useprocessimporteddata",
       "community": 513,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "useprocessimporteddata()"
     },
     {
@@ -19173,7 +19173,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_groupedimportlog",
       "community": 513,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "groupedimportlog"
     },
     {
@@ -19185,7 +19185,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useimportshistory",
       "community": 513,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "useimportshistory()"
     },
     {
@@ -19197,7 +19197,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_usedeleteimport",
       "community": 513,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "usedeleteimport()"
     },
     {
@@ -19209,7 +19209,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useclearalldata",
       "community": 513,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "useclearalldata()"
     },
     {
@@ -19219,8 +19219,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usemcplogs",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "usemcplogs.ts"
     },
     {
@@ -19232,8 +19232,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usemcplogs_mcplog",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "mcplog"
     },
     {
@@ -19244,8 +19244,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usemcplogs_usemcplogs",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "usemcplogs()"
     },
     {
@@ -19255,8 +19255,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useoscache",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "useoscache.ts"
     },
     {
@@ -19268,8 +19268,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useoscache_oficinaoscache",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "oficinaoscache"
     },
     {
@@ -19280,8 +19280,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useoscache_useoscache",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "useoscache()"
     },
     {
@@ -19327,7 +19327,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usepatio",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "usepatio.ts"
     },
@@ -19339,7 +19339,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usepatio_usepatioos",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "usepatioos()"
     },
@@ -19351,7 +19351,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usepatio_useupdatepatioos",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "useupdatepatioos()"
     },
@@ -19363,7 +19363,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usepatio_usepatiosummary",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "usepatiosummary()"
     },
@@ -19652,7 +19652,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedashboardsummary",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "usedashboardsummary()"
     },
     {
@@ -19712,7 +19712,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useweeklyrevenuetrend",
       "community": 513,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "useweeklyrevenuetrend()"
     },
     {
@@ -19723,7 +19723,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usecreateimportbatch",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "usecreateimportbatch()"
     },
@@ -19735,7 +19735,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usebulkinsertconciliationmatches",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "usebulkinsertconciliationmatches()"
     },
@@ -19817,8 +19817,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher",
-      "community": 1089,
-      "community_name": "start.ts",
+      "community": 680,
+      "community_name": "src/server.ts",
       "norm_label": "auth-attacher.ts"
     },
     {
@@ -19828,8 +19828,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher_attachsupabaseauth",
-      "community": 1089,
-      "community_name": "start.ts",
+      "community": 680,
+      "community_name": "src/server.ts",
       "norm_label": "attachsupabaseauth"
     },
     {
@@ -19895,8 +19895,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_integrations_supabase_client",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "client.ts"
     },
     {
@@ -19907,8 +19907,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_integrations_supabase_client_createsupabaseclient",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "createsupabaseclient()"
     },
     {
@@ -21030,7 +21030,7 @@
       "_origin": "ast",
       "id": "src_lib_ofxparser",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "lib/ofxparser.ts"
     },
     {
@@ -21043,7 +21043,7 @@
       "_origin": "ast",
       "id": "src_lib_ofxparser_ofxtransaction",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "ofxtransaction"
     },
     {
@@ -21055,7 +21055,7 @@
       "_origin": "ast",
       "id": "src_lib_ofxparser_parseofx",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "parseofx()"
     },
     {
@@ -21068,7 +21068,7 @@
       "_origin": "ast",
       "id": "src_lib_ofxparser_systemtransaction",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "systemtransaction"
     },
     {
@@ -21081,7 +21081,7 @@
       "_origin": "ast",
       "id": "src_lib_ofxparser_matchresult",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "matchresult"
     },
     {
@@ -21093,7 +21093,7 @@
       "_origin": "ast",
       "id": "src_lib_ofxparser_matchtransactions",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "matchtransactions()"
     },
     {
@@ -21103,7 +21103,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_centralimportmanager",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportmanager.ts"
     },
@@ -21116,7 +21116,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_parsers_centralimportmanager_centralimportresults",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportresults"
     },
@@ -21128,7 +21128,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_centralimportmanager_parsecentralimports",
-      "community": 513,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "parsecentralimports()"
     },
@@ -21139,7 +21139,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_contasapagarparser",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "contasapagarparser.ts"
     },
@@ -21152,7 +21152,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_parsers_contasapagarparser_parsedexpense",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "parsedexpense"
     },
@@ -21164,7 +21164,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_contasapagarparser_parsecontasapagar",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "parsecontasapagar()"
     },
@@ -21198,7 +21198,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_jurosredeparser",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "jurosredeparser.ts"
     },
@@ -21210,7 +21210,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_jurosredeparser_parsejurosrede",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "parsejurosrede()"
     },
@@ -21270,95 +21270,95 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "marcozeroparser.ts"
     },
     {
       "label": "MarcoZeroGlobalData",
       "file_type": "code",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L5",
+      "source_location": "L6",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_marcozeroglobaldata",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "marcozeroglobaldata"
     },
     {
       "label": "MarcoZeroStoreData",
       "file_type": "code",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L23",
+      "source_location": "L24",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_marcozerostoredata",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "marcozerostoredata"
     },
     {
       "label": "MarcoZeroResult",
       "file_type": "code",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L29",
+      "source_location": "L30",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_marcozeroresult",
       "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "marcozeroresult"
     },
     {
       "label": "cleanNumber()",
       "file_type": "code",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L35",
+      "source_location": "L36",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_cleannumber",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "cleannumber()"
     },
     {
       "label": "parseDate()",
       "file_type": "code",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L48",
+      "source_location": "L41",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_parsedate",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "parsedate()"
     },
     {
       "label": "isKnownStore()",
       "file_type": "code",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L67",
+      "source_location": "L60",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_isknownstore",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "isknownstore()"
     },
     {
       "label": "parseMarcoZeroPlanilha()",
       "file_type": "code",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L103",
+      "source_location": "L96",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_parsemarcozeroplanilha",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "parsemarcozeroplanilha()"
     },
     {
@@ -21373,10 +21373,22 @@
       "norm_label": "numberutils.ts"
     },
     {
-      "label": "extractNumber()",
+      "label": "roundCurrency()",
       "file_type": "code",
       "source_file": "src/lib/parsers/numberUtils.ts",
       "source_location": "L1",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_parsers_numberutils_roundcurrency",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
+      "norm_label": "roundcurrency()"
+    },
+    {
+      "label": "extractNumber()",
+      "file_type": "code",
+      "source_file": "src/lib/parsers/numberUtils.ts",
+      "source_location": "L6",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_numberutils_extractnumber",
@@ -21425,7 +21437,7 @@
       "label": "extractDocument()",
       "file_type": "code",
       "source_file": "src/lib/parsers/ofxParser.ts",
-      "source_location": "L25",
+      "source_location": "L26",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser_extractdocument",
@@ -21437,7 +21449,7 @@
       "label": "parseOFXFile()",
       "file_type": "code",
       "source_file": "src/lib/parsers/ofxParser.ts",
-      "source_location": "L41",
+      "source_location": "L42",
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser_parseofxfile",
@@ -21501,8 +21513,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_storemapping",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "storemapping.ts"
     },
     {
@@ -21512,8 +21524,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_storemapping_rede_store_mapping",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "rede_store_mapping"
     },
     {
@@ -21524,8 +21536,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_storemapping_normalizeredestorename",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "normalizeredestorename()"
     },
     {
@@ -21635,8 +21647,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_cashregisterrow",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "cashregisterrow"
     },
     {
@@ -21648,7 +21660,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_patioosrow",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "patioosrow"
     },
@@ -21736,7 +21748,7 @@
       "_origin": "ast",
       "id": "src_lib_utils_getdefaultdate",
       "community": 513,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "getdefaultdate()"
     },
     {
@@ -21748,7 +21760,7 @@
       "_origin": "ast",
       "id": "src_lib_utils_formatcurrency",
       "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -22078,8 +22090,8 @@
       "source_location": "L460",
       "_origin": "ast",
       "id": "src_routetree_gen_routetree",
-      "community": 1089,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "routetree"
     },
     {
@@ -22102,8 +22114,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routetree_gen_register",
-      "community": 1089,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "register"
     },
     {
@@ -22113,8 +22125,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_router",
-      "community": 1089,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "router.tsx"
     },
     {
@@ -22125,8 +22137,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_router_getrouter",
-      "community": 1089,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "getrouter()"
     },
     {
@@ -22488,8 +22500,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_configuracoes",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "configuracoes.tsx"
     },
     {
@@ -22511,8 +22523,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_configuracoes_configuracoespage",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "configuracoespage()"
     },
     {
@@ -22522,7 +22534,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_custos",
-      "community": 1076,
+      "community": 1134,
       "community_name": "custos.tsx",
       "norm_label": "custos.tsx"
     },
@@ -22533,7 +22545,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_routes_custos_route",
-      "community": 1076,
+      "community": 1134,
       "community_name": "custos.tsx",
       "norm_label": "route"
     },
@@ -22545,7 +22557,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_custos_custospage",
-      "community": 1076,
+      "community": 1134,
       "community_name": "custos.tsx",
       "norm_label": "custospage()"
     },
@@ -22626,7 +22638,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "importacoes-despesas.tsx"
     },
@@ -22649,7 +22661,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_usestoremapping",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "usestoremapping()"
     },
@@ -22661,7 +22673,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_importacoesdespesaswizard",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "importacoesdespesaswizard()"
     },
@@ -22673,7 +22685,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_stepindicator",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "stepindicator()"
     },
@@ -22685,7 +22697,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes",
       "community": 513,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "importacoes.tsx"
     },
     {
@@ -22708,7 +22720,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes_formatdate",
       "community": 513,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "formatdate()"
     },
     {
@@ -22720,7 +22732,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes_importacoespage",
       "community": 513,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "importacoes.tsx",
       "norm_label": "importacoespage()"
     },
     {
@@ -22730,8 +22742,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_importar_os",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 513,
+      "community_name": "importacoes.tsx",
       "norm_label": "importar-os.tsx"
     },
     {
@@ -22753,8 +22765,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importar_os_useosstoremapping",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 513,
+      "community_name": "importacoes.tsx",
       "norm_label": "useosstoremapping()"
     },
     {
@@ -22765,8 +22777,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importar_os_stepindicator",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 513,
+      "community_name": "importacoes.tsx",
       "norm_label": "stepindicator()"
     },
     {
@@ -22777,8 +22789,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importar_os_importaroswizard",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 513,
+      "community_name": "importacoes.tsx",
       "norm_label": "importaroswizard()"
     },
     {
@@ -22789,7 +22801,7 @@
       "_origin": "ast",
       "id": "src_routes_index",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "index.tsx"
     },
     {
@@ -22812,7 +22824,7 @@
       "_origin": "ast",
       "id": "src_routes_index_dashboardpage",
       "community": 49,
-      "community_name": "AnimatedNumber.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "dashboardpage()"
     },
     {
@@ -22856,8 +22868,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_logs_agente",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "logs.agente.tsx"
     },
     {
@@ -22879,8 +22891,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_logs_agente_logsagentepage",
-      "community": 42,
-      "community_name": "Card.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "logsagentepage()"
     },
     {
@@ -22890,7 +22902,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_logs_motor",
-      "community": 406,
+      "community": 1092,
       "community_name": "LogsMotorPanel.tsx",
       "norm_label": "logs.motor.tsx"
     },
@@ -22901,8 +22913,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_routes_logs_motor_route",
-      "community": 406,
-      "community_name": "LogsMotorPanel.tsx",
+      "community": 1095,
+      "community_name": "FileRoutesByPath",
       "norm_label": "route"
     },
     {
@@ -22913,7 +22925,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_logs_motor_logsmotorpage",
-      "community": 406,
+      "community": 1092,
       "community_name": "LogsMotorPanel.tsx",
       "norm_label": "logsmotorpage()"
     },
@@ -23028,7 +23040,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_patio",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "patio.tsx"
     },
@@ -23041,7 +23053,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_patio_historychange",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "historychange"
     },
@@ -23054,7 +23066,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_patio_historylog",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "historylog"
     },
@@ -23078,7 +23090,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_patio_filtertab",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "filtertab"
     },
@@ -23090,7 +23102,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_patio_getoseffectivevalues",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "getoseffectivevalues()"
     },
@@ -23102,7 +23114,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_patio_patiopage",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "patiopage()"
     },
@@ -23114,7 +23126,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_patio_tabbtn",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "tabbtn()"
     },
@@ -23362,8 +23374,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_start",
-      "community": 1089,
-      "community_name": "start.ts",
+      "community": 680,
+      "community_name": "src/server.ts",
       "norm_label": "start.ts"
     },
     {
@@ -23373,8 +23385,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_start_errormiddleware",
-      "community": 1089,
-      "community_name": "start.ts",
+      "community": 680,
+      "community_name": "src/server.ts",
       "norm_label": "errormiddleware"
     },
     {
@@ -23384,8 +23396,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_start_startinstance",
-      "community": 1089,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "startinstance"
     },
     {
@@ -23855,38 +23867,16 @@
       "norm_label": "test_rpc.cjs"
     },
     {
-      "label": "{ createClient }",
-      "file_type": "code",
-      "source_file": "test_rpc.cjs",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "test_rpc_createclient",
-      "community": 1131,
-      "community_name": "test_rpc.cjs",
-      "norm_label": "{ createclient }"
-    },
-    {
-      "label": "supabase",
+      "label": "roundCurrency()",
       "file_type": "code",
       "source_file": "test_rpc.cjs",
       "source_location": "L2",
-      "_origin": "ast",
-      "id": "test_rpc_supabase",
-      "community": 1131,
-      "community_name": "test_rpc.cjs",
-      "norm_label": "supabase"
-    },
-    {
-      "label": "run()",
-      "file_type": "code",
-      "source_file": "test_rpc.cjs",
-      "source_location": "L4",
       "_callable": true,
       "_origin": "ast",
-      "id": "test_rpc_run",
+      "id": "test_rpc_roundcurrency",
       "community": 1131,
       "community_name": "test_rpc.cjs",
-      "norm_label": "run()"
+      "norm_label": "roundcurrency()"
     },
     {
       "label": "test_ssh.cjs",
@@ -32381,212 +32371,190 @@
       "norm_label": "tasks"
     },
     {
-      "label": "187-gestao-os-legadas/design.md",
+      "label": "189-fix-dashboard-cartesian-cte/design.md",
       "file_type": "document",
-      "source_file": "specs/187-gestao-os-legadas/design.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_187_gestao_os_legadas_design",
+      "id": "specs_189_fix_dashboard_cartesian_cte_design",
       "community": 1126,
-      "community_name": "Design: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
-      "norm_label": "187-gestao-os-legadas/design.md"
+      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "189-fix-dashboard-cartesian-cte/design.md"
     },
     {
-      "label": "Design: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "label": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "file_type": "document",
-      "source_file": "specs/187-gestao-os-legadas/design.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_187_gestao_os_legadas_design_design_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "id": "specs_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
       "community": 1126,
-      "community_name": "Design: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
-      "norm_label": "design: gestao de oss legadas do marco zero (187-gestao-os-legadas)"
+      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "design: correcao critica de cartesian product via ctes (189)"
     },
     {
       "label": "Arquitetura T\u00e9cnica",
       "file_type": "document",
-      "source_file": "specs/187-gestao-os-legadas/design.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_187_gestao_os_legadas_design_arquitetura_t\u00e9cnica",
+      "id": "specs_189_fix_dashboard_cartesian_cte_design_arquitetura_t\u00e9cnica",
       "community": 1126,
-      "community_name": "Design: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "arquitetura tecnica"
-    },
-    {
-      "label": "Interfaces TypeScript",
-      "file_type": "document",
-      "source_file": "specs/187-gestao-os-legadas/design.md",
-      "source_location": "L12",
-      "_origin": "ast",
-      "id": "specs_187_gestao_os_legadas_design_interfaces_typescript",
-      "community": 1126,
-      "community_name": "Design: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
-      "norm_label": "interfaces typescript"
     },
     {
       "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
       "file_type": "document",
-      "source_file": "specs/187-gestao-os-legadas/design.md",
-      "source_location": "L31",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L33",
       "_origin": "ast",
-      "id": "specs_187_gestao_os_legadas_design_componentes_hooks_fun\u00e7\u00f5es",
+      "id": "specs_189_fix_dashboard_cartesian_cte_design_componentes_hooks_fun\u00e7\u00f5es",
       "community": 1126,
-      "community_name": "Design: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "componentes / hooks / funcoes"
     },
     {
       "label": "Fluxo de UI",
       "file_type": "document",
-      "source_file": "specs/187-gestao-os-legadas/design.md",
-      "source_location": "L37",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L38",
       "_origin": "ast",
-      "id": "specs_187_gestao_os_legadas_design_fluxo_de_ui",
+      "id": "specs_189_fix_dashboard_cartesian_cte_design_fluxo_de_ui",
       "community": 1126,
-      "community_name": "Design: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "fluxo de ui"
-    },
-    {
-      "label": "Infra / Deploy",
-      "file_type": "document",
-      "source_file": "specs/187-gestao-os-legadas/design.md",
-      "source_location": "L50",
-      "_origin": "ast",
-      "id": "specs_187_gestao_os_legadas_design_infra_deploy",
-      "community": 1126,
-      "community_name": "Design: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
-      "norm_label": "infra / deploy"
     },
     {
       "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
       "file_type": "document",
-      "source_file": "specs/187-gestao-os-legadas/design.md",
-      "source_location": "L53",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L43",
       "_origin": "ast",
-      "id": "specs_187_gestao_os_legadas_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "id": "specs_189_fix_dashboard_cartesian_cte_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
       "community": 1126,
-      "community_name": "Design: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
     },
     {
-      "label": "187-gestao-os-legadas/proposal.md",
+      "label": "189-fix-dashboard-cartesian-cte/proposal.md",
       "file_type": "document",
-      "source_file": "specs/187-gestao-os-legadas/proposal.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_187_gestao_os_legadas_proposal",
-      "community": 1130,
-      "community_name": "Proposal: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
-      "norm_label": "187-gestao-os-legadas/proposal.md"
+      "id": "specs_189_fix_dashboard_cartesian_cte_proposal",
+      "community": 930,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "189-fix-dashboard-cartesian-cte/proposal.md"
     },
     {
-      "label": "Proposal: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "label": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "file_type": "document",
-      "source_file": "specs/187-gestao-os-legadas/proposal.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_187_gestao_os_legadas_proposal_proposal_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
-      "community": 1130,
-      "community_name": "Proposal: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
-      "norm_label": "proposal: gestao de oss legadas do marco zero (187-gestao-os-legadas)"
+      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "community": 930,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "proposal: correcao critica de cartesian product via ctes (189)"
     },
     {
       "label": "Problema",
       "file_type": "document",
-      "source_file": "specs/187-gestao-os-legadas/proposal.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_187_gestao_os_legadas_proposal_problema",
-      "community": 1130,
-      "community_name": "Proposal: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_problema",
+      "community": 930,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "problema"
     },
     {
       "label": "Solu\u00e7\u00e3o Proposta",
       "file_type": "document",
-      "source_file": "specs/187-gestao-os-legadas/proposal.md",
-      "source_location": "L6",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L7",
       "_origin": "ast",
-      "id": "specs_187_gestao_os_legadas_proposal_solu\u00e7\u00e3o_proposta",
-      "community": 1130,
-      "community_name": "Proposal: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 930,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "solucao proposta"
     },
     {
       "label": "Contratos de Dados",
       "file_type": "document",
-      "source_file": "specs/187-gestao-os-legadas/proposal.md",
-      "source_location": "L10",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L15",
       "_origin": "ast",
-      "id": "specs_187_gestao_os_legadas_proposal_contratos_de_dados",
-      "community": 1130,
-      "community_name": "Proposal: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_contratos_de_dados",
+      "community": 930,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "contratos de dados"
     },
     {
       "label": "API / Interface",
       "file_type": "document",
-      "source_file": "specs/187-gestao-os-legadas/proposal.md",
-      "source_location": "L18",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L19",
       "_origin": "ast",
-      "id": "specs_187_gestao_os_legadas_proposal_api_interface",
-      "community": 1130,
-      "community_name": "Proposal: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_api_interface",
+      "community": 930,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "api / interface"
     },
     {
       "label": "Features Existentes Impactadas",
       "file_type": "document",
-      "source_file": "specs/187-gestao-os-legadas/proposal.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
       "source_location": "L23",
       "_origin": "ast",
-      "id": "specs_187_gestao_os_legadas_proposal_features_existentes_impactadas",
-      "community": 1130,
-      "community_name": "Proposal: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_features_existentes_impactadas",
+      "community": 930,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "features existentes impactadas"
     },
     {
       "label": "Risco Principal",
       "file_type": "document",
-      "source_file": "specs/187-gestao-os-legadas/proposal.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
       "source_location": "L27",
       "_origin": "ast",
-      "id": "specs_187_gestao_os_legadas_proposal_risco_principal",
-      "community": 1130,
-      "community_name": "Proposal: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_risco_principal",
+      "community": 930,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "risco principal"
     },
     {
-      "label": "187-gestao-os-legadas/spec-plan.md",
+      "label": "189-fix-dashboard-cartesian-cte/spec-plan.md",
       "file_type": "document",
-      "source_file": "specs/187-gestao-os-legadas/spec-plan.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_187_gestao_os_legadas_spec_plan",
-      "community": 1132,
-      "community_name": "Spec Plan: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
-      "norm_label": "187-gestao-os-legadas/spec-plan.md"
+      "id": "specs_189_fix_dashboard_cartesian_cte_spec_plan",
+      "community": 1136,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "189-fix-dashboard-cartesian-cte/spec-plan.md"
     },
     {
-      "label": "Spec Plan: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "label": "Spec Plan: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "file_type": "document",
-      "source_file": "specs/187-gestao-os-legadas/spec-plan.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_187_gestao_os_legadas_spec_plan_spec_plan_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
-      "community": 1132,
-      "community_name": "Spec Plan: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
-      "norm_label": "spec plan: gestao de oss legadas do marco zero (187-gestao-os-legadas)"
+      "id": "specs_189_fix_dashboard_cartesian_cte_spec_plan_spec_plan_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "community": 1136,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "spec plan: correcao critica de cartesian product via ctes (189)"
     },
     {
       "label": "Tasks",
       "file_type": "document",
-      "source_file": "specs/187-gestao-os-legadas/spec-plan.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/spec-plan.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_187_gestao_os_legadas_spec_plan_tasks",
-      "community": 1132,
-      "community_name": "Spec Plan: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "id": "specs_189_fix_dashboard_cartesian_cte_spec_plan_tasks",
+      "community": 1136,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "tasks"
     },
     {
@@ -56303,6 +56271,413 @@
       "id": "specs_archive_186_refatoracao_marco_zero_spec_plan_tasks",
       "community": 1133,
       "community_name": "Spec Plan: Refatora\u00e7\u00e3o Absoluta do Marco Zero: Matem\u00e1tica, Logs e UI Dedicada (186)",
+      "norm_label": "tasks"
+    },
+    {
+      "label": "187-gestao-os-legadas/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/187-gestao-os-legadas/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_187_gestao_os_legadas_design",
+      "community": 406,
+      "community_name": "Design: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "norm_label": "187-gestao-os-legadas/design.md"
+    },
+    {
+      "label": "Design: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "file_type": "document",
+      "source_file": "specs/archive/187-gestao-os-legadas/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_187_gestao_os_legadas_design_design_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "community": 406,
+      "community_name": "Design: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "norm_label": "design: gestao de oss legadas do marco zero (187-gestao-os-legadas)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/archive/187-gestao-os-legadas/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_187_gestao_os_legadas_design_arquitetura_t\u00e9cnica",
+      "community": 406,
+      "community_name": "Design: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Interfaces TypeScript",
+      "file_type": "document",
+      "source_file": "specs/archive/187-gestao-os-legadas/design.md",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "specs_archive_187_gestao_os_legadas_design_interfaces_typescript",
+      "community": 406,
+      "community_name": "Design: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "norm_label": "interfaces typescript"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/archive/187-gestao-os-legadas/design.md",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "specs_archive_187_gestao_os_legadas_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 406,
+      "community_name": "Design: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Fluxo de UI",
+      "file_type": "document",
+      "source_file": "specs/archive/187-gestao-os-legadas/design.md",
+      "source_location": "L37",
+      "_origin": "ast",
+      "id": "specs_archive_187_gestao_os_legadas_design_fluxo_de_ui",
+      "community": 406,
+      "community_name": "Design: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "norm_label": "fluxo de ui"
+    },
+    {
+      "label": "Infra / Deploy",
+      "file_type": "document",
+      "source_file": "specs/archive/187-gestao-os-legadas/design.md",
+      "source_location": "L50",
+      "_origin": "ast",
+      "id": "specs_archive_187_gestao_os_legadas_design_infra_deploy",
+      "community": 406,
+      "community_name": "Design: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "norm_label": "infra / deploy"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/archive/187-gestao-os-legadas/design.md",
+      "source_location": "L53",
+      "_origin": "ast",
+      "id": "specs_archive_187_gestao_os_legadas_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 406,
+      "community_name": "Design: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "187-gestao-os-legadas/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/187-gestao-os-legadas/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_187_gestao_os_legadas_proposal",
+      "community": 1076,
+      "community_name": "Proposal: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "norm_label": "187-gestao-os-legadas/proposal.md"
+    },
+    {
+      "label": "Proposal: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "file_type": "document",
+      "source_file": "specs/archive/187-gestao-os-legadas/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_187_gestao_os_legadas_proposal_proposal_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "community": 1076,
+      "community_name": "Proposal: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "norm_label": "proposal: gestao de oss legadas do marco zero (187-gestao-os-legadas)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/archive/187-gestao-os-legadas/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_187_gestao_os_legadas_proposal_problema",
+      "community": 1076,
+      "community_name": "Proposal: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/archive/187-gestao-os-legadas/proposal.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "specs_archive_187_gestao_os_legadas_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 1076,
+      "community_name": "Proposal: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/187-gestao-os-legadas/proposal.md",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "specs_archive_187_gestao_os_legadas_proposal_contratos_de_dados",
+      "community": 1076,
+      "community_name": "Proposal: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/archive/187-gestao-os-legadas/proposal.md",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "specs_archive_187_gestao_os_legadas_proposal_api_interface",
+      "community": 1076,
+      "community_name": "Proposal: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/archive/187-gestao-os-legadas/proposal.md",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "specs_archive_187_gestao_os_legadas_proposal_features_existentes_impactadas",
+      "community": 1076,
+      "community_name": "Proposal: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/archive/187-gestao-os-legadas/proposal.md",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "specs_archive_187_gestao_os_legadas_proposal_risco_principal",
+      "community": 1076,
+      "community_name": "Proposal: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "187-gestao-os-legadas/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/187-gestao-os-legadas/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_187_gestao_os_legadas_spec_plan",
+      "community": 1130,
+      "community_name": "Spec Plan: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "norm_label": "187-gestao-os-legadas/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "file_type": "document",
+      "source_file": "specs/archive/187-gestao-os-legadas/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_187_gestao_os_legadas_spec_plan_spec_plan_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "community": 1130,
+      "community_name": "Spec Plan: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "norm_label": "spec plan: gestao de oss legadas do marco zero (187-gestao-os-legadas)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/187-gestao-os-legadas/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_187_gestao_os_legadas_spec_plan_tasks",
+      "community": 1130,
+      "community_name": "Spec Plan: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "norm_label": "tasks"
+    },
+    {
+      "label": "188-sanitizacao-ponto-flutuante/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_design",
+      "community": 1109,
+      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "188-sanitizacao-ponto-flutuante/design.md"
+    },
+    {
+      "label": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "community": 1109,
+      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "design: sanitizacao global de ponto flutuante (188-sanitizacao-ponto-flutuante)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_design_arquitetura_t\u00e9cnica",
+      "community": 1109,
+      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Interfaces TypeScript",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_design_interfaces_typescript",
+      "community": 1109,
+      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "interfaces typescript"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 1109,
+      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Fluxo de Execu\u00e7\u00e3o",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_design_fluxo_de_execu\u00e7\u00e3o",
+      "community": 1109,
+      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "fluxo de execucao"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L35",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 1109,
+      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "188-sanitizacao-ponto-flutuante/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_proposal",
+      "community": 1089,
+      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "188-sanitizacao-ponto-flutuante/proposal.md"
+    },
+    {
+      "label": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
+      "community": 1089,
+      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "proposal: sanitizacao global de ponto flutuante e arredondamento financeiro (188-sanitizacao-ponto-flutuante)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_problema",
+      "community": 1089,
+      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 1089,
+      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_contratos_de_dados",
+      "community": 1089,
+      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_api_interface",
+      "community": 1089,
+      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_features_existentes_impactadas",
+      "community": 1089,
+      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_risco_principal",
+      "community": 1089,
+      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "188-sanitizacao-ponto-flutuante/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_spec_plan",
+      "community": 1137,
+      "community_name": "Spec Plan: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "188-sanitizacao-ponto-flutuante/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_spec_plan_spec_plan_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "community": 1137,
+      "community_name": "Spec Plan: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "spec plan: sanitizacao global de ponto flutuante (188-sanitizacao-ponto-flutuante)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_spec_plan_tasks",
+      "community": 1137,
+      "community_name": "Spec Plan: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
       "norm_label": "tasks"
     },
     {
@@ -103804,7 +104179,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/parsers/ofxParser.ts",
-      "source_location": "L166",
+      "source_location": "L167",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_ofxparser_parseofxfile",
@@ -104603,7 +104978,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/parsers/ofxParser.ts",
-      "source_location": "L125",
+      "source_location": "L126",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_ofxparser_parseofxfile",
@@ -104729,7 +105104,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L35",
+      "source_location": "L36",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser",
@@ -104740,7 +105115,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L67",
+      "source_location": "L60",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser",
@@ -104751,7 +105126,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L5",
+      "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser",
@@ -104762,7 +105137,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L29",
+      "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser",
@@ -104773,7 +105148,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L23",
+      "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser",
@@ -104784,7 +105159,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L48",
+      "source_location": "L41",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser",
@@ -104795,11 +105170,47 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L103",
+      "source_location": "L96",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser",
       "target": "src_lib_parsers_marcozeroparser_parsemarcozeroplanilha",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/parsers/marcoZeroParser.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_parsers_marcozeroparser",
+      "target": "src_lib_parsers_numberutils",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/parsers/marcoZeroParser.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_parsers_marcozeroparser",
+      "target": "src_lib_parsers_numberutils_extractnumber",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/parsers/marcoZeroParser.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_parsers_marcozeroparser",
+      "target": "src_lib_parsers_numberutils_roundcurrency",
       "confidence_score": 1.0
     },
     {
@@ -104843,7 +105254,19 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L187",
+      "source_location": "L37",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_parsers_marcozeroparser_cleannumber",
+      "target": "src_lib_parsers_numberutils_extractnumber",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/parsers/marcoZeroParser.ts",
+      "source_location": "L180",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser_parsemarcozeroplanilha",
@@ -104855,7 +105278,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L293",
+      "source_location": "L286",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser_parsemarcozeroplanilha",
@@ -104867,11 +105290,34 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/marcoZeroParser.ts",
-      "source_location": "L250",
+      "source_location": "L243",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_marcozeroparser_parsemarcozeroplanilha",
       "target": "src_lib_parsers_marcozeroparser_isknownstore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/parsers/marcoZeroParser.ts",
+      "source_location": "L237",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_parsers_marcozeroparser_parsemarcozeroplanilha",
+      "target": "src_lib_parsers_numberutils_roundcurrency"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/parsers/numberUtils.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_parsers_numberutils",
+      "target": "src_lib_parsers_numberutils_extractnumber",
       "confidence_score": 1.0
     },
     {
@@ -104882,7 +105328,19 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_numberutils",
-      "target": "src_lib_parsers_numberutils_extractnumber",
+      "target": "src_lib_parsers_numberutils_roundcurrency",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/parsers/ofxParser.ts",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_parsers_ofxparser",
+      "target": "src_lib_parsers_numberutils",
       "confidence_score": 1.0
     },
     {
@@ -104896,6 +105354,66 @@
       "source": "src_lib_parsers_redeparser",
       "target": "src_lib_parsers_numberutils",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/parsers/numberUtils.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_parsers_numberutils_extractnumber",
+      "target": "src_lib_parsers_numberutils_roundcurrency",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/parsers/redeParser.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_parsers_redeparser",
+      "target": "src_lib_parsers_numberutils_roundcurrency",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/parsers/redeParser.ts",
+      "source_location": "L123",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_parsers_redeparser_parseredefile",
+      "target": "src_lib_parsers_numberutils_roundcurrency"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/parsers/ofxParser.ts",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_parsers_ofxparser",
+      "target": "src_lib_parsers_numberutils_extractnumber",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/parsers/ofxParser.ts",
+      "source_location": "L70",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_lib_parsers_ofxparser_parseofxfile",
+      "target": "src_lib_parsers_numberutils_extractnumber"
     },
     {
       "relation": "imports",
@@ -104925,7 +105443,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/ofxParser.ts",
-      "source_location": "L25",
+      "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_ofxparser",
@@ -104958,7 +105476,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/ofxParser.ts",
-      "source_location": "L41",
+      "source_location": "L42",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_ofxparser",
@@ -104970,7 +105488,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/lib/parsers/ofxParser.ts",
-      "source_location": "L113",
+      "source_location": "L114",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_ofxparser_parseofxfile",
@@ -108202,33 +108720,11 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "test_rpc.cjs",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "test_rpc",
-      "target": "test_rpc_createclient",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "test_rpc.cjs",
-      "source_location": "L4",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "test_rpc",
-      "target": "test_rpc_run",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "test_rpc.cjs",
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_rpc",
-      "target": "test_rpc_supabase",
+      "target": "test_rpc_roundcurrency",
       "confidence_score": 1.0
     },
     {
@@ -115095,177 +115591,155 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/187-gestao-os-legadas/design.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_187_gestao_os_legadas_design",
-      "target": "specs_187_gestao_os_legadas_design_design_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "source": "specs_189_fix_dashboard_cartesian_cte_design",
+      "target": "specs_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/187-gestao-os-legadas/design.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_187_gestao_os_legadas_design_design_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
-      "target": "specs_187_gestao_os_legadas_design_arquitetura_t\u00e9cnica",
+      "source": "specs_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_design_arquitetura_t\u00e9cnica",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/187-gestao-os-legadas/design.md",
-      "source_location": "L53",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_187_gestao_os_legadas_design_design_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
-      "target": "specs_187_gestao_os_legadas_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "source": "specs_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/187-gestao-os-legadas/design.md",
-      "source_location": "L31",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L33",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_187_gestao_os_legadas_design_design_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
-      "target": "specs_187_gestao_os_legadas_design_componentes_hooks_fun\u00e7\u00f5es",
+      "source": "specs_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_design_componentes_hooks_fun\u00e7\u00f5es",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/187-gestao-os-legadas/design.md",
-      "source_location": "L37",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L38",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_187_gestao_os_legadas_design_design_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
-      "target": "specs_187_gestao_os_legadas_design_fluxo_de_ui",
+      "source": "specs_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_design_fluxo_de_ui",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/187-gestao-os-legadas/design.md",
-      "source_location": "L50",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_187_gestao_os_legadas_design_design_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
-      "target": "specs_187_gestao_os_legadas_design_infra_deploy",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/187-gestao-os-legadas/design.md",
-      "source_location": "L12",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_187_gestao_os_legadas_design_design_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
-      "target": "specs_187_gestao_os_legadas_design_interfaces_typescript",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/187-gestao-os-legadas/proposal.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_187_gestao_os_legadas_proposal",
-      "target": "specs_187_gestao_os_legadas_proposal_proposal_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "source": "specs_189_fix_dashboard_cartesian_cte_proposal",
+      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/187-gestao-os-legadas/proposal.md",
-      "source_location": "L18",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_187_gestao_os_legadas_proposal_proposal_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
-      "target": "specs_187_gestao_os_legadas_proposal_api_interface",
+      "source": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_api_interface",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/187-gestao-os-legadas/proposal.md",
-      "source_location": "L10",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_187_gestao_os_legadas_proposal_proposal_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
-      "target": "specs_187_gestao_os_legadas_proposal_contratos_de_dados",
+      "source": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_contratos_de_dados",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/187-gestao-os-legadas/proposal.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
       "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_187_gestao_os_legadas_proposal_proposal_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
-      "target": "specs_187_gestao_os_legadas_proposal_features_existentes_impactadas",
+      "source": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_features_existentes_impactadas",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/187-gestao-os-legadas/proposal.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_187_gestao_os_legadas_proposal_proposal_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
-      "target": "specs_187_gestao_os_legadas_proposal_problema",
+      "source": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_problema",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/187-gestao-os-legadas/proposal.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
       "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_187_gestao_os_legadas_proposal_proposal_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
-      "target": "specs_187_gestao_os_legadas_proposal_risco_principal",
+      "source": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_risco_principal",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/187-gestao-os-legadas/proposal.md",
-      "source_location": "L6",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_187_gestao_os_legadas_proposal_proposal_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
-      "target": "specs_187_gestao_os_legadas_proposal_solu\u00e7\u00e3o_proposta",
+      "source": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_solu\u00e7\u00e3o_proposta",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/187-gestao-os-legadas/spec-plan.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/spec-plan.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_187_gestao_os_legadas_spec_plan",
-      "target": "specs_187_gestao_os_legadas_spec_plan_spec_plan_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "source": "specs_189_fix_dashboard_cartesian_cte_spec_plan",
+      "target": "specs_189_fix_dashboard_cartesian_cte_spec_plan_spec_plan_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/187-gestao-os-legadas/spec-plan.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/spec-plan.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_187_gestao_os_legadas_spec_plan_spec_plan_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
-      "target": "specs_187_gestao_os_legadas_spec_plan_tasks",
+      "source": "specs_189_fix_dashboard_cartesian_cte_spec_plan_spec_plan_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_spec_plan_tasks",
       "confidence_score": 1.0
     },
     {
@@ -134263,6 +134737,347 @@
       "_origin": "ast",
       "source": "specs_archive_186_refatoracao_marco_zero_spec_plan_spec_plan_refatora\u00e7\u00e3o_absoluta_do_marco_zero_matem\u00e1tica_logs_e_ui_dedicada_186",
       "target": "specs_archive_186_refatoracao_marco_zero_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/187-gestao-os-legadas/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_187_gestao_os_legadas_design",
+      "target": "specs_archive_187_gestao_os_legadas_design_design_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/187-gestao-os-legadas/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_187_gestao_os_legadas_design_design_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "target": "specs_archive_187_gestao_os_legadas_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/187-gestao-os-legadas/design.md",
+      "source_location": "L53",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_187_gestao_os_legadas_design_design_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "target": "specs_archive_187_gestao_os_legadas_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/187-gestao-os-legadas/design.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_187_gestao_os_legadas_design_design_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "target": "specs_archive_187_gestao_os_legadas_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/187-gestao-os-legadas/design.md",
+      "source_location": "L37",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_187_gestao_os_legadas_design_design_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "target": "specs_archive_187_gestao_os_legadas_design_fluxo_de_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/187-gestao-os-legadas/design.md",
+      "source_location": "L50",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_187_gestao_os_legadas_design_design_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "target": "specs_archive_187_gestao_os_legadas_design_infra_deploy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/187-gestao-os-legadas/design.md",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_187_gestao_os_legadas_design_design_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "target": "specs_archive_187_gestao_os_legadas_design_interfaces_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/187-gestao-os-legadas/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_187_gestao_os_legadas_proposal",
+      "target": "specs_archive_187_gestao_os_legadas_proposal_proposal_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/187-gestao-os-legadas/proposal.md",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_187_gestao_os_legadas_proposal_proposal_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "target": "specs_archive_187_gestao_os_legadas_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/187-gestao-os-legadas/proposal.md",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_187_gestao_os_legadas_proposal_proposal_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "target": "specs_archive_187_gestao_os_legadas_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/187-gestao-os-legadas/proposal.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_187_gestao_os_legadas_proposal_proposal_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "target": "specs_archive_187_gestao_os_legadas_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/187-gestao-os-legadas/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_187_gestao_os_legadas_proposal_proposal_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "target": "specs_archive_187_gestao_os_legadas_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/187-gestao-os-legadas/proposal.md",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_187_gestao_os_legadas_proposal_proposal_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "target": "specs_archive_187_gestao_os_legadas_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/187-gestao-os-legadas/proposal.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_187_gestao_os_legadas_proposal_proposal_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "target": "specs_archive_187_gestao_os_legadas_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/187-gestao-os-legadas/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_187_gestao_os_legadas_spec_plan",
+      "target": "specs_archive_187_gestao_os_legadas_spec_plan_spec_plan_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/187-gestao-os-legadas/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_187_gestao_os_legadas_spec_plan_spec_plan_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
+      "target": "specs_archive_187_gestao_os_legadas_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_design",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L35",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_design_fluxo_de_execu\u00e7\u00e3o",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_design_interfaces_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_proposal",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_spec_plan",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_spec_plan_spec_plan_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_spec_plan_spec_plan_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_spec_plan_tasks",
       "confidence_score": 1.0
     },
     {

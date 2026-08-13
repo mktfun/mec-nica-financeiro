@@ -1255,18 +1255,18 @@
     "semantic_hash": ""
   },
   "src/lib/parsers/numberUtils.ts": {
-    "mtime": 1785512916.0,
-    "ast_hash": "1f940ec1aa010a93ac2cb777bdf8ac4a",
+    "mtime": 1786638951.705135,
+    "ast_hash": "4a6d27414a17a9e90d1efa018b301af2",
     "semantic_hash": ""
   },
   "src/lib/parsers/ofxParser.ts": {
-    "mtime": 1786624537.3404198,
-    "ast_hash": "6de4acc2cde26db103ab5a8851896077",
+    "mtime": 1786639021.4783108,
+    "ast_hash": "6c1a2b953ba8a92dcafcba1950effe08",
     "semantic_hash": ""
   },
   "src/lib/parsers/redeParser.ts": {
-    "mtime": 1786143715.9647143,
-    "ast_hash": "229912b7b348e854f40cb313646778d4",
+    "mtime": 1786638977.1640549,
+    "ast_hash": "f5d1705bf31b0c552205177d9d8ca6c5",
     "semantic_hash": ""
   },
   "src/lib/storage.ts": {
@@ -1645,8 +1645,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1786637667.2516441,
-    "ast_hash": "d3eb97a0a7a7923f4a6e315b4abe9f31",
+    "mtime": 1786639920.3644602,
+    "ast_hash": "05555a30e4dfeb907327d82ddd8750de",
     "semantic_hash": ""
   },
   "specs/016-loja-cleanup/design.md": {
@@ -3325,8 +3325,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786631163.7963607,
-    "ast_hash": "cff9961e124b75a4c041eb4217e90f71",
+    "mtime": 1786641872.8014224,
+    "ast_hash": "dcf11f4032a19e9f92e3f15824429bcc",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -6295,8 +6295,8 @@
     "semantic_hash": ""
   },
   "src/lib/parsers/marcoZeroParser.ts": {
-    "mtime": 1786624581.9972188,
-    "ast_hash": "2e5ec7eafc052855ae002cf559c00e1a",
+    "mtime": 1786639067.5198326,
+    "ast_hash": "15550e7e745eca740c43742433001bed",
     "semantic_hash": ""
   },
   "supabase/migrations/20260811124024_create_estoque_os_pendente.sql": {
@@ -6340,7 +6340,7 @@
     "semantic_hash": ""
   },
   "tmp_schema_dump.sql": {
-    "mtime": 1786455251.0736244,
+    "mtime": 1786640277.1077514,
     "ast_hash": "fc802db88cdc5f6b48aad8fa238d86bb",
     "semantic_hash": ""
   },
@@ -6775,23 +6775,8 @@
     "semantic_hash": ""
   },
   "test_rpc.cjs": {
-    "mtime": 1786632811.6868114,
-    "ast_hash": "c51311b03148f325474645e4a99a5681",
-    "semantic_hash": ""
-  },
-  "specs/187-gestao-os-legadas/design.md": {
-    "mtime": 1786633450.810053,
-    "ast_hash": "9971b56e466cf667232cec31390d9c81",
-    "semantic_hash": ""
-  },
-  "specs/187-gestao-os-legadas/proposal.md": {
-    "mtime": 1786633432.1886387,
-    "ast_hash": "5366b0b903d49ca108954522422827a9",
-    "semantic_hash": ""
-  },
-  "specs/187-gestao-os-legadas/spec-plan.md": {
-    "mtime": 1786633647.046906,
-    "ast_hash": "2539584b1e1ddde1d84062bc18a1d8d4",
+    "mtime": 1786639114.067915,
+    "ast_hash": "e43a36fb9151c434ff25149e1a4bb791",
     "semantic_hash": ""
   },
   "specs/archive/186-refatoracao-marco-zero/design.md": {
@@ -6807,6 +6792,41 @@
   "specs/archive/186-refatoracao-marco-zero/spec-plan.md": {
     "mtime": 1786631100.480519,
     "ast_hash": "ff671529094ac8cfed70b7d56f32f2d0",
+    "semantic_hash": ""
+  },
+  "specs/archive/187-gestao-os-legadas/design.md": {
+    "mtime": 1786633450.810053,
+    "ast_hash": "9971b56e466cf667232cec31390d9c81",
+    "semantic_hash": ""
+  },
+  "specs/archive/187-gestao-os-legadas/proposal.md": {
+    "mtime": 1786633432.1886387,
+    "ast_hash": "5366b0b903d49ca108954522422827a9",
+    "semantic_hash": ""
+  },
+  "specs/archive/187-gestao-os-legadas/spec-plan.md": {
+    "mtime": 1786633647.046906,
+    "ast_hash": "2539584b1e1ddde1d84062bc18a1d8d4",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813140500_fix_cartesian_ctes.sql": {
+    "mtime": 1786640722.637616,
+    "ast_hash": "310f0970c3b5da2860cdaf5ed6566b4d",
+    "semantic_hash": ""
+  },
+  "specs/archive/188-sanitizacao-ponto-flutuante/design.md": {
+    "mtime": 1786638905.8960085,
+    "ast_hash": "192015967babf1f0b9faeeb44b17fa18",
+    "semantic_hash": ""
+  },
+  "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md": {
+    "mtime": 1786638889.4232771,
+    "ast_hash": "d8b0305bc5551be94ead28ea73f56737",
+    "semantic_hash": ""
+  },
+  "specs/archive/188-sanitizacao-ponto-flutuante/spec-plan.md": {
+    "mtime": 1786639132.2180133,
+    "ast_hash": "57e76b3688e2ce7f82669afd957ee555",
     "semantic_hash": ""
   }
 }
