@@ -176,7 +176,7 @@ function ConciliacaoPage() {
                               {/* 1. Faturam. Banco (OFX) */}
                               <div>
                                 <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
-                                  Faturam. Banco
+                                  Saldo Banco Itaú
                                 </span>
                                 <p className="font-bold text-sm text-[var(--text-secondary)] font-mono">
                                   <AnimatedNumber value={log.faturamento_banco} format="currency" />

@@ -146,16 +146,17 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
   let bankBalance: number | undefined;
   const ledgerMatch = text.match(/<LEDGERBAL>[\s\S]*?<BALAMT>([^\r\n<]+)/);
   if (ledgerMatch) {
-    const balStr = ledgerMatch[1].trim();
-    let balNum = extractNumber(balStr);
-    if (isNaN(balNum)) balNum = parseInt(balStr, 10);
-    if (!isNaN(balNum)) {
-      // Se a string original NÃO tiver vírgula nem ponto, e o valor for grande (ex: > 100000), assumimos que está em centavos.
-      // Cuidado para não dividir saldos pequenos que são reais (ex: 4585).
-      if (!balStr.includes('.') && !balStr.includes(',') && Math.abs(balNum) > 100000) {
-         balNum = balNum / 100.0;
-      }
-      bankBalance = balNum;
+    const rawValue = ledgerMatch[1].trim();
+    // 1. Substitui vírgula por ponto se necessário
+    let cleanStr = rawValue.replace(',', '.').trim();
+    // 2. Faz o parse para Float preservando o ponto decimal real
+    const parsedFloat = parseFloat(cleanStr);
+    
+    if (!isNaN(parsedFloat)) {
+      // 3. Converte para centavos de forma matemática segura
+      const cents = Math.round(parsedFloat * 100);
+      // Retorna em Reais para salvar na coluna do banco
+      bankBalance = cents / 100;
     }
   }
 

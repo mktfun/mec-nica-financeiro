@@ -6101,7 +6101,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "package_dependencies_ai",
-      "community": 1138,
+      "community": 1146,
       "community_name": "ai",
       "norm_label": "ai"
     },
@@ -6112,7 +6112,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "ai",
-      "community": 1138,
+      "community": 1146,
       "community_name": "ai",
       "norm_label": "ai"
     },
@@ -6937,8 +6937,8 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "package_devdependencies_eslint",
-      "community": 1,
-      "community_name": "devDependencies",
+      "community": 1142,
+      "community_name": "eslint",
       "norm_label": "eslint"
     },
     {
@@ -6948,8 +6948,8 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "eslint",
-      "community": 1,
-      "community_name": "devDependencies",
+      "community": 1142,
+      "community_name": "eslint",
       "norm_label": "eslint"
     },
     {
@@ -6959,7 +6959,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "package_devdependencies_eslint_config_prettier",
-      "community": 1132,
+      "community": 1147,
       "community_name": "eslint-config-prettier",
       "norm_label": "eslint-config-prettier"
     },
@@ -6970,7 +6970,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "eslint_config_prettier",
-      "community": 1132,
+      "community": 1147,
       "community_name": "eslint-config-prettier",
       "norm_label": "eslint-config-prettier"
     },
@@ -7025,8 +7025,8 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "package_devdependencies_eslint_plugin_react_refresh",
-      "community": 729,
-      "community_name": "eslint-plugin-react-refresh",
+      "community": 1,
+      "community_name": "devDependencies",
       "norm_label": "eslint-plugin-react-refresh"
     },
     {
@@ -7036,8 +7036,8 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "eslint_plugin_react_refresh",
-      "community": 729,
-      "community_name": "eslint-plugin-react-refresh",
+      "community": 1,
+      "community_name": "devDependencies",
       "norm_label": "eslint-plugin-react-refresh"
     },
     {
@@ -15347,8 +15347,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "agenteiaconfigpanel.tsx"
     },
     {
@@ -15358,8 +15358,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_model_options",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "model_options"
     },
     {
@@ -15369,8 +15369,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_provider_labels",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "provider_labels"
     },
     {
@@ -15381,8 +15381,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_agenteiaconfigpanel",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "agenteiaconfigpanel()"
     },
     {
@@ -15392,8 +15392,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_cacheagentepanel",
-      "community": 17,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "cacheagentepanel.tsx"
     },
     {
@@ -15404,8 +15404,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_cacheagentepanel_cacheagentepanel",
-      "community": 17,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "cacheagentepanel()"
     },
     {
@@ -15439,8 +15439,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel_aisettingsform",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "aisettingsform()"
     },
     {
@@ -15450,8 +15450,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_custospanel",
-      "community": 17,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "custospanel.tsx"
     },
     {
@@ -15473,8 +15473,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_logsagentepanel",
-      "community": 677,
-      "community_name": "AppShell.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "logsagentepanel.tsx"
     },
     {
@@ -15485,8 +15485,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_logsagentepanel_logsagentepanel",
-      "community": 677,
-      "community_name": "AppShell.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "logsagentepanel()"
     },
     {
@@ -15496,8 +15496,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel",
-      "community": 1092,
-      "community_name": "LogsMotorPanel.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "logsmotorpanel.tsx"
     },
     {
@@ -15508,8 +15508,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel_logsmotorpanel",
-      "community": 1092,
-      "community_name": "LogsMotorPanel.tsx",
+      "community": 1141,
+      "community_name": "logs.motor.tsx",
       "norm_label": "logsmotorpanel()"
     },
     {
@@ -16569,7 +16569,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_bankreconciliationdashboard",
       "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "bankreconciliationdashboard.tsx"
     },
     {
@@ -16581,7 +16581,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_bankreconciliationdashboard_bankreconciliationdashboard",
       "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "bankreconciliationdashboard()"
     },
     {
@@ -16592,7 +16592,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_cashflowchart",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "cashflowchart.tsx"
     },
     {
@@ -16604,7 +16604,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_cashflowchart_cashflowchart",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "cashflowchart()"
     },
     {
@@ -16614,7 +16614,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart",
-      "community": 42,
+      "community": 49,
       "community_name": "StoreTableDashboard.tsx",
       "norm_label": "evolucaomacrochart.tsx"
     },
@@ -16627,7 +16627,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_evolucaomacrochartprops",
-      "community": 42,
+      "community": 49,
       "community_name": "StoreTableDashboard.tsx",
       "norm_label": "evolucaomacrochartprops"
     },
@@ -16639,7 +16639,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatcurrency",
-      "community": 42,
+      "community": 49,
       "community_name": "StoreTableDashboard.tsx",
       "norm_label": "formatcurrency()"
     },
@@ -16651,7 +16651,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatdate",
-      "community": 42,
+      "community": 49,
       "community_name": "StoreTableDashboard.tsx",
       "norm_label": "formatdate()"
     },
@@ -16663,7 +16663,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatcompactcurrency",
-      "community": 42,
+      "community": 49,
       "community_name": "StoreTableDashboard.tsx",
       "norm_label": "formatcompactcurrency()"
     },
@@ -16675,7 +16675,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_evolucaomacrochart",
-      "community": 42,
+      "community": 49,
       "community_name": "StoreTableDashboard.tsx",
       "norm_label": "evolucaomacrochart()"
     },
@@ -16686,8 +16686,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart",
-      "community": 49,
-      "community_name": "patio.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "faturamentovscontaschart.tsx"
     },
     {
@@ -16699,8 +16699,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_faturamentovscontaschartprops",
-      "community": 49,
-      "community_name": "patio.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "faturamentovscontaschartprops"
     },
     {
@@ -16711,8 +16711,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_formatcurrency",
-      "community": 49,
-      "community_name": "patio.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -16723,8 +16723,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_shortenname",
-      "community": 49,
-      "community_name": "patio.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "shortenname()"
     },
     {
@@ -16735,8 +16735,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_customyaxistick",
-      "community": 49,
-      "community_name": "patio.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "customyaxistick()"
     },
     {
@@ -16747,8 +16747,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_customtooltip",
-      "community": 49,
-      "community_name": "patio.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "customtooltip()"
     },
     {
@@ -16759,8 +16759,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_faturamentovscontaschart",
-      "community": 49,
-      "community_name": "patio.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "faturamentovscontaschart()"
     },
     {
@@ -16770,7 +16770,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "herobalance.tsx"
     },
@@ -16782,7 +16782,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance_herobalance",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "herobalance()"
     },
@@ -16793,7 +16793,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "kpicard.tsx"
     },
@@ -16806,7 +16806,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicolor",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "kpicolor"
     },
@@ -16819,7 +16819,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicardprops",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "kpicardprops"
     },
@@ -16830,7 +16830,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_color_map",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "color_map"
     },
@@ -16842,7 +16842,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicard",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "kpicard()"
     },
@@ -16853,7 +16853,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "motorstatus.tsx"
     },
@@ -16865,7 +16865,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus_motorstatus",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "motorstatus()"
     },
@@ -16876,8 +16876,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "newtransactiondialog.tsx"
     },
     {
@@ -16889,8 +16889,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialogprops",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "newtransactiondialogprops"
     },
     {
@@ -16901,8 +16901,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialog",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "newtransactiondialog()"
     },
     {
@@ -16912,8 +16912,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_rationale_17",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "todo: implement transaction creation"
     },
     {
@@ -16923,8 +16923,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "quickactions.tsx"
     },
     {
@@ -16934,8 +16934,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_container",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "container"
     },
     {
@@ -16945,8 +16945,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_item",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "item"
     },
     {
@@ -16957,8 +16957,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_quickactions",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "quickactions()"
     },
     {
@@ -16968,7 +16968,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_recentactivity",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "recentactivity.tsx"
     },
@@ -16980,7 +16980,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_recentactivity_recentactivity",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "recentactivity()"
     },
@@ -17050,7 +17050,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard",
-      "community": 42,
+      "community": 49,
       "community_name": "StoreTableDashboard.tsx",
       "norm_label": "storetabledashboard.tsx"
     },
@@ -17063,7 +17063,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_storetabledashboardprops",
-      "community": 42,
+      "community": 49,
       "community_name": "StoreTableDashboard.tsx",
       "norm_label": "storetabledashboardprops"
     },
@@ -17075,7 +17075,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_fmt",
-      "community": 42,
+      "community": 49,
       "community_name": "StoreTableDashboard.tsx",
       "norm_label": "fmt()"
     },
@@ -17087,7 +17087,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_statusvariant",
-      "community": 42,
+      "community": 49,
       "community_name": "StoreTableDashboard.tsx",
       "norm_label": "statusvariant()"
     },
@@ -17099,7 +17099,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_statuslabel",
-      "community": 42,
+      "community": 49,
       "community_name": "StoreTableDashboard.tsx",
       "norm_label": "statuslabel()"
     },
@@ -17111,7 +17111,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_storetabledashboard",
-      "community": 42,
+      "community": 49,
       "community_name": "StoreTableDashboard.tsx",
       "norm_label": "storetabledashboard()"
     },
@@ -17231,8 +17231,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard",
-      "community": 17,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "auditoriapassivowizard.tsx"
     },
     {
@@ -17244,8 +17244,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard_auditoriapassivowizardprops",
-      "community": 17,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "auditoriapassivowizardprops"
     },
     {
@@ -17257,8 +17257,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard_osstatus",
-      "community": 17,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "osstatus"
     },
     {
@@ -17270,8 +17270,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard_unifiedos",
-      "community": 17,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "unifiedos"
     },
     {
@@ -17282,8 +17282,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard_auditoriapassivowizard",
-      "community": 17,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "auditoriapassivowizard()"
     },
     {
@@ -17483,8 +17483,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente",
-      "community": 17,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "matchmanualospendente.tsx"
     },
     {
@@ -17496,8 +17496,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente_matchmanualosprops",
-      "community": 17,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "matchmanualosprops"
     },
     {
@@ -17508,8 +17508,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente_matchmanualospendente",
-      "community": 17,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "matchmanualospendente()"
     },
     {
@@ -17682,8 +17682,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_topbar",
-      "community": 677,
-      "community_name": "AppShell.tsx",
+      "community": 42,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "topbar.tsx"
     },
     {
@@ -17694,8 +17694,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_layout_topbar_topbar",
-      "community": 677,
-      "community_name": "AppShell.tsx",
+      "community": 42,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "topbar()"
     },
     {
@@ -17705,7 +17705,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_animatednumber",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "animatednumber.tsx"
     },
@@ -17718,7 +17718,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumberprops",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "animatednumberprops"
     },
@@ -17730,7 +17730,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumber",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "animatednumber()"
     },
@@ -17777,8 +17777,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_button",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "button.tsx"
     },
     {
@@ -17790,8 +17790,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_button_buttonprops",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "buttonprops"
     },
     {
@@ -17802,8 +17802,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_button_button",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "button()"
     },
     {
@@ -17813,8 +17813,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_card",
-      "community": 17,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "card.tsx"
     },
     {
@@ -17826,8 +17826,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_card_cardprops",
-      "community": 17,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "cardprops"
     },
     {
@@ -17838,8 +17838,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_card_card",
-      "community": 17,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "card()"
     },
     {
@@ -17849,8 +17849,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_input",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "input.tsx"
     },
     {
@@ -17862,8 +17862,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_input_inputprops",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "inputprops"
     },
     {
@@ -17873,8 +17873,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_ui_input_input",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "input"
     },
     {
@@ -17920,8 +17920,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_modal",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "modal.tsx"
     },
     {
@@ -17933,8 +17933,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_modal_modalprops",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "modalprops"
     },
     {
@@ -17945,8 +17945,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_modal_modal",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "modal()"
     },
     {
@@ -17956,8 +17956,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_themetoggle",
-      "community": 677,
-      "community_name": "AppShell.tsx",
+      "community": 42,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "themetoggle.tsx"
     },
     {
@@ -17968,8 +17968,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_themetoggle_themetoggle",
-      "community": 677,
-      "community_name": "AppShell.tsx",
+      "community": 42,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "themetoggle()"
     },
     {
@@ -17980,7 +17980,7 @@
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone",
       "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "universaldropzone.tsx"
     },
     {
@@ -17993,7 +17993,7 @@
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_filetypecategory",
       "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "filetypecategory"
     },
     {
@@ -18006,7 +18006,7 @@
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_classifiedfile",
       "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "classifiedfile"
     },
     {
@@ -18018,7 +18018,7 @@
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_classifyfile",
       "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "classifyfile()"
     },
     {
@@ -18031,7 +18031,7 @@
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_universaldropzoneprops",
       "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "universaldropzoneprops"
     },
     {
@@ -18043,7 +18043,7 @@
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_universaldropzone",
       "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "universaldropzone()"
     },
     {
@@ -18076,8 +18076,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useaisettings",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "useaisettings.ts"
     },
     {
@@ -18089,8 +18089,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useaisettings_aisettings",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "aisettings"
     },
     {
@@ -18101,8 +18101,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useaisettings_useaisettings",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "useaisettings()"
     },
     {
@@ -18113,8 +18113,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useaisettings_usesaveaisettings",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "usesaveaisettings()"
     },
     {
@@ -18277,7 +18277,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "usebackenddashboard.ts"
     },
@@ -18290,7 +18290,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_storemetrics",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "storemetrics"
     },
@@ -18303,7 +18303,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_dashboardmetrics",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "dashboardmetrics"
     },
@@ -18315,7 +18315,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_usebackenddashboard",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "usebackenddashboard()"
     },
@@ -18386,8 +18386,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotlogs",
-      "community": 1092,
-      "community_name": "LogsMotorPanel.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "usebotlogs.ts"
     },
     {
@@ -18399,8 +18399,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_botauditlog",
-      "community": 1092,
-      "community_name": "LogsMotorPanel.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "botauditlog"
     },
     {
@@ -18411,8 +18411,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotlogs",
-      "community": 1092,
-      "community_name": "LogsMotorPanel.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "usebotlogs()"
     },
     {
@@ -18423,8 +18423,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotauditlogs",
-      "community": 1092,
-      "community_name": "LogsMotorPanel.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "usebotauditlogs()"
     },
     {
@@ -18469,7 +18469,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usecashregisters",
-      "community": 4,
+      "community": 42,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "usecashregisters.ts"
     },
@@ -18481,7 +18481,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usecashregisters_usecashregisters",
-      "community": 4,
+      "community": 42,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "usecashregisters()"
     },
@@ -18493,7 +18493,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usecashregisters_useclosecashregister",
-      "community": 4,
+      "community": 42,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "useclosecashregister()"
     },
@@ -18540,8 +18540,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usecentralimport_unifiedimportresult",
-      "community": 17,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "unifiedimportresult"
     },
     {
@@ -18613,8 +18613,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usereconciliationsfordate",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "usereconciliationsfordate()"
     },
     {
@@ -18649,8 +18649,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesaveimportedreport",
-      "community": 513,
-      "community_name": "importacoes.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "usesaveimportedreport()"
     },
     {
@@ -18661,7 +18661,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usestorehistory",
-      "community": 4,
+      "community": 42,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "usestorehistory()"
     },
@@ -18758,7 +18758,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesavebankreconciliation",
       "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "usesavebankreconciliation()"
     },
     {
@@ -18770,7 +18770,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesavemachinetotal",
       "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "usesavemachinetotal()"
     },
     {
@@ -18927,7 +18927,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2",
-      "community": 42,
+      "community": 49,
       "community_name": "StoreTableDashboard.tsx",
       "norm_label": "usedashboardv2.ts"
     },
@@ -18940,7 +18940,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_storemetrics",
-      "community": 42,
+      "community": 49,
       "community_name": "StoreTableDashboard.tsx",
       "norm_label": "storemetrics"
     },
@@ -18953,7 +18953,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_dashboardv2data",
-      "community": 42,
+      "community": 49,
       "community_name": "StoreTableDashboard.tsx",
       "norm_label": "dashboardv2data"
     },
@@ -18965,7 +18965,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_usedashboardv2",
-      "community": 42,
+      "community": 49,
       "community_name": "StoreTableDashboard.tsx",
       "norm_label": "usedashboardv2()"
     },
@@ -18976,8 +18976,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useexpenseimportprocessor",
-      "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "useexpenseimportprocessor.ts"
     },
     {
@@ -18989,8 +18989,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useexpenseimportprocessor_expenseimportresult",
-      "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "expenseimportresult"
     },
     {
@@ -19001,8 +19001,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useexpenseimportprocessor_processexpensefiles",
-      "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "processexpensefiles()"
     },
     {
@@ -19048,8 +19048,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "useimportlogs.ts"
     },
     {
@@ -19061,8 +19061,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlog",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "importlog"
     },
     {
@@ -19074,8 +19074,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlogfilters",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "importlogfilters"
     },
     {
@@ -19086,8 +19086,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogs",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "useimportlogs()"
     },
     {
@@ -19098,8 +19098,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogdetail",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "useimportlogdetail()"
     },
     {
@@ -19109,8 +19109,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor",
-      "community": 513,
-      "community_name": "importacoes.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "useimportprocessor.ts"
     },
     {
@@ -19122,8 +19122,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_parsedos",
-      "community": 513,
-      "community_name": "importacoes.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "parsedos"
     },
     {
@@ -19135,8 +19135,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_parsedreceivable",
-      "community": 513,
-      "community_name": "importacoes.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "parsedreceivable"
     },
     {
@@ -19159,8 +19159,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useprocessimporteddata",
-      "community": 513,
-      "community_name": "importacoes.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "useprocessimporteddata()"
     },
     {
@@ -19172,8 +19172,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_groupedimportlog",
-      "community": 513,
-      "community_name": "importacoes.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "groupedimportlog"
     },
     {
@@ -19184,8 +19184,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useimportshistory",
-      "community": 513,
-      "community_name": "importacoes.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "useimportshistory()"
     },
     {
@@ -19196,8 +19196,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_usedeleteimport",
-      "community": 513,
-      "community_name": "importacoes.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "usedeleteimport()"
     },
     {
@@ -19208,8 +19208,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useclearalldata",
-      "community": 513,
-      "community_name": "importacoes.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "useclearalldata()"
     },
     {
@@ -19219,8 +19219,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usemcplogs",
-      "community": 677,
-      "community_name": "AppShell.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "usemcplogs.ts"
     },
     {
@@ -19232,8 +19232,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usemcplogs_mcplog",
-      "community": 677,
-      "community_name": "AppShell.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "mcplog"
     },
     {
@@ -19244,8 +19244,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usemcplogs_usemcplogs",
-      "community": 677,
-      "community_name": "AppShell.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "usemcplogs()"
     },
     {
@@ -19255,8 +19255,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useoscache",
-      "community": 17,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "useoscache.ts"
     },
     {
@@ -19268,8 +19268,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useoscache_oficinaoscache",
-      "community": 17,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "oficinaoscache"
     },
     {
@@ -19280,8 +19280,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useoscache_useoscache",
-      "community": 17,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "useoscache()"
     },
     {
@@ -19291,8 +19291,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "useosimportprocessor.ts"
     },
     {
@@ -19304,8 +19304,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor_osimportresult",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "osimportresult"
     },
     {
@@ -19327,7 +19327,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usepatio",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "usepatio.ts"
     },
@@ -19339,7 +19339,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usepatio_usepatioos",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "usepatioos()"
     },
@@ -19351,7 +19351,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usepatio_useupdatepatioos",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "useupdatepatioos()"
     },
@@ -19363,7 +19363,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usepatio_usepatiosummary",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "usepatiosummary()"
     },
@@ -19604,7 +19604,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usestores_usestorefinancialstats",
-      "community": 4,
+      "community": 42,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "usestorefinancialstats()"
     },
@@ -19616,7 +19616,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "usetransactions.ts"
     },
     {
@@ -19628,7 +19628,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactions",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "usetransactions()"
     },
     {
@@ -19640,7 +19640,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactionsbystore",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "usetransactionsbystore()"
     },
     {
@@ -19651,7 +19651,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedashboardsummary",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "usedashboardsummary()"
     },
@@ -19664,7 +19664,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usecashflow",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "usecashflow()"
     },
     {
@@ -19676,7 +19676,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useextrato",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "useextrato()"
     },
     {
@@ -19711,8 +19711,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useweeklyrevenuetrend",
-      "community": 513,
-      "community_name": "importacoes.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "useweeklyrevenuetrend()"
     },
     {
@@ -19747,8 +19747,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usebulkinserttransactions",
-      "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "usebulkinserttransactions()"
     },
     {
@@ -19760,7 +19760,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedailysystembalance",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "usedailysystembalance()"
     },
     {
@@ -19772,7 +19772,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_uselatestbankbalance",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "uselatestbankbalance()"
     },
     {
@@ -19784,7 +19784,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedailybankbalance",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "usedailybankbalance()"
     },
     {
@@ -19794,7 +19794,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usetriplematch",
-      "community": 4,
+      "community": 42,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "usetriplematch.ts"
     },
@@ -19806,7 +19806,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetriplematch_usetriplematch",
-      "community": 4,
+      "community": 42,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "usetriplematch()"
     },
@@ -21030,7 +21030,7 @@
       "_origin": "ast",
       "id": "src_lib_ofxparser",
       "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "lib/ofxparser.ts"
     },
     {
@@ -21043,7 +21043,7 @@
       "_origin": "ast",
       "id": "src_lib_ofxparser_ofxtransaction",
       "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "ofxtransaction"
     },
     {
@@ -21055,7 +21055,7 @@
       "_origin": "ast",
       "id": "src_lib_ofxparser_parseofx",
       "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "parseofx()"
     },
     {
@@ -21068,7 +21068,7 @@
       "_origin": "ast",
       "id": "src_lib_ofxparser_systemtransaction",
       "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "systemtransaction"
     },
     {
@@ -21081,7 +21081,7 @@
       "_origin": "ast",
       "id": "src_lib_ofxparser_matchresult",
       "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "matchresult"
     },
     {
@@ -21093,7 +21093,7 @@
       "_origin": "ast",
       "id": "src_lib_ofxparser_matchtransactions",
       "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "BankReconciliationDashboard.tsx",
       "norm_label": "matchtransactions()"
     },
     {
@@ -21139,8 +21139,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_contasapagarparser",
-      "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "contasapagarparser.ts"
     },
     {
@@ -21152,8 +21152,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_parsers_contasapagarparser_parsedexpense",
-      "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "parsedexpense"
     },
     {
@@ -21164,8 +21164,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_contasapagarparser_parsecontasapagar",
-      "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "parsecontasapagar()"
     },
     {
@@ -21198,8 +21198,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_jurosredeparser",
-      "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "jurosredeparser.ts"
     },
     {
@@ -21210,8 +21210,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_jurosredeparser_parsejurosrede",
-      "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "parsejurosrede()"
     },
     {
@@ -21635,7 +21635,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_transactionrow",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "transactionrow"
     },
     {
@@ -21647,8 +21647,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_cashregisterrow",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 42,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "cashregisterrow"
     },
     {
@@ -21660,7 +21660,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_patioosrow",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "patioosrow"
     },
@@ -21747,8 +21747,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_utils_getdefaultdate",
-      "community": 513,
-      "community_name": "importacoes.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "getdefaultdate()"
     },
     {
@@ -22500,8 +22500,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_configuracoes",
-      "community": 677,
-      "community_name": "AppShell.tsx",
+      "community": 1145,
+      "community_name": "configuracoes.tsx",
       "norm_label": "configuracoes.tsx"
     },
     {
@@ -22511,8 +22511,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_routes_configuracoes_route",
-      "community": 1095,
-      "community_name": "FileRoutesByPath",
+      "community": 1145,
+      "community_name": "configuracoes.tsx",
       "norm_label": "route"
     },
     {
@@ -22523,8 +22523,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_configuracoes_configuracoespage",
-      "community": 677,
-      "community_name": "AppShell.tsx",
+      "community": 1145,
+      "community_name": "configuracoes.tsx",
       "norm_label": "configuracoespage()"
     },
     {
@@ -22569,7 +22569,7 @@
       "_origin": "ast",
       "id": "src_routes_historico",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "historico.tsx"
     },
     {
@@ -22592,7 +22592,7 @@
       "_origin": "ast",
       "id": "src_routes_historico_getdefaultperiod",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "getdefaultperiod()"
     },
     {
@@ -22604,7 +22604,7 @@
       "_origin": "ast",
       "id": "src_routes_historico_formatdate",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "formatdate()"
     },
     {
@@ -22616,7 +22616,7 @@
       "_origin": "ast",
       "id": "src_routes_historico_geticonformethod",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "geticonformethod()"
     },
     {
@@ -22628,7 +22628,7 @@
       "_origin": "ast",
       "id": "src_routes_historico_historicopage",
       "community": 4,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "useTransactions.ts",
       "norm_label": "historicopage()"
     },
     {
@@ -22638,8 +22638,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas",
-      "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "importacoes-despesas.tsx"
     },
     {
@@ -22661,8 +22661,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_usestoremapping",
-      "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "usestoremapping()"
     },
     {
@@ -22673,8 +22673,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_importacoesdespesaswizard",
-      "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "importacoesdespesaswizard()"
     },
     {
@@ -22685,8 +22685,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_stepindicator",
-      "community": 634,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "stepindicator()"
     },
     {
@@ -22696,8 +22696,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_importacoes",
-      "community": 513,
-      "community_name": "importacoes.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "importacoes.tsx"
     },
     {
@@ -22719,8 +22719,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_formatdate",
-      "community": 513,
-      "community_name": "importacoes.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "formatdate()"
     },
     {
@@ -22731,8 +22731,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_importacoespage",
-      "community": 513,
-      "community_name": "importacoes.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "importacoespage()"
     },
     {
@@ -22742,8 +22742,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_importar_os",
-      "community": 513,
-      "community_name": "importacoes.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "importar-os.tsx"
     },
     {
@@ -22765,8 +22765,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importar_os_useosstoremapping",
-      "community": 513,
-      "community_name": "importacoes.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "useosstoremapping()"
     },
     {
@@ -22777,8 +22777,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importar_os_stepindicator",
-      "community": 513,
-      "community_name": "importacoes.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "stepindicator()"
     },
     {
@@ -22789,8 +22789,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importar_os_importaroswizard",
-      "community": 513,
-      "community_name": "importacoes.tsx",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "importaroswizard()"
     },
     {
@@ -22800,7 +22800,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_index",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "index.tsx"
     },
@@ -22823,7 +22823,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_index_dashboardpage",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "dashboardpage()"
     },
@@ -22868,8 +22868,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_logs_agente",
-      "community": 677,
-      "community_name": "AppShell.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "logs.agente.tsx"
     },
     {
@@ -22891,8 +22891,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_logs_agente_logsagentepage",
-      "community": 677,
-      "community_name": "AppShell.tsx",
+      "community": 1092,
+      "community_name": "Card.tsx",
       "norm_label": "logsagentepage()"
     },
     {
@@ -22902,8 +22902,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_logs_motor",
-      "community": 1092,
-      "community_name": "LogsMotorPanel.tsx",
+      "community": 1141,
+      "community_name": "logs.motor.tsx",
       "norm_label": "logs.motor.tsx"
     },
     {
@@ -22913,8 +22913,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_routes_logs_motor_route",
-      "community": 1095,
-      "community_name": "FileRoutesByPath",
+      "community": 1141,
+      "community_name": "logs.motor.tsx",
       "norm_label": "route"
     },
     {
@@ -22925,8 +22925,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_logs_motor_logsmotorpage",
-      "community": 1092,
-      "community_name": "LogsMotorPanel.tsx",
+      "community": 1141,
+      "community_name": "logs.motor.tsx",
       "norm_label": "logsmotorpage()"
     },
     {
@@ -22936,7 +22936,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_loja_lojaid",
-      "community": 4,
+      "community": 42,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "loja.$lojaid.tsx"
     },
@@ -22959,7 +22959,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_getdefaultperiod",
-      "community": 4,
+      "community": 42,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "getdefaultperiod()"
     },
@@ -22971,7 +22971,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_formatdate",
-      "community": 4,
+      "community": 42,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "formatdate()"
     },
@@ -22983,7 +22983,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_geticonformethod",
-      "community": 4,
+      "community": 42,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "geticonformethod()"
     },
@@ -22995,7 +22995,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_lojadashboardpage",
-      "community": 4,
+      "community": 42,
       "community_name": "loja.$lojaId.tsx",
       "norm_label": "lojadashboardpage()"
     },
@@ -23040,7 +23040,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_patio",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "patio.tsx"
     },
@@ -23053,7 +23053,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_patio_historychange",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "historychange"
     },
@@ -23066,7 +23066,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_patio_historylog",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "historylog"
     },
@@ -23090,7 +23090,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_patio_filtertab",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "filtertab"
     },
@@ -23102,7 +23102,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_patio_getoseffectivevalues",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "getoseffectivevalues()"
     },
@@ -23114,7 +23114,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_patio_patiopage",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "patiopage()"
     },
@@ -23126,7 +23126,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_patio_tabbtn",
-      "community": 49,
+      "community": 513,
       "community_name": "patio.tsx",
       "norm_label": "tabbtn()"
     },
@@ -32371,190 +32371,157 @@
       "norm_label": "tasks"
     },
     {
-      "label": "189-fix-dashboard-cartesian-cte/design.md",
+      "label": "191-fix-calculo-diferenca-final/design.md",
       "file_type": "document",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
+      "source_file": "specs/191-fix-calculo-diferenca-final/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_189_fix_dashboard_cartesian_cte_design",
-      "community": 1126,
-      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
-      "norm_label": "189-fix-dashboard-cartesian-cte/design.md"
+      "id": "specs_191_fix_calculo_diferenca_final_design",
+      "community": 1138,
+      "community_name": "Design: fix-calculo-diferenca-final-e-expurgo-provisao (191)",
+      "norm_label": "191-fix-calculo-diferenca-final/design.md"
     },
     {
-      "label": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "label": "Design: fix-calculo-diferenca-final-e-expurgo-provisao (191)",
       "file_type": "document",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
+      "source_file": "specs/191-fix-calculo-diferenca-final/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
-      "community": 1126,
-      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
-      "norm_label": "design: correcao critica de cartesian product via ctes (189)"
+      "id": "specs_191_fix_calculo_diferenca_final_design_design_fix_calculo_diferenca_final_e_expurgo_provisao_191",
+      "community": 1138,
+      "community_name": "Design: fix-calculo-diferenca-final-e-expurgo-provisao (191)",
+      "norm_label": "design: fix-calculo-diferenca-final-e-expurgo-provisao (191)"
     },
     {
       "label": "Arquitetura T\u00e9cnica",
       "file_type": "document",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
+      "source_file": "specs/191-fix-calculo-diferenca-final/design.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_189_fix_dashboard_cartesian_cte_design_arquitetura_t\u00e9cnica",
-      "community": 1126,
-      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "id": "specs_191_fix_calculo_diferenca_final_design_arquitetura_t\u00e9cnica",
+      "community": 1138,
+      "community_name": "Design: fix-calculo-diferenca-final-e-expurgo-provisao (191)",
       "norm_label": "arquitetura tecnica"
     },
     {
-      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "label": "Componentes / Hooks",
       "file_type": "document",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
-      "source_location": "L33",
+      "source_file": "specs/191-fix-calculo-diferenca-final/design.md",
+      "source_location": "L14",
       "_origin": "ast",
-      "id": "specs_189_fix_dashboard_cartesian_cte_design_componentes_hooks_fun\u00e7\u00f5es",
-      "community": 1126,
-      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
-      "norm_label": "componentes / hooks / funcoes"
+      "id": "specs_191_fix_calculo_diferenca_final_design_componentes_hooks",
+      "community": 1138,
+      "community_name": "Design: fix-calculo-diferenca-final-e-expurgo-provisao (191)",
+      "norm_label": "componentes / hooks"
     },
     {
-      "label": "Fluxo de UI",
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o",
       "file_type": "document",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
-      "source_location": "L38",
+      "source_file": "specs/191-fix-calculo-diferenca-final/design.md",
+      "source_location": "L18",
       "_origin": "ast",
-      "id": "specs_189_fix_dashboard_cartesian_cte_design_fluxo_de_ui",
-      "community": 1126,
-      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
-      "norm_label": "fluxo de ui"
+      "id": "specs_191_fix_calculo_diferenca_final_design_cen\u00e1rios_de_verifica\u00e7\u00e3o",
+      "community": 1138,
+      "community_name": "Design: fix-calculo-diferenca-final-e-expurgo-provisao (191)",
+      "norm_label": "cenarios de verificacao"
     },
     {
-      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "label": "191-fix-calculo-diferenca-final/proposal.md",
       "file_type": "document",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
-      "source_location": "L43",
-      "_origin": "ast",
-      "id": "specs_189_fix_dashboard_cartesian_cte_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
-      "community": 1126,
-      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
-      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
-    },
-    {
-      "label": "189-fix-dashboard-cartesian-cte/proposal.md",
-      "file_type": "document",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_file": "specs/191-fix-calculo-diferenca-final/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_189_fix_dashboard_cartesian_cte_proposal",
-      "community": 930,
-      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
-      "norm_label": "189-fix-dashboard-cartesian-cte/proposal.md"
+      "id": "specs_191_fix_calculo_diferenca_final_proposal",
+      "community": 1126,
+      "community_name": "Proposal: fix-calculo-diferenca-final-e-expurgo-provisao (191)",
+      "norm_label": "191-fix-calculo-diferenca-final/proposal.md"
     },
     {
-      "label": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "label": "Proposal: fix-calculo-diferenca-final-e-expurgo-provisao (191)",
       "file_type": "document",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_file": "specs/191-fix-calculo-diferenca-final/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
-      "community": 930,
-      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
-      "norm_label": "proposal: correcao critica de cartesian product via ctes (189)"
+      "id": "specs_191_fix_calculo_diferenca_final_proposal_proposal_fix_calculo_diferenca_final_e_expurgo_provisao_191",
+      "community": 1126,
+      "community_name": "Proposal: fix-calculo-diferenca-final-e-expurgo-provisao (191)",
+      "norm_label": "proposal: fix-calculo-diferenca-final-e-expurgo-provisao (191)"
     },
     {
       "label": "Problema",
       "file_type": "document",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_file": "specs/191-fix-calculo-diferenca-final/proposal.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_problema",
-      "community": 930,
-      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "id": "specs_191_fix_calculo_diferenca_final_proposal_problema",
+      "community": 1126,
+      "community_name": "Proposal: fix-calculo-diferenca-final-e-expurgo-provisao (191)",
       "norm_label": "problema"
     },
     {
       "label": "Solu\u00e7\u00e3o Proposta",
       "file_type": "document",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
-      "source_location": "L7",
+      "source_file": "specs/191-fix-calculo-diferenca-final/proposal.md",
+      "source_location": "L8",
       "_origin": "ast",
-      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_solu\u00e7\u00e3o_proposta",
-      "community": 930,
-      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "id": "specs_191_fix_calculo_diferenca_final_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 1126,
+      "community_name": "Proposal: fix-calculo-diferenca-final-e-expurgo-provisao (191)",
       "norm_label": "solucao proposta"
     },
     {
       "label": "Contratos de Dados",
       "file_type": "document",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
-      "source_location": "L15",
+      "source_file": "specs/191-fix-calculo-diferenca-final/proposal.md",
+      "source_location": "L12",
       "_origin": "ast",
-      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_contratos_de_dados",
-      "community": 930,
-      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "id": "specs_191_fix_calculo_diferenca_final_proposal_contratos_de_dados",
+      "community": 1126,
+      "community_name": "Proposal: fix-calculo-diferenca-final-e-expurgo-provisao (191)",
       "norm_label": "contratos de dados"
-    },
-    {
-      "label": "API / Interface",
-      "file_type": "document",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
-      "source_location": "L19",
-      "_origin": "ast",
-      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_api_interface",
-      "community": 930,
-      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
-      "norm_label": "api / interface"
-    },
-    {
-      "label": "Features Existentes Impactadas",
-      "file_type": "document",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
-      "source_location": "L23",
-      "_origin": "ast",
-      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_features_existentes_impactadas",
-      "community": 930,
-      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
-      "norm_label": "features existentes impactadas"
     },
     {
       "label": "Risco Principal",
       "file_type": "document",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
-      "source_location": "L27",
+      "source_file": "specs/191-fix-calculo-diferenca-final/proposal.md",
+      "source_location": "L15",
       "_origin": "ast",
-      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_risco_principal",
-      "community": 930,
-      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "id": "specs_191_fix_calculo_diferenca_final_proposal_risco_principal",
+      "community": 1126,
+      "community_name": "Proposal: fix-calculo-diferenca-final-e-expurgo-provisao (191)",
       "norm_label": "risco principal"
     },
     {
-      "label": "189-fix-dashboard-cartesian-cte/spec-plan.md",
+      "label": "191-fix-calculo-diferenca-final/spec-plan.md",
       "file_type": "document",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/spec-plan.md",
+      "source_file": "specs/191-fix-calculo-diferenca-final/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_189_fix_dashboard_cartesian_cte_spec_plan",
-      "community": 1136,
-      "community_name": "Spec Plan: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
-      "norm_label": "189-fix-dashboard-cartesian-cte/spec-plan.md"
+      "id": "specs_191_fix_calculo_diferenca_final_spec_plan",
+      "community": 1143,
+      "community_name": "Spec Plan: fix-calculo-diferenca-final-e-expurgo-provisao (191)",
+      "norm_label": "191-fix-calculo-diferenca-final/spec-plan.md"
     },
     {
-      "label": "Spec Plan: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "label": "Spec Plan: fix-calculo-diferenca-final-e-expurgo-provisao (191)",
       "file_type": "document",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/spec-plan.md",
+      "source_file": "specs/191-fix-calculo-diferenca-final/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_189_fix_dashboard_cartesian_cte_spec_plan_spec_plan_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
-      "community": 1136,
-      "community_name": "Spec Plan: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
-      "norm_label": "spec plan: correcao critica de cartesian product via ctes (189)"
+      "id": "specs_191_fix_calculo_diferenca_final_spec_plan_spec_plan_fix_calculo_diferenca_final_e_expurgo_provisao_191",
+      "community": 1143,
+      "community_name": "Spec Plan: fix-calculo-diferenca-final-e-expurgo-provisao (191)",
+      "norm_label": "spec plan: fix-calculo-diferenca-final-e-expurgo-provisao (191)"
     },
     {
       "label": "Tasks",
       "file_type": "document",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/spec-plan.md",
+      "source_file": "specs/191-fix-calculo-diferenca-final/spec-plan.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_189_fix_dashboard_cartesian_cte_spec_plan_tasks",
-      "community": 1136,
-      "community_name": "Spec Plan: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "id": "specs_191_fix_calculo_diferenca_final_spec_plan_tasks",
+      "community": 1143,
+      "community_name": "Spec Plan: fix-calculo-diferenca-final-e-expurgo-provisao (191)",
       "norm_label": "tasks"
     },
     {
@@ -56681,6 +56648,402 @@
       "norm_label": "tasks"
     },
     {
+      "label": "189-fix-dashboard-cartesian-cte/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_189_fix_dashboard_cartesian_cte_design",
+      "community": 1136,
+      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "189-fix-dashboard-cartesian-cte/design.md"
+    },
+    {
+      "label": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "file_type": "document",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "community": 1136,
+      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "design: correcao critica de cartesian product via ctes (189)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_189_fix_dashboard_cartesian_cte_design_arquitetura_t\u00e9cnica",
+      "community": 1136,
+      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L33",
+      "_origin": "ast",
+      "id": "specs_archive_189_fix_dashboard_cartesian_cte_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 1136,
+      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Fluxo de UI",
+      "file_type": "document",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L38",
+      "_origin": "ast",
+      "id": "specs_archive_189_fix_dashboard_cartesian_cte_design_fluxo_de_ui",
+      "community": 1136,
+      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "fluxo de ui"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L43",
+      "_origin": "ast",
+      "id": "specs_archive_189_fix_dashboard_cartesian_cte_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 1136,
+      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "189-fix-dashboard-cartesian-cte/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_189_fix_dashboard_cartesian_cte_proposal",
+      "community": 1132,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "189-fix-dashboard-cartesian-cte/proposal.md"
+    },
+    {
+      "label": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "file_type": "document",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "community": 1132,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "proposal: correcao critica de cartesian product via ctes (189)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_189_fix_dashboard_cartesian_cte_proposal_problema",
+      "community": 1132,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "specs_archive_189_fix_dashboard_cartesian_cte_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 1132,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "specs_archive_189_fix_dashboard_cartesian_cte_proposal_contratos_de_dados",
+      "community": 1132,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "specs_archive_189_fix_dashboard_cartesian_cte_proposal_api_interface",
+      "community": 1132,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "specs_archive_189_fix_dashboard_cartesian_cte_proposal_features_existentes_impactadas",
+      "community": 1132,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "specs_archive_189_fix_dashboard_cartesian_cte_proposal_risco_principal",
+      "community": 1132,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "189-fix-dashboard-cartesian-cte/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_189_fix_dashboard_cartesian_cte_spec_plan",
+      "community": 1140,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "189-fix-dashboard-cartesian-cte/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "file_type": "document",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_189_fix_dashboard_cartesian_cte_spec_plan_spec_plan_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "community": 1140,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "spec plan: correcao critica de cartesian product via ctes (189)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_189_fix_dashboard_cartesian_cte_spec_plan_tasks",
+      "community": 1140,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "tasks"
+    },
+    {
+      "label": "190-fix-ofx-bank-balance/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_190_fix_ofx_bank_balance_design",
+      "community": 729,
+      "community_name": "Design: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "norm_label": "190-fix-ofx-bank-balance/design.md"
+    },
+    {
+      "label": "Design: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "file_type": "document",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_190_fix_ofx_bank_balance_design_design_fix_ofx_bank_balance_and_os_pending_values_190",
+      "community": 729,
+      "community_name": "Design: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "norm_label": "design: fix-ofx-bank-balance-and-os-pending-values (190)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_190_fix_ofx_bank_balance_design_arquitetura_t\u00e9cnica",
+      "community": 729,
+      "community_name": "Design: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Interfaces TypeScript",
+      "file_type": "document",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/design.md",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "specs_archive_190_fix_ofx_bank_balance_design_interfaces_typescript",
+      "community": 729,
+      "community_name": "Design: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "norm_label": "interfaces typescript"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/design.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "specs_archive_190_fix_ofx_bank_balance_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 729,
+      "community_name": "Design: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Fluxo de UI",
+      "file_type": "document",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/design.md",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "specs_archive_190_fix_ofx_bank_balance_design_fluxo_de_ui",
+      "community": 729,
+      "community_name": "Design: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "norm_label": "fluxo de ui"
+    },
+    {
+      "label": "Infra / Deploy",
+      "file_type": "document",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/design.md",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "specs_archive_190_fix_ofx_bank_balance_design_infra_deploy",
+      "community": 729,
+      "community_name": "Design: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "norm_label": "infra / deploy"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/design.md",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "specs_archive_190_fix_ofx_bank_balance_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 729,
+      "community_name": "Design: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "190-fix-ofx-bank-balance/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_190_fix_ofx_bank_balance_proposal",
+      "community": 930,
+      "community_name": "Proposal: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "norm_label": "190-fix-ofx-bank-balance/proposal.md"
+    },
+    {
+      "label": "Proposal: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "file_type": "document",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_190_fix_ofx_bank_balance_proposal_proposal_fix_ofx_bank_balance_and_os_pending_values_190",
+      "community": 930,
+      "community_name": "Proposal: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "norm_label": "proposal: fix-ofx-bank-balance-and-os-pending-values (190)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_190_fix_ofx_bank_balance_proposal_problema",
+      "community": 930,
+      "community_name": "Proposal: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/proposal.md",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "specs_archive_190_fix_ofx_bank_balance_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 930,
+      "community_name": "Proposal: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/proposal.md",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "specs_archive_190_fix_ofx_bank_balance_proposal_contratos_de_dados",
+      "community": 930,
+      "community_name": "Proposal: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/proposal.md",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "specs_archive_190_fix_ofx_bank_balance_proposal_api_interface",
+      "community": 930,
+      "community_name": "Proposal: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/proposal.md",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "specs_archive_190_fix_ofx_bank_balance_proposal_features_existentes_impactadas",
+      "community": 930,
+      "community_name": "Proposal: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/proposal.md",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "specs_archive_190_fix_ofx_bank_balance_proposal_risco_principal",
+      "community": 930,
+      "community_name": "Proposal: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "190-fix-ofx-bank-balance/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_190_fix_ofx_bank_balance_spec_plan",
+      "community": 1144,
+      "community_name": "Spec Plan: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "norm_label": "190-fix-ofx-bank-balance/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "file_type": "document",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_190_fix_ofx_bank_balance_spec_plan_spec_plan_fix_ofx_bank_balance_and_os_pending_values_190",
+      "community": 1144,
+      "community_name": "Spec Plan: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "norm_label": "spec plan: fix-ofx-bank-balance-and-os-pending-values (190)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_190_fix_ofx_bank_balance_spec_plan_tasks",
+      "community": 1144,
+      "community_name": "Spec Plan: fix-ofx-bank-balance-and-os-pending-values (190)",
+      "norm_label": "tasks"
+    },
+    {
       "label": "agente-fullbleed-layout-and-clean-tabs/design.md",
       "file_type": "document",
       "source_file": "specs/archive/agente-fullbleed-layout-and-clean-tabs/design.md",
@@ -69868,6 +70231,39 @@
       "community": 591,
       "community_name": "Features",
       "norm_label": "[186-refatoracao-marco-zero]"
+    },
+    {
+      "label": "2026-08-13: Refatoracao CTEs Conciliacao (189)",
+      "file_type": "document",
+      "source_file": "specs/global/features.md",
+      "source_location": "L192",
+      "_origin": "ast",
+      "id": "specs_global_features_2026_08_13_refatoracao_ctes_conciliacao_189",
+      "community": 591,
+      "community_name": "Features",
+      "norm_label": "2026-08-13: refatoracao ctes conciliacao (189)"
+    },
+    {
+      "label": "2026-08-13: Fix de Valores Inflados no OFX e OS (190)",
+      "file_type": "document",
+      "source_file": "specs/global/features.md",
+      "source_location": "L198",
+      "_origin": "ast",
+      "id": "specs_global_features_2026_08_13_fix_de_valores_inflados_no_ofx_e_os_190",
+      "community": 591,
+      "community_name": "Features",
+      "norm_label": "2026-08-13: fix de valores inflados no ofx e os (190)"
+    },
+    {
+      "label": "2026-08-13: Correcao Diferenca Final e Expurgo Provisao (191)",
+      "file_type": "document",
+      "source_file": "specs/global/features.md",
+      "source_location": "L204",
+      "_origin": "ast",
+      "id": "specs_global_features_2026_08_13_correcao_diferenca_final_e_expurgo_provisao_191",
+      "community": 591,
+      "community_name": "Features",
+      "norm_label": "2026-08-13: correcao diferenca final e expurgo provisao (191)"
     },
     {
       "label": "features_clean.md",
@@ -104179,7 +104575,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/parsers/ofxParser.ts",
-      "source_location": "L167",
+      "source_location": "L172",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_lib_parsers_ofxparser_parseofxfile",
@@ -115591,155 +115987,122 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
+      "source_file": "specs/191-fix-calculo-diferenca-final/design.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_189_fix_dashboard_cartesian_cte_design",
-      "target": "specs_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "source": "specs_191_fix_calculo_diferenca_final_design",
+      "target": "specs_191_fix_calculo_diferenca_final_design_design_fix_calculo_diferenca_final_e_expurgo_provisao_191",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
+      "source_file": "specs/191-fix-calculo-diferenca-final/design.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
-      "target": "specs_189_fix_dashboard_cartesian_cte_design_arquitetura_t\u00e9cnica",
+      "source": "specs_191_fix_calculo_diferenca_final_design_design_fix_calculo_diferenca_final_e_expurgo_provisao_191",
+      "target": "specs_191_fix_calculo_diferenca_final_design_arquitetura_t\u00e9cnica",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
-      "source_location": "L43",
+      "source_file": "specs/191-fix-calculo-diferenca-final/design.md",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
-      "target": "specs_189_fix_dashboard_cartesian_cte_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "source": "specs_191_fix_calculo_diferenca_final_design_design_fix_calculo_diferenca_final_e_expurgo_provisao_191",
+      "target": "specs_191_fix_calculo_diferenca_final_design_cen\u00e1rios_de_verifica\u00e7\u00e3o",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
-      "source_location": "L33",
+      "source_file": "specs/191-fix-calculo-diferenca-final/design.md",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
-      "target": "specs_189_fix_dashboard_cartesian_cte_design_componentes_hooks_fun\u00e7\u00f5es",
+      "source": "specs_191_fix_calculo_diferenca_final_design_design_fix_calculo_diferenca_final_e_expurgo_provisao_191",
+      "target": "specs_191_fix_calculo_diferenca_final_design_componentes_hooks",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
-      "source_location": "L38",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
-      "target": "specs_189_fix_dashboard_cartesian_cte_design_fluxo_de_ui",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_file": "specs/191-fix-calculo-diferenca-final/proposal.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_189_fix_dashboard_cartesian_cte_proposal",
-      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "source": "specs_191_fix_calculo_diferenca_final_proposal",
+      "target": "specs_191_fix_calculo_diferenca_final_proposal_proposal_fix_calculo_diferenca_final_e_expurgo_provisao_191",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
-      "source_location": "L19",
+      "source_file": "specs/191-fix-calculo-diferenca-final/proposal.md",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
-      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_api_interface",
+      "source": "specs_191_fix_calculo_diferenca_final_proposal_proposal_fix_calculo_diferenca_final_e_expurgo_provisao_191",
+      "target": "specs_191_fix_calculo_diferenca_final_proposal_contratos_de_dados",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_file": "specs/191-fix-calculo-diferenca-final/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_191_fix_calculo_diferenca_final_proposal_proposal_fix_calculo_diferenca_final_e_expurgo_provisao_191",
+      "target": "specs_191_fix_calculo_diferenca_final_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/191-fix-calculo-diferenca-final/proposal.md",
       "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
-      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_contratos_de_dados",
+      "source": "specs_191_fix_calculo_diferenca_final_proposal_proposal_fix_calculo_diferenca_final_e_expurgo_provisao_191",
+      "target": "specs_191_fix_calculo_diferenca_final_proposal_risco_principal",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
-      "source_location": "L23",
+      "source_file": "specs/191-fix-calculo-diferenca-final/proposal.md",
+      "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
-      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_features_existentes_impactadas",
+      "source": "specs_191_fix_calculo_diferenca_final_proposal_proposal_fix_calculo_diferenca_final_e_expurgo_provisao_191",
+      "target": "specs_191_fix_calculo_diferenca_final_proposal_solu\u00e7\u00e3o_proposta",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
-      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_problema",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
-      "source_location": "L27",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
-      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_risco_principal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
-      "source_location": "L7",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
-      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_solu\u00e7\u00e3o_proposta",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/spec-plan.md",
+      "source_file": "specs/191-fix-calculo-diferenca-final/spec-plan.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_189_fix_dashboard_cartesian_cte_spec_plan",
-      "target": "specs_189_fix_dashboard_cartesian_cte_spec_plan_spec_plan_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "source": "specs_191_fix_calculo_diferenca_final_spec_plan",
+      "target": "specs_191_fix_calculo_diferenca_final_spec_plan_spec_plan_fix_calculo_diferenca_final_e_expurgo_provisao_191",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/189-fix-dashboard-cartesian-cte/spec-plan.md",
+      "source_file": "specs/191-fix-calculo-diferenca-final/spec-plan.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_189_fix_dashboard_cartesian_cte_spec_plan_spec_plan_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
-      "target": "specs_189_fix_dashboard_cartesian_cte_spec_plan_tasks",
+      "source": "specs_191_fix_calculo_diferenca_final_spec_plan_spec_plan_fix_calculo_diferenca_final_e_expurgo_provisao_191",
+      "target": "specs_191_fix_calculo_diferenca_final_spec_plan_tasks",
       "confidence_score": 1.0
     },
     {
@@ -135083,6 +135446,336 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_189_fix_dashboard_cartesian_cte_design",
+      "target": "specs_archive_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_archive_189_fix_dashboard_cartesian_cte_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L43",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_archive_189_fix_dashboard_cartesian_cte_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_archive_189_fix_dashboard_cartesian_cte_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_archive_189_fix_dashboard_cartesian_cte_design_fluxo_de_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_189_fix_dashboard_cartesian_cte_proposal",
+      "target": "specs_archive_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_archive_189_fix_dashboard_cartesian_cte_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_archive_189_fix_dashboard_cartesian_cte_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_archive_189_fix_dashboard_cartesian_cte_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_archive_189_fix_dashboard_cartesian_cte_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_archive_189_fix_dashboard_cartesian_cte_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_archive_189_fix_dashboard_cartesian_cte_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_189_fix_dashboard_cartesian_cte_spec_plan",
+      "target": "specs_archive_189_fix_dashboard_cartesian_cte_spec_plan_spec_plan_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/189-fix-dashboard-cartesian-cte/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_189_fix_dashboard_cartesian_cte_spec_plan_spec_plan_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_archive_189_fix_dashboard_cartesian_cte_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_190_fix_ofx_bank_balance_design",
+      "target": "specs_archive_190_fix_ofx_bank_balance_design_design_fix_ofx_bank_balance_and_os_pending_values_190",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_190_fix_ofx_bank_balance_design_design_fix_ofx_bank_balance_and_os_pending_values_190",
+      "target": "specs_archive_190_fix_ofx_bank_balance_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/design.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_190_fix_ofx_bank_balance_design_design_fix_ofx_bank_balance_and_os_pending_values_190",
+      "target": "specs_archive_190_fix_ofx_bank_balance_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/design.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_190_fix_ofx_bank_balance_design_design_fix_ofx_bank_balance_and_os_pending_values_190",
+      "target": "specs_archive_190_fix_ofx_bank_balance_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/design.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_190_fix_ofx_bank_balance_design_design_fix_ofx_bank_balance_and_os_pending_values_190",
+      "target": "specs_archive_190_fix_ofx_bank_balance_design_fluxo_de_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/design.md",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_190_fix_ofx_bank_balance_design_design_fix_ofx_bank_balance_and_os_pending_values_190",
+      "target": "specs_archive_190_fix_ofx_bank_balance_design_infra_deploy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/design.md",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_190_fix_ofx_bank_balance_design_design_fix_ofx_bank_balance_and_os_pending_values_190",
+      "target": "specs_archive_190_fix_ofx_bank_balance_design_interfaces_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_190_fix_ofx_bank_balance_proposal",
+      "target": "specs_archive_190_fix_ofx_bank_balance_proposal_proposal_fix_ofx_bank_balance_and_os_pending_values_190",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/proposal.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_190_fix_ofx_bank_balance_proposal_proposal_fix_ofx_bank_balance_and_os_pending_values_190",
+      "target": "specs_archive_190_fix_ofx_bank_balance_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/proposal.md",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_190_fix_ofx_bank_balance_proposal_proposal_fix_ofx_bank_balance_and_os_pending_values_190",
+      "target": "specs_archive_190_fix_ofx_bank_balance_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/proposal.md",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_190_fix_ofx_bank_balance_proposal_proposal_fix_ofx_bank_balance_and_os_pending_values_190",
+      "target": "specs_archive_190_fix_ofx_bank_balance_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_190_fix_ofx_bank_balance_proposal_proposal_fix_ofx_bank_balance_and_os_pending_values_190",
+      "target": "specs_archive_190_fix_ofx_bank_balance_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/proposal.md",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_190_fix_ofx_bank_balance_proposal_proposal_fix_ofx_bank_balance_and_os_pending_values_190",
+      "target": "specs_archive_190_fix_ofx_bank_balance_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/proposal.md",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_190_fix_ofx_bank_balance_proposal_proposal_fix_ofx_bank_balance_and_os_pending_values_190",
+      "target": "specs_archive_190_fix_ofx_bank_balance_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_190_fix_ofx_bank_balance_spec_plan",
+      "target": "specs_archive_190_fix_ofx_bank_balance_spec_plan_spec_plan_fix_ofx_bank_balance_and_os_pending_values_190",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/190-fix-ofx-bank-balance/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_190_fix_ofx_bank_balance_spec_plan_spec_plan_fix_ofx_bank_balance_and_os_pending_values_190",
+      "target": "specs_archive_190_fix_ofx_bank_balance_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "specs/archive/agente-fullbleed-layout-and-clean-tabs/design.md",
       "source_location": "L3",
       "weight": 1.0,
@@ -145561,6 +146254,39 @@
       "_origin": "ast",
       "source": "specs_global_features_161_cloud_sync_live_preview",
       "target": "specs_global_features_feature_164_o_fim_do_rob\u00f4_e_concilia\u00e7\u00e3o_h\u00edbrida",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/global/features.md",
+      "source_location": "L204",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_global_features_186_refatoracao_marco_zero",
+      "target": "specs_global_features_2026_08_13_correcao_diferenca_final_e_expurgo_provisao_191",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/global/features.md",
+      "source_location": "L198",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_global_features_186_refatoracao_marco_zero",
+      "target": "specs_global_features_2026_08_13_fix_de_valores_inflados_no_ofx_e_os_190",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/global/features.md",
+      "source_location": "L192",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_global_features_186_refatoracao_marco_zero",
+      "target": "specs_global_features_2026_08_13_refatoracao_ctes_conciliacao_189",
       "confidence_score": 1.0
     },
     {

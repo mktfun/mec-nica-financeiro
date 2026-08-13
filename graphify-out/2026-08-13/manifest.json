@@ -935,8 +935,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1786631078.2033982,
-    "ast_hash": "b78faae3763f27350df3cb90c19aadc0",
+    "mtime": 1786645372.3553653,
+    "ast_hash": "231d48e8ff1263b4beffeaa03e748972",
     "semantic_hash": ""
   },
   "src/components/dashboard/AlertResolveDialog.tsx": {
@@ -1230,8 +1230,8 @@
     "semantic_hash": ""
   },
   "src/lib/modulo1Calculations.ts": {
-    "mtime": 1786628153.8739705,
-    "ast_hash": "0e4aff4d24268d349d4d0cc9b3c43f8e",
+    "mtime": 1786645363.1404903,
+    "ast_hash": "77eaba3abbe5f1ed78ad6055c156e6d6",
     "semantic_hash": ""
   },
   "src/lib/ofxParser.ts": {
@@ -1260,8 +1260,8 @@
     "semantic_hash": ""
   },
   "src/lib/parsers/ofxParser.ts": {
-    "mtime": 1786639021.4783108,
-    "ast_hash": "6c1a2b953ba8a92dcafcba1950effe08",
+    "mtime": 1786644113.8739977,
+    "ast_hash": "82b9c2b0204cc99632fab53fcc37474a",
     "semantic_hash": ""
   },
   "src/lib/parsers/redeParser.ts": {
@@ -3325,8 +3325,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786641872.8014224,
-    "ast_hash": "dcf11f4032a19e9f92e3f15824429bcc",
+    "mtime": 1786645619.9826958,
+    "ast_hash": "27a863c751fa44150f665de44d4a0b6f",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -6827,6 +6827,41 @@
   "specs/archive/188-sanitizacao-ponto-flutuante/spec-plan.md": {
     "mtime": 1786639132.2180133,
     "ast_hash": "57e76b3688e2ce7f82669afd957ee555",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813150000_fix_ofx_bank_balance_and_status.sql": {
+    "mtime": 1786644169.9098492,
+    "ast_hash": "64a3a5327654f337b5adee582993c64a",
+    "semantic_hash": ""
+  },
+  "specs/archive/189-fix-dashboard-cartesian-cte/design.md": {
+    "mtime": 1786640392.2394042,
+    "ast_hash": "fffa041aa5117679e62eda39dc97df23",
+    "semantic_hash": ""
+  },
+  "specs/archive/189-fix-dashboard-cartesian-cte/proposal.md": {
+    "mtime": 1786640377.5946207,
+    "ast_hash": "4427079db89186b79bdcd55dce258954",
+    "semantic_hash": ""
+  },
+  "specs/archive/189-fix-dashboard-cartesian-cte/spec-plan.md": {
+    "mtime": 1786640786.4263365,
+    "ast_hash": "87cc4fb0cfb6bb82d37bba1b9a43161b",
+    "semantic_hash": ""
+  },
+  "specs/archive/190-fix-ofx-bank-balance/design.md": {
+    "mtime": 1786643959.819568,
+    "ast_hash": "6343c090ce8308acb6ec8f161cb54bc5",
+    "semantic_hash": ""
+  },
+  "specs/archive/190-fix-ofx-bank-balance/proposal.md": {
+    "mtime": 1786643945.7184372,
+    "ast_hash": "a4f3847d4220ca0d84c22d6e9dcaac7d",
+    "semantic_hash": ""
+  },
+  "specs/archive/190-fix-ofx-bank-balance/spec-plan.md": {
+    "mtime": 1786644239.2187994,
+    "ast_hash": "d630b3bb966ad82e26ee3c13a2ccc11b",
     "semantic_hash": ""
   }
 }

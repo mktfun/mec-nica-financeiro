@@ -210,3 +210,9 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - **Modulos:** Conciliacao, Frontend
 - **src/lib/modulo1Calculations.ts:** Corrigida a equacao de fechamento diario para usar valor absoluto no fundo disponivel, impedindo a subtracao de valores negativos que dobrava os debitos.
 - **src/components/conciliacao/ResumoDiaPanel.tsx:** Rotulos visuais atualizados removendo referencias obsoletas a Provisao, restando apenas Juros e Contas Manuais.
+
+### 2026-08-13: Protecao de Precisao OFX Jabaquara/Kennedy (192)
+- **Status:** Implementado
+- **Modulos:** Importacao (OFX), Conciliacao
+- **src/lib/parsers/ofxParser.ts:** Trocada logica de extractNumber por parseFloat estrito na extracao do Saldo Bancario, impedindo que dízimas com apenas 1 dígito sejam corrompidas.
+- **src/routes/conciliacao.index.tsx:** Ajuste visual na tabela de fechamento de lojas para Saldo Banco Itaú, evitando erros semanticos de interpretacao.
