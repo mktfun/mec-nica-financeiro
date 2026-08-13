@@ -38,9 +38,9 @@ export interface ImportLogEntry {
 }
 
 const INITIAL_STAGES: AgentStage[] = [
-  { id: 'ofx',        title: 'Processando extratos OFX',           status: 'pending', subSteps: [] },
   { id: 'os',         title: 'Importando OS do pátio',             status: 'pending', subSteps: [] },
   { id: 'maquininha', title: 'Lendo maquininha / Rede',            status: 'pending', subSteps: [] },
+  { id: 'ofx',        title: 'Processando extratos OFX',           status: 'pending', subSteps: [] },
   { id: 'salvar',     title: 'Salvando conciliação no banco',      status: 'pending', subSteps: [] },
 ];
 
@@ -368,7 +368,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       updateStage(1, 'success', 'Maquininhas processadas!');
       
       // Snapshot Na Loja OS
-      updateStage(2, 'running', 'Gerando snapshot de OSs...');
+      updateStage(1, 'running', 'Gerando snapshot de OSs...');
       const allStoreIds = new Set<string>();
       Object.values(mapping).forEach(v => {
         if (v && v !== 'GLOBAL') allStoreIds.add(v);
@@ -400,7 +400,8 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
       // 2. Transações e OFX
       const ofxCount = results.ofxResults.reduce((acc, curr) => acc + curr.transactions.length, 0);
-      addLog(`ðŸ¦ Conciliando Extratos OFX (${ofxCount} lançamentos bancários)...`, "info");
+      updateStage(2, 'running', `Conciliando OFX (${ofxCount} lançamentos)...`);
+      addLog(`ðŸ ¦ Conciliando Extratos OFX (${ofxCount} lançamentos bancários)...`, "info");
 
       const validAmounts = new Set<number>();
       results.osFiles.filter(r => r.success).forEach(r => r.osArray.forEach(os => {
@@ -561,7 +562,9 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         });
       });
 
-      addLog(`âš™ï¸ Gravando batch de ${txsToInsert.length} transações no banco...`, "info");
+      updateStage(2, 'success', 'Extratos processados!');
+      updateStage(3, 'running', `Gravando batch de ${txsToInsert.length} transações...`);
+      addLog(`âš™ï¸  Gravando batch de ${txsToInsert.length} transações no banco...`, "info");
       const batch = await createImportBatch({ target_date: targetDate });
       
       await saveTransactions({ transactions: txsToInsert, storeBankBalances, storePreviousBalances, import_batch_id: batch.id } as any);
@@ -900,12 +903,15 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
       };
       const blob = new Blob([JSON.stringify(auditData, null, 2)], { type: 'application/json' });
       setAuditTrailUrl(URL.createObjectURL(blob));
+      
+      updateStage(3, 'success', 'Conciliação finalizada!');
 
       setSaveFinished(true);
 
     } catch(e: any) {
       console.error(e);
-      addLog(`âŒ Erro ao confirmar importação: ${e.message || 'Falha no banco de dados.'}`, "error");
+      setImportStages(prev => prev.map(s => s.status === 'running' ? { ...s, status: 'error' } : s));
+      addLog(`❌ Erro ao confirmar importação: ${e.message || 'Falha no banco de dados.'}`, "error");
     } finally {
       setIsSaving(false);
     }
@@ -1257,6 +1263,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <AuditoriaPassivoWizard 
               storeId={firstStoreId || ''} 
+              cloudOsData={cloudOsData}
               onComplete={() => setStep(3)}
               onCancel={() => setStep(2)}
             />

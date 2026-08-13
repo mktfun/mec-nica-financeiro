@@ -935,8 +935,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1786623268.4144106,
-    "ast_hash": "21d4410190a7fcf1e56c8ae89c359511",
+    "mtime": 1786447325.099753,
+    "ast_hash": "1e1c82b8e10649ea8a012fa18d608cdd",
     "semantic_hash": ""
   },
   "src/components/dashboard/AlertResolveDialog.tsx": {
@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1786621120.7983587,
-    "ast_hash": "4bed2a2d7e379c62cb4203fc58447010",
+    "mtime": 1786556061.229887,
+    "ast_hash": "3e560cc0a6a978884024720c05620810",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -1230,8 +1230,8 @@
     "semantic_hash": ""
   },
   "src/lib/modulo1Calculations.ts": {
-    "mtime": 1786623258.1185212,
-    "ast_hash": "e1d8cda37073d0adc1a1ac0bc57c5528",
+    "mtime": 1786143715.9568758,
+    "ast_hash": "99df24e33223229d6780df8a15c95651",
     "semantic_hash": ""
   },
   "src/lib/ofxParser.ts": {
@@ -3325,8 +3325,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786623612.2932231,
-    "ast_hash": "6caf4bd19195accd8a79cb869896296b",
+    "mtime": 1786548328.7311316,
+    "ast_hash": "613dfbdadf2d0b830ea0590372ee1ecf",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -6335,8 +6335,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/AuditoriaPassivoWizard.tsx": {
-    "mtime": 1786621181.476775,
-    "ast_hash": "d18e0dd634e26a98f3c1d6b37bc6df70",
+    "mtime": 1786455597.2115593,
+    "ast_hash": "ba7c1094ae7cb8ed9b93780ae686c703",
     "semantic_hash": ""
   },
   "tmp_schema_dump.sql": {
@@ -6504,6 +6504,21 @@
     "ast_hash": "0491c0f33f815baccdd7c2a6d9c791a9",
     "semantic_hash": ""
   },
+  "specs/174-redesign-central-import-wizard/design.md": {
+    "mtime": 1786555983.4069493,
+    "ast_hash": "88916feb2bb92f2c694f31af64092472",
+    "semantic_hash": ""
+  },
+  "specs/174-redesign-central-import-wizard/proposal.md": {
+    "mtime": 1786555968.9612927,
+    "ast_hash": "c660f5da60968f0224dacf3d83356018",
+    "semantic_hash": ""
+  },
+  "specs/174-redesign-central-import-wizard/spec-plan.md": {
+    "mtime": 1786556197.8040233,
+    "ast_hash": "411198c15ea7a75bd51875ead8413d30",
+    "semantic_hash": ""
+  },
   "specs/archive/173-fix-pdfjs-ssr-crash/design.md": {
     "mtime": 1786548087.7298565,
     "ast_hash": "4239ca7b386a3986e3980eb1935651e0",
@@ -6517,111 +6532,6 @@
   "specs/archive/173-fix-pdfjs-ssr-crash/spec-plan.md": {
     "mtime": 1786548099.9576378,
     "ast_hash": "531e57a2734d1b9c012e905b38251474",
-    "semantic_hash": ""
-  },
-  "supabase/migrations/20260812100400_fix_auto_match_rpc_date_window.sql": {
-    "mtime": 1786557646.9481514,
-    "ast_hash": "00d6b141bd942e142bd0df19022150b0",
-    "semantic_hash": ""
-  },
-  "supabase/migrations/20260813081500_fix_conciliation_carry_over.sql": {
-    "mtime": 1786620243.182931,
-    "ast_hash": "503e18bc45fd79fcbc5acfb3155802cf",
-    "semantic_hash": ""
-  },
-  "supabase/migrations/20260813085500_fix_dashboard_math.sql": {
-    "mtime": 1786622466.8674548,
-    "ast_hash": "a709f1a14588cda4685e84b50d2cd983",
-    "semantic_hash": ""
-  },
-  "specs/175-fix-wizard-stages/design.md": {
-    "mtime": 1786556665.525983,
-    "ast_hash": "f3bb2427b8610a7e6b594b2ed19300a3",
-    "semantic_hash": ""
-  },
-  "specs/175-fix-wizard-stages/proposal.md": {
-    "mtime": 1786556650.4347672,
-    "ast_hash": "03e7033d7d1249266632818a00a2386c",
-    "semantic_hash": ""
-  },
-  "specs/175-fix-wizard-stages/spec-plan.md": {
-    "mtime": 1786556845.9035602,
-    "ast_hash": "c86d8a602f3610c5c4d5490595ceb060",
-    "semantic_hash": ""
-  },
-  "specs/176-fix-match-engine/design.md": {
-    "mtime": 1786557524.0906792,
-    "ast_hash": "48e9e08a387039889fd1602cf01eff55",
-    "semantic_hash": ""
-  },
-  "specs/176-fix-match-engine/proposal.md": {
-    "mtime": 1786557510.3293471,
-    "ast_hash": "c299433939da5f7375c5a3e18015b872",
-    "semantic_hash": ""
-  },
-  "specs/176-fix-match-engine/spec-plan.md": {
-    "mtime": 1786557805.6338153,
-    "ast_hash": "89a22b884b44bf8cf0539efdf3ce8048",
-    "semantic_hash": ""
-  },
-  "specs/177-conciliation-carry-over/design.md": {
-    "mtime": 1786619715.0164702,
-    "ast_hash": "abcf91d9abde6ace35931b2020e59aa1",
-    "semantic_hash": ""
-  },
-  "specs/177-conciliation-carry-over/proposal.md": {
-    "mtime": 1786619882.4624045,
-    "ast_hash": "cfea1344423bde5902a425a31e141af5",
-    "semantic_hash": ""
-  },
-  "specs/177-conciliation-carry-over/spec-plan.md": {
-    "mtime": 1786620398.0779147,
-    "ast_hash": "2dea8b9376117e6b40017c52e47e4a54",
-    "semantic_hash": ""
-  },
-  "specs/178-auditoria-virada-mes/design.md": {
-    "mtime": 1786620999.1720393,
-    "ast_hash": "0a79a12b3cef3e16188eee9ef0688a59",
-    "semantic_hash": ""
-  },
-  "specs/178-auditoria-virada-mes/proposal.md": {
-    "mtime": 1786620970.3224156,
-    "ast_hash": "6245c00d9309f1a93f1914f3f31ceacf",
-    "semantic_hash": ""
-  },
-  "specs/178-auditoria-virada-mes/spec-plan.md": {
-    "mtime": 1786621200.0130992,
-    "ast_hash": "f841d82379a842630b1a1a7e3623a64c",
-    "semantic_hash": ""
-  },
-  "specs/179-fix-dashboard-math/design.md": {
-    "mtime": 1786622362.183797,
-    "ast_hash": "8a8b5f1e2d0d17d65585f56e3e07c4ac",
-    "semantic_hash": ""
-  },
-  "specs/179-fix-dashboard-math/proposal.md": {
-    "mtime": 1786622346.831238,
-    "ast_hash": "bdab0c9c81c8c927275046da94d1f461",
-    "semantic_hash": ""
-  },
-  "specs/179-fix-dashboard-math/spec-plan.md": {
-    "mtime": 1786623280.2031758,
-    "ast_hash": "d9864636707800c260762a8b603b7ea8",
-    "semantic_hash": ""
-  },
-  "specs/archive/174-redesign-central-import-wizard/design.md": {
-    "mtime": 1786555983.4069493,
-    "ast_hash": "88916feb2bb92f2c694f31af64092472",
-    "semantic_hash": ""
-  },
-  "specs/archive/174-redesign-central-import-wizard/proposal.md": {
-    "mtime": 1786555968.9612927,
-    "ast_hash": "c660f5da60968f0224dacf3d83356018",
-    "semantic_hash": ""
-  },
-  "specs/archive/174-redesign-central-import-wizard/spec-plan.md": {
-    "mtime": 1786556197.8040233,
-    "ast_hash": "411198c15ea7a75bd51875ead8413d30",
     "semantic_hash": ""
   }
 }

@@ -34,16 +34,16 @@ export function calculateGlobalConciliacao(input: GlobalConciliacaoInput): Globa
   const dinheiro_mp = Number(input.dinheiro_mp || 0);
   const a_receber = Number(input.a_receber_manual || 0);
   const na_loja = Number(input.na_loja_os || 0);
-  const saldo_negativo_itau = Number(input.saldo_negativo_itau || 0);
 
-  // Caixa atual = (Soma Saldos + Dinheiro MP + A Receber + Na Loja) - Saldo Negativo
-  const caixa_atual = (saldo + dinheiro_mp + a_receber + na_loja) - saldo_negativo_itau;
+  // Caixa atual = (Soma Saldos + Dinheiro MP + A Receber + Na Loja)
+  // Nota: saldo_negativo_itau foi removido da dedução pois saldos negativos no banco já abatem a soma.
+  const caixa_atual = saldo + dinheiro_mp + a_receber + na_loja;
 
   // Fluxo CX = caixa atual (conciliacao hoje) - caixa anterior (caixa da conciliacao anterior)
   const fluxo_cx = caixa_atual - Number(input.caixa_anterior || 0);
 
-  // Faturamento = (faturamento atual - anterior) + outros faturamentos
-  const faturamento = (Number(input.faturamento_atual || 0) - Number(input.faturamento_anterior || 0)) + Number(input.faturamento_outros || 0);
+  // Faturamento = Entradas líquidas puras do OFX no dia (Faturamento Atual)
+  const faturamento = Number(input.faturamento_atual || 0);
 
   // Valor disp contas = fat atual - fluxo caixa
   const valor_disp_contas = faturamento - fluxo_cx;

@@ -1,4 +1,4 @@
-﻿# Features
+# Features
 ### Frontend
 
 - `src/routes/custos.tsx`: Nova tela de monitoramento de custos com I.A., exibindo painel com métricas de requisições de Chat e Motor filtráveis por período (Hoje, Esta Semana, Este Mês).
@@ -103,10 +103,10 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
   - Ajuste no useTransactions.ts e CentralImportWizard.tsx para não dropar despesas que vêm do banco sem o campo FITID. Em caso de ausência do ID no arquivo bancário, um hash determinístico (data+valor+título) é injetado.
   - O mapeamento nativo de matched_store_id (via conta bancária) agora é plenamente mantido para as despesas (out), vinculando-as corretamente às respectivas lojas para contabilização de saldo descentralizada.
 # #   [ i m p o r t - d e d u p - u p g r a d e ] 
- -   * * D e d u p l i c a � � o   G l o b a l   d e   I m p o r t a � � e s * * : 
+ -   * * D e d u p l i c a � � o   G l o b a l   d e   I m p o r t a � � e s * * : 
      -   T a b e l a   ` p o s _ t r a n s a c t i o n s `   a t u a l i z a d a   p a r a   p o s s u i r   a   c o l u n a   ` d e d u p _ h a s h `   c o m   c o n s t r a i n t   ` U N I Q U E ` . 
-     -   F r o n t e n d   u s a   ` g e n e r a t e D e t e r m i n i s t i c H a s h `   ( n o v o   e m   ` h a s h U t i l s . t s ` )   p a r a   i n j e t a r   i d e n t i d a d e s   d e t e r m i n � s t i c a s   b a s e a d a s   e m   ( d a t a + v a l o r + t � t u l o )   n o   p a r s e r   O F X ,   p l a n i l h a s   d e   M a q u i n i n h a   e   R e d e ,   i g n o r a n d o   o   p r o b l e m � t i c o   ` < F I T I D > ` . 
-     -   M u d a n � a   m a s s i v a   n o s   p i p e l i n e s   d o   b a c k e n d   q u e   a b a n d o n a r a m   ` i n s e r t `   f r � g i l   p a r a   u t i l i z a r   ` u p s e r t `   i n q u e b r � v e l ,   b l i n d a n d o   o   b a n c o   d e   d a d o s   c o n t r a   r e p e t i � � e s   d e   u p l o a d   d a s   m e s m a s   p l a n i l h a s .  
+     -   F r o n t e n d   u s a   ` g e n e r a t e D e t e r m i n i s t i c H a s h `   ( n o v o   e m   ` h a s h U t i l s . t s ` )   p a r a   i n j e t a r   i d e n t i d a d e s   d e t e r m i n � s t i c a s   b a s e a d a s   e m   ( d a t a + v a l o r + t � t u l o )   n o   p a r s e r   O F X ,   p l a n i l h a s   d e   M a q u i n i n h a   e   R e d e ,   i g n o r a n d o   o   p r o b l e m � t i c o   ` < F I T I D > ` . 
+     -   M u d a n � a   m a s s i v a   n o s   p i p e l i n e s   d o   b a c k e n d   q u e   a b a n d o n a r a m   ` i n s e r t `   f r � g i l   p a r a   u t i l i z a r   ` u p s e r t `   i n q u e b r � v e l ,   b l i n d a n d o   o   b a n c o   d e   d a d o s   c o n t r a   r e p e t i � � e s   d e   u p l o a d   d a s   m e s m a s   p l a n i l h a s .  
  
 ## [155-historical-os-query]
 - **Acúmulo Histórico de Pátio OS**: 
@@ -148,9 +148,20 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
   
 ## [171-os-mixed-cell-parser]  
 - **Parser Misto Resiliente (XLSX)**:  
-  - Modificado: src/hooks/useOsImportProcessor.ts (Substitu�do parse num�rico fr�gil por extra��o avan�ada com Regex extractNumber de numberUtils.ts).  
+  - Modificado: src/hooks/useOsImportProcessor.ts (Substitu�do parse num�rico fr�gil por extra��o avan�ada com Regex extractNumber de numberUtils.ts).  
   - Modificado: src/hooks/useImportProcessor.ts (Corrigidas tipagens omissas de ParsedOS e ParsedReceivable).  
-  - As formas de pagamento e valores lidos da planilha de OS agora resistem a c�lulas preenchidas de forma mista por usu�rios humanos (ex: \" PIX R$ 1.5,"00\ no campo de valor).  
+  - As formas de pagamento e valores lidos da planilha de OS agora resistem a c�lulas preenchidas de forma mista por usu�rios humanos (ex: \" PIX R$ 1.5,"00\ no campo de valor).  
+ 
+
+## Feature 172: Refatoração de UI/UX do Wizard e JSON Trail
+- **Componentes Alterados:** `CentralImportWizard` (Dropzone unificado visualmente sem abrir janela paralela, design modernizado, botão de download JSON e console de log visual animado embutido), `AgentRunnerModal` (adaptado apenas para fluxos em nuvem reais).
+- **Tipos/Hooks Adicionados:** Adicionado state mapping para `AgentStageItem` e Blob payload generator para `auditTrailUrl`.
+  
+## [171-os-mixed-cell-parser]  
+- **Parser Misto Resiliente (XLSX)**:  
+  - Modificado: src/hooks/useOsImportProcessor.ts (Substitudo parse numrico frgil por extrao avanada com Regex extractNumber de numberUtils.ts).  
+  - Modificado: src/hooks/useImportProcessor.ts (Corrigidas tipagens omissas de ParsedOS e ParsedReceivable).  
+  - As formas de pagamento e valores lidos da planilha de OS agora resistem a clulas preenchidas de forma mista por usurios humanos (ex: \" PIX R$ 1.5,"00\ no campo de valor).  
  
 
 ## Feature 172: Refatoração de UI/UX do Wizard e JSON Trail
@@ -162,4 +173,10 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - **Arquivo Modificado:** `src/lib/parsers/mapaMetasParser.ts`
 - **Mudanca:** Import estatico `import * as pdfjsLib from 'pdfjs-dist'` removido do escopo global. Substituido por Dynamic Import (`await import('pdfjs-dist')`) dentro da funcao `parseMapaMetasPDF`.
 - **Efeito:** Elimina crash SSR `DOMMatrix is not defined` ao carregar telas de Dashboard e Importacao.
-- (174) Redesign Central Import Wizard: Refatorado Step 4 do Wizard para substituir o importLogs por AgentStageItem, refinando o aspecto premium e ocultando logs t�cnicos atr�s de export JSON. 
+- (174) Redesign Central Import Wizard: Refatorado Step 4 do Wizard para substituir o importLogs por AgentStageItem, refinando o aspecto premium e ocultando logs tcnicos atrs de export JSON. 
+
+## [178-auditoria-virada-mes]
+- **Auditoria de Estoque de OS Pendente**: Criado componente `AuditoriaPassivoWizard` para gerenciar a validação de OS do Marco Zero cruzando com o Excel importado do mês atual, impedindo duplo input.
+
+## [179-fix-dashboard-math]
+- **Correção da Matemática Financeira (Conciliação Diária Global)**: Refeita a equação de Diferença e Fluxo de Caixa no backend (RPC `get_dashboard_metrics`) e frontend (`modulo1Calculations.ts`) para garantir o cálculo puramente baseado nas premissas contábeis corretas, removendo deduções fantasmas.

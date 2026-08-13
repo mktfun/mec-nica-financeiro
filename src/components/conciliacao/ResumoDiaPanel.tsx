@@ -354,7 +354,7 @@ export function ResumoDiaPanel({
                 <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
                   <AnimatedNumber value={calculated.faturamento} format="currency" />
                 </span>
-                <span className="text-[9px] text-[var(--text-tertiary)]">Diferença mês + Outros Faturamentos</span>
+                <span className="text-[9px] text-[var(--text-tertiary)]">Entradas puras importadas do OFX</span>
               </div>
               <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
                 <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Valor Disp. Contas</span>
