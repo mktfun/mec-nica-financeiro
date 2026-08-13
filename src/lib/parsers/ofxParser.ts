@@ -150,6 +150,11 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
     let balNum = extractNumber(balStr);
     if (isNaN(balNum)) balNum = parseInt(balStr, 10);
     if (!isNaN(balNum)) {
+      // Se a string original NÃO tiver vírgula nem ponto, e o valor for grande (ex: > 100000), assumimos que está em centavos.
+      // Cuidado para não dividir saldos pequenos que são reais (ex: 4585).
+      if (!balStr.includes('.') && !balStr.includes(',') && Math.abs(balNum) > 100000) {
+         balNum = balNum / 100.0;
+      }
       bankBalance = balNum;
     }
   }

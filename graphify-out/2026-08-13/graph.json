@@ -5287,8 +5287,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "package_dependencies_ai_sdk_react",
-      "community": 1109,
-      "community_name": "@ai-sdk/react",
+      "community": 45,
+      "community_name": "dependencies",
       "norm_label": "@ai-sdk/react"
     },
     {
@@ -5298,8 +5298,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "ai_sdk_react",
-      "community": 1109,
-      "community_name": "@ai-sdk/react",
+      "community": 45,
+      "community_name": "dependencies",
       "norm_label": "@ai-sdk/react"
     },
     {
@@ -6101,8 +6101,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "package_dependencies_ai",
-      "community": 45,
-      "community_name": "dependencies",
+      "community": 1138,
+      "community_name": "ai",
       "norm_label": "ai"
     },
     {
@@ -6112,8 +6112,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "ai",
-      "community": 45,
-      "community_name": "dependencies",
+      "community": 1138,
+      "community_name": "ai",
       "norm_label": "ai"
     },
     {
@@ -6937,8 +6937,8 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "package_devdependencies_eslint",
-      "community": 1134,
-      "community_name": "eslint",
+      "community": 1,
+      "community_name": "devDependencies",
       "norm_label": "eslint"
     },
     {
@@ -6948,8 +6948,8 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "eslint",
-      "community": 1134,
-      "community_name": "eslint",
+      "community": 1,
+      "community_name": "devDependencies",
       "norm_label": "eslint"
     },
     {
@@ -7157,8 +7157,8 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "package_devdependencies_vite",
-      "community": 1,
-      "community_name": "devDependencies",
+      "community": 1139,
+      "community_name": "vite",
       "norm_label": "vite"
     },
     {
@@ -7168,8 +7168,8 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "vite",
-      "community": 1,
-      "community_name": "devDependencies",
+      "community": 1139,
+      "community_name": "vite",
       "norm_label": "vite"
     },
     {
@@ -13716,7 +13716,7 @@
       "_origin": "ast",
       "id": "scratch_testparsers",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "testparsers.ts"
     },
     {
@@ -13727,7 +13727,7 @@
       "_origin": "ast",
       "id": "scratch_testparsers_tx1",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "tx1"
     },
     {
@@ -13738,7 +13738,7 @@
       "_origin": "ast",
       "id": "scratch_testparsers_tx2",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "tx2"
     },
     {
@@ -13750,7 +13750,7 @@
       "_origin": "ast",
       "id": "scratch_testparsers_cleannumber",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "cleannumber()"
     },
     {
@@ -13762,7 +13762,7 @@
       "_origin": "ast",
       "id": "scratch_testparsers_parseofxamount",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "parseofxamount()"
     },
     {
@@ -13773,7 +13773,7 @@
       "_origin": "ast",
       "id": "scratch_testparsers2",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "testparsers2.ts"
     },
     {
@@ -13784,7 +13784,7 @@
       "_origin": "ast",
       "id": "scratch_testparsers2_tx1",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "tx1"
     },
     {
@@ -13795,7 +13795,7 @@
       "_origin": "ast",
       "id": "scratch_testparsers2_tx2",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "tx2"
     },
     {
@@ -15302,7 +15302,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_mocks_importfiles",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "importfiles.ts"
     },
@@ -15313,7 +15313,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_mocks_importfiles_mockfiles",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "mockfiles"
     },
@@ -15347,8 +15347,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "agenteiaconfigpanel.tsx"
     },
     {
@@ -15358,8 +15358,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_model_options",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "model_options"
     },
     {
@@ -15369,8 +15369,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_provider_labels",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "provider_labels"
     },
     {
@@ -15381,8 +15381,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_agenteiaconfigpanel",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "agenteiaconfigpanel()"
     },
     {
@@ -15392,8 +15392,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_cacheagentepanel",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "cacheagentepanel.tsx"
     },
     {
@@ -15404,8 +15404,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_cacheagentepanel_cacheagentepanel",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "cacheagentepanel()"
     },
     {
@@ -15415,8 +15415,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "configuracoespanel.tsx"
     },
     {
@@ -15427,8 +15427,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel_configuracoespanel",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "configuracoespanel()"
     },
     {
@@ -15439,8 +15439,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel_aisettingsform",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "aisettingsform()"
     },
     {
@@ -15450,8 +15450,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_custospanel",
-      "community": 677,
-      "community_name": "AppShell.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "custospanel.tsx"
     },
     {
@@ -15462,8 +15462,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_custospanel_custospanel",
-      "community": 677,
-      "community_name": "AppShell.tsx",
+      "community": 1134,
+      "community_name": "custos.tsx",
       "norm_label": "custospanel()"
     },
     {
@@ -15496,8 +15496,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 1092,
+      "community_name": "LogsMotorPanel.tsx",
       "norm_label": "logsmotorpanel.tsx"
     },
     {
@@ -15508,8 +15508,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel_logsmotorpanel",
-      "community": 677,
-      "community_name": "AppShell.tsx",
+      "community": 1092,
+      "community_name": "LogsMotorPanel.tsx",
       "norm_label": "logsmotorpanel()"
     },
     {
@@ -16213,8 +16213,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_legacyostable",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "legacyostable.tsx"
     },
     {
@@ -16226,8 +16226,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_conciliacao_legacyostable_legacyos",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "legacyos"
     },
     {
@@ -16238,8 +16238,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_conciliacao_legacyostable_legacyostable",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "legacyostable()"
     },
     {
@@ -16249,8 +16249,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 495,
+      "community_name": "supabase",
       "norm_label": "modulo1saldopanel.tsx"
     },
     {
@@ -16274,8 +16274,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel_modulo1saldopanel",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 495,
+      "community_name": "supabase",
       "norm_label": "modulo1saldopanel()"
     },
     {
@@ -16286,7 +16286,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_ofxsemmatchtable",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "ofxsemmatchtable.tsx"
     },
     {
@@ -16298,7 +16298,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_ofxsemmatchtable_ofxsemmatchtable",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "ofxsemmatchtable()"
     },
     {
@@ -16308,8 +16308,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_orphancategorizationmodal",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "orphancategorizationmodal.tsx"
     },
     {
@@ -16321,8 +16321,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_conciliacao_orphancategorizationmodal_orphancategorizationmodalprops",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "orphancategorizationmodalprops"
     },
     {
@@ -16332,8 +16332,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_components_conciliacao_orphancategorizationmodal_categories",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "categories"
     },
     {
@@ -16344,8 +16344,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_conciliacao_orphancategorizationmodal_orphancategorizationmodal",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "orphancategorizationmodal()"
     },
     {
@@ -16356,7 +16356,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_osdetailmodal",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "osdetailmodal.tsx"
     },
     {
@@ -16369,7 +16369,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_osdetailmodal_osdetailmodalprops",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "osdetailmodalprops"
     },
     {
@@ -16381,7 +16381,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_osdetailmodal_osdetailmodal",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "osdetailmodal()"
     },
     {
@@ -16392,7 +16392,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_osvsredetable",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "osvsredetable.tsx"
     },
     {
@@ -16404,7 +16404,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_osvsredetable_osvsredetable",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "osvsredetable()"
     },
     {
@@ -16415,7 +16415,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_pixvsofxtable",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "pixvsofxtable.tsx"
     },
     {
@@ -16427,7 +16427,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_pixvsofxtable_pixvsofxtable",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "pixvsofxtable()"
     },
     {
@@ -16437,8 +16437,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsextratotable",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "redevsextratotable.tsx"
     },
     {
@@ -16450,8 +16450,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsextratotable_redevsextratotableprops",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "redevsextratotableprops"
     },
     {
@@ -16462,8 +16462,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsextratotable_redevsextratotable",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "redevsextratotable()"
     },
     {
@@ -16474,7 +16474,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsofxtable",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "redevsofxtable.tsx"
     },
     {
@@ -16486,7 +16486,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_redevsofxtable_redevsofxtable",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "redevsofxtable()"
     },
     {
@@ -16569,7 +16569,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_bankreconciliationdashboard",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "bankreconciliationdashboard.tsx"
     },
     {
@@ -16581,7 +16581,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_bankreconciliationdashboard_bankreconciliationdashboard",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "bankreconciliationdashboard()"
     },
     {
@@ -16592,7 +16592,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_cashflowchart",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "cashflowchart.tsx"
     },
     {
@@ -16604,7 +16604,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_cashflowchart_cashflowchart",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "cashflowchart()"
     },
     {
@@ -16614,8 +16614,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart",
-      "community": 49,
-      "community_name": "index.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "evolucaomacrochart.tsx"
     },
     {
@@ -16627,8 +16627,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_evolucaomacrochartprops",
-      "community": 49,
-      "community_name": "index.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "evolucaomacrochartprops"
     },
     {
@@ -16639,8 +16639,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatcurrency",
-      "community": 49,
-      "community_name": "index.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -16651,8 +16651,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatdate",
-      "community": 49,
-      "community_name": "index.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "formatdate()"
     },
     {
@@ -16663,8 +16663,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatcompactcurrency",
-      "community": 49,
-      "community_name": "index.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "formatcompactcurrency()"
     },
     {
@@ -16675,8 +16675,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_evolucaomacrochart",
-      "community": 49,
-      "community_name": "index.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "evolucaomacrochart()"
     },
     {
@@ -16687,7 +16687,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "faturamentovscontaschart.tsx"
     },
     {
@@ -16700,7 +16700,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_faturamentovscontaschartprops",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "faturamentovscontaschartprops"
     },
     {
@@ -16712,7 +16712,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_formatcurrency",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -16724,7 +16724,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_shortenname",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "shortenname()"
     },
     {
@@ -16736,7 +16736,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_customyaxistick",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "customyaxistick()"
     },
     {
@@ -16748,7 +16748,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_customtooltip",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "customtooltip()"
     },
     {
@@ -16760,7 +16760,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_faturamentovscontaschart_faturamentovscontaschart",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "faturamentovscontaschart()"
     },
     {
@@ -16770,8 +16770,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 49,
+      "community_name": "patio.tsx",
       "norm_label": "herobalance.tsx"
     },
     {
@@ -16782,8 +16782,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance_herobalance",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 49,
+      "community_name": "patio.tsx",
       "norm_label": "herobalance()"
     },
     {
@@ -16794,7 +16794,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "kpicard.tsx"
     },
     {
@@ -16807,7 +16807,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicolor",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "kpicolor"
     },
     {
@@ -16820,7 +16820,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicardprops",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "kpicardprops"
     },
     {
@@ -16831,7 +16831,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_color_map",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "color_map"
     },
     {
@@ -16843,7 +16843,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicard",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "kpicard()"
     },
     {
@@ -16853,8 +16853,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 49,
+      "community_name": "patio.tsx",
       "norm_label": "motorstatus.tsx"
     },
     {
@@ -16865,8 +16865,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus_motorstatus",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 49,
+      "community_name": "patio.tsx",
       "norm_label": "motorstatus()"
     },
     {
@@ -16968,8 +16968,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_recentactivity",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 49,
+      "community_name": "patio.tsx",
       "norm_label": "recentactivity.tsx"
     },
     {
@@ -16980,7 +16980,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_recentactivity_recentactivity",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "recentactivity()"
     },
@@ -17050,8 +17050,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard",
-      "community": 49,
-      "community_name": "index.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "storetabledashboard.tsx"
     },
     {
@@ -17063,8 +17063,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_storetabledashboardprops",
-      "community": 49,
-      "community_name": "index.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "storetabledashboardprops"
     },
     {
@@ -17075,8 +17075,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_fmt",
-      "community": 49,
-      "community_name": "index.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "fmt()"
     },
     {
@@ -17087,8 +17087,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_statusvariant",
-      "community": 49,
-      "community_name": "index.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "statusvariant()"
     },
     {
@@ -17099,8 +17099,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_statuslabel",
-      "community": 49,
-      "community_name": "index.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "statuslabel()"
     },
     {
@@ -17111,8 +17111,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_storetabledashboard",
-      "community": 49,
-      "community_name": "index.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "storetabledashboard()"
     },
     {
@@ -17122,7 +17122,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_agentrunnermodal",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentrunnermodal.tsx"
     },
@@ -17135,7 +17135,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_agentrunnermodal_agentrunnermodalprops",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentrunnermodalprops"
     },
@@ -17146,7 +17146,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_components_importacoes_agentrunnermodal_initial_stages",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "initial_stages"
     },
@@ -17158,7 +17158,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_agentrunnermodal_agentrunnermodal",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentrunnermodal()"
     },
@@ -17169,7 +17169,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentstageitem.tsx"
     },
@@ -17182,7 +17182,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem_substep",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "substep"
     },
@@ -17195,7 +17195,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem_agentstage",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentstage"
     },
@@ -17208,7 +17208,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem_agentstageitemprops",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentstageitemprops"
     },
@@ -17220,7 +17220,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_agentstageitem_agentstageitem",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "agentstageitem()"
     },
@@ -17231,8 +17231,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "auditoriapassivowizard.tsx"
     },
     {
@@ -17244,8 +17244,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard_auditoriapassivowizardprops",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "auditoriapassivowizardprops"
     },
     {
@@ -17257,8 +17257,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard_osstatus",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "osstatus"
     },
     {
@@ -17270,8 +17270,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard_unifiedos",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "unifiedos"
     },
     {
@@ -17282,8 +17282,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_auditoriapassivowizard_auditoriapassivowizard",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "auditoriapassivowizard()"
     },
     {
@@ -17340,7 +17340,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportwizard.tsx"
     },
@@ -17353,7 +17353,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_importlogentry",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "importlogentry"
     },
@@ -17364,7 +17364,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_initial_stages",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "initial_stages"
     },
@@ -17376,7 +17376,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_useunifiedstoremapping",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "useunifiedstoremapping()"
     },
@@ -17388,7 +17388,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_stepindicator",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "stepindicator()"
     },
@@ -17400,7 +17400,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_centralimportwizard",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportwizard()"
     },
@@ -17461,7 +17461,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_marcozerowizard",
       "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "marcozerowizard.tsx"
     },
     {
@@ -17473,7 +17473,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_marcozerowizard_marcozerowizard",
       "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "marcozerowizard()"
     },
     {
@@ -17483,8 +17483,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "matchmanualospendente.tsx"
     },
     {
@@ -17496,8 +17496,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente_matchmanualosprops",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "matchmanualosprops"
     },
     {
@@ -17508,8 +17508,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente_matchmanualospendente",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "matchmanualospendente()"
     },
     {
@@ -17520,7 +17520,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "wizardimportacao.tsx"
     },
     {
@@ -17533,7 +17533,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_wizardimportacaoprops",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "wizardimportacaoprops"
     },
     {
@@ -17545,7 +17545,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_usestoremapping",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "usestoremapping()"
     },
     {
@@ -17557,7 +17557,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_generatesyntheticfitid",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "generatesyntheticfitid()"
     },
     {
@@ -17569,7 +17569,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_wizardimportacao",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "wizardimportacao()"
     },
     {
@@ -17581,7 +17581,7 @@
       "_origin": "ast",
       "id": "src_components_importacoes_wizardimportacao_stepindicator",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "stepindicator()"
     },
     {
@@ -17705,8 +17705,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_animatednumber",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 49,
+      "community_name": "patio.tsx",
       "norm_label": "animatednumber.tsx"
     },
     {
@@ -17718,8 +17718,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumberprops",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 49,
+      "community_name": "patio.tsx",
       "norm_label": "animatednumberprops"
     },
     {
@@ -17730,8 +17730,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumber",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 49,
+      "community_name": "patio.tsx",
       "norm_label": "animatednumber()"
     },
     {
@@ -17742,7 +17742,7 @@
       "_origin": "ast",
       "id": "src_components_ui_badge",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "badge.tsx"
     },
     {
@@ -17755,7 +17755,7 @@
       "_origin": "ast",
       "id": "src_components_ui_badge_badgeprops",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "badgeprops"
     },
     {
@@ -17767,7 +17767,7 @@
       "_origin": "ast",
       "id": "src_components_ui_badge_badge",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "badge()"
     },
     {
@@ -17813,8 +17813,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_card",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "card.tsx"
     },
     {
@@ -17826,8 +17826,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_card_cardprops",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "cardprops"
     },
     {
@@ -17838,8 +17838,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_card_card",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "card()"
     },
     {
@@ -17885,7 +17885,7 @@
       "_origin": "ast",
       "id": "src_components_ui_loadingspinner",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "loadingspinner.tsx"
     },
     {
@@ -17898,7 +17898,7 @@
       "_origin": "ast",
       "id": "src_components_ui_loadingspinner_loadingspinnerprops",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "loadingspinnerprops"
     },
     {
@@ -17910,7 +17910,7 @@
       "_origin": "ast",
       "id": "src_components_ui_loadingspinner_loadingspinner",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "loadingspinner()"
     },
     {
@@ -17980,7 +17980,7 @@
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "universaldropzone.tsx"
     },
     {
@@ -17993,7 +17993,7 @@
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_filetypecategory",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "filetypecategory"
     },
     {
@@ -18006,7 +18006,7 @@
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_classifiedfile",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "classifiedfile"
     },
     {
@@ -18018,7 +18018,7 @@
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_classifyfile",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "classifyfile()"
     },
     {
@@ -18031,7 +18031,7 @@
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_universaldropzoneprops",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "universaldropzoneprops"
     },
     {
@@ -18043,7 +18043,7 @@
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_universaldropzone",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "universaldropzone()"
     },
     {
@@ -18076,8 +18076,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useaisettings",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "useaisettings.ts"
     },
     {
@@ -18089,8 +18089,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useaisettings_aisettings",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "aisettings"
     },
     {
@@ -18101,8 +18101,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useaisettings_useaisettings",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "useaisettings()"
     },
     {
@@ -18113,8 +18113,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useaisettings_usesaveaisettings",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "usesaveaisettings()"
     },
     {
@@ -18278,7 +18278,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "usebackenddashboard.ts"
     },
     {
@@ -18291,7 +18291,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_storemetrics",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "storemetrics"
     },
     {
@@ -18304,7 +18304,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_dashboardmetrics",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "dashboardmetrics"
     },
     {
@@ -18316,7 +18316,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_usebackenddashboard",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "usebackenddashboard()"
     },
     {
@@ -18326,8 +18326,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "usebotcredentials.ts"
     },
     {
@@ -18339,8 +18339,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_botcredentialrow",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "botcredentialrow"
     },
     {
@@ -18351,8 +18351,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usebotcredentials",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "usebotcredentials()"
     },
     {
@@ -18363,8 +18363,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_useupdatebotcredential",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "useupdatebotcredential()"
     },
     {
@@ -18375,8 +18375,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usemarkcredentialvalid",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "usemarkcredentialvalid()"
     },
     {
@@ -18386,8 +18386,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotlogs",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 1092,
+      "community_name": "LogsMotorPanel.tsx",
       "norm_label": "usebotlogs.ts"
     },
     {
@@ -18399,8 +18399,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_botauditlog",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 1092,
+      "community_name": "LogsMotorPanel.tsx",
       "norm_label": "botauditlog"
     },
     {
@@ -18411,8 +18411,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotlogs",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 1092,
+      "community_name": "LogsMotorPanel.tsx",
       "norm_label": "usebotlogs()"
     },
     {
@@ -18423,8 +18423,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotauditlogs",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 1092,
+      "community_name": "LogsMotorPanel.tsx",
       "norm_label": "usebotauditlogs()"
     },
     {
@@ -18458,8 +18458,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebotruns_usebotrunhistory",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "usebotrunhistory()"
     },
     {
@@ -18469,8 +18469,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usecashregisters",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usecashregisters.ts"
     },
     {
@@ -18481,8 +18481,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usecashregisters_usecashregisters",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usecashregisters()"
     },
     {
@@ -18493,8 +18493,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usecashregisters_useclosecashregister",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "useclosecashregister()"
     },
     {
@@ -18504,8 +18504,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usecategorizeorphan",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "usecategorizeorphan.ts"
     },
     {
@@ -18516,8 +18516,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usecategorizeorphan_usecategorizeorphan",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "usecategorizeorphan()"
     },
     {
@@ -18528,7 +18528,7 @@
       "_origin": "ast",
       "id": "src_hooks_usecentralimport",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "usecentralimport.ts"
     },
     {
@@ -18540,7 +18540,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usecentralimport_unifiedimportresult",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "unifiedimportresult"
     },
@@ -18554,7 +18554,7 @@
       "_origin": "ast",
       "id": "src_hooks_usecentralimport_maquininhaitem",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "maquininhaitem"
     },
     {
@@ -18566,7 +18566,7 @@
       "_origin": "ast",
       "id": "src_hooks_usecentralimport_usecentralimport",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "usecentralimport()"
     },
     {
@@ -18576,8 +18576,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "useconciliacao.ts"
     },
     {
@@ -18588,8 +18588,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_isvaliduuid",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "isvaliduuid()"
     },
     {
@@ -18601,8 +18601,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_conciliacaoresumo",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "conciliacaoresumo"
     },
     {
@@ -18661,8 +18661,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usestorehistory",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usestorehistory()"
     },
     {
@@ -18673,8 +18673,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesystemtransactions",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "usesystemtransactions()"
     },
     {
@@ -18685,8 +18685,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usedailyreconciliationdelta",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "usedailyreconciliationdelta()"
     },
     {
@@ -18698,7 +18698,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usereconciliationviews",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "usereconciliationviews()"
     },
     {
@@ -18709,8 +18709,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usemodulo1storesdata",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "usemodulo1storesdata()"
     },
     {
@@ -18722,7 +18722,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useupdateosstatus",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "useupdateosstatus()"
     },
     {
@@ -18733,8 +18733,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useresolveunmatchedalert",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "useresolveunmatchedalert()"
     },
     {
@@ -18745,8 +18745,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useredevsextrato",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 34,
+      "community_name": "useConciliacao.ts",
       "norm_label": "useredevsextrato()"
     },
     {
@@ -18758,7 +18758,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesavebankreconciliation",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "usesavebankreconciliation()"
     },
     {
@@ -18770,7 +18770,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesavemachinetotal",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "usesavemachinetotal()"
     },
     {
@@ -18927,8 +18927,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2",
-      "community": 49,
-      "community_name": "index.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "usedashboardv2.ts"
     },
     {
@@ -18940,8 +18940,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_storemetrics",
-      "community": 49,
-      "community_name": "index.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "storemetrics"
     },
     {
@@ -18953,8 +18953,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_dashboardv2data",
-      "community": 49,
-      "community_name": "index.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "dashboardv2data"
     },
     {
@@ -18965,8 +18965,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_usedashboardv2",
-      "community": 49,
-      "community_name": "index.tsx",
+      "community": 42,
+      "community_name": "StoreTableDashboard.tsx",
       "norm_label": "usedashboardv2()"
     },
     {
@@ -18976,7 +18976,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useexpenseimportprocessor",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "useexpenseimportprocessor.ts"
     },
@@ -18989,7 +18989,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useexpenseimportprocessor_expenseimportresult",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "expenseimportresult"
     },
@@ -19001,7 +19001,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useexpenseimportprocessor_processexpensefiles",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "processexpensefiles()"
     },
@@ -19048,8 +19048,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "useimportlogs.ts"
     },
     {
@@ -19061,8 +19061,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlog",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "importlog"
     },
     {
@@ -19074,8 +19074,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlogfilters",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "importlogfilters"
     },
     {
@@ -19086,8 +19086,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogs",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "useimportlogs()"
     },
     {
@@ -19098,8 +19098,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogdetail",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 13,
+      "community_name": "supabase.ts",
       "norm_label": "useimportlogdetail()"
     },
     {
@@ -19135,8 +19135,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_parsedreceivable",
-      "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 513,
+      "community_name": "importacoes.tsx",
       "norm_label": "parsedreceivable"
     },
     {
@@ -19147,7 +19147,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_savepatioosandreceivables",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "savepatioosandreceivables()"
     },
@@ -19255,8 +19255,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useoscache",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "useoscache.ts"
     },
     {
@@ -19268,8 +19268,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useoscache_oficinaoscache",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "oficinaoscache"
     },
     {
@@ -19280,8 +19280,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useoscache_useoscache",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 17,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "useoscache()"
     },
     {
@@ -19292,7 +19292,7 @@
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "useosimportprocessor.ts"
     },
     {
@@ -19305,7 +19305,7 @@
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor_osimportresult",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "osimportresult"
     },
     {
@@ -19317,7 +19317,7 @@
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor_processosfiles",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "processosfiles()"
     },
     {
@@ -19327,7 +19327,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usepatio",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "usepatio.ts"
     },
@@ -19339,7 +19339,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usepatio_usepatioos",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "usepatioos()"
     },
@@ -19351,7 +19351,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usepatio_useupdatepatioos",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "useupdatepatioos()"
     },
@@ -19363,7 +19363,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usepatio_usepatiosummary",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "usepatiosummary()"
     },
@@ -19473,8 +19473,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_userecebiveis",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "userecebiveis.ts"
     },
     {
@@ -19485,8 +19485,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_userecebiveis",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "userecebiveis()"
     },
     {
@@ -19497,8 +19497,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_usemarkreceived",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "usemarkreceived()"
     },
     {
@@ -19509,8 +19509,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_usereceivablessummary",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "usereceivablessummary()"
     },
     {
@@ -19592,8 +19592,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usestores_usedeletestore",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "usedeletestore()"
     },
     {
@@ -19604,8 +19604,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usestores_usestorefinancialstats",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usestorefinancialstats()"
     },
     {
@@ -19616,7 +19616,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usetransactions.ts"
     },
     {
@@ -19628,7 +19628,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactions",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usetransactions()"
     },
     {
@@ -19640,7 +19640,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactionsbystore",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usetransactionsbystore()"
     },
     {
@@ -19651,8 +19651,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedashboardsummary",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 49,
+      "community_name": "patio.tsx",
       "norm_label": "usedashboardsummary()"
     },
     {
@@ -19664,7 +19664,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usecashflow",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usecashflow()"
     },
     {
@@ -19676,7 +19676,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useextrato",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "useextrato()"
     },
     {
@@ -19700,7 +19700,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactionspordataeloja",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "usetransactionspordataeloja()"
     },
     {
@@ -19711,8 +19711,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useweeklyrevenuetrend",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 513,
+      "community_name": "importacoes.tsx",
       "norm_label": "useweeklyrevenuetrend()"
     },
     {
@@ -19723,7 +19723,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usecreateimportbatch",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "usecreateimportbatch()"
     },
@@ -19735,7 +19735,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usebulkinsertconciliationmatches",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "usebulkinsertconciliationmatches()"
     },
@@ -19747,8 +19747,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usebulkinserttransactions",
-      "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usebulkinserttransactions()"
     },
     {
@@ -19760,7 +19760,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedailysystembalance",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usedailysystembalance()"
     },
     {
@@ -19772,7 +19772,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_uselatestbankbalance",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "uselatestbankbalance()"
     },
     {
@@ -19784,7 +19784,7 @@
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedailybankbalance",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usedailybankbalance()"
     },
     {
@@ -19794,8 +19794,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usetriplematch",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usetriplematch.ts"
     },
     {
@@ -19806,8 +19806,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetriplematch_usetriplematch",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usetriplematch()"
     },
     {
@@ -19817,8 +19817,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher",
-      "community": 1089,
-      "community_name": "start.ts",
+      "community": 680,
+      "community_name": "src/server.ts",
       "norm_label": "auth-attacher.ts"
     },
     {
@@ -19828,8 +19828,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher_attachsupabaseauth",
-      "community": 1089,
-      "community_name": "start.ts",
+      "community": 680,
+      "community_name": "src/server.ts",
       "norm_label": "attachsupabaseauth"
     },
     {
@@ -20691,7 +20691,7 @@
       "_origin": "ast",
       "id": "src_lib_logger",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "logger.ts"
     },
     {
@@ -20704,7 +20704,7 @@
       "_origin": "ast",
       "id": "src_lib_logger_loglevel",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "loglevel"
     },
     {
@@ -20717,7 +20717,7 @@
       "_origin": "ast",
       "id": "src_lib_logger_logstage",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "logstage"
     },
     {
@@ -20729,7 +20729,7 @@
       "_origin": "ast",
       "id": "src_lib_logger_tracelog",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "tracelog()"
     },
     {
@@ -20741,7 +20741,7 @@
       "_origin": "ast",
       "id": "src_lib_logger_generatesessionid",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "generatesessionid()"
     },
     {
@@ -21018,8 +21018,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_calculatemodulo1saldo",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 495,
+      "community_name": "supabase",
       "norm_label": "calculatemodulo1saldo()"
     },
     {
@@ -21030,7 +21030,7 @@
       "_origin": "ast",
       "id": "src_lib_ofxparser",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "lib/ofxparser.ts"
     },
     {
@@ -21043,7 +21043,7 @@
       "_origin": "ast",
       "id": "src_lib_ofxparser_ofxtransaction",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "ofxtransaction"
     },
     {
@@ -21055,7 +21055,7 @@
       "_origin": "ast",
       "id": "src_lib_ofxparser_parseofx",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "parseofx()"
     },
     {
@@ -21068,7 +21068,7 @@
       "_origin": "ast",
       "id": "src_lib_ofxparser_systemtransaction",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "systemtransaction"
     },
     {
@@ -21081,7 +21081,7 @@
       "_origin": "ast",
       "id": "src_lib_ofxparser_matchresult",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "matchresult"
     },
     {
@@ -21093,7 +21093,7 @@
       "_origin": "ast",
       "id": "src_lib_ofxparser_matchtransactions",
       "community": 634,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community_name": "importacoes-despesas.tsx",
       "norm_label": "matchtransactions()"
     },
     {
@@ -21103,7 +21103,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_centralimportmanager",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportmanager.ts"
     },
@@ -21116,7 +21116,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_parsers_centralimportmanager_centralimportresults",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportresults"
     },
@@ -21128,7 +21128,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_centralimportmanager_parsecentralimports",
-      "community": 54,
+      "community": 17,
       "community_name": "CentralImportWizard.tsx",
       "norm_label": "parsecentralimports()"
     },
@@ -21139,7 +21139,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_contasapagarparser",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "contasapagarparser.ts"
     },
@@ -21152,7 +21152,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_parsers_contasapagarparser_parsedexpense",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "parsedexpense"
     },
@@ -21164,7 +21164,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_contasapagarparser_parsecontasapagar",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "parsecontasapagar()"
     },
@@ -21176,7 +21176,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_hashutils",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "hashutils.ts"
     },
     {
@@ -21188,7 +21188,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_hashutils_generatedeterministichash",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "generatedeterministichash()"
     },
     {
@@ -21198,7 +21198,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_jurosredeparser",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "jurosredeparser.ts"
     },
@@ -21210,7 +21210,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_jurosredeparser_parsejurosrede",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "parsejurosrede()"
     },
@@ -21222,7 +21222,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_mapametasparser",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "mapametasparser.ts"
     },
     {
@@ -21235,7 +21235,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_mapametasparser_mapametasstore",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "mapametasstore"
     },
     {
@@ -21248,7 +21248,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_mapametasparser_mapametasresult",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "mapametasresult"
     },
     {
@@ -21260,7 +21260,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_mapametasparser_parsemapametaspdf",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "parsemapametaspdf()"
     },
     {
@@ -21270,8 +21270,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "marcozeroparser.ts"
     },
     {
@@ -21283,8 +21283,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_marcozeroglobaldata",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "marcozeroglobaldata"
     },
     {
@@ -21296,8 +21296,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_marcozerostoredata",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "marcozerostoredata"
     },
     {
@@ -21310,7 +21310,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_marcozeroresult",
       "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "marcozeroresult"
     },
     {
@@ -21321,8 +21321,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_cleannumber",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "cleannumber()"
     },
     {
@@ -21333,8 +21333,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_parsedate",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "parsedate()"
     },
     {
@@ -21345,8 +21345,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_isknownstore",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "isknownstore()"
     },
     {
@@ -21357,8 +21357,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_parsemarcozeroplanilha",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "parsemarcozeroplanilha()"
     },
     {
@@ -21369,7 +21369,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_numberutils",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "numberutils.ts"
     },
     {
@@ -21381,7 +21381,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_numberutils_roundcurrency",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "roundcurrency()"
     },
     {
@@ -21393,7 +21393,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_numberutils_extractnumber",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "extractnumber()"
     },
     {
@@ -21404,7 +21404,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "parsers/ofxparser.ts"
     },
     {
@@ -21417,7 +21417,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser_ofxtransaction",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "ofxtransaction"
     },
     {
@@ -21430,7 +21430,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser_ofxparseresult",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "ofxparseresult"
     },
     {
@@ -21442,7 +21442,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser_extractdocument",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "extractdocument()"
     },
     {
@@ -21454,7 +21454,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser_parseofxfile",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "parseofxfile()"
     },
     {
@@ -21465,7 +21465,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_redeparser",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "redeparser.ts"
     },
     {
@@ -21478,7 +21478,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_redeparser_redetransaction",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "redetransaction"
     },
     {
@@ -21491,7 +21491,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_redeparser_rederesult",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "rederesult"
     },
     {
@@ -21503,7 +21503,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_redeparser_parseredefile",
       "community": 54,
-      "community_name": "CentralImportWizard.tsx",
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "parseredefile()"
     },
     {
@@ -21513,8 +21513,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_storemapping",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "storemapping.ts"
     },
     {
@@ -21524,8 +21524,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_storemapping_rede_store_mapping",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "rede_store_mapping"
     },
     {
@@ -21536,8 +21536,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_parsers_storemapping_normalizeredestorename",
-      "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "normalizeredestorename()"
     },
     {
@@ -21635,7 +21635,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_transactionrow",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "transactionrow"
     },
     {
@@ -21660,7 +21660,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_patioosrow",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "patioosrow"
     },
@@ -21673,8 +21673,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_receivablerow",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "receivablerow"
     },
     {
@@ -21747,8 +21747,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_utils_getdefaultdate",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 513,
+      "community_name": "importacoes.tsx",
       "norm_label": "getdefaultdate()"
     },
     {
@@ -21760,7 +21760,7 @@
       "_origin": "ast",
       "id": "src_lib_utils_formatcurrency",
       "community": 17,
-      "community_name": "importacoes-despesas.tsx",
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -22090,8 +22090,8 @@
       "source_location": "L460",
       "_origin": "ast",
       "id": "src_routetree_gen_routetree",
-      "community": 1089,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "routetree"
     },
     {
@@ -22114,8 +22114,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routetree_gen_register",
-      "community": 1089,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "register"
     },
     {
@@ -22125,8 +22125,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_router",
-      "community": 1089,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "router.tsx"
     },
     {
@@ -22137,8 +22137,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_router_getrouter",
-      "community": 1089,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "getrouter()"
     },
     {
@@ -22265,8 +22265,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_bootstrap",
-      "community": 34,
-      "community_name": "Card.tsx",
+      "community": 496,
+      "community_name": "useStores",
       "norm_label": "bootstrap.tsx"
     },
     {
@@ -22396,7 +22396,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "conciliacao.$lojaid.tsx"
     },
     {
@@ -22419,7 +22419,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_formatdate",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "formatdate()"
     },
     {
@@ -22432,7 +22432,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_tabtype",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "tabtype"
     },
     {
@@ -22444,7 +22444,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_tabbtn",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "tabbtn()"
     },
     {
@@ -22456,7 +22456,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_lojaid_conciliacaolojapage",
       "community": 34,
-      "community_name": "Card.tsx",
+      "community_name": "useConciliacao.ts",
       "norm_label": "conciliacaolojapage()"
     },
     {
@@ -22500,8 +22500,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_configuracoes",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "configuracoes.tsx"
     },
     {
@@ -22523,8 +22523,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_configuracoes_configuracoespage",
-      "community": 13,
-      "community_name": "supabase.ts",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "configuracoespage()"
     },
     {
@@ -22534,8 +22534,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_custos",
-      "community": 677,
-      "community_name": "AppShell.tsx",
+      "community": 1134,
+      "community_name": "custos.tsx",
       "norm_label": "custos.tsx"
     },
     {
@@ -22545,8 +22545,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_routes_custos_route",
-      "community": 1095,
-      "community_name": "FileRoutesByPath",
+      "community": 1134,
+      "community_name": "custos.tsx",
       "norm_label": "route"
     },
     {
@@ -22557,8 +22557,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_custos_custospage",
-      "community": 677,
-      "community_name": "AppShell.tsx",
+      "community": 1134,
+      "community_name": "custos.tsx",
       "norm_label": "custospage()"
     },
     {
@@ -22569,7 +22569,7 @@
       "_origin": "ast",
       "id": "src_routes_historico",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "historico.tsx"
     },
     {
@@ -22592,7 +22592,7 @@
       "_origin": "ast",
       "id": "src_routes_historico_getdefaultperiod",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "getdefaultperiod()"
     },
     {
@@ -22604,7 +22604,7 @@
       "_origin": "ast",
       "id": "src_routes_historico_formatdate",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "formatdate()"
     },
     {
@@ -22616,7 +22616,7 @@
       "_origin": "ast",
       "id": "src_routes_historico_geticonformethod",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "geticonformethod()"
     },
     {
@@ -22628,7 +22628,7 @@
       "_origin": "ast",
       "id": "src_routes_historico_historicopage",
       "community": 4,
-      "community_name": "useTransactions.ts",
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "historicopage()"
     },
     {
@@ -22638,7 +22638,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "importacoes-despesas.tsx"
     },
@@ -22661,7 +22661,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_usestoremapping",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "usestoremapping()"
     },
@@ -22673,7 +22673,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_importacoesdespesaswizard",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "importacoesdespesaswizard()"
     },
@@ -22685,7 +22685,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_stepindicator",
-      "community": 17,
+      "community": 634,
       "community_name": "importacoes-despesas.tsx",
       "norm_label": "stepindicator()"
     },
@@ -22801,7 +22801,7 @@
       "_origin": "ast",
       "id": "src_routes_index",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "index.tsx"
     },
     {
@@ -22824,7 +22824,7 @@
       "_origin": "ast",
       "id": "src_routes_index_dashboardpage",
       "community": 49,
-      "community_name": "index.tsx",
+      "community_name": "patio.tsx",
       "norm_label": "dashboardpage()"
     },
     {
@@ -22902,8 +22902,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_logs_motor",
-      "community": 677,
-      "community_name": "AppShell.tsx",
+      "community": 1092,
+      "community_name": "LogsMotorPanel.tsx",
       "norm_label": "logs.motor.tsx"
     },
     {
@@ -22925,8 +22925,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_logs_motor_logsmotorpage",
-      "community": 677,
-      "community_name": "AppShell.tsx",
+      "community": 1092,
+      "community_name": "LogsMotorPanel.tsx",
       "norm_label": "logsmotorpage()"
     },
     {
@@ -22936,8 +22936,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_loja_lojaid",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "loja.$lojaid.tsx"
     },
     {
@@ -22959,8 +22959,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_getdefaultperiod",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "getdefaultperiod()"
     },
     {
@@ -22971,8 +22971,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_formatdate",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "formatdate()"
     },
     {
@@ -22983,8 +22983,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_geticonformethod",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "geticonformethod()"
     },
     {
@@ -22995,8 +22995,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_lojadashboardpage",
-      "community": 496,
-      "community_name": "useStores",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "lojadashboardpage()"
     },
     {
@@ -23040,7 +23040,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_patio",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "patio.tsx"
     },
@@ -23053,7 +23053,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_patio_historychange",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "historychange"
     },
@@ -23066,7 +23066,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_patio_historylog",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "historylog"
     },
@@ -23090,7 +23090,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_patio_filtertab",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "filtertab"
     },
@@ -23102,7 +23102,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_patio_getoseffectivevalues",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "getoseffectivevalues()"
     },
@@ -23114,7 +23114,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_patio_patiopage",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "patiopage()"
     },
@@ -23126,7 +23126,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_patio_tabbtn",
-      "community": 930,
+      "community": 49,
       "community_name": "patio.tsx",
       "norm_label": "tabbtn()"
     },
@@ -23231,8 +23231,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_recebiveis",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "recebiveis.tsx"
     },
     {
@@ -23255,8 +23255,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_recebiveis_filtertab",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "filtertab"
     },
     {
@@ -23267,8 +23267,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_recebiveis_recebiveispage",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "recebiveispage()"
     },
     {
@@ -23279,8 +23279,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_recebiveis_tabbtn",
-      "community": 4,
-      "community_name": "useTransactions.ts",
+      "community": 677,
+      "community_name": "AppShell.tsx",
       "norm_label": "tabbtn()"
     },
     {
@@ -23374,8 +23374,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_start",
-      "community": 1089,
-      "community_name": "start.ts",
+      "community": 680,
+      "community_name": "src/server.ts",
       "norm_label": "start.ts"
     },
     {
@@ -23385,8 +23385,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_start_errormiddleware",
-      "community": 1089,
-      "community_name": "start.ts",
+      "community": 680,
+      "community_name": "src/server.ts",
       "norm_label": "errormiddleware"
     },
     {
@@ -23396,8 +23396,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_start_startinstance",
-      "community": 1089,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "startinstance"
     },
     {
@@ -32371,201 +32371,190 @@
       "norm_label": "tasks"
     },
     {
-      "label": "188-sanitizacao-ponto-flutuante/design.md",
+      "label": "189-fix-dashboard-cartesian-cte/design.md",
       "file_type": "document",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/design.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_188_sanitizacao_ponto_flutuante_design",
-      "community": 1092,
-      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
-      "norm_label": "188-sanitizacao-ponto-flutuante/design.md"
+      "id": "specs_189_fix_dashboard_cartesian_cte_design",
+      "community": 1126,
+      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "189-fix-dashboard-cartesian-cte/design.md"
     },
     {
-      "label": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "label": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "file_type": "document",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/design.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
-      "community": 1092,
-      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
-      "norm_label": "design: sanitizacao global de ponto flutuante (188-sanitizacao-ponto-flutuante)"
+      "id": "specs_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "community": 1126,
+      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "design: correcao critica de cartesian product via ctes (189)"
     },
     {
       "label": "Arquitetura T\u00e9cnica",
       "file_type": "document",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/design.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_188_sanitizacao_ponto_flutuante_design_arquitetura_t\u00e9cnica",
-      "community": 1092,
-      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "id": "specs_189_fix_dashboard_cartesian_cte_design_arquitetura_t\u00e9cnica",
+      "community": 1126,
+      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "arquitetura tecnica"
-    },
-    {
-      "label": "Interfaces TypeScript",
-      "file_type": "document",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/design.md",
-      "source_location": "L7",
-      "_origin": "ast",
-      "id": "specs_188_sanitizacao_ponto_flutuante_design_interfaces_typescript",
-      "community": 1092,
-      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
-      "norm_label": "interfaces typescript"
     },
     {
       "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
       "file_type": "document",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/design.md",
-      "source_location": "L17",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L33",
       "_origin": "ast",
-      "id": "specs_188_sanitizacao_ponto_flutuante_design_componentes_hooks_fun\u00e7\u00f5es",
-      "community": 1092,
-      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "id": "specs_189_fix_dashboard_cartesian_cte_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 1126,
+      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "componentes / hooks / funcoes"
     },
     {
-      "label": "Fluxo de Execu\u00e7\u00e3o",
+      "label": "Fluxo de UI",
       "file_type": "document",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/design.md",
-      "source_location": "L28",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L38",
       "_origin": "ast",
-      "id": "specs_188_sanitizacao_ponto_flutuante_design_fluxo_de_execu\u00e7\u00e3o",
-      "community": 1092,
-      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
-      "norm_label": "fluxo de execucao"
+      "id": "specs_189_fix_dashboard_cartesian_cte_design_fluxo_de_ui",
+      "community": 1126,
+      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "fluxo de ui"
     },
     {
       "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
       "file_type": "document",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/design.md",
-      "source_location": "L35",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L43",
       "_origin": "ast",
-      "id": "specs_188_sanitizacao_ponto_flutuante_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
-      "community": 1092,
-      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "id": "specs_189_fix_dashboard_cartesian_cte_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 1126,
+      "community_name": "Design: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
     },
     {
-      "label": "188-sanitizacao-ponto-flutuante/proposal.md",
+      "label": "189-fix-dashboard-cartesian-cte/proposal.md",
       "file_type": "document",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_188_sanitizacao_ponto_flutuante_proposal",
-      "community": 42,
-      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
-      "norm_label": "188-sanitizacao-ponto-flutuante/proposal.md"
+      "id": "specs_189_fix_dashboard_cartesian_cte_proposal",
+      "community": 930,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "189-fix-dashboard-cartesian-cte/proposal.md"
     },
     {
-      "label": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "label": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "file_type": "document",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
-      "community": 42,
-      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
-      "norm_label": "proposal: sanitizacao global de ponto flutuante e arredondamento financeiro (188-sanitizacao-ponto-flutuante)"
+      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "community": 930,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "proposal: correcao critica de cartesian product via ctes (189)"
     },
     {
       "label": "Problema",
       "file_type": "document",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_188_sanitizacao_ponto_flutuante_proposal_problema",
-      "community": 42,
-      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_problema",
+      "community": 930,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "problema"
     },
     {
       "label": "Solu\u00e7\u00e3o Proposta",
       "file_type": "document",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/proposal.md",
-      "source_location": "L6",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L7",
       "_origin": "ast",
-      "id": "specs_188_sanitizacao_ponto_flutuante_proposal_solu\u00e7\u00e3o_proposta",
-      "community": 42,
-      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 930,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "solucao proposta"
     },
     {
       "label": "Contratos de Dados",
       "file_type": "document",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/proposal.md",
-      "source_location": "L14",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L15",
       "_origin": "ast",
-      "id": "specs_188_sanitizacao_ponto_flutuante_proposal_contratos_de_dados",
-      "community": 42,
-      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_contratos_de_dados",
+      "community": 930,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "contratos de dados"
     },
     {
       "label": "API / Interface",
       "file_type": "document",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
       "source_location": "L19",
       "_origin": "ast",
-      "id": "specs_188_sanitizacao_ponto_flutuante_proposal_api_interface",
-      "community": 42,
-      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_api_interface",
+      "community": 930,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "api / interface"
     },
     {
       "label": "Features Existentes Impactadas",
       "file_type": "document",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/proposal.md",
-      "source_location": "L24",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L23",
       "_origin": "ast",
-      "id": "specs_188_sanitizacao_ponto_flutuante_proposal_features_existentes_impactadas",
-      "community": 42,
-      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_features_existentes_impactadas",
+      "community": 930,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "features existentes impactadas"
     },
     {
       "label": "Risco Principal",
       "file_type": "document",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/proposal.md",
-      "source_location": "L28",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L27",
       "_origin": "ast",
-      "id": "specs_188_sanitizacao_ponto_flutuante_proposal_risco_principal",
-      "community": 42,
-      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "id": "specs_189_fix_dashboard_cartesian_cte_proposal_risco_principal",
+      "community": 930,
+      "community_name": "Proposal: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "risco principal"
     },
     {
-      "label": "188-sanitizacao-ponto-flutuante/spec-plan.md",
+      "label": "189-fix-dashboard-cartesian-cte/spec-plan.md",
       "file_type": "document",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/spec-plan.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_188_sanitizacao_ponto_flutuante_spec_plan",
-      "community": 1126,
-      "community_name": "Spec Plan: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
-      "norm_label": "188-sanitizacao-ponto-flutuante/spec-plan.md"
+      "id": "specs_189_fix_dashboard_cartesian_cte_spec_plan",
+      "community": 1136,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "189-fix-dashboard-cartesian-cte/spec-plan.md"
     },
     {
-      "label": "Spec Plan: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "label": "Spec Plan: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "file_type": "document",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/spec-plan.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_188_sanitizacao_ponto_flutuante_spec_plan_spec_plan_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
-      "community": 1126,
-      "community_name": "Spec Plan: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
-      "norm_label": "spec plan: sanitizacao global de ponto flutuante (188-sanitizacao-ponto-flutuante)"
+      "id": "specs_189_fix_dashboard_cartesian_cte_spec_plan_spec_plan_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "community": 1136,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
+      "norm_label": "spec plan: correcao critica de cartesian product via ctes (189)"
     },
     {
       "label": "Tasks",
       "file_type": "document",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/spec-plan.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/spec-plan.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_188_sanitizacao_ponto_flutuante_spec_plan_tasks",
-      "community": 1126,
-      "community_name": "Spec Plan: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "id": "specs_189_fix_dashboard_cartesian_cte_spec_plan_tasks",
+      "community": 1136,
+      "community_name": "Spec Plan: Corre\u00e7\u00e3o Cr\u00edtica de Cartesian Product via CTEs (189)",
       "norm_label": "tasks"
     },
     {
@@ -56491,6 +56480,204 @@
       "id": "specs_archive_187_gestao_os_legadas_spec_plan_tasks",
       "community": 1130,
       "community_name": "Spec Plan: Gest\u00e3o de OSs Legadas do Marco Zero (187-gestao-os-legadas)",
+      "norm_label": "tasks"
+    },
+    {
+      "label": "188-sanitizacao-ponto-flutuante/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_design",
+      "community": 1109,
+      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "188-sanitizacao-ponto-flutuante/design.md"
+    },
+    {
+      "label": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "community": 1109,
+      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "design: sanitizacao global de ponto flutuante (188-sanitizacao-ponto-flutuante)"
+    },
+    {
+      "label": "Arquitetura T\u00e9cnica",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_design_arquitetura_t\u00e9cnica",
+      "community": 1109,
+      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "arquitetura tecnica"
+    },
+    {
+      "label": "Interfaces TypeScript",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_design_interfaces_typescript",
+      "community": 1109,
+      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "interfaces typescript"
+    },
+    {
+      "label": "Componentes / Hooks / Fun\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_design_componentes_hooks_fun\u00e7\u00f5es",
+      "community": 1109,
+      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "componentes / hooks / funcoes"
+    },
+    {
+      "label": "Fluxo de Execu\u00e7\u00e3o",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_design_fluxo_de_execu\u00e7\u00e3o",
+      "community": 1109,
+      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "fluxo de execucao"
+    },
+    {
+      "label": "Cen\u00e1rios de Verifica\u00e7\u00e3o (SCAN \u2192 INFER \u2192 VERIFY \u2192 FIX)",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L35",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "community": 1109,
+      "community_name": "Design: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "cenarios de verificacao (scan \u2192 infer \u2192 verify \u2192 fix)"
+    },
+    {
+      "label": "188-sanitizacao-ponto-flutuante/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_proposal",
+      "community": 1089,
+      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "188-sanitizacao-ponto-flutuante/proposal.md"
+    },
+    {
+      "label": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
+      "community": 1089,
+      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "proposal: sanitizacao global de ponto flutuante e arredondamento financeiro (188-sanitizacao-ponto-flutuante)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_problema",
+      "community": 1089,
+      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Solu\u00e7\u00e3o Proposta",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 1089,
+      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "solucao proposta"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_contratos_de_dados",
+      "community": 1089,
+      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "API / Interface",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_api_interface",
+      "community": 1089,
+      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "api / interface"
+    },
+    {
+      "label": "Features Existentes Impactadas",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_features_existentes_impactadas",
+      "community": 1089,
+      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "features existentes impactadas"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_risco_principal",
+      "community": 1089,
+      "community_name": "Proposal: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante e Arredondamento Financeiro (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "188-sanitizacao-ponto-flutuante/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_spec_plan",
+      "community": 1137,
+      "community_name": "Spec Plan: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "188-sanitizacao-ponto-flutuante/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_spec_plan_spec_plan_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "community": 1137,
+      "community_name": "Spec Plan: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
+      "norm_label": "spec plan: sanitizacao global de ponto flutuante (188-sanitizacao-ponto-flutuante)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_188_sanitizacao_ponto_flutuante_spec_plan_tasks",
+      "community": 1137,
+      "community_name": "Spec Plan: Sanitiza\u00e7\u00e3o Global de Ponto Flutuante (188-sanitizacao-ponto-flutuante)",
       "norm_label": "tasks"
     },
     {
@@ -115404,166 +115591,155 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/design.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_188_sanitizacao_ponto_flutuante_design",
-      "target": "specs_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "source": "specs_189_fix_dashboard_cartesian_cte_design",
+      "target": "specs_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/design.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
-      "target": "specs_188_sanitizacao_ponto_flutuante_design_arquitetura_t\u00e9cnica",
+      "source": "specs_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_design_arquitetura_t\u00e9cnica",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/design.md",
-      "source_location": "L35",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
-      "target": "specs_188_sanitizacao_ponto_flutuante_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "source": "specs_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/design.md",
-      "source_location": "L17",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L33",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
-      "target": "specs_188_sanitizacao_ponto_flutuante_design_componentes_hooks_fun\u00e7\u00f5es",
+      "source": "specs_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_design_componentes_hooks_fun\u00e7\u00f5es",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/design.md",
-      "source_location": "L28",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/design.md",
+      "source_location": "L38",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
-      "target": "specs_188_sanitizacao_ponto_flutuante_design_fluxo_de_execu\u00e7\u00e3o",
+      "source": "specs_189_fix_dashboard_cartesian_cte_design_design_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_design_fluxo_de_ui",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/design.md",
-      "source_location": "L7",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
-      "target": "specs_188_sanitizacao_ponto_flutuante_design_interfaces_typescript",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_188_sanitizacao_ponto_flutuante_proposal",
-      "target": "specs_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
+      "source": "specs_189_fix_dashboard_cartesian_cte_proposal",
+      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
       "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
-      "target": "specs_188_sanitizacao_ponto_flutuante_proposal_api_interface",
+      "source": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_api_interface",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/proposal.md",
-      "source_location": "L14",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
-      "target": "specs_188_sanitizacao_ponto_flutuante_proposal_contratos_de_dados",
+      "source": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_contratos_de_dados",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/proposal.md",
-      "source_location": "L24",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
-      "target": "specs_188_sanitizacao_ponto_flutuante_proposal_features_existentes_impactadas",
+      "source": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_features_existentes_impactadas",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
-      "target": "specs_188_sanitizacao_ponto_flutuante_proposal_problema",
+      "source": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_problema",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/proposal.md",
-      "source_location": "L28",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
-      "target": "specs_188_sanitizacao_ponto_flutuante_proposal_risco_principal",
+      "source": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_risco_principal",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/proposal.md",
-      "source_location": "L6",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/proposal.md",
+      "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
-      "target": "specs_188_sanitizacao_ponto_flutuante_proposal_solu\u00e7\u00e3o_proposta",
+      "source": "specs_189_fix_dashboard_cartesian_cte_proposal_proposal_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_proposal_solu\u00e7\u00e3o_proposta",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/spec-plan.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/spec-plan.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_188_sanitizacao_ponto_flutuante_spec_plan",
-      "target": "specs_188_sanitizacao_ponto_flutuante_spec_plan_spec_plan_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "source": "specs_189_fix_dashboard_cartesian_cte_spec_plan",
+      "target": "specs_189_fix_dashboard_cartesian_cte_spec_plan_spec_plan_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/188-sanitizacao-ponto-flutuante/spec-plan.md",
+      "source_file": "specs/189-fix-dashboard-cartesian-cte/spec-plan.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_188_sanitizacao_ponto_flutuante_spec_plan_spec_plan_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
-      "target": "specs_188_sanitizacao_ponto_flutuante_spec_plan_tasks",
+      "source": "specs_189_fix_dashboard_cartesian_cte_spec_plan_spec_plan_corre\u00e7\u00e3o_cr\u00edtica_de_cartesian_product_via_ctes_189",
+      "target": "specs_189_fix_dashboard_cartesian_cte_spec_plan_tasks",
       "confidence_score": 1.0
     },
     {
@@ -134737,6 +134913,171 @@
       "_origin": "ast",
       "source": "specs_archive_187_gestao_os_legadas_spec_plan_spec_plan_gest\u00e3o_de_oss_legadas_do_marco_zero_187_gestao_os_legadas",
       "target": "specs_archive_187_gestao_os_legadas_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_design",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_design_arquitetura_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L35",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_design_cen\u00e1rios_de_verifica\u00e7\u00e3o_scan_infer_verify_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_design_componentes_hooks_fun\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_design_fluxo_de_execu\u00e7\u00e3o",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/design.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_design_design_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_design_interfaces_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_proposal",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_api_interface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_features_existentes_impactadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/proposal.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_proposal_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_e_arredondamento_financeiro_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_proposal_solu\u00e7\u00e3o_proposta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_spec_plan",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_spec_plan_spec_plan_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/188-sanitizacao-ponto-flutuante/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_188_sanitizacao_ponto_flutuante_spec_plan_spec_plan_sanitiza\u00e7\u00e3o_global_de_ponto_flutuante_188_sanitizacao_ponto_flutuante",
+      "target": "specs_archive_188_sanitizacao_ponto_flutuante_spec_plan_tasks",
       "confidence_score": 1.0
     },
     {

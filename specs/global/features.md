@@ -192,3 +192,9 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - **Modulos:** Backend RPC  
 - **Supabase RPC:** calculate_daily_conciliation(p_date date) - Reescrita completa sem cursores iterativos (Early Aggregation com CTEs).  
 - **Supabase RPC:** get_dashboard_metrics(p_date date) - Reescrita completa com isolamento CTE para aniquilar cartesian products. 
+
+### 2026-08-13: Fix de Valores Inflados no OFX e OS (190)
+- **Status:** Implementado
+- **Modulos:** OFX Parser, Backend RPC
+- **src/lib/parsers/ofxParser.ts:** Adicionada logica para dividir por 100 valores grandes em centavos exportados sem pontuacao.
+- **Supabase RPCs:** calculate_daily_conciliation e get_dashboard_metrics passaram a excluir OSs com status finalizado do calculo pendente.
