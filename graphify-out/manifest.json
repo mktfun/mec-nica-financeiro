@@ -1310,8 +1310,8 @@
     "semantic_hash": ""
   },
   "src/routes/conciliacao.$lojaId.tsx": {
-    "mtime": 1786447323.0970402,
-    "ast_hash": "b38c6e6e91e41afc6f0e7cdcc11025a8",
+    "mtime": 1786633630.9792373,
+    "ast_hash": "9143a11888b5446bd4ef8e819dc2f673",
     "semantic_hash": ""
   },
   "src/routes/conciliacao.index.tsx": {
@@ -1645,8 +1645,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1786455957.3348372,
-    "ast_hash": "daeed73ef8670d42b54f99d9888aa60e",
+    "mtime": 1786637667.2516441,
+    "ast_hash": "d3eb97a0a7a7923f4a6e315b4abe9f31",
     "semantic_hash": ""
   },
   "specs/016-loja-cleanup/design.md": {
@@ -3790,8 +3790,8 @@
     "semantic_hash": ""
   },
   "supabase/migrations/20260730000000_ias_claritas_graphify.sql": {
-    "mtime": 1785512916.0,
-    "ast_hash": "9968a92b2c41889126a6091f3f0380d4",
+    "mtime": 1786631709.467412,
+    "ast_hash": "8ea901ef3c6eb1eebb038f48c8954d43",
     "semantic_hash": ""
   },
   "spec/global/architecture.md": {
@@ -6285,8 +6285,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/MarcoZeroWizard.tsx": {
-    "mtime": 1786631028.5254686,
-    "ast_hash": "721f1f23db9598f1f0aa71506eaf76eb",
+    "mtime": 1786632115.2842686,
+    "ast_hash": "164aa01688b70e71b8c592ded46db592",
     "semantic_hash": ""
   },
   "src/components/importacoes/MatchManualOsPendente.tsx": {
@@ -6594,16 +6594,6 @@
     "ast_hash": "411198c15ea7a75bd51875ead8413d30",
     "semantic_hash": ""
   },
-  "scratch/execute.ps1": {
-    "mtime": 1786625510.6793048,
-    "ast_hash": "1d6d5b584653b30790ddb12213bb2664",
-    "semantic_hash": ""
-  },
-  "scratch/push.ps1": {
-    "mtime": 1786624720.3199832,
-    "ast_hash": "147c66d24c2192088db8179675850463",
-    "semantic_hash": ""
-  },
   "scratch/testParsers.ts": {
     "mtime": 1786623792.6069121,
     "ast_hash": "d7051429ff5d415933108127c09cfb22",
@@ -6640,8 +6630,8 @@
     "semantic_hash": ""
   },
   "supabase/migrations/20260813113000_process_marco_zero_rpc.sql": {
-    "mtime": 1786630948.9792829,
-    "ast_hash": "e5093a4e8d72f0a3ab64a84f71ac927a",
+    "mtime": 1786632761.1630485,
+    "ast_hash": "7296bd168d63d0286f8217415485c3b5",
     "semantic_hash": ""
   },
   "supabase/migrations/20260813123412_fix_rpc_conciliation_columns.sql": {
@@ -6772,6 +6762,51 @@
   "tela.png": {
     "mtime": 1786625035.4145849,
     "ast_hash": "fda80d955beb94d21a2459c4810b2424",
+    "semantic_hash": ""
+  },
+  "src/components/conciliacao/LegacyOsTable.tsx": {
+    "mtime": 1786633596.0725899,
+    "ast_hash": "70537b436c294ecdb338a958c4f4a0bc",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813120600_liquidate_legacy_os_rpc.sql": {
+    "mtime": 1786633544.0161278,
+    "ast_hash": "e0b22e0f60805bf37f2919d650e1ead5",
+    "semantic_hash": ""
+  },
+  "test_rpc.cjs": {
+    "mtime": 1786632811.6868114,
+    "ast_hash": "c51311b03148f325474645e4a99a5681",
+    "semantic_hash": ""
+  },
+  "specs/187-gestao-os-legadas/design.md": {
+    "mtime": 1786633450.810053,
+    "ast_hash": "9971b56e466cf667232cec31390d9c81",
+    "semantic_hash": ""
+  },
+  "specs/187-gestao-os-legadas/proposal.md": {
+    "mtime": 1786633432.1886387,
+    "ast_hash": "5366b0b903d49ca108954522422827a9",
+    "semantic_hash": ""
+  },
+  "specs/187-gestao-os-legadas/spec-plan.md": {
+    "mtime": 1786633647.046906,
+    "ast_hash": "2539584b1e1ddde1d84062bc18a1d8d4",
+    "semantic_hash": ""
+  },
+  "specs/archive/186-refatoracao-marco-zero/design.md": {
+    "mtime": 1786630731.0971677,
+    "ast_hash": "08b0cf88d5c83c908fd3e077ab32aabf",
+    "semantic_hash": ""
+  },
+  "specs/archive/186-refatoracao-marco-zero/proposal.md": {
+    "mtime": 1786630719.5140405,
+    "ast_hash": "db2ff7dcda0d0331ce2b2ddb6ad3b7db",
+    "semantic_hash": ""
+  },
+  "specs/archive/186-refatoracao-marco-zero/spec-plan.md": {
+    "mtime": 1786631100.480519,
+    "ast_hash": "ff671529094ac8cfed70b7d56f32f2d0",
     "semantic_hash": ""
   }
 }
