@@ -216,3 +216,8 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - **Modulos:** Importacao (OFX), Conciliacao
 - **src/lib/parsers/ofxParser.ts:** Trocada logica de extractNumber por parseFloat estrito na extracao do Saldo Bancario, impedindo que dízimas com apenas 1 dígito sejam corrompidas.
 - **src/routes/conciliacao.index.tsx:** Ajuste visual na tabela de fechamento de lojas para Saldo Banco Itaú, evitando erros semanticos de interpretacao.
+
+### 2026-08-13: Recalibração do Saldo Global itaú (<Feature ID>: 193)
+- **Status:** Implementado
+- **Módulos:** Conciliação, Dashboard
+- **supabase/migrations/20260813160000_fix_global_reconciliation_sum_and_reset.sql:** Ajustou a RPC `get_dashboard_metrics` para extrair o saldo global puramente da leitura somada de `bank_total` das lojas na tabela `reconciliations`, e preservou os inputs manuais de Dinheiro MP. Executou cleanup dos snapshots corrompidos do dia 11/08.

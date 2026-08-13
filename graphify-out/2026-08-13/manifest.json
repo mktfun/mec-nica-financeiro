@@ -1260,8 +1260,8 @@
     "semantic_hash": ""
   },
   "src/lib/parsers/ofxParser.ts": {
-    "mtime": 1786644113.8739977,
-    "ast_hash": "82b9c2b0204cc99632fab53fcc37474a",
+    "mtime": 1786646695.9056485,
+    "ast_hash": "324660184bfc35ed0e6a8386eba7100c",
     "semantic_hash": ""
   },
   "src/lib/parsers/redeParser.ts": {
@@ -1315,8 +1315,8 @@
     "semantic_hash": ""
   },
   "src/routes/conciliacao.index.tsx": {
-    "mtime": 1786447323.0985432,
-    "ast_hash": "23c2cd22d906bdb8f452ec8565f7d173",
+    "mtime": 1786646710.0122788,
+    "ast_hash": "622a8c525771c964e21cf975342330a5",
     "semantic_hash": ""
   },
   "src/routes/configuracoes.tsx": {
@@ -3325,8 +3325,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786645619.9826958,
-    "ast_hash": "27a863c751fa44150f665de44d4a0b6f",
+    "mtime": 1786646835.3711443,
+    "ast_hash": "ec2fc5ebef56b3a9c8d88f0582e87c03",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -6862,6 +6862,21 @@
   "specs/archive/190-fix-ofx-bank-balance/spec-plan.md": {
     "mtime": 1786644239.2187994,
     "ast_hash": "d630b3bb966ad82e26ee3c13a2ccc11b",
+    "semantic_hash": ""
+  },
+  "specs/archive/191-fix-calculo-diferenca-final/design.md": {
+    "mtime": 1786645106.7193043,
+    "ast_hash": "3b47ba247367a4ef50576c9c276158f8",
+    "semantic_hash": ""
+  },
+  "specs/archive/191-fix-calculo-diferenca-final/proposal.md": {
+    "mtime": 1786645094.992977,
+    "ast_hash": "3461202a7f1ff858c9da8d39a17a4e1d",
+    "semantic_hash": ""
+  },
+  "specs/archive/191-fix-calculo-diferenca-final/spec-plan.md": {
+    "mtime": 1786645450.419688,
+    "ast_hash": "31dfea460e768cbed2e7e60f95cb06fa",
     "semantic_hash": ""
   }
 }
