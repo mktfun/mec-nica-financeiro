@@ -58,6 +58,8 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
   const stmtTrnRegex = /<STMTTRN>([\s\S]*?)<\/STMTTRN>/g;
   let match;
   
+  const hashOccurrences = new Map<string, number>();
+  
   while ((match = stmtTrnRegex.exec(text)) !== null) {
     const trnBlock = match[1];
     
@@ -65,11 +67,6 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
     const amtMatch = trnBlock.match(/<TRNAMT>([^\r\n<]+)/);
     const amountStr = amtMatch ? amtMatch[1].trim() : '0';
     let amount = parseFloat(amountStr.replace(',', '.'));
-    
-    const hasDecimalSeparator = amountStr.includes('.') || amountStr.includes(',');
-    if (!hasDecimalSeparator && Math.abs(amount) > 100) {
-      amount = amount / 100;
-    }
     
     if (isNaN(amount)) continue;
     
@@ -125,7 +122,12 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
       parsedType = 'in';
     }
     
-    const deterministicFitid = generateDeterministicHash(dateStr, amount, rawMemo, 'ofx');
+    let deterministicFitid = generateDeterministicHash(dateStr, amount, rawMemo, 'ofx');
+    const count = (hashOccurrences.get(deterministicFitid) || 0) + 1;
+    hashOccurrences.set(deterministicFitid, count);
+    if (count > 1) {
+      deterministicFitid = `${deterministicFitid}_${count}`;
+    }
     
     transactions.push({
       storeName: alias,
@@ -147,14 +149,6 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
     let balNum = parseFloat(balStr.replace(',', '.'));
     if (isNaN(balNum)) balNum = parseInt(balStr, 10);
     if (!isNaN(balNum)) {
-      // Alguns bancos brasileiros (ex: Itaú, Bradesco) exportam o BALAMT como inteiro
-      // de centavos sem ponto decimal (ex: "1931431" ao invés de "19314.31").
-      // Critério: se a string original não contém ponto/vírgula E o valor absoluto > 100,
-      // então divide por 100 para converter de centavos para reais.
-      const hasDecimalSeparator = balStr.includes('.') || balStr.includes(',');
-      if (!hasDecimalSeparator && Math.abs(balNum) > 100) {
-        balNum = balNum / 100;
-      }
       bankBalance = balNum;
     }
   }

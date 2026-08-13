@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Link } from '@tanstack/react-router';
 import {
   AlertOctagon, Save, AlertTriangle, CheckCircle2,
-  CalendarDays, ChevronRight, Landmark, Wallet, Receipt, ShoppingBag, Edit2
+  CalendarDays, ChevronRight, Landmark, Wallet, Receipt, ShoppingBag, Edit2, Database, ShieldCheck
 } from 'lucide-react';
 import { useDailySnapshot, usePreviousDaySnapshot, useSaveDailySnapshot } from '@/hooks/useDailySnapshot';
 import { getDefaultDate } from '@/lib/utils';
@@ -65,15 +65,15 @@ export function ResumoDiaPanel({
     setManualContas(currentSnapshot?.contas_a_pagar || 0);
   }, [selectedDate, currentSnapshot?.contas_a_pagar]);
 
-  // Faturamento Anterior é o Faturamento Acumulado salvo no último fechamento (previousSnapshot)
-  const faturamentoAnteriorGlobal = previousSnapshot?.faturamento || 0;
+  // Faturamento Anterior é o Faturamento Acumulado salvo no último fechamento (previousSnapshot) ou do metadata do snapshot atual (Marco Zero)
+  const faturamentoAnteriorGlobal = previousSnapshot?.faturamento 
+    ?? (currentSnapshot?.metadata as any)?.faturamento_anterior 
+    ?? 0;
 
-  // Caixa Anterior vem nativamente do OFX (previous_balance da tabela reconciliations do dia ATUAL)
-  const { data: recsToday } = useReconciliationsForDate(selectedDate);
-  const sumOfxPreviousBalance = recsToday?.reduce((acc, r) => acc + (r.previous_balance || 0), 0) || 0;
-  
-  // Usamos EXCLUSIVAMENTE o saldo consolidado na conciliação anterior para não conflitar com saldos de banco isolados
-  const caixaAnteriorGlobal = previousSnapshot?.caixa_atual || 0;
+  // Caixa Anterior vem do fechamento anterior ou do metadata do snapshot atual (Marco Zero)
+  const caixaAnteriorGlobal = previousSnapshot?.caixa_atual 
+    ?? (currentSnapshot?.metadata as any)?.caixa_anterior 
+    ?? 0;
 
   // Calcular pix_os cruzado (quantos PIX foram declarados de OS e encontrados no banco)
   let totalPixOs = 0;
@@ -154,6 +154,139 @@ export function ResumoDiaPanel({
 
   const diferencaAbs = Math.abs(calculated.diferenca);
   const isDiferencaOk = calculated.diferenca >= -50 && calculated.diferenca <= 50;
+
+  const isMarcoZero = (currentSnapshot?.metadata as any)?.is_marco_zero === true;
+
+  if (isMarcoZero) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative rounded-2xl border border-emerald-500/30 bg-emerald-500/5 backdrop-blur-3xl shadow-xl overflow-hidden p-6"
+      >
+        {/* Top Header Section */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 pb-6 border-b border-white/10">
+          <div className="flex items-start gap-4">
+            <div className="p-3 bg-emerald-500/20 text-emerald-400 rounded-2xl mt-1 shrink-0">
+              <Database size={28} />
+            </div>
+            <div>
+              <div className="flex items-center gap-3 flex-wrap">
+                <h1 className="text-2xl font-display font-bold text-white tracking-tight">Implantação Marco Zero</h1>
+                <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full border border-emerald-500/30 flex items-center gap-1.5">
+                  <ShieldCheck size={14} /> Estado Inicial Implantado
+                </span>
+              </div>
+              <p className="text-xs text-[var(--text-secondary)] mt-1.5 max-w-xl">
+                Esta data é o lastro patrimonial inicial das filiais. Os saldos e ordens de serviço legadas foram consolidadas e ancoradas no sistema.
+              </p>
+            </div>
+          </div>
+
+          {/* Date Picker */}
+          <div className="flex items-center gap-1 bg-[var(--bg-canvas)] rounded-lg p-1 border border-[var(--border-subtle)]">
+            <button 
+              onClick={() => onDayChange(-1)} 
+              disabled={availableDates.length > 0 && selectedDate === availableDates[0]}
+              className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)] disabled:opacity-30"
+            >
+              <ChevronRight size={16} className="rotate-180" />
+            </button>
+            <div className="flex items-center gap-2 px-2">
+              <CalendarDays size={14} className="text-[var(--text-tertiary)]" />
+              <input
+                type="date"
+                value={selectedDate}
+                min={availableDates[0]}
+                max={availableDates[availableDates.length - 1]}
+                onChange={(e) => {
+                   if (availableDates.includes(e.target.value) || availableDates.length === 0) {
+                      onDateSelect(e.target.value);
+                   } else {
+                      const closest = availableDates.reduce((prev, curr) => 
+                         Math.abs(new Date(curr).getTime() - new Date(e.target.value).getTime()) < Math.abs(new Date(prev).getTime() - new Date(e.target.value).getTime()) ? curr : prev
+                      );
+                      onDateSelect(closest);
+                   }
+                }}
+                className="bg-transparent text-xs font-bold text-white font-mono focus:outline-none cursor-pointer"
+              />
+            </div>
+            <button 
+              onClick={() => onDayChange(1)} 
+              disabled={availableDates.length > 0 && selectedDate === availableDates[availableDates.length - 1]}
+              className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)] disabled:opacity-30"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        </div>
+
+        {/* Saldos Legados puros */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 my-6">
+          <div className="bg-black/30 p-4 rounded-xl border border-white/5">
+            <span className="text-xs text-[var(--text-tertiary)] block mb-1 font-semibold uppercase tracking-wider">Caixa Anterior</span>
+            <span className="font-bold text-lg text-white font-mono">
+              <AnimatedNumber value={(currentSnapshot?.metadata as any)?.caixa_anterior || 0} format="currency" />
+            </span>
+          </div>
+          <div className="bg-black/30 p-4 rounded-xl border border-white/5">
+            <span className="text-xs text-[var(--text-tertiary)] block mb-1 font-semibold uppercase tracking-wider">Caixa Atual</span>
+            <span className="font-bold text-lg text-emerald-400 font-mono">
+              <AnimatedNumber value={currentSnapshot?.caixa_atual || 0} format="currency" />
+            </span>
+          </div>
+          <div className="bg-black/30 p-4 rounded-xl border border-white/5">
+            <span className="text-xs text-[var(--text-tertiary)] block mb-1 font-semibold uppercase tracking-wider">Dinheiro MP</span>
+            <span className="font-bold text-lg text-white font-mono">
+              <AnimatedNumber value={currentSnapshot?.dinheiro_mp || 0} format="currency" />
+            </span>
+          </div>
+          <div className="bg-black/30 p-4 rounded-xl border border-white/5">
+            <span className="text-xs text-[var(--text-tertiary)] block mb-1 font-semibold uppercase tracking-wider">A Receber</span>
+            <span className="font-bold text-lg text-white font-mono">
+              <AnimatedNumber value={currentSnapshot?.a_receber_manual || 0} format="currency" />
+            </span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="bg-black/30 p-4 rounded-xl border border-white/5">
+            <span className="text-xs text-[var(--text-tertiary)] block mb-1 font-semibold uppercase tracking-wider">Faturamento Atual</span>
+            <span className="font-bold text-lg text-white font-mono">
+              <AnimatedNumber value={currentSnapshot?.faturamento || 0} format="currency" />
+            </span>
+          </div>
+          <div className="bg-black/30 p-4 rounded-xl border border-white/5">
+            <span className="text-xs text-[var(--text-tertiary)] block mb-1 font-semibold uppercase tracking-wider">Faturamento Ant.</span>
+            <span className="font-bold text-lg text-white font-mono">
+              <AnimatedNumber value={(currentSnapshot?.metadata as any)?.faturamento_anterior || 0} format="currency" />
+            </span>
+          </div>
+          <div className="bg-black/30 p-4 rounded-xl border border-white/5">
+            <span className="text-xs text-[var(--text-tertiary)] block mb-1 font-semibold uppercase tracking-wider">Fluxo de Caixa</span>
+            <span className="font-bold text-lg text-white font-mono">
+              <AnimatedNumber value={(currentSnapshot?.metadata as any)?.fluxo_caixa || 0} format="currency" />
+            </span>
+          </div>
+          <div className="bg-black/30 p-4 rounded-xl border border-white/5">
+            <span className="text-xs text-[var(--text-tertiary)] block mb-1 font-semibold uppercase tracking-wider">Diferença Legada</span>
+            <span className="font-bold text-lg text-emerald-400 font-mono">
+              <AnimatedNumber value={(currentSnapshot?.metadata as any)?.diferenca || 0} format="currency" />
+            </span>
+          </div>
+        </div>
+
+        {/* Info Footer */}
+        <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 flex items-center gap-3 text-xs text-emerald-300">
+          <ShieldCheck size={20} className="shrink-0 text-emerald-400" />
+          <span>
+            <strong>Estado Inicial Verificado:</strong> Esta data representa a implantação inicial do sistema. A partir da data seguinte, as telas operacionais de conciliação bancária estarão ativas.
+          </span>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div

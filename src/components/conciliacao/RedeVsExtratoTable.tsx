@@ -2,8 +2,11 @@ import { motion } from 'framer-motion';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Badge } from '@/components/ui/Badge';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { CheckCircle2, AlertTriangle, HelpCircle, Link2Off } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, HelpCircle, Link2Off, FileEdit } from 'lucide-react';
 import { useRedeVsExtrato } from '@/hooks/useConciliacao';
+import { useCategorizeOrphan } from '@/hooks/useCategorizeOrphan';
+import { OrphanCategorizationModal } from './OrphanCategorizationModal';
+import { useState } from 'react';
 
 interface RedeVsExtratoTableProps {
   storeId: string;
@@ -11,7 +14,9 @@ interface RedeVsExtratoTableProps {
 }
 
 export function RedeVsExtratoTable({ storeId, date }: RedeVsExtratoTableProps) {
-  const { data, isLoading } = useRedeVsExtrato(storeId, date);
+  const { data, isLoading, refetch } = useRedeVsExtrato(storeId, date) as any;
+  const { categorize } = useCategorizeOrphan();
+  const [categorizingTx, setCategorizingTx] = useState<any>(null);
 
   if (isLoading) {
     return (
@@ -97,6 +102,7 @@ export function RedeVsExtratoTable({ storeId, date }: RedeVsExtratoTableProps) {
               <th className="text-right py-3 px-4 font-medium">Delta</th>
               <th className="text-right py-3 px-4 font-medium">Modalidade</th>
               <th className="text-center py-3 px-4 font-medium">Status</th>
+              <th className="text-center py-3 px-4 font-medium w-32">Ações</th>
             </tr>
           </thead>
           <tbody>
@@ -211,9 +217,33 @@ export function RedeVsExtratoTable({ storeId, date }: RedeVsExtratoTableProps) {
                           <Badge variant="success">Bateu ✓</Badge>
                         )
                       ) : row.matchType === 'unmatched_rede' ? (
-                        <Badge variant="danger">Só na Rede</Badge>
+                         row.manual_category ? (
+                           <Badge variant="neutral">{row.manual_category.replace('_', ' ').toUpperCase()}</Badge>
+                         ) : (
+                           <Badge variant="danger">Só na Rede</Badge>
+                         )
                       ) : (
-                        <Badge variant="neutral">Só no Extrato</Badge>
+                         row.manual_category ? (
+                           <Badge variant="neutral">{row.manual_category.replace('_', ' ').toUpperCase()}</Badge>
+                         ) : (
+                           <Badge variant="neutral">Só no Extrato</Badge>
+                         )
+                      )}
+                    </td>
+                    <td className="py-3.5 px-4 text-center">
+                      {(row.matchType === 'unmatched_extrato' || row.matchType === 'unmatched_rede') && !row.manual_category && (
+                        <button
+                          onClick={() => setCategorizingTx(row)}
+                          className="p-1.5 rounded-lg bg-[var(--bg-surface-elevated)] hover:bg-[var(--color-primary)]/20 text-[var(--text-secondary)] hover:text-[var(--color-primary)] transition-colors inline-flex items-center gap-1 text-xs"
+                          title="Justificar / Categorizar"
+                        >
+                          <FileEdit size={14} /> Justificar
+                        </button>
+                      )}
+                      {row.manual_category && (
+                         <span className="text-[10px] text-[var(--text-tertiary)] max-w-[100px] truncate block" title={row.manual_justification}>
+                           {row.manual_justification}
+                         </span>
                       )}
                     </td>
                   </motion.tr>
@@ -223,6 +253,21 @@ export function RedeVsExtratoTable({ storeId, date }: RedeVsExtratoTableProps) {
           </tbody>
         </table>
       </div>
+
+      {categorizingTx && (
+        <OrphanCategorizationModal
+          transactionId={categorizingTx.id}
+          transactionTitle={categorizingTx.extrato_ref || categorizingTx.rede_ref || 'Transação'}
+          transactionAmount={categorizingTx.extrato_amount || categorizingTx.rede_amount || categorizingTx.rede_liquido || 0}
+          transactionType={categorizingTx.extrato_amount > 0 ? 'in' : 'out'}
+          onClose={() => setCategorizingTx(null)}
+          categorizeOrphan={categorize}
+          onSuccess={(cat, just) => {
+            setCategorizingTx(null);
+            if (refetch) refetch();
+          }}
+        />
+      )}
     </div>
   );
 }

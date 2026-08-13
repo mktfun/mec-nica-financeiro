@@ -35,7 +35,11 @@ export interface MarcoZeroResult {
 const cleanNumber = (val: any): number => {
   if (typeof val === 'number') return val;
   if (!val) return 0;
-  const str = String(val).replace(/[R$\s]/g, '').replace(/\./g, '').replace(',', '.');
+  let str = String(val).replace(/[R$\s]/g, '');
+  if (/^-?\d+\.\d{1,2}$/.test(str)) {
+    return parseFloat(str);
+  }
+  str = str.replace(/\./g, '').replace(',', '.');
   const num = parseFloat(str);
   return isNaN(num) ? 0 : num;
 };
@@ -159,16 +163,24 @@ export const parseMarcoZeroPlanilha = async (file: File): Promise<MarcoZeroResul
                   // fix encoding issues
                   const cleanLabel = label.replace('ITAÁŠ', 'ITAÚ').replace('Â±', '±');
                   
-                  if (cleanLabel && (
-                    cleanLabel.includes('FATURAMENTO') || 
-                    cleanLabel.includes('CAIXA') || 
-                    cleanLabel.includes('DINHEIRO') || 
-                    cleanLabel.includes('CONTAS') || 
+                  const isTargetLabel = 
+                    cleanLabel === 'DINHEIRO MP' || 
+                    cleanLabel === 'A RECEBER' || 
                     cleanLabel.includes('NEGATIVO') || 
-                    cleanLabel.includes('A RECEBER') || 
-                    cleanLabel.includes('PROLABORE') || 
-                    cleanLabel.includes('JUROS')
-                  )) {
+                    cleanLabel === 'CAIXA ANTERIOR' || 
+                    cleanLabel === 'CAIXA ATUAL' || 
+                    cleanLabel.includes('FATURAMENTO ATUAL') || 
+                    cleanLabel.includes('FATURAMENTO ANTERIOR') || 
+                    cleanLabel.includes('FLUXO CAIXA') || 
+                    cleanLabel.includes('FLUXO DE CAIXA') || 
+                    cleanLabel.includes('PAGAMENTO DE CONTAS') || 
+                    cleanLabel === 'VALOR DAS CONTAS' || 
+                    cleanLabel === 'JUROS ATUAL' || 
+                    cleanLabel === 'CONTAS' || 
+                    cleanLabel.includes('PROLABORE DANIEL') || 
+                    cleanLabel.includes('PROLABORE HENRIQUE');
+
+                  if (cleanLabel && isTargetLabel) {
                     labelColH = cleanLabel;
                     // Procura número à esquerda
                     for (let k = j - 1; k >= 0; k--) {

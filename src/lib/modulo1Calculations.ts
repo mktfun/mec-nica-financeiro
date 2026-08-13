@@ -42,11 +42,15 @@ export function calculateGlobalConciliacao(input: GlobalConciliacaoInput): Globa
   // Fluxo CX = caixa atual (conciliacao hoje) - caixa anterior (caixa da conciliacao anterior)
   const fluxo_cx = caixa_atual - Number(input.caixa_anterior || 0);
 
-  // Faturamento = Entradas líquidas puras do OFX no dia (Faturamento Atual)
+  // Faturamento = Entradas acumuladas
+  const faturamento_fat_ant = Number(input.faturamento_anterior || 0);
   const faturamento = Number(input.faturamento_atual || 0);
+  
+  // Faturamento do período = Faturamento Atual - Faturamento Anterior (se houver anterior)
+  const faturamento_periodo = faturamento_fat_ant > 0 ? (faturamento - faturamento_fat_ant) : faturamento;
 
-  // Valor disp contas = fat atual - fluxo caixa
-  const valor_disp_contas = faturamento - fluxo_cx;
+  // Valor disp contas = faturamento do período - fluxo caixa
+  const valor_disp_contas = faturamento_periodo - fluxo_cx;
 
   // Valor contas = juros REDE + contas a pagar + provisão
   const valor_contas = Math.abs(Number(input.juros_rede || 0)) + Math.abs(Number(input.contas_a_pagar || 0));

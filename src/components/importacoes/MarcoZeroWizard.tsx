@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { FileSpreadsheet, UploadCloud, CheckCircle2, Database, Calendar } from 'lucide-react';
+import { FileSpreadsheet, UploadCloud, CheckCircle2, Database, Calendar, Download } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
 import { parseMarcoZeroPlanilha, MarcoZeroResult } from '@/lib/parsers/marcoZeroParser';
@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
 import { AnimatedNumber } from '../ui/AnimatedNumber';
 import { useStores } from '@/hooks/useStores';
+import { formatCurrency } from '@/lib/utils';
 
 export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => void, onCancel: () => void }) {
   const [file, setFile] = useState<File | null>(null);
@@ -17,6 +18,7 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
   const [storeMapping, setStoreMapping] = useState<Record<string, string>>({});
   const [targetDate, setTargetDate] = useState<string>('');
   const [isSaving, setIsSaving] = useState(false);
+  const [executionResult, setExecutionResult] = useState<any | null>(null);
   
   const { data: stores = [] } = useStores();
 
@@ -78,81 +80,29 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
       return;
     }
 
+    const payloadStores = data.stores
+      .map(ext => ({
+        store_id: storeMapping[ext.storeName] || null,
+        store_name: ext.storeName,
+        saldoLoja: ext.saldoLoja,
+        osPendentes: ext.osPendentes
+      }))
+      .filter(s => !!s.store_id);
+
     setIsSaving(true);
     try {
-      // 1. Inserir daily_snapshots (Snapshot Global do Marco Zero)
-      const { error: snapError } = await supabase.from('daily_snapshots').upsert({
-        date: targetDate,
-        caixa_atual: data.global.caixaAnterior,
-        dinheiro_mp: data.global.dinheiroMp,
-        total_recebiveis: data.global.aReceber,
-        saldo_bancario: data.global.negativo,
-        faturamento: data.global.faturamentoAtual,
-        total_patio: 0,
-        notes: 'Implantação de Saldo Inicial (Marco Zero)',
-        metadata: {
-          fluxo_caixa: data.global.fluxoCaixa,
-          faturamento_anterior: data.global.faturamentoAnterior,
-          valor_disponivel_contas: data.global.valorDisponivelContas,
-          valor_das_contas: data.global.valorDasContas,
-          diferenca: data.global.diferenca,
-          juros_atual: data.global.jurosAtual,
-          contas: data.global.contas,
-          prolabore_daniel: data.global.prolaboreDaniel,
-          prolabore_henrique: data.global.prolaboreHenrique
-        }
-      }, { onConflict: 'date' });
+      // Chamada transacional atômica para a RPC do Supabase
+      const { data: rpcRes, error: rpcErr } = await (supabase as any).rpc('process_marco_zero_import', {
+        p_target_date: targetDate,
+        p_global: data.global,
+        p_stores: payloadStores
+      });
 
-      if (snapError) throw new Error("Erro ao salvar snapshot global: " + snapError.message);
+      if (rpcErr) throw new Error("Erro na RPC do Marco Zero: " + rpcErr.message);
+      if (rpcRes?.status === 'error') throw new Error("Erro no processamento: " + (rpcRes.error_message || 'Erro desconhecido'));
 
-      // 2. Inserir OSs e Saldo por Loja
-      for (const ext of data.stores) {
-        const storeId = storeMapping[ext.storeName];
-        if (!storeId) continue;
-
-        // OSs Pendentes
-        if (ext.osPendentes.length > 0) {
-          const payload = ext.osPendentes.map(os => ({
-            store_id: storeId,
-            numero_os: os.numero_os,
-            data_os: os.data_os,
-            valor_os: os.valor_os,
-            status: 'PENDENTE'
-          }));
-
-          const { error: osError } = await supabase
-            .from('estoque_os_pendente')
-            .insert(payload);
-
-          if (osError) throw new Error(`Erro ao salvar OSs da loja ${ext.storeName}: ` + osError.message);
-        }
-
-        // Caso a loja tenha um "saldo_loja" extraído (ex: Gaveta/Caixa local), 
-        // inserimos retroativamente na conciliação da loja para aquele dia para constar no histórico.
-        if (ext.saldoLoja > 0) {
-          const { data: recData } = await supabase
-            .from('reconciliations')
-            .select('id')
-            .eq('store_id', storeId)
-            .eq('date', targetDate)
-            .maybeSingle();
-
-          if (recData) {
-             await supabase.from('reconciliations').update({ daily_cash: ext.saldoLoja }).eq('id', recData.id);
-          } else {
-             await supabase.from('reconciliations').insert({
-               store_id: storeId,
-               date: targetDate,
-               daily_cash: ext.saldoLoja,
-               status: 'completed',
-               is_closed: true
-             });
-          }
-        }
-      }
-
+      setExecutionResult(rpcRes);
       toast.success("Marco Zero implantado com sucesso!");
-      onComplete();
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -204,7 +154,74 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
         </Card>
       )}
 
-      {data && (
+      {executionResult && (
+        <Card className="p-8 border border-emerald-500/30 bg-emerald-500/5 shadow-2xl">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="p-3 bg-emerald-500/20 text-emerald-400 rounded-2xl">
+              <CheckCircle2 size={32} />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-white">Marco Zero Implantado com Sucesso!</h3>
+              <p className="text-sm text-[var(--text-secondary)] mt-1">
+                Data Base: <span className="font-mono text-emerald-400 font-bold">{targetDate}</span> • {executionResult.processed_stores_count} Filiais Processadas • {executionResult.processed_os_count} Ordens de Serviço
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-sm">
+            <div className="bg-black/40 p-4 rounded-xl border border-white/5">
+              <span className="text-xs text-[var(--text-tertiary)] block mb-1">Caixa Atual</span>
+              <span className="font-bold text-lg text-emerald-400 font-mono">
+                R$ {formatCurrency(executionResult.global_summary?.caixa_atual || 0).replace('R$', '').trim()}
+              </span>
+            </div>
+            <div className="bg-black/40 p-4 rounded-xl border border-white/5">
+              <span className="text-xs text-[var(--text-tertiary)] block mb-1">Faturamento Atual</span>
+              <span className="font-bold text-lg text-white font-mono">
+                R$ {formatCurrency(executionResult.global_summary?.faturamento_atual || 0).replace('R$', '').trim()}
+              </span>
+            </div>
+            <div className="bg-black/40 p-4 rounded-xl border border-white/5">
+              <span className="text-xs text-[var(--text-tertiary)] block mb-1">Fluxo de Caixa</span>
+              <span className="font-bold text-lg text-white font-mono">
+                R$ {formatCurrency(executionResult.global_summary?.fluxo_caixa || 0).replace('R$', '').trim()}
+              </span>
+            </div>
+            <div className="bg-black/40 p-4 rounded-xl border border-white/5">
+              <span className="text-xs text-[var(--text-tertiary)] block mb-1">Diferença</span>
+              <span className="font-bold text-lg text-emerald-400 font-mono">
+                R$ {formatCurrency(executionResult.global_summary?.diferenca || 0).replace('R$', '').trim()}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between pt-6 border-t border-white/10">
+            <Button
+              variant="outline"
+              onClick={() => {
+                const blob = new Blob([JSON.stringify(executionResult, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `logs_marco_zero_${targetDate}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                toast.success("Logs de execução baixados com sucesso!");
+              }}
+              className="flex items-center gap-2 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10"
+            >
+              <Download size={16} />
+              Baixar Logs de Execução (.JSON)
+            </Button>
+
+            <Button onClick={onComplete} className="bg-emerald-500 hover:bg-emerald-600 text-black font-semibold">
+              Concluir e Ir para o Sistema
+            </Button>
+          </div>
+        </Card>
+      )}
+
+      {data && !executionResult && (
         <div className="space-y-6">
           <Card className="p-6 md:p-8 bg-[var(--bg-canvas)] border border-[var(--color-primary)]/30">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--border-subtle)] pb-6 mb-6">

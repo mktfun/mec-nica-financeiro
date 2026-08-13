@@ -180,3 +180,9 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 
 ## [179-fix-dashboard-math]
 - **Correção da Matemática Financeira (Conciliação Diária Global)**: Refeita a equação de Diferença e Fluxo de Caixa no backend (RPC `get_dashboard_metrics`) e frontend (`modulo1Calculations.ts`) para garantir o cálculo puramente baseado nas premissas contábeis corretas, removendo deduções fantasmas.
+
+## [186-refatoracao-marco-zero]
+- **Refatoração Absoluta do Marco Zero (Backend Transacional + Log JSON + UI Dedicada)**:
+  - **RPC SQL:** `supabase/migrations/20260813113000_process_marco_zero_rpc.sql` (RPC atômica idempotente `process_marco_zero_import` com tenant isolation por `store_id`).
+  - **Wizard & Download Logs:** `MarcoZeroWizard.tsx` chama a RPC PostgreSQL atômica, exibe a tela de sucesso e disponibiliza o botão "Baixar Logs de Execução (.JSON)".
+  - **UI Dedicada de Estado Inicial:** `ResumoDiaPanel.tsx` detecta `metadata.is_marco_zero === true` e renderiza a UI simplificada de Estado Inicial do Marco Zero sem a complexidade dos blocos de conciliação bancária padrão.

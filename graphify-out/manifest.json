@@ -925,8 +925,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/RedeVsExtratoTable.tsx": {
-    "mtime": 1785512916.0,
-    "ast_hash": "e129bd3fe1c6a6cfaac0bf74cb6568df",
+    "mtime": 1786625875.297615,
+    "ast_hash": "5510be37dff57df0e0e781be94097c57",
     "semantic_hash": ""
   },
   "src/components/conciliacao/RedeVsOfxTable.tsx": {
@@ -935,8 +935,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1786623268.4144106,
-    "ast_hash": "21d4410190a7fcf1e56c8ae89c359511",
+    "mtime": 1786631078.2033982,
+    "ast_hash": "b78faae3763f27350df3cb90c19aadc0",
     "semantic_hash": ""
   },
   "src/components/dashboard/AlertResolveDialog.tsx": {
@@ -1230,8 +1230,8 @@
     "semantic_hash": ""
   },
   "src/lib/modulo1Calculations.ts": {
-    "mtime": 1786623258.1185212,
-    "ast_hash": "e1d8cda37073d0adc1a1ac0bc57c5528",
+    "mtime": 1786628153.8739705,
+    "ast_hash": "0e4aff4d24268d349d4d0cc9b3c43f8e",
     "semantic_hash": ""
   },
   "src/lib/ofxParser.ts": {
@@ -1260,8 +1260,8 @@
     "semantic_hash": ""
   },
   "src/lib/parsers/ofxParser.ts": {
-    "mtime": 1786447323.09604,
-    "ast_hash": "5efea048295399fde999e32a645eb9f0",
+    "mtime": 1786624537.3404198,
+    "ast_hash": "6de4acc2cde26db103ab5a8851896077",
     "semantic_hash": ""
   },
   "src/lib/parsers/redeParser.ts": {
@@ -1395,7 +1395,7 @@
     "semantic_hash": ""
   },
   "supabase/.temp/linked-project.json": {
-    "mtime": 1786542291.0079453,
+    "mtime": 1786624799.2027357,
     "ast_hash": "909b93e98d3011225245726bdc8dbc31",
     "semantic_hash": ""
   },
@@ -3325,8 +3325,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786623612.2932231,
-    "ast_hash": "6caf4bd19195accd8a79cb869896296b",
+    "mtime": 1786631163.7963607,
+    "ast_hash": "cff9961e124b75a4c041eb4217e90f71",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -5820,8 +5820,8 @@
     "semantic_hash": ""
   },
   "schema_dump.sql": {
-    "mtime": 1786447323.0330484,
-    "ast_hash": "2a2d1d59bfa7f25978818d0244b29892",
+    "mtime": 1786626578.9238844,
+    "ast_hash": "fc802db88cdc5f6b48aad8fa238d86bb",
     "semantic_hash": ""
   },
   "scratch/test_db.js": {
@@ -6285,8 +6285,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/MarcoZeroWizard.tsx": {
-    "mtime": 1786539742.5543983,
-    "ast_hash": "0e882f14d38a48a850dd2e3c1e67759b",
+    "mtime": 1786631028.5254686,
+    "ast_hash": "721f1f23db9598f1f0aa71506eaf76eb",
     "semantic_hash": ""
   },
   "src/components/importacoes/MatchManualOsPendente.tsx": {
@@ -6295,8 +6295,8 @@
     "semantic_hash": ""
   },
   "src/lib/parsers/marcoZeroParser.ts": {
-    "mtime": 1786541466.158641,
-    "ast_hash": "1feed57b8192c698b3b4b1eb4fca7232",
+    "mtime": 1786624581.9972188,
+    "ast_hash": "2e5ec7eafc052855ae002cf559c00e1a",
     "semantic_hash": ""
   },
   "supabase/migrations/20260811124024_create_estoque_os_pendente.sql": {
@@ -6579,36 +6579,6 @@
     "ast_hash": "2dea8b9376117e6b40017c52e47e4a54",
     "semantic_hash": ""
   },
-  "specs/178-auditoria-virada-mes/design.md": {
-    "mtime": 1786620999.1720393,
-    "ast_hash": "0a79a12b3cef3e16188eee9ef0688a59",
-    "semantic_hash": ""
-  },
-  "specs/178-auditoria-virada-mes/proposal.md": {
-    "mtime": 1786620970.3224156,
-    "ast_hash": "6245c00d9309f1a93f1914f3f31ceacf",
-    "semantic_hash": ""
-  },
-  "specs/178-auditoria-virada-mes/spec-plan.md": {
-    "mtime": 1786621200.0130992,
-    "ast_hash": "f841d82379a842630b1a1a7e3623a64c",
-    "semantic_hash": ""
-  },
-  "specs/179-fix-dashboard-math/design.md": {
-    "mtime": 1786622362.183797,
-    "ast_hash": "8a8b5f1e2d0d17d65585f56e3e07c4ac",
-    "semantic_hash": ""
-  },
-  "specs/179-fix-dashboard-math/proposal.md": {
-    "mtime": 1786622346.831238,
-    "ast_hash": "bdab0c9c81c8c927275046da94d1f461",
-    "semantic_hash": ""
-  },
-  "specs/179-fix-dashboard-math/spec-plan.md": {
-    "mtime": 1786623280.2031758,
-    "ast_hash": "d9864636707800c260762a8b603b7ea8",
-    "semantic_hash": ""
-  },
   "specs/archive/174-redesign-central-import-wizard/design.md": {
     "mtime": 1786555983.4069493,
     "ast_hash": "88916feb2bb92f2c694f31af64092472",
@@ -6622,6 +6592,186 @@
   "specs/archive/174-redesign-central-import-wizard/spec-plan.md": {
     "mtime": 1786556197.8040233,
     "ast_hash": "411198c15ea7a75bd51875ead8413d30",
+    "semantic_hash": ""
+  },
+  "scratch/execute.ps1": {
+    "mtime": 1786625510.6793048,
+    "ast_hash": "1d6d5b584653b30790ddb12213bb2664",
+    "semantic_hash": ""
+  },
+  "scratch/push.ps1": {
+    "mtime": 1786624720.3199832,
+    "ast_hash": "147c66d24c2192088db8179675850463",
+    "semantic_hash": ""
+  },
+  "scratch/testParsers.ts": {
+    "mtime": 1786623792.6069121,
+    "ast_hash": "d7051429ff5d415933108127c09cfb22",
+    "semantic_hash": ""
+  },
+  "scratch/testParsers2.ts": {
+    "mtime": 1786623819.7703226,
+    "ast_hash": "5baaa5cf637428e2fe78396b60194242",
+    "semantic_hash": ""
+  },
+  "src/components/conciliacao/OrphanCategorizationModal.tsx": {
+    "mtime": 1786625713.225247,
+    "ast_hash": "ec3c079a54d6eb0dbf615ce1fcc05887",
+    "semantic_hash": ""
+  },
+  "src/hooks/useCategorizeOrphan.ts": {
+    "mtime": 1786625681.4114447,
+    "ast_hash": "92156c7886b9b913fc305f58ae17e4a5",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813094000_fix_rpc_conciliation_columns.sql": {
+    "mtime": 1786624502.2780147,
+    "ast_hash": "1393854fd5851d3a4ceece49be7ad885",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813095200_fila_orfaos.sql": {
+    "mtime": 1786625640.1006737,
+    "ast_hash": "344f8c177d09c50e82fd45ddbc3cd67b",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813103000_fix_dashboard_math_double_counting.sql": {
+    "mtime": 1786627218.5438466,
+    "ast_hash": "70dc4e4b88dfae0f96087f2ac325db2e",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813113000_process_marco_zero_rpc.sql": {
+    "mtime": 1786630948.9792829,
+    "ast_hash": "e5093a4e8d72f0a3ab64a84f71ac927a",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813123412_fix_rpc_conciliation_columns.sql": {
+    "mtime": 1786624452.1695435,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "specs/180-fix-parsers-and-conciliation-rpc/design.md": {
+    "mtime": 1786624280.8183358,
+    "ast_hash": "8c2f8c269171b439cbb78291508de70e",
+    "semantic_hash": ""
+  },
+  "specs/180-fix-parsers-and-conciliation-rpc/proposal.md": {
+    "mtime": 1786624265.0443385,
+    "ast_hash": "12a79a8ed0e44add853f97f11a54f348",
+    "semantic_hash": ""
+  },
+  "specs/180-fix-parsers-and-conciliation-rpc/spec-plan.md": {
+    "mtime": 1786625064.1215298,
+    "ast_hash": "e1f709b462d022e2319d34decb2cc85d",
+    "semantic_hash": ""
+  },
+  "specs/181-fila-de-orfaos/design.md": {
+    "mtime": 1786625389.5152476,
+    "ast_hash": "242cb970347f352c3209722933a08231",
+    "semantic_hash": ""
+  },
+  "specs/181-fila-de-orfaos/proposal.md": {
+    "mtime": 1786625372.2391562,
+    "ast_hash": "62ef7c578d0f62a20bdb8d163d5e452f",
+    "semantic_hash": ""
+  },
+  "specs/181-fila-de-orfaos/spec-plan.md": {
+    "mtime": 1786625940.0575454,
+    "ast_hash": "b7a54ca0549652f05f4962eba155000c",
+    "semantic_hash": ""
+  },
+  "specs/182-fix-dashboard-math/design.md": {
+    "mtime": 1786627128.902699,
+    "ast_hash": "795cc48ad6f286536e47ae5fc0fbcf07",
+    "semantic_hash": ""
+  },
+  "specs/182-fix-dashboard-math/proposal.md": {
+    "mtime": 1786627114.3829436,
+    "ast_hash": "675ed12af7175220d34d1949bed0ee0d",
+    "semantic_hash": ""
+  },
+  "specs/182-fix-dashboard-math/spec-plan.md": {
+    "mtime": 1786627262.1673727,
+    "ast_hash": "d168eb00beec2524f3629d79508ae05a",
+    "semantic_hash": ""
+  },
+  "specs/183-fix-modulo1-caixa-math/design.md": {
+    "mtime": 1786627468.918863,
+    "ast_hash": "374ffb193f9dc6943eced80aaa2b0f0b",
+    "semantic_hash": ""
+  },
+  "specs/183-fix-modulo1-caixa-math/proposal.md": {
+    "mtime": 1786627460.1757958,
+    "ast_hash": "660e4452622a666ece5721a7211c8bae",
+    "semantic_hash": ""
+  },
+  "specs/183-fix-modulo1-caixa-math/spec-plan.md": {
+    "mtime": 1786627477.1499448,
+    "ast_hash": "d492ca8d475c696d58ce80660bcd88ac",
+    "semantic_hash": ""
+  },
+  "specs/184-simple-marco-zero-save/design.md": {
+    "mtime": 1786627800.8413732,
+    "ast_hash": "12c2112c0b2a974b6cd71c1f771c1b30",
+    "semantic_hash": ""
+  },
+  "specs/184-simple-marco-zero-save/proposal.md": {
+    "mtime": 1786627792.5024137,
+    "ast_hash": "4c5f9a42c1aaf3e1a451541671f950ac",
+    "semantic_hash": ""
+  },
+  "specs/184-simple-marco-zero-save/spec-plan.md": {
+    "mtime": 1786627907.4896142,
+    "ast_hash": "2236d44204775c2738ace495c9caaafd",
+    "semantic_hash": ""
+  },
+  "specs/185-fix-marco-zero-scope-and-math/design.md": {
+    "mtime": 1786628032.7722068,
+    "ast_hash": "128869fea230daf2a96b9d1b41c0abc2",
+    "semantic_hash": ""
+  },
+  "specs/185-fix-marco-zero-scope-and-math/proposal.md": {
+    "mtime": 1786628022.8785698,
+    "ast_hash": "a7571d6df0857924e5fd751781f9a78f",
+    "semantic_hash": ""
+  },
+  "specs/185-fix-marco-zero-scope-and-math/spec-plan.md": {
+    "mtime": 1786628180.8124695,
+    "ast_hash": "104fc7e97b76afa7354891128c7b5c4e",
+    "semantic_hash": ""
+  },
+  "specs/archive/178-auditoria-virada-mes/design.md": {
+    "mtime": 1786620999.1720393,
+    "ast_hash": "0a79a12b3cef3e16188eee9ef0688a59",
+    "semantic_hash": ""
+  },
+  "specs/archive/178-auditoria-virada-mes/proposal.md": {
+    "mtime": 1786620970.3224156,
+    "ast_hash": "6245c00d9309f1a93f1914f3f31ceacf",
+    "semantic_hash": ""
+  },
+  "specs/archive/178-auditoria-virada-mes/spec-plan.md": {
+    "mtime": 1786621200.0130992,
+    "ast_hash": "f841d82379a842630b1a1a7e3623a64c",
+    "semantic_hash": ""
+  },
+  "specs/archive/179-fix-dashboard-math/design.md": {
+    "mtime": 1786622362.183797,
+    "ast_hash": "8a8b5f1e2d0d17d65585f56e3e07c4ac",
+    "semantic_hash": ""
+  },
+  "specs/archive/179-fix-dashboard-math/proposal.md": {
+    "mtime": 1786622346.831238,
+    "ast_hash": "bdab0c9c81c8c927275046da94d1f461",
+    "semantic_hash": ""
+  },
+  "specs/archive/179-fix-dashboard-math/spec-plan.md": {
+    "mtime": 1786623280.2031758,
+    "ast_hash": "d9864636707800c260762a8b603b7ea8",
+    "semantic_hash": ""
+  },
+  "tela.png": {
+    "mtime": 1786625035.4145849,
+    "ast_hash": "fda80d955beb94d21a2459c4810b2424",
     "semantic_hash": ""
   }
 }
