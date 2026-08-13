@@ -221,3 +221,9 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - **Status:** Implementado
 - **Módulos:** Conciliação, Dashboard
 - **supabase/migrations/20260813160000_fix_global_reconciliation_sum_and_reset.sql:** Ajustou a RPC `get_dashboard_metrics` para extrair o saldo global puramente da leitura somada de `bank_total` das lojas na tabela `reconciliations`, e preservou os inputs manuais de Dinheiro MP. Executou cleanup dos snapshots corrompidos do dia 11/08.
+
+### 2026-08-13: Restauração do Parser OFX (100x) e Correção Matemática (<Feature ID>: 194)
+- **Status:** Implementado
+- **Módulos:** Conciliação, OFX Parser, Cálculos
+- **src/lib/parsers/ofxParser.ts:** Ajustou-se a extração de `TRNAMT`, `OVERDRAFTLIMIT`, etc. para usar `parseFloat(` nativo, prevenindo truncamento de dízimas de um dígito como `.9` ou `.5` que alteravam a grandeza do saldo (ex: 39.851,90 entrando como 3.985,19).
+- **src/lib/modulo1Calculations.ts:** Ajustou-se a formula de diferença para confrontar magnitude absoluta do disponível contra contas `Yabs(X) - Y`, evitando acumulaação de sinais negativos (ex: -195k).

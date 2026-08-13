@@ -66,17 +66,10 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
     
     // Extract TRNAMT
     const amtMatch = trnBlock.match(/<TRNAMT>([^\r\n<]+)/);
-    let amount = 0;
-    if (amtMatch) {
-      const rawValue = amtMatch[1].trim();
-      const cleanStr = rawValue.replace(',', '.').trim();
-      const parsedFloat = parseFloat(cleanStr);
-      if (!isNaN(parsedFloat)) {
-        amount = Math.round(parsedFloat * 100) / 100;
-      }
-    }
+    const amountStr = amtMatch ? amtMatch[1].trim() : '0';
+    let amount = extractNumber(amountStr);
     
-    if (isNaN(amount) || amount === 0) continue;
+    if (isNaN(amount)) continue;
     
     // Extract FITID (unique transaction ID from bank) - Ignore it and use deterministic hash
     const fitidMatch = trnBlock.match(/<FITID>([^\r\n<]+)/);
@@ -171,19 +164,9 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
   const overdraftMatch = text.match(/<OVERDRAFTLIMIT>([^\r\n<]+)/);
   const creditMatch = text.match(/<CREDITLIMIT>([^\r\n<]+)/);
   if (overdraftMatch) {
-    const rawValue = overdraftMatch[1].trim();
-    const cleanStr = rawValue.replace(',', '.').trim();
-    const parsedFloat = parseFloat(cleanStr);
-    if (!isNaN(parsedFloat)) {
-      accountLimit = Math.abs(Math.round(parsedFloat * 100) / 100);
-    }
+    accountLimit = Math.abs(extractNumber(overdraftMatch[1]));
   } else if (creditMatch) {
-    const rawValue = creditMatch[1].trim();
-    const cleanStr = rawValue.replace(',', '.').trim();
-    const parsedFloat = parseFloat(cleanStr);
-    if (!isNaN(parsedFloat)) {
-      accountLimit = Math.abs(Math.round(parsedFloat * 100) / 100);
-    }
+    accountLimit = Math.abs(extractNumber(creditMatch[1]));
   }
 
   if (options?.sessionId) {

@@ -3325,8 +3325,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786646835.3711443,
-    "ast_hash": "ec2fc5ebef56b3a9c8d88f0582e87c03",
+    "mtime": 1786648169.1928315,
+    "ast_hash": "7a2796ea73827e2b36deb6e5c90fec8e",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -6877,6 +6877,26 @@
   "specs/archive/191-fix-calculo-diferenca-final/spec-plan.md": {
     "mtime": 1786645450.419688,
     "ast_hash": "31dfea460e768cbed2e7e60f95cb06fa",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813160000_fix_global_reconciliation_sum_and_reset.sql": {
+    "mtime": 1786648056.5311577,
+    "ast_hash": "ab917cc0b0c38cc343ac6e9a54f2f1e0",
+    "semantic_hash": ""
+  },
+  "specs/archive/192-fix-ofx-precision/design.md": {
+    "mtime": 1786646621.382387,
+    "ast_hash": "09d233465d2244a5118fd860948b5d8c",
+    "semantic_hash": ""
+  },
+  "specs/archive/192-fix-ofx-precision/proposal.md": {
+    "mtime": 1786646607.4924579,
+    "ast_hash": "ef0f35c6169aac87dcf18da77e972ecc",
+    "semantic_hash": ""
+  },
+  "specs/archive/192-fix-ofx-precision/spec-plan.md": {
+    "mtime": 1786646742.0406015,
+    "ast_hash": "585ac33a2aa092c7ab1a763b34d79126",
     "semantic_hash": ""
   }
 }

@@ -139,7 +139,7 @@ export function calculateModulo1Saldo(stores: StoreSaldoState[]): {
     const g25 = Number(st.faturamento_atual || 0) - Number(st.faturamento_anterior || 0);
     const g27 = g25 + Number(st.seguro_sinistro || 0) + Number(st.juros_atual || 0);
     const g29 = g27 - g23;
-    const g31 = g29 - Number(st.valor_contas || 0);
+    const g31 = Math.abs(g29) - Number(st.valor_contas || 0);
 
     storesCalculated[st.store_id] = {
       saldo_g13: g13,
@@ -173,7 +173,7 @@ export function calculateModulo1Saldo(stores: StoreSaldoState[]): {
   const globalG25 = globalFatAtual - globalFatAnt;
   const globalG27 = globalG25 + globalSeguro + globalJuros;
   const globalG29 = globalG27 - globalG23;
-  const globalG31 = globalG29 - globalContas;
+  const globalG31 = Math.abs(globalG29) - globalContas;
 
   return {
     storesCalculated,

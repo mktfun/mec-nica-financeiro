@@ -135,3 +135,9 @@
 **Contexto:** O saldo global (Saldo Banco Itaé) na tela de conciliação apresentava valores inflados (ex: 6.5M). Isso ocorreu porque o cálculo RPC `get_dashboard_metrics` estava usando a soma das transações (maq + pix) em vez de usar estritamente o `bank_total` original processado de cada banco, além de existirem registros corrompidos na base legada antes do fix 192.
 
 **Regra aprendida:** Agregações de saldo bancário `bank_total` globais não podem ser reconstruídas por faturamentos indiretos na RPC. A RPC global de dashboard deve sempre fazer JOIN e SUM na tabela `reconciliations` (coluna `bank_total`) que retém a fonte real da verdade do OFX.
+
+## [2026-08-13] - [Feature ID: 194]-restore-previous-parser-and-fix-decimals-and-math
+
+**Contexto:** Os valores importados do OFX perdiam a precisão decimal quando terminavam em dízima de um dígito (ex: `.9`, `.5`) devido a uma falha na função legada `extractNumber`. Além disso, a diferença final da conciliação somava sinais negativos em cascata.
+
+**Regra aprendida:** Todo parse de moeda vinda do OFX (TRNAMT, BALAMT, LIMIT) deve ser literalmente convertido usando `parseFloat(` apñs replace de vírgula, e multiplicado por 100 com `Math.round(*float* * 100)` para garantir centavos exatos. A subtração de diferenças de caixa deve sempre confrontar a magnitude absoluta (`Math.abs()`) do disponível contra as contas.
