@@ -1230,8 +1230,8 @@
     "semantic_hash": ""
   },
   "src/lib/modulo1Calculations.ts": {
-    "mtime": 1786645363.1404903,
-    "ast_hash": "77eaba3abbe5f1ed78ad6055c156e6d6",
+    "mtime": 1786649768.8425884,
+    "ast_hash": "d9fcd0b488ebeacd99f5d4bcf291ebee",
     "semantic_hash": ""
   },
   "src/lib/ofxParser.ts": {
@@ -1260,8 +1260,8 @@
     "semantic_hash": ""
   },
   "src/lib/parsers/ofxParser.ts": {
-    "mtime": 1786646695.9056485,
-    "ast_hash": "324660184bfc35ed0e6a8386eba7100c",
+    "mtime": 1786649746.8642075,
+    "ast_hash": "930df8bd558eff70eb0148511221e8b2",
     "semantic_hash": ""
   },
   "src/lib/parsers/redeParser.ts": {
@@ -3325,8 +3325,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786646835.3711443,
-    "ast_hash": "ec2fc5ebef56b3a9c8d88f0582e87c03",
+    "mtime": 1786649972.0534744,
+    "ast_hash": "2dc9b555d9dba67879db6e88cbf3e839",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -6877,6 +6877,56 @@
   "specs/archive/191-fix-calculo-diferenca-final/spec-plan.md": {
     "mtime": 1786645450.419688,
     "ast_hash": "31dfea460e768cbed2e7e60f95cb06fa",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813160000_fix_global_reconciliation_sum_and_reset.sql": {
+    "mtime": 1786648056.5311577,
+    "ast_hash": "ab917cc0b0c38cc343ac6e9a54f2f1e0",
+    "semantic_hash": ""
+  },
+  "specs/archive/192-fix-ofx-precision/design.md": {
+    "mtime": 1786646621.382387,
+    "ast_hash": "09d233465d2244a5118fd860948b5d8c",
+    "semantic_hash": ""
+  },
+  "specs/archive/192-fix-ofx-precision/proposal.md": {
+    "mtime": 1786646607.4924579,
+    "ast_hash": "ef0f35c6169aac87dcf18da77e972ecc",
+    "semantic_hash": ""
+  },
+  "specs/archive/192-fix-ofx-precision/spec-plan.md": {
+    "mtime": 1786646742.0406015,
+    "ast_hash": "585ac33a2aa092c7ab1a763b34d79126",
+    "semantic_hash": ""
+  },
+  "old_ofxParser.ts": {
+    "mtime": 1786649238.622089,
+    "ast_hash": "abc86473e5e01736b6162b2040749bd4",
+    "semantic_hash": ""
+  },
+  "old_ofxParser_c10005e.ts": {
+    "mtime": 1786649275.9393055,
+    "ast_hash": "d04ecce0a88a7cbeffdf28fa13362b0f",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813170000_purge_corrupted_snapshot.sql": {
+    "mtime": 1786649791.689664,
+    "ast_hash": "e957d7f9b2f46ab4c3a413fafd18479d",
+    "semantic_hash": ""
+  },
+  "specs/archive/193-fix-global-reconciliation/design.md": {
+    "mtime": 1786647975.1085196,
+    "ast_hash": "0038542382b12d681554b937e776a177",
+    "semantic_hash": ""
+  },
+  "specs/archive/193-fix-global-reconciliation/proposal.md": {
+    "mtime": 1786647960.8765378,
+    "ast_hash": "9012fd6989fc258a9c18a1861939fc7c",
+    "semantic_hash": ""
+  },
+  "specs/archive/193-fix-global-reconciliation/spec-plan.md": {
+    "mtime": 1786648075.5373812,
+    "ast_hash": "040157871bfdf0d14c82c8586b2efa17",
     "semantic_hash": ""
   }
 }
