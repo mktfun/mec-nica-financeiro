@@ -156,10 +156,35 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
     const rawValue = ledgerMatch[1].trim();
     // 1. Substitui vírgula por ponto se necessário
     let cleanStr = rawValue.replace(',', '.').trim();
-    // 2. Faz o parse para Float preservando o ponto decimal real
-    const parsedFloat = parseFloat(cleanStr);
+    // 2. Faz o parse para Float
+    let parsedFloat = parseFloat(cleanStr);
     
     if (!isNaN(parsedFloat)) {
+      // Itaú missing dot heuristic:
+      if (!cleanStr.includes('.') && !cleanStr.includes(',')) {
+        const option100 = parsedFloat / 100;
+        const option10 = parsedFloat / 10;
+        const option1 = parsedFloat;
+
+        if (previousBalance !== undefined) {
+          const sumTx = transactions.reduce((acc, t) => acc + t.amount, 0);
+          const expectedBalance = previousBalance + sumTx;
+          const expectedBalanceNeg = -previousBalance + sumTx;
+
+          // Encontra a opção que tem a menor diferença para o saldo esperado
+          const diffs = [
+            { val: option100, diff: Math.min(Math.abs(option100 - expectedBalance), Math.abs(option100 - expectedBalanceNeg)) },
+            { val: option10, diff: Math.min(Math.abs(option10 - expectedBalance), Math.abs(option10 - expectedBalanceNeg)) },
+            { val: option1, diff: Math.min(Math.abs(option1 - expectedBalance), Math.abs(option1 - expectedBalanceNeg)) }
+          ];
+          diffs.sort((a, b) => a.diff - b.diff);
+          parsedFloat = diffs[0].val;
+        } else {
+          // Fallback seguro: a maioria dos casos sem ponto são centavos exatos (ex: 1309322 -> 13093.22)
+          parsedFloat = parsedFloat / 100;
+        }
+      }
+
       // 3. Converte para centavos de forma matemática segura
       const cents = Math.round(parsedFloat * 100);
       // Retorna em Reais para salvar na coluna do banco

@@ -227,3 +227,9 @@ a_loja_os. Bootstrap coleta 'PÃ¡tio Pendente' para preencher caixa_atual e evita
 - **MÃ³dulos:** ConciliaÃ§Ã£o, OFX Parser, CÃ¡lculos
 - **src/lib/parsers/ofxParser.ts:** Ajustou-se a extraÃ§Ã£o de `TRNAMT`, `OVERDRAFTLIMIT`, etc. para usar `parseFloat(` nativo, prevenindo truncamento de dÃ­zimas de um dÃ­gito como `.9` ou `.5` que alteravam a grandeza do saldo (ex: 39.851,90 entrando como 3.985,19).
 - **src/lib/modulo1Calculations.ts:** Ajustou-se a formula de diferenÃ§a para confrontar magnitude absoluta do disponÃ­vel contra contas `Yabs(X) - Y`, evitando acumulaaÃ§Ã£o de sinais negativos (ex: -195k).
+
+### 2026-08-13: Proteção Extrema de Precisão OFX Itaú (195)
+- **Status:** Implementado
+- **Módulos:** Importação (OFX), Conciliação
+- **src/lib/parsers/ofxParser.ts:** Implementada triangulação matemática para deduzir a grandeza correta de saldos truncados do Itaú (sem ponto e sem trailing zeros) cruzando o previousBalance + sum(TRNAMT). Resolve inflação de saldos globais para 6.5M.
+
