@@ -501,7 +501,7 @@ export function ResumoDiaPanel({
             <div className="mt-4 pt-4 border-t border-[var(--border-subtle)] flex justify-between items-center bg-[var(--bg-surface-elevated)] p-3 rounded-lg">
                <div>
                   <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Subtotal: Valor Contas</span>
-                  <span className="text-[9px] text-[var(--text-tertiary)]">Juros (REDE) + Pagar + Provisão</span>
+                  <span className="text-[9px] text-[var(--text-tertiary)]">Juros (REDE) + Contas (Manual)</span>
                </div>
                <span className="text-lg font-bold text-[var(--color-accent-warning)]">
                  <AnimatedNumber value={calculated.valor_contas} format="currency" />

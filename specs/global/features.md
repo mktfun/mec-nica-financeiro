@@ -198,3 +198,15 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - **Modulos:** OFX Parser, Backend RPC
 - **src/lib/parsers/ofxParser.ts:** Adicionada logica para dividir por 100 valores grandes em centavos exportados sem pontuacao.
 - **Supabase RPCs:** calculate_daily_conciliation e get_dashboard_metrics passaram a excluir OSs com status finalizado do calculo pendente.
+
+### 2026-08-13: Correcao Diferenca Final e Expurgo Provisao (191)
+- **Status:** Implementado
+- **Modulos:** Conciliacao, Frontend
+- **modulo1Calculations.ts:** Diferenca calculada usando ABS no valor disp contas.
+- **ResumoDiaPanel.tsx:** Rotulo Subtotal Valor Contas ajustado removendo Provisao.
+
+### 2026-08-13: Correcao da Diferenca Final e Expurgo da Provisao (191)
+- **Status:** Implementado
+- **Modulos:** Conciliacao, Frontend
+- **src/lib/modulo1Calculations.ts:** Corrigida a equacao de fechamento diario para usar valor absoluto no fundo disponivel, impedindo a subtracao de valores negativos que dobrava os debitos.
+- **src/components/conciliacao/ResumoDiaPanel.tsx:** Rotulos visuais atualizados removendo referencias obsoletas a Provisao, restando apenas Juros e Contas Manuais.

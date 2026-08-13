@@ -117,3 +117,9 @@
 **Risco identificado:** Risco de contagem duplicada ou dupla baixa. A RPC liquidate_legacy_os valida a execuá∆o atìmica WHERE status = 'em_aberto'.  
   
 **N∆o fazer:** N∆o misturar OSs do Marco Zero (saldo inicial legadas) com o fluxo de conciliaá∆o di†rio (aba de Cart∆o/Pix), pois as OSs legadas j† tiveram seu caixa original depositado no passado, devendo constar apenas a baixa do passivo. 
+
+## [2026-08-13] - [Feature ID: 191-fix-calculo-diferenca-final]
+
+**Contexto:** O valor disponivel para contas da conciliacao pode ser matematicamente negativo se o fluxo de caixa for excessivo em comparacao ao faturamento do periodo (indicando que a loja esta usando saldo anterior). Ao deduzir as despesas (Juros + Contas) deste saldo disponivel negativo, a formula A - B estava gerando -A - B (somando as dividas em magnitude).
+
+**Regra aprendida:** Em balancos de fechamento de caixa, sempre aplique Math.abs() ao confrontar o saldo/massa disponivel com o montante de despesas, se o objetivo da rubrica final for demonstrar apenas a variacao pura (ex: Diferenca Final = Math.abs(Valor Disp. Contas) - Despesas). Isso alinha o balanco com o que e fisicamente compreensivel (tenho 90k, devo 90k, diferenca 0).
