@@ -107,3 +107,13 @@
 **Risco identificado:** Exibir bot√µes operacionais de concilia√ß√£o banc√°ria di√°ria na data do Marco Zero gera diverg√™ncias fantasmas porque o Marco Zero n√£o possui extratos OFX de entradas/sa√≠das operacionais daquele dia.
 
 **N√£o fazer:** Nunca renderizar calculadoras de diverg√™ncia banc√°ria di√°ria padr√£o em uma data marcada com `is_marco_zero: true`.
+  
+## [2026-08-13] - [Feature ID: 187-gestao-os-legadas]  
+  
+**Contexto:** Gest∆o das OSs importadas pelo fluxo do Marco Zero na vis∆o di†ria da filial.  
+  
+**Regra aprendida:** As datas de Marco Zero usam uma vis∆o de tabela dedicada (LegacyOsTable) ao invÇs do dashboard de conciliaá∆o normal, pois n∆o possuem movimentaá∆o OFX. A liquidaá∆o manual ou em lote dessas OSs via RPC ajusta reativamente o contador Na Loja OS.  
+  
+**Risco identificado:** Risco de contagem duplicada ou dupla baixa. A RPC liquidate_legacy_os valida a execuá∆o atìmica WHERE status = 'em_aberto'.  
+  
+**N∆o fazer:** N∆o misturar OSs do Marco Zero (saldo inicial legadas) com o fluxo de conciliaá∆o di†rio (aba de Cart∆o/Pix), pois as OSs legadas j† tiveram seu caixa original depositado no passado, devendo constar apenas a baixa do passivo. 

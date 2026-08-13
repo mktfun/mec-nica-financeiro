@@ -19,7 +19,16 @@ CREATE TABLE public.claritas_policies (
   created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 3. agent_reflections
+-- 3. Fallback for conversations if missing
+CREATE TABLE IF NOT EXISTS public.conversations (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    title TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
+);
+
+-- 4. agent_reflections
 CREATE TABLE public.agent_reflections (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   conversation_id uuid NOT NULL REFERENCES public.conversations(id) ON DELETE CASCADE,

@@ -28,7 +28,7 @@ DECLARE
     
     v_store_item jsonb;
     v_os_item jsonb;
-    v_store_id uuid;
+    v_store_id text;
     v_store_name text;
     v_saldo_loja numeric;
     
@@ -136,7 +136,7 @@ BEGIN
     -- 4. Processar Lojas e OSs com Tenant Isolation Estrito
     IF p_stores IS NOT NULL AND jsonb_array_length(p_stores) > 0 THEN
         FOR v_store_item IN SELECT * FROM jsonb_array_elements(p_stores) LOOP
-            v_store_id := (v_store_item->>'store_id')::uuid;
+            v_store_id := (v_store_item->>'store_id')::text;
             v_store_name := v_store_item->>'store_name';
             v_saldo_loja := COALESCE((v_store_item->>'saldoLoja')::numeric, 0);
             v_store_os_count := 0;
@@ -151,16 +151,17 @@ BEGIN
                     date,
                     daily_cash,
                     bank_total,
-                    status,
-                    is_closed
+                    status
                 ) VALUES (
                     v_store_id,
                     p_target_date,
                     v_saldo_loja,
                     v_saldo_loja,
-                    'completed',
-                    true
+                    'completed'
                 );
+
+                -- Limpar OSs do pátio para essa data/loja para garantir idempotência sem ON CONFLICT
+                DELETE FROM patio_os WHERE store_id = v_store_id AND opened_at = p_target_date;
 
                 -- OSs do Pátio salvas com opened_at = p_target_date (isolamento temporal)
                 IF v_store_item->'osPendentes' IS NOT NULL AND jsonb_array_length(v_store_item->'osPendentes') > 0 THEN
@@ -169,6 +170,7 @@ BEGIN
                             store_id,
                             store_name,
                             os_number,
+                            plate,
                             total_value,
                             paid_value,
                             status,
@@ -178,16 +180,13 @@ BEGIN
                             v_store_id,
                             v_store_name,
                             v_os_item->>'numero_os',
+                            'N/I',
                             COALESCE((v_os_item->>'valor_os')::numeric, 0),
                             0,
                             'em_aberto',
                             p_target_date,
                             now()
-                        )
-                        ON CONFLICT (store_id, os_number) DO UPDATE SET
-                            total_value = EXCLUDED.total_value,
-                            opened_at = EXCLUDED.opened_at,
-                            updated_at = now();
+                        );
 
                         v_store_os_count := v_store_os_count + 1;
                         v_total_os_inserted := v_total_os_inserted + 1;

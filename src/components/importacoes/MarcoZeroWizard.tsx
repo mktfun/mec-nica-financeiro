@@ -19,6 +19,7 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
   const [targetDate, setTargetDate] = useState<string>('');
   const [isSaving, setIsSaving] = useState(false);
   const [executionResult, setExecutionResult] = useState<any | null>(null);
+  const [visibleError, setVisibleError] = useState<string | null>(null);
   
   const { data: stores = [] } = useStores();
 
@@ -89,6 +90,7 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
       }))
       .filter(s => !!s.store_id);
 
+    setVisibleError(null);
     setIsSaving(true);
     try {
       // Chamada transacional atômica para a RPC do Supabase
@@ -98,13 +100,22 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
         p_stores: payloadStores
       });
 
-      if (rpcErr) throw new Error("Erro na RPC do Marco Zero: " + rpcErr.message);
-      if (rpcRes?.status === 'error') throw new Error("Erro no processamento: " + (rpcRes.error_message || 'Erro desconhecido'));
+      if (rpcErr) {
+        console.error("Supabase RPC Error:", rpcErr);
+        throw new Error("Erro na RPC do Marco Zero: " + (rpcErr.message || JSON.stringify(rpcErr)));
+      }
+      if (rpcRes?.status === 'error') {
+        console.error("RPC Internal Error:", rpcRes);
+        throw new Error("Erro no processamento: " + (rpcRes.error_message || JSON.stringify(rpcRes)));
+      }
 
       setExecutionResult(rpcRes);
       toast.success("Marco Zero implantado com sucesso!");
     } catch (error: any) {
-      toast.error(error.message);
+      console.error("Caught error in handleSave:", error);
+      const msg = error?.message || "Erro desconhecido ao salvar. Verifique o console.";
+      toast.error(msg);
+      setVisibleError(msg);
     } finally {
       setIsSaving(false);
     }
@@ -357,6 +368,13 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
               ))}
             </div>
           </Card>
+
+          {visibleError && (
+            <div className="bg-red-500/10 border border-red-500/30 p-4 rounded-xl text-red-500 font-semibold mb-4 text-sm">
+              <span className="block mb-1 font-bold">Erro ao Implantar:</span>
+              {visibleError}
+            </div>
+          )}
 
           <div className="flex items-center justify-between mt-6">
             <Button variant="ghost" onClick={() => setData(null)} disabled={isSaving}>

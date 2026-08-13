@@ -75,3 +75,6 @@
 - **MarcoZeroWizard.tsx**: Modificado para parsear todas as abas dinamicamente da planilha e renderizar cards de visualizaá∆o para cada uma, suportando multiplas inserá‰es.  
 - **AuditoriaPassivoWizard.tsx**: Novo wizard estilo checklist para aprovaá∆o/baixa manual das OSs que est∆o em estoque_os_pendente com status PENDENTE. Foi inserido em CentralImportWizard (passo 2.5).  
 - **marcoZeroParser.ts**: Modificado para extrair MarcoZeroExtraction[] iterando sobre todas as SheetNames do workbook xlsx. 
+  
+- **LegacyOsTable** (src/components/conciliacao/LegacyOsTable.tsx): Tabela dedicada para gest∆o e liquidaá∆o em lote de OSs legadas do Marco Zero.  
+- **liquidate_legacy_os** (Supabase RPC): Baixa atìmica de OSs legadas alterando status para pago e integrando com o contador de pendàncias na loja. 

@@ -13,6 +13,8 @@ import { TableProperties } from 'lucide-react';
 
 import { useTransactionsPorDataELoja } from '@/hooks/useTransactions';
 import { useReconciliationViews } from '@/hooks/useConciliacao';
+import { useDailySnapshot } from '@/hooks/useDailySnapshot';
+import { LegacyOsTable } from '@/components/conciliacao/LegacyOsTable';
 
 
 export const Route = createFileRoute('/conciliacao/$lojaId')({
@@ -59,6 +61,9 @@ function ConciliacaoLojaPage() {
   const store = stores.find(s => s.id === lojaId);
   const { data: transactions = [] } = useTransactionsPorDataELoja(targetDate, lojaId);
   const { data: reconData } = useReconciliationViews(lojaId, targetDate);
+  const { data: currentSnapshot } = useDailySnapshot(targetDate);
+  
+  const isMarcoZero = (currentSnapshot?.metadata as any)?.is_marco_zero === true;
 
 
   if (!store) {
@@ -120,27 +125,35 @@ function ConciliacaoLojaPage() {
           </div>
         </div>
 
-        <div className="flex border-b border-[var(--border-subtle)] mb-6 overflow-x-auto hide-scrollbar">
-          <TabBtn active={activeTab === 'os_rede'} onClick={() => setActiveTab('os_rede')}>
-            1. Cartão (OS → Maquininha)
-          </TabBtn>
-          <TabBtn active={activeTab === 'rede_ofx'} onClick={() => setActiveTab('rede_ofx')}>
-            2. Maquininha (Líq) → Banco
-          </TabBtn>
-          <TabBtn active={activeTab === 'pix_ofx'} onClick={() => setActiveTab('pix_ofx')}>
-            3. PIX (OS → Banco OFX)
-          </TabBtn>
-          <TabBtn active={activeTab === 'ofx_sem_match'} onClick={() => setActiveTab('ofx_sem_match')}>
-            4. Banco (Sem Origem)
-          </TabBtn>
-        </div>
+        {isMarcoZero ? (
+          <div className="min-h-[400px]">
+            <LegacyOsTable storeId={lojaId} date={targetDate} />
+          </div>
+        ) : (
+          <>
+            <div className="flex border-b border-[var(--border-subtle)] mb-6 overflow-x-auto hide-scrollbar">
+              <TabBtn active={activeTab === 'os_rede'} onClick={() => setActiveTab('os_rede')}>
+                1. Cartão (OS → Maquininha)
+              </TabBtn>
+              <TabBtn active={activeTab === 'rede_ofx'} onClick={() => setActiveTab('rede_ofx')}>
+                2. Maquininha (Líq) → Banco
+              </TabBtn>
+              <TabBtn active={activeTab === 'pix_ofx'} onClick={() => setActiveTab('pix_ofx')}>
+                3. PIX (OS → Banco OFX)
+              </TabBtn>
+              <TabBtn active={activeTab === 'ofx_sem_match'} onClick={() => setActiveTab('ofx_sem_match')}>
+                4. Banco (Sem Origem)
+              </TabBtn>
+            </div>
 
-        <div className="min-h-[400px]">
-          {activeTab === 'os_rede' && <OsVsRedeTable storeId={lojaId} date={targetDate} />}
-          {activeTab === 'rede_ofx' && <RedeVsOfxTable storeId={lojaId} date={targetDate} />}
-          {activeTab === 'pix_ofx' && <PixVsOfxTable storeId={lojaId} date={targetDate} />}
-          {activeTab === 'ofx_sem_match' && <OfxSemMatchTable storeId={lojaId} date={targetDate} />}
-        </div>
+            <div className="min-h-[400px]">
+              {activeTab === 'os_rede' && <OsVsRedeTable storeId={lojaId} date={targetDate} />}
+              {activeTab === 'rede_ofx' && <RedeVsOfxTable storeId={lojaId} date={targetDate} />}
+              {activeTab === 'pix_ofx' && <PixVsOfxTable storeId={lojaId} date={targetDate} />}
+              {activeTab === 'ofx_sem_match' && <OfxSemMatchTable storeId={lojaId} date={targetDate} />}
+            </div>
+          </>
+        )}
       </div>
     </AppShell>
   );
