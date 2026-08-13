@@ -78,3 +78,4 @@
   
 - **LegacyOsTable** (src/components/conciliacao/LegacyOsTable.tsx): Tabela dedicada para gest∆o e liquidaá∆o em lote de OSs legadas do Marco Zero.  
 - **liquidate_legacy_os** (Supabase RPC): Baixa atìmica de OSs legadas alterando status para pago e integrando com o contador de pendàncias na loja. 
+- **roundCurrency** (src/lib/parsers/numberUtils.ts): Utilit†rio central de alta precis∆o (Math.round((val + Number.EPSILON) * 100) / 100) para sanitizar IEEE 754. 

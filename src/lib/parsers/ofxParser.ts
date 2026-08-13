@@ -20,6 +20,7 @@ export interface OfxParseResult {
 
 import { traceLog } from '../logger';
 import { generateDeterministicHash } from './hashUtils';
+import { extractNumber } from './numberUtils';
 
 // Extracts CPF (000.000.000-00) or CNPJ (00.000.000/0000-00) from the end of a MEMO string
 function extractDocument(memo: string): { doc: string | undefined; name: string | undefined } {
@@ -66,7 +67,7 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
     // Extract TRNAMT
     const amtMatch = trnBlock.match(/<TRNAMT>([^\r\n<]+)/);
     const amountStr = amtMatch ? amtMatch[1].trim() : '0';
-    let amount = parseFloat(amountStr.replace(',', '.'));
+    let amount = extractNumber(amountStr);
     
     if (isNaN(amount)) continue;
     
@@ -146,7 +147,7 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
   const ledgerMatch = text.match(/<LEDGERBAL>[\s\S]*?<BALAMT>([^\r\n<]+)/);
   if (ledgerMatch) {
     const balStr = ledgerMatch[1].trim();
-    let balNum = parseFloat(balStr.replace(',', '.'));
+    let balNum = extractNumber(balStr);
     if (isNaN(balNum)) balNum = parseInt(balStr, 10);
     if (!isNaN(balNum)) {
       bankBalance = balNum;
@@ -157,9 +158,9 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
   const overdraftMatch = text.match(/<OVERDRAFTLIMIT>([^\r\n<]+)/);
   const creditMatch = text.match(/<CREDITLIMIT>([^\r\n<]+)/);
   if (overdraftMatch) {
-    accountLimit = Math.abs(parseFloat(overdraftMatch[1].replace(',', '.')));
+    accountLimit = Math.abs(extractNumber(overdraftMatch[1]));
   } else if (creditMatch) {
-    accountLimit = Math.abs(parseFloat(creditMatch[1].replace(',', '.')));
+    accountLimit = Math.abs(extractNumber(creditMatch[1]));
   }
 
   if (options?.sessionId) {

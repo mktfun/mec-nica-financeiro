@@ -1,6 +1,11 @@
+export function roundCurrency(value: number): number {
+  if (isNaN(value)) return 0;
+  return Math.round((value + Number.EPSILON) * 100) / 100;
+}
+
 export function extractNumber(val: any): number {
   if (val === null || val === undefined || val === '') return 0;
-  if (typeof val === 'number') return isNaN(val) ? 0 : val;
+  if (typeof val === 'number') return isNaN(val) ? 0 : roundCurrency(val);
 
   let str = String(val).trim();
   
@@ -42,5 +47,5 @@ export function extractNumber(val: any): number {
   }
 
   const parsed = parseFloat(str);
-  return isNaN(parsed) ? 0 : parsed;
+  return isNaN(parsed) ? 0 : roundCurrency(parsed);
 }

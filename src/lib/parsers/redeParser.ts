@@ -1,5 +1,5 @@
-﻿import * as XLSX from 'xlsx';
-import { extractNumber } from './numberUtils';
+import * as XLSX from 'xlsx';
+import { extractNumber, roundCurrency } from './numberUtils';
 import { normalizeRedeStoreName } from './storeMapping';
 import { traceLog } from '../logger';
 
@@ -120,12 +120,12 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
 
       let interest = taxRaw !== undefined ? extractNumber(taxRaw) : 0;
       if (isNaN(interest) || interest === 0) {
-        interest = parseFloat((grossAmount - netAmount).toFixed(2));
+        interest = roundCurrency(grossAmount - netAmount);
       }
       
-      totalGross += grossAmount;
-      totalNet += netAmount;
-      totalInterest += interest;
+      totalGross = roundCurrency(totalGross + grossAmount);
+      totalNet = roundCurrency(totalNet + netAmount);
+      totalInterest = roundCurrency(totalInterest + interest);
 
       // Tenta achar a data na linha (formato DD/MM/YYYY ou similar)
       let rowDate = targetDate;

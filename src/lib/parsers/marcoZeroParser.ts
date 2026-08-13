@@ -1,6 +1,7 @@
 import * as XLSX from 'xlsx';
 import { parseISO, isValid, parse } from 'date-fns';
 import { normalizeRedeStoreName, REDE_STORE_MAPPING } from './storeMapping';
+import { extractNumber, roundCurrency } from './numberUtils';
 
 export interface MarcoZeroGlobalData {
   dinheiroMp: number;
@@ -33,15 +34,7 @@ export interface MarcoZeroResult {
 
 // Helpers para limpeza de string para number
 const cleanNumber = (val: any): number => {
-  if (typeof val === 'number') return val;
-  if (!val) return 0;
-  let str = String(val).replace(/[R$\s]/g, '');
-  if (/^-?\d+\.\d{1,2}$/.test(str)) {
-    return parseFloat(str);
-  }
-  str = str.replace(/\./g, '').replace(',', '.');
-  const num = parseFloat(str);
-  return isNaN(num) ? 0 : num;
+  return extractNumber(val);
 };
 
 // Helpers para parse de data
@@ -241,7 +234,7 @@ export const parseMarcoZeroPlanilha = async (file: File): Promise<MarcoZeroResul
               // But looking at the excel, it's row 28, just below 'VALOR DAS CONTAS' which is row 27.
               // We'll leave it as zero unless we can specifically find it, or we calculate it.
               // Diferenca = valorDisponivelContas - valorDasContas
-              globalData.diferenca = globalData.valorDisponivelContas - globalData.valorDasContas;
+              globalData.diferenca = roundCurrency(globalData.valorDisponivelContas - globalData.valorDasContas);
 
               // 2. Extração de Saldo por Loja: Coluna B (índice 1) = Nome, Coluna D (índice 3) = Saldo
               const cellA = String(row[0] || '').trim();
