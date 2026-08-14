@@ -72,7 +72,7 @@ export function RecentActivity({ monthStr }: { monthStr: string }) {
                 OS #{os.os_number}
               </h4>
               <Badge variant={os.status === 'em_aberto' ? 'danger' : os.status === 'pago_parcial' ? 'warning' : 'success'} className="text-[9px]">
-                {os.status.replace('_', ' ')}
+                {(os.status || '').replace('_', ' ')}
               </Badge>
             </div>
             <div className="flex items-center gap-2 mt-1.5 text-[11px] text-[var(--text-tertiary)] font-medium">

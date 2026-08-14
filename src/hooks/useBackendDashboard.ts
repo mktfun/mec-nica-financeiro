@@ -108,6 +108,36 @@ export function useBackendDashboard(date: string) {
         ? ((faturamentoAtual - faturamentoAnterior) / faturamentoAnterior) * 100 
         : 0;
 
+      const porLoja = (storeMetrics || []).map((s: any) => {
+        const storeId = s.store_id || s.storeId || '';
+        const storeName = s.store_name || s.storeName || 'Loja';
+        const saldoAtual = Number(s.saldo_banco ?? s.faturamento_banco ?? s.saldoAtual ?? 0);
+        const faturamento = Number(s.previsto_ofx ?? s.faturamento ?? (Number(s.maquininha || 0) + Number(s.pix || 0)));
+        const contas = Number(s.valor_contas ?? s.contas ?? 0);
+        const resultado = faturamento - contas;
+        const veiculosPatio = Number(s.veiculos_patio ?? s.veiculosPatio ?? 0);
+        const veiculosPatioValor = Number(s.na_loja_os ?? s.veiculosPatioValor ?? 0);
+
+        return {
+          ...s,
+          storeId,
+          storeName,
+          store_id: storeId,
+          store_name: storeName,
+          saldoAtual,
+          saldo_banco: saldoAtual,
+          faturamento,
+          contas,
+          valor_contas: contas,
+          resultado,
+          veiculosPatio,
+          veiculos_patio: veiculosPatio,
+          veiculosPatioValor,
+          na_loja_os: veiculosPatioValor,
+          statusConciliacao: s.status || 'approved'
+        };
+      });
+
       return {
         ...globalMetrics,
         faturamentoAtual,
@@ -117,7 +147,7 @@ export function useBackendDashboard(date: string) {
         contasAPagar: globalMetrics.valorContas,
         veiculosPatio: Number(todayLog.veiculos_patio || 0),
         veiculosPatioValor: Number(globalMetrics.naLoja ?? todayLog.veiculos_patio_valor ?? 0),
-        porLoja: storeMetrics || [],
+        porLoja,
         historicoMacro
       } as DashboardMetrics;
     },

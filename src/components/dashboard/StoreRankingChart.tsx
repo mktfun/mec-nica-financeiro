@@ -12,8 +12,8 @@ export function StoreRankingChart() {
   const data = useMemo(() => {
     return stores.map(store => {
       return {
-        name: store.name.replace('Rei do ', 'R. '), // Shorten names for the chart
-        fullName: store.name,
+        name: (store.name || '').replace('Rei do ', 'R. '), // Shorten names for the chart
+        fullName: store.name || 'Loja',
         saldo: allBalances[store.id] || 0,
       };
     }).sort((a, b) => {

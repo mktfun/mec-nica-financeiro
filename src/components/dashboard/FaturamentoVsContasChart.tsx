@@ -13,8 +13,8 @@ import { CartesianGrid } from 'recharts';
 const formatCurrency = (value: number) =>
   `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 
-const shortenName = (name: string) =>
-  name.replace(/Rei do /gi, '').replace(/Mecânica /gi, '').slice(0, 20);
+const shortenName = (name?: string) =>
+  (name || '').replace(/Rei do /gi, '').replace(/Mecânica /gi, '').slice(0, 20);
 
 const CustomYAxisTick = ({ x, y, payload }: any) => {
   return (
@@ -62,12 +62,12 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export function FaturamentoVsContasChart({ data, isLoading }: FaturamentoVsContasChartProps) {
   const chartData = useMemo(
     () =>
-      data
-        .filter(s => s.faturamento > 0 || s.contas > 0)
+      (data || [])
+        .filter(s => (s.faturamento || 0) > 0 || (s.contas || 0) > 0)
         .map(s => ({
-          name: shortenName(s.storeName),
-          Faturamento: s.faturamento,
-          Contas: s.contas,
+          name: shortenName(s.storeName || s.store_name),
+          Faturamento: s.faturamento || 0,
+          Contas: s.contas || 0,
         })),
     [data]
   );

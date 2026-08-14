@@ -96,7 +96,7 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
                   className="border-b border-[var(--border-subtle)] hover:bg-[var(--bg-surface-hover)] transition-colors"
                 >
                   <td className="py-3 pr-2 font-medium text-[var(--text-primary)] whitespace-nowrap">
-                    {store.storeName.replace(/Rei do /gi, 'R. ').replace(/Mecânica Mec\. /gi, 'Mec. ')}
+                    {(store.storeName || store.store_name || 'Loja').replace(/Rei do /gi, 'R. ').replace(/Mecânica Mec\. /gi, 'Mec. ')}
                   </td>
                   <td className="py-3 px-2 font-mono text-[var(--text-secondary)] whitespace-nowrap">
                     {fmt(store.saldoAtual)}
