@@ -1165,8 +1165,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useTransactions.ts": {
-    "mtime": 1786372390.2904403,
-    "ast_hash": "6fe56f20cd0fc00307fc932045caba6c",
+    "mtime": 1786720070.25931,
+    "ast_hash": "886e55a64d3f25e76947287f37dd47ff",
     "semantic_hash": ""
   },
   "src/integrations/supabase/auth-attacher.ts": {
@@ -1315,8 +1315,8 @@
     "semantic_hash": ""
   },
   "src/routes/conciliacao.index.tsx": {
-    "mtime": 1786717745.9235773,
-    "ast_hash": "d5214489a4e91d399416b44794a6bb22",
+    "mtime": 1786725390.460309,
+    "ast_hash": "7d2f28c00a2a0ee9776f0e0b8a00a08f",
     "semantic_hash": ""
   },
   "src/routes/configuracoes.tsx": {
@@ -1335,8 +1335,8 @@
     "semantic_hash": ""
   },
   "src/routes/importacoes.tsx": {
-    "mtime": 1786717820.1814933,
-    "ast_hash": "cfaacc1f7bd938e56e0ce9351f0df2e7",
+    "mtime": 1786725358.6320913,
+    "ast_hash": "369df0c3266c7bbd77fb68b51dc78db7",
     "semantic_hash": ""
   },
   "src/routes/importar-os.tsx": {
@@ -3205,8 +3205,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786717948.8477087,
-    "ast_hash": "ae8119773ff439d694c939e741caefb6",
+    "mtime": 1786726162.1673906,
+    "ast_hash": "d6aa1fb5505e334676c72071e22cc09c",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -7019,11 +7019,6 @@
     "ast_hash": "d15abe16a2c2f59f0485ac8bc7d63dbd",
     "semantic_hash": ""
   },
-  "src/components/conciliacao/ImportConciliacaoModal.tsx": {
-    "mtime": 1786717674.424428,
-    "ast_hash": "ef1b023e8f1b6e4c26b2da9e96ad2159",
-    "semantic_hash": ""
-  },
   "src/hooks/useStoreFileMappings.ts": {
     "mtime": 1786717623.517277,
     "ast_hash": "f3cc8b58b8661edc50147afcc3a6aef1",
@@ -7032,21 +7027,6 @@
   "supabase/migrations/20260814120000_create_store_file_mappings.sql": {
     "mtime": 1786717589.4390385,
     "ast_hash": "1a9ea05a6e1893ee885d1dba32522455",
-    "semantic_hash": ""
-  },
-  "specs/199-unified-single-flow-import-modal/design.md": {
-    "mtime": 1786717210.62233,
-    "ast_hash": "6fccb4bee2e02f7813410051e7f87671",
-    "semantic_hash": ""
-  },
-  "specs/199-unified-single-flow-import-modal/proposal.md": {
-    "mtime": 1786717203.201125,
-    "ast_hash": "3d36166e144b613aea59e02b4cb03797",
-    "semantic_hash": ""
-  },
-  "specs/199-unified-single-flow-import-modal/spec-plan.md": {
-    "mtime": 1786717873.9299333,
-    "ast_hash": "b401f5f7abf8e798a5a7638f71cab2aa",
     "semantic_hash": ""
   },
   "specs/archive/198-manual-os-diff-resolution-in-import-modal/design.md": {
@@ -7062,6 +7042,71 @@
   "specs/archive/198-manual-os-diff-resolution-in-import-modal/spec-plan.md": {
     "mtime": 1786716716.795995,
     "ast_hash": "d3ea872f9120d321f8caae999f81d5b5",
+    "semantic_hash": ""
+  },
+  "src/components/importacoes/DailyImportView.tsx": {
+    "mtime": 1786726049.219924,
+    "ast_hash": "8030edb3047138128a1aa75993a4adc8",
+    "semantic_hash": ""
+  },
+  "specs/200-fix-ofx-transactions-type-check-constraint/design.md": {
+    "mtime": 1786720009.2618954,
+    "ast_hash": "a57a00ba4bd2adb1a3a49e2990c2b0c0",
+    "semantic_hash": ""
+  },
+  "specs/200-fix-ofx-transactions-type-check-constraint/proposal.md": {
+    "mtime": 1786720003.7875147,
+    "ast_hash": "92169644c2b55aeed3b695dae22241fc",
+    "semantic_hash": ""
+  },
+  "specs/200-fix-ofx-transactions-type-check-constraint/spec-plan.md": {
+    "mtime": 1786720076.0995884,
+    "ast_hash": "c65b01b7badbb0dd1d93a9d282a127cb",
+    "semantic_hash": ""
+  },
+  "specs/201-restore-import-page-view-and-marco-zero/design.md": {
+    "mtime": 1786725227.1856909,
+    "ast_hash": "2f653e76fe607ee70cdde3b6cc019822",
+    "semantic_hash": ""
+  },
+  "specs/201-restore-import-page-view-and-marco-zero/proposal.md": {
+    "mtime": 1786725213.3843021,
+    "ast_hash": "8a8b5edba1694d41b1a6e6ecbb565065",
+    "semantic_hash": ""
+  },
+  "specs/201-restore-import-page-view-and-marco-zero/spec-plan.md": {
+    "mtime": 1786725426.1106799,
+    "ast_hash": "4c2f854aefbd24e6fc18cfa0cc473dd4",
+    "semantic_hash": ""
+  },
+  "specs/202-restore-original-import-flow-with-modern-dark-ui/design.md": {
+    "mtime": 1786725905.9210184,
+    "ast_hash": "c16d074a0a1a5a167e533bf9bf5ada66",
+    "semantic_hash": ""
+  },
+  "specs/202-restore-original-import-flow-with-modern-dark-ui/proposal.md": {
+    "mtime": 1786725898.9120922,
+    "ast_hash": "3ebe487c4f8bc0b8bdad86d59aa2d17c",
+    "semantic_hash": ""
+  },
+  "specs/202-restore-original-import-flow-with-modern-dark-ui/spec-plan.md": {
+    "mtime": 1786726062.2189922,
+    "ast_hash": "db8c5389fb12ee9ba46965684fc43f04",
+    "semantic_hash": ""
+  },
+  "specs/archive/199-unified-single-flow-import-modal/design.md": {
+    "mtime": 1786717210.62233,
+    "ast_hash": "6fccb4bee2e02f7813410051e7f87671",
+    "semantic_hash": ""
+  },
+  "specs/archive/199-unified-single-flow-import-modal/proposal.md": {
+    "mtime": 1786717203.201125,
+    "ast_hash": "3d36166e144b613aea59e02b4cb03797",
+    "semantic_hash": ""
+  },
+  "specs/archive/199-unified-single-flow-import-modal/spec-plan.md": {
+    "mtime": 1786717873.9299333,
+    "ast_hash": "b401f5f7abf8e798a5a7638f71cab2aa",
     "semantic_hash": ""
   }
 }

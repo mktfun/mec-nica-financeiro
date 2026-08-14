@@ -1,6 +1,8 @@
 # Features
 ### Frontend
 
+- **[200-202-import-reactive-flow]** Central de Importações e Fechamento em Tela Cheia (`DailyImportView.tsx`): Fluxo reativo interativo com dropzone multi-arquivos (OFX, Pátio, Rede, Marco Zero), previews de extratos e OSs, logs de auto-match em tempo real, grid de OSs órfãs, inputs manuais protegidos por trava, inspetor JSON de conciliação e normalização estrita de constraint de tipo (`in/out`).
+
 - **[199-unified-single-flow-import-modal]** Modal de Importação e Fechamento Diário Unificado (`ImportConciliacaoModal.tsx`): Layout Single-Flow Block de 2 colunas responsivas em Dark-UI sólido (Zinc-950), eliminando steppers e centralizando upload de arquivos, inputs manuais (odômetro, dinheiro MP, a receber, contas manual), ajuste de OSs órfãs e persistência de matches de lojas no Supabase (`store_file_mappings`).
 
 - `src/routes/custos.tsx`: Nova tela de monitoramento de custos com I.A., exibindo painel com métricas de requisições de Chat e Motor filtráveis por período (Hoje, Esta Semana, Este Mês).

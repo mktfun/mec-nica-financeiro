@@ -205,3 +205,16 @@
 **Risco identificado:** Perda de matches de lojas em novos navegadores caso dependa exclusivamente de `localStorage`.
 
 **Não fazer:** Nunca armazenar mapeamentos de infraestrutura financeira apenas no storage local do browser.
+
+## [2026-08-14] — [Feature ID: 200-202-import-reactive-flow-and-marco-zero]
+
+**Contexto:** Central de Importações em tela cheia com estados reativos, normalização estrita de constraints de OFX (in/out), carga de Marco Zero e Inspetor JSON de conciliação.
+
+**Regra aprendida:**
+1. **Normalização Estrita em `ofx_transactions`:** A coluna `type` na tabela `ofx_transactions` do PostgreSQL possui a restrição `CHECK (type IN ('in', 'out'))`. Qualquer payload deve normalizar entradas e saídas estritamente para `'in'` ou `'out'` e manter o valor `amount` sempre positivo (`Math.abs`).
+2. **Jornada de Estados Reativos (Sem Stepper Linear):** A interface de importação deve reagir organicamente à seleção de arquivos (Dropzone -> Previews de Dados Brutos -> Logs de Auto-Match -> Edição de OSs Órfãs -> Trava de Inputs Manuais -> Inspetor JSON -> Gravação com Barra de Progresso).
+3. **Carga de Marco Zero Integrada:** O parser de implantação (`parseMarcoZeroPlanilha` / `process_marco_zero_import`) deve coexistir na central de importação como modo selecionável, sem misturar saldos iniciais com o fechamento diário regular.
+
+**Risco identificado:** Modalização forçada espreme dados de alta densidade em telas complexas.
+
+**Não fazer:** Nunca esconder o payload JSON de conciliação nem comprimir tabelas financeiras de auditoria dentro de popups com rolagem dupla.
