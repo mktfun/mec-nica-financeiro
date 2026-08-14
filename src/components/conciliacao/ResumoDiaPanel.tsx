@@ -14,6 +14,7 @@ import { StoreSaldoState } from '@/lib/modulo1Calculations';
 import { supabase } from '@/lib/supabase';
 import { useReconciliationsForDate } from '@/hooks/useConciliacao';
 import { useQueryClient } from '@tanstack/react-query';
+import { DailyReconciliationSummary } from '@/hooks/useBackendConciliacao';
 
 interface ResumoDiaPanelProps {
   selectedDate: string;
@@ -29,6 +30,7 @@ interface ResumoDiaPanelProps {
   totalOfxOut?: number;
   storesData?: any[]; // We just need it to get faturamento_atual from index
   availableDates?: string[];
+  summary?: DailyReconciliationSummary | null;
 }
 
 export function ResumoDiaPanel({
@@ -44,7 +46,8 @@ export function ResumoDiaPanel({
   totalOfxIn = 0,
   totalOfxOut = 0,
   storesData = [],
-  availableDates = []
+  availableDates = [],
+  summary = null
 }: ResumoDiaPanelProps) {
   const [isSaved, setIsSaved] = useState(false);
   const queryClient = useQueryClient();
@@ -56,22 +59,24 @@ export function ResumoDiaPanel({
   const saveSnapshot = useSaveDailySnapshot();
 
   // Faturamento Atual global do sistema (acumulado do mês até hoje) lido das transações
-  const faturamentoAtualGlobal = storesData.reduce((acc, st) => acc + (st.faturamento_atual || 0), 0);
+  const faturamentoAtualGlobal = summary?.faturamento_ofx ?? storesData.reduce((acc, st) => acc + (st.faturamento_atual || 0), 0);
 
   const [manualContas, setManualContas] = useState(0);
 
   useEffect(() => {
-    // Hidratação do valor manual salvo no banco para o dia correspondente
-    setManualContas(currentSnapshot?.contas_a_pagar || 0);
-  }, [selectedDate, currentSnapshot?.contas_a_pagar]);
+    // Hidratação do valor manual salvo no banco para o dia correspondente ou vindo do summary
+    setManualContas(summary?.contas_manual || currentSnapshot?.contas_a_pagar || 0);
+  }, [selectedDate, currentSnapshot?.contas_a_pagar, summary?.contas_manual]);
 
   // Faturamento Anterior é o Faturamento Acumulado salvo no último fechamento (previousSnapshot) ou do metadata do snapshot atual (Marco Zero)
-  const faturamentoAnteriorGlobal = previousSnapshot?.faturamento 
+  const faturamentoAnteriorGlobal = summary?.faturamento_anterior 
+    ?? previousSnapshot?.faturamento 
     ?? (currentSnapshot?.metadata as any)?.faturamento_anterior 
     ?? 0;
 
   // Caixa Anterior vem do fechamento anterior ou do metadata do snapshot atual (Marco Zero)
-  const caixaAnteriorGlobal = previousSnapshot?.caixa_atual 
+  const caixaAnteriorGlobal = summary?.caixa_anterior 
+    ?? previousSnapshot?.caixa_atual 
     ?? (currentSnapshot?.metadata as any)?.caixa_anterior 
     ?? 0;
 
@@ -89,28 +94,41 @@ export function ResumoDiaPanel({
   const contasAPagarAutomatico = manualContas;
 
   // Sum na_loja_os directly from storesData to avoid loop with 0 value
-  const dynamicGlobalNaLojaOs = storesData ? Object.values(storesData).reduce((acc: number, s: any) => acc + (s.na_loja_os || 0), 0) : 0;
+  const dynamicGlobalNaLojaOs = summary?.na_loja_os ?? (storesData ? Object.values(storesData).reduce((acc: number, s: any) => acc + (s.na_loja_os || 0), 0) : 0);
 
-  const dynamicJurosRede = storesData ? Object.values(storesData).reduce((acc: number, s: any) => acc + (s.juros_atual || 0), 0) : 0;
-  const dynamicDinheiroMp = storesData ? Object.values(storesData).reduce((acc: number, s: any) => acc + (s.dinheiro_mp_manual || 0), 0) : 0;
-  const dynamicAReceber = storesData ? Object.values(storesData).reduce((acc: number, s: any) => acc + (s.a_receber_manual || 0), 0) : 0;
+  const dynamicJurosRede = summary?.juros_rede ?? (storesData ? Object.values(storesData).reduce((acc: number, s: any) => acc + (s.juros_atual || 0), 0) : 0);
+  const dynamicDinheiroMp = summary?.dinheiro_mp ?? (storesData ? Object.values(storesData).reduce((acc: number, s: any) => acc + (s.dinheiro_mp_manual || 0), 0) : 0);
+  const dynamicAReceber = summary?.a_receber ?? (storesData ? Object.values(storesData).reduce((acc: number, s: any) => acc + (s.a_receber_manual || 0), 0) : 0);
 
   const inputForCalculation: GlobalConciliacaoInput = {
-    saldo_bancario: currentSnapshot?.saldo_bancario || totalBancarioIn, // Se já salvou usa o salvo, senão a soma das entradas (in) do OFX
-    dinheiro_mp: currentSnapshot?.dinheiro_mp || dynamicDinheiroMp,
-    a_receber_manual: currentSnapshot?.a_receber_manual || dynamicAReceber,
+    saldo_bancario: summary?.total_saldo_banco || currentSnapshot?.saldo_bancario || totalBancarioIn,
+    dinheiro_mp: dynamicDinheiroMp,
+    a_receber_manual: dynamicAReceber,
     na_loja_os: dynamicGlobalNaLojaOs,
     saldo_negativo_itau: currentSnapshot?.saldo_negativo_itau || 0,
     caixa_anterior: caixaAnteriorGlobal,
     faturamento_atual: faturamentoAtualGlobal,
     faturamento_anterior: faturamentoAnteriorGlobal,
     faturamento_outros: faturamentoOutrosAutomatico,
-    juros_rede: currentSnapshot?.juros_rede || dynamicJurosRede,
+    juros_rede: dynamicJurosRede,
     contas_a_pagar: manualContas,
     provisao: 0,
   };
 
   const calculated = calculateGlobalConciliacao(inputForCalculation);
+
+  // Se summary estiver disponível, usamos os valores consolidados diretamente do PostgreSQL
+  const saldoFinal = summary ? summary.total_saldo_banco : calculated.saldo;
+  const dinheiroMpFinal = summary ? summary.dinheiro_mp : calculated.dinheiro_mp;
+  const aReceberFinal = summary ? summary.a_receber : calculated.a_receber;
+  const naLojaFinal = summary ? summary.na_loja_os : calculated.na_loja;
+  const caixaAtualFinal = summary ? (summary.total_saldo_banco + summary.dinheiro_mp + summary.a_receber + summary.na_loja_os) : calculated.caixa_atual;
+  const fluxoCaixaFinal = summary ? (caixaAtualFinal - caixaAnteriorGlobal) : calculated.fluxo_cx;
+  const faturamentoFinal = summary ? summary.faturamento_ofx : calculated.faturamento;
+  const valorDispContasFinal = summary ? (faturamentoFinal - fluxoCaixaFinal) : calculated.valor_disp_contas;
+  const jurosRedeFinal = summary ? summary.juros_rede : inputForCalculation.juros_rede;
+  const subtotalContasFinal = jurosRedeFinal + manualContas;
+  const diferencaFinalCalculada = Math.abs(valorDispContasFinal) - subtotalContasFinal;
 
   const handleSave = async () => {
     // Gravar na_loja_os no histórico de cada loja individualmente
@@ -129,31 +147,31 @@ export function ResumoDiaPanel({
       // Ao salvar, atualiza as colunas de resultado no snapshot de hoje
       await saveSnapshot.mutateAsync({
         date: selectedDate,
-        caixa_atual: calculated.caixa_atual,
+        caixa_atual: caixaAtualFinal,
         // Faturamento salvo deve ser o ATUAL acumulado, para que o dia seguinte use como `faturamento_anterior`
-        faturamento: faturamentoAtualGlobal,
-        dinheiro_mp: inputForCalculation.dinheiro_mp,
-        total_recebiveis: calculated.a_receber,
-        total_patio: calculated.na_loja,
-        saldo_bancario: calculated.saldo,
-        a_receber_manual: inputForCalculation.a_receber_manual,
+        faturamento: faturamentoFinal,
+        dinheiro_mp: dinheiroMpFinal,
+        total_recebiveis: aReceberFinal,
+        total_patio: naLojaFinal,
+        saldo_bancario: saldoFinal,
+        a_receber_manual: aReceberFinal,
         faturamento_outros_valor: faturamentoOutrosAutomatico,
         faturamento_outros_desc: null,
         contas_a_pagar: manualContas,
         provisao: 0,
         saldo_negativo_itau: inputForCalculation.saldo_negativo_itau,
-        juros_rede: inputForCalculation.juros_rede,
+        juros_rede: jurosRedeFinal,
         notes: 'Fechamento salvo com base nos valores lidos da importação automática de OFX.',
       });
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 3000);
   };
 
-  const statusSuccess = isApproved && divergenciaGlobal === 0 && detalhesCount > 0;
-  const statusDanger = divergenciaGlobal !== 0;
+  const statusSuccess = isApproved && Math.abs(diferencaFinalCalculada) <= 50 && detalhesCount > 0;
+  const statusDanger = Math.abs(diferencaFinalCalculada) > 50;
 
-  const diferencaAbs = Math.abs(calculated.diferenca);
-  const isDiferencaOk = calculated.diferenca >= -50 && calculated.diferenca <= 50;
+  const diferencaAbs = Math.abs(diferencaFinalCalculada);
+  const isDiferencaOk = Math.abs(diferencaFinalCalculada) <= 50;
 
   const isMarcoZero = (currentSnapshot?.metadata as any)?.is_marco_zero === true;
 
@@ -387,11 +405,11 @@ export function ResumoDiaPanel({
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
           <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">SALDO BANCO ITAÁš</span>
+              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">SALDO BANCO ITAÚ</span>
               <Landmark size={15} className="text-[var(--color-accent-light-blue)]" />
             </div>
             <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-light-blue)]">
-              <AnimatedNumber value={calculated.saldo} format="currency" />
+              <AnimatedNumber value={saldoFinal} format="currency" />
             </p>
             <span className="text-[10px] text-[var(--text-tertiary)] block">Extrato bancário OFX global</span>
           </div>
@@ -402,7 +420,7 @@ export function ResumoDiaPanel({
               <Wallet size={15} className="text-[var(--color-accent-teal)]" />
             </div>
             <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-teal)]">
-              <AnimatedNumber value={calculated.dinheiro_mp} format="currency" />
+              <AnimatedNumber value={dinheiroMpFinal} format="currency" />
             </p>
             <span className="text-[10px] text-[var(--text-tertiary)] block">Preenchido na importação</span>
           </div>
@@ -413,7 +431,7 @@ export function ResumoDiaPanel({
               <Receipt size={15} className="text-[var(--color-primary)]" />
             </div>
             <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-primary)]">
-              <AnimatedNumber value={calculated.a_receber} format="currency" />
+              <AnimatedNumber value={aReceberFinal} format="currency" />
             </p>
             <span className="text-[10px] text-[var(--text-tertiary)] block">Boletos/Descontos manuais</span>
           </div>
@@ -424,7 +442,7 @@ export function ResumoDiaPanel({
               <ShoppingBag size={15} className="text-[var(--color-accent-warning)]" />
             </div>
             <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-warning)]">
-              <AnimatedNumber value={calculated.na_loja} format="currency" />
+              <AnimatedNumber value={naLojaFinal} format="currency" />
             </p>
             <span className="text-[10px] text-[var(--text-tertiary)] block">OSs do Pátio pendentes</span>
           </div>
@@ -447,7 +465,7 @@ export function ResumoDiaPanel({
             </div>
             
             <div className="flex justify-between items-center text-[10px] text-[var(--text-tertiary)]">
-              <span>Juros: <AnimatedNumber value={inputForCalculation.juros_rede} format="currency" /></span>
+              <span>Juros: <AnimatedNumber value={jurosRedeFinal} format="currency" /></span>
               <span title="Total de Saídas no Extrato OFX importado" className="border-b border-dashed border-[var(--text-tertiary)]/30 cursor-help text-[var(--text-tertiary)]/70 hover:text-[var(--text-tertiary)]">
                 OFX Out: -{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Math.abs(totalOfxOut))}
               </span>
@@ -466,14 +484,14 @@ export function ResumoDiaPanel({
               <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
                 <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Caixa Atual</span>
                 <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
-                  <AnimatedNumber value={calculated.caixa_atual} format="currency" />
+                  <AnimatedNumber value={caixaAtualFinal} format="currency" />
                 </span>
                 <span className="text-[9px] text-[var(--text-tertiary)]">Descontado saldo negativo (Itaú)</span>
               </div>
               <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
                 <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Fluxo de Caixa</span>
                 <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
-                  <AnimatedNumber value={calculated.fluxo_cx} format="currency" />
+                  <AnimatedNumber value={fluxoCaixaFinal} format="currency" />
                 </span>
                 <span className="text-[9px] text-[var(--text-tertiary)] block mt-1">Caixa atual vs Conciliação Anterior</span>
               </div>
@@ -485,14 +503,14 @@ export function ResumoDiaPanel({
                   </span>
                 </div>
                 <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
-                  <AnimatedNumber value={calculated.faturamento} format="currency" />
+                  <AnimatedNumber value={faturamentoFinal} format="currency" />
                 </span>
                 <span className="text-[9px] text-[var(--text-tertiary)]">Entradas puras importadas do OFX</span>
               </div>
               <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
                 <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Valor Disp. Contas</span>
                 <span className="text-lg font-bold text-[var(--color-primary-bright)] mt-1 block">
-                  <AnimatedNumber value={calculated.valor_disp_contas} format="currency" />
+                  <AnimatedNumber value={valorDispContasFinal} format="currency" />
                 </span>
                 <span className="text-[9px] text-[var(--text-tertiary)]">Faturamento - Fluxo de Caixa</span>
               </div>
@@ -504,7 +522,7 @@ export function ResumoDiaPanel({
                   <span className="text-[9px] text-[var(--text-tertiary)]">Juros (REDE) + Contas (Manual)</span>
                </div>
                <span className="text-lg font-bold text-[var(--color-accent-warning)]">
-                 <AnimatedNumber value={calculated.valor_contas} format="currency" />
+                 <AnimatedNumber value={subtotalContasFinal} format="currency" />
                </span>
             </div>
           </div>
@@ -522,15 +540,15 @@ export function ResumoDiaPanel({
              <p className={`text-4xl font-display font-bold tabular-nums ${
                isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
              }`}>
-               <AnimatedNumber value={calculated.diferenca} format="currency" />
+               <AnimatedNumber value={diferencaFinalCalculada} format="currency" />
              </p>
              
              <p className={`text-xs mt-3 opacity-80 ${
                isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
              }`}>
                {isDiferencaOk 
-                 ? 'Variação dentro do limite seguro (Â± R$ 50).' 
-                 : 'Variação fora da tolerância de Â± R$ 50. Verifique os lançamentos!'}
+                 ? 'Variação dentro do limite seguro (± R$ 50).' 
+                 : 'Variação fora da tolerância de ± R$ 50. Verifique os lançamentos!'}
              </p>
           </div>
         </div>

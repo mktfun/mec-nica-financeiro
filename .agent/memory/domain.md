@@ -152,3 +152,17 @@
 **Risco identificado:** Misturar passivo legado com fluxo de pátio ativo faz o usuário acreditar que o botão de reset/lixeira da importação falhou.
 
 **Não fazer:** Nunca misturar saldos estáticos de tabelas de histórico Marco Zero diretamente em totais operacionais diários sem um card ou flag exclusivo.
+
+
+## [2026-08-14] — [Feature ID: 196]
+
+**Contexto:** Delegação total dos cálculos de conciliação e agregação de saldos das 10 lojas para o PostgreSQL através da RPC `get_daily_reconciliation_summary`.
+
+**Regra aprendida:**
+1. Faturamento Líquido do fechamento diário é a soma direta de entradas puras do OFX no dia (`type = 'in'`), e não a subtração de faturamentos acumulados passados.
+2. Consolidação de saldos das 10 lojas no PostgreSQL deve usar `DISTINCT ON (store_id) store_id, bank_total FROM reconciliations WHERE date <= p_date ORDER BY store_id, date DESC` para garantir que lojas sem movimentação no dia exato não fiquem de fora do somatório geral.
+3. Não executar múltiplos `.reduce()` ou múltiplas queries pesadas no client React para métricas de conciliação.
+
+**Risco identificado:** A tabela `ofx_transactions` usa colunas `target_date`, `counterpart_name`, `fitid` e valores `'in'`/`'out'`, e não `description`, `date` ou `'CREDIT'`.
+
+**Não fazer:** Nunca calcular consolidação diária agregando transações no client-side nem subtrair faturamento acumulado do mês de entradas diárias isoladas.

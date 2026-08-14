@@ -4,15 +4,13 @@ import { Card } from '@/components/ui/Card';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Store, Search } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { useStores } from '@/hooks/useStores';
-import { useBackendConciliacao, useGlobalOfxOut } from '@/hooks/useBackendConciliacao';
+import { useDailyReconciliationSummary } from '@/hooks/useBackendConciliacao';
 import { useAvailableConciliacaoDates } from '@/hooks/useDailySnapshot';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { ResumoDiaPanel } from '@/components/conciliacao/ResumoDiaPanel';
 import { BreakdownModal } from '@/components/conciliacao/BreakdownModal';
 import { StoreSaldoState } from '@/lib/modulo1Calculations';
-import { supabase } from '@/lib/supabase';
 
 export const Route = createFileRoute('/conciliacao/')({
   component: ConciliacaoPage,
@@ -24,8 +22,7 @@ function ConciliacaoPage() {
 
   const { data: availableDates = [], isLoading: loadingDates } = useAvailableConciliacaoDates();
   const { data: stores = [], isLoading: loadingStores } = useStores();
-  const { data: logsData = [], isLoading: loadingLogs } = useBackendConciliacao(selectedDate);
-  const { data: globalOfxOut = 0, isLoading: loadingOfxOut } = useGlobalOfxOut(selectedDate);
+  const { data: summary, isLoading: loadingSummary } = useDailyReconciliationSummary(selectedDate);
 
   useEffect(() => {
     if (!selectedDate && availableDates.length > 0) {
@@ -35,10 +32,10 @@ function ConciliacaoPage() {
     }
   }, [availableDates, loadingDates, selectedDate]);
 
-  const isLoading = loadingStores || loadingLogs || loadingOfxOut || loadingDates || !selectedDate;
+  const isLoading = loadingStores || loadingSummary || loadingDates || !selectedDate;
 
-  const resultado = logsData.reduce((acc, log) => acc + log.diferenca, 0);
-  const isApproved = logsData.every(log => log.status === 'approved');
+  const storesList = summary?.stores || [];
+  const isApproved = summary?.status_geral === 'approved';
 
   const handleDayChange = (offset: number) => {
     if (availableDates.length === 0) return;
@@ -55,40 +52,17 @@ function ConciliacaoPage() {
     }
   };
 
-  const totalSistema = logsData.reduce((acc, log) => acc + log.previsto_ofx, 0);
-  const totalBancarioIn = logsData.reduce((acc, log) => acc + log.faturamento_banco, 0);
-  const totalBancarioRaw = totalBancarioIn;
-  const divergenciaGlobal = resultado;
-
-  // Buscar taxas reais da maquininha por loja para a data selecionada
-  const { data: feesByStore = {} } = useQuery({
-    queryKey: ['fees-by-store', selectedDate],
-    queryFn: async (): Promise<Record<string, number>> => {
-      if (!selectedDate) return {};
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data, error } = await (supabase as any)
-        .from('pos_transactions')
-        .select('store_id, fee_amount')
-        .eq('target_date', selectedDate);
-      if (error || !data) return {};
-      return (data as { store_id: string; fee_amount: number }[]).reduce(
-        (acc: Record<string, number>, row) => {
-          acc[row.store_id] = (acc[row.store_id] || 0) + Number(row.fee_amount || 0);
-          return acc;
-        },
-        {}
-      );
-    },
-    enabled: !!selectedDate,
-  });
-
+  const totalSistema = storesList.reduce((acc, log) => acc + (log.previsto_ofx || 0), 0);
+  const totalBancarioIn = summary?.faturamento_ofx || 0;
+  const totalBancarioRaw = summary?.total_saldo_banco || 0;
+  const divergenciaGlobal = summary?.diferenca_final || 0;
 
   const storesState: StoreSaldoState[] = stores.map(s => {
-    const log = logsData.find(l => l.store_id === s.id);
+    const log = storesList.find(l => l.store_id === s.id);
     return {
       store_id: s.id,
       store_name: s.name,
-      saldo_banco_itau: log?.faturamento_banco || 0,
+      saldo_banco_itau: log?.saldo_banco || 0,
       limite_credito: 0,
       cartao_entrou: log?.maquininha || 0,
       cartao_nao_entrou: 0,
@@ -100,12 +74,11 @@ function ConciliacaoPage() {
       faturamento_atual: log?.previsto_ofx || 0,
       faturamento_anterior: 0,
       seguro_sinistro: 0,
-      juros_atual: feesByStore[s.id] || 0,  // FIX: antes era hardcode 0
+      juros_atual: 0,
       caixa_anterior: 0,
       valor_contas: 0
     };
   });
-
 
   return (
     <AppShell>
@@ -124,14 +97,15 @@ function ConciliacaoPage() {
               onDateSelect={setSelectedDate}
               divergenciaGlobal={divergenciaGlobal}
               isApproved={isApproved}
-              detalhesCount={logsData.length}
+              detalhesCount={storesList.length}
               totalSistema={totalSistema}
               totalBancarioIn={totalBancarioIn}
               totalBancarioRaw={totalBancarioRaw}
               totalOfxIn={totalBancarioIn}
-              totalOfxOut={globalOfxOut}
+              totalOfxOut={summary?.ofx_out || 0}
               storesData={storesState}
               availableDates={availableDates}
+              summary={summary}
             />
 
             {/* Lista de Lojas Visual Original */}
@@ -143,14 +117,14 @@ function ConciliacaoPage() {
               
               <div className="grid grid-cols-1 gap-4">
                 {stores.map((store) => {
-                  const log = logsData.find(l => l.store_id === store.id) || {
-                    faturamento_banco: 0,
+                  const log = storesList.find(l => l.store_id === store.id) || {
+                    saldo_banco: 0,
                     maquininha: 0,
                     pix: 0,
                     na_loja_os: 0,
                     previsto_ofx: 0,
                     diferenca: 0,
-                    status: 'pending'
+                    status: 'pending' as const
                   };
 
                   const isDiferencaOk = log.status === 'approved';
@@ -179,7 +153,7 @@ function ConciliacaoPage() {
                                   Saldo Banco Itaú
                                 </span>
                                 <p className="font-bold text-sm text-[var(--text-secondary)] font-mono">
-                                  <AnimatedNumber value={log.faturamento_banco} format="currency" />
+                                  <AnimatedNumber value={log.saldo_banco} format="currency" />
                                 </p>
                               </div>
 

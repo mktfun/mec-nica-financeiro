@@ -235,3 +235,9 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 
 
 - **Desacoplamento Marco Zero e Correção Na Loja OS (195):** RPCs `get_dashboard_metrics` e `calculate_daily_conciliation` refatoradas na migration `20260814000000_decouple_marco_zero.sql` para isolar a métrica "Na Loja OS" de `estoque_os_pendente`, garantindo que o card reflita 100% o pátio diário real e zere ao acionar o botão de limpeza.
+### Spec 196: Backend Daily Reconciliation Summary & Math Delegation
+- **Status:** Completed
+- **Data:** 2026-08-14
+- **RPC:** `get_daily_reconciliation_summary(p_date date)` em `supabase/migrations/20260814010000_get_daily_reconciliation_summary.sql`
+- **Hook:** `useDailyReconciliationSummary(date)` em `src/hooks/useBackendConciliacao.ts`
+- **Impacto:** Eliminação total de loops `.reduce()` e queries pesadas no client da tela de conciliação diária; consolidação atômica de saldos bancários das 10 lojas, entradas e saídas OFX, taxas REDE e cálculo exato de fluxo de caixa e faturamento líquido.
