@@ -241,3 +241,8 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - **RPC:** `get_daily_reconciliation_summary(p_date date)` em `supabase/migrations/20260814010000_get_daily_reconciliation_summary.sql`
 - **Hook:** `useDailyReconciliationSummary(date)` em `src/hooks/useBackendConciliacao.ts`
 - **Impacto:** Eliminação total de loops `.reduce()` e queries pesadas no client da tela de conciliação diária; consolidação atômica de saldos bancários das 10 lojas, entradas e saídas OFX, taxas REDE e cálculo exato de fluxo de caixa e faturamento líquido.
+
+- **Faturamento Odômetro, Trava de Edição & Faxina Visual (Spec 197):**
+  - **Localização:** `src/lib/modulo1Calculations.ts`, `src/components/conciliacao/ResumoDiaPanel.tsx`, `src/components/importacoes/CentralImportWizard.tsx`.
+  - **Regra:** Cálculo de faturamento líquido incremental tipo odômetro (`Hoje - Ant`) persistindo a leitura acumulada em `daily_snapshots.faturamento`.
+  - **UI/UX:** Trava de formulário em modo leitura por padrão (`isEditing`) com botões 'Editar Fechamento', 'Salvar Alterações' e 'Cancelar'. Modal de importação com remoção de steppers redundantes e logs recolhidos em accordion monospaced.

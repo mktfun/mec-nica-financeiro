@@ -94,24 +94,7 @@ function useUnifiedStoreMapping(stores: any[]) {
   return { mapping, updateMapping, setMapping };
 }
 
-function StepIndicator({ current, step, title }: { current: number, step: number, title: string }) {
-  const isPast = current > step;
-  const isActive = current === step;
-  
-  return (
-    <div className={`flex flex-col items-center gap-2 ${isPast || isActive ? 'opacity-100' : 'opacity-40'}`}>
-      <div className={`
-        w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-all duration-500
-        ${isPast ? 'bg-[var(--color-accent-teal)] border-[var(--color-accent-teal)] text-black' : 
-          isActive ? 'bg-[var(--color-primary)] border-[var(--color-primary)] text-white shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.5)]' : 
-          'bg-transparent border-[var(--text-tertiary)] text-[var(--text-tertiary)]'}
-      `}>
-        {isPast ? <CheckCircle2 size={18} /> : step}
-      </div>
-      <span className={`text-xs font-semibold ${isActive ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}>{title}</span>
-    </div>
-  );
-}
+// Hook para gerenciar mapeamento de lojas
 
 export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const [step, setStep] = useState<1 | 2 | 2.5 | 3 | 3.5 | 4>(1);
@@ -984,14 +967,13 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
         )}
       </div>
 
-      <div className="flex items-center mb-8 space-x-4 max-w-3xl mx-auto">
-        <StepIndicator current={step} step={1} title="Upload Unificado" />
-        <div className={`h-px flex-1 ${step > 1 ? 'bg-[var(--color-primary)]' : 'bg-[var(--border-subtle)]'}`} />
-        <StepIndicator current={step} step={2} title="Mapeamento" />
-        <div className={`h-px flex-1 ${step > 2 ? 'bg-[var(--color-primary)]' : 'bg-[var(--border-subtle)]'}`} />
-        <StepIndicator current={step} step={3} title="Preview" />
-        <div className={`h-px flex-1 ${step > 3 ? 'bg-[var(--color-primary)]' : 'bg-[var(--border-subtle)]'}`} />
-        <StepIndicator current={step} step={4} title="Processando & Logs" />
+      {/* Header com indicador limpo de etapa */}
+      <div className="flex items-center justify-between mb-6 pb-2 border-b border-[var(--border-subtle)]">
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="text-[11px] font-semibold text-[var(--color-primary)] border-[var(--color-primary)]/30 bg-[var(--color-primary)]/10 px-3 py-1">
+            {step === 1 ? '1. Upload de Arquivos' : step === 2 ? '2. Mapeamento de Filiais' : step === 3 ? '3. Conferência e Preview' : '4. Gravação e Processamento'}
+          </Badge>
+        </div>
       </div>
 
       {step === 1 && !showMarcoZero && (
@@ -1638,7 +1620,7 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
               {/* Acompanhamento Visual de Execução */}
               <div className="space-y-3 mt-6">
                 <span className="text-[10px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider block">
-                  Progresso da Conciliação
+                  Progresso dos Agentes
                 </span>
                 <div className="flex flex-col gap-3">
                   {importStages.map((stage) => (
@@ -1646,6 +1628,30 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
                   ))}
                 </div>
               </div>
+
+              {/* Logs Técnicos de Depuração Colapsáveis */}
+              {importLogs.length > 0 && (
+                <details className="mt-4 p-3.5 rounded-xl bg-black/40 border border-white/5 group">
+                  <summary className="text-xs font-mono text-[var(--text-tertiary)] cursor-pointer flex items-center justify-between hover:text-[var(--text-secondary)] select-none">
+                    <span className="flex items-center gap-2">
+                      <Terminal size={14} className="text-[var(--color-primary)]" />
+                      Logs de Depuração ({importLogs.length} eventos registrados)
+                    </span>
+                    <span className="text-[10px] uppercase font-sans tracking-wider text-[var(--text-tertiary)] group-open:rotate-180 transition-transform">▼</span>
+                  </summary>
+                  <div className="mt-3 max-h-48 overflow-y-auto space-y-1.5 text-[11px] font-mono text-[var(--text-secondary)] border-t border-white/5 pt-2.5">
+                    {importLogs.map((log) => (
+                      <div key={log.id} className="flex gap-2 leading-relaxed">
+                        <span className="text-[var(--text-tertiary)] shrink-0">[{log.timestamp}]</span>
+                        <span className={log.type === 'error' ? 'text-red-400' : log.type === 'success' ? 'text-emerald-400' : 'text-zinc-400'}>
+                          {log.message}
+                        </span>
+                      </div>
+                    ))}
+                    <div ref={logsEndRef} />
+                  </div>
+                </details>
+              )}
 
               {/* Alerta de Erro se houver */}
               {importLogs.some(l => l.type === 'error') && (

@@ -935,8 +935,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1786709840.9206438,
-    "ast_hash": "ea7e1bac6fe699939130db0f20387ac2",
+    "mtime": 1786713125.9745266,
+    "ast_hash": "17122654482102d8ba8751b35902dfec",
     "semantic_hash": ""
   },
   "src/components/dashboard/AlertResolveDialog.tsx": {
@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1786630127.0240638,
-    "ast_hash": "4bed2a2d7e379c62cb4203fc58447010",
+    "mtime": 1786712653.1877801,
+    "ast_hash": "e251089153c823fd370839d66aee2eb4",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -1230,8 +1230,8 @@
     "semantic_hash": ""
   },
   "src/lib/modulo1Calculations.ts": {
-    "mtime": 1786707035.5363414,
-    "ast_hash": "d9fcd0b488ebeacd99f5d4bcf291ebee",
+    "mtime": 1786712586.3707447,
+    "ast_hash": "f1107121301abd524c524896090d1de9",
     "semantic_hash": ""
   },
   "src/lib/ofxParser.ts": {
@@ -1250,8 +1250,8 @@
     "semantic_hash": ""
   },
   "src/lib/parsers/mapaMetasParser.ts": {
-    "mtime": 1786630127.1197402,
-    "ast_hash": "9d70edf484ccc9fb7f8b9a750d47bfa6",
+    "mtime": 1786711307.0570266,
+    "ast_hash": "5f1dab1344f0c7859aece918c823e579",
     "semantic_hash": ""
   },
   "src/lib/parsers/numberUtils.ts": {
@@ -1430,8 +1430,8 @@
     "semantic_hash": ""
   },
   "vite.config.ts": {
-    "mtime": 1786708408.5689454,
-    "ast_hash": "80f8d7afb10d22e5505fa4c817810c23",
+    "mtime": 1786711318.602635,
+    "ast_hash": "f9a90338d5b796a1bc31839dabf1a86f",
     "semantic_hash": ""
   },
   ".antigravity/rules.md": {
@@ -3205,8 +3205,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786708464.6836023,
-    "ast_hash": "5cb5bbf27fffdbcdab4cfed958f0476e",
+    "mtime": 1786710424.7558568,
+    "ast_hash": "98a5c9d8b8fd4651266a2d6f433ce1a3",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -6979,21 +6979,6 @@
     "ast_hash": "e19f9e38ad9aae165fa3df1b8885c7a5",
     "semantic_hash": ""
   },
-  "specs/196-backend-daily-reconciliation-summary/design.md": {
-    "mtime": 1786709360.963948,
-    "ast_hash": "2d1d955ffecddc63b25e992ad29bf5e1",
-    "semantic_hash": ""
-  },
-  "specs/196-backend-daily-reconciliation-summary/proposal.md": {
-    "mtime": 1786709353.25597,
-    "ast_hash": "43f995a22a75ae5cb74e60d9f2844164",
-    "semantic_hash": ""
-  },
-  "specs/196-backend-daily-reconciliation-summary/spec-plan.md": {
-    "mtime": 1786709970.4740827,
-    "ast_hash": "1a742f7cf858475ed285f5f8bc88c1a7",
-    "semantic_hash": ""
-  },
   "specs/archive/195-fix-na-loja-os-math/design.md": {
     "mtime": 1786707479.6100814,
     "ast_hash": "24998b7134a05d9b469f5e10ddca28de",
@@ -7007,6 +6992,36 @@
   "specs/archive/195-fix-na-loja-os-math/spec-plan.md": {
     "mtime": 1786707815.243613,
     "ast_hash": "e204d8ea4306f60bbc8c0060ce9a3b02",
+    "semantic_hash": ""
+  },
+  "specs/197-odometer-faturamento-and-ui-cleanup/design.md": {
+    "mtime": 1786712437.053002,
+    "ast_hash": "488ada41e89e8d91ee1fa0e55b8843a0",
+    "semantic_hash": ""
+  },
+  "specs/197-odometer-faturamento-and-ui-cleanup/proposal.md": {
+    "mtime": 1786712428.7462394,
+    "ast_hash": "65d1e08abbb1840a17c6f749b812ac7e",
+    "semantic_hash": ""
+  },
+  "specs/197-odometer-faturamento-and-ui-cleanup/spec-plan.md": {
+    "mtime": 1786713383.420305,
+    "ast_hash": "d15abe16a2c2f59f0485ac8bc7d63dbd",
+    "semantic_hash": ""
+  },
+  "specs/archive/196-backend-daily-reconciliation-summary/design.md": {
+    "mtime": 1786709360.963948,
+    "ast_hash": "2d1d955ffecddc63b25e992ad29bf5e1",
+    "semantic_hash": ""
+  },
+  "specs/archive/196-backend-daily-reconciliation-summary/proposal.md": {
+    "mtime": 1786709353.25597,
+    "ast_hash": "43f995a22a75ae5cb74e60d9f2844164",
+    "semantic_hash": ""
+  },
+  "specs/archive/196-backend-daily-reconciliation-summary/spec-plan.md": {
+    "mtime": 1786709970.4740827,
+    "ast_hash": "1a742f7cf858475ed285f5f8bc88c1a7",
     "semantic_hash": ""
   }
 }

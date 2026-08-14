@@ -166,3 +166,16 @@
 **Risco identificado:** A tabela `ofx_transactions` usa colunas `target_date`, `counterpart_name`, `fitid` e valores `'in'`/`'out'`, e não `description`, `date` ou `'CREDIT'`.
 
 **Não fazer:** Nunca calcular consolidação diária agregando transações no client-side nem subtrair faturamento acumulado do mês de entradas diárias isoladas.
+
+## [2026-08-14] — [Feature ID: 197-odometer-faturamento-and-ui-cleanup]
+
+**Contexto:** O faturamento digitado na conciliação segue a lógica de "odômetro" (leitura acumulada do mês até hoje). O faturamento real (líquido) do dia é a diferença incremental: Faturamento Líquido (Dia) = Faturamento Acumulado Hoje (Input) - Faturamento Acumulado Ontem (Ant). O valor digitado hoje é salvo em daily_snapshots.faturamento para servir de base Ant para amanhã.
+
+**Regra aprendida:**
+1. Faturamento tipo Odômetro: O input do operador é o acumulado histórico do mês. O faturamento diário é calculado subtraindo o faturamento_anterior (se > 0).
+2. Valor Disp. Contas utiliza diretamente o faturamento líquido do período (Faturamento Líquido - Fluxo de Caixa).
+3. O daily_snapshots.faturamento deve armazenar o valor acumulado bruto (leitura do odômetro) para manter a integridade da cadeia de snapshots.
+
+**Risco identificado:** Digitação acidental de uma leitura inferior à anterior gerando faturamento líquido negativo. A UI deve exibir em destaque o comparativo com a leitura anterior.
+
+**Não fazer:** Nunca subtrair receitas individuais de OFX do faturamento sem respeitar a leitura acumulada como verdade mestre do fechamento.

@@ -20,7 +20,8 @@ export interface GlobalConciliacaoCalculated {
   na_loja: number;
   caixa_atual: number;
   fluxo_cx: number;
-  faturamento: number;
+  faturamento: number; // Leitura acumulada (Odômetro)
+  faturamento_liquido: number; // Faturamento líquido do dia (Hoje - Ant)
   valor_disp_contas: number;
   valor_contas: number;
   diferenca: number;
@@ -42,15 +43,15 @@ export function calculateGlobalConciliacao(input: GlobalConciliacaoInput): Globa
   // Fluxo CX = caixa atual (conciliacao hoje) - caixa anterior (caixa da conciliacao anterior)
   const fluxo_cx = caixa_atual - Number(input.caixa_anterior || 0);
 
-  // Faturamento = Entradas acumuladas
+  // Faturamento = Entradas acumuladas (Odômetro)
   const faturamento_fat_ant = Number(input.faturamento_anterior || 0);
   const faturamento = Number(input.faturamento_atual || 0);
   
-  // Faturamento do período = Faturamento Atual - Faturamento Anterior (se houver anterior)
-  const faturamento_periodo = faturamento_fat_ant > 0 ? (faturamento - faturamento_fat_ant) : faturamento;
+  // Faturamento do período (Líquido) = Faturamento Atual - Faturamento Anterior (se houver anterior)
+  const faturamento_liquido = faturamento_fat_ant > 0 ? (faturamento - faturamento_fat_ant) : faturamento;
 
   // Valor disp contas = faturamento do período - fluxo caixa
-  const valor_disp_contas = faturamento_periodo - fluxo_cx;
+  const valor_disp_contas = faturamento_liquido - fluxo_cx;
 
   // Valor contas = juros REDE + contas a pagar
   const valor_contas = Math.abs(Number(input.juros_rede || 0)) + Math.abs(Number(input.contas_a_pagar || 0));
@@ -66,6 +67,7 @@ export function calculateGlobalConciliacao(input: GlobalConciliacaoInput): Globa
     caixa_atual,
     fluxo_cx,
     faturamento,
+    faturamento_liquido,
     valor_disp_contas,
     valor_contas,
     diferenca,

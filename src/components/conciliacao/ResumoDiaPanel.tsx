@@ -2,19 +2,18 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Button } from '@/components/ui/Button';
-import { Link } from '@tanstack/react-router';
+import { Badge } from '@/components/ui/Badge';
 import {
   AlertOctagon, Save, AlertTriangle, CheckCircle2,
-  CalendarDays, ChevronRight, Landmark, Wallet, Receipt, ShoppingBag, Edit2, Database, ShieldCheck
+  CalendarDays, ChevronRight, Landmark, Wallet, Receipt, ShoppingBag, Edit2, Database, ShieldCheck, X
 } from 'lucide-react';
 import { useDailySnapshot, usePreviousDaySnapshot, useSaveDailySnapshot } from '@/hooks/useDailySnapshot';
-import { getDefaultDate } from '@/lib/utils';
 import { calculateGlobalConciliacao, GlobalConciliacaoInput } from '@/lib/modulo1Calculations';
 import { StoreSaldoState } from '@/lib/modulo1Calculations';
 import { supabase } from '@/lib/supabase';
-import { useReconciliationsForDate } from '@/hooks/useConciliacao';
 import { useQueryClient } from '@tanstack/react-query';
 import { DailyReconciliationSummary } from '@/hooks/useBackendConciliacao';
+import { toast } from 'sonner';
 
 interface ResumoDiaPanelProps {
   selectedDate: string;
@@ -28,7 +27,7 @@ interface ResumoDiaPanelProps {
   totalBancarioRaw: number;
   totalOfxIn?: number;
   totalOfxOut?: number;
-  storesData?: any[]; // We just need it to get faturamento_atual from index
+  storesData?: any[];
   availableDates?: string[];
   summary?: DailyReconciliationSummary | null;
 }
@@ -50,25 +49,22 @@ export function ResumoDiaPanel({
   summary = null
 }: ResumoDiaPanelProps) {
   const [isSaved, setIsSaved] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const queryClient = useQueryClient();
 
-  // Lê o snapshot do dia selecionado (que já contém os inputs manuais salvos via ImportWizard)
+  // Lê o snapshot do dia selecionado (que já contém os inputs manuais salvos)
   const { data: currentSnapshot } = useDailySnapshot(selectedDate);
   // Lê o snapshot da conciliação imediatamente anterior
   const { data: previousSnapshot } = usePreviousDaySnapshot(selectedDate);
   const saveSnapshot = useSaveDailySnapshot();
 
-  // Faturamento Atual global do sistema (acumulado do mês até hoje) lido das transações
-  const faturamentoAtualGlobal = summary?.faturamento_ofx ?? storesData.reduce((acc, st) => acc + (st.faturamento_atual || 0), 0);
+  // Estados locais para edição dos campos manuais
+  const [faturamentoInput, setFaturamentoInput] = useState<number>(0);
+  const [dinheiroMpInput, setDinheiroMpInput] = useState<number>(0);
+  const [aReceberInput, setAReceberInput] = useState<number>(0);
+  const [contasInput, setContasInput] = useState<number>(0);
 
-  const [manualContas, setManualContas] = useState(0);
-
-  useEffect(() => {
-    // Hidratação do valor manual salvo no banco para o dia correspondente ou vindo do summary
-    setManualContas(summary?.contas_manual || currentSnapshot?.contas_a_pagar || 0);
-  }, [selectedDate, currentSnapshot?.contas_a_pagar, summary?.contas_manual]);
-
-  // Faturamento Anterior é o Faturamento Acumulado salvo no último fechamento (previousSnapshot) ou do metadata do snapshot atual (Marco Zero)
+  // Faturamento Anterior (Ant) vem do snapshot anterior ou metadados de Marco Zero
   const faturamentoAnteriorGlobal = summary?.faturamento_anterior 
     ?? previousSnapshot?.faturamento 
     ?? (currentSnapshot?.metadata as any)?.faturamento_anterior 
@@ -80,98 +76,101 @@ export function ResumoDiaPanel({
     ?? (currentSnapshot?.metadata as any)?.caixa_anterior 
     ?? 0;
 
-  // Calcular pix_os cruzado (quantos PIX foram declarados de OS e encontrados no banco)
-  let totalPixOs = 0;
-  if (storesData) {
-    storesData.forEach(st => {
-      totalPixOs += (st.pix_os || 0);
-    });
-  }
+  // Hidratação a partir dos dados do banco ao trocar de data ou carregar snapshot
+  useEffect(() => {
+    const initialFaturamento = currentSnapshot?.faturamento 
+      ?? (summary?.faturamento_anterior && summary?.faturamento_ofx ? (summary.faturamento_anterior + summary.faturamento_ofx) : (summary?.faturamento_ofx || 0));
+    
+    setFaturamentoInput(Number(initialFaturamento) || 0);
+    setDinheiroMpInput(Number(currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? 0));
+    setAReceberInput(Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber ?? 0));
+    setContasInput(Number(currentSnapshot?.contas_a_pagar ?? summary?.contas_manual ?? 0));
+    setIsEditing(false);
+  }, [selectedDate, currentSnapshot, summary]);
 
-  // Automáticos via OFX (Outros agora é 0 por padrão, não um residual)
-  const faturamentoOutrosAutomatico = 0;
-  // totalOfxOut será usado apenas para fins visuais de Raio-X
-  const contasAPagarAutomatico = manualContas;
+  // Valores ativos baseados no modo de edição (isEditing ? input local : snapshot persistido / summary)
+  const faturamentoAcumuladoHoje = isEditing ? faturamentoInput : (currentSnapshot?.faturamento ?? faturamentoInput);
+  const dinheiroMpValor = isEditing ? dinheiroMpInput : (currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? 0);
+  const aReceberValor = isEditing ? aReceberInput : (currentSnapshot?.a_receber_manual ?? summary?.a_receber ?? 0);
+  const contasManualValor = isEditing ? contasInput : (currentSnapshot?.contas_a_pagar ?? summary?.contas_manual ?? 0);
 
-  // Sum na_loja_os directly from storesData to avoid loop with 0 value
-  const dynamicGlobalNaLojaOs = summary?.na_loja_os ?? (storesData ? Object.values(storesData).reduce((acc: number, s: any) => acc + (s.na_loja_os || 0), 0) : 0);
+  // Pilares Automáticos
+  const saldoBancosValor = summary?.total_saldo_banco ?? currentSnapshot?.saldo_bancario ?? totalBancarioIn;
+  const naLojaValor = summary?.na_loja_os ?? currentSnapshot?.total_patio ?? 0;
+  const jurosRedeValor = summary?.juros_rede ?? currentSnapshot?.juros_rede ?? 0;
 
-  const dynamicJurosRede = summary?.juros_rede ?? (storesData ? Object.values(storesData).reduce((acc: number, s: any) => acc + (s.juros_atual || 0), 0) : 0);
-  const dynamicDinheiroMp = summary?.dinheiro_mp ?? (storesData ? Object.values(storesData).reduce((acc: number, s: any) => acc + (s.dinheiro_mp_manual || 0), 0) : 0);
-  const dynamicAReceber = summary?.a_receber ?? (storesData ? Object.values(storesData).reduce((acc: number, s: any) => acc + (s.a_receber_manual || 0), 0) : 0);
+  // Cálculo Odômetro do Faturamento Líquido do Dia
+  const faturamentoLiquidoDia = faturamentoAnteriorGlobal > 0 
+    ? (faturamentoAcumuladoHoje - faturamentoAnteriorGlobal) 
+    : faturamentoAcumuladoHoje;
 
-  const inputForCalculation: GlobalConciliacaoInput = {
-    saldo_bancario: summary?.total_saldo_banco || currentSnapshot?.saldo_bancario || totalBancarioIn,
-    dinheiro_mp: dynamicDinheiroMp,
-    a_receber_manual: dynamicAReceber,
-    na_loja_os: dynamicGlobalNaLojaOs,
-    saldo_negativo_itau: currentSnapshot?.saldo_negativo_itau || 0,
-    caixa_anterior: caixaAnteriorGlobal,
-    faturamento_atual: faturamentoAtualGlobal,
-    faturamento_anterior: faturamentoAnteriorGlobal,
-    faturamento_outros: faturamentoOutrosAutomatico,
-    juros_rede: dynamicJurosRede,
-    contas_a_pagar: manualContas,
-    provisao: 0,
+  // Matemática Consolidada
+  const caixaAtualCalculado = saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor;
+  const fluxoCaixaCalculado = caixaAtualCalculado - caixaAnteriorGlobal;
+  const valorDispContasCalculado = faturamentoLiquidoDia - fluxoCaixaCalculado;
+  const subtotalContasCalculado = jurosRedeValor + contasManualValor;
+  const diferencaFinalCalculada = Math.abs(valorDispContasCalculado) - subtotalContasCalculado;
+
+  const diferencaAbs = Math.abs(diferencaFinalCalculada);
+  const isDiferencaOk = diferencaAbs <= 50;
+
+  const handleCancel = () => {
+    const initialFaturamento = currentSnapshot?.faturamento 
+      ?? (summary?.faturamento_anterior && summary?.faturamento_ofx ? (summary.faturamento_anterior + summary.faturamento_ofx) : (summary?.faturamento_ofx || 0));
+    setFaturamentoInput(Number(initialFaturamento) || 0);
+    setDinheiroMpInput(Number(currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? 0));
+    setAReceberInput(Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber ?? 0));
+    setContasInput(Number(currentSnapshot?.contas_a_pagar ?? summary?.contas_manual ?? 0));
+    setIsEditing(false);
+    toast.info('Edição cancelada. Valores restaurados.');
   };
 
-  const calculated = calculateGlobalConciliacao(inputForCalculation);
-
-  // Se summary estiver disponível, usamos os valores consolidados diretamente do PostgreSQL
-  const saldoFinal = summary ? summary.total_saldo_banco : calculated.saldo;
-  const dinheiroMpFinal = summary ? summary.dinheiro_mp : calculated.dinheiro_mp;
-  const aReceberFinal = summary ? summary.a_receber : calculated.a_receber;
-  const naLojaFinal = summary ? summary.na_loja_os : calculated.na_loja;
-  const caixaAtualFinal = summary ? (summary.total_saldo_banco + summary.dinheiro_mp + summary.a_receber + summary.na_loja_os) : calculated.caixa_atual;
-  const fluxoCaixaFinal = summary ? (caixaAtualFinal - caixaAnteriorGlobal) : calculated.fluxo_cx;
-  const faturamentoFinal = summary ? summary.faturamento_ofx : calculated.faturamento;
-  const valorDispContasFinal = summary ? (faturamentoFinal - fluxoCaixaFinal) : calculated.valor_disp_contas;
-  const jurosRedeFinal = summary ? summary.juros_rede : inputForCalculation.juros_rede;
-  const subtotalContasFinal = jurosRedeFinal + manualContas;
-  const diferencaFinalCalculada = Math.abs(valorDispContasFinal) - subtotalContasFinal;
-
   const handleSave = async () => {
-    // Gravar na_loja_os no histórico de cada loja individualmente
-    if (storesData) {
-      const promises = Object.values(storesData).map(s => 
-        supabase.from('reconciliations').upsert({
-          store_id: s.store_id || (s as any).id,
-          date: selectedDate,
-          na_loja_os: s.na_loja_os,
-          status: 'validated'
-        }, { onConflict: 'store_id,date' })
-      );
-      await Promise.all(promises);
-    }
+    try {
+      // Gravar na_loja_os no histórico de cada loja se disponível
+      if (storesData && storesData.length > 0) {
+        const promises = Object.values(storesData).map(s => 
+          supabase.from('reconciliations').upsert({
+            store_id: s.store_id || (s as any).id,
+            date: selectedDate,
+            na_loja_os: s.na_loja_os,
+            status: 'validated'
+          }, { onConflict: 'store_id,date' })
+        );
+        await Promise.all(promises);
+      }
 
       // Ao salvar, atualiza as colunas de resultado no snapshot de hoje
       await saveSnapshot.mutateAsync({
         date: selectedDate,
-        caixa_atual: caixaAtualFinal,
-        // Faturamento salvo deve ser o ATUAL acumulado, para que o dia seguinte use como `faturamento_anterior`
-        faturamento: faturamentoFinal,
-        dinheiro_mp: dinheiroMpFinal,
-        total_recebiveis: aReceberFinal,
-        total_patio: naLojaFinal,
-        saldo_bancario: saldoFinal,
-        a_receber_manual: aReceberFinal,
-        faturamento_outros_valor: faturamentoOutrosAutomatico,
+        caixa_atual: caixaAtualCalculado,
+        // O Faturamento persistido é a leitura acumulada (odômetro) do dia
+        faturamento: faturamentoAcumuladoHoje,
+        dinheiro_mp: dinheiroMpValor,
+        total_recebiveis: aReceberValor,
+        total_patio: naLojaValor,
+        saldo_bancario: saldoBancosValor,
+        a_receber_manual: aReceberValor,
+        faturamento_outros_valor: 0,
         faturamento_outros_desc: null,
-        contas_a_pagar: manualContas,
+        contas_a_pagar: contasManualValor,
         provisao: 0,
-        saldo_negativo_itau: inputForCalculation.saldo_negativo_itau,
-        juros_rede: jurosRedeFinal,
-        notes: 'Fechamento salvo com base nos valores lidos da importação automática de OFX.',
+        saldo_negativo_itau: currentSnapshot?.saldo_negativo_itau || 0,
+        juros_rede: jurosRedeValor,
+        notes: 'Fechamento diário salvo via painel de conciliação.',
       });
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 3000);
+
+      await queryClient.invalidateQueries({ queryKey: ['daily-snapshot', selectedDate] });
+      await queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary', selectedDate] });
+
+      setIsSaved(true);
+      setIsEditing(false);
+      toast.success('Fechamento diário gravado com sucesso!');
+      setTimeout(() => setIsSaved(false), 3000);
+    } catch (err: any) {
+      toast.error('Erro ao gravar fechamento: ' + (err.message || err));
+    }
   };
-
-  const statusSuccess = isApproved && Math.abs(diferencaFinalCalculada) <= 50 && detalhesCount > 0;
-  const statusDanger = Math.abs(diferencaFinalCalculada) > 50;
-
-  const diferencaAbs = Math.abs(diferencaFinalCalculada);
-  const isDiferencaOk = Math.abs(diferencaFinalCalculada) <= 50;
 
   const isMarcoZero = (currentSnapshot?.metadata as any)?.is_marco_zero === true;
 
@@ -182,7 +181,6 @@ export function ResumoDiaPanel({
         animate={{ opacity: 1, y: 0 }}
         className="relative rounded-2xl border border-emerald-500/30 bg-emerald-500/5 backdrop-blur-3xl shadow-xl overflow-hidden p-6"
       >
-        {/* Top Header Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 pb-6 border-b border-white/10">
           <div className="flex items-start gap-4">
             <div className="p-3 bg-emerald-500/20 text-emerald-400 rounded-2xl mt-1 shrink-0">
@@ -201,106 +199,70 @@ export function ResumoDiaPanel({
             </div>
           </div>
 
-          {/* Date Picker */}
-          <div className="flex items-center gap-1 bg-[var(--bg-canvas)] rounded-lg p-1 border border-[var(--border-subtle)]">
-            <button 
-              onClick={() => onDayChange(-1)} 
+          <div className="flex items-center gap-2 bg-black/40 p-1.5 rounded-xl border border-white/10 shrink-0">
+            <button
+              onClick={() => onDayChange(-1)}
               disabled={availableDates.length > 0 && selectedDate === availableDates[0]}
-              className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)] disabled:opacity-30"
+              className="p-2 hover:bg-white/10 rounded-lg text-white/70 disabled:opacity-30 transition-colors"
             >
-              <ChevronRight size={16} className="rotate-180" />
+              <ChevronRight size={18} className="rotate-180" />
             </button>
-            <div className="flex items-center gap-2 px-2">
-              <CalendarDays size={14} className="text-[var(--text-tertiary)]" />
-              <input
-                type="date"
-                value={selectedDate}
-                min={availableDates[0]}
-                max={availableDates[availableDates.length - 1]}
-                onChange={(e) => {
-                   if (availableDates.includes(e.target.value) || availableDates.length === 0) {
-                      onDateSelect(e.target.value);
-                   } else {
-                      const closest = availableDates.reduce((prev, curr) => 
-                         Math.abs(new Date(curr).getTime() - new Date(e.target.value).getTime()) < Math.abs(new Date(prev).getTime() - new Date(e.target.value).getTime()) ? curr : prev
-                      );
-                      onDateSelect(closest);
-                   }
-                }}
-                className="bg-transparent text-xs font-bold text-white font-mono focus:outline-none cursor-pointer"
-              />
+            <div className="flex items-center gap-2 px-3 py-1 font-mono font-bold text-sm text-emerald-400">
+              <CalendarDays size={16} />
+              {selectedDate.split('-').reverse().join('/')}
             </div>
-            <button 
-              onClick={() => onDayChange(1)} 
+            <button
+              onClick={() => onDayChange(1)}
               disabled={availableDates.length > 0 && selectedDate === availableDates[availableDates.length - 1]}
-              className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)] disabled:opacity-30"
+              className="p-2 hover:bg-white/10 rounded-lg text-white/70 disabled:opacity-30 transition-colors"
             >
-              <ChevronRight size={16} />
+              <ChevronRight size={18} />
             </button>
           </div>
         </div>
 
-        {/* Saldos Legados puros */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 my-6">
-          <div className="bg-black/30 p-4 rounded-xl border border-white/5">
-            <span className="text-xs text-[var(--text-tertiary)] block mb-1 font-semibold uppercase tracking-wider">Caixa Anterior</span>
-            <span className="font-bold text-lg text-white font-mono">
-              <AnimatedNumber value={(currentSnapshot?.metadata as any)?.caixa_anterior || 0} format="currency" />
-            </span>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+          <div className="p-4 rounded-xl bg-black/30 border border-white/5 space-y-1">
+            <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">SALDO BANCÁRIO INICIAL</span>
+            <p className="text-xl font-bold font-mono text-[var(--color-accent-light-blue)]">
+              <AnimatedNumber value={currentSnapshot?.saldo_bancario || 0} format="currency" />
+            </p>
+            <span className="text-[10px] text-[var(--text-tertiary)] block">Extrato OFX Marco Zero</span>
           </div>
-          <div className="bg-black/30 p-4 rounded-xl border border-white/5">
-            <span className="text-xs text-[var(--text-tertiary)] block mb-1 font-semibold uppercase tracking-wider">Caixa Atual</span>
-            <span className="font-bold text-lg text-emerald-400 font-mono">
-              <AnimatedNumber value={currentSnapshot?.caixa_atual || 0} format="currency" />
-            </span>
-          </div>
-          <div className="bg-black/30 p-4 rounded-xl border border-white/5">
-            <span className="text-xs text-[var(--text-tertiary)] block mb-1 font-semibold uppercase tracking-wider">Dinheiro MP</span>
-            <span className="font-bold text-lg text-white font-mono">
+
+          <div className="p-4 rounded-xl bg-black/30 border border-white/5 space-y-1">
+            <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">DINHEIRO EM CAIXA</span>
+            <p className="text-xl font-bold font-mono text-[var(--color-accent-teal)]">
               <AnimatedNumber value={currentSnapshot?.dinheiro_mp || 0} format="currency" />
-            </span>
+            </p>
+            <span className="text-[10px] text-[var(--text-tertiary)] block">Conferência física</span>
           </div>
-          <div className="bg-black/30 p-4 rounded-xl border border-white/5">
-            <span className="text-xs text-[var(--text-tertiary)] block mb-1 font-semibold uppercase tracking-wider">A Receber</span>
-            <span className="font-bold text-lg text-white font-mono">
+
+          <div className="p-4 rounded-xl bg-black/30 border border-white/5 space-y-1">
+            <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">A RECEBER (BOLETOS)</span>
+            <p className="text-xl font-bold font-mono text-[var(--color-primary)]">
               <AnimatedNumber value={currentSnapshot?.a_receber_manual || 0} format="currency" />
-            </span>
+            </p>
+            <span className="text-[10px] text-[var(--text-tertiary)] block">Carteira inicial a liquidar</span>
+          </div>
+
+          <div className="p-4 rounded-xl bg-black/30 border border-white/5 space-y-1">
+            <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">ESTOQUE / OS PÁTIO</span>
+            <p className="text-xl font-bold font-mono text-[var(--color-accent-warning)]">
+              <AnimatedNumber value={currentSnapshot?.total_patio || 0} format="currency" />
+            </p>
+            <span className="text-[10px] text-[var(--text-tertiary)] block">Carros no pátio implantados</span>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-black/30 p-4 rounded-xl border border-white/5">
-            <span className="text-xs text-[var(--text-tertiary)] block mb-1 font-semibold uppercase tracking-wider">Faturamento Atual</span>
-            <span className="font-bold text-lg text-white font-mono">
-              <AnimatedNumber value={currentSnapshot?.faturamento || 0} format="currency" />
-            </span>
+        <div className="mt-6 pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 bg-emerald-500/10 -mx-6 -mb-6 p-6">
+          <div className="flex items-center gap-3">
+            <ShieldCheck size={20} className="text-emerald-400" />
+            <span className="text-sm font-semibold text-white">Patrimônio Inicial Ancorado (Caixa de Partida)</span>
           </div>
-          <div className="bg-black/30 p-4 rounded-xl border border-white/5">
-            <span className="text-xs text-[var(--text-tertiary)] block mb-1 font-semibold uppercase tracking-wider">Faturamento Ant.</span>
-            <span className="font-bold text-lg text-white font-mono">
-              <AnimatedNumber value={(currentSnapshot?.metadata as any)?.faturamento_anterior || 0} format="currency" />
-            </span>
+          <div className="text-2xl font-bold font-mono text-emerald-400">
+            <AnimatedNumber value={currentSnapshot?.caixa_atual || 0} format="currency" />
           </div>
-          <div className="bg-black/30 p-4 rounded-xl border border-white/5">
-            <span className="text-xs text-[var(--text-tertiary)] block mb-1 font-semibold uppercase tracking-wider">Fluxo de Caixa</span>
-            <span className="font-bold text-lg text-white font-mono">
-              <AnimatedNumber value={(currentSnapshot?.metadata as any)?.fluxo_caixa || 0} format="currency" />
-            </span>
-          </div>
-          <div className="bg-black/30 p-4 rounded-xl border border-white/5">
-            <span className="text-xs text-[var(--text-tertiary)] block mb-1 font-semibold uppercase tracking-wider">Diferença Legada</span>
-            <span className="font-bold text-lg text-emerald-400 font-mono">
-              <AnimatedNumber value={(currentSnapshot?.metadata as any)?.diferenca || 0} format="currency" />
-            </span>
-          </div>
-        </div>
-
-        {/* Info Footer */}
-        <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 flex items-center gap-3 text-xs text-emerald-300">
-          <ShieldCheck size={20} className="shrink-0 text-emerald-400" />
-          <span>
-            <strong>Estado Inicial Verificado:</strong> Esta data representa a implantação inicial do sistema. A partir da data seguinte, as telas operacionais de conciliação bancária estarão ativas.
-          </span>
         </div>
       </motion.div>
     );
@@ -310,79 +272,43 @@ export function ResumoDiaPanel({
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`relative rounded-2xl border backdrop-blur-3xl shadow-sm transition-colors duration-500 overflow-hidden ${
-        statusSuccess
-          ? 'bg-[var(--color-accent-teal)]/5 border-[var(--color-accent-teal)]/20'
-          : statusDanger
-          ? 'bg-[var(--color-accent-danger)]/5 border-[var(--color-accent-danger)]/20'
-          : 'bg-[var(--bg-surface-elevated)] border-[var(--border-subtle)]'
-      }`}
+      className="relative rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] shadow-2xl overflow-hidden"
     >
       {/* Top Header Section */}
-      <div className="p-6 border-b border-[var(--border-subtle)] flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-        <div className="flex items-start gap-4">
-          <div className={`p-3 rounded-full mt-1 ${
-            statusSuccess 
-              ? 'bg-[var(--color-accent-teal)]/10 text-[var(--color-accent-teal)]' 
-              : statusDanger 
-              ? 'bg-[var(--color-accent-danger)]/10 text-[var(--color-accent-danger)]' 
-              : 'bg-[var(--bg-surface-elevated)] text-[var(--text-tertiary)]'
-          }`}>
-            {statusDanger ? <AlertOctagon size={24} /> : <CheckCircle2 size={24} />}
-          </div>
-          <div>
-            <h1 className="text-2xl font-display font-bold text-[var(--text-primary)] tracking-tight">Conciliação Diária</h1>
-            <h2 className="text-sm font-medium mt-1">
-              {statusSuccess ? 'Caixas Batidos com Sucesso' : statusDanger ? 'Divergência Encontrada no Dia' : 'Aguardando Fechamento'}
-            </h2>
-            <p className="text-xs text-[var(--text-tertiary)] mt-1 max-w-md">
-              Dados globais da operação lidos do arquivo e dos inputs da importação (Somente Leitura).
-            </p>
-          </div>
-        </div>
-
-        {/* Date & Core Totals */}
-        <div className="flex flex-col items-end gap-4 w-full lg:w-auto">
-          {/* Action Row */}
-          <div className="flex items-center gap-3">
-            {/* Date Picker */}
-            <div className="flex items-center gap-1 bg-[var(--bg-canvas)] rounded-lg p-1 border border-[var(--border-subtle)]">
-              <button 
-                onClick={() => onDayChange(-1)} 
+      <div className="p-6 border-b border-[var(--border-subtle)] bg-gradient-to-r from-[var(--bg-surface)] to-[var(--bg-surface-elevated)]">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+          
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1 bg-[var(--bg-canvas)] p-1.5 rounded-lg border border-[var(--border-subtle)]">
+              <button
+                onClick={() => onDayChange(-1)}
                 disabled={availableDates.length > 0 && selectedDate === availableDates[0]}
-                className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)] disabled:opacity-30"
+                className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)] disabled:opacity-30 transition-colors"
+                title="Dia anterior"
               >
                 <ChevronRight size={16} className="rotate-180" />
               </button>
-              <div className="flex items-center gap-2 px-2">
-                <CalendarDays size={14} className="text-[var(--text-tertiary)]" />
-                <input
-                  type="date"
-                  value={selectedDate}
-                  min={availableDates[0]}
-                  max={availableDates[availableDates.length - 1]}
-                  onChange={(e) => {
-                     if (availableDates.includes(e.target.value) || availableDates.length === 0) {
-                        onDateSelect(e.target.value);
-                     } else {
-                        // Encontra a data válida mais próxima se digitar algo fora do permitido
-                        const closest = availableDates.reduce((prev, curr) => 
-                           Math.abs(new Date(curr).getTime() - new Date(e.target.value).getTime()) < Math.abs(new Date(prev).getTime() - new Date(e.target.value).getTime()) ? curr : prev
-                        );
-                        onDateSelect(closest);
-                     }
-                  }}
-                  className="bg-transparent text-sm font-medium text-[var(--text-secondary)] focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert opacity-80 hover:opacity-100"
-                />
+
+              <div className="flex items-center gap-2 px-3 py-1 font-mono font-bold text-sm text-[var(--text-primary)]">
+                <CalendarDays size={16} className="text-[var(--color-primary)]" />
+                {selectedDate ? selectedDate.split('-').reverse().join('/') : 'Carregando...'}
               </div>
-              <button 
-                onClick={() => onDayChange(1)} 
+
+              <button
+                onClick={() => onDayChange(1)}
                 disabled={availableDates.length > 0 && selectedDate === availableDates[availableDates.length - 1]}
-                className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)] disabled:opacity-30"
+                className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)] disabled:opacity-30 transition-colors"
+                title="Próximo dia"
               >
                 <ChevronRight size={16} />
               </button>
             </div>
+
+            {isEditing && (
+              <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 text-xs px-2.5 py-1 animate-pulse">
+                Modo Edição Ativo
+              </Badge>
+            )}
           </div>
 
           <div className="flex gap-6 text-right font-sans tabular-nums">
@@ -398,74 +324,113 @@ export function ResumoDiaPanel({
         </div>
       </div>
 
-      {/* Grid das Métricas - Apenas Leitura */}
+      {/* Grid das Métricas */}
       <div className="p-6 bg-[var(--bg-canvas)]">
         
-        {/* 5 Pilares Iniciais (Intocados Visualmente, mas Read-Only) */}
+        {/* 5 Pilares Iniciais */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+          
+          {/* 1. Saldo Banco */}
           <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">SALDO BANCO ITAÚ</span>
               <Landmark size={15} className="text-[var(--color-accent-light-blue)]" />
             </div>
             <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-light-blue)]">
-              <AnimatedNumber value={saldoFinal} format="currency" />
+              <AnimatedNumber value={saldoBancosValor} format="currency" />
             </p>
             <span className="text-[10px] text-[var(--text-tertiary)] block">Extrato bancário OFX global</span>
           </div>
 
+          {/* 2. Dinheiro MP */}
           <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">DINHEIRO MP</span>
               <Wallet size={15} className="text-[var(--color-accent-teal)]" />
             </div>
-            <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-teal)]">
-              <AnimatedNumber value={dinheiroMpFinal} format="currency" />
-            </p>
+            {isEditing ? (
+              <div className="relative mt-1">
+                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-[var(--text-tertiary)]">R$</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={dinheiroMpInput || ''}
+                  onChange={(e) => setDinheiroMpInput(Number(e.target.value))}
+                  placeholder="0,00"
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--color-accent-teal)]/40 rounded-lg py-1 pl-7 pr-2 text-base font-bold font-mono text-[var(--color-accent-teal)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-teal)]"
+                />
+              </div>
+            ) : (
+              <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-teal)]">
+                <AnimatedNumber value={dinheiroMpValor} format="currency" />
+              </p>
+            )}
             <span className="text-[10px] text-[var(--text-tertiary)] block">Preenchido na importação</span>
           </div>
 
+          {/* 3. A Receber */}
           <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">A RECEBER</span>
               <Receipt size={15} className="text-[var(--color-primary)]" />
             </div>
-            <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-primary)]">
-              <AnimatedNumber value={aReceberFinal} format="currency" />
-            </p>
+            {isEditing ? (
+              <div className="relative mt-1">
+                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-[var(--text-tertiary)]">R$</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={aReceberInput || ''}
+                  onChange={(e) => setAReceberInput(Number(e.target.value))}
+                  placeholder="0,00"
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--color-primary)]/40 rounded-lg py-1 pl-7 pr-2 text-base font-bold font-mono text-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
+                />
+              </div>
+            ) : (
+              <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-primary)]">
+                <AnimatedNumber value={aReceberValor} format="currency" />
+              </p>
+            )}
             <span className="text-[10px] text-[var(--text-tertiary)] block">Boletos/Descontos manuais</span>
           </div>
 
+          {/* 4. Na Loja OS */}
           <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">NA LOJA OS</span>
               <ShoppingBag size={15} className="text-[var(--color-accent-warning)]" />
             </div>
             <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-warning)]">
-              <AnimatedNumber value={naLojaFinal} format="currency" />
+              <AnimatedNumber value={naLojaValor} format="currency" />
             </p>
             <span className="text-[10px] text-[var(--text-tertiary)] block">OSs do Pátio pendentes</span>
           </div>
 
-          <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-2">
-            <div className="flex items-center justify-between mb-1">
+          {/* 5. Contas Manual */}
+          <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
+            <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">CONTAS (MANUAL)</span>
               <Receipt size={15} className="text-[var(--color-accent-danger)]" />
             </div>
-            
-            <div className="relative">
-              <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-[var(--text-tertiary)]">R$</span>
-              <input 
-                type="number"
-                value={manualContas || ''}
-                onChange={(e) => setManualContas(Number(e.target.value))}
-                placeholder="0,00"
-                className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg py-1.5 pl-8 pr-3 text-lg font-bold font-sans tabular-nums text-[var(--color-accent-danger)] focus:border-[var(--color-accent-danger)]/50 focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-danger)]/50 transition-all placeholder:text-[var(--text-tertiary)]/50"
-              />
-            </div>
-            
-            <div className="flex justify-between items-center text-[10px] text-[var(--text-tertiary)]">
-              <span>Juros: <AnimatedNumber value={jurosRedeFinal} format="currency" /></span>
+            {isEditing ? (
+              <div className="relative mt-1">
+                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-[var(--text-tertiary)]">R$</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={contasInput || ''}
+                  onChange={(e) => setContasInput(Number(e.target.value))}
+                  placeholder="0,00"
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--color-accent-danger)]/40 rounded-lg py-1 pl-7 pr-2 text-base font-bold font-mono text-[var(--color-accent-danger)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-danger)]"
+                />
+              </div>
+            ) : (
+              <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-danger)]">
+                <AnimatedNumber value={contasManualValor} format="currency" />
+              </p>
+            )}
+            <div className="flex justify-between items-center text-[10px] text-[var(--text-tertiary)] pt-1">
+              <span>Juros: <AnimatedNumber value={jurosRedeValor} format="currency" /></span>
               <span title="Total de Saídas no Extrato OFX importado" className="border-b border-dashed border-[var(--text-tertiary)]/30 cursor-help text-[var(--text-tertiary)]/70 hover:text-[var(--text-tertiary)]">
                 OFX Out: -{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Math.abs(totalOfxOut))}
               </span>
@@ -481,20 +446,26 @@ export function ResumoDiaPanel({
           <div className="lg:col-span-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-5 shadow-sm">
             <h3 className="font-semibold text-[var(--text-primary)] mb-4 uppercase text-xs tracking-wider">Consolidação do Dia</h3>
             <div className="grid grid-cols-2 gap-4">
+              
+              {/* Caixa Atual */}
               <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
                 <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Caixa Atual</span>
                 <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
-                  <AnimatedNumber value={caixaAtualFinal} format="currency" />
+                  <AnimatedNumber value={caixaAtualCalculado} format="currency" />
                 </span>
                 <span className="text-[9px] text-[var(--text-tertiary)]">Descontado saldo negativo (Itaú)</span>
               </div>
+
+              {/* Fluxo de Caixa */}
               <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
                 <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Fluxo de Caixa</span>
                 <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
-                  <AnimatedNumber value={fluxoCaixaFinal} format="currency" />
+                  <AnimatedNumber value={fluxoCaixaCalculado} format="currency" />
                 </span>
                 <span className="text-[9px] text-[var(--text-tertiary)] block mt-1">Caixa atual vs Conciliação Anterior</span>
               </div>
+
+              {/* Faturamento Líquido (Odômetro) */}
               <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
                 <div className="flex justify-between items-start">
                   <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Faturamento Líquido</span>
@@ -502,17 +473,40 @@ export function ResumoDiaPanel({
                     Ant: <AnimatedNumber value={faturamentoAnteriorGlobal} format="currency" />
                   </span>
                 </div>
-                <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
-                  <AnimatedNumber value={faturamentoFinal} format="currency" />
-                </span>
-                <span className="text-[9px] text-[var(--text-tertiary)]">Entradas puras importadas do OFX</span>
+
+                {isEditing ? (
+                  <div className="space-y-1 mt-1.5">
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={faturamentoInput || ''}
+                      onChange={(e) => setFaturamentoInput(Number(e.target.value))}
+                      placeholder="Odômetro Acumulado Hoje"
+                      className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--color-primary)]/40 rounded-lg py-1 px-2 text-sm font-bold font-mono text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
+                    />
+                    <span className="text-[10px] text-[var(--color-primary)] font-semibold block">
+                      = Líquido: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoLiquidoDia)}
+                    </span>
+                  </div>
+                ) : (
+                  <>
+                    <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
+                      <AnimatedNumber value={faturamentoLiquidoDia} format="currency" />
+                    </span>
+                    <span className="text-[9px] text-[var(--text-tertiary)] block mt-0.5">
+                      Odômetro Acumulado: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoAcumuladoHoje)}
+                    </span>
+                  </>
+                )}
               </div>
+
+              {/* Valor Disp. Contas */}
               <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
                 <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Valor Disp. Contas</span>
                 <span className="text-lg font-bold text-[var(--color-primary-bright)] mt-1 block">
-                  <AnimatedNumber value={valorDispContasFinal} format="currency" />
+                  <AnimatedNumber value={valorDispContasCalculado} format="currency" />
                 </span>
-                <span className="text-[9px] text-[var(--text-tertiary)]">Faturamento - Fluxo de Caixa</span>
+                <span className="text-[9px] text-[var(--text-tertiary)]">Faturamento Líquido - Fluxo de Caixa</span>
               </div>
             </div>
             
@@ -522,7 +516,7 @@ export function ResumoDiaPanel({
                   <span className="text-[9px] text-[var(--text-tertiary)]">Juros (REDE) + Contas (Manual)</span>
                </div>
                <span className="text-lg font-bold text-[var(--color-accent-warning)]">
-                 <AnimatedNumber value={subtotalContasFinal} format="currency" />
+                 <AnimatedNumber value={subtotalContasCalculado} format="currency" />
                </span>
             </div>
           </div>
@@ -553,19 +547,41 @@ export function ResumoDiaPanel({
           </div>
         </div>
 
-        <div className="flex justify-end border-t border-[var(--border-subtle)] pt-4 mt-6">
-          <Button
-            variant="primary"
-            onClick={handleSave}
-            disabled={saveSnapshot.isPending}
-            className="gap-2 px-6 py-2 text-sm"
-          >
-            {currentSnapshot ? <Edit2 size={16} /> : <Save size={16} />}
-            {isSaved ? 'Salvo!' : (currentSnapshot ? 'Editar Fechamento' : 'Gravar Fechamento Diário')}
-          </Button>
+        {/* Barra de Ações com Trava de Edição */}
+        <div className="flex justify-end gap-3 border-t border-[var(--border-subtle)] pt-4 mt-6">
+          {!isEditing ? (
+            <Button
+              variant="outline"
+              onClick={() => setIsEditing(true)}
+              className="gap-2 px-6 py-2 text-sm border-[var(--color-primary)]/40 text-[var(--text-primary)] hover:bg-[var(--color-primary)]/10"
+            >
+              <Edit2 size={16} />
+              Editar Fechamento
+            </Button>
+          ) : (
+            <>
+              <Button
+                variant="ghost"
+                onClick={handleCancel}
+                disabled={saveSnapshot.isPending}
+                className="gap-2 px-5 py-2 text-sm text-[var(--text-tertiary)] hover:text-white"
+              >
+                <X size={16} />
+                Cancelar
+              </Button>
+              <Button
+                variant="primary"
+                onClick={handleSave}
+                disabled={saveSnapshot.isPending}
+                className="gap-2 px-6 py-2 text-sm bg-[var(--color-accent-teal)] hover:bg-[var(--color-accent-teal)]/90 text-black font-semibold"
+              >
+                <Save size={16} />
+                {saveSnapshot.isPending ? 'Salvando...' : 'Salvar Alterações'}
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </motion.div>
   );
 }
-

@@ -935,8 +935,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1786707035.5317852,
-    "ast_hash": "231d48e8ff1263b4beffeaa03e748972",
+    "mtime": 1786709840.9206438,
+    "ast_hash": "ea7e1bac6fe699939130db0f20387ac2",
     "semantic_hash": ""
   },
   "src/components/dashboard/AlertResolveDialog.tsx": {
@@ -1315,8 +1315,8 @@
     "semantic_hash": ""
   },
   "src/routes/conciliacao.index.tsx": {
-    "mtime": 1786707035.5403795,
-    "ast_hash": "622a8c525771c964e21cf975342330a5",
+    "mtime": 1786709804.5977237,
+    "ast_hash": "6e0b510fc5e5880a645947d99974c3f2",
     "semantic_hash": ""
   },
   "src/routes/configuracoes.tsx": {
@@ -5140,8 +5140,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useBackendConciliacao.ts": {
-    "mtime": 1786367140.3619075,
-    "ast_hash": "e3b67b9517622f81689be39f4d1920e7",
+    "mtime": 1786709745.6742435,
+    "ast_hash": "b2d8d745159cabab496172567e0cca72",
     "semantic_hash": ""
   },
   "src/hooks/useBackendDashboard.ts": {
@@ -5687,11 +5687,6 @@
   "specs/archive/148-fix-conciliation-diff/spec-plan.md": {
     "mtime": 1786377180.3660724,
     "ast_hash": "71042aacb84960eac0e6f11ee911661e",
-    "semantic_hash": ""
-  },
-  ".tmp_query.sql": {
-    "mtime": 1786380367.869774,
-    "ast_hash": "5321012e42d4b7a8a5edde62a1bbe1d4",
     "semantic_hash": ""
   },
   "specs/archive/149-conciliation-details/design.md": {
@@ -6584,381 +6579,6 @@
     "ast_hash": "00760023b9792dea48c53fb5c0673997",
     "semantic_hash": ""
   },
-  "supabase/temp_migrations/20260602140022_add_history_log_to_patio_os.sql": {
-    "mtime": 1785428874.0,
-    "ast_hash": "1d89c19f4b98d026c605e9f7955b8364",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260603000000_fix_import_logs.sql": {
-    "mtime": 1785428874.0,
-    "ast_hash": "240bcfb54f14e04fb0cf83bc9af8db25",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260605123007_create_delete_import_rpc.sql": {
-    "mtime": 1785428874.0,
-    "ast_hash": "ab0d6c0adb8c2ee28e6ba85c70f9e676",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260610091633_add_machine_total_to_reconciliations.sql": {
-    "mtime": 1785428874.0,
-    "ast_hash": "8023c4e5f8fd9aa3ec00de9383483275",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260610121559_add_machine_total_to_reconciliations.sql": {
-    "mtime": 1785428874.0,
-    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260610125106_add_bank_reconciliation_fields.sql": {
-    "mtime": 1785428874.0,
-    "ast_hash": "877f86a25da2337bd764e2b6f1fa8f3a",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260610191300_add_bank_total_to_reconciliations.sql": {
-    "mtime": 1785428874.0,
-    "ast_hash": "5528ee98c514998406ab1a464bd96163",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260610210000_add_tx_source_and_match_engine.sql": {
-    "mtime": 1785428874.0,
-    "ast_hash": "979b0c55b1fae36fdc3c60dfd01cbaf9",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260610212000_fix_delete_import_rpc_source_ofx.sql": {
-    "mtime": 1785428874.0,
-    "ast_hash": "fe10c24d941f441765c761ead1d71b8e",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260610220000_update_bank_total_trigger.sql": {
-    "mtime": 1785428874.0,
-    "ast_hash": "652633bc030184c829cda4ba4de9686f",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260611083000_fix_store_id_uuid_to_text.sql": {
-    "mtime": 1785428874.0,
-    "ast_hash": "ca0b75bdc4d913eba1469d86c128df27",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260611140000_add_target_date_to_transactions.sql": {
-    "mtime": 1785428874.0,
-    "ast_hash": "ccf8acc0d6225cbf5e66e1a6ae3c90d9",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260612131236_create_interest_rates.sql": {
-    "mtime": 1785428874.0,
-    "ast_hash": "7c26b273a137425b4e90cea5a32cb1ec",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260714000001_bot_credentials_and_daily_snapshots.sql": {
-    "mtime": 1786367140.6324937,
-    "ast_hash": "4c9203652295285b1e4adbc364b82ddd",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260714000002_remove_interest_rates.sql": {
-    "mtime": 1785428874.0,
-    "ast_hash": "73060cd55b74eba4ea80405e9b5a9038",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260714184300_bot_logs_and_goals.sql": {
-    "mtime": 1785428874.0,
-    "ast_hash": "5f25675e09ca104ee08ddcecd6490e04",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260716000000_fix_ofx_deletion.sql": {
-    "mtime": 1785428874.0,
-    "ast_hash": "1b99e9f9cc3da2a5e11ac7cce36e2198",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260717000000_goals_and_tx_update.sql": {
-    "mtime": 1786367140.6344018,
-    "ast_hash": "3d6fc21ee97452276bf038d71011ba3f",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260718000000_ai_chat.sql": {
-    "mtime": 1786367140.637277,
-    "ast_hash": "cb32157013cb03a051effc5a4d35d61d",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260718000001_ai_settings.sql": {
-    "mtime": 1786367140.6395383,
-    "ast_hash": "549185f65b877490c9b4149859ccd4bf",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260720100000_reconciliacoes_triplas.sql": {
-    "mtime": 1786630127.1370027,
-    "ast_hash": "45f905ed16b3c60945615f26acff60d4",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260720140922_fix_delete_import_remnants.sql": {
-    "mtime": 1786630127.1390169,
-    "ast_hash": "e2a114556c2f0c85d926f02cb09bbbbb",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260720180000_enrich_patio_os.sql": {
-    "mtime": 1785428874.0,
-    "ast_hash": "daba082c111e1a2796c9044550203e0e",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260722142023_split_credit_debit.sql": {
-    "mtime": 1785428874.0,
-    "ast_hash": "68b6c1ee7af0f31e6490b92c912358fb",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260728000000_add_bot_settings.sql": {
-    "mtime": 1786630127.1409721,
-    "ast_hash": "cf89e7f112f1f28287fd29de48fad3ac",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260730000000_ias_claritas_graphify.sql": {
-    "mtime": 1786707035.5403795,
-    "ast_hash": "25f09c5894df8e0a847e74aba0468405",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260801000000_daily_snapshots_extension.sql": {
-    "mtime": 1785524691.3277187,
-    "ast_hash": "1871390d9bd566f424e9701b146ba6b8",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260803000000_oficina_bot_automation.sql": {
-    "mtime": 1786367140.6416204,
-    "ast_hash": "3373d4db16fff0d5ad3a7009dc35f232",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260803000001_cron_sync.sql": {
-    "mtime": 1786367140.643616,
-    "ast_hash": "a6a885f5e4b0b0a8a186257e64334989",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260804000000_add_account_limit_to_stores.sql": {
-    "mtime": 1786367140.6456096,
-    "ast_hash": "170894c06d904f834a4dd1e15fc87210",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260804000001_add_na_loja_os_history.sql": {
-    "mtime": 1786367140.6466072,
-    "ast_hash": "e03b9f0e8257e458478d9ec9beb3d0b2",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260805192825_add_previous_balance.sql": {
-    "mtime": 1786367140.648602,
-    "ast_hash": "80c04fd936439376b75bd5187ae7e04e",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260805200900_add_gross_and_fee_to_transactions.sql": {
-    "mtime": 1786367140.6501324,
-    "ast_hash": "9320affa085236a9486712c79fdcc4f1",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260807000000_global_math_and_logs.sql": {
-    "mtime": 1786367140.6520407,
-    "ast_hash": "71936ab7a93f8227e7800154f3c46063",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260807000001_update_global_math_logic.sql": {
-    "mtime": 1786367140.6538289,
-    "ast_hash": "70edd3e1232dfa3b92cd8e95ddda088f",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260807000002_backend_aggregation_views.sql": {
-    "mtime": 1786367140.6557076,
-    "ast_hash": "38d2bb355fa58d8132e26b64b9fff128",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260807000003_master_backend_delegation.sql": {
-    "mtime": 1786367140.6587453,
-    "ast_hash": "b341d7f480086e425bdf347cdd4de428",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260807000004_fix_dashboard_perf.sql": {
-    "mtime": 1786367140.6602557,
-    "ast_hash": "8d36e05ffdd19352f75d797e58efa4d0",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260807000005_remove_phantom_pix_column.sql": {
-    "mtime": 1786367140.6622343,
-    "ast_hash": "b7365f2c3445af02af9ff92a1b5afa33",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260807000006_fix_payment_method_typo.sql": {
-    "mtime": 1786367140.6646492,
-    "ast_hash": "24176cb25b86abb9d874a1f3468a8e60",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260807000007_fix_dashboard_patio_math.sql": {
-    "mtime": 1786367140.666651,
-    "ast_hash": "9fb853465d915cca985e31b6eb17e2be",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260807000008_math_accuracy_fixes.sql": {
-    "mtime": 1786367140.668433,
-    "ast_hash": "0b4025d6a4d4efb9446ca6fc604b17d2",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260807000009_schema_cleanup_and_split.sql": {
-    "mtime": 1786367140.6706712,
-    "ast_hash": "c40d09277b5bd33c350f2fa481931b3d",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260807000010_fix_dashboard_rpc.sql": {
-    "mtime": 1786367140.671548,
-    "ast_hash": "a96402153648d3f4458619e3039cc53f",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260807000011_create_transactions_view.sql": {
-    "mtime": 1786367140.6741724,
-    "ast_hash": "265d409175c39321392edcd07f7278ad",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260807000012_fix_auto_match_rpc.sql": {
-    "mtime": 1786367140.6781063,
-    "ast_hash": "ffeb138f110e8ab634210f63b40b0d82",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260807000013_fix_dashboard_metrics.sql": {
-    "mtime": 1786367140.6801102,
-    "ast_hash": "a018da36a05d6f5d42816fa66ba87f82",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260807000014_fix_conciliacao_math.sql": {
-    "mtime": 1786367140.6821024,
-    "ast_hash": "b9035e8455c13acfa7156c3707d4fb57",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260807000017_fix_diferenca_math.sql": {
-    "mtime": 1786367140.6840944,
-    "ast_hash": "9fd8df63fb1757f06535636ae147f6af",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260807000018_restore_import_logs_and_rpc.sql": {
-    "mtime": 1786367140.6858656,
-    "ast_hash": "0c008da0c65d379a26374cad20eeee92",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260807000019_fix_conciliation_matches_fkeys.sql": {
-    "mtime": 1786367140.6878645,
-    "ast_hash": "d8150dce297c74bcd19a7f548108507c",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260810000000_add_pos_dedup_hash.sql": {
-    "mtime": 1786371002.5687525,
-    "ast_hash": "4a7e84114044c02a13bc7588c7f3e9dc",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260810000001_fix_daily_conciliation_patio.sql": {
-    "mtime": 1786374932.5995479,
-    "ast_hash": "18c03dee58060ab050cdd53b034abbd7",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260810000002_fix_match_engine.sql": {
-    "mtime": 1786376201.5560162,
-    "ast_hash": "59127beaf538cb1dffcbc9716c106116",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260810000003_fix_conciliation_math_and_duplicates.sql": {
-    "mtime": 1786377077.2246652,
-    "ast_hash": "6e742a01e6f6fe8b38e13ca84d4bce24",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260810154944_fix_conciliation_math_and_duplicates.sql": {
-    "mtime": 1786376984.3858695,
-    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260810165000_raw_data_rpcs.sql": {
-    "mtime": 1786378488.360656,
-    "ast_hash": "fc1571a89676235692af830d2018ece9",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260810170000_fix_raw_rpc_store_id_type.sql": {
-    "mtime": 1786383147.5789497,
-    "ast_hash": "8263d420987c16e3522a7234ac298614",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260810180000_conciliation_breakdown_rpc.sql": {
-    "mtime": 1786386260.984393,
-    "ast_hash": "748115d04736aabbb13acbd1c9fd08cf",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260810190000_historical_patio_os.sql": {
-    "mtime": 1786390267.970182,
-    "ast_hash": "9f7b7f5b3fdbc7d80c31a62edbb2f528",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260811124024_create_estoque_os_pendente.sql": {
-    "mtime": 1786630127.1414773,
-    "ast_hash": "412ab3f7ae1187121b9546624e608138",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260812100300_add_metadata_to_daily_snapshots.sql": {
-    "mtime": 1786630127.1476045,
-    "ast_hash": "e0cdcdfc17dce8442cb58ec0b203214a",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260812100400_fix_auto_match_rpc_date_window.sql": {
-    "mtime": 1786630127.1488934,
-    "ast_hash": "395ab1b37da5b4f064ee4e9645680163",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260813081500_fix_conciliation_carry_over.sql": {
-    "mtime": 1786630127.150553,
-    "ast_hash": "71f441c335731f7c6f83c97d74c849b7",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260813085500_fix_dashboard_math.sql": {
-    "mtime": 1786630127.1521335,
-    "ast_hash": "d822608196780461dbf0b82d05776358",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260813094000_fix_rpc_conciliation_columns.sql": {
-    "mtime": 1786707035.5885198,
-    "ast_hash": "3aa6256801461b10306a1acd306262a3",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260813095200_fila_orfaos.sql": {
-    "mtime": 1786707035.5900176,
-    "ast_hash": "0a7c5a6779deb030cf807341b070cf1f",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260813103000_fix_dashboard_math_double_counting.sql": {
-    "mtime": 1786707035.5920277,
-    "ast_hash": "1547cd5195e93b380210e3f4a1972610",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260813113000_process_marco_zero_rpc.sql": {
-    "mtime": 1786707035.5920277,
-    "ast_hash": "770ba7de9d0c73898266901a7e9ec857",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260813120600_liquidate_legacy_os_rpc.sql": {
-    "mtime": 1786707035.5940397,
-    "ast_hash": "e1ac2eb6753eff7979ec79286ad66092",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260813123412_fix_rpc_conciliation_columns.sql": {
-    "mtime": 1786707035.5940397,
-    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260813140500_fix_cartesian_ctes.sql": {
-    "mtime": 1786707035.5955503,
-    "ast_hash": "62ff7394fe225a6f182090d851aac545",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260813150000_fix_ofx_bank_balance_and_status.sql": {
-    "mtime": 1786707035.5960553,
-    "ast_hash": "4c971e7dedec53a4af7748a6dd419766",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260813160000_fix_global_reconciliation_sum_and_reset.sql": {
-    "mtime": 1786707035.5960553,
-    "ast_hash": "7dc8d86100bbc66c0b947bde42cccaf6",
-    "semantic_hash": ""
-  },
-  "supabase/temp_migrations/20260813170000_purge_corrupted_snapshot.sql": {
-    "mtime": 1786707035.59807,
-    "ast_hash": "d49fd26f71a387759c86719949240510",
-    "semantic_hash": ""
-  },
   "specs/148-fix-conciliation-diff/proposal.md": {
     "mtime": 1786459083.1036782,
     "ast_hash": "824adc22a4f118e2b289720da9b663a6",
@@ -6979,17 +6599,412 @@
     "ast_hash": "b11442ee05c1a6a7cdc650dae900b30a",
     "semantic_hash": ""
   },
-  "specs/195-fix-na-loja-os-math/design.md": {
+  "supabase/migrations/20260602140022_add_history_log_to_patio_os.sql": {
+    "mtime": 1785428874.0,
+    "ast_hash": "1d89c19f4b98d026c605e9f7955b8364",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260603000000_fix_import_logs.sql": {
+    "mtime": 1785428874.0,
+    "ast_hash": "240bcfb54f14e04fb0cf83bc9af8db25",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260605123007_create_delete_import_rpc.sql": {
+    "mtime": 1785428874.0,
+    "ast_hash": "ab0d6c0adb8c2ee28e6ba85c70f9e676",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260610091633_add_machine_total_to_reconciliations.sql": {
+    "mtime": 1785428874.0,
+    "ast_hash": "8023c4e5f8fd9aa3ec00de9383483275",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260610121559_add_machine_total_to_reconciliations.sql": {
+    "mtime": 1785428874.0,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260610125106_add_bank_reconciliation_fields.sql": {
+    "mtime": 1785428874.0,
+    "ast_hash": "877f86a25da2337bd764e2b6f1fa8f3a",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260610191300_add_bank_total_to_reconciliations.sql": {
+    "mtime": 1785428874.0,
+    "ast_hash": "5528ee98c514998406ab1a464bd96163",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260610210000_add_tx_source_and_match_engine.sql": {
+    "mtime": 1785428874.0,
+    "ast_hash": "979b0c55b1fae36fdc3c60dfd01cbaf9",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260610212000_fix_delete_import_rpc_source_ofx.sql": {
+    "mtime": 1785428874.0,
+    "ast_hash": "fe10c24d941f441765c761ead1d71b8e",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260610220000_update_bank_total_trigger.sql": {
+    "mtime": 1785428874.0,
+    "ast_hash": "652633bc030184c829cda4ba4de9686f",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260611083000_fix_store_id_uuid_to_text.sql": {
+    "mtime": 1785428874.0,
+    "ast_hash": "ca0b75bdc4d913eba1469d86c128df27",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260611140000_add_target_date_to_transactions.sql": {
+    "mtime": 1785428874.0,
+    "ast_hash": "ccf8acc0d6225cbf5e66e1a6ae3c90d9",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260612131236_create_interest_rates.sql": {
+    "mtime": 1785428874.0,
+    "ast_hash": "7c26b273a137425b4e90cea5a32cb1ec",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260714000001_bot_credentials_and_daily_snapshots.sql": {
+    "mtime": 1786367140.6324937,
+    "ast_hash": "4c9203652295285b1e4adbc364b82ddd",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260714000002_remove_interest_rates.sql": {
+    "mtime": 1785428874.0,
+    "ast_hash": "73060cd55b74eba4ea80405e9b5a9038",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260714184300_bot_logs_and_goals.sql": {
+    "mtime": 1785428874.0,
+    "ast_hash": "5f25675e09ca104ee08ddcecd6490e04",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260716000000_fix_ofx_deletion.sql": {
+    "mtime": 1785428874.0,
+    "ast_hash": "1b99e9f9cc3da2a5e11ac7cce36e2198",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260717000000_goals_and_tx_update.sql": {
+    "mtime": 1786367140.6344018,
+    "ast_hash": "3d6fc21ee97452276bf038d71011ba3f",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260718000000_ai_chat.sql": {
+    "mtime": 1786367140.637277,
+    "ast_hash": "cb32157013cb03a051effc5a4d35d61d",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260718000001_ai_settings.sql": {
+    "mtime": 1786367140.6395383,
+    "ast_hash": "549185f65b877490c9b4149859ccd4bf",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260720100000_reconciliacoes_triplas.sql": {
+    "mtime": 1786630127.1370027,
+    "ast_hash": "45f905ed16b3c60945615f26acff60d4",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260720140922_fix_delete_import_remnants.sql": {
+    "mtime": 1786630127.1390169,
+    "ast_hash": "e2a114556c2f0c85d926f02cb09bbbbb",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260720180000_enrich_patio_os.sql": {
+    "mtime": 1785428874.0,
+    "ast_hash": "daba082c111e1a2796c9044550203e0e",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260722142023_split_credit_debit.sql": {
+    "mtime": 1785428874.0,
+    "ast_hash": "68b6c1ee7af0f31e6490b92c912358fb",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260728000000_add_bot_settings.sql": {
+    "mtime": 1786630127.1409721,
+    "ast_hash": "cf89e7f112f1f28287fd29de48fad3ac",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260730000000_ias_claritas_graphify.sql": {
+    "mtime": 1786707035.5403795,
+    "ast_hash": "25f09c5894df8e0a847e74aba0468405",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260801000000_daily_snapshots_extension.sql": {
+    "mtime": 1785524691.3277187,
+    "ast_hash": "1871390d9bd566f424e9701b146ba6b8",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260803000000_oficina_bot_automation.sql": {
+    "mtime": 1786367140.6416204,
+    "ast_hash": "3373d4db16fff0d5ad3a7009dc35f232",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260803000001_cron_sync.sql": {
+    "mtime": 1786367140.643616,
+    "ast_hash": "a6a885f5e4b0b0a8a186257e64334989",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260804000000_add_account_limit_to_stores.sql": {
+    "mtime": 1786367140.6456096,
+    "ast_hash": "170894c06d904f834a4dd1e15fc87210",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260804000001_add_na_loja_os_history.sql": {
+    "mtime": 1786367140.6466072,
+    "ast_hash": "e03b9f0e8257e458478d9ec9beb3d0b2",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260805192825_add_previous_balance.sql": {
+    "mtime": 1786367140.648602,
+    "ast_hash": "80c04fd936439376b75bd5187ae7e04e",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260805200900_add_gross_and_fee_to_transactions.sql": {
+    "mtime": 1786367140.6501324,
+    "ast_hash": "9320affa085236a9486712c79fdcc4f1",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000000_global_math_and_logs.sql": {
+    "mtime": 1786367140.6520407,
+    "ast_hash": "71936ab7a93f8227e7800154f3c46063",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000001_update_global_math_logic.sql": {
+    "mtime": 1786367140.6538289,
+    "ast_hash": "70edd3e1232dfa3b92cd8e95ddda088f",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000002_backend_aggregation_views.sql": {
+    "mtime": 1786367140.6557076,
+    "ast_hash": "38d2bb355fa58d8132e26b64b9fff128",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000003_master_backend_delegation.sql": {
+    "mtime": 1786367140.6587453,
+    "ast_hash": "b341d7f480086e425bdf347cdd4de428",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000004_fix_dashboard_perf.sql": {
+    "mtime": 1786367140.6602557,
+    "ast_hash": "8d36e05ffdd19352f75d797e58efa4d0",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000005_remove_phantom_pix_column.sql": {
+    "mtime": 1786367140.6622343,
+    "ast_hash": "b7365f2c3445af02af9ff92a1b5afa33",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000006_fix_payment_method_typo.sql": {
+    "mtime": 1786367140.6646492,
+    "ast_hash": "24176cb25b86abb9d874a1f3468a8e60",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000007_fix_dashboard_patio_math.sql": {
+    "mtime": 1786367140.666651,
+    "ast_hash": "9fb853465d915cca985e31b6eb17e2be",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000008_math_accuracy_fixes.sql": {
+    "mtime": 1786367140.668433,
+    "ast_hash": "0b4025d6a4d4efb9446ca6fc604b17d2",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000009_schema_cleanup_and_split.sql": {
+    "mtime": 1786367140.6706712,
+    "ast_hash": "c40d09277b5bd33c350f2fa481931b3d",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000010_fix_dashboard_rpc.sql": {
+    "mtime": 1786367140.671548,
+    "ast_hash": "a96402153648d3f4458619e3039cc53f",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000011_create_transactions_view.sql": {
+    "mtime": 1786367140.6741724,
+    "ast_hash": "265d409175c39321392edcd07f7278ad",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000012_fix_auto_match_rpc.sql": {
+    "mtime": 1786367140.6781063,
+    "ast_hash": "ffeb138f110e8ab634210f63b40b0d82",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000013_fix_dashboard_metrics.sql": {
+    "mtime": 1786367140.6801102,
+    "ast_hash": "a018da36a05d6f5d42816fa66ba87f82",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000014_fix_conciliacao_math.sql": {
+    "mtime": 1786367140.6821024,
+    "ast_hash": "b9035e8455c13acfa7156c3707d4fb57",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000017_fix_diferenca_math.sql": {
+    "mtime": 1786367140.6840944,
+    "ast_hash": "9fd8df63fb1757f06535636ae147f6af",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000018_restore_import_logs_and_rpc.sql": {
+    "mtime": 1786367140.6858656,
+    "ast_hash": "0c008da0c65d379a26374cad20eeee92",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260807000019_fix_conciliation_matches_fkeys.sql": {
+    "mtime": 1786367140.6878645,
+    "ast_hash": "d8150dce297c74bcd19a7f548108507c",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260810000000_add_pos_dedup_hash.sql": {
+    "mtime": 1786371002.5687525,
+    "ast_hash": "4a7e84114044c02a13bc7588c7f3e9dc",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260810000001_fix_daily_conciliation_patio.sql": {
+    "mtime": 1786374932.5995479,
+    "ast_hash": "18c03dee58060ab050cdd53b034abbd7",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260810000002_fix_match_engine.sql": {
+    "mtime": 1786376201.5560162,
+    "ast_hash": "59127beaf538cb1dffcbc9716c106116",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260810000003_fix_conciliation_math_and_duplicates.sql": {
+    "mtime": 1786377077.2246652,
+    "ast_hash": "6e742a01e6f6fe8b38e13ca84d4bce24",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260810154944_fix_conciliation_math_and_duplicates.sql": {
+    "mtime": 1786376984.3858695,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260810165000_raw_data_rpcs.sql": {
+    "mtime": 1786378488.360656,
+    "ast_hash": "fc1571a89676235692af830d2018ece9",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260810170000_fix_raw_rpc_store_id_type.sql": {
+    "mtime": 1786383147.5789497,
+    "ast_hash": "8263d420987c16e3522a7234ac298614",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260810180000_conciliation_breakdown_rpc.sql": {
+    "mtime": 1786386260.984393,
+    "ast_hash": "748115d04736aabbb13acbd1c9fd08cf",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260810190000_historical_patio_os.sql": {
+    "mtime": 1786390267.970182,
+    "ast_hash": "9f7b7f5b3fdbc7d80c31a62edbb2f528",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260811124024_create_estoque_os_pendente.sql": {
+    "mtime": 1786630127.1414773,
+    "ast_hash": "412ab3f7ae1187121b9546624e608138",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260812100300_add_metadata_to_daily_snapshots.sql": {
+    "mtime": 1786630127.1476045,
+    "ast_hash": "e0cdcdfc17dce8442cb58ec0b203214a",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260812100400_fix_auto_match_rpc_date_window.sql": {
+    "mtime": 1786630127.1488934,
+    "ast_hash": "395ab1b37da5b4f064ee4e9645680163",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813081500_fix_conciliation_carry_over.sql": {
+    "mtime": 1786630127.150553,
+    "ast_hash": "71f441c335731f7c6f83c97d74c849b7",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813085500_fix_dashboard_math.sql": {
+    "mtime": 1786630127.1521335,
+    "ast_hash": "d822608196780461dbf0b82d05776358",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813094000_fix_rpc_conciliation_columns.sql": {
+    "mtime": 1786707035.5885198,
+    "ast_hash": "3aa6256801461b10306a1acd306262a3",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813095200_fila_orfaos.sql": {
+    "mtime": 1786707035.5900176,
+    "ast_hash": "0a7c5a6779deb030cf807341b070cf1f",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813103000_fix_dashboard_math_double_counting.sql": {
+    "mtime": 1786707035.5920277,
+    "ast_hash": "1547cd5195e93b380210e3f4a1972610",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813113000_process_marco_zero_rpc.sql": {
+    "mtime": 1786707035.5920277,
+    "ast_hash": "770ba7de9d0c73898266901a7e9ec857",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813120600_liquidate_legacy_os_rpc.sql": {
+    "mtime": 1786707035.5940397,
+    "ast_hash": "e1ac2eb6753eff7979ec79286ad66092",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813123412_fix_rpc_conciliation_columns.sql": {
+    "mtime": 1786707035.5940397,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813140500_fix_cartesian_ctes.sql": {
+    "mtime": 1786707035.5955503,
+    "ast_hash": "62ff7394fe225a6f182090d851aac545",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813150000_fix_ofx_bank_balance_and_status.sql": {
+    "mtime": 1786707035.5960553,
+    "ast_hash": "4c971e7dedec53a4af7748a6dd419766",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813160000_fix_global_reconciliation_sum_and_reset.sql": {
+    "mtime": 1786707035.5960553,
+    "ast_hash": "7dc8d86100bbc66c0b947bde42cccaf6",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260813170000_purge_corrupted_snapshot.sql": {
+    "mtime": 1786707035.59807,
+    "ast_hash": "d49fd26f71a387759c86719949240510",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260814010000_get_daily_reconciliation_summary.sql": {
+    "mtime": 1786709711.9247637,
+    "ast_hash": "e19f9e38ad9aae165fa3df1b8885c7a5",
+    "semantic_hash": ""
+  },
+  "specs/196-backend-daily-reconciliation-summary/design.md": {
+    "mtime": 1786709360.963948,
+    "ast_hash": "2d1d955ffecddc63b25e992ad29bf5e1",
+    "semantic_hash": ""
+  },
+  "specs/196-backend-daily-reconciliation-summary/proposal.md": {
+    "mtime": 1786709353.25597,
+    "ast_hash": "43f995a22a75ae5cb74e60d9f2844164",
+    "semantic_hash": ""
+  },
+  "specs/196-backend-daily-reconciliation-summary/spec-plan.md": {
+    "mtime": 1786709970.4740827,
+    "ast_hash": "1a742f7cf858475ed285f5f8bc88c1a7",
+    "semantic_hash": ""
+  },
+  "specs/archive/195-fix-na-loja-os-math/design.md": {
     "mtime": 1786707479.6100814,
     "ast_hash": "24998b7134a05d9b469f5e10ddca28de",
     "semantic_hash": ""
   },
-  "specs/195-fix-na-loja-os-math/proposal.md": {
+  "specs/archive/195-fix-na-loja-os-math/proposal.md": {
     "mtime": 1786707479.5653257,
     "ast_hash": "c5197d21e1364b3cdd3c7a015bdcf13a",
     "semantic_hash": ""
   },
-  "specs/195-fix-na-loja-os-math/spec-plan.md": {
+  "specs/archive/195-fix-na-loja-os-math/spec-plan.md": {
     "mtime": 1786707815.243613,
     "ast_hash": "e204d8ea4306f60bbc8c0060ce9a3b02",
     "semantic_hash": ""
