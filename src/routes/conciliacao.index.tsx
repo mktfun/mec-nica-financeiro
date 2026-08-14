@@ -10,7 +10,6 @@ import { useAvailableConciliacaoDates } from '@/hooks/useDailySnapshot';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { ResumoDiaPanel } from '@/components/conciliacao/ResumoDiaPanel';
 import { BreakdownModal } from '@/components/conciliacao/BreakdownModal';
-import { ImportConciliacaoModal } from '@/components/conciliacao/ImportConciliacaoModal';
 import { StoreSaldoState } from '@/lib/modulo1Calculations';
 import { UploadCloud } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -22,7 +21,7 @@ export const Route = createFileRoute('/conciliacao/')({
 function ConciliacaoPage() {
   const [selectedDate, setSelectedDate] = useState('');
   const [breakdownStore, setBreakdownStore] = useState<{ id: string; name: string } | null>(null);
-  const [showImportModal, setShowImportModal] = useState(false);
+  const navigate = Route.useNavigate();
   const queryClient = useQueryClient();
 
   const { data: availableDates = [], isLoading: loadingDates } = useAvailableConciliacaoDates();
@@ -106,26 +105,13 @@ function ConciliacaoPage() {
                 </p>
               </div>
               <button
-                onClick={() => setShowImportModal(true)}
+                onClick={() => navigate({ to: '/importacoes', search: { date: selectedDate, tab: 'diario' } })}
                 className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-lg shadow-emerald-950/50 flex items-center gap-2 transition-all cursor-pointer"
               >
                 <UploadCloud size={16} />
                 Importar e Fechar Dia
               </button>
             </div>
-
-            {/* Modal de Importação & Fechamento Diário */}
-            <ImportConciliacaoModal
-              isOpen={showImportModal}
-              onClose={() => setShowImportModal(false)}
-              selectedDate={selectedDate}
-              onSuccess={() => {
-                setShowImportModal(false);
-                queryClient.invalidateQueries({ queryKey: ['daily-snapshot'] });
-                queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
-                queryClient.invalidateQueries({ queryKey: ['available-conciliacao-dates'] });
-              }}
-            />
 
             {/* O Hero Card Unificado */}
             <ResumoDiaPanel 
