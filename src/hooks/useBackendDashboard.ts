@@ -95,7 +95,7 @@ export function useBackendDashboard(date: string) {
 
       const todayLog = (logsData || []).find((l: any) => l.date === effectiveDate) || {};
 
-      const faturamentoAtual = Number(todayLog.faturamento_atual || 0);
+      const faturamentoAtual = Number(globalMetrics?.faturamentoAtual ?? globalMetrics?.fatura ?? todayLog.faturamento_atual ?? 0);
       const faturamentoAnterior = Number(todayLog.faturamento_anterior || 0);
       const variacaoFaturamento = faturamentoAnterior > 0 
         ? ((faturamentoAtual - faturamentoAnterior) / faturamentoAnterior) * 100 
@@ -109,7 +109,7 @@ export function useBackendDashboard(date: string) {
         fluxoCaixa: globalMetrics.fluxoCx,
         contasAPagar: globalMetrics.valorContas,
         veiculosPatio: Number(todayLog.veiculos_patio || 0),
-        veiculosPatioValor: Number(todayLog.veiculos_patio_valor || globalMetrics.naLoja || 0),
+        veiculosPatioValor: Number(globalMetrics.naLoja ?? todayLog.veiculos_patio_valor ?? 0),
         porLoja: storeMetrics || [],
         historicoMacro
       } as DashboardMetrics;
