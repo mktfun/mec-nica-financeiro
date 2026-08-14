@@ -16,7 +16,16 @@ export default defineConfig({
     // Exclui pdfjs-dist do SSR: a lib acessa APIs do browser (DOMMatrix, canvas)
     // no momento do carregamento do módulo, derrubando o renderer do Vite/Node.
     ssr: {
-      external: ['pdfjs-dist'],
+      external: ['pdfjs-dist', 'framer-motion'],
+    },
+    build: {
+      // @ts-ignore
+      rolldownOptions: {
+        external: ['pdfjs-dist', 'framer-motion'],
+      },
+      rollupOptions: {
+        external: ['pdfjs-dist', 'framer-motion'],
+      },
     },
     optimizeDeps: {
       exclude: ['pdfjs-dist'],

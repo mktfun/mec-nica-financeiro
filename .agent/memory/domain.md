@@ -141,3 +141,14 @@
 **Contexto:** Os valores importados do OFX perdiam a precisão decimal quando terminavam em dízima de um dígito (ex: `.9`, `.5`) devido a uma falha na função legada `extractNumber`. Além disso, a diferença final da conciliação somava sinais negativos em cascata.
 
 **Regra aprendida:** Todo parse de moeda vinda do OFX (TRNAMT, BALAMT, LIMIT) deve ser literalmente convertido usando `parseFloat(` apñs replace de vírgula, e multiplicado por 100 com `Math.round(*float* * 100)` para garantir centavos exatos. A subtração de diferenças de caixa deve sempre confrontar a magnitude absoluta (`Math.abs()`) do disponível contra as contas.
+
+
+## [2026-08-14] — [Feature ID: 195-fix-na-loja-os-math]
+
+**Contexto:** O card "NA LOJA OS" exibia R$ 1.596.629,29 de forma persistente mesmo após limpar as importações diárias de pátio na UI, porque a tabela `estoque_os_pendente` (Marco Zero legado) estava sendo somada na métrica de fechamento diário.
+
+**Regra aprendida:** Agregações de fechamento diário (`get_dashboard_metrics` e `calculate_daily_conciliation`) devem refletir estritamente a movimentação corrente/transitória do pátio (`patio_os`). Dados estáticos/passivos de legado (Marco Zero / `estoque_os_pendente`) não devem ser somados diretamente aos cards de fechamento diário sem uma segmentação ou card explícito.
+
+**Risco identificado:** Misturar passivo legado com fluxo de pátio ativo faz o usuário acreditar que o botão de reset/lixeira da importação falhou.
+
+**Não fazer:** Nunca misturar saldos estáticos de tabelas de histórico Marco Zero diretamente em totais operacionais diários sem um card ou flag exclusivo.

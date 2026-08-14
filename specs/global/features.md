@@ -233,3 +233,5 @@ a_loja_os. Bootstrap coleta 'PÃ¡tio Pendente' para preencher caixa_atual e evita
 - **Módulos:** Importação (OFX), Conciliação
 - **src/lib/parsers/ofxParser.ts:** Implementada triangulação matemática para deduzir a grandeza correta de saldos truncados do Itaú (sem ponto e sem trailing zeros) cruzando o previousBalance + sum(TRNAMT). Resolve inflação de saldos globais para 6.5M.
 
+
+- **Desacoplamento Marco Zero e CorreÃ§Ã£o Na Loja OS (195):** RPCs `get_dashboard_metrics` e `calculate_daily_conciliation` refatoradas na migration `20260814000000_decouple_marco_zero.sql` para isolar a mÃ©trica "Na Loja OS" de `estoque_os_pendente`, garantindo que o card reflita 100% o pÃ¡tio diÃ¡rio real e zere ao acionar o botÃ£o de limpeza.
