@@ -46,14 +46,21 @@ export function useBackendDashboard(date: string) {
     queryFn: async (): Promise<DashboardMetrics> => {
       let effectiveDate = date;
       if (!effectiveDate) {
-        const { data: latestLog } = await supabase
-          .from('import_logs')
+        const { data: latestSnap } = await supabase
+          .from('daily_snapshots')
+          .select('date')
+          .order('date', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        const { data: latestBatch } = await supabase
+          .from('import_batches')
           .select('target_date')
           .order('target_date', { ascending: false })
           .limit(1)
-          .single();
-        
-        effectiveDate = latestLog?.target_date || new Date().toISOString().split('T')[0];
+          .maybeSingle();
+
+        effectiveDate = latestSnap?.date || latestBatch?.target_date || new Date().toISOString().split('T')[0];
       }
       
       console.log(`[Dashboard] Solicitando métricas via RPC get_dashboard_metrics para a data: ${effectiveDate}`);

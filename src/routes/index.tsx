@@ -1,10 +1,11 @@
-﻿import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { KpiCard } from '@/components/dashboard/KpiCard';
 import { StoreTableDashboard } from '@/components/dashboard/StoreTableDashboard';
 import { FaturamentoVsContasChart } from '@/components/dashboard/FaturamentoVsContasChart';
 import { EvolucaoMacroChart } from '@/components/dashboard/EvolucaoMacroChart';
 import { useBackendDashboard } from '@/hooks/useBackendDashboard';
+import { useAvailableConciliacaoDates } from '@/hooks/useDailySnapshot';
 import {
   Landmark,
   Wallet,
@@ -14,20 +15,46 @@ import {
   ArrowRightLeft,
   Clock,
   Car,
-  CalendarCheck2
+  CalendarCheck2,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Card } from '@/components/ui/Card';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export const Route = createFileRoute('/')({
   component: DashboardPage,
 });
 
 function DashboardPage() {
+  const { data: availableDates = [], isLoading: loadingDates } = useAvailableConciliacaoDates();
   const [selectedDate, setSelectedDate] = useState<string>('');
+
+  useEffect(() => {
+    if (!selectedDate && availableDates.length > 0) {
+      setSelectedDate(availableDates[availableDates.length - 1]);
+    }
+  }, [availableDates, selectedDate]);
+
   const { data, isLoading } = useBackendDashboard(selectedDate || '');
+
+  const handleNavigateDate = (direction: 'prev' | 'next') => {
+    if (availableDates.length === 0) return;
+    const currentIndex = availableDates.indexOf(selectedDate);
+    if (currentIndex === -1) {
+      setSelectedDate(availableDates[availableDates.length - 1]);
+      return;
+    }
+    const newIndex = direction === 'prev' ? currentIndex - 1 : currentIndex + 1;
+    if (newIndex >= 0 && newIndex < availableDates.length) {
+      setSelectedDate(availableDates[newIndex]);
+    }
+  };
+
+  const isFirstDate = availableDates.length > 0 && selectedDate === availableDates[0];
+  const isLastDate = availableDates.length > 0 && selectedDate === availableDates[availableDates.length - 1];
 
   return (
     <AppShell>
@@ -35,15 +62,41 @@ function DashboardPage() {
 
         {/* ── HEADER ── */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <h1 className="font-display font-bold text-3xl text-white">Visão Geral</h1>
-          <div className="flex items-center gap-2 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] px-3 py-1.5 rounded-lg shadow-sm focus-within:ring-1 focus-within:ring-[var(--color-primary)]">
-            <CalendarCheck2 size={16} className="text-[var(--color-primary)]" />
-            <input 
-              type="date"
-              value={selectedDate || data?.dataAtual || ''}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              className="bg-transparent border-none outline-none text-sm text-white font-medium w-[130px] p-0 focus:ring-0 [&::-webkit-calendar-picker-indicator]:invert-[0.6] cursor-pointer"
-            />
+          <div>
+            <h1 className="font-display font-bold text-3xl text-white">Visão Geral</h1>
+            <p className="text-xs text-zinc-400 mt-0.5">Indicadores consolidados em tempo real</p>
+          </div>
+          
+          <div className="flex items-center gap-1 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] p-1 rounded-xl shadow-sm">
+            <button
+              type="button"
+              onClick={() => handleNavigateDate('prev')}
+              disabled={loadingDates || isFirstDate || availableDates.length === 0}
+              className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 disabled:opacity-25 disabled:cursor-not-allowed transition-all cursor-pointer"
+              title="Data anterior com fechamento"
+            >
+              <ChevronLeft size={18} />
+            </button>
+
+            <div className="flex items-center gap-2 px-2 py-1">
+              <CalendarCheck2 size={16} className="text-[var(--color-primary)]" />
+              <input 
+                type="date"
+                value={selectedDate || data?.dataAtual || ''}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="bg-transparent border-none outline-none text-sm text-white font-medium w-[130px] p-0 focus:ring-0 [&::-webkit-calendar-picker-indicator]:invert-[0.6] cursor-pointer"
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={() => handleNavigateDate('next')}
+              disabled={loadingDates || isLastDate || availableDates.length === 0}
+              className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 disabled:opacity-25 disabled:cursor-not-allowed transition-all cursor-pointer"
+              title="Próxima data com fechamento"
+            >
+              <ChevronRight size={18} />
+            </button>
           </div>
         </div>
 

@@ -35,16 +35,28 @@ export function useDashboardV2(selectedDateStr?: string) {
   return useQuery({
     queryKey: ['dashboard-v2', selectedDateStr || 'latest'],
     queryFn: async (): Promise<DashboardV2Data> => {
-      // 1. Descobrir as datas via import_logs (nova fonte da verdade para importações)
-      const { data: datesData, error: datesErr } = await supabase
-        .from('import_logs')
+      // 1. Descobrir as datas via daily_snapshots, import_batches e reconciliations
+      const datesSet = new Set<string>();
+
+      const { data: snapDates } = await supabase
+        .from('daily_snapshots')
+        .select('date')
+        .order('date', { ascending: false });
+      snapDates?.forEach(d => { if (d.date) datesSet.add(d.date); });
+
+      const { data: batchDates } = await supabase
+        .from('import_batches')
         .select('target_date')
         .order('target_date', { ascending: false });
+      batchDates?.forEach(d => { if (d.target_date) datesSet.add(d.target_date); });
 
-      if (datesErr) throw datesErr;
+      const { data: reconDates } = await supabase
+        .from('reconciliations')
+        .select('date')
+        .order('date', { ascending: false });
+      reconDates?.forEach(d => { if (d.date) datesSet.add(d.date); });
 
-      // Pega as datas únicas, decrescentes
-      const uniqueDates = Array.from(new Set((datesData || []).map(d => d.target_date)));
+      const uniqueDates = Array.from(datesSet).sort().reverse();
       
       let dateAtual = selectedDateStr || uniqueDates[0] || new Date().toISOString().split('T')[0];
       
