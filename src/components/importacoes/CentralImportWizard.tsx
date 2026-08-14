@@ -37,6 +37,22 @@ export interface ImportLogEntry {
   message: string;
 }
 
+export interface MissingPatioOsEdit {
+  id: string;
+  os_number: string;
+  plate: string;
+  store_id: string;
+  store_name: string;
+  original_total_value: number;
+  original_paid_value: number;
+  original_status: string;
+  total_value: number;
+  paid_value: number;
+  status: string;
+  opened_at?: string;
+  days_open?: number;
+}
+
 const INITIAL_STAGES: AgentStage[] = [
   { id: 'os',         title: 'Importando OS do pátio',             status: 'pending', subSteps: [] },
   { id: 'maquininha', title: 'Lendo maquininha / Rede',            status: 'pending', subSteps: [] },
@@ -145,6 +161,19 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const [manualDinheiroMp, setManualDinheiroMp] = useState<number>(0);
   const [manualAReceber, setManualAReceber] = useState<number>(0);
 
+  // OSs ausentes / órfãs detectadas para ajuste manual livre
+  const [missingOsList, setMissingOsList] = useState<MissingPatioOsEdit[]>([]);
+  const [isLoadingMissingOs, setIsLoadingMissingOs] = useState(false);
+
+  const updateMissingOs = (id: string, field: 'total_value' | 'paid_value' | 'status', value: any) => {
+    setMissingOsList(prev => prev.map(item => {
+      if (item.id === id) {
+        return { ...item, [field]: value };
+      }
+      return item;
+    }));
+  };
+
   // Terminal logs state
   const [importLogs, setImportLogs] = useState<ImportLogEntry[]>([]);
   const [importStages, setImportStages] = useState<AgentStage[]>(INITIAL_STAGES);
@@ -161,6 +190,64 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const saveSnapshot = useSaveDailySnapshot();
   const [isSaving, setIsSaving] = useState(false);
   const navigate = useNavigate();
+
+  // Detecção de OSs ativas no banco que não vieram no relatório importado do mês
+  useEffect(() => {
+    async function detectMissingOs() {
+      if (step !== 3) return;
+
+      const mappedStoreIds = Object.values(mapping).filter(id => id && id !== 'GLOBAL');
+      if (mappedStoreIds.length === 0) return;
+
+      setIsLoadingMissingOs(true);
+      try {
+        const { data: dbActiveOs, error } = await supabase
+          .from('patio_os')
+          .select('id, os_number, plate, store_id, store_name, total_value, paid_value, status, opened_at, days_open')
+          .in('store_id', mappedStoreIds)
+          .in('status', ['em_aberto', 'pago_parcial', 'ABERTA', 'PENDENTE']);
+
+        if (error) {
+          console.error("Erro ao buscar OSs ativas no banco:", error);
+          return;
+        }
+
+        const importedOsNumbersByStore = new Set<string>();
+        results.osFiles.filter(f => f.success).forEach(file => {
+          const storeId = mapping[file.storeAlias];
+          file.osArray.forEach(os => {
+            importedOsNumbersByStore.add(`${storeId}_${String(os.os_number).trim()}`);
+          });
+        });
+
+        const missing: MissingPatioOsEdit[] = (dbActiveOs || [])
+          .filter(dbOs => !importedOsNumbersByStore.has(`${dbOs.store_id}_${String(dbOs.os_number).trim()}`))
+          .map(dbOs => ({
+            id: dbOs.id,
+            os_number: String(dbOs.os_number),
+            plate: dbOs.plate || '-',
+            store_id: dbOs.store_id,
+            store_name: dbOs.store_name || stores.find(s => s.id === dbOs.store_id)?.name || 'Loja',
+            original_total_value: Number(dbOs.total_value) || 0,
+            original_paid_value: Number(dbOs.paid_value) || 0,
+            original_status: dbOs.status || 'em_aberto',
+            total_value: Number(dbOs.total_value) || 0,
+            paid_value: Number(dbOs.paid_value) || 0,
+            status: dbOs.status || 'em_aberto',
+            opened_at: dbOs.opened_at,
+            days_open: dbOs.days_open
+          }));
+
+        setMissingOsList(missing);
+      } catch (err) {
+        console.error("Erro ao detectar OSs ausentes:", err);
+      } finally {
+        setIsLoadingMissingOs(false);
+      }
+    }
+
+    detectMissingOs();
+  }, [step, mapping, results.osFiles, stores]);
 
   
   const updateStage = (stageIdx: number, status: 'pending'|'running'|'success'|'error', subLabel?: string) => {
@@ -281,6 +368,28 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
     try {
       updateStage(0, 'running', 'Iniciando gravação...');
       await new Promise(r => setTimeout(r, 200));
+
+      // 0. Gravar alterações em lote nas OSs ausentes ajustadas manualmente pelo operador
+      const modifiedMissingOs = missingOsList.filter(
+        os => os.total_value !== os.original_total_value || os.paid_value !== os.original_paid_value || os.status !== os.original_status
+      );
+
+      if (modifiedMissingOs.length > 0) {
+        addLog(`Atualizando ${modifiedMissingOs.length} OSs ausentes ajustadas manualmente...`, 'info');
+        const updatePromises = modifiedMissingOs.map(os => 
+          supabase
+            .from('patio_os')
+            .update({
+              total_value: os.total_value,
+              paid_value: os.paid_value,
+              status: os.status,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', os.id)
+        );
+        await Promise.all(updatePromises);
+        addLog(`${modifiedMissingOs.length} OSs ausentes atualizadas com sucesso.`, 'success');
+      }
 
       const txsToInsert: any[] = [];
       const storeBankBalances: Record<string, number> = {};
@@ -1314,6 +1423,100 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
           </div>
 
           <Card className="p-8 space-y-6">
+            {/* Tabela de Ajuste Manual Direto para OSs Ausentes no Relatório Atual */}
+            {missingOsList.length > 0 && (
+              <div className="p-6 bg-[var(--bg-canvas)] border border-amber-500/30 rounded-2xl shadow-xl space-y-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-3 border-b border-amber-500/20">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-2 bg-amber-500/10 text-amber-400 rounded-lg">
+                      <AlertCircle size={20} />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-sm text-[var(--text-primary)]">
+                        OSs Pendentes Ausentes no Relatório Atual ({missingOsList.length})
+                      </h4>
+                      <p className="text-xs text-[var(--text-tertiary)]">
+                        Estas ordens constam ativas no banco de dados, mas não vieram na planilha do mês importada. Ajuste os valores ou status livremente abaixo:
+                      </p>
+                    </div>
+                  </div>
+                  <Badge variant="outline" className="text-xs bg-amber-500/10 text-amber-400 border-amber-500/30 font-mono self-start md:self-auto">
+                    Controle Manual
+                  </Badge>
+                </div>
+
+                <div className="overflow-x-auto max-h-80 overflow-y-auto">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="border-b border-[var(--border-subtle)] text-[var(--text-tertiary)] uppercase font-semibold">
+                        <th className="py-2.5 px-3">Loja</th>
+                        <th className="py-2.5 px-3">OS / Placa</th>
+                        <th className="py-2.5 px-3">Abertura</th>
+                        <th className="py-2.5 px-3 w-36">Valor Total (R$)</th>
+                        <th className="py-2.5 px-3 w-36">Total Pago (R$)</th>
+                        <th className="py-2.5 px-3">Saldo Pendente</th>
+                        <th className="py-2.5 px-3 w-40">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[var(--border-subtle)]">
+                      {missingOsList.map((os) => {
+                        const saldoPendente = Math.max(0, Number(os.total_value || 0) - Number(os.paid_value || 0));
+                        const isModified = os.total_value !== os.original_total_value || os.paid_value !== os.original_paid_value || os.status !== os.original_status;
+
+                        return (
+                          <tr key={os.id} className={`hover:bg-white/[0.02] transition-colors ${isModified ? 'bg-amber-500/5' : ''}`}>
+                            <td className="py-2.5 px-3 font-medium text-[var(--text-primary)]">
+                              {os.store_name}
+                            </td>
+                            <td className="py-2.5 px-3">
+                              <span className="font-mono font-bold text-[var(--text-primary)] block">#{os.os_number}</span>
+                              <span className="text-[10px] text-[var(--text-tertiary)]">{os.plate}</span>
+                            </td>
+                            <td className="py-2.5 px-3 text-[var(--text-tertiary)] font-mono text-[11px]">
+                              {os.opened_at ? os.opened_at.split('-').reverse().join('/') : '-'}
+                            </td>
+                            <td className="py-2 px-3">
+                              <input
+                                type="number"
+                                step="0.01"
+                                value={os.total_value}
+                                onChange={(e) => updateMissingOs(os.id, 'total_value', Number(e.target.value))}
+                                className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg px-2.5 py-1 text-xs font-mono font-semibold text-[var(--text-primary)] focus:outline-none"
+                              />
+                            </td>
+                            <td className="py-2 px-3">
+                              <input
+                                type="number"
+                                step="0.01"
+                                value={os.paid_value}
+                                onChange={(e) => updateMissingOs(os.id, 'paid_value', Number(e.target.value))}
+                                className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg px-2.5 py-1 text-xs font-mono font-semibold text-[var(--color-accent-teal)] focus:outline-none"
+                              />
+                            </td>
+                            <td className="py-2.5 px-3 font-mono font-bold text-[var(--color-accent-warning)]">
+                              {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(saldoPendente)}
+                            </td>
+                            <td className="py-2 px-3">
+                              <select
+                                value={os.status}
+                                onChange={(e) => updateMissingOs(os.id, 'status', e.target.value)}
+                                className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg px-2 py-1 text-xs font-semibold text-[var(--text-primary)] focus:outline-none"
+                              >
+                                <option value="em_aberto">em_aberto</option>
+                                <option value="pago_parcial">pago_parcial</option>
+                                <option value="finalizado">finalizado</option>
+                                <option value="cancelado">cancelado</option>
+                              </select>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
             <h3 className="font-display text-xl font-semibold">Previsão por Loja</h3>
             
             {/* Aviso Anti-Zero */}

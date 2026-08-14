@@ -10,7 +10,10 @@ import { useAvailableConciliacaoDates } from '@/hooks/useDailySnapshot';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { ResumoDiaPanel } from '@/components/conciliacao/ResumoDiaPanel';
 import { BreakdownModal } from '@/components/conciliacao/BreakdownModal';
+import { ImportConciliacaoModal } from '@/components/conciliacao/ImportConciliacaoModal';
 import { StoreSaldoState } from '@/lib/modulo1Calculations';
+import { UploadCloud } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 
 export const Route = createFileRoute('/conciliacao/')({
   component: ConciliacaoPage,
@@ -19,6 +22,8 @@ export const Route = createFileRoute('/conciliacao/')({
 function ConciliacaoPage() {
   const [selectedDate, setSelectedDate] = useState('');
   const [breakdownStore, setBreakdownStore] = useState<{ id: string; name: string } | null>(null);
+  const [showImportModal, setShowImportModal] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: availableDates = [], isLoading: loadingDates } = useAvailableConciliacaoDates();
   const { data: stores = [], isLoading: loadingStores } = useStores();
@@ -90,6 +95,38 @@ function ConciliacaoPage() {
           </div>
         ) : (
           <>
+            {/* Botão de Ação Rápida: Importação & Fechamento Diário */}
+            <div className="flex justify-between items-center bg-zinc-900/60 border border-zinc-800/80 p-4 rounded-2xl">
+              <div>
+                <h2 className="text-base font-bold text-zinc-100 flex items-center gap-2">
+                  Painel de Conciliação Diária
+                </h2>
+                <p className="text-xs text-zinc-400">
+                  Consolidação dos 5 pilares, faturamento odômetro e conferência por filial.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowImportModal(true)}
+                className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-lg shadow-emerald-950/50 flex items-center gap-2 transition-all cursor-pointer"
+              >
+                <UploadCloud size={16} />
+                Importar e Fechar Dia
+              </button>
+            </div>
+
+            {/* Modal de Importação & Fechamento Diário */}
+            <ImportConciliacaoModal
+              isOpen={showImportModal}
+              onClose={() => setShowImportModal(false)}
+              selectedDate={selectedDate}
+              onSuccess={() => {
+                setShowImportModal(false);
+                queryClient.invalidateQueries({ queryKey: ['daily-snapshot'] });
+                queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+                queryClient.invalidateQueries({ queryKey: ['available-conciliacao-dates'] });
+              }}
+            />
+
             {/* O Hero Card Unificado */}
             <ResumoDiaPanel 
               selectedDate={selectedDate}

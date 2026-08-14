@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1786712653.1877801,
-    "ast_hash": "e251089153c823fd370839d66aee2eb4",
+    "mtime": 1786716403.831819,
+    "ast_hash": "bc12f612dd042271cb69b95b7036901a",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -1315,8 +1315,8 @@
     "semantic_hash": ""
   },
   "src/routes/conciliacao.index.tsx": {
-    "mtime": 1786709804.5977237,
-    "ast_hash": "6e0b510fc5e5880a645947d99974c3f2",
+    "mtime": 1786717745.9235773,
+    "ast_hash": "d5214489a4e91d399416b44794a6bb22",
     "semantic_hash": ""
   },
   "src/routes/configuracoes.tsx": {
@@ -1335,8 +1335,8 @@
     "semantic_hash": ""
   },
   "src/routes/importacoes.tsx": {
-    "mtime": 1786367140.550498,
-    "ast_hash": "02d23918fd0ca7a1bf74eb0e28d479cc",
+    "mtime": 1786717820.1814933,
+    "ast_hash": "cfaacc1f7bd938e56e0ce9351f0df2e7",
     "semantic_hash": ""
   },
   "src/routes/importar-os.tsx": {
@@ -3205,8 +3205,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786710424.7558568,
-    "ast_hash": "98a5c9d8b8fd4651266a2d6f433ce1a3",
+    "mtime": 1786717948.8477087,
+    "ast_hash": "ae8119773ff439d694c939e741caefb6",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -6554,11 +6554,6 @@
     "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
     "semantic_hash": ""
   },
-  "run_sql.cjs": {
-    "mtime": 1786707035.4848967,
-    "ast_hash": "ac94651c6aa0b55e02a4bfe59b95631a",
-    "semantic_hash": ""
-  },
   "specs/archive/194-restore-previous-parser/design.md": {
     "mtime": 1786707035.5240166,
     "ast_hash": "f323cc89b5d1199749bcbefccb4d763c",
@@ -6994,21 +6989,6 @@
     "ast_hash": "e204d8ea4306f60bbc8c0060ce9a3b02",
     "semantic_hash": ""
   },
-  "specs/197-odometer-faturamento-and-ui-cleanup/design.md": {
-    "mtime": 1786712437.053002,
-    "ast_hash": "488ada41e89e8d91ee1fa0e55b8843a0",
-    "semantic_hash": ""
-  },
-  "specs/197-odometer-faturamento-and-ui-cleanup/proposal.md": {
-    "mtime": 1786712428.7462394,
-    "ast_hash": "65d1e08abbb1840a17c6f749b812ac7e",
-    "semantic_hash": ""
-  },
-  "specs/197-odometer-faturamento-and-ui-cleanup/spec-plan.md": {
-    "mtime": 1786713383.420305,
-    "ast_hash": "d15abe16a2c2f59f0485ac8bc7d63dbd",
-    "semantic_hash": ""
-  },
   "specs/archive/196-backend-daily-reconciliation-summary/design.md": {
     "mtime": 1786709360.963948,
     "ast_hash": "2d1d955ffecddc63b25e992ad29bf5e1",
@@ -7022,6 +7002,66 @@
   "specs/archive/196-backend-daily-reconciliation-summary/spec-plan.md": {
     "mtime": 1786709970.4740827,
     "ast_hash": "1a742f7cf858475ed285f5f8bc88c1a7",
+    "semantic_hash": ""
+  },
+  "specs/archive/197-odometer-faturamento-and-ui-cleanup/design.md": {
+    "mtime": 1786712437.053002,
+    "ast_hash": "488ada41e89e8d91ee1fa0e55b8843a0",
+    "semantic_hash": ""
+  },
+  "specs/archive/197-odometer-faturamento-and-ui-cleanup/proposal.md": {
+    "mtime": 1786712428.7462394,
+    "ast_hash": "65d1e08abbb1840a17c6f749b812ac7e",
+    "semantic_hash": ""
+  },
+  "specs/archive/197-odometer-faturamento-and-ui-cleanup/spec-plan.md": {
+    "mtime": 1786713383.420305,
+    "ast_hash": "d15abe16a2c2f59f0485ac8bc7d63dbd",
+    "semantic_hash": ""
+  },
+  "src/components/conciliacao/ImportConciliacaoModal.tsx": {
+    "mtime": 1786717674.424428,
+    "ast_hash": "ef1b023e8f1b6e4c26b2da9e96ad2159",
+    "semantic_hash": ""
+  },
+  "src/hooks/useStoreFileMappings.ts": {
+    "mtime": 1786717623.517277,
+    "ast_hash": "f3cc8b58b8661edc50147afcc3a6aef1",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260814120000_create_store_file_mappings.sql": {
+    "mtime": 1786717589.4390385,
+    "ast_hash": "1a9ea05a6e1893ee885d1dba32522455",
+    "semantic_hash": ""
+  },
+  "specs/199-unified-single-flow-import-modal/design.md": {
+    "mtime": 1786717210.62233,
+    "ast_hash": "6fccb4bee2e02f7813410051e7f87671",
+    "semantic_hash": ""
+  },
+  "specs/199-unified-single-flow-import-modal/proposal.md": {
+    "mtime": 1786717203.201125,
+    "ast_hash": "3d36166e144b613aea59e02b4cb03797",
+    "semantic_hash": ""
+  },
+  "specs/199-unified-single-flow-import-modal/spec-plan.md": {
+    "mtime": 1786717873.9299333,
+    "ast_hash": "b401f5f7abf8e798a5a7638f71cab2aa",
+    "semantic_hash": ""
+  },
+  "specs/archive/198-manual-os-diff-resolution-in-import-modal/design.md": {
+    "mtime": 1786716275.3800712,
+    "ast_hash": "966b1c2123d866ca7c1daebeaa473979",
+    "semantic_hash": ""
+  },
+  "specs/archive/198-manual-os-diff-resolution-in-import-modal/proposal.md": {
+    "mtime": 1786716267.697062,
+    "ast_hash": "3385826961589d005bcb0167ed8572b9",
+    "semantic_hash": ""
+  },
+  "specs/archive/198-manual-os-diff-resolution-in-import-modal/spec-plan.md": {
+    "mtime": 1786716716.795995,
+    "ast_hash": "d3ea872f9120d321f8caae999f81d5b5",
     "semantic_hash": ""
   }
 }

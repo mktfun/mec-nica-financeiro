@@ -1,6 +1,8 @@
 # Features
 ### Frontend
 
+- **[199-unified-single-flow-import-modal]** Modal de Importação e Fechamento Diário Unificado (`ImportConciliacaoModal.tsx`): Layout Single-Flow Block de 2 colunas responsivas em Dark-UI sólido (Zinc-950), eliminando steppers e centralizando upload de arquivos, inputs manuais (odômetro, dinheiro MP, a receber, contas manual), ajuste de OSs órfãs e persistência de matches de lojas no Supabase (`store_file_mappings`).
+
 - `src/routes/custos.tsx`: Nova tela de monitoramento de custos com I.A., exibindo painel com métricas de requisições de Chat e Motor filtráveis por período (Hoje, Esta Semana, Este Mês).
 - `src/routes/agente.tsx`: Interface de chat principal, agora com paginação no histórico, UI livre de overlaps no layout principal, e auto-titulação.
 - `src/routes/logs.agente.tsx`: Monitoramento e telemetria, com botão de navegação nativa.
@@ -228,10 +230,10 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - **src/lib/parsers/ofxParser.ts:** Ajustou-se a extração de `TRNAMT`, `OVERDRAFTLIMIT`, etc. para usar `parseFloat(` nativo, prevenindo truncamento de dízimas de um dígito como `.9` ou `.5` que alteravam a grandeza do saldo (ex: 39.851,90 entrando como 3.985,19).
 - **src/lib/modulo1Calculations.ts:** Ajustou-se a formula de diferença para confrontar magnitude absoluta do disponível contra contas `Yabs(X) - Y`, evitando acumulaação de sinais negativos (ex: -195k).
 
-### 2026-08-13: Prote��o Extrema de Precis�o OFX Ita� (195)
+### 2026-08-13: Prote��o Extrema de Precis�o OFX Ita� (195)
 - **Status:** Implementado
-- **M�dulos:** Importa��o (OFX), Concilia��o
-- **src/lib/parsers/ofxParser.ts:** Implementada triangula��o matem�tica para deduzir a grandeza correta de saldos truncados do Ita� (sem ponto e sem trailing zeros) cruzando o previousBalance + sum(TRNAMT). Resolve infla��o de saldos globais para 6.5M.
+- **M�dulos:** Importa��o (OFX), Concilia��o
+- **src/lib/parsers/ofxParser.ts:** Implementada triangula��o matem�tica para deduzir a grandeza correta de saldos truncados do Ita� (sem ponto e sem trailing zeros) cruzando o previousBalance + sum(TRNAMT). Resolve infla��o de saldos globais para 6.5M.
 
 
 - **Desacoplamento Marco Zero e Correção Na Loja OS (195):** RPCs `get_dashboard_metrics` e `calculate_daily_conciliation` refatoradas na migration `20260814000000_decouple_marco_zero.sql` para isolar a métrica "Na Loja OS" de `estoque_os_pendente`, garantindo que o card reflita 100% o pátio diário real e zere ao acionar o botão de limpeza.

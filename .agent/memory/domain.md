@@ -179,3 +179,29 @@
 **Risco identificado:** Digitação acidental de uma leitura inferior à anterior gerando faturamento líquido negativo. A UI deve exibir em destaque o comparativo com a leitura anterior.
 
 **Não fazer:** Nunca subtrair receitas individuais de OFX do faturamento sem respeitar a leitura acumulada como verdade mestre do fechamento.
+
+## [2026-08-14] — [Feature ID: 198-manual-os-diff-resolution-in-import-modal]
+
+**Contexto:** Resolução manual de OSs ausentes no modal de importação centralizada para ordens antigas do pátio que não constam no recorte mensal do ERP.
+
+**Regra aprendida:**
+1. **Controle Manual Estrito de OSs Órfãs:** O sistema deve detectar no client-side quais OSs ativas no banco de dados não vieram no relatório importado do mês atual e renderizar uma tabela simples para edição direta de `Valor Total`, `Total Pago` e `Status`.
+2. **Sem Baixas Mágicas / Automáticas:** O operador ajusta os valores e status livremente na tabela.
+3. **Persistência em Lote:** As alterações das OSs ausentes só são persistidas no Supabase ao confirmar o lote final de importação, garantindo atomicidade e conferência prévia.
+
+**Risco identificado:** Sobrescrever ou deletar ordens ativas do pátio simplesmente porque não constam na planilha mensal recente.
+
+**Não fazer:** Nunca aplicar baixas automáticas ou inferir liquidação de ordens sem confirmação explícita do operador.
+
+## [2026-08-14] — [Feature ID: 199-unified-single-flow-import-modal]
+
+**Contexto:** Unificação do fluxo de importação e fechamento diário em um modal Single-Flow de 2 colunas com persistência centralizada de mapeamentos de lojas no Supabase.
+
+**Regra aprendida:**
+1. **Persistência Centralizada de Mapeamento de Lojas:** Os vínculos entre os identificadores dos arquivos (aliases) e as lojas cadastradas devem ser persistidos na tabela `store_file_mappings` no Supabase. Isso garante que nunca seja necessário refazer os matches ao trocar de navegador ou sessão.
+2. **Layout em Bloco Único (Sem Steppers):** A interface de importação e fechamento concentra a dropzone, o reconhecimento de lojas, os inputs globais do dia (odômetro, dinheiro MP, a receber, contas manual) e o grid de OSs órfãs em uma única visualização em 2 colunas.
+3. **Persistência em Lote:** O fechamento e a importação são enviados ao Supabase em um único lote atômico através do botão "Confirmar e Gravar Fechamento".
+
+**Risco identificado:** Perda de matches de lojas em novos navegadores caso dependa exclusivamente de `localStorage`.
+
+**Não fazer:** Nunca armazenar mapeamentos de infraestrutura financeira apenas no storage local do browser.

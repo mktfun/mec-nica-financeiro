@@ -1,0 +1,136 @@
+import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase, StoreRow } from '@/lib/supabase';
+
+export interface StoreFileMapping {
+  id?: string;
+  file_alias: string;
+  store_id: string;
+  store_name?: string;
+}
+
+const LOCAL_STORAGE_KEY = '@mecanica/unified-mappings';
+
+export function useStoreFileMappings(stores: StoreRow[] = []) {
+  const queryClient = useQueryClient();
+  const [localMapping, setLocalMapping] = useState<Record<string, string>>({});
+
+  // 1. Carregar mapeamentos persistidos no Supabase
+  const { data: dbMappings = [], isLoading: isLoadingDb } = useQuery({
+    queryKey: ['store_file_mappings'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('store_file_mappings')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.warn('[useStoreFileMappings] Erro ao carregar do Supabase:', error);
+        return [];
+      }
+      return (data || []) as StoreFileMapping[];
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutos de cache
+  });
+
+  // 2. Inicializar mapa combinando Supabase (prioritário) + localStorage (fallback) + auto-match por nome
+  useEffect(() => {
+    const combined: Record<string, string> = {};
+
+    // 2.1 Fallback localStorage
+    try {
+      const savedStr = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (savedStr) {
+        const saved = JSON.parse(savedStr);
+        Object.keys(saved).forEach(alias => {
+          const val = saved[alias];
+          // Se for slug, converter para store_id
+          const found = stores.find(s => 
+            s.id === val || 
+            s.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim() === val
+          );
+          if (found) {
+            combined[alias] = found.id;
+          } else if (val) {
+            combined[alias] = val;
+          }
+        });
+      }
+    } catch (e) {
+      console.warn('[useStoreFileMappings] Erro ao ler localStorage:', e);
+    }
+
+    // 2.2 Prioridade: dados do Supabase
+    dbMappings.forEach(m => {
+      if (m.file_alias && m.store_id) {
+        combined[m.file_alias] = m.store_id;
+      }
+    });
+
+    // 2.3 Auto-match por similaridade de nome para aliases que ainda não têm vínculo
+    stores.forEach(s => {
+      const cleanStoreName = s.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+      // Auto-vínculo para o próprio nome da loja
+      if (!combined[s.name]) combined[s.name] = s.id;
+      if (!combined[cleanStoreName]) combined[cleanStoreName] = s.id;
+    });
+
+    setLocalMapping(combined);
+  }, [dbMappings, stores]);
+
+  // 3. Mutação para salvar/atualizar match no Supabase e localStorage
+  const mutation = useMutation({
+    mutationFn: async ({ file_alias, store_id, store_name }: { file_alias: string; store_id: string; store_name?: string }) => {
+      // Salva no Supabase via upsert
+      const { data, error } = await supabase
+        .from('store_file_mappings')
+        .upsert(
+          {
+            file_alias,
+            store_id,
+            store_name: store_name || null,
+            updated_at: new Date().toISOString()
+          },
+          { onConflict: 'file_alias' }
+        )
+        .select()
+        .single();
+
+      if (error) {
+        console.error('[useStoreFileMappings] Erro ao salvar mapeamento no Supabase:', error);
+        throw error;
+      }
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['store_file_mappings'] });
+    }
+  });
+
+  const updateMapping = useCallback((file_alias: string, store_id: string, store_name?: string) => {
+    if (!file_alias) return;
+
+    // Atualização otimista local
+    setLocalMapping(prev => {
+      const next = { ...prev, [file_alias]: store_id };
+      try {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(next));
+      } catch (e) {}
+      return next;
+    });
+
+    // Persistência no Supabase (se loja válida selecionada)
+    if (store_id && store_id !== 'GLOBAL') {
+      mutation.mutate({ file_alias, store_id, store_name });
+    } else if (store_id === 'GLOBAL') {
+      // Atualiza apenas localmente para ignorar nesta sessão
+    }
+  }, [mutation]);
+
+  return {
+    mapping: localMapping,
+    isLoading: isLoadingDb,
+    updateMapping,
+    setMapping: setLocalMapping
+  };
+}

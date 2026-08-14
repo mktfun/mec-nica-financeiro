@@ -1,4 +1,4 @@
-﻿import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { FileSpreadsheet, Trash2, AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight, UploadCloud, RefreshCw } from 'lucide-react';
 import { useImportsHistory, useDeleteImport, useClearAllData, GroupedImportLog } from '@/hooks/useImportProcessor';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { CentralImportWizard } from '@/components/importacoes/CentralImportWizard';
+import { ImportConciliacaoModal } from '@/components/conciliacao/ImportConciliacaoModal';
 import { Modal } from '@/components/ui/Modal';
 
 export const Route = createFileRoute('/importacoes')({
@@ -93,12 +93,14 @@ function ImportacoesPage() {
           </div>
         </div>
 
-        {showWizard ? (
-          <CentralImportWizard 
-            onCancel={() => setShowWizard(false)} 
-          />
-        ) : (
-          <div className="space-y-10">
+        {/* Modal de Importação & Fechamento Diário Unificado */}
+        <ImportConciliacaoModal
+          isOpen={showWizard}
+          onClose={() => setShowWizard(false)}
+          onSuccess={() => setShowWizard(false)}
+        />
+
+        <div className="space-y-10">
             {/* Info Banner */}
             <div className="bg-[var(--color-accent-warning)]/10 border border-[var(--color-accent-warning)]/20 p-4 rounded-[var(--radius-lg)] flex items-start gap-3">
               <AlertTriangle className="text-[var(--color-accent-warning)] shrink-0 mt-0.5" size={20} />
@@ -221,7 +223,6 @@ function ImportacoesPage() {
               )}
             </Card>
           </div>
-        )}
 
         {/* Modal de Limpeza Geral */}
         <Modal
