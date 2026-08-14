@@ -16,8 +16,34 @@ export interface MapaMetasResult {
 
 export async function parseMapaMetasPDF(file: File): Promise<MapaMetasResult> {
   try {
-    const pdfjsLib = await import('pdfjs-dist');
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+    if (typeof window === 'undefined') {
+      return {
+        success: false,
+        stores: [],
+        totalFaturamento: 0,
+        fileName: file.name,
+        error: 'PDF parsing only supported in browser environment'
+      };
+    }
+
+    let pdfjsLib: any = (window as any).pdfjsLib;
+    if (!pdfjsLib) {
+      await new Promise<void>((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error('Falha ao carregar motor de PDF'));
+        document.head.appendChild(script);
+      });
+      pdfjsLib = (window as any).pdfjsLib;
+      if (pdfjsLib) {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      }
+    }
+
+    if (!pdfjsLib) {
+      throw new Error('Biblioteca PDF.js indisponível');
+    }
 
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;

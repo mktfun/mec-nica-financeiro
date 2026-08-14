@@ -5,6 +5,11 @@
 //     error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... } }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
 // @cloudflare/vite-plugin builds from this — wrangler.jsonc main alone is insufficient.
@@ -13,22 +18,13 @@ export default defineConfig({
     server: { entry: "server" },
   },
   vite: {
-    // Exclui pdfjs-dist do SSR: a lib acessa APIs do browser (DOMMatrix, canvas)
-    // no momento do carregamento do módulo, derrubando o renderer do Vite/Node.
+    resolve: {
+      alias: {
+        "framer-motion": path.resolve(__dirname, "node_modules/framer-motion/dist/cjs/index.js"),
+      },
+    },
     ssr: {
-      external: ['pdfjs-dist', 'framer-motion'],
-    },
-    build: {
-      // @ts-ignore
-      rolldownOptions: {
-        external: ['pdfjs-dist', 'framer-motion'],
-      },
-      rollupOptions: {
-        external: ['pdfjs-dist', 'framer-motion'],
-      },
-    },
-    optimizeDeps: {
-      exclude: ['pdfjs-dist'],
+      noExternal: ['framer-motion'],
     },
   },
 });
