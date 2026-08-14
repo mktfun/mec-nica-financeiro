@@ -90,6 +90,12 @@ export function MarcoZeroWizard({ onComplete, onCancel }: { onComplete: () => vo
       }))
       .filter(s => !!s.store_id);
 
+    console.log('[MarcoZeroWizard] Enviando payload para RPC process_marco_zero_import:', {
+      p_target_date: targetDate,
+      p_global: data.global,
+      p_stores: payloadStores
+    });
+
     setVisibleError(null);
     setIsSaving(true);
     try {

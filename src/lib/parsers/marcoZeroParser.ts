@@ -94,44 +94,40 @@ const isKnownStore = (rawName: string): string | null => {
 };
 
 export const parseMarcoZeroPlanilha = async (file: File): Promise<MarcoZeroResult> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
+  try {
+    const buffer = await file.arrayBuffer();
+    const workbook = XLSX.read(new Uint8Array(buffer), { type: 'array', cellDates: true });
+    
+    const globalData: MarcoZeroGlobalData = {
+      dinheiroMp: 0,
+      aReceber: 0,
+      negativo: 0,
+      caixaAnterior: 0,
+      caixaAtual: 0,
+      faturamentoAtual: 0,
+      fluxoCaixa: 0,
+      faturamentoAnterior: 0,
+      valorDisponivelContas: 0,
+      valorDasContas: 0,
+      diferenca: 0,
+      jurosAtual: 0,
+      contas: 0,
+      prolaboreDaniel: 0,
+      prolaboreHenrique: 0
+    };
 
-    reader.onload = (e) => {
-      try {
-        const data = e.target?.result;
-        const workbook = XLSX.read(data, { type: 'binary', cellDates: true });
-        
-        const globalData: MarcoZeroGlobalData = {
-          dinheiroMp: 0,
-          aReceber: 0,
-          negativo: 0,
-          caixaAnterior: 0,
-          caixaAtual: 0,
-          faturamentoAtual: 0,
-          fluxoCaixa: 0,
-          faturamentoAnterior: 0,
-          valorDisponivelContas: 0,
-          valorDasContas: 0,
-          diferenca: 0,
-          jurosAtual: 0,
-          contas: 0,
-          prolaboreDaniel: 0,
-          prolaboreHenrique: 0
+    const storesMap: Record<string, MarcoZeroStoreData> = {};
+
+    const getOrCreateStore = (name: string) => {
+      if (!storesMap[name]) {
+        storesMap[name] = {
+          storeName: name,
+          saldoLoja: 0,
+          osPendentes: []
         };
-
-        const storesMap: Record<string, MarcoZeroStoreData> = {};
-
-        const getOrCreateStore = (name: string) => {
-          if (!storesMap[name]) {
-            storesMap[name] = {
-              storeName: name,
-              saldoLoja: 0,
-              osPendentes: []
-            };
-          }
-          return storesMap[name];
-        };
+      }
+      return storesMap[name];
+    };
 
         workbook.SheetNames.forEach(sheetName => {
           const sheet = workbook.Sheets[sheetName];
@@ -314,17 +310,18 @@ export const parseMarcoZeroPlanilha = async (file: File): Promise<MarcoZeroResul
           ext.saldoLoja !== 0 || ext.osPendentes.length > 0
         );
 
-        resolve({
+        const result: MarcoZeroResult = {
           global: globalData,
           stores: storeResult
-        });
+        };
 
+        console.log('[MarcoZeroParser] Extração concluída com sucesso:', result);
+        console.log('[MarcoZeroParser] Globais extraídos:', globalData);
+        console.log('[MarcoZeroParser] Lojas extraídas:', storeResult);
+
+        return result;
       } catch (error: any) {
-        reject(new Error("Erro ao processar Marco Zero: " + error.message));
+        console.error('[MarcoZeroParser] Erro ao processar Marco Zero:', error);
+        throw new Error("Erro ao processar Marco Zero: " + error.message);
       }
-    };
-
-    reader.onerror = () => reject(new Error("Falha ao ler o arquivo."));
-    reader.readAsBinaryString(file);
-  });
 };

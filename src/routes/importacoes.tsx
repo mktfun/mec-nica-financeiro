@@ -16,7 +16,7 @@ import {
 import { useImportsHistory, useDeleteImport, useClearAllData, GroupedImportLog } from '@/hooks/useImportProcessor';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { Modal } from '@/components/ui/Modal';
-import { DailyImportView } from '@/components/importacoes/DailyImportView';
+import { CentralImportWizard } from '@/components/importacoes/CentralImportWizard';
 import { MarcoZeroWizard } from '@/components/importacoes/MarcoZeroWizard';
 
 interface ImportacoesSearchParams {
@@ -160,9 +160,9 @@ function ImportacoesPage() {
         {/* CONTEÚDO DAS ABAS */}
         {activeTab === 'diario' && (
           <div className="animate-in fade-in duration-300">
-            <DailyImportView 
+            <CentralImportWizard 
               initialDate={selectedDate}
-              onSuccess={() => handleTabChange('historico')}
+              onCancel={() => handleTabChange('historico')}
             />
           </div>
         )}

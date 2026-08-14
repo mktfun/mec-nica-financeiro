@@ -15,9 +15,10 @@ import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { 
   UploadCloud, CheckCircle2, FileType2, Link as LinkIcon, ArrowRight, ArrowLeft, 
   Database, Search, X, TrendingDown, TrendingUp, AlertCircle, CreditCard, FileText, 
-  Terminal, Sparkles, FileSpreadsheet, Layers, RefreshCcw, Loader2 
+  Terminal, Sparkles, FileSpreadsheet, Layers, RefreshCcw, Loader2, Code2, Copy, Check, Lock, Unlock
 } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
+import { useStoreFileMappings } from '@/hooks/useStoreFileMappings';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { CentralImportResults, parseCentralImports } from '@/lib/parsers/centralImportManager';
 import { traceLog, generateSessionId } from '@/lib/logger';
@@ -60,64 +61,18 @@ const INITIAL_STAGES: AgentStage[] = [
   { id: 'salvar',     title: 'Salvando conciliação no banco',      status: 'pending', subSteps: [] },
 ];
 
-
-
-// Hook para gerenciar mapeamento de lojas
-function useUnifiedStoreMapping(stores: any[]) {
-  const [mapping, setMapping] = useState<Record<string, string>>({});
-  const [initialized, setInitialized] = useState(false);
-  
-  useEffect(() => {
-    if (stores.length === 0 || initialized) return;
-    
-    const savedStr = localStorage.getItem('@mecanica/unified-mappings');
-    if (savedStr) {
-      try {
-        const savedSlugs = JSON.parse(savedStr);
-        const initialMapping: Record<string, string> = {};
-        
-        Object.keys(savedSlugs).forEach(alias => {
-           const slugName = savedSlugs[alias];
-           const foundStore = stores.find((s: any) => 
-              s.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim() === slugName
-           );
-           if (foundStore) {
-             initialMapping[alias] = foundStore.id;
-           }
-        });
-        setMapping(initialMapping);
-      } catch (e) {
-        console.error("Failed to parse mappings", e);
-      }
-    }
-    setInitialized(true);
-  }, [stores, initialized]);
-
-  const updateMapping = (alias: string, storeId: string, storeName?: string) => {
-    setMapping(prev => {
-      const next = { ...prev, [alias]: storeId };
-      return next;
-    });
-
-    if (storeName) {
-      const savedStr = localStorage.getItem('@mecanica/unified-mappings');
-      const savedSlugs = savedStr ? JSON.parse(savedStr) : {};
-      savedSlugs[alias] = storeName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
-      localStorage.setItem('@mecanica/unified-mappings', JSON.stringify(savedSlugs));
-    }
-  };
-
-  return { mapping, updateMapping, setMapping };
-}
-
-// Hook para gerenciar mapeamento de lojas
-
-export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
+export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () => void, initialDate?: string }) {
   const [step, setStep] = useState<1 | 2 | 2.5 | 3 | 3.5 | 4>(1);
   const [subStep, setSubStep] = useState<1 | 2 | 3>(1);
   const [isPreparing, setIsPreparing] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
-  const [targetDate, setTargetDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [targetDate, setTargetDate] = useState<string>(initialDate || new Date().toISOString().split('T')[0]);
+
+  useEffect(() => {
+    if (initialDate) {
+      setTargetDate(initialDate);
+    }
+  }, [initialDate]);
   const [isAgentModalOpen, setIsAgentModalOpen] = useState(false);
   const [needsFallback, setNeedsFallback] = useState(false);
   const [showMarcoZero, setShowMarcoZero] = useState(false);
@@ -181,8 +136,14 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
   const [saveFinished, setSaveFinished] = useState(false);
   const logsEndRef = useRef<HTMLDivElement>(null);
 
+  // Manual inputs extras com trava
+  const [odometroHoje, setOdometroHoje] = useState<number>(0);
+  const [contasManual, setContasManual] = useState<number>(0);
+  const [isManualLocked, setIsManualLocked] = useState<boolean>(true);
+  const [copiedJson, setCopiedJson] = useState(false);
+
   const { data: stores = [] } = useStores();
-  const { mapping, updateMapping, setMapping } = useUnifiedStoreMapping(stores);
+  const { mapping, updateMapping } = useStoreFileMappings(stores);
   const { processFiles, isProcessing, results } = useCentralImport();
   const { mutateAsync: saveTransactions } = useBulkInsertTransactions();
   const { mutateAsync: createImportBatch } = useCreateImportBatch();
@@ -627,9 +588,10 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
             store_name: matched_store_id ? matched_store_id : ofx.alias,
             title: tx.title || 'Importação OFX',
             subtitle: tx.counterpart_name || ofx.alias,
-            amount: tx.amount || 0,
-            type: tx.type,
-            occurred_at: tx.date || new Date().toISOString(),
+            amount: Math.abs(tx.amount || 0),
+            type: (tx.type === 'in' || tx.type === 'income' || tx.amount > 0) ? 'in' : 'out',
+            occurred_at: tx.date || targetDate || new Date().toISOString(),
+            date: tx.date || targetDate,
             target_date: targetDate,
             icon_type: 'bank',
             source: 'ofx',
@@ -1608,33 +1570,138 @@ export function CentralImportWizard({ onCancel }: { onCancel: () => void }) {
 
             {/* Início: Valores Manuais Globais */}
             <div className="pt-6 border-t border-[var(--border-subtle)] space-y-4">
-              <h4 className="font-semibold text-lg text-[var(--text-primary)]">Valores Manuais do Dia</h4>
-              <p className="text-sm text-[var(--text-secondary)] mb-4">
-                Preencha os dados abaixo. Eles serão salvos no fechamento diário e não poderão ser editados na tela de conciliação.
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex items-center justify-between">
                 <div>
-                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Dinheiro MP (Daniel)</label>
+                  <h4 className="font-semibold text-lg text-[var(--text-primary)]">Valores Manuais do Dia</h4>
+                  <p className="text-sm text-[var(--text-secondary)]">
+                    Preencha os dados abaixo. Eles serão salvos no fechamento diário e travados para evitar alterações acidentais.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsManualLocked(!isManualLocked)}
+                  className={`px-3 py-1.5 text-xs font-bold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer ${
+                    isManualLocked 
+                      ? 'bg-zinc-800 text-zinc-300 border border-zinc-700 hover:bg-zinc-700' 
+                      : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                  }`}
+                >
+                  {isManualLocked ? <Lock size={13} /> : <Unlock size={13} />}
+                  {isManualLocked ? 'Trava Ativa' : 'Destravado'}
+                </button>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 font-mono">
+                <div>
+                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Odômetro Hoje</label>
                   <input 
                     type="number" 
-                    value={manualDinheiroMp || ''} 
-                      onChange={e => setManualDinheiroMp(Number(e.target.value))}
-                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)]"
+                    step="0.01"
+                    disabled={isManualLocked}
+                    value={odometroHoje || ''} 
+                    onChange={e => setOdometroHoje(Number(e.target.value))}
+                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)] font-bold text-[var(--text-primary)]"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">A Receber (Boleto/Desc.)</label>
+                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Dinheiro MP</label>
                   <input 
                     type="number" 
+                    step="0.01"
+                    disabled={isManualLocked}
+                    value={manualDinheiroMp || ''} 
+                    onChange={e => setManualDinheiroMp(Number(e.target.value))}
+                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)] font-bold text-[var(--text-primary)]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">A Receber</label>
+                  <input 
+                    type="number" 
+                    step="0.01"
+                    disabled={isManualLocked}
                     value={manualAReceber || ''} 
-                      onChange={e => setManualAReceber(Number(e.target.value))}
-                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)]"
+                    onChange={e => setManualAReceber(Number(e.target.value))}
+                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)] font-bold text-[var(--text-primary)]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Contas a Pagar</label>
+                  <input 
+                    type="number" 
+                    step="0.01"
+                    disabled={isManualLocked}
+                    value={contasManual || ''} 
+                    onChange={e => setContasManual(Number(e.target.value))}
+                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)] font-bold text-[var(--text-primary)]"
                   />
                 </div>
               </div>
             </div>
             {/* Fim: Valores Manuais Globais */}
+
+            {/* Inspetor JSON de Conciliação */}
+            <div className="pt-4 border-t border-[var(--border-subtle)]">
+              <details className="group p-4 bg-zinc-950 rounded-xl border border-zinc-800">
+                <summary className="cursor-pointer flex items-center justify-between text-xs font-mono text-zinc-300 select-none hover:text-zinc-100">
+                  <span className="flex items-center gap-2">
+                    <Code2 size={16} className="text-emerald-400" />
+                    Inspetor de Conciliação (Payload JSON que será enviado ao Backend)
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigator.clipboard.writeText(JSON.stringify({
+                          target_date: targetDate,
+                          manual_inputs: {
+                            odometro_hoje: odometroHoje,
+                            dinheiro_mp: manualDinheiroMp,
+                            a_receber: manualAReceber,
+                            contas_manual: contasManual
+                          },
+                          file_mappings: mapping,
+                          orphan_os_modifications: missingOsList.filter(
+                            os => os.total_value !== os.original_total_value || os.paid_value !== os.original_paid_value || os.status !== os.original_status
+                          ),
+                          ofx_results_count: results.ofxResults.length,
+                          os_files_count: results.osFiles.length,
+                          rede_results_count: results.redeResults.length
+                        }, null, 2));
+                        setCopiedJson(true);
+                        toast.success('JSON de conciliação copiado!');
+                        setTimeout(() => setCopiedJson(false), 2000);
+                      }}
+                      className="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] font-mono rounded flex items-center gap-1 cursor-pointer"
+                    >
+                      {copiedJson ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
+                      {copiedJson ? 'Copiado!' : 'Copiar JSON'}
+                    </button>
+                    <span className="text-[10px] text-zinc-500 group-open:rotate-180 transition-transform">▼</span>
+                  </div>
+                </summary>
+                <div className="mt-3 p-3 bg-zinc-950 border-t border-zinc-800 font-mono text-[11px] text-emerald-400 overflow-x-auto max-h-60">
+                  <pre>{JSON.stringify({
+                    target_date: targetDate,
+                    manual_inputs: {
+                      odometro_hoje: odometroHoje,
+                      dinheiro_mp: manualDinheiroMp,
+                      a_receber: manualAReceber,
+                      contas_manual: contasManual
+                    },
+                    file_mappings: mapping,
+                    orphan_os_modifications: missingOsList.filter(
+                      os => os.total_value !== os.original_total_value || os.paid_value !== os.original_paid_value || os.status !== os.original_status
+                    ),
+                    ofx_results_count: results.ofxResults.length,
+                    os_files_count: results.osFiles.length,
+                    rede_results_count: results.redeResults.length
+                  }, null, 2)}</pre>
+                </div>
+              </details>
+            </div>
 
             <div className="pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between">
               <div>
