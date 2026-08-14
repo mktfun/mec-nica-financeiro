@@ -270,14 +270,23 @@ export function ImportConciliacaoModal({
 
         ofx.transactions.forEach(t => {
           txsToInsert.push({
-            date: t.date || targetDate,
+            id: crypto.randomUUID(),
+            store_id: storeId,
+            store_name: storeId || ofx.alias,
+            title: t.title || 'Importação OFX',
+            subtitle: t.counterpart_name || ofx.alias,
             description: t.description || t.memo || 'Transação OFX',
             amount: t.amount,
             type: t.type === 'in' || t.amount > 0 ? 'income' : 'expense',
             category: t.category || 'Outros',
-            store_id: storeId,
+            occurred_at: t.date || targetDate || new Date().toISOString(),
+            date: t.date || targetDate,
+            target_date: targetDate,
+            source: 'ofx',
             status: 'reconciled',
             fitid: t.fitid,
+            cnpj_cpf: t.cnpj_cpf || null,
+            counterpart_name: t.counterpart_name || null,
             imported_at: new Date().toISOString()
           });
         });
