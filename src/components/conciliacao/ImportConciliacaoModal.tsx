@@ -22,6 +22,7 @@ import { useSaveDailySnapshot } from '@/hooks/useDailySnapshot';
 import { savePatioOsAndReceivables, ParsedReceivable } from '@/hooks/useImportProcessor';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 
 export interface ImportConciliacaoModalProps {
   isOpen: boolean;
@@ -75,9 +76,10 @@ export function ImportConciliacaoModal({
   const [aReceber, setAReceber] = useState<number | ''>('');
   const [contasManual, setContasManual] = useState<number | ''>('');
 
-  // Grid de OSs Órfãs
   const [orphanOsList, setOrphanOsList] = useState<OrphanPatioOs[]>([]);
   const [isLoadingOrphans, setIsLoadingOrphans] = useState(false);
+
+  const queryClient = useQueryClient();
 
   // Persistência
   const { mutateAsync: saveTransactions } = useBulkInsertTransactions();
@@ -251,11 +253,21 @@ export function ImportConciliacaoModal({
         return savePatioOsAndReceivables(sid, storeName, [], parsedRecs);
       });
 
-      // 4.4 Gravar Transações Bancárias OFX
+      // 4.4 Gravar Lote de Importação / Auditoria no banco com target_date
+      const batch = await createImportBatch({ target_date: targetDate });
+
+      // 4.5 Gravar Transações Bancárias OFX e Saldos
+      const storeBankBalances: Record<string, number> = {};
+      const storePreviousBalances: Record<string, number> = {};
       const txsToInsert: any[] = [];
+
       results.ofxResults.forEach(ofx => {
         let storeId: string | null = mapping[ofx.alias];
         if (storeId === 'GLOBAL') storeId = null;
+        const dictKey = storeId || 'global_account';
+        if (ofx.bankBalance !== undefined) storeBankBalances[dictKey] = ofx.bankBalance;
+        if (ofx.previousBalance !== undefined) storePreviousBalances[dictKey] = ofx.previousBalance;
+
         ofx.transactions.forEach(t => {
           txsToInsert.push({
             date: t.date || targetDate,
@@ -265,32 +277,20 @@ export function ImportConciliacaoModal({
             category: t.category || 'Outros',
             store_id: storeId,
             status: 'reconciled',
+            fitid: t.fitid,
             imported_at: new Date().toISOString()
           });
         });
       });
 
-      if (txsToInsert.length > 0) {
-        await saveTransactions(txsToInsert);
+      if (txsToInsert.length > 0 || Object.keys(storeBankBalances).length > 0) {
+        await saveTransactions({
+          transactions: txsToInsert,
+          storeBankBalances,
+          storePreviousBalances,
+          import_batch_id: batch?.id
+        } as any);
       }
-
-      // 4.5 Gravar Lote de Auditoria
-      const allStoreIds = Array.from(new Set(Object.values(mapping).filter(v => v && v !== 'GLOBAL')));
-      await createImportBatch({
-        store_id: allStoreIds[0] || null,
-        file_name: pendingFiles.map(f => f.name).join(', ') || 'Importacao_Centralizada',
-        file_type: 'multi',
-        period_start: targetDate,
-        period_end: targetDate,
-        total_records: txsToInsert.length + results.osFiles.reduce((acc, f) => acc + f.osArray.length, 0),
-        raw_metadata: {
-          odometro: Number(odometroHoje) || 0,
-          dinheiro_mp: Number(dinheiroMp) || 0,
-          a_receber: Number(aReceber) || 0,
-          contas_manual: Number(contasManual) || 0,
-          orphans_updated: modifiedOrphans.length
-        }
-      });
 
       // 4.6 Gravar Snapshot Diário Unificado
       await saveSnapshot.mutateAsync({
@@ -302,6 +302,14 @@ export function ImportConciliacaoModal({
       });
 
       await Promise.all([...osPromises, ...redePromises]);
+
+      // Invalidação completa de cache para atualizar as telas em tempo real
+      await queryClient.invalidateQueries({ queryKey: ['daily-snapshot'] });
+      await queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+      await queryClient.invalidateQueries({ queryKey: ['available-conciliacao-dates'] });
+      await queryClient.invalidateQueries({ queryKey: ['patio_os'] });
+      await queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      await queryClient.invalidateQueries({ queryKey: ['import-history'] });
 
       toast.success('Fechamento e importação consolidados com sucesso!', { id: toastId });
       if (onSuccess) onSuccess();
