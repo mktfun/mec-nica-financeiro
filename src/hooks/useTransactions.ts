@@ -375,19 +375,23 @@ export function useBulkInsertTransactions() {
       if (ofxTxs.length > 0) {
         const { data: d1, error: e1 } = await supabase
           .from('ofx_transactions' as any)
-          .upsert(ofxTxs.map((t: any) => ({
-             store_id: t.store_id,
-             bank_name: t.title || 'Itaú',
-             type: t.type,
-             amount: t.amount,
-             occurred_at: t.occurred_at || t.date || new Date().toISOString(),
-             fitid: t.fitid || t.id,
-             counterpart_name: t.counterpart_name || t.subtitle || null,
-             cnpj_cpf: t.cnpj_cpf || null,
-             matched_os_number: t.os_number || t.matched_os_number || null,
-             import_batch_id: t.import_batch_id || null,
-             target_date: t.target_date || null
-          })), { onConflict: 'store_id, fitid', ignoreDuplicates: true });
+          .upsert(ofxTxs.map((t: any) => {
+             const rawType = String(t.type || '').toLowerCase();
+             const normalizedType: 'in' | 'out' = (rawType === 'in' || rawType === 'income' || rawType === 'credit' || rawType === 'c' || (typeof t.amount === 'number' && t.amount > 0 && rawType !== 'out' && rawType !== 'expense' && rawType !== 'debit' && rawType !== 'd')) ? 'in' : 'out';
+             return {
+               store_id: t.store_id,
+               bank_name: t.title || 'Itaú',
+               type: normalizedType,
+               amount: Math.abs(t.amount || 0),
+               occurred_at: t.occurred_at || t.date || new Date().toISOString(),
+               fitid: t.fitid || t.id,
+               counterpart_name: t.counterpart_name || t.subtitle || null,
+               cnpj_cpf: t.cnpj_cpf || null,
+               matched_os_number: t.os_number || t.matched_os_number || null,
+               import_batch_id: t.import_batch_id || null,
+               target_date: t.target_date || null
+             };
+          }), { onConflict: 'store_id, fitid', ignoreDuplicates: true });
         if (e1) { error = e1; } else { data = d1; }
       }
 
