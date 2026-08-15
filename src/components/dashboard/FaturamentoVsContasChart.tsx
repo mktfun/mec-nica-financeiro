@@ -1,20 +1,31 @@
 import { useMemo } from 'react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid } from 'recharts';
 import { Card } from '@/components/ui/Card';
-import { BarChart2 } from 'lucide-react';
+import { BarChart2, TrendingUp, TrendingDown } from 'lucide-react';
 
 interface FaturamentoVsContasChartProps {
   data: any[];
   isLoading?: boolean;
 }
 
-import { CartesianGrid } from 'recharts';
-
 const formatCurrency = (value: number) =>
-  `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+  value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 });
 
-const shortenName = (name?: string) =>
-  (name || '').replace(/Rei do /gi, '').replace(/Mecânica /gi, '').slice(0, 20);
+const cleanStoreLabel = (name?: string) => {
+  if (!name) return 'Loja';
+  return name
+    .replace(/Planalto - BRASICAR/gi, 'Planalto (BRASICAR)')
+    .replace(/Rudge Ramos - CAP/gi, 'Rudge Ramos (CAP)')
+    .replace(/Jorge Beretta - DHJV/gi, 'Jorge Beretta (DHJV)')
+    .replace(/Dom Pedro - DP/gi, 'Dom Pedro (DP)')
+    .replace(/Piraporinha - EMPORIO/gi, 'Piraporinha (EMPORIO)')
+    .replace(/Santo André - HD/gi, 'Santo André (HD)')
+    .replace(/Jabaquara - JAB/gi, 'Jabaquara (JAB)')
+    .replace(/Maua - MHE/gi, 'Mauá (MHE)')
+    .replace(/Kennedy - MP/gi, 'Kennedy (MP)')
+    .replace(/Rei do Módulo - MP/gi, 'R. Módulo (MP)')
+    .replace(/Mecânica /gi, '');
+};
 
 const CustomYAxisTick = ({ x, y, payload }: any) => {
   return (
@@ -26,7 +37,7 @@ const CustomYAxisTick = ({ x, y, payload }: any) => {
         textAnchor="end"
         fill="var(--text-secondary)"
         fontSize={11}
-        fontWeight={500}
+        fontWeight={600}
       >
         {payload.value}
       </text>
@@ -36,22 +47,47 @@ const CustomYAxisTick = ({ x, y, payload }: any) => {
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
+    const faturamento = Number(payload.find((p: any) => p.dataKey === 'Faturamento')?.value || 0);
+    const contas = Number(payload.find((p: any) => p.dataKey === 'Contas')?.value || 0);
+    const resultado = faturamento - contas;
+    const isPositive = resultado >= 0;
+
     return (
-      <div className="bg-[var(--bg-surface-elevated)]/90 backdrop-blur-md border border-[var(--border-subtle)] p-3 rounded-xl shadow-xl min-w-[160px]">
-        <p className="text-sm font-semibold text-[var(--text-primary)] mb-2 pb-2 border-b border-[var(--border-subtle)]">
-          {label}
+      <div className="bg-[#0f111a]/95 backdrop-blur-md border border-[var(--border-subtle)] p-3.5 rounded-xl shadow-2xl min-w-[220px] pointer-events-none z-[99999]">
+        <p className="text-xs font-bold text-white mb-2 pb-2 border-b border-[var(--border-subtle)] flex items-center justify-between">
+          <span>{label}</span>
         </p>
-        <div className="space-y-1.5">
-          {payload.map((entry: any, index: number) => (
-            <div key={index} className="flex items-center justify-between gap-4 text-xs">
-              <span style={{ color: entry.color }} className="font-medium opacity-90">
-                {entry.name}:
-              </span>
-              <span className="font-bold text-[var(--text-primary)]">
-                {formatCurrency(entry.value)}
-              </span>
-            </div>
-          ))}
+        
+        <div className="space-y-2 text-xs">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-[var(--color-accent-teal)] font-medium flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[var(--color-accent-teal)]" />
+              Faturamento:
+            </span>
+            <span className="font-mono font-bold text-white">
+              {formatCurrency(faturamento)}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-[var(--color-accent-warning)] font-medium flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[var(--color-accent-warning)]" />
+              Contas (OFX):
+            </span>
+            <span className="font-mono font-bold text-white">
+              {formatCurrency(contas)}
+            </span>
+          </div>
+
+          <div className="pt-2 mt-1 border-t border-[var(--border-subtle)] flex items-center justify-between">
+            <span className="text-[var(--text-tertiary)] font-medium flex items-center gap-1">
+              {isPositive ? <TrendingUp size={12} className="text-[var(--color-accent-teal)]" /> : <TrendingDown size={12} className="text-[var(--color-accent-danger)]" />}
+              Resultado:
+            </span>
+            <span className={`font-mono font-bold ${isPositive ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
+              {isPositive ? '+' : ''}{formatCurrency(resultado)}
+            </span>
+          </div>
         </div>
       </div>
     );
@@ -63,84 +99,95 @@ export function FaturamentoVsContasChart({ data, isLoading }: FaturamentoVsConta
   const chartData = useMemo(
     () =>
       (data || [])
-        .filter(s => (s.faturamento || 0) > 0 || (s.contas || 0) > 0)
         .map(s => ({
-          name: shortenName(s.storeName || s.store_name),
-          Faturamento: s.faturamento || 0,
-          Contas: s.contas || 0,
+          name: cleanStoreLabel(s.storeName || s.store_name),
+          Faturamento: Number(s.faturamento || 0),
+          Contas: Number(s.contas || 0),
         })),
     [data]
   );
 
   if (isLoading) {
     return (
-      <Card className="h-full animate-pulse">
+      <Card className="h-full animate-pulse p-5">
         <div className="h-6 w-36 bg-[var(--bg-surface-hover)] rounded mb-6" />
-        <div className="flex-1 bg-[var(--bg-surface-hover)] rounded" />
+        <div className="h-[380px] bg-[var(--bg-surface-hover)] rounded" />
       </Card>
     );
   }
 
   return (
-    <Card className="h-full flex flex-col">
-      <div className="mb-5">
-        <h3 className="font-display font-semibold text-base flex items-center gap-2">
-          <BarChart2 size={16} className="text-[var(--color-primary)]" />
-          Faturamento × Contas
-        </h3>
-        <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">Por loja no período selecionado</p>
+    <Card className="h-full flex flex-col p-5 overflow-visible">
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <h3 className="font-display font-semibold text-base flex items-center gap-2 text-[var(--text-primary)]">
+            <BarChart2 size={16} className="text-[var(--color-primary)]" />
+            Faturamento × Contas
+          </h3>
+          <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">
+            Comparativo de receitas e despesas por filial no dia
+          </p>
+        </div>
       </div>
 
       {chartData.length === 0 ? (
-        <div className="flex-1 flex items-center justify-center">
+        <div className="flex-1 flex items-center justify-center min-h-[300px]">
           <p className="text-sm text-[var(--text-tertiary)]">Sem dados para o período</p>
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto min-h-[260px] pr-2 custom-scrollbar">
-          <div style={{ height: Math.max(260, chartData.length * 38) }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={chartData}
-                layout="vertical"
-                margin={{ top: 0, right: 16, left: 0, bottom: 0 }}
-                barCategoryGap="15%"
-              >
-                <CartesianGrid horizontal={false} stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
-                <XAxis type="number" hide />
-                <YAxis
-                  dataKey="name"
-                  type="category"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={<CustomYAxisTick />}
-                  width={130}
-                />
-                <Tooltip
-                  cursor={{ fill: 'rgba(255,255,255,0.04)', radius: 4 }}
-                  content={<CustomTooltip />}
-                  allowEscapeViewBox={{ x: true, y: true }}
-                  isAnimationActive={false}
-                />
-                <Legend
-                  iconType="circle"
-                  iconSize={8}
-                  wrapperStyle={{ fontSize: 11, paddingTop: 12, color: 'var(--text-secondary)' }}
-                />
-                <Bar
-                  dataKey="Faturamento"
-                  fill="var(--color-accent-teal)"
-                  radius={[0, 4, 4, 0]}
-                  barSize={14}
-                />
-                <Bar
-                  dataKey="Contas"
-                  fill="var(--color-accent-warning)"
-                  radius={[0, 4, 4, 0]}
-                  barSize={14}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+        <div className="w-full" style={{ height: Math.max(380, chartData.length * 40) }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={chartData}
+              layout="vertical"
+              margin={{ top: 8, right: 24, left: 10, bottom: 8 }}
+              barCategoryGap="20%"
+            >
+              <CartesianGrid horizontal={false} stroke="rgba(255,255,255,0.06)" strokeDasharray="3 3" />
+              <XAxis 
+                type="number" 
+                tickFormatter={(v) => `R$ ${(v / 1000).toFixed(0)}k`} 
+                stroke="var(--text-tertiary)"
+                fontSize={10}
+                tickLine={false}
+                axisLine={{ stroke: 'var(--border-subtle)' }}
+              />
+              <YAxis
+                dataKey="name"
+                type="category"
+                axisLine={false}
+                tickLine={false}
+                tick={<CustomYAxisTick />}
+                width={150}
+              />
+              <Tooltip
+                cursor={{ fill: 'rgba(255,255,255,0.05)', radius: 6 }}
+                content={<CustomTooltip />}
+                allowEscapeViewBox={{ x: true, y: true }}
+                wrapperStyle={{ zIndex: 99999, outline: 'none' }}
+                isAnimationActive={false}
+              />
+              <Legend
+                iconType="circle"
+                iconSize={8}
+                wrapperStyle={{ fontSize: 12, paddingTop: 16, color: 'var(--text-secondary)' }}
+              />
+              <Bar
+                dataKey="Faturamento"
+                name="Faturamento"
+                fill="var(--color-accent-teal)"
+                radius={[0, 6, 6, 0]}
+                barSize={12}
+              />
+              <Bar
+                dataKey="Contas"
+                name="Contas (OFX)"
+                fill="var(--color-accent-warning)"
+                radius={[0, 6, 6, 0]}
+                barSize={12}
+              />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       )}
     </Card>

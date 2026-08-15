@@ -233,18 +233,20 @@ function DashboardPage() {
         )}
 
         {/* ── FAIXA BASE — Tabela + Gráficos ── */}
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-4" style={{ minHeight: 340 }}>
+        <div className="space-y-6">
           {/* Topo - Widescreen Chart */}
-          <div className="xl:col-span-4">
+          <div className="w-full">
             <EvolucaoMacroChart data={data?.historicoMacro ?? []} isLoading={isLoading} />
           </div>
           
-          {/* Bottom Split */}
-          <div className="xl:col-span-3">
-            <StoreTableDashboard data={data?.porLoja ?? []} isLoading={isLoading} />
-          </div>
-          <div className="xl:col-span-1">
-            <FaturamentoVsContasChart data={data?.porLoja ?? []} isLoading={isLoading} />
+          {/* Bottom Grid: Tabela e Gráfico por Loja lado a lado com largura confortável */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div className="lg:col-span-7">
+              <StoreTableDashboard data={data?.porLoja ?? []} isLoading={isLoading} />
+            </div>
+            <div className="lg:col-span-5">
+              <FaturamentoVsContasChart data={data?.porLoja ?? []} isLoading={isLoading} />
+            </div>
           </div>
         </div>
 

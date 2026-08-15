@@ -87,6 +87,8 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
             )}
             {data.map((store, i) => {
               const isPositive = store.resultado >= 0;
+              const isSaldoNegative = Number(store.saldoAtual || 0) < 0;
+
               return (
                 <motion.tr
                   key={store.storeId}
@@ -98,8 +100,19 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
                   <td className="py-3 pr-2 font-medium text-[var(--text-primary)] whitespace-nowrap">
                     {(store.storeName || store.store_name || 'Loja').replace(/Rei do /gi, 'R. ').replace(/Mecânica Mec\. /gi, 'Mec. ')}
                   </td>
-                  <td className="py-3 px-2 font-mono text-[var(--text-secondary)] whitespace-nowrap">
-                    {fmt(store.saldoAtual)}
+                  <td className="py-3 px-2 font-mono whitespace-nowrap">
+                    {isSaldoNegative ? (
+                      <span className="text-[var(--color-accent-danger)] font-bold flex items-center gap-1">
+                        {fmt(store.saldoAtual)}
+                        <span className="text-[9px] font-sans font-medium px-1 py-0.5 rounded bg-rose-500/15 text-rose-400 border border-rose-500/30">
+                          Negativo
+                        </span>
+                      </span>
+                    ) : (
+                      <span className="text-[var(--text-secondary)]">
+                        {fmt(store.saldoAtual)}
+                      </span>
+                    )}
                   </td>
                   <td className="py-3 px-2 font-mono text-[var(--color-accent-teal)] whitespace-nowrap">
                     {fmt(store.faturamento)}
