@@ -253,15 +253,16 @@ export function useReconciliationViews(storeId: string, date: string) {
         const taxaBrl = Number(redeTx.fee_amount || Math.max(0, redeBruto - redeLiquido));
         const taxaPercent = redeBruto > 0 ? (taxaBrl / redeBruto * 100) : 0;
 
-        let osNumber = redeTx.os_number;
+        let rawOsNum = redeTx.os_number;
         let osData: any = null;
+        const isRealOsNumber = rawOsNum && /^\d+$/.test(String(rawOsNum).trim());
 
-        // 1. Busca por número de OS exato gravado
-        if (osNumber) {
-          osData = (patioOs || []).find(o => String(o.os_number) === String(osNumber));
+        // 1. Busca por número de OS real gravado
+        if (isRealOsNumber) {
+          osData = (patioOs || []).find(o => String(o.os_number) === String(rawOsNum));
         }
 
-        // 2. Busca por ID de pareamento ou valor próximo
+        // 2. Busca por valor próximo entre OSs de cartão da filial
         if (!osData && cardOsList.length > 0) {
           const matchByVal = cardOsList.find(o => {
             const osVal = Number(o.paid_value) || Number(o.total_value) || (Number(o.credit_value || 0) + Number(o.debit_value || 0));
@@ -269,27 +270,29 @@ export function useReconciliationViews(storeId: string, date: string) {
           });
           if (matchByVal) {
             osData = matchByVal;
-            osNumber = matchByVal.os_number;
-          } else if (cardOsList.length === 1 && redeTxs.length === 1) {
-            osData = cardOsList[0];
-            osNumber = cardOsList[0].os_number;
+            rawOsNum = matchByVal.os_number;
           }
         }
 
-        // Se não houver OS individual associada, calcula o faturamento de cartão da loja
-        // baseado nas entradas de adquirente que entraram no banco ou no faturamento total de cartão da filial
+        // O faturamento da maquininha da loja que entrou no banco / sistema
         let osTotal = 0;
         if (osData) {
           osTotal = Number(osData.paid_value) || Number(osData.total_value) || 0;
-        } else if (totalCardOsFaturamento > 0) {
-          osTotal = redeTxs.length === 1 ? totalCardOsFaturamento : (totalCardOsFaturamento / redeTxs.length);
         } else if (totalAdquirenteOfx > 0) {
-          osTotal = redeTxs.length === 1 ? totalAdquirenteOfx : redeBruto;
+          osTotal = redeTxs.length === 1 ? totalAdquirenteOfx : (totalAdquirenteOfx / redeTxs.length);
         } else {
-          osTotal = redeBruto;
+          osTotal = redeLiquido > 0 ? redeLiquido : redeBruto;
         }
 
         const delta = redeBruto - osTotal;
+        const isSettledWithBank = isRedeBankSettled || (totalAdquirenteOfx > 0 && Math.abs(totalAdquirenteOfx - totalRedeNet) < 5.0);
+
+        let displayOsLabel = 'Extrato REDE Consolidado';
+        if (osData && osData.os_number) {
+          displayOsLabel = `OS #${osData.os_number}`;
+        } else if (isRealOsNumber) {
+          displayOsLabel = `OS #${rawOsNum}`;
+        }
 
         return {
           id: redeTx.id,
@@ -299,7 +302,8 @@ export function useReconciliationViews(storeId: string, date: string) {
           taxa_percent: taxaPercent,
           rede_liquido: redeLiquido,
           os_total: osTotal,
-          os_number: osNumber || 'Loja Consolidada',
+          os_number: displayOsLabel,
+          is_real_os: !!osData,
           os_data: osData ? {
             ...osData,
             client_name: osData.client_name || osData.store_name,
@@ -307,8 +311,8 @@ export function useReconciliationViews(storeId: string, date: string) {
             parsed_credit_debit: (Number(osData.credit_value || 0) + Number(osData.debit_value || 0)),
             parsed_pix_transfer: Number(osData.pix_transfer_value || 0)
           } : null,
-          delta: Math.abs(delta) < 0.05 ? 0 : delta,
-          status: (osData || isRedeBankSettled || redeTx.match_status === 'MATCHED') ? 'PAREADO' : 'SEM_PAR'
+          delta: delta,
+          status: (osData || isSettledWithBank || redeTx.match_status === 'MATCHED') ? 'PAREADO' : 'SEM_PAR'
         };
       });
 
