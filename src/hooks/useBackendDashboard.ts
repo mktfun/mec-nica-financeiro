@@ -4,13 +4,20 @@ import { supabase } from '@/lib/supabase';
 export interface StoreMetrics {
   storeId: string;
   storeName: string;
-  faturamento_banco: number;
-  maquininha: number;
-  pix: number;
+  store_id: string;
+  store_name: string;
+  saldo_banco: number;
+  saldoAtual?: number;
+  faturamento: number;
+  contas: number;
+  valor_contas?: number;
+  resultado: number;
+  veiculos_patio: number;
+  veiculosPatio?: number;
   na_loja_os: number;
-  previsto_ofx: number;
-  diferenca: number;
-  status: 'approved' | 'divergence' | 'pending';
+  veiculosPatioValor?: number;
+  status?: 'approved' | 'divergence' | 'pending';
+  statusConciliacao?: string;
 }
 
 export interface DashboardMetrics {
@@ -20,24 +27,26 @@ export interface DashboardMetrics {
   aReceber: number;
   naLoja: number;
   caixaAtual: number;
+  caixaAnterior: number;
   fluxoCx: number;
+  fluxoCaixa: number;
   fatura: number;
-  valorDispContas: number;
-  valorContas: number;
-  diferenca: number;
-
-  // Campos para compatibilidade com o UI do React (index.tsx)
   faturamentoAtual: number;
   faturamentoAnterior: number;
   variacaoFaturamento: number;
-  fluxoCaixa: number; // Mapeado de fluxoCx
-  contasAPagar: number; // Mapeado de valorContas
+  valorDispContas: number;
+  valorContas: number;
+  contasAPagar: number;
+  diferenca: number;
   veiculosPatio: number;
   veiculosPatioValor: number;
-  
-  // Compatibilidade Legado / Componentes
   porLoja: StoreMetrics[];
-  historicoMacro: any[];
+  historicoMacro: Array<{
+    date: string;
+    saldo: number;
+    faturamento: number;
+    contas: number;
+  }>;
 }
 
 export function useBackendDashboard(date: string) {
@@ -63,92 +72,52 @@ export function useBackendDashboard(date: string) {
         effectiveDate = latestSnap?.date || latestBatch?.target_date || new Date().toISOString().split('T')[0];
       }
       
-      console.log(`[Dashboard] Solicitando métricas via RPC get_dashboard_metrics para a data: ${effectiveDate}`);
-      
-      // 1. Puxa métricas globais invioláveis
-      const { data: globalMetrics, error: globalErr } = await supabase.rpc('get_dashboard_metrics', {
+      // Chamada 100% Backend da RPC mestre que consolida todos os indicadores
+      const { data, error } = await supabase.rpc('get_dashboard_metrics', {
         p_date: effectiveDate
       });
 
-      if (globalErr) throw globalErr;
-
-      // 2. Puxa a tabela por loja
-      const { data: storeMetrics, error: storeErr } = await supabase.rpc('calculate_daily_conciliation', {
-        p_date: effectiveDate
-      });
-
-      if (storeErr) throw storeErr;
-
-      // 3. Puxa o histórico (dashboard_daily_logs)
-      const targetDateObj = new Date(effectiveDate);
-      const searchDates: string[] = [];
-      for (let d = 0; d <= 7; d++) {
-        const dObj = new Date(targetDateObj.getTime() - d * 86400000);
-        searchDates.push(dObj.toISOString().split('T')[0]);
+      if (error) {
+        console.error('[Dashboard] Erro ao invocar get_dashboard_metrics RPC:', error);
+        throw error;
       }
 
-      const { data: logsData } = await supabase
-        .from('dashboard_daily_logs')
-        .select('*')
-        .in('date', searchDates)
-        .order('date', { ascending: true });
+      const res = (data || {}) as any;
 
-      const historicoMacro = (logsData || []).map((l: any) => ({
-        date: l.date,
-        saldo: l.saldo_total,
-        faturamento: l.faturamento_atual,
-        contas: l.contas_a_pagar
+      // Mapeamento direto e limpo para manter retrocompatibilidade com todos os componentes da UI
+      const porLoja = (res.porLoja || []).map((s: any) => ({
+        ...s,
+        storeId: s.store_id || s.storeId || '',
+        storeName: s.store_name || s.storeName || '',
+        saldoAtual: Number(s.saldo_banco || 0),
+        valor_contas: Number(s.contas || 0),
+        veiculosPatio: Number(s.veiculos_patio || 0),
+        veiculosPatioValor: Number(s.na_loja_os || 0),
+        statusConciliacao: s.status || 'approved'
       }));
 
-      const todayLog = (logsData || []).find((l: any) => l.date === effectiveDate) || {};
-
-      const faturamentoAtual = Number(globalMetrics?.faturamentoAtual ?? globalMetrics?.fatura ?? todayLog.faturamento_atual ?? 0);
-      const faturamentoAnterior = Number(todayLog.faturamento_anterior || 0);
-      const variacaoFaturamento = faturamentoAnterior > 0 
-        ? ((faturamentoAtual - faturamentoAnterior) / faturamentoAnterior) * 100 
-        : 0;
-
-      const porLoja = (storeMetrics || []).map((s: any) => {
-        const storeId = s.store_id || s.storeId || '';
-        const storeName = s.store_name || s.storeName || 'Loja';
-        const saldoAtual = Number(s.saldo_banco ?? s.faturamento_banco ?? s.saldoAtual ?? 0);
-        const faturamento = Number(s.previsto_ofx ?? s.faturamento ?? (Number(s.maquininha || 0) + Number(s.pix || 0)));
-        const contas = Number(s.valor_contas ?? s.contas ?? 0);
-        const resultado = faturamento - contas;
-        const veiculosPatio = Number(s.veiculos_patio ?? s.veiculosPatio ?? 0);
-        const veiculosPatioValor = Number(s.na_loja_os ?? s.veiculosPatioValor ?? 0);
-
-        return {
-          ...s,
-          storeId,
-          storeName,
-          store_id: storeId,
-          store_name: storeName,
-          saldoAtual,
-          saldo_banco: saldoAtual,
-          faturamento,
-          contas,
-          valor_contas: contas,
-          resultado,
-          veiculosPatio,
-          veiculos_patio: veiculosPatio,
-          veiculosPatioValor,
-          na_loja_os: veiculosPatioValor,
-          statusConciliacao: s.status || 'approved'
-        };
-      });
-
       return {
-        ...globalMetrics,
-        faturamentoAtual,
-        faturamentoAnterior,
-        variacaoFaturamento,
-        fluxoCaixa: globalMetrics.fluxoCx,
-        contasAPagar: globalMetrics.valorContas,
-        veiculosPatio: Number(todayLog.veiculos_patio || 0),
-        veiculosPatioValor: Number(globalMetrics.naLoja ?? todayLog.veiculos_patio_valor ?? 0),
+        dataAtual: res.dataAtual || effectiveDate,
+        saldoTotal: Number(res.saldoTotal || 0),
+        dinheiroMp: Number(res.dinheiroMp || 0),
+        aReceber: Number(res.aReceber || 0),
+        naLoja: Number(res.naLoja || 0),
+        caixaAtual: Number(res.caixaAtual || 0),
+        caixaAnterior: Number(res.caixaAnterior || 0),
+        fluxoCx: Number(res.fluxoCx || 0),
+        fluxoCaixa: Number(res.fluxoCaixa ?? res.fluxoCx ?? 0),
+        fatura: Number(res.fatura ?? res.faturamentoAtual ?? 0),
+        faturamentoAtual: Number(res.faturamentoAtual ?? res.fatura ?? 0),
+        faturamentoAnterior: Number(res.faturamentoAnterior || 0),
+        variacaoFaturamento: Number(res.variacaoFaturamento || 0),
+        valorDispContas: Number(res.valorDispContas ?? res.caixaAtual ?? 0),
+        valorContas: Number(res.valorContas ?? res.contasAPagar ?? 0),
+        contasAPagar: Number(res.contasAPagar ?? res.valorContas ?? 0),
+        diferenca: Number(res.diferenca || 0),
+        veiculosPatio: Number(res.veiculosPatio || 0),
+        veiculosPatioValor: Number(res.veiculosPatioValor ?? res.naLoja ?? 0),
         porLoja,
-        historicoMacro
+        historicoMacro: res.historicoMacro || []
       } as DashboardMetrics;
     },
     enabled: true

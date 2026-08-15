@@ -38,20 +38,21 @@ export function OrphanCategorizationModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedCategory) {
-      setError('Por favor, selecione uma categoria.');
+    const finalCategory = (selectedCategory || '').trim();
+    if (!finalCategory) {
+      setError('Por favor, informe ou selecione uma categoria.');
       return;
     }
 
     setIsSubmitting(true);
     setError(null);
     
-    const result = await categorizeOrphan(transactionId, selectedCategory, justification);
+    const result = await categorizeOrphan(transactionId, finalCategory, justification);
     
     setIsSubmitting(false);
     
     if (result.success) {
-      onSuccess(selectedCategory, justification);
+      onSuccess(finalCategory, justification);
     } else {
       setError(result.error || 'Erro ao salvar justificativa.');
     }
@@ -64,7 +65,7 @@ export function OrphanCategorizationModal({
           <h3 className="font-semibold text-white">Justificar Transação Órfã</h3>
           <button 
             onClick={onClose}
-            className="p-1 hover:bg-[#1e293b] rounded-md transition-colors text-[var(--text-secondary)] hover:text-white"
+            className="p-1 hover:bg-[#1e293b] rounded-md transition-colors text-[var(--text-secondary)] hover:text-white cursor-pointer"
           >
             <X size={18} />
           </button>
@@ -81,19 +82,30 @@ export function OrphanCategorizationModal({
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-[var(--text-secondary)]">
-              Categoria <span className="text-rose-500">*</span>
+            <label className="text-sm font-medium text-[var(--text-secondary)] flex justify-between items-center">
+              <span>Categoria / Tipo <span className="text-rose-500">*</span></span>
+              <span className="text-[10px] text-[var(--text-tertiary)]">Digite livremente ou escolha</span>
             </label>
-            <div className="grid grid-cols-2 gap-2">
+            
+            <input
+              type="text"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              placeholder="Ex: Venda de Sucata, Reembolso Limpa Baú, Venda de Juros..."
+              className="w-full bg-[#1e293b]/50 border border-[#1e293b] rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-brand-500 transition-colors"
+              autoFocus
+            />
+
+            <div className="flex flex-wrap gap-1.5 pt-1">
               {availableCategories.map(cat => (
                 <button
                   key={cat.id}
                   type="button"
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`px-3 py-2 text-sm rounded-lg border transition-all text-left ${
-                    selectedCategory === cat.id 
-                      ? 'bg-brand-500/20 border-brand-500 text-brand-400' 
-                      : 'bg-[#1e293b]/30 border-[#1e293b] text-[var(--text-secondary)] hover:bg-[#1e293b]/50'
+                  onClick={() => setSelectedCategory(cat.label)}
+                  className={`px-2.5 py-1 text-xs rounded-md border transition-all cursor-pointer ${
+                    selectedCategory.toLowerCase() === cat.label.toLowerCase()
+                      ? 'bg-brand-500/20 border-brand-500 text-brand-400 font-medium' 
+                      : 'bg-[#1e293b]/30 border-[#1e293b] text-[var(--text-secondary)] hover:bg-[#1e293b]/50 hover:text-white'
                   }`}
                 >
                   {cat.label}
@@ -109,8 +121,8 @@ export function OrphanCategorizationModal({
             <textarea
               value={justification}
               onChange={(e) => setJustification(e.target.value)}
-              placeholder="Ex: Venda de sucata metálica no pátio"
-              className="w-full bg-[#1e293b]/30 border border-[#1e293b] rounded-lg p-3 text-white text-sm focus:outline-none focus:border-brand-500 transition-colors h-24 resize-none"
+              placeholder="Ex: Venda de sucata metálica no pátio ou detalhes adicionais..."
+              className="w-full bg-[#1e293b]/30 border border-[#1e293b] rounded-lg p-3 text-white text-sm focus:outline-none focus:border-brand-500 transition-colors h-20 resize-none"
             />
           </div>
 

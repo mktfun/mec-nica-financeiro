@@ -109,7 +109,7 @@ function DashboardPage() {
             color="primary"
             isLoading={isLoading}
             index={0}
-            tooltip="Soma do bank_total da conciliação mais recente de cada loja."
+            tooltip="Soma dos saldos bancários de todas as lojas no fechamento."
           />
           <KpiCard
             label="Caixa Atual"
@@ -118,7 +118,7 @@ function DashboardPage() {
             color="teal"
             isLoading={isLoading}
             index={1}
-            tooltip="Saldo Total + A Receber (OSs em aberto e parcial). Representa o dinheiro total que entra no caixa."
+            tooltip="Saldo Total + Dinheiro MP + A Receber + Pátio na Loja. Posição de caixa oficial."
           />
           <KpiCard
             label="Contas a Pagar"
@@ -127,16 +127,16 @@ function DashboardPage() {
             color="warning"
             isLoading={isLoading}
             index={2}
-            tooltip="Soma dos valores em aberto de todas as contas a pagar importadas do sistema legado."
+            tooltip="Total de contas a pagar e despesas do dia apuradas no fechamento."
           />
           <KpiCard
             label="Diferença Final"
             value={data?.diferenca ?? 0}
             icon={Scale}
-            color={!data || data.diferenca >= 0 ? 'teal' : 'danger'}
+            color={!data || Math.abs(data.diferenca) < 1.0 ? 'teal' : 'danger'}
             isLoading={isLoading}
             index={3}
-            tooltip="Caixa Atual menos Contas a Pagar. Positivo = sobra. Negativo = falta."
+            tooltip="Diferença apurada no fechamento da conciliação do dia (zerada quando balanceado)."
           />
         </div>
 
