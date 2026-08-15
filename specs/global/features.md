@@ -297,3 +297,9 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - **`FaturamentoVsContasChart.tsx`**: Redesenho com Recharts Tooltip flutuante sem cortes (`allowEscapeViewBox`, `zIndex: 99999`), altura dinâmica e nomes limpos de filiais.
 - **`StoreTableDashboard.tsx`**: Destaque visual em vermelho e badge para contas bancárias com saldo negativo / cheque especial.
 - **`src/routes/index.tsx`**: Grid responsivo equilibrado (`lg:col-span-7` e `lg:col-span-5`) para tabela e gráfico de faturamento.
+
+### Spec 213 — Redesign Dashboard Layout & Donut Charts
+- **`StoreDonutCharts.tsx`**: 2 Cards Donut empilhados com fatias percentuais e volume de faturamento e despesas por filial com centro informativo.
+- **`StoreTableDashboard.tsx`**: Tabela widescreen na coluna esquerda (`lg:col-span-8`) sem cortes em Resultado e Pátio.
+- **`EvolucaoMacroChart.tsx`**: Gráfico de evolução temporal com altura fixa de `280px` e escala calibrada.
+- **RPC `get_dashboard_metrics`**: Histórico diário com deltas de odômetro por dia.
