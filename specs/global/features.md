@@ -259,3 +259,11 @@ a_loja_os. Bootstrap coleta 'PÃ¡tio Pendente' para preencher caixa_atual e evita
 - **src/components/importacoes/CentralImportWizard.tsx:** Painel de auditoria visual de saldos bancários OFX com totais individuais por filial e somatório consolidado, além de acumulação sem sobrescrita para múltiplas contas.
 - **src/hooks/useTransactions.ts:** Blindagem do upsert em reconciliations exigindo store_id válido.
 
+
+### 2026-08-15: Extração Robusta e Automática de Juros REDE (207)
+- **Status:** Implementado
+- **Módulos:** Importação Central (REDE / Maquininha), numberUtils, Snapshot Diário
+- **src/lib/parsers/numberUtils.ts:** Tratamento para ignorar valores percentuais ('2.04%') evitando contaminações de valores monetários.
+- **src/lib/parsers/redeParser.ts:** Mapeamento dinâmico para 'valor da venda atualizado', 'valor da venda original', 'valor total das taxas descontadas', 'valor MDR' e 'valor taxa de recebimento automático', calculando retenção real contábil (gross - net).
+- **src/components/importacoes/CentralImportWizard.tsx:** Consolidação automática de jurosRedeTotal e preservação de campos manuais de fechamento.
+

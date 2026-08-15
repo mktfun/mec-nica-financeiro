@@ -7,10 +7,12 @@ export function extractNumber(val: any): number {
   if (val === null || val === undefined || val === '') return 0;
   if (typeof val === 'number') return isNaN(val) ? 0 : roundCurrency(val);
 
-  let str = String(val).trim();
-  
+  let rawStr = String(val).trim();
+  if (rawStr.endsWith('%')) return 0; // Ignora colunas de taxa percentual (ex: 2.04%)
+  if (rawStr === '-' || rawStr === '') return 0;
+
   // Remove "R$" and any other currency symbols, spaces, etc.
-  str = str.replace(/[^\d.,-]/g, '');
+  let str = rawStr.replace(/[^\d.,-]/g, '');
 
   if (!str) return 0;
 

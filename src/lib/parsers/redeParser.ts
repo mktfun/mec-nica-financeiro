@@ -69,22 +69,27 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
 
     const headers = json[headerIndex] ? json[headerIndex].map((h: any) => String(h || '').toLowerCase().trim()) : [];
     
-    // Mapeamento dinâmico com fallback pros índices originais testados (0, 2, 3, 9)
-    let methodIdx = headers.findIndex((h: string) => h.includes('meio de pagamento') || h.includes('bandeira') || h.includes('produto'));
+    // Mapeamento dinâmico inteligente para todas as variações de colunas da REDE
+    let methodIdx = headers.findIndex((h: string) => h.includes('meio de pagamento') || h.includes('bandeira') || h.includes('modalidade') || h.includes('produto'));
     if (methodIdx === -1) methodIdx = 0;
 
-    let grossIdx = headers.findIndex((h: string) => h.includes('valor bruto') || h.includes('venda bruta') || h.includes('bruto'));
-    if (grossIdx === -1) grossIdx = 2;
+    let grossIdx = headers.findIndex((h: string) => h === 'valor da venda atualizado');
+    if (grossIdx === -1) grossIdx = headers.findIndex((h: string) => h === 'valor da venda original');
+    if (grossIdx === -1) grossIdx = headers.findIndex((h: string) => h.includes('valor bruto') || h.includes('venda bruta') || h.includes('bruto'));
+    if (grossIdx === -1) grossIdx = headers.findIndex((h: string) => h.includes('valor da venda'));
 
-    let netIdx = headers.findIndex((h: string) => h.includes('valor líquido') || h.includes('venda liquida') || h.includes('venda líquida') || h.includes('liquido') || h.includes('líquido'));
-    if (netIdx === -1) netIdx = 3;
+    let netIdx = headers.findIndex((h: string) => h === 'valor líquido' || h === 'valor liquido');
+    if (netIdx === -1) netIdx = headers.findIndex((h: string) => h.includes('valor líquido') || h.includes('valor liquido'));
+    if (netIdx === -1) netIdx = headers.findIndex((h: string) => h.includes('líquido') || h.includes('liquido'));
 
     let storeIdx = headers.findIndex((h: string) => h === 'nome do estabelecimento' || h === 'nome fantasia' || h === 'loja');
     if (storeIdx === -1) storeIdx = headers.findIndex((h: string) => h.includes('nome do estabelecimento'));
     if (storeIdx === -1) storeIdx = headers.findIndex((h: string) => h.includes('estabelecimento') && !h.includes('número') && !h.includes('numero'));
-    if (storeIdx === -1) storeIdx = 9;
-    
-    let taxIdx = headers.findIndex((h: string) => h.includes('taxa') || h.includes('tarifa') || h.includes('juros') || h.includes('desconto'));
+
+    // Colunas de taxas e descontos explícitos
+    let totalFeeIdx = headers.findIndex((h: string) => h.includes('valor total das taxas') || h.includes('total das taxas'));
+    let mdrFeeIdx = headers.findIndex((h: string) => h === 'valor mdr' || h.includes('valor mdr'));
+    let antecipacaoFeeIdx = headers.findIndex((h: string) => h.includes('valor taxa de recebimento') || h.includes('valor antecipa'));
 
     const transactions: RedeTransaction[] = [];
     let totalInterest = 0;
@@ -99,13 +104,12 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
       const methodRaw = String(row[methodIdx] || '').toLowerCase();
       const grossRaw = grossIdx !== -1 ? row[grossIdx] : undefined;
       const netRaw = netIdx !== -1 ? row[netIdx] : undefined;
-      const taxRaw = taxIdx !== -1 ? row[taxIdx] : undefined;
       const rawStoreName = storeIdx !== -1 ? String(row[storeIdx] || 'DESCONHECIDA').trim() : 'DESCONHECIDA';
       const storeName = normalizeRedeStoreName(rawStoreName);
 
       if (storeName === 'IGNORAR') continue;
 
-      // Se a linha não tiver valor de venda numérico, ignora
+      // Se a linha não tiver valor numérico, ignora
       if (grossRaw === undefined || grossRaw === null || grossRaw === '') continue;
 
       let grossAmount = extractNumber(grossRaw);
@@ -118,8 +122,19 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
       else if (methodRaw.includes('débito') || methodRaw.includes('debito')) method = 'Cartão Débito';
       else if (methodRaw.includes('pix')) method = 'PIX';
 
-      let interest = taxRaw !== undefined ? extractNumber(taxRaw) : 0;
-      if (isNaN(interest) || interest === 0) {
+      let interest = 0;
+      // 1. Prioridade: coluna monetária explícita "valor total das taxas descontadas"
+      if (totalFeeIdx !== -1 && row[totalFeeIdx]) {
+        interest = extractNumber(row[totalFeeIdx]);
+      }
+      // 2. Prioridade: soma de valor MDR + valor taxa antecipação
+      if (interest === 0 && (mdrFeeIdx !== -1 || antecipacaoFeeIdx !== -1)) {
+        const mdr = mdrFeeIdx !== -1 ? extractNumber(row[mdrFeeIdx]) : 0;
+        const ant = antecipacaoFeeIdx !== -1 ? extractNumber(row[antecipacaoFeeIdx]) : 0;
+        interest = roundCurrency(mdr + ant);
+      }
+      // 3. Prioridade: diferença contábil real entre valor bruto vendido e líquido creditado
+      if (interest === 0 && grossAmount > 0 && netAmount > 0 && grossAmount >= netAmount) {
         interest = roundCurrency(grossAmount - netAmount);
       }
       
