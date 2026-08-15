@@ -218,3 +218,16 @@
 **Risco identificado:** Modalização forçada espreme dados de alta densidade em telas complexas.
 
 **Não fazer:** Nunca esconder o payload JSON de conciliação nem comprimir tabelas financeiras de auditoria dentro de popups com rolagem dupla.
+
+## [2026-08-15] — [Feature ID: 210 e 211]
+
+**Contexto:** Sincronização do Dashboard macro com a Conciliação e liberação de categorização livre de transações bancárias órfãs.
+
+**Regra aprendida:**
+1. A comparação de faturamento diário com o dia anterior deve subtrair o odômetro do dia D pelo odômetro de D-1, e o odômetro de D-1 pelo de D-2, garantindo comparação maçã com maçã (faturamento do dia vs faturamento do dia).
+2. Transações de maquininha na Aba 1 de cada loja devem ser confrontadas com os créditos de adquirente que entraram no OFX daquela filial (e não com a soma total do pátio).
+3. O modal de justificativa de órfãos permite digitação livre de qualquer texto de categoria no banco.
+
+**Risco identificado:** Comparar o faturamento diário (ex: R$ 75k) contra o acumulado do odômetro (R$ 369k) gerava uma falsa queda de -79.7%.
+
+**Não fazer:** Nunca atrelar a totalidade das OSs em aberto de uma loja a uma única linha de extrato da adquirente.

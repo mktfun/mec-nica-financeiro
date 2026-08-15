@@ -286,3 +286,9 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - **src/components/conciliacao/OfxSemMatchTable.tsx:** Adicionado fluxo interativo de justificativa com OrphanCategorizationModal, badges visuais de categoria e cards de resumo.
 - **src/components/conciliacao/ResumoDiaPanel.tsx:** Integracao de faturamento_outros_valor na formula de fechamento, elevando o Valor Disponivel Contas e zerando a diferenca final com as receitas justificadas.
 
+
+### Spec 210 & 211 — Dashboard 100% RPC Backend & Categorização Livre de Órfãos
+- **RPC `get_dashboard_metrics` (v2)**: Consolidação integral de faturamento diário (odômetro), caixa consolidado, comparativo diário com D-1, saídas/despesas OFX por filial, pátio e diferença do fechamento oficial no PostgreSQL.
+- **Trigger `trg_transactions_instead_of_update`**: Trigger INSTEAD OF UPDATE na view `public.transactions` para permitir mutações diretas em views com UNION ALL sem erro PostgreSQL 55000.
+- **`OrphanCategorizationModal.tsx`**: Entrada livre de qualquer texto/nome de categoria manual com chips de sugestão rápida.
+- **`OsVsRedeTable.tsx` & `useConciliacao.ts`**: Pareamento de vendas de maquininha contra créditos de adquirente que entraram no OFX daquela loja com cálculo preciso de taxa MDR e referências limpas.
