@@ -144,6 +144,28 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
   const { data: stores = [] } = useStores();
   const { mapping, updateMapping } = useStoreFileMappings(stores);
+
+  // Helper para resolver a loja correta por mapping direto, conta bancária ou prefixo do arquivo
+  const resolveStoreForOfx = useCallback((ofx: { alias: string; fileName?: string }): string => {
+    if (mapping[ofx.alias]) return mapping[ofx.alias];
+    const acctMatch = ofx.alias.match(/(\d{8,12})/);
+    if (acctMatch && mapping[acctMatch[1]]) return mapping[acctMatch[1]];
+    if (ofx.fileName) {
+      const upper = ofx.fileName.toUpperCase();
+      if (upper.includes('_DP') || upper.includes('DOM PEDRO') || upper.includes('DOM_PEDRO')) return 'st-01';
+      if (upper.includes('_JAB') || upper.includes('JABAQUARA')) return 'st-02';
+      if (upper.includes('_JB') || upper.includes('JORGE') || upper.includes('BERETTA')) return 'st-03';
+      if (upper.includes('_MP') || upper.includes('KENNEDY')) return 'st-04';
+      if (upper.includes('_EMP') || upper.includes('PIRAPORINHA') || upper.includes('EMPORIO')) return 'st-05';
+      if (upper.includes('_BRA') || upper.includes('PLANALTO') || upper.includes('BRASICAR')) return 'st-06';
+      if (upper.includes('_CAP') || upper.includes('RUDGE') || upper.includes('CAPAO')) return 'st-07';
+      if (upper.includes('_HD') || upper.includes('SANTO ANDRE') || upper.includes('SANTO_ANDRE')) return 'st-08';
+      if (upper.includes('_RM') || upper.includes('REI DO MODULO') || upper.includes('MODULO')) return 'st-09';
+      if (upper.includes('_MHE') || upper.includes('MAUA') || upper.includes('REI DO OLEO') || upper.includes('REI_DO_OLEO')) return '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f';
+    }
+    return '';
+  }, [mapping]);
+
   const { processFiles, isProcessing, results } = useCentralImport();
   const { mutateAsync: saveTransactions } = useBulkInsertTransactions();
   const { mutateAsync: createImportBatch } = useCreateImportBatch();
@@ -528,13 +550,19 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
 
       results.ofxResults.forEach(ofx => {
-        let store_id: string | null = mapping[ofx.alias];
+        let store_id: string | null = resolveStoreForOfx(ofx) || mapping[ofx.alias] || null;
         if (store_id === 'GLOBAL') store_id = null;
         const dictKey = store_id || 'global_account';
-        if (ofx.bankBalance !== undefined) storeBankBalances[dictKey] = ofx.bankBalance;
-        if (ofx.previousBalance !== undefined) storePreviousBalances[dictKey] = ofx.previousBalance;
+        
+        // Acumula somando saldos para filiais com mais de uma conta
+        if (ofx.bankBalance !== undefined) {
+          storeBankBalances[dictKey] = (storeBankBalances[dictKey] || 0) + ofx.bankBalance;
+        }
+        if (ofx.previousBalance !== undefined) {
+          storePreviousBalances[dictKey] = (storePreviousBalances[dictKey] || 0) + ofx.previousBalance;
+        }
 
-        let globalStoreId: string | null = mapping[ofx.alias] || null;
+        let globalStoreId: string | null = store_id;
         if (globalStoreId === 'GLOBAL') globalStoreId = null;
 
         const uniqueOfxTxs = new Map();
@@ -1149,6 +1177,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                       {ofxAliases.map(alias => {
                         const ofx = results.ofxResults.find(o => o.alias === alias);
                         const fileName = ofx?.fileName;
+                        const effectiveStoreId = mapping[alias] || (ofx ? resolveStoreForOfx(ofx) : '');
                         return (
                           <div key={`ofx-${alias}`} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
                             <div className="flex-1">
@@ -1163,13 +1192,13 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                             <LinkIcon className="text-[var(--color-primary)]/50 shrink-0" size={24} />
                             <div className="flex-1">
                               <select 
-                                value={mapping[alias] || ''} 
-                              onChange={e => {
-                                const s = stores.find(st => st.id === e.target.value);
-                                updateMapping(alias, e.target.value, s?.name);
-                              }}
+                                value={effectiveStoreId} 
+                                onChange={e => {
+                                  const s = stores.find(st => st.id === e.target.value);
+                                  updateMapping(alias, e.target.value, s?.name);
+                                }}
                                 className={`w-full bg-[var(--bg-surface-elevated)] border rounded p-3 text-sm focus:outline-none 
-                                  ${mapping[alias] ? 'border-[var(--color-accent-teal)] text-[var(--text-primary)]' : 'border-[var(--color-accent-warning)] text-[var(--text-secondary)] animate-pulse'}`}
+                                  ${effectiveStoreId ? 'border-[var(--color-accent-teal)] text-[var(--text-primary)]' : 'border-[var(--color-accent-warning)] text-[var(--text-secondary)] animate-pulse'}`}
                               >
                                 <option value="">-- Selecione a Loja do Sistema --</option>
                                 <option value="GLOBAL">-- CONTA GLOBAL / INTERNA --</option>
@@ -1181,6 +1210,97 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                           </div>
                         );
                       })}
+                    </div>
+                  )}
+
+                  {/* Tabela de Auditoria e Diagnóstico de Saldos Bancários OFX */}
+                  {results.ofxResults.length > 0 && (
+                    <div className="mt-8 pt-6 border-t border-[var(--border-subtle)] space-y-4">
+                      <div className="flex justify-between items-center">
+                        <h5 className="font-display font-semibold text-sm text-[var(--text-primary)] flex items-center gap-2">
+                          <CheckCircle2 size={16} className="text-[var(--color-accent-teal)]" />
+                          Auditoria de Saldos dos Extratos (.OFX) Extraídos
+                        </h5>
+                        <Badge variant="outline" className="text-xs font-mono">
+                          {results.ofxResults.length} contas lidas
+                        </Badge>
+                      </div>
+
+                      <div className="overflow-x-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)]">
+                        <table className="w-full text-left text-xs font-sans">
+                          <thead className="bg-[var(--bg-canvas)] border-b border-[var(--border-subtle)] text-[var(--text-tertiary)] uppercase font-semibold">
+                            <tr>
+                              <th className="p-3">Arquivo / Conta</th>
+                              <th className="p-3">Filial Vinculada</th>
+                              <th className="p-3 text-right">Saldo Anterior</th>
+                              <th className="p-3 text-right">Entradas (+)</th>
+                              <th className="p-3 text-right">Saídas (-)</th>
+                              <th className="p-3 text-right">Saldo Final (OFX)</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-[var(--border-subtle)] font-mono">
+                            {results.ofxResults.map((ofx, idx) => {
+                              const storeId = resolveStoreForOfx(ofx) || mapping[ofx.alias];
+                              const storeObj = stores.find(s => s.id === storeId);
+                              const totalIn = ofx.transactions.filter(t => t.type === 'in').reduce((s, t) => s + t.amount, 0);
+                              const totalOut = ofx.transactions.filter(t => t.type === 'out').reduce((s, t) => s + Math.abs(t.amount), 0);
+
+                              return (
+                                <tr key={idx} className="hover:bg-[var(--bg-surface-hover)]">
+                                  <td className="p-3 font-sans">
+                                    <div className="font-semibold text-[var(--text-primary)]">{ofx.fileName || 'Extrato'}</div>
+                                    <div className="text-[10px] text-[var(--text-tertiary)]">{ofx.alias}</div>
+                                  </td>
+                                  <td className="p-3 font-sans">
+                                    {storeObj ? (
+                                      <span className="text-[var(--color-accent-teal)] font-medium">{storeObj.name}</span>
+                                    ) : (
+                                      <span className="text-amber-400 font-medium flex items-center gap-1">
+                                        <AlertCircle size={12} /> Não vinculada
+                                      </span>
+                                    )}
+                                  </td>
+                                  <td className="p-3 text-right text-[var(--text-secondary)]">
+                                    {ofx.previousBalance !== undefined ? (
+                                      ofx.previousBalance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                                    ) : '-'}
+                                  </td>
+                                  <td className="p-3 text-right text-emerald-400">
+                                    +{totalIn.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                  </td>
+                                  <td className="p-3 text-right text-rose-400">
+                                    -{totalOut.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                  </td>
+                                  <td className="p-3 text-right font-bold text-sky-400">
+                                    {ofx.bankBalance !== undefined ? (
+                                      ofx.bankBalance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                                    ) : '-'}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                          <tfoot className="bg-[var(--bg-canvas)] border-t border-[var(--border-subtle)] font-bold">
+                            <tr>
+                              <td colSpan={2} className="p-3 font-sans text-right text-[var(--text-secondary)] uppercase">
+                                Total Geral Consolidado ({results.ofxResults.length} Contas):
+                              </td>
+                              <td className="p-3 text-right text-[var(--text-secondary)]">
+                                {results.ofxResults.reduce((s, o) => s + (o.previousBalance || 0), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                              </td>
+                              <td className="p-3 text-right text-emerald-400">
+                                +{results.ofxResults.reduce((s, o) => s + o.transactions.filter(t => t.type === 'in').reduce((st, t) => st + t.amount, 0), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                              </td>
+                              <td className="p-3 text-right text-rose-400">
+                                -{results.ofxResults.reduce((s, o) => s + o.transactions.filter(t => t.type === 'out').reduce((st, t) => st + Math.abs(t.amount), 0), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                              </td>
+                              <td className="p-3 text-right text-lg text-sky-400 font-bold">
+                                {results.ofxResults.reduce((s, o) => s + (o.bankBalance || 0), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                              </td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
                     </div>
                   )}
 
@@ -1531,12 +1651,16 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
                 storeRedeNet += results.maquininhaItems.filter(item => mapping[item.storeName] === storeId).reduce((acc, item) => acc + (item.amount || 0), 0);
 
-                const storeOfxIn = results.ofxResults.filter(r => mapping[r.alias] === storeId).reduce((acc, r) => {
+                const storeOfxIn = results.ofxResults.filter(r => (resolveStoreForOfx(r) || mapping[r.alias]) === storeId).reduce((acc, r) => {
                   const txs = r.transactions.filter(tx => tx.type === 'in');
                   return acc + txs.reduce((sum, tx) => sum + tx.amount, 0);
                 }, 0);
 
-                if (rawOsMaq === 0 && storeRedeNet === 0 && storeOfxIn === 0) return null;
+                const storeBankTotal = results.ofxResults.filter(r => (resolveStoreForOfx(r) || mapping[r.alias]) === storeId).reduce((acc, r) => {
+                  return acc + (r.bankBalance || 0);
+                }, 0);
+
+                if (rawOsMaq === 0 && storeRedeNet === 0 && storeOfxIn === 0 && storeBankTotal === 0) return null;
 
                 return (
                   <div key={store.id} className="p-4 bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl hover:border-[var(--color-primary)]/50 transition-colors">
@@ -1545,9 +1669,16 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                         <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-primary)]"></div>
                         {store.name}
                       </h5>
-                      <Badge variant="outline" className="text-xs">
-                        {storeRedeNet > 0 ? 'Rede Ativa' : 'OFX Direct'}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        {storeBankTotal !== 0 && (
+                          <span className="text-xs font-mono font-bold text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/20">
+                            Saldo: {storeBankTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                          </span>
+                        )}
+                        <Badge variant="outline" className="text-xs">
+                          {storeRedeNet > 0 ? 'Rede Ativa' : 'OFX Direct'}
+                        </Badge>
+                      </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                       <div>
@@ -1560,7 +1691,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                       </div>
                       <div>
                         <span className="text-[var(--text-tertiary)] uppercase">Entradas Banco (OFX)</span>
-                        <p className="font-bold text-sky-400 text-sm">{storeOfxIn.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                        <p className="font-bold text-emerald-400 text-sm">{storeOfxIn.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
                       </div>
                     </div>
                   </div>

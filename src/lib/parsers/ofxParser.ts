@@ -42,11 +42,19 @@ function extractDocument(memo: string): { doc: string | undefined; name: string 
 export async function parseOFXFile(file: File, options?: { sessionId?: string }): Promise<OfxParseResult> {
   const text = await file.text();
   
-  // Tenta achar a tag ORG (Banco) e ACCTID (Conta)
+  // Tenta achar a tag ORG (Banco), BANKID e ACCTID (Conta)
   const orgMatch = text.match(/<ORG>(.+?)(?:\r?\n|<)/);
+  const bankIdMatch = text.match(/<BANKID>(.+?)(?:\r?\n|<)/);
   const acctMatch = text.match(/<ACCTID>(.+?)(?:\r?\n|<)/);
   
-  const banco = orgMatch ? orgMatch[1].trim() : 'BANCO DESCONHECIDO';
+  let banco = orgMatch ? orgMatch[1].trim() : '';
+  if (!banco || banco === 'BANCO DESCONHECIDO') {
+    if (bankIdMatch && (bankIdMatch[1].trim() === '0341' || bankIdMatch[1].trim() === '341')) {
+      banco = 'ITAU';
+    } else {
+      banco = 'BANCO DESCONHECIDO';
+    }
+  }
   const conta = acctMatch ? acctMatch[1].trim() : 'CONTA DESCONHECIDA';
   
   // O alias gerado será "BANCO - CONTA"
@@ -107,14 +115,26 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
     const memoMatch = trnBlock.match(/<MEMO>([^\r\n<]+)/);
     const rawMemo = memoMatch ? memoMatch[1].trim() : 'Transação Bancária';
     
-    // Capture SALDO ANTERIOR before filtering it out
-    if (rawMemo.toUpperCase().includes('SALDO ANTERIOR')) {
-      previousBalance = Math.abs(amount);
+    // Capture SALDO ANTERIOR and all Brazilian bank variations before filtering out
+    const isPrevBalMemo = (
+      rawMemo.toUpperCase().includes('SALDO ANTERIOR') ||
+      rawMemo.toUpperCase().includes('SDO ANTERIOR') ||
+      rawMemo.toUpperCase().includes('SLD ANTERIOR') ||
+      rawMemo.toUpperCase().includes('SALDO INICIAL') ||
+      rawMemo.toUpperCase().includes('SALDO DEVEDOR') ||
+      rawMemo.toUpperCase().includes('SALDO DO DIA') ||
+      rawMemo.toUpperCase().includes('DISPONIVEL ANTERIOR') ||
+      rawMemo.toUpperCase().includes('DISPONÍVEL ANTERIOR')
+    );
+
+    if (isPrevBalMemo) {
+      // Preserve sign (positive for credit balance, negative if indicated or negative amount)
+      previousBalance = (trnType === 'DEBIT' || trnType === 'SRVCHG') ? -Math.abs(amount) : amount;
       continue; // Don't add as transaction
     }
     
-    // Filter other junk/balance entries
-    const JUNK = ['SALDO TOTAL', 'SALDO DISPONIVEL', 'SALDO DISPONÍVEL', 'SALDO INICIAL', 'DISPONÍVEL DIA'];
+    // Filter other junk/balance summary entries
+    const JUNK = ['SALDO TOTAL', 'SALDO DISPONIVEL', 'SALDO DISPONÍVEL', 'DISPONÍVEL DIA', 'SALDO FINAL'];
     if (JUNK.some(k => rawMemo.toUpperCase().includes(k.toUpperCase()))) continue;
     
     // Extract CPF/CNPJ and counterpart name from memo
@@ -149,6 +169,18 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
     });
   }
   
+  // Check for native <PRVBAL> tag if previousBalance was not found in transactions
+  if (previousBalance === undefined) {
+    const prvBalMatch = text.match(/<PRVBAL>[\s\S]*?<BALAMT>([^\r\n<]+)/i) || text.match(/<PRVBAL>([^\r\n<]+)/i);
+    if (prvBalMatch) {
+      const rawVal = prvBalMatch[1].trim().replace(',', '.');
+      const parsed = parseFloat(rawVal);
+      if (!isNaN(parsed)) {
+        previousBalance = Math.round(parsed * 100) / 100;
+      }
+    }
+  }
+
   // LEDGERBAL = actual account balance
   let bankBalance: number | undefined;
   const ledgerMatch = text.match(/<LEDGERBAL>[\s\S]*?<BALAMT>([^\r\n<]+)/);
@@ -167,20 +199,21 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
         const option1 = parsedFloat;
 
         if (previousBalance !== undefined) {
-          const sumTx = transactions.reduce((acc, t) => acc + t.amount, 0);
+          const sumTx = transactions.reduce((acc, t) => acc + (t.type === 'in' ? Math.abs(t.amount) : -Math.abs(t.amount)), 0);
           const expectedBalance = previousBalance + sumTx;
-          const expectedBalanceNeg = -previousBalance + sumTx;
+          const expectedBalanceNeg = -Math.abs(previousBalance) + sumTx;
+          const expectedBalancePos = Math.abs(previousBalance) + sumTx;
 
           // Encontra a opção que tem a menor diferença para o saldo esperado
           const diffs = [
-            { val: option100, diff: Math.min(Math.abs(option100 - expectedBalance), Math.abs(option100 - expectedBalanceNeg)) },
-            { val: option10, diff: Math.min(Math.abs(option10 - expectedBalance), Math.abs(option10 - expectedBalanceNeg)) },
-            { val: option1, diff: Math.min(Math.abs(option1 - expectedBalance), Math.abs(option1 - expectedBalanceNeg)) }
+            { val: option100, diff: Math.min(Math.abs(option100 - expectedBalance), Math.abs(option100 - expectedBalanceNeg), Math.abs(option100 - expectedBalancePos)) },
+            { val: option10, diff: Math.min(Math.abs(option10 - expectedBalance), Math.abs(option10 - expectedBalanceNeg), Math.abs(option10 - expectedBalancePos)) },
+            { val: option1, diff: Math.min(Math.abs(option1 - expectedBalance), Math.abs(option1 - expectedBalanceNeg), Math.abs(option1 - expectedBalancePos)) }
           ];
           diffs.sort((a, b) => a.diff - b.diff);
           parsedFloat = diffs[0].val;
         } else {
-          // Fallback seguro: a maioria dos casos sem ponto são centavos exatos (ex: 1309322 -> 13093.22)
+          // Fallback seguro: se não tiver saldo anterior, maioria dos casos sem ponto são centavos exatos
           parsedFloat = parsedFloat / 100;
         }
       }

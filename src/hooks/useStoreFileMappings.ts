@@ -9,7 +9,18 @@ export interface StoreFileMapping {
   store_name?: string;
 }
 
-const LOCAL_STORAGE_KEY = '@mecanica/unified-mappings';
+const KNOWN_ACCOUNT_DEFAULTS: Record<string, string> = {
+  '8813984633': 'st-01', // Dom Pedro (DP)
+  '8813984112': 'st-02', // Jabaquara (JAB)
+  '3385988047': 'st-03', // Jorge Beretta (DHJV)
+  '7386175298': 'st-04', // Kennedy (MP)
+  '7386162601': 'st-05', // Piraporinha (EMPORIO)
+  '7386166586': 'st-06', // Planalto (BRASICAR)
+  '0263811531': 'st-07', // Rudge Ramos (CAP)
+  '8813994293': 'st-08', // Santo André (HD)
+  '8813992677': 'st-09', // Rei do Módulo (MP)
+  '2783070820': '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f', // Mauá (MHE)
+};
 
 export function useStoreFileMappings(stores: StoreRow[] = []) {
   const queryClient = useQueryClient();
@@ -33,9 +44,16 @@ export function useStoreFileMappings(stores: StoreRow[] = []) {
     staleTime: 5 * 60 * 1000, // 5 minutos de cache
   });
 
-  // 2. Inicializar mapa combinando Supabase (prioritário) + localStorage (fallback) + auto-match por nome
+  // 2. Inicializar mapa combinando Defaults + Supabase + localStorage + auto-match por nome
   useEffect(() => {
     const combined: Record<string, string> = {};
+
+    // 2.0 Defaults conhecidos por conta/alias
+    Object.entries(KNOWN_ACCOUNT_DEFAULTS).forEach(([acct, sid]) => {
+      combined[acct] = sid;
+      combined[`ITAU - ${acct}`] = sid;
+      combined[`BANCO DESCONHECIDO - ${acct}`] = sid;
+    });
 
     // 2.1 Fallback localStorage
     try {

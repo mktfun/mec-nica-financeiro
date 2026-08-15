@@ -250,3 +250,12 @@ a_loja_os. Bootstrap coleta 'PÃ¡tio Pendente' para preencher caixa_atual e evita
   - **LocalizaÃ§Ã£o:** `src/lib/modulo1Calculations.ts`, `src/components/conciliacao/ResumoDiaPanel.tsx`, `src/components/importacoes/CentralImportWizard.tsx`.
   - **Regra:** CÃ¡lculo de faturamento lÃ­quido incremental tipo odÃ´metro (`Hoje - Ant`) persistindo a leitura acumulada em `daily_snapshots.faturamento`.
   - **UI/UX:** Trava de formulÃ¡rio em modo leitura por padrÃ£o (`isEditing`) com botÃµes 'Editar Fechamento', 'Salvar AlteraÃ§Ãµes' e 'Cancelar'. Modal de importaÃ§Ã£o com remoÃ§Ã£o de steppers redundantes e logs recolhidos em accordion monospaced.
+
+### 2026-08-15: Auto-Mapeamento e Auditoria de Saldos OFX Itaú (206)
+- **Status:** Implementado
+- **Módulos:** Importação Central (OFX), Conciliação, Mapeamento de Filiais
+- **src/lib/parsers/ofxParser.ts:** Regex ampliada para captura de saldo anterior (SLD/SDO/INICIAL/DEVEDOR/PRVBAL) com preservação de sinais negativos e triangulação matemática contra escalas truncadas do Itaú.
+- **src/hooks/useStoreFileMappings.ts:** Auto-mapeamento nativo de contas bancárias Itaú e prefixos de arquivos para todas as 10 lojas.
+- **src/components/importacoes/CentralImportWizard.tsx:** Painel de auditoria visual de saldos bancários OFX com totais individuais por filial e somatório consolidado, além de acumulação sem sobrescrita para múltiplas contas.
+- **src/hooks/useTransactions.ts:** Blindagem do upsert em reconciliations exigindo store_id válido.
+

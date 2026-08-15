@@ -445,6 +445,8 @@ export function useBulkInsertTransactions() {
           
           if (bankBalance !== undefined || previousBalance !== undefined) {
             const realStoreId = storeKey === 'global_account' ? null : storeKey;
+            if (!realStoreId) continue; // Pula chaves nulas para manter a integridade da tabela reconciliations
+            
             const updatePayload: any = {
               store_id: realStoreId,
               date: targetDate,
