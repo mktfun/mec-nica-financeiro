@@ -292,3 +292,8 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - **Trigger `trg_transactions_instead_of_update`**: Trigger INSTEAD OF UPDATE na view `public.transactions` para permitir mutações diretas em views com UNION ALL sem erro PostgreSQL 55000.
 - **`OrphanCategorizationModal.tsx`**: Entrada livre de qualquer texto/nome de categoria manual com chips de sugestão rápida.
 - **`OsVsRedeTable.tsx` & `useConciliacao.ts`**: Pareamento de vendas de maquininha contra créditos de adquirente que entraram no OFX daquela loja com cálculo preciso de taxa MDR e referências limpas.
+
+### Spec 212 — Dashboard Chart Layout & Tooltip Clipping Fix
+- **`FaturamentoVsContasChart.tsx`**: Redesenho com Recharts Tooltip flutuante sem cortes (`allowEscapeViewBox`, `zIndex: 99999`), altura dinâmica e nomes limpos de filiais.
+- **`StoreTableDashboard.tsx`**: Destaque visual em vermelho e badge para contas bancárias com saldo negativo / cheque especial.
+- **`src/routes/index.tsx`**: Grid responsivo equilibrado (`lg:col-span-7` e `lg:col-span-5`) para tabela e gráfico de faturamento.
