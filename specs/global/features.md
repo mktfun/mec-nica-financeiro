@@ -267,3 +267,13 @@ a_loja_os. Bootstrap coleta 'PÃ¡tio Pendente' para preencher caixa_atual e evita
 - **src/lib/parsers/redeParser.ts:** Mapeamento dinâmico para 'valor da venda atualizado', 'valor da venda original', 'valor total das taxas descontadas', 'valor MDR' e 'valor taxa de recebimento automático', calculando retenção real contábil (gross - net).
 - **src/components/importacoes/CentralImportWizard.tsx:** Consolidação automática de jurosRedeTotal e preservação de campos manuais de fechamento.
 
+
+### 2026-08-15: Reestruturação da Conciliação Detalhada por Loja (208)
+- **Status:** Implementado
+- **Módulos:** Conciliação por Loja (/conciliacao/$lojaId), useReconciliationViews, OsVsRedeTable, RedeVsOfxTable, PixVsOfxTable, OfxSemMatchTable
+- **src/hooks/useConciliacao.ts:** Migração definitiva da busca de OSs para a tabela 'patio_os', cálculo correto de Bruto (gross_amount), Líquido (amount) e Taxas (fee_amount), pareamento de OSs de cartão e PIX com extrato bancário.
+- **src/components/conciliacao/OsVsRedeTable.tsx:** Adicionados cards de resumo (Rede Bruto, OS Cartão, Delta) e metadados de cliente, veículo/placa e link formatado para OS.
+- **src/components/conciliacao/RedeVsOfxTable.tsx:** Cards de topo e status de entrada bancária enriquecidos.
+- **src/components/conciliacao/PixVsOfxTable.tsx:** Cards consolidados e pareamento detalhado de PIX de OS vs Lançamentos OFX.
+- **src/components/conciliacao/OfxSemMatchTable.tsx:** Tabela de entradas bancárias avulsas com totalizador.
+

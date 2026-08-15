@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { CheckCircle2, AlertTriangle, Info, QrCode, FileText } from 'lucide-react';
@@ -18,14 +18,17 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
   const pixGroups = data?.pixVsOfx?.pixGroups || [];
 
   // Helper para verificar se a OS teve o PIX correspondido no banco
-  const hasEntered = (osNumber: string) => {
-    return pixGroups.some((group: any) => 
-      group.isMatched && group.matchedOs?.os_number === osNumber
+  const getPixGroup = (osNumber: string) => {
+    return pixGroups.find((group: any) => 
+      group.osPix?.os_number === osNumber || group.matchedOs?.os_number === osNumber
     );
   };
 
   const totalOsPix = osPixList.reduce((acc: number, item: any) => acc + Number(item.amount || 0), 0);
-  const totalEntered = osPixList.filter(item => hasEntered(item.os_number)).reduce((acc: number, item: any) => acc + Number(item.amount || 0), 0);
+  const totalEntered = osPixList.filter(item => {
+    const group = getPixGroup(item.os_number);
+    return group?.isMatched;
+  }).reduce((acc: number, item: any) => acc + Number(item.amount || 0), 0);
   const totalNotEntered = totalOsPix - totalEntered;
 
   return (
@@ -34,7 +37,7 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card variant="elevated" className="p-5">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Total PIX Pátio</span>
+            <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Total PIX Pátio (Declarado)</span>
             <QrCode size={18} className="text-[var(--text-tertiary)]" />
           </div>
           <p className="text-2xl font-bold text-[var(--text-primary)] font-mono">
@@ -44,7 +47,7 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
 
         <Card variant="elevated" className="p-5 border-[var(--color-accent-teal)]/30">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">PIX Entrou no Banco</span>
+            <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">PIX Confirmado no Banco</span>
             <CheckCircle2 size={18} className="text-[var(--color-accent-teal)]" />
           </div>
           <p className="text-2xl font-bold text-[var(--color-accent-teal)] font-mono">
@@ -54,7 +57,7 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
 
         <Card variant="elevated" className="p-5">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">PIX Pendente</span>
+            <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">PIX Pendente de Confirmação</span>
             <AlertTriangle size={18} className="text-[var(--color-accent-warning)]" />
           </div>
           <p className="text-2xl font-bold text-[var(--color-accent-warning)] font-mono">
@@ -68,7 +71,7 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
         <div className="bg-[var(--bg-panel)] p-4 border-b border-[var(--border-subtle)] flex items-center justify-between">
           <h3 className="font-display font-semibold text-lg flex items-center gap-2 text-[var(--color-primary)]">
             <QrCode size={20} />
-            Extrato de PIX (Ordens de Serviço)
+            Extrato de PIX (Ordens de Serviço vs Extrato Bancário)
           </h3>
           <Badge variant="outline" className="text-xs">
             {osPixList.length} Transações
@@ -86,39 +89,56 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
               <thead>
                 <tr className="text-[var(--text-tertiary)] text-xs uppercase tracking-wider border-b border-[var(--border-subtle)] bg-[var(--bg-canvas)]">
                   <th className="text-left py-3 px-4 font-medium">OS Vinculada</th>
-                  <th className="text-left py-3 px-4 font-medium">Cliente</th>
-                  <th className="text-right py-3 px-4 font-medium">Valor PIX (Declarado)</th>
+                  <th className="text-left py-3 px-4 font-medium">Cliente / Veículo</th>
+                  <th className="text-right py-3 px-4 font-medium">Valor PIX (OS)</th>
+                  <th className="text-left py-3 px-4 font-medium">Lançamento OFX (Banco)</th>
                   <th className="text-center py-3 px-4 font-medium">Status OFX</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border-subtle)]">
                 {osPixList.map((pixTx: any, idx: number) => {
-                  const entrou = hasEntered(pixTx.os_number);
+                  const group = getPixGroup(pixTx.os_number);
+                  const entrou = group?.isMatched;
+                  const ofxPix = group?.ofxPix;
+
                   return (
                     <tr key={idx} className="hover:bg-[var(--bg-canvas)]/50 transition-colors">
                       <td className="py-3 px-4 font-medium text-[var(--text-primary)]">
                         <div 
-                          className="flex items-center gap-1.5 cursor-pointer hover:underline text-[var(--color-primary)]"
-                          onClick={() => pixTx.raw_os && setSelectedOsData(pixTx.raw_os)}
+                          className="flex items-center gap-1.5 cursor-pointer hover:underline text-[var(--color-primary)] font-bold"
+                          onClick={() => setSelectedOsData({ ...pixTx, store_id: storeId, target_date: date })}
                         >
                           <FileText size={14} />
                           <span className="font-mono">OS #{pixTx.os_number}</span>
                         </div>
                       </td>
                       <td className="py-3 px-4 text-[var(--text-secondary)]">
-                        {pixTx.client_name || '-'}
+                        <div className="flex flex-col">
+                          <span className="font-medium text-[var(--text-primary)]">{pixTx.client_name || '-'}</span>
+                          {pixTx.plate && <span className="text-[10px] text-[var(--text-tertiary)] font-mono">Placa: {pixTx.plate}</span>}
+                        </div>
                       </td>
                       <td className="py-3 px-4 text-right font-mono font-bold text-[var(--text-primary)]">
                         R$ {Number(pixTx.amount || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </td>
+                      <td className="py-3 px-4 text-xs font-mono text-[var(--text-secondary)]">
+                        {ofxPix ? (
+                          <div className="flex flex-col">
+                            <span className="text-[var(--color-accent-teal)] font-medium">{ofxPix.title}</span>
+                            <span className="text-[10px] text-[var(--text-tertiary)]">R$ {Number(ofxPix.amount || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                          </div>
+                        ) : (
+                          <span className="text-[var(--text-tertiary)] italic">Aguardando conciliação OFX</span>
+                        )}
+                      </td>
                       <td className="py-3 px-4 text-center">
                         {entrou ? (
-                          <Badge variant="success" className="bg-[var(--color-accent-teal)]/10 text-[var(--color-accent-teal)] border-[var(--color-accent-teal)]/30">
-                            <CheckCircle2 size={12} className="mr-1" /> Entrou
+                          <Badge variant="success" className="bg-[var(--color-accent-teal)]/10 text-[var(--color-accent-teal)] border-[var(--color-accent-teal)]/30 text-xs font-mono">
+                            <CheckCircle2 size={12} className="mr-1" /> Entrou no Banco
                           </Badge>
                         ) : (
-                          <Badge variant="danger" className="bg-[var(--color-accent-danger)]/10 text-[var(--color-accent-danger)] border-[var(--color-accent-danger)]/30">
-                            <AlertTriangle size={12} className="mr-1" /> Não Entrou
+                          <Badge variant="warning" className="bg-[var(--color-accent-warning)]/10 text-[var(--color-accent-warning)] border-[var(--color-accent-warning)]/30 text-xs font-mono">
+                            <AlertTriangle size={12} className="mr-1" /> Pendente OFX
                           </Badge>
                         )}
                       </td>
@@ -131,9 +151,11 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
         )}
       </Card>
 
-      {selectedOsData && (
-        <OsDetailModal osData={selectedOsData} onClose={() => setSelectedOsData(null)} />
-      )}
+      <OsDetailModal 
+        isOpen={!!selectedOsData}
+        osData={selectedOsData} 
+        onClose={() => setSelectedOsData(null)} 
+      />
     </div>
   );
 }

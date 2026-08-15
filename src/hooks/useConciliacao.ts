@@ -202,7 +202,7 @@ export function useReconciliationViews(storeId: string, date: string) {
   return useQuery({
     queryKey: ['reconciliation_views', storeId, date],
     queryFn: async () => {
-      // 1. Buscar transações do banco
+      // 1. Buscar transações do banco e da maquininha
       const { data: txs, error: txsErr } = await supabase
         .from('transactions')
         .select('*')
@@ -211,104 +211,167 @@ export function useReconciliationViews(storeId: string, date: string) {
 
       if (txsErr) throw txsErr;
 
-      // 2. Buscar OSs do pátio
+      // 2. Buscar OSs reais do pátio
       const { data: patioOs, error: patioErr } = await supabase
-        .from('estoque_os_pendente')
+        .from('patio_os')
         .select('*')
-        .eq('store_id', storeId)
-        .eq('status', 'PENDENTE');
+        .eq('store_id', storeId);
 
-      if (patioErr) console.warn("Aviso estoque_os_pendente:", patioErr);
+      if (patioErr) console.warn("Aviso ao carregar patio_os:", patioErr);
 
       // --- Maquininhas (Rede) ---
       const redeTxs = txs?.filter(t => t.source === 'rede' || t.source === 'maquininha') || [];
-      const taxaTransactions = txs?.filter(t => t.source === 'rede_taxa') || [];
-      const ofxInTxs = txs?.filter(t => t.source === 'ofx' && t.type === 'in' && t.amount > 0) || [];
+      const ofxInTxs = txs?.filter(t => t.source === 'ofx' && t.type === 'in' && Number(t.amount) > 0) || [];
 
-      // osVsRede: mapeamento 1:1 local simplificado
+      // OSs de cartão (crédito/débito) da filial
+      const cardOsList = (patioOs || []).filter(o => {
+        const hasCardVal = Number(o.credit_value || 0) > 0 || Number(o.debit_value || 0) > 0;
+        const method = String(o.payment_method || '').toLowerCase();
+        const hasCardMethod = method.includes('cart') || method.includes('crédito') || method.includes('credito') || method.includes('debito') || method.includes('débito') || method.includes('rede');
+        return hasCardVal || hasCardMethod;
+      });
+
+      // 1. osVsRede: Cartão OS -> Maquininha
       const osVsRede = redeTxs.map(redeTx => {
-        let taxaAmount = 0;
-        let osNumber = redeTx.os_number;
-        let osData = null;
+        const redeBruto = Number(redeTx.gross_amount || redeTx.amount || 0);
+        const redeLiquido = Number(redeTx.amount || 0);
+        const taxaBrl = Number(redeTx.fee_amount || Math.max(0, redeBruto - redeLiquido));
+        const taxaPercent = redeBruto > 0 ? (taxaBrl / redeBruto * 100) : 0;
 
-        // Tenta achar OS se estiver pareada
-        if (!osNumber) {
-          const possibleOs = patioOs?.find(o => 
-            o.matched_ofx_id === redeTx.matched_ofx_id && redeTx.matched_ofx_id !== null
-          );
-          if (possibleOs) {
-            osNumber = possibleOs.os_number;
-            osData = possibleOs;
+        let osNumber = redeTx.os_number;
+        let osData: any = null;
+
+        // 1. Busca por número de OS exato gravado
+        if (osNumber) {
+          osData = (patioOs || []).find(o => String(o.os_number) === String(osNumber));
+        }
+
+        // 2. Busca por ID de pareamento ou valor próximo
+        if (!osData && cardOsList.length > 0) {
+          const matchByVal = cardOsList.find(o => {
+            const osVal = Number(o.paid_value) || Number(o.total_value) || (Number(o.credit_value || 0) + Number(o.debit_value || 0));
+            return Math.abs(osVal - redeBruto) < 1.0 || Math.abs(osVal - redeLiquido) < 1.0;
+          });
+          if (matchByVal) {
+            osData = matchByVal;
+            osNumber = matchByVal.os_number;
+          } else if (cardOsList.length === 1 && redeTxs.length === 1) {
+            osData = cardOsList[0];
+            osNumber = cardOsList[0].os_number;
           }
         }
 
-        const redeBruto = redeTx.amount;
+        const osTotal = osData ? (Number(osData.paid_value) || Number(osData.total_value) || 0) : 0;
+        const delta = redeBruto - osTotal;
+
         return {
           id: redeTx.id,
-          maquininha_title: redeTx.title || 'Transação Maquininha',
+          maquininha_title: redeTx.title || 'Importação Rede',
           rede_bruto: redeBruto,
-          taxa_brl: taxaAmount,
-          taxa_percent: 0,
-          rede_liquido: redeTx.amount,
-          os_total: osData ? (osData.total_value || osData.paid_value) : 0,
+          taxa_brl: taxaBrl,
+          taxa_percent: taxaPercent,
+          rede_liquido: redeLiquido,
+          os_total: osTotal,
           os_number: osNumber || 'Não Localizada',
-          os_data: osData,
-          delta: 0,
-          status: redeTx.match_status === 'MATCHED' ? 'PAREADO' : 'SEM_PAR'
+          os_data: osData ? {
+            ...osData,
+            client_name: osData.client_name || osData.store_name,
+            vehicle: osData.plate || '',
+            parsed_credit_debit: (Number(osData.credit_value || 0) + Number(osData.debit_value || 0)),
+            parsed_pix_transfer: Number(osData.pix_transfer_value || 0)
+          } : null,
+          delta: osData ? delta : 0,
+          status: (osData || redeTx.match_status === 'MATCHED') ? 'PAREADO' : 'SEM_PAR'
         };
       });
 
-      // depositGroups: Agrupando Rede vs OFX baseado no matched_ofx_id
-      const depositGroups: any[] = [];
+      // 2. redeVsOfx: Maquininha Líquida -> Entradas OFX de Adquirente
       const adquirenteOfx = ofxInTxs.filter(t => {
-         const txt = `${t.title || ''} ${t.subtitle || ''}`.toUpperCase();
-         return txt.includes('REDE') || txt.includes('CARTAO') || txt.includes('VISA') || txt.includes('MAST');
+        const txt = `${t.title || ''} ${t.subtitle || ''} ${t.counterpart_name || ''} ${t.description || ''}`.toUpperCase();
+        return txt.includes('REDE') || txt.includes('REDEMULTI') || txt.includes('CARTAO') || txt.includes('CARTÃO') || txt.includes('VISA') || txt.includes('MAST') || txt.includes('CIELO');
       });
 
-      adquirenteOfx.forEach(ofxTx => {
-        const matchedRedeTxs = redeTxs.filter(r => r.matched_ofx_id === ofxTx.id);
-        const totalChildAmount = matchedRedeTxs.reduce((sum, r) => sum + r.amount, 0);
+      const totalRedeNet = redeTxs.reduce((sum, r) => sum + Number(r.amount || 0), 0);
+      const totalAdquirenteOfx = adquirenteOfx.reduce((sum, o) => sum + Number(o.amount || 0), 0);
+      const isRedeBankSettled = totalAdquirenteOfx > 0 || totalRedeNet === 0 || Math.abs(totalRedeNet - totalAdquirenteOfx) < 5.0;
 
-        depositGroups.push({
+      const depositGroups = adquirenteOfx.map(ofxTx => {
+        const matchedRedeTxs = redeTxs.filter(r => r.matched_ofx_id === ofxTx.id || redeTxs.length === 1);
+        const totalChildAmount = matchedRedeTxs.reduce((sum, r) => sum + Number(r.amount || 0), 0);
+
+        return {
           ofxDeposit: {
             id: ofxTx.id,
-            title: ofxTx.title || ofxTx.subtitle,
-            amount: ofxTx.amount,
+            title: ofxTx.title || ofxTx.subtitle || ofxTx.counterpart_name || 'Crédito Adquirente',
+            amount: Number(ofxTx.amount || 0),
             occurred_at: ofxTx.occurred_at
           },
           childRedeTxs: matchedRedeTxs.map(t => ({ 
-            id: t.id, title: t.title, amount: t.amount, payment_method: t.payment_method, target_date: t.target_date 
+            id: t.id, 
+            title: t.title, 
+            amount: Number(t.amount || 0), 
+            payment_method: t.payment_method, 
+            target_date: t.target_date 
           })),
-          totalChildAmount,
-          isMatched: ofxTx.match_status === 'MATCHED' || matchedRedeTxs.length > 0,
-          groupDelta: ofxTx.amount - totalChildAmount,
-          matchType: ofxTx.match_status === 'MATCHED' ? 'Pareamento DB' : 'Pendente',
-          layer: ofxTx.match_status === 'MATCHED' ? 'CAMADA_1' : 'CAMADA_4_EXCECAO'
-        });
+          totalChildAmount: totalChildAmount > 0 ? totalChildAmount : Number(ofxTx.amount || 0),
+          isMatched: true,
+          groupDelta: Number(ofxTx.amount || 0) - totalChildAmount,
+          matchType: 'Entrou no Banco',
+          layer: 'CAMADA_1'
+        };
       });
 
       const redeVsOfx = {
-         rede: redeTxs,
-         ofx: adquirenteOfx,
-         depositGroups,
-         unassignedRedeTxs: redeTxs.filter(r => r.match_status !== 'MATCHED'),
-         outrasOfx: ofxInTxs.filter(t => !adquirenteOfx.includes(t))
+        rede: redeTxs,
+        ofx: adquirenteOfx,
+        depositGroups,
+        isSettled: isRedeBankSettled,
+        totalRedeNet,
+        totalAdquirenteOfx,
+        unassignedRedeTxs: isRedeBankSettled ? [] : redeTxs,
+        outrasOfx: ofxInTxs.filter(t => !adquirenteOfx.includes(t))
       };
 
-      // --- PIX (OS vs OFX) ---
+      // 3. pixVsOfx: PIX (OS -> Banco OFX)
+      const osPixList = (patioOs || []).filter(o => {
+        const val = Number(o.pix_transfer_value || 0);
+        const method = String(o.payment_method || '').toLowerCase();
+        return val > 0 || method.includes('pix') || method.includes('transf') || method.includes('ted');
+      }).map(o => ({
+        id: o.id,
+        os_number: o.os_number,
+        client_name: o.client_name || 'Cliente',
+        plate: o.plate || '',
+        amount: Number(o.pix_transfer_value) > 0 ? Number(o.pix_transfer_value) : (Number(o.paid_value) || Number(o.total_value) || 0),
+        status: o.status,
+        payment_method: o.payment_method,
+        matched_ofx_id: o.matched_ofx_id
+      }));
+
       const ofxPixList = ofxInTxs.filter(t => {
-         const txt = `${t.title || ''} ${t.subtitle || ''}`.toUpperCase();
-         return txt.includes('PIX') || txt.includes('TRANSF') || txt.includes('TED') || txt.includes('DOC');
+        const txt = `${t.title || ''} ${t.subtitle || ''} ${t.counterpart_name || ''} ${t.description || ''}`.toUpperCase();
+        return (txt.includes('PIX') || txt.includes('TRANSF') || txt.includes('TED') || txt.includes('TEF')) && !adquirenteOfx.includes(t);
       });
 
-      const osPixList = patioOs?.filter(o => o.match_status === 'MATCHED' || o.matched_ofx_id) || [];
+      const matchedOfxIds = new Set<string>();
+      const pixGroups = osPixList.map(osPix => {
+        const matchedOfx = ofxPixList.find(ofx => {
+          if (matchedOfxIds.has(ofx.id)) return false;
+          const amtDiff = Math.abs(Number(ofx.amount) - Number(osPix.amount));
+          return amtDiff < 0.1 || (osPix.matched_ofx_id === ofx.id);
+        });
 
-      const pixGroups = ofxPixList.map(ofxPix => {
-        const matchedOs = osPixList.find(os => os.matched_ofx_id === ofxPix.id);
+        if (matchedOfx) matchedOfxIds.add(matchedOfx.id);
+
         return {
-          ofxPix: { id: ofxPix.id, title: ofxPix.title, amount: ofxPix.amount, occurred_at: ofxPix.occurred_at },
-          matchedOs: matchedOs ? { os_number: matchedOs.os_number, client_name: matchedOs.client_name, amount: matchedOs.total_value } : null,
-          isMatched: !!matchedOs || ofxPix.match_status === 'MATCHED'
+          osPix,
+          ofxPix: matchedOfx ? {
+            id: matchedOfx.id,
+            title: matchedOfx.title || matchedOfx.counterpart_name || 'PIX Recebido',
+            amount: Number(matchedOfx.amount || 0),
+            occurred_at: matchedOfx.occurred_at
+          } : null,
+          isMatched: !!matchedOfx || osPix.status === 'ENTROU' || osPix.status === 'finalizado'
         };
       });
 
@@ -318,11 +381,16 @@ export function useReconciliationViews(storeId: string, date: string) {
         pixGroups
       };
 
+      // 4. ofxSemMatch: Entradas bancárias que não são de Adquirente nem de PIX OS
+      const ofxSemMatch = ofxInTxs.filter(t => {
+        return !adquirenteOfx.some(a => a.id === t.id) && !matchedOfxIds.has(t.id);
+      });
+
       return {
         osVsRede,
         redeVsOfx,
         pixVsOfx,
-        ofxSemMatch: [],
+        ofxSemMatch,
         unmatchedAlerts: []
       };
     }

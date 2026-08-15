@@ -1,4 +1,4 @@
-﻿import { Badge } from '@/components/ui/Badge';
+import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { CheckCircle2, AlertTriangle, CreditCard, Info } from 'lucide-react';
 import { useReconciliationViews } from '@/hooks/useConciliacao';
@@ -16,6 +16,7 @@ export function RedeVsOfxTable({ storeId, date }: { storeId: string; date: strin
 
   // Helper para verificar se a transação entrou no OFX
   const hasEntered = (txId: string) => {
+    if (data?.redeVsOfx?.isSettled) return true;
     return depositGroups.some((group: any) => 
       group.childRedeTxs?.some((child: any) => child.id === txId)
     );
@@ -116,12 +117,12 @@ export function RedeVsOfxTable({ storeId, date }: { storeId: string; date: strin
                       </td>
                       <td className="py-3 px-4 text-center">
                         {entrou ? (
-                          <Badge variant="success" className="bg-[var(--color-accent-teal)]/10 text-[var(--color-accent-teal)] border-[var(--color-accent-teal)]/30">
-                            <CheckCircle2 size={12} className="mr-1" /> Entrou
+                          <Badge variant="success" className="bg-[var(--color-accent-teal)]/10 text-[var(--color-accent-teal)] border-[var(--color-accent-teal)]/30 text-xs font-mono">
+                            <CheckCircle2 size={12} className="mr-1" /> Entrou no Banco
                           </Badge>
                         ) : (
-                          <Badge variant="danger" className="bg-[var(--color-accent-danger)]/10 text-[var(--color-accent-danger)] border-[var(--color-accent-danger)]/30">
-                            <AlertTriangle size={12} className="mr-1" /> Não Entrou
+                          <Badge variant="warning" className="bg-[var(--color-accent-warning)]/10 text-[var(--color-accent-warning)] border-[var(--color-accent-warning)]/30 text-xs font-mono">
+                            <AlertTriangle size={12} className="mr-1" /> Pendente de Crédito
                           </Badge>
                         )}
                       </td>
