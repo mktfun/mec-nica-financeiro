@@ -98,16 +98,18 @@ export function ResumoDiaPanel({
   const saldoBancosValor = summary?.total_saldo_banco ?? currentSnapshot?.saldo_bancario ?? totalBancarioIn;
   const naLojaValor = summary?.na_loja_os ?? currentSnapshot?.total_patio ?? 0;
   const jurosRedeValor = summary?.juros_rede ?? currentSnapshot?.juros_rede ?? 0;
+  const faturamentoOutrosValor = Number(currentSnapshot?.faturamento_outros_valor ?? summary?.faturamento_outros ?? 0);
 
-  // Cálculo Odômetro do Faturamento Líquido do Dia
+  // Cálculo Odômetro do Faturamento Líquido do Dia + Ajustes Justificados
   const faturamentoLiquidoDia = faturamentoAnteriorGlobal > 0 
     ? (faturamentoAcumuladoHoje - faturamentoAnteriorGlobal) 
     : faturamentoAcumuladoHoje;
+  const faturamentoTotalComAjustes = faturamentoLiquidoDia + faturamentoOutrosValor;
 
   // Matemática Consolidada
   const caixaAtualCalculado = saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor;
   const fluxoCaixaCalculado = caixaAtualCalculado - caixaAnteriorGlobal;
-  const valorDispContasCalculado = faturamentoLiquidoDia - fluxoCaixaCalculado;
+  const valorDispContasCalculado = faturamentoTotalComAjustes - fluxoCaixaCalculado;
   const subtotalContasCalculado = jurosRedeValor + contasManualValor;
   const diferencaFinalCalculada = Math.abs(valorDispContasCalculado) - subtotalContasCalculado;
 
@@ -151,8 +153,8 @@ export function ResumoDiaPanel({
         total_patio: naLojaValor,
         saldo_bancario: saldoBancosValor,
         a_receber_manual: aReceberValor,
-        faturamento_outros_valor: 0,
-        faturamento_outros_desc: null,
+        faturamento_outros_valor: faturamentoOutrosValor,
+        faturamento_outros_desc: currentSnapshot?.faturamento_outros_desc || null,
         contas_a_pagar: contasManualValor,
         provisao: 0,
         saldo_negativo_itau: currentSnapshot?.saldo_negativo_itau || 0,
@@ -491,11 +493,16 @@ export function ResumoDiaPanel({
                 ) : (
                   <>
                     <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
-                      <AnimatedNumber value={faturamentoLiquidoDia} format="currency" />
+                      <AnimatedNumber value={faturamentoTotalComAjustes} format="currency" />
                     </span>
-                    <span className="text-[9px] text-[var(--text-tertiary)] block mt-0.5">
-                      Odômetro Acumulado: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoAcumuladoHoje)}
-                    </span>
+                    <div className="flex flex-col gap-0.5 mt-0.5 text-[9px] text-[var(--text-tertiary)]">
+                      <span>Odômetro: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoLiquidoDia)}</span>
+                      {faturamentoOutrosValor > 0 && (
+                        <span className="text-[var(--color-accent-teal)] font-medium">
+                          + Justificados: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoOutrosValor)}
+                        </span>
+                      )}
+                    </div>
                   </>
                 )}
               </div>

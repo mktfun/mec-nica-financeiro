@@ -9,15 +9,31 @@ export function useCategorizeOrphan() {
     setLoading(true);
     setError(null);
     try {
+      // 1. Tenta via RPC
       const { data, error: rpcError } = await supabase.rpc('categorize_orphan_transaction', {
         p_tx_id: transactionId,
         p_category: category,
         p_justification: justification
       });
 
-      if (rpcError) throw rpcError;
+      if (!rpcError) {
+        return { success: true, data };
+      }
 
-      return { success: true, data };
+      // 2. Fallback direto na tabela transactions
+      const { data: updateData, error: updateError } = await supabase
+        .from('transactions')
+        .update({
+          manual_category: category,
+          manual_justification: justification
+        })
+        .eq('id', transactionId)
+        .select()
+        .single();
+
+      if (updateError) throw updateError;
+
+      return { success: true, data: updateData };
     } catch (err: any) {
       console.error('Error categorizing orphan transaction:', err);
       setError(err.message || 'Erro ao categorizar transação');

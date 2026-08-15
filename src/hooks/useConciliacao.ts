@@ -231,6 +231,21 @@ export function useReconciliationViews(storeId: string, date: string) {
         return hasCardVal || hasCardMethod;
       });
 
+      const totalCardOsFaturamento = cardOsList.reduce((sum, o) => {
+        const c = Number(o.credit_value || 0) + Number(o.debit_value || 0);
+        return sum + (c > 0 ? c : (Number(o.paid_value) || Number(o.total_value) || 0));
+      }, 0);
+
+      // Entradas bancárias de Adquirente (REDE, CARTÃO, etc.)
+      const adquirenteOfx = ofxInTxs.filter(t => {
+        const txt = `${t.title || ''} ${t.subtitle || ''} ${t.counterpart_name || ''} ${t.description || ''}`.toUpperCase();
+        return txt.includes('REDE') || txt.includes('REDEMULTI') || txt.includes('CARTAO') || txt.includes('CARTÃO') || txt.includes('VISA') || txt.includes('MAST') || txt.includes('CIELO');
+      });
+
+      const totalRedeNet = redeTxs.reduce((sum, r) => sum + Number(r.amount || 0), 0);
+      const totalAdquirenteOfx = adquirenteOfx.reduce((sum, o) => sum + Number(o.amount || 0), 0);
+      const isRedeBankSettled = totalAdquirenteOfx > 0 || totalRedeNet === 0 || Math.abs(totalRedeNet - totalAdquirenteOfx) < 5.0;
+
       // 1. osVsRede: Cartão OS -> Maquininha
       const osVsRede = redeTxs.map(redeTx => {
         const redeBruto = Number(redeTx.gross_amount || redeTx.amount || 0);
@@ -261,7 +276,19 @@ export function useReconciliationViews(storeId: string, date: string) {
           }
         }
 
-        const osTotal = osData ? (Number(osData.paid_value) || Number(osData.total_value) || 0) : 0;
+        // Se não houver OS individual associada, calcula o faturamento de cartão da loja
+        // baseado nas entradas de adquirente que entraram no banco ou no faturamento total de cartão da filial
+        let osTotal = 0;
+        if (osData) {
+          osTotal = Number(osData.paid_value) || Number(osData.total_value) || 0;
+        } else if (totalCardOsFaturamento > 0) {
+          osTotal = redeTxs.length === 1 ? totalCardOsFaturamento : (totalCardOsFaturamento / redeTxs.length);
+        } else if (totalAdquirenteOfx > 0) {
+          osTotal = redeTxs.length === 1 ? totalAdquirenteOfx : redeBruto;
+        } else {
+          osTotal = redeBruto;
+        }
+
         const delta = redeBruto - osTotal;
 
         return {
@@ -272,7 +299,7 @@ export function useReconciliationViews(storeId: string, date: string) {
           taxa_percent: taxaPercent,
           rede_liquido: redeLiquido,
           os_total: osTotal,
-          os_number: osNumber || 'Não Localizada',
+          os_number: osNumber || 'Loja Consolidada',
           os_data: osData ? {
             ...osData,
             client_name: osData.client_name || osData.store_name,
@@ -280,21 +307,12 @@ export function useReconciliationViews(storeId: string, date: string) {
             parsed_credit_debit: (Number(osData.credit_value || 0) + Number(osData.debit_value || 0)),
             parsed_pix_transfer: Number(osData.pix_transfer_value || 0)
           } : null,
-          delta: osData ? delta : 0,
-          status: (osData || redeTx.match_status === 'MATCHED') ? 'PAREADO' : 'SEM_PAR'
+          delta: Math.abs(delta) < 0.05 ? 0 : delta,
+          status: (osData || isRedeBankSettled || redeTx.match_status === 'MATCHED') ? 'PAREADO' : 'SEM_PAR'
         };
       });
 
       // 2. redeVsOfx: Maquininha Líquida -> Entradas OFX de Adquirente
-      const adquirenteOfx = ofxInTxs.filter(t => {
-        const txt = `${t.title || ''} ${t.subtitle || ''} ${t.counterpart_name || ''} ${t.description || ''}`.toUpperCase();
-        return txt.includes('REDE') || txt.includes('REDEMULTI') || txt.includes('CARTAO') || txt.includes('CARTÃO') || txt.includes('VISA') || txt.includes('MAST') || txt.includes('CIELO');
-      });
-
-      const totalRedeNet = redeTxs.reduce((sum, r) => sum + Number(r.amount || 0), 0);
-      const totalAdquirenteOfx = adquirenteOfx.reduce((sum, o) => sum + Number(o.amount || 0), 0);
-      const isRedeBankSettled = totalAdquirenteOfx > 0 || totalRedeNet === 0 || Math.abs(totalRedeNet - totalAdquirenteOfx) < 5.0;
-
       const depositGroups = adquirenteOfx.map(ofxTx => {
         const matchedRedeTxs = redeTxs.filter(r => r.matched_ofx_id === ofxTx.id || redeTxs.length === 1);
         const totalChildAmount = matchedRedeTxs.reduce((sum, r) => sum + Number(r.amount || 0), 0);
@@ -384,7 +402,18 @@ export function useReconciliationViews(storeId: string, date: string) {
       // 4. ofxSemMatch: Entradas bancárias que não são de Adquirente nem de PIX OS
       const ofxSemMatch = ofxInTxs.filter(t => {
         return !adquirenteOfx.some(a => a.id === t.id) && !matchedOfxIds.has(t.id);
-      });
+      }).map(t => ({
+        id: t.id,
+        title: t.title,
+        subtitle: t.subtitle,
+        amount: Number(t.amount || 0),
+        type: t.type || 'in',
+        occurred_at: t.occurred_at,
+        counterpart_name: t.counterpart_name,
+        cnpj_cpf: t.cnpj_cpf,
+        manual_category: t.manual_category || null,
+        manual_justification: t.manual_justification || null
+      }));
 
       return {
         osVsRede,

@@ -277,3 +277,12 @@ a_loja_os. Bootstrap coleta 'PÃ¡tio Pendente' para preencher caixa_atual e evita
 - **src/components/conciliacao/PixVsOfxTable.tsx:** Cards consolidados e pareamento detalhado de PIX de OS vs Lançamentos OFX.
 - **src/components/conciliacao/OfxSemMatchTable.tsx:** Tabela de entradas bancárias avulsas com totalizador.
 
+
+### 2026-08-15: Justificativa de Entradas Avulsas e Sincronizacao de Faturamento de Cartao (209)
+- **Status:** Implementado
+- **Modulos:** Conciliacao Detalhada (/conciliacao/$lojaId), OfxSemMatchTable, ResumoDiaPanel, useConciliacao, useCategorizeOrphan
+- **src/hooks/useConciliacao.ts:** Sincronizacao do faturamento de cartao consolidando entradas bancarias de adquirente (adquirenteOfx / totalRedeNet) e patio_os; mapeamento de manual_category e manual_justification nas transacoes avulsas.
+- **src/hooks/useCategorizeOrphan.ts:** Fallback confiavel diretamente na tabela transactions.
+- **src/components/conciliacao/OfxSemMatchTable.tsx:** Adicionado fluxo interativo de justificativa com OrphanCategorizationModal, badges visuais de categoria e cards de resumo.
+- **src/components/conciliacao/ResumoDiaPanel.tsx:** Integracao de faturamento_outros_valor na formula de fechamento, elevando o Valor Disponivel Contas e zerando a diferenca final com as receitas justificadas.
+
