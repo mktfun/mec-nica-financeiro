@@ -1,5 +1,5 @@
-﻿import { useMemo } from 'react';
-import { ComposedChart, Area, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid } from 'recharts';
+import { useMemo } from 'react';
+import { ComposedChart, Area, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { Card } from '@/components/ui/Card';
 import { Activity } from 'lucide-react';
 import type { DashboardV2Data } from '@/hooks/useDashboardV2';
@@ -10,11 +10,15 @@ interface EvolucaoMacroChartProps {
 }
 
 const formatCurrency = (value: number) =>
-  `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+  `R$ ${Number(value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 const formatDate = (dateStr: string) => {
-  const [y, m, d] = dateStr.split('-');
-  return `${d}/${m}`;
+  if (!dateStr) return '';
+  const parts = dateStr.split('-');
+  if (parts.length === 3) {
+    return `${parts[2]}/${parts[1]}`;
+  }
+  return dateStr;
 };
 
 const formatCompactCurrency = (value: number) => {
@@ -27,26 +31,30 @@ const formatCompactCurrency = (value: number) => {
 };
 
 export function EvolucaoMacroChart({ data, isLoading }: EvolucaoMacroChartProps) {
-  // O Recharts espera os dados do mais antigo pro mais novo (para a linha ir da esquerda para a direita)
   const chartData = useMemo(() => {
-    if (!data) return [];
-    return data;
+    if (!data || !Array.isArray(data)) return [];
+    return data.map(item => ({
+      date: item.date,
+      saldo: Number(item.saldo || 0),
+      faturamento: Number(item.faturamento || 0),
+      contas: Number(item.contas || 0),
+    }));
   }, [data]);
 
   if (isLoading) {
     return (
-      <Card className="h-full animate-pulse flex flex-col justify-center min-h-[220px]">
-        <div className="h-6 w-48 bg-[var(--bg-surface-hover)] rounded mb-6 mx-4 mt-4" />
-        <div className="flex-1 bg-[var(--bg-surface-hover)] rounded mx-4 mb-4" />
+      <Card className="w-full animate-pulse flex flex-col justify-center min-h-[300px] p-6">
+        <div className="h-6 w-48 bg-[var(--bg-surface-hover)] rounded mb-6" />
+        <div className="h-[220px] bg-[var(--bg-surface-hover)] rounded" />
       </Card>
     );
   }
 
   return (
-    <Card className="h-full flex flex-col p-6 overflow-hidden">
-      <div className="flex justify-between items-start mb-6">
+    <Card className="w-full flex flex-col p-6 overflow-hidden">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-          <h3 className="font-display font-semibold text-lg flex items-center gap-2">
+          <h3 className="font-display font-semibold text-base sm:text-lg flex items-center gap-2 text-[var(--text-primary)]">
             <Activity size={20} className="text-[var(--color-primary)]" />
             Visão Macro do Mês
           </h3>
@@ -56,76 +64,77 @@ export function EvolucaoMacroChart({ data, isLoading }: EvolucaoMacroChartProps)
         </div>
         
         {/* Legenda Customizada Minimalista */}
-        <div className="flex items-center gap-4 text-xs font-medium text-[var(--text-secondary)] bg-[var(--bg-surface-hover)] px-3 py-1.5 rounded-full">
+        <div className="flex items-center gap-4 text-xs font-medium text-[var(--text-secondary)] bg-[var(--bg-surface-hover)] px-3 py-1.5 rounded-full border border-[var(--border-subtle)]">
           <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-primary)]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-primary)] shadow-sm shadow-blue-500/50" />
             Saldo
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-accent-teal)]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-accent-teal)] shadow-sm shadow-emerald-500/50" />
             Faturamento
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-accent-warning)]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-accent-warning)] shadow-sm shadow-amber-500/50" />
             Contas
           </div>
         </div>
       </div>
 
       {chartData.length === 0 ? (
-        <div className="flex-1 flex items-center justify-center min-h-[220px]">
+        <div className="w-full h-[260px] flex items-center justify-center">
           <p className="text-sm text-[var(--text-tertiary)]">Sem dados para este mês</p>
         </div>
       ) : (
-        <div className="flex-1 min-h-[220px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="w-full h-[260px]">
+          <ResponsiveContainer width="100%" height={260}>
             <ComposedChart
               data={chartData}
-              margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+              margin={{ top: 10, right: 16, left: 0, bottom: 0 }}
             >
               <defs>
                 <linearGradient id="colorFaturamento" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--color-accent-teal)" stopOpacity={0.5} />
-                  <stop offset="95%" stopColor="var(--color-accent-teal)" stopOpacity={0} />
+                  <stop offset="5%" stopColor="var(--color-accent-teal)" stopOpacity={0.4} />
+                  <stop offset="95%" stopColor="var(--color-accent-teal)" stopOpacity={0.0} />
                 </linearGradient>
                 <linearGradient id="colorContas" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--color-accent-warning)" stopOpacity={0.5} />
-                  <stop offset="95%" stopColor="var(--color-accent-warning)" stopOpacity={0} />
+                  <stop offset="5%" stopColor="var(--color-accent-warning)" stopOpacity={0.4} />
+                  <stop offset="95%" stopColor="var(--color-accent-warning)" stopOpacity={0.0} />
                 </linearGradient>
               </defs>
               
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
               
               <XAxis 
                 dataKey="date" 
                 tickFormatter={formatDate}
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: 'var(--text-tertiary)', fontSize: 10 }}
-                dy={12}
+                tick={{ fill: 'var(--text-tertiary)', fontSize: 11 }}
+                dy={8}
                 minTickGap={20}
               />
               <YAxis 
-                hide={false}
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: 'var(--text-tertiary)', fontSize: 10 }}
+                tick={{ fill: 'var(--text-tertiary)', fontSize: 11 }}
                 tickFormatter={(val) => formatCompactCurrency(val).replace('R$', '').trim()}
                 domain={['auto', 'auto']}
-                width={45}
+                width={55}
               />
               <Tooltip
-                cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 1, strokeDasharray: '4 4' }}
+                cursor={{ stroke: 'rgba(255,255,255,0.15)', strokeWidth: 1, strokeDasharray: '4 4' }}
                 contentStyle={{
-                  backgroundColor: 'var(--bg-surface-elevated)',
+                  backgroundColor: 'rgba(15, 17, 26, 0.95)',
+                  backdropFilter: 'blur(12px)',
                   border: '1px solid var(--border-subtle)',
-                  borderRadius: 8,
+                  borderRadius: 12,
                   color: 'var(--text-primary)',
                   fontSize: 12,
-                  boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
+                  boxShadow: '0 12px 32px rgba(0,0,0,0.6)',
+                  padding: '12px',
                 }}
                 labelFormatter={(label) => `Data: ${formatDate(label as string)}`}
-                formatter={(value: number, name: string) => [formatCurrency(value), name]}
+                formatter={(value: any, name: string) => [formatCurrency(Number(value)), name]}
               />
 
               <Area
@@ -133,7 +142,7 @@ export function EvolucaoMacroChart({ data, isLoading }: EvolucaoMacroChartProps)
                 type="monotone"
                 dataKey="faturamento"
                 stroke="var(--color-accent-teal)"
-                strokeWidth={2}
+                strokeWidth={2.5}
                 fillOpacity={1}
                 fill="url(#colorFaturamento)"
               />
@@ -143,7 +152,7 @@ export function EvolucaoMacroChart({ data, isLoading }: EvolucaoMacroChartProps)
                 type="monotone"
                 dataKey="contas"
                 stroke="var(--color-accent-warning)"
-                strokeWidth={2}
+                strokeWidth={2.5}
                 fillOpacity={1}
                 fill="url(#colorContas)"
               />
@@ -154,8 +163,8 @@ export function EvolucaoMacroChart({ data, isLoading }: EvolucaoMacroChartProps)
                 dataKey="saldo"
                 stroke="var(--color-primary)"
                 strokeWidth={3}
-                dot={{ r: 3, fill: 'var(--color-primary)', strokeWidth: 0 }}
-                activeDot={{ r: 5, strokeWidth: 0 }}
+                dot={{ r: 4, fill: 'var(--color-primary)', strokeWidth: 2, stroke: '#fff' }}
+                activeDot={{ r: 6, strokeWidth: 0 }}
               />
             </ComposedChart>
           </ResponsiveContainer>

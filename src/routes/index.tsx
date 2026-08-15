@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { KpiCard } from '@/components/dashboard/KpiCard';
 import { StoreTableDashboard } from '@/components/dashboard/StoreTableDashboard';
-import { FaturamentoVsContasChart } from '@/components/dashboard/FaturamentoVsContasChart';
+import { StoreDonutCharts } from '@/components/dashboard/StoreDonutCharts';
 import { EvolucaoMacroChart } from '@/components/dashboard/EvolucaoMacroChart';
 import { useBackendDashboard } from '@/hooks/useBackendDashboard';
 import { useAvailableConciliacaoDates } from '@/hooks/useDailySnapshot';
@@ -239,13 +239,13 @@ function DashboardPage() {
             <EvolucaoMacroChart data={data?.historicoMacro ?? []} isLoading={isLoading} />
           </div>
           
-          {/* Bottom Grid: Tabela e Gráfico por Loja lado a lado com largura confortável */}
+          {/* Bottom Grid: Tabela na Esquerda (65%) e 2 Donuts na Direita (35%) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            <div className="lg:col-span-7">
+            <div className="lg:col-span-8">
               <StoreTableDashboard data={data?.porLoja ?? []} isLoading={isLoading} />
             </div>
-            <div className="lg:col-span-5">
-              <FaturamentoVsContasChart data={data?.porLoja ?? []} isLoading={isLoading} />
+            <div className="lg:col-span-4">
+              <StoreDonutCharts data={data?.porLoja ?? []} isLoading={isLoading} />
             </div>
           </div>
         </div>
