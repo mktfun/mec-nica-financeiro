@@ -1345,8 +1345,8 @@
     "semantic_hash": ""
   },
   "src/routes/index.tsx": {
-    "mtime": 1786829890.2107804,
-    "ast_hash": "b7331d8b4b58ebf76e0bfa6e3259b844",
+    "mtime": 1786830759.8258634,
+    "ast_hash": "6e5b73e8adc90eb45249e8aea417fa60",
     "semantic_hash": ""
   },
   "src/routes/login.tsx": {
@@ -3205,8 +3205,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786830050.7335043,
-    "ast_hash": "45b98226e30be099ea24a5d8a0166730",
+    "mtime": 1786830918.3200805,
+    "ast_hash": "54c2d63e6c8215c9e90e70c8562d144c",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -4280,8 +4280,8 @@
     "semantic_hash": ""
   },
   "src/components/dashboard/FaturamentoVsContasChart.tsx": {
-    "mtime": 1786806195.2304838,
-    "ast_hash": "3bd14cd90a8f7b9af446bffd5161a642",
+    "mtime": 1786830727.4595683,
+    "ast_hash": "9dfc25f35ac527d129f27015f367256a",
     "semantic_hash": ""
   },
   "src/components/dashboard/KpiCard.tsx": {
@@ -4290,8 +4290,8 @@
     "semantic_hash": ""
   },
   "src/components/dashboard/StoreTableDashboard.tsx": {
-    "mtime": 1786806195.2334824,
-    "ast_hash": "d01efa80cbc44e3c44ed282bd5bc87f6",
+    "mtime": 1786830743.807722,
+    "ast_hash": "290eb5ba3b1eb7ee11235d310cf94463",
     "semantic_hash": ""
   },
   "src/hooks/useDashboardV2.ts": {
@@ -7257,6 +7257,21 @@
   "specs/archive/211-sync-dashboard-with-conciliation-and-custom-orphan-categories/spec-plan.md": {
     "mtime": 1786829910.573337,
     "ast_hash": "6b28431ab0dcbf06b639c46070b84b80",
+    "semantic_hash": ""
+  },
+  "specs/archive/212-fix-dashboard-chart-layout-tooltip-clipping-and-negative-balance-display/design.md": {
+    "mtime": 1786830658.0137591,
+    "ast_hash": "4131de715cd15b96cb66e9fa3b8bafe7",
+    "semantic_hash": ""
+  },
+  "specs/archive/212-fix-dashboard-chart-layout-tooltip-clipping-and-negative-balance-display/proposal.md": {
+    "mtime": 1786830647.1819959,
+    "ast_hash": "66880fb31e2eb1b9777c3d35fd4bb235",
+    "semantic_hash": ""
+  },
+  "specs/archive/212-fix-dashboard-chart-layout-tooltip-clipping-and-negative-balance-display/spec-plan.md": {
+    "mtime": 1786830785.3650124,
+    "ast_hash": "2302d4d2abb2b35ddee1efd9b79cbdb8",
     "semantic_hash": ""
   }
 }
