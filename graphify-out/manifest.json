@@ -1345,8 +1345,8 @@
     "semantic_hash": ""
   },
   "src/routes/index.tsx": {
-    "mtime": 1786830759.8258634,
-    "ast_hash": "6e5b73e8adc90eb45249e8aea417fa60",
+    "mtime": 1786832372.0402634,
+    "ast_hash": "ab15bf3ec9d09bb002553178203bd29e",
     "semantic_hash": ""
   },
   "src/routes/login.tsx": {
@@ -3205,8 +3205,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1786830918.3200805,
-    "ast_hash": "54c2d63e6c8215c9e90e70c8562d144c",
+    "mtime": 1786832479.0243723,
+    "ast_hash": "522e5670f591c6bdb5b04ef9465d91d8",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -4275,8 +4275,8 @@
     "semantic_hash": ""
   },
   "src/components/dashboard/EvolucaoMacroChart.tsx": {
-    "mtime": 1786143715.926046,
-    "ast_hash": "98bbba7a3f1194b19be9746802aa782a",
+    "mtime": 1786832318.1379583,
+    "ast_hash": "334ee778a4c8af92b0618149b3b07686",
     "semantic_hash": ""
   },
   "src/components/dashboard/FaturamentoVsContasChart.tsx": {
@@ -7272,6 +7272,31 @@
   "specs/archive/212-fix-dashboard-chart-layout-tooltip-clipping-and-negative-balance-display/spec-plan.md": {
     "mtime": 1786830785.3650124,
     "ast_hash": "2302d4d2abb2b35ddee1efd9b79cbdb8",
+    "semantic_hash": ""
+  },
+  "src/components/dashboard/StoreDonutCharts.tsx": {
+    "mtime": 1786832333.7565098,
+    "ast_hash": "86944304ce3c6839586af24e234a4473",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260815191500_update_dashboard_rpc_macro_history.sql": {
+    "mtime": 1786832190.7921274,
+    "ast_hash": "4bc976852d97973fb7b862d69dfe254e",
+    "semantic_hash": ""
+  },
+  "specs/archive/213-redesign-dashboard-charts-and-table-layout/design.md": {
+    "mtime": 1786832140.902712,
+    "ast_hash": "817d47f4d67eac549142b5d4ad5eff18",
+    "semantic_hash": ""
+  },
+  "specs/archive/213-redesign-dashboard-charts-and-table-layout/proposal.md": {
+    "mtime": 1786832131.0244167,
+    "ast_hash": "1152f53f77d3feb34cef233ffb34a75a",
+    "semantic_hash": ""
+  },
+  "specs/archive/213-redesign-dashboard-charts-and-table-layout/spec-plan.md": {
+    "mtime": 1786832396.9948907,
+    "ast_hash": "50c2b9336a9ae0ede8363be71f0a151c",
     "semantic_hash": ""
   }
 }

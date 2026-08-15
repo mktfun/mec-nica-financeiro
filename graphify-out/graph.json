@@ -6173,8 +6173,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "package_dependencies_ai",
-      "community": 45,
-      "community_name": "dependencies",
+      "community": 1214,
+      "community_name": "ai",
       "norm_label": "ai"
     },
     {
@@ -6184,8 +6184,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "ai",
-      "community": 45,
-      "community_name": "dependencies",
+      "community": 1214,
+      "community_name": "ai",
       "norm_label": "ai"
     },
     {
@@ -6261,8 +6261,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "package_dependencies_date_fns",
-      "community": 657,
-      "community_name": "date-fns",
+      "community": 45,
+      "community_name": "dependencies",
       "norm_label": "date-fns"
     },
     {
@@ -6272,8 +6272,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "date_fns",
-      "community": 657,
-      "community_name": "date-fns",
+      "community": 45,
+      "community_name": "dependencies",
       "norm_label": "date-fns"
     },
     {
@@ -15396,8 +15396,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_mocks_importfiles",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "importfiles.ts"
     },
     {
@@ -15407,8 +15407,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_mocks_importfiles_mockfiles",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "mockfiles"
     },
     {
@@ -15442,7 +15442,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "agenteiaconfigpanel.tsx"
     },
     {
@@ -15453,7 +15453,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_model_options",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "model_options"
     },
     {
@@ -15464,7 +15464,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_provider_labels",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "provider_labels"
     },
     {
@@ -15476,7 +15476,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_agenteiaconfigpanel",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "agenteiaconfigpanel()"
     },
     {
@@ -15486,8 +15486,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_cacheagentepanel",
-      "community": 513,
-      "community_name": "Card.tsx",
+      "community": 336,
+      "community_name": "supabase.ts",
       "norm_label": "cacheagentepanel.tsx"
     },
     {
@@ -15498,8 +15498,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_cacheagentepanel_cacheagentepanel",
-      "community": 513,
-      "community_name": "Card.tsx",
+      "community": 336,
+      "community_name": "supabase.ts",
       "norm_label": "cacheagentepanel()"
     },
     {
@@ -15510,7 +15510,7 @@
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "configuracoespanel.tsx"
     },
     {
@@ -15522,7 +15522,7 @@
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel_configuracoespanel",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "configuracoespanel()"
     },
     {
@@ -15534,7 +15534,7 @@
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel_aisettingsform",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "aisettingsform()"
     },
     {
@@ -15567,8 +15567,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_logsagentepanel",
-      "community": 513,
-      "community_name": "Card.tsx",
+      "community": 336,
+      "community_name": "supabase.ts",
       "norm_label": "logsagentepanel.tsx"
     },
     {
@@ -15579,8 +15579,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_agente_logsagentepanel_logsagentepanel",
-      "community": 513,
-      "community_name": "Card.tsx",
+      "community": 336,
+      "community_name": "supabase.ts",
       "norm_label": "logsagentepanel()"
     },
     {
@@ -15591,7 +15591,7 @@
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "logsmotorpanel.tsx"
     },
     {
@@ -15603,7 +15603,7 @@
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel_logsmotorpanel",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "logsmotorpanel()"
     },
     {
@@ -15947,7 +15947,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "promptinput.tsx"
     },
     {
@@ -15960,7 +15960,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_attachment",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "attachment"
     },
     {
@@ -15972,7 +15972,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_morphingtext",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "morphingtext()"
     },
     {
@@ -15984,7 +15984,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_modelicon",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "modelicon()"
     },
     {
@@ -15996,7 +15996,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_arrowupicon",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "arrowupicon()"
     },
     {
@@ -16008,7 +16008,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_micicon",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "micicon()"
     },
     {
@@ -16020,7 +16020,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_stopicon",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "stopicon()"
     },
     {
@@ -16032,7 +16032,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_plusicon",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "plusicon()"
     },
     {
@@ -16044,7 +16044,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_closeicon",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "closeicon()"
     },
     {
@@ -16056,7 +16056,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_dynamicbarsicon",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "dynamicbarsicon()"
     },
     {
@@ -16068,7 +16068,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_attachmentthumb",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "attachmentthumb()"
     },
     {
@@ -16080,7 +16080,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_attachmentgallerymodal",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "attachmentgallerymodal()"
     },
     {
@@ -16093,7 +16093,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_promptinputprops",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "promptinputprops"
     },
     {
@@ -16104,7 +16104,7 @@
       "_origin": "ast",
       "id": "src_components_chat_promptinput_promptinput",
       "community": 773,
-      "community_name": "PromptInput.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "promptinput"
     },
     {
@@ -16307,8 +16307,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_legacyostable",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "legacyostable.tsx"
     },
     {
@@ -16320,8 +16320,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_conciliacao_legacyostable_legacyos",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "legacyos"
     },
     {
@@ -16332,8 +16332,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_conciliacao_legacyostable_legacyostable",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "legacyostable()"
     },
     {
@@ -16344,7 +16344,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "modulo1saldopanel.tsx"
     },
     {
@@ -16357,7 +16357,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel_modulo1saldopanelprops",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "modulo1saldopanelprops"
     },
     {
@@ -16369,7 +16369,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel_modulo1saldopanel",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "modulo1saldopanel()"
     },
     {
@@ -16591,7 +16591,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "resumodiapanel.tsx"
     },
     {
@@ -16604,7 +16604,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel_resumodiapanelprops",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "resumodiapanelprops"
     },
     {
@@ -16616,7 +16616,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_resumodiapanel_resumodiapanel",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "resumodiapanel()"
     },
     {
@@ -16662,8 +16662,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_bankreconciliationdashboard",
-      "community": 1182,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "bankreconciliationdashboard.tsx"
     },
     {
@@ -16674,8 +16674,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_bankreconciliationdashboard_bankreconciliationdashboard",
-      "community": 1182,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "bankreconciliationdashboard()"
     },
     {
@@ -16685,8 +16685,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_cashflowchart",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "cashflowchart.tsx"
     },
     {
@@ -16697,8 +16697,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_cashflowchart_cashflowchart",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "cashflowchart()"
     },
     {
@@ -16709,7 +16709,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart",
       "community": 513,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "evolucaomacrochart.tsx"
     },
     {
@@ -16722,7 +16722,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_evolucaomacrochartprops",
       "community": 513,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "evolucaomacrochartprops"
     },
     {
@@ -16734,7 +16734,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatcurrency",
       "community": 513,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -16746,31 +16746,31 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatdate",
       "community": 513,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "formatdate()"
     },
     {
       "label": "formatCompactCurrency()",
       "file_type": "code",
       "source_file": "src/components/dashboard/EvolucaoMacroChart.tsx",
-      "source_location": "L20",
+      "source_location": "L24",
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatcompactcurrency",
       "community": 513,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "formatcompactcurrency()"
     },
     {
       "label": "EvolucaoMacroChart()",
       "file_type": "code",
       "source_file": "src/components/dashboard/EvolucaoMacroChart.tsx",
-      "source_location": "L29",
+      "source_location": "L33",
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_evolucaomacrochart",
       "community": 513,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "evolucaomacrochart()"
     },
     {
@@ -16864,8 +16864,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "herobalance.tsx"
     },
     {
@@ -16876,8 +16876,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_herobalance_herobalance",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "herobalance()"
     },
     {
@@ -16887,8 +16887,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 513,
+      "community_name": "index.tsx",
       "norm_label": "kpicard.tsx"
     },
     {
@@ -16900,8 +16900,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicolor",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 513,
+      "community_name": "index.tsx",
       "norm_label": "kpicolor"
     },
     {
@@ -16913,8 +16913,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicardprops",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 513,
+      "community_name": "index.tsx",
       "norm_label": "kpicardprops"
     },
     {
@@ -16924,8 +16924,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_color_map",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 513,
+      "community_name": "index.tsx",
       "norm_label": "color_map"
     },
     {
@@ -16936,8 +16936,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicard",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 513,
+      "community_name": "index.tsx",
       "norm_label": "kpicard()"
     },
     {
@@ -16947,8 +16947,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "motorstatus.tsx"
     },
     {
@@ -16959,8 +16959,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_motorstatus_motorstatus",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "motorstatus()"
     },
     {
@@ -16970,8 +16970,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "newtransactiondialog.tsx"
     },
     {
@@ -16983,8 +16983,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialogprops",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "newtransactiondialogprops"
     },
     {
@@ -16995,8 +16995,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialog",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "newtransactiondialog()"
     },
     {
@@ -17006,8 +17006,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_rationale_17",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "todo: implement transaction creation"
     },
     {
@@ -17017,8 +17017,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "quickactions.tsx"
     },
     {
@@ -17028,8 +17028,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_container",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "container"
     },
     {
@@ -17039,8 +17039,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_item",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "item"
     },
     {
@@ -17051,8 +17051,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_quickactions",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "quickactions()"
     },
     {
@@ -17062,8 +17062,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_recentactivity",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "recentactivity.tsx"
     },
     {
@@ -17074,9 +17074,115 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_recentactivity_recentactivity",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "recentactivity()"
+    },
+    {
+      "label": "StoreDonutCharts.tsx",
+      "file_type": "code",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_components_dashboard_storedonutcharts",
+      "community": 1182,
+      "community_name": "StoreDonutCharts.tsx",
+      "norm_label": "storedonutcharts.tsx"
+    },
+    {
+      "label": "StoreDonutChartsProps",
+      "file_type": "code",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L6",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_components_dashboard_storedonutcharts_storedonutchartsprops",
+      "community": 1182,
+      "community_name": "StoreDonutCharts.tsx",
+      "norm_label": "storedonutchartsprops"
+    },
+    {
+      "label": "formatCurrency()",
+      "file_type": "code",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L11",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_dashboard_storedonutcharts_formatcurrency",
+      "community": 1182,
+      "community_name": "StoreDonutCharts.tsx",
+      "norm_label": "formatcurrency()"
+    },
+    {
+      "label": "formatCompact()",
+      "file_type": "code",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L14",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_dashboard_storedonutcharts_formatcompact",
+      "community": 1182,
+      "community_name": "StoreDonutCharts.tsx",
+      "norm_label": "formatcompact()"
+    },
+    {
+      "label": "cleanStoreLabel()",
+      "file_type": "code",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L21",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_dashboard_storedonutcharts_cleanstorelabel",
+      "community": 1182,
+      "community_name": "StoreDonutCharts.tsx",
+      "norm_label": "cleanstorelabel()"
+    },
+    {
+      "label": "FATURAMENTO_COLORS",
+      "file_type": "code",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "src_components_dashboard_storedonutcharts_faturamento_colors",
+      "community": 1182,
+      "community_name": "StoreDonutCharts.tsx",
+      "norm_label": "faturamento_colors"
+    },
+    {
+      "label": "CONTAS_COLORS",
+      "file_type": "code",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L53",
+      "_origin": "ast",
+      "id": "src_components_dashboard_storedonutcharts_contas_colors",
+      "community": 1182,
+      "community_name": "StoreDonutCharts.tsx",
+      "norm_label": "contas_colors"
+    },
+    {
+      "label": "CustomDonutTooltip()",
+      "file_type": "code",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L66",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_dashboard_storedonutcharts_customdonuttooltip",
+      "community": 1182,
+      "community_name": "StoreDonutCharts.tsx",
+      "norm_label": "customdonuttooltip()"
+    },
+    {
+      "label": "StoreDonutCharts()",
+      "file_type": "code",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L100",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_dashboard_storedonutcharts_storedonutcharts",
+      "community": 1182,
+      "community_name": "StoreDonutCharts.tsx",
+      "norm_label": "storedonutcharts()"
     },
     {
       "label": "StoreFormDialog.tsx",
@@ -17121,8 +17227,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_storerankingchart",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 1092,
+      "community_name": "useStores",
       "norm_label": "storerankingchart.tsx"
     },
     {
@@ -17133,8 +17239,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dashboard_storerankingchart_storerankingchart",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 1092,
+      "community_name": "useStores",
       "norm_label": "storerankingchart()"
     },
     {
@@ -17145,7 +17251,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard",
       "community": 513,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "storetabledashboard.tsx"
     },
     {
@@ -17158,7 +17264,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_storetabledashboardprops",
       "community": 513,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "storetabledashboardprops"
     },
     {
@@ -17170,7 +17276,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_fmt",
       "community": 513,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "fmt()"
     },
     {
@@ -17182,7 +17288,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_statusvariant",
       "community": 513,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "statusvariant()"
     },
     {
@@ -17194,7 +17300,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_statuslabel",
       "community": 513,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "statuslabel()"
     },
     {
@@ -17206,7 +17312,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_storetabledashboard",
       "community": 513,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "storetabledashboard()"
     },
     {
@@ -17483,8 +17589,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_centralimportwizard",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportwizard()"
     },
     {
@@ -17543,7 +17649,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_marcozerowizard",
-      "community": 513,
+      "community": 17,
       "community_name": "Card.tsx",
       "norm_label": "marcozerowizard.tsx"
     },
@@ -17555,7 +17661,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_importacoes_marcozerowizard_marcozerowizard",
-      "community": 513,
+      "community": 17,
       "community_name": "Card.tsx",
       "norm_label": "marcozerowizard()"
     },
@@ -17674,8 +17780,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_appshell",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "appshell.tsx"
     },
     {
@@ -17697,8 +17803,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_bottomnav",
-      "community": 513,
-      "community_name": "Card.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "bottomnav.tsx"
     },
     {
@@ -17708,8 +17814,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_layout_bottomnav_navitems",
-      "community": 513,
-      "community_name": "Card.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "navitems"
     },
     {
@@ -17720,8 +17826,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_layout_bottomnav_bottomnav",
-      "community": 513,
-      "community_name": "Card.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "bottomnav()"
     },
     {
@@ -17731,8 +17837,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_sidebar",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "sidebar.tsx"
     },
     {
@@ -17742,8 +17848,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_layout_sidebar_navitems",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "navitems"
     },
     {
@@ -17754,8 +17860,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_layout_sidebar_sidebar",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "sidebar()"
     },
     {
@@ -17765,8 +17871,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_topbar",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "topbar.tsx"
     },
     {
@@ -17777,8 +17883,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_layout_topbar_topbar",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "topbar()"
     },
     {
@@ -17788,8 +17894,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_animatednumber",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "animatednumber.tsx"
     },
     {
@@ -17801,8 +17907,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumberprops",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "animatednumberprops"
     },
     {
@@ -17813,8 +17919,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_animatednumber_animatednumber",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "animatednumber()"
     },
     {
@@ -17860,8 +17966,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_button",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "button.tsx"
     },
     {
@@ -17873,8 +17979,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_button_buttonprops",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "buttonprops"
     },
     {
@@ -17885,8 +17991,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_button_button",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "button()"
     },
     {
@@ -17896,7 +18002,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_card",
-      "community": 513,
+      "community": 17,
       "community_name": "Card.tsx",
       "norm_label": "card.tsx"
     },
@@ -17909,7 +18015,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_card_cardprops",
-      "community": 513,
+      "community": 17,
       "community_name": "Card.tsx",
       "norm_label": "cardprops"
     },
@@ -17921,8 +18027,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_card_card",
-      "community": 513,
-      "community_name": "Card.tsx",
+      "community": 496,
+      "community_name": "Card",
       "norm_label": "card()"
     },
     {
@@ -18003,8 +18109,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_modal",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "modal.tsx"
     },
     {
@@ -18016,8 +18122,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_modal_modalprops",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "modalprops"
     },
     {
@@ -18028,8 +18134,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_modal_modal",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "modal()"
     },
     {
@@ -18039,8 +18145,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_themetoggle",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "themetoggle.tsx"
     },
     {
@@ -18051,8 +18157,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_themetoggle_themetoggle",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "themetoggle()"
     },
     {
@@ -18062,8 +18168,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone",
-      "community": 1182,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "universaldropzone.tsx"
     },
     {
@@ -18075,8 +18181,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_filetypecategory",
-      "community": 1182,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "filetypecategory"
     },
     {
@@ -18088,8 +18194,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_classifiedfile",
-      "community": 1182,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "classifiedfile"
     },
     {
@@ -18100,8 +18206,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_classifyfile",
-      "community": 1182,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "classifyfile()"
     },
     {
@@ -18113,8 +18219,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_universaldropzoneprops",
-      "community": 1182,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "universaldropzoneprops"
     },
     {
@@ -18125,8 +18231,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_ui_universaldropzone_universaldropzone",
-      "community": 1182,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "universaldropzone()"
     },
     {
@@ -18160,7 +18266,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "useaisettings.ts"
     },
     {
@@ -18173,7 +18279,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_aisettings",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "aisettings"
     },
     {
@@ -18185,7 +18291,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_useaisettings",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "useaisettings()"
     },
     {
@@ -18197,7 +18303,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_usesaveaisettings",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "usesaveaisettings()"
     },
     {
@@ -18254,8 +18360,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useauth",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "useauth.ts"
     },
     {
@@ -18265,8 +18371,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_hooks_useauth_listeners",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "listeners"
     },
     {
@@ -18277,8 +18383,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useauth_usesession",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "usesession()"
     },
     {
@@ -18289,8 +18395,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useauth_uselogin",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "uselogin()"
     },
     {
@@ -18301,8 +18407,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useauth_uselogout",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "uselogout()"
     },
     {
@@ -18313,7 +18419,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "usebackendconciliacao.ts"
     },
     {
@@ -18326,7 +18432,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_conciliationdailylog",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "conciliationdailylog"
     },
     {
@@ -18338,7 +18444,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_usebackendconciliacao",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "usebackendconciliacao()"
     },
     {
@@ -18350,7 +18456,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_useglobalofxout",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "useglobalofxout()"
     },
     {
@@ -18363,7 +18469,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_storereconciliationsummary",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "storereconciliationsummary"
     },
     {
@@ -18376,7 +18482,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_dailyreconciliationsummary",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "dailyreconciliationsummary"
     },
     {
@@ -18388,7 +18494,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_usedailyreconciliationsummary",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "usedailyreconciliationsummary()"
     },
     {
@@ -18398,8 +18504,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 513,
+      "community_name": "index.tsx",
       "norm_label": "usebackenddashboard.ts"
     },
     {
@@ -18411,8 +18517,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_storemetrics",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 513,
+      "community_name": "index.tsx",
       "norm_label": "storemetrics"
     },
     {
@@ -18424,8 +18530,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_dashboardmetrics",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 513,
+      "community_name": "index.tsx",
       "norm_label": "dashboardmetrics"
     },
     {
@@ -18436,8 +18542,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_usebackenddashboard",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 513,
+      "community_name": "index.tsx",
       "norm_label": "usebackenddashboard()"
     },
     {
@@ -18448,7 +18554,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "usebotcredentials.ts"
     },
     {
@@ -18461,7 +18567,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_botcredentialrow",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "botcredentialrow"
     },
     {
@@ -18473,7 +18579,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usebotcredentials",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "usebotcredentials()"
     },
     {
@@ -18485,7 +18591,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_useupdatebotcredential",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "useupdatebotcredential()"
     },
     {
@@ -18497,7 +18603,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usemarkcredentialvalid",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "usemarkcredentialvalid()"
     },
     {
@@ -18508,7 +18614,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotlogs",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "usebotlogs.ts"
     },
     {
@@ -18521,7 +18627,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_botauditlog",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "botauditlog"
     },
     {
@@ -18533,7 +18639,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotlogs",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "usebotlogs()"
     },
     {
@@ -18545,7 +18651,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotauditlogs",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "usebotauditlogs()"
     },
     {
@@ -18555,8 +18661,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebotruns",
-      "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 336,
+      "community_name": "supabase.ts",
       "norm_label": "usebotruns.ts"
     },
     {
@@ -18567,8 +18673,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usebotruns_uselatestbotrun",
-      "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 336,
+      "community_name": "supabase.ts",
       "norm_label": "uselatestbotrun()"
     },
     {
@@ -18580,7 +18686,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotruns_usebotrunhistory",
       "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community_name": "Card",
       "norm_label": "usebotrunhistory()"
     },
     {
@@ -18661,8 +18767,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usecentralimport_unifiedimportresult",
-      "community": 532,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "unifiedimportresult"
     },
     {
@@ -18771,7 +18877,7 @@
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesaveimportedreport",
       "community": 17,
-      "community_name": "importacoes.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "usesaveimportedreport()"
     },
     {
@@ -18878,8 +18984,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesavebankreconciliation",
-      "community": 1182,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "usesavebankreconciliation()"
     },
     {
@@ -18890,8 +18996,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesavemachinetotal",
-      "community": 1182,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "usesavemachinetotal()"
     },
     {
@@ -18977,7 +19083,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "usedailysnapshot.ts"
     },
     {
@@ -18990,7 +19096,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_dailysnapshotrow",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "dailysnapshotrow"
     },
     {
@@ -19002,7 +19108,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usedailysnapshot",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "usedailysnapshot()"
     },
     {
@@ -19014,7 +19120,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usepreviousdaysnapshot",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "usepreviousdaysnapshot()"
     },
     {
@@ -19026,7 +19132,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usesavedailysnapshot",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "usesavedailysnapshot()"
     },
     {
@@ -19037,8 +19143,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_useavailableconciliacaodates",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 513,
+      "community_name": "index.tsx",
       "norm_label": "useavailableconciliacaodates()"
     },
     {
@@ -19049,7 +19155,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2",
       "community": 513,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "usedashboardv2.ts"
     },
     {
@@ -19062,7 +19168,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_storemetrics",
       "community": 513,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "storemetrics"
     },
     {
@@ -19075,7 +19181,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_dashboardv2data",
       "community": 513,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "dashboardv2data"
     },
     {
@@ -19087,7 +19193,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_usedashboardv2",
       "community": 513,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "usedashboardv2()"
     },
     {
@@ -19169,8 +19275,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 336,
+      "community_name": "supabase.ts",
       "norm_label": "useimportlogs.ts"
     },
     {
@@ -19182,8 +19288,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlog",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 336,
+      "community_name": "supabase.ts",
       "norm_label": "importlog"
     },
     {
@@ -19195,8 +19301,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlogfilters",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 336,
+      "community_name": "supabase.ts",
       "norm_label": "importlogfilters"
     },
     {
@@ -19207,8 +19313,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogs",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 336,
+      "community_name": "supabase.ts",
       "norm_label": "useimportlogs()"
     },
     {
@@ -19219,8 +19325,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogdetail",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 336,
+      "community_name": "supabase.ts",
       "norm_label": "useimportlogdetail()"
     },
     {
@@ -19231,7 +19337,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor",
       "community": 17,
-      "community_name": "importacoes.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "useimportprocessor.ts"
     },
     {
@@ -19244,7 +19350,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_parsedos",
       "community": 17,
-      "community_name": "importacoes.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "parsedos"
     },
     {
@@ -19256,8 +19362,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_parsedreceivable",
-      "community": 17,
-      "community_name": "importacoes.tsx",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "parsedreceivable"
     },
     {
@@ -19269,7 +19375,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_savepatioosandreceivables",
       "community": 17,
-      "community_name": "importacoes.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "savepatioosandreceivables()"
     },
     {
@@ -19281,7 +19387,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useprocessimporteddata",
       "community": 17,
-      "community_name": "importacoes.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "useprocessimporteddata()"
     },
     {
@@ -19294,7 +19400,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_groupedimportlog",
       "community": 17,
-      "community_name": "importacoes.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "groupedimportlog"
     },
     {
@@ -19306,7 +19412,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useimportshistory",
       "community": 17,
-      "community_name": "importacoes.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "useimportshistory()"
     },
     {
@@ -19318,7 +19424,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_usedeleteimport",
       "community": 17,
-      "community_name": "importacoes.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "usedeleteimport()"
     },
     {
@@ -19330,7 +19436,7 @@
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_useclearalldata",
       "community": 17,
-      "community_name": "importacoes.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "useclearalldata()"
     },
     {
@@ -19340,8 +19446,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usemcplogs",
-      "community": 513,
-      "community_name": "Card.tsx",
+      "community": 336,
+      "community_name": "supabase.ts",
       "norm_label": "usemcplogs.ts"
     },
     {
@@ -19353,8 +19459,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_usemcplogs_mcplog",
-      "community": 513,
-      "community_name": "Card.tsx",
+      "community": 336,
+      "community_name": "supabase.ts",
       "norm_label": "mcplog"
     },
     {
@@ -19365,8 +19471,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usemcplogs_usemcplogs",
-      "community": 513,
-      "community_name": "Card.tsx",
+      "community": 336,
+      "community_name": "supabase.ts",
       "norm_label": "usemcplogs()"
     },
     {
@@ -19376,8 +19482,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useoscache",
-      "community": 513,
-      "community_name": "Card.tsx",
+      "community": 336,
+      "community_name": "supabase.ts",
       "norm_label": "useoscache.ts"
     },
     {
@@ -19389,8 +19495,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_hooks_useoscache_oficinaoscache",
-      "community": 513,
-      "community_name": "Card.tsx",
+      "community": 336,
+      "community_name": "supabase.ts",
       "norm_label": "oficinaoscache"
     },
     {
@@ -19401,8 +19507,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_useoscache_useoscache",
-      "community": 513,
-      "community_name": "Card.tsx",
+      "community": 336,
+      "community_name": "supabase.ts",
       "norm_label": "useoscache()"
     },
     {
@@ -19448,8 +19554,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usepatio",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "usepatio.ts"
     },
     {
@@ -19460,8 +19566,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usepatio_usepatioos",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "usepatioos()"
     },
     {
@@ -19472,8 +19578,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usepatio_useupdatepatioos",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "useupdatepatioos()"
     },
     {
@@ -19484,8 +19590,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usepatio_usepatiosummary",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "usepatiosummary()"
     },
     {
@@ -19594,8 +19700,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_userecebiveis",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "Card.tsx",
       "norm_label": "userecebiveis.ts"
     },
     {
@@ -19606,8 +19712,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_userecebiveis",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "Card.tsx",
       "norm_label": "userecebiveis()"
     },
     {
@@ -19618,8 +19724,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_usemarkreceived",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "Card.tsx",
       "norm_label": "usemarkreceived()"
     },
     {
@@ -19630,8 +19736,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_usereceivablessummary",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "Card.tsx",
       "norm_label": "usereceivablessummary()"
     },
     {
@@ -19760,8 +19866,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usestores_usedeletestore",
-      "community": 496,
-      "community_name": "ConfiguracoesPanel.tsx",
+      "community": 1092,
+      "community_name": "useStores",
       "norm_label": "usedeletestore()"
     },
     {
@@ -19783,8 +19889,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usetransactions",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usetransactions.ts"
     },
     {
@@ -19795,8 +19901,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactions",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usetransactions()"
     },
     {
@@ -19807,8 +19913,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usetransactionsbystore",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usetransactionsbystore()"
     },
     {
@@ -19819,8 +19925,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedashboardsummary",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usedashboardsummary()"
     },
     {
@@ -19831,8 +19937,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usecashflow",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usecashflow()"
     },
     {
@@ -19855,8 +19961,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useallstoresbalances",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 1092,
+      "community_name": "useStores",
       "norm_label": "useallstoresbalances()"
     },
     {
@@ -19879,8 +19985,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useweeklyrevenuetrend",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "useweeklyrevenuetrend()"
     },
     {
@@ -19891,8 +19997,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usecreateimportbatch",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usecreateimportbatch()"
     },
     {
@@ -19903,8 +20009,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usebulkinsertconciliationmatches",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usebulkinsertconciliationmatches()"
     },
     {
@@ -19915,8 +20021,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usebulkinserttransactions",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usebulkinserttransactions()"
     },
     {
@@ -19927,8 +20033,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedailysystembalance",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usedailysystembalance()"
     },
     {
@@ -19939,8 +20045,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_uselatestbankbalance",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "uselatestbankbalance()"
     },
     {
@@ -19951,8 +20057,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usedailybankbalance",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usedailybankbalance()"
     },
     {
@@ -20086,8 +20192,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "src_integrations_supabase_client_supabase",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 336,
+      "community_name": "supabase.ts",
       "norm_label": "supabase"
     },
     {
@@ -21111,7 +21217,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "modulo1calculations.ts"
     },
     {
@@ -21124,7 +21230,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_globalconciliacaoinput",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "globalconciliacaoinput"
     },
     {
@@ -21137,7 +21243,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_globalconciliacaocalculated",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "globalconciliacaocalculated"
     },
     {
@@ -21149,7 +21255,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_calculateglobalconciliacao",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "calculateglobalconciliacao()"
     },
     {
@@ -21162,7 +21268,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_storesaldostate",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "storesaldostate"
     },
     {
@@ -21175,7 +21281,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_modulo1calculated",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "modulo1calculated"
     },
     {
@@ -21187,7 +21293,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_calculatemodulo1saldo",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "calculatemodulo1saldo()"
     },
     {
@@ -21197,8 +21303,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_ofxparser",
-      "community": 1182,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "lib/ofxparser.ts"
     },
     {
@@ -21210,8 +21316,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_ofxparser_ofxtransaction",
-      "community": 1182,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "ofxtransaction"
     },
     {
@@ -21222,8 +21328,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_ofxparser_parseofx",
-      "community": 1182,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "parseofx()"
     },
     {
@@ -21235,8 +21341,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_ofxparser_systemtransaction",
-      "community": 1182,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "systemtransaction"
     },
     {
@@ -21248,8 +21354,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_ofxparser_matchresult",
-      "community": 1182,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "matchresult"
     },
     {
@@ -21260,8 +21366,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_ofxparser_matchtransactions",
-      "community": 1182,
-      "community_name": "BankReconciliationDashboard.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "matchtransactions()"
     },
     {
@@ -21477,8 +21583,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_marcozeroresult",
-      "community": 513,
-      "community_name": "Card.tsx",
+      "community": 54,
+      "community_name": "WizardImportacao.tsx",
       "norm_label": "marcozeroresult"
     },
     {
@@ -21815,8 +21921,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_cashregisterrow",
-      "community": 336,
-      "community_name": "supabase.ts",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "cashregisterrow"
     },
     {
@@ -21828,8 +21934,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_patioosrow",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "patioosrow"
     },
     {
@@ -21841,8 +21947,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_lib_supabase_receivablerow",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "Card.tsx",
       "norm_label": "receivablerow"
     },
     {
@@ -21891,7 +21997,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_utils",
-      "community": 513,
+      "community": 17,
       "community_name": "Card.tsx",
       "norm_label": "utils.ts"
     },
@@ -21903,8 +22009,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_utils_cn",
-      "community": 513,
-      "community_name": "Card.tsx",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "cn()"
     },
     {
@@ -21915,8 +22021,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_utils_getdefaultdate",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "Card.tsx",
       "norm_label": "getdefaultdate()"
     },
     {
@@ -21927,7 +22033,7 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_lib_utils_formatcurrency",
-      "community": 513,
+      "community": 17,
       "community_name": "Card.tsx",
       "norm_label": "formatcurrency()"
     },
@@ -22433,8 +22539,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_bootstrap",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "bootstrap.tsx"
     },
     {
@@ -22444,8 +22550,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_routes_bootstrap_route",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "route"
     },
     {
@@ -22456,8 +22562,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_bootstrap_bootstrappage",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "bootstrappage()"
     },
     {
@@ -22635,7 +22741,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_index",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "conciliacao.index.tsx"
     },
     {
@@ -22645,8 +22751,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_routes_conciliacao_index_route",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -22658,7 +22764,7 @@
       "_origin": "ast",
       "id": "src_routes_conciliacao_index_conciliacaopage",
       "community": 495,
-      "community_name": "supabase",
+      "community_name": "conciliacao.index.tsx",
       "norm_label": "conciliacaopage()"
     },
     {
@@ -22747,8 +22853,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_historico_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "route"
     },
     {
@@ -22806,8 +22912,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "importacoes-despesas.tsx"
     },
     {
@@ -22817,8 +22923,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_route",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "route"
     },
     {
@@ -22829,8 +22935,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_usestoremapping",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "usestoremapping()"
     },
     {
@@ -22841,8 +22947,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_importacoesdespesaswizard",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "importacoesdespesaswizard()"
     },
     {
@@ -22853,8 +22959,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_importacoes_despesas_stepindicator",
-      "community": 54,
-      "community_name": "WizardImportacao.tsx",
+      "community": 4,
+      "community_name": "loja.$lojaId.tsx",
       "norm_label": "stepindicator()"
     },
     {
@@ -22865,7 +22971,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes",
       "community": 17,
-      "community_name": "importacoes.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "importacoes.tsx"
     },
     {
@@ -22878,7 +22984,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes_importacoessearchparams",
       "community": 17,
-      "community_name": "importacoes.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "importacoessearchparams"
     },
     {
@@ -22901,7 +23007,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes_formatdate",
       "community": 17,
-      "community_name": "importacoes.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "formatdate()"
     },
     {
@@ -22913,7 +23019,7 @@
       "_origin": "ast",
       "id": "src_routes_importacoes_importacoespage",
       "community": 17,
-      "community_name": "importacoes.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "importacoespage()"
     },
     {
@@ -22924,7 +23030,7 @@
       "_origin": "ast",
       "id": "src_routes_importar_os",
       "community": 17,
-      "community_name": "importacoes.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "importar-os.tsx"
     },
     {
@@ -22935,7 +23041,7 @@
       "_origin": "ast",
       "id": "src_routes_importar_os_route",
       "community": 17,
-      "community_name": "importacoes.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "route"
     },
     {
@@ -22947,7 +23053,7 @@
       "_origin": "ast",
       "id": "src_routes_importar_os_useosstoremapping",
       "community": 17,
-      "community_name": "importacoes.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "useosstoremapping()"
     },
     {
@@ -22959,7 +23065,7 @@
       "_origin": "ast",
       "id": "src_routes_importar_os_stepindicator",
       "community": 17,
-      "community_name": "importacoes.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "stepindicator()"
     },
     {
@@ -22971,7 +23077,7 @@
       "_origin": "ast",
       "id": "src_routes_importar_os_importaroswizard",
       "community": 17,
-      "community_name": "importacoes.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "importaroswizard()"
     },
     {
@@ -22981,8 +23087,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_index",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 513,
+      "community_name": "index.tsx",
       "norm_label": "index.tsx"
     },
     {
@@ -22992,8 +23098,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "src_routes_index_route",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 513,
+      "community_name": "index.tsx",
       "norm_label": "route"
     },
     {
@@ -23004,8 +23110,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_index_dashboardpage",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 513,
+      "community_name": "index.tsx",
       "norm_label": "dashboardpage()"
     },
     {
@@ -23015,8 +23121,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_login",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "login.tsx"
     },
     {
@@ -23026,8 +23132,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_routes_login_route",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "route"
     },
     {
@@ -23038,8 +23144,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_login_loginpage",
-      "community": 11,
-      "community_name": "routeTree.gen.ts",
+      "community": 773,
+      "community_name": "AppShell.tsx",
       "norm_label": "loginpage()"
     },
     {
@@ -23221,8 +23327,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_patio",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "patio.tsx"
     },
     {
@@ -23234,8 +23340,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_patio_historychange",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "historychange"
     },
     {
@@ -23247,8 +23353,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_patio_historylog",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "historylog"
     },
     {
@@ -23258,8 +23364,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_routes_patio_route",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "route"
     },
     {
@@ -23271,8 +23377,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_patio_filtertab",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "filtertab"
     },
     {
@@ -23283,8 +23389,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_patio_getoseffectivevalues",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "getoseffectivevalues()"
     },
     {
@@ -23295,8 +23401,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_patio_patiopage",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "patiopage()"
     },
     {
@@ -23307,8 +23413,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_patio_tabbtn",
-      "community": 1092,
-      "community_name": "useStores",
+      "community": 42,
+      "community_name": "patio.tsx",
       "norm_label": "tabbtn()"
     },
     {
@@ -23318,8 +23424,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_proposta",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "proposta.tsx"
     },
     {
@@ -23329,8 +23435,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_routes_proposta_route",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -23342,8 +23448,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_proposta_costconfig",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "costconfig"
     },
     {
@@ -23353,8 +23459,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_routes_proposta_defaultconfig",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "defaultconfig"
     },
     {
@@ -23365,8 +23471,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_proposta_propostapage",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "propostapage()"
     },
     {
@@ -23377,8 +23483,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_proposta_costrow",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "costrow()"
     },
     {
@@ -23389,8 +23495,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_proposta_editfield",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "editfield()"
     },
     {
@@ -23401,8 +23507,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_proposta_editstringfield",
-      "community": 495,
-      "community_name": "supabase",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "editstringfield()"
     },
     {
@@ -23412,8 +23518,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_recebiveis",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "Card.tsx",
       "norm_label": "recebiveis.tsx"
     },
     {
@@ -23423,8 +23529,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_routes_recebiveis_route",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "route"
     },
     {
@@ -23436,8 +23542,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_routes_recebiveis_filtertab",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "Card.tsx",
       "norm_label": "filtertab"
     },
     {
@@ -23448,8 +23554,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_recebiveis_recebiveispage",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "Card.tsx",
       "norm_label": "recebiveispage()"
     },
     {
@@ -23460,8 +23566,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_routes_recebiveis_tabbtn",
-      "community": 42,
-      "community_name": "useTransactions.ts",
+      "community": 17,
+      "community_name": "Card.tsx",
       "norm_label": "tabbtn()"
     },
     {
@@ -60998,6 +61104,171 @@
       "norm_label": "tasks"
     },
     {
+      "label": "213-redesign-dashboard-charts-and-table-layout/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design",
+      "community": 1211,
+      "community_name": "2. Detalhes de Componentes",
+      "norm_label": "213-redesign-dashboard-charts-and-table-layout/design.md"
+    },
+    {
+      "label": "Design: 213-redesign-dashboard-charts-and-table-layout",
+      "file_type": "document",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design_design_213_redesign_dashboard_charts_and_table_layout",
+      "community": 1211,
+      "community_name": "2. Detalhes de Componentes",
+      "norm_label": "design: 213-redesign-dashboard-charts-and-table-layout"
+    },
+    {
+      "label": "1. Wireframe e Distribui\u00e7\u00e3o de Grid",
+      "file_type": "document",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design_1_wireframe_e_distribui\u00e7\u00e3o_de_grid",
+      "community": 1211,
+      "community_name": "2. Detalhes de Componentes",
+      "norm_label": "1. wireframe e distribuicao de grid"
+    },
+    {
+      "label": "2. Detalhes de Componentes",
+      "file_type": "document",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/design.md",
+      "source_location": "L37",
+      "_origin": "ast",
+      "id": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design_2_detalhes_de_componentes",
+      "community": 1211,
+      "community_name": "2. Detalhes de Componentes",
+      "norm_label": "2. detalhes de componentes"
+    },
+    {
+      "label": "2.1 `src/components/dashboard/StoreTableDashboard.tsx`",
+      "file_type": "document",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/design.md",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design_2_1_src_components_dashboard_storetabledashboard_tsx",
+      "community": 1211,
+      "community_name": "2. Detalhes de Componentes",
+      "norm_label": "2.1 `src/components/dashboard/storetabledashboard.tsx`"
+    },
+    {
+      "label": "2.2 `src/components/dashboard/StoreDonutCharts.tsx`",
+      "file_type": "document",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/design.md",
+      "source_location": "L43",
+      "_origin": "ast",
+      "id": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design_2_2_src_components_dashboard_storedonutcharts_tsx",
+      "community": 1211,
+      "community_name": "2. Detalhes de Componentes",
+      "norm_label": "2.2 `src/components/dashboard/storedonutcharts.tsx`"
+    },
+    {
+      "label": "2.3 `src/components/dashboard/EvolucaoMacroChart.tsx`",
+      "file_type": "document",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/design.md",
+      "source_location": "L48",
+      "_origin": "ast",
+      "id": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design_2_3_src_components_dashboard_evolucaomacrochart_tsx",
+      "community": 1211,
+      "community_name": "2. Detalhes de Componentes",
+      "norm_label": "2.3 `src/components/dashboard/evolucaomacrochart.tsx`"
+    },
+    {
+      "label": "2.4 `src/routes/index.tsx`",
+      "file_type": "document",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/design.md",
+      "source_location": "L51",
+      "_origin": "ast",
+      "id": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design_2_4_src_routes_index_tsx",
+      "community": 1211,
+      "community_name": "2. Detalhes de Componentes",
+      "norm_label": "2.4 `src/routes/index.tsx`"
+    },
+    {
+      "label": "213-redesign-dashboard-charts-and-table-layout/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_213_redesign_dashboard_charts_and_table_layout_proposal",
+      "community": 1212,
+      "community_name": "Proposal: 213-redesign-dashboard-charts-and-table-layout",
+      "norm_label": "213-redesign-dashboard-charts-and-table-layout/proposal.md"
+    },
+    {
+      "label": "Proposal: 213-redesign-dashboard-charts-and-table-layout",
+      "file_type": "document",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_213_redesign_dashboard_charts_and_table_layout_proposal_proposal_213_redesign_dashboard_charts_and_table_layout",
+      "community": 1212,
+      "community_name": "Proposal: 213-redesign-dashboard-charts-and-table-layout",
+      "norm_label": "proposal: 213-redesign-dashboard-charts-and-table-layout"
+    },
+    {
+      "label": "1. Vis\u00e3o Geral e Alinhamento com o Usu\u00e1rio",
+      "file_type": "document",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_213_redesign_dashboard_charts_and_table_layout_proposal_1_vis\u00e3o_geral_e_alinhamento_com_o_usu\u00e1rio",
+      "community": 1212,
+      "community_name": "Proposal: 213-redesign-dashboard-charts-and-table-layout",
+      "norm_label": "1. visao geral e alinhamento com o usuario"
+    },
+    {
+      "label": "2. Contratos T\u00e9cnicos",
+      "file_type": "document",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/proposal.md",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "specs_archive_213_redesign_dashboard_charts_and_table_layout_proposal_2_contratos_t\u00e9cnicos",
+      "community": 1212,
+      "community_name": "Proposal: 213-redesign-dashboard-charts-and-table-layout",
+      "norm_label": "2. contratos tecnicos"
+    },
+    {
+      "label": "213-redesign-dashboard-charts-and-table-layout/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_213_redesign_dashboard_charts_and_table_layout_spec_plan",
+      "community": 1213,
+      "community_name": "Spec Plan: 213-redesign-dashboard-charts-and-table-layout",
+      "norm_label": "213-redesign-dashboard-charts-and-table-layout/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: 213-redesign-dashboard-charts-and-table-layout",
+      "file_type": "document",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_213_redesign_dashboard_charts_and_table_layout_spec_plan_spec_plan_213_redesign_dashboard_charts_and_table_layout",
+      "community": 1213,
+      "community_name": "Spec Plan: 213-redesign-dashboard-charts-and-table-layout",
+      "norm_label": "spec plan: 213-redesign-dashboard-charts-and-table-layout"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_213_redesign_dashboard_charts_and_table_layout_spec_plan_tasks",
+      "community": 1213,
+      "community_name": "Spec Plan: 213-redesign-dashboard-charts-and-table-layout",
+      "norm_label": "tasks"
+    },
+    {
       "label": "agente-fullbleed-layout-and-clean-tabs/design.md",
       "file_type": "document",
       "source_file": "specs/archive/agente-fullbleed-layout-and-clean-tabs/design.md",
@@ -73973,8 +74244,8 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "specs_global_features_100_fix_ofx_cents_amounts",
-      "community": 591,
-      "community_name": "Features",
+      "community": 1215,
+      "community_name": "[100-fix-ofx-cents-amounts]",
       "norm_label": "[100-fix-ofx-cents-amounts]"
     },
     {
@@ -73984,8 +74255,8 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "specs_global_features_4_7_automa\u00e7\u00e3o_de_concilia\u00e7\u00e3o",
-      "community": 591,
-      "community_name": "Features",
+      "community": 1215,
+      "community_name": "[100-fix-ofx-cents-amounts]",
       "norm_label": "4.7 automacao de conciliacao"
     },
     {
@@ -74072,8 +74343,8 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "specs_global_features_161_cloud_sync_live_preview",
-      "community": 591,
-      "community_name": "Features",
+      "community": 1216,
+      "community_name": "[161-cloud-sync-live-preview]",
       "norm_label": "[161-cloud-sync-live-preview]"
     },
     {
@@ -74083,8 +74354,8 @@
       "source_location": "L141",
       "_origin": "ast",
       "id": "specs_global_features_feature_164_o_fim_do_rob\u00f4_e_concilia\u00e7\u00e3o_h\u00edbrida",
-      "community": 591,
-      "community_name": "Features",
+      "community": 1216,
+      "community_name": "[161-cloud-sync-live-preview]",
       "norm_label": "feature 164: o fim do robo e conciliacao hibrida"
     },
     {
@@ -74182,8 +74453,8 @@
       "source_location": "L190",
       "_origin": "ast",
       "id": "specs_global_features_186_refatoracao_marco_zero",
-      "community": 591,
-      "community_name": "Features",
+      "community": 657,
+      "community_name": "[186-refatoracao-marco-zero]",
       "norm_label": "[186-refatoracao-marco-zero]"
     },
     {
@@ -74193,8 +74464,8 @@
       "source_location": "L196",
       "_origin": "ast",
       "id": "specs_global_features_2026_08_13_refatoracao_ctes_conciliacao_189",
-      "community": 591,
-      "community_name": "Features",
+      "community": 657,
+      "community_name": "[186-refatoracao-marco-zero]",
       "norm_label": "2026-08-13: refatoracao ctes conciliacao (189)"
     },
     {
@@ -74204,8 +74475,8 @@
       "source_location": "L202",
       "_origin": "ast",
       "id": "specs_global_features_2026_08_13_fix_de_valores_inflados_no_ofx_e_os_190",
-      "community": 591,
-      "community_name": "Features",
+      "community": 657,
+      "community_name": "[186-refatoracao-marco-zero]",
       "norm_label": "2026-08-13: fix de valores inflados no ofx e os (190)"
     },
     {
@@ -74215,8 +74486,8 @@
       "source_location": "L208",
       "_origin": "ast",
       "id": "specs_global_features_2026_08_13_correcao_diferenca_final_e_expurgo_provisao_191",
-      "community": 591,
-      "community_name": "Features",
+      "community": 657,
+      "community_name": "[186-refatoracao-marco-zero]",
       "norm_label": "2026-08-13: correcao diferenca final e expurgo provisao (191)"
     },
     {
@@ -74226,8 +74497,8 @@
       "source_location": "L214",
       "_origin": "ast",
       "id": "specs_global_features_2026_08_13_correcao_da_diferenca_final_e_expurgo_da_provisao_191",
-      "community": 591,
-      "community_name": "Features",
+      "community": 657,
+      "community_name": "[186-refatoracao-marco-zero]",
       "norm_label": "2026-08-13: correcao da diferenca final e expurgo da provisao (191)"
     },
     {
@@ -74237,8 +74508,8 @@
       "source_location": "L220",
       "_origin": "ast",
       "id": "specs_global_features_2026_08_13_protecao_de_precisao_ofx_jabaquara_kennedy_192",
-      "community": 591,
-      "community_name": "Features",
+      "community": 657,
+      "community_name": "[186-refatoracao-marco-zero]",
       "norm_label": "2026-08-13: protecao de precisao ofx jabaquara/kennedy (192)"
     },
     {
@@ -74248,8 +74519,8 @@
       "source_location": "L226",
       "_origin": "ast",
       "id": "specs_global_features_2026_08_13_recalibra\u00e7\u00e3o_do_saldo_global_ita\u00fa_feature_id_193",
-      "community": 591,
-      "community_name": "Features",
+      "community": 657,
+      "community_name": "[186-refatoracao-marco-zero]",
       "norm_label": "2026-08-13: recalibracao do saldo global itau (<feature id>: 193)"
     },
     {
@@ -74259,8 +74530,8 @@
       "source_location": "L231",
       "_origin": "ast",
       "id": "specs_global_features_2026_08_13_restaura\u00e7\u00e3o_do_parser_ofx_100x_e_corre\u00e7\u00e3o_matem\u00e1tica_feature_id_194",
-      "community": 591,
-      "community_name": "Features",
+      "community": 657,
+      "community_name": "[186-refatoracao-marco-zero]",
       "norm_label": "2026-08-13: restauracao do parser ofx (100x) e correcao matematica (<feature id>: 194)"
     },
     {
@@ -74270,8 +74541,8 @@
       "source_location": "L237",
       "_origin": "ast",
       "id": "specs_global_features_2026_08_13_prote_o_extrema_de_precis_o_ofx_ita_195",
-      "community": 591,
-      "community_name": "Features",
+      "community": 657,
+      "community_name": "[186-refatoracao-marco-zero]",
       "norm_label": "2026-08-13: prote\ufffd\ufffdo extrema de precis\ufffdo ofx ita\ufffd (195)"
     },
     {
@@ -74281,8 +74552,8 @@
       "source_location": "L244",
       "_origin": "ast",
       "id": "specs_global_features_spec_196_backend_daily_reconciliation_summary_math_delegation",
-      "community": 591,
-      "community_name": "Features",
+      "community": 657,
+      "community_name": "[186-refatoracao-marco-zero]",
       "norm_label": "spec 196: backend daily reconciliation summary & math delegation"
     },
     {
@@ -74292,8 +74563,8 @@
       "source_location": "L256",
       "_origin": "ast",
       "id": "specs_global_features_2026_08_15_auto_mapeamento_e_auditoria_de_saldos_ofx_ita_206",
-      "community": 591,
-      "community_name": "Features",
+      "community": 657,
+      "community_name": "[186-refatoracao-marco-zero]",
       "norm_label": "2026-08-15: auto-mapeamento e auditoria de saldos ofx ita\ufffd (206)"
     },
     {
@@ -74303,8 +74574,8 @@
       "source_location": "L265",
       "_origin": "ast",
       "id": "specs_global_features_2026_08_15_extra_o_robusta_e_autom_tica_de_juros_rede_207",
-      "community": 591,
-      "community_name": "Features",
+      "community": 657,
+      "community_name": "[186-refatoracao-marco-zero]",
       "norm_label": "2026-08-15: extra\ufffd\ufffdo robusta e autom\ufffdtica de juros rede (207)"
     },
     {
@@ -74314,8 +74585,8 @@
       "source_location": "L273",
       "_origin": "ast",
       "id": "specs_global_features_2026_08_15_reestrutura_o_da_concilia_o_detalhada_por_loja_208",
-      "community": 591,
-      "community_name": "Features",
+      "community": 657,
+      "community_name": "[186-refatoracao-marco-zero]",
       "norm_label": "2026-08-15: reestrutura\ufffd\ufffdo da concilia\ufffd\ufffdo detalhada por loja (208)"
     },
     {
@@ -74325,8 +74596,8 @@
       "source_location": "L283",
       "_origin": "ast",
       "id": "specs_global_features_2026_08_15_justificativa_de_entradas_avulsas_e_sincronizacao_de_faturamento_de_cartao_209",
-      "community": 591,
-      "community_name": "Features",
+      "community": 657,
+      "community_name": "[186-refatoracao-marco-zero]",
       "norm_label": "2026-08-15: justificativa de entradas avulsas e sincronizacao de faturamento de cartao (209)"
     },
     {
@@ -74336,8 +74607,8 @@
       "source_location": "L292",
       "_origin": "ast",
       "id": "specs_global_features_spec_210_211_dashboard_100_rpc_backend_categoriza\u00e7\u00e3o_livre_de_\u00f3rf\u00e3os",
-      "community": 591,
-      "community_name": "Features",
+      "community": 657,
+      "community_name": "[186-refatoracao-marco-zero]",
       "norm_label": "spec 210 & 211 \u2014 dashboard 100% rpc backend & categorizacao livre de orfaos"
     },
     {
@@ -74347,9 +74618,20 @@
       "source_location": "L298",
       "_origin": "ast",
       "id": "specs_global_features_spec_212_dashboard_chart_layout_tooltip_clipping_fix",
-      "community": 591,
-      "community_name": "Features",
+      "community": 657,
+      "community_name": "[186-refatoracao-marco-zero]",
       "norm_label": "spec 212 \u2014 dashboard chart layout & tooltip clipping fix"
+    },
+    {
+      "label": "Spec 213 \u2014 Redesign Dashboard Layout & Donut Charts",
+      "file_type": "document",
+      "source_file": "specs/global/features.md",
+      "source_location": "L303",
+      "_origin": "ast",
+      "id": "specs_global_features_spec_213_redesign_dashboard_layout_donut_charts",
+      "community": 657,
+      "community_name": "[186-refatoracao-marco-zero]",
+      "norm_label": "spec 213 \u2014 redesign dashboard layout & donut charts"
     },
     {
       "label": "features_clean.md",
@@ -97439,7 +97721,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/dashboard/EvolucaoMacroChart.tsx",
-      "source_location": "L29",
+      "source_location": "L33",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_dashboard_evolucaomacrochart",
@@ -97461,7 +97743,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/dashboard/EvolucaoMacroChart.tsx",
-      "source_location": "L20",
+      "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_dashboard_evolucaomacrochart",
@@ -97567,7 +97849,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/components/dashboard/EvolucaoMacroChart.tsx",
-      "source_location": "L128",
+      "source_location": "L137",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_dashboard_evolucaomacrochart_evolucaomacrochart",
@@ -97579,7 +97861,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/components/dashboard/EvolucaoMacroChart.tsx",
-      "source_location": "L127",
+      "source_location": "L136",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_dashboard_evolucaomacrochart_evolucaomacrochart",
@@ -97591,7 +97873,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/components/dashboard/EvolucaoMacroChart.tsx",
-      "source_location": "L113",
+      "source_location": "L120",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_dashboard_evolucaomacrochart_evolucaomacrochart",
@@ -97701,18 +97983,6 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/index.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_routes_index",
-      "target": "src_components_dashboard_faturamentovscontaschart",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -97734,18 +98004,6 @@
       "_origin": "ast",
       "source": "src_components_dashboard_faturamentovscontaschart_faturamentovscontaschart",
       "target": "src_components_dashboard_faturamentovscontaschart_cleanstorelabel",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/index.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_routes_index",
-      "target": "src_components_dashboard_faturamentovscontaschart_faturamentovscontaschart",
       "confidence_score": 1.0
     },
     {
@@ -98322,6 +98580,178 @@
       "_origin": "ast",
       "source": "src_components_dashboard_recentactivity_recentactivity",
       "target": "src_hooks_usestores_usestores"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_dashboard_storedonutcharts",
+      "target": "src_components_dashboard_storedonutcharts_cleanstorelabel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L53",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_dashboard_storedonutcharts",
+      "target": "src_components_dashboard_storedonutcharts_contas_colors",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L66",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_dashboard_storedonutcharts",
+      "target": "src_components_dashboard_storedonutcharts_customdonuttooltip",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_dashboard_storedonutcharts",
+      "target": "src_components_dashboard_storedonutcharts_faturamento_colors",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_dashboard_storedonutcharts",
+      "target": "src_components_dashboard_storedonutcharts_formatcompact",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_dashboard_storedonutcharts",
+      "target": "src_components_dashboard_storedonutcharts_formatcurrency",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L100",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_dashboard_storedonutcharts",
+      "target": "src_components_dashboard_storedonutcharts_storedonutcharts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_dashboard_storedonutcharts",
+      "target": "src_components_dashboard_storedonutcharts_storedonutchartsprops",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_dashboard_storedonutcharts",
+      "target": "src_components_ui_card",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_dashboard_storedonutcharts",
+      "target": "src_components_ui_card_card",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/index.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_routes_index",
+      "target": "src_components_dashboard_storedonutcharts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L85",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_dashboard_storedonutcharts_customdonuttooltip",
+      "target": "src_components_dashboard_storedonutcharts_formatcurrency",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L160",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_dashboard_storedonutcharts_storedonutcharts",
+      "target": "src_components_dashboard_storedonutcharts_formatcompact",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/dashboard/StoreDonutCharts.tsx",
+      "source_location": "L107",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_dashboard_storedonutcharts_storedonutcharts",
+      "target": "src_components_dashboard_storedonutcharts_cleanstorelabel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/index.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_routes_index",
+      "target": "src_components_dashboard_storedonutcharts_storedonutcharts",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -143163,6 +143593,138 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design",
+      "target": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design_design_213_redesign_dashboard_charts_and_table_layout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design_design_213_redesign_dashboard_charts_and_table_layout",
+      "target": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design_1_wireframe_e_distribui\u00e7\u00e3o_de_grid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/design.md",
+      "source_location": "L37",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design_design_213_redesign_dashboard_charts_and_table_layout",
+      "target": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design_2_detalhes_de_componentes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/design.md",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design_2_detalhes_de_componentes",
+      "target": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design_2_1_src_components_dashboard_storetabledashboard_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/design.md",
+      "source_location": "L43",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design_2_detalhes_de_componentes",
+      "target": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design_2_2_src_components_dashboard_storedonutcharts_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/design.md",
+      "source_location": "L48",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design_2_detalhes_de_componentes",
+      "target": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design_2_3_src_components_dashboard_evolucaomacrochart_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/design.md",
+      "source_location": "L51",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design_2_detalhes_de_componentes",
+      "target": "specs_archive_213_redesign_dashboard_charts_and_table_layout_design_2_4_src_routes_index_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_213_redesign_dashboard_charts_and_table_layout_proposal",
+      "target": "specs_archive_213_redesign_dashboard_charts_and_table_layout_proposal_proposal_213_redesign_dashboard_charts_and_table_layout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_213_redesign_dashboard_charts_and_table_layout_proposal_proposal_213_redesign_dashboard_charts_and_table_layout",
+      "target": "specs_archive_213_redesign_dashboard_charts_and_table_layout_proposal_1_vis\u00e3o_geral_e_alinhamento_com_o_usu\u00e1rio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/proposal.md",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_213_redesign_dashboard_charts_and_table_layout_proposal_proposal_213_redesign_dashboard_charts_and_table_layout",
+      "target": "specs_archive_213_redesign_dashboard_charts_and_table_layout_proposal_2_contratos_t\u00e9cnicos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_213_redesign_dashboard_charts_and_table_layout_spec_plan",
+      "target": "specs_archive_213_redesign_dashboard_charts_and_table_layout_spec_plan_spec_plan_213_redesign_dashboard_charts_and_table_layout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/213-redesign-dashboard-charts-and-table-layout/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_213_redesign_dashboard_charts_and_table_layout_spec_plan_spec_plan_213_redesign_dashboard_charts_and_table_layout",
+      "target": "specs_archive_213_redesign_dashboard_charts_and_table_layout_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "specs/archive/agente-fullbleed-layout-and-clean-tabs/design.md",
       "source_location": "L3",
       "weight": 1.0,
@@ -153806,6 +154368,17 @@
       "_origin": "ast",
       "source": "specs_global_features_186_refatoracao_marco_zero",
       "target": "specs_global_features_spec_212_dashboard_chart_layout_tooltip_clipping_fix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/global/features.md",
+      "source_location": "L303",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_global_features_186_refatoracao_marco_zero",
+      "target": "specs_global_features_spec_213_redesign_dashboard_layout_donut_charts",
       "confidence_score": 1.0
     },
     {
