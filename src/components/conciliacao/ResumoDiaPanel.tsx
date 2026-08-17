@@ -4,14 +4,12 @@ import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import {
-  AlertOctagon, Save, AlertTriangle, CheckCircle2,
+  Save, AlertTriangle, CheckCircle2,
   CalendarDays, ChevronRight, Landmark, Wallet, Receipt, ShoppingBag, Edit2, Database, ShieldCheck, X
 } from 'lucide-react';
 import { useDailySnapshot, usePreviousDaySnapshot, useSaveDailySnapshot } from '@/hooks/useDailySnapshot';
 import { useJustifiedTransactions } from '@/hooks/useJustifiedTransactions';
 import { FaturamentoAtualBreakdownModal } from '@/components/conciliacao/FaturamentoAtualBreakdownModal';
-import { calculateGlobalConciliacao, GlobalConciliacaoInput } from '@/lib/modulo1Calculations';
-import { StoreSaldoState } from '@/lib/modulo1Calculations';
 import { supabase } from '@/lib/supabase';
 import { useQueryClient } from '@tanstack/react-query';
 import { DailyReconciliationSummary } from '@/hooks/useBackendConciliacao';
@@ -556,34 +554,56 @@ export function ResumoDiaPanel({
             </div>
           </div>
 
-          {/* DIVERGÊNCIA FINAL */}
-          <div className={`p-4 rounded-xl border flex flex-col justify-between ${
+          {/* Card Lateral - Diferença Final (Destaque Centralizado e Harmonioso) */}
+          <div className={`rounded-xl border p-6 flex flex-col items-center justify-center text-center shadow-lg transition-all relative overflow-hidden backdrop-blur-md ${
              isDiferencaOk 
-               ? 'bg-[var(--color-accent-teal)]/10 border-[var(--color-accent-teal)]/30' 
-               : 'bg-[var(--color-accent-danger)]/10 border-[var(--color-accent-danger)]/30'
+               ? 'bg-gradient-to-b from-emerald-500/10 to-emerald-950/20 border-emerald-500/30 text-emerald-400' 
+               : 'bg-gradient-to-b from-rose-500/10 to-rose-950/20 border-rose-500/30 text-rose-400'
           }`}>
-             <div>
-                <span className={`text-[10px] uppercase font-bold tracking-wider block ${
-                  isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
-                }`}>
+             {/* Header com Ícone e Título */}
+             <div className="flex items-center gap-1.5 mb-2">
+                {isDiferencaOk ? (
+                  <CheckCircle2 size={16} className="text-emerald-400" />
+                ) : (
+                  <AlertTriangle size={16} className="text-rose-400" />
+                )}
+                <span className="text-xs uppercase font-bold tracking-widest text-zinc-300">
                   Diferença Final
                 </span>
-                <span className={`text-2xl font-bold font-mono mt-1 block ${
-                  isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
+             </div>
+
+             {/* Valor Central Gigante e Destacado */}
+             <div className="my-2">
+                <span className={`text-4xl sm:text-5xl font-display font-extrabold font-mono tracking-tight tabular-nums ${
+                  isDiferencaOk ? 'text-emerald-400 drop-shadow-[0_0_12px_rgba(52,211,153,0.3)]' : 'text-rose-400 drop-shadow-[0_0_12px_rgba(244,63,94,0.3)]'
                 }`}>
                   <AnimatedNumber value={diferencaFinalCalculada} format="currency" />
                 </span>
-                <span className="text-[9px] text-[var(--text-tertiary)] block mt-1">
-                  |Valor Disp. Contas| - Subtotal Contas
-                </span>
              </div>
-             <p className={`text-[11px] font-medium mt-3 ${
-               isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
+
+             {/* Fórmula Explicativa */}
+             <span className="text-[10px] text-zinc-400 font-mono block mb-4 opacity-80">
+               |Valor Disp. Contas| - Subtotal Contas
+             </span>
+
+             {/* Badge de Status / Tolerância */}
+             <div className={`px-3 py-1.5 rounded-full text-xs font-semibold inline-flex items-center gap-1.5 border ${
+               isDiferencaOk 
+                 ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-300' 
+                 : 'bg-rose-500/15 border-rose-500/30 text-rose-300'
              }`}>
-               {isDiferencaOk 
-                 ? 'Variação dentro do limite seguro (± R$ 50).' 
-                 : 'Variação fora da tolerância de ± R$ 50. Verifique os lançamentos!'}
-             </p>
+               {isDiferencaOk ? (
+                 <>
+                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                   Fechamento Conforme (tolerância ± R$ 50)
+                 </>
+               ) : (
+                 <>
+                   <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+                   Fora da tolerância (± R$ 50)
+                 </>
+               )}
+             </div>
           </div>
         </div>
 

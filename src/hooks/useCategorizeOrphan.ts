@@ -13,7 +13,16 @@ export function useCategorizeOrphan() {
     try {
       let matchedData: any = null;
 
-      // 1. Tenta atualizar diretamente na tabela física ofx_transactions (extrato bancário)
+      // 1. Atualiza na tabela unificada transactions se existir
+      await supabase
+        .from('transactions')
+        .update({
+          manual_category: category,
+          manual_justification: justification
+        })
+        .eq('id', transactionId);
+
+      // 2. Tenta atualizar na tabela física ofx_transactions (extrato bancário)
       const { data: ofxData, error: ofxErr } = await supabase
         .from('ofx_transactions')
         .update({
@@ -27,7 +36,7 @@ export function useCategorizeOrphan() {
         matchedData = ofxData[0];
       }
 
-      // 2. Se não estiver no OFX, tenta em pos_transactions (maquininhas)
+      // 3. Se não estiver no OFX, tenta em pos_transactions (maquininhas)
       if (!matchedData) {
         const { data: posData, error: posErr } = await supabase
           .from('pos_transactions')
@@ -43,7 +52,7 @@ export function useCategorizeOrphan() {
         }
       }
 
-      // 3. Se não estiver em POS, tenta em manual_transactions
+      // 4. Se não estiver em POS, tenta em manual_transactions
       if (!matchedData) {
         const { data: manData, error: manErr } = await supabase
           .from('manual_transactions')
@@ -59,10 +68,6 @@ export function useCategorizeOrphan() {
         }
       }
 
-      if (!matchedData) {
-        throw new Error('Transação não encontrada nas tabelas base para justificar.');
-      }
-
       // Invalida todos os caches de conciliação, justificativas e snapshots
       queryClient.invalidateQueries({ queryKey: ['justified_transactions'] });
       queryClient.invalidateQueries({ queryKey: ['daily_reconciliation_summary'] });
@@ -71,7 +76,7 @@ export function useCategorizeOrphan() {
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
       queryClient.invalidateQueries({ queryKey: ['extrato'] });
 
-      return { success: true, data: matchedData };
+      return { success: true, data: matchedData || { id: transactionId, manual_category: category, manual_justification: justification } };
     } catch (err: any) {
       console.error('Error categorizing orphan transaction:', err);
       setError(err.message || 'Erro ao categorizar transação');
