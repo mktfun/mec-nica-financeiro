@@ -303,3 +303,17 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
 - **`StoreTableDashboard.tsx`**: Tabela widescreen na coluna esquerda (`lg:col-span-8`) sem cortes em Resultado e Pátio.
 - **`EvolucaoMacroChart.tsx`**: Gráfico de evolução temporal com altura fixa de `280px` e escala calibrada.
 - **RPC `get_dashboard_metrics`**: Histórico diário com deltas de odômetro por dia.
+
+## [2026-08-17] — Specs 214, 215, 216: Detalhes da Loja, Gráficos Analíticos e Evolução Temporal
+
+- **Rota:** `/loja/$lojaId` (`src/routes/loja.$lojaId.tsx`)
+- **Componentes Novos:**
+  - `src/components/lojas/LojaPieCharts.tsx`: Gráfico Donut Recharts contextual que sincroniza automaticamente com a aba selecionada (`Extrato` -> Receitas x Despesas, `Saídas` -> Fornecedores em cores macro, `Entradas` -> Origens/Canais).
+  - `src/components/lojas/LojaEvolutionChart.tsx`: Gráfico de evolução temporal diária em 3 linhas (Entradas Verde, Saídas Coral, Saldo Líquido Azul) com legenda e tooltips.
+- **Hooks & Libs:**
+  - `src/hooks/useStoreAnalyticBreakdown.ts`: Hook com agregação de métricas por loja e tratamento defensivo com `COALESCE`.
+  - `src/lib/parsers/supplierUtils.ts`: Higienização e agrupamento inteligente de fornecedores e origens.
+- **Backend & Database:**
+  - RPC `get_store_analytic_breakdown` (`supabase/migrations/20260817090000_create_store_analytic_breakdown_rpc.sql`).
+  - Migration de purgamento de transações de teste legadas anteriores ao Marco Zero (`supabase/migrations/20260817093000_purge_legacy_pre_marco_zero.sql`).
+- **Blindagem de Período:** Inputs de data e atalho `Tudo` com limite mínimo no Marco Zero (`2026-08-13`).

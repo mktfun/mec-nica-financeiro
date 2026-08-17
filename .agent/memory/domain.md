@@ -231,3 +231,11 @@
 **Risco identificado:** Comparar o faturamento diário (ex: R$ 75k) contra o acumulado do odômetro (R$ 369k) gerava uma falsa queda de -79.7%.
 
 **Não fazer:** Nunca atrelar a totalidade das OSs em aberto de uma loja a uma única linha de extrato da adquirente.
+
+## [2026-08-17] — [Feature IDs: 214, 215, 216 — Extrato Analítico por Loja e Marco Zero]
+
+**Contexto:** Unificação do extrato por loja com cálculo de despesas por fornecedor e evolução em 3 linhas diárias.
+
+**Regra aprendida:**
+1. **Marco Zero como Limite Mínimo Universal:** O Marco Zero de 13/08/2026 define a data inicial oficial do sistema. Qualquer relatório, extrato ou filtro deve ter como limite mínimo `2026-08-13`.
+2. **Saldo Real vs Movimentação Periódica:** O saldo em conta bancária (Saldo da Loja) representa o saldo da conta e é fixo no último OFX importado. As métricas de Entradas, Saídas e Resultado Líquido pertencem estritamente ao período filtrado.
