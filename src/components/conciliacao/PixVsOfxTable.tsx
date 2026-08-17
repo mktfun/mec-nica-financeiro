@@ -2,17 +2,19 @@ import { useState } from 'react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { CheckCircle2, AlertTriangle, Info, QrCode, FileText, Unlink, Link2 } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, Info, QrCode, FileText, Unlink, Link2, Landmark } from 'lucide-react';
 import { useReconciliationViews } from '@/hooks/useConciliacao';
 import { useManualMatch } from '@/hooks/useManualMatch';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { OsDetailModal } from './OsDetailModal';
+import { LinkOfxToOsModal } from './LinkOfxToOsModal';
 import { toast } from 'sonner';
 
 export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string }) {
   const { data, isLoading } = useReconciliationViews(storeId, date);
   const { unlinkTransaction, loading: unlinking } = useManualMatch();
   const [selectedOsData, setSelectedOsData] = useState<any | null>(null);
+  const [linkingOsData, setLinkingOsData] = useState<any | null>(null);
 
   if (isLoading) {
     return <div className="p-12 flex justify-center"><LoadingSpinner text="Carregando extrato de PIX..." /></div>;
@@ -60,6 +62,7 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
           <p className="text-2xl font-bold text-[var(--text-primary)] font-mono">
             R$ {totalOsPix.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </p>
+          <span className="text-[10px] text-[var(--text-tertiary)] block mt-1">Soma das OSs com pagamento em PIX</span>
         </Card>
 
         <Card variant="elevated" className="p-5 border-[var(--color-accent-teal)]/30">
@@ -70,9 +73,10 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
           <p className="text-2xl font-bold text-[var(--color-accent-teal)] font-mono">
             R$ {totalEntered.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </p>
+          <span className="text-[10px] text-[var(--text-tertiary)] block mt-1">Lançamentos identificados no extrato Itaú</span>
         </Card>
 
-        <Card variant="elevated" className="p-5">
+        <Card variant="elevated" className="p-5 border-[var(--color-accent-warning)]/30">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">PIX Pendente de Confirmação</span>
             <AlertTriangle size={18} className="text-[var(--color-accent-warning)]" />
@@ -80,6 +84,7 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
           <p className="text-2xl font-bold text-[var(--color-accent-warning)] font-mono">
             R$ {totalNotEntered.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </p>
+          <span className="text-[10px] text-[var(--text-tertiary)] block mt-1">Aguardando correspondente bancário</span>
         </Card>
       </div>
 
@@ -91,7 +96,7 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
               <QrCode size={20} />
               Extrato de PIX (Ordens de Serviço vs Extrato Bancário)
             </h3>
-            <p className="text-xs text-[var(--text-secondary)]">Conferência de pagamentos recebidos via PIX nas OSs da oficina.</p>
+            <p className="text-xs text-[var(--text-secondary)]">Conferência individual se cada PIX informado pelo cliente na OS realmente caiu na conta bancária.</p>
           </div>
           <Badge variant="outline" className="text-xs font-mono">
             {osPixList.length} Transações
@@ -107,13 +112,13 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-[var(--text-tertiary)] text-xs uppercase tracking-wider border-b border-[var(--border-subtle)] bg-[var(--bg-canvas)]">
+                <tr className="text-[var(--text-tertiary)] text-xs uppercase tracking-wider border-b border-[var(--border-subtle)] bg-[var(--bg-canvas)] font-mono">
                   <th className="text-left py-3 px-4 font-medium">OS Vinculada</th>
                   <th className="text-left py-3 px-4 font-medium">Cliente / Veículo</th>
                   <th className="text-right py-3 px-4 font-medium">Valor PIX (OS)</th>
                   <th className="text-left py-3 px-4 font-medium">Lançamento OFX (Banco)</th>
-                  <th className="text-center py-3 px-4 font-medium">Status OFX</th>
-                  <th className="text-center py-3 px-4 font-medium">Ação</th>
+                  <th className="text-center py-3 px-4 font-medium">Status no Banco</th>
+                  <th className="text-center py-3 px-4 font-medium">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border-subtle)]">
@@ -144,22 +149,27 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
                       </td>
                       <td className="py-3 px-4 text-xs font-mono text-[var(--text-secondary)]">
                         {ofxPix ? (
-                          <div className="flex flex-col">
-                            <span className="text-[var(--color-accent-teal)] font-medium">{ofxPix.title}</span>
-                            <span className="text-[10px] text-[var(--text-tertiary)]">R$ {Number(ofxPix.amount || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                          <div className="flex flex-col gap-0.5">
+                            <span className="text-emerald-400 font-medium flex items-center gap-1">
+                              <Landmark size={11} className="shrink-0" />
+                              {ofxPix.title}
+                            </span>
+                            <span className="text-[10px] text-[var(--text-tertiary)]">
+                              R$ {Number(ofxPix.amount || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </span>
                           </div>
                         ) : (
-                          <span className="text-[var(--text-tertiary)] italic">Aguardando conciliação OFX</span>
+                          <span className="text-[var(--text-tertiary)] italic">Aguardando correspondente no extrato</span>
                         )}
                       </td>
                       <td className="py-3 px-4 text-center">
                         {entrou ? (
-                          <Badge variant="success" className="bg-[var(--color-accent-teal)]/10 text-[var(--color-accent-teal)] border-[var(--color-accent-teal)]/30 text-xs font-mono">
+                          <Badge variant="success" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-xs font-mono">
                             <CheckCircle2 size={12} className="mr-1" /> Entrou no Banco
                           </Badge>
                         ) : (
-                          <Badge variant="warning" className="bg-[var(--color-accent-warning)]/10 text-[var(--color-accent-warning)] border-[var(--color-accent-warning)]/30 text-xs font-mono">
-                            <AlertTriangle size={12} className="mr-1" /> Pendente OFX
+                          <Badge variant="warning" className="bg-amber-500/10 text-amber-400 border-amber-500/30 text-xs font-mono">
+                            <AlertTriangle size={12} className="mr-1" /> Pendente no Extrato
                           </Badge>
                         )}
                       </td>
@@ -177,9 +187,23 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
                             Desvincular
                           </Button>
                         ) : (
-                          <span className="text-[10px] text-[var(--text-tertiary)] italic">
-                            Aguardando no banco
-                          </span>
+                          <Button
+                            size="sm"
+                            variant="teal"
+                            onClick={() => setLinkingOsData({
+                              os_number: pixTx.os_number,
+                              client_name: pixTx.client_name,
+                              plate: pixTx.plate,
+                              amount: Number(pixTx.amount || 0),
+                              store_id: storeId,
+                              target_date: date,
+                            })}
+                            className="text-xs h-7 px-2 font-mono gap-1"
+                            title="Buscar lançamento bancário correspondente no extrato"
+                          >
+                            <Link2 size={12} />
+                            Vincular Extrato
+                          </Button>
                         )}
                       </td>
                     </tr>
@@ -191,11 +215,21 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
         )}
       </Card>
 
+      {/* Modal de Detalhes da OS */}
       <OsDetailModal 
         isOpen={!!selectedOsData}
         osData={selectedOsData} 
         onClose={() => setSelectedOsData(null)} 
       />
+
+      {/* Modal de Vínculo de Extrato para OS */}
+      {linkingOsData && (
+        <LinkOfxToOsModal
+          isOpen={!!linkingOsData}
+          onClose={() => setLinkingOsData(null)}
+          osData={linkingOsData}
+        />
+      )}
     </div>
   );
 }
