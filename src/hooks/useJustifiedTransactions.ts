@@ -59,13 +59,14 @@ export function useJustifiedTransactions(date?: string) {
       try {
         const { data: txData, error: txErr } = await supabase
           .from('transactions')
-          .select('id, store_id, title, subtitle, amount, occurred_at, target_date, manual_category, manual_justification, os_number, match_status')
+          .select('id, store_id, title, subtitle, amount, occurred_at, target_date, manual_category, manual_justification, os_number, status')
           .eq('target_date', targetDate);
 
         if (!txErr && txData) {
           txData.forEach((row: any) => {
             // Se já for vinculada a uma OS, NÃO conta como justificativa avulsa (evita duplicar no faturamento)
-            if (row.os_number || row.match_status === 'MATCHED') return;
+            if (row.os_number || row.status === 'MATCHED') return;
+
 
             const hasCat = row.manual_category && String(row.manual_category).trim() !== '';
             const hasJust = row.manual_justification && String(row.manual_justification).trim() !== '';

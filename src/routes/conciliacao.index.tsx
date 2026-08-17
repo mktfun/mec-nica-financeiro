@@ -226,9 +226,9 @@ function ConciliacaoPage() {
                                 <p className="font-bold text-sm text-[var(--text-primary)] font-mono">
                                   <AnimatedNumber value={previstoAjustado} format="currency" />
                                 </p>
-                                {storeJustified > 0 && (
+                                {storeAllJustified > 0 && (
                                   <span className="text-[9px] text-blue-400 block mt-0.5 font-medium">
-                                    (- <AnimatedNumber value={storeJustified} format="currency" /> just.)
+                                    (- <AnimatedNumber value={storeAllJustified} format="currency" /> just.)
                                   </span>
                                 )}
                               </div>
