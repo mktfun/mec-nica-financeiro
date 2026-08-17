@@ -20,7 +20,7 @@ export function useAvailableStoreOs(storeId: string, date: string) {
   return useQuery<StoreOsCandidate[]>({
     queryKey: ['available_store_os', storeId, date],
     queryFn: async () => {
-      const candidates: StoreOsCandidate[] = [];
+      const candidatesMap = new Map<string, StoreOsCandidate>();
 
       // 1. Busca em estoque_os_pendente
       try {
@@ -31,38 +31,42 @@ export function useAvailableStoreOs(storeId: string, date: string) {
 
         if (pendenteData) {
           pendenteData.forEach((row: any) => {
-            candidates.push({
-              id: row.id,
-              os_number: String(row.os_number || row.numero_os || ''),
-              client_name: row.client_name || row.cliente || 'Cliente',
-              plate: row.plate || row.placa || '',
-              total_value: Number(row.total_value || row.valor_os || 0),
-              paid_value: Number(row.paid_value || row.valor_pago || 0),
-              pix_transfer_value: Number(row.pix_transfer_value || 0),
-              payment_method: row.payment_method || row.forma_pagamento || 'PIX',
-              status: row.status || 'PENDENTE',
-              date: row.date || row.data || date,
-              matched_ofx_id: row.matched_ofx_id || null,
-            });
+            const num = String(row.os_number || row.numero_os || '').trim();
+            if (num) {
+              candidatesMap.set(num, {
+                id: row.id,
+                os_number: num,
+                client_name: row.client_name || row.cliente || 'Cliente',
+                plate: row.plate || row.placa || '',
+                total_value: Number(row.total_value || row.valor_os || 0),
+                paid_value: Number(row.paid_value || row.valor_pago || 0),
+                pix_transfer_value: Number(row.pix_transfer_value || 0),
+                payment_method: row.payment_method || row.forma_pagamento || 'PIX',
+                status: row.status || 'PENDENTE',
+                date: row.date || row.data || date,
+                matched_ofx_id: row.matched_ofx_id || null,
+              });
+            }
           });
         }
       } catch (e) {
         console.warn('Aviso ao consultar estoque_os_pendente:', e);
       }
 
-      // 2. Busca em patio_os se não encontrou
-      if (candidates.length === 0) {
-        try {
-          const { data: patioData } = await supabase
-            .from('patio_os')
-            .select('*')
-            .eq('store_id', storeId);
+      // 2. Busca em patio_os para complementar
+      try {
+        const { data: patioData } = await supabase
+          .from('patio_os')
+          .select('*')
+          .eq('store_id', storeId);
 
-          if (patioData) {
-            patioData.forEach((row: any) => {
-              candidates.push({
+        if (patioData) {
+          patioData.forEach((row: any) => {
+            const num = String(row.os_number || '').trim();
+            if (num && !candidatesMap.has(num)) {
+              candidatesMap.set(num, {
                 id: row.id,
-                os_number: String(row.os_number || ''),
+                os_number: num,
                 client_name: row.client_name || 'Cliente',
                 plate: row.plate || '',
                 total_value: Number(row.total_value || 0),
@@ -73,14 +77,14 @@ export function useAvailableStoreOs(storeId: string, date: string) {
                 date: row.date || date,
                 matched_ofx_id: row.matched_ofx_id || null,
               });
-            });
-          }
-        } catch (e) {
-          console.warn('Aviso ao consultar patio_os:', e);
+            }
+          });
         }
+      } catch (e) {
+        console.warn('Aviso ao consultar patio_os:', e);
       }
 
-      return candidates;
+      return Array.from(candidatesMap.values());
     },
     enabled: !!storeId,
   });

@@ -24,7 +24,7 @@ try {
   execSync('git add -A', { stdio: 'inherit' });
 
   console.log('Committing changes...');
-  const msg = 'feat(223): audit settlement status for card batches and PIX from OS with link modal';
+  const msg = 'feat(224): OFX-centric atemporal PIX reconciliation with uniqueness rule and store pool match';
   execSync(`git commit -m "${msg}"`, { stdio: 'inherit' });
 
   console.log('Pushing to main...');

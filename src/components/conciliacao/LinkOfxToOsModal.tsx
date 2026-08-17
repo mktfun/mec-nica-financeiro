@@ -31,19 +31,19 @@ export function LinkOfxToOsModal({
   const [search, setSearch] = useState('');
   const { linkTransactionToOs, loading: linking } = useManualMatch();
 
-  // Busca lançamentos bancários de entrada daquela filial e data
+  // Busca lançamentos bancários de entrada daquela filial (atemporal / pool da loja)
   const { data: bankTransactions = [], isLoading } = useQuery({
     queryKey: ['unlinked_bank_transactions', osData?.store_id, osData?.target_date],
     queryFn: async () => {
-      if (!osData?.target_date) return [];
+      if (!osData?.store_id) return [];
 
       const { data: txs, error } = await supabase
         .from('transactions')
         .select('*')
         .eq('store_id', osData.store_id)
-        .eq('target_date', osData.target_date)
         .eq('source', 'ofx')
-        .eq('type', 'in');
+        .eq('type', 'in')
+        .is('os_number', null);
 
       if (error) {
         console.warn('Erro ao carregar transações bancárias:', error);
@@ -56,11 +56,12 @@ export function LinkOfxToOsModal({
         counterpart_name: t.counterpart_name || t.cnpj_cpf || '',
         amount: Math.abs(Number(t.amount || 0)),
         occurred_at: t.occurred_at || t.target_date,
+        target_date: t.target_date,
         os_number: t.os_number,
         match_status: t.match_status,
       }));
     },
-    enabled: isOpen && !!osData?.target_date,
+    enabled: isOpen && !!osData?.store_id,
   });
 
   const filteredTransactions = useMemo(() => {
@@ -176,7 +177,12 @@ export function LinkOfxToOsModal({
                       <td className="py-2.5 px-3 font-medium text-[var(--text-primary)]">
                         <div className="flex items-center gap-1.5">
                           <Landmark size={13} className="text-[var(--color-primary)] shrink-0" />
-                          <span className="font-mono truncate max-w-[200px]">{tx.title}</span>
+                          <span className="font-mono truncate max-w-[180px]">{tx.title}</span>
+                          {tx.target_date && (
+                            <span className="text-[9px] font-mono px-1 py-0.2 bg-[var(--bg-panel)] border border-[var(--border-subtle)] rounded text-[var(--text-tertiary)] shrink-0">
+                              {tx.target_date.split('-').reverse().slice(0, 2).join('/')}
+                            </span>
+                          )}
                         </div>
                       </td>
                       <td className="py-2.5 px-3 text-[var(--text-secondary)]">

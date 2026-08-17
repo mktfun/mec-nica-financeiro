@@ -379,14 +379,39 @@ export function useReconciliationViews(storeId: string, date: string) {
       });
 
       const matchedOfxIds = new Set<string>();
-      const pixGroups = osPixList.map(osPix => {
-        const matchedOfx = ofxPixList.find(ofx => {
-          if (matchedOfxIds.has(ofx.id)) return false;
-          const amtDiff = Math.abs(Number(ofx.amount) - Number(osPix.amount));
-          return amtDiff < 0.1 || (osPix.matched_ofx_id === ofx.id);
-        });
 
-        if (matchedOfx) matchedOfxIds.add(matchedOfx.id);
+      // 1. Registra vínculos explícitos gravados em banco
+      ofxInTxs.forEach(tx => {
+        if (tx.os_number || (tx as any).matched_os_number) {
+          matchedOfxIds.add(tx.id);
+        }
+      });
+
+      const pixGroups = osPixList.map(osPix => {
+        // A) Vínculo explícito direto gravado
+        let matchedOfx = ofxPixList.find(ofx => 
+          (osPix.matched_ofx_id && osPix.matched_ofx_id === ofx.id) ||
+          (ofx.os_number && String(ofx.os_number) === String(osPix.os_number)) ||
+          ((ofx as any).matched_os_number && String((ofx as any).matched_os_number) === String(osPix.os_number))
+        );
+
+        // B) Se não houver vínculo explícito, busca por valor exato com regra de unicidade (OFX-Centric)
+        if (!matchedOfx) {
+          matchedOfx = ofxPixList.find(ofx => {
+            if (matchedOfxIds.has(ofx.id)) return false;
+            const amtDiff = Math.abs(Number(ofx.amount) - Number(osPix.amount));
+            if (amtDiff < 0.05) {
+              // Regra de Unicidade Estrita: auto-match apenas se não houver ambiguidade
+              const sameValCount = osPixList.filter(o => Math.abs(Number(o.amount) - Number(osPix.amount)) < 0.05).length;
+              return sameValCount === 1;
+            }
+            return false;
+          });
+        }
+
+        if (matchedOfx) {
+          matchedOfxIds.add(matchedOfx.id);
+        }
 
         return {
           osPix,
@@ -396,7 +421,7 @@ export function useReconciliationViews(storeId: string, date: string) {
             amount: Number(matchedOfx.amount || 0),
             occurred_at: matchedOfx.occurred_at
           } : null,
-          isMatched: !!matchedOfx || osPix.status === 'ENTROU' || osPix.status === 'finalizado'
+          isMatched: !!matchedOfx || osPix.status === 'ENTROU' || osPix.status === 'finalizado' || osPix.status === 'PAGO'
         };
       });
 
@@ -406,9 +431,12 @@ export function useReconciliationViews(storeId: string, date: string) {
         pixGroups
       };
 
-      // 4. ofxSemMatch: Entradas bancárias que não são de Adquirente nem de PIX OS
+      // 4. ofxSemMatch: Entradas bancárias que não são de Adquirente nem de PIX OS e nem foram vinculadas
       const ofxSemMatch = ofxInTxs.filter(t => {
-        return !adquirenteOfx.some(a => a.id === t.id) && !matchedOfxIds.has(t.id);
+        const isAdquirente = adquirenteOfx.some(a => a.id === t.id);
+        const isMatchedPix = matchedOfxIds.has(t.id);
+        const hasOs = !!t.os_number || !!(t as any).matched_os_number;
+        return !isAdquirente && !isMatchedPix && !hasOs;
       }).map(t => ({
         id: t.id,
         title: t.title,
