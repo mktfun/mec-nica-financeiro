@@ -23,7 +23,7 @@ try {
   execSync('git add -A', { stdio: 'inherit' });
 
   console.log('Committing changes...');
-  const msg = 'feat(loja): redesign loja details with macro donut chart, 3-line evolution chart and purge pre-marco-zero legacy data (Specs 214-216)';
+  const msg = 'fix(import): eliminate TDZ ReferenceError in CentralImportWizard and enhance Rede parser for sales reports';
   execSync(`git commit -m "${msg}"`, { stdio: 'inherit' });
 
   console.log('Pushing to origin main...');

@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
@@ -6,18 +6,21 @@ import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { getDefaultDate } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { DollarSign, Clock, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { DollarSign, Clock, AlertTriangle, CheckCircle2, CreditCard, Layers } from 'lucide-react';
 import { useRecebiveis, useReceivablesSummary } from '@/hooks/useRecebiveis';
 import { useStores } from '@/hooks/useStores';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { MdrAuditView } from '@/components/maquininhas/MdrAuditView';
 
 export const Route = createFileRoute('/recebiveis')({
   component: RecebiveisPage,
 });
 
 type FilterTab = 'todos' | 'pendente' | 'recebido' | 'vencido';
+type MainView = 'recebiveis' | 'mdr_audit';
 
 function RecebiveisPage() {
+  const [mainView, setMainView] = useState<MainView>('recebiveis');
   const [activeTab, setActiveTab] = useState<FilterTab>('todos');
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
@@ -88,56 +91,89 @@ function RecebiveisPage() {
         </div>
 
         {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="font-display font-bold text-3xl">Recebíveis</h1>
-            <p className="text-sm text-[var(--text-secondary)] mt-1">Valores a receber por forma de pagamento e vencimento.</p>
+            <h1 className="font-display font-bold text-3xl">Recebíveis & Cartões</h1>
+            <p className="text-sm text-[var(--text-secondary)] mt-1">
+              Controle de fluxos a receber por vencimento e auditoria analítica de taxas MDR de maquininhas.
+            </p>
           </div>
-          
-          <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
-            <div className="flex items-center gap-2 bg-[var(--bg-surface)] border border-white/10 rounded-[var(--radius-md)] px-3 py-1.5 text-sm w-full sm:w-auto">
-              <span className="text-[var(--text-tertiary)]">De:</span>
-              <input 
-                type="date" 
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="bg-transparent text-white focus:outline-none [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert"
-              />
-              <span className="text-[var(--text-tertiary)] ml-2">Até:</span>
-              <input 
-                type="date" 
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="bg-transparent text-white focus:outline-none [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert"
-              />
-            </div>
 
-            <div className="w-full sm:w-64 relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg className="h-4 w-4 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-              <input
-                type="text"
-                placeholder="Buscar loja, tipo..."
-                value={searchQuery}
-                onChange={(e) => handleSearchChange(e.target.value)}
-                className="w-full bg-[var(--bg-surface)] border border-white/10 rounded-[var(--radius-md)] pl-9 pr-4 py-1.5 text-sm text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors placeholder:text-[var(--text-tertiary)]"
-              />
-            </div>
+          {/* Main Mode Switcher */}
+          <div className="flex items-center gap-1.5 p-1 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl">
+            <button
+              onClick={() => setMainView('recebiveis')}
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                mainView === 'recebiveis'
+                  ? 'bg-[var(--bg-canvas)] text-[var(--text-primary)] shadow-sm border border-[var(--border-subtle)]'
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+              }`}
+            >
+              <Layers size={14} />
+              Contas a Receber
+            </button>
+            <button
+              onClick={() => setMainView('mdr_audit')}
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                mainView === 'mdr_audit'
+                  ? 'bg-[var(--color-primary)] text-black font-bold shadow-sm'
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+              }`}
+            >
+              <CreditCard size={14} />
+              Auditoria de Taxas (MDR)
+            </button>
           </div>
         </div>
 
-        {isLoading ? (
-          <div className="flex justify-center p-12">
-            <LoadingSpinner size="sm" text="" />
-          </div>
+        {mainView === 'mdr_audit' ? (
+          <MdrAuditView />
         ) : (
-          <>
-            {/* Summary Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <Card className="border-l-4 border-l-[var(--color-primary)]">
+          <div className="space-y-6">
+            {/* Filtros da Visão Geral */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="flex items-center gap-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-[var(--radius-md)] px-3 py-1.5 text-sm w-full sm:w-auto">
+                <span className="text-[var(--text-tertiary)] text-xs uppercase font-bold">De:</span>
+                <input 
+                  type="date" 
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="bg-transparent text-xs text-[var(--text-primary)] focus:outline-none cursor-pointer"
+                />
+                <span className="text-[var(--text-tertiary)] text-xs uppercase font-bold ml-2">Até:</span>
+                <input 
+                  type="date" 
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="bg-transparent text-xs text-[var(--text-primary)] focus:outline-none cursor-pointer"
+                />
+              </div>
+
+              <div className="w-full sm:w-64 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg className="h-4 w-4 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Buscar loja, tipo..."
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  className="w-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-[var(--radius-md)] pl-9 pr-4 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors placeholder:text-[var(--text-tertiary)]"
+                />
+              </div>
+            </div>
+
+            {isLoading ? (
+              <div className="flex justify-center p-12">
+                <LoadingSpinner size="sm" text="" />
+              </div>
+            ) : (
+              <>
+                {/* Summary Cards */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                  <Card className="border-l-4 border-l-[var(--color-primary)]">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider">Total a Receber</span>
                   <DollarSign size={16} className="text-[var(--color-primary)]" />
@@ -285,6 +321,8 @@ function RecebiveisPage() {
               )}
             </Card>
           </>
+        )}
+          </div>
         )}
       </div>
     </AppShell>

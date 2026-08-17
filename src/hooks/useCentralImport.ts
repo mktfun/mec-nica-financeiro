@@ -143,25 +143,30 @@ export function useCentralImport() {
 
       // 2. Processa os Excel (tenta Rede -> OS -> Maquininha Genérica)
       if (excelFiles.length > 0) {
-        // Testa parse OS em lote
-        const osResults = await processOsFiles(excelFiles, { sessionId: options?.sessionId });
-        
         for (let i = 0; i < excelFiles.length; i++) {
           const file = excelFiles[i];
           await new Promise(r => setTimeout(r, 0)); // Cede o controle ao navegador
           
           // Primeiro, testa se é do formato Rede
-          const redeRes = await parseRedeFile(file, { sessionId: options?.sessionId });
-          if (redeRes.success && redeRes.transactions.length > 0) {
-             newResults.redeResults.push(redeRes);
-             continue; // Sucesso como Rede
+          try {
+            const redeRes = await parseRedeFile(file, { sessionId: options?.sessionId });
+            if (redeRes.success && redeRes.transactions.length > 0) {
+               newResults.redeResults.push(redeRes);
+               continue; // Sucesso como Rede
+            }
+          } catch (e) {
+            // Não é Rede, segue para OS
           }
           
           // Depois, testa se é OS
-          const osRes = osResults.find(r => r.fileName === file.name);
-          if (osRes && osRes.success && osRes.osArray.length > 0) {
-            newResults.osFiles.push(osRes);
-            continue; // Sucesso como OS
+          try {
+            const osRes = await processOsFiles([file], { sessionId: options?.sessionId });
+            if (osRes && osRes[0] && osRes[0].success && osRes[0].osArray.length > 0) {
+              newResults.osFiles.push(osRes[0]);
+              continue; // Sucesso como OS
+            }
+          } catch (e) {
+            // Não é OS, segue para Maquininha Genérica
           }
           
           // Falhou como Rede e OS, tenta Maquininha Genérica

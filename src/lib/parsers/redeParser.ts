@@ -34,20 +34,27 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
       throw new Error("Arquivo muito pequeno.");
     }
 
-    const row0 = String(json[0]?.[0] || '');
-    if (!row0.includes("EXTRATO PARA SIMPLES CONFERÊNCIA")) {
+    const firstFewRowsText = json.slice(0, 8).map(r => Array.isArray(r) ? r.join(' ') : String(r)).join(' ').toUpperCase();
+    const isRedeFile = firstFewRowsText.includes("EXTRATO") || 
+                       firstFewRowsText.includes("REDE") || 
+                       firstFewRowsText.includes("RELATÓRIO DE VENDAS") ||
+                       firstFewRowsText.includes("RELATORIO DE VENDAS") ||
+                       firstFewRowsText.includes("VALOR DA VENDA") ||
+                       firstFewRowsText.includes("ESTABELECIMENTO") ||
+                       file.name.toUpperCase().includes("REDE");
+
+    if (!isRedeFile) {
        throw new Error("Não é um arquivo da Rede reconhecido.");
     }
 
-    // Tentar extrair a data do "PERÍODO: DD-MM-YYYY A DD-MM-YYYY"
+    // Tentar extrair a data do "PERÍODO: DD-MM-YYYY A DD-MM-YYYY" ou do nome do arquivo
     let targetDate = new Date().toISOString().split('T')[0];
-    const dateMatch = row0.match(/PERÍODO:\s*(\d{2}-\d{2}-\d{4})/i);
-    if (dateMatch && dateMatch[1]) {
-      // Converter DD-MM-YYYY para YYYY-MM-DD
-      const parts = dateMatch[1].split('-');
-      if (parts.length === 3) {
-        targetDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-      }
+    const dateMatch = firstFewRowsText.match(/PERÍODO:\s*(\d{2})[-/](\d{2})[-/](\d{4})/i) || 
+                      firstFewRowsText.match(/PERIODO:\s*(\d{2})[-/](\d{2})[-/](\d{4})/i) ||
+                      file.name.match(/(\d{2})_(\d{2})_(\d{4})/);
+
+    if (dateMatch && dateMatch[1] && dateMatch[2] && dateMatch[3]) {
+      targetDate = `${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}`;
     }
 
     // Encontra o índice da linha de cabeçalho

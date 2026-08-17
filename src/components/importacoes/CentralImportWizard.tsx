@@ -62,10 +62,20 @@ const INITIAL_STAGES: AgentStage[] = [
 ];
 
 export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () => void, initialDate?: string }) {
+  const navigate = useNavigate();
+  const { data: stores = [] } = useStores();
+  const { mapping, updateMapping } = useStoreFileMappings(stores);
+  const { processFiles, isProcessing, results } = useCentralImport();
+  const { mutateAsync: saveTransactions } = useBulkInsertTransactions();
+  const { mutateAsync: createImportBatch } = useCreateImportBatch();
+  const { mutateAsync: insertConciliationMatches } = useBulkInsertConciliationMatches();
+  const saveSnapshot = useSaveDailySnapshot();
+
   const [step, setStep] = useState<1 | 2 | 2.5 | 3 | 3.5 | 4>(1);
   const [subStep, setSubStep] = useState<1 | 2 | 3>(1);
   const [isPreparing, setIsPreparing] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [targetDate, setTargetDate] = useState<string>(initialDate || new Date().toISOString().split('T')[0]);
 
   useEffect(() => {
@@ -73,6 +83,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       setTargetDate(initialDate);
     }
   }, [initialDate]);
+
   const [isAgentModalOpen, setIsAgentModalOpen] = useState(false);
   const [needsFallback, setNeedsFallback] = useState(false);
   const [showMarcoZero, setShowMarcoZero] = useState(false);
@@ -80,35 +91,6 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const [manualOsMatches, setManualOsMatches] = useState<{ ofxTx: any, osId: string }[]>([]);
   const [cloudOsData, setCloudOsData] = useState<any[]>([]);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
-
-  
-  
-  const handleCloudDataSuccess = (cloudData: any[], fallback: boolean) => {
-    setIsAgentModalOpen(false);
-    setCloudOsData(cloudData);
-    setNeedsFallback(fallback);
-    
-    if (fallback) {
-      toast.success(`${cloudData.length} faturamentos extraídos via OCR/LLM.`);
-    } else {
-      toast.success(`${cloudData.length} faturamentos encontrados e processados.`);
-    }
-    
-    const aliases = new Set<string>();
-    results.osFiles.filter(r => r.success).forEach(r => aliases.add(r.storeAlias));
-    results.maquininhaItems.forEach(i => aliases.add(i.storeName));
-    results.ofxResults.forEach(o => aliases.add(o.alias));
-    results.redeResults.filter(r => r.success).forEach(r => {
-      r.transactions.forEach(t => aliases.add(t.storeName));
-    });
-    
-    if (Array.from(aliases).length > 0) {
-      setStep(2); // NUNCA pular o mapeamento se houver lojas para mapear
-    } else {
-      setStep(fallback ? 3.5 : 3);
-    }
-  };
-
   const [unmappedAliases, setUnmappedAliases] = useState<string[]>([]);
   const [sessionId, setSessionId] = useState<string>('');
   
@@ -142,9 +124,6 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const [isManualLocked, setIsManualLocked] = useState<boolean>(true);
   const [copiedJson, setCopiedJson] = useState(false);
 
-  const { data: stores = [] } = useStores();
-  const { mapping, updateMapping } = useStoreFileMappings(stores);
-
   // Helper para resolver a loja correta por mapping direto, conta bancária ou prefixo do arquivo
   const resolveStoreForOfx = useCallback((ofx: { alias: string; fileName?: string }): string => {
     if (mapping[ofx.alias]) return mapping[ofx.alias];
@@ -166,13 +145,31 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     return '';
   }, [mapping]);
 
-  const { processFiles, isProcessing, results } = useCentralImport();
-  const { mutateAsync: saveTransactions } = useBulkInsertTransactions();
-  const { mutateAsync: createImportBatch } = useCreateImportBatch();
-  const { mutateAsync: insertConciliationMatches } = useBulkInsertConciliationMatches();
-  const saveSnapshot = useSaveDailySnapshot();
-  const [isSaving, setIsSaving] = useState(false);
-  const navigate = useNavigate();
+  const handleCloudDataSuccess = (cloudData: any[], fallback: boolean) => {
+    setIsAgentModalOpen(false);
+    setCloudOsData(cloudData);
+    setNeedsFallback(fallback);
+    
+    if (fallback) {
+      toast.success(`${cloudData.length} faturamentos extraídos via OCR/LLM.`);
+    } else {
+      toast.success(`${cloudData.length} faturamentos encontrados e processados.`);
+    }
+    
+    const aliases = new Set<string>();
+    results.osFiles.filter(r => r.success).forEach(r => aliases.add(r.storeAlias));
+    results.maquininhaItems.forEach(i => aliases.add(i.storeName));
+    results.ofxResults.forEach(o => aliases.add(o.alias));
+    results.redeResults.filter(r => r.success).forEach(r => {
+      r.transactions.forEach(t => aliases.add(t.storeName));
+    });
+    
+    if (Array.from(aliases).length > 0) {
+      setStep(2); // NUNCA pular o mapeamento se houver lojas para mapear
+    } else {
+      setStep(fallback ? 3.5 : 3);
+    }
+  };
 
   // Detecção de OSs ativas no banco que não vieram no relatório importado do mês
   useEffect(() => {
