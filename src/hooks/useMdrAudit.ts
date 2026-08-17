@@ -7,6 +7,59 @@ export interface MdrAuditFilters {
   storeId?: string | null;
   startDate?: string;
   endDate?: string;
+  brand?: string | null;
+  divergenceOnly?: boolean;
+}
+
+export interface DailyMdrItem {
+  date: string;
+  gross: number;
+  net: number;
+  fees: number;
+  overcharge: number;
+  effective_rate_pct: number;
+  count: number;
+  divergent_count: number;
+}
+
+export interface BrandMdrItem {
+  brand: string;
+  gross: number;
+  net: number;
+  fees: number;
+  overcharge: number;
+  effective_rate_pct: number;
+  contracted_rate_pct: number;
+}
+
+export interface StoreMdrItem {
+  store_id: string;
+  store_name: string;
+  gross: number;
+  net: number;
+  fees: number;
+  overcharge: number;
+  effective_rate_pct: number;
+  divergent_count: number;
+}
+
+export interface TransactionMdrItem {
+  id: string;
+  store_id: string;
+  store_name: string;
+  machine_name: string;
+  payment_method: string;
+  brand: string;
+  gross_amount: number;
+  net_amount: number;
+  fee_amount: number;
+  effective_rate_pct: number;
+  contracted_rate_pct: number;
+  divergence_pct: number;
+  overcharge_amount: number;
+  audit_status: 'conforme' | 'atencao' | 'divergente' | 'sem_contrato';
+  occurred_at: string;
+  target_date: string;
 }
 
 export interface MdrAuditData {
@@ -19,69 +72,35 @@ export interface MdrAuditData {
     divergent_count: number;
     total_count: number;
   };
-  by_brand: Array<{
-    brand: string;
-    gross: number;
-    net: number;
-    fees: number;
-    overcharge: number;
-    effective_rate_pct: number;
-    contracted_rate_pct: number;
-  }>;
-  by_store: Array<{
-    store_id: string;
-    store_name: string;
-    gross: number;
-    net: number;
-    fees: number;
-    overcharge: number;
-    effective_rate_pct: number;
-    divergent_count: number;
-  }>;
-  transactions: Array<{
-    id: string;
-    store_id: string;
-    store_name: string;
-    machine_name: string;
-    payment_method: string;
-    brand: string;
-    gross_amount: number;
-    net_amount: number;
-    fee_amount: number;
-    effective_rate_pct: number;
-    contracted_rate_pct: number;
-    divergence_pct: number;
-    overcharge_amount: number;
-    audit_status: 'conforme' | 'atencao' | 'divergente' | 'sem_contrato';
-    occurred_at: string;
-    target_date: string;
-  }>;
+  by_day: DailyMdrItem[];
+  by_brand: BrandMdrItem[];
+  by_store: StoreMdrItem[];
+  transactions: TransactionMdrItem[];
 }
 
 export function useMdrAudit(filters?: MdrAuditFilters) {
   const storeId = filters?.storeId || null;
-  const startDate = filters?.startDate || '2026-08-13';
-  const endDate = filters?.endDate || '2026-08-14';
+  const startDate = filters?.startDate || '2026-08-01';
+  const endDate = filters?.endDate || '2026-08-31';
+  const brandFilter = filters?.brand || null;
+  const divergenceOnly = !!filters?.divergenceOnly;
 
   return useQuery<MdrAuditData>({
-    queryKey: ['mdr_audit_summary', storeId, startDate, endDate],
-    queryFn: async () => {
-      // 1. Tenta chamada direta à RPC
-      try {
-        const { data, error } = await supabase.rpc('get_mdr_audit_summary', {
-          p_store_id: storeId,
-          p_start_date: startDate,
-          p_end_date: endDate,
-        });
+    queryKey: ['mdr_audit_summary', storeId, startDate, endDate, brandFilter, divergenceOnly],
+    queryFn: async (): Promise<MdrAuditData> => {
+      // 1. Carrega contratos do banco para comparação dinâmica
+      const { data: contractsData } = await supabase
+        .from('pos_fee_contracts')
+        .select('*')
+        .eq('active', true);
 
-        if (!error && data && data.totals) {
-          return data as MdrAuditData;
-        }
-      } catch (e) {
-        console.warn('Fallback para cálculo cliente de auditoria MDR...');
-      }
+      const contractMap = new Map<string, number>();
+      (contractsData || []).forEach(c => {
+        const key = `${c.brand.toLowerCase()}_${c.method.toLowerCase()}`;
+        contractMap.set(key, Number(c.contracted_mdr_percent));
+      });
 
-      // 2. Fallback resiliente no cliente com dados do banco
+      // 2. Consulta transações de maquininhas do Supabase (pos_transactions e fallback receivables)
       let query = supabase
         .from('pos_transactions')
         .select(`
@@ -104,19 +123,64 @@ export function useMdrAudit(filters?: MdrAuditFilters) {
       }
 
       const { data: posData, error: posError } = await query;
-      if (posError) throw posError;
+      if (posError) {
+        console.warn('Erro ao consultar pos_transactions:', posError.message);
+      }
 
-      const txs = posData || [];
+      let txs = (posData || []) as any[];
+
+      // Se não houver pos_transactions, busca em receivables de cartão
+      if (txs.length === 0) {
+        let recQuery = supabase
+          .from('receivables')
+          .select(`
+            id,
+            store_id,
+            acquirer,
+            card_brand,
+            gross_amount,
+            net_amount,
+            fee_amount,
+            expected_date,
+            stores ( id, name )
+          `)
+          .gte('expected_date', startDate)
+          .lte('expected_date', endDate);
+
+        if (storeId) {
+          recQuery = recQuery.eq('store_id', storeId);
+        }
+
+        const { data: recData } = await recQuery;
+        if (recData && recData.length > 0) {
+          txs = recData.map(r => ({
+            id: r.id,
+            store_id: r.store_id,
+            machine_name: r.acquirer || 'Rede',
+            payment_method: r.card_brand ? `Cartão ${r.card_brand}` : 'Cartão',
+            gross_amount: r.gross_amount,
+            net_amount: r.net_amount,
+            fee_amount: r.fee_amount,
+            occurred_at: r.expected_date,
+            target_date: r.expected_date,
+            stores: r.stores
+          }));
+        }
+      }
+
       let totalGross = 0;
       let totalNet = 0;
       let totalFees = 0;
       let totalOvercharge = 0;
       let divergentCount = 0;
 
+      const dayMap: Record<string, { gross: number; net: number; fees: number; overcharge: number; count: number; divergent_count: number }> = {};
       const brandMap: Record<string, { gross: number; net: number; fees: number; overcharge: number; count: number; contractedRate: number }> = {};
       const storeMap: Record<string, { store_id: string; store_name: string; gross: number; net: number; fees: number; overcharge: number; divergent_count: number }> = {};
 
-      const processedTransactions = txs.map((row: any) => {
+      const processedTransactions: TransactionMdrItem[] = [];
+
+      txs.forEach((row: any) => {
         const gross = Number(row.gross_amount || 0);
         const net = Number(row.net_amount || 0);
         let fee = Number(row.fee_amount || 0);
@@ -136,10 +200,17 @@ export function useMdrAudit(filters?: MdrAuditFilters) {
 
         let methodType: MdrParsedTransaction['method'] = 'Cartão Crédito À Vista';
         if (combined.includes('débito') || combined.includes('debito')) methodType = 'Cartão Débito';
+        else if (combined.includes('parcelado') || combined.includes('parc')) methodType = 'Cartão Parcelado Loja';
         else if (combined.includes('pix')) methodType = 'PIX';
 
         const effectiveRate = gross > 0 ? roundCurrency(((gross - net) / gross) * 100) : 0;
-        const contractedRate = getContractRate(brand, methodType);
+        
+        // Pega taxa de contrato customizada do banco ou default
+        const contractKey = `${brand.toLowerCase()}_${methodType.toLowerCase()}`;
+        const contractedRate = contractMap.has(contractKey) 
+          ? (contractMap.get(contractKey) || 0) 
+          : getContractRate(brand, methodType);
+
         const divergence = roundCurrency(effectiveRate - contractedRate);
 
         let overcharge = 0;
@@ -158,6 +229,18 @@ export function useMdrAudit(filters?: MdrAuditFilters) {
         totalNet = roundCurrency(totalNet + net);
         totalFees = roundCurrency(totalFees + fee);
         totalOvercharge = roundCurrency(totalOvercharge + overcharge);
+
+        // Agrupa por Dia
+        const dayKey = row.target_date || (row.occurred_at ? row.occurred_at.split('T')[0] : '2026-08-17');
+        if (!dayMap[dayKey]) {
+          dayMap[dayKey] = { gross: 0, net: 0, fees: 0, overcharge: 0, count: 0, divergent_count: 0 };
+        }
+        dayMap[dayKey].gross = roundCurrency(dayMap[dayKey].gross + gross);
+        dayMap[dayKey].net = roundCurrency(dayMap[dayKey].net + net);
+        dayMap[dayKey].fees = roundCurrency(dayMap[dayKey].fees + fee);
+        dayMap[dayKey].overcharge = roundCurrency(dayMap[dayKey].overcharge + overcharge);
+        dayMap[dayKey].count++;
+        if (status === 'divergente') dayMap[dayKey].divergent_count++;
 
         // Agrupa por Brand
         if (!brandMap[brand]) {
@@ -179,7 +262,7 @@ export function useMdrAudit(filters?: MdrAuditFilters) {
         storeMap[row.store_id].overcharge = roundCurrency(storeMap[row.store_id].overcharge + overcharge);
         if (status === 'divergente') storeMap[row.store_id].divergent_count++;
 
-        return {
+        processedTransactions.push({
           id: row.id,
           store_id: row.store_id,
           store_name: storeName,
@@ -196,10 +279,21 @@ export function useMdrAudit(filters?: MdrAuditFilters) {
           audit_status: status,
           occurred_at: row.occurred_at || row.target_date,
           target_date: row.target_date,
-        };
+        });
       });
 
-      const by_brand = Object.entries(brandMap).map(([brand, d]) => ({
+      const by_day: DailyMdrItem[] = Object.entries(dayMap).map(([date, d]) => ({
+        date,
+        gross: d.gross,
+        net: d.net,
+        fees: d.fees,
+        overcharge: d.overcharge,
+        effective_rate_pct: d.gross > 0 ? roundCurrency((d.fees / d.gross) * 100) : 0,
+        count: d.count,
+        divergent_count: d.divergent_count,
+      })).sort((a, b) => b.date.localeCompare(a.date));
+
+      const by_brand: BrandMdrItem[] = Object.entries(brandMap).map(([brand, d]) => ({
         brand,
         gross: d.gross,
         net: d.net,
@@ -209,7 +303,7 @@ export function useMdrAudit(filters?: MdrAuditFilters) {
         contracted_rate_pct: d.contractedRate,
       })).sort((a, b) => b.gross - a.gross);
 
-      const by_store = Object.values(storeMap).map(d => ({
+      const by_store: StoreMdrItem[] = Object.values(storeMap).map(d => ({
         store_id: d.store_id,
         store_name: d.store_name,
         gross: d.gross,
@@ -222,6 +316,14 @@ export function useMdrAudit(filters?: MdrAuditFilters) {
 
       const avg_effective_rate_pct = totalGross > 0 ? roundCurrency((totalFees / totalGross) * 100) : 0;
 
+      let filteredTransactions = processedTransactions;
+      if (brandFilter) {
+        filteredTransactions = filteredTransactions.filter(t => t.brand.toLowerCase() === brandFilter.toLowerCase());
+      }
+      if (divergenceOnly) {
+        filteredTransactions = filteredTransactions.filter(t => t.audit_status === 'divergente');
+      }
+
       return {
         totals: {
           total_gross: totalGross,
@@ -232,9 +334,10 @@ export function useMdrAudit(filters?: MdrAuditFilters) {
           divergent_count: divergentCount,
           total_count: txs.length,
         },
+        by_day,
         by_brand,
         by_store,
-        transactions: processedTransactions.sort((a, b) => b.overcharge_amount - a.overcharge_amount),
+        transactions: filteredTransactions.sort((a, b) => b.overcharge_amount - a.overcharge_amount),
       };
     },
     staleTime: 1000 * 60 * 2,

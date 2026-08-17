@@ -1,13 +1,13 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Home, PieChart, Store, AlertTriangle, Settings } from "lucide-react";
+import { Home, PieChart, Store, Percent, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { id: "/", label: "Home", icon: Home },
   { id: "/conciliacao", label: "Contas", icon: PieChart },
   { id: "/lojas", label: "Lojas", icon: Store },
-  { id: "/alertas", label: "Alertas", icon: AlertTriangle },
+  { id: "/taxas", label: "Taxas", icon: Percent },
   { id: "/configuracoes", label: "Ajustes", icon: Settings },
 ];
 

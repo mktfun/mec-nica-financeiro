@@ -23,7 +23,7 @@ try {
   execSync('git add -A', { stdio: 'inherit' });
 
   console.log('Committing changes...');
-  const msg = 'fix(parser): fix trnType reference order in ofxParser and define LOCAL_STORAGE_KEY';
+  const msg = 'feat(218): add dedicated Taxas & Juros page, daily evolution and transaction audit table replacing alertas';
   execSync(`git commit -m "${msg}"`, { stdio: 'inherit' });
 
   console.log('Pushing to main...');

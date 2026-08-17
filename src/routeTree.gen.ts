@@ -24,6 +24,7 @@ import { Route as LojasRouteImport } from './routes/lojas'
 import { Route as PatioRouteImport } from './routes/patio'
 import { Route as PropostaRouteImport } from './routes/proposta'
 import { Route as RecebiveisRouteImport } from './routes/recebiveis'
+import { Route as TaxasRouteImport } from './routes/taxas'
 import { Route as ConciliacaoIndexRouteImport } from './routes/conciliacao.index'
 import { Route as ConciliacaoLojaIdRouteImport } from './routes/conciliacao.$lojaId'
 import { Route as LogsAgenteRouteImport } from './routes/logs.agente'
@@ -105,6 +106,11 @@ const RecebiveisRoute = RecebiveisRouteImport.update({
   path: '/recebiveis',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TaxasRoute = TaxasRouteImport.update({
+  id: '/taxas',
+  path: '/taxas',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConciliacaoIndexRoute = ConciliacaoIndexRouteImport.update({
   id: '/conciliacao/',
   path: '/conciliacao/',
@@ -147,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/patio': typeof PatioRoute
   '/proposta': typeof PropostaRoute
   '/recebiveis': typeof RecebiveisRoute
+  '/taxas': typeof TaxasRoute
   '/conciliacao/$lojaId': typeof ConciliacaoLojaIdRoute
   '/logs/agente': typeof LogsAgenteRoute
   '/logs/motor': typeof LogsMotorRoute
@@ -169,6 +176,7 @@ export interface FileRoutesByTo {
   '/patio': typeof PatioRoute
   '/proposta': typeof PropostaRoute
   '/recebiveis': typeof RecebiveisRoute
+  '/taxas': typeof TaxasRoute
   '/conciliacao/$lojaId': typeof ConciliacaoLojaIdRoute
   '/logs/agente': typeof LogsAgenteRoute
   '/logs/motor': typeof LogsMotorRoute
@@ -192,6 +200,7 @@ export interface FileRoutesById {
   '/patio': typeof PatioRoute
   '/proposta': typeof PropostaRoute
   '/recebiveis': typeof RecebiveisRoute
+  '/taxas': typeof TaxasRoute
   '/conciliacao/$lojaId': typeof ConciliacaoLojaIdRoute
   '/logs/agente': typeof LogsAgenteRoute
   '/logs/motor': typeof LogsMotorRoute
@@ -216,6 +225,7 @@ export interface FileRouteTypes {
     | '/patio'
     | '/proposta'
     | '/recebiveis'
+    | '/taxas'
     | '/conciliacao/$lojaId'
     | '/logs/agente'
     | '/logs/motor'
@@ -238,6 +248,7 @@ export interface FileRouteTypes {
     | '/patio'
     | '/proposta'
     | '/recebiveis'
+    | '/taxas'
     | '/conciliacao/$lojaId'
     | '/logs/agente'
     | '/logs/motor'
@@ -260,6 +271,7 @@ export interface FileRouteTypes {
     | '/patio'
     | '/proposta'
     | '/recebiveis'
+    | '/taxas'
     | '/conciliacao/$lojaId'
     | '/logs/agente'
     | '/logs/motor'
@@ -283,6 +295,7 @@ export interface RootRouteChildren {
   PatioRoute: typeof PatioRoute
   PropostaRoute: typeof PropostaRoute
   RecebiveisRoute: typeof RecebiveisRoute
+  TaxasRoute: typeof TaxasRoute
   ConciliacaoLojaIdRoute: typeof ConciliacaoLojaIdRoute
   LogsAgenteRoute: typeof LogsAgenteRoute
   LogsMotorRoute: typeof LogsMotorRoute
@@ -397,6 +410,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RecebiveisRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/taxas': {
+      id: '/taxas'
+      path: '/taxas'
+      fullPath: '/taxas'
+      preLoaderRoute: typeof TaxasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/conciliacao/': {
       id: '/conciliacao/'
       path: '/conciliacao'
@@ -451,6 +471,7 @@ const rootRouteChildren: RootRouteChildren = {
   PatioRoute: PatioRoute,
   PropostaRoute: PropostaRoute,
   RecebiveisRoute: RecebiveisRoute,
+  TaxasRoute: TaxasRoute,
   ConciliacaoLojaIdRoute: ConciliacaoLojaIdRoute,
   LogsAgenteRoute: LogsAgenteRoute,
   LogsMotorRoute: LogsMotorRoute,
