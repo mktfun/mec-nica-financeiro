@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const { execSync } = require('child_process');
 
 const envFile = fs.readFileSync('.env', 'utf8');
@@ -19,12 +20,36 @@ if (token) {
   process.env.GITHUB_TOKEN = token;
 }
 
+const specsToArchive = [
+  '222-ajuste-tabela-cartao-rede-bruto-taxa-liquido-bandeira',
+  '223-auditoria-status-liquidacao-cartao-e-pix-os',
+  '224-conciliacao-atemporal-pix-ofx-centric',
+  '225-justificativa-com-impacto-faturamento-e-redesign-vincular-os'
+];
+
+const archiveDir = path.join('specs', 'archive');
+if (!fs.existsSync(archiveDir)) {
+  fs.mkdirSync(archiveDir, { recursive: true });
+}
+
+specsToArchive.forEach(spec => {
+  const src = path.join('specs', spec);
+  const dst = path.join(archiveDir, spec);
+  if (fs.existsSync(src)) {
+    if (fs.existsSync(dst)) {
+      fs.rmSync(dst, { recursive: true, force: true });
+    }
+    fs.renameSync(src, dst);
+    console.log(`Archived ${spec} -> specs/archive/${spec}`);
+  }
+});
+
 try {
   console.log('Staging changes...');
   execSync('git add -A', { stdio: 'inherit' });
 
   console.log('Committing changes...');
-  const msg = 'feat(225): justification revenue impact selector, deduplicated manual match modal with exact match priority, and reset test justifications';
+  const msg = 'chore: archive specs 222, 223, 224, and 225';
   execSync(`git commit -m "${msg}"`, { stdio: 'inherit' });
 
   console.log('Pushing to main...');
@@ -33,7 +58,7 @@ try {
   console.log('Pushing to master...');
   execSync('git push origin main:master --force', { stdio: 'inherit' });
 
-  console.log('Push to main and master completed successfully!');
+  console.log('Archive and push to main/master completed successfully!');
 } catch (err) {
   console.error('Git error:', err.message);
 }
