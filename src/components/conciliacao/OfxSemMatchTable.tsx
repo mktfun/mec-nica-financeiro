@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { HelpCircle, Info, FileEdit, CheckCircle2 } from 'lucide-react';
+import { HelpCircle, Info, FileEdit, CheckCircle2, Link2 } from 'lucide-react';
 import { useReconciliationViews } from '@/hooks/useConciliacao';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useCategorizeOrphan } from '@/hooks/useCategorizeOrphan';
 import { OrphanCategorizationModal } from './OrphanCategorizationModal';
+import { ManualMatchOsModal } from './ManualMatchOsModal';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
@@ -15,6 +16,7 @@ export function OfxSemMatchTable({ storeId, date }: { storeId: string; date: str
   const { categorize } = useCategorizeOrphan();
   const queryClient = useQueryClient();
   const [categorizingTx, setCategorizingTx] = useState<any | null>(null);
+  const [matchingTx, setMatchingTx] = useState<any | null>(null);
 
   if (isLoading) {
     return <div className="p-12 flex justify-center"><LoadingSpinner text="Carregando..." /></div>;
@@ -31,6 +33,7 @@ export function OfxSemMatchTable({ storeId, date }: { storeId: string; date: str
     await queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] });
     await queryClient.invalidateQueries({ queryKey: ['daily-snapshot'] });
     await queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+    await queryClient.invalidateQueries({ queryKey: ['justified_transactions'] });
     await queryClient.invalidateQueries({ queryKey: ['transactions'] });
   };
 
@@ -60,7 +63,7 @@ export function OfxSemMatchTable({ storeId, date }: { storeId: string; date: str
 
           <Card variant="elevated" className="p-5 border-[var(--color-accent-warning)]/30">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Pendente de Justificativa</span>
+              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Pendente de Justificativa / Vínculo</span>
               <FileEdit size={18} className="text-[var(--color-accent-warning)]" />
             </div>
             <p className="text-2xl font-bold text-[var(--color-accent-warning)] font-mono">
@@ -74,9 +77,11 @@ export function OfxSemMatchTable({ storeId, date }: { storeId: string; date: str
         <div className="bg-[var(--bg-panel)] p-4 border-b border-[var(--border-subtle)] flex items-center justify-between">
           <div>
             <h3 className="font-display font-semibold text-lg flex items-center gap-2 text-[var(--color-primary)]">
-              4. Extrato Bancário (Entradas Avulsas / Justificativas)
+              4. Extrato Bancário (Entradas Avulsas, PIX e Justificativas)
             </h3>
-            <p className="text-xs text-[var(--text-secondary)]">Justifique receitas como Venda de Sucata ou Reembolsos para abater da conciliação do dia.</p>
+            <p className="text-xs text-[var(--text-secondary)]">
+              Vincule pagamentos de clientes à sua respectiva OS ou justifique receitas avulsas (como Venda de Sucata, Óleo ou Reembolsos).
+            </p>
           </div>
           <Badge variant="outline" className="text-xs border-[var(--color-primary)]/30 text-[var(--color-primary)] bg-[var(--color-primary)]/10 font-mono">
             {rows.length} Entradas
@@ -97,7 +102,7 @@ export function OfxSemMatchTable({ storeId, date }: { storeId: string; date: str
                   <th className="text-left py-3 px-4 font-medium">Contraparte / Documento</th>
                   <th className="text-right py-3 px-4 font-medium">Valor Depositado</th>
                   <th className="text-center py-3 px-4 font-medium">Classificação</th>
-                  <th className="text-center py-3 px-4 font-medium">Ação</th>
+                  <th className="text-center py-3 px-4 font-medium">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border-subtle)]">
@@ -136,15 +141,28 @@ export function OfxSemMatchTable({ storeId, date }: { storeId: string; date: str
                         )}
                       </td>
                       <td className="py-3 px-4 text-center">
-                        <Button
-                          size="sm"
-                          variant={hasCategory ? "outline" : "teal"}
-                          onClick={() => setCategorizingTx(row)}
-                          className="text-[11px] h-7 px-2.5 font-mono"
-                        >
-                          <FileEdit size={12} className="mr-1" />
-                          {hasCategory ? 'Alterar' : 'Justificar'}
-                        </Button>
+                        <div className="flex items-center justify-center gap-1.5">
+                          <Button
+                            size="sm"
+                            variant="teal"
+                            onClick={() => setMatchingTx(row)}
+                            className="text-[11px] h-7 px-2 font-mono gap-1"
+                            title="Vincular à Ordem de Serviço (Não soma no Faturamento Atual)"
+                          >
+                            <Link2 size={12} />
+                            Vincular OS
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant={hasCategory ? "outline" : "ghost"}
+                            onClick={() => setCategorizingTx(row)}
+                            className="text-[11px] h-7 px-2 font-mono text-[var(--text-secondary)] hover:text-white"
+                            title="Justificar como Receita Avulsa (Soma no Faturamento Atual)"
+                          >
+                            <FileEdit size={12} className="mr-1" />
+                            {hasCategory ? 'Alterar' : 'Justificar'}
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -155,6 +173,7 @@ export function OfxSemMatchTable({ storeId, date }: { storeId: string; date: str
         )}
       </Card>
 
+      {/* Modal de Categorização Avulsa */}
       {categorizingTx && (
         <OrphanCategorizationModal
           transactionId={categorizingTx.id}
@@ -164,6 +183,17 @@ export function OfxSemMatchTable({ storeId, date }: { storeId: string; date: str
           onClose={() => setCategorizingTx(null)}
           onSuccess={handleCategorizationSuccess}
           categorizeOrphan={categorize}
+        />
+      )}
+
+      {/* Modal de Vínculo com OS */}
+      {matchingTx && (
+        <ManualMatchOsModal
+          isOpen={!!matchingTx}
+          onClose={() => setMatchingTx(null)}
+          transaction={matchingTx}
+          storeId={storeId}
+          targetDate={date}
         />
       )}
     </div>

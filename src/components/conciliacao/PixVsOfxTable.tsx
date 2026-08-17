@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
-import { CheckCircle2, AlertTriangle, Info, QrCode, FileText } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { CheckCircle2, AlertTriangle, Info, QrCode, FileText, Unlink, Link2 } from 'lucide-react';
 import { useReconciliationViews } from '@/hooks/useConciliacao';
+import { useManualMatch } from '@/hooks/useManualMatch';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { OsDetailModal } from './OsDetailModal';
+import { toast } from 'sonner';
 
 export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string }) {
   const { data, isLoading } = useReconciliationViews(storeId, date);
+  const { unlinkTransaction, loading: unlinking } = useManualMatch();
   const [selectedOsData, setSelectedOsData] = useState<any | null>(null);
 
   if (isLoading) {
@@ -30,6 +34,19 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
     return group?.isMatched;
   }).reduce((acc: number, item: any) => acc + Number(item.amount || 0), 0);
   const totalNotEntered = totalOsPix - totalEntered;
+
+  const handleUnlink = async (ofxPixId: string, osNumber: string) => {
+    try {
+      const res = await unlinkTransaction(ofxPixId, osNumber);
+      if (res.success) {
+        toast.success(`Vínculo da OS #${osNumber} desfeito! Transação retornou para Entradas Avulsas.`);
+      } else {
+        toast.error(`Falha ao desvincular: ${res.error}`);
+      }
+    } catch (err: any) {
+      toast.error(`Erro ao desvincular: ${err.message || err}`);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -69,11 +86,14 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
       {/* Tabela Extrato PIX */}
       <Card className="p-0 overflow-hidden border-[var(--border-subtle)]">
         <div className="bg-[var(--bg-panel)] p-4 border-b border-[var(--border-subtle)] flex items-center justify-between">
-          <h3 className="font-display font-semibold text-lg flex items-center gap-2 text-[var(--color-primary)]">
-            <QrCode size={20} />
-            Extrato de PIX (Ordens de Serviço vs Extrato Bancário)
-          </h3>
-          <Badge variant="outline" className="text-xs">
+          <div>
+            <h3 className="font-display font-semibold text-lg flex items-center gap-2 text-[var(--color-primary)]">
+              <QrCode size={20} />
+              Extrato de PIX (Ordens de Serviço vs Extrato Bancário)
+            </h3>
+            <p className="text-xs text-[var(--text-secondary)]">Conferência de pagamentos recebidos via PIX nas OSs da oficina.</p>
+          </div>
+          <Badge variant="outline" className="text-xs font-mono">
             {osPixList.length} Transações
           </Badge>
         </div>
@@ -93,6 +113,7 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
                   <th className="text-right py-3 px-4 font-medium">Valor PIX (OS)</th>
                   <th className="text-left py-3 px-4 font-medium">Lançamento OFX (Banco)</th>
                   <th className="text-center py-3 px-4 font-medium">Status OFX</th>
+                  <th className="text-center py-3 px-4 font-medium">Ação</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border-subtle)]">
@@ -140,6 +161,25 @@ export function PixVsOfxTable({ storeId, date }: { storeId: string; date: string
                           <Badge variant="warning" className="bg-[var(--color-accent-warning)]/10 text-[var(--color-accent-warning)] border-[var(--color-accent-warning)]/30 text-xs font-mono">
                             <AlertTriangle size={12} className="mr-1" /> Pendente OFX
                           </Badge>
+                        )}
+                      </td>
+                      <td className="py-3 px-4 text-center">
+                        {entrou && ofxPix?.id ? (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            disabled={unlinking}
+                            onClick={() => handleUnlink(ofxPix.id, pixTx.os_number)}
+                            className="text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 text-xs h-7 px-2 font-mono gap-1"
+                            title="Desvincular (caso o pagamento tenha sido em dinheiro ou outra forma)"
+                          >
+                            <Unlink size={12} />
+                            Desvincular
+                          </Button>
+                        ) : (
+                          <span className="text-[10px] text-[var(--text-tertiary)] italic">
+                            Aguardando no banco
+                          </span>
                         )}
                       </td>
                     </tr>
