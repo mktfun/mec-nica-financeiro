@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { X, Check, DollarSign, Ban, Landmark, Sparkles } from 'lucide-react';
+import { Modal } from '@/components/ui/Modal';
+import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
+import { Check, DollarSign, Ban, Landmark, AlertCircle } from 'lucide-react';
 
 interface OrphanCategorizationModalProps {
   transactionId: string;
@@ -69,170 +72,170 @@ export function OrphanCategorizationModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-      <div className="bg-[#0f111a] border border-[#1e293b] rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
-        <div className="flex items-center justify-between p-4 border-b border-[#1e293b] bg-[var(--bg-panel)]">
-          <div>
-            <h3 className="font-semibold text-white text-base flex items-center gap-2">
-              <Landmark size={18} className="text-[var(--color-primary)]" />
-              Justificar Lançamento Bancário
-            </h3>
-            <p className="text-xs text-[var(--text-tertiary)]">Concilie a transação e defina o impacto contábil no faturamento.</p>
+    <Modal
+      isOpen={true}
+      onClose={onClose}
+      title="Justificar Lançamento Bancário"
+    >
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Card do Lançamento Bancário */}
+        <div className="p-4 bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] uppercase font-bold text-[var(--text-tertiary)] tracking-wider">
+              Lançamento do Extrato Bancário
+            </span>
+            <Badge variant="outline" className="text-xs font-mono text-[var(--color-primary)]">
+              {transactionType === 'in' ? 'Entrada' : 'Saída'}
+            </Badge>
           </div>
-          <button 
-            onClick={onClose}
-            className="p-1.5 hover:bg-[#1e293b] rounded-lg transition-colors text-[var(--text-secondary)] hover:text-white cursor-pointer"
-          >
-            <X size={18} />
-          </button>
-        </div>
-        
-        <form onSubmit={handleSubmit} className="p-5 space-y-5">
-          {/* Card Detalhes */}
-          <div className="bg-[#1e293b]/40 p-3.5 rounded-xl border border-[#1e293b] flex items-center justify-between">
-            <div>
-              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider font-bold">Lançamento do Extrato</p>
-              <p className="text-sm font-semibold text-white line-clamp-1 mt-0.5">{transactionTitle || 'Transação sem nome'}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider font-bold">Valor</p>
-              <p className={`text-base font-bold font-mono ${transactionType === 'in' ? 'text-emerald-400' : 'text-rose-400'}`}>
-                {transactionType === 'in' ? '+' : '-'} 
-                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(transactionAmount)}
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <Landmark size={16} className="text-[var(--color-primary)] shrink-0" />
+              <p className="font-semibold text-sm text-[var(--text-primary)] truncate max-w-[260px]">
+                {transactionTitle || 'Lançamento Bancário'}
               </p>
             </div>
-          </div>
-
-          {/* 1. SELETOR DE IMPACTO NO FATURAMENTO */}
-          {transactionType === 'in' && (
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] block">
-                Impacto no Faturamento Atual da Loja <span className="text-rose-400">*</span>
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                {/* Opção 1: Somar */}
-                <button
-                  type="button"
-                  onClick={() => setImpactsRevenue(true)}
-                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${
-                    impactsRevenue
-                      ? 'bg-emerald-500/10 border-emerald-500/50 shadow-lg shadow-emerald-500/5 ring-1 ring-emerald-500/30'
-                      : 'bg-[#1e293b]/30 border-[#1e293b] opacity-60 hover:opacity-90 hover:bg-[#1e293b]/50'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
-                      <DollarSign size={14} />
-                      Somar ao Faturamento
-                    </span>
-                    {impactsRevenue && <Check size={14} className="text-emerald-400" />}
-                  </div>
-                  <span className="text-[11px] text-[var(--text-tertiary)] leading-tight">
-                    Receita real da loja (Venda sem OS, sucata, serviços avulsos).
-                  </span>
-                </button>
-
-                {/* Opção 2: Apenas Conciliar (Não somar) */}
-                <button
-                  type="button"
-                  onClick={() => setImpactsRevenue(false)}
-                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${
-                    !impactsRevenue
-                      ? 'bg-amber-500/10 border-amber-500/50 shadow-lg shadow-amber-500/5 ring-1 ring-amber-500/30'
-                      : 'bg-[#1e293b]/30 border-[#1e293b] opacity-60 hover:opacity-90 hover:bg-[#1e293b]/50'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
-                      <Ban size={14} />
-                      Apenas Conciliar (NÃO Somar)
-                    </span>
-                    {!impactsRevenue && <Check size={14} className="text-amber-400" />}
-                  </div>
-                  <span className="text-[11px] text-[var(--text-tertiary)] leading-tight">
-                    Marco Zero, rendimento de aplicação, transferência entre filiais, aportes.
-                  </span>
-                </button>
-              </div>
+            <div className="text-right">
+              <span className="text-base font-bold font-mono text-[var(--text-primary)]">
+                {transactionType === 'in' ? '+' : '-'} R$ {transactionAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </span>
             </div>
-          )}
+          </div>
+        </div>
 
-          {/* 2. CATEGORIA */}
+        {/* 1. SELETOR DE IMPACTO NO FATURAMENTO */}
+        {transactionType === 'in' && (
           <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] flex justify-between items-center">
-              <span>Categoria / Motivo <span className="text-rose-400">*</span></span>
-              <span className="text-[10px] text-[var(--text-tertiary)] lowercase font-normal">escolha abaixo ou digite</span>
+            <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] block font-mono">
+              Impacto no Faturamento Atual da Loja <span className="text-amber-400">*</span>
             </label>
-            
-            <input
-              type="text"
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              placeholder="Ex: Rendimento de Aplicação, Ajuste Marco Zero, Venda de Sucata..."
-              className="w-full bg-[#1e293b]/50 border border-[#1e293b] rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none focus:border-brand-500 transition-colors placeholder:text-[var(--text-tertiary)]"
-            />
+            <div className="grid grid-cols-2 gap-3">
+              {/* Opção 1: Somar */}
+              <button
+                type="button"
+                onClick={() => setImpactsRevenue(true)}
+                className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${
+                  impactsRevenue
+                    ? 'bg-[var(--bg-panel)] border-[var(--color-primary)] shadow-sm ring-1 ring-[var(--color-primary)]/40'
+                    : 'bg-[var(--bg-canvas)] border-[var(--border-subtle)] opacity-60 hover:opacity-100 hover:border-[var(--text-tertiary)]'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5 font-sans">
+                    <DollarSign size={14} className="text-[var(--color-primary)]" />
+                    Somar ao Faturamento
+                  </span>
+                  {impactsRevenue && <Check size={14} className="text-[var(--color-primary)]" />}
+                </div>
+                <span className="text-[11px] text-[var(--text-tertiary)] leading-tight">
+                  Receita real da loja (venda sem OS, sucata, serviços avulsos).
+                </span>
+              </button>
 
-            <div className="flex flex-wrap gap-1.5 pt-1">
-              {availableCategories.map(cat => (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => handleCategorySelect(cat)}
-                  className={`px-2.5 py-1 text-xs rounded-lg border transition-all cursor-pointer ${
-                    selectedCategory.toLowerCase() === cat.label.toLowerCase()
-                      ? 'bg-brand-500/20 border-brand-500 text-brand-400 font-semibold' 
-                      : 'bg-[#1e293b]/30 border-[#1e293b] text-[var(--text-secondary)] hover:bg-[#1e293b]/50 hover:text-white'
-                  }`}
-                >
-                  {cat.label}
-                </button>
-              ))}
+              {/* Opção 2: Apenas Conciliar */}
+              <button
+                type="button"
+                onClick={() => setImpactsRevenue(false)}
+                className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${
+                  !impactsRevenue
+                    ? 'bg-[var(--bg-panel)] border-[var(--color-primary)] shadow-sm ring-1 ring-[var(--color-primary)]/40'
+                    : 'bg-[var(--bg-canvas)] border-[var(--border-subtle)] opacity-60 hover:opacity-100 hover:border-[var(--text-tertiary)]'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5 font-sans">
+                    <Ban size={14} className="text-[var(--color-accent-warning)]" />
+                    Apenas Conciliar (NÃO Somar)
+                  </span>
+                  {!impactsRevenue && <Check size={14} className="text-[var(--color-primary)]" />}
+                </div>
+                <span className="text-[11px] text-[var(--text-tertiary)] leading-tight">
+                  Marco Zero, rendimento de aplicação, transferência, aporte.
+                </span>
+              </button>
             </div>
           </div>
+        )}
 
-          {/* 3. DETALHES ADICIONAIS */}
-          <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
-              Justificativa / Observação (Opcional)
+        {/* 2. CATEGORIA */}
+        <div className="space-y-2">
+          <div className="flex justify-between items-center">
+            <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] font-mono">
+              Categoria / Motivo <span className="text-amber-400">*</span>
             </label>
-            <textarea
-              value={justification}
-              onChange={(e) => setJustification(e.target.value)}
-              placeholder="Ex: Rendimento diário automático de saldo Itaú ou ajuste anterior ao Marco Zero..."
-              className="w-full bg-[#1e293b]/30 border border-[#1e293b] rounded-xl p-3 text-white text-sm focus:outline-none focus:border-brand-500 transition-colors h-16 resize-none placeholder:text-[var(--text-tertiary)]"
-            />
+            <span className="text-[10px] text-[var(--text-tertiary)] font-sans">escolha abaixo ou digite</span>
           </div>
+          
+          <input
+            type="text"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            placeholder="Ex: Rendimento de Aplicação, Ajuste Marco Zero, Venda de Sucata..."
+            className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg px-3.5 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors placeholder:text-[var(--text-tertiary)] font-sans"
+          />
 
-          {error && (
-            <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-xs font-medium">
-              {error}
-            </div>
-          )}
-
-          <div className="pt-2 flex gap-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 px-4 py-2.5 text-sm text-[var(--text-secondary)] hover:text-white transition-colors bg-[#1e293b]/30 hover:bg-[#1e293b]/50 border border-[#1e293b] rounded-xl font-medium"
-              disabled={isSubmitting}
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting || !selectedCategory}
-              className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-600/20"
-            >
-              {isSubmitting ? (
-                <span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-              ) : (
-                <Check size={16} />
-              )}
-              Confirmar Justificativa
-            </button>
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {availableCategories.map(cat => (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => handleCategorySelect(cat)}
+                className={`px-2.5 py-1 text-xs rounded-md border transition-all cursor-pointer font-sans ${
+                  selectedCategory.toLowerCase() === cat.label.toLowerCase()
+                    ? 'bg-[var(--bg-surface-hover)] border-[var(--color-primary)] text-[var(--color-primary)] font-bold' 
+                    : 'bg-[var(--bg-canvas)] border-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--bg-panel)] hover:text-[var(--text-primary)]'
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
           </div>
-        </form>
-      </div>
-    </div>
+        </div>
+
+        {/* 3. JUSTIFICATIVA */}
+        <div className="space-y-1.5">
+          <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] font-mono">
+            Observações Adicionais (Opcional)
+          </label>
+          <textarea
+            value={justification}
+            onChange={(e) => setJustification(e.target.value)}
+            placeholder="Ex: Rendimento diário automático de saldo Itaú ou ajuste do Marco Zero..."
+            className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-3 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors h-16 resize-none placeholder:text-[var(--text-tertiary)] font-sans"
+          />
+        </div>
+
+        {error && (
+          <div className="p-3 bg-[var(--color-accent-warning)]/10 border border-[var(--color-accent-warning)]/30 rounded-lg text-[var(--color-accent-warning)] text-xs font-medium flex items-center gap-2">
+            <AlertCircle size={14} className="shrink-0" />
+            {error}
+          </div>
+        )}
+
+        <div className="pt-2 flex justify-end gap-3 border-t border-[var(--border-subtle)]">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            disabled={isSubmitting}
+          >
+            Cancelar
+          </Button>
+          <Button
+            type="submit"
+            variant="primary"
+            disabled={isSubmitting || !selectedCategory}
+            className="font-semibold gap-1.5"
+          >
+            {isSubmitting ? (
+              <span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+            ) : (
+              <Check size={16} />
+            )}
+            Confirmar Justificativa
+          </Button>
+        </div>
+      </form>
+    </Modal>
   );
 }
