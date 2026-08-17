@@ -249,7 +249,7 @@ export function useReconciliationViews(storeId: string, date: string) {
       // 1. osVsRede: Cartão OS -> Maquininha
       const osVsRede = redeTxs.map(redeTx => {
         const redeBruto = Number(redeTx.gross_amount || redeTx.amount || 0);
-        const redeLiquido = Number(redeTx.amount || 0);
+        const redeLiquido = Number(redeTx.amount || (redeBruto - Number(redeTx.fee_amount || 0)));
         const taxaBrl = Number(redeTx.fee_amount || Math.max(0, redeBruto - redeLiquido));
         const taxaPercent = redeBruto > 0 ? (taxaBrl / redeBruto * 100) : 0;
 
@@ -274,34 +274,37 @@ export function useReconciliationViews(storeId: string, date: string) {
           }
         }
 
-        // O faturamento da maquininha da loja que entrou no banco / sistema
-        let osTotal = 0;
-        if (osData) {
-          osTotal = Number(osData.paid_value) || Number(osData.total_value) || 0;
-        } else if (totalAdquirenteOfx > 0) {
-          osTotal = redeTxs.length === 1 ? totalAdquirenteOfx : (totalAdquirenteOfx / redeTxs.length);
-        } else {
-          osTotal = redeLiquido > 0 ? redeLiquido : redeBruto;
-        }
-
-        const delta = redeBruto - osTotal;
         const isSettledWithBank = isRedeBankSettled || (totalAdquirenteOfx > 0 && Math.abs(totalAdquirenteOfx - totalRedeNet) < 5.0);
 
-        let displayOsLabel = 'Extrato REDE Consolidado';
+        let displayOsLabel = 'Lote REDE Consolidado';
         if (osData && osData.os_number) {
           displayOsLabel = `OS #${osData.os_number}`;
         } else if (isRealOsNumber) {
           displayOsLabel = `OS #${rawOsNum}`;
         }
 
+        // Extrai bandeira e modalidade
+        const paymentMethodStr = String(redeTx.payment_method || redeTx.title || 'Cartão');
+        let brand = (redeTx as any).brand || 'Rede';
+        const pmLower = paymentMethodStr.toLowerCase();
+        if (pmLower.includes('visa')) brand = 'Visa';
+        else if (pmLower.includes('mast')) brand = 'Mastercard';
+        else if (pmLower.includes('elo')) brand = 'Elo';
+        else if (pmLower.includes('hiper')) brand = 'Hipercard';
+        else if (pmLower.includes('amex')) brand = 'Amex';
+        else if (pmLower.includes('pix')) brand = 'PIX';
+
         return {
           id: redeTx.id,
           maquininha_title: redeTx.title || 'Importação Rede',
+          bandeira: brand,
+          payment_method: paymentMethodStr,
+          installments: (redeTx as any).installments || 1,
           rede_bruto: redeBruto,
           taxa_brl: taxaBrl,
           taxa_percent: taxaPercent,
           rede_liquido: redeLiquido,
-          os_total: osTotal,
+          os_total: redeLiquido,
           os_number: displayOsLabel,
           is_real_os: !!osData,
           os_data: osData ? {
@@ -311,7 +314,7 @@ export function useReconciliationViews(storeId: string, date: string) {
             parsed_credit_debit: (Number(osData.credit_value || 0) + Number(osData.debit_value || 0)),
             parsed_pix_transfer: Number(osData.pix_transfer_value || 0)
           } : null,
-          delta: delta,
+          delta: taxaBrl,
           status: (osData || isSettledWithBank || redeTx.match_status === 'MATCHED') ? 'PAREADO' : 'SEM_PAR'
         };
       });

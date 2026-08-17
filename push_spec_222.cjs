@@ -1,24 +1,5 @@
 const fs = require('fs');
-const path = require('path');
 const { execSync } = require('child_process');
-
-const srcDir = path.join(__dirname, 'specs', '221-conciliacao-vinculo-manual-pix-os-e-desvinculo');
-const destDir = path.join(__dirname, 'specs', 'archive', '221-conciliacao-vinculo-manual-pix-os-e-desvinculo');
-
-if (fs.existsSync(srcDir)) {
-  if (!fs.existsSync(destDir)) {
-    fs.mkdirSync(destDir, { recursive: true });
-  }
-  const files = fs.readdirSync(srcDir);
-  for (const f of files) {
-    fs.copyFileSync(path.join(srcDir, f), path.join(destDir, f));
-    fs.unlinkSync(path.join(srcDir, f));
-  }
-  fs.rmdirSync(srcDir);
-  console.log('Spec 221 moved to specs/archive/221-conciliacao-vinculo-manual-pix-os-e-desvinculo successfully!');
-} else {
-  console.log('Spec 221 source dir not found or already moved.');
-}
 
 const envFile = fs.readFileSync('.env', 'utf8');
 const env = {};
@@ -42,8 +23,8 @@ try {
   console.log('Staging changes...');
   execSync('git add -A', { stdio: 'inherit' });
 
-  console.log('Committing archive...');
-  const msg = 'feat(221): archive manual match PIX to OS and revenue duplication protection spec';
+  console.log('Committing changes...');
+  const msg = 'feat(222): card table redesign with gross, fee, net and brand badges without division fallback';
   execSync(`git commit -m "${msg}"`, { stdio: 'inherit' });
 
   console.log('Pushing to main...');
@@ -52,7 +33,7 @@ try {
   console.log('Pushing to master...');
   execSync('git push origin main:master --force', { stdio: 'inherit' });
 
-  console.log('Archived and pushed successfully!');
+  console.log('Push to main and master completed successfully!');
 } catch (err) {
   console.error('Git error:', err.message);
 }
