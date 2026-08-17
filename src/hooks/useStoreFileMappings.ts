@@ -9,6 +9,8 @@ export interface StoreFileMapping {
   store_name?: string;
 }
 
+const LOCAL_STORAGE_KEY = 'mecanica_store_file_mappings';
+
 const KNOWN_ACCOUNT_DEFAULTS: Record<string, string> = {
   // Contas Bancárias OFX
   '8813984633': 'st-01', // Dom Pedro (DP)

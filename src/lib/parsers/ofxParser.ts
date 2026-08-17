@@ -111,6 +111,10 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
       }
     }
     
+    // Extract TRNTYPE
+    const typeMatch = trnBlock.match(/<TRNTYPE>([A-Z]+)/);
+    const trnType = typeMatch ? typeMatch[1].trim() : '';
+
     // Extract MEMO
     const memoMatch = trnBlock.match(/<MEMO>([^\r\n<]+)/);
     const rawMemo = memoMatch ? memoMatch[1].trim() : 'Transação Bancária';
@@ -140,9 +144,6 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
     // Extract CPF/CNPJ and counterpart name from memo
     const { doc, name } = extractDocument(rawMemo);
     
-    // Extract TRNTYPE
-    const typeMatch = trnBlock.match(/<TRNTYPE>([A-Z]+)/);
-    const trnType = typeMatch ? typeMatch[1].trim() : '';
     let parsedType: 'in' | 'out' = amount >= 0 ? 'in' : 'out';
     if (trnType === 'DEBIT' || trnType === 'SRVCHG' || trnType === 'PAYMENT') {
       parsedType = 'out';

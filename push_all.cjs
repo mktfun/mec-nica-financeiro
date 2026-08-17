@@ -23,7 +23,7 @@ try {
   execSync('git add -A', { stdio: 'inherit' });
 
   console.log('Committing changes...');
-  const msg = 'fix(import): eliminate race condition in onDrop transition and return parsed results synchronously';
+  const msg = 'fix(parser): fix trnType reference order in ofxParser and define LOCAL_STORAGE_KEY';
   execSync(`git commit -m "${msg}"`, { stdio: 'inherit' });
 
   console.log('Pushing to main...');
