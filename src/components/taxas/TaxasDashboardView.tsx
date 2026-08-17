@@ -45,7 +45,7 @@ interface TaxasDashboardViewProps {
 }
 
 export function TaxasDashboardView({ initialStoreId }: TaxasDashboardViewProps) {
-  const { stores } = useStores();
+  const { data: stores = [] } = useStores();
   const [selectedStore, setSelectedStore] = useState<string | null>(initialStoreId || null);
   const [startDate, setStartDate] = useState<string>('2026-08-01');
   const [endDate, setEndDate] = useState<string>('2026-08-31');
