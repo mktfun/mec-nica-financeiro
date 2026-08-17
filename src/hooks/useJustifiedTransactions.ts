@@ -18,6 +18,8 @@ export interface JustifiedTransactionsResult {
   transactions: JustifiedTransactionItem[];
   totalByStore: Record<string, number>;
   totalGlobal: number;
+  totalAllByStore: Record<string, number>;
+  totalAllGlobal: number;
 }
 
 export function useJustifiedTransactions(date?: string) {
@@ -28,7 +30,9 @@ export function useJustifiedTransactions(date?: string) {
     queryFn: async (): Promise<JustifiedTransactionsResult> => {
       const itemsMap = new Map<string, JustifiedTransactionItem>();
       const totalByStore: Record<string, number> = {};
+      const totalAllByStore: Record<string, number> = {};
       let totalGlobal = 0;
+      let totalAllGlobal = 0;
 
       // 0. Carrega lojas para obter nomes amigáveis
       const { data: storesData } = await supabase.from('stores').select('id, name');
@@ -158,9 +162,12 @@ export function useJustifiedTransactions(date?: string) {
         console.warn('Erro ao consultar pos_transactions:', e);
       }
 
-      // 4. Consolida totais por loja e global (SOMANDO APENAS OS QUE IMPACTAM FATURAMENTO)
+      // 4. Consolida totais por loja e global
       const items = Array.from(itemsMap.values());
       items.forEach((item) => {
+        totalAllByStore[item.store_id] = (totalAllByStore[item.store_id] || 0) + item.amount;
+        totalAllGlobal += item.amount;
+
         if (item.impacts_revenue) {
           totalByStore[item.store_id] = (totalByStore[item.store_id] || 0) + item.amount;
           totalGlobal += item.amount;
@@ -171,6 +178,8 @@ export function useJustifiedTransactions(date?: string) {
         transactions: items,
         totalByStore,
         totalGlobal,
+        totalAllByStore,
+        totalAllGlobal,
       };
     },
     staleTime: 1000 * 20,

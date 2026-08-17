@@ -358,6 +358,26 @@ export function useReconciliationViews(storeId: string, date: string) {
       };
 
       // 3. pixVsOfx: PIX (OS -> Banco OFX)
+      const isClientPix = (t: any) => {
+        const txt = `${t.title || ''} ${t.subtitle || ''} ${t.counterpart_name || ''} ${t.description || ''}`.toUpperCase();
+        if (
+          txt.includes('SISPAG') ||
+          txt.includes('REND PAGO') ||
+          txt.includes('APLIC') ||
+          txt.includes('RESGATE') ||
+          txt.includes('APORTE') ||
+          txt.includes('TAR BANC') ||
+          txt.includes('TARIFA') ||
+          txt.includes('BOLETO') ||
+          txt.includes('SALARIOS') ||
+          txt.includes('TRIB MUNICIPAL') ||
+          txt.includes('FORNECEDOR')
+        ) {
+          return false;
+        }
+        return txt.includes('PIX') || txt.includes('TED') || txt.includes('DOC') || txt.includes('DEP');
+      };
+
       const osPixList = (patioOs || []).filter(o => {
         const val = Number(o.pix_transfer_value || 0);
         const method = String(o.payment_method || '').toLowerCase();
@@ -374,9 +394,9 @@ export function useReconciliationViews(storeId: string, date: string) {
       }));
 
       const ofxPixList = ofxInTxs.filter(t => {
-        const txt = `${t.title || ''} ${t.subtitle || ''} ${t.counterpart_name || ''} ${t.description || ''}`.toUpperCase();
-        return (txt.includes('PIX') || txt.includes('TRANSF') || txt.includes('TED') || txt.includes('TEF')) && !adquirenteOfx.includes(t);
+        return isClientPix(t) && !adquirenteOfx.some(a => a.id === t.id);
       });
+
 
       const matchedOfxIds = new Set<string>();
 
@@ -530,8 +550,8 @@ export function useModulo1StoresData(date: string) {
 
 
 
-        // 1. Extrair transações de entrada do OFX (sem filtro restrito de texto como 'PIX', pois cada banco tem uma sigla)
-        const ofxPixTxs = storeTxs.filter(t => t.source === 'ofx' && t.type === 'in');
+        // 1. Extrair transações de entrada do OFX genuínas de PIX/depósito de cliente
+        const ofxPixTxs = storeTxs.filter(t => t.source === 'ofx' && t.type === 'in' && isClientPix(t));
 
         // 2. Extrair valores declarados como PIX nas OSs
         const osPixList = storeOs.map(os => {

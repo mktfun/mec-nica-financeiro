@@ -142,8 +142,14 @@ function ConciliacaoLojaPage() {
                 3. PIX (OS → Banco OFX)
               </TabBtn>
               <TabBtn active={activeTab === 'ofx_sem_match'} onClick={() => setActiveTab('ofx_sem_match')}>
-                4. Banco (Sem Origem)
+                4. Entradas Avulsas / Outras
+                {reconData?.ofxSemMatch && reconData.ofxSemMatch.length > 0 && (
+                  <span className="ml-1 px-1.5 py-0.2 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full text-[10px] font-mono font-bold">
+                    {reconData.ofxSemMatch.length}
+                  </span>
+                )}
               </TabBtn>
+
             </div>
 
             <div className="min-h-[400px]">

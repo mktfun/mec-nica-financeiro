@@ -152,13 +152,13 @@ function ConciliacaoPage() {
                     status: 'pending' as const
                   };
 
-                  const storeJustified = justifiedData?.totalByStore[store.id] || 0;
+                  const storeJustifiedRevenue = justifiedData?.totalByStore[store.id] || 0;
+                  const storeAllJustified = justifiedData?.totalAllByStore[store.id] || 0;
                   const rawPrevisto = log.previsto_ofx || 0;
-                  const previstoAjustado = Math.max(0, rawPrevisto - storeJustified);
-                  const diferencaCalculada = storeJustified > 0 
-                    ? (previstoAjustado - ((log.maquininha || 0) + (log.pix || 0))) 
-                    : log.diferenca;
+                  const previstoAjustado = Math.max(0, rawPrevisto - storeJustifiedRevenue);
+                  const diferencaCalculada = Math.max(0, (log.diferenca || 0) - storeAllJustified);
                   const isDiferencaOk = Math.abs(diferencaCalculada) <= 50 || log.status === 'approved';
+
 
                   return (
                     <div key={store.id} className="relative group">

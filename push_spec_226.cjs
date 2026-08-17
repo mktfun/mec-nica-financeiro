@@ -24,7 +24,7 @@ try {
   execSync('git add -A', { stdio: 'inherit' });
 
   console.log('Committing changes...');
-  const msg = 'fix(ui): harmonize OrphanCategorizationModal design with system tokens and standard Modal component';
+  const msg = 'feat(226): isolate corporate/yield entries from client pix pool, unbind invalid matches, and synchronize store difference deductions';
   execSync(`git commit -m "${msg}"`, { stdio: 'inherit' });
 
   console.log('Pushing to main...');
@@ -33,7 +33,7 @@ try {
   console.log('Pushing to master...');
   execSync('git push origin main:master --force', { stdio: 'inherit' });
 
-  console.log('Push to main/master completed successfully!');
+  console.log('Push to main and master completed successfully!');
 } catch (err) {
   console.error('Git error:', err.message);
 }
