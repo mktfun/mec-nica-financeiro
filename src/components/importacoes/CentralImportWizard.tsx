@@ -277,29 +277,24 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     });
 
     setPendingFiles(acceptedFiles);
-    await processFiles(acceptedFiles);
-  }, [processFiles]);
+    const parsedResults = await processFiles(acceptedFiles, { sessionId: newSessionId });
+    
+    if (parsedResults) {
+      const aliases = new Set<string>();
+      parsedResults.osFiles.filter(r => r.success).forEach(r => aliases.add(r.storeAlias));
+      parsedResults.maquininhaItems.forEach(i => aliases.add(i.storeName));
+      parsedResults.ofxResults.forEach(o => aliases.add(o.alias));
+      parsedResults.redeResults.filter(r => r.success).forEach(r => {
+        r.transactions.forEach(t => aliases.add(t.storeName));
+      });
 
-  // Avança o wizard automaticamente assim que processFiles terminar
-  useEffect(() => {
-    if (isProcessing) return;          // ainda processando — aguarda
-    if (pendingFiles.length === 0) return; // nenhum arquivo foi solto ainda
-
-    const aliases = new Set<string>();
-    results.osFiles.filter(r => r.success).forEach(r => aliases.add(r.storeAlias));
-    results.maquininhaItems.forEach(i => aliases.add(i.storeName));
-    results.ofxResults.forEach(o => aliases.add(o.alias));
-    results.redeResults.filter(r => r.success).forEach(r => {
-      r.transactions.forEach(t => aliases.add(t.storeName));
-    });
-
-    if (aliases.size > 0) {
-      setStep(2); // tem lojas para mapear
-    } else {
-      setStep(3); // sem aliases — vai direto para confirmação
+      if (aliases.size > 0) {
+        setStep(2); // tem lojas para mapear
+      } else {
+        setStep(3); // sem aliases — vai direto para confirmação
+      }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isProcessing]);
+  }, [processFiles]);
 
 
 

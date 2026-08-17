@@ -197,20 +197,16 @@ export function useCentralImport() {
         });
       }
 
-      setResults(prev => ({
-        osFiles: [...prev.osFiles, ...newResults.osFiles],
-        maquininhaItems: [...prev.maquininhaItems, ...newResults.maquininhaItems],
-        redeResults: [...prev.redeResults, ...newResults.redeResults],
-        ofxResults: [...prev.ofxResults, ...newResults.ofxResults],
-        mapaMetasResults: [...prev.mapaMetasResults, ...newResults.mapaMetasResults]
-      }));
+      setResults(newResults);
+      return newResults;
 
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      alert('Erro ao processar arquivos.');
+      // Log do erro sem travar com alert nativo que bloqueia a UI
     } finally {
       setIsProcessing(false);
     }
+    return newResults;
   }, []);
 
   return { processFiles, isProcessing, results, setResults };
