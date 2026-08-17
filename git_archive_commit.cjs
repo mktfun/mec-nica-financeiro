@@ -19,16 +19,23 @@ if (token) {
 }
 
 try {
-  console.log('Staging changes...');
+  // Clean up any temp cjs scripts if existing
+  ['apply_mdr_migration.cjs', 'view_rede_parser.cjs', 'inspect_pos_db.cjs', 'git_push_fix.cjs'].forEach(f => {
+    if (fs.existsSync(f)) {
+      try { fs.unlinkSync(f); } catch (e) {}
+    }
+  });
+
+  console.log('Staging all changes...');
   execSync('git add -A', { stdio: 'inherit' });
 
   console.log('Committing changes...');
-  const msg = 'fix(import): eliminate TDZ ReferenceError in CentralImportWizard and enhance Rede parser for sales reports';
+  const msg = 'feat(217): archive mdr fees audit and multi-store pos divergence analysis';
   execSync(`git commit -m "${msg}"`, { stdio: 'inherit' });
 
   console.log('Pushing to origin main...');
   execSync('git push origin main', { stdio: 'inherit' });
-  console.log('Push completed successfully!');
+  console.log('Archive push completed successfully!');
 } catch (err) {
   console.error('Git error:', err.message);
 }

@@ -317,3 +317,14 @@ a_loja_os. Bootstrap coleta 'Pátio Pendente' para preencher caixa_atual e evita
   - RPC `get_store_analytic_breakdown` (`supabase/migrations/20260817090000_create_store_analytic_breakdown_rpc.sql`).
   - Migration de purgamento de transações de teste legadas anteriores ao Marco Zero (`supabase/migrations/20260817093000_purge_legacy_pre_marco_zero.sql`).
 - **Blindagem de Período:** Inputs de data e atalho `Tudo` com limite mínimo no Marco Zero (`2026-08-13`).
+
+
+## Spec 217 — Auditoria de MDR, Taxas de Maquininhas e Divergência Contratual Multi-Loja
+- **Status:** Implementado & Arquivado
+- **Arquivos & Artefatos:**
+  - `supabase/migrations/20260817100000_create_mdr_contracts_and_audit_rpc.sql`: Tabela `pos_fee_contracts` e RPC `get_mdr_audit_summary`.
+  - `src/lib/parsers/redeSalesParser.ts`: Parser analítico multi-loja (1:N) de vendas e cálculo de taxa efetiva $\text{MDR} = (1 - (\text{líquido}/\text{bruto})) \times 100$.
+  - `src/hooks/useMdrAudit.ts`: Hook TanStack Query de auditoria com chamada à RPC e fallback local.
+  - `src/components/maquininhas/MdrAuditView.tsx`: Componente de auditoria com KPIs, gráfico comparativo por bandeira (Recharts), ranking de filial, tabela analítica e exportação CSV para contestação.
+  - `src/routes/recebiveis.tsx`: Rota integrada com abas "Contas a Receber" e "Auditoria de Taxas (MDR)".
+  - `src/components/importacoes/CentralImportWizard.tsx` & `src/hooks/useCentralImport.ts`: Correção de TDZ closure e suporte resiliente a múltiplos relatórios de vendas da Rede.

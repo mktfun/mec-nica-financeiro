@@ -239,3 +239,17 @@
 **Regra aprendida:**
 1. **Marco Zero como Limite Mínimo Universal:** O Marco Zero de 13/08/2026 define a data inicial oficial do sistema. Qualquer relatório, extrato ou filtro deve ter como limite mínimo `2026-08-13`.
 2. **Saldo Real vs Movimentação Periódica:** O saldo em conta bancária (Saldo da Loja) representa o saldo da conta e é fixo no último OFX importado. As métricas de Entradas, Saídas e Resultado Líquido pertencem estritamente ao período filtrado.
+
+## [2026-08-17] — [Feature ID: 217]
+
+**Contexto:** Implementação de auditoria de taxas de maquininhas (MDR) multi-loja e cálculo de desvio contratual contra a adquirente (Rede).
+
+**Regra aprendida:** 
+- A taxa MDR efetiva real cobrada em cada transação deve ser calculada pela relação entre valor líquido e valor bruto atualizado:
+  $$\text{MDR Efetiva (\%)} = (1 - (\text{valor\_liquido} / \text{valor\_venda\_atualizado})) \times 100$$
+- A divergência contratual ocorre quando a taxa efetiva supera a taxa de referência do contrato (`pos_fee_contracts`) com tolerância de até 0.30\%. Cobranças com delta positivo configuram cobrança a maior (prejuízo recuperável).
+- Em operações multi-loja (1:N), a adquirente emite extratos com número de estabelecimento (PV), CNPJ ou Razão Social que devem ser mapeados para o `store_id` unificado das 9 filiais.
+
+**Risco identificado:** A adquirente pode aplicar antecipação automática ou descontos operacionais (aluguel de POS) que afetam o valor líquido da venda se não isolados linha a linha.
+
+**Não fazer:** Nunca calcular o MDR pela média simples das vendas sem ponderar pelo valor bruto transacionado de cada bandeira/modalidade.
