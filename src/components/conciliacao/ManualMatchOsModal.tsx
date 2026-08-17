@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { Search, Link2, FileText, CheckCircle2, AlertCircle, User, Car, Banknote } from 'lucide-react';
+import { Search, Link2, FileText, CheckCircle2, AlertCircle, User, Car, Banknote, Sparkles } from 'lucide-react';
 import { useAvailableStoreOs, useManualMatch, StoreOsCandidate } from '@/hooks/useManualMatch';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { toast } from 'sonner';
@@ -33,17 +33,47 @@ export function ManualMatchOsModal({
   const { data: osCandidates = [], isLoading } = useAvailableStoreOs(storeId, targetDate);
   const { linkTransactionToOs, loading: linking } = useManualMatch();
 
-  const filteredCandidates = useMemo(() => {
-    if (!search.trim()) return osCandidates;
-    const q = search.toLowerCase().trim();
-    return osCandidates.filter(
-      (os) =>
-        os.os_number.toLowerCase().includes(q) ||
-        os.client_name.toLowerCase().includes(q) ||
-        os.plate.toLowerCase().includes(q) ||
-        os.payment_method.toLowerCase().includes(q)
-    );
-  }, [osCandidates, search]);
+  // Desduplica por os_number e ordena com matches exatos no topo
+  const sortedAndDeduplicatedCandidates = useMemo(() => {
+    if (!transaction) return [];
+
+    const txAmount = Math.abs(transaction.amount);
+    const uniqueMap = new Map<string, StoreOsCandidate>();
+
+    // Desduplica por os_number
+    osCandidates.forEach((os) => {
+      const num = String(os.os_number || '').trim();
+      if (num && !uniqueMap.has(num)) {
+        uniqueMap.set(num, os);
+      }
+    });
+
+    let list = Array.from(uniqueMap.values());
+
+    // Filtro de busca
+    if (search.trim()) {
+      const q = search.toLowerCase().trim();
+      list = list.filter(
+        (os) =>
+          os.os_number.toLowerCase().includes(q) ||
+          os.client_name.toLowerCase().includes(q) ||
+          os.plate.toLowerCase().includes(q) ||
+          os.payment_method.toLowerCase().includes(q)
+      );
+    }
+
+    // Ordenação: 1. Match Exato -> 2. Menor Diferença -> 3. Número da OS
+    return list.sort((a, b) => {
+      const valA = a.pix_transfer_value > 0 ? a.pix_transfer_value : (a.paid_value || a.total_value);
+      const valB = b.pix_transfer_value > 0 ? b.pix_transfer_value : (b.paid_value || b.total_value);
+      const diffA = Math.abs(valA - txAmount);
+      const diffB = Math.abs(valB - txAmount);
+
+      if (diffA < 0.05 && diffB >= 0.05) return -1;
+      if (diffB < 0.05 && diffA >= 0.05) return 1;
+      return diffA - diffB;
+    });
+  }, [osCandidates, search, transaction]);
 
   if (!transaction) return null;
 
@@ -60,6 +90,8 @@ export function ManualMatchOsModal({
       toast.error(`Erro ao vincular: ${err.message || err}`);
     }
   };
+
+  const txAmount = Math.abs(transaction.amount);
 
   return (
     <Modal
@@ -93,7 +125,7 @@ export function ManualMatchOsModal({
             <div className="text-right">
               <span className="text-xs text-[var(--text-tertiary)] block uppercase">Valor Depositado</span>
               <span className="text-xl font-bold font-mono text-emerald-400">
-                R$ {Math.abs(transaction.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                R$ {txAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </span>
             </div>
           </div>
@@ -117,7 +149,7 @@ export function ManualMatchOsModal({
             <div className="p-8 flex justify-center">
               <LoadingSpinner text="Carregando OSs da filial..." />
             </div>
-          ) : filteredCandidates.length === 0 ? (
+          ) : sortedAndDeduplicatedCandidates.length === 0 ? (
             <div className="p-8 text-center text-[var(--text-tertiary)] text-xs">
               <AlertCircle size={24} className="mx-auto mb-2 opacity-30" />
               Nenhuma Ordem de Serviço pendente encontrada para esta filial nesta data.
@@ -135,62 +167,79 @@ export function ManualMatchOsModal({
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border-subtle)]">
-                {filteredCandidates.map((os) => {
+                {sortedAndDeduplicatedCandidates.map((os) => {
                   const osVal = os.pix_transfer_value > 0 ? os.pix_transfer_value : (os.paid_value || os.total_value);
-                  const diff = Math.abs(osVal - Math.abs(transaction.amount));
+                  const diff = Math.abs(osVal - txAmount);
                   const isExact = diff < 0.05;
 
                   return (
                     <tr
-                      key={os.id || os.os_number}
-                      className={`hover:bg-[var(--bg-surface-hover)] transition-colors ${
-                        isExact ? 'bg-emerald-500/5' : ''
+                      key={os.os_number}
+                      className={`transition-colors ${
+                        isExact
+                          ? 'bg-emerald-500/10 hover:bg-emerald-500/15 border-l-2 border-emerald-500'
+                          : 'hover:bg-[var(--bg-surface-hover)]'
                       }`}
                     >
+                      {/* OS # */}
                       <td className="py-2.5 px-3 font-mono font-bold text-[var(--color-primary)]">
-                        <div className="flex items-center gap-1">
-                          <FileText size={13} />
-                          OS #{os.os_number}
+                        <div className="flex items-center gap-1.5">
+                          <FileText size={13} className="shrink-0 text-[var(--color-primary)]" />
+                          <span>OS #{os.os_number}</span>
                         </div>
                       </td>
+
+                      {/* Cliente / Placa */}
                       <td className="py-2.5 px-3 text-[var(--text-secondary)]">
                         <div className="flex flex-col">
-                          <span className="font-medium text-[var(--text-primary)] flex items-center gap-1">
-                            <User size={11} className="opacity-50" /> {os.client_name}
+                          <span className="font-medium text-[var(--text-primary)] truncate max-w-[150px]">
+                            {os.client_name || 'Cliente'}
                           </span>
                           {os.plate && (
-                            <span className="text-[10px] text-[var(--text-tertiary)] font-mono flex items-center gap-1">
-                              <Car size={10} className="opacity-50" /> {os.plate}
+                            <span className="text-[10px] text-[var(--text-tertiary)] font-mono">
+                              {os.plate}
                             </span>
                           )}
                         </div>
                       </td>
-                      <td className="py-2.5 px-3 text-[var(--text-secondary)]">
-                        <Badge variant="outline" className="text-[10px] font-mono">
+
+                      {/* Pagamento Declarado */}
+                      <td className="py-2.5 px-3 text-[var(--text-tertiary)] font-mono">
+                        <span className="px-1.5 py-0.5 rounded bg-[var(--bg-canvas)] border border-[var(--border-subtle)] text-[10px]">
                           {os.payment_method || 'PIX'}
-                        </Badge>
+                        </span>
                       </td>
+
+                      {/* Valor OS */}
                       <td className="py-2.5 px-3 text-right font-mono font-bold text-[var(--text-primary)]">
                         R$ {osVal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </td>
+
+                      {/* Diferença */}
                       <td className="py-2.5 px-3 text-center font-mono">
                         {isExact ? (
-                          <Badge variant="success" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[10px]">
-                            <CheckCircle2 size={10} className="mr-1" /> Exato
+                          <Badge variant="success" className="bg-emerald-500/20 text-emerald-400 border-emerald-500/40 text-[10px] font-bold">
+                            <CheckCircle2 size={10} className="mr-1" /> Match Exato
                           </Badge>
                         ) : (
-                          <span className="text-[10px] text-amber-400 font-semibold">
+                          <span className="text-[10px] text-amber-400 font-medium">
                             ± R$ {diff.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                           </span>
                         )}
                       </td>
+
+                      {/* Botão Vincular */}
                       <td className="py-2.5 px-3 text-right">
                         <Button
                           size="sm"
-                          variant="primary"
+                          variant={isExact ? 'primary' : 'teal'}
                           disabled={linking}
                           onClick={() => handleLink(os)}
-                          className="h-7 px-3 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold gap-1"
+                          className={`h-7 px-3 text-xs font-semibold gap-1 shrink-0 ${
+                            isExact
+                              ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20'
+                              : 'bg-[var(--bg-panel)] hover:bg-[var(--bg-surface-hover)] border border-[var(--border-subtle)] text-[var(--text-primary)]'
+                          }`}
                         >
                           <Link2 size={12} />
                           Vincular
@@ -204,7 +253,7 @@ export function ManualMatchOsModal({
           )}
         </div>
 
-        {/* Nota explicativa de proteção contábil */}
+        {/* Nota explicativa contábil */}
         <div className="p-3 bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg text-[11px] text-[var(--text-secondary)] flex items-start gap-2">
           <Banknote size={16} className="text-emerald-400 shrink-0 mt-0.5" />
           <span>

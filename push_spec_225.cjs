@@ -24,7 +24,7 @@ try {
   execSync('git add -A', { stdio: 'inherit' });
 
   console.log('Committing changes...');
-  const msg = 'feat(224): OFX-centric atemporal PIX reconciliation with uniqueness rule and store pool match';
+  const msg = 'feat(225): justification revenue impact selector, deduplicated manual match modal with exact match priority, and reset test justifications';
   execSync(`git commit -m "${msg}"`, { stdio: 'inherit' });
 
   console.log('Pushing to main...');

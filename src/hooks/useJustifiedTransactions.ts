@@ -11,6 +11,7 @@ export interface JustifiedTransactionItem {
   amount: number;
   category: string;
   justification: string;
+  impacts_revenue: boolean;
 }
 
 export interface JustifiedTransactionsResult {
@@ -38,6 +39,18 @@ export function useJustifiedTransactions(date?: string) {
 
       const getStoreLabel = (storeId: string) => storeNameMap[storeId] || storeId || 'Loja Geral';
 
+      const checkImpactsRevenue = (cat?: string, just?: string) => {
+        const c = String(cat || '').toLowerCase();
+        const j = String(just || '').toLowerCase();
+        if (c.includes('[apenas conciliar]') || c.includes('apenas conciliar') || j.includes('[não somar]') || j.includes('[nao somar]')) {
+          return false;
+        }
+        if (c.includes('rendimento') || c.includes('marco zero') || c.includes('transferência') || c.includes('transferencia') || c.includes('aporte') || c.includes('tarifa')) {
+          return false;
+        }
+        return true;
+      };
+
       // 1. Busca na tabela unificada `transactions`
       try {
         const { data: txData, error: txErr } = await supabase
@@ -54,6 +67,7 @@ export function useJustifiedTransactions(date?: string) {
             const hasJust = row.manual_justification && String(row.manual_justification).trim() !== '';
             if (hasCat || hasJust) {
               const amt = Math.abs(Number(row.amount || 0));
+              const impacts = checkImpactsRevenue(row.manual_category, row.manual_justification);
               itemsMap.set(row.id, {
                 id: row.id,
                 store_id: row.store_id || 'st-01',
@@ -64,6 +78,7 @@ export function useJustifiedTransactions(date?: string) {
                 amount: amt,
                 category: row.manual_category || 'Ajuste Geral',
                 justification: row.manual_justification || 'Justificado',
+                impacts_revenue: impacts,
               });
             }
           });
@@ -89,6 +104,7 @@ export function useJustifiedTransactions(date?: string) {
             if (hasCat || hasJust) {
               const amt = Math.abs(Number(row.amount || 0));
               const title = row.bank_name || row.counterpart_name || 'Extrato Itaú OFX';
+              const impacts = checkImpactsRevenue(row.manual_category, row.manual_justification);
               itemsMap.set(row.id, {
                 id: row.id,
                 store_id: row.store_id || 'st-01',
@@ -99,6 +115,7 @@ export function useJustifiedTransactions(date?: string) {
                 amount: amt,
                 category: row.manual_category || 'Ajuste OFX',
                 justification: row.manual_justification || 'Justificado',
+                impacts_revenue: impacts,
               });
             }
           });
@@ -121,6 +138,7 @@ export function useJustifiedTransactions(date?: string) {
             if (hasCat || hasJust) {
               const amt = Math.abs(Number(row.gross_amount || 0));
               const title = `${row.machine_name || 'Rede'} - ${row.payment_method || 'Cartão'}`;
+              const impacts = checkImpactsRevenue(row.manual_category, row.manual_justification);
               itemsMap.set(row.id, {
                 id: row.id,
                 store_id: row.store_id || 'st-01',
@@ -131,6 +149,7 @@ export function useJustifiedTransactions(date?: string) {
                 amount: amt,
                 category: row.manual_category || 'Ajuste Maquininha',
                 justification: row.manual_justification || 'Justificado',
+                impacts_revenue: impacts,
               });
             }
           });
@@ -139,11 +158,13 @@ export function useJustifiedTransactions(date?: string) {
         console.warn('Erro ao consultar pos_transactions:', e);
       }
 
-      // 4. Consolida totais por loja e global
+      // 4. Consolida totais por loja e global (SOMANDO APENAS OS QUE IMPACTAM FATURAMENTO)
       const items = Array.from(itemsMap.values());
       items.forEach((item) => {
-        totalByStore[item.store_id] = (totalByStore[item.store_id] || 0) + item.amount;
-        totalGlobal += item.amount;
+        if (item.impacts_revenue) {
+          totalByStore[item.store_id] = (totalByStore[item.store_id] || 0) + item.amount;
+          totalGlobal += item.amount;
+        }
       });
 
       return {

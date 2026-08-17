@@ -7,18 +7,29 @@ export function useCategorizeOrphan() {
   const [error, setError] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
-  const categorize = async (transactionId: string, category: string, justification: string) => {
+  const categorize = async (
+    transactionId: string, 
+    category: string, 
+    justification: string,
+    impactsRevenue: boolean = true
+  ) => {
     setLoading(true);
     setError(null);
     try {
       let matchedData: any = null;
 
+      // Se NÃO impacta faturamento, anota a tag [Apenas Conciliar] de forma transparente
+      const cleanCategory = category.replace(/\s*\[Apenas Conciliar\]/gi, '').trim();
+      const finalCategory = impactsRevenue ? cleanCategory : `${cleanCategory} [Apenas Conciliar]`;
+      const cleanJustification = justification.replace(/\s*\[NÃO SOMAR\]/gi, '').trim();
+      const finalJustification = impactsRevenue ? cleanJustification : `${cleanJustification} [NÃO SOMAR]`.trim();
+
       // 1. Atualiza na tabela unificada transactions se existir
       await supabase
         .from('transactions')
         .update({
-          manual_category: category,
-          manual_justification: justification
+          manual_category: finalCategory,
+          manual_justification: finalJustification
         })
         .eq('id', transactionId);
 
@@ -26,8 +37,8 @@ export function useCategorizeOrphan() {
       const { data: ofxData, error: ofxErr } = await supabase
         .from('ofx_transactions')
         .update({
-          manual_category: category,
-          manual_justification: justification
+          manual_category: finalCategory,
+          manual_justification: finalJustification
         })
         .eq('id', transactionId)
         .select();
@@ -41,8 +52,8 @@ export function useCategorizeOrphan() {
         const { data: posData, error: posErr } = await supabase
           .from('pos_transactions')
           .update({
-            manual_category: category,
-            manual_justification: justification
+            manual_category: finalCategory,
+            manual_justification: finalJustification
           })
           .eq('id', transactionId)
           .select();
@@ -57,8 +68,8 @@ export function useCategorizeOrphan() {
         const { data: manData, error: manErr } = await supabase
           .from('manual_transactions')
           .update({
-            manual_category: category,
-            manual_justification: justification
+            manual_category: finalCategory,
+            manual_justification: finalJustification
           })
           .eq('id', transactionId)
           .select();
@@ -74,9 +85,17 @@ export function useCategorizeOrphan() {
       queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
       queryClient.invalidateQueries({ queryKey: ['reconciliations'] });
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] });
       queryClient.invalidateQueries({ queryKey: ['extrato'] });
 
-      return { success: true, data: matchedData || { id: transactionId, manual_category: category, manual_justification: justification } };
+      return { 
+        success: true, 
+        data: matchedData || { 
+          id: transactionId, 
+          manual_category: finalCategory, 
+          manual_justification: finalJustification
+        } 
+      };
     } catch (err: any) {
       console.error('Error categorizing orphan transaction:', err);
       setError(err.message || 'Erro ao categorizar transação');
