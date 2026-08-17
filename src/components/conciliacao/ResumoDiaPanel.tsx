@@ -8,6 +8,8 @@ import {
   CalendarDays, ChevronRight, Landmark, Wallet, Receipt, ShoppingBag, Edit2, Database, ShieldCheck, X
 } from 'lucide-react';
 import { useDailySnapshot, usePreviousDaySnapshot, useSaveDailySnapshot } from '@/hooks/useDailySnapshot';
+import { useJustifiedTransactions } from '@/hooks/useJustifiedTransactions';
+import { FaturamentoAtualBreakdownModal } from '@/components/conciliacao/FaturamentoAtualBreakdownModal';
 import { calculateGlobalConciliacao, GlobalConciliacaoInput } from '@/lib/modulo1Calculations';
 import { StoreSaldoState } from '@/lib/modulo1Calculations';
 import { supabase } from '@/lib/supabase';
@@ -50,6 +52,7 @@ export function ResumoDiaPanel({
 }: ResumoDiaPanelProps) {
   const [isSaved, setIsSaved] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isBreakdownModalOpen, setIsBreakdownModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
   // Lê o snapshot do dia selecionado (que já contém os inputs manuais salvos)
@@ -57,6 +60,7 @@ export function ResumoDiaPanel({
   // Lê o snapshot da conciliação imediatamente anterior
   const { data: previousSnapshot } = usePreviousDaySnapshot(selectedDate);
   const saveSnapshot = useSaveDailySnapshot();
+  const { data: justifiedData } = useJustifiedTransactions(selectedDate);
 
   // Estados locais para edição dos campos manuais
   const [faturamentoInput, setFaturamentoInput] = useState<number>(0);
@@ -76,17 +80,17 @@ export function ResumoDiaPanel({
     ?? (currentSnapshot?.metadata as any)?.caixa_anterior 
     ?? 0;
 
-  // Hidratação a partir dos dados do banco ao trocar de data ou carregar snapshot
+  // Sincroniza estados locais apenas quando não estiver no meio de uma edição ativa
   useEffect(() => {
-    const initialFaturamento = currentSnapshot?.faturamento 
-      ?? (summary?.faturamento_anterior && summary?.faturamento_ofx ? (summary.faturamento_anterior + summary.faturamento_ofx) : (summary?.faturamento_ofx || 0));
-    
-    setFaturamentoInput(Number(initialFaturamento) || 0);
-    setDinheiroMpInput(Number(currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? 0));
-    setAReceberInput(Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber ?? 0));
-    setContasInput(Number(currentSnapshot?.contas_a_pagar ?? summary?.contas_manual ?? 0));
-    setIsEditing(false);
-  }, [selectedDate, currentSnapshot, summary]);
+    if (!isEditing) {
+      const initialFaturamento = currentSnapshot?.faturamento 
+        ?? (summary?.faturamento_anterior && summary?.faturamento_ofx ? (summary.faturamento_anterior + summary.faturamento_ofx) : (summary?.faturamento_ofx || 0));
+      setFaturamentoInput(Number(initialFaturamento) || 0);
+      setDinheiroMpInput(Number(currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? 0));
+      setAReceberInput(Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber ?? 0));
+      setContasInput(Number(currentSnapshot?.contas_a_pagar ?? summary?.contas_manual ?? 0));
+    }
+  }, [currentSnapshot, summary, isEditing]);
 
   // Valores ativos baseados no modo de edição (isEditing ? input local : snapshot persistido / summary)
   const faturamentoAcumuladoHoje = isEditing ? faturamentoInput : (currentSnapshot?.faturamento ?? faturamentoInput);
@@ -98,12 +102,19 @@ export function ResumoDiaPanel({
   const saldoBancosValor = summary?.total_saldo_banco ?? currentSnapshot?.saldo_bancario ?? totalBancarioIn;
   const naLojaValor = summary?.na_loja_os ?? currentSnapshot?.total_patio ?? 0;
   const jurosRedeValor = summary?.juros_rede ?? currentSnapshot?.juros_rede ?? 0;
-  const faturamentoOutrosValor = Number(currentSnapshot?.faturamento_outros_valor ?? summary?.faturamento_outros ?? 0);
+  
+  // Total de justificativas do dia (subindo para o Faturamento Atual)
+  const totalJustificadosDia = justifiedData?.totalGlobal || 0;
+  const faturamentoOutrosValor = totalJustificadosDia > 0 
+    ? totalJustificadosDia 
+    : Number(currentSnapshot?.faturamento_outros_valor ?? summary?.faturamento_outros ?? 0);
 
-  // Cálculo Odômetro do Faturamento Líquido do Dia + Ajustes Justificados
+  // Cálculo Odômetro do Faturamento Mapa de Metas do Dia
   const faturamentoLiquidoDia = faturamentoAnteriorGlobal > 0 
     ? (faturamentoAcumuladoHoje - faturamentoAnteriorGlobal) 
     : faturamentoAcumuladoHoje;
+    
+  // Faturamento Atual = Mapa de Metas + Transações Justificadas
   const faturamentoTotalComAjustes = faturamentoLiquidoDia + faturamentoOutrosValor;
 
   // Matemática Consolidada
@@ -467,13 +478,30 @@ export function ResumoDiaPanel({
                 <span className="text-[9px] text-[var(--text-tertiary)] block mt-1">Caixa atual vs Conciliação Anterior</span>
               </div>
 
-              {/* Faturamento Líquido (Odômetro) */}
-              <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
+              {/* Faturamento Atual (Mapa de Metas + Justificados) */}
+              <div 
+                onClick={() => !isEditing && setIsBreakdownModalOpen(true)}
+                className={`bg-[var(--bg-canvas)] p-3 rounded-lg border transition-all ${
+                  !isEditing 
+                    ? 'border-[var(--border-subtle)] hover:border-emerald-500/50 hover:bg-emerald-950/10 cursor-pointer group' 
+                    : 'border-[var(--border-subtle)]'
+                }`}
+                title={!isEditing ? "Clique para ver a composição detalhada do Faturamento Atual" : undefined}
+              >
                 <div className="flex justify-between items-start">
-                  <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Faturamento Líquido</span>
-                  <span className="text-[10px] font-mono text-[var(--text-secondary)] bg-[var(--bg-surface-hover)] px-1.5 rounded">
-                    Ant: <AnimatedNumber value={faturamentoAnteriorGlobal} format="currency" />
+                  <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold group-hover:text-emerald-400 transition-colors">
+                    Faturamento Atual
                   </span>
+                  <div className="flex items-center gap-1.5">
+                    {!isEditing && (
+                      <span className="text-[9px] font-bold text-emerald-400/80 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                        Ver Detalhes ↗
+                      </span>
+                    )}
+                    <span className="text-[10px] font-mono text-[var(--text-secondary)] bg-[var(--bg-surface-hover)] px-1.5 rounded">
+                      Ant: <AnimatedNumber value={faturamentoAnteriorGlobal} format="currency" />
+                    </span>
+                  </div>
                 </div>
 
                 {isEditing ? (
@@ -483,23 +511,23 @@ export function ResumoDiaPanel({
                       step="0.01"
                       value={faturamentoInput || ''}
                       onChange={(e) => setFaturamentoInput(Number(e.target.value))}
-                      placeholder="Odômetro Acumulado Hoje"
+                      placeholder="Faturamento Mapa de Metas"
                       className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--color-primary)]/40 rounded-lg py-1 px-2 text-sm font-bold font-mono text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
                     />
                     <span className="text-[10px] text-[var(--color-primary)] font-semibold block">
-                      = Líquido: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoLiquidoDia)}
+                      = Mapa de Metas: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoLiquidoDia)}
                     </span>
                   </div>
                 ) : (
                   <>
-                    <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
+                    <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block group-hover:text-emerald-400 transition-colors">
                       <AnimatedNumber value={faturamentoTotalComAjustes} format="currency" />
                     </span>
                     <div className="flex flex-col gap-0.5 mt-0.5 text-[9px] text-[var(--text-tertiary)]">
-                      <span>Odômetro: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoLiquidoDia)}</span>
-                      {faturamentoOutrosValor > 0 && (
-                        <span className="text-[var(--color-accent-teal)] font-medium">
-                          + Justificados: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoOutrosValor)}
+                      <span>Mapa de Metas: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoLiquidoDia)}</span>
+                      {totalJustificadosDia > 0 && (
+                        <span className="text-blue-400 font-semibold">
+                          + Justificados: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalJustificadosDia)}
                         </span>
                       )}
                     </div>
@@ -513,7 +541,7 @@ export function ResumoDiaPanel({
                 <span className="text-lg font-bold text-[var(--color-primary-bright)] mt-1 block">
                   <AnimatedNumber value={valorDispContasCalculado} format="currency" />
                 </span>
-                <span className="text-[9px] text-[var(--text-tertiary)]">Faturamento Líquido - Fluxo de Caixa</span>
+                <span className="text-[9px] text-[var(--text-tertiary)]">Faturamento Atual - Fluxo de Caixa</span>
               </div>
             </div>
             
@@ -528,23 +556,28 @@ export function ResumoDiaPanel({
             </div>
           </div>
 
-          {/* Card Lateral - Diferença Verde/Vermelho */}
-          <div className={`p-6 rounded-xl border flex flex-col justify-center items-center text-center shadow-lg transition-colors ${
-            isDiferencaOk
-              ? 'bg-[var(--color-accent-teal)]/10 border-[var(--color-accent-teal)]/30'
-              : 'bg-[var(--color-accent-danger)]/10 border-[var(--color-accent-danger)]/30'
+          {/* DIVERGÊNCIA FINAL */}
+          <div className={`p-4 rounded-xl border flex flex-col justify-between ${
+             isDiferencaOk 
+               ? 'bg-[var(--color-accent-teal)]/10 border-[var(--color-accent-teal)]/30' 
+               : 'bg-[var(--color-accent-danger)]/10 border-[var(--color-accent-danger)]/30'
           }`}>
-             <h3 className={`text-xs font-bold uppercase tracking-wider mb-2 ${
-               isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
-             }`}>Diferença Final</h3>
-             
-             <p className={`text-4xl font-display font-bold tabular-nums ${
-               isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
-             }`}>
-               <AnimatedNumber value={diferencaFinalCalculada} format="currency" />
-             </p>
-             
-             <p className={`text-xs mt-3 opacity-80 ${
+             <div>
+                <span className={`text-[10px] uppercase font-bold tracking-wider block ${
+                  isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
+                }`}>
+                  Diferença Final
+                </span>
+                <span className={`text-2xl font-bold font-mono mt-1 block ${
+                  isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
+                }`}>
+                  <AnimatedNumber value={diferencaFinalCalculada} format="currency" />
+                </span>
+                <span className="text-[9px] text-[var(--text-tertiary)] block mt-1">
+                  |Valor Disp. Contas| - Subtotal Contas
+                </span>
+             </div>
+             <p className={`text-[11px] font-medium mt-3 ${
                isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
              }`}>
                {isDiferencaOk 
@@ -589,6 +622,17 @@ export function ResumoDiaPanel({
           )}
         </div>
       </div>
+
+      {/* Modal de Composição do Faturamento Atual */}
+      <FaturamentoAtualBreakdownModal
+        isOpen={isBreakdownModalOpen}
+        onClose={() => setIsBreakdownModalOpen(false)}
+        selectedDate={selectedDate}
+        mapaMetasAmount={faturamentoLiquidoDia}
+        justifiedTransactions={justifiedData?.transactions || []}
+        totalJustified={totalJustificadosDia}
+        totalFaturamentoAtual={faturamentoTotalComAjustes}
+      />
     </motion.div>
   );
 }

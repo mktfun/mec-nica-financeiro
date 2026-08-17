@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { useStores } from '@/hooks/useStores';
 import { useDailyReconciliationSummary } from '@/hooks/useBackendConciliacao';
 import { useAvailableConciliacaoDates } from '@/hooks/useDailySnapshot';
+import { useJustifiedTransactions } from '@/hooks/useJustifiedTransactions';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { ResumoDiaPanel } from '@/components/conciliacao/ResumoDiaPanel';
 import { BreakdownModal } from '@/components/conciliacao/BreakdownModal';
@@ -27,6 +28,7 @@ function ConciliacaoPage() {
   const { data: availableDates = [], isLoading: loadingDates } = useAvailableConciliacaoDates();
   const { data: stores = [], isLoading: loadingStores } = useStores();
   const { data: summary, isLoading: loadingSummary } = useDailyReconciliationSummary(selectedDate);
+  const { data: justifiedData } = useJustifiedTransactions(selectedDate);
 
   useEffect(() => {
     if (!selectedDate && availableDates.length > 0) {
@@ -150,7 +152,13 @@ function ConciliacaoPage() {
                     status: 'pending' as const
                   };
 
-                  const isDiferencaOk = log.status === 'approved';
+                  const storeJustified = justifiedData?.totalByStore[store.id] || 0;
+                  const rawPrevisto = log.previsto_ofx || 0;
+                  const previstoAjustado = Math.max(0, rawPrevisto - storeJustified);
+                  const diferencaCalculada = storeJustified > 0 
+                    ? (previstoAjustado - ((log.maquininha || 0) + (log.pix || 0))) 
+                    : log.diferenca;
+                  const isDiferencaOk = Math.abs(diferencaCalculada) <= 50 || log.status === 'approved';
 
                   return (
                     <div key={store.id} className="relative group">
@@ -216,8 +224,13 @@ function ConciliacaoPage() {
                                   Previsto
                                 </span>
                                 <p className="font-bold text-sm text-[var(--text-primary)] font-mono">
-                                  <AnimatedNumber value={log.previsto_ofx} format="currency" />
+                                  <AnimatedNumber value={previstoAjustado} format="currency" />
                                 </p>
+                                {storeJustified > 0 && (
+                                  <span className="text-[9px] text-blue-400 block mt-0.5 font-medium">
+                                    (- <AnimatedNumber value={storeJustified} format="currency" /> just.)
+                                  </span>
+                                )}
                               </div>
 
                               {/* 6. Diferença */}
@@ -228,7 +241,7 @@ function ConciliacaoPage() {
                                   Diferença
                                 </span>
                                 <p className={`font-bold text-sm font-mono ${isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
-                                  <AnimatedNumber value={log.diferenca} format="currency" />
+                                  <AnimatedNumber value={diferencaCalculada} format="currency" />
                                 </p>
                               </div>
 
