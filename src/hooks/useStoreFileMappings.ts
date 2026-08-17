@@ -10,6 +10,7 @@ export interface StoreFileMapping {
 }
 
 const KNOWN_ACCOUNT_DEFAULTS: Record<string, string> = {
+  // Contas Bancárias OFX
   '8813984633': 'st-01', // Dom Pedro (DP)
   '8813984112': 'st-02', // Jabaquara (JAB)
   '3385988047': 'st-03', // Jorge Beretta (DHJV)
@@ -20,6 +21,54 @@ const KNOWN_ACCOUNT_DEFAULTS: Record<string, string> = {
   '8813994293': 'st-08', // Santo André (HD)
   '8813992677': 'st-09', // Rei do Módulo (MP)
   '2783070820': '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f', // Mauá (MHE)
+  
+  // OS Aliases das Planilhas de Pátio
+  'MPrudge': 'st-07',
+  'MPdompedro1': 'st-01',
+  'MPSantoAndre': 'st-08',
+  'MPJabaquara': 'st-02',
+  'MPJorgeBeretta': 'st-03',
+  'ReiDoOleoMaua': '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f',
+  'MPkennedy': 'st-04',
+  'MPpiraporinha': 'st-05',
+  'MPplanalto': 'st-06',
+  'ReiDoModulo': 'st-09',
+  
+  // Códigos curtos de arquivos
+  'CAP': 'st-07',
+  'DP': 'st-01',
+  'HD': 'st-08',
+  'JAB': 'st-02',
+  'JB': 'st-03',
+  'MHE': '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f',
+  'MP': 'st-04',
+  'PIR': 'st-05',
+  'PLA': 'st-06',
+  'RM': 'st-09',
+  'BRA': 'st-06',
+  'EMP': 'st-05',
+
+  // PVs Maquininha Rede
+  '76347036': 'st-04', // Kennedy MP
+  '71854878': 'st-01', // Dom Pedro
+  '104112840': 'st-08', // Santo Andre
+  '101423446': 'st-06', // Planalto
+  '101422997': 'st-05', // Piraporinha
+  '101423667': 'st-03', // Jorge Beretta
+  '63034336': 'st-07', // Rudge Ramos
+  '47712201': 'st-09', // Rei do Modulo
+  '63304449': 'st-02', // Jabaquara
+  '102553424': '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f', // Maua
+  'KENNEDY MP': 'st-04',
+  'DOM PEDRO': 'st-01',
+  'SANTO ANDRE': 'st-08',
+  'PLANALTO': 'st-06',
+  'PIRAPORINHA': 'st-05',
+  'JORGE BERETTA': 'st-03',
+  'RUDGE RAMOS': 'st-07',
+  'REI DO MODULO': 'st-09',
+  'JABAQUARA': 'st-02',
+  'MAUA': '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f'
 };
 
 export function useStoreFileMappings(stores: StoreRow[] = []) {

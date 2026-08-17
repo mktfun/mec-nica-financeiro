@@ -1554,7 +1554,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                               <span className="text-[10px] text-[var(--text-tertiary)]">{os.plate}</span>
                             </td>
                             <td className="py-2.5 px-3 text-[var(--text-tertiary)] font-mono text-[11px]">
-                              {os.opened_at ? os.opened_at.split('-').reverse().join('/') : '-'}
+                              {os.opened_at ? os.opened_at.split('T')[0].split('-').reverse().join('/') : '-'}
                             </td>
                             <td className="py-2 px-3">
                               <input
