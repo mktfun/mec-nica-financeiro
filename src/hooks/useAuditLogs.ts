@@ -13,9 +13,12 @@ export interface AuditLogEntry {
   created_at: string;
 }
 
-export function useAuditLogs(targetDate?: string) {
+export function useAuditLogs(filters?: { targetDate?: string; userEmail?: string } | string) {
+  const targetDate = typeof filters === 'string' ? filters : filters?.targetDate;
+  const userEmail = typeof filters === 'object' ? filters?.userEmail : undefined;
+
   return useQuery({
-    queryKey: ['audit-logs', targetDate],
+    queryKey: ['audit-logs', targetDate, userEmail],
     queryFn: async (): Promise<AuditLogEntry[]> => {
       let query = supabase
         .from('audit_logs')
@@ -24,8 +27,12 @@ export function useAuditLogs(targetDate?: string) {
 
       if (targetDate) {
         query = query.eq('target_date', targetDate);
-      } else {
-        query = query.limit(50);
+      }
+      if (userEmail && userEmail !== 'all') {
+        query = query.ilike('user_email', `%${userEmail}%`);
+      }
+      if (!targetDate && (!userEmail || userEmail === 'all')) {
+        query = query.limit(100);
       }
 
       const { data, error } = await query;

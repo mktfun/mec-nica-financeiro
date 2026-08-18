@@ -17,6 +17,7 @@ import { DailyAuditLogsView } from '@/components/configuracoes/DailyAuditLogsVie
 
 export function ConfiguracoesPanel() {
   const [activeTab, setActiveTab] = useState<'usuarios' | 'logs' | 'motor'>('usuarios');
+  const [filterUserEmail, setFilterUserEmail] = useState<string>('all');
   const { data: botRuns = [], isLoading: loadingBots } = useBotRunHistory();
   const { data: stores = [], isLoading: loadingStores } = useStores();
   const { data: botCreds = [], isLoading: loadingCreds } = useBotCredentials();
@@ -40,6 +41,11 @@ export function ConfiguracoesPanel() {
     if (confirm(`Tem certeza que deseja excluir a loja ${store.name}?`)) {
       await deleteStore.mutateAsync(store.id);
     }
+  };
+
+  const handleViewUserLogs = (email: string) => {
+    setFilterUserEmail(email);
+    setActiveTab('logs');
   };
 
   const lastRun = botRuns[0];
@@ -68,7 +74,10 @@ export function ConfiguracoesPanel() {
 
         <button
           type="button"
-          onClick={() => setActiveTab('logs')}
+          onClick={() => {
+            setFilterUserEmail('all');
+            setActiveTab('logs');
+          }}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
             activeTab === 'logs'
               ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-950/40'
@@ -94,9 +103,9 @@ export function ConfiguracoesPanel() {
       </div>
 
       {/* Conteúdo da Aba */}
-      {activeTab === 'usuarios' && <UserManagementPanel />}
+      {activeTab === 'usuarios' && <UserManagementPanel onViewUserLogs={handleViewUserLogs} />}
 
-      {activeTab === 'logs' && <DailyAuditLogsView />}
+      {activeTab === 'logs' && <DailyAuditLogsView key={filterUserEmail} initialUserEmail={filterUserEmail} />}
 
       {activeTab === 'motor' && (
         <div className="space-y-6">

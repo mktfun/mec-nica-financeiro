@@ -7,9 +7,11 @@ import { CreateUserModal } from './CreateUserModal';
 import { Users, UserPlus, Shield, UploadCloud, Edit3, CheckCircle2, XCircle, Mail, Clock } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
-import { useQueryClient } from '@tanstack/react-query';
+interface UserManagementPanelProps {
+  onViewUserLogs?: (email: string) => void;
+}
 
-export function UserManagementPanel() {
+export function UserManagementPanel({ onViewUserLogs }: UserManagementPanelProps) {
   const { data: users = [], isLoading } = useSystemUsers();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
@@ -202,6 +204,19 @@ export function UserManagementPanel() {
                     <Edit3 size={13} />
                     <span>Editar: {u.can_edit_data ? 'Sim' : 'Não'}</span>
                   </button>
+
+                  {/* Ver Logs do Usuário */}
+                  {onViewUserLogs && (
+                    <button
+                      type="button"
+                      onClick={() => onViewUserLogs(u.email)}
+                      className="px-3 py-1.5 rounded-xl border border-zinc-800 bg-zinc-950/60 hover:bg-zinc-800 hover:border-zinc-700 text-xs font-semibold text-zinc-300 flex items-center gap-1.5 transition-all cursor-pointer"
+                      title={`Ver histórico de ações de ${u.full_name}`}
+                    >
+                      <Clock size={13} className="text-zinc-500" />
+                      <span>Ver Logs</span>
+                    </button>
+                  )}
                 </div>
               </Card>
             );

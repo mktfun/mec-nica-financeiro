@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { useAuditLogs, AuditLogEntry } from '@/hooks/useAuditLogs';
+import { useSystemUsers } from '@/hooks/useUserPermissions';
 import {
   CalendarDays,
   ChevronRight,
@@ -12,24 +13,35 @@ import {
   Bot,
   Link as LinkIcon,
   User,
+  Users,
   SlidersHorizontal,
   FileCode,
   Clock,
-  Sparkles
+  Sparkles,
+  Filter,
+  X
 } from 'lucide-react';
 
 interface DailyAuditLogsViewProps {
   initialDate?: string;
+  initialUserEmail?: string;
 }
 
-export function DailyAuditLogsView({ initialDate }: DailyAuditLogsViewProps) {
+export function DailyAuditLogsView({ initialDate, initialUserEmail }: DailyAuditLogsViewProps) {
   const [selectedDate, setSelectedDate] = useState<string>(
     initialDate || new Date().toISOString().split('T')[0]
   );
+  const [selectedUserEmail, setSelectedUserEmail] = useState<string>(initialUserEmail || 'all');
+  const [allDatesForUser, setAllDatesForUser] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
 
-  const { data: logs = [], isLoading } = useAuditLogs(selectedDate);
+  const { data: systemUsers = [] } = useSystemUsers();
+
+  const { data: logs = [], isLoading } = useAuditLogs({
+    targetDate: allDatesForUser ? undefined : selectedDate,
+    userEmail: selectedUserEmail === 'all' ? undefined : selectedUserEmail
+  });
 
   const handleDayOffset = (offset: number) => {
     const current = new Date(selectedDate + 'T12:00:00Z');
@@ -97,37 +109,85 @@ export function DailyAuditLogsView({ initialDate }: DailyAuditLogsViewProps) {
 
   return (
     <div className="space-y-6">
-      {/* Header com Seletor de Data */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-zinc-900/60 border border-zinc-800/80 p-5 rounded-2xl">
+      {/* Header com Seletor de Data e Usuário */}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-zinc-900/60 border border-zinc-800/80 p-5 rounded-2xl">
         <div>
           <h2 className="text-base font-bold text-zinc-100 flex items-center gap-2">
-            Histórico e Logs de Auditoria Diária
+            Histórico e Logs de Auditoria
           </h2>
           <p className="text-xs text-zinc-400 mt-0.5">
-            Linha do tempo passo a passo de todas as ações, importações e fechamentos do dia selecionado.
+            Linha do tempo passo a passo filtrada por data ou por pessoa responsável.
           </p>
         </div>
 
-        {/* Seletor de Dia */}
-        <div className="flex items-center gap-1.5 bg-zinc-950 p-1.5 rounded-xl border border-zinc-800 shrink-0">
-          <button
-            onClick={() => handleDayOffset(-1)}
-            className="p-1.5 hover:bg-zinc-800 rounded-lg text-zinc-400 hover:text-zinc-200 transition-colors"
-            title="Dia anterior"
-          >
-            <ChevronRight size={16} className="rotate-180" />
-          </button>
-          <div className="flex items-center gap-2 px-3 py-1 font-mono font-bold text-xs text-emerald-400">
-            <CalendarDays size={14} />
-            {selectedDate.split('-').reverse().join('/')}
+        <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+          {/* Seletor de Pessoa / Usuário */}
+          <div className="flex items-center gap-1.5 bg-zinc-950 px-2.5 py-1 rounded-xl border border-zinc-800 shrink-0">
+            <User size={13} className="text-zinc-500" />
+            <select
+              value={selectedUserEmail}
+              onChange={(e) => setSelectedUserEmail(e.target.value)}
+              className="bg-transparent text-xs text-zinc-200 font-medium focus:outline-none cursor-pointer pr-1"
+            >
+              <option value="all" className="bg-zinc-950 text-zinc-300">Todos os Usuários / Robôs</option>
+              {systemUsers.map((u) => (
+                <option key={u.id} value={u.email} className="bg-zinc-950 text-zinc-300">
+                  {u.full_name} ({u.email})
+                </option>
+              ))}
+            </select>
+            {selectedUserEmail !== 'all' && (
+              <button
+                type="button"
+                onClick={() => setSelectedUserEmail('all')}
+                title="Limpar filtro de usuário"
+                className="text-zinc-500 hover:text-zinc-200"
+              >
+                <X size={13} />
+              </button>
+            )}
           </div>
-          <button
-            onClick={() => handleDayOffset(1)}
-            className="p-1.5 hover:bg-zinc-800 rounded-lg text-zinc-400 hover:text-zinc-200 transition-colors"
-            title="Próximo dia"
-          >
-            <ChevronRight size={16} />
-          </button>
+
+          {/* Seletor de Dia (oculto se ver todas as datas do usuário) */}
+          {!allDatesForUser ? (
+            <div className="flex items-center gap-1.5 bg-zinc-950 p-1.5 rounded-xl border border-zinc-800 shrink-0">
+              <button
+                onClick={() => handleDayOffset(-1)}
+                className="p-1.5 hover:bg-zinc-800 rounded-lg text-zinc-400 hover:text-zinc-200 transition-colors"
+                title="Dia anterior"
+              >
+                <ChevronRight size={16} className="rotate-180" />
+              </button>
+              <div className="flex items-center gap-2 px-3 py-1 font-mono font-bold text-xs text-emerald-400">
+                <CalendarDays size={14} />
+                {selectedDate.split('-').reverse().join('/')}
+              </div>
+              <button
+                onClick={() => handleDayOffset(1)}
+                className="p-1.5 hover:bg-zinc-800 rounded-lg text-zinc-400 hover:text-zinc-200 transition-colors"
+                title="Próximo dia"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          ) : (
+            <span className="px-3 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-400 text-xs font-semibold">
+              Exibindo histórico de todas as datas
+            </span>
+          )}
+
+          {/* Toggle: Todas as datas do usuário selecionado */}
+          {selectedUserEmail !== 'all' && (
+            <label className="flex items-center gap-1.5 text-xs text-zinc-400 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={allDatesForUser}
+                onChange={(e) => setAllDatesForUser(e.target.checked)}
+                className="w-3.5 h-3.5 rounded border-zinc-700 bg-zinc-900 text-emerald-500 focus:ring-emerald-500/20"
+              />
+              <span>Todas as datas</span>
+            </label>
+          )}
         </div>
       </div>
 
