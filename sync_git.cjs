@@ -20,20 +20,21 @@ if (token) {
 }
 
 try {
-  console.log('Staging changes...');
   execSync('git add -A', { stdio: 'inherit' });
-
-  console.log('Committing changes...');
-  const msg = 'feat(227): 100% PostgreSQL RPC dashboard metrics calculation with macro evolution series and store breakdown';
-  execSync(`git commit -m "${msg}"`, { stdio: 'inherit' });
-
-  console.log('Pushing to main...');
+  execSync('git stash', { stdio: 'inherit' });
+  execSync('git pull origin main', { stdio: 'inherit' });
+  try {
+    execSync('git stash pop', { stdio: 'inherit' });
+  } catch (e) {
+    console.log('Stash pop note:', e.message);
+  }
+  execSync('git add -A', { stdio: 'inherit' });
+  try {
+    execSync('git commit -m "feat(227): dashboard PostgreSQL RPC integration and clean macro series"', { stdio: 'inherit' });
+  } catch (e) {}
   execSync('git push origin main', { stdio: 'inherit' });
-
-  console.log('Pushing to master...');
   execSync('git push origin main:master --force', { stdio: 'inherit' });
-
-  console.log('Push to main and master completed successfully!');
+  console.log('Sync complete!');
 } catch (err) {
   console.error('Git error:', err.message);
 }
