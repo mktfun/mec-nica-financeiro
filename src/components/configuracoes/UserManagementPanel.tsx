@@ -7,6 +7,8 @@ import { CreateUserModal } from './CreateUserModal';
 import { Users, UserPlus, Shield, UploadCloud, Edit3, CheckCircle2, XCircle, Mail, Clock } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
+
 interface UserManagementPanelProps {
   onViewUserLogs?: (email: string) => void;
 }
