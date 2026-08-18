@@ -19,12 +19,14 @@ CREATE TABLE IF NOT EXISTS conciliation_daily_logs (
 
 ALTER TABLE conciliation_daily_logs ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Authenticated users can read conciliation_daily_logs"
-    ON conciliation_daily_logs FOR SELECT
+DROP POLICY IF EXISTS "Authenticated users can read conciliation_daily_logs" ON conciliation_daily_logs;
+DROP POLICY IF EXISTS "Authenticated users can read conciliation_daily_logs" ON conciliation_daily_logs;
+CREATE POLICY "Authenticated users can read conciliation_daily_logs" ON conciliation_daily_logs FOR SELECT
     USING (auth.role() = 'authenticated');
     
-CREATE POLICY "Service Role can manage conciliation_daily_logs"
-    ON conciliation_daily_logs FOR ALL
+DROP POLICY IF EXISTS "Service Role can manage conciliation_daily_logs" ON conciliation_daily_logs;
+DROP POLICY IF EXISTS "Service Role can manage conciliation_daily_logs" ON conciliation_daily_logs;
+CREATE POLICY "Service Role can manage conciliation_daily_logs" ON conciliation_daily_logs FOR ALL
     USING (auth.role() = 'service_role' OR auth.role() = 'authenticated'); -- Allow RPC execution by authenticated user
 
 
@@ -50,12 +52,12 @@ CREATE TABLE IF NOT EXISTS dashboard_daily_logs (
 
 ALTER TABLE dashboard_daily_logs ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Authenticated users can read dashboard_daily_logs"
-    ON dashboard_daily_logs FOR SELECT
+DROP POLICY IF EXISTS "Authenticated users can read dashboard_daily_logs" ON dashboard_daily_logs;
+CREATE POLICY "Authenticated users can read dashboard_daily_logs" ON dashboard_daily_logs FOR SELECT
     USING (auth.role() = 'authenticated');
 
-CREATE POLICY "Service Role can manage dashboard_daily_logs"
-    ON dashboard_daily_logs FOR ALL
+DROP POLICY IF EXISTS "Service Role can manage dashboard_daily_logs" ON dashboard_daily_logs;
+CREATE POLICY "Service Role can manage dashboard_daily_logs" ON dashboard_daily_logs FOR ALL
     USING (auth.role() = 'service_role' OR auth.role() = 'authenticated');
 
 -- Trigger para updated_at
@@ -67,13 +69,13 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
-CREATE TRIGGER update_conciliation_logs_modtime
-    BEFORE UPDATE ON conciliation_daily_logs
+DROP TRIGGER IF EXISTS update_conciliation_logs_modtime ON conciliation_daily_logs;
+CREATE TRIGGER update_conciliation_logs_modtime BEFORE UPDATE ON conciliation_daily_logs
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
     
-CREATE TRIGGER update_dashboard_logs_modtime
-    BEFORE UPDATE ON dashboard_daily_logs
+DROP TRIGGER IF EXISTS update_dashboard_logs_modtime ON dashboard_daily_logs;
+CREATE TRIGGER update_dashboard_logs_modtime BEFORE UPDATE ON dashboard_daily_logs
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 -- RPC 1: calculate_daily_conciliation
