@@ -66,30 +66,30 @@ export function useReconciliationInsights(
         const posTxs = (ofxData || []).filter(t => t.source === 'rede' || t.source === 'maquininha');
 
         // 2. Análise 1: Cartões a Compensar (Vendas de maquininha que não caíram no extrato do dia)
+        const cartoesCompensarBackend = summary?.cartoes_a_compensar || 0;
         const totalPosAmount = posTxs.reduce((acc, t) => acc + (Number(t.amount) || 0), 0);
         const totalOfxMaq = ofxInTxs
           .filter(t => (t.title || '').toUpperCase().includes('REDE') || (t.title || '').toUpperCase().includes('MAQUINA'))
           .reduce((acc, t) => acc + (Number(t.amount) || 0), 0);
 
-        if (totalPosAmount > 0 && Math.abs(totalPosAmount - totalOfxMaq) > 50) {
-          const deltaCartoes = totalPosAmount - totalOfxMaq;
-          if (deltaCartoes > 50) {
-            const formattedDelta = deltaCartoes.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            observations.push({
-              id: 'cartoes-a-compensar',
-              pillar: 'saldo_banco',
-              pillarLabel: PILLAR_LABELS.saldo_banco,
-              severity: 'warning',
-              title: 'Cartões a Compensar',
-              description: `${formattedDelta} em vendas processadas na maquininha sem crédito no extrato OFX do mesmo dia.`,
-              delta: deltaCartoes
-            });
+        const deltaCartoes = cartoesCompensarBackend > 0 ? cartoesCompensarBackend : (totalPosAmount - totalOfxMaq);
 
-            dots.saldo_banco = {
-              severity: 'warning',
-              tooltip: `Cartões a compensar: ${formattedDelta} não creditados no extrato do dia.`
-            };
-          }
+        if (deltaCartoes > 10) {
+          const formattedDelta = deltaCartoes.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+          observations.push({
+            id: 'cartoes-a-compensar',
+            pillar: 'saldo_banco',
+            pillarLabel: PILLAR_LABELS.saldo_banco,
+            severity: 'warning',
+            title: 'Maquininhas Não Entradas (A Compensar)',
+            description: `${formattedDelta} em vendas de cartão somadas ao Saldo Caixa, pendentes de crédito no extrato bancário.`,
+            delta: deltaCartoes
+          });
+
+          dots.saldo_banco = {
+            severity: 'warning',
+            tooltip: `Maquininhas a compensar: ${formattedDelta} somados no saldo consolidado.`
+          };
         }
 
         // 3. Análise 2: PIX sem vínculo direto com OS

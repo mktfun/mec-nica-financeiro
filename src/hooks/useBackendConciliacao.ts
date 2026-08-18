@@ -90,9 +90,36 @@ export interface StoreReconciliationSummary {
   status: 'approved' | 'divergence';
 }
 
+export interface StorePosDetail {
+  store_id: string;
+  store_name: string;
+  rede_bruto: number;
+  rede_liquido: number;
+  rede_taxas: number;
+  total_vendas_rede: number;
+  ofx_maquininhas: number;
+  nao_entrou_valor: number;
+  status_compensacao: 'entrou' | 'parcial' | 'nao_entrou' | 'sem_movimento';
+  ofx_transacoes: Array<{ id: string; amount: number; fitid: string; counterpart: string }>;
+  os_cartao_total: number;
+  os_cartao_transacoes: Array<{ id: string; os_number: string; plate: string; total_value: number; paid_value: number; credit_value?: number; debit_value?: number; payment_method: string }>;
+}
+
+export interface PosTripleReconciliationResult {
+  target_date: string;
+  total_rede_bruto: number;
+  total_rede_liquido: number;
+  total_rede_taxas: number;
+  total_ofx_maquininhas: number;
+  total_nao_entrou: number;
+  stores: StorePosDetail[];
+}
+
 export interface DailyReconciliationSummary {
   data_atual: string;
   total_saldo_banco: number;
+  saldo_bancos_ofx: number;
+  cartoes_a_compensar: number;
   dinheiro_mp: number;
   a_receber: number;
   na_loja_os: number;
@@ -110,6 +137,7 @@ export interface DailyReconciliationSummary {
   diferenca_final: number;
   status_geral: 'approved' | 'divergence';
   stores: StoreReconciliationSummary[];
+  maquininhas_detalhe?: PosTripleReconciliationResult;
 }
 
 export function useDailyReconciliationSummary(date: string) {
@@ -133,4 +161,27 @@ export function useDailyReconciliationSummary(date: string) {
     staleTime: 1000 * 30, // 30s cache
   });
 }
+
+export function usePosTripleReconciliation(date: string) {
+  return useQuery({
+    queryKey: ['pos-triple-reconciliation', date],
+    queryFn: async (): Promise<PosTripleReconciliationResult | null> => {
+      if (!date) return null;
+
+      const { data, error } = await supabase.rpc('get_store_pos_triple_reconciliation', {
+        p_date: date
+      });
+
+      if (error) {
+        console.error("Erro ao carregar conciliação tripla de maquininhas:", error);
+        throw error;
+      }
+
+      return data as unknown as PosTripleReconciliationResult;
+    },
+    enabled: !!date,
+    staleTime: 1000 * 30,
+  });
+}
+
 

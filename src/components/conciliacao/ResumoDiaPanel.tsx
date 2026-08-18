@@ -12,11 +12,12 @@ import { useJustifiedTransactions } from '@/hooks/useJustifiedTransactions';
 import { useReconciliationInsights } from '@/hooks/useReconciliationInsights';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { FaturamentoAtualBreakdownModal } from '@/components/conciliacao/FaturamentoAtualBreakdownModal';
+import { MaquininhasDetailModal } from '@/components/conciliacao/MaquininhasDetailModal';
 import { WhisperDot } from '@/components/conciliacao/WhisperDot';
 import { AuditTrailBar } from '@/components/conciliacao/AuditTrailBar';
 import { supabase } from '@/lib/supabase';
 import { useQueryClient } from '@tanstack/react-query';
-import { DailyReconciliationSummary } from '@/hooks/useBackendConciliacao';
+import { DailyReconciliationSummary, usePosTripleReconciliation } from '@/hooks/useBackendConciliacao';
 import { toast } from 'sonner';
 
 interface ResumoDiaPanelProps {
@@ -55,7 +56,10 @@ export function ResumoDiaPanel({
   const [isSaved, setIsSaved] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isBreakdownModalOpen, setIsBreakdownModalOpen] = useState(false);
+  const [isMaquininhasModalOpen, setIsMaquininhasModalOpen] = useState(false);
   const queryClient = useQueryClient();
+
+  const { data: tripleReconData, isLoading: loadingTripleRecon } = usePosTripleReconciliation(selectedDate);
 
   // Lê o snapshot do dia selecionado (que já contém os inputs manuais salvos)
   const { data: currentSnapshot } = useDailySnapshot(selectedDate);
@@ -347,19 +351,31 @@ export function ResumoDiaPanel({
         {/* 5 Pilares Iniciais */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
           
-          {/* 1. Saldo Banco */}
+          {/* 1. Saldo Bancos + Cartões */}
           <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">SALDO BANCO ITAÚ</span>
+                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">SALDO BANCOS + CARTÕES</span>
                 <WhisperDot dot={insights?.dots.saldo_banco} />
               </div>
               <Landmark size={15} className="text-[var(--color-accent-light-blue)]" />
             </div>
             <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-light-blue)]">
-              <AnimatedNumber value={saldoBancosValor} format="currency" />
+              <AnimatedNumber value={summary?.total_saldo_banco ?? (saldoBancosValor + (tripleReconData?.total_nao_entrou || 0))} format="currency" />
             </p>
-            <span className="text-[10px] text-[var(--text-tertiary)] block">Extrato bancário OFX global</span>
+            <div className="flex justify-between items-center text-[10px] text-[var(--text-tertiary)] pt-1">
+              <span title="Saldo total dos extratos bancários OFX" className="cursor-help">
+                OFX: <AnimatedNumber value={summary?.saldo_bancos_ofx ?? saldoBancosValor} format="currency" />
+              </span>
+              <button
+                type="button"
+                onClick={() => setIsMaquininhasModalOpen(true)}
+                title="Maquininhas Não Entradas (A Compensar). Clique para conferir por loja."
+                className="border-b border-dashed border-amber-400/50 cursor-pointer text-amber-400/90 hover:text-amber-300 font-semibold transition-colors flex items-center gap-0.5"
+              >
+                + Maq: <AnimatedNumber value={summary?.cartoes_a_compensar ?? (tripleReconData?.total_nao_entrou || 0)} format="currency" />
+              </button>
+            </div>
           </div>
 
           {/* 2. Dinheiro MP */}
@@ -684,6 +700,15 @@ export function ResumoDiaPanel({
         justifiedTransactions={justifiedData?.transactions || []}
         totalJustified={totalJustificadosDia}
         totalFaturamentoAtual={faturamentoTotalComAjustes}
+      />
+
+      {/* Modal de Detalhamento Triplo de Maquininhas & Batimento OFX */}
+      <MaquininhasDetailModal
+        isOpen={isMaquininhasModalOpen}
+        onClose={() => setIsMaquininhasModalOpen(false)}
+        targetDate={selectedDate}
+        data={summary?.maquininhas_detalhe || tripleReconData}
+        isLoading={loadingTripleRecon}
       />
     </motion.div>
   );

@@ -86,6 +86,13 @@
 - Visualizador de Logs de Auditoria Diária (`DailyAuditLogsView.tsx`) com seletor de data (`< 18/08/2026 >`), linha do tempo vertical por tipo de ação e visualizador de detalhes técnicos / payload.
 - Organização do menu `/configuracoes` em 3 abas intuitivas: *Acessos & Permissões*, *Logs de Auditoria Diária* e *Motor & Lojas*.
 
+## Feature 234: Conciliação Tripla de Maquininhas, Saldo a Compensar e Batimento OFX
+- RPCs `get_store_pos_triple_reconciliation` e `get_daily_reconciliation_summary` no Supabase: 100% dos cálculos no backend confrontando o Total Líquido das vendas da Rede contra a soma de todas as bandeiras do OFX (`REDE MAST`, `REDE VISA`, `REDE ELO`, etc.) e OSs com pagamentos em cartão.
+- Inclusão automática das vendas de maquininhas pendentes de crédito bancário (`cartoes_a_compensar`) no Saldo do Pilar 1 (`total_saldo_banco = saldo_bancos_ofx + cartoes_a_compensar`) e no Caixa Atual.
+- Redesign do Card 1 em `ResumoDiaPanel.tsx` com sub-linhas transparentes (`OFX: R$ ...` | `+ Maq: R$ ...`) no padrão visual do card de Contas.
+- Modal `MaquininhasDetailModal.tsx` com visão widescreen dos 4 KPIs globais e tabela detalhada das 10 lojas com status de compensação (`ENTROU`, `PARCIAL`, `NÃO ENTROU`).
+
+
 
 
 
