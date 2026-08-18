@@ -60,5 +60,16 @@
 - Mapeamento normalizado de filiais com saldo bancário real (`R$ 186.496,03`) e pátio (`33 veículos / R$ 92.746,71`).
 - Comparação dinâmica de Faturamento Atual vs Anterior ancorada no último fechamento registrado (Marco Zero / Período).
 
+## Feature 228: Redesign do Dashboard com Tabs de Análise por Unidade e Tabela Horizontal
+- Card de Análise Setorial por Unidades (`StoreAnalyticsTabs.tsx`) em tela cheia com 3 abas: Saldo Bancário (Itaú), Faturamento (OFX) e Contas (OFX).
+- Cada aba com Donut Chart, centro luminoso exibindo Total Líquido, 4 cards de KPIs da dimensão e ranking das 10 unidades com barras de progresso proporcionais.
+- Tabela "Resultado por Loja" em layout widescreen espaçoso e horizontal.
+
+## Feature 229: Faturamento Incremental no Gráfico Macro, Suporte a Saldo Negativo e Nomenclatura "Unidades"
+- Curva de Faturamento no Gráfico de Evolução Macro ajustada para plotar os deltas incrementais reais do período (14/08: R$ 75.005,10 | 17/08: R$ 96.172,06).
+- Tratamento robusto para saldos bancários negativos no Donut Chart com badge de alerta e destaque em vermelho no ranking.
+- Padronização de nomenclatura de "Filial" para "Unidade" em toda a interface do Dashboard.
+
+
 
 
