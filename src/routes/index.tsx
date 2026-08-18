@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { KpiCard } from '@/components/dashboard/KpiCard';
 import { StoreTableDashboard } from '@/components/dashboard/StoreTableDashboard';
-import { StoreDonutCharts } from '@/components/dashboard/StoreDonutCharts';
+import { StoreAnalyticsTabs } from '@/components/dashboard/StoreAnalyticsTabs';
 import { EvolucaoMacroChart } from '@/components/dashboard/EvolucaoMacroChart';
 import { useBackendDashboard } from '@/hooks/useBackendDashboard';
 import { useAvailableConciliacaoDates } from '@/hooks/useDailySnapshot';
@@ -232,23 +232,24 @@ function DashboardPage() {
           </motion.div>
         )}
 
-        {/* ── FAIXA BASE — Tabela + Gráficos ── */}
+        {/* ── FAIXA BASE — Gráfico Macro + Tabs de Análise Setorial + Tabela de Resultado ── */}
         <div className="space-y-6">
-          {/* Topo - Widescreen Chart */}
+          {/* 1. Topo - Widescreen Chart */}
           <div className="w-full">
             <EvolucaoMacroChart data={data?.historicoMacro ?? []} isLoading={isLoading} />
           </div>
           
-          {/* Bottom Grid: Tabela na Esquerda (65%) e 2 Donuts na Direita (35%) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            <div className="lg:col-span-8">
-              <StoreTableDashboard data={data?.porLoja ?? []} isLoading={isLoading} />
-            </div>
-            <div className="lg:col-span-4">
-              <StoreDonutCharts data={data?.porLoja ?? []} isLoading={isLoading} />
-            </div>
+          {/* 2. Meio - Widescreen Análise Setorial por Filiais em Tabs (Saldo | Faturamento OFX | Contas OFX) */}
+          <div className="w-full">
+            <StoreAnalyticsTabs data={data?.porLoja ?? []} isLoading={isLoading} />
+          </div>
+
+          {/* 3. Base - Widescreen Tabela de Resultado por Loja */}
+          <div className="w-full">
+            <StoreTableDashboard data={data?.porLoja ?? []} isLoading={isLoading} />
           </div>
         </div>
+
 
       </div>
     </AppShell>

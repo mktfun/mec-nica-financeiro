@@ -67,10 +67,10 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-[var(--border-subtle)]">
-              {['Loja', 'Saldo Bancário', 'Faturamento', 'Contas (OFX)', 'Resultado', 'Pátio'].map(h => (
+              {['Loja', 'Saldo Bancário (Itaú)', 'Faturamento (OFX)', 'Contas (OFX)', 'Resultado Operacional', 'Pátio'].map(h => (
                 <th
                   key={h}
-                  className="text-left pb-2 text-[10px] uppercase tracking-widest text-[var(--text-tertiary)] font-semibold px-2 first:pl-0"
+                  className="text-left pb-2.5 text-[10px] uppercase tracking-widest text-[var(--text-tertiary)] font-bold px-3 first:pl-1"
                 >
                   {h}
                 </th>
@@ -97,10 +97,10 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
                   transition={{ delay: i * 0.04 }}
                   className="border-b border-[var(--border-subtle)] hover:bg-[var(--bg-surface-hover)] transition-colors"
                 >
-                  <td className="py-3 pr-2 font-medium text-[var(--text-primary)] whitespace-nowrap">
+                  <td className="py-3 pr-3 pl-1 font-medium text-[var(--text-primary)] whitespace-nowrap">
                     {(store.storeName || store.store_name || 'Loja').replace(/Rei do /gi, 'R. ').replace(/Mecânica Mec\. /gi, 'Mec. ')}
                   </td>
-                  <td className="py-3 px-2 font-mono whitespace-nowrap">
+                  <td className="py-3 px-3 font-mono whitespace-nowrap">
                     {isSaldoNegative ? (
                       <span className="text-[var(--color-accent-danger)] font-bold flex items-center gap-1">
                         {fmt(store.saldoAtual)}
@@ -114,13 +114,13 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
                       </span>
                     )}
                   </td>
-                  <td className="py-3 px-2 font-mono text-[var(--color-accent-teal)] whitespace-nowrap">
+                  <td className="py-3 px-3 font-mono text-[var(--color-accent-teal)] whitespace-nowrap">
                     {fmt(store.faturamento)}
                   </td>
-                  <td className="py-3 px-2 font-mono text-[var(--color-accent-warning)] whitespace-nowrap">
+                  <td className="py-3 px-3 font-mono text-[var(--color-accent-warning)] whitespace-nowrap">
                     {fmt(store.contas)}
                   </td>
-                  <td className="py-3 px-2 whitespace-nowrap">
+                  <td className="py-3 px-3 whitespace-nowrap">
                     <span className={`font-mono font-semibold flex items-center gap-1 ${
                       isPositive ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
                     }`}>
@@ -128,7 +128,7 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
                       {fmt(store.resultado)}
                     </span>
                   </td>
-                  <td className="py-3 px-2 text-[11px] whitespace-nowrap text-[var(--text-secondary)]">
+                  <td className="py-3 px-3 text-[11px] whitespace-nowrap text-[var(--text-secondary)]">
                     {store.veiculosPatio > 0 ? (
                       <div className="flex flex-col gap-0.5">
                         <span className="font-semibold text-[var(--color-accent-warning)]">{store.veiculosPatio} ud.</span>
@@ -146,19 +146,19 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
           {data.length > 0 && (
             <tfoot className="bg-[var(--bg-surface-elevated)] border-t-2 border-[var(--border-subtle)]">
               <tr>
-                <td className="py-3 pr-2 font-display font-bold text-[var(--text-primary)] uppercase tracking-wider text-xs">
+                <td className="py-3 pr-3 pl-1 font-display font-bold text-[var(--text-primary)] uppercase tracking-wider text-xs">
                   Total
                 </td>
-                <td className="py-3 px-2 font-mono font-bold text-[var(--text-primary)] whitespace-nowrap">
+                <td className="py-3 px-3 font-mono font-bold text-[var(--text-primary)] whitespace-nowrap">
                   {fmt(totais.saldoAtual)}
                 </td>
-                <td className="py-3 px-2 font-mono font-bold text-[var(--color-accent-teal)] whitespace-nowrap">
+                <td className="py-3 px-3 font-mono font-bold text-[var(--color-accent-teal)] whitespace-nowrap">
                   {fmt(totais.faturamento)}
                 </td>
-                <td className="py-3 px-2 font-mono font-bold text-[var(--color-accent-warning)] whitespace-nowrap">
+                <td className="py-3 px-3 font-mono font-bold text-[var(--color-accent-warning)] whitespace-nowrap">
                   {fmt(totais.contas)}
                 </td>
-                <td className="py-3 px-2 whitespace-nowrap">
+                <td className="py-3 px-3 whitespace-nowrap">
                   <span className={`font-mono font-bold flex items-center gap-1 ${
                     isTotalPositive ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
                   }`}>
@@ -166,7 +166,7 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
                     {fmt(totais.resultado)}
                   </span>
                 </td>
-                <td className="py-3 px-2 text-[11px] whitespace-nowrap">
+                <td className="py-3 px-3 text-[11px] whitespace-nowrap">
                   <div className="flex flex-col gap-0.5">
                     <span className="font-bold text-[var(--color-accent-warning)]">{totais.veiculosPatio} ud.</span>
                     <span className="font-mono font-bold text-[var(--text-primary)] text-[10px]">{fmt(totais.veiculosPatioValor)}</span>
