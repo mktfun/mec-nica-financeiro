@@ -34,6 +34,8 @@ export interface DashboardMetrics {
   fatura: number;
   faturamentoAtual: number;
   faturamentoAnterior: number;
+  faturamentoOdometroAtual?: number;
+  faturamentoOdometroAnterior?: number;
   variacaoFaturamento: number;
   valorDispContas: number;
   valorContas: number;
@@ -113,6 +115,8 @@ export function useBackendDashboard(date: string) {
         fatura: Number(res.fatura ?? res.faturamentoAtual ?? 0),
         faturamentoAtual: Number(res.faturamentoAtual ?? res.fatura ?? 0),
         faturamentoAnterior: Number(res.faturamentoAnterior || 0),
+        faturamentoOdometroAtual: Number(res.faturamentoOdometroAtual || 0),
+        faturamentoOdometroAnterior: Number(res.faturamentoOdometroAnterior || 0),
         variacaoFaturamento: Number(res.variacaoFaturamento || 0),
         valorDispContas: Number(res.valorDispContas ?? res.caixaAtual ?? 0),
         valorContas: Number(res.valorContas ?? res.contasAPagar ?? 0),

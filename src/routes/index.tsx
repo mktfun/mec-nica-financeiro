@@ -145,17 +145,33 @@ function DashboardPage() {
 
           {/* Faturamento Atual vs Anterior — 2/4 */}
           <Card className="md:col-span-2 p-5 flex flex-col gap-3">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-[var(--color-primary)]/15 flex items-center justify-center">
-                <TrendingUp size={16} className="text-[var(--color-primary)]" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-[var(--color-primary)]/15 flex items-center justify-center">
+                  <TrendingUp size={16} className="text-[var(--color-primary)]" />
+                </div>
+                <div>
+                  <span className="text-[10px] uppercase tracking-widest text-[var(--text-tertiary)] font-bold block">
+                    Faturamento do Período
+                  </span>
+                  <span className="text-[10px] text-[var(--text-secondary)]">
+                    Incremento apurado via Mapa de Metas
+                  </span>
+                </div>
               </div>
-              <span className="text-[10px] uppercase tracking-widest text-[var(--text-tertiary)] font-semibold">
-                Faturamento
-              </span>
+
+              {Boolean(data?.faturamentoOdometroAtual && data.faturamentoOdometroAtual > 0) && (
+                <span className="text-[10px] font-mono text-[var(--text-tertiary)] bg-[var(--bg-surface-hover)] px-2 py-0.5 rounded border border-[var(--border-subtle)]" title="Odômetro Acumulado no Mês">
+                  Odômetro: R$ {(Number(data?.faturamentoOdometroAtual || 0) / 1000).toFixed(1)}k
+                </span>
+              )}
             </div>
+
             <div className="grid grid-cols-2 gap-4 mt-1">
               <div>
-                <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Atual</p>
+                <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">
+                  Atual ({data?.dataAtual ? data.dataAtual.split('-').reverse().slice(0, 2).join('/') : 'Dia'})
+                </p>
                 <p className="font-mono font-bold text-2xl text-[var(--color-accent-teal)]">
                   {isLoading ? (
                     <span className="animate-pulse h-7 w-28 bg-[var(--bg-surface-hover)] rounded block" />
@@ -165,7 +181,9 @@ function DashboardPage() {
                 </p>
               </div>
               <div>
-                <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Anterior</p>
+                <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">
+                  Anterior ({data?.dataAnterior ? data.dataAnterior.split('-').reverse().slice(0, 2).join('/') : 'Ant.'})
+                </p>
                 <p className="font-mono font-bold text-2xl text-[var(--text-secondary)]">
                   {isLoading ? (
                     <span className="animate-pulse h-7 w-28 bg-[var(--bg-surface-hover)] rounded block" />
@@ -176,19 +194,21 @@ function DashboardPage() {
               </div>
             </div>
             {!isLoading && data && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className={`text-xs font-medium flex items-center gap-1 ${
-                  data.variacaoFaturamento >= 0
-                    ? 'text-[var(--color-accent-teal)]'
-                    : 'text-[var(--color-accent-danger)]'
-                }`}
-              >
-                <TrendingUp size={12} />
-                {data.variacaoFaturamento >= 0 ? '+' : ''}
-                {data.variacaoFaturamento.toFixed(1)}% vs ANTERIOR
-              </motion.div>
+              <div className="flex items-center justify-between text-xs mt-0.5">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className={`font-medium flex items-center gap-1 ${
+                    data.variacaoFaturamento >= 0
+                      ? 'text-[var(--color-accent-teal)]'
+                      : 'text-[var(--color-accent-danger)]'
+                  }`}
+                >
+                  <TrendingUp size={12} />
+                  {data.variacaoFaturamento >= 0 ? '+' : ''}
+                  {data.variacaoFaturamento.toFixed(1)}% vs FECHAMENTO ANTERIOR
+                </motion.div>
+              </div>
             )}
           </Card>
 

@@ -24,7 +24,7 @@ try {
   execSync('git add -A', { stdio: 'inherit' });
 
   console.log('Committing changes...');
-  const msg = 'feat(228): widescreen store analytics tabs (saldo, faturamento ofx, contas ofx) and full-width store results table';
+  const msg = 'feat: calculate incremental period revenue from odometer delta in PostgreSQL RPC and display clean period card';
   execSync(`git commit -m "${msg}"`, { stdio: 'inherit' });
 
   console.log('Pushing to main...');
@@ -33,7 +33,7 @@ try {
   console.log('Pushing to master...');
   execSync('git push origin main:master --force', { stdio: 'inherit' });
 
-  console.log('Push to main and master completed successfully!');
+  console.log('Push completed successfully!');
 } catch (err) {
   console.error('Git error:', err.message);
 }
