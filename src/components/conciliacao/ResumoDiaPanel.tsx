@@ -9,7 +9,10 @@ import {
 } from 'lucide-react';
 import { useDailySnapshot, usePreviousDaySnapshot, useSaveDailySnapshot } from '@/hooks/useDailySnapshot';
 import { useJustifiedTransactions } from '@/hooks/useJustifiedTransactions';
+import { useReconciliationInsights } from '@/hooks/useReconciliationInsights';
 import { FaturamentoAtualBreakdownModal } from '@/components/conciliacao/FaturamentoAtualBreakdownModal';
+import { WhisperDot } from '@/components/conciliacao/WhisperDot';
+import { AuditTrailBar } from '@/components/conciliacao/AuditTrailBar';
 import { supabase } from '@/lib/supabase';
 import { useQueryClient } from '@tanstack/react-query';
 import { DailyReconciliationSummary } from '@/hooks/useBackendConciliacao';
@@ -59,6 +62,7 @@ export function ResumoDiaPanel({
   const { data: previousSnapshot } = usePreviousDaySnapshot(selectedDate);
   const saveSnapshot = useSaveDailySnapshot();
   const { data: justifiedData } = useJustifiedTransactions(selectedDate);
+  const { data: insights } = useReconciliationInsights(selectedDate, summary);
 
   // Estados locais para edição dos campos manuais
   const [faturamentoInput, setFaturamentoInput] = useState<number>(0);
@@ -344,7 +348,10 @@ export function ResumoDiaPanel({
           {/* 1. Saldo Banco */}
           <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">SALDO BANCO ITAÚ</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">SALDO BANCO ITAÚ</span>
+                <WhisperDot dot={insights?.dots.saldo_banco} />
+              </div>
               <Landmark size={15} className="text-[var(--color-accent-light-blue)]" />
             </div>
             <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-light-blue)]">
@@ -356,7 +363,10 @@ export function ResumoDiaPanel({
           {/* 2. Dinheiro MP */}
           <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">DINHEIRO MP</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">DINHEIRO MP</span>
+                <WhisperDot dot={insights?.dots.dinheiro_mp} />
+              </div>
               <Wallet size={15} className="text-[var(--color-accent-teal)]" />
             </div>
             {isEditing ? (
@@ -382,7 +392,10 @@ export function ResumoDiaPanel({
           {/* 3. A Receber */}
           <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">A RECEBER</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">A RECEBER</span>
+                <WhisperDot dot={insights?.dots.a_receber} />
+              </div>
               <Receipt size={15} className="text-[var(--color-primary)]" />
             </div>
             {isEditing ? (
@@ -408,7 +421,10 @@ export function ResumoDiaPanel({
           {/* 4. Na Loja OS */}
           <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">NA LOJA OS</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">NA LOJA OS</span>
+                <WhisperDot dot={insights?.dots.na_loja_os} />
+              </div>
               <ShoppingBag size={15} className="text-[var(--color-accent-warning)]" />
             </div>
             <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-warning)]">
@@ -420,7 +436,10 @@ export function ResumoDiaPanel({
           {/* 5. Contas Manual */}
           <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">CONTAS (MANUAL)</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">CONTAS (MANUAL)</span>
+                <WhisperDot dot={insights?.dots.contas} />
+              </div>
               <Receipt size={15} className="text-[var(--color-accent-danger)]" />
             </div>
             {isEditing ? (
@@ -606,6 +625,9 @@ export function ResumoDiaPanel({
              </div>
           </div>
         </div>
+
+        {/* Auditoria Discreta - Observações da Conciliação */}
+        <AuditTrailBar observations={insights?.observations} className="mb-6" />
 
         {/* Barra de Ações com Trava de Edição */}
         <div className="flex justify-end gap-3 border-t border-[var(--border-subtle)] pt-4 mt-6">
