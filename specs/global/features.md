@@ -54,4 +54,11 @@
 - Sincronização e abate automático na Diferença da filial no fechamento por loja para todas as entradas justificadas como "Apenas Conciliar (Não Somar)".
 - Badge dinâmico de contagem de pendências avulsas na aba 4 da conciliação por loja.
 
+## Feature 227: Métricas do Dashboard e Gráfico de Evolução Macro 100% no PostgreSQL RPC
+- Migração completa dos cálculos do Dashboard para a RPC PostgreSQL `get_dashboard_metrics`: zero cálculos no frontend.
+- Gráfico de Evolução Macro alimentado pela série cronológica de snapshots fechados do mês (`daily_snapshots`), desenhando as curvas de Saldo, Faturamento e Contas a Pagar.
+- Mapeamento normalizado de filiais com saldo bancário real (`R$ 186.496,03`) e pátio (`33 veículos / R$ 92.746,71`).
+- Comparação dinâmica de Faturamento Atual vs Anterior ancorada no último fechamento registrado (Marco Zero / Período).
+
+
 
