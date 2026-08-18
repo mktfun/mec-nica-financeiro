@@ -19,10 +19,12 @@ const remoteUrl = `https://x-access-token:${token}@github.com/${repo}.git`;
 
 try {
   execSync('git add .', { stdio: 'inherit' });
-  execSync('git commit -m "fix: import useQueryClient in UserManagementPanel"', { stdio: 'inherit' });
+  try {
+    execSync('git commit -m "chore: clean working tree and sync"', { stdio: 'inherit' });
+  } catch (e) {}
   execSync(`git push ${remoteUrl} main:main`, { stdio: 'inherit' });
   execSync(`git push ${remoteUrl} main:master`, { stdio: 'inherit' });
-  console.log('Push complete to main and master!');
+  console.log('GitHub sync complete!');
 } catch (e) {
   console.error('Git error:', e.message);
 }
