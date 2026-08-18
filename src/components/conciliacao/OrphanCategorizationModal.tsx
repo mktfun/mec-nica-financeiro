@@ -19,7 +19,7 @@ const CATEGORIES = [
   { id: 'deposito_avulso', label: 'Depósito Avulso (Receita)', type: 'in', defaultImpact: true },
   { id: 'rendimento_aplicacao', label: 'Rendimento de Aplicação', type: 'in', defaultImpact: false },
   { id: 'ajuste_marco_zero', label: 'Ajuste Marco Zero / Antigo', type: 'in', defaultImpact: false },
-  { id: 'transferencia_filiais', label: 'Transferência entre Filiais', type: 'in', defaultImpact: false },
+  { id: 'transferencia_filiais', label: 'Transferência entre Unidades', type: 'in', defaultImpact: false },
   { id: 'aporte_capital', label: 'Aporte de Capital / Sócios', type: 'in', defaultImpact: false },
   { id: 'estorno', label: 'Estorno', type: 'in', defaultImpact: false },
   { id: 'tarifa_bancaria', label: 'Tarifa Bancária', type: 'out', defaultImpact: false },

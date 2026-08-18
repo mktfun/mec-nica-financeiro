@@ -103,7 +103,7 @@ function ConciliacaoPage() {
                   Painel de Conciliação Diária
                 </h2>
                 <p className="text-xs text-zinc-400">
-                  Consolidação dos 5 pilares, faturamento odômetro e conferência por filial.
+                  Consolidação dos 5 pilares, faturamento odômetro e conferência por unidade.
                 </p>
               </div>
               <button
