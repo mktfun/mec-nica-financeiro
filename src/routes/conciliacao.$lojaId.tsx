@@ -14,7 +14,9 @@ import { TableProperties } from 'lucide-react';
 import { useTransactionsPorDataELoja } from '@/hooks/useTransactions';
 import { useReconciliationViews } from '@/hooks/useConciliacao';
 import { useDailySnapshot } from '@/hooks/useDailySnapshot';
+import { usePosTripleReconciliation } from '@/hooks/useBackendConciliacao';
 import { LegacyOsTable } from '@/components/conciliacao/LegacyOsTable';
+import { formatCurrency } from '@/lib/utils';
 
 
 export const Route = createFileRoute('/conciliacao/$lojaId')({
@@ -62,8 +64,10 @@ function ConciliacaoLojaPage() {
   const { data: transactions = [] } = useTransactionsPorDataELoja(targetDate, lojaId);
   const { data: reconData } = useReconciliationViews(lojaId, targetDate);
   const { data: currentSnapshot } = useDailySnapshot(targetDate);
+  const { data: tripleReconData } = usePosTripleReconciliation(targetDate);
   
   const isMarcoZero = (currentSnapshot?.metadata as any)?.is_marco_zero === true;
+  const storePos = tripleReconData?.stores?.find(s => s.store_id === lojaId);
 
 
   if (!store) {
@@ -124,6 +128,59 @@ function ConciliacaoLojaPage() {
             </div>
           </div>
         </div>
+
+        {/* Banner de Conciliação de Maquininha da Loja */}
+        {storePos && (storePos.rede_liquido > 0 || storePos.ofx_maquininhas > 0) && (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-4 shadow-sm">
+            <div className="space-y-1">
+              <span className="text-[10px] uppercase font-bold text-zinc-400">Vendas Rede (Líquido)</span>
+              <p className="text-base font-bold font-mono text-zinc-100">
+                {formatCurrency(storePos.rede_liquido)}
+              </p>
+              <span className="text-[10px] text-zinc-500 font-mono">Bruto: {formatCurrency(storePos.rede_bruto)}</span>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-[10px] uppercase font-bold text-zinc-400">Creditado no OFX</span>
+              <p className="text-base font-bold font-mono text-emerald-400">
+                {formatCurrency(storePos.ofx_maquininhas)}
+              </p>
+              <span className="text-[10px] text-zinc-500 font-mono">{storePos.ofx_transacoes?.length || 0} lançamento(s)</span>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-[10px] uppercase font-bold text-zinc-400">A Compensar (Não Entrou)</span>
+              <p className={`text-base font-bold font-mono ${storePos.nao_entrou_valor > 0 ? 'text-amber-400 font-bold' : 'text-zinc-500'}`}>
+                {storePos.nao_entrou_valor > 0 ? `+ ${formatCurrency(storePos.nao_entrou_valor)}` : 'R$ 0,00'}
+              </p>
+              <span className="text-[10px] text-zinc-500">Soma no Saldo da Filial</span>
+            </div>
+
+            <div className="space-y-1 flex flex-col justify-center items-start">
+              <span className="text-[10px] uppercase font-bold text-zinc-400 mb-1">Status de Compensação</span>
+              {storePos.status_compensacao === 'entrou' && (
+                <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                  ENTROU
+                </span>
+              )}
+              {storePos.status_compensacao === 'parcial' && (
+                <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                  PARCIAL
+                </span>
+              )}
+              {storePos.status_compensacao === 'nao_entrou' && (
+                <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                  NÃO ENTROU
+                </span>
+              )}
+              {storePos.status_compensacao === 'sem_movimento' && (
+                <span className="px-2.5 py-1 rounded-md text-xs font-semibold text-zinc-500">
+                  SEM MOVIMENTO
+                </span>
+              )}
+            </div>
+          </div>
+        )}
 
         {isMarcoZero ? (
           <div className="min-h-[400px]">

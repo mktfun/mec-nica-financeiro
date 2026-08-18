@@ -92,6 +92,12 @@
 - Redesign do Card 1 em `ResumoDiaPanel.tsx` com sub-linhas transparentes (`OFX: R$ ...` | `+ Maq: R$ ...`) no padrão visual do card de Contas.
 - Modal `MaquininhasDetailModal.tsx` com visão widescreen dos 4 KPIs globais e tabela detalhada das 10 lojas com status de compensação (`ENTROU`, `PARCIAL`, `NÃO ENTROU`).
 
+## Feature 235: Exibição e Soma de Maquininhas Não Entradas por Loja e no Consolidador Geral
+- Enriquecimento da lista `stores` da RPC `get_daily_reconciliation_summary` com `saldo_banco_ofx`, `nao_entrou_valor`, `saldo_banco` (Consolidado: $\text{OFX} + \text{Não Entrou}$) e `status_compensacao` por filial.
+- Atualização do card de cada uma das 10 filiais em `conciliacao.index.tsx`: exibição do Saldo Consolidado, sub-linhas (`OFX: R$ ...` | `+ Maq: + R$ ...`) e badge no cabeçalho da loja (`ENTROU` / `NÃO ENTROU (+ R$ ...)`).
+- Header de `conciliacao.$lojaId.tsx` com painel de 4 métricas da maquininha da loja (Vendas Líquido, Creditado no OFX, A Compensar e Status de Compensação).
+
+
 
 
 

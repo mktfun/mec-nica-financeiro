@@ -81,7 +81,11 @@ export function useGlobalOfxOut(date: string) {
 export interface StoreReconciliationSummary {
   store_id: string;
   store_name: string;
-  saldo_banco: number;
+  saldo_banco: number; // Saldo Consolidado (OFX + Não Entrou)
+  saldo_banco_ofx?: number; // Saldo puro do extrato OFX
+  nao_entrou_valor?: number; // Vendas de maquininha a compensar (Não Entrou)
+  rede_liquido?: number; // Total líquido das vendas na maquininha
+  status_compensacao?: 'entrou' | 'parcial' | 'nao_entrou' | 'sem_movimento';
   maquininha: number;
   pix: number;
   na_loja_os: number;

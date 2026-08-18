@@ -181,26 +181,46 @@ function ConciliacaoPage() {
                         <Card className="p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-6 transition-all hover:scale-[1.01] hover:bg-white/10 hover:border-white/20 cursor-pointer shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] border border-white/5 backdrop-blur-md">
                           
                           {/* Nome da Loja & Status */}
-                          <div className="w-full xl:w-56 shrink-0 flex items-center gap-4">
+                          <div className="w-full xl:w-64 shrink-0 flex items-center gap-4">
                             <div className={`w-2 h-14 rounded-full ${isDiferencaOk ? 'bg-[var(--color-accent-teal)]' : 'bg-[var(--color-accent-danger)]'}`} />
-                              <div>
+                            <div>
+                              <div className="flex items-center gap-2 flex-wrap">
                                 <p className="font-semibold text-base sm:text-lg text-white leading-tight">{store.name}</p>
-                                <p className="text-xs text-[var(--text-tertiary)] font-mono mt-0.5">ID: {store.id}</p>
+                                {log.status_compensacao === 'entrou' && (
+                                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                                    ENTROU
+                                  </span>
+                                )}
+                                {(log.status_compensacao === 'parcial' || log.status_compensacao === 'nao_entrou') && (log.nao_entrou_valor || 0) > 0 && (
+                                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                                    NÃO ENTROU (+ {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(log.nao_entrou_valor || 0)})
+                                  </span>
+                                )}
                               </div>
+                              <p className="text-xs text-[var(--text-tertiary)] font-mono mt-0.5">ID: {store.id}</p>
                             </div>
+                          </div>
 
                           {/* Painel Único de Fundo Contínuo Envelopando as 6 Métricas */}
                           <div className="bg-black/25 p-4 sm:p-5 rounded-2xl border border-white/5 flex-1 font-sans tabular-nums text-xs">
                             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6 xl:gap-8 items-center">
                               
-                              {/* 1. Faturam. Banco (OFX) */}
+                              {/* 1. Saldo Bancos + Cartões */}
                               <div>
                                 <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
-                                  Saldo Banco Itaú
+                                  Saldo Bancos + Cartões
                                 </span>
-                                <p className="font-bold text-sm text-[var(--text-secondary)] font-mono">
+                                <p className="font-bold text-sm text-[var(--color-accent-light-blue)] font-mono">
                                   <AnimatedNumber value={log.saldo_banco} format="currency" />
                                 </p>
+                                <div className="text-[10px] text-[var(--text-tertiary)] mt-0.5 flex flex-col font-mono">
+                                  <span>OFX: <AnimatedNumber value={log.saldo_banco_ofx ?? log.saldo_banco} format="currency" /></span>
+                                  {(log.nao_entrou_valor || 0) > 0 && (
+                                    <span className="text-amber-400 font-semibold">
+                                      + Maq: + {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(log.nao_entrou_valor || 0)}
+                                    </span>
+                                  )}
+                                </div>
                               </div>
 
                               {/* 2. Maquininha */}
