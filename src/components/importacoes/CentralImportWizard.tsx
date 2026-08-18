@@ -29,6 +29,7 @@ import { useSaveDailySnapshot } from '@/hooks/useDailySnapshot';
 import { supabase } from '@/lib/supabase';
 import { useNavigate } from '@tanstack/react-router';
 import { savePatioOsAndReceivables, ParsedReceivable } from '@/hooks/useImportProcessor';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { getDefaultDate } from '@/lib/utils';
 
 export interface ImportLogEntry {
@@ -117,6 +118,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const [auditTrailUrl, setAuditTrailUrl] = useState<string | null>(null);
   const [saveFinished, setSaveFinished] = useState(false);
   const logsEndRef = useRef<HTMLDivElement>(null);
+  const { canImport } = useUserPermissions();
 
   // Manual inputs extras com trava
   const [odometroHoje, setOdometroHoje] = useState<number>(0);
@@ -267,6 +269,10 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
   
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    if (!canImport) {
+      toast.error('Você não possui permissão para importar arquivos.');
+      return;
+    }
     if (acceptedFiles.length === 0) return;
     
     const newSessionId = generateSessionId();
@@ -334,6 +340,10 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   });
 
   const handleConfirm = async () => {
+    if (!canImport) {
+      toast.error('Você não possui permissão para importar e gravar dados.');
+      return;
+    }
     setIsSaving(true);
     setStep(4);
     setImportStages(JSON.parse(JSON.stringify(INITIAL_STAGES)));

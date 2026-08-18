@@ -12,8 +12,10 @@ import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { ResumoDiaPanel } from '@/components/conciliacao/ResumoDiaPanel';
 import { BreakdownModal } from '@/components/conciliacao/BreakdownModal';
 import { StoreSaldoState } from '@/lib/modulo1Calculations';
-import { UploadCloud } from 'lucide-react';
+import { UploadCloud, Lock } from 'lucide-react';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 export const Route = createFileRoute('/conciliacao/')({
   component: ConciliacaoPage,
@@ -24,6 +26,7 @@ function ConciliacaoPage() {
   const [breakdownStore, setBreakdownStore] = useState<{ id: string; name: string } | null>(null);
   const navigate = Route.useNavigate();
   const queryClient = useQueryClient();
+  const { canImport } = useUserPermissions();
 
   const { data: availableDates = [], isLoading: loadingDates } = useAvailableConciliacaoDates();
   const { data: stores = [], isLoading: loadingStores } = useStores();
@@ -107,10 +110,22 @@ function ConciliacaoPage() {
                 </p>
               </div>
               <button
-                onClick={() => navigate({ to: '/importacoes', search: { date: selectedDate, tab: 'diario' } })}
-                className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-lg shadow-emerald-950/50 flex items-center gap-2 transition-all cursor-pointer"
+                onClick={() => {
+                  if (!canImport) {
+                    toast.error('Você não tem permissão para importar arquivos.');
+                    return;
+                  }
+                  navigate({ to: '/importacoes', search: { date: selectedDate, tab: 'diario' } });
+                }}
+                disabled={!canImport}
+                title={!canImport ? 'Apenas usuários com permissão de importação podem acessar esta área.' : 'Importar arquivos e fechar dia'}
+                className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-lg ${
+                  canImport
+                    ? 'bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white shadow-emerald-950/50 cursor-pointer'
+                    : 'bg-zinc-800 border border-zinc-700 text-zinc-500 opacity-60 cursor-not-allowed'
+                }`}
               >
-                <UploadCloud size={16} />
+                {canImport ? <UploadCloud size={16} /> : <Lock size={15} />}
                 Importar e Fechar Dia
               </button>
             </div>

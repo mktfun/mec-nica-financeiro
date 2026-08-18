@@ -10,6 +10,7 @@ import {
 import { useDailySnapshot, usePreviousDaySnapshot, useSaveDailySnapshot } from '@/hooks/useDailySnapshot';
 import { useJustifiedTransactions } from '@/hooks/useJustifiedTransactions';
 import { useReconciliationInsights } from '@/hooks/useReconciliationInsights';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { FaturamentoAtualBreakdownModal } from '@/components/conciliacao/FaturamentoAtualBreakdownModal';
 import { WhisperDot } from '@/components/conciliacao/WhisperDot';
 import { AuditTrailBar } from '@/components/conciliacao/AuditTrailBar';
@@ -63,6 +64,7 @@ export function ResumoDiaPanel({
   const saveSnapshot = useSaveDailySnapshot();
   const { data: justifiedData } = useJustifiedTransactions(selectedDate);
   const { data: insights } = useReconciliationInsights(selectedDate, summary);
+  const { canEditData } = useUserPermissions();
 
   // Estados locais para edição dos campos manuais
   const [faturamentoInput, setFaturamentoInput] = useState<number>(0);
@@ -634,8 +636,16 @@ export function ResumoDiaPanel({
           {!isEditing ? (
             <Button
               variant="outline"
-              onClick={() => setIsEditing(true)}
-              className="gap-2 px-6 py-2 text-sm border-[var(--color-primary)]/40 text-[var(--text-primary)] hover:bg-[var(--color-primary)]/10"
+              disabled={!canEditData}
+              onClick={() => {
+                if (!canEditData) {
+                  toast.error('Você não tem permissão para editar dados.');
+                  return;
+                }
+                setIsEditing(true);
+              }}
+              title={!canEditData ? 'Apenas usuários com permissão de edição podem alterar o fechamento.' : 'Editar valores do dia'}
+              className={`gap-2 px-6 py-2 text-sm border-[var(--color-primary)]/40 text-[var(--text-primary)] hover:bg-[var(--color-primary)]/10 ${!canEditData ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               <Edit2 size={16} />
               Editar Fechamento

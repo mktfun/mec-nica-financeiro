@@ -1,4 +1,4 @@
-﻿import { useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -10,10 +10,13 @@ import { StoreRow } from '@/lib/supabase';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useBotCredentials, useUpdateBotCredential } from '@/hooks/useBotCredentials';
 import { useBotLogs } from '@/hooks/useBotLogs';
-import { Bot, Eye, EyeOff, CheckCircle2, XCircle, Clock, ExternalLink, Terminal, AlertTriangle, Workflow } from 'lucide-react';
+import { Bot, Eye, EyeOff, CheckCircle2, XCircle, Clock, ExternalLink, Terminal, AlertTriangle, Workflow, Users, FileText, Settings2, Sliders } from 'lucide-react';
 import { useAiSettings, useSaveAiSettings } from '@/hooks/useAiSettings';
+import { UserManagementPanel } from '@/components/configuracoes/UserManagementPanel';
+import { DailyAuditLogsView } from '@/components/configuracoes/DailyAuditLogsView';
 
 export function ConfiguracoesPanel() {
+  const [activeTab, setActiveTab] = useState<'usuarios' | 'logs' | 'motor'>('usuarios');
   const { data: botRuns = [], isLoading: loadingBots } = useBotRunHistory();
   const { data: stores = [], isLoading: loadingStores } = useStores();
   const { data: botCreds = [], isLoading: loadingCreds } = useBotCredentials();
@@ -42,13 +45,61 @@ export function ConfiguracoesPanel() {
   const lastRun = botRuns[0];
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-2xl mx-auto w-full p-4 md:p-8">
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-4xl mx-auto w-full p-4 md:p-8">
       <div className="mb-8">
-        <h1 className="font-display font-bold text-3xl mb-2">Configurações</h1>
-        <p className="text-[var(--text-secondary)] text-sm">Gerencie o comportamento do motor de conciliação autônomo e lojas.</p>
+        <h1 className="font-display font-bold text-3xl mb-2">Configurações & Acessos</h1>
+        <p className="text-[var(--text-secondary)] text-sm">Gerencie usuários, permissões granulares, logs de auditoria e robôs.</p>
       </div>
 
-      <div className="space-y-6">
+      {/* Navegação por Abas */}
+      <div className="flex items-center gap-2 p-1.5 bg-zinc-900/60 border border-zinc-800/80 rounded-2xl mb-8 overflow-x-auto scrollbar-none">
+        <button
+          type="button"
+          onClick={() => setActiveTab('usuarios')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            activeTab === 'usuarios'
+              ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-950/40'
+              : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60'
+          }`}
+        >
+          <Users size={15} />
+          <span>Acessos & Permissões</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('logs')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            activeTab === 'logs'
+              ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-950/40'
+              : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60'
+          }`}
+        >
+          <FileText size={15} />
+          <span>Logs de Auditoria Diária</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('motor')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            activeTab === 'motor'
+              ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-950/40'
+              : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60'
+          }`}
+        >
+          <Settings2 size={15} />
+          <span>Motor & Lojas</span>
+        </button>
+      </div>
+
+      {/* Conteúdo da Aba */}
+      {activeTab === 'usuarios' && <UserManagementPanel />}
+
+      {activeTab === 'logs' && <DailyAuditLogsView />}
+
+      {activeTab === 'motor' && (
+        <div className="space-y-6">
         {/* Motor de Conciliação */}
         <Card variant="glass" className="p-6">
           <h3 className="font-display font-semibold text-lg mb-4">Motor de Conciliação</h3>
@@ -257,6 +308,7 @@ export function ConfiguracoesPanel() {
           <AiSettingsForm />
         </Card>
       </div>
+      )}
 
       <StoreFormDialog 
         isOpen={isFormOpen}
