@@ -65,10 +65,20 @@
 - Cada aba com Donut Chart, centro luminoso exibindo Total Líquido, 4 cards de KPIs da dimensão e ranking das 10 unidades com barras de progresso proporcionais.
 - Tabela "Resultado por Loja" em layout widescreen espaçoso e horizontal.
 
-## Feature 229: Faturamento Incremental no Gráfico Macro, Suporte a Saldo Negativo e Nomenclatura "Unidades"
-- Curva de Faturamento no Gráfico de Evolução Macro ajustada para plotar os deltas incrementais reais do período (14/08: R$ 75.005,10 | 17/08: R$ 96.172,06).
-- Tratamento robusto para saldos bancários negativos no Donut Chart com badge de alerta e destaque em vermelho no ranking.
-- Padronização de nomenclatura de "Filial" para "Unidade" em toda a interface do Dashboard.
+## Feature 230: Redesign da Etapa 4 de Importação Central (Orquestração Multi-Agente de IA)
+- Remoção dos 4 cards estáticos redundantes e da barra de gradiente pesada no wizard de importação.
+- Redesign completo com foco no painel de orquestração multi-agente (`AgentStageItem.tsx`), detalhando os 4 agentes especializados (Car, CreditCard, Landmark, Sparkles) com badges dinâmicos de status, sub-etapas e telemetria.
+- Ajuste na RPC do Dashboard para desaninhar corretamente o JSON escalar de `diferenca_final`.
+
+## Feature 231: Diagnóstico de Conciliação e Cartões a Compensar (18/08)
+- Mapeamento matemático das regras da planilha de conciliação diária (`CONCILIAÇÃO 1808.xlsx`).
+- Dedução automática de pagamentos do dia no cálculo de saldo retido de Carros em Pátio (OSs).
+- Isolamento estrito de snapshots diários (`daily_snapshots`) por data no fechamento.
+
+## Feature 232: Whisper Dots e Audit Trail Discreto de Divergências na Conciliação
+- Hook de inteligência analítica `useReconciliationInsights.ts` que cruza dados de cartões a compensar, PIX avulsos, OSs do pátio e contas vs saídas OFX.
+- Componente `WhisperDot.tsx`: Micro-indicador estático e suave (4px) nos 5 pilares (`Saldo Banco Itaú`, `Dinheiro MP`, `A Receber`, `Na Loja OS`, `Contas (Manual)`) com tooltip nativo descritivo no hover.
+- Componente `AuditTrailBar.tsx`: Barra colapsável e elegante abaixo da Consolidação do Dia (`⚙ N observações de conferência · Expandir`), detalhando cada causa raiz e delta financeiro sem poluição visual.
 
 
 
