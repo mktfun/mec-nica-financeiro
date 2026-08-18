@@ -19,7 +19,7 @@ const remoteUrl = `https://x-access-token:${token}@github.com/${repo}.git`;
 
 try {
   execSync('git add .', { stdio: 'inherit' });
-  execSync('git commit -m "feat(spec-233): implementacao de gestao de acessos com permissoes e logs de auditoria por dia"', { stdio: 'inherit' });
+  execSync('git commit -m "chore: archive spec 233 and update features.md"', { stdio: 'inherit' });
   execSync(`git push ${remoteUrl} main:main`, { stdio: 'inherit' });
   execSync(`git push ${remoteUrl} main:master`, { stdio: 'inherit' });
   console.log('Push complete to main and master!');

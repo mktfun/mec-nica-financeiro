@@ -80,6 +80,13 @@
 - Componente `WhisperDot.tsx`: Micro-indicador estático e suave (4px) nos 5 pilares (`Saldo Banco Itaú`, `Dinheiro MP`, `A Receber`, `Na Loja OS`, `Contas (Manual)`) com tooltip nativo descritivo no hover.
 - Componente `AuditTrailBar.tsx`: Barra colapsável e elegante abaixo da Consolidação do Dia (`⚙ N observações de conferência · Expandir`), detalhando cada causa raiz e delta financeiro sem poluição visual.
 
+## Feature 233: Gestão de Acessos, Permissões Granulares e Logs Diários
+- Gestão completa de usuários em `UserManagementPanel.tsx` e `CreateUserModal.tsx`: cadastro direto de novos acessos com E-mail, Senha e Papéis (`Admin`, `Operador`, `Visualizador`).
+- Controle granular de privilégios (`can_import` e `can_edit_data`) com travas em tempo real no botão "Editar Fechamento" da conciliação e no fluxo de importações.
+- Visualizador de Logs de Auditoria Diária (`DailyAuditLogsView.tsx`) com seletor de data (`< 18/08/2026 >`), linha do tempo vertical por tipo de ação e visualizador de detalhes técnicos / payload.
+- Organização do menu `/configuracoes` em 3 abas intuitivas: *Acessos & Permissões*, *Logs de Auditoria Diária* e *Motor & Lojas*.
+
+
 
 
 
