@@ -22,6 +22,7 @@ export interface StoreMetrics {
 
 export interface DashboardMetrics {
   dataAtual: string;
+  dataAnterior: string;
   saldoTotal: number;
   dinheiroMp: number;
   aReceber: number;
@@ -84,20 +85,23 @@ export function useBackendDashboard(date: string) {
 
       const res = (data || {}) as any;
 
-      // Mapeamento direto e limpo para manter retrocompatibilidade com todos os componentes da UI
+      // Mapeamento direto das propriedades calculadas pelo PostgreSQL
       const porLoja = (res.porLoja || []).map((s: any) => ({
         ...s,
-        storeId: s.store_id || s.storeId || '',
-        storeName: s.store_name || s.storeName || '',
-        saldoAtual: Number(s.saldo_banco || 0),
-        valor_contas: Number(s.contas || 0),
-        veiculosPatio: Number(s.veiculos_patio || 0),
-        veiculosPatioValor: Number(s.na_loja_os || 0),
-        statusConciliacao: s.status || 'approved'
+        storeId: s.storeId || s.store_id || '',
+        storeName: s.storeName || s.store_name || '',
+        saldoAtual: Number(s.saldoAtual ?? s.saldo_banco ?? 0),
+        faturamento: Number(s.faturamento || 0),
+        contas: Number(s.contas ?? s.valor_contas ?? 0),
+        resultado: Number(s.resultado || (Number(s.faturamento || 0) - Number(s.contas || 0))),
+        veiculosPatio: Number(s.veiculosPatio ?? s.veiculos_patio ?? 0),
+        veiculosPatioValor: Number(s.veiculosPatioValor ?? s.na_loja_os ?? 0),
+        statusConciliacao: s.statusConciliacao || s.status || 'approved'
       }));
 
       return {
         dataAtual: res.dataAtual || effectiveDate,
+        dataAnterior: res.dataAnterior || '',
         saldoTotal: Number(res.saldoTotal || 0),
         dinheiroMp: Number(res.dinheiroMp || 0),
         aReceber: Number(res.aReceber || 0),
@@ -120,6 +124,7 @@ export function useBackendDashboard(date: string) {
         historicoMacro: res.historicoMacro || []
       } as DashboardMetrics;
     },
-    enabled: true
+    enabled: true,
+    staleTime: 1000 * 30
   });
 }

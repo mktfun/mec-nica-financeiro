@@ -24,7 +24,7 @@ try {
   execSync('git add -A', { stdio: 'inherit' });
 
   console.log('Committing changes...');
-  const msg = 'fix(hotfix): resolve storeJustified ReferenceError and fix status column query in useJustifiedTransactions';
+  const msg = 'feat(227): 100% PostgreSQL RPC dashboard metrics calculation with macro evolution series and store breakdown';
   execSync(`git commit -m "${msg}"`, { stdio: 'inherit' });
 
   console.log('Pushing to main...');
@@ -33,7 +33,7 @@ try {
   console.log('Pushing to master...');
   execSync('git push origin main:master --force', { stdio: 'inherit' });
 
-  console.log('Hotfix push completed successfully!');
+  console.log('Push to main and master completed successfully!');
 } catch (err) {
   console.error('Git error:', err.message);
 }
