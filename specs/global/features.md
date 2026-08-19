@@ -97,6 +97,16 @@
 - Atualização do card de cada uma das 10 filiais em `conciliacao.index.tsx`: exibição do Saldo Consolidado, sub-linhas (`OFX: R$ ...` | `+ Maq: + R$ ...`) e badge no cabeçalho da loja (`ENTROU` / `NÃO ENTROU (+ R$ ...)`).
 - Header de `conciliacao.$lojaId.tsx` com painel de 4 métricas da maquininha da loja (Vendas Líquido, Creditado no OFX, A Compensar e Status de Compensação).
 
+## Feature 237: Redesign Visual & Descompressão do Painel de Resumo do Dia
+- **Descompressão dos 5 Pilares (`ResumoDiaPanel.tsx`):** Grid responsivo e espaçoso (`grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3.5`) com respiro, tipografia `font-mono` nítida em destaque e ícones sutis em badges com cantos arredondados.
+- **Sub-linhas Alinhadas:** Sub-totais do Card 1 (`OFX: R$ ...` / `+ Maq: + R$ ...`) e do Card 5 (`Juros: R$ ...` / `Saídas OFX: - R$ ...`) perfeitamente alinhados horizontalmente, sem sobreposição de textos ou quebras de linha defeituosas.
+- **Cockpit de Fechamento Integrado (3 Colunas):** Área inferior reorganizada em 3 colunas harmoniosas:
+  1. *Dinâmica de Caixa:* Caixa Atual Consolidado + Fluxo de Caixa (Variação vs Dia Anterior).
+  2. *Operação & Disponível:* Faturamento Atual (com link de detalhes `↗`) + Disponível para Contas.
+  3. *Balanço do Fechamento & Diferença Final:* Card unificado com Total de Contas a Pagar, Diferença Final apurada em destaque e badge de conformidade ($\pm \text{R\$ 50}$).
+- **Eliminação de Ruído Visual:** Remoção de frases e micro-rótulos redundantes que poluíam o painel, gerando uma experiência limpa de padrão FinTech executivo.
+
+
 
 
 
