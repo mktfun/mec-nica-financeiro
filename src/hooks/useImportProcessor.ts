@@ -36,13 +36,14 @@ export async function savePatioOsAndReceivables(
   storeId: string, 
   storeName: string, 
   osArray: ParsedOS[], 
-  receivablesArray: ParsedReceivable[]
+  receivablesArray: ParsedReceivable[],
+  targetDate?: string
 ) {
-  // 1. Process Patio OS (upsert by os_number â€” idempotent)
+  // 1. Process Patio OS (upsert by os_number — idempotent)
   if (osArray.length > 0) {
     const { data: existingOs } = await supabase
       .from('patio_os')
-      .select('id, os_number, total_value, paid_value, status, raw_status, credit_value, debit_value, pix_transfer_value, history_log')
+      .select('id, os_number, total_value, paid_value, status, raw_status, credit_value, debit_value, pix_transfer_value, history_log, last_payment_date')
       .eq('store_id', storeId);
 
     const existingMap = new Map((existingOs || []).map(o => [String(o.os_number), o]));
@@ -51,10 +52,19 @@ export async function savePatioOsAndReceivables(
     const toUpdate: any[] = [];
 
     for (const os of osArray) {
-      const existingObjForDelta = existingMap.get(String(os.os_number));
-      const velho_valor_pago = existingObjForDelta ? Number(existingObjForDelta.paid_value) : 0;
+      const existingObj = existingMap.get(String(os.os_number));
+      const velho_valor_pago = existingObj ? Number(existingObj.paid_value) : 0;
       const delta_paid = os.paid_value - velho_valor_pago;
       (os as any).delta_paid = delta_paid;
+
+      let paymentDate: string | null = null;
+      if (delta_paid > 0) {
+        paymentDate = targetDate || new Date().toISOString().split('T')[0];
+      } else if (existingObj?.last_payment_date) {
+        paymentDate = existingObj.last_payment_date;
+      } else if (os.paid_value > 0) {
+        paymentDate = targetDate || new Date().toISOString().split('T')[0];
+      }
 
       const payload = {
         store_id: storeId,
@@ -72,11 +82,10 @@ export async function savePatioOsAndReceivables(
         opened_at: os.opened_at,
         closed_at: os.closed_at,
         days_open: os.days_open,
+        last_payment_date: paymentDate,
         updated_at: new Date().toISOString()
       };
 
-
-      const existingObj = existingMap.get(String(os.os_number));
       if (existingObj) {
         const oldTotal = Number(existingObj.total_value);
         const newTotal = Number(payload.total_value);
@@ -194,7 +203,7 @@ export function useProcessImportedData() {
       targetDate?: string;
       ofxBankBalance?: number;
     }) => {
-      await savePatioOsAndReceivables(storeId, storeName, osArray, receivablesArray);
+      await savePatioOsAndReceivables(storeId, storeName, osArray, receivablesArray, targetDate);
 
 
       // 3. Agrupar OSs por data de fechamento para processar Transações, Conciliações e Logs

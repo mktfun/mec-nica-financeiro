@@ -654,6 +654,7 @@ export type Database = {
           store_name: string | null
           total_value: number
           updated_at: string
+          last_payment_date: string | null
         }
         Insert: {
           closed_at?: string | null
@@ -677,6 +678,7 @@ export type Database = {
           store_name?: string | null
           total_value?: number
           updated_at?: string
+          last_payment_date?: string | null
         }
         Update: {
           closed_at?: string | null
@@ -700,6 +702,7 @@ export type Database = {
           store_name?: string | null
           total_value?: number
           updated_at?: string
+          last_payment_date?: string | null
         }
         Relationships: [
           {
@@ -726,6 +729,7 @@ export type Database = {
           payment_method: string
           store_id: string | null
           target_date: string | null
+          transaction_type: 'venda' | 'devolucao'
         }
         Insert: {
           created_at?: string | null
@@ -741,6 +745,7 @@ export type Database = {
           payment_method: string
           store_id?: string | null
           target_date?: string | null
+          transaction_type?: 'venda' | 'devolucao'
         }
         Update: {
           created_at?: string | null
@@ -756,6 +761,7 @@ export type Database = {
           payment_method?: string
           store_id?: string | null
           target_date?: string | null
+          transaction_type?: 'venda' | 'devolucao'
         }
         Relationships: [
           {

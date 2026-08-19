@@ -10,6 +10,7 @@ export interface RedeTransaction {
   netAmount: number;
   interest: number;
   date: string;
+  transactionType?: 'venda' | 'devolucao';
 }
 
 export interface RedeResult {
@@ -19,6 +20,7 @@ export interface RedeResult {
   totalInterest: number;
   totalNet: number;
   totalGross: number;
+  totalDevolucoes?: number;
   error?: string;
 }
 
@@ -102,6 +104,7 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
     let totalInterest = 0;
     let totalNet = 0;
     let totalGross = 0;
+    let totalDevolucoes = 0;
 
     // Os dados começam na linha seguinte ao cabeçalho
     for (let i = headerIndex + 1; i < json.length; i++) {
@@ -119,10 +122,18 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
       // Se a linha não tiver valor numérico, ignora
       if (grossRaw === undefined || grossRaw === null || grossRaw === '') continue;
 
-      let grossAmount = extractNumber(grossRaw);
-      let netAmount = extractNumber(netRaw);
+      let rawGrossNum = extractNumber(grossRaw);
+      let rawNetNum = extractNumber(netRaw);
 
-      if (grossAmount === 0 && netAmount === 0) continue;
+      if (rawGrossNum === 0 && rawNetNum === 0) continue;
+
+      // Detecção inteligente de devoluções, estornos e chargebacks
+      const rowText = row.map(c => String(c || '').toLowerCase()).join(' ');
+      const isDevolucao = rawGrossNum < 0 || rawNetNum < 0 || /devolu|estorn|cancel|chargeback|reversal/.test(rowText);
+
+      const grossAmount = Math.abs(rawGrossNum);
+      const netAmount = Math.abs(rawNetNum);
+      const transactionType: 'venda' | 'devolucao' = isDevolucao ? 'devolucao' : 'venda';
 
       let method: 'Cartão Crédito' | 'Cartão Débito' | 'PIX' | 'Outros' = 'Outros';
       if (methodRaw.includes('crédito') || methodRaw.includes('credito')) method = 'Cartão Crédito';
@@ -132,12 +143,12 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
       let interest = 0;
       // 1. Prioridade: coluna monetária explícita "valor total das taxas descontadas"
       if (totalFeeIdx !== -1 && row[totalFeeIdx]) {
-        interest = extractNumber(row[totalFeeIdx]);
+        interest = Math.abs(extractNumber(row[totalFeeIdx]));
       }
       // 2. Prioridade: soma de valor MDR + valor taxa antecipação
       if (interest === 0 && (mdrFeeIdx !== -1 || antecipacaoFeeIdx !== -1)) {
-        const mdr = mdrFeeIdx !== -1 ? extractNumber(row[mdrFeeIdx]) : 0;
-        const ant = antecipacaoFeeIdx !== -1 ? extractNumber(row[antecipacaoFeeIdx]) : 0;
+        const mdr = mdrFeeIdx !== -1 ? Math.abs(extractNumber(row[mdrFeeIdx])) : 0;
+        const ant = antecipacaoFeeIdx !== -1 ? Math.abs(extractNumber(row[antecipacaoFeeIdx])) : 0;
         interest = roundCurrency(mdr + ant);
       }
       // 3. Prioridade: diferença contábil real entre valor bruto vendido e líquido creditado
@@ -145,9 +156,13 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
         interest = roundCurrency(grossAmount - netAmount);
       }
       
-      totalGross = roundCurrency(totalGross + grossAmount);
-      totalNet = roundCurrency(totalNet + netAmount);
-      totalInterest = roundCurrency(totalInterest + interest);
+      if (isDevolucao) {
+        totalDevolucoes = roundCurrency(totalDevolucoes + netAmount);
+      } else {
+        totalGross = roundCurrency(totalGross + grossAmount);
+        totalNet = roundCurrency(totalNet + netAmount);
+        totalInterest = roundCurrency(totalInterest + interest);
+      }
 
       // Tenta achar a data na linha (formato DD/MM/YYYY ou similar)
       let rowDate = targetDate;
@@ -167,7 +182,8 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
         grossAmount,
         netAmount,
         interest,
-        date: rowDate
+        date: rowDate,
+        transactionType
       });
     }
 
@@ -176,12 +192,14 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
         sheet_name: sheetName,
         total_rows_read: json.length,
         transactions_extracted: transactions.length,
+        total_devolucoes: totalDevolucoes,
         extracted_values: transactions.map(t => ({
           date: t.date,
           method: t.method,
           grossAmount: t.grossAmount,
           netAmount: t.netAmount,
-          interest: t.interest
+          interest: t.interest,
+          transactionType: t.transactionType
         }))
       });
     }
@@ -192,7 +210,8 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
       transactions,
       totalInterest,
       totalNet,
-      totalGross
+      totalGross,
+      totalDevolucoes
     };
 
   } catch (error: any) {

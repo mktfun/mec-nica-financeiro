@@ -81,3 +81,14 @@
 - **roundCurrency** (src/lib/parsers/numberUtils.ts): Utilit�rio central de alta precis�o (Math.round((val + Number.EPSILON) * 100) / 100) para sanitizar IEEE 754. 
 
 - **Desacoplamento Marco Zero e Correção Na Loja OS (195):** RPCs `get_dashboard_metrics` e `calculate_daily_conciliation` refatoradas na migration `20260814000000_decouple_marco_zero.sql` para isolar a métrica "Na Loja OS" de `estoque_os_pendente`, garantindo que o card reflita 100% o pátio diário real e zere ao acionar o botão de limpeza.
+## Feature 240: Segregação de Devoluções Rede (Pilar 5) & Âncora Temporal de OS Pátio
+- **Tratamento Contábil de Devoluções da Maquininha Rede:**
+  - Adicionada coluna `transaction_type text NOT NULL DEFAULT 'venda' CHECK (transaction_type IN ('venda', 'devolucao'))` à tabela `pos_transactions`.
+  - Estornos, cancelamentos e devoluções da Rede agora são expurgados do saldo de vendas a compensar do Pilar 1 e computados obrigatoriamente como obrigações financeiras (Conta a Pagar) somadas em `v_subtotal_contas` no Pilar 5.
+  - Sub-linha `Devoluções REDE: - R$ X` no Pilar 5 do `ResumoDiaPanel.tsx` e 5º KPI card `Devoluções / Estornos` em `MaquininhasDetailModal.tsx`.
+- **Janela Temporal e Isolamento Retroativo no Pátio (`patio_os`):**
+  - Adicionada coluna `last_payment_date date` em `patio_os` com índice `idx_patio_os_last_payment_date`.
+  - `savePatioOsAndReceivables` registra a data do pagamento no momento do input.
+  - As RPCs `get_daily_reconciliation_summary` e `get_store_pos_triple_reconciliation` avaliam `effective_paid_value` respeitando a data consultada (`last_payment_date <= p_date`), impedindo vazamento de pagamentos futuros para conciliações de dias passados.
+- **Parsers & Importadores:**
+  - `redeParser.ts` e `useTransactions.ts` detectam devoluções automaticamente por valor negativo (`net_amount < 0`) e por texto de estorno/cancelamento.

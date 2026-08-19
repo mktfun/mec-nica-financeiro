@@ -126,10 +126,11 @@ export function ResumoDiaPanel({
   const faturamentoTotalComAjustes = faturamentoLiquidoDia + faturamentoOutrosValor;
 
   // Matemática Consolidada
+  const devolucoesRedeValor = summary?.devolucoes_rede || 0;
   const caixaAtualCalculado = saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor;
   const fluxoCaixaCalculado = caixaAtualCalculado - caixaAnteriorGlobal;
   const valorDispContasCalculado = faturamentoTotalComAjustes - fluxoCaixaCalculado;
-  const subtotalContasCalculado = jurosRedeValor + contasManualValor;
+  const subtotalContasCalculado = jurosRedeValor + contasManualValor + devolucoesRedeValor;
   const diferencaFinalCalculada = Math.abs(valorDispContasCalculado) - subtotalContasCalculado;
 
   const diferencaAbs = Math.abs(diferencaFinalCalculada);
@@ -543,6 +544,12 @@ export function ResumoDiaPanel({
                 <span className="text-zinc-500">Juros:</span>
                 <span className="text-zinc-300"><AnimatedNumber value={jurosRedeValor} format="currency" /></span>
               </div>
+              {devolucoesRedeValor > 0 && (
+                <div className="flex justify-between items-center text-rose-400 font-semibold">
+                  <span title="Devoluções e Estornos da Maquininha Rede (Conta a Pagar)">Devoluções:</span>
+                  <span>+<AnimatedNumber value={devolucoesRedeValor} format="currency" /></span>
+                </div>
+              )}
               <div className="flex justify-between items-center">
                 <span className="text-zinc-500">OFX Out:</span>
                 <span className="text-zinc-400">-{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Math.abs(totalOfxOut))}</span>
@@ -570,29 +577,27 @@ export function ResumoDiaPanel({
             </div>
 
             <div className="pt-3 border-t border-zinc-800/80">
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">
-                  Fluxo de Caixa
-                </span>
-                <span className={`text-[10px] font-mono font-semibold px-2 py-0.5 rounded ${fluxoCaixaCalculado >= 0 ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}`}>
-                  vs Anterior
-                </span>
-              </div>
-              <span className={`text-lg font-bold font-mono block ${fluxoCaixaCalculado >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-                {fluxoCaixaCalculado >= 0 ? '+ ' : ''}<AnimatedNumber value={fluxoCaixaCalculado} format="currency" />
+              <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block mb-1">
+                Fluxo de Caixa (Variação)
+              </span>
+              <span className={`text-lg font-bold font-mono block ${
+                fluxoCaixaCalculado >= 0 ? 'text-emerald-400' : 'text-rose-400'
+              }`}>
+                {fluxoCaixaCalculado >= 0 ? '+' : ''}
+                <AnimatedNumber value={fluxoCaixaCalculado} format="currency" />
               </span>
               <span className="text-[10px] text-zinc-500 font-mono mt-0.5 block">
-                Caixa Anterior: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(caixaAnteriorGlobal)}
+                vs Caixa Anterior ({new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(caixaAnteriorGlobal)})
               </span>
             </div>
           </div>
 
           {/* Coluna 2: Operação & Disponível para Contas */}
-          <div className="bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-5 flex flex-col justify-between gap-4 shadow-sm">
-            <div 
-              onClick={() => !isEditing && setIsBreakdownModalOpen(true)}
-              className={!isEditing ? "cursor-pointer group" : ""}
-            >
+          <div 
+            onClick={() => !isEditing && setIsBreakdownModalOpen(true)}
+            className={!isEditing ? "cursor-pointer group bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-5 flex flex-col justify-between gap-4 shadow-sm hover:border-zinc-700/80 transition-all" : "bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-5 flex flex-col justify-between gap-4 shadow-sm"}
+          >
+            <div>
               <div className="flex justify-between items-center mb-1">
                 <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider group-hover:text-emerald-400 transition-colors">
                   Faturamento do Dia
@@ -662,7 +667,7 @@ export function ResumoDiaPanel({
                 </span>
               </div>
               <span className="text-[10px] text-zinc-500 font-mono block">
-                Juros ({new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(jurosRedeValor)}) + Contas ({new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(contasManualValor)})
+                Juros ({new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(jurosRedeValor)}) + Contas ({new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(contasManualValor)}){devolucoesRedeValor > 0 ? ` + Devoluções (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(devolucoesRedeValor)})` : ''}
               </span>
             </div>
 

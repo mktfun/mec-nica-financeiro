@@ -85,6 +85,7 @@ export interface StoreReconciliationSummary {
   saldo_banco_ofx?: number; // Saldo puro do extrato OFX
   nao_entrou_valor?: number; // Vendas de maquininha a compensar (Não Entrou)
   rede_liquido?: number; // Total líquido das vendas na maquininha
+  rede_devolucoes?: number; // Devoluções/estornos da maquininha
   status_compensacao?: 'entrou' | 'parcial' | 'nao_entrou' | 'sem_movimento';
   maquininha: number;
   pix: number;
@@ -100,6 +101,7 @@ export interface StorePosDetail {
   rede_bruto: number;
   rede_liquido: number;
   rede_taxas: number;
+  rede_devolucoes?: number;
   total_vendas_rede: number;
   ofx_maquininhas: number;
   nao_entrou_valor: number;
@@ -114,6 +116,7 @@ export interface PosTripleReconciliationResult {
   total_rede_bruto: number;
   total_rede_liquido: number;
   total_rede_taxas: number;
+  total_devolucoes: number;
   total_ofx_maquininhas: number;
   total_nao_entrou: number;
   stores: StorePosDetail[];
@@ -129,6 +132,7 @@ export interface DailyReconciliationSummary {
   na_loja_os: number;
   contas_manual: number;
   juros_rede: number;
+  devolucoes_rede?: number;
   ofx_out: number;
   caixa_atual: number;
   caixa_anterior: number;

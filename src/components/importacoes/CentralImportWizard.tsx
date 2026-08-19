@@ -388,7 +388,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         let store_id: string | null = mapping[osResult.storeAlias];
         if (store_id === 'GLOBAL') store_id = null;
         if (!store_id) return Promise.resolve();
-        return savePatioOsAndReceivables(store_id, osResult.storeAlias, osResult.osArray, osResult.receivablesArray || []);
+        return savePatioOsAndReceivables(store_id, osResult.storeAlias, osResult.osArray, osResult.receivablesArray || [], targetDate);
       });
 
       // Maquininha (fallback)
@@ -410,7 +410,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           due_date: item.dateCredito || targetDate,
           status: 'recebido'
         }));
-        return savePatioOsAndReceivables(sid, storeName, [], parsedRecs);
+        return savePatioOsAndReceivables(sid, storeName, [], parsedRecs, targetDate);
       });
 
       // Rede
@@ -437,7 +437,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           due_date: item.date || targetDate,
           status: 'recebido'
         }));
-        return savePatioOsAndReceivables(sid, storeName, [], parsedRecs);
+        return savePatioOsAndReceivables(sid, storeName, [], parsedRecs, targetDate);
       });
 
       await Promise.all([...osPromises, ...maqPromises, ...redePromises]);

@@ -43,11 +43,11 @@ export function MaquininhasDetailModal({
       size="2xl"
     >
       <div className="space-y-6">
-        {/* Cards de Resumo Global (4 Colunas Largas e Espaçosas) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Cards de Resumo Global */}
+        <div className={`grid grid-cols-1 sm:grid-cols-2 ${(data?.total_devolucoes || 0) > 0 ? 'lg:grid-cols-5' : 'lg:grid-cols-4'} gap-3.5`}>
           
           {/* Card 1: Vendas Rede */}
-          <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-4.5 flex flex-col justify-between shadow-sm">
+          <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-4 flex flex-col justify-between shadow-sm">
             <div>
               <div className="flex items-center justify-between gap-2 mb-2">
                 <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
@@ -66,7 +66,7 @@ export function MaquininhasDetailModal({
           </div>
 
           {/* Card 2: Taxas & MDR */}
-          <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-4.5 flex flex-col justify-between shadow-sm">
+          <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-4 flex flex-col justify-between shadow-sm">
             <div>
               <div className="flex items-center justify-between gap-2 mb-2">
                 <span className="text-[11px] font-bold text-rose-400 uppercase tracking-wider flex items-center gap-1.5">
@@ -84,8 +84,29 @@ export function MaquininhasDetailModal({
             </div>
           </div>
 
-          {/* Card 3: Creditado no OFX */}
-          <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-4.5 flex flex-col justify-between shadow-sm">
+          {/* Card 3: Devoluções / Estornos (se houver) */}
+          {(data?.total_devolucoes || 0) > 0 && (
+            <div className="bg-rose-950/20 border border-rose-500/30 rounded-2xl p-4 flex flex-col justify-between shadow-sm">
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <span className="text-[11px] font-bold text-rose-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <TrendingDown size={14} className="text-rose-400" />
+                    Devoluções / Estornos
+                  </span>
+                </div>
+                <p className="text-2xl font-bold font-mono text-rose-400 tracking-tight">
+                  {formatCurrency(data?.total_devolucoes || 0)}
+                </p>
+              </div>
+              <div className="pt-2 mt-2 border-t border-rose-500/20 text-[11px] text-rose-400/80 flex justify-between items-center">
+                <span>Conta a Pagar</span>
+                <span className="bg-rose-500/10 text-rose-300 px-1.5 py-0.5 rounded text-[10px] font-bold">Pilar 5</span>
+              </div>
+            </div>
+          )}
+
+          {/* Card 4: Creditado no OFX */}
+          <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-4 flex flex-col justify-between shadow-sm">
             <div>
               <div className="flex items-center justify-between gap-2 mb-2">
                 <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
@@ -103,8 +124,8 @@ export function MaquininhasDetailModal({
             </div>
           </div>
 
-          {/* Card 4: A Compensar */}
-          <div className="bg-amber-950/20 border border-amber-500/30 rounded-2xl p-4.5 flex flex-col justify-between shadow-sm">
+          {/* Card 5: A Compensar */}
+          <div className="bg-amber-950/20 border border-amber-500/30 rounded-2xl p-4 flex flex-col justify-between shadow-sm">
             <div>
               <div className="flex items-center justify-between gap-2 mb-2">
                 <span className="text-[11px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
@@ -162,8 +183,13 @@ export function MaquininhasDetailModal({
                         <td className="py-3.5 px-4 font-sans font-semibold text-zinc-100 text-sm">
                           {st.store_name}
                         </td>
-                        <td className="py-3.5 px-4 text-right text-zinc-200 font-bold text-sm">
-                          {formatCurrency(st.rede_liquido)}
+                        <td className="py-3.5 px-4 text-right text-sm">
+                          <span className="text-zinc-200 font-bold block">{formatCurrency(st.rede_liquido)}</span>
+                          {(st.rede_devolucoes || 0) > 0 && (
+                            <span className="text-[10px] text-rose-400 block font-normal font-mono">
+                              Devol: -{formatCurrency(st.rede_devolucoes || 0)}
+                            </span>
+                          )}
                         </td>
                         <td className="py-3.5 px-4 text-right text-emerald-400 font-bold text-sm">
                           {formatCurrency(st.ofx_maquininhas)}

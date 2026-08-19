@@ -396,19 +396,28 @@ export function useBulkInsertTransactions() {
       }
 
       if (!error && otherTxs.length > 0) {
-        const posTxs = otherTxs.filter((t: any) => t.source === 'rede' || t.source === 'maquininha').map((t: any) => ({
-             store_id: t.store_id,
-             machine_name: t.counterpart_name || t.title || 'Maquininha',
-             payment_method: t.payment_method || 'Outros',
-             gross_amount: t.gross_amount || t.amount,
-             net_amount: t.amount,
-             fee_amount: t.fee_amount || 0,
-             occurred_at: t.occurred_at || t.date || new Date().toISOString(),
-             matched_os_number: t.os_number || t.matched_os_number || null,
-             import_batch_id: t.import_batch_id || null,
-             target_date: t.target_date || null,
-             dedup_hash: t.dedup_hash || null
-        }));
+        const posTxs = otherTxs.filter((t: any) => t.source === 'rede' || t.source === 'maquininha').map((t: any) => {
+          const isDevolucao = t.transaction_type === 'devolucao' || 
+            t.transactionType === 'devolucao' || 
+            Number(t.amount || 0) < 0 || 
+            Number(t.gross_amount || 0) < 0 || 
+            /devolu|estorn|cancel|chargeback|reversal/.test(String(t.counterpart_name || t.title || t.payment_method || '').toLowerCase());
+          
+          return {
+            store_id: t.store_id,
+            machine_name: t.counterpart_name || t.title || 'Maquininha',
+            payment_method: t.payment_method || 'Outros',
+            gross_amount: Math.abs(t.gross_amount || t.amount || 0),
+            net_amount: Math.abs(t.amount || 0),
+            fee_amount: Math.abs(t.fee_amount || 0),
+            occurred_at: t.occurred_at || t.date || new Date().toISOString(),
+            matched_os_number: t.os_number || t.matched_os_number || null,
+            import_batch_id: t.import_batch_id || null,
+            target_date: t.target_date || null,
+            dedup_hash: t.dedup_hash || null,
+            transaction_type: isDevolucao ? 'devolucao' : 'venda'
+          };
+        });
         
         if (posTxs.length > 0) {
           const { data: d2, error: e2 } = await supabase

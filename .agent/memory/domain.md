@@ -253,3 +253,44 @@
 **Risco identificado:** A adquirente pode aplicar antecipação automática ou descontos operacionais (aluguel de POS) que afetam o valor líquido da venda se não isolados linha a linha.
 
 **Não fazer:** Nunca calcular o MDR pela média simples das vendas sem ponderar pelo valor bruto transacionado de cada bandeira/modalidade.
+
+## [2026-08-19] - [Feature IDs: 237, 238, 239 - Redesign ResumoDiaPanel, RPC Limpeza Marco Zero, Modal Maquininhas Widescreen]
+
+**Contexto:** Três specs lançadas no mesmo commit que evoluem o cockpit financeiro de fechamento diário e corrigem problemas críticos de RPC no Supabase.
+
+**Regra aprendida:**
+
+### Feature 237 - Redesign Visual e Descompressão do Painel de Resumo do Dia (ResumoDiaPanel.tsx)
+1. **Grid dos 5 Pilares:** O layout correto é grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3.5 com cards individuais estilo ounded-2xl bg-zinc-900/70 border border-zinc-800/80 flex flex-col justify-between hover:border-zinc-700/80 transition-all shadow-sm.
+2. **Sub-linhas alinhadas nos cards:** Card 1 (Saldo Bancos) mostra sub-linhas OFX: R$ ... e + Maq: + R$ ... em layout horizontal (lex justify-between) com ont-mono text-[11px], separados por order-t border-zinc-800/80.
+3. **Cockpit de Fechamento em 3 Colunas Balanceadas:** Área inferior reorganizada em 3 colunas harmoniosas - Dinâmica de Caixa | Operação & Disponível | Balanço do Fechamento & Diferença Final.
+4. **Tipografia dos pilares:** Valores principais usam 	ext-xl sm:text-2xl font-bold font-mono tracking-tight. Labels usam 	ext-[11px] font-bold text-zinc-400 uppercase tracking-wider.
+5. **Ícones dos pilares:** Cada card tem um icon badge w-7 h-7 rounded-lg bg-{cor}-500/10 text-{cor}-400 flex items-center justify-center shrink-0 com ícone de 14px.
+6. **Cores dos pilares:** Card 1 (Saldo Bancos) = cyan, Card 2 (Dinheiro MP) = emerald, uniformizar com zinc-950 como bg-canvas.
+
+### Feature 238 - RPC Limpeza Atômica e Correção do Marco Zero
+1. **RPC clear_all_financial_data():** Função PL/pgSQL com SECURITY DEFINER que trunca com CASCADE as 20 tabelas transacionais: ofx_transactions, pos_transactions, patio_os, estoque_os_pendente, econciliations, econciliacoes_triplas, daily_snapshots, dashboard_daily_logs, conciliation_daily_logs, conciliation_matches, manual_transactions, eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_contas, oficina_os_cache, udit_logs, lerts.
+2. **Fix crítico da RPC process_marco_zero_import:** Erro operator does not exist: date = text é resolvido com _target_date date := p_target_date::date. Sempre fazer casting explícito de datas em RPCs PL/pgSQL.
+3. **Saldo Inicial do Marco Zero (14/08/2026):** Saldo Bancário = R$ 170.244,95 | Dinheiro em Caixa = R$ 13.066,00 | A Receber = R$ 10.694,50 | Estoque/OS Pátio = R$ 107.229,76 | Patrimônio Inicial = R$ 289.386,12.
+4. **marcoZeroParser.ts Atualizado:** Varredura multi-linha da aba SALDO - o nome da loja está em uma linha e o saldo bancário (Saldo Banco Itaú:) está na linha seguinte. currentStoreContext é mantido entre linhas para capturar corretamente o saldo de cada loja.
+5. **Desbloqueio do seletor de datas:** Hook useAvailableConciliacaoDates indexa automaticamente datas de pos_transactions, patio_os, ofx_transactions, daily_snapshots e o dia atual, garantindo navegação fluida sem travamento.
+
+### Feature 239 - Modal Maquininhas 2XL e Refinamento dos Cards de Lojas
+1. **Modal.tsx com suporte a size="2xl":** Adicionado 2xl: "max-w-6xl" (1152px) ao mapa de tamanhos do componente central de modais. Usar size="2xl" para modais de alta densidade de dados.
+2. **MaquininhasDetailModal.tsx:** 4 KPIs espaçosos com cards individuais e tipografia de alta fidelidade. Tabela de conciliação tripla expandida sem scroll horizontal, com badges ENTROU, PARCIAL, NÃO ENTROU.
+3. **Cards das Filiais em conciliacao.index.tsx:** Layout 2-Tier: Nível 1 (identidade: indicador de conformidade, nome, chip st-XX, badge de maquininha, diferença apurada, botão Raio-X) + Nível 2 (grid das 6 métricas: SALDO BANCOS, MAQUININHA, PIX, NA LOJA OS, PREVISTO, DIFERENÇA).
+4. **Resolução de conflitos PostgreSQL:** Sempre verificar sobrecargas (overloads) antes de criar RPCs com mesmo nome mas assinaturas diferentes. Fazer DROP FUNCTION das versões conflitantes antes de recriar.
+
+**Risco identificado:** Conflito de sobrecarga de RPCs no PostgreSQL causa erro de ambiguidade (unction X is not unique) ao invocar via Supabase JS Client.
+
+**Não fazer:** Nunca criar uma nova versão de RPC sem primeiro verificar e eliminar sobrecargas existentes com DROP FUNCTION public.nome_rpc(tipos_args).
+
+### Feature 240 - Fix de Devoluções da Rede e Janela Temporal de OS no Pátio (2026-08-19)
+1. **Devoluções da Rede (Conta a Pagar):** Transações de estorno/chargeback/devolução da maquininha Rede NÃO devem ser somadas no Pilar 1 (Cartões a Compensar / Saldo Bancos). Elas representam obrigações/saídas para a empresa e são obrigatoriamente somadas em `v_subtotal_contas` no Pilar 5 (Contas do Dia / Contas a Pagar).
+2. **Classificação em `pos_transactions`:** Coluna `transaction_type text NOT NULL DEFAULT 'venda' CHECK (transaction_type IN ('venda', 'devolucao'))`. Devoluções detectadas por `net_amount < 0`, `gross_amount < 0` ou regex `/devolu|estorn|cancel|chargeback|reversal/`.
+3. **Âncora Temporal em `patio_os` (`last_payment_date`):** Quando uma OS tem pagamentos parciais atualizados em data posterior à data consultada (`last_payment_date > p_date`), a RPC `get_daily_reconciliation_summary` desconsidera o pagamento futuro e mantém o saldo pendente íntegro na data histórica. OSs legadas sem `last_payment_date` (NULL) utilizam `paid_value` atual, mantendo zero regressão.
+4. **Interface Visual:** Pilar 5 em `ResumoDiaPanel.tsx` exibe sub-linha `Devoluções REDE: - R$ X` (apenas quando `devolucoes_rede > 0`). `MaquininhasDetailModal.tsx` exibe 5º KPI Card `Devoluções / Estornos` com badge Pilar 5.
+
+**Risco identificado:** A ausência de âncora temporal no `paid_value` de `patio_os` fazia com que pagamentos recebidos hoje alterassem retroativamente o "Na Loja OS" de dias anteriores. A segregação de devoluções sem coluna de tipo infle o saldo do Pilar 1.
+
+**Não fazer:** Nunca misturar estornos/devoluções de POS no somatório de vendas líquidas a compensar. Devolução de POS é passivo/saída de caixa.
