@@ -224,18 +224,31 @@ export function ResumoDiaPanel({
             <button
               onClick={() => onDayChange(-1)}
               disabled={availableDates.length > 0 && selectedDate === availableDates[0]}
-              className="p-2 hover:bg-white/10 rounded-lg text-white/70 disabled:opacity-30 transition-colors"
+              className="p-2 hover:bg-white/10 rounded-lg text-white/70 disabled:opacity-30 transition-colors cursor-pointer"
+              title="Dia anterior"
             >
               <ChevronRight size={18} className="rotate-180" />
             </button>
-            <div className="flex items-center gap-2 px-3 py-1 font-mono font-bold text-sm text-emerald-400">
+            <div className="relative flex items-center gap-2 px-3 py-1 font-mono font-bold text-sm text-emerald-400 cursor-pointer hover:text-emerald-300">
               <CalendarDays size={16} />
-              {selectedDate.split('-').reverse().join('/')}
+              <span>{selectedDate ? selectedDate.split('-').reverse().join('/') : 'Carregando...'}</span>
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => {
+                  if (e.target.value && onDateSelect) {
+                    onDateSelect(e.target.value);
+                  }
+                }}
+                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                title="Clique para escolher uma data"
+              />
             </div>
             <button
               onClick={() => onDayChange(1)}
               disabled={availableDates.length > 0 && selectedDate === availableDates[availableDates.length - 1]}
-              className="p-2 hover:bg-white/10 rounded-lg text-white/70 disabled:opacity-30 transition-colors"
+              className="p-2 hover:bg-white/10 rounded-lg text-white/70 disabled:opacity-30 transition-colors cursor-pointer"
+              title="Próximo dia"
             >
               <ChevronRight size={18} />
             </button>
@@ -304,21 +317,32 @@ export function ResumoDiaPanel({
               <button
                 onClick={() => onDayChange(-1)}
                 disabled={availableDates.length > 0 && selectedDate === availableDates[0]}
-                className="p-2 hover:bg-zinc-800 rounded-lg text-zinc-400 hover:text-white disabled:opacity-30 transition-colors"
+                className="p-2 hover:bg-zinc-800 rounded-lg text-zinc-400 hover:text-white disabled:opacity-30 transition-colors cursor-pointer"
                 title="Dia anterior"
               >
                 <ChevronRight size={16} className="rotate-180" />
               </button>
 
-              <div className="flex items-center gap-2 px-3 py-1 font-mono font-bold text-sm text-zinc-100">
+              <div className="relative flex items-center gap-2 px-3 py-1 font-mono font-bold text-sm text-zinc-100 cursor-pointer hover:text-indigo-300">
                 <CalendarDays size={16} className="text-indigo-400" />
-                {selectedDate ? selectedDate.split('-').reverse().join('/') : 'Carregando...'}
+                <span>{selectedDate ? selectedDate.split('-').reverse().join('/') : 'Carregando...'}</span>
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => {
+                    if (e.target.value && onDateSelect) {
+                      onDateSelect(e.target.value);
+                    }
+                  }}
+                  className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                  title="Clique para escolher uma data no calendário"
+                />
               </div>
 
               <button
                 onClick={() => onDayChange(1)}
                 disabled={availableDates.length > 0 && selectedDate === availableDates[availableDates.length - 1]}
-                className="p-2 hover:bg-zinc-800 rounded-lg text-zinc-400 hover:text-white disabled:opacity-30 transition-colors"
+                className="p-2 hover:bg-zinc-800 rounded-lg text-zinc-400 hover:text-white disabled:opacity-30 transition-colors cursor-pointer"
                 title="Próximo dia"
               >
                 <ChevronRight size={16} />

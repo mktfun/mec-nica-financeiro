@@ -1,4 +1,4 @@
-﻿import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { getDefaultDate } from '@/lib/utils';
 import { useSaveImportedReport } from './useConciliacao';
@@ -402,29 +402,20 @@ export function useClearAllData() {
 
   return useMutation({
     mutationFn: async () => {
-      const tables = [
-        'conciliation_matches',
-        'transactions',
-        'patio_os',
-        'receivables',
-        'reconciliations',
-        'import_logs',
-        'import_batches',
-        'cash_registers',
-        'reconciliacoes_triplas',
-        'daily_snapshots'
-      ];
-
-      for (const table of tables) {
-        try {
-          await supabase.from(table as any).delete().neq('id', '00000000-0000-0000-0000-000000000000');
-        } catch (e) {
-          console.warn(`Clean table ${table} notice:`, e);
-        }
+      // 1. Chamada atômica à RPC SECURITY DEFINER no PostgreSQL que trunca todas as 20 tabelas
+      const { data, error } = await (supabase as any).rpc('clear_all_financial_data');
+      if (error) {
+        console.error('Erro na RPC clear_all_financial_data:', error);
+        throw error;
       }
+      return data;
     },
     onSuccess: () => {
       qc.clear();
+      toast.success('Todas as tabelas financeiras foram 100% zeradas no banco de dados!');
+    },
+    onError: (err: any) => {
+      toast.error('Erro ao limpar dados do banco: ' + (err?.message || 'Erro desconhecido'));
     }
   });
 }

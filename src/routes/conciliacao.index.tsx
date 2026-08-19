@@ -47,17 +47,22 @@ function ConciliacaoPage() {
   const isApproved = summary?.status_geral === 'approved';
 
   const handleDayChange = (offset: number) => {
-    if (availableDates.length === 0) return;
-    
-    const currentIndex = availableDates.indexOf(selectedDate);
-    if (currentIndex === -1) {
-      setSelectedDate(availableDates[availableDates.length - 1]);
-      return;
+    if (availableDates.length > 0) {
+      const currentIndex = availableDates.indexOf(selectedDate);
+      if (currentIndex !== -1) {
+        const newIndex = currentIndex + offset;
+        if (newIndex >= 0 && newIndex < availableDates.length) {
+          setSelectedDate(availableDates[newIndex]);
+          return;
+        }
+      }
     }
     
-    const newIndex = currentIndex + offset;
-    if (newIndex >= 0 && newIndex < availableDates.length) {
-      setSelectedDate(availableDates[newIndex]);
+    // Fallback fluido: adiciona ou subtrai 1 dia diretamente no calendário
+    if (selectedDate) {
+      const d = new Date(selectedDate + 'T12:00:00Z');
+      d.setDate(d.getDate() + offset);
+      setSelectedDate(d.toISOString().substring(0, 10));
     }
   };
 
@@ -148,22 +153,30 @@ function ConciliacaoPage() {
               summary={summary}
             />
 
-            {/* Lista de Lojas Visual Original */}
+            {/* Lista de Lojas — Fechamento Consolidado */}
             <div className="space-y-4 pt-4">
-              <h3 className="text-lg font-semibold flex items-center gap-2 mb-2">
-                <Store size={18} className="text-[var(--color-primary)]" />
-                Fechamento por Loja
-              </h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-base sm:text-lg font-bold text-zinc-100 flex items-center gap-2">
+                  <Store size={18} className="text-indigo-400" />
+                  Fechamento por Filial
+                </h3>
+                <span className="text-xs text-zinc-500 font-mono">
+                  {stores.length} lojas monitoradas
+                </span>
+              </div>
               
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 gap-3.5">
                 {stores.map((store) => {
                   const log = storesList.find(l => l.store_id === store.id) || {
                     saldo_banco: 0,
+                    saldo_banco_ofx: 0,
                     maquininha: 0,
                     pix: 0,
                     na_loja_os: 0,
                     previsto_ofx: 0,
                     diferenca: 0,
+                    status_compensacao: 'sem_movimento' as const,
+                    nao_entrou_valor: 0,
                     status: 'pending' as const
                   };
 
@@ -174,132 +187,176 @@ function ConciliacaoPage() {
                   const diferencaCalculada = Math.max(0, (log.diferenca || 0) - storeAllJustified);
                   const isDiferencaOk = Math.abs(diferencaCalculada) <= 50 || log.status === 'approved';
 
-
                   return (
                     <div key={store.id} className="relative group">
-                      <Link to="/conciliacao/$lojaId" params={{ lojaId: store.id }} search={{ date: selectedDate }} className="block">
-                        <Card className="p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-6 transition-all hover:scale-[1.01] hover:bg-white/10 hover:border-white/20 cursor-pointer shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] border border-white/5 backdrop-blur-md">
+                      <Link
+                        to="/conciliacao/$lojaId"
+                        params={{ lojaId: store.id }}
+                        search={{ date: selectedDate }}
+                        className="block"
+                      >
+                        <div className="bg-zinc-900/70 hover:bg-zinc-900 border border-zinc-800/80 hover:border-zinc-700/90 rounded-2xl p-4 sm:p-5 transition-all shadow-sm cursor-pointer">
                           
-                          {/* Nome da Loja & Status */}
-                          <div className="w-full xl:w-64 shrink-0 flex items-center gap-4">
-                            <div className={`w-2 h-14 rounded-full ${isDiferencaOk ? 'bg-[var(--color-accent-teal)]' : 'bg-[var(--color-accent-danger)]'}`} />
-                            <div>
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <p className="font-semibold text-base sm:text-lg text-white leading-tight">{store.name}</p>
-                                {log.status_compensacao === 'entrou' && (
-                                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                                    ENTROU
-                                  </span>
-                                )}
-                                {(log.status_compensacao === 'parcial' || log.status_compensacao === 'nao_entrou') && (log.nao_entrou_valor || 0) > 0 && (
-                                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
-                                    NÃO ENTROU (+ {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(log.nao_entrou_valor || 0)})
-                                  </span>
-                                )}
-                              </div>
-                              <p className="text-xs text-[var(--text-tertiary)] font-mono mt-0.5">ID: {store.id}</p>
-                            </div>
-                          </div>
-
-                          {/* Painel Único de Fundo Contínuo Envelopando as 6 Métricas */}
-                          <div className="bg-black/25 p-4 sm:p-5 rounded-2xl border border-white/5 flex-1 font-sans tabular-nums text-xs">
-                            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6 xl:gap-8 items-center">
-                              
-                              {/* 1. Saldo Bancos + Cartões */}
+                          {/* Cabeçalho da Loja: Nome, Badges & Ação */}
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-zinc-800/80">
+                            <div className="flex items-center gap-3">
+                              <div className={`w-3 h-3 rounded-full shrink-0 ${isDiferencaOk ? 'bg-emerald-400 ring-4 ring-emerald-500/20' : 'bg-rose-500 ring-4 ring-rose-500/20'}`} />
                               <div>
-                                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
-                                  Saldo Bancos + Cartões
-                                </span>
-                                <p className="font-bold text-sm text-[var(--color-accent-light-blue)] font-mono">
-                                  <AnimatedNumber value={log.saldo_banco} format="currency" />
-                                </p>
-                                <div className="text-[10px] text-[var(--text-tertiary)] mt-0.5 flex flex-col font-mono">
-                                  <span>OFX: <AnimatedNumber value={log.saldo_banco_ofx ?? log.saldo_banco} format="currency" /></span>
-                                  {(log.nao_entrou_valor || 0) > 0 && (
-                                    <span className="text-amber-400 font-semibold">
-                                      + Maq: + {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(log.nao_entrou_valor || 0)}
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <h4 className="font-bold text-base text-zinc-100 leading-snug">
+                                    {store.name}
+                                  </h4>
+                                  <span className="text-[11px] font-mono text-zinc-500 bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800/80">
+                                    {store.id}
+                                  </span>
+                                  {log.status_compensacao === 'entrou' && (
+                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                                      MAQ: ENTROU
+                                    </span>
+                                  )}
+                                  {(log.status_compensacao === 'parcial' || log.status_compensacao === 'nao_entrou') && (log.nao_entrou_valor || 0) > 0 && (
+                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                                      NÃO ENTROU (+ {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(log.nao_entrou_valor || 0)})
                                     </span>
                                   )}
                                 </div>
                               </div>
+                            </div>
 
-                              {/* 2. Maquininha */}
-                              <div>
-                                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
-                                  Maquininha
-                                </span>
-                                <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
-                                  <AnimatedNumber value={log.maquininha} format="currency" />
-                                </p>
-                              </div>
+                            <div className="flex items-center gap-2.5 self-end sm:self-auto">
+                              <span className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold ${
+                                isDiferencaOk
+                                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                  : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                              }`}>
+                                Dif: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(diferencaCalculada)}
+                              </span>
 
-                              {/* 3. PIX */}
-                              <div>
-                                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
-                                  PIX
-                                </span>
-                                <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
-                                  <AnimatedNumber value={log.pix} format="currency" />
-                                </p>
-                              </div>
-
-                              {/* 4. Na Loja OS */}
-                              <div>
-                                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
-                                  Na Loja OS
-                                </span>
-                                <p className="font-bold text-sm text-[var(--color-accent-warning)] font-mono">
-                                  <AnimatedNumber value={log.na_loja_os} format="currency" />
-                                </p>
-                              </div>
-
-                              {/* 5. Previsto */}
-                              <div>
-                                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
-                                  Previsto
-                                </span>
-                                <p className="font-bold text-sm text-[var(--text-primary)] font-mono">
-                                  <AnimatedNumber value={previstoAjustado} format="currency" />
-                                </p>
-                                {storeAllJustified > 0 && (
-                                  <span className="text-[9px] text-blue-400 block mt-0.5 font-medium">
-                                    (- <AnimatedNumber value={storeAllJustified} format="currency" /> just.)
-                                  </span>
-                                )}
-                              </div>
-
-                              {/* 6. Diferença */}
-                              <div className="xl:border-l xl:border-white/10 xl:pl-6">
-                                <span className={`text-[10px] uppercase font-bold tracking-wider block mb-1 ${
-                                  isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
-                                }`}>
-                                  Diferença
-                                </span>
-                                <p className={`font-bold text-sm font-mono ${isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
-                                  <AnimatedNumber value={diferencaCalculada} format="currency" />
-                                </p>
-                              </div>
-
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  e.preventDefault();
+                                  setBreakdownStore({ id: store.id, name: store.name });
+                                }}
+                                title="Abrir Raio-X da loja"
+                                className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700/60 transition-colors"
+                              >
+                                <Search size={12} />
+                                Raio-X
+                              </button>
                             </div>
                           </div>
 
-                        </Card>
-                      </Link>
+                          {/* Grid das 6 Métricas Perfeitamente Alinhadas */}
+                          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-3.5 font-sans tabular-nums">
+                            
+                            {/* 1. Saldo Bancos */}
+                            <div className="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/60">
+                              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
+                                SALDO BANCOS
+                              </span>
+                              <p className="font-bold text-sm sm:text-base text-cyan-300 font-mono truncate">
+                                <AnimatedNumber value={log.saldo_banco} format="currency" />
+                              </p>
+                              <div className="text-[10px] text-zinc-500 mt-1 font-mono flex flex-col gap-0.5">
+                                <span>OFX: <AnimatedNumber value={log.saldo_banco_ofx ?? log.saldo_banco} format="currency" /></span>
+                                {(log.nao_entrou_valor || 0) > 0 && (
+                                  <span className="text-amber-400 font-bold">
+                                    + Maq: +{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(log.nao_entrou_valor || 0)}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
 
-                      {/* Botão Raio-X — flutuante sobre o Card, fora do Link para não navegar */}
-                      <button
-                        onClick={(e) => { e.stopPropagation(); e.preventDefault(); setBreakdownStore({ id: store.id, name: store.name }); }}
-                        title="Ver transações detalhadas desta loja"
-                        className="absolute top-3 right-3 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-semibold bg-[var(--bg-canvas)]/80 border border-[var(--border-subtle)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)] hover:border-[var(--color-primary)]/40 transition-all opacity-0 group-hover:opacity-100"
-                      >
-                        <Search size={11} />
-                        Raio-X
-                      </button>
+                            {/* 2. Maquininha */}
+                            <div className="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/60">
+                              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
+                                MAQUININHA
+                              </span>
+                              <p className="font-bold text-sm sm:text-base text-indigo-400 font-mono truncate">
+                                <AnimatedNumber value={log.maquininha} format="currency" />
+                              </p>
+                              <span className="text-[10px] text-zinc-500 mt-1 block">
+                                Rede Cartões
+                              </span>
+                            </div>
+
+                            {/* 3. PIX */}
+                            <div className="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/60">
+                              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
+                                PIX
+                              </span>
+                              <p className="font-bold text-sm sm:text-base text-blue-400 font-mono truncate">
+                                <AnimatedNumber value={log.pix} format="currency" />
+                              </p>
+                              <span className="text-[10px] text-zinc-500 mt-1 block">
+                                Entradas PIX
+                              </span>
+                            </div>
+
+                            {/* 4. Na Loja OS */}
+                            <div className="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/60">
+                              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
+                                NA LOJA (OS)
+                              </span>
+                              <p className="font-bold text-sm sm:text-base text-amber-400 font-mono truncate">
+                                <AnimatedNumber value={log.na_loja_os} format="currency" />
+                              </p>
+                              <span className="text-[10px] text-zinc-500 mt-1 block">
+                                Pátio Aberto
+                              </span>
+                            </div>
+
+                            {/* 5. Previsto */}
+                            <div className="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/60">
+                              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
+                                PREVISTO
+                              </span>
+                              <p className="font-bold text-sm sm:text-base text-zinc-100 font-mono truncate">
+                                <AnimatedNumber value={previstoAjustado} format="currency" />
+                              </p>
+                              {storeAllJustified > 0 ? (
+                                <span className="text-[10px] text-blue-400 mt-1 block font-medium">
+                                  -{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(storeAllJustified)} just.
+                                </span>
+                              ) : (
+                                <span className="text-[10px] text-zinc-500 mt-1 block">
+                                  Faturamento apurado
+                                </span>
+                              )}
+                            </div>
+
+                            {/* 6. Diferença */}
+                            <div className={`p-2.5 rounded-xl border ${
+                              isDiferencaOk
+                                ? 'bg-emerald-950/20 border-emerald-500/30'
+                                : 'bg-rose-950/20 border-rose-500/30'
+                            }`}>
+                              <span className={`text-[10px] font-bold uppercase tracking-wider block mb-1 ${
+                                isDiferencaOk ? 'text-emerald-400' : 'text-rose-400'
+                              }`}>
+                                DIFERENÇA
+                              </span>
+                              <p className={`font-bold text-sm sm:text-base font-mono truncate ${
+                                isDiferencaOk ? 'text-emerald-400' : 'text-rose-400'
+                              }`}>
+                                <AnimatedNumber value={diferencaCalculada} format="currency" />
+                              </p>
+                              <span className={`text-[10px] mt-1 block font-semibold ${
+                                isDiferencaOk ? 'text-emerald-500' : 'text-rose-400'
+                              }`}>
+                                {isDiferencaOk ? '✓ Aprovado' : '⚠ Divergência'}
+                              </span>
+                            </div>
+
+                          </div>
+
+                        </div>
+                      </Link>
                     </div>
                   );
                 })}
-
-                </div>
+              </div>
             </div>
 
             {/* BreakdownModal — Raio-X por Loja */}

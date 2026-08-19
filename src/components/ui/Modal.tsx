@@ -8,10 +8,21 @@ interface ModalProps {
   children: ReactNode;
   footer?: ReactNode;
   position?: "center" | "right";
+  size?: "sm" | "md" | "lg" | "xl" | "2xl" | "full";
 }
 
-export function Modal({ isOpen, onClose, title, children, footer, position = "center" }: ModalProps) {
+const sizeClasses: Record<string, string> = {
+  sm: "max-w-sm",
+  md: "max-w-md",
+  lg: "max-w-2xl",
+  xl: "max-w-4xl",
+  "2xl": "max-w-6xl",
+  full: "max-w-[95vw]",
+};
+
+export function Modal({ isOpen, onClose, title, children, footer, position = "center", size = "md" }: ModalProps) {
   const isSheet = position === "right";
+  const maxWidthClass = sizeClasses[size] || "max-w-lg";
 
   return (
     <AnimatePresence>
@@ -36,7 +47,7 @@ export function Modal({ isOpen, onClose, title, children, footer, position = "ce
             className={`pointer-events-auto bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] shadow-2xl flex flex-col overflow-hidden ${
               isSheet
                 ? "absolute top-0 right-0 h-full w-full max-w-md rounded-l-[var(--radius-xl)]"
-                : "relative w-full max-w-lg rounded-[var(--radius-xl)] max-h-[85vh] m-4"
+                : `relative w-full ${maxWidthClass} rounded-[var(--radius-xl)] max-h-[85vh] m-4`
             }`}
           >
             {/* Header */}

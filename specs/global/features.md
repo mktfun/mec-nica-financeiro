@@ -106,6 +106,26 @@
   3. *Balanço do Fechamento & Diferença Final:* Card unificado com Total de Contas a Pagar, Diferença Final apurada em destaque e badge de conformidade ($\pm \text{R\$ 50}$).
 - **Eliminação de Ruído Visual:** Remoção de frases e micro-rótulos redundantes que poluíam o painel, gerando uma experiência limpa de padrão FinTech executivo.
 
+## Feature 238: RPC de Limpeza Geral Atômica & Sincronização e Desbloqueio de Datas do Marco Zero
+- **RPC `clear_all_financial_data()` no PostgreSQL (`SECURITY DEFINER`):** Truncamento atômico com `CASCADE` das 20 tabelas transacionais (`ofx_transactions`, `pos_transactions`, `patio_os`, `estoque_os_pendente`, `reconciliations`, `daily_snapshots`, etc.), garantindo zeração 100% real no banco e no React Query ao clicar no botão de limpeza.
+- **Correção da RPC `process_marco_zero_import`:** Fix do erro de casting `operator does not exist: date = text`, gravando `saldo_bancario` (R$ 170.244,95) e `total_patio` (R$ 107.229,76) reais no `daily_snapshots`.
+- **Aperfeiçoamento do `marcoZeroParser.ts`:** Varredura robusta multi-linha da aba `SALDO` e extração precisa de `saldoBancos` e `totalPatio`.
+- **Desbloqueio Total de Navegação e Seletor de Datas:**
+  - Inclusão de `<input type="date">` nativo e interativo nos headers de conciliação diária e do card de Marco Zero em `ResumoDiaPanel.tsx`.
+  - Atualização do hook `useAvailableConciliacaoDates` para indexar automaticamente datas de `pos_transactions`, `patio_os`, `ofx_transactions`, `daily_snapshots` e o dia atual.
+  - Navegação fluida com fallbacks para evitar travamento em qualquer data específica (14/08, 18/08, 19/08, etc.).
+
+## Feature 239: Redesign Widescreen do Modal de Maquininhas & Refinamento dos Cards de Lojas
+- **Modal Widescreen 2XL (`Modal.tsx` & `MaquininhasDetailModal.tsx`):**
+  - Adição do controle dinâmico de largura `size="2xl"` (`max-w-6xl`) no componente `Modal.tsx`.
+  - Expansão do modal de maquininhas: visualização dos 4 KPIs sem quebra de números (`R$ 36.317,07`) e tabela de conciliação tripla ampla com status claros (`ENTROU`, `PARCIAL`, `NÃO ENTROU`) e transações OFX vinculadas.
+- **Refinamento dos Cards de Fechamento por Loja (`conciliacao.index.tsx`):**
+  - Layout 2-Tier com cabeçalho limpo (identidade da filial, chips de status da maquininha e conformidade) e grid de 6 métricas proporcionais e alinhadas (`SALDO BANCOS`, `MAQUININHA`, `PIX`, `NA LOJA OS`, `PREVISTO`, `DIFERENÇA`).
+- **Resolução de Conflitos de Sobrecarga no PostgreSQL:**
+  - Eliminação de assinaturas duplicadas para `process_marco_zero_import` e `get_daily_reconciliation_summary`, garantindo chamadas RPC 100% livres de erros de ambiguidade no Supabase.
+
+
+
 
 
 
