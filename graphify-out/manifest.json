@@ -935,8 +935,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1787148252.912578,
-    "ast_hash": "f7d8e6d7d25571444fa07ccd8dcd708c",
+    "mtime": 1787149327.1546938,
+    "ast_hash": "ae5ec8482213509fa6d474cc46618a40",
     "semantic_hash": ""
   },
   "src/components/dashboard/AlertResolveDialog.tsx": {
@@ -1315,8 +1315,8 @@
     "semantic_hash": ""
   },
   "src/routes/conciliacao.index.tsx": {
-    "mtime": 1787146680.6026165,
-    "ast_hash": "8b4dcb725bfa1c01c1e83c361ddbcd6b",
+    "mtime": 1787149389.2850542,
+    "ast_hash": "0946b18ab19a3c06cdd8b581d8b3775f",
     "semantic_hash": ""
   },
   "src/routes/configuracoes.tsx": {
@@ -7614,21 +7614,6 @@
     "ast_hash": "211b6dcb087bd609d7805aee97820751",
     "semantic_hash": ""
   },
-  "specs/240-fix-devolucoes-rede-e-janela-temporal-patio-os/design.md": {
-    "mtime": 1787147361.8046587,
-    "ast_hash": "b435f74bdb16a1acf872877a7fc34779",
-    "semantic_hash": ""
-  },
-  "specs/240-fix-devolucoes-rede-e-janela-temporal-patio-os/proposal.md": {
-    "mtime": 1787147311.304768,
-    "ast_hash": "849e461f6d59947c3908c89155bce408",
-    "semantic_hash": ""
-  },
-  "specs/240-fix-devolucoes-rede-e-janela-temporal-patio-os/spec-plan.md": {
-    "mtime": 1787148326.267118,
-    "ast_hash": "85124c05291233c50f9526627ada9316",
-    "semantic_hash": ""
-  },
   "specs/archive/200-multi-canal-restaurantes/design.md": {
     "mtime": 1787013838.0606844,
     "ast_hash": "28ed803ef29a55fffbbdad24014fbd78",
@@ -8037,6 +8022,41 @@
   "specs/archive/239-redesign-modal-maquininhas-e-cards-fechamento-lojas/walkthrough.md": {
     "mtime": 1787146680.5930688,
     "ast_hash": "779ec5ab6eaed19a02165b43af07e458",
+    "semantic_hash": ""
+  },
+  "specs/241-restaurar-design-cards-lojas-e-resumo-dia/design.md": {
+    "mtime": 1787149209.99096,
+    "ast_hash": "90a02f972de54f6383331eada71e7371",
+    "semantic_hash": ""
+  },
+  "specs/241-restaurar-design-cards-lojas-e-resumo-dia/proposal.md": {
+    "mtime": 1787149196.5726683,
+    "ast_hash": "6062aed71483f6b3d46efd7f97e974e7",
+    "semantic_hash": ""
+  },
+  "specs/241-restaurar-design-cards-lojas-e-resumo-dia/spec-plan.md": {
+    "mtime": 1787149414.2237623,
+    "ast_hash": "cccaef1080121f31fb992f55a05856c8",
+    "semantic_hash": ""
+  },
+  "specs/archive/240-fix-devolucoes-rede-e-janela-temporal-patio-os/design.md": {
+    "mtime": 1787147361.8046587,
+    "ast_hash": "b435f74bdb16a1acf872877a7fc34779",
+    "semantic_hash": ""
+  },
+  "specs/archive/240-fix-devolucoes-rede-e-janela-temporal-patio-os/proposal.md": {
+    "mtime": 1787147311.304768,
+    "ast_hash": "849e461f6d59947c3908c89155bce408",
+    "semantic_hash": ""
+  },
+  "specs/archive/240-fix-devolucoes-rede-e-janela-temporal-patio-os/spec-plan.md": {
+    "mtime": 1787148326.267118,
+    "ast_hash": "85124c05291233c50f9526627ada9316",
+    "semantic_hash": ""
+  },
+  "specs/archive/240-fix-devolucoes-rede-e-janela-temporal-patio-os/walkthrough.md": {
+    "mtime": 1787148638.2036328,
+    "ast_hash": "d15b84bd1a8c508d4f315e8f2abc6282",
     "semantic_hash": ""
   }
 }

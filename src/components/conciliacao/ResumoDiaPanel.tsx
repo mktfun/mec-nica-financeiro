@@ -110,6 +110,7 @@ export function ResumoDiaPanel({
   const saldoBancosValor = summary?.total_saldo_banco ?? currentSnapshot?.saldo_bancario ?? totalBancarioIn;
   const naLojaValor = summary?.na_loja_os ?? currentSnapshot?.total_patio ?? 0;
   const jurosRedeValor = summary?.juros_rede ?? currentSnapshot?.juros_rede ?? 0;
+  const devolucoesRedeValor = summary?.devolucoes_rede || 0;
   
   // Total de justificativas do dia (subindo para o Faturamento Atual)
   const totalJustificadosDia = justifiedData?.totalGlobal || 0;
@@ -126,7 +127,6 @@ export function ResumoDiaPanel({
   const faturamentoTotalComAjustes = faturamentoLiquidoDia + faturamentoOutrosValor;
 
   // Matemática Consolidada
-  const devolucoesRedeValor = summary?.devolucoes_rede || 0;
   const caixaAtualCalculado = saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor;
   const fluxoCaixaCalculado = caixaAtualCalculado - caixaAnteriorGlobal;
   const valorDispContasCalculado = faturamentoTotalComAjustes - fluxoCaixaCalculado;
@@ -162,21 +162,22 @@ export function ResumoDiaPanel({
         await Promise.all(promises);
       }
 
-      // Ao salvar, atualiza as colunas de resultado no snapshot de hoje
       await saveSnapshot.mutateAsync({
         date: selectedDate,
-        caixa_atual: caixaAtualCalculado,
-        // O Faturamento persistido é a leitura acumulada (odômetro) do dia
-        faturamento: faturamentoAcumuladoHoje,
-        dinheiro_mp: dinheiroMpValor,
-        total_recebiveis: aReceberValor,
-        total_patio: naLojaValor,
         saldo_bancario: saldoBancosValor,
+        dinheiro_mp: dinheiroMpValor,
         a_receber_manual: aReceberValor,
+        total_patio: naLojaValor,
+        caixa_atual: caixaAtualCalculado,
+        faturamento: faturamentoAcumuladoHoje,
         faturamento_outros_valor: faturamentoOutrosValor,
-        faturamento_outros_desc: currentSnapshot?.faturamento_outros_desc || null,
+        faturamento_outros_desc: 'Transações Justificadas (Ajustes)',
+        faturamento_liquido: faturamentoTotalComAjustes,
+        fluxo_caixa: fluxoCaixaCalculado,
+        valor_disp_contas: valorDispContasCalculado,
         contas_a_pagar: contasManualValor,
-        provisao: 0,
+        subtotal_contas: subtotalContasCalculado,
+        diferenca_final: diferencaFinalCalculada,
         saldo_negativo_itau: currentSnapshot?.saldo_negativo_itau || 0,
         juros_rede: jurosRedeValor,
         notes: 'Fechamento diário salvo via painel de conciliação.',
@@ -310,22 +311,22 @@ export function ResumoDiaPanel({
       className="relative rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] shadow-2xl overflow-hidden"
     >
       {/* Top Header Section */}
-      <div className="p-5 sm:p-6 border-b border-[var(--border-subtle)] bg-zinc-900/60">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="p-6 border-b border-[var(--border-subtle)] bg-gradient-to-r from-[var(--bg-surface)] to-[var(--bg-surface-elevated)]">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 bg-zinc-950 p-1 rounded-xl border border-zinc-800 shadow-inner">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1 bg-[var(--bg-canvas)] p-1.5 rounded-lg border border-[var(--border-subtle)]">
               <button
                 onClick={() => onDayChange(-1)}
                 disabled={availableDates.length > 0 && selectedDate === availableDates[0]}
-                className="p-2 hover:bg-zinc-800 rounded-lg text-zinc-400 hover:text-white disabled:opacity-30 transition-colors cursor-pointer"
+                className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)] disabled:opacity-30 transition-colors cursor-pointer"
                 title="Dia anterior"
               >
                 <ChevronRight size={16} className="rotate-180" />
               </button>
 
-              <div className="relative flex items-center gap-2 px-3 py-1 font-mono font-bold text-sm text-zinc-100 cursor-pointer hover:text-indigo-300">
-                <CalendarDays size={16} className="text-indigo-400" />
+              <div className="relative flex items-center gap-2 px-3 py-1 font-mono font-bold text-sm text-[var(--text-primary)] cursor-pointer hover:text-[var(--color-primary)]">
+                <CalendarDays size={16} className="text-[var(--color-primary)]" />
                 <span>{selectedDate ? selectedDate.split('-').reverse().join('/') : 'Carregando...'}</span>
                 <input
                   type="date"
@@ -343,7 +344,7 @@ export function ResumoDiaPanel({
               <button
                 onClick={() => onDayChange(1)}
                 disabled={availableDates.length > 0 && selectedDate === availableDates[availableDates.length - 1]}
-                className="p-2 hover:bg-zinc-800 rounded-lg text-zinc-400 hover:text-white disabled:opacity-30 transition-colors cursor-pointer"
+                className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-md text-[var(--text-secondary)] disabled:opacity-30 transition-colors cursor-pointer"
                 title="Próximo dia"
               >
                 <ChevronRight size={16} />
@@ -357,350 +358,324 @@ export function ResumoDiaPanel({
             )}
           </div>
 
-          <div className="flex items-center gap-3 self-end md:self-auto font-sans tabular-nums">
-            <div className="bg-zinc-950/80 px-3.5 py-1.5 rounded-xl border border-zinc-800/80 text-right">
-              <p className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider">Apurado Sistema</p>
-              <p className="text-base font-bold font-mono text-zinc-100">
-                <AnimatedNumber value={totalSistema} format="currency" />
-              </p>
+          <div className="flex gap-6 text-right font-sans tabular-nums">
+            <div>
+              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Apurado Sistema (Fechamento)</p>
+              <p className="text-xl font-display font-bold text-[var(--text-primary)]"><AnimatedNumber value={totalSistema} format="currency" /></p>
             </div>
-            <div className="bg-zinc-950/80 px-3.5 py-1.5 rounded-xl border border-zinc-800/80 text-right">
-              <p className="text-[10px] text-indigo-400 font-semibold uppercase tracking-wider">Entradas OFX</p>
-              <p className="text-base font-bold font-mono text-indigo-300">
-                <AnimatedNumber value={totalBancarioIn} format="currency" />
-              </p>
+            <div>
+              <p className="text-[10px] text-[var(--color-primary)] uppercase tracking-wider mb-1">Entradas OFX (Fechamento)</p>
+              <p className="text-xl font-display font-bold text-[var(--color-primary)]"><AnimatedNumber value={totalBancarioIn} format="currency" /></p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Grid das Métricas */}
-      <div className="p-5 sm:p-6 bg-zinc-950">
+      <div className="p-6 bg-[var(--bg-canvas)]">
         
         {/* 5 Pilares Iniciais */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3.5 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
           
           {/* 1. Saldo Bancos + Cartões */}
-          <div className="p-4 rounded-2xl bg-zinc-900/70 border border-zinc-800/80 flex flex-col justify-between hover:border-zinc-700/80 transition-all shadow-sm">
-            <div>
-              <div className="flex items-center justify-between gap-2 mb-2">
-                <div className="flex items-center gap-1.5 min-w-0">
-                  <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider truncate">SALDO BANCOS</span>
-                  <WhisperDot dot={insights?.dots.saldo_banco} />
-                </div>
-                <div className="w-7 h-7 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center shrink-0">
-                  <Landmark size={14} />
-                </div>
+          <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">SALDO BANCOS + CARTÕES</span>
+                <WhisperDot dot={insights?.dots.saldo_banco} />
               </div>
-              <p className="text-xl sm:text-2xl font-bold font-mono text-cyan-300 tracking-tight">
-                <AnimatedNumber value={summary?.total_saldo_banco ?? (saldoBancosValor + (tripleReconData?.total_nao_entrou || 0))} format="currency" />
-              </p>
+              <Landmark size={15} className="text-[var(--color-accent-light-blue)]" />
             </div>
-            <div className="pt-2.5 mt-2 border-t border-zinc-800/80 flex flex-col gap-1 text-[11px] font-mono text-zinc-400">
-              <div className="flex justify-between items-center">
-                <span className="text-zinc-500">OFX:</span>
-                <span className="text-zinc-300"><AnimatedNumber value={summary?.saldo_bancos_ofx ?? saldoBancosValor} format="currency" /></span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-zinc-500">+ Maq:</span>
-                <button
-                  type="button"
-                  onClick={() => setIsMaquininhasModalOpen(true)}
-                  title="Maquininhas Não Entradas (A Compensar). Clique para detalhar."
-                  className="text-amber-400 hover:text-amber-300 font-semibold transition-colors flex items-center gap-1 hover:underline cursor-pointer"
-                >
-                  + <AnimatedNumber value={summary?.cartoes_a_compensar ?? (tripleReconData?.total_nao_entrou || 0)} format="currency" />
-                </button>
-              </div>
+            <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-light-blue)]">
+              <AnimatedNumber value={summary?.total_saldo_banco ?? (saldoBancosValor + (tripleReconData?.total_nao_entrou || 0))} format="currency" />
+            </p>
+            <div className="flex justify-between items-center text-[10px] text-[var(--text-tertiary)] pt-1">
+              <span title="Saldo total dos extratos bancários OFX" className="cursor-help">
+                OFX: <AnimatedNumber value={summary?.saldo_bancos_ofx ?? saldoBancosValor} format="currency" />
+              </span>
+              <button
+                type="button"
+                onClick={() => setIsMaquininhasModalOpen(true)}
+                title="Maquininhas Não Entradas (A Compensar). Clique para conferir por loja."
+                className="border-b border-dashed border-amber-400/50 cursor-pointer text-amber-400/90 hover:text-amber-300 font-semibold transition-colors flex items-center gap-0.5"
+              >
+                + Maq: <AnimatedNumber value={summary?.cartoes_a_compensar ?? (tripleReconData?.total_nao_entrou || 0)} format="currency" />
+              </button>
             </div>
           </div>
 
           {/* 2. Dinheiro MP */}
-          <div className="p-4 rounded-2xl bg-zinc-900/70 border border-zinc-800/80 flex flex-col justify-between hover:border-zinc-700/80 transition-all shadow-sm">
-            <div>
-              <div className="flex items-center justify-between gap-2 mb-2">
-                <div className="flex items-center gap-1.5 min-w-0">
-                  <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider truncate">DINHEIRO MP</span>
-                  <WhisperDot dot={insights?.dots.dinheiro_mp} />
-                </div>
-                <div className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0">
-                  <Wallet size={14} />
-                </div>
+          <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">DINHEIRO MP</span>
+                <WhisperDot dot={insights?.dots.dinheiro_mp} />
               </div>
-              {isEditing ? (
-                <div className="relative mt-1">
-                  <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-zinc-500">R$</span>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={dinheiroMpInput || ''}
-                    onChange={(e) => setDinheiroMpInput(Number(e.target.value))}
-                    placeholder="0,00"
-                    className="w-full bg-zinc-950 border border-emerald-500/40 rounded-lg py-1 pl-7 pr-2 text-base font-bold font-mono text-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                  />
-                </div>
-              ) : (
-                <p className="text-xl sm:text-2xl font-bold font-mono text-emerald-400 tracking-tight">
-                  <AnimatedNumber value={dinheiroMpValor} format="currency" />
-                </p>
-              )}
+              <Wallet size={15} className="text-[var(--color-accent-teal)]" />
             </div>
-            <div className="pt-2.5 mt-2 border-t border-zinc-800/80 text-[11px] font-mono text-zinc-500 flex justify-between items-center">
-              <span>Tipo:</span>
-              <span className="text-zinc-400">Em Espécie</span>
-            </div>
+            {isEditing ? (
+              <div className="relative mt-1">
+                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-[var(--text-tertiary)]">R$</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={dinheiroMpInput || ''}
+                  onChange={(e) => setDinheiroMpInput(Number(e.target.value))}
+                  placeholder="0,00"
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--color-accent-teal)]/40 rounded-lg py-1 pl-7 pr-2 text-base font-bold font-mono text-[var(--color-accent-teal)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-teal)]"
+                />
+              </div>
+            ) : (
+              <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-teal)]">
+                <AnimatedNumber value={dinheiroMpValor} format="currency" />
+              </p>
+            )}
+            <span className="text-[10px] text-[var(--text-tertiary)] block">Preenchido na importação</span>
           </div>
 
           {/* 3. A Receber */}
-          <div className="p-4 rounded-2xl bg-zinc-900/70 border border-zinc-800/80 flex flex-col justify-between hover:border-zinc-700/80 transition-all shadow-sm">
-            <div>
-              <div className="flex items-center justify-between gap-2 mb-2">
-                <div className="flex items-center gap-1.5 min-w-0">
-                  <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider truncate">A RECEBER</span>
-                  <WhisperDot dot={insights?.dots.a_receber} />
-                </div>
-                <div className="w-7 h-7 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center shrink-0">
-                  <Receipt size={14} />
-                </div>
+          <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">A RECEBER</span>
+                <WhisperDot dot={insights?.dots.a_receber} />
               </div>
-              {isEditing ? (
-                <div className="relative mt-1">
-                  <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-zinc-500">R$</span>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={aReceberInput || ''}
-                    onChange={(e) => setAReceberInput(Number(e.target.value))}
-                    placeholder="0,00"
-                    className="w-full bg-zinc-950 border border-indigo-500/40 rounded-lg py-1 pl-7 pr-2 text-base font-bold font-mono text-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                  />
-                </div>
-              ) : (
-                <p className="text-xl sm:text-2xl font-bold font-mono text-indigo-400 tracking-tight">
-                  <AnimatedNumber value={aReceberValor} format="currency" />
-                </p>
-              )}
+              <Receipt size={15} className="text-[var(--color-primary)]" />
             </div>
-            <div className="pt-2.5 mt-2 border-t border-zinc-800/80 text-[11px] font-mono text-zinc-500 flex justify-between items-center">
-              <span>Origem:</span>
-              <span className="text-zinc-400">Boletos / Manuais</span>
-            </div>
+            {isEditing ? (
+              <div className="relative mt-1">
+                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-[var(--text-tertiary)]">R$</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={aReceberInput || ''}
+                  onChange={(e) => setAReceberInput(Number(e.target.value))}
+                  placeholder="0,00"
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--color-primary)]/40 rounded-lg py-1 pl-7 pr-2 text-base font-bold font-mono text-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
+                />
+              </div>
+            ) : (
+              <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-primary)]">
+                <AnimatedNumber value={aReceberValor} format="currency" />
+              </p>
+            )}
+            <span className="text-[10px] text-[var(--text-tertiary)] block">Boletos/Descontos manuais</span>
           </div>
 
           {/* 4. Na Loja OS */}
-          <div className="p-4 rounded-2xl bg-zinc-900/70 border border-zinc-800/80 flex flex-col justify-between hover:border-zinc-700/80 transition-all shadow-sm">
-            <div>
-              <div className="flex items-center justify-between gap-2 mb-2">
-                <div className="flex items-center gap-1.5 min-w-0">
-                  <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider truncate">NA LOJA (OS)</span>
-                  <WhisperDot dot={insights?.dots.na_loja_os} />
-                </div>
-                <div className="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0">
-                  <ShoppingBag size={14} />
-                </div>
+          <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">NA LOJA OS</span>
+                <WhisperDot dot={insights?.dots.na_loja_os} />
               </div>
-              <p className="text-xl sm:text-2xl font-bold font-mono text-amber-400 tracking-tight">
-                <AnimatedNumber value={naLojaValor} format="currency" />
-              </p>
+              <ShoppingBag size={15} className="text-[var(--color-accent-warning)]" />
             </div>
-            <div className="pt-2.5 mt-2 border-t border-zinc-800/80 text-[11px] font-mono text-zinc-500 flex justify-between items-center">
-              <span>Status:</span>
-              <span className="text-zinc-400">Pátio Pendente</span>
-            </div>
+            <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-warning)]">
+              <AnimatedNumber value={naLojaValor} format="currency" />
+            </p>
+            <span className="text-[10px] text-[var(--text-tertiary)] block">OSs do Pátio pendentes</span>
           </div>
 
           {/* 5. Contas Manual */}
-          <div className="p-4 rounded-2xl bg-zinc-900/70 border border-zinc-800/80 flex flex-col justify-between hover:border-zinc-700/80 transition-all shadow-sm">
-            <div>
-              <div className="flex items-center justify-between gap-2 mb-2">
-                <div className="flex items-center gap-1.5 min-w-0">
-                  <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider truncate">CONTAS (MANUAL)</span>
-                  <WhisperDot dot={insights?.dots.contas} />
-                </div>
-                <div className="w-7 h-7 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center shrink-0">
-                  <Receipt size={14} />
-                </div>
+          <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">CONTAS (MANUAL)</span>
+                <WhisperDot dot={insights?.dots.contas} />
               </div>
-              {isEditing ? (
-                <div className="relative mt-1">
-                  <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-zinc-500">R$</span>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={contasInput || ''}
-                    onChange={(e) => setContasInput(Number(e.target.value))}
-                    placeholder="0,00"
-                    className="w-full bg-zinc-950 border border-rose-500/40 rounded-lg py-1 pl-7 pr-2 text-base font-bold font-mono text-rose-400 focus:outline-none focus:ring-1 focus:ring-rose-500"
-                  />
-                </div>
-              ) : (
-                <p className="text-xl sm:text-2xl font-bold font-mono text-rose-400 tracking-tight">
-                  <AnimatedNumber value={contasManualValor} format="currency" />
-                </p>
-              )}
+              <Receipt size={15} className="text-[var(--color-accent-danger)]" />
             </div>
-            <div className="pt-2.5 mt-2 border-t border-zinc-800/80 flex flex-col gap-1 text-[11px] font-mono text-zinc-400">
-              <div className="flex justify-between items-center">
-                <span className="text-zinc-500">Juros:</span>
-                <span className="text-zinc-300"><AnimatedNumber value={jurosRedeValor} format="currency" /></span>
+            {isEditing ? (
+              <div className="relative mt-1">
+                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-[var(--text-tertiary)]">R$</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={contasInput || ''}
+                  onChange={(e) => setContasInput(Number(e.target.value))}
+                  placeholder="0,00"
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--color-accent-danger)]/40 rounded-lg py-1 pl-7 pr-2 text-base font-bold font-mono text-[var(--color-accent-danger)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-danger)]"
+                />
               </div>
+            ) : (
+              <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-danger)]">
+                <AnimatedNumber value={contasManualValor} format="currency" />
+              </p>
+            )}
+            <div className="flex justify-between items-center text-[10px] text-[var(--text-tertiary)] pt-1 flex-wrap gap-1 font-mono">
+              <span>Juros: <AnimatedNumber value={jurosRedeValor} format="currency" /></span>
               {devolucoesRedeValor > 0 && (
-                <div className="flex justify-between items-center text-rose-400 font-semibold">
-                  <span title="Devoluções e Estornos da Maquininha Rede (Conta a Pagar)">Devoluções:</span>
-                  <span>+<AnimatedNumber value={devolucoesRedeValor} format="currency" /></span>
-                </div>
+                <span className="text-rose-400 font-semibold" title="Devoluções e Estornos da Maquininha Rede (Conta a Pagar)">
+                  Devoluções: +<AnimatedNumber value={devolucoesRedeValor} format="currency" />
+                </span>
               )}
-              <div className="flex justify-between items-center">
-                <span className="text-zinc-500">OFX Out:</span>
-                <span className="text-zinc-400">-{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Math.abs(totalOfxOut))}</span>
-              </div>
+              <span title="Total de Saídas no Extrato OFX importado" className="border-b border-dashed border-[var(--text-tertiary)]/30 cursor-help text-[var(--text-tertiary)]/70 hover:text-[var(--text-tertiary)]">
+                OFX Out: -{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Math.abs(totalOfxOut))}
+              </span>
             </div>
           </div>
 
         </div>
 
-        {/* Dashboard de Consolidação & Balanço (3 Colunas Harmoniosas) */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+        {/* Dashboard de Consolidação & Diferença */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
           
-          {/* Coluna 1: Dinâmica de Caixa */}
-          <div className="bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-5 flex flex-col justify-between gap-4 shadow-sm">
-            <div>
-              <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block mb-1">
-                Caixa Atual Consolidado
-              </span>
-              <span className="text-2xl font-bold font-mono text-zinc-100 block">
-                <AnimatedNumber value={caixaAtualCalculado} format="currency" />
-              </span>
-              <span className="text-[11px] text-zinc-500 font-mono mt-0.5 block">
-                Patrimônio Disponível
-              </span>
-            </div>
-
-            <div className="pt-3 border-t border-zinc-800/80">
-              <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block mb-1">
-                Fluxo de Caixa (Variação)
-              </span>
-              <span className={`text-lg font-bold font-mono block ${
-                fluxoCaixaCalculado >= 0 ? 'text-emerald-400' : 'text-rose-400'
-              }`}>
-                {fluxoCaixaCalculado >= 0 ? '+' : ''}
-                <AnimatedNumber value={fluxoCaixaCalculado} format="currency" />
-              </span>
-              <span className="text-[10px] text-zinc-500 font-mono mt-0.5 block">
-                vs Caixa Anterior ({new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(caixaAnteriorGlobal)})
-              </span>
-            </div>
-          </div>
-
-          {/* Coluna 2: Operação & Disponível para Contas */}
-          <div 
-            onClick={() => !isEditing && setIsBreakdownModalOpen(true)}
-            className={!isEditing ? "cursor-pointer group bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-5 flex flex-col justify-between gap-4 shadow-sm hover:border-zinc-700/80 transition-all" : "bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-5 flex flex-col justify-between gap-4 shadow-sm"}
-          >
-            <div>
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider group-hover:text-emerald-400 transition-colors">
-                  Faturamento do Dia
+          {/* Card Grandão - Consolidação */}
+          <div className="lg:col-span-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-5 shadow-sm">
+            <h3 className="font-semibold text-[var(--text-primary)] mb-4 uppercase text-xs tracking-wider">Consolidação do Dia</h3>
+            <div className="grid grid-cols-2 gap-4">
+              
+              {/* Caixa Atual */}
+              <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
+                <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Caixa Atual</span>
+                <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
+                  <AnimatedNumber value={caixaAtualCalculado} format="currency" />
                 </span>
-                {!isEditing && (
-                  <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 group-hover:bg-emerald-500/20 transition-all">
-                    Ver Detalhes ↗
-                  </span>
-                )}
+                <span className="text-[9px] text-[var(--text-tertiary)]">Patrimônio disponível</span>
               </div>
 
-              {isEditing ? (
-                <div className="space-y-1 mt-1.5">
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={faturamentoInput || ''}
-                    onChange={(e) => setFaturamentoInput(Number(e.target.value))}
-                    placeholder="Faturamento Mapa de Metas"
-                    className="w-full bg-zinc-950 border border-indigo-500/40 rounded-lg py-1 px-2.5 text-base font-bold font-mono text-zinc-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                  />
-                  <span className="text-[10px] text-indigo-400 font-semibold block">
-                    = Líquido: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoLiquidoDia)}
+              {/* Caixa Anterior */}
+              <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
+                <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Caixa Anterior</span>
+                <span className="text-lg font-bold text-[var(--text-secondary)] mt-1 block">
+                  <AnimatedNumber value={caixaAnteriorGlobal} format="currency" />
+                </span>
+                <span className="text-[9px] text-[var(--text-tertiary)]">Fechamento do dia anterior</span>
+              </div>
+
+              {/* Fluxo de Caixa */}
+              <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
+                <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Fluxo de Caixa</span>
+                <span className={`text-lg font-bold mt-1 block ${fluxoCaixaCalculado >= 0 ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
+                  {fluxoCaixaCalculado >= 0 ? '+ ' : ''}<AnimatedNumber value={fluxoCaixaCalculado} format="currency" />
+                </span>
+                <span className="text-[9px] text-[var(--text-tertiary)]">Caixa Atual - Caixa Anterior</span>
+              </div>
+
+              {/* Faturamento do Dia */}
+              <div 
+                onClick={() => !isEditing && setIsBreakdownModalOpen(true)}
+                className={`bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)] transition-all ${
+                  !isEditing ? 'cursor-pointer hover:border-[var(--color-primary)]/40 hover:bg-[var(--bg-surface-elevated)] group' : ''
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold group-hover:text-[var(--color-primary)] transition-colors">
+                    Faturamento do Dia
                   </span>
+                  {!isEditing && (
+                    <span className="text-[9px] font-semibold text-[var(--color-primary)] bg-[var(--color-primary)]/10 px-1.5 py-0.5 rounded group-hover:bg-[var(--color-primary)]/20 transition-all">
+                      Ver Detalhes ↗
+                    </span>
+                  )}
                 </div>
-              ) : (
-                <>
-                  <span className="text-2xl font-bold font-mono text-zinc-100 block group-hover:text-emerald-400 transition-colors">
-                    <AnimatedNumber value={faturamentoTotalComAjustes} format="currency" />
-                  </span>
-                  <div className="flex items-center gap-2 mt-0.5 text-[10px] font-mono text-zinc-500">
-                    <span>Metas: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoLiquidoDia)}</span>
-                    {totalJustificadosDia > 0 && (
-                      <span className="text-blue-400 font-semibold">+ Justificados: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalJustificadosDia)}</span>
-                    )}
+
+                {isEditing ? (
+                  <div className="space-y-1 mt-1">
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={faturamentoInput || ''}
+                      onChange={(e) => setFaturamentoInput(Number(e.target.value))}
+                      placeholder="Faturamento Acumulado"
+                      className="w-full bg-[var(--bg-surface)] border border-[var(--color-primary)]/40 rounded-lg py-1 px-2 text-base font-bold font-mono text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
+                    />
+                    <span className="text-[10px] text-[var(--color-primary)] font-semibold block">
+                      = Mapa de Metas: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoLiquidoDia)}
+                    </span>
                   </div>
-                </>
-              )}
-            </div>
-
-            <div className="pt-3 border-t border-zinc-800/80">
-              <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block mb-1">
-                Disponível para Contas
-              </span>
-              <span className="text-lg font-bold font-mono text-indigo-300 block">
-                <AnimatedNumber value={valorDispContasCalculado} format="currency" />
-              </span>
-              <span className="text-[10px] text-zinc-500 font-mono mt-0.5 block">
-                Faturamento Líquido - Fluxo de Caixa
-              </span>
-            </div>
-          </div>
-
-          {/* Coluna 3: Balanço do Fechamento & Diferença Final */}
-          <div className={`rounded-2xl border p-5 flex flex-col justify-between gap-3 transition-all relative shadow-sm ${
-            isDiferencaOk 
-              ? 'bg-emerald-950/20 border-emerald-500/30' 
-              : 'bg-rose-950/20 border-rose-500/30'
-          }`}>
-            <div>
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">
-                  Subtotal Contas a Pagar
-                </span>
-                <span className="text-xs font-bold font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
-                  <AnimatedNumber value={subtotalContasCalculado} format="currency" />
-                </span>
-              </div>
-              <span className="text-[10px] text-zinc-500 font-mono block">
-                Juros ({new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(jurosRedeValor)}) + Contas ({new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(contasManualValor)}){devolucoesRedeValor > 0 ? ` + Devoluções (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(devolucoesRedeValor)})` : ''}
-              </span>
-            </div>
-
-            <div className="my-1">
-              <div className="flex items-center gap-1.5 mb-1">
-                {isDiferencaOk ? (
-                  <CheckCircle2 size={15} className="text-emerald-400" />
                 ) : (
-                  <AlertTriangle size={15} className="text-rose-400" />
+                  <>
+                    <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block group-hover:text-emerald-400 transition-colors">
+                      <AnimatedNumber value={faturamentoTotalComAjustes} format="currency" />
+                    </span>
+                    <div className="flex flex-col gap-0.5 mt-0.5 text-[9px] text-[var(--text-tertiary)]">
+                      <span>Mapa de Metas: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoLiquidoDia)}</span>
+                      {totalJustificadosDia > 0 && (
+                        <span className="text-blue-400 font-semibold">
+                          + Justificados: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalJustificadosDia)}
+                        </span>
+                      )}
+                    </div>
+                  </>
                 )}
-                <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-300">
-                  Diferença Final Apurada
-                </span>
               </div>
-              <span className={`text-3xl sm:text-4xl font-extrabold font-mono tracking-tight tabular-nums block ${
-                isDiferencaOk ? 'text-emerald-400' : 'text-rose-400'
-              }`}>
-                <AnimatedNumber value={diferencaFinalCalculada} format="currency" />
-              </span>
-            </div>
 
-            <div>
-              <div className={`w-full py-1.5 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 border ${
-                isDiferencaOk 
-                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300' 
-                  : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
-              }`}>
-                <span className={`w-2 h-2 rounded-full ${isDiferencaOk ? 'bg-emerald-400 animate-pulse' : 'bg-rose-400'}`} />
-                {isDiferencaOk ? 'Fechamento Conforme (± R$ 50)' : 'Fora da tolerância (± R$ 50)'}
+              {/* Valor Disp. Contas */}
+              <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
+                <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Valor Disp. Contas</span>
+                <span className="text-lg font-bold text-[var(--color-primary-bright)] mt-1 block">
+                  <AnimatedNumber value={valorDispContasCalculado} format="currency" />
+                </span>
+                <span className="text-[9px] text-[var(--text-tertiary)]">Faturamento Atual - Fluxo de Caixa</span>
               </div>
+            </div>
+            
+            <div className="mt-4 pt-4 border-t border-[var(--border-subtle)] flex justify-between items-center bg-[var(--bg-surface-elevated)] p-3 rounded-lg">
+               <div>
+                  <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Subtotal: Valor Contas</span>
+                  <span className="text-[9px] text-[var(--text-tertiary)]">
+                    Juros (REDE) + Contas (Manual){devolucoesRedeValor > 0 ? ` + Devoluções (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(devolucoesRedeValor)})` : ''}
+                  </span>
+               </div>
+               <span className="text-lg font-bold text-[var(--color-accent-warning)] font-mono">
+                 <AnimatedNumber value={subtotalContasCalculado} format="currency" />
+               </span>
             </div>
           </div>
 
+          {/* Card Lateral - Diferença Final (Destaque Centralizado e Harmonioso) */}
+          <div className={`rounded-xl border p-6 flex flex-col items-center justify-center text-center shadow-lg transition-all relative overflow-hidden backdrop-blur-md ${
+             isDiferencaOk 
+               ? 'bg-gradient-to-b from-emerald-500/10 to-emerald-950/20 border-emerald-500/30 text-emerald-400' 
+               : 'bg-gradient-to-b from-rose-500/10 to-rose-950/20 border-rose-500/30 text-rose-400'
+          }`}>
+             {/* Header com Ícone e Título */}
+             <div className="flex items-center gap-1.5 mb-2">
+                {isDiferencaOk ? (
+                  <CheckCircle2 size={16} className="text-emerald-400" />
+                ) : (
+                  <AlertTriangle size={16} className="text-rose-400" />
+                )}
+                <span className="text-xs uppercase font-bold tracking-widest text-zinc-300">
+                  Diferença Final
+                </span>
+             </div>
+
+             {/* Valor Central Gigante e Destacado */}
+             <div className="my-2">
+                <span className={`text-4xl sm:text-5xl font-display font-extrabold font-mono tracking-tight tabular-nums ${
+                  isDiferencaOk ? 'text-emerald-400 drop-shadow-[0_0_12px_rgba(52,211,153,0.3)]' : 'text-rose-400 drop-shadow-[0_0_12px_rgba(244,63,94,0.3)]'
+                }`}>
+                  <AnimatedNumber value={diferencaFinalCalculada} format="currency" />
+                </span>
+             </div>
+
+             {/* Fórmula Explicativa */}
+             <span className="text-[10px] text-zinc-400 font-mono block mb-4 opacity-80">
+               |Valor Disp. Contas| - Subtotal Contas
+             </span>
+
+             {/* Badge de Status / Tolerância */}
+             <div className={`px-3 py-1.5 rounded-full text-xs font-semibold inline-flex items-center gap-1.5 border ${
+               isDiferencaOk 
+                 ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-300' 
+                 : 'bg-rose-500/15 border-rose-500/30 text-rose-300'
+             }`}>
+               {isDiferencaOk ? (
+                 <>
+                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                   Fechamento Conforme (tolerância ± R$ 50)
+                 </>
+               ) : (
+                 <>
+                   <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+                   Fora da tolerância (± R$ 50)
+                 </>
+               )}
+             </div>
+          </div>
         </div>
 
         {/* Auditoria Discreta - Observações da Conciliação */}
@@ -720,7 +695,7 @@ export function ResumoDiaPanel({
                 setIsEditing(true);
               }}
               title={!canEditData ? 'Apenas usuários com permissão de edição podem alterar o fechamento.' : 'Editar valores do dia'}
-              className={`gap-2 px-6 py-2 text-sm border-[var(--color-primary)]/40 text-[var(--text-primary)] hover:bg-[var(--color-primary)]/10 ${!canEditData ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`gap-2 px-6 py-2 text-sm border-[var(--color-primary)]/40 text-[var(--text-primary)] hover:bg-[var(--color-primary)]/10 cursor-pointer ${!canEditData ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               <Edit2 size={16} />
               Editar Fechamento
@@ -731,7 +706,7 @@ export function ResumoDiaPanel({
                 variant="ghost"
                 onClick={handleCancel}
                 disabled={saveSnapshot.isPending}
-                className="gap-2 px-5 py-2 text-sm text-[var(--text-tertiary)] hover:text-white"
+                className="gap-2 px-5 py-2 text-sm text-[var(--text-tertiary)] hover:text-white cursor-pointer"
               >
                 <X size={16} />
                 Cancelar
@@ -740,7 +715,7 @@ export function ResumoDiaPanel({
                 variant="primary"
                 onClick={handleSave}
                 disabled={saveSnapshot.isPending}
-                className="gap-2 px-6 py-2 text-sm bg-[var(--color-accent-teal)] hover:bg-[var(--color-accent-teal)]/90 text-black font-semibold"
+                className="gap-2 px-6 py-2 text-sm bg-[var(--color-accent-teal)] hover:bg-[var(--color-accent-teal)]/90 text-black font-semibold cursor-pointer"
               >
                 <Save size={16} />
                 {saveSnapshot.isPending ? 'Salvando...' : 'Salvar Alterações'}

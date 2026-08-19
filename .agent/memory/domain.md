@@ -294,3 +294,18 @@
 **Risco identificado:** A ausência de âncora temporal no `paid_value` de `patio_os` fazia com que pagamentos recebidos hoje alterassem retroativamente o "Na Loja OS" de dias anteriores. A segregação de devoluções sem coluna de tipo infle o saldo do Pilar 1.
 
 **Não fazer:** Nunca misturar estornos/devoluções de POS no somatório de vendas líquidas a compensar. Devolução de POS é passivo/saída de caixa.
+
+### Feature 241 - Restauração do Design Original dos Cards de Lojas e Painel de Resumo do Dia (2026-08-19)
+1. **Design System & Tokens Consistentes:** O padrão visual do projeto utiliza estritamente as variáveis CSS do tema (`var(--bg-surface)`, `var(--bg-surface-elevated)`, `var(--border-subtle)`, `var(--text-primary)`, `var(--color-primary)`, `var(--color-accent-teal)`, etc.) e gradientes suaves de cabeçalho (`from-[var(--bg-surface)] to-[var(--bg-surface-elevated)]`). Não substituir por classes brutas `zinc-900`/`zinc-950` que quebram a consistência estética do produto.
+2. **Layout dos Cards de Lojas (`conciliacao.index.tsx`):** Layout horizontal contínuo clássico em nível único (`flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-6`):
+   - Esquerda: Barra lateral de conformidade (`w-2 h-14 rounded-full`), Nome da Loja, Badges `ENTROU` / `NÃO ENTROU (+ R$ ...)`, ID.
+   - Direita: Envelope escuro contínuo (`bg-black/25 p-4 sm:p-5 rounded-2xl border border-white/5`) com 6 colunas proporcionais (`Saldo Bancos + Cartões`, `Maquininha`, `PIX`, `Na Loja OS`, `Previsto`, `Diferença`).
+   - Botão flutuante "Raio-X" no canto superior direito visível no hover.
+3. **Painel de Resumo do Dia (`ResumoDiaPanel.tsx`):**
+   - 5 Pilares no grid clássico `grid-cols-2 md:grid-cols-5 gap-4` com cores e whisper dots.
+   - Cockpit inferior de 2 colunas: Esquerda (2/3) Consolidação do Dia + Direita (1/3) Diferença Final com badge de tolerância (± R$ 50).
+   - Preservadas as devoluções da Rede no Pilar 5 e no subtotal de contas da Spec 240.
+
+**Risco identificado:** Tentar "modernizar" o layout alterando containers de 1 nível para 2 tiers ou substituindo o design system gera poluição visual e rejeição imediata do usuário.
+
+**Não fazer:** Nunca quebrar a harmonia horizontal dos cards de filiais nem abandonar as variáveis de design system do projeto.
