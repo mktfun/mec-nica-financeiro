@@ -113,10 +113,11 @@ $$\text{Score Final} = 0.30 \cdot \text{NF} + 0.25 \cdot \text{ARA} + 0.20 \cdot
    - Criação do carregador de datasets e injetor de perturbações sintéticas.
    - Implementação das funções de grading matemático e semântico (DeepEval / G-Eval rubrics).
 2. **Fase 2: Execução do Benchmark Comparativo Multi-Modelo:**
-   - Rodar a suite completa de 50 cenários de teste contra:
-     * **Google Gemini 2.5 Flash** (via API)
-     * **Anthropic Claude 3.5 Haiku** (via API)
-     * **OpenAI GPT-4o-mini** (via API)
+   - Rodar a suite completa de 50 cenários de teste contra os modelos:
+     * 🥇 **Google Gemini 3.1 Flash-Lite** (Nova 3ª geração: alta densidade e latência sub-300ms)
+     * 🥈 **Google Gemini 2.5 Flash-Lite** (Ultra baixo custo)
+     * 🥉 **Google Gemini 2.5 Flash** (Raciocínio contábil padrão)
+     * **Anthropic Claude 3.5 Haiku** (Baseline de controle externo)
 3. **Fase 3: Emissão do Relatório Acadêmico de Auditoria:**
    - Geração de tabela comparativa com: Acurácia %, Taxa de Alucinação, Latência (p50, p95), Custo em R$ e Diagnóstico de Falhas.
 4. **Fase 4: Integração Segura no Pipeline do ConciliaMec:**
