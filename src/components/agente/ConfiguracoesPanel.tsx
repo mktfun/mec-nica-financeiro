@@ -333,14 +333,14 @@ function AiSettingsForm() {
   const saveSettings = useSaveAiSettings();
 
   const [provider, setProvider] = useState('google');
-  const [model, setModel] = useState('gemini-2.0-flash');
+  const [model, setModel] = useState('gemini-3.5-flash-lite');
   const [apiKey, setApiKey] = useState('');
 
   // Update local state when query finishes
   useEffect(() => {
     if (settings) {
       setProvider(settings.provider || 'google');
-      setModel(settings.model || 'gemini-2.0-flash');
+      setModel(settings.model || 'gemini-3.5-flash-lite');
       setApiKey(settings.api_key || '');
     }
   }, [settings]);
@@ -355,7 +355,7 @@ function AiSettingsForm() {
   };
 
   const modelOptions = {
-    'google': ['gemini-2.0-flash', 'gemini-1.5-pro'],
+    'google': ['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite', 'gemini-3.5-flash', 'gemini-2.5-flash'],
     'openai': ['gpt-4o', 'gpt-4o-mini'],
     'anthropic': ['claude-3-5-sonnet-20240620', 'claude-3-haiku-20240307']
   };

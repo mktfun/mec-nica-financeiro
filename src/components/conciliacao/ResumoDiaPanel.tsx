@@ -11,6 +11,8 @@ import { useDailySnapshot, usePreviousDaySnapshot, useSaveDailySnapshot } from '
 import { useJustifiedTransactions } from '@/hooks/useJustifiedTransactions';
 import { useReconciliationInsights } from '@/hooks/useReconciliationInsights';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
+import { useAiSettings } from '@/hooks/useAiSettings';
+import { diagnoseReconciliationDiscrepancy } from '@/lib/aiReconciliationService';
 import { FaturamentoAtualBreakdownModal } from '@/components/conciliacao/FaturamentoAtualBreakdownModal';
 import { MaquininhasDetailModal } from '@/components/conciliacao/MaquininhasDetailModal';
 import { PatioOsDetailModal } from '@/components/conciliacao/PatioOsDetailModal';
@@ -142,6 +144,29 @@ export function ResumoDiaPanel({
 
   const diferencaAbs = Math.abs(diferencaFinalCalculada);
   const isDiferencaOk = diferencaAbs <= 50;
+
+  const { data: aiSettings } = useAiSettings();
+  const [aiDiagnosis, setAiDiagnosis] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    diagnoseReconciliationDiscrepancy({
+      saldoBancosTotal: saldoBancosCartoesDinheiro,
+      faturamentoDia: faturamentoLiquidoDia,
+      fluxoCaixa: fluxoCaixaCalculado,
+      valorDisponivelContas: valorDispContasCalculado,
+      contasPagas: contasManualValor,
+      jurosRede: jurosRedeValor,
+      devolucoesRede: devolucoesRedeValor,
+      diferencaFinal: diferencaFinalCalculada,
+      dataBase: selectedDate
+    }, aiSettings?.api_key).then(res => {
+      if (active && res) {
+        setAiDiagnosis(res.explanation);
+      }
+    }).catch(() => {});
+    return () => { active = false; };
+  }, [selectedDate, saldoBancosCartoesDinheiro, faturamentoLiquidoDia, fluxoCaixaCalculado, valorDispContasCalculado, contasManualValor, jurosRedeValor, devolucoesRedeValor, diferencaFinalCalculada, aiSettings?.api_key]);
 
   const handleCancel = () => {
     const initialFaturamento = currentSnapshot?.faturamento 
@@ -700,6 +725,14 @@ export function ResumoDiaPanel({
                  </>
                )}
              </div>
+
+             {/* Diagnóstico Inteligente da IA (Gemini 3.5 Flash-Lite) */}
+             {aiDiagnosis && (
+               <div className="mt-3.5 px-3 py-2 rounded-lg bg-black/40 border border-white/5 text-[11px] text-zinc-300 leading-relaxed text-left flex items-start gap-2 max-w-sm">
+                 <span className="text-xs shrink-0 mt-0.5">✨</span>
+                 <span>{aiDiagnosis}</span>
+               </div>
+             )}
           </div>
         </div>
 

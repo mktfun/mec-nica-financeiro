@@ -7,7 +7,7 @@ import { Bot, Cpu, KeyRound, Zap, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 const MODEL_OPTIONS = {
-  google: ['gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-2.5-flash'],
+  google: ['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite', 'gemini-3.5-flash', 'gemini-2.5-flash'],
   openai: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo'],
   anthropic: ['claude-3-5-sonnet-20240620', 'claude-3-haiku-20240307', 'claude-opus-4-5'],
 };
@@ -23,14 +23,14 @@ export function AgenteIAConfigPanel() {
   const saveSettings = useSaveAiSettings();
 
   const [provider, setProvider] = useState('google');
-  const [model, setModel] = useState('gemini-2.0-flash');
+  const [model, setModel] = useState('gemini-3.5-flash-lite');
   const [apiKey, setApiKey] = useState('');
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     if (settings) {
       setProvider(settings.provider || 'google');
-      setModel(settings.model || 'gemini-2.0-flash');
+      setModel(settings.model || 'gemini-3.5-flash-lite');
       setApiKey(settings.api_key || '');
     }
   }, [settings]);

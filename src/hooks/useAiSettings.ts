@@ -1,4 +1,4 @@
-﻿import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 
@@ -32,7 +32,7 @@ export function useAiSettings() {
           if (!error && data) {
             return {
               provider: data.provider || 'google',
-              model: data.model || 'gemini-2.0-flash',
+              model: data.model || 'gemini-3.5-flash-lite',
               api_key: data.api_key || defaultKey,
               bot_url: data.bot_url || 'https://bot.tork.services',
               bot_api_key: data.bot_api_key || '',
@@ -50,7 +50,7 @@ export function useAiSettings() {
         if (!globalErr && globalData) {
           return {
             provider: globalData.provider || 'google',
-            model: globalData.model || 'gemini-2.0-flash',
+            model: globalData.model || 'gemini-3.5-flash-lite',
             api_key: globalData.api_key || defaultKey,
             bot_url: globalData.bot_url || 'https://bot.tork.services',
             bot_api_key: globalData.bot_api_key || '',
@@ -60,7 +60,7 @@ export function useAiSettings() {
         console.warn('Aviso ao carregar ai_settings do Supabase:', err);
       }
 
-      return { provider: 'google', model: 'gemini-2.0-flash', api_key: defaultKey, bot_url: 'https://bot.tork.services', bot_api_key: '' };
+      return { provider: 'google', model: 'gemini-3.5-flash-lite', api_key: defaultKey, bot_url: 'https://bot.tork.services', bot_api_key: '' };
     },
   });
 }
