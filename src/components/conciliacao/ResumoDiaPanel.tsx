@@ -151,7 +151,7 @@ export function ResumoDiaPanel({
   useEffect(() => {
     let active = true;
     diagnoseReconciliationDiscrepancy({
-      saldoBancosTotal: saldoBancosCartoesDinheiro,
+      saldoBancosTotal: saldoBancosValor,
       faturamentoDia: faturamentoLiquidoDia,
       fluxoCaixa: fluxoCaixaCalculado,
       valorDisponivelContas: valorDispContasCalculado,
@@ -166,7 +166,7 @@ export function ResumoDiaPanel({
       }
     }).catch(() => {});
     return () => { active = false; };
-  }, [selectedDate, saldoBancosCartoesDinheiro, faturamentoLiquidoDia, fluxoCaixaCalculado, valorDispContasCalculado, contasManualValor, jurosRedeValor, devolucoesRedeValor, diferencaFinalCalculada, aiSettings?.api_key]);
+  }, [selectedDate, saldoBancosValor, faturamentoLiquidoDia, fluxoCaixaCalculado, valorDispContasCalculado, contasManualValor, jurosRedeValor, devolucoesRedeValor, diferencaFinalCalculada, aiSettings?.api_key]);
 
   const handleCancel = () => {
     const initialFaturamento = currentSnapshot?.faturamento 
