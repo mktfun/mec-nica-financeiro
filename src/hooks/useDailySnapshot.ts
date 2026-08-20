@@ -18,6 +18,7 @@ export type DailySnapshotRow = {
   saldo_negativo_itau: number;
   juros_rede: number;
   notes: string | null;
+  metadata?: Record<string, any> | null;
   created_at: string;
   updated_at: string;
 };

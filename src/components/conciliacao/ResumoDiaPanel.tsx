@@ -179,30 +179,37 @@ export function ResumoDiaPanel({
         saldo_bancario: saldoBancosValor,
         dinheiro_mp: dinheiroMpValor,
         a_receber_manual: aReceberValor,
+        total_recebiveis: dinheiroMpValor + aReceberValor,
         total_patio: naLojaValor,
         caixa_atual: caixaAtualCalculado,
         faturamento: effectiveAccumulatedFaturamento,
         faturamento_outros_valor: faturamentoOutrosValor,
         faturamento_outros_desc: 'Transações Justificadas (Ajustes)',
-        faturamento_liquido: faturamentoTotalComAjustes,
-        fluxo_caixa: fluxoCaixaCalculado,
-        valor_disp_contas: valorDispContasCalculado,
         contas_a_pagar: contasManualValor,
-        subtotal_contas: subtotalContasCalculado,
-        diferenca_final: diferencaFinalCalculada,
+        provisao: currentSnapshot?.provisao || 0,
         saldo_negativo_itau: currentSnapshot?.saldo_negativo_itau || 0,
         juros_rede: jurosRedeValor,
         notes: 'Fechamento diário salvo via painel de conciliação.',
+        metadata: {
+          ...(currentSnapshot?.metadata || {}),
+          faturamento_liquido: faturamentoTotalComAjustes,
+          fluxo_caixa: fluxoCaixaCalculado,
+          valor_disp_contas: valorDispContasCalculado,
+          subtotal_contas: subtotalContasCalculado,
+          diferenca_final: diferencaFinalCalculada,
+        },
       });
 
-      await queryClient.invalidateQueries({ queryKey: ['daily-snapshot', selectedDate] });
-      await queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary', selectedDate] });
+      await queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
+      await queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+      await queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
 
       setIsSaved(true);
       setIsEditing(false);
       toast.success('Fechamento diário gravado com sucesso!');
       setTimeout(() => setIsSaved(false), 3000);
     } catch (err: any) {
+      console.error('Erro ao gravar fechamento:', err);
       toast.error('Erro ao gravar fechamento: ' + (err.message || err));
     }
   };
