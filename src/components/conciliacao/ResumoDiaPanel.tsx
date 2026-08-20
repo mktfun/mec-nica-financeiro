@@ -396,11 +396,11 @@ export function ResumoDiaPanel({
         {/* 5 Pilares Iniciais */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
           
-          {/* 1. Saldo Bancos + Cartões */}
+          {/* 1. Saldo Bancos + Cartões + Dinheiro */}
           <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">SALDO BANCOS + CARTÕES</span>
+                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">SALDO BANCOS + CARTÕES + DINHEIRO</span>
                 <WhisperDot dot={insights?.dots.saldo_banco} />
               </div>
               <Landmark size={15} className="text-[var(--color-accent-light-blue)]" />
@@ -415,10 +415,10 @@ export function ResumoDiaPanel({
               <button
                 type="button"
                 onClick={() => setIsMaquininhasModalOpen(true)}
-                title="Maquininhas Não Entradas (A Compensar). Clique para conferir por loja."
+                title="Maquininhas & Dinheiro Declarado Não Entrados (A Compensar). Clique para conferir por loja."
                 className="border-b border-dashed border-amber-400/50 cursor-pointer text-amber-400/90 hover:text-amber-300 font-semibold transition-colors flex items-center gap-0.5"
               >
-                + Maq: <AnimatedNumber value={summary?.cartoes_a_compensar ?? (tripleReconData?.total_nao_entrou || 0)} format="currency" />
+                + Pendentes: <AnimatedNumber value={summary?.cartoes_a_compensar ?? (tripleReconData?.total_nao_entrou || 0)} format="currency" />
               </button>
             </div>
           </div>
@@ -603,11 +603,11 @@ export function ResumoDiaPanel({
                       step="0.01"
                       value={faturamentoInput || ''}
                       onChange={(e) => setFaturamentoInput(Number(e.target.value))}
-                      placeholder="Faturamento Acumulado"
+                      placeholder="Faturamento Oficina Inteligente (Acumulado)"
                       className="w-full bg-[var(--bg-surface)] border border-[var(--color-primary)]/40 rounded-lg py-1 px-2 text-base font-bold font-mono text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
                     />
                     <span className="text-[10px] text-[var(--color-primary)] font-semibold block">
-                      = Mapa de Metas: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoLiquidoDia)}
+                      = Oficina Inteligente (Dia): {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoLiquidoDia)}
                     </span>
                   </div>
                 ) : (
@@ -616,7 +616,7 @@ export function ResumoDiaPanel({
                       <AnimatedNumber value={faturamentoTotalComAjustes} format="currency" />
                     </span>
                     <div className="flex flex-col gap-0.5 mt-0.5 text-[9px] text-[var(--text-tertiary)]">
-                      <span>Mapa de Metas: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoLiquidoDia)}</span>
+                      <span>Oficina Inteligente (Dia): {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoLiquidoDia)}</span>
                       {totalJustificadosDia > 0 && (
                         <span className="text-blue-400 font-semibold">
                           + Justificados: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalJustificadosDia)}

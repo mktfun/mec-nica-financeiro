@@ -1729,7 +1729,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
               
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 font-mono">
                 <div>
-                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Odômetro Hoje</label>
+                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Faturamento Oficina Inteligente (Acumulado)</label>
                   <input 
                     type="number" 
                     step="0.01"
