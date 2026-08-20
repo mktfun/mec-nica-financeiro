@@ -726,13 +726,13 @@ export function ResumoDiaPanel({
                )}
              </div>
 
-             {/* Diagnóstico Inteligente da IA (Gemini 3.5 Flash-Lite) */}
-             {aiDiagnosis && (
-               <div className="mt-3.5 px-3 py-2 rounded-lg bg-black/40 border border-white/5 text-[11px] text-zinc-300 leading-relaxed text-left flex items-start gap-2 max-w-sm">
-                 <span className="text-xs shrink-0 mt-0.5">✨</span>
-                 <span>{aiDiagnosis}</span>
-               </div>
-             )}
+              {/* Diagnóstico Contábil Automático */}
+              {aiDiagnosis && (
+                <div className="mt-3.5 px-3 py-2 rounded-lg bg-[var(--bg-canvas)] border border-[var(--border-subtle)] text-[11px] font-mono text-[var(--text-secondary)] leading-relaxed text-left flex items-start gap-2 max-w-sm">
+                  <span className="text-[10px] text-[var(--text-tertiary)] uppercase font-semibold shrink-0 mt-0.5">Auditoria:</span>
+                  <span>{aiDiagnosis}</span>
+                </div>
+              )}
           </div>
         </div>
 
