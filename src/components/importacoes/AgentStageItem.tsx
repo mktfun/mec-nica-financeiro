@@ -129,36 +129,41 @@ export function AgentStageItem({ stage }: AgentStageItemProps) {
 
         {/* Indicador Lateral */}
         <div className="flex items-center gap-2">
-          {isRunning && <Loader2 size={16} className="animate-spin text-white opacity-80" />}
+          {isRunning && <Loader2 size={16} className="animate-spin text-sky-400" />}
+          {isSuccess && <CheckCircle2 size={16} className="text-emerald-400 animate-in zoom-in-50" />}
           {isPending && <Circle size={16} className="text-[var(--text-tertiary)] opacity-40" />}
+          {isError && <AlertCircle size={16} className="text-rose-400" />}
         </div>
       </div>
 
       {/* Sub-Etapas / Telemetria do Agente */}
       <div className={`transition-all duration-300 ease-in-out overflow-hidden ${stage.subSteps.length > 0 ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
         <div className="p-3.5 pl-14 flex flex-col gap-2 bg-black/20">
-          {stage.subSteps.map((sub, idx) => (
-            <motion.div 
-              key={sub.id} 
-              initial={{ opacity: 0, x: -6 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: idx * 0.05 }}
-              className="flex items-center justify-between text-xs"
-            >
-              <div className="flex items-center gap-2.5">
-                {sub.status === 'pending' && <Circle size={12} className="text-[var(--text-tertiary)] opacity-40" />}
-                {sub.status === 'running' && <Loader2 size={12} className="animate-spin text-sky-400 shrink-0" />}
-                {sub.status === 'success' && <CheckCircle2 size={12} className="text-emerald-400 shrink-0" />}
-                {sub.status === 'error' && <AlertCircle size={12} className="text-rose-400 shrink-0" />}
-                <span className={`font-mono text-xs ${sub.status === 'success' ? 'text-[var(--text-secondary)]' : sub.status === 'running' ? 'text-sky-300 font-semibold' : 'text-[var(--text-tertiary)]'}`}>
-                  {sub.label}
+          {stage.subSteps.map((sub, idx) => {
+            const effectiveSubStatus = isSuccess ? 'success' : sub.status;
+            return (
+              <motion.div 
+                key={sub.id} 
+                initial={{ opacity: 0, x: -6 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: idx * 0.05 }}
+                className="flex items-center justify-between text-xs"
+              >
+                <div className="flex items-center gap-2.5">
+                  {effectiveSubStatus === 'pending' && <Circle size={12} className="text-[var(--text-tertiary)] opacity-40" />}
+                  {effectiveSubStatus === 'running' && <Loader2 size={12} className="animate-spin text-sky-400 shrink-0" />}
+                  {effectiveSubStatus === 'success' && <CheckCircle2 size={12} className="text-emerald-400 shrink-0" />}
+                  {effectiveSubStatus === 'error' && <AlertCircle size={12} className="text-rose-400 shrink-0" />}
+                  <span className={`font-mono text-xs ${effectiveSubStatus === 'success' ? 'text-[var(--text-secondary)]' : effectiveSubStatus === 'running' ? 'text-sky-300 font-semibold' : 'text-[var(--text-tertiary)]'}`}>
+                    {sub.label}
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-[var(--text-tertiary)] opacity-60">
+                  {effectiveSubStatus === 'success' ? 'OK' : effectiveSubStatus === 'running' ? 'Processando' : 'Pendente'}
                 </span>
-              </div>
-              <span className="text-[10px] font-mono text-[var(--text-tertiary)] opacity-60">
-                {sub.status === 'success' ? 'OK' : sub.status === 'running' ? 'Processando' : 'Pendente'}
-              </span>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </div>

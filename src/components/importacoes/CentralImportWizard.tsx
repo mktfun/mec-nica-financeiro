@@ -445,7 +445,6 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       updateStage(1, 'success', 'Maquininhas processadas!');
       
       // Snapshot Na Loja OS
-      updateStage(1, 'running', 'Gerando snapshot de OSs...');
       const allStoreIds = new Set<string>();
       Object.values(mapping).forEach(v => {
         if (v && v !== 'GLOBAL') allStoreIds.add(v);
@@ -990,8 +989,15 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       const blob = new Blob([JSON.stringify(auditData, null, 2)], { type: 'application/json' });
       setAuditTrailUrl(URL.createObjectURL(blob));
       
+      updateStage(0, 'success', 'OSs e Recebíveis salvos!');
+      updateStage(1, 'success', 'Maquininhas processadas!');
+      updateStage(2, 'success', 'OFX conciliado!');
       updateStage(3, 'success', 'Conciliação finalizada!');
-
+      setImportStages(prev => prev.map(s => ({ 
+        ...s, 
+        status: 'success', 
+        subSteps: s.subSteps.map(sub => ({ ...sub, status: 'success' })) 
+      })));
       setSaveFinished(true);
 
     } catch(e: any) {
@@ -1862,8 +1868,13 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         </motion.div>
       )}
 
-      {/* STEP 4: PAINEL EXECUTIVO DE PROGRESSO & GRAVAÇÃƒO */}
+      {/* STEP 4: PAINEL EXECUTIVO DE PROGRESSO & GRAVAÇÃO (10/10 DESIGN) */}
       {step === 4 && (() => {
+        const totalOsCount = results.osFiles.filter(r => r.success).reduce((acc, curr) => acc + curr.osArray.length, 0);
+        const totalRedeCount = results.redeResults.filter(r => r.success).reduce((acc, curr) => acc + curr.transactions.length, 0);
+        const totalOfxCount = results.ofxResults.reduce((acc, curr) => acc + curr.transactions.length, 0);
+        const formattedTargetDate = targetDate.split('-').reverse().join('/');
+
         const progressPct = saveFinished ? 100 : (
           importLogs.some(l => l.message.includes('Vinculando')) ? 85 :
           importLogs.some(l => l.message.includes('extrato')) ? 65 :
@@ -1871,153 +1882,191 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           importLogs.some(l => l.message.includes('Pátio')) ? 20 : 10
         );
 
-        const currentPhase = saveFinished ? 'completed' : (
-          importLogs.some(l => l.message.includes('Vinculando')) ? 'matches' :
-          importLogs.some(l => l.message.includes('extrato') || l.message.includes('transações')) ? 'ofx' :
-          importLogs.some(l => l.message.includes('Rede')) ? 'rede' : 'os'
-        );
-
         return (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-            <Card className="p-6 md:p-8 bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-2xl shadow-xl space-y-6">
-              
-              {/* Header do Painel de Orquestração */}
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-[var(--border-subtle)]">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-sm relative shrink-0">
-                    <Sparkles size={20} className={!saveFinished ? 'animate-pulse' : ''} />
-                    {!saveFinished && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 max-w-5xl mx-auto">
+            
+            {/* HERO CELEBRATION BANNER (Quando Concluído) */}
+            {saveFinished ? (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.96 }} 
+                animate={{ opacity: 1, scale: 1 }} 
+                className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-zinc-900/90 via-zinc-900/80 to-zinc-950/90 border border-emerald-500/30 p-8 shadow-2xl backdrop-blur-xl"
+              >
+                <div className="absolute -top-24 -right-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+
+                <div className="relative z-10 flex flex-col items-center text-center space-y-6">
+                  {/* Glowing Icon */}
+                  <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-emerald-500/20 to-emerald-400/10 border border-emerald-400/40 flex items-center justify-center text-emerald-400 shadow-[0_0_40px_rgba(16,185,129,0.25)] animate-in zoom-in-50 duration-500">
+                    <CheckCircle2 size={40} className="stroke-[2.2]" />
+                  </div>
+
+                  <div>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-2">
+                      <Sparkles size={12} /> Pipeline 100% Finalizado
+                    </span>
+                    <h2 className="text-3xl font-display font-bold text-zinc-100 tracking-tight">
+                      Lote de Conciliação Consolidado!
+                    </h2>
+                    <p className="text-sm text-zinc-400 max-w-md mx-auto mt-1.5">
+                      Todos os dados brutos foram auditados, persistidos no banco de dados e as métricas do fechamento estão prontas.
+                    </p>
+                  </div>
+
+                  {/* 4 Cards de Métricas do Lote */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 w-full max-w-3xl pt-2">
+                    <div className="bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 text-left">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
+                        <Car size={13} className="text-blue-400" /> OSs Gravadas
+                      </span>
+                      <p className="text-xl font-bold font-mono text-zinc-100 mt-1">{totalOsCount}</p>
+                      <span className="text-[10px] text-zinc-500">{results.osFiles.length} arquivos processados</span>
+                    </div>
+
+                    <div className="bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 text-left">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
+                        <CreditCard size={13} className="text-emerald-400" /> Vendas Rede
+                      </span>
+                      <p className="text-xl font-bold font-mono text-zinc-100 mt-1">{totalRedeCount}</p>
+                      <span className="text-[10px] text-zinc-500">{results.redeResults.length} relatórios MDR</span>
+                    </div>
+
+                    <div className="bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 text-left">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
+                        <Landmark size={13} className="text-sky-400" /> Extratos OFX
+                      </span>
+                      <p className="text-xl font-bold font-mono text-zinc-100 mt-1">{totalOfxCount}</p>
+                      <span className="text-[10px] text-zinc-500">{results.ofxResults.length} contas bancárias</span>
+                    </div>
+
+                    <div className="bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 text-left">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
+                        <Clock size={13} className="text-purple-400" /> Data Base
+                      </span>
+                      <p className="text-xl font-bold font-mono text-zinc-100 mt-1">{formattedTargetDate}</p>
+                      <span className="text-[10px] text-emerald-400 font-semibold">Fechamento do Dia</span>
+                    </div>
+                  </div>
+
+                  {/* Botões de Ação Final */}
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-4 w-full max-w-lg">
+                    <Button
+                      onClick={() => navigate({ to: '/conciliacao' })}
+                      className="w-full sm:w-auto flex-1 py-3.5 px-6 font-bold text-sm bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-zinc-950 rounded-xl shadow-[0_0_25px_rgba(16,185,129,0.35)] transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <Sparkles size={16} />
+                      Ir para a Conciliação do Dia →
+                    </Button>
+
+                    {auditTrailUrl && (
+                      <a href={auditTrailUrl} download={`auditoria-conciliacao-${new Date().getTime()}.json`} className="w-full sm:w-auto">
+                        <Button variant="secondary" className="w-full text-xs py-3 px-4 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 rounded-xl cursor-pointer">
+                          <Download size={15} className="mr-1.5" />
+                          Baixar JSON
+                        </Button>
+                      </a>
+                    )}
+
+                    <Button
+                      onClick={() => setStep(1)}
+                      variant="ghost"
+                      className="w-full sm:w-auto text-xs py-3 px-4 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50 rounded-xl cursor-pointer"
+                    >
+                      Nova Importação
+                    </Button>
+                  </div>
+                </div>
+              </motion.div>
+            ) : (
+              /* CARD DE PROCESSAMENTO EM ANDAMENTO */
+              <Card className="p-6 md:p-8 bg-zinc-900/80 border border-zinc-800 rounded-3xl shadow-2xl backdrop-blur-md space-y-6">
+                
+                {/* Header da Orquestração */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-zinc-800">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-11 h-11 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-sm relative shrink-0">
+                      <Sparkles size={22} className="animate-pulse" />
                       <span className="absolute -top-1 -right-1 flex h-3 w-3">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-3 w-3 bg-purple-500"></span>
                       </span>
-                    )}
+                    </div>
+                    <div>
+                      <h3 className="font-display text-lg font-bold text-zinc-100 flex items-center gap-2">
+                        Orquestração de Conciliação
+                      </h3>
+                      <p className="text-xs text-zinc-400 mt-0.5">
+                        Agentes ingerindo OSs, auditando taxas MDR e consolidando o fechamento do dia {formattedTargetDate}.
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-display text-lg font-bold text-[var(--text-primary)] flex items-center gap-2">
-                      Orquestração dos Agentes de Conciliação
-                    </h3>
-                    <p className="text-xs text-[var(--text-tertiary)] mt-0.5">
-                      Agentes autônomos ingerindo, auditando taxas, processando extratos bancários e consolidando o fechamento no Supabase.
-                    </p>
-                  </div>
-                </div>
 
-                <div className="flex items-center gap-2">
-                  {!saveFinished ? (
-                    <Badge variant="outline" className="text-xs font-mono px-3 py-1.5 bg-sky-500/10 text-sky-400 border-sky-500/30 gap-2">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-xs font-mono px-3.5 py-1.5 bg-sky-500/10 text-sky-400 border-sky-500/30 gap-2">
                       <LoadingSpinner size="xs" />
                       <span>Agentes em Execução ({progressPct}%)</span>
                     </Badge>
-                  ) : (
-                    <Badge variant="outline" className="text-xs font-mono px-3 py-1.5 bg-emerald-500/10 text-emerald-400 border-emerald-500/30 gap-1.5 font-semibold">
-                      <CheckCircle2 size={13} />
-                      <span>Orquestração Concluída (100%)</span>
-                    </Badge>
-                  )}
-                </div>
-              </div>
-
-              {/* Lista dos Agentes Especialistas em Execução */}
-              <div className="space-y-3.5">
-                <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-[var(--text-tertiary)] px-1">
-                  <span>Agentes Especialistas Ativos</span>
-                  <span className="font-mono text-[10px] text-[var(--text-tertiary)]">
-                    {saveFinished ? '4 de 4 Concluídos' : 'Processamento em Tempo Real'}
-                  </span>
+                  </div>
                 </div>
 
-                <div className="flex flex-col gap-3">
-                  {importStages.map((stage) => (
-                    <AgentStageItem key={stage.id} stage={stage} />
-                  ))}
-                </div>
-              </div>
+                {/* Lista dos Agentes */}
+                <div className="space-y-3.5">
+                  <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-zinc-400 px-1">
+                    <span>Agentes Especialistas Ativos</span>
+                    <span className="font-mono text-[10px] text-zinc-500">Processamento em Tempo Real</span>
+                  </div>
 
-              {/* Logs Técnicos de Depuração Colapsáveis */}
-              {importLogs.length > 0 && (
-                <details className="mt-4 p-3.5 rounded-xl bg-black/40 border border-white/5 group">
-                  <summary className="text-xs font-mono text-[var(--text-tertiary)] cursor-pointer flex items-center justify-between hover:text-[var(--text-secondary)] select-none">
-                    <span className="flex items-center gap-2">
-                      <Terminal size={14} className="text-[var(--color-primary)]" />
-                      Logs de Depuração ({importLogs.length} eventos registrados)
-                    </span>
-                    <span className="text-[10px] uppercase font-sans tracking-wider text-[var(--text-tertiary)] group-open:rotate-180 transition-transform">▼</span>
-                  </summary>
-                  <div className="mt-3 max-h-48 overflow-y-auto space-y-1.5 text-[11px] font-mono text-[var(--text-secondary)] border-t border-white/5 pt-2.5">
-                    {importLogs.map((log) => (
-                      <div key={log.id} className="flex gap-2 leading-relaxed">
-                        <span className="text-[var(--text-tertiary)] shrink-0">[{log.timestamp}]</span>
-                        <span className={log.type === 'error' ? 'text-red-400' : log.type === 'success' ? 'text-emerald-400' : 'text-zinc-400'}>
-                          {log.message}
-                        </span>
-                      </div>
+                  <div className="flex flex-col gap-3">
+                    {importStages.map((stage) => (
+                      <AgentStageItem key={stage.id} stage={stage} />
                     ))}
-                    <div ref={logsEndRef} />
                   </div>
-                </details>
-              )}
-
-              {/* Alerta de Erro se houver */}
-              {importLogs.some(l => l.type === 'error') && (
-                <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-xl flex items-start justify-between gap-4 animate-in fade-in">
-                  <div className="flex items-start gap-3">
-                    <AlertCircle size={20} className="text-red-400 shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="font-semibold text-red-400 text-sm">Falha durante o processamento</h4>
-                      <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                        {importLogs.find(l => l.type === 'error')?.message}
-                      </p>
-                    </div>
-                  </div>
-                  <Button onClick={handleConfirm} disabled={isSaving} className="bg-red-500 text-white hover:bg-red-600 text-xs px-3 py-1.5 shrink-0">
-                    Tentar Novamente
-                  </Button>
                 </div>
-              )}
+              </Card>
+            )}
 
-              {/* Painel de Sucesso e Ações Finais */}
-              {saveFinished && (
-                <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="pt-4 border-t border-[var(--border-subtle)] space-y-5">
-                  <div className="bg-emerald-500/10 border border-emerald-500/20 p-5 rounded-xl flex items-center gap-4">
-                    <CheckCircle2 size={28} className="text-emerald-400 shrink-0" />
-                    <div>
-                      <h4 className="font-semibold text-emerald-400 text-base">Lote Importado com Sucesso!</h4>
-                      <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                        Todas as OSs, vendas de cartão e lançamentos do extrato foram persistidos no banco de dados.
-                      </p>
+            {/* Logs Técnicos de Depuração Colapsáveis */}
+            {importLogs.length > 0 && (
+              <details className="p-4 rounded-2xl bg-zinc-950/80 border border-zinc-800/80 group">
+                <summary className="text-xs font-mono text-zinc-400 cursor-pointer flex items-center justify-between hover:text-zinc-200 select-none">
+                  <span className="flex items-center gap-2">
+                    <Terminal size={14} className="text-purple-400" />
+                    Telemetria e Logs da Execução ({importLogs.length} eventos registrados)
+                  </span>
+                  <span className="text-[10px] uppercase font-sans tracking-wider text-zinc-500 group-open:rotate-180 transition-transform">▼</span>
+                </summary>
+                <div className="mt-3 max-h-48 overflow-y-auto space-y-1.5 text-[11px] font-mono text-zinc-400 border-t border-zinc-800/80 pt-3">
+                  {importLogs.map((log) => (
+                    <div key={log.id} className="flex gap-2 leading-relaxed">
+                      <span className="text-zinc-600 shrink-0">[{log.timestamp}]</span>
+                      <span className={log.type === 'error' ? 'text-rose-400' : log.type === 'success' ? 'text-emerald-400' : 'text-zinc-300'}>
+                        {log.message}
+                      </span>
                     </div>
-                  </div>
+                  ))}
+                  <div ref={logsEndRef} />
+                </div>
+              </details>
+            )}
 
-                  <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-2">
-                    {auditTrailUrl && (
-                      <a href={auditTrailUrl} download={`auditoria-conciliacao-${new Date().getTime()}.json`}>
-                        <Button variant="secondary" className="w-full sm:w-auto text-xs px-4 py-2.5 bg-[var(--bg-canvas)] border border-[var(--border-strong)]">
-                          <Download size={16} className="mr-2" />
-                          Baixar Auditoria (JSON)
-                        </Button>
-                      </a>
-                    )}
-                    <Button
-                      onClick={onCancel}
-                      variant="secondary"
-                      className="w-full sm:w-auto text-xs px-4 py-2.5"
-                    >
-                      <FileSpreadsheet size={16} />
-                      Ver Histórico de Importações
-                    </Button>
-
-                    <Button
-                      onClick={() => navigate({ to: '/conciliacao' })}
-                      className="w-full sm:w-auto text-xs px-5 py-2.5 font-semibold bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 shadow-[0_4px_15px_rgba(var(--color-primary-rgb),0.3)]"
-                    >
-                      <CheckCircle2 size={16} />
-                      Ir para a Tela de Conciliação â†’
-                    </Button>
+            {/* Alerta de Erro se houver */}
+            {importLogs.some(l => l.type === 'error') && !saveFinished && (
+              <div className="bg-rose-500/10 border border-rose-500/20 p-4 rounded-2xl flex items-start justify-between gap-4 animate-in fade-in">
+                <div className="flex items-start gap-3">
+                  <AlertCircle size={20} className="text-rose-400 shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-rose-400 text-sm">Falha durante o processamento</h4>
+                    <p className="text-xs text-zinc-400 mt-0.5">
+                      {importLogs.find(l => l.type === 'error')?.message}
+                    </p>
                   </div>
-                </motion.div>
-              )}
-            </Card>
+                </div>
+                <Button onClick={handleConfirm} disabled={isSaving} className="bg-rose-500 hover:bg-rose-600 text-white text-xs px-3.5 py-1.5 shrink-0 rounded-xl cursor-pointer">
+                  Tentar Novamente
+                </Button>
+              </div>
+            )}
+
           </motion.div>
         );
       })()}
