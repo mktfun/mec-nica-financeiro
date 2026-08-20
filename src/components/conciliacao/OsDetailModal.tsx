@@ -1,4 +1,4 @@
-﻿import { Modal } from '@/components/ui/Modal';
+import { Modal } from '@/components/ui/Modal';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { FileText, User, Calendar, CreditCard, QrCode, Banknote, CheckCircle2, ShieldCheck, Check, RotateCcw } from 'lucide-react';
@@ -62,7 +62,7 @@ export function OsDetailModal({ isOpen, onClose, osData }: OsDetailModalProps) {
 
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={`Ordem de Serviço #${osData.os_number}`}>
+    <Modal isOpen={isOpen} onClose={onClose} title={`Ordem de Serviço #${osData.os_number}`} size="xl">
       <div className="space-y-6 pt-2">
         {/* Header da OS */}
         <div className="bg-[var(--bg-surface)] p-5 rounded-2xl border border-[var(--border-subtle)] flex items-center justify-between">

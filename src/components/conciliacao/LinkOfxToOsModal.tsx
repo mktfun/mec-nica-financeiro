@@ -96,7 +96,7 @@ export function LinkOfxToOsModal({
       isOpen={isOpen}
       onClose={onClose}
       title={`Vincular Extrato Bancário à OS #${osData.os_number}`}
-      className="max-w-3xl"
+      size="2xl"
     >
       <div className="space-y-5">
         {/* Detalhes da OS Selecionada */}
@@ -129,18 +129,18 @@ export function LinkOfxToOsModal({
 
         {/* Busca por Lançamentos do Banco */}
         <div className="relative">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
           <input
             type="text"
             placeholder="Buscar por descrição do extrato, nome do pagador ou valor..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg py-2 pl-9 pr-4 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--color-primary)] font-sans"
+            className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg py-2.5 pl-10 pr-4 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--color-primary)] font-sans"
           />
         </div>
 
         {/* Tabela de Lançamentos Bancários */}
-        <div className="border border-[var(--border-subtle)] rounded-xl overflow-hidden max-h-80 overflow-y-auto">
+        <div className="border border-[var(--border-subtle)] rounded-xl overflow-hidden max-h-[460px] overflow-y-auto">
           {isLoading ? (
             <div className="p-8 flex justify-center">
               <LoadingSpinner text="Carregando lançamentos do extrato..." />

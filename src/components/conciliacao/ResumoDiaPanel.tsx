@@ -13,6 +13,7 @@ import { useReconciliationInsights } from '@/hooks/useReconciliationInsights';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { FaturamentoAtualBreakdownModal } from '@/components/conciliacao/FaturamentoAtualBreakdownModal';
 import { MaquininhasDetailModal } from '@/components/conciliacao/MaquininhasDetailModal';
+import { PatioOsDetailModal } from '@/components/conciliacao/PatioOsDetailModal';
 import { WhisperDot } from '@/components/conciliacao/WhisperDot';
 import { AuditTrailBar } from '@/components/conciliacao/AuditTrailBar';
 import { supabase } from '@/lib/supabase';
@@ -57,6 +58,7 @@ export function ResumoDiaPanel({
   const [isEditing, setIsEditing] = useState(false);
   const [isBreakdownModalOpen, setIsBreakdownModalOpen] = useState(false);
   const [isMaquininhasModalOpen, setIsMaquininhasModalOpen] = useState(false);
+  const [isPatioModalOpen, setIsPatioModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: tripleReconData, isLoading: loadingTripleRecon } = usePosTripleReconciliation(selectedDate);
@@ -119,9 +121,14 @@ export function ResumoDiaPanel({
     : Number(currentSnapshot?.faturamento_outros_valor ?? summary?.faturamento_outros ?? 0);
 
   // Cálculo Odômetro do Faturamento Mapa de Metas do Dia
-  const faturamentoLiquidoDia = faturamentoAnteriorGlobal > 0 
-    ? (faturamentoAcumuladoHoje - faturamentoAnteriorGlobal) 
-    : faturamentoAcumuladoHoje;
+  // Se o usuário digitou um valor maior que o faturamento anterior, é o odômetro acumulado: calcula a diferença.
+  // Se o usuário digitou um valor menor que o faturamento anterior (mas > 0) e não é marco zero, é o próprio faturamento líquido do dia!
+  let faturamentoLiquidoDia = 0;
+  if (faturamentoAnteriorGlobal > 0 && faturamentoAcumuladoHoje > faturamentoAnteriorGlobal) {
+    faturamentoLiquidoDia = faturamentoAcumuladoHoje - faturamentoAnteriorGlobal;
+  } else if (faturamentoAcumuladoHoje > 0) {
+    faturamentoLiquidoDia = faturamentoAcumuladoHoje;
+  }
     
   // Faturamento Atual = Mapa de Metas + Transações Justificadas
   const faturamentoTotalComAjustes = faturamentoLiquidoDia + faturamentoOutrosValor;
@@ -162,6 +169,11 @@ export function ResumoDiaPanel({
         await Promise.all(promises);
       }
 
+      const effectiveAccumulatedFaturamento = 
+        (faturamentoAnteriorGlobal > 0 && faturamentoAcumuladoHoje > 0 && faturamentoAcumuladoHoje < faturamentoAnteriorGlobal)
+          ? (faturamentoAnteriorGlobal + faturamentoAcumuladoHoje)
+          : faturamentoAcumuladoHoje;
+
       await saveSnapshot.mutateAsync({
         date: selectedDate,
         saldo_bancario: saldoBancosValor,
@@ -169,7 +181,7 @@ export function ResumoDiaPanel({
         a_receber_manual: aReceberValor,
         total_patio: naLojaValor,
         caixa_atual: caixaAtualCalculado,
-        faturamento: faturamentoAcumuladoHoje,
+        faturamento: effectiveAccumulatedFaturamento,
         faturamento_outros_valor: faturamentoOutrosValor,
         faturamento_outros_desc: 'Transações Justificadas (Ajustes)',
         faturamento_liquido: faturamentoTotalComAjustes,
@@ -463,18 +475,24 @@ export function ResumoDiaPanel({
           </div>
 
           {/* 4. Na Loja OS */}
-          <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
+          <div 
+            onClick={() => setIsPatioModalOpen(true)}
+            className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1 cursor-pointer hover:border-amber-500/50 hover:bg-[var(--bg-surface-hover)] transition-all group shadow-sm"
+            title="Clique para ver a lista detalhada de OSs no pátio e editar valores"
+          >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">NA LOJA OS</span>
+                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-amber-400 transition-colors">NA LOJA OS</span>
                 <WhisperDot dot={insights?.dots.na_loja_os} />
               </div>
-              <ShoppingBag size={15} className="text-[var(--color-accent-warning)]" />
+              <span className="text-[9px] font-semibold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded group-hover:bg-amber-500/20 transition-all flex items-center gap-1">
+                Ver OSs ↗
+              </span>
             </div>
-            <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-warning)]">
+            <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-warning)] group-hover:text-amber-300 transition-colors">
               <AnimatedNumber value={naLojaValor} format="currency" />
             </p>
-            <span className="text-[10px] text-[var(--text-tertiary)] block">OSs do Pátio pendentes</span>
+            <span className="text-[10px] text-[var(--text-tertiary)] block">OSs do Pátio pendentes (Clique p/ ver)</span>
           </div>
 
           {/* 5. Contas Manual */}
@@ -743,6 +761,13 @@ export function ResumoDiaPanel({
         targetDate={selectedDate}
         data={summary?.maquininhas_detalhe || tripleReconData}
         isLoading={loadingTripleRecon}
+      />
+
+      {/* Modal de Detalhamento e Edição de Ordens de Serviço no Pátio */}
+      <PatioOsDetailModal
+        isOpen={isPatioModalOpen}
+        onClose={() => setIsPatioModalOpen(false)}
+        targetDate={selectedDate}
       />
     </motion.div>
   );

@@ -98,7 +98,7 @@ export function ManualMatchOsModal({
       isOpen={isOpen}
       onClose={onClose}
       title="Vincular Transação Bancária à Ordem de Serviço (OS)"
-      className="max-w-3xl"
+      size="2xl"
     >
       <div className="space-y-5">
         {/* Card do Lançamento Bancário */}
@@ -133,18 +133,18 @@ export function ManualMatchOsModal({
 
         {/* Busca por OS */}
         <div className="relative">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
           <input
             type="text"
             placeholder="Buscar por Nº da OS, Nome do Cliente, Placa ou Forma de Pagamento..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg py-2 pl-9 pr-4 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--color-primary)] font-sans"
+            className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg py-2.5 pl-10 pr-4 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--color-primary)] font-sans"
           />
         </div>
 
         {/* Lista de OSs da Loja */}
-        <div className="border border-[var(--border-subtle)] rounded-xl overflow-hidden max-h-80 overflow-y-auto">
+        <div className="border border-[var(--border-subtle)] rounded-xl overflow-hidden max-h-[460px] overflow-y-auto">
           {isLoading ? (
             <div className="p-8 flex justify-center">
               <LoadingSpinner text="Carregando OSs da filial..." />
