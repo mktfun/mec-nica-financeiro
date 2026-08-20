@@ -1086,62 +1086,65 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       </div>
 
       {step === 1 && !showMarcoZero && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Esquerda: Upload Manual (Planilhas) */}
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
+          <div className={`grid grid-cols-1 ${!hasDailySnapshots ? 'md:grid-cols-2' : ''} gap-6`}>
+            
+            {/* Dropzone Principal */}
             <div 
               {...getRootProps()} 
-              className={`group relative overflow-hidden border-2 border-dashed rounded-3xl p-10 flex flex-col items-center justify-center cursor-pointer transition-all duration-500
+              className={`border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center cursor-pointer transition-colors duration-200
                 ${isDragActive 
-                  ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/10 scale-[1.02] shadow-[0_0_30px_rgba(var(--color-primary-rgb),0.15)]' 
-                  : 'border-[var(--border-strong)] bg-gradient-to-b from-[var(--bg-surface)] to-[var(--bg-canvas)] hover:border-[var(--color-primary)]/60 hover:shadow-2xl'
+                  ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/5' 
+                  : 'border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:border-[var(--border-strong)]'
                 }
               `}
             >
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--color-primary)_0%,transparent_70%)] opacity-0 group-hover:opacity-[0.03] transition-opacity duration-700 pointer-events-none"></div>
               <input {...getInputProps()} />
-              <div className="flex gap-4 mb-8 relative z-10">
-                 <div className="bg-gradient-to-br from-[var(--color-primary)]/20 to-transparent p-5 rounded-2xl shadow-lg border border-[var(--color-primary)]/20 text-[var(--color-primary)] group-hover:-translate-y-1 group-hover:scale-105 transition-all duration-300 backdrop-blur-sm">
-                   <Database size={32} strokeWidth={1.5} />
-                 </div>
-                 <div className="bg-gradient-to-br from-[var(--color-accent-teal)]/20 to-transparent p-5 rounded-2xl shadow-lg border border-[var(--color-accent-teal)]/20 text-[var(--color-accent-teal)] group-hover:translate-y-1 group-hover:scale-105 transition-all duration-300 backdrop-blur-sm">
-                   <UploadCloud size={32} strokeWidth={1.5} />
-                 </div>
+              <div className="w-12 h-12 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--color-primary)] mb-4">
+                <UploadCloud size={24} />
               </div>
-              <h3 className="font-display font-semibold text-2xl mb-3 text-center text-[var(--text-primary)] relative z-10 tracking-tight">
-                {isDragActive ? 'Solte os arquivos para processar' : 'Processamento Local de Planilhas'}
+              <h3 className="font-semibold text-lg mb-1.5 text-center text-[var(--text-primary)]">
+                {isDragActive ? 'Solte os arquivos para importar' : 'Importar Arquivos de Conciliação'}
               </h3>
-              <p className="text-[var(--text-secondary)] text-sm text-center max-w-md leading-relaxed relative z-10">
-                Arraste arquivos de <span className="text-[var(--text-primary)] font-medium">OS do Pátio</span>, <span className="text-[var(--text-primary)] font-medium">Vendas Rede</span> e <span className="text-[var(--text-primary)] font-medium">Extratos OFX</span>. O sistema fará o parsing e a conciliação automática.
+              <p className="text-[var(--text-secondary)] text-xs text-center max-w-sm mb-5 leading-relaxed">
+                Arraste os arquivos da pasta do dia ou clique para selecionar. O sistema processará automaticamente:
               </p>
+
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <span className="px-2.5 py-1 rounded-md bg-[var(--bg-canvas)] border border-[var(--border-subtle)] text-[11px] font-mono text-[var(--text-secondary)]">
+                  Extratos (.ofx)
+                </span>
+                <span className="px-2.5 py-1 rounded-md bg-[var(--bg-canvas)] border border-[var(--border-subtle)] text-[11px] font-mono text-[var(--text-secondary)]">
+                  Ordens de Serviço (.xls)
+                </span>
+                <span className="px-2.5 py-1 rounded-md bg-[var(--bg-canvas)] border border-[var(--border-subtle)] text-[11px] font-mono text-[var(--text-secondary)]">
+                  Vendas Rede (.xlsx)
+                </span>
+              </div>
             </div>
             
-            {/* Direita: Implantação de Saldo (Marco Zero) */}
+            {/* Marco Zero (Se aplicável) */}
             {!hasDailySnapshots && (
-              <div className="group border border-[var(--border-subtle)] bg-gradient-to-br from-[var(--bg-surface)] to-[var(--bg-canvas)] rounded-3xl p-10 flex flex-col items-center justify-center transition-all duration-500 hover:border-[var(--color-primary)]/40 hover:shadow-2xl relative overflow-hidden">
-                <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.03)_50%,transparent_75%,transparent_100%)] bg-[length:250%_250%] opacity-0 group-hover:opacity-100 group-hover:animate-[shimmer_3s_infinite] pointer-events-none"></div>
-                <div className="absolute top-0 right-0 bg-[var(--color-accent-warning)]/10 text-[var(--color-accent-warning)] text-xs px-4 py-1.5 font-bold rounded-bl-2xl border-l border-b border-[var(--color-accent-warning)]/20 flex items-center gap-1.5 shadow-sm">
-                  <AlertCircle size={14} /> AVISO
+              <div className="border border-[var(--border-subtle)] bg-[var(--bg-surface)] rounded-2xl p-8 flex flex-col items-center justify-between text-center">
+                <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-4">
+                  <Database size={24} />
                 </div>
-                <div className="bg-gradient-to-br from-[var(--color-accent-warning)]/20 to-[var(--color-accent-warning)]/5 p-6 rounded-2xl shadow-lg border border-[var(--color-accent-warning)]/30 text-[var(--color-accent-warning)] mb-8 group-hover:scale-110 transition-transform duration-500">
-                  <Database size={32} strokeWidth={1.5} />
+                <div>
+                  <h3 className="font-semibold text-lg mb-1 text-[var(--text-primary)]">
+                    Implantação Inicial (Marco Zero)
+                  </h3>
+                  <p className="text-[var(--text-secondary)] text-xs max-w-xs leading-relaxed">
+                    Carregue a planilha histórica para inicializar os saldos das lojas e estoque pendente pela primeira vez.
+                  </p>
                 </div>
-                <h3 className="font-display font-semibold text-2xl mb-3 text-center text-[var(--text-primary)] tracking-tight relative z-10">
-                  Implantação de Saldo Inicial
-                </h3>
-                <p className="text-[var(--text-secondary)] text-sm text-center max-w-sm mb-8 leading-relaxed relative z-10">
-                  Inicie o Estoque de OSs Pendentes carregando a planilha antiga de conciliação diária. Faça isso apenas uma vez por loja.
-                </p>
 
-                <div className="mt-auto w-full relative z-10">
-                  <Button 
-                    onClick={() => setShowMarcoZero(true)}
-                    variant="outline"
-                    className="w-full h-12 border-[var(--border-strong)] text-[var(--text-primary)] hover:border-[var(--color-accent-warning)] hover:text-[var(--color-accent-warning)] hover:bg-[var(--color-accent-warning)]/10 transition-all duration-300"
-                  >
-                    <FileSpreadsheet className="mr-2" size={18} strokeWidth={2}/> Abrir Marco Zero
-                  </Button>
-                </div>
+                <Button 
+                  onClick={() => setShowMarcoZero(true)}
+                  variant="outline"
+                  className="w-full mt-6 text-xs h-10 border-[var(--border-subtle)] hover:bg-[var(--bg-surface-elevated)]"
+                >
+                  <FileSpreadsheet className="mr-2" size={15} /> Abrir Assistente Marco Zero
+                </Button>
               </div>
             )}
           </div>
@@ -1885,161 +1888,124 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         return (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 max-w-5xl mx-auto">
             
-            {/* HERO CELEBRATION BANNER (Quando Concluído) */}
+            {/* HERO BANNER (Quando Concluído) */}
             {saveFinished ? (
               <motion.div 
-                initial={{ opacity: 0, scale: 0.96 }} 
-                animate={{ opacity: 1, scale: 1 }} 
-                className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-zinc-900/90 via-zinc-900/80 to-zinc-950/90 border border-emerald-500/30 p-8 shadow-2xl backdrop-blur-xl"
+                initial={{ opacity: 0, y: 4 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                className="rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] p-8 text-center space-y-6"
               >
-                <div className="absolute -top-24 -right-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
+                  <CheckCircle2 size={24} />
+                </div>
 
-                <div className="relative z-10 flex flex-col items-center text-center space-y-6">
-                  {/* Glowing Icon */}
-                  <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-emerald-500/20 to-emerald-400/10 border border-emerald-400/40 flex items-center justify-center text-emerald-400 shadow-[0_0_40px_rgba(16,185,129,0.25)] animate-in zoom-in-50 duration-500">
-                    <CheckCircle2 size={40} className="stroke-[2.2]" />
+                <div>
+                  <h2 className="text-xl font-bold text-[var(--text-primary)] tracking-tight">
+                    Importação Concluída com Sucesso
+                  </h2>
+                  <p className="text-xs text-[var(--text-secondary)] max-w-md mx-auto mt-1">
+                    Os arquivos foram auditados, as OSs e transações foram persistidas no banco e os saldos consolidados para {formattedTargetDate}.
+                  </p>
+                </div>
+
+                {/* 4 Cards de Métricas do Lote */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto pt-1">
+                  <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3 text-left">
+                    <span className="text-[10px] font-mono uppercase text-[var(--text-tertiary)] block">OSs Gravadas</span>
+                    <p className="text-lg font-bold font-mono text-[var(--text-primary)] mt-0.5">{totalOsCount}</p>
+                    <span className="text-[10px] text-[var(--text-tertiary)]">{results.osFiles.length} arquivos</span>
                   </div>
 
-                  <div>
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-2">
-                      <Sparkles size={12} /> Pipeline 100% Finalizado
-                    </span>
-                    <h2 className="text-3xl font-display font-bold text-zinc-100 tracking-tight">
-                      Lote de Conciliação Consolidado!
-                    </h2>
-                    <p className="text-sm text-zinc-400 max-w-md mx-auto mt-1.5">
-                      Todos os dados brutos foram auditados, persistidos no banco de dados e as métricas do fechamento estão prontas.
-                    </p>
+                  <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3 text-left">
+                    <span className="text-[10px] font-mono uppercase text-[var(--text-tertiary)] block">Vendas Rede</span>
+                    <p className="text-lg font-bold font-mono text-[var(--text-primary)] mt-0.5">{totalRedeCount}</p>
+                    <span className="text-[10px] text-[var(--text-tertiary)]">{results.redeResults.length} relatórios</span>
                   </div>
 
-                  {/* 4 Cards de Métricas do Lote */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 w-full max-w-3xl pt-2">
-                    <div className="bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 text-left">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
-                        <Car size={13} className="text-blue-400" /> OSs Gravadas
-                      </span>
-                      <p className="text-xl font-bold font-mono text-zinc-100 mt-1">{totalOsCount}</p>
-                      <span className="text-[10px] text-zinc-500">{results.osFiles.length} arquivos processados</span>
-                    </div>
-
-                    <div className="bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 text-left">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
-                        <CreditCard size={13} className="text-emerald-400" /> Vendas Rede
-                      </span>
-                      <p className="text-xl font-bold font-mono text-zinc-100 mt-1">{totalRedeCount}</p>
-                      <span className="text-[10px] text-zinc-500">{results.redeResults.length} relatórios MDR</span>
-                    </div>
-
-                    <div className="bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 text-left">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
-                        <Landmark size={13} className="text-sky-400" /> Extratos OFX
-                      </span>
-                      <p className="text-xl font-bold font-mono text-zinc-100 mt-1">{totalOfxCount}</p>
-                      <span className="text-[10px] text-zinc-500">{results.ofxResults.length} contas bancárias</span>
-                    </div>
-
-                    <div className="bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 text-left">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
-                        <Clock size={13} className="text-purple-400" /> Data Base
-                      </span>
-                      <p className="text-xl font-bold font-mono text-zinc-100 mt-1">{formattedTargetDate}</p>
-                      <span className="text-[10px] text-emerald-400 font-semibold">Fechamento do Dia</span>
-                    </div>
+                  <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3 text-left">
+                    <span className="text-[10px] font-mono uppercase text-[var(--text-tertiary)] block">Extratos OFX</span>
+                    <p className="text-lg font-bold font-mono text-[var(--text-primary)] mt-0.5">{totalOfxCount}</p>
+                    <span className="text-[10px] text-[var(--text-tertiary)]">{results.ofxResults.length} contas</span>
                   </div>
 
-                  {/* Botões de Ação Final */}
-                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-4 w-full max-w-lg">
-                    <Button
-                      onClick={() => navigate({ to: '/conciliacao' })}
-                      className="w-full sm:w-auto flex-1 py-3.5 px-6 font-bold text-sm bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-zinc-950 rounded-xl shadow-[0_0_25px_rgba(16,185,129,0.35)] transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      <Sparkles size={16} />
-                      Ir para a Conciliação do Dia →
-                    </Button>
-
-                    {auditTrailUrl && (
-                      <a href={auditTrailUrl} download={`auditoria-conciliacao-${new Date().getTime()}.json`} className="w-full sm:w-auto">
-                        <Button variant="secondary" className="w-full text-xs py-3 px-4 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 rounded-xl cursor-pointer">
-                          <Download size={15} className="mr-1.5" />
-                          Baixar JSON
-                        </Button>
-                      </a>
-                    )}
-
-                    <Button
-                      onClick={() => setStep(1)}
-                      variant="ghost"
-                      className="w-full sm:w-auto text-xs py-3 px-4 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50 rounded-xl cursor-pointer"
-                    >
-                      Nova Importação
-                    </Button>
+                  <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3 text-left">
+                    <span className="text-[10px] font-mono uppercase text-[var(--text-tertiary)] block">Data Base</span>
+                    <p className="text-lg font-bold font-mono text-[var(--text-primary)] mt-0.5">{formattedTargetDate}</p>
+                    <span className="text-[10px] text-emerald-400 font-medium">Consolidado</span>
                   </div>
+                </div>
+
+                {/* Botões de Ação Final */}
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 max-w-md mx-auto">
+                  <Button
+                    onClick={() => navigate({ to: '/conciliacao' })}
+                    className="w-full sm:w-auto flex-1 py-2.5 px-5 font-semibold text-xs bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 rounded-lg shadow-sm"
+                  >
+                    Ir para a Conciliação do Dia →
+                  </Button>
+
+                  {auditTrailUrl && (
+                    <a href={auditTrailUrl} download={`auditoria-conciliacao-${new Date().getTime()}.json`} className="w-full sm:w-auto">
+                      <Button variant="outline" className="w-full text-xs py-2.5 px-4 border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
+                        <Download size={14} className="mr-1.5" />
+                        Auditoria JSON
+                      </Button>
+                    </a>
+                  )}
+
+                  <Button
+                    onClick={() => setStep(1)}
+                    variant="ghost"
+                    className="w-full sm:w-auto text-xs py-2.5 px-3 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                  >
+                    Nova Importação
+                  </Button>
                 </div>
               </motion.div>
             ) : (
               /* CARD DE PROCESSAMENTO EM ANDAMENTO */
-              <Card className="p-6 md:p-8 bg-zinc-900/80 border border-zinc-800 rounded-3xl shadow-2xl backdrop-blur-md space-y-6">
+              <div className="rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] p-6 space-y-5">
                 
-                {/* Header da Orquestração */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-zinc-800">
-                  <div className="flex items-center gap-3.5">
-                    <div className="w-11 h-11 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-sm relative shrink-0">
-                      <Sparkles size={22} className="animate-pulse" />
-                      <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-purple-500"></span>
-                      </span>
-                    </div>
-                    <div>
-                      <h3 className="font-display text-lg font-bold text-zinc-100 flex items-center gap-2">
-                        Orquestração de Conciliação
-                      </h3>
-                      <p className="text-xs text-zinc-400 mt-0.5">
-                        Agentes ingerindo OSs, auditando taxas MDR e consolidando o fechamento do dia {formattedTargetDate}.
-                      </p>
-                    </div>
+                {/* Header */}
+                <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)]">
+                  <div>
+                    <h3 className="font-semibold text-sm text-[var(--text-primary)]">
+                      Processamento dos Arquivos
+                    </h3>
+                    <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                      Ingestão de OSs, auditoria de taxas e conciliação para {formattedTargetDate}.
+                    </p>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="text-xs font-mono px-3.5 py-1.5 bg-sky-500/10 text-sky-400 border-sky-500/30 gap-2">
-                      <LoadingSpinner size="xs" />
-                      <span>Agentes em Execução ({progressPct}%)</span>
-                    </Badge>
-                  </div>
+                  <Badge variant="outline" className="text-xs font-mono px-3 py-1 bg-[var(--bg-canvas)] border-[var(--border-subtle)] text-[var(--text-secondary)]">
+                    {progressPct}% Concluído
+                  </Badge>
                 </div>
 
                 {/* Lista dos Agentes */}
-                <div className="space-y-3.5">
-                  <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-zinc-400 px-1">
-                    <span>Agentes Especialistas Ativos</span>
-                    <span className="font-mono text-[10px] text-zinc-500">Processamento em Tempo Real</span>
-                  </div>
-
-                  <div className="flex flex-col gap-3">
-                    {importStages.map((stage) => (
-                      <AgentStageItem key={stage.id} stage={stage} />
-                    ))}
-                  </div>
+                <div className="space-y-3">
+                  {importStages.map((stage) => (
+                    <AgentStageItem key={stage.id} stage={stage} />
+                  ))}
                 </div>
-              </Card>
+              </div>
             )}
 
             {/* Logs Técnicos de Depuração Colapsáveis */}
             {importLogs.length > 0 && (
-              <details className="p-4 rounded-2xl bg-zinc-950/80 border border-zinc-800/80 group">
-                <summary className="text-xs font-mono text-zinc-400 cursor-pointer flex items-center justify-between hover:text-zinc-200 select-none">
+              <details className="p-3.5 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] group">
+                <summary className="text-xs font-mono text-[var(--text-tertiary)] cursor-pointer flex items-center justify-between hover:text-[var(--text-secondary)] select-none">
                   <span className="flex items-center gap-2">
-                    <Terminal size={14} className="text-purple-400" />
-                    Telemetria e Logs da Execução ({importLogs.length} eventos registrados)
+                    <Terminal size={13} />
+                    Logs de Execução ({importLogs.length} eventos)
                   </span>
-                  <span className="text-[10px] uppercase font-sans tracking-wider text-zinc-500 group-open:rotate-180 transition-transform">▼</span>
+                  <span className="text-[10px] text-[var(--text-tertiary)] group-open:rotate-180 transition-transform">▼</span>
                 </summary>
-                <div className="mt-3 max-h-48 overflow-y-auto space-y-1.5 text-[11px] font-mono text-zinc-400 border-t border-zinc-800/80 pt-3">
+                <div className="mt-2.5 max-h-40 overflow-y-auto space-y-1 text-[11px] font-mono text-[var(--text-secondary)] border-t border-[var(--border-subtle)] pt-2.5">
                   {importLogs.map((log) => (
-                    <div key={log.id} className="flex gap-2 leading-relaxed">
-                      <span className="text-zinc-600 shrink-0">[{log.timestamp}]</span>
-                      <span className={log.type === 'error' ? 'text-rose-400' : log.type === 'success' ? 'text-emerald-400' : 'text-zinc-300'}>
+                    <div key={log.id} className="flex gap-2">
+                      <span className="text-[var(--text-tertiary)] shrink-0">[{log.timestamp}]</span>
+                      <span className={log.type === 'error' ? 'text-rose-400' : log.type === 'success' ? 'text-emerald-400' : 'text-[var(--text-secondary)]'}>
                         {log.message}
                       </span>
                     </div>
@@ -2051,17 +2017,17 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
             {/* Alerta de Erro se houver */}
             {importLogs.some(l => l.type === 'error') && !saveFinished && (
-              <div className="bg-rose-500/10 border border-rose-500/20 p-4 rounded-2xl flex items-start justify-between gap-4 animate-in fade-in">
+              <div className="bg-rose-500/10 border border-rose-500/20 p-4 rounded-xl flex items-start justify-between gap-4">
                 <div className="flex items-start gap-3">
-                  <AlertCircle size={20} className="text-rose-400 shrink-0 mt-0.5" />
+                  <AlertCircle size={18} className="text-rose-400 shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-semibold text-rose-400 text-sm">Falha durante o processamento</h4>
-                    <p className="text-xs text-zinc-400 mt-0.5">
+                    <h4 className="font-semibold text-rose-400 text-xs">Falha durante o processamento</h4>
+                    <p className="text-xs text-[var(--text-secondary)] mt-0.5">
                       {importLogs.find(l => l.type === 'error')?.message}
                     </p>
                   </div>
                 </div>
-                <Button onClick={handleConfirm} disabled={isSaving} className="bg-rose-500 hover:bg-rose-600 text-white text-xs px-3.5 py-1.5 shrink-0 rounded-xl cursor-pointer">
+                <Button onClick={handleConfirm} disabled={isSaving} className="bg-rose-500 hover:bg-rose-600 text-white text-xs px-3 py-1.5 shrink-0 rounded-lg">
                   Tentar Novamente
                 </Button>
               </div>
