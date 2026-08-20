@@ -25,14 +25,12 @@ function run(cmd) {
 
 try {
   run('git add -A');
-  run('git commit -m "feat(spec-238-239): rpc limpeza geral, desbloqueio de datas, modal maquininhas 2xl e redesign dos cards de lojas"');
-  
-  const remoteUrl = execSync('git config --get remote.origin.url', { encoding: 'utf8' }).trim();
-  console.log('Current remote URL:', remoteUrl);
-  
-  if (ghToken) {
+  const status = execSync('git status --porcelain', { encoding: 'utf8' }).trim();
+  if (status) {
+    run('git commit -m "docs: adicionar guia oficial da conciliacao financeira"');
+    const remoteUrl = execSync('git config --get remote.origin.url', { encoding: 'utf8' }).trim();
     let authedUrl = remoteUrl;
-    if (remoteUrl.includes('github.com')) {
+    if (ghToken && remoteUrl.includes('github.com')) {
       const parts = remoteUrl.split('github.com/');
       if (parts.length > 1) {
         authedUrl = `https://x-access-token:${ghToken}@github.com/${parts[1]}`;
@@ -40,11 +38,10 @@ try {
     }
     run(`git push "${authedUrl}" HEAD:main`);
     run(`git push "${authedUrl}" HEAD:master`);
+    console.log('Docs committed and pushed!');
   } else {
-    run('git push origin HEAD:main');
-    run('git push origin HEAD:master');
+    console.log('Working tree clean, nothing to commit.');
   }
-  console.log('Successfully pushed to main and master!');
 } catch (e) {
   console.error('Git error:', e.message);
   process.exit(1);
