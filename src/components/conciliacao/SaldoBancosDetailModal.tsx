@@ -12,6 +12,8 @@ import {
   Clock,
   ArrowRight
 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/lib/supabase';
 import { StoreReconciliationSummary } from '@/hooks/useBackendConciliacao';
 
 interface SaldoBancosDetailModalProps {
@@ -29,9 +31,40 @@ export function SaldoBancosDetailModal({
 }: SaldoBancosDetailModalProps) {
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Fallback para buscar lojas se stores vier vazio
+  const { data: fallbackStores } = useQuery({
+    queryKey: ['saldo-bancos-modal-stores', targetDate],
+    queryFn: async () => {
+      const { data: stList } = await supabase.from('stores').select('id, name').order('name');
+      const { data: recons } = await supabase.from('reconciliations').select('store_id, bank_total, na_loja_os').eq('date', targetDate);
+      
+      const mapRecon = new Map(recons?.map(r => [r.store_id, r]) || []);
+      return (stList || []).map(st => {
+        const r = mapRecon.get(st.id);
+        return {
+          store_id: st.id,
+          store_name: st.name,
+          saldo_banco: Number(r?.bank_total || 0),
+          saldo_banco_ofx: Number(r?.bank_total || 0),
+          nao_entrou_valor: 0,
+          status_compensacao: 'entrou' as const,
+          maquininha: 0,
+          pix: 0,
+          na_loja_os: Number(r?.na_loja_os || 0),
+          previsto_ofx: 0,
+          diferenca: 0,
+          status: 'approved' as const
+        };
+      });
+    },
+    enabled: isOpen && stores.length === 0
+  });
+
+  const effectiveStores = stores.length > 0 ? stores : (fallbackStores || []);
+
   // Processa dados por filial com separação nítida de OFX, Dinheiro e Maquininhas
   const rows = useMemo(() => {
-    return stores.map(s => {
+    return effectiveStores.map(s => {
       // Dinheiro em loja específico (ex: R$ 1.900 na Rudge Ramos)
       const isRudge = s.store_name?.toLowerCase().includes('rudge') || s.store_id === 'st-07';
       const dinheiroLoja = isRudge ? 1900.00 : 0;
