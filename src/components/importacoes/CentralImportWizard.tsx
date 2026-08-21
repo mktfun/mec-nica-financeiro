@@ -130,6 +130,16 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const [copiedJson, setCopiedJson] = useState(false);
   const [autoHealingData, setAutoHealingData] = useState<any>(null);
 
+  // Sincroniza automaticamente o valor de Contas a Pagar quando importado analiticamente
+  useEffect(() => {
+    if (results.contasPagarResults && results.contasPagarResults.length > 0) {
+      const total = results.contasPagarResults.reduce((acc, c) => acc + c.totalAmount, 0);
+      if (total > 0) {
+        setContasManual(total);
+      }
+    }
+  }, [results.contasPagarResults]);
+
   // Helper para resolver a loja correta por mapping direto, conta bancária ou prefixo do arquivo
   const resolveStoreForOfx = useCallback((ofx: { alias: string; fileName?: string }): string => {
     if (mapping[ofx.alias]) return mapping[ofx.alias];
@@ -950,14 +960,16 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         addLog("Aviso: Falha ao gravar fechamento do dia.", "warning");
       }
 
-      addLog("Pareando transacoes importadas com Ordens de Servico...", "info");
+      addLog("Pareando transações importadas com Ordens de Serviço em aberto...", "info");
       try {
-        const { error: matchErr } = await supabase.rpc('auto_match_transactions', { p_date: targetDate });
+        const { data: matchData, error: matchErr } = await supabase.rpc('auto_match_transactions', { p_date: targetDate });
         if (matchErr) {
           console.warn("auto_match_transactions retornou erro (nao critico):", matchErr);
           addLog(`Pareamento automatico parcial: ${matchErr.message}`, "warning");
         } else {
-          addLog("Pareamento automatico concluido!", "success");
+          const osCount = (matchData as any)?.matched_os_count || 0;
+          const redeCount = (matchData as any)?.matched_rede_count || 0;
+          addLog(`🤖 Pareamento inteligente concluído: ${osCount} OS(s) em aberto quitadas/conciliadas e ${redeCount} lote(s) de cartão vinculados!`, "success");
         }
       } catch (rpcErr: any) {
         console.warn("Erro ao chamar auto_match_transactions:", rpcErr);
@@ -1053,12 +1065,15 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   let allOsCount = 0;
   let totalOsMaqGlobal = 0;
   let totalOsBancoGlobal = 0;
+  let totalPatioEstoqueGlobal = 0;
 
   const totalOs = results.osFiles.reduce((acc, curr) => {
      let sum = 0;
      curr.osArray.forEach(os => {
         allOsCount++;
         const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
+        const totalVal = os.total_value || os.paid_value || 0;
+        totalPatioEstoqueGlobal += totalVal;
 
         if (delta > 0) {
           const totalOsValue = os.paid_value > 0 ? os.paid_value : 1;
@@ -1527,13 +1542,20 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="p-6 bg-[var(--bg-surface-elevated)] border-l-4 border-l-[var(--color-primary)]">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Total OS (Líquido Pátio)</span>
+                <span className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Total OS (Recebimentos do Dia)</span>
                 <FileText size={18} className="text-[var(--color-primary)]" />
               </div>
               <p className="text-2xl font-bold text-[var(--text-primary)]">
                 <AnimatedNumber value={totalOs} format="currency" />
               </p>
-              <p className="text-xs text-[var(--text-secondary)] mt-1">{filteredOsCount} ordens de serviço válidas</p>
+              <div className="flex flex-col gap-0.5 mt-1 text-xs text-[var(--text-secondary)]">
+                <span>{filteredOsCount} novos pagamentos no dia</span>
+                {totalPatioEstoqueGlobal > 0 && (
+                  <span className="text-[11px] font-medium text-emerald-400">
+                    Estoque em Pátio: {totalPatioEstoqueGlobal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} ({allOsCount} OSs)
+                  </span>
+                )}
+              </div>
             </Card>
 
             <Card className="p-6 bg-[var(--bg-surface-elevated)] border-l-4 border-l-[var(--color-accent-teal)]">
@@ -1837,12 +1859,19 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Contas a Pagar</label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-xs font-semibold uppercase text-[var(--text-secondary)]">Contas a Pagar</label>
+                    {results.contasPagarResults && results.contasPagarResults.length > 0 && (
+                      <span className="text-[10px] text-rose-400 font-semibold flex items-center gap-1">
+                        <Receipt size={10} /> Auto-preenchido ({results.contasPagarResults.reduce((acc, c) => acc + c.totalBills, 0)} contas)
+                      </span>
+                    )}
+                  </div>
                   <input 
                     type="number" 
                     step="0.01"
                     disabled={isManualLocked}
-                    value={contasManual || ''} 
+                    value={contasManual || (results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || '')} 
                     onChange={e => setContasManual(Number(e.target.value))}
                     className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)] font-bold text-[var(--text-primary)]"
                   />
