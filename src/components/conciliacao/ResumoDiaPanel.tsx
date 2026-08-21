@@ -426,16 +426,16 @@ export function ResumoDiaPanel({
           {/* 1. Saldo Bancos + Cartões + Dinheiro */}
           <div 
             onClick={() => setIsSaldoBancosModalOpen(true)}
-            className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] hover:border-blue-500/50 hover:bg-slate-900/60 transition-all cursor-pointer space-y-2 group shadow-sm"
+            className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] hover:border-[var(--color-primary)]/60 hover:bg-[var(--bg-surface-hover)] transition-all cursor-pointer space-y-2 group shadow-sm"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-blue-400 transition-colors">
+                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-[var(--color-primary)] transition-colors">
                   SALDO BANCOS + DINHEIRO
                 </span>
                 <WhisperDot dot={insights?.dots.saldo_banco} />
               </div>
-              <div className="flex items-center gap-1 text-[11px] text-blue-400 group-hover:underline">
+              <div className="flex items-center gap-1 text-[11px] text-[var(--color-primary)] group-hover:underline">
                 <Landmark size={14} />
                 <span className="text-[10px] hidden sm:inline">Ver Lojas ↗</span>
               </div>
@@ -445,23 +445,23 @@ export function ResumoDiaPanel({
               <AnimatedNumber value={summary?.total_saldo_banco ?? saldoBancosValor} format="currency" />
             </p>
 
-            <div className="space-y-1 pt-1.5 border-t border-slate-800/80 text-[10px]">
-              <div className="flex justify-between items-center text-slate-400">
+            <div className="space-y-1 pt-1.5 border-t border-[var(--border-subtle)] text-[10px]">
+              <div className="flex justify-between items-center text-[var(--text-tertiary)]">
                 <span>Extrato OFX (10 bancos):</span>
-                <span className="font-mono font-medium text-slate-200">
+                <span className="font-mono font-medium text-[var(--text-primary)]">
                   <AnimatedNumber value={summary?.saldo_bancos_ofx ?? saldoBancosValor} format="currency" />
                 </span>
               </div>
               {(summary?.dinheiro_em_lojas ?? 0) > 0 && (
-                <div className="flex justify-between items-center text-amber-400/90">
-                  <span>Dinheiro em Loja:</span>
+                <div className="flex justify-between items-center text-amber-400">
+                  <span>Dinheiro no Cofre:</span>
                   <span className="font-mono font-semibold text-amber-300">
                     + <AnimatedNumber value={summary?.dinheiro_em_lojas || 0} format="currency" />
                   </span>
                 </div>
               )}
               {(summary?.cartoes_a_compensar ?? 0) > 0 && (
-                <div className="flex justify-between items-center text-emerald-400/90">
+                <div className="flex justify-between items-center text-emerald-400">
                   <span>Maquininhas a Compensar:</span>
                   <span className="font-mono font-semibold text-emerald-300">
                     + <AnimatedNumber value={summary?.cartoes_a_compensar || 0} format="currency" />

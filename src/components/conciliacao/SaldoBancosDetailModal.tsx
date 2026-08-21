@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
 import { formatCurrency } from '@/lib/utils';
 import {
   Landmark,
@@ -8,11 +9,14 @@ import {
   Banknote,
   CreditCard,
   Search,
-  CheckCircle2
+  CheckCircle2,
+  ArrowDownToLine,
+  Check
 } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { StoreReconciliationSummary } from '@/hooks/useBackendConciliacao';
+import { toast } from 'sonner';
 
 interface SaldoBancosDetailModalProps {
   isOpen: boolean;
@@ -28,6 +32,8 @@ export function SaldoBancosDetailModal({
   stores = []
 }: SaldoBancosDetailModalProps) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [depositingId, setDepositingId] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   // Fallback via RPC se stores vier vazio
   const { data: fallbackSummary } = useQuery({
@@ -41,19 +47,49 @@ export function SaldoBancosDetailModal({
 
   const effectiveStores = stores.length > 0 ? stores : (fallbackSummary?.stores || []);
 
+  // Mutação para dar baixa em dinheiro no cofre
+  const clearCashMutation = useMutation({
+    mutationFn: async (vaultId: string) => {
+      const { error } = await supabase
+        .from('store_cash_vault')
+        .update({
+          status: 'depositado',
+          deposited_at: new Date().toISOString()
+        })
+        .eq('id', vaultId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success('Baixa de depósito realizada com sucesso! O dinheiro foi transferido para o banco.');
+      queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['saldo-bancos-modal-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
+      queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
+      setDepositingId(null);
+    },
+    onError: (err: any) => {
+      toast.error('Erro ao dar baixa: ' + (err.message || err));
+      setDepositingId(null);
+    }
+  });
+
   // Consome 100% os dados calculados diretamente no Postgres/RPC
   const rows = useMemo(() => {
     return effectiveStores.map((s: any) => {
-      const saldoOfxPuro = Number(s.saldo_banco_ofx ?? s.saldo_banco ?? 0);
+      const saldoOfxPuro = Number(s.saldo_banco_ofx ?? 0);
       const dinheiroLoja = Number(s.dinheiro_loja ?? 0);
       const maquininhaNaoEntrou = Number(s.nao_entrou_valor ?? 0);
       const saldoConsolidado = Number(s.saldo_banco ?? (saldoOfxPuro + dinheiroLoja + maquininhaNaoEntrou));
+      const vaultEntries = Array.isArray(s.vault_entries) ? s.vault_entries : [];
+      const activeVaultEntry = vaultEntries.find((v: any) => v && v.status === 'em_transito');
 
       return {
         storeId: s.store_id,
         storeName: s.store_name,
         saldoOfxPuro,
         dinheiroLoja,
+        activeVaultEntry,
         maquininhaNaoEntrou,
         saldoConsolidado,
         statusCompensacao: s.status_compensacao || 'entrou'
@@ -80,123 +116,147 @@ export function SaldoBancosDetailModal({
     );
   }, [rows]);
 
+  const handleDarBaixa = (vaultId: string, storeName: string, amount: number) => {
+    if (confirm(`Confirmar o depósito bancário de ${formatCurrency(amount)} da filial ${storeName}?`)) {
+      setDepositingId(vaultId);
+      clearCashMutation.mutate(vaultId);
+    }
+  };
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
       title="Raio-X de Saldos Bancários & Dinheiro por Filial"
-      maxWidth="max-w-5xl"
+      size="2xl"
     >
       <div className="space-y-6">
-        {/* Header Cards com o Resumo dos 3 Componentes */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
-            <div className="flex items-center gap-2 text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">
-              <Landmark className="w-4 h-4 text-blue-400" />
+        {/* Header Cards com o Resumo dos 4 Componentes no padrão visual do sistema */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-4 space-y-1">
+            <div className="flex items-center gap-2 text-[var(--text-tertiary)] text-xs font-semibold uppercase tracking-wider">
+              <Landmark className="w-4 h-4 text-[var(--color-accent-light-blue)]" />
               Extratos OFX (Bancos)
             </div>
-            <div className="text-xl font-bold text-slate-100">
+            <div className="text-xl font-bold font-sans tabular-nums text-[var(--text-primary)]">
               {formatCurrency(totals.ofx)}
             </div>
-            <div className="text-[11px] text-slate-500 mt-0.5">10 contas Itaú ativas</div>
+            <div className="text-[11px] text-[var(--text-tertiary)]">10 contas Itaú ativas</div>
           </div>
 
-          <div className="bg-slate-900/60 border border-amber-500/20 rounded-xl p-4">
-            <div className="flex items-center gap-2 text-amber-400 text-xs font-semibold uppercase tracking-wider mb-1">
+          <div className="bg-[var(--bg-canvas)] border border-amber-500/30 rounded-xl p-4 space-y-1">
+            <div className="flex items-center gap-2 text-amber-400 text-xs font-semibold uppercase tracking-wider">
               <Banknote className="w-4 h-4 text-amber-400" />
-              Dinheiro em Loja
+              Dinheiro no Cofre
             </div>
-            <div className="text-xl font-bold text-amber-300">
+            <div className="text-xl font-bold font-sans tabular-nums text-amber-300">
               {formatCurrency(totals.dinheiro)}
             </div>
-            <div className="text-[11px] text-amber-500/80 mt-0.5">Físico em cofre/caixa</div>
+            <div className="text-[11px] text-amber-400/70">Em trânsito nas lojas</div>
           </div>
 
-          <div className="bg-slate-900/60 border border-emerald-500/20 rounded-xl p-4">
-            <div className="flex items-center gap-2 text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-1">
+          <div className="bg-[var(--bg-canvas)] border border-emerald-500/30 rounded-xl p-4 space-y-1">
+            <div className="flex items-center gap-2 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
               <CreditCard className="w-4 h-4 text-emerald-400" />
               Maquininhas (A Compensar)
             </div>
-            <div className="text-xl font-bold text-emerald-300">
+            <div className="text-xl font-bold font-sans tabular-nums text-emerald-300">
               {formatCurrency(totals.maquininhas)}
             </div>
-            <div className="text-[11px] text-emerald-500/80 mt-0.5">Vendas Rede a liquidar</div>
+            <div className="text-[11px] text-emerald-400/70">Vendas Rede a compensar</div>
           </div>
 
-          <div className="bg-blue-950/40 border border-blue-500/30 rounded-xl p-4">
-            <div className="flex items-center gap-2 text-blue-300 text-xs font-semibold uppercase tracking-wider mb-1">
-              <CheckCircle2 className="w-4 h-4 text-blue-400" />
+          <div className="bg-[var(--bg-canvas)] border border-[var(--color-primary)]/40 rounded-xl p-4 space-y-1">
+            <div className="flex items-center gap-2 text-[var(--color-primary)] text-xs font-semibold uppercase tracking-wider">
+              <CheckCircle2 className="w-4 h-4 text-[var(--color-primary)]" />
               Total Consolidado
             </div>
-            <div className="text-xl font-bold text-blue-200">
+            <div className="text-xl font-bold font-sans tabular-nums text-[var(--text-primary)]">
               {formatCurrency(totals.total)}
             </div>
-            <div className="text-[11px] text-blue-400/80 mt-0.5">Pilar 1 do Caixa do Dia</div>
+            <div className="text-[11px] text-[var(--text-tertiary)]">Pilar 1 do Fechamento</div>
           </div>
         </div>
 
         {/* Barra de Busca */}
         <div className="flex items-center justify-between gap-4">
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-tertiary)]" />
             <input
               type="text"
               placeholder="Buscar por filial..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700/80 rounded-lg pl-9 pr-3 py-1.5 text-sm text-slate-200 focus:outline-none focus:border-blue-500"
+              className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg pl-9 pr-3 py-1.5 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
             />
           </div>
-          <div className="text-xs text-slate-400">
-            Exibindo <span className="font-semibold text-slate-200">{filteredRows.length}</span> filiais
+          <div className="text-xs text-[var(--text-tertiary)]">
+            Exibindo <span className="font-semibold text-[var(--text-primary)]">{filteredRows.length}</span> filiais
           </div>
         </div>
 
-        {/* Tabela Detalhada por Filial */}
-        <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950/40">
+        {/* Tabela Ampla e Arejada por Filial */}
+        <div className="overflow-x-auto rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-canvas)]">
           <table className="w-full text-left text-sm">
-            <thead className="bg-slate-900/80 text-slate-400 text-xs font-semibold border-b border-slate-800">
+            <thead className="bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] text-xs font-semibold border-b border-[var(--border-subtle)]">
               <tr>
-                <th className="py-3 px-4">Filial / Loja</th>
-                <th className="py-3 px-4 text-right">Extrato OFX (Itaú)</th>
-                <th className="py-3 px-4 text-right">Dinheiro em Loja</th>
-                <th className="py-3 px-4 text-right">Maquininhas (Rede)</th>
-                <th className="py-3 px-4 text-right">Saldo Consolidado</th>
-                <th className="py-3 px-4 text-center">Status</th>
+                <th className="py-3 px-5">Filial / Loja</th>
+                <th className="py-3 px-5 text-right">Extrato OFX (Itaú)</th>
+                <th className="py-3 px-5 text-center">Dinheiro no Cofre / Loja</th>
+                <th className="py-3 px-5 text-right">Maquininhas (Rede)</th>
+                <th className="py-3 px-5 text-right">Saldo Consolidado</th>
+                <th className="py-3 px-5 text-center">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody className="divide-y divide-[var(--border-subtle)]">
               {filteredRows.map(row => (
-                <tr key={row.storeId} className="hover:bg-slate-900/40 transition-colors">
-                  <td className="py-3 px-4 font-medium text-slate-200 flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-slate-500" />
-                    {row.storeName}
+                <tr key={row.storeId} className="hover:bg-[var(--bg-surface-hover)] transition-colors">
+                  <td className="py-3.5 px-5 font-medium text-[var(--text-primary)] flex items-center gap-2.5">
+                    <Building2 className="w-4 h-4 text-[var(--text-tertiary)] shrink-0" />
+                    <span className="whitespace-nowrap">{row.storeName}</span>
                   </td>
-                  <td className="py-3 px-4 text-right font-mono text-slate-300">
+                  <td className="py-3.5 px-5 text-right font-mono tabular-nums text-[var(--text-secondary)] whitespace-nowrap">
                     {formatCurrency(row.saldoOfxPuro)}
                   </td>
-                  <td className="py-3 px-4 text-right font-mono">
+                  <td className="py-3.5 px-5 text-center whitespace-nowrap">
                     {row.dinheiroLoja > 0 ? (
-                      <span className="text-amber-400 font-semibold bg-amber-950/40 px-2 py-0.5 rounded border border-amber-500/30">
-                        {formatCurrency(row.dinheiroLoja)}
-                      </span>
+                      <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 rounded-lg px-2.5 py-1">
+                        <span className="font-mono font-semibold text-amber-300">
+                          {formatCurrency(row.dinheiroLoja)}
+                        </span>
+                        {row.activeVaultEntry ? (
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() => handleDarBaixa(row.activeVaultEntry.id, row.storeName, row.dinheiroLoja)}
+                            disabled={depositingId === row.activeVaultEntry.id}
+                            className="h-6 px-2 text-[10px] bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border-amber-500/40 gap-1"
+                            title="Clique para confirmar o depósito deste valor no banco"
+                          >
+                            <ArrowDownToLine className="w-3 h-3" />
+                            {depositingId === row.activeVaultEntry.id ? 'Baixando...' : 'Dar Baixa'}
+                          </Button>
+                        ) : (
+                          <span className="text-[10px] text-amber-400 font-medium">No Cofre</span>
+                        )}
+                      </div>
                     ) : (
-                      <span className="text-slate-600">-</span>
+                      <span className="text-[var(--text-tertiary)]">-</span>
                     )}
                   </td>
-                  <td className="py-3 px-4 text-right font-mono">
+                  <td className="py-3.5 px-5 text-right font-mono tabular-nums whitespace-nowrap">
                     {row.maquininhaNaoEntrou > 0 ? (
-                      <span className="text-emerald-400 font-semibold bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-500/30">
+                      <span className="text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">
                         {formatCurrency(row.maquininhaNaoEntrou)}
                       </span>
                     ) : (
-                      <span className="text-slate-600">-</span>
+                      <span className="text-[var(--text-tertiary)]">-</span>
                     )}
                   </td>
-                  <td className="py-3 px-4 text-right font-mono font-bold text-slate-100">
+                  <td className="py-3.5 px-5 text-right font-mono tabular-nums font-bold text-[var(--text-primary)] whitespace-nowrap">
                     {formatCurrency(row.saldoConsolidado)}
                   </td>
-                  <td className="py-3 px-4 text-center">
+                  <td className="py-3.5 px-5 text-center whitespace-nowrap">
                     <Badge variant={row.dinheiroLoja > 0 || row.maquininhaNaoEntrou > 0 ? 'warning' : 'success'}>
                       {row.dinheiroLoja > 0 ? 'Com Dinheiro' : row.maquininhaNaoEntrou > 0 ? 'A Compensar' : 'Conciliado'}
                     </Badge>
@@ -204,14 +264,14 @@ export function SaldoBancosDetailModal({
                 </tr>
               ))}
             </tbody>
-            <tfoot className="bg-slate-900/90 font-bold border-t border-slate-700">
+            <tfoot className="bg-[var(--bg-surface-elevated)] font-bold border-t border-[var(--border-subtle)]">
               <tr>
-                <td className="py-3 px-4 text-slate-200">TOTAIS CONSOLIDADOS</td>
-                <td className="py-3 px-4 text-right font-mono text-slate-200">{formatCurrency(totals.ofx)}</td>
-                <td className="py-3 px-4 text-right font-mono text-amber-400">{formatCurrency(totals.dinheiro)}</td>
-                <td className="py-3 px-4 text-right font-mono text-emerald-400">{formatCurrency(totals.maquininhas)}</td>
-                <td className="py-3 px-4 text-right font-mono text-blue-300 font-extrabold">{formatCurrency(totals.total)}</td>
-                <td className="py-3 px-4 text-center">
+                <td className="py-4 px-5 text-[var(--text-primary)]">TOTAIS CONSOLIDADOS</td>
+                <td className="py-4 px-5 text-right font-mono tabular-nums text-[var(--text-primary)]">{formatCurrency(totals.ofx)}</td>
+                <td className="py-4 px-5 text-center font-mono tabular-nums text-amber-300 font-semibold">{formatCurrency(totals.dinheiro)}</td>
+                <td className="py-4 px-5 text-right font-mono tabular-nums text-emerald-300 font-semibold">{formatCurrency(totals.maquininhas)}</td>
+                <td className="py-4 px-5 text-right font-mono tabular-nums text-[var(--color-primary)] font-extrabold">{formatCurrency(totals.total)}</td>
+                <td className="py-4 px-5 text-center">
                   <Badge variant="success">10 Lojas OK</Badge>
                 </td>
               </tr>
