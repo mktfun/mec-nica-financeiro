@@ -325,3 +325,23 @@
 **Risco identificado:** Executar mutações de auto-cura sem persistência de log pericial. Mitigado gravando a tabela `reconciliation_audit_logs` com o histórico completo de deltas (inicial e final) e passos executados.
 
 **Não fazer:** Nunca exigir que o usuário abra ferramentas manuais para regularizar assimetrias evidentes de extrato ou datas de cofre que a inteligência pericial consegue deduzir e corrigir deterministicamente.
+
+## [2026-08-21] — [Feature ID: 256-importacao-contas-a-pagar-e-conciliacao-aportes-intercompany]
+
+**Contexto:** O valor de Contas a Pagar era inserido de forma manual ou global. Foi implementado o parser analítico do arquivo `BuscaContasAPagar.xls` (Oficina Inteligente / ERP), mapeamento das 10 filiais pela coluna `Emp`, categorização inteligente de despesas (Sócios, Cartão/Tech, Peças, Despesas Bancárias, Uber OS) e motor de cruzamento triangular de aportes/transferências entre lojas e sócios.
+
+**Regra aprendida:**
+1. **Estrutura do BuscaContasAPagar.xls:**
+   - O arquivo possui linha de cabeçalho variável e linha final de totalizador geral que deve ser ignorada para evitar duplicação do valor total (`195.066,04`).
+   - Mapeamento de lojas pela coluna `Emp` normalizada (`MPJorgeBeretta` -> `st-03`, `ReiDoModulo` -> `st-09`, `MPpiraporinha` -> `st-05`, etc.).
+   - Extração de OS em Uber: Recibos com padrão `UBER OS[0-9]+` têm o número da OS extraído automaticamente para vinculação de custo logístico ao pátio.
+2. **Cruzamento Triangular Intercompany:**
+   - Quando um sócio retira de uma loja (despesa do ERP) e aporta em outra loja (crédito no OFX):
+     - Registra o Aporte no Faturamento (`daily_revenue_adjustments`).
+     - Vincula a retirada do ERP da loja de origem (`daily_manual_bills`).
+     - Lança o delta residual não faturado como despesa manual (`daily_manual_bills` com tag *"Aporte Intercompany Residual"*).
+     - Isso zera o fechamento pericial com partidas dobradas transparentes.
+
+**Risco identificado:** Tratar PIX de cliente como aporte de sócio. Mitigado com cadastro formal e chaves PIX em `intercompany_entities`.
+
+**Não fazer:** Nunca descartar despesas com nomes novos; sempre aplicar fallback para `outros` e permitir reclassificação em 1 clique no modal.

@@ -109,3 +109,10 @@
 - **Tabela `public.reconciliation_audit_logs`:** Armazena logs de auditoria pericial, deltas (inicial e final), contagem de iterações e etapas executadas.
 - **Hook `useAutonomousReconciliation` (`src/hooks/useAutonomousReconciliation.ts`):** Invoca o motor autônomo via RPC e invalida as queries de conciliação.
 - **Estágio 5 de Auto-Healing no Wizard (`src/components/importacoes/CentralImportWizard.tsx`):** Executa a conciliação autônoma diretamente na esteira de importação e renderiza o laudo pericial de auto-cura no modal final de conclusão.
+
+## Importação Analítica de Contas a Pagar & Cruzamento Triangular (Spec 256)
+- **Parser de Contas a Pagar (`src/lib/parsers/contasPagarParser.ts`):** Extração de arquivos `BuscaContasAPagar.xls` do ERP Oficina Inteligente, mapeamento das 10 filiais pela coluna `Emp`, categorização inteligente e extração de OS em recibos de Uber.
+- **Hook `useContasAPagarImport` (`src/hooks/useContasAPagarImport.ts`):** Gravação e persistência de contas em chunks de 100 linhas na tabela `daily_manual_bills` e log em `accounts_payable_imports`.
+- **Hook & Modal de Entidades (`src/hooks/useIntercompanyEntities.ts` e `src/components/configuracoes/IntercompanyEntitiesModal.tsx`):** Cadastro e gerenciamento de Sócios, Chaves PIX e Regras de Classificação de Fornecedores.
+- **Modal Analítico de Contas (`src/components/conciliacao/ContasManualModal.tsx`):** Tabela analítica com busca, filtros por filial/categoria, reclassificação rápida de categoria e badges intercompany.
+- **Tabelas Supabase (`supabase/migrations/20260821000008_accounts_payable_support.sql`):** `public.intercompany_entities`, `public.expense_category_rules`, `public.accounts_payable_imports` e colunas estendidas em `daily_manual_bills`.
