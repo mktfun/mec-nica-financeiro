@@ -442,21 +442,21 @@ export function ResumoDiaPanel({
             </div>
 
             <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-light-blue)]">
-              <AnimatedNumber value={summary?.total_saldo_banco ?? (saldoBancosValor + (tripleReconData?.total_nao_entrou || 0))} format="currency" />
+              <AnimatedNumber value={summary?.total_saldo_banco ?? saldoBancosValor} format="currency" />
             </p>
 
             <div className="space-y-1 pt-1.5 border-t border-slate-800/80 text-[10px]">
               <div className="flex justify-between items-center text-slate-400">
                 <span>Extrato OFX (10 bancos):</span>
                 <span className="font-mono font-medium text-slate-200">
-                  <AnimatedNumber value={summary?.saldo_bancos_ofx ?? (saldoBancosValor - (summary?.cartoes_a_compensar || 0))} format="currency" />
+                  <AnimatedNumber value={summary?.saldo_bancos_ofx ?? saldoBancosValor} format="currency" />
                 </span>
               </div>
-              {(selectedDate === '2026-08-19' || Number((currentSnapshot?.metadata as any)?.dinheiro_em_lojas || 0) > 0) && (
+              {(summary?.dinheiro_em_lojas ?? 0) > 0 && (
                 <div className="flex justify-between items-center text-amber-400/90">
                   <span>Dinheiro em Loja:</span>
                   <span className="font-mono font-semibold text-amber-300">
-                    + <AnimatedNumber value={selectedDate === '2026-08-19' ? 1900.00 : Number((currentSnapshot?.metadata as any)?.dinheiro_em_lojas || 0)} format="currency" />
+                    + <AnimatedNumber value={summary?.dinheiro_em_lojas || 0} format="currency" />
                   </span>
                 </div>
               )}

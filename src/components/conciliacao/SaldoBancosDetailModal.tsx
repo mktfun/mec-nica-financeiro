@@ -8,9 +8,7 @@ import {
   Banknote,
   CreditCard,
   Search,
-  CheckCircle2,
-  Clock,
-  ArrowRight
+  CheckCircle2
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
@@ -31,71 +29,25 @@ export function SaldoBancosDetailModal({
 }: SaldoBancosDetailModalProps) {
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Fallback para buscar lojas se stores vier vazio
-  const { data: fallbackStores } = useQuery({
-    queryKey: ['saldo-bancos-modal-stores', targetDate],
+  // Fallback via RPC se stores vier vazio
+  const { data: fallbackSummary } = useQuery({
+    queryKey: ['saldo-bancos-modal-summary', targetDate],
     queryFn: async () => {
-      const { data: stList } = await supabase.from('stores').select('id, name').order('name');
-      const { data: recons } = await supabase.from('reconciliations').select('store_id, bank_total, na_loja_os').eq('date', targetDate);
-      
-      const mapRecon = new Map(recons?.map(r => [r.store_id, r]) || []);
-      return (stList || []).map(st => {
-        const r = mapRecon.get(st.id);
-        return {
-          store_id: st.id,
-          store_name: st.name,
-          saldo_banco: Number(r?.bank_total || 0),
-          saldo_banco_ofx: Number(r?.bank_total || 0),
-          nao_entrou_valor: 0,
-          status_compensacao: 'entrou' as const,
-          maquininha: 0,
-          pix: 0,
-          na_loja_os: Number(r?.na_loja_os || 0),
-          previsto_ofx: 0,
-          diferenca: 0,
-          status: 'approved' as const
-        };
-      });
+      const { data } = await supabase.rpc('get_daily_reconciliation_summary', { p_date: targetDate });
+      return data;
     },
     enabled: isOpen && stores.length === 0
   });
 
-  // Busca dinheiro declarado nas OSs por filial para a data alvo
-  const { data: storeCashMap } = useQuery({
-    queryKey: ['store-cash-map', targetDate],
-    queryFn: async () => {
-      const { data: osList } = await supabase
-        .from('patio_os')
-        .select('store_id, payment_method, total_value, paid_value');
-      
-      const map = new Map<string, number>();
-      osList?.forEach(os => {
-        const pm = (os.payment_method || '').toLowerCase();
-        if (pm.includes('dinheiro')) {
-          const m = pm.match(/dinheiro:\s*([\d.,]+)/i);
-          if (m) {
-            const val = parseFloat(m[1].replace(',', '.'));
-            if (!isNaN(val) && val > 0) {
-              map.set(os.store_id, (map.get(os.store_id) || 0) + val);
-            }
-          }
-        }
-      });
-      return map;
-    },
-    enabled: isOpen
-  });
+  const effectiveStores = stores.length > 0 ? stores : (fallbackSummary?.stores || []);
 
-  // Processa dados por filial com separação nítida de OFX, Dinheiro e Maquininhas
+  // Consome 100% os dados calculados diretamente no Postgres/RPC
   const rows = useMemo(() => {
-    return effectiveStores.map(s => {
-      const isRudge19 = targetDate === '2026-08-19' && (s.store_name?.toLowerCase().includes('rudge') || s.store_id === 'st-07');
-      // Dinheiro em loja específico calculado dinamicamente ou com fallback apenas no dia 19
-      const dinheiroLoja = storeCashMap?.get(s.store_id) || (isRudge19 ? 1900.00 : 0);
-      
-      const saldoOfxPuro = Math.max(0, (s.saldo_banco_ofx || s.saldo_banco || 0) - (isRudge19 ? 1900 : 0));
-      const maquininhaNaoEntrou = s.nao_entrou_valor || 0;
-      const saldoConsolidado = saldoOfxPuro + dinheiroLoja + maquininhaNaoEntrou;
+    return effectiveStores.map((s: any) => {
+      const saldoOfxPuro = Number(s.saldo_banco_ofx ?? s.saldo_banco ?? 0);
+      const dinheiroLoja = Number(s.dinheiro_loja ?? 0);
+      const maquininhaNaoEntrou = Number(s.nao_entrou_valor ?? 0);
+      const saldoConsolidado = Number(s.saldo_banco ?? (saldoOfxPuro + dinheiroLoja + maquininhaNaoEntrou));
 
       return {
         storeId: s.store_id,
@@ -107,7 +59,7 @@ export function SaldoBancosDetailModal({
         statusCompensacao: s.status_compensacao || 'entrou'
       };
     });
-  }, [effectiveStores, storeCashMap, targetDate]);
+  }, [effectiveStores]);
 
   const filteredRows = useMemo(() => {
     if (!searchTerm) return rows;
@@ -157,7 +109,7 @@ export function SaldoBancosDetailModal({
             <div className="text-xl font-bold text-amber-300">
               {formatCurrency(totals.dinheiro)}
             </div>
-            <div className="text-[11px] text-amber-500/80 mt-0.5">OS #8736 (Rudge Ramos)</div>
+            <div className="text-[11px] text-amber-500/80 mt-0.5">Físico em cofre/caixa</div>
           </div>
 
           <div className="bg-slate-900/60 border border-emerald-500/20 rounded-xl p-4">
