@@ -1,24 +1,28 @@
-# Design: Importação Analítica do "BuscaContasAPagar.xls" & Conciliação Triangular de Aportes/Transferências Intercompany (Spec 256)
+# Design: Importação Analítica do "BuscaContasAPagar.xls", Cadastro de Entidades e Motor Triangular Intercompany (Spec 256)
 
 ---
 
-## 🏛️ Arquitetura Técnica
+## 🏛️ Arquitetura Técnica do Cruzamento Triangular
 
 ```mermaid
 flowchart TD
-    A[Arquivo BuscaContasAPagar.xls] --> B[parseContasAPagar.ts]
-    B --> C[Mapeamento Heurístico de 10 Lojas & Categorização de Custos]
-    C --> D[useContasAPagarImport.ts]
+    A[Upload BuscaContasAPagar.xls] --> B[parseContasAPagar.ts]
+    B --> C[Mapeamento de 10 Lojas & Classificação com expense_category_rules]
+    C --> D[(Tabela: daily_manual_bills)]
     
-    D -->|Persistência em Lote| E[(Tabela: daily_manual_bills + accounts_payable_imports)]
+    E[Extrato OFX: Entrada PIX] --> F[Detector de Sócios via intercompany_entities]
+    D --> G[Motor Triangular de Aportes & Transferências]
+    F --> G
     
-    E --> F[get_daily_reconciliation_summary]
+    G --> H{Cruzamento de Valores}
+    H -->|Valor Exato| I[Match Perfeito: Aporte + Faturamento]
+    H -->|Divergência / Delta| J[Auto-Resolução Contábil]
     
-    G[Extratos OFX: Entradas PIX Sócios] --> H[Motor de Cruzamento Triangular]
-    E --> H
-    H --> I[Identificação de Aportes & Despesas Delta Não Lançadas]
-    I --> J[IntercompanyTransferCard.tsx]
-    J -->|1-Click Resolution| K[useAutonomousReconciliation.ts]
+    J --> K[1. Lança Entrada no Faturamento: daily_revenue_adjustments]
+    J --> L[2. Vincula Saída do ERP: daily_manual_bills]
+    J --> M[3. Lança Delta Residual como Despesa: daily_manual_bills]
+    
+    K & L & M --> N[Fechamento Contábil Perfeito e Equilibrado!]
 ```
 
 ---
@@ -27,6 +31,23 @@ flowchart TD
 
 ```typescript
 // src/types/contasPagar.ts
+
+export interface IntercompanyEntity {
+  id: string;
+  name: string;
+  type: 'socio' | 'filial' | 'holding' | 'parceiro';
+  cpfCnpj?: string;
+  pixKeys: string[];
+  storeId?: string;
+  isActive: boolean;
+}
+
+export interface ExpenseCategoryRule {
+  id: string;
+  pattern: string;
+  category: string;
+  priority: number;
+}
 
 export interface RawContaAPagarRow {
   emp: string;
@@ -43,14 +64,6 @@ export interface RawContaAPagarRow {
   vlPago: number;
 }
 
-export type ContaCategory = 
-  | 'retirada_socios'
-  | 'gestao_tech'
-  | 'custo_operacional_pecas'
-  | 'logistica_os'
-  | 'despesas_bancarias'
-  | 'outros';
-
 export interface ParsedContaAPagar {
   externalCode: string;
   installment: string;
@@ -58,24 +71,25 @@ export interface ParsedContaAPagar {
   storeName: string;
   recipientName: string;
   description: string;
-  category: ContaCategory;
+  category: string;
   dueDate: string;
   paymentDate?: string;
   amount: number;
   status: 'PAG' | 'ABER' | 'CANCELADA';
   matchedOsNumber?: string;
   isIntercompany: boolean;
+  intercompanyEntityId?: string;
 }
 
-export interface IntercompanyMatch {
-  ofxEntryId: string;
-  ofxAmount: number;
-  ofxCounterpart: string;
-  sourceStoreId?: string;
-  sourceStoreName?: string;
-  erpExpenseAmount: number;
+export interface TriangularMatchResult {
+  inflowOfxId: string;
+  inflowAmount: number;
+  inflowStoreId: string;
+  outflowBillsId?: string;
+  outflowAmount: number;
+  outflowStoreId?: string;
   unregisteredDelta: number;
-  suggestedAction: 'conciliar_aporte_e_despesa';
+  entityName: string;
 }
 ```
 
@@ -83,36 +97,32 @@ export interface IntercompanyMatch {
 
 ## 🧩 Componentes & Artefatos Novos / Modificados
 
-1. **`src/lib/parsers/contasPagarParser.ts`**: Parser de arquivos `.xls`/`.xlsx` do relatório do ERP Oficina Inteligente, com mapeamento normalizado de lojas (`MPJorgeBeretta` -> `st-03`, `ReiDoModulo` -> `st-09`, etc.) e categorização inteligente (Uber OS, Peças, Retiradas, Cartão).
-2. **`src/hooks/useContasAPagarImport.ts`**: Hook de importação e query das contas do dia.
-3. **`src/components/importacoes/CentralImportWizard.tsx`**: Novo slot de upload para `BuscaContasAPagar.xls` no Step 1 do Wizard.
-4. **`src/components/conciliacao/ContasManualModal.tsx`**: Evolução para tabela analítica com busca, filtro por loja e categoria, e totalizador dinâmico.
-5. **`src/components/conciliacao/IntercompanyTransferCard.tsx`**: Card para sugestão de regularização de aportes e transferências com botão de ação direta.
-6. **`supabase/migrations/20260821000008_accounts_payable_support.sql`**: Migration expandindo `daily_manual_bills` e criando `accounts_payable_imports`.
+1. **`src/lib/parsers/contasPagarParser.ts`**: Parser de arquivos `.xls`/`.xlsx` com categorização dinâmica e extração de OS de frete.
+2. **`src/hooks/useIntercompanyEntities.ts`**: Hook para cadastro e listagem de sócios, filiais e regras de despesa.
+3. **`src/hooks/useContasAPagarImport.ts`**: Hook de processamento e persistência das despesas.
+4. **`src/components/configuracoes/IntercompanyEntitiesModal.tsx`**: Modal minimalista para cadastrar/editar sócios, chaves PIX e regras de classificação.
+5. **`src/components/conciliacao/ContasManualModal.tsx`**: Tabela analítica turbinada com busca, filtro por loja/categoria e dropdown de reclassificação.
+6. **`supabase/migrations/20260821000008_accounts_payable_support.sql`**: Migration criando `intercompany_entities`, `expense_category_rules`, `accounts_payable_imports` e colunas estendidas em `daily_manual_bills`.
 
 ---
 
 ## 🎨 Fluxo de UI & Restrições Visuais
 
-* **Paleta & Tokens:** Dark mode estrito (`var(--bg-canvas)`, `var(--bg-surface-elevated)`), fontes mono para números e valores, badges coloridos por categoria (Ex: Roxo para Sócios, Azul para Peças, Amarelo para Logística OS).
-* **Jornada do Usuário:**
-  1. O usuário arrasta `BuscaContasAPagar (1).xls` na Central de Importação junto com os OFX e OSs.
-  2. O sistema extrai instantaneamente as 253 contas (R$ 195.066,04), atribui às 10 lojas e extrai as OSs vinculadas aos Ubers.
-  3. No fechamento, o total de `Contas (Manual / Analítico)` é preenchido automaticamente sem digitação manual.
-  4. Se houver aporte intercompany de sócio com despesa delta, o sistema sugere a contrapartida e regulariza em 1 clique.
+* **Paleta & Tokens:** Dark mode estrito (`var(--bg-canvas)`, `var(--bg-surface-elevated)`), fontes mono para valores, badges coloridos por categoria.
+* **Jornada:**
+  1. No painel de Configurações ou Conciliação, o usuário pode clicar em **"Entidades & Sócios"** para conferir as contas e chaves PIX cadastradas.
+  2. Ao importar o `BuscaContasAPagar.xls`, o sistema extrai todas as contas e cruza automaticamente com os extratos bancários.
+  3. Se houver aporte triangular de sócio, o sistema reconhece a origem e o destino, lança o faturamento, amarra a retirada do ERP e gera a despesa delta residual para zerar o fechamento de ponta a ponta.
 
 ---
 
 ## 🧪 Cenários de Verificação (SCAN ➔ INFER ➔ VERIFY ➔ FIX)
 
-### Cenário 1: Importação do Arquivo Real `BuscaContasAPagar (1).xls`
-* **SCAN:** Parse das 253 linhas do arquivo de 21/08.
-* **INFER:** Extrai e soma `R$ 195.066,04` e mapeia 100% das lojas para seus IDs reais.
-* **VERIFY:** O valor bate exatamente com o total contábil esperado (`195066.04`).
-* **FIX:** Persiste na tabela `daily_manual_bills`.
-
-### Cenário 2: Aporte Intercompany com Delta sem Despesa (Ex: R$ 16k entrada com R$ 10k saída)
-* **SCAN:** Entrada de PIX de +R$ 16k na conta da Loja B e retirada de R$ 10k na Loja A.
-* **INFER:** Detecta delta de R$ 6.000 não lançado no ERP.
-* **VERIFY:** Confere se o sócio é o mesmo titular em ambas as pontas.
-* **FIX:** Sugere e lança aporte de R$ 16k no faturamento e despesa de R$ 6k nas contas.
+### Cenário 1: Cruzamento Triangular Real (Retirada R$ 10k ➔ Aporte R$ 16k ➔ Delta R$ 6k)
+* **SCAN:** Entrada de PIX de `+R$ 16.000,00` na Loja B identificada com titularidade de Sócio.
+* **INFER:** Busca no `daily_manual_bills` e localiza retirada de `R$ 10.000,00` na Loja A pelo mesmo sócio.
+* **VERIFY:** Calcula delta residual: `16000 - 10000 = 6000`.
+* **FIX:** 
+  1. Cria ajuste de faturamento (+R$ 16k) em `daily_revenue_adjustments`.
+  2. Cria despesa delta (+R$ 6k) em `daily_manual_bills`.
+  3. Resultado: Conciliação zera perfeitamente!
