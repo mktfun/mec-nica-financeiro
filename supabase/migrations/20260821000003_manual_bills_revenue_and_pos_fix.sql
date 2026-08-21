@@ -51,7 +51,7 @@ WHERE NOT EXISTS (
     SELECT 1 FROM public.daily_revenue_adjustments WHERE date = '2026-08-21'::date AND type = 'estorno_cartao' AND amount = 3342.24
 );
 
--- 4. Função get_store_pos_triple_reconciliation
+-- 4. Função get_store_pos_triple_reconciliation corrigida
 DROP FUNCTION IF EXISTS public.get_store_pos_triple_reconciliation(date);
 DROP FUNCTION IF EXISTS public.get_store_pos_triple_reconciliation(text);
 
@@ -76,7 +76,7 @@ BEGIN
             COALESCE(SUM(gross_amount), 0) as rede_bruto,
             COALESCE(SUM(net_amount), 0) as rede_liquido,
             COALESCE(SUM(fee_amount), 0) as rede_taxas,
-            COALESCE(SUM(CASE WHEN transaction_type = 'devolucao' OR status = 'cancelada' THEN ABS(net_amount) ELSE 0 END), 0) as rede_devolucoes
+            COALESCE(SUM(CASE WHEN transaction_type = 'devolucao' OR settlement_status = 'cancelada' THEN ABS(net_amount) ELSE 0 END), 0) as rede_devolucoes
         FROM pos_transactions
         WHERE target_date = p_target_date
         GROUP BY store_id
@@ -92,11 +92,10 @@ BEGIN
               counterpart_name ILIKE '%REDE%' 
               OR counterpart_name ILIKE '%REDECARD%'
               OR fitid ILIKE '%REDE%'
-              OR memo ILIKE '%REDE%'
-              OR memo ILIKE '%CIELO%'
-              OR memo ILIKE '%GETNET%'
-              OR memo ILIKE '%STONE%'
-              OR memo ILIKE '%PAGSEGURO%'
+              OR counterpart_name ILIKE '%CIELO%'
+              OR counterpart_name ILIKE '%GETNET%'
+              OR counterpart_name ILIKE '%STONE%'
+              OR counterpart_name ILIKE '%PAGSEGURO%'
           )
         GROUP BY store_id
     ),
@@ -432,7 +431,7 @@ BEGIN
             COALESCE(NULLIF(r.historical_na_loja, 0), pt.patio_os_sum, 0) as na_loja_os,
             (COALESCE(pv.previsto_ofx, 0) - (COALESCE(pos.ofx_maquininhas, 0) + COALESCE(px.pix, 0))) as diferenca,
             CASE 
-                WHEN (COALESCE(pv.previsto_ofx, 0) - (COALESCE(pos.ofx_maquininhas, 0) + COALESCE(px.pix, 0))) >= -1 THEN 'approved' 
+                WHEN ABS(COALESCE(pv.previsto_ofx, 0) - (COALESCE(pos.ofx_maquininhas, 0) + COALESCE(px.pix, 0))) <= 10 THEN 'approved' 
                 ELSE 'divergence' 
             END as status
         FROM stores s

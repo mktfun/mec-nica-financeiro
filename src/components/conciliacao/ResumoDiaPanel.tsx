@@ -424,50 +424,53 @@ export function ResumoDiaPanel({
       {/* Grid das Métricas */}
       <div className="p-6 bg-[var(--bg-canvas)]">
         
-        {/* 5 Pilares Iniciais */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+        {/* 4 Pilares de Patrimônio (Caixa Atual) - Grid Balanceado */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
           
-          {/* 1. Saldo Bancos + Cartões + Dinheiro */}
+          {/* 1. Saldo Bancos + Cartões + Dinheiro (Amplo e Horizontal - 2 Colunas) */}
           <div 
             onClick={() => setIsSaldoBancosModalOpen(true)}
-            className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] hover:border-[var(--color-primary)]/60 hover:bg-[var(--bg-surface-hover)] transition-all cursor-pointer space-y-2 group shadow-sm"
+            className="lg:col-span-2 p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] hover:border-[var(--color-primary)]/60 hover:bg-[var(--bg-surface-hover)] transition-all cursor-pointer flex flex-col justify-between group shadow-sm"
           >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-[var(--color-primary)] transition-colors">
-                  SALDO BANCOS + DINHEIRO
-                </span>
-                <WhisperDot dot={insights?.dots.saldo_banco} />
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-[var(--color-primary)] transition-colors">
+                    SALDO BANCOS + DINHEIRO
+                  </span>
+                  <WhisperDot dot={insights?.dots.saldo_banco} />
+                </div>
+                <div className="flex items-center gap-1 text-[11px] text-[var(--color-primary)] group-hover:underline">
+                  <Landmark size={14} />
+                  <span className="text-[10px] font-semibold bg-[var(--color-primary)]/10 px-1.5 py-0.5 rounded">Ver Lojas ↗</span>
+                </div>
               </div>
-              <div className="flex items-center gap-1 text-[11px] text-[var(--color-primary)] group-hover:underline">
-                <Landmark size={14} />
-                <span className="text-[10px] hidden sm:inline">Ver Lojas ↗</span>
-              </div>
+
+              <p className="text-2xl font-bold font-sans tabular-nums text-[var(--color-accent-light-blue)]">
+                <AnimatedNumber value={summary?.total_saldo_banco ?? saldoBancosValor} format="currency" />
+              </p>
             </div>
 
-            <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-light-blue)]">
-              <AnimatedNumber value={summary?.total_saldo_banco ?? saldoBancosValor} format="currency" />
-            </p>
-
-            <div className="space-y-1 pt-1.5 border-t border-[var(--border-subtle)] text-[10px]">
-              <div className="flex justify-between items-center text-[var(--text-tertiary)]">
-                <span>Extrato OFX (10 bancos):</span>
-                <span className="font-mono font-medium text-[var(--text-primary)]">
+            {/* Sub-métricas distribuídas horizontalmente lado a lado */}
+            <div className={`grid ${(summary?.cartoes_a_compensar ?? 0) > 0 ? 'grid-cols-3' : 'grid-cols-2'} gap-2 pt-3 mt-2 border-t border-[var(--border-subtle)] text-[11px]`}>
+              <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2 flex flex-col">
+                <span className="text-[9px] text-[var(--text-tertiary)] uppercase font-semibold">Extrato OFX (10 bancos)</span>
+                <span className="font-mono font-bold text-[var(--text-primary)] text-xs mt-0.5">
                   <AnimatedNumber value={summary?.saldo_bancos_ofx ?? saldoBancosValor} format="currency" />
                 </span>
               </div>
-              {(summary?.dinheiro_em_lojas ?? 0) > 0 && (
-                <div className="flex justify-between items-center text-amber-400">
-                  <span>Dinheiro no Cofre:</span>
-                  <span className="font-mono font-semibold text-amber-300">
-                    + <AnimatedNumber value={summary?.dinheiro_em_lojas || 0} format="currency" />
-                  </span>
-                </div>
-              )}
+
+              <div className="bg-[var(--bg-canvas)] border border-amber-500/30 rounded-lg p-2 flex flex-col text-amber-400">
+                <span className="text-[9px] text-amber-400/80 uppercase font-semibold">Dinheiro no Cofre</span>
+                <span className="font-mono font-bold text-amber-300 text-xs mt-0.5">
+                  + <AnimatedNumber value={summary?.dinheiro_em_lojas ?? 0} format="currency" />
+                </span>
+              </div>
+
               {(summary?.cartoes_a_compensar ?? 0) > 0 && (
-                <div className="flex justify-between items-center text-emerald-400">
-                  <span>Maquininhas a Compensar:</span>
-                  <span className="font-mono font-semibold text-emerald-300">
+                <div className="bg-[var(--bg-canvas)] border border-emerald-500/30 rounded-lg p-2 flex flex-col text-emerald-400">
+                  <span className="text-[9px] text-emerald-400/80 uppercase font-semibold">A Compensar</span>
+                  <span className="font-mono font-bold text-emerald-300 text-xs mt-0.5">
                     + <AnimatedNumber value={summary?.cartoes_a_compensar || 0} format="currency" />
                   </span>
                 </div>
@@ -476,134 +479,94 @@ export function ResumoDiaPanel({
           </div>
 
           {/* 2. Dinheiro MP */}
-          <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">DINHEIRO MP</span>
-                <WhisperDot dot={insights?.dots.dinheiro_mp} />
+          <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] flex flex-col justify-between space-y-2">
+            <div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">DINHEIRO MP</span>
+                  <WhisperDot dot={insights?.dots.dinheiro_mp} />
+                </div>
+                <Wallet size={15} className="text-[var(--color-accent-teal)]" />
               </div>
-              <Wallet size={15} className="text-[var(--color-accent-teal)]" />
+              {isEditing ? (
+                <div className="relative mt-2">
+                  <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-[var(--text-tertiary)]">R$</span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={dinheiroMpInput || ''}
+                    onChange={(e) => setDinheiroMpInput(Number(e.target.value))}
+                    placeholder="0,00"
+                    className="w-full bg-[var(--bg-canvas)] border border-[var(--color-accent-teal)]/40 rounded-lg py-1 pl-7 pr-2 text-base font-bold font-mono text-[var(--color-accent-teal)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-teal)]"
+                  />
+                </div>
+              ) : (
+                <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-teal)] mt-2">
+                  <AnimatedNumber value={dinheiroMpValor} format="currency" />
+                </p>
+              )}
             </div>
-            {isEditing ? (
-              <div className="relative mt-1">
-                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-[var(--text-tertiary)]">R$</span>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={dinheiroMpInput || ''}
-                  onChange={(e) => setDinheiroMpInput(Number(e.target.value))}
-                  placeholder="0,00"
-                  className="w-full bg-[var(--bg-canvas)] border border-[var(--color-accent-teal)]/40 rounded-lg py-1 pl-7 pr-2 text-base font-bold font-mono text-[var(--color-accent-teal)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-teal)]"
-                />
-              </div>
-            ) : (
-              <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-teal)]">
-                <AnimatedNumber value={dinheiroMpValor} format="currency" />
-              </p>
-            )}
-            <span className="text-[10px] text-[var(--text-tertiary)] block">Preenchido na importação</span>
+            <span className="text-[10px] text-[var(--text-tertiary)] block pt-2 border-t border-[var(--border-subtle)]/50">
+              Preenchido na importação
+            </span>
           </div>
 
           {/* 3. A Receber */}
-          <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">A RECEBER</span>
-                <WhisperDot dot={insights?.dots.a_receber} />
+          <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] flex flex-col justify-between space-y-2">
+            <div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">A RECEBER</span>
+                  <WhisperDot dot={insights?.dots.a_receber} />
+                </div>
+                <Receipt size={15} className="text-[var(--color-primary)]" />
               </div>
-              <Receipt size={15} className="text-[var(--color-primary)]" />
+              {isEditing ? (
+                <div className="relative mt-2">
+                  <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-[var(--text-tertiary)]">R$</span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={aReceberInput || ''}
+                    onChange={(e) => setAReceberInput(Number(e.target.value))}
+                    placeholder="0,00"
+                    className="w-full bg-[var(--bg-canvas)] border border-[var(--color-primary)]/40 rounded-lg py-1 pl-7 pr-2 text-base font-bold font-mono text-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
+                  />
+                </div>
+              ) : (
+                <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-primary)] mt-2">
+                  <AnimatedNumber value={aReceberValor} format="currency" />
+                </p>
+              )}
             </div>
-            {isEditing ? (
-              <div className="relative mt-1">
-                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-[var(--text-tertiary)]">R$</span>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={aReceberInput || ''}
-                  onChange={(e) => setAReceberInput(Number(e.target.value))}
-                  placeholder="0,00"
-                  className="w-full bg-[var(--bg-canvas)] border border-[var(--color-primary)]/40 rounded-lg py-1 pl-7 pr-2 text-base font-bold font-mono text-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
-                />
-              </div>
-            ) : (
-              <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-primary)]">
-                <AnimatedNumber value={aReceberValor} format="currency" />
-              </p>
-            )}
-            <span className="text-[10px] text-[var(--text-tertiary)] block">Boletos/Descontos manuais</span>
+            <span className="text-[10px] text-[var(--text-tertiary)] block pt-2 border-t border-[var(--border-subtle)]/50">
+              Boletos / Descontos manuais
+            </span>
           </div>
 
           {/* 4. Na Loja OS */}
           <div 
             onClick={() => setIsPatioModalOpen(true)}
-            className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1 cursor-pointer hover:border-amber-500/50 hover:bg-[var(--bg-surface-hover)] transition-all group shadow-sm"
+            className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] flex flex-col justify-between cursor-pointer hover:border-amber-500/50 hover:bg-[var(--bg-surface-hover)] transition-all group shadow-sm space-y-2"
             title="Clique para ver a lista detalhada de OSs no pátio e editar valores"
           >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-amber-400 transition-colors">NA LOJA OS</span>
-                <WhisperDot dot={insights?.dots.na_loja_os} />
-              </div>
-              <span className="text-[9px] font-semibold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded group-hover:bg-amber-500/20 transition-all flex items-center gap-1">
-                Ver OSs ↗
-              </span>
-            </div>
-            <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-warning)] group-hover:text-amber-300 transition-colors">
-              <AnimatedNumber value={naLojaValor} format="currency" />
-            </p>
-            <span className="text-[10px] text-[var(--text-tertiary)] block">OSs do Pátio pendentes (Clique p/ ver)</span>
-          </div>
-
-          {/* 5. Contas Manual */}
-          <div 
-            onClick={() => !isEditing && setIsContasModalOpen(true)}
-            className={`p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1 transition-all ${
-              !isEditing ? 'cursor-pointer hover:border-red-500/50 hover:bg-[var(--bg-surface-hover)] group' : ''
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-red-400 transition-colors">
-                  CONTAS (MANUAL)
+            <div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-amber-400 transition-colors">NA LOJA OS</span>
+                  <WhisperDot dot={insights?.dots.na_loja_os} />
+                </div>
+                <span className="text-[9px] font-semibold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded group-hover:bg-amber-500/20 transition-all flex items-center gap-1">
+                  Ver OSs ↗
                 </span>
-                <WhisperDot dot={insights?.dots.contas} />
               </div>
-              {!isEditing ? (
-                <span className="text-[9px] font-semibold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded group-hover:bg-red-500/20 transition-all flex items-center gap-1">
-                  Ver Contas ↗
-                </span>
-              ) : (
-                <Receipt size={15} className="text-[var(--color-accent-danger)]" />
-              )}
-            </div>
-            {isEditing ? (
-              <div className="relative mt-1">
-                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-[var(--text-tertiary)]">R$</span>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={contasInput || ''}
-                  onChange={(e) => setContasInput(Number(e.target.value))}
-                  placeholder="0,00"
-                  className="w-full bg-[var(--bg-canvas)] border border-[var(--color-accent-danger)]/40 rounded-lg py-1 pl-7 pr-2 text-base font-bold font-mono text-[var(--color-accent-danger)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-danger)]"
-                />
-              </div>
-            ) : (
-              <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-danger)]">
-                <AnimatedNumber value={contasManualValor} format="currency" />
+              <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-warning)] group-hover:text-amber-300 transition-colors mt-2">
+                <AnimatedNumber value={naLojaValor} format="currency" />
               </p>
-            )}
-            <div className="flex justify-between items-center text-[10px] text-[var(--text-tertiary)] pt-1 flex-wrap gap-1 font-mono">
-              <span>Juros: <AnimatedNumber value={jurosRedeValor} format="currency" /></span>
-              {devolucoesRedeValor > 0 && (
-                <span className="text-rose-400 font-semibold" title="Devoluções e Estornos da Maquininha Rede (Conta a Pagar)">
-                  Devoluções: +<AnimatedNumber value={devolucoesRedeValor} format="currency" />
-                </span>
-              )}
-              <span title="Total de Saídas no Extrato OFX importado" className="border-b border-dashed border-[var(--text-tertiary)]/30 cursor-help text-[var(--text-tertiary)]/70 hover:text-[var(--text-tertiary)]">
-                OFX Out: -{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Math.abs(totalOfxOut))}
-              </span>
             </div>
+            <span className="text-[10px] text-[var(--text-tertiary)] block pt-2 border-t border-[var(--border-subtle)]/50">
+              OSs do Pátio pendentes
+            </span>
           </div>
 
         </div>
@@ -611,43 +574,51 @@ export function ResumoDiaPanel({
         {/* Dashboard de Consolidação & Diferença */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
           
-          {/* Card Grandão - Consolidação */}
-          <div className="lg:col-span-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-5 shadow-sm">
-            <h3 className="font-semibold text-[var(--text-primary)] mb-4 uppercase text-xs tracking-wider">Consolidação do Dia</h3>
-            <div className="grid grid-cols-2 gap-4">
+          {/* Card da Consolidação com Contas Integradas (2 Colunas) */}
+          <div className="lg:col-span-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-5 shadow-sm space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold text-[var(--text-primary)] uppercase text-xs tracking-wider flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[var(--color-primary)]"></span>
+                Consolidação do Dia & Fluxo Contábil
+              </h3>
+              <span className="text-[10px] text-[var(--text-tertiary)]">Apuração dos 10 Bancos & Filiais</span>
+            </div>
+
+            {/* Grid com as 5 Métricas de Consolidação */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               
-              {/* Caixa Atual */}
+              {/* 1. Caixa Atual */}
               <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
                 <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Caixa Atual</span>
-                <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block">
+                <span className="text-base sm:text-lg font-bold text-[var(--text-primary)] mt-1 block">
                   <AnimatedNumber value={caixaAtualCalculado} format="currency" />
                 </span>
                 <span className="text-[9px] text-[var(--text-tertiary)]">Patrimônio disponível</span>
               </div>
 
-              {/* Caixa Anterior */}
+              {/* 2. Caixa Anterior */}
               <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
                 <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Caixa Anterior</span>
-                <span className="text-lg font-bold text-[var(--text-secondary)] mt-1 block">
+                <span className="text-base sm:text-lg font-bold text-[var(--text-secondary)] mt-1 block">
                   <AnimatedNumber value={caixaAnteriorGlobal} format="currency" />
                 </span>
                 <span className="text-[9px] text-[var(--text-tertiary)]">Fechamento do dia anterior</span>
               </div>
 
-              {/* Fluxo de Caixa */}
+              {/* 3. Fluxo de Caixa */}
               <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
                 <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Fluxo de Caixa</span>
-                <span className={`text-lg font-bold mt-1 block ${fluxoCaixaCalculado >= 0 ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
+                <span className={`text-base sm:text-lg font-bold mt-1 block ${fluxoCaixaCalculado >= 0 ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
                   {fluxoCaixaCalculado >= 0 ? '+ ' : ''}<AnimatedNumber value={fluxoCaixaCalculado} format="currency" />
                 </span>
-                <span className="text-[9px] text-[var(--text-tertiary)]">Caixa Atual - Caixa Anterior</span>
+                <span className="text-[9px] text-[var(--text-tertiary)]">Caixa Atual - Caixa Ant.</span>
               </div>
 
-              {/* Faturamento do Dia */}
+              {/* 4. Faturamento do Dia */}
               <div 
                 onClick={() => !isEditing && setIsFaturamentoModalOpen(true)}
                 className={`bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)] transition-all ${
-                  !isEditing ? 'cursor-pointer hover:border-[var(--color-primary)]/40 hover:bg-[var(--bg-surface-elevated)] group' : ''
+                  !isEditing ? 'cursor-pointer hover:border-[var(--color-primary)]/50 hover:bg-[var(--bg-surface-elevated)] group' : ''
                 }`}
               >
                 <div className="flex items-center justify-between">
@@ -668,23 +639,20 @@ export function ResumoDiaPanel({
                       step="0.01"
                       value={faturamentoInput || ''}
                       onChange={(e) => setFaturamentoInput(Number(e.target.value))}
-                      placeholder="Faturamento Oficina Inteligente (Acumulado)"
-                      className="w-full bg-[var(--bg-surface)] border border-[var(--color-primary)]/40 rounded-lg py-1 px-2 text-base font-bold font-mono text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
+                      placeholder="Faturamento Oficina Inteligente"
+                      className="w-full bg-[var(--bg-surface)] border border-[var(--color-primary)]/40 rounded-lg py-1 px-2 text-sm font-bold font-mono text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
                     />
-                    <span className="text-[10px] text-[var(--color-primary)] font-semibold block">
-                      = Oficina Inteligente (Dia): {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoLiquidoDia)}
-                    </span>
                   </div>
                 ) : (
                   <>
-                    <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block group-hover:text-emerald-400 transition-colors">
+                    <span className="text-base sm:text-lg font-bold text-[var(--text-primary)] mt-1 block group-hover:text-emerald-400 transition-colors">
                       <AnimatedNumber value={summary?.faturamento_periodo ?? faturamentoTotalComAjustes} format="currency" />
                     </span>
                     <div className="flex flex-col gap-0.5 mt-0.5 text-[9px] text-[var(--text-tertiary)]">
-                      <span>Oficina Inteligente (Dia): {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary?.faturamento_oi_base ?? faturamentoLiquidoDia)}</span>
+                      <span>OI: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary?.faturamento_oi_base ?? faturamentoLiquidoDia)}</span>
                       {(summary?.faturamento_ajustes || totalJustificadosDia) > 0 && (
                         <span className="text-amber-400 font-semibold">
-                          + Ajustes/Aportes: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary?.faturamento_ajustes ?? totalJustificadosDia)}
+                          + Ajustes: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary?.faturamento_ajustes ?? totalJustificadosDia)}
                         </span>
                       )}
                     </div>
@@ -692,21 +660,67 @@ export function ResumoDiaPanel({
                 )}
               </div>
 
-              {/* Valor Disp. Contas */}
+              {/* 5. Contas a Pagar (Manual) */}
+              <div 
+                onClick={() => !isEditing && setIsContasModalOpen(true)}
+                className={`bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)] transition-all ${
+                  !isEditing ? 'cursor-pointer hover:border-red-500/50 hover:bg-[var(--bg-surface-elevated)] group' : ''
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase block group-hover:text-red-400 transition-colors">
+                    Contas (Manual)
+                  </span>
+                  {!isEditing && (
+                    <span className="text-[9px] font-semibold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded group-hover:bg-red-500/20 transition-all">
+                      Ver Contas ↗
+                    </span>
+                  )}
+                </div>
+
+                {isEditing ? (
+                  <div className="relative mt-1">
+                    <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-[var(--text-tertiary)]">R$</span>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={contasInput || ''}
+                      onChange={(e) => setContasInput(Number(e.target.value))}
+                      placeholder="0,00"
+                      className="w-full bg-[var(--bg-canvas)] border border-[var(--color-accent-danger)]/40 rounded-lg py-1 pl-7 pr-2 text-sm font-bold font-mono text-[var(--color-accent-danger)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-danger)]"
+                    />
+                  </div>
+                ) : (
+                  <>
+                    <span className="text-base sm:text-lg font-bold text-[var(--color-accent-danger)] mt-1 block">
+                      <AnimatedNumber value={contasManualValor} format="currency" />
+                    </span>
+                    <div className="flex flex-col gap-0.5 mt-0.5 text-[9px] text-[var(--text-tertiary)] font-mono">
+                      <span>Juros: <AnimatedNumber value={jurosRedeValor} format="currency" /></span>
+                      {devolucoesRedeValor > 0 && (
+                        <span className="text-rose-400 font-semibold">Devoluções: +<AnimatedNumber value={devolucoesRedeValor} format="currency" /></span>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* 6. Valor Disp. Contas */}
               <div className="bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)]">
                 <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Valor Disp. Contas</span>
-                <span className="text-lg font-bold text-[var(--color-primary-bright)] mt-1 block">
+                <span className="text-base sm:text-lg font-bold text-[var(--color-primary-bright)] mt-1 block">
                   <AnimatedNumber value={valorDispContasCalculado} format="currency" />
                 </span>
-                <span className="text-[9px] text-[var(--text-tertiary)]">Faturamento Atual - Fluxo de Caixa</span>
+                <span className="text-[9px] text-[var(--text-tertiary)]">Faturamento - Fluxo Caixa</span>
               </div>
             </div>
             
-            <div className="mt-4 pt-4 border-t border-[var(--border-subtle)] flex justify-between items-center bg-[var(--bg-surface-elevated)] p-3 rounded-lg">
+            {/* Barra Inferior de Batimento */}
+            <div className="pt-3 border-t border-[var(--border-subtle)] flex flex-col sm:flex-row justify-between items-start sm:items-center bg-[var(--bg-surface-elevated)] p-3 rounded-lg gap-2">
                <div>
-                  <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Subtotal: Valor Contas</span>
+                  <span className="text-[10px] text-[var(--text-tertiary)] uppercase block font-semibold">Subtotal: Total de Contas a Cobrir</span>
                   <span className="text-[9px] text-[var(--text-tertiary)]">
-                    Juros (REDE) + Contas (Manual){devolucoesRedeValor > 0 ? ` + Devoluções (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(devolucoesRedeValor)})` : ''}
+                    Contas (Manual) + Juros (REDE){devolucoesRedeValor > 0 ? ` + Devoluções (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(devolucoesRedeValor)})` : ''}
                   </span>
                </div>
                <span className="text-lg font-bold text-[var(--color-accent-warning)] font-mono">
