@@ -41,3 +41,4 @@ supabase.zip
 supabase_bin/
 
 .agent/memory/
+scratch/

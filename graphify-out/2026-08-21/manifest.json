@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1787327246.1497946,
-    "ast_hash": "0b201b2c9e5590591aea9c3c81071029",
+    "mtime": 1787336609.165172,
+    "ast_hash": "5d87d25479b5fc7e9e560310331ec442",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -1525,8 +1525,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1787333999.1473022,
-    "ast_hash": "6459b1286d5bbdfdd90cf18c840f03bb",
+    "mtime": 1787338005.513609,
+    "ast_hash": "fd251fae05b3396d09d7fb4a32cf3797",
     "semantic_hash": ""
   },
   "specs/016-loja-cleanup/design.md": {
@@ -8987,6 +8987,51 @@
   "specs/archive/256-importacao-contas-a-pagar-e-conciliacao-aportes-intercompany/spec-plan.md": {
     "mtime": 1787327317.064785,
     "ast_hash": "bcdad0dda7f5c6f68fd28212511e3301",
+    "semantic_hash": ""
+  },
+  "scratch/append_features_259.cjs": {
+    "mtime": 1787333982.0163524,
+    "ast_hash": "7dafb88b29d235b921bbd6c04252a963",
+    "semantic_hash": ""
+  },
+  "scratch/append_features_260.cjs": {
+    "mtime": 1787337958.4689488,
+    "ast_hash": "bae0e2fcb084fdf02922658390fb5586",
+    "semantic_hash": ""
+  },
+  "scratch/append_memory_260.cjs": {
+    "mtime": 1787337871.2571075,
+    "ast_hash": "0be09c410133229ac93e603b6a8282ec",
+    "semantic_hash": ""
+  },
+  "scratch/apply_migration_0010.cjs": {
+    "mtime": 1787336103.7021067,
+    "ast_hash": "c5e15853936cea838c86671d14663dcd",
+    "semantic_hash": ""
+  },
+  "scratch/test_auto_match_rpc.cjs": {
+    "mtime": 1787336845.6602023,
+    "ast_hash": "acdfec9b5e406f24b365239390599166",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260821000010_auto_match_pending_os.sql": {
+    "mtime": 1787336225.3978362,
+    "ast_hash": "e21f360182fdf060bdd033d843868d68",
+    "semantic_hash": ""
+  },
+  "specs/archive/259-exclusao-cirurgica-por-data-e-correcao-exclusao-imports/design.md": {
+    "mtime": 1787328137.3798354,
+    "ast_hash": "89f1f481f97d27e6701bb7622723151a",
+    "semantic_hash": ""
+  },
+  "specs/archive/259-exclusao-cirurgica-por-data-e-correcao-exclusao-imports/proposal.md": {
+    "mtime": 1787328127.6361957,
+    "ast_hash": "8dcfa9dc3d8a6524f0559abafffacf09",
+    "semantic_hash": ""
+  },
+  "specs/archive/259-exclusao-cirurgica-por-data-e-correcao-exclusao-imports/spec-plan.md": {
+    "mtime": 1787333154.1614962,
+    "ast_hash": "294059305fb668b91f276b0465a82547",
     "semantic_hash": ""
   }
 }

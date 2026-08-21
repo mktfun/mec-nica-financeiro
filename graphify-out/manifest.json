@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1787336609.165172,
-    "ast_hash": "5d87d25479b5fc7e9e560310331ec442",
+    "mtime": 1787340145.7951279,
+    "ast_hash": "5334933bd22e70eb9917394dce0eb4cd",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -3205,8 +3205,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1787248177.2953043,
-    "ast_hash": "930af7926d5f6dfef82f4981a277f2f4",
+    "mtime": 1787340537.1819756,
+    "ast_hash": "1dec483aacb04d2f0f80fad4bbf1c2de",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -9032,6 +9032,26 @@
   "specs/archive/259-exclusao-cirurgica-por-data-e-correcao-exclusao-imports/spec-plan.md": {
     "mtime": 1787333154.1614962,
     "ast_hash": "294059305fb668b91f276b0465a82547",
+    "semantic_hash": ""
+  },
+  "scratch/append_memory_261.cjs": {
+    "mtime": 1787340497.5116456,
+    "ast_hash": "ea8e01e93fb07d45ba1b637dd1d48b5a",
+    "semantic_hash": ""
+  },
+  "specs/archive/260-atualizacao-os-pendentes-e-conciliacao-orfas/design.md": {
+    "mtime": 1787335630.237935,
+    "ast_hash": "2f6b3966229c2d62668665b47a5f858c",
+    "semantic_hash": ""
+  },
+  "specs/archive/260-atualizacao-os-pendentes-e-conciliacao-orfas/proposal.md": {
+    "mtime": 1787335822.6883183,
+    "ast_hash": "b34f4d1dc49bbf40ac2754019dc5651f",
+    "semantic_hash": ""
+  },
+  "specs/archive/260-atualizacao-os-pendentes-e-conciliacao-orfas/spec-plan.md": {
+    "mtime": 1787337080.8786519,
+    "ast_hash": "37a6893d229fdd978c2db7938b28fca3",
     "semantic_hash": ""
   }
 }

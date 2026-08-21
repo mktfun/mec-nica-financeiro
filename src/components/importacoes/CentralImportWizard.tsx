@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
 import { Card } from '@/components/ui/Card';
@@ -68,7 +68,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const navigate = useNavigate();
   const { data: stores = [] } = useStores();
   const { mapping, updateMapping } = useStoreFileMappings(stores);
-  const { processFiles, isProcessing, results } = useCentralImport();
+  const { processFiles, isProcessing, results, setResults } = useCentralImport();
   const { mutateAsync: saveTransactions } = useBulkInsertTransactions();
   const { mutateAsync: createImportBatch } = useCreateImportBatch();
   const { mutateAsync: insertConciliationMatches } = useBulkInsertConciliationMatches();
@@ -114,6 +114,95 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       return item;
     }));
   };
+
+  // Estados para filtro e busca de OSs importadas
+  const [osSearchQuery, setOsSearchQuery] = useState('');
+  const [osStoreFilter, setOsStoreFilter] = useState('ALL');
+  const [osStatusFilter, setOsStatusFilter] = useState('ALL');
+  const [osPage, setOsPage] = useState(1);
+  const OS_PAGE_SIZE = 50;
+
+  const updateImportedOs = (fileName: string, osNumber: string, field: 'total_value' | 'paid_value' | 'status', value: any) => {
+    setResults(prev => ({
+      ...prev,
+      osFiles: prev.osFiles.map(file => {
+        if (file.fileName === fileName || file.osArray.some(o => o.os_number === osNumber)) {
+          return {
+            ...file,
+            osArray: file.osArray.map(os => {
+              if (os.os_number === osNumber) {
+                const updated: any = { ...os, [field]: value, is_edited: true };
+                if (field === 'paid_value') {
+                  const numVal = Number(value) || 0;
+                  updated.delta_paid = numVal;
+                }
+                return updated;
+              }
+              return os;
+            })
+          };
+        }
+        return file;
+      })
+    }));
+  };
+
+  const allImportedOsList = useMemo(() => {
+    const list: Array<{
+      fileName: string;
+      storeAlias: string;
+      storeName: string;
+      os: any;
+    }> = [];
+
+    results.osFiles.filter(r => r.success).forEach(file => {
+      const storeId = mapping[file.storeAlias];
+      const storeObj = stores.find(s => s.id === storeId);
+      const storeName = storeObj ? storeObj.name : file.storeAlias;
+
+      file.osArray.forEach(os => {
+        list.push({
+          fileName: file.fileName,
+          storeAlias: file.storeAlias,
+          storeName,
+          os
+        });
+      });
+    });
+
+    return list;
+  }, [results.osFiles, mapping, stores]);
+
+  const filteredImportedOsList = useMemo(() => {
+    return allImportedOsList.filter(item => {
+      if (osStoreFilter !== 'ALL') {
+        const matchesStore = item.storeAlias === osStoreFilter || item.storeName === osStoreFilter || mapping[item.storeAlias] === osStoreFilter;
+        if (!matchesStore) return false;
+      }
+      if (osStatusFilter !== 'ALL') {
+        const osStatus = (item.os.status || 'em_aberto').toLowerCase();
+        if (osStatusFilter === 'pendente') {
+          if (osStatus === 'finalizado' || osStatus === 'cancelado') return false;
+        } else if (osStatus !== osStatusFilter.toLowerCase()) {
+          return false;
+        }
+      }
+      if (osSearchQuery.trim()) {
+        const q = osSearchQuery.toLowerCase().trim();
+        const num = String(item.os.os_number || '').toLowerCase();
+        const plate = String(item.os.plate || '').toLowerCase();
+        const store = item.storeName.toLowerCase();
+        if (!num.includes(q) && !plate.includes(q) && !store.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [allImportedOsList, osStoreFilter, osStatusFilter, osSearchQuery, mapping]);
+
+  const totalPages = Math.ceil(filteredImportedOsList.length / OS_PAGE_SIZE) || 1;
+  const paginatedImportedOsList = useMemo(() => {
+    const start = (osPage - 1) * OS_PAGE_SIZE;
+    return filteredImportedOsList.slice(start, start + OS_PAGE_SIZE);
+  }, [filteredImportedOsList, osPage, OS_PAGE_SIZE]);
 
   // Terminal logs state
   const [importLogs, setImportLogs] = useState<ImportLogEntry[]>([]);
@@ -1571,17 +1660,204 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
             <Card className="p-6 bg-[var(--bg-surface-elevated)] border-l-4 border-l-sky-500">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Extrato Bancário (OFX)</span>
+                <span className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Saldo Total Bancário (OFX)</span>
                 <Database size={18} className="text-sky-400" />
               </div>
               <p className="text-2xl font-bold text-[var(--text-primary)]">
                 <AnimatedNumber value={totalOfxIn} format="currency" />
               </p>
-              <p className="text-xs text-[var(--text-secondary)] mt-1">{allOfxTx.length} entradas/saídas no extrato</p>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">{allOfxTx.length} lançamentos no total dos extratos</p>
             </Card>
           </div>
 
           <Card className="p-8 space-y-6">
+            {/* Tabela Interativa de Ordens de Serviço Importadas */}
+            {allImportedOsList.length > 0 && (
+              <div className="p-6 bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-2xl shadow-xl space-y-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-[var(--border-subtle)]">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-2 bg-[var(--color-primary)]/10 text-[var(--color-primary)] rounded-lg">
+                      <FileText size={20} />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-sm text-[var(--text-primary)] flex items-center gap-2">
+                        Ordens de Serviço do Pátio ({filteredImportedOsList.length} de {allImportedOsList.length})
+                        <Badge variant="outline" className="text-[10px] bg-emerald-500/10 text-emerald-400 border-emerald-500/30">
+                          {totalOs.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} pagos no dia
+                        </Badge>
+                      </h4>
+                      <p className="text-xs text-[var(--text-tertiary)]">
+                        Valores extraídos das planilhas das filiais. Você pode auditar e editar o Valor Total ou Valor Pago diretamente antes de gravar:
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Controles de Busca e Filtro */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="relative">
+                      <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
+                      <input
+                        type="text"
+                        placeholder="Buscar OS, Placa, Loja..."
+                        value={osSearchQuery}
+                        onChange={(e) => { setOsSearchQuery(e.target.value); setOsPage(1); }}
+                        className="pl-8 pr-3 py-1.5 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg text-xs text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none w-44 md:w-56"
+                      />
+                      {osSearchQuery && (
+                        <button onClick={() => setOsSearchQuery('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] hover:text-white">
+                          <X size={12} />
+                        </button>
+                      )}
+                    </div>
+
+                    <select
+                      value={osStoreFilter}
+                      onChange={(e) => { setOsStoreFilter(e.target.value); setOsPage(1); }}
+                      className="px-2.5 py-1.5 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none"
+                    >
+                      <option value="ALL">Todas as Lojas</option>
+                      {Array.from(new Set(allImportedOsList.map(item => item.storeName))).map(sName => (
+                        <option key={sName} value={sName}>{sName}</option>
+                      ))}
+                    </select>
+
+                    <select
+                      value={osStatusFilter}
+                      onChange={(e) => { setOsStatusFilter(e.target.value); setOsPage(1); }}
+                      className="px-2.5 py-1.5 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none"
+                    >
+                      <option value="ALL">Todos os Status</option>
+                      <option value="pendente">Pendentes (Em Aberto / Parcial)</option>
+                      <option value="em_aberto">em_aberto</option>
+                      <option value="pago_parcial">pago_parcial</option>
+                      <option value="finalizado">finalizado</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto max-h-96 overflow-y-auto">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead className="sticky top-0 bg-[var(--bg-surface-elevated)] z-10">
+                      <tr className="border-b border-[var(--border-subtle)] text-[var(--text-tertiary)] uppercase font-semibold">
+                        <th className="py-2.5 px-3">Loja</th>
+                        <th className="py-2.5 px-3">OS / Placa</th>
+                        <th className="py-2.5 px-3">Abertura</th>
+                        <th className="py-2.5 px-3 w-36">Valor Total OS (R$)</th>
+                        <th className="py-2.5 px-3 w-36">Total Pago (R$)</th>
+                        <th className="py-2.5 px-3">Saldo Pendente</th>
+                        <th className="py-2.5 px-3 w-36">Status</th>
+                        <th className="py-2.5 px-3 text-center w-24">Edição</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[var(--border-subtle)]">
+                      {paginatedImportedOsList.length === 0 ? (
+                        <tr>
+                          <td colSpan={8} className="py-8 text-center text-[var(--text-tertiary)]">
+                            Nenhuma Ordem de Serviço encontrada com os filtros selecionados.
+                          </td>
+                        </tr>
+                      ) : (
+                        paginatedImportedOsList.map(({ fileName, storeName, os }) => {
+                          const saldoPendente = Math.max(0, Number(os.total_value || 0) - Number(os.paid_value || 0));
+                          const isEdited = !!os.is_edited;
+
+                          return (
+                            <tr key={`${fileName}_${os.os_number}`} className={`hover:bg-white/[0.02] transition-colors ${isEdited ? 'bg-amber-500/5' : ''}`}>
+                              <td className="py-2.5 px-3 font-medium text-[var(--text-primary)]">
+                                <span className="px-2 py-0.5 rounded bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] text-[11px]">
+                                  {storeName}
+                                </span>
+                              </td>
+                              <td className="py-2.5 px-3">
+                                <span className="font-mono font-bold text-[var(--text-primary)] block">#{os.os_number}</span>
+                                <span className="text-[10px] text-[var(--text-tertiary)]">{os.plate || 'SEM PLACA'}</span>
+                              </td>
+                              <td className="py-2.5 px-3 text-[var(--text-tertiary)] font-mono text-[11px]">
+                                {os.opened_at ? os.opened_at.split('T')[0].split('-').reverse().join('/') : '-'}
+                              </td>
+                              <td className="py-2 px-3">
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  value={os.total_value ?? 0}
+                                  onChange={(e) => updateImportedOs(fileName, os.os_number, 'total_value', Number(e.target.value))}
+                                  className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg px-2.5 py-1 text-xs font-mono font-semibold text-[var(--text-primary)] focus:outline-none"
+                                />
+                              </td>
+                              <td className="py-2 px-3">
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  value={os.paid_value ?? 0}
+                                  onChange={(e) => updateImportedOs(fileName, os.os_number, 'paid_value', Number(e.target.value))}
+                                  className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg px-2.5 py-1 text-xs font-mono font-semibold text-[var(--color-accent-teal)] focus:outline-none"
+                                />
+                              </td>
+                              <td className="py-2.5 px-3 font-mono font-bold text-[var(--color-accent-warning)]">
+                                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(saldoPendente)}
+                              </td>
+                              <td className="py-2 px-3">
+                                <select
+                                  value={os.status || 'em_aberto'}
+                                  onChange={(e) => updateImportedOs(fileName, os.os_number, 'status', e.target.value)}
+                                  className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg px-2 py-1 text-xs font-semibold text-[var(--text-primary)] focus:outline-none"
+                                >
+                                  <option value="em_aberto">em_aberto</option>
+                                  <option value="pago_parcial">pago_parcial</option>
+                                  <option value="finalizado">finalizado</option>
+                                  <option value="cancelado">cancelado</option>
+                                </select>
+                              </td>
+                              <td className="py-2.5 px-3 text-center">
+                                {isEdited ? (
+                                  <Badge variant="outline" className="text-[10px] bg-amber-500/10 text-amber-400 border-amber-500/30 px-1.5 py-0.5">
+                                    Editado
+                                  </Badge>
+                                ) : (
+                                  <span className="text-[10px] text-[var(--text-tertiary)] font-mono">Original</span>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Paginação */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-between pt-2 border-t border-[var(--border-subtle)] text-xs text-[var(--text-secondary)]">
+                    <span>
+                      Mostrando {((osPage - 1) * OS_PAGE_SIZE) + 1} - {Math.min(osPage * OS_PAGE_SIZE, filteredImportedOsList.length)} de {filteredImportedOsList.length} OSs
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={osPage <= 1}
+                        onClick={() => setOsPage(p => Math.max(1, p - 1))}
+                        className="h-7 text-xs px-2.5 border-[var(--border-subtle)]"
+                      >
+                        Anterior
+                      </Button>
+                      <span className="font-mono text-xs px-2">
+                        Página {osPage} de {totalPages}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={osPage >= totalPages}
+                        onClick={() => setOsPage(p => Math.min(totalPages, p + 1))}
+                        className="h-7 text-xs px-2.5 border-[var(--border-subtle)]"
+                      >
+                        Próxima
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
             {/* Tabela de Ajuste Manual Direto para OSs Ausentes no Relatório Atual */}
             {missingOsList.length > 0 && (
               <div className="p-6 bg-[var(--bg-canvas)] border border-amber-500/30 rounded-2xl shadow-xl space-y-4">

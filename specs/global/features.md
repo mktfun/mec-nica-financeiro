@@ -156,3 +156,10 @@
   - Layout horizontal em nível único: Barra vertical de conformidade `w-2 h-14 rounded-full`, Nome da loja, badges de compensação (`ENTROU` / `NÃO ENTROU`) e ID.
   - Envelope contínuo `bg-black/25 p-4 sm:p-5 rounded-2xl border border-white/5 flex-1` alinhando as 6 métricas em grid de 6 colunas (`Saldo Bancos + Cartões`, `Maquininha`, `PIX`, `Na Loja OS`, `Previsto`, `Diferença`).
   - Botão Raio-X flutuante no topo direito do card com revelação suave no hover.
+
+## Feature 261: Saldo Total Bancário OFX e Tabela Interativa de Edição Livre de OSs no Preview
+- Card de Extratos Bancários atualizado para **"Saldo Total Bancário (OFX)"** com a soma consolidada das entradas de todos os extratos importados e a contagem total de lançamentos.
+- Tabela completa e interativa de Ordens de Serviço Importadas no Step 3 do `CentralImportWizard.tsx` com busca por OS/placa/filial, filtro por loja e filtro por status.
+- Inputs editáveis inline para **Valor Total OS (R$)** (`os.total_value`), **Total Pago no Dia (R$)** (`os.paid_value`) e **Status** (`em_aberto`, `pago_parcial`, `finalizado`, `cancelado`).
+- Cálculo reativo em tempo real do **Saldo Pendente** (`Math.max(0, total_value - paid_value)`), cards de resumo do topo (`Total OS`, `Estoque em Pátio`) e previsões por filial.
+- Persistência integral das OSs editadas em `patio_os`, `reconciliations` (`na_loja_os`) e `daily_snapshots` no fechamento diário (`executeDailyClosing`).

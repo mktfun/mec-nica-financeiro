@@ -376,3 +376,16 @@
 **Risco identificado:** Parear uma OS de outra filial ou com valor aproximado incorreto. Mitigado com correspondência estrita por `store_id` e tolerância de 0.05 centavos.
 
 **Não fazer:** Nunca exigir `closed_at >= D-3` para OSs em aberto, pois OSs podem ter sido abertas há mais tempo no pátio e quitadas hoje.
+
+## [2026-08-21] — [Feature ID: 261-saldo-total-ofx-e-tabela-edicao-os-preview]
+
+**Contexto:** O extrato bancário (OFX) importado contém o saldo acumulado dos extratos das filiais. O operador precisa conferir o valor consolidado do extrato sob o título "Saldo Total Bancário (OFX)" e poder auditar/editar o Valor Total da OS e o Total Pago diretamente no Step 3 de conferência da importação.
+
+**Regra aprendida:**
+1. **Nomenclatura do Card Bancário:** O Card 3 da Central de Importação exibe "Saldo Total Bancário (OFX)", refletindo com transparência o montante consolidado dos extratos bancários importados e o número total de lançamentos.
+2. **Edição Livre de OSs no Preview:** Na etapa 3 do Wizard, disponibilizar tabela pesquisável e paginada de todas as OSs importadas com inputs editáveis para `total_value`, `paid_value` e seletor de `status`.
+3. **Persistência Reativa dos Valores Editados:** Toda alteração feita pelo usuário recalcula os cards do topo em tempo real e é gravada diretamente nas tabelas `patio_os`, `reconciliations` e `daily_snapshots` ao confirmar o fechamento.
+
+**Risco identificado:** Tentar restringir o extrato bancário por data quando o operador precisa da conferência global do saldo em conta.
+
+**Não fazer:** Nunca ocultar ou bloquear a edição de valores de OSs quando o operador detecta que uma ordem de serviço veio com valor divergente da planilha original.
