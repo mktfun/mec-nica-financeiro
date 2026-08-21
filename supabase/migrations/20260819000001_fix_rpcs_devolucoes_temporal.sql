@@ -188,7 +188,7 @@ BEGIN
         v_a_receber := COALESCE(v_snapshot_record.a_receber_manual, 0);
         v_contas_manual := COALESCE(v_snapshot_record.contas_a_pagar, 0);
         v_juros_rede := COALESCE(v_snapshot_record.juros_rede, 0);
-        v_is_marco_zero := (COALESCE(v_snapshot_record.total_patrimonio, 0) > 0) OR (v_target_date = '2026-08-14'::date);
+        v_is_marco_zero := (v_target_date = '2026-08-14'::date);
     END IF;
 
     -- 2. Obter Caixa Anterior e Faturamento Anterior

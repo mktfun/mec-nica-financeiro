@@ -187,19 +187,19 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
 
         const sumPayments = parsed_credit + parsed_debit + parsed_pix_transfer;
 
-        // 2. Consolidação robusta do Valor Total e Valor Pago
+        // 2. Consolidação robusta do Valor Total e Valor Pago com base contábil estrita
         let totalValue = Math.max(rawTotalValue, paidValue + openValue, sumPayments);
         if (totalValue === 0 && (paidValue > 0 || openValue > 0)) {
           totalValue = paidValue + openValue;
         }
 
+        // Se a coluna Restante na OS está preenchida (> 0), o saldo pendente no pátio é exatamente o openValue
         let finalPaidValue = paidValue;
-        if (finalPaidValue === 0) {
-          if (openValue > 0 && totalValue > openValue) {
-            finalPaidValue = totalValue - openValue;
-          } else if (openValue === 0 && sumPayments > 0) {
-            finalPaidValue = sumPayments;
-          }
+        if (openValue > 0) {
+          finalPaidValue = totalValue > openValue ? (totalValue - openValue) : (paidValue || sumPayments);
+        } else if (openValue === 0 && (rawTotalValue > 0 || sumPayments > 0)) {
+          // Se Restante na OS é 0 / '-', a OS está 100% quitada/faturada
+          finalPaidValue = totalValue;
         }
 
         // Fallback apenas se NENHUM método foi identificado no texto
@@ -207,19 +207,16 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
           parsed_credit = totalValue || finalPaidValue;
         }
 
-        // 3. Determinação precisa do Status da OS
+        // 3. Determinação precisa do Status da OS com corte financeiro
         let statusEnum: 'em_aberto' | 'pago_parcial' | 'finalizado' = 'em_aberto';
 
         const isClosedStr = statusStr.match(/finalizad[oa]|pag[oa]|entregue|faturad[oa]|fechad[oa]|concluíd[oa]/i);
-        const isOpenStr = statusStr.match(/em\s*aberto|abert[oa]|pendente/i);
-        const isPartialStr = statusStr.match(/parcial/i);
+        const remOpen = openValue > 0 ? openValue : Math.max(0, totalValue - finalPaidValue);
 
-        const remOpen = Math.max(0, totalValue - finalPaidValue);
-
-        if (isClosedStr || (totalValue > 0 && remOpen <= 0.05)) {
+        if (isClosedStr || remOpen <= 0.05) {
           statusEnum = 'finalizado';
           osCount++;
-        } else if (isPartialStr || (finalPaidValue > 0 && remOpen > 0.05)) {
+        } else if (finalPaidValue > 0 && remOpen > 0.05) {
           statusEnum = 'pago_parcial';
         } else {
           statusEnum = 'em_aberto';

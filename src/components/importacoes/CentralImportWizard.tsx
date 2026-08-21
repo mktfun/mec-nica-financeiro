@@ -901,7 +901,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       }
 
       const totalRecebiveis = manualDinheiroMp + manualAReceber;
-      const caixaAtual = totalBancarioIn + totalRecebiveis;
+      const caixaAtualCalculado = totalBancarioIn + totalRecebiveis + veiculosPatioValor;
 
       addLog("Auto-salvando Fechamento do Dia...", "info");
       const finalContasManual = contasManual > 0 ? contasManual : totalOfxOut;
@@ -909,7 +909,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       try {
         const payload = {
           date: targetDate,
-          caixa_atual: caixaAtual,
+          caixa_atual: caixaAtualCalculado,
           faturamento: finalFaturamento,
           dinheiro_mp: manualDinheiroMp,
           total_recebiveis: totalRecebiveis,
@@ -947,27 +947,24 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
       addLog("📸 Sincronizando Fechamento Consolidado do Dia...", "info");
       try {
-        const { data: metrics } = await supabase.rpc('get_dashboard_metrics', { p_date: targetDate });
-        if (metrics) {
-          const payload = {
-            date: targetDate,
-            caixa_atual: metrics.caixaAtual || caixaAtual,
-            faturamento: finalFaturamento > 0 ? finalFaturamento : (metrics.faturamentoAtual || faturamentoAtual),
-            dinheiro_mp: manualDinheiroMp,
-            total_recebiveis: metrics.aReceber || totalRecebiveis,
-            total_patio: metrics.veiculosPatioValor || veiculosPatioValor,
-            saldo_bancario: metrics.saldoTotal || totalBancarioIn,
-            a_receber_manual: manualAReceber,
-            faturamento_outros_valor: 0,
-            contas_a_pagar: finalContasManual,
-            provisao: 0,
-            saldo_negativo_itau: saldoNegativoItau,
-            juros_rede: jurosRedeTotal,
-            updated_at: new Date().toISOString()
-          };
-          await supabase.from('daily_snapshots').upsert(payload, { onConflict: 'date' });
-          addLog("✅ Histórico de conciliação atualizado automaticamente!", "success");
-        }
+        const payload = {
+          date: targetDate,
+          caixa_atual: caixaAtualCalculado,
+          faturamento: finalFaturamento,
+          dinheiro_mp: manualDinheiroMp,
+          total_recebiveis: totalRecebiveis,
+          total_patio: veiculosPatioValor,
+          saldo_bancario: totalBancarioIn,
+          a_receber_manual: manualAReceber,
+          faturamento_outros_valor: 0,
+          contas_a_pagar: finalContasManual,
+          provisao: 0,
+          saldo_negativo_itau: saldoNegativoItau,
+          juros_rede: jurosRedeTotal,
+          updated_at: new Date().toISOString()
+        };
+        await supabase.from('daily_snapshots').upsert(payload, { onConflict: 'date' });
+        addLog("✅ Histórico de conciliação atualizado automaticamente!", "success");
       } catch (metricsErr) {
         console.warn("Erro ao gerar snapshot automático", metricsErr);
       }
