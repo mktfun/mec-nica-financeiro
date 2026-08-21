@@ -123,3 +123,8 @@
 - **Modal de Reset Diário (`src/components/importacoes/PurgeDailyModal.tsx`):** Interface com seletor de data, aviso de escopo e botão de confirmação.
 - **Header de Importações Atualizado (`src/routes/importacoes.tsx`):** Botão "Resetar Dados do Dia" e eliminação de `alert()` nativo em favor de notificações `Sonner toast`.
 - **Ponto de Retorno / Checkpoint (`scratch/checkpoint_day_21_20260821.json` e `scratch/restore_checkpoint_day_21.cjs`):** Mecanismo de backup completo e restauração em 1 comando para testes periciais do dia 21.
+
+## Atualização de OSs Pendentes, Conciliação de Órfãs & Auto-Preenchimento de Contas (Spec 260)
+- **RPC `auto_match_transactions` (`supabase/migrations/20260821000010_auto_match_pending_os.sql`):** Motor de pareamento inteligente por filial (`store_id`) que busca OSs em aberto (`em_aberto`, `pago_parcial`) por correspondência com Saldo Pendente (`total_value - paid_value`), PIX ou Valor Total. Quita a OS (`status = finalizado`, `closed_at = p_date`), atualiza `paid_value`, vincula a transação OFX (`matched_os_number`) e gera os registros em `conciliation_matches`. Suporta também pareamento de créditos com lotes de cartão da Rede.
+- **Auto-Preenchimento de Contas a Pagar (`CentralImportWizard.tsx`):** Sincronização automática do valor analítico de contas a pagar no formulário de valores manuais com badge de confirmação visual.
+- **Visibilidade de Estoque em Pátio (`CentralImportWizard.tsx`):** Exibição do Delta de recebimentos do dia e do total ativo em pátio por filial.

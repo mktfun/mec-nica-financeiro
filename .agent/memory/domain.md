@@ -360,3 +360,19 @@
 **Risco identificado:** Apagar dados globais por engano se a data for nula. Mitigado com verificação estrita `IF p_date IS NULL THEN RAISE EXCEPTION` na RPC Postgres.
 
 **Não fazer:** Nunca usar `clear_all_financial_data` para refazer apenas um dia; sempre usar a exclusão cirúrgica por data.
+
+## [2026-08-21] — [Feature ID: 260-atualizacao-os-pendentes-e-conciliacao-orfas]
+
+**Contexto:** OSs em aberto no pátio não eram baixadas automaticamente quando o cliente realizava o pagamento via PIX (extrato OFX) ou cartão (Rede) em dias posteriores, deixando as transações bancárias como órfãs e a OS como pendente. Além disso, o valor analítico de Contas a Pagar não auto-preenchia o campo de entrada do fechamento.
+
+**Regra aprendida:**
+1. **Pareamento Inteligente por Saldo Pendente (`auto_match_transactions`):**
+   - O motor busca OSs com `status IN ('em_aberto', 'pago_parcial')` da filial correspondente.
+   - Prioriza correspondência com o **Saldo Pendente** (`total_value - paid_value`), depois PIX e depois Valor Total.
+   - Atualiza a OS: incrementa `paid_value`, define `status = 'finalizado'`, preenche `closed_at = p_date`, vincula `matched_ofx_id` e gera o registro em `conciliation_matches`.
+2. **Auto-Preenchimento de Contas a Pagar:** Quando um lote analítico de contas a pagar é importado (`results.contasPagarResults`), o formulário de valores manuais é auto-preenchido e sinalizado para evitar digitação manual redundante.
+3. **Visibilidade de Estoque em Pátio:** No Card de OS do preview, exibir sempre os pagamentos do dia e o total ativo de veículos/serviços em pátio.
+
+**Risco identificado:** Parear uma OS de outra filial ou com valor aproximado incorreto. Mitigado com correspondência estrita por `store_id` e tolerância de 0.05 centavos.
+
+**Não fazer:** Nunca exigir `closed_at >= D-3` para OSs em aberto, pois OSs podem ter sido abertas há mais tempo no pátio e quitadas hoje.
