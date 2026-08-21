@@ -41,3 +41,11 @@
 **Comportamento proibido:** Confiar que um build bem-sucedido via Vite/esbuild atesta a ausência de erros de tipagem ou referência (`ReferenceError`) após criar, renomear ou excluir estados/variáveis.
 **Guardrail:** NUNCA assuma que um build bem-sucedido garante código seguro se você alterou variáveis. Se criar ou renomear estados React em um projeto Vite, verifique a declaração lendo o arquivo minuciosamente ou force a verificação de tipos (`npx tsc --noEmit`) antes de concluir a task. Vite apenas transpila o código e vai mascarar `ReferenceError` fatais até o runtime.
 **Por quê universal:** Vite é o padrão na maioria dos projetos React modernos. Renomear uma variável e receber um "build successful" cria uma falsa sensação de segurança e gera bugs em produção invisíveis na compilação.
+
+## 7. Blindagem de Scripts Temporários e Segredos no Git
+
+**Regra:** Diretórios de scripts temporários e testes locais (`scratch/`, `.temp/`) devem estar permanentemente no `.gitignore`.
+**Comportamento proibido:** Criar ou rodar scripts em `scratch/` que possam conter chaves, tokens de API, connection strings ou dumps locais e incluir esses arquivos no `git add .` / `git commit`.
+**Guardrail:** Antes de executar qualquer commit ou push, certifique-se de que a pasta `scratch/` (e similares de uso exclusivo do agente) esteja registrada no `.gitignore`. Scripts auxiliares de depuração são efêmeros e nunca devem ser versionados no repositório remoto.
+**Por quê universal:** O GitHub Push Protection e o Secret Scanning bloqueiam imediatamente o `git push` caso detectem tokens em scripts auxiliares, exigindo resets e limpeza de histórico em qualquer projeto.
+

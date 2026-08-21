@@ -115,94 +115,72 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     }));
   };
 
-  // Estados para filtro e busca de OSs importadas
-  const [osSearchQuery, setOsSearchQuery] = useState('');
-  const [osStoreFilter, setOsStoreFilter] = useState('ALL');
-  const [osStatusFilter, setOsStatusFilter] = useState('ALL');
-  const [osPage, setOsPage] = useState(1);
-  const OS_PAGE_SIZE = 50;
+  const [missingOsSearch, setMissingOsSearch] = useState('');
 
-  const updateImportedOs = (fileName: string, osNumber: string, field: 'total_value' | 'paid_value' | 'status', value: any) => {
-    setResults(prev => ({
-      ...prev,
-      osFiles: prev.osFiles.map(file => {
-        if (file.fileName === fileName || file.osArray.some(o => o.os_number === osNumber)) {
-          return {
-            ...file,
-            osArray: file.osArray.map(os => {
-              if (os.os_number === osNumber) {
-                const updated: any = { ...os, [field]: value, is_edited: true };
-                if (field === 'paid_value') {
-                  const numVal = Number(value) || 0;
-                  updated.delta_paid = numVal;
-                }
-                return updated;
-              }
-              return os;
-            })
-          };
+  // Detecção de OSs ativas no banco que não vieram no relatório importado do mês
+  useEffect(() => {
+    async function detectMissingOs() {
+      if (step !== 3) return;
+
+      const mappedStoreIds = Object.values(mapping).filter(id => id && id !== 'GLOBAL');
+      if (mappedStoreIds.length === 0) return;
+
+      setIsLoadingMissingOs(true);
+      try {
+        const { data: dbActiveOs, error } = await supabase
+          .from('patio_os')
+          .select('id, os_number, plate, store_id, store_name, total_value, paid_value, status, opened_at, days_open')
+          .in('store_id', mappedStoreIds)
+          .or('status.ilike.%aberto%,status.ilike.%parcial%,status.ilike.%pendente%,status.eq.ABERTA,status.eq.PENDENTE');
+
+        if (error) {
+          console.error("Erro ao buscar OSs ativas no banco:", error);
+          return;
         }
-        return file;
-      })
-    }));
-  };
 
-  const allImportedOsList = useMemo(() => {
-    const list: Array<{
-      fileName: string;
-      storeAlias: string;
-      storeName: string;
-      os: any;
-    }> = [];
-
-    results.osFiles.filter(r => r.success).forEach(file => {
-      const storeId = mapping[file.storeAlias];
-      const storeObj = stores.find(s => s.id === storeId);
-      const storeName = storeObj ? storeObj.name : file.storeAlias;
-
-      file.osArray.forEach(os => {
-        list.push({
-          fileName: file.fileName,
-          storeAlias: file.storeAlias,
-          storeName,
-          os
+        const importedOsNumbersByStore = new Set<string>();
+        results.osFiles.filter(f => f.success).forEach(file => {
+          const storeId = mapping[file.storeAlias];
+          file.osArray.forEach(os => {
+            const cleanNum = String(os.os_number || '').trim();
+            if (storeId) importedOsNumbersByStore.add(`${storeId}_${cleanNum}`);
+            importedOsNumbersByStore.add(cleanNum);
+          });
         });
-      });
-    });
 
-    return list;
-  }, [results.osFiles, mapping, stores]);
+        const missing: MissingPatioOsEdit[] = (dbActiveOs || [])
+          .filter(dbOs => {
+            const cleanNum = String(dbOs.os_number || '').trim();
+            const hasWithStore = importedOsNumbersByStore.has(`${dbOs.store_id}_${cleanNum}`);
+            const hasDirect = importedOsNumbersByStore.has(cleanNum);
+            return !hasWithStore && !hasDirect;
+          })
+          .map(dbOs => ({
+            id: dbOs.id,
+            os_number: String(dbOs.os_number),
+            plate: dbOs.plate || '-',
+            store_id: dbOs.store_id,
+            store_name: dbOs.store_name || stores.find(s => s.id === dbOs.store_id)?.name || 'Loja',
+            original_total_value: Number(dbOs.total_value) || 0,
+            original_paid_value: Number(dbOs.paid_value) || 0,
+            original_status: dbOs.status || 'em_aberto',
+            total_value: Number(dbOs.total_value) || 0,
+            paid_value: Number(dbOs.paid_value) || 0,
+            status: dbOs.status || 'em_aberto',
+            opened_at: dbOs.opened_at,
+            days_open: dbOs.days_open
+          }));
 
-  const filteredImportedOsList = useMemo(() => {
-    return allImportedOsList.filter(item => {
-      if (osStoreFilter !== 'ALL') {
-        const matchesStore = item.storeAlias === osStoreFilter || item.storeName === osStoreFilter || mapping[item.storeAlias] === osStoreFilter;
-        if (!matchesStore) return false;
+        setMissingOsList(missing);
+      } catch (err) {
+        console.error("Erro ao detectar OSs ausentes:", err);
+      } finally {
+        setIsLoadingMissingOs(false);
       }
-      if (osStatusFilter !== 'ALL') {
-        const osStatus = (item.os.status || 'em_aberto').toLowerCase();
-        if (osStatusFilter === 'pendente') {
-          if (osStatus === 'finalizado' || osStatus === 'cancelado') return false;
-        } else if (osStatus !== osStatusFilter.toLowerCase()) {
-          return false;
-        }
-      }
-      if (osSearchQuery.trim()) {
-        const q = osSearchQuery.toLowerCase().trim();
-        const num = String(item.os.os_number || '').toLowerCase();
-        const plate = String(item.os.plate || '').toLowerCase();
-        const store = item.storeName.toLowerCase();
-        if (!num.includes(q) && !plate.includes(q) && !store.includes(q)) return false;
-      }
-      return true;
-    });
-  }, [allImportedOsList, osStoreFilter, osStatusFilter, osSearchQuery, mapping]);
+    }
 
-  const totalPages = Math.ceil(filteredImportedOsList.length / OS_PAGE_SIZE) || 1;
-  const paginatedImportedOsList = useMemo(() => {
-    const start = (osPage - 1) * OS_PAGE_SIZE;
-    return filteredImportedOsList.slice(start, start + OS_PAGE_SIZE);
-  }, [filteredImportedOsList, osPage, OS_PAGE_SIZE]);
+    detectMissingOs();
+  }, [step, mapping, results.osFiles, stores]);
 
   // Terminal logs state
   const [importLogs, setImportLogs] = useState<ImportLogEntry[]>([]);
@@ -836,6 +814,36 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         } catch (err: any) {
           console.error("Erro ao baixar OS passiva", err);
           addLog("⚠️ Erro ao dar baixa em OSs do passivo.", "warning");
+        }
+      }
+
+      // Salvar atualizações manuais de OSs ausentes
+      if (missingOsList.length > 0) {
+        const modifiedMissing = missingOsList.filter(o => 
+          o.total_value !== o.original_total_value || 
+          o.paid_value !== o.original_paid_value || 
+          o.status !== o.original_status
+        );
+
+        if (modifiedMissing.length > 0) {
+          addLog(`🔧 Atualizando ${modifiedMissing.length} OSs ausentes editadas pelo operador...`, "info");
+          for (const item of modifiedMissing) {
+            try {
+              await supabase
+                .from('patio_os')
+                .update({
+                  total_value: item.total_value,
+                  paid_value: item.paid_value,
+                  status: item.status,
+                  closed_at: (item.status === 'finalizado' || item.status === 'cancelado') ? targetDate : null,
+                  last_payment_date: item.paid_value > item.original_paid_value ? targetDate : undefined,
+                })
+                .eq('id', item.id);
+            } catch (err: any) {
+              console.warn("Erro ao atualizar OS ausente:", err);
+            }
+          }
+          addLog("✅ OSs ausentes atualizadas com sucesso no banco!", "success");
         }
       }
 
@@ -1671,218 +1679,52 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           </div>
 
           <Card className="p-8 space-y-6">
-            {/* Tabela Interativa de Ordens de Serviço Importadas */}
-            {allImportedOsList.length > 0 && (
-              <div className="p-6 bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-2xl shadow-xl space-y-4">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-[var(--border-subtle)]">
-                  <div className="flex items-center gap-2.5">
-                    <div className="p-2 bg-[var(--color-primary)]/10 text-[var(--color-primary)] rounded-lg">
-                      <FileText size={20} />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-sm text-[var(--text-primary)] flex items-center gap-2">
-                        Ordens de Serviço do Pátio ({filteredImportedOsList.length} de {allImportedOsList.length})
-                        <Badge variant="outline" className="text-[10px] bg-emerald-500/10 text-emerald-400 border-emerald-500/30">
-                          {totalOs.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} pagos no dia
-                        </Badge>
-                      </h4>
-                      <p className="text-xs text-[var(--text-tertiary)]">
-                        Valores extraídos das planilhas das filiais. Você pode auditar e editar o Valor Total ou Valor Pago diretamente antes de gravar:
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Controles de Busca e Filtro */}
-                  <div className="flex flex-wrap items-center gap-2">
-                    <div className="relative">
-                      <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
-                      <input
-                        type="text"
-                        placeholder="Buscar OS, Placa, Loja..."
-                        value={osSearchQuery}
-                        onChange={(e) => { setOsSearchQuery(e.target.value); setOsPage(1); }}
-                        className="pl-8 pr-3 py-1.5 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg text-xs text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none w-44 md:w-56"
-                      />
-                      {osSearchQuery && (
-                        <button onClick={() => setOsSearchQuery('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] hover:text-white">
-                          <X size={12} />
-                        </button>
-                      )}
-                    </div>
-
-                    <select
-                      value={osStoreFilter}
-                      onChange={(e) => { setOsStoreFilter(e.target.value); setOsPage(1); }}
-                      className="px-2.5 py-1.5 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none"
-                    >
-                      <option value="ALL">Todas as Lojas</option>
-                      {Array.from(new Set(allImportedOsList.map(item => item.storeName))).map(sName => (
-                        <option key={sName} value={sName}>{sName}</option>
-                      ))}
-                    </select>
-
-                    <select
-                      value={osStatusFilter}
-                      onChange={(e) => { setOsStatusFilter(e.target.value); setOsPage(1); }}
-                      className="px-2.5 py-1.5 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none"
-                    >
-                      <option value="ALL">Todos os Status</option>
-                      <option value="pendente">Pendentes (Em Aberto / Parcial)</option>
-                      <option value="em_aberto">em_aberto</option>
-                      <option value="pago_parcial">pago_parcial</option>
-                      <option value="finalizado">finalizado</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="overflow-x-auto max-h-96 overflow-y-auto">
-                  <table className="w-full text-left text-xs border-collapse">
-                    <thead className="sticky top-0 bg-[var(--bg-surface-elevated)] z-10">
-                      <tr className="border-b border-[var(--border-subtle)] text-[var(--text-tertiary)] uppercase font-semibold">
-                        <th className="py-2.5 px-3">Loja</th>
-                        <th className="py-2.5 px-3">OS / Placa</th>
-                        <th className="py-2.5 px-3">Abertura</th>
-                        <th className="py-2.5 px-3 w-36">Valor Total OS (R$)</th>
-                        <th className="py-2.5 px-3 w-36">Total Pago (R$)</th>
-                        <th className="py-2.5 px-3">Saldo Pendente</th>
-                        <th className="py-2.5 px-3 w-36">Status</th>
-                        <th className="py-2.5 px-3 text-center w-24">Edição</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[var(--border-subtle)]">
-                      {paginatedImportedOsList.length === 0 ? (
-                        <tr>
-                          <td colSpan={8} className="py-8 text-center text-[var(--text-tertiary)]">
-                            Nenhuma Ordem de Serviço encontrada com os filtros selecionados.
-                          </td>
-                        </tr>
-                      ) : (
-                        paginatedImportedOsList.map(({ fileName, storeName, os }) => {
-                          const saldoPendente = Math.max(0, Number(os.total_value || 0) - Number(os.paid_value || 0));
-                          const isEdited = !!os.is_edited;
-
-                          return (
-                            <tr key={`${fileName}_${os.os_number}`} className={`hover:bg-white/[0.02] transition-colors ${isEdited ? 'bg-amber-500/5' : ''}`}>
-                              <td className="py-2.5 px-3 font-medium text-[var(--text-primary)]">
-                                <span className="px-2 py-0.5 rounded bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] text-[11px]">
-                                  {storeName}
-                                </span>
-                              </td>
-                              <td className="py-2.5 px-3">
-                                <span className="font-mono font-bold text-[var(--text-primary)] block">#{os.os_number}</span>
-                                <span className="text-[10px] text-[var(--text-tertiary)]">{os.plate || 'SEM PLACA'}</span>
-                              </td>
-                              <td className="py-2.5 px-3 text-[var(--text-tertiary)] font-mono text-[11px]">
-                                {os.opened_at ? os.opened_at.split('T')[0].split('-').reverse().join('/') : '-'}
-                              </td>
-                              <td className="py-2 px-3">
-                                <input
-                                  type="number"
-                                  step="0.01"
-                                  value={os.total_value ?? 0}
-                                  onChange={(e) => updateImportedOs(fileName, os.os_number, 'total_value', Number(e.target.value))}
-                                  className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg px-2.5 py-1 text-xs font-mono font-semibold text-[var(--text-primary)] focus:outline-none"
-                                />
-                              </td>
-                              <td className="py-2 px-3">
-                                <input
-                                  type="number"
-                                  step="0.01"
-                                  value={os.paid_value ?? 0}
-                                  onChange={(e) => updateImportedOs(fileName, os.os_number, 'paid_value', Number(e.target.value))}
-                                  className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg px-2.5 py-1 text-xs font-mono font-semibold text-[var(--color-accent-teal)] focus:outline-none"
-                                />
-                              </td>
-                              <td className="py-2.5 px-3 font-mono font-bold text-[var(--color-accent-warning)]">
-                                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(saldoPendente)}
-                              </td>
-                              <td className="py-2 px-3">
-                                <select
-                                  value={os.status || 'em_aberto'}
-                                  onChange={(e) => updateImportedOs(fileName, os.os_number, 'status', e.target.value)}
-                                  className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg px-2 py-1 text-xs font-semibold text-[var(--text-primary)] focus:outline-none"
-                                >
-                                  <option value="em_aberto">em_aberto</option>
-                                  <option value="pago_parcial">pago_parcial</option>
-                                  <option value="finalizado">finalizado</option>
-                                  <option value="cancelado">cancelado</option>
-                                </select>
-                              </td>
-                              <td className="py-2.5 px-3 text-center">
-                                {isEdited ? (
-                                  <Badge variant="outline" className="text-[10px] bg-amber-500/10 text-amber-400 border-amber-500/30 px-1.5 py-0.5">
-                                    Editado
-                                  </Badge>
-                                ) : (
-                                  <span className="text-[10px] text-[var(--text-tertiary)] font-mono">Original</span>
-                                )}
-                              </td>
-                            </tr>
-                          );
-                        })
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Paginação */}
-                {totalPages > 1 && (
-                  <div className="flex items-center justify-between pt-2 border-t border-[var(--border-subtle)] text-xs text-[var(--text-secondary)]">
-                    <span>
-                      Mostrando {((osPage - 1) * OS_PAGE_SIZE) + 1} - {Math.min(osPage * OS_PAGE_SIZE, filteredImportedOsList.length)} de {filteredImportedOsList.length} OSs
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={osPage <= 1}
-                        onClick={() => setOsPage(p => Math.max(1, p - 1))}
-                        className="h-7 text-xs px-2.5 border-[var(--border-subtle)]"
-                      >
-                        Anterior
-                      </Button>
-                      <span className="font-mono text-xs px-2">
-                        Página {osPage} de {totalPages}
-                      </span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={osPage >= totalPages}
-                        onClick={() => setOsPage(p => Math.min(totalPages, p + 1))}
-                        className="h-7 text-xs px-2.5 border-[var(--border-subtle)]"
-                      >
-                        Próxima
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
             {/* Tabela de Ajuste Manual Direto para OSs Ausentes no Relatório Atual */}
-            {missingOsList.length > 0 && (
+            {isLoadingMissingOs ? (
+              <div className="p-6 bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-2xl flex items-center justify-center gap-3 text-xs text-[var(--text-secondary)]">
+                <LoadingSpinner size="sm" text="" />
+                <span>Verificando se há OSs em aberto no banco ausentes da planilha importada...</span>
+              </div>
+            ) : missingOsList.length > 0 ? (
               <div className="p-6 bg-[var(--bg-canvas)] border border-amber-500/30 rounded-2xl shadow-xl space-y-4">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-3 border-b border-amber-500/20">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-amber-500/20">
                   <div className="flex items-center gap-2.5">
                     <div className="p-2 bg-amber-500/10 text-amber-400 rounded-lg">
                       <AlertCircle size={20} />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-sm text-[var(--text-primary)]">
+                      <h4 className="font-semibold text-sm text-[var(--text-primary)] flex items-center gap-2">
                         OSs Pendentes Ausentes no Relatório Atual ({missingOsList.length})
+                        <Badge variant="outline" className="text-[10px] bg-amber-500/10 text-amber-400 border-amber-500/30">
+                          Ajuste Necessário
+                        </Badge>
                       </h4>
                       <p className="text-xs text-[var(--text-tertiary)]">
-                        Estas ordens constam ativas no banco de dados, mas não vieram na planilha do mês importada. Ajuste os valores ou status livremente abaixo:
+                        Estas ordens constam ativas no banco de dados, mas <b>não vieram na planilha importada</b>. Ajuste os valores ou status livremente abaixo antes de gravar:
                       </p>
                     </div>
                   </div>
-                  <Badge variant="outline" className="text-xs bg-amber-500/10 text-amber-400 border-amber-500/30 font-mono self-start md:self-auto">
-                    Controle Manual
-                  </Badge>
+
+                  <div className="relative">
+                    <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
+                    <input
+                      type="text"
+                      placeholder="Buscar por placa, OS, loja..."
+                      value={missingOsSearch}
+                      onChange={(e) => setMissingOsSearch(e.target.value)}
+                      className="pl-8 pr-3 py-1.5 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-amber-500 rounded-lg text-xs text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none w-48 md:w-56"
+                    />
+                    {missingOsSearch && (
+                      <button onClick={() => setMissingOsSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] hover:text-white">
+                        <X size={12} />
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <div className="overflow-x-auto max-h-80 overflow-y-auto">
                   <table className="w-full text-left text-xs border-collapse">
-                    <thead>
+                    <thead className="sticky top-0 bg-[var(--bg-surface-elevated)] z-10">
                       <tr className="border-b border-[var(--border-subtle)] text-[var(--text-tertiary)] uppercase font-semibold">
                         <th className="py-2.5 px-3">Loja</th>
                         <th className="py-2.5 px-3">OS / Placa</th>
@@ -1894,63 +1736,71 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[var(--border-subtle)]">
-                      {missingOsList.map((os) => {
-                        const saldoPendente = Math.max(0, Number(os.total_value || 0) - Number(os.paid_value || 0));
-                        const isModified = os.total_value !== os.original_total_value || os.paid_value !== os.original_paid_value || os.status !== os.original_status;
+                      {missingOsList
+                        .filter(os => {
+                          if (!missingOsSearch.trim()) return true;
+                          const q = missingOsSearch.toLowerCase().trim();
+                          return String(os.os_number).toLowerCase().includes(q) ||
+                                 String(os.plate).toLowerCase().includes(q) ||
+                                 String(os.store_name).toLowerCase().includes(q);
+                        })
+                        .map((os) => {
+                          const saldoPendente = Math.max(0, Number(os.total_value || 0) - Number(os.paid_value || 0));
+                          const isModified = os.total_value !== os.original_total_value || os.paid_value !== os.original_paid_value || os.status !== os.original_status;
 
-                        return (
-                          <tr key={os.id} className={`hover:bg-white/[0.02] transition-colors ${isModified ? 'bg-amber-500/5' : ''}`}>
-                            <td className="py-2.5 px-3 font-medium text-[var(--text-primary)]">
-                              {os.store_name}
-                            </td>
-                            <td className="py-2.5 px-3">
-                              <span className="font-mono font-bold text-[var(--text-primary)] block">#{os.os_number}</span>
-                              <span className="text-[10px] text-[var(--text-tertiary)]">{os.plate}</span>
-                            </td>
-                            <td className="py-2.5 px-3 text-[var(--text-tertiary)] font-mono text-[11px]">
-                              {os.opened_at ? os.opened_at.split('T')[0].split('-').reverse().join('/') : '-'}
-                            </td>
-                            <td className="py-2 px-3">
-                              <input
-                                type="number"
-                                step="0.01"
-                                value={os.total_value}
-                                onChange={(e) => updateMissingOs(os.id, 'total_value', Number(e.target.value))}
-                                className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg px-2.5 py-1 text-xs font-mono font-semibold text-[var(--text-primary)] focus:outline-none"
-                              />
-                            </td>
-                            <td className="py-2 px-3">
-                              <input
-                                type="number"
-                                step="0.01"
-                                value={os.paid_value}
-                                onChange={(e) => updateMissingOs(os.id, 'paid_value', Number(e.target.value))}
-                                className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg px-2.5 py-1 text-xs font-mono font-semibold text-[var(--color-accent-teal)] focus:outline-none"
-                              />
-                            </td>
-                            <td className="py-2.5 px-3 font-mono font-bold text-[var(--color-accent-warning)]">
-                              {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(saldoPendente)}
-                            </td>
-                            <td className="py-2 px-3">
-                              <select
-                                value={os.status}
-                                onChange={(e) => updateMissingOs(os.id, 'status', e.target.value)}
-                                className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg px-2 py-1 text-xs font-semibold text-[var(--text-primary)] focus:outline-none"
-                              >
-                                <option value="em_aberto">em_aberto</option>
-                                <option value="pago_parcial">pago_parcial</option>
-                                <option value="finalizado">finalizado</option>
-                                <option value="cancelado">cancelado</option>
-                              </select>
-                            </td>
-                          </tr>
-                        );
-                      })}
+                          return (
+                            <tr key={os.id} className={`hover:bg-white/[0.02] transition-colors ${isModified ? 'bg-amber-500/10' : ''}`}>
+                              <td className="py-2.5 px-3 font-medium text-[var(--text-primary)]">
+                                {os.store_name}
+                              </td>
+                              <td className="py-2.5 px-3">
+                                <span className="font-mono font-bold text-[var(--text-primary)] block">#{os.os_number}</span>
+                                <span className="text-[10px] text-[var(--text-tertiary)]">{os.plate}</span>
+                              </td>
+                              <td className="py-2.5 px-3 text-[var(--text-tertiary)] font-mono text-[11px]">
+                                {os.opened_at ? os.opened_at.split('T')[0].split('-').reverse().join('/') : '-'}
+                              </td>
+                              <td className="py-2 px-3">
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  value={os.total_value}
+                                  onChange={(e) => updateMissingOs(os.id, 'total_value', Number(e.target.value))}
+                                  className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-amber-500 rounded-lg px-2.5 py-1 text-xs font-mono font-semibold text-[var(--text-primary)] focus:outline-none"
+                                />
+                              </td>
+                              <td className="py-2 px-3">
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  value={os.paid_value}
+                                  onChange={(e) => updateMissingOs(os.id, 'paid_value', Number(e.target.value))}
+                                  className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-amber-500 rounded-lg px-2.5 py-1 text-xs font-mono font-semibold text-[var(--color-accent-teal)] focus:outline-none"
+                                />
+                              </td>
+                              <td className="py-2.5 px-3 font-mono font-bold text-[var(--color-accent-warning)]">
+                                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(saldoPendente)}
+                              </td>
+                              <td className="py-2 px-3">
+                                <select
+                                  value={os.status}
+                                  onChange={(e) => updateMissingOs(os.id, 'status', e.target.value)}
+                                  className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-amber-500 rounded-lg px-2 py-1 text-xs font-semibold text-[var(--text-primary)] focus:outline-none"
+                                >
+                                  <option value="em_aberto">em_aberto</option>
+                                  <option value="pago_parcial">pago_parcial</option>
+                                  <option value="finalizado">finalizado</option>
+                                  <option value="cancelado">cancelado</option>
+                                </select>
+                              </td>
+                            </tr>
+                          );
+                        })}
                     </tbody>
                   </table>
                 </div>
               </div>
-            )}
+            ) : null}
 
             <h3 className="font-display text-xl font-semibold">Previsão por Loja</h3>
             

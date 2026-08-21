@@ -163,3 +163,10 @@
 - Inputs editáveis inline para **Valor Total OS (R$)** (`os.total_value`), **Total Pago no Dia (R$)** (`os.paid_value`) e **Status** (`em_aberto`, `pago_parcial`, `finalizado`, `cancelado`).
 - Cálculo reativo em tempo real do **Saldo Pendente** (`Math.max(0, total_value - paid_value)`), cards de resumo do topo (`Total OS`, `Estoque em Pátio`) e previsões por filial.
 - Persistência integral das OSs editadas em `patio_os`, `reconciliations` (`na_loja_os`) e `daily_snapshots` no fechamento diário (`executeDailyClosing`).
+
+## Feature 262: Tabela Exclusiva de OSs Ausentes no Preview de Importação
+- Remoção da tabela genérica de todas as OSs importadas do Step 3 do `CentralImportWizard.tsx`.
+- Restauração e aprimoramento da rotina `detectMissingOs` que cruza o banco com os arquivos e isola exclusivamente as OSs ativas ausentes.
+- Tabela interativa dedicada com inputs inline de **Valor Total (R$)**, **Total Pago (R$)**, **Saldo Pendente Calculado** e **Status** (`em_aberto`, `pago_parcial`, `finalizado`, `cancelado`).
+- Busca rápida por placa, OS ou loja dentro das ordens ausentes.
+- Persistência atômica das alterações em `patio_os` durante o fechamento diário (`executeDailyClosing`).

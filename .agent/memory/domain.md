@@ -389,3 +389,15 @@
 **Risco identificado:** Tentar restringir o extrato bancário por data quando o operador precisa da conferência global do saldo em conta.
 
 **Não fazer:** Nunca ocultar ou bloquear a edição de valores de OSs quando o operador detecta que uma ordem de serviço veio com valor divergente da planilha original.
+
+## [2026-08-21] — [Feature ID: 262-restaurar-tabela-exclusiva-os-ausentes-preview]
+
+**Contexto:** Auditoria e fechamento de ordens de serviço ativas no banco de dados que não constam na planilha mensal/diária do pátio.
+
+**Regra aprendida:**
+1. **Detecção Precisa de OSs Ausentes (`detectMissingOs`):** Buscar no Supabase ordens com status ativo (`em_aberto`, `pago_parcial`, `ABERTA`, `PENDENTE`) das filiais mapeadas e cruzar contra todas as OSs contidas nos arquivos importados (`results.osFiles`). As que sobrarem são as OSs ausentes.
+2. **Persistência no Fechamento:** Ao confirmar o fechamento, as OSs ausentes modificadas pelo operador são atualizadas diretamente em `patio_os` com `total_value`, `paid_value`, `status` e `closed_at: targetDate` caso finalizadas.
+
+**Risco identificado:** Deixar OSs órfãs no pátio indefinidamente se o relatório do mês deixar de trazê-las.
+
+**Não fazer:** Nunca descartar silenciosamente OSs que deixaram de vir na planilha sem dar a chance ao operador de decidir o status final.
