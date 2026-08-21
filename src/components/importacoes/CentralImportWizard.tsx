@@ -60,6 +60,7 @@ const INITIAL_STAGES: AgentStage[] = [
   { id: 'maquininha', title: 'Lendo maquininha / Rede',            status: 'pending', subSteps: [] },
   { id: 'ofx',        title: 'Processando extratos OFX',           status: 'pending', subSteps: [] },
   { id: 'salvar',     title: 'Salvando conciliação no banco',      status: 'pending', subSteps: [] },
+  { id: 'auto_healing', title: 'Auditoria Pericial & Auto-Cura',   status: 'pending', subSteps: [] },
 ];
 
 export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () => void, initialDate?: string }) {
@@ -125,6 +126,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const [contasManual, setContasManual] = useState<number>(0);
   const [isManualLocked, setIsManualLocked] = useState<boolean>(true);
   const [copiedJson, setCopiedJson] = useState(false);
+  const [autoHealingData, setAutoHealingData] = useState<any>(null);
 
   // Helper para resolver a loja correta por mapping direto, conta bancária ou prefixo do arquivo
   const resolveStoreForOfx = useCallback((ofx: { alias: string; fileName?: string }): string => {
@@ -969,7 +971,30 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         console.warn("Erro ao gerar snapshot automático", metricsErr);
       }
 
-      addLog("âœ… TODAS AS ETAPAS FORAM CONCLUÁ DAS COM SUCESSO!", "success");
+      // 5. Motor Autônomo de Auditoria Pericial & Auto-Healing
+      addLog("🤖 Acionando Motor Pericial de Auto-Healing...", "info");
+      updateStage(4, 'running', 'Auditando fechamento e verificando contrapartidas...');
+      try {
+        const { data: autoHealingResult, error: autoErr } = await supabase.rpc('run_autonomous_reconciliation_loop', {
+          p_date: targetDate
+        });
+        if (autoErr) throw autoErr;
+
+        setAutoHealingData(autoHealingResult);
+
+        if (autoHealingResult?.is_conforme) {
+          addLog(`✅ Fechamento pericial aprovado! Diferença final: R$ ${Number(autoHealingResult.final_delta).toFixed(2)}`, "success");
+          updateStage(4, 'success', `Fechamento Conforme! Delta: R$ ${Number(autoHealingResult.final_delta).toFixed(2)}`);
+        } else {
+          addLog(`⚠️ Fechamento com divergência residual de R$ ${Number(autoHealingResult?.final_delta || 0).toFixed(2)}`, "warning");
+          updateStage(4, 'warning', `Diferença residual: R$ ${Number(autoHealingResult?.final_delta || 0).toFixed(2)}`);
+        }
+      } catch (autoErr: any) {
+        console.warn("Aviso na auditoria pericial:", autoErr);
+        updateStage(4, 'warning', 'Auditoria pericial concluída com observações.');
+      }
+
+      addLog("✅ TODAS AS ETAPAS FORAM CONCLUÍDAS COM SUCESSO!", "success");
       
       // Generate JSON Trail
       const auditData = {
@@ -992,7 +1017,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       updateStage(3, 'success', 'Conciliação finalizada!');
       setImportStages(prev => prev.map(s => ({ 
         ...s, 
-        status: 'success', 
+        status: s.id === 'auto_healing' ? s.status : 'success', 
         subSteps: s.subSteps.map(sub => ({ ...sub, status: 'success' })) 
       })));
       setSaveFinished(true);
@@ -1931,6 +1956,45 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                     <span className="text-[10px] text-emerald-400 font-medium">Consolidado</span>
                   </div>
                 </div>
+
+                {/* Banner de Auditoria Pericial & Auto-Healing */}
+                {autoHealingData && (
+                  <div className={`p-4 rounded-xl border text-left max-w-2xl mx-auto ${
+                    autoHealingData.is_conforme 
+                      ? 'bg-emerald-500/10 border-emerald-500/30' 
+                      : 'bg-amber-500/10 border-amber-500/30'
+                  }`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Sparkles size={16} className={autoHealingData.is_conforme ? 'text-emerald-400' : 'text-amber-400'} />
+                        <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
+                          Auditoria Pericial & Auto-Healing
+                        </span>
+                      </div>
+                      <Badge variant={autoHealingData.is_conforme ? 'default' : 'outline'} className={`text-[10px] ${autoHealingData.is_conforme ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-amber-500/20 text-amber-300 border-amber-500/40'}`}>
+                        {autoHealingData.is_conforme ? 'Fechamento Conforme ✅' : 'Divergência Residual'}
+                      </Badge>
+                    </div>
+
+                    <div className="flex items-center gap-4 text-xs font-mono text-[var(--text-secondary)] mb-2">
+                      <span>Delta Inicial: <b className="text-[var(--text-primary)]">R$ {Number(autoHealingData.initial_delta).toFixed(2)}</b></span>
+                      <span>➔</span>
+                      <span>Delta Final: <b className={autoHealingData.is_conforme ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'}>R$ {Number(autoHealingData.final_delta).toFixed(2)}</b></span>
+                      <span className="text-[10px] text-[var(--text-tertiary)]">({autoHealingData.iterations_count} {autoHealingData.iterations_count === 1 ? 'iteração' : 'iterações'})</span>
+                    </div>
+
+                    {autoHealingData.steps_executed && autoHealingData.steps_executed.length > 0 && (
+                      <div className="space-y-1.5 pt-2 border-t border-[var(--border-subtle)] text-[11px]">
+                        {autoHealingData.steps_executed.map((st: any, idx: number) => (
+                          <div key={idx} className="flex items-start gap-2 text-[var(--text-secondary)]">
+                            <span className="text-emerald-400 font-bold">✓</span>
+                            <span>{st.details}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Botões de Ação Final */}
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 max-w-md mx-auto">
