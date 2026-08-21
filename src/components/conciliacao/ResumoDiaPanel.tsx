@@ -17,6 +17,8 @@ import { FaturamentoAtualBreakdownModal } from '@/components/conciliacao/Faturam
 import { MaquininhasDetailModal } from '@/components/conciliacao/MaquininhasDetailModal';
 import { PatioOsDetailModal } from '@/components/conciliacao/PatioOsDetailModal';
 import { SaldoBancosDetailModal } from '@/components/conciliacao/SaldoBancosDetailModal';
+import { ContasManualModal } from '@/components/conciliacao/ContasManualModal';
+import { FaturamentoDetalhesModal } from '@/components/conciliacao/FaturamentoDetalhesModal';
 import { WhisperDot } from '@/components/conciliacao/WhisperDot';
 import { AuditTrailBar } from '@/components/conciliacao/AuditTrailBar';
 import { supabase } from '@/lib/supabase';
@@ -63,6 +65,8 @@ export function ResumoDiaPanel({
   const [isMaquininhasModalOpen, setIsMaquininhasModalOpen] = useState(false);
   const [isPatioModalOpen, setIsPatioModalOpen] = useState(false);
   const [isSaldoBancosModalOpen, setIsSaldoBancosModalOpen] = useState(false);
+  const [isContasModalOpen, setIsContasModalOpen] = useState(false);
+  const [isFaturamentoModalOpen, setIsFaturamentoModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: tripleReconData, isLoading: loadingTripleRecon } = usePosTripleReconciliation(selectedDate);
@@ -551,13 +555,26 @@ export function ResumoDiaPanel({
           </div>
 
           {/* 5. Contas Manual */}
-          <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
+          <div 
+            onClick={() => !isEditing && setIsContasModalOpen(true)}
+            className={`p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1 transition-all ${
+              !isEditing ? 'cursor-pointer hover:border-red-500/50 hover:bg-[var(--bg-surface-hover)] group' : ''
+            }`}
+          >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">CONTAS (MANUAL)</span>
+                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-red-400 transition-colors">
+                  CONTAS (MANUAL)
+                </span>
                 <WhisperDot dot={insights?.dots.contas} />
               </div>
-              <Receipt size={15} className="text-[var(--color-accent-danger)]" />
+              {!isEditing ? (
+                <span className="text-[9px] font-semibold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded group-hover:bg-red-500/20 transition-all flex items-center gap-1">
+                  Ver Contas ↗
+                </span>
+              ) : (
+                <Receipt size={15} className="text-[var(--color-accent-danger)]" />
+              )}
             </div>
             {isEditing ? (
               <div className="relative mt-1">
@@ -628,7 +645,7 @@ export function ResumoDiaPanel({
 
               {/* Faturamento do Dia */}
               <div 
-                onClick={() => !isEditing && setIsBreakdownModalOpen(true)}
+                onClick={() => !isEditing && setIsFaturamentoModalOpen(true)}
                 className={`bg-[var(--bg-canvas)] p-3 rounded-lg border border-[var(--border-subtle)] transition-all ${
                   !isEditing ? 'cursor-pointer hover:border-[var(--color-primary)]/40 hover:bg-[var(--bg-surface-elevated)] group' : ''
                 }`}
@@ -661,13 +678,13 @@ export function ResumoDiaPanel({
                 ) : (
                   <>
                     <span className="text-lg font-bold text-[var(--text-primary)] mt-1 block group-hover:text-emerald-400 transition-colors">
-                      <AnimatedNumber value={faturamentoTotalComAjustes} format="currency" />
+                      <AnimatedNumber value={summary?.faturamento_periodo ?? faturamentoTotalComAjustes} format="currency" />
                     </span>
                     <div className="flex flex-col gap-0.5 mt-0.5 text-[9px] text-[var(--text-tertiary)]">
-                      <span>Oficina Inteligente (Dia): {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoLiquidoDia)}</span>
-                      {totalJustificadosDia > 0 && (
-                        <span className="text-blue-400 font-semibold">
-                          + Justificados: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalJustificadosDia)}
+                      <span>Oficina Inteligente (Dia): {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary?.faturamento_oi_base ?? faturamentoLiquidoDia)}</span>
+                      {(summary?.faturamento_ajustes || totalJustificadosDia) > 0 && (
+                        <span className="text-amber-400 font-semibold">
+                          + Ajustes/Aportes: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary?.faturamento_ajustes ?? totalJustificadosDia)}
                         </span>
                       )}
                     </div>
@@ -839,6 +856,23 @@ export function ResumoDiaPanel({
         onClose={() => setIsSaldoBancosModalOpen(false)}
         targetDate={selectedDate}
         stores={summary?.stores || []}
+      />
+
+      {/* Modal de Lançamento de Contas a Pagar Item a Item */}
+      <ContasManualModal
+        isOpen={isContasModalOpen}
+        onClose={() => setIsContasModalOpen(false)}
+        targetDate={selectedDate}
+        fallbackTotal={contasManualValor}
+      />
+
+      {/* Modal de Composição & Ajustes de Faturamento do Dia */}
+      <FaturamentoDetalhesModal
+        isOpen={isFaturamentoModalOpen}
+        onClose={() => setIsFaturamentoModalOpen(false)}
+        targetDate={selectedDate}
+        faturamentoOiBase={summary?.faturamento_oi_base ?? faturamentoLiquidoDia}
+        faturamentoTotal={summary?.faturamento_periodo ?? faturamentoTotalComAjustes}
       />
     </motion.div>
   );
