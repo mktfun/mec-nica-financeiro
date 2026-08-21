@@ -104,13 +104,13 @@ export function ContasManualModal({
   });
 
   const totalBills = bills.reduce((acc, b) => acc + Number(b.amount || 0), 0);
-  const displayTotal = bills.length > 0 ? totalBills : fallbackTotal;
+  const displayTotal = fallbackTotal + totalBills;
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Lançamento de Contas a Pagar do Dia (Item a Item)"
+      title="Lançamento de Contas a Pagar & Despesas Adicionais"
       size="2xl"
     >
       <div className="space-y-6">
@@ -122,9 +122,12 @@ export function ContasManualModal({
             </div>
             <div>
               <h3 className="text-sm font-semibold text-[var(--text-primary)]">Total de Contas a Pagar</h3>
-              <p className="text-xs text-[var(--text-tertiary)]">
-                {bills.length > 0 ? `${bills.length} contas lançadas nesta data` : 'Valor informado no fechamento'}
-              </p>
+              <div className="flex flex-col text-xs text-[var(--text-tertiary)] mt-0.5">
+                <span>Base Fechamento: {formatCurrency(fallbackTotal)}</span>
+                {totalBills > 0 && (
+                  <span className="text-rose-400 font-semibold">+ Despesas Extras ({bills.length}): {formatCurrency(totalBills)}</span>
+                )}
+              </div>
             </div>
           </div>
           <div className="text-right">
