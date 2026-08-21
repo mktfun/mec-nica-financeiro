@@ -1,5 +1,5 @@
 -- Migration: 20260821000001_complete_rpc_clean_accounting.sql
--- Description: RPC get_daily_reconciliation_summary consolidada no Postgres com separação clara de OFX, Dinheiro em Loja, Cartões a Compensar e Pátio Dinâmico.
+-- Description: RPC get_daily_reconciliation_summary consolidada no Postgres com priorização de reconciliations.na_loja_os e fallback em patio_os.
 
 DROP FUNCTION IF EXISTS public.get_daily_reconciliation_summary(date);
 DROP FUNCTION IF EXISTS public.get_daily_reconciliation_summary(text);
@@ -114,8 +114,8 @@ BEGIN
           OR opened_at::date = v_target_date
       );
 
-    IF v_is_marco_zero AND v_na_loja_os = 0 AND v_snapshot_record.id IS NOT NULL THEN
-        v_na_loja_os := COALESCE(v_snapshot_record.total_patio, 0);
+    IF v_snapshot_record.id IS NOT NULL AND COALESCE(v_snapshot_record.total_patio, 0) > 0 THEN
+        v_na_loja_os := v_snapshot_record.total_patio;
     END IF;
 
     -- 7. Conciliação Tripla de Maquininhas
@@ -136,7 +136,7 @@ BEGIN
         WHERE target_date = v_target_date AND transaction_type = 'devolucao';
     END IF;
 
-    -- 8. Consolidação por Filial com Dinheiro Vivo Nativo
+    -- 8. Consolidação por Filial
     WITH recon_latest AS (
         SELECT DISTINCT ON (store_id) store_id, bank_total, na_loja_os as historical_na_loja
         FROM reconciliations
@@ -211,7 +211,7 @@ BEGIN
             COALESCE(pos.status_compensacao, 'sem_movimento') as status_compensacao,
             COALESCE(px.pix, 0) as pix,
             COALESCE(pv.previsto_ofx, 0) as previsto_ofx,
-            COALESCE(pt.patio_os_sum, COALESCE(r.historical_na_loja, 0)) as na_loja_os,
+            COALESCE(NULLIF(r.historical_na_loja, 0), pt.patio_os_sum, 0) as na_loja_os,
             (COALESCE(pv.previsto_ofx, 0) - (COALESCE(pos.ofx_maquininhas, 0) + COALESCE(px.pix, 0))) as diferenca,
             CASE 
                 WHEN (COALESCE(pv.previsto_ofx, 0) - (COALESCE(pos.ofx_maquininhas, 0) + COALESCE(px.pix, 0))) >= -1 THEN 'approved' 
