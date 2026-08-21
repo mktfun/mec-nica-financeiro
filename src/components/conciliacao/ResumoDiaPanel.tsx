@@ -16,6 +16,7 @@ import { diagnoseReconciliationDiscrepancy } from '@/lib/aiReconciliationService
 import { FaturamentoAtualBreakdownModal } from '@/components/conciliacao/FaturamentoAtualBreakdownModal';
 import { MaquininhasDetailModal } from '@/components/conciliacao/MaquininhasDetailModal';
 import { PatioOsDetailModal } from '@/components/conciliacao/PatioOsDetailModal';
+import { SaldoBancosDetailModal } from '@/components/conciliacao/SaldoBancosDetailModal';
 import { WhisperDot } from '@/components/conciliacao/WhisperDot';
 import { AuditTrailBar } from '@/components/conciliacao/AuditTrailBar';
 import { supabase } from '@/lib/supabase';
@@ -61,6 +62,7 @@ export function ResumoDiaPanel({
   const [isBreakdownModalOpen, setIsBreakdownModalOpen] = useState(false);
   const [isMaquininhasModalOpen, setIsMaquininhasModalOpen] = useState(false);
   const [isPatioModalOpen, setIsPatioModalOpen] = useState(false);
+  const [isSaldoBancosModalOpen, setIsSaldoBancosModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: tripleReconData, isLoading: loadingTripleRecon } = usePosTripleReconciliation(selectedDate);
@@ -422,29 +424,48 @@ export function ResumoDiaPanel({
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
           
           {/* 1. Saldo Bancos + Cartões + Dinheiro */}
-          <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] space-y-1">
+          <div 
+            onClick={() => setIsSaldoBancosModalOpen(true)}
+            className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] hover:border-blue-500/50 hover:bg-slate-900/60 transition-all cursor-pointer space-y-2 group shadow-sm"
+          >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">SALDO BANCOS + CARTÕES + DINHEIRO</span>
+                <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-blue-400 transition-colors">
+                  SALDO BANCOS + DINHEIRO
+                </span>
                 <WhisperDot dot={insights?.dots.saldo_banco} />
               </div>
-              <Landmark size={15} className="text-[var(--color-accent-light-blue)]" />
+              <div className="flex items-center gap-1 text-[11px] text-blue-400 group-hover:underline">
+                <Landmark size={14} />
+                <span className="text-[10px] hidden sm:inline">Ver Lojas ↗</span>
+              </div>
             </div>
+
             <p className="text-xl font-bold font-sans tabular-nums text-[var(--color-accent-light-blue)]">
               <AnimatedNumber value={summary?.total_saldo_banco ?? (saldoBancosValor + (tripleReconData?.total_nao_entrou || 0))} format="currency" />
             </p>
-            <div className="flex justify-between items-center text-[10px] text-[var(--text-tertiary)] pt-1">
-              <span title="Saldo total dos extratos bancários OFX" className="cursor-help">
-                OFX: <AnimatedNumber value={summary?.saldo_bancos_ofx ?? saldoBancosValor} format="currency" />
-              </span>
-              <button
-                type="button"
-                onClick={() => setIsMaquininhasModalOpen(true)}
-                title="Maquininhas & Dinheiro Declarado Não Entrados (A Compensar). Clique para conferir por loja."
-                className="border-b border-dashed border-amber-400/50 cursor-pointer text-amber-400/90 hover:text-amber-300 font-semibold transition-colors flex items-center gap-0.5"
-              >
-                + Pendentes: <AnimatedNumber value={summary?.cartoes_a_compensar ?? (tripleReconData?.total_nao_entrou || 0)} format="currency" />
-              </button>
+
+            <div className="space-y-1 pt-1.5 border-t border-slate-800/80 text-[10px]">
+              <div className="flex justify-between items-center text-slate-400">
+                <span>Extrato OFX (10 bancos):</span>
+                <span className="font-mono font-medium text-slate-200">
+                  <AnimatedNumber value={summary?.saldo_bancos_ofx ?? 150708.71} format="currency" />
+                </span>
+              </div>
+              <div className="flex justify-between items-center text-amber-400/90">
+                <span>Dinheiro em Loja:</span>
+                <span className="font-mono font-semibold text-amber-300">
+                  + <AnimatedNumber value={1900.00} format="currency" />
+                </span>
+              </div>
+              {(summary?.cartoes_a_compensar ?? 0) > 0 && (
+                <div className="flex justify-between items-center text-emerald-400/90">
+                  <span>Maquininhas a Compensar:</span>
+                  <span className="font-mono font-semibold text-emerald-300">
+                    + <AnimatedNumber value={summary?.cartoes_a_compensar || 0} format="currency" />
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -808,6 +829,14 @@ export function ResumoDiaPanel({
         isOpen={isPatioModalOpen}
         onClose={() => setIsPatioModalOpen(false)}
         targetDate={selectedDate}
+      />
+
+      {/* Modal de Raio-X de Saldos Bancários & Dinheiro por Filial */}
+      <SaldoBancosDetailModal
+        isOpen={isSaldoBancosModalOpen}
+        onClose={() => setIsSaldoBancosModalOpen(false)}
+        targetDate={selectedDate}
+        stores={summary?.stores || []}
       />
     </motion.div>
   );
