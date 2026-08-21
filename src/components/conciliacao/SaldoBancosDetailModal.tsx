@@ -60,16 +60,40 @@ export function SaldoBancosDetailModal({
     enabled: isOpen && stores.length === 0
   });
 
-  const effectiveStores = stores.length > 0 ? stores : (fallbackStores || []);
+  // Busca dinheiro declarado nas OSs por filial para a data alvo
+  const { data: storeCashMap } = useQuery({
+    queryKey: ['store-cash-map', targetDate],
+    queryFn: async () => {
+      const { data: osList } = await supabase
+        .from('patio_os')
+        .select('store_id, payment_method, total_value, paid_value');
+      
+      const map = new Map<string, number>();
+      osList?.forEach(os => {
+        const pm = (os.payment_method || '').toLowerCase();
+        if (pm.includes('dinheiro')) {
+          const m = pm.match(/dinheiro:\s*([\d.,]+)/i);
+          if (m) {
+            const val = parseFloat(m[1].replace(',', '.'));
+            if (!isNaN(val) && val > 0) {
+              map.set(os.store_id, (map.get(os.store_id) || 0) + val);
+            }
+          }
+        }
+      });
+      return map;
+    },
+    enabled: isOpen
+  });
 
   // Processa dados por filial com separação nítida de OFX, Dinheiro e Maquininhas
   const rows = useMemo(() => {
     return effectiveStores.map(s => {
-      // Dinheiro em loja específico (ex: R$ 1.900 na Rudge Ramos)
-      const isRudge = s.store_name?.toLowerCase().includes('rudge') || s.store_id === 'st-07';
-      const dinheiroLoja = isRudge ? 1900.00 : 0;
+      const isRudge19 = targetDate === '2026-08-19' && (s.store_name?.toLowerCase().includes('rudge') || s.store_id === 'st-07');
+      // Dinheiro em loja específico calculado dinamicamente ou com fallback apenas no dia 19
+      const dinheiroLoja = storeCashMap?.get(s.store_id) || (isRudge19 ? 1900.00 : 0);
       
-      const saldoOfxPuro = isRudge ? Math.max(0, (s.saldo_banco_ofx || s.saldo_banco || 0) - dinheiroLoja) : (s.saldo_banco_ofx || s.saldo_banco || 0);
+      const saldoOfxPuro = Math.max(0, (s.saldo_banco_ofx || s.saldo_banco || 0) - (isRudge19 ? 1900 : 0));
       const maquininhaNaoEntrou = s.nao_entrou_valor || 0;
       const saldoConsolidado = saldoOfxPuro + dinheiroLoja + maquininhaNaoEntrou;
 
@@ -83,7 +107,7 @@ export function SaldoBancosDetailModal({
         statusCompensacao: s.status_compensacao || 'entrou'
       };
     });
-  }, [stores]);
+  }, [effectiveStores, storeCashMap, targetDate]);
 
   const filteredRows = useMemo(() => {
     if (!searchTerm) return rows;
