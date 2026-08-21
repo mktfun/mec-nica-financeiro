@@ -30,6 +30,7 @@ import { supabase } from '@/lib/supabase';
 import { useNavigate } from '@tanstack/react-router';
 import { savePatioOsAndReceivables, ParsedReceivable } from '@/hooks/useImportProcessor';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
+import { useContasAPagarImport } from '@/hooks/useContasAPagarImport';
 import { getDefaultDate } from '@/lib/utils';
 
 export interface ImportLogEntry {
@@ -72,6 +73,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const { mutateAsync: createImportBatch } = useCreateImportBatch();
   const { mutateAsync: insertConciliationMatches } = useBulkInsertConciliationMatches();
   const saveSnapshot = useSaveDailySnapshot();
+  const { saveBills } = useContasAPagarImport();
 
   const [step, setStep] = useState<1 | 2 | 2.5 | 3 | 3.5 | 4>(1);
   const [subStep, setSubStep] = useState<1 | 2 | 3>(1);
@@ -902,11 +904,26 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         await supabase.from('reconciliations').upsert(reconciliationsToUpsert, { onConflict: 'store_id,date' });
       }
 
+      // Salvar Lotes Analíticos de Contas a Pagar
+      if (results.contasPagarResults && results.contasPagarResults.length > 0) {
+        addLog(`📑 Salvando ${results.contasPagarResults.length} lote(s) de Contas a Pagar no banco...`, "info");
+        for (const cResult of results.contasPagarResults) {
+          try {
+            await saveBills({ parseResult: cResult, targetDate });
+            addLog(`✅ ${cResult.totalBills} contas salvas com sucesso! Total: R$ ${cResult.totalAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, "success");
+          } catch (cErr: any) {
+            console.warn("Erro ao salvar contas a pagar:", cErr);
+            addLog(`⚠️ Falha ao salvar contas a pagar: ${cErr.message}`, "warning");
+          }
+        }
+      }
+
       const totalRecebiveis = manualDinheiroMp + manualAReceber;
       const caixaAtualCalculado = totalBancarioIn + totalRecebiveis + veiculosPatioValor;
 
       addLog("Auto-salvando Fechamento do Dia...", "info");
-      const finalContasManual = contasManual > 0 ? contasManual : totalOfxOut;
+      const totalImportedContas = results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || 0;
+      const finalContasManual = totalImportedContas > 0 ? totalImportedContas : (contasManual > 0 ? contasManual : totalOfxOut);
       const finalFaturamento = odometroHoje > 0 ? odometroHoje : faturamentoAtual;
       try {
         const payload = {
@@ -1141,6 +1158,9 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                 </span>
                 <span className="px-2.5 py-1 rounded-md bg-[var(--bg-canvas)] border border-[var(--border-subtle)] text-[11px] font-mono text-[var(--text-secondary)]">
                   Vendas Rede (.xlsx)
+                </span>
+                <span className="px-2.5 py-1 rounded-md bg-rose-500/10 border border-rose-500/30 text-[11px] font-mono text-rose-300">
+                  Contas a Pagar (.xls)
                 </span>
               </div>
             </div>
@@ -1733,6 +1753,30 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                 );
               })}
             </div>
+
+            {/* Contas a Pagar Analíticas Importadas */}
+            {results.contasPagarResults && results.contasPagarResults.length > 0 && (
+              <div className="p-4 bg-rose-500/10 border border-rose-500/30 rounded-xl space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Receipt size={16} className="text-rose-400" />
+                    <h5 className="font-semibold text-sm text-[var(--text-primary)]">
+                      Contas a Pagar Importadas Analiticamente
+                    </h5>
+                  </div>
+                  <Badge variant="default" className="text-xs bg-rose-500/20 text-rose-300 border-rose-500/30">
+                    {results.contasPagarResults.reduce((acc, c) => acc + c.totalBills, 0)} contas processadas
+                  </Badge>
+                </div>
+
+                <div className="flex items-center justify-between text-xs font-mono pt-1">
+                  <span className="text-[var(--text-secondary)]">Total a ser gravado em Contas a Pagar:</span>
+                  <span className="text-base font-bold text-rose-400">
+                    {results.contasPagarResults.reduce((acc, c) => acc + c.totalAmount, 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                  </span>
+                </div>
+              </div>
+            )}
 
             {/* Início: Valores Manuais Globais */}
             <div className="pt-6 border-t border-[var(--border-subtle)] space-y-4">
