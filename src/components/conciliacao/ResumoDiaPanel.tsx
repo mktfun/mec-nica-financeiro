@@ -138,15 +138,32 @@ export function ResumoDiaPanel({
     faturamentoLiquidoDia = faturamentoAcumuladoHoje;
   }
     
-  // Faturamento Atual = Mapa de Metas + Transações Justificadas
-  const faturamentoTotalComAjustes = faturamentoLiquidoDia + faturamentoOutrosValor;
+  // Faturamento Atual = Mapa de Metas + Transações Justificadas + Ajustes Manuais (Aportes/Estornos)
+  const faturamentoAjustesValor = summary?.faturamento_ajustes ?? 0;
+  const faturamentoTotalComAjustes = isEditing 
+    ? (faturamentoLiquidoDia + faturamentoOutrosValor + faturamentoAjustesValor)
+    : (summary?.faturamento_periodo ?? (faturamentoLiquidoDia + faturamentoOutrosValor + faturamentoAjustesValor));
 
   // Matemática Consolidada
-  const caixaAtualCalculado = saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor;
-  const fluxoCaixaCalculado = caixaAtualCalculado - caixaAnteriorGlobal;
-  const valorDispContasCalculado = faturamentoTotalComAjustes - fluxoCaixaCalculado;
-  const subtotalContasCalculado = jurosRedeValor + contasManualValor + devolucoesRedeValor;
-  const diferencaFinalCalculada = Math.abs(valorDispContasCalculado) - subtotalContasCalculado;
+  const caixaAtualCalculado = isEditing 
+    ? (saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor)
+    : (summary?.caixa_atual ?? (saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor));
+
+  const fluxoCaixaCalculado = isEditing 
+    ? (caixaAtualCalculado - caixaAnteriorGlobal)
+    : (summary?.fluxo_caixa ?? (caixaAtualCalculado - caixaAnteriorGlobal));
+
+  const valorDispContasCalculado = isEditing 
+    ? (faturamentoTotalComAjustes - fluxoCaixaCalculado)
+    : (summary?.valor_disp_contas ?? (faturamentoTotalComAjustes - fluxoCaixaCalculado));
+
+  const subtotalContasCalculado = isEditing 
+    ? (jurosRedeValor + contasManualValor + devolucoesRedeValor)
+    : (summary?.subtotal_contas ?? (jurosRedeValor + contasManualValor + devolucoesRedeValor));
+
+  const diferencaFinalCalculada = isEditing 
+    ? (Math.abs(valorDispContasCalculado) - subtotalContasCalculado)
+    : (summary?.diferenca_final ?? (Math.abs(valorDispContasCalculado) - subtotalContasCalculado));
 
   const diferencaAbs = Math.abs(diferencaFinalCalculada);
   const isDiferencaOk = diferencaAbs <= 50;
