@@ -382,14 +382,15 @@ export function useDeleteImport() {
 
       // 2. Fallback resiliente via JS Client para garantir que os logs e registros não fiquem órfãos
       if (logIds && logIds.length > 0) {
-        if (storeId && storeId !== 'GLOBAL' && targetDates && targetDates.length > 0) {
-          await supabase.from('conciliation_matches').delete().eq('store_id', storeId).in('target_date', targetDates);
-          await supabase.from('manual_transactions').delete().eq('store_id', storeId).in('target_date', targetDates);
-          await supabase.from('patio_os').delete().eq('store_id', storeId);
-          await supabase.from('receivables').delete().eq('store_id', storeId);
-          await supabase.from('reconciliations').delete().eq('store_id', storeId).in('date', targetDates);
+        try {
+          if (storeId && storeId !== 'GLOBAL' && targetDates && targetDates.length > 0) {
+            await supabase.from('conciliation_matches').delete().eq('store_id', storeId).in('target_date', targetDates);
+            await supabase.from('reconciliations').delete().eq('store_id', storeId).in('date', targetDates);
+          }
+          await supabase.from('import_logs').delete().in('id', logIds);
+        } catch (clientErr) {
+          console.warn('Fallback delete notice:', clientErr);
         }
-        await supabase.from('import_logs').delete().in('id', logIds);
       }
     },
     onSuccess: () => {
@@ -401,7 +402,11 @@ export function useDeleteImport() {
       qc.invalidateQueries({ queryKey: ['dashboard'] });
       qc.invalidateQueries({ queryKey: ['patio'] });
       qc.invalidateQueries({ queryKey: ['patio_os'] });
-      qc.clear();
+      qc.invalidateQueries({ queryKey: ['daily_snapshots'] });
+      toast.success('Lote de importação excluído com sucesso!');
+    },
+    onError: (err: any) => {
+      toast.error(`Erro ao excluir importação: ${err.message || 'Erro desconhecido'}`);
     }
   });
 }

@@ -11,13 +11,17 @@ import {
   Calendar, 
   Layers, 
   History,
-  Sparkles
+  Sparkles,
+  CalendarX,
+  RotateCcw
 } from 'lucide-react';
 import { useImportsHistory, useDeleteImport, useClearAllData, GroupedImportLog } from '@/hooks/useImportProcessor';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { Modal } from '@/components/ui/Modal';
 import { CentralImportWizard } from '@/components/importacoes/CentralImportWizard';
 import { MarcoZeroWizard } from '@/components/importacoes/MarcoZeroWizard';
+import { PurgeDailyModal } from '@/components/importacoes/PurgeDailyModal';
+import { toast } from 'sonner';
 
 interface ImportacoesSearchParams {
   tab?: 'diario' | 'marco-zero' | 'historico';
@@ -52,6 +56,7 @@ function ImportacoesPage() {
   
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [showClearAllModal, setShowClearAllModal] = useState(false);
+  const [showPurgeModal, setShowPurgeModal] = useState(false);
   const [page, setPage] = useState(1);
   const itemsPerPage = 10;
   
@@ -77,7 +82,7 @@ function ImportacoesPage() {
       }
     } catch (err) {
       console.error('Failed to delete import log:', err);
-      alert('Erro ao excluir importação: ' + ((err as any).message || JSON.stringify(err)));
+      toast.error(`Erro ao excluir importação: ${(err as any).message || 'Falha ao excluir'}`);
     }
   };
 
@@ -86,7 +91,7 @@ function ImportacoesPage() {
       await clearAllData.mutateAsync();
       setShowClearAllModal(false);
     } catch (err: any) {
-      alert('Erro ao zerar dados: ' + (err.message || JSON.stringify(err)));
+      toast.error(`Erro ao zerar dados: ${err.message || 'Falha ao limpar'}`);
     }
   };
 
@@ -108,11 +113,20 @@ function ImportacoesPage() {
           
           <div className="flex items-center gap-3">
             <button 
+              onClick={() => setShowPurgeModal(true)} 
+              className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-semibold px-3.5 py-2.5 rounded-xl flex items-center gap-2 transition-all cursor-pointer shadow-sm"
+              title="Resetar apenas os dados e a conciliação de uma data específica"
+            >
+              <RotateCcw size={15} className="text-amber-400" />
+              Resetar Dados do Dia
+            </button>
+
+            <button 
               onClick={() => setShowClearAllModal(true)} 
               className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 text-xs font-semibold px-3.5 py-2.5 rounded-xl flex items-center gap-2 transition-all cursor-pointer"
               title="Apagar todos os dados do banco de dados"
             >
-              <Trash2 size={16} />
+              <Trash2 size={15} />
               Limpar Todos os Dados
             </button>
           </div>
@@ -357,6 +371,13 @@ function ImportacoesPage() {
             </div>
           </div>
         </Modal>
+
+        {/* Modal de Exclusão Cirúrgica por Data */}
+        <PurgeDailyModal
+          isOpen={showPurgeModal}
+          onClose={() => setShowPurgeModal(false)}
+          initialDate={selectedDate || new Date().toISOString().split('T')[0]}
+        />
 
       </div>
     </AppShell>
