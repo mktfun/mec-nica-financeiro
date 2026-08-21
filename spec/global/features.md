@@ -116,3 +116,10 @@
 - **Hook & Modal de Entidades (`src/hooks/useIntercompanyEntities.ts` e `src/components/configuracoes/IntercompanyEntitiesModal.tsx`):** Cadastro e gerenciamento de Sócios, Chaves PIX e Regras de Classificação de Fornecedores.
 - **Modal Analítico de Contas (`src/components/conciliacao/ContasManualModal.tsx`):** Tabela analítica com busca, filtros por filial/categoria, reclassificação rápida de categoria e badges intercompany.
 - **Tabelas Supabase (`supabase/migrations/20260821000008_accounts_payable_support.sql`):** `public.intercompany_entities`, `public.expense_category_rules`, `public.accounts_payable_imports` e colunas estendidas em `daily_manual_bills`.
+
+## Exclusão Cirúrgica por Data & Correção do Botão de Excluir Imports (Spec 259)
+- **RPC `purge_daily_financial_data` (`supabase/migrations/20260821000009_purge_daily_financial_data.sql`):** Exclusão transacional atômica de todos os registros de conciliação por data específica (`p_date DATE`), direcionada às tabelas base (`manual_transactions`, `pos_transactions`, `ofx_transactions`, `daily_snapshots`, `reconciliations`, `conciliation_matches`, `daily_manual_bills`, `daily_revenue_adjustments`, `store_cash_vault`, `accounts_payable_imports` e `import_logs`).
+- **Hook `usePurgeDailyData` (`src/hooks/usePurgeDailyData.ts`):** Hook React Query para executar a exclusão cirúrgica de um dia selecionado e invalidar todos os caches locais.
+- **Modal de Reset Diário (`src/components/importacoes/PurgeDailyModal.tsx`):** Interface com seletor de data, aviso de escopo e botão de confirmação.
+- **Header de Importações Atualizado (`src/routes/importacoes.tsx`):** Botão "Resetar Dados do Dia" e eliminação de `alert()` nativo em favor de notificações `Sonner toast`.
+- **Ponto de Retorno / Checkpoint (`scratch/checkpoint_day_21_20260821.json` e `scratch/restore_checkpoint_day_21.cjs`):** Mecanismo de backup completo e restauração em 1 comando para testes periciais do dia 21.

@@ -345,3 +345,18 @@
 **Risco identificado:** Tratar PIX de cliente como aporte de sócio. Mitigado com cadastro formal e chaves PIX em `intercompany_entities`.
 
 **Não fazer:** Nunca descartar despesas com nomes novos; sempre aplicar fallback para `outros` e permitir reclassificação em 1 clique no modal.
+
+## [2026-08-21] — [Feature ID: 259-exclusao-cirurgica-por-data-e-correcao-exclusao-imports]
+
+**Contexto:** O botão de exclusão de lote no histórico de importações disparava pop-ups de `alert()` nativos bloqueantes e não existia mecanismo para resetar apenas os dados de um dia específico (como o dia 21) para reprocessamento limpo sem perder o Marco Zero ou o histórico de outros dias.
+
+**Regra aprendida:**
+1. **Exclusão Cirúrgica por Data (`purge_daily_financial_data`):**
+   - Deve apagar de forma transacional apenas os registros correspondentes ao `p_date` selecionado (snapshots, reconciliações, conciliation_matches, extratos OFX, maquininhas, despesas manuais, logs de auditoria e contas a pagar).
+   - Não toca em lojas, Marco Zero, regras contábeis nem em outros dias do calendário.
+2. **Eliminação de `alert()`:** Todas as ações de mutação e exclusão devem sempre usar `toast.success` ou `toast.error` (Sonner) para evitar travar a thread da UI.
+3. **Ponto de Retorno (Checkpoint):** Em operações periciais de conciliação, sempre fornecer backup estruturado em JSON com script de restore em 1 comando (`node scratch/restore_checkpoint_day_21.cjs`).
+
+**Risco identificado:** Apagar dados globais por engano se a data for nula. Mitigado com verificação estrita `IF p_date IS NULL THEN RAISE EXCEPTION` na RPC Postgres.
+
+**Não fazer:** Nunca usar `clear_all_financial_data` para refazer apenas um dia; sempre usar a exclusão cirúrgica por data.
