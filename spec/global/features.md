@@ -103,3 +103,9 @@
   - Layout horizontal em nível único: Barra vertical de conformidade `w-2 h-14 rounded-full`, Nome da loja, badges de compensação (`ENTROU` / `NÃO ENTROU`) e ID.
   - Envelope contínuo `bg-black/25 p-4 sm:p-5 rounded-2xl border border-white/5 flex-1` alinhando as 6 métricas em grid de 6 colunas (`Saldo Bancos + Cartões`, `Maquininha`, `PIX`, `Na Loja OS`, `Previsto`, `Diferença`).
   - Botão Raio-X flutuante no topo direito do card com revelação suave no hover.
+
+## Motor de Conciliação Autônoma Zero-Touch & Auto-Healing (Spec 258)
+- **RPC `run_autonomous_reconciliation_loop` (`supabase/migrations/20260821000007_autonomous_reconciliation_engine.sql`):** Executa loop pericial de auto-cura no fechamento diário, buscando correspondências de cofre, ancoragem de datas, identificação de aportes intercompany de sócios nos extratos OFX e balanceamento de contrapartidas de despesa.
+- **Tabela `public.reconciliation_audit_logs`:** Armazena logs de auditoria pericial, deltas (inicial e final), contagem de iterações e etapas executadas.
+- **Hook `useAutonomousReconciliation` (`src/hooks/useAutonomousReconciliation.ts`):** Invoca o motor autônomo via RPC e invalida as queries de conciliação.
+- **Estágio 5 de Auto-Healing no Wizard (`src/components/importacoes/CentralImportWizard.tsx`):** Executa a conciliação autônoma diretamente na esteira de importação e renderiza o laudo pericial de auto-cura no modal final de conclusão.

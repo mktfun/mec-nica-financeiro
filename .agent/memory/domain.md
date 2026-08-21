@@ -309,3 +309,19 @@
 **Risco identificado:** Tentar "modernizar" o layout alterando containers de 1 nível para 2 tiers ou substituindo o design system gera poluição visual e rejeição imediata do usuário.
 
 **Não fazer:** Nunca quebrar a harmonia horizontal dos cards de filiais nem abandonar as variáveis de design system do projeto.
+
+## [2026-08-21] — [Feature ID: 258-motor-conciliacao-autonoma-zero-touch-com-auto-healing]
+
+**Contexto:** O fechamento de conciliação diária podia apresentar divergências contábeis (ex: dinheiro no cofre em data divergente, aportes intercompany de sócios no extrato OFX sem contrapartida de faturamento, ou efeito cascata de snapshots retroativos). O usuário não queria intervir manualmente nem abrir chat de IA; exigiu que o próprio motor de importação investigasse de forma 100% autônoma e aplicasse as regras contábeis periciais até zerar o fechamento.
+
+**Regra aprendida:**
+1. **Regra de Auto-Healing em Loop:** A RPC `run_autonomous_reconciliation_loop(p_date)` executa até 3 ciclos de auto-cura pericial determinística:
+   - *Assinatura Numérica de Cofre:* Se o delta bater com um item de `store_cash_vault` com `entry_date < target_date`, reancora a entrada para a data alvo.
+   - *Aportes Intercompany de Sócios:* Identifica créditos de PIX de sócios (`DANIEL`, `ROGERIO`, `RAPHAEL`, etc.) nos OFX e auto-cadastra em `daily_revenue_adjustments` (`type = 'aporte'`).
+   - *Partidas Dobradas:* Se houver aporte no faturamento sem despesa correspondente no ERP, regulariza a contrapartida de despesa em `daily_manual_bills`.
+   - *Integridade de Caixa Anterior:* Garante que o Caixa Anterior seja estritamente o Caixa Atual consolidado do dia útil anterior.
+2. **Zero Alucinação (Constitution Guardrail):** A IA é expressamente proibida de criar transações com valores fictícios; todo ajuste deve ter como base um `fitid` de OFX real, um registro de cofre real ou um item do contas a pagar.
+
+**Risco identificado:** Executar mutações de auto-cura sem persistência de log pericial. Mitigado gravando a tabela `reconciliation_audit_logs` com o histórico completo de deltas (inicial e final) e passos executados.
+
+**Não fazer:** Nunca exigir que o usuário abra ferramentas manuais para regularizar assimetrias evidentes de extrato ou datas de cofre que a inteligência pericial consegue deduzir e corrigir deterministicamente.
