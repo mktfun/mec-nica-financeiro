@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1787325512.3743114,
-    "ast_hash": "1743adea17cd3fdf5ea523e65374a8ce",
+    "mtime": 1787327246.1497946,
+    "ast_hash": "0b201b2c9e5590591aea9c3c81071029",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -1110,8 +1110,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useCentralImport.ts": {
-    "mtime": 1786978677.8033147,
-    "ast_hash": "1b91489b5b74bd2e4b5fa94d32728271",
+    "mtime": 1787327115.4880548,
+    "ast_hash": "440f9c60954748b45c8cf8c53fbeb174",
     "semantic_hash": ""
   },
   "src/hooks/useConciliacao.ts": {
@@ -1525,8 +1525,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1787326001.87694,
-    "ast_hash": "7af6d216bdfb455b79bc60d644ddcb58",
+    "mtime": 1787327543.0830207,
+    "ast_hash": "8c4d14fb6794fee07eb42206ab886d6d",
     "semantic_hash": ""
   },
   "specs/016-loja-cleanup/design.md": {
@@ -8585,8 +8585,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/ContasManualModal.tsx": {
-    "mtime": 1787322045.0343432,
-    "ast_hash": "c5be0aaa5a129c3c531dd777ea5b5c8e",
+    "mtime": 1787327090.224902,
+    "ast_hash": "7bfac79563bba06805eb8fef97af311c",
     "semantic_hash": ""
   },
   "src/components/conciliacao/FaturamentoDetalhesModal.tsx": {
@@ -8804,11 +8804,6 @@
     "ast_hash": "29dec721815b948c9d9b5d509faa2551",
     "semantic_hash": ""
   },
-  "specs/256-importacao-contas-a-pagar-e-conciliacao-aportes-intercompany/proposal.md": {
-    "mtime": 1787323913.9441054,
-    "ast_hash": "8578f7f500bbdb69a5084b202894c79f",
-    "semantic_hash": ""
-  },
   "specs/257-copiloto-ia-forense-e-auditoria-autonoma/design.md": {
     "mtime": 1787324985.8569918,
     "ast_hash": "1377b42e8fe5b6f71d07aab79fc5cf61",
@@ -8842,6 +8837,71 @@
   "specs/archive/241-restaurar-design-cards-lojas-e-resumo-dia/walkthrough.md": {
     "mtime": 1787248177.292249,
     "ast_hash": "abe24b4463dbee107f4ea6462c70415e",
+    "semantic_hash": ""
+  },
+  "scratch/append_features_258.cjs": {
+    "mtime": 1787325992.440257,
+    "ast_hash": "7f29667d50c9bba6bbccc0226bfee009",
+    "semantic_hash": ""
+  },
+  "scratch/append_memory_256.cjs": {
+    "mtime": 1787327474.115787,
+    "ast_hash": "67402216d4b92ef32cf8a3963b0cebbe",
+    "semantic_hash": ""
+  },
+  "scratch/apply_migration_0008.cjs": {
+    "mtime": 1787326863.5810716,
+    "ast_hash": "20489636e36642813ce204e3c0bb437d",
+    "semantic_hash": ""
+  },
+  "scratch/test_contas_parser.cjs": {
+    "mtime": 1787327004.208102,
+    "ast_hash": "68d4d500c49b46c3906fc9c42b864d70",
+    "semantic_hash": ""
+  },
+  "src/components/configuracoes/IntercompanyEntitiesModal.tsx": {
+    "mtime": 1787327061.5471675,
+    "ast_hash": "b330b69059fba17d08ba200ea701152f",
+    "semantic_hash": ""
+  },
+  "src/hooks/useContasAPagarImport.ts": {
+    "mtime": 1787327042.3783004,
+    "ast_hash": "2bda3ab7fb9c453d21445c82b8753524",
+    "semantic_hash": ""
+  },
+  "src/hooks/useIntercompanyEntities.ts": {
+    "mtime": 1787327031.0698783,
+    "ast_hash": "5c6a16c317826b4701de2d73a955b3d0",
+    "semantic_hash": ""
+  },
+  "src/lib/parsers/contasPagarParser.ts": {
+    "mtime": 1787327022.1130776,
+    "ast_hash": "13ef86d9ab891f13e16f96d6375c271a",
+    "semantic_hash": ""
+  },
+  "src/types/contasPagar.ts": {
+    "mtime": 1787326889.4893901,
+    "ast_hash": "4c5e2b25e9c4689955f38f6e1d101998",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260821000008_accounts_payable_support.sql": {
+    "mtime": 1787326856.5297654,
+    "ast_hash": "644836e93e2043b9ad8b6557eea115fd",
+    "semantic_hash": ""
+  },
+  "specs/archive/258-motor-conciliacao-autonoma-zero-touch-com-auto-healing/design.md": {
+    "mtime": 1787325216.5667205,
+    "ast_hash": "d469832968ab710e942e6568baff2d55",
+    "semantic_hash": ""
+  },
+  "specs/archive/258-motor-conciliacao-autonoma-zero-touch-com-auto-healing/proposal.md": {
+    "mtime": 1787325205.542683,
+    "ast_hash": "73b4cd2f2c794daa746c8cf100f87fc9",
+    "semantic_hash": ""
+  },
+  "specs/archive/258-motor-conciliacao-autonoma-zero-touch-com-auto-healing/spec-plan.md": {
+    "mtime": 1787325571.7472818,
+    "ast_hash": "82e852e1801cfe00a1a16b383f9a28ca",
     "semantic_hash": ""
   }
 }

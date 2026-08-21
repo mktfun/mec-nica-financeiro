@@ -1140,8 +1140,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useImportProcessor.ts": {
-    "mtime": 1787248177.3085108,
-    "ast_hash": "2679e51f2ef96d545d9c99f5a1c2b085",
+    "mtime": 1787328237.4277399,
+    "ast_hash": "198311973c8f0b85844a9f67844ce4f7",
     "semantic_hash": ""
   },
   "src/hooks/useOsImportProcessor.ts": {
@@ -1335,8 +1335,8 @@
     "semantic_hash": ""
   },
   "src/routes/importacoes.tsx": {
-    "mtime": 1786977431.6448324,
-    "ast_hash": "998e315a1f313db3225bcc6eee05b571",
+    "mtime": 1787328269.3762782,
+    "ast_hash": "1030ad96c0e792bedfeb34c15e666a7a",
     "semantic_hash": ""
   },
   "src/routes/importar-os.tsx": {
@@ -1525,8 +1525,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1787327543.0830207,
-    "ast_hash": "8c4d14fb6794fee07eb42206ab886d6d",
+    "mtime": 1787333999.1473022,
+    "ast_hash": "6459b1286d5bbdfdd90cf18c840f03bb",
     "semantic_hash": ""
   },
   "specs/016-loja-cleanup/design.md": {
@@ -8902,6 +8902,91 @@
   "specs/archive/258-motor-conciliacao-autonoma-zero-touch-com-auto-healing/spec-plan.md": {
     "mtime": 1787325571.7472818,
     "ast_hash": "82e852e1801cfe00a1a16b383f9a28ca",
+    "semantic_hash": ""
+  },
+  "scratch/append_features_256.cjs": {
+    "mtime": 1787327526.4228356,
+    "ast_hash": "c7cfcf340ad03e3922790a549cb7b392",
+    "semantic_hash": ""
+  },
+  "scratch/append_memory_259.cjs": {
+    "mtime": 1787333549.0654733,
+    "ast_hash": "94a612cbc3d8a5b778bdaa37d6fcdaac",
+    "semantic_hash": ""
+  },
+  "scratch/apply_migration_0009.cjs": {
+    "mtime": 1787328194.7280369,
+    "ast_hash": "3ca201cd97ebe3f8dae60383d9b54fe8",
+    "semantic_hash": ""
+  },
+  "scratch/check_bills_schema.cjs": {
+    "mtime": 1787328321.8241744,
+    "ast_hash": "e38444d468594682a0c4c44489b1b716",
+    "semantic_hash": ""
+  },
+  "scratch/check_columns.cjs": {
+    "mtime": 1787328303.6286168,
+    "ast_hash": "c9604679705cfa32edff7cb78df48216",
+    "semantic_hash": ""
+  },
+  "scratch/check_pos_manual.cjs": {
+    "mtime": 1787328402.3682008,
+    "ast_hash": "ee6190da8f48c35619f4ec0c83e7ecd4",
+    "semantic_hash": ""
+  },
+  "scratch/checkpoint_day_21_20260821.json": {
+    "mtime": 1787328081.1118255,
+    "ast_hash": "ae14bfedacd96fbe3e84777afac686c7",
+    "semantic_hash": ""
+  },
+  "scratch/create_checkpoint_day_21.cjs": {
+    "mtime": 1787328054.2200077,
+    "ast_hash": "955c659ba5eb51a5c716057965f7ed02",
+    "semantic_hash": ""
+  },
+  "scratch/restore_checkpoint_day_21.cjs": {
+    "mtime": 1787328088.6822543,
+    "ast_hash": "63fbd2fd00e22b4d3e7fdef0aa0540d0",
+    "semantic_hash": ""
+  },
+  "scratch/test_each_delete.cjs": {
+    "mtime": 1787332344.8796358,
+    "ast_hash": "4ec26d200cf56fed4a3104c80528666f",
+    "semantic_hash": ""
+  },
+  "scratch/test_purge_and_restore.cjs": {
+    "mtime": 1787328279.0210218,
+    "ast_hash": "d7a8eb816150c9b30bcf27853f32c267",
+    "semantic_hash": ""
+  },
+  "src/components/importacoes/PurgeDailyModal.tsx": {
+    "mtime": 1787328223.9964004,
+    "ast_hash": "6bee35d0ef8ed2fbfc4e30a35251ecf4",
+    "semantic_hash": ""
+  },
+  "src/hooks/usePurgeDailyData.ts": {
+    "mtime": 1787328213.855106,
+    "ast_hash": "7d02437b0605fd1a6db5426b6783be49",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260821000009_purge_daily_financial_data.sql": {
+    "mtime": 1787332566.6110978,
+    "ast_hash": "07d9ef68fd6946b8db3d66be0f20196c",
+    "semantic_hash": ""
+  },
+  "specs/archive/256-importacao-contas-a-pagar-e-conciliacao-aportes-intercompany/design.md": {
+    "mtime": 1787326793.917922,
+    "ast_hash": "8e5470b81e9ea6e3cc5fb85a180722a0",
+    "semantic_hash": ""
+  },
+  "specs/archive/256-importacao-contas-a-pagar-e-conciliacao-aportes-intercompany/proposal.md": {
+    "mtime": 1787326781.8023646,
+    "ast_hash": "a9f078a80059fff452260cb7b69716a7",
+    "semantic_hash": ""
+  },
+  "specs/archive/256-importacao-contas-a-pagar-e-conciliacao-aportes-intercompany/spec-plan.md": {
+    "mtime": 1787327317.064785,
+    "ast_hash": "bcdad0dda7f5c6f68fd28212511e3301",
     "semantic_hash": ""
   }
 }
