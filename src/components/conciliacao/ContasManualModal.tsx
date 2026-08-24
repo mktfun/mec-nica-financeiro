@@ -60,7 +60,7 @@ export function ContasManualModal({
       const { data, error } = await supabase
         .from('daily_manual_bills')
         .select('*')
-        .or(`date.eq.${targetDate},target_date.eq.${targetDate}`)
+        .eq('date', targetDate)
         .order('amount', { ascending: false });
       if (error) throw error;
       return data || [];
@@ -80,7 +80,6 @@ export function ContasManualModal({
       }
 
       const { error } = await supabase.from('daily_manual_bills').insert({
-        target_date: targetDate,
         date: targetDate,
         title: title.trim(),
         recipient_name: title.trim(),

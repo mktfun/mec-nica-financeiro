@@ -114,7 +114,7 @@ export function ResumoDiaPanel({
   const faturamentoAcumuladoHoje = isEditing ? faturamentoInput : (currentSnapshot?.faturamento ?? faturamentoInput);
   const dinheiroMpValor = isEditing ? dinheiroMpInput : (currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? 0);
   const aReceberValor = isEditing ? aReceberInput : (currentSnapshot?.a_receber_manual ?? summary?.a_receber ?? 0);
-  const contasManualValor = isEditing ? contasInput : (currentSnapshot?.contas_a_pagar ?? summary?.contas_manual ?? 0);
+  const contasManualValor = isEditing ? contasInput : (summary?.contas_manual ?? currentSnapshot?.contas_a_pagar ?? 0);
 
   // Pilares Automáticos
   const saldoBancosValor = summary?.total_saldo_banco ?? currentSnapshot?.saldo_bancario ?? totalBancarioIn;
@@ -727,9 +727,19 @@ export function ResumoDiaPanel({
                     <p className="text-xl font-bold text-[var(--color-accent-danger)] font-mono mt-0.5">
                       <AnimatedNumber value={contasManualValor} format="currency" />
                     </p>
-                    <span className="text-[10px] text-[var(--text-tertiary)]">
-                      Juros: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(jurosRedeValor)}
-                    </span>
+                    <div className="text-[10px] text-[var(--text-tertiary)] flex flex-col gap-0.5 mt-0.5">
+                      <span>
+                        Base Planilha: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary?.contas_base ?? contasManualValor)}
+                        {(summary?.contas_extras || 0) > 0 && (
+                          <span className="text-amber-400 font-semibold ml-1">
+                            + Extras: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary?.contas_extras || 0)}
+                          </span>
+                        )}
+                      </span>
+                      <span>
+                        Juros Rede: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(jurosRedeValor)}
+                      </span>
+                    </div>
                   </div>
                 )}
               </div>

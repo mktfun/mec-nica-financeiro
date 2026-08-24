@@ -414,3 +414,16 @@
 **Risco identificado:** Dessincronização entre as OSs modificadas na UI e os reducers de faturamento/estoque das filiais.
 
 **Não fazer:** Nunca separar as OSs em tabelas desconexas sem permitir a conferência consolidada da movimentação do dia.
+
+## [2026-08-24] — [Feature ID: 264 & 265]
+
+**Contexto:** Diagnóstico de Contas a Pagar e impacto de despesas manuais avulsas (`daily_manual_bills`) na Diferença Final.
+
+**Regra aprendida:**
+- `Subtotal Contas a Cobrir = Contas Base (Planilha) + Despesas Manuais Avulsas (daily_manual_bills) + Juros Rede`.
+- Ao cadastrar uma despesa avulsa em `daily_manual_bills`, o total de contas a pagar aumenta, aumentando a necessidade de cobertura operacional e ampliando o déficit de fechamento se o faturamento não subir.
+- Retiradas de Sócios ou aportes que explicam divergências de caixa devem ser tratados como Ajustes de Faturamento (`daily_revenue_adjustments`) ou Justificativas, e não como contas a pagar a fornecedores.
+
+**Risco identificado:** Confundir despesa operacional a pagar com retirada/ajuste patrimonial.
+
+**Não fazer:** Não somar despesas manuais duas vezes se a planilha importada já contém a conta em sua totalidade.

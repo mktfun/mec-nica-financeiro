@@ -32,6 +32,8 @@ import { savePatioOsAndReceivables, ParsedReceivable } from '@/hooks/useImportPr
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useContasAPagarImport } from '@/hooks/useContasAPagarImport';
 import { getDefaultDate } from '@/lib/utils';
+import { useDiagnosticEngine } from '@/hooks/useDiagnosticEngine';
+import { DiagnosticPanel } from './DiagnosticPanel';
 
 export interface ImportLogEntry {
   id: string;
@@ -378,6 +380,40 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const [isManualLocked, setIsManualLocked] = useState<boolean>(true);
   const [copiedJson, setCopiedJson] = useState(false);
   const [autoHealingData, setAutoHealingData] = useState<any>(null);
+
+  // Computados e Hook do Motor de Diagnóstico Pré-Fechamento
+  const computedTotalOfxIn = useMemo(() => {
+    return results.ofxResults.flatMap(r => r.transactions).filter(t => t.type === 'in').reduce((a, b) => a + b.amount, 0);
+  }, [results.ofxResults]);
+
+  const computedTotalPatioEstoque = useMemo(() => {
+    return allPreviewOsList.reduce((acc, os) => {
+      const isPendente = os.status?.toLowerCase().includes('em_aberto') || os.status?.toLowerCase().includes('pago_parcial') || os.status === 'ABERTA' || os.status === 'PENDENTE';
+      if (isPendente) {
+        const saldo = Math.max(0, (os.total_value || 0) - (os.paid_value || 0));
+        return acc + saldo;
+      }
+      return acc;
+    }, 0);
+  }, [allPreviewOsList]);
+
+  const computedJurosRede = useMemo(() => {
+    return results.redeResults.filter(r => r.success).reduce((acc, r) => {
+      return acc + r.transactions.reduce((sum, t) => sum + (t.interest || 0), 0);
+    }, 0);
+  }, [results.redeResults]);
+
+  const { diagnostic, isLoading: isLoadingDiagnostic, refetchHistory } = useDiagnosticEngine({
+    step,
+    targetDate,
+    isLoadingMissingOs,
+    totalOfxIn: computedTotalOfxIn,
+    totalPatioEstoqueGlobal: computedTotalPatioEstoque,
+    manualDinheiroMp,
+    manualAReceber,
+    contasManual,
+    jurosRedeTotal: computedJurosRede
+  });
 
   // Sincroniza automaticamente o valor de Contas a Pagar quando importado analiticamente
   useEffect(() => {
@@ -2123,6 +2159,13 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                 )}
               </div>
             )}
+
+            {/* Painel de Auditoria Pré-Fechamento */}
+            <DiagnosticPanel
+              diagnostic={diagnostic}
+              isLoading={isLoadingDiagnostic}
+              onRefresh={refetchHistory}
+            />
 
             <h3 className="font-display text-xl font-semibold">Previsão por Loja</h3>
             

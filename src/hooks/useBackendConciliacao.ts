@@ -177,7 +177,7 @@ export function usePosTripleReconciliation(date: string) {
       if (!date) return null;
 
       const { data, error } = await supabase.rpc('get_store_pos_triple_reconciliation', {
-        p_date: date
+        p_target_date: date
       });
 
       if (error) {

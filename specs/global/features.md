@@ -177,3 +177,13 @@
 - Edição inline livre de **Valor Total OS (R$)**, **Total Pago (R$)** e **Status** com recálculo reativo dos cards de resumo e saldos por filial.
 - Busca textual por placa, número da OS e filial, com filtro por loja e paginação de 50 itens por página.
 - Persistência atômica das alterações em `patio_os` no fechamento diário (`executeDailyClosing`).
+
+## Feature 264: Motor de Diagnóstico Pré-Conciliação no Step 3
+- Hook `useDiagnosticEngine.ts` que consulta os últimos 5 fechamentos em `daily_snapshots` e calcula o Caixa Projetado e desvios por fonte.
+- Componente `DiagnosticPanel.tsx` integrado no Step 3 do `CentralImportWizard.tsx` exibindo tabela de conferência dos 5 pilares patrimoniais (Pátio, Banco OFX, Dinheiro MP, A Receber, Contas a Pagar + Juros) com semáforo (`Conforme`, `Atenção`, `Divergente`).
+- Indicação automática da origem da divergência com callout explicativo quando a variação ultrapassa a tolerância dinâmica (`max(R$ 500, 2% do faturamento)`).
+
+## Feature 265: Correção de RPC Tripla de Maquininhas e Transparência em Contas
+- Correção do parâmetro `p_target_date` no hook `usePosTripleReconciliation` em `useBackendConciliacao.ts`.
+- Migration `20260824000001_overload_get_store_pos_triple_reconciliation.sql` unificando a assinatura SQL para aceitar tanto `p_target_date` quanto `p_date`.
+- Detalhamento transparente da composição do card de Contas no `ResumoDiaPanel.tsx`: Base da Planilha + Despesas Manuais Avulsas (`daily_manual_bills`) + Juros Rede = Subtotal a Cobrir.

@@ -32,13 +32,14 @@ export function useContasAPagarImport() {
       await supabase
         .from('daily_manual_bills')
         .delete()
-        .eq('target_date', targetDate)
+        .eq('date', targetDate)
         .not('external_code', 'is', null);
 
       // 3. Preparar payload de inserção em lote
       const rowsToInsert = parseResult.bills.map((b: ParsedContaAPagar) => ({
-        target_date: targetDate,
+        date: targetDate,
         store_id: b.store_id !== 'master' ? b.store_id : null,
+        title: b.recipient_name || b.description || 'Conta a Pagar',
         description: `[${b.store_name}] ${b.recipient_name} - ${b.description}`,
         amount: b.amount,
         category: b.category,
