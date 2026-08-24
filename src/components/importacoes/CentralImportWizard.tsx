@@ -1130,19 +1130,23 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       // 4. Salvar Daily Snapshot (Valores Globais)
       addLog("Calculando fechamento diario (auto-save)...", "info");
       
+      let saldoBancosPositivo = 0;
       let saldoNegativoItau = 0;
-      let totalBancarioIn = 0;
       let totalOfxOut = 0;
 
       results.ofxResults.forEach(ofx => {
-        if (ofx.bankBalance !== undefined && ofx.bankBalance < 0) {
-          saldoNegativoItau += Math.abs(ofx.bankBalance);
+        const bal = typeof ofx.bankBalance === 'number' ? ofx.bankBalance : 0;
+        if (bal < 0) {
+          saldoNegativoItau += Math.abs(bal);
+        } else {
+          saldoBancosPositivo += bal;
         }
         ofx.transactions.forEach((t: any) => {
-          if (t.type === 'in') totalBancarioIn += t.amount;
           if (t.type === 'out') totalOfxOut += Math.abs(t.amount);
         });
       });
+
+      const saldoBancosLiquido = saldoBancosPositivo - saldoNegativoItau;
 
       let jurosRedeTotal = 0;
       results.redeResults.forEach(r => {
@@ -1244,7 +1248,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       }
 
       const totalRecebiveis = manualDinheiroMp + manualAReceber;
-      const caixaAtualCalculado = totalBancarioIn + totalRecebiveis + veiculosPatioValor;
+      const caixaAtualCalculado = saldoBancosPositivo + totalRecebiveis + veiculosPatioValor - saldoNegativoItau;
 
       addLog("Auto-salvando Fechamento do Dia...", "info");
       const totalImportedContas = results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || 0;
@@ -1258,7 +1262,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           dinheiro_mp: manualDinheiroMp,
           total_recebiveis: totalRecebiveis,
           total_patio: veiculosPatioValor,
-          saldo_bancario: totalBancarioIn,
+          saldo_bancario: saldoBancosLiquido,
           a_receber_manual: manualAReceber,
           faturamento_outros_valor: 0,
           faturamento_outros_desc: null,
@@ -1300,7 +1304,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           dinheiro_mp: manualDinheiroMp,
           total_recebiveis: totalRecebiveis,
           total_patio: veiculosPatioValor,
-          saldo_bancario: totalBancarioIn,
+          saldo_bancario: saldoBancosLiquido,
           a_receber_manual: manualAReceber,
           faturamento_outros_valor: 0,
           contas_a_pagar: finalContasManual,
