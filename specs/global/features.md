@@ -1,3 +1,8 @@
+### Spec 275 — Previsto = Total Entradas OFX, Diferença = Pendentes Não Justificados + Guardrails de Auto-Match de PIX
+- **RPC get_daily_reconciliation_summary**: Previsto por loja padronizado para soma total de entradas OFX do dia. Diferença por loja refletindo o saldo exato de entradas pendentes de identificação/justificativa.
+- **CentralImportWizard.tsx**: 4 guardrails ativos no auto-match de PIX (valor mínimo >= R$ 10, filtro de rendimentos/aplicação financeira, exigência de PIX esperado na OS > 0 e tolerância < R$ 0,10).
+- **StoreExtratoBancarioView.tsx & conciliacao.index.tsx**: Harmonização visual e computacional da classificação de liquidações da Rede e status de conciliação por filial.
+
 ### Spec 274 — Motor Inteligente de Auto-Match (Rede ↔ OS) e Carry-Over de Pátio
 - **useImportProcessor.ts**: Auto-match inteligente entre transações da Rede e OSs em aberto na filial para quitação automática sem intervenção manual.
 - **patio_os**: Preservação cumulativa de carros em pátio de datas anteriores (carry-over).

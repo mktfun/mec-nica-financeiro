@@ -49,8 +49,8 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
   const totalEntradas = ofxDeposits.reduce((acc, t) => acc + Number(t.amount || 0), 0);
   
   const isRedeTx = (t: any) => {
-    const title = `${t.title || ''} ${t.subtitle || ''} ${t.counterpart_name || ''}`.toUpperCase();
-    return title.includes('REDE') || title.includes('CIELO') || title.includes('GETNET') || title.includes('PAGSEGURO') || title.includes('STONE') || title.includes('ADQ') || title.includes('CART');
+    const title = `${t.title || ''} ${t.subtitle || ''} ${t.counterpart_name || ''} ${t.fitid || ''}`.toUpperCase();
+    return title.includes('REDE') || title.includes('CIELO') || title.includes('GETNET') || title.includes('PAGSEGURO') || title.includes('STONE') || title.includes('ADQ') || title.includes('CART') || title.includes('REDECARD') || title.includes('MAST') || title.includes('VISA') || title.includes('ELO');
   };
 
   const totalRede = ofxDeposits.filter(t => isRedeTx(t)).reduce((acc, t) => acc + Number(t.amount || 0), 0);

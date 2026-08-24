@@ -1,3 +1,16 @@
+## [2026-08-24] — [Feature ID: 275-previsto-entradas-ofx-e-diferenca-pendente-por-loja]
+
+**Contexto:** Padronização da visão de conciliação por filial para que o Previsto seja o Total de Entradas OFX creditadas no dia e a Diferença reflita exatamente o saldo de entradas NÃO justificadas/identificadas.
+
+**Regra aprendida:**
+1. **Previsto por Filial:** $\sum \text{amount}$ de todas as entradas bancárias OFX (	ype = in) do dia.
+2. **Diferença por Filial:** $\text{Previsto} - (\text{Rede/Cartão Liquidado} + \text{PIX OS Vinculados} + \text{Receitas Avulsas Justificadas})$.
+3. O status da filial é conciliado se $|\text{Diferença}| \le 0.05$, senão divergente indicando pendência de ação do usuário.
+
+**Risco identificado:** Abater transações de PIX da diferença sem vínculo com OS ou justificativa manual, ocultando pendências bancárias legítimas.
+
+**Não fazer:** Nunca abater PIX bruto do previsto sem checar se tem matched_os_number ou manual_category.
+
 ## [2026-08-24] — [Feature ID: 274-motor-automatch-rede-os-e-carryover-patio]
 
 **Contexto:** Divergências entre conciliação manual no Excel e sistema decorriam de: (1) OSs pagas na maquininha sem baixa no ERP pelo atendente (ex: Rei do Módulo OS #1847 R$ 12.900) e (2) relatórios do ERP filtrados por data de abertura do mês corrente omitindo carros em pátio abertos no mês anterior (ex: Santo André OS #2326 R$ 9.218,73).

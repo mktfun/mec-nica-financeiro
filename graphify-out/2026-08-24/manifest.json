@@ -580,8 +580,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useImportProcessor.ts": {
-    "mtime": 1787586662.3850293,
-    "ast_hash": "36dbdb55e1c1a51fef83f00bc1f65ad4",
+    "mtime": 1787589721.72374,
+    "ast_hash": "137a281bf6bb931376d428af15c9b9d1",
     "semantic_hash": ""
   },
   "src/hooks/useOsImportProcessor.ts": {
@@ -2605,8 +2605,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1787587175.8933358,
-    "ast_hash": "28ba9ec3f581b5015abb25ecf0173622",
+    "mtime": 1787588842.9524536,
+    "ast_hash": "4e2655bea2ea25364db99554af2ac0df",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -7949,21 +7949,6 @@
     "ast_hash": "ff90f9d0b56517a7f0ed5d0b2be4a3a6",
     "semantic_hash": ""
   },
-  "specs/273-varredura-calculos-rpc-e-pilares-saldo/design.md": {
-    "mtime": 1787588274.3433285,
-    "ast_hash": "c7317c84269cc059c45d35db9b04cedc",
-    "semantic_hash": ""
-  },
-  "specs/273-varredura-calculos-rpc-e-pilares-saldo/proposal.md": {
-    "mtime": 1787588264.6275716,
-    "ast_hash": "80756201e08e08fa7be9e9558848ec75",
-    "semantic_hash": ""
-  },
-  "specs/273-varredura-calculos-rpc-e-pilares-saldo/spec-plan.md": {
-    "mtime": 1787588572.4902382,
-    "ast_hash": "fb6cbb40c930c1bd0227a0973909bcd1",
-    "semantic_hash": ""
-  },
   "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md": {
     "mtime": 1787585927.612475,
     "ast_hash": "5022fae4091c5db890cec82f4c9da115",
@@ -7977,6 +7962,86 @@
   "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/spec-plan.md": {
     "mtime": 1787586746.728838,
     "ast_hash": "4d070e2bc2f605a1ff9a5e20639d0cdc",
+    "semantic_hash": ""
+  },
+  "scripts/audit-os-comparison.cjs": {
+    "mtime": 1787588993.3610806,
+    "ast_hash": "c56c5e3a80e00863e27178eac15cf4cf",
+    "semantic_hash": ""
+  },
+  "scripts/audit-os-deep.cjs": {
+    "mtime": 1787589042.2004676,
+    "ast_hash": "538ac079ae62ab5ae6d1c0fece6ec000",
+    "semantic_hash": ""
+  },
+  "scripts/check-os-details.cjs": {
+    "mtime": 1787589167.4591968,
+    "ast_hash": "8163a7f7aafcf4bfc3b15cf363e37306",
+    "semantic_hash": ""
+  },
+  "scripts/compare-manual-vs-xls.cjs": {
+    "mtime": 1787589233.3291059,
+    "ast_hash": "d052a4cce7904fafbc0b1eec47cb71e7",
+    "semantic_hash": ""
+  },
+  "scripts/dump-xls-header.cjs": {
+    "mtime": 1787589198.1333976,
+    "ast_hash": "9c7879d4a92ad31b998698741ad935e3",
+    "semantic_hash": ""
+  },
+  "scripts/verify-recon-2408.cjs": {
+    "mtime": 1787589615.0620086,
+    "ast_hash": "3c7c745e14d7dff44b3088f7dcbba6de",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260824000006_sync_patio_os_forensic_excel_2408.sql": {
+    "mtime": 1787589582.7499642,
+    "ast_hash": "ad965b6f03de1cee91f76f224f0426a5",
+    "semantic_hash": ""
+  },
+  "specs/274-motor-automatch-rede-os-e-carryover-patio/design.md": {
+    "mtime": 1787589441.9819613,
+    "ast_hash": "a7b259c644d178cf798a49128eaa6d55",
+    "semantic_hash": ""
+  },
+  "specs/274-motor-automatch-rede-os-e-carryover-patio/proposal.md": {
+    "mtime": 1787589430.25157,
+    "ast_hash": "df152e63e4a27be6916c4390d7ed59bb",
+    "semantic_hash": ""
+  },
+  "specs/274-motor-automatch-rede-os-e-carryover-patio/spec-plan.md": {
+    "mtime": 1787589778.6415713,
+    "ast_hash": "e4635313bff1e2cafc037500a46b44a9",
+    "semantic_hash": ""
+  },
+  "specs/274-sincronizacao-forense-patio-os-excel-2408/design.md": {
+    "mtime": 1787589274.8130631,
+    "ast_hash": "4d468538df5eeaa243d56887959bc9dd",
+    "semantic_hash": ""
+  },
+  "specs/274-sincronizacao-forense-patio-os-excel-2408/proposal.md": {
+    "mtime": 1787589261.4978483,
+    "ast_hash": "3354494c90a95fc97f89911e64b15c76",
+    "semantic_hash": ""
+  },
+  "specs/274-sincronizacao-forense-patio-os-excel-2408/spec-plan.md": {
+    "mtime": 1787589291.233519,
+    "ast_hash": "0a14cfacd1aa4c754f4a40af94601118",
+    "semantic_hash": ""
+  },
+  "specs/archive/273-varredura-calculos-rpc-e-pilares-saldo/design.md": {
+    "mtime": 1787588274.3433285,
+    "ast_hash": "c7317c84269cc059c45d35db9b04cedc",
+    "semantic_hash": ""
+  },
+  "specs/archive/273-varredura-calculos-rpc-e-pilares-saldo/proposal.md": {
+    "mtime": 1787588264.6275716,
+    "ast_hash": "80756201e08e08fa7be9e9558848ec75",
+    "semantic_hash": ""
+  },
+  "specs/archive/273-varredura-calculos-rpc-e-pilares-saldo/spec-plan.md": {
+    "mtime": 1787588572.4902382,
+    "ast_hash": "fb6cbb40c930c1bd0227a0973909bcd1",
     "semantic_hash": ""
   }
 }

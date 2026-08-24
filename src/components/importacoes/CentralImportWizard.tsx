@@ -716,12 +716,17 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           let matched_os_number = null;
           
           if (tx.type === 'in') {
+            const isRendimento = /REND|APLIC|RESG|CDB|LCA|LCI|TESOURO|JUROS|IOF|AUT APR/i.test(`${tx.title || ''} ${tx.counterpart_name || ''}`);
+            const isAdquirente = /REDE|CIELO|GETNET|STONE|REDECARD|MAST|VISA|ELO|PAGSEGURO|ADQ|CART/i.test(`${tx.title || ''} ${tx.counterpart_name || ''}`);
+            const isEligibleForMatch = Number(tx.amount || 0) >= 10.0 && !isRendimento && !isAdquirente;
+
             let foundMatch = false;
-            if (matched_store_id && autoMatchMap[matched_store_id]) {
+            if (isEligibleForMatch && matched_store_id && autoMatchMap[matched_store_id]) {
               const matchedOs = autoMatchMap[matched_store_id].find(os => {
                  const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
-                 const pixVal = os.pix_transfer_value || delta;
-                 return Math.abs(pixVal - tx.amount) < 1.0;
+                 const pixVal = Number(os.pix_transfer_value || 0) > 0 ? Number(os.pix_transfer_value) : Number(delta || 0);
+                 if (pixVal <= 0) return false;
+                 return Math.abs(pixVal - Number(tx.amount || 0)) < 0.10;
               });
               if (matchedOs) {
                 matched_os_number = matchedOs.os_number;
@@ -730,12 +735,13 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
               }
             }
             
-            if (!foundMatch) {
+            if (isEligibleForMatch && !foundMatch) {
               for (const [s_id, osList] of Object.entries(autoMatchMap)) {
                 const matchedOs = osList.find(os => {
                    const delta = (os as any).delta_paid !== undefined ? (os as any).delta_paid : os.paid_value;
-                   const pixVal = os.pix_transfer_value || delta;
-                   return Math.abs(pixVal - tx.amount) < 1.0;
+                   const pixVal = Number(os.pix_transfer_value || 0) > 0 ? Number(os.pix_transfer_value) : Number(delta || 0);
+                   if (pixVal <= 0) return false;
+                   return Math.abs(pixVal - Number(tx.amount || 0)) < 0.10;
                 });
                 if (matchedOs) {
                   matched_store_id = s_id;

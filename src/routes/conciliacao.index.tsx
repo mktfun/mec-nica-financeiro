@@ -175,12 +175,9 @@ function ConciliacaoPage() {
                     status: 'pending' as const
                   };
 
-                  const storeJustifiedRevenue = justifiedData?.totalByStore[store.id] || 0;
-                  const storeAllJustified = justifiedData?.totalAllByStore[store.id] || 0;
                   const rawPrevisto = log.previsto_ofx || 0;
-                  const previstoAjustado = Math.max(0, rawPrevisto - storeJustifiedRevenue);
-                  const diferencaCalculada = Math.max(0, (log.diferenca || 0) - storeAllJustified);
-                  const isDiferencaOk = Math.abs(diferencaCalculada) <= 50 || log.status === 'approved';
+                  const diferencaCalculada = Math.max(0, log.diferenca || 0);
+                  const isDiferencaOk = Math.abs(diferencaCalculada) <= 0.05 || log.status === 'conciliado';
 
                   return (
                     <div key={store.id} className="relative group">
@@ -273,13 +270,11 @@ function ConciliacaoPage() {
                                   Previsto
                                 </span>
                                 <p className="font-bold text-sm text-[var(--text-primary)] font-mono">
-                                  <AnimatedNumber value={previstoAjustado} format="currency" />
+                                  <AnimatedNumber value={rawPrevisto} format="currency" />
                                 </p>
-                                {storeAllJustified > 0 && (
-                                  <span className="text-[9px] text-blue-400 block mt-0.5 font-medium">
-                                    (- <AnimatedNumber value={storeAllJustified} format="currency" /> just.)
-                                  </span>
-                                )}
+                                <span className="text-[9px] text-[var(--text-tertiary)] block mt-0.5 font-medium">
+                                  Total Entradas OFX
+                                </span>
                               </div>
 
                               {/* 6. Diferença */}
