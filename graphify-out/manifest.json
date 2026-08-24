@@ -435,8 +435,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1787571513.4579434,
-    "ast_hash": "b9a5ead9ecd12f56579af64b6f826623",
+    "mtime": 1787579053.3101287,
+    "ast_hash": "d2243dfbf601a410be4bcd7c91bc0f03",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -560,8 +560,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useDailySnapshot.ts": {
-    "mtime": 1787258995.8480084,
-    "ast_hash": "fdd6a772f62e42ef2bd024b7e5bf3ffd",
+    "mtime": 1787578376.4489913,
+    "ast_hash": "9a77729de04d58cf876390eac50f8921",
     "semantic_hash": ""
   },
   "src/hooks/useExpenseImportProcessor.ts": {
@@ -605,8 +605,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useTransactions.ts": {
-    "mtime": 1787248177.3195174,
-    "ast_hash": "5d7f73565e0092a677eb2a787ed9ffa4",
+    "mtime": 1787579134.9226012,
+    "ast_hash": "023004881cb070d02c7ac8871f9ffd5d",
     "semantic_hash": ""
   },
   "src/integrations/supabase/auth-attacher.ts": {
@@ -2605,8 +2605,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1787530940.947828,
-    "ast_hash": "3e016dbff7fc32f7d7f8d6d07555e965",
+    "mtime": 1787576356.1396744,
+    "ast_hash": "5f9fe45b6f30167a13f2ae04d425b77b",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -7744,36 +7744,6 @@
     "ast_hash": "6d70c5cac933618ffe0dd2180eac8a43",
     "semantic_hash": ""
   },
-  "specs/264-motor-diagnostico-pre-conciliacao/design.md": {
-    "mtime": 1787571359.1197286,
-    "ast_hash": "4ed330969b36640d459539fbe0391261",
-    "semantic_hash": ""
-  },
-  "specs/264-motor-diagnostico-pre-conciliacao/proposal.md": {
-    "mtime": 1787571310.4621603,
-    "ast_hash": "89b820271598bd59b5618a636328eb5b",
-    "semantic_hash": ""
-  },
-  "specs/264-motor-diagnostico-pre-conciliacao/spec-plan.md": {
-    "mtime": 1787571699.5536425,
-    "ast_hash": "893f04e8c2a025adf096e59ca19a5b3c",
-    "semantic_hash": ""
-  },
-  "specs/265-correcao-rpc-tripla-maquininhas-e-auditoria-contas-dia-24/design.md": {
-    "mtime": 1787575255.3884497,
-    "ast_hash": "ce7ab883b95a2fe845e3981751bf53dd",
-    "semantic_hash": ""
-  },
-  "specs/265-correcao-rpc-tripla-maquininhas-e-auditoria-contas-dia-24/proposal.md": {
-    "mtime": 1787575243.2708552,
-    "ast_hash": "f73eb1782532906e6a4d334dc7ead5b3",
-    "semantic_hash": ""
-  },
-  "specs/265-correcao-rpc-tripla-maquininhas-e-auditoria-contas-dia-24/spec-plan.md": {
-    "mtime": 1787576072.0860693,
-    "ast_hash": "e35c9f1d62dae7c8dc1e8eceb2316676",
-    "semantic_hash": ""
-  },
   "specs/archive/261-saldo-total-ofx-e-tabela-edicao-os-preview/design.md": {
     "mtime": 1787340052.2760265,
     "ast_hash": "b48a88fb71cfb1057a133ff27c56b97b",
@@ -7817,6 +7787,76 @@
   "specs/archive/263-tabela-unificada-os-preview-com-filtros-e-edicao-livre/spec-plan.md": {
     "mtime": 1787342316.486296,
     "ast_hash": "5d823c7f3bae406944515338d651ad76",
+    "semantic_hash": ""
+  },
+  "src/components/importacoes/MissingPatioOsEditor.tsx": {
+    "mtime": 1787578941.9111838,
+    "ast_hash": "f54a05666ee8805c3ef2100577b197ce",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260824000002_fix_daily_summary_weekend_anchor_and_cash.sql": {
+    "mtime": 1787578413.8062792,
+    "ast_hash": "2957aa699dcc878d323fa798f687bcdc",
+    "semantic_hash": ""
+  },
+  "specs/266-alinhamento-conciliacao-2408-excel-e-ancora-dia-anterior/design.md": {
+    "mtime": 1787578042.5592537,
+    "ast_hash": "4ce809edb1ca45bcc693df429c21f771",
+    "semantic_hash": ""
+  },
+  "specs/266-alinhamento-conciliacao-2408-excel-e-ancora-dia-anterior/proposal.md": {
+    "mtime": 1787578029.658528,
+    "ast_hash": "84fbf3d0185963bbb9a2eefab53045af",
+    "semantic_hash": ""
+  },
+  "specs/266-alinhamento-conciliacao-2408-excel-e-ancora-dia-anterior/spec-plan.md": {
+    "mtime": 1787578520.2180583,
+    "ast_hash": "986d71658b8e5e98f6d301ebfec320a3",
+    "semantic_hash": ""
+  },
+  "specs/267-painel-edicao-os-ausentes-patio-e-deduplicacao-rede/design.md": {
+    "mtime": 1787578748.5984967,
+    "ast_hash": "a9186eb503a16ad8f2a2b9ddc94dcedf",
+    "semantic_hash": ""
+  },
+  "specs/267-painel-edicao-os-ausentes-patio-e-deduplicacao-rede/proposal.md": {
+    "mtime": 1787578738.293252,
+    "ast_hash": "c727794d4fa05ba9fa3e24536f93ddc9",
+    "semantic_hash": ""
+  },
+  "specs/267-painel-edicao-os-ausentes-patio-e-deduplicacao-rede/spec-plan.md": {
+    "mtime": 1787579191.1247013,
+    "ast_hash": "6d983eb4e7178c270ba7805efa65827a",
+    "semantic_hash": ""
+  },
+  "specs/archive/264-motor-diagnostico-pre-conciliacao/design.md": {
+    "mtime": 1787571359.1197286,
+    "ast_hash": "4ed330969b36640d459539fbe0391261",
+    "semantic_hash": ""
+  },
+  "specs/archive/264-motor-diagnostico-pre-conciliacao/proposal.md": {
+    "mtime": 1787571310.4621603,
+    "ast_hash": "89b820271598bd59b5618a636328eb5b",
+    "semantic_hash": ""
+  },
+  "specs/archive/264-motor-diagnostico-pre-conciliacao/spec-plan.md": {
+    "mtime": 1787571699.5536425,
+    "ast_hash": "893f04e8c2a025adf096e59ca19a5b3c",
+    "semantic_hash": ""
+  },
+  "specs/archive/265-correcao-rpc-tripla-maquininhas-e-auditoria-contas-dia-24/design.md": {
+    "mtime": 1787575255.3884497,
+    "ast_hash": "ce7ab883b95a2fe845e3981751bf53dd",
+    "semantic_hash": ""
+  },
+  "specs/archive/265-correcao-rpc-tripla-maquininhas-e-auditoria-contas-dia-24/proposal.md": {
+    "mtime": 1787575243.2708552,
+    "ast_hash": "f73eb1782532906e6a4d334dc7ead5b3",
+    "semantic_hash": ""
+  },
+  "specs/archive/265-correcao-rpc-tripla-maquininhas-e-auditoria-contas-dia-24/spec-plan.md": {
+    "mtime": 1787576072.0860693,
+    "ast_hash": "e35c9f1d62dae7c8dc1e8eceb2316676",
     "semantic_hash": ""
   }
 }

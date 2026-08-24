@@ -43,11 +43,12 @@ export function usePreviousDaySnapshot(date: string) {
   return useQuery({
     queryKey: ['daily_snapshots', 'previous', date],
     queryFn: async () => {
-      // Get the most recent snapshot before the given date
+      // Get the most recent consolidated snapshot before the given date
       const { data, error } = await supabase
         .from('daily_snapshots')
         .select('*')
         .lt('date', date)
+        .gt('caixa_atual', 0)
         .order('date', { ascending: false })
         .limit(1)
         .maybeSingle();

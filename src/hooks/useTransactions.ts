@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase, TransactionRow } from '@/lib/supabase';
 import { getDefaultDate } from '@/lib/utils';
+import { generateDeterministicHash } from '@/lib/parsers/hashUtils';
 
 export function useTransactions(limit = 20) {
   return useQuery({
@@ -414,7 +415,12 @@ export function useBulkInsertTransactions() {
             matched_os_number: t.os_number || t.matched_os_number || null,
             import_batch_id: t.import_batch_id || null,
             target_date: t.target_date || null,
-            dedup_hash: t.dedup_hash || null,
+            dedup_hash: t.dedup_hash || generateDeterministicHash(
+              t.target_date || t.date || '', 
+              Math.abs(t.amount || t.gross_amount || 0), 
+              `${t.store_id}_${t.payment_method || ''}_${t.nsu || t.tid || ''}`, 
+              'pos'
+            ),
             transaction_type: isDevolucao ? 'devolucao' : 'venda'
           };
         });

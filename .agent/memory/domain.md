@@ -427,3 +427,17 @@
 **Risco identificado:** Confundir despesa operacional a pagar com retirada/ajuste patrimonial.
 
 **Não fazer:** Não somar despesas manuais duas vezes se a planilha importada já contém a conta em sua totalidade.
+
+## [2026-08-24] — [Feature ID: 266 & 267]
+
+**Contexto:** Alinhamento de conciliação com Excel oficial, âncora de dias úteis anteriores, sincronização granular de OSs e deduplicação de maquininhas.
+
+**Regra aprendida:**
+- A conciliação de segunda-feira deve sempre ancorar na última sexta-feira com fechamento consolidado (`caixa_atual > 0`), ignorando rascunhos vazios de fim de semana.
+- Saldos bancários negativos do Itaú devem ser deduzidos na apuração do Caixa Atual Líquido (`Caixa Atual = Patrimônio Bruto - Negativo Itaú`).
+- Transações de POS (Rede) devem possuir deduplicação determinística (`dedup_hash`) para evitar que relatórios importados em duplicidade gerem falsos alertas de "não entrou".
+- OSs do pátio que estavam ativas no dia anterior e não constam no arquivo .xls de hoje devem ser auditadas pelo operador no Step 3 antes da consolidação.
+
+**Risco identificado:** Reprocessamento de arquivos gerando duplicação em `pos_transactions` ou rascunhos de fim de semana quebrando o carry-over.
+
+**Não fazer:** Nunca assumir que `date < target_date` trará o dia útil correto sem verificar se o fechamento anterior foi consolidado (`caixa_atual > 0`).

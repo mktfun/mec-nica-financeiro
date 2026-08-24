@@ -31,9 +31,9 @@ import { useNavigate } from '@tanstack/react-router';
 import { savePatioOsAndReceivables, ParsedReceivable } from '@/hooks/useImportProcessor';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useContasAPagarImport } from '@/hooks/useContasAPagarImport';
-import { getDefaultDate } from '@/lib/utils';
 import { useDiagnosticEngine } from '@/hooks/useDiagnosticEngine';
 import { DiagnosticPanel } from './DiagnosticPanel';
+import { MissingPatioOsEditor } from './MissingPatioOsEditor';
 
 export interface ImportLogEntry {
   id: string;
@@ -486,7 +486,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           .from('patio_os')
           .select('id, os_number, plate, store_id, store_name, total_value, paid_value, status, opened_at, days_open')
           .in('store_id', mappedStoreIds)
-          .in('status', ['em_aberto', 'pago_parcial', 'ABERTA', 'PENDENTE']);
+          .not('status', 'in', '("finalizada","finalizado","paga","pago","cancelada","cancelado")');
 
         if (error) {
           console.error("Erro ao buscar OSs ativas no banco:", error);
@@ -1897,6 +1897,13 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           </div>
 
           <Card className="p-8 space-y-6">
+            {/* Editor de OSs do Pátio Ausentes nos Arquivos de Hoje */}
+            <MissingPatioOsEditor
+              missingList={missingOsList}
+              onChangeList={setMissingOsList}
+              isSaving={isSaving}
+            />
+
             {/* Tabela Unificada de Ordens de Serviço do Preview */}
             {allPreviewOsList.length > 0 && (
               <div className="p-6 bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-2xl shadow-xl space-y-4">

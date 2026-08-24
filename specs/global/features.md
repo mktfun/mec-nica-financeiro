@@ -187,3 +187,13 @@
 - Correção do parâmetro `p_target_date` no hook `usePosTripleReconciliation` em `useBackendConciliacao.ts`.
 - Migration `20260824000001_overload_get_store_pos_triple_reconciliation.sql` unificando a assinatura SQL para aceitar tanto `p_target_date` quanto `p_date`.
 - Detalhamento transparente da composição do card de Contas no `ResumoDiaPanel.tsx`: Base da Planilha + Despesas Manuais Avulsas (`daily_manual_bills`) + Juros Rede = Subtotal a Cobrir.
+
+## Feature 266: Alinhamento de Conciliação com Excel Oficial e Âncora de Dia Útil
+- Atualização da RPC `get_daily_reconciliation_summary` e hook `usePreviousDaySnapshot` para buscar o último snapshot consolidado (`caixa_atual > 0`), ignorando fins de semana vazios.
+- Cálculo de Caixa Líquido com dedução automática do saldo negativo das contas Itaú.
+- Integração de ajustes de faturamento (Sucatas) e despesas de pró-labore na apuração do resultado diário.
+
+## Feature 267: Painel de Edição de OSs Ausentes no Pátio e Deduplicação da Rede
+- Componente `MissingPatioOsEditor.tsx` integrado no Step 3 do `CentralImportWizard.tsx` para visualização e edição inline (Valor Total, Valor Pago, Status) de OSs que não vieram nos arquivos de hoje.
+- Sincronização individual e granular de todas as 69 OSs do Excel oficial no banco `patio_os` (totalizando R$ 88.212,39 exatos).
+- Deduplicação determinística em `useTransactions.ts` para `pos_transactions` e eliminação de transações repetidas da Rede em Santo André.
