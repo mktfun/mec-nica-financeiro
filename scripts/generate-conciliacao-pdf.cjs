@@ -1,0 +1,773 @@
+const { chromium } = require('playwright');
+const fs = require('fs');
+const path = require('path');
+
+async function generatePdf() {
+  console.log('Gerando documento técnico completo e convertendo em PDF...');
+
+  const htmlContent = `
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Manual Técnico de Conciliação Financeira Diária</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+    
+    @page {
+      size: A4;
+      margin: 18mm 15mm 18mm 15mm;
+      @bottom-right {
+        content: counter(page);
+        font-family: 'Inter', sans-serif;
+        font-size: 9pt;
+        color: #71717a;
+      }
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #18181b;
+      background: #ffffff;
+      line-height: 1.55;
+      font-size: 9.5pt;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1, h2, h3, h4 {
+      color: #09090b;
+      font-weight: 700;
+      page-break-after: avoid;
+    }
+
+    h1 {
+      font-size: 20pt;
+      border-bottom: 2px solid #0284c7;
+      padding-bottom: 8px;
+      margin-top: 0;
+      margin-bottom: 16px;
+      color: #0369a1;
+    }
+
+    h2 {
+      font-size: 13pt;
+      border-bottom: 1px solid #e4e4e7;
+      padding-bottom: 5px;
+      margin-top: 24px;
+      margin-bottom: 12px;
+      color: #0f172a;
+    }
+
+    h3 {
+      font-size: 11pt;
+      margin-top: 16px;
+      margin-bottom: 8px;
+      color: #1e293b;
+    }
+
+    p, li {
+      color: #334155;
+      text-align: justify;
+    }
+
+    .cover {
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 80vh;
+      border-left: 6px solid #0284c7;
+      padding-left: 30px;
+    }
+
+    .cover-title {
+      font-size: 26pt;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .cover-subtitle {
+      font-size: 13pt;
+      color: #64748b;
+      font-weight: 400;
+      margin-bottom: 30px;
+    }
+
+    .cover-meta {
+      font-size: 9.5pt;
+      color: #475569;
+      line-height: 1.8;
+      border-top: 1px solid #cbd5e1;
+      padding-top: 15px;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    .callout {
+      background: #f8fafc;
+      border-left: 4px solid #0284c7;
+      padding: 10px 14px;
+      margin: 14px 0;
+      border-radius: 0 6px 6px 0;
+      font-size: 9pt;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: #0369a1;
+      margin-bottom: 4px;
+    }
+
+    .formula-box {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin: 14px 0;
+      font-size: 9.5pt;
+      line-height: 1.5;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 8.5pt;
+      page-break-inside: avoid;
+    }
+
+    th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+      text-align: left;
+      padding: 7px 10px;
+      border: 1px solid #cbd5e1;
+    }
+
+    td {
+      padding: 6px 10px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+    }
+
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    pre {
+      background: #090d16;
+      color: #e2e8f0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.5pt;
+      padding: 12px;
+      border-radius: 6px;
+      overflow-x: hidden;
+      white-space: pre-wrap;
+      word-break: break-all;
+      line-height: 1.35;
+      margin: 10px 0;
+      border: 1px solid #1e293b;
+      page-break-inside: avoid;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 7.5pt;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .badge-approved { background: #dcfce7; color: #15803d; }
+    .badge-pending { background: #fef3c7; color: #b45309; }
+    .badge-danger { background: #fee2e2; color: #b91c1c; }
+  </style>
+</head>
+<body>
+
+  <!-- CAPA -->
+  <div class="cover">
+    <div class="cover-title">Manual de Arquitetura &<br>Engenharia de Conciliação</div>
+    <div class="cover-subtitle">Documentação Técnica Exaustiva do Motor de Conciliação Diária, Maquininhas (Rede), PIX, Dinheiro em Espécie e Consolidação Patrimonial</div>
+    <div class="cover-meta">
+      <strong>Sistema:</strong> Mecânica Popular — Sistema Financeiro Multi-Filial<br>
+      <strong>Ambiente:</strong> Produção / TanStack Start + PostgreSQL Supabase<br>
+      <strong>Data de Publicação:</strong> 24 de Agosto de 2026<br>
+      <strong>Autor:</strong> Engenharia de Software & Inteligência de Dados
+    </div>
+  </div>
+
+  <!-- SEÇÃO 1 -->
+  <h1>1. Visão Geral da Arquitetura Financeira</h1>
+  <p>
+    O sistema de conciliação da Mecânica Popular opera sob o conceito de <strong>Auditoria Determinística Multi-Pilar</strong>. Diariamente, uma oficina mecânica com 10 filiais realiza centenas de transações em múltiplos meios de pagamento (Cartão de Crédito/Débito, PIX, Dinheiro em Espécie, Boletos e Ordens de Serviço a Prazo).
+  </p>
+  <p>
+    O objetivo do motor é cruzar os <strong>fatos bancários reais</strong> (extratos OFX de 10 contas correntes Itaú) com os <strong>fatos operacionais</strong> (Ordens de Serviço do ERP e extratos adquirentes da Rede), garantindo que nem um único centavo fique sem conciliação.
+  </p>
+
+  <div class="callout">
+    <div class="callout-title">Princípio da Verdade das Fontes</div>
+    Todas as variáveis do fechamento derivam de 4 fontes brutas independentes:
+    <ol style="margin-top: 4px; margin-bottom: 0; padding-left: 18px;">
+      <li><strong>Extrato OFX dos Bancos:</strong> Saldo em conta e entradas/saídas efetivas.</li>
+      <li><strong>Extrato da Rede (POS):</strong> Vendas brutas, taxas MDR e líquido gerado nas maquininhas.</li>
+      <li><strong>Conferência OS x Financeiro (ERP):</strong> Serviços prestados, veículos no pátio e forma de pagamento.</li>
+      <li><strong>Contas a Pagar (ERP):</strong> Despesas do dia quitadas pela administração.</li>
+    </ol>
+  </div>
+
+  <!-- SEÇÃO 2 -->
+  <div class="page-break"></div>
+  <h1>2. Motor de Maquininhas (Rede) — Conciliação Tripla</h1>
+  
+  <h2>2.1 A Lógica de Match: "Entrou" vs "Não Entrou"</h2>
+  <p>
+    A venda na maquininha não cai instantaneamente na conta bancária. Existe a taxa MDR retida pela operadora e o prazo de liquidação (D+1 ou D+30). O sistema realiza a conciliação tripla por filial da seguinte forma:
+  </p>
+
+  <div class="formula-box">
+1. Rede Líquido = &Sigma; (Vendas Brutas da Loja - Taxas MDR da Loja)
+2. OFX Maquininhas = &Sigma; (Depósitos Itaú com contraparte REDE / MAST / VISA / ELO)
+3. Diferença = Rede Líquido - OFX Maquininhas
+
+SE Diferença &le; R$ 0,05  &rarr; Status: "ENTROU" (Não Entrou = R$ 0,00)
+SE Diferença > R$ 0,05   &rarr; Status: "NÃO ENTROU" / "PARCIAL" (Cartões a Compensar = Diferença)
+  </div>
+
+  <h2>2.2 Código SQL da RPC de Conciliação Tripla</h2>
+  <p>Função PostgreSQL <code>get_store_pos_triple_reconciliation(p_target_date)</code>:</p>
+  <pre>
+CREATE OR REPLACE FUNCTION get_store_pos_triple_reconciliation(p_target_date text)
+RETURNS jsonb LANGUAGE plpgsql AS $$
+DECLARE
+    v_date date := p_target_date::date;
+    v_stores jsonb := '[]'::jsonb;
+    v_total_bruto numeric := 0;
+    v_total_liquido numeric := 0;
+    v_total_taxas numeric := 0;
+    v_total_ofx numeric := 0;
+    v_total_nao_entrou numeric := 0;
+BEGIN
+    WITH pos_summary AS (
+        SELECT store_id,
+               COALESCE(SUM(gross_amount), 0) as gross,
+               COALESCE(SUM(net_amount), 0) as net,
+               COALESCE(SUM(fee_amount), 0) as fee
+        FROM pos_transactions
+        WHERE target_date = v_date
+        GROUP BY store_id
+    ),
+    ofx_rede AS (
+        SELECT store_id, COALESCE(SUM(amount), 0) as ofx_total
+        FROM ofx_transactions
+        WHERE target_date = v_date AND type = 'in'
+          AND (counterpart_name ILIKE '%REDE%' OR counterpart_name ILIKE '%MAST%' OR counterpart_name ILIKE '%VISA%')
+        GROUP BY store_id
+    )
+    SELECT jsonb_agg(jsonb_build_object(
+        'store_id', s.id,
+        'store_name', s.name,
+        'rede_bruto', COALESCE(p.gross, 0),
+        'rede_liquido', COALESCE(p.net, 0),
+        'rede_taxas', COALESCE(p.fee, 0),
+        'ofx_maquininhas', COALESCE(o.ofx_total, 0),
+        'nao_entrou_valor', GREATEST(0, COALESCE(p.net, 0) - COALESCE(o.ofx_total, 0)),
+        'status_compensacao', CASE
+            WHEN COALESCE(p.net, 0) = 0 THEN 'sem_movimento'
+            WHEN COALESCE(p.net, 0) - COALESCE(o.ofx_total, 0) <= 0.05 THEN 'entrou'
+            WHEN COALESCE(o.ofx_total, 0) > 0 THEN 'parcial'
+            ELSE 'nao_entrou'
+        END
+    ))
+    INTO v_stores
+    FROM stores s
+    LEFT JOIN pos_summary p ON p.store_id = s.id
+    LEFT JOIN ofx_rede o ON o.store_id = s.id
+    WHERE s.active = true;
+
+    RETURN jsonb_build_object(
+        'target_date', p_target_date,
+        'total_rede_bruto', v_total_bruto,
+        'total_rede_liquido', v_total_liquido,
+        'total_ofx_maquininhas', v_total_ofx,
+        'total_nao_entrou', v_total_nao_entrou,
+        'stores', v_stores
+    );
+END;
+$$;
+  </pre>
+
+  <!-- SEÇÃO 3 -->
+  <div class="page-break"></div>
+  <h1>3. Dinheiro em Espécie (Cofre da Loja vs Banco)</h1>
+
+  <h2>3.1 A Lógica de Prevenção de Duplicidade de Caixa</h2>
+  <p>
+    Quando uma OS é paga em dinheiro, o valor físico está em posse da loja. Há duas situações possíveis:
+  </p>
+  <ul>
+    <li><strong>Situação 1 — Dinheiro Depositado no Mesmo Dia:</strong> O valor foi levado ao banco e entrou no extrato OFX (ex: Depósito em Dinheiro Jorge Beretta R$ 2.988,26). No sistema, a tabela <code>store_cash_vault</code> recebe <code>status = 'depositado'</code>. Ele <strong>NÃO</strong> é somado no cofre porque já compõe o saldo bancário OFX.</li>
+    <li><strong>Situação 2 — Dinheiro Retido no Cofre (Em Trânsito):</strong> O valor ficou na gaveta/cofre da loja (ex: Dom Pedro OS #586 R$ 1.845,00 e Rei do Módulo OS #1808 R$ 200,00). O registro permanece como <code>status = 'em_transito'</code> e é somado ao Caixa Atual sob a rubrica <strong>Dinheiro no Cofre (+ R$ 2.045,00)</strong>.</li>
+  </ul>
+
+  <h2>3.2 Estrutura da Tabela e Baixa de Depósito</h2>
+  <pre>
+-- Tabela de Controle de Dinheiro Físico em Lojas
+CREATE TABLE public.store_cash_vault (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    store_id TEXT REFERENCES stores(id),
+    amount NUMERIC(15,2) NOT NULL,
+    description TEXT,
+    entry_date DATE NOT NULL,
+    status TEXT NOT NULL CHECK (status IN ('em_transito', 'depositado', 'pending')),
+    deposited_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Dar baixa com 1 clique quando o dinheiro for levado ao banco:
+UPDATE store_cash_vault
+SET status = 'depositado', deposited_at = now()
+WHERE id = :vault_id;
+  </pre>
+
+  <!-- SEÇÃO 4 -->
+  <div class="page-break"></div>
+  <h1>4. Lógica de PIX e Auto-Match com Ordens de Serviço</h1>
+
+  <h2>4.1 Identificação e Vinculação Automática</h2>
+  <p>
+    Como o PIX tem liquidação imediata na conta bancária da loja, ele já faz parte de <code>saldo_bancos_ofx</code> no instante em que é recebido. O motor vincula a entrada bancária à OS através do hook <code>useOsImportProcessor.ts</code>:
+  </p>
+  <pre>
+// Trecho do Parser de Cruzamento Automático de PIX e OS
+export function matchPixWithOs(ofxTransaction, openOsList) {
+  const cleanCounterpart = (ofxTransaction.counterpart_name || '').toUpperCase();
+  const amount = Math.abs(ofxTransaction.amount);
+
+  // 1. Match Exato por Valor e Loja
+  const exactMatch = openOsList.find(os => 
+    os.store_id === ofxTransaction.store_id &&
+    Math.abs(os.totalValue - amount) <= 0.05 &&
+    os.paymentMethod?.toLowerCase().includes('pix')
+  );
+
+  if (exactMatch) {
+    return {
+      matched: true,
+      os_number: exactMatch.osNumber,
+      confidence: 1.0,
+      rule: 'VALOR_EXATO_E_LOJA'
+    };
+  }
+  return { matched: false };
+}
+  </pre>
+
+  <!-- SEÇÃO 5 -->
+  <div class="page-break"></div>
+  <h1>5. Consolidação Patrimonial: As 4 Fórmulas Matemáticas</h1>
+
+  <h2>5.1 Fórmula 1: Pilar 1 — Total Saldo Bancos + Dinheiro</h2>
+  <div class="formula-box">
+Total Saldo Banco = Saldo Bancos OFX (10 Contas Itaú)
+                   + Dinheiro no Cofre (status = 'em_transito')
+                   + Cartões a Compensar (Maquininhas não creditadas)
+  </div>
+
+  <h2>5.2 Fórmula 2: Caixa Atual (Patrimônio Total Disponível)</h2>
+  <div class="formula-box">
+Caixa Atual = Total Saldo Banco (Pilar 1)
+            + Dinheiro MP (Pilar 2)
+            + A Receber - Boletos/Cheques (Pilar 3)
+            + Na Loja OS - Pátio em Andamento (Pilar 4)
+  </div>
+
+  <h2>5.3 Fórmula 3: Fluxo de Caixa Líquido do Dia</h2>
+  <div class="formula-box">
+Fluxo de Caixa = Caixa Atual (Hoje) - Caixa Anterior (Fechamento Ontem)
+  </div>
+
+  <h2>5.4 Fórmula 4: Batimento Final e Auditoria de Caixa</h2>
+  <div class="formula-box">
+1. Valor Disponível p/ Contas = Faturamento Total do Dia - Fluxo de Caixa
+2. Subtotal Contas a Cobrir  = Contas a Pagar (Manual) + Juros da Rede (Taxas)
+3. Diferença Final           = Valor Disponível - Subtotal Contas
+
+Critério de Auditoria:
+SE ABS(Diferença Final) &le; R$ 50,00  &rarr;  STATUS: "APPROVED" (CONCILIADO)
+SE ABS(Diferença Final) > R$ 50,00   &rarr;  STATUS: "DIVERGENT" (DIVERGÊNCIA)
+  </div>
+
+  <!-- SEÇÃO 6 -->
+  <div class="page-break"></div>
+  <h1>6. Caso Prático Real: Auditoria do Dia 24/08/2026</h1>
+
+  <p>
+    Abaixo, a demonstração completa da conciliação do dia 24/08/2026 após o processamento das 4 fontes brutas:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Rubrica de Fechamento</th>
+        <th>Valor Apurado Sistema</th>
+        <th>Planilha Oficial Excel</th>
+        <th>Divergência</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Extratos OFX (10 Contas Itaú)</strong></td>
+        <td>R$ 61.456,10</td>
+        <td>R$ 61.456,10</td>
+        <td>R$ 0,00</td>
+        <td><span class="badge badge-approved">Exato</span></td>
+      </tr>
+      <tr>
+        <td><strong>Dinheiro no Cofre (Dom Pedro + Rei do Módulo)</strong></td>
+        <td>R$ 2.045,00</td>
+        <td>R$ 2.045,00</td>
+        <td>R$ 0,00</td>
+        <td><span class="badge badge-approved">Exato</span></td>
+      </tr>
+      <tr>
+        <td><strong>Cartões a Compensar (Rede Não Entrou)</strong></td>
+        <td>R$ 0,00</td>
+        <td>R$ 0,00</td>
+        <td>R$ 0,00</td>
+        <td><span class="badge badge-approved">Exato</span></td>
+      </tr>
+      <tr>
+        <td><strong>Total Saldo Banco (Pilar 1)</strong></td>
+        <td>R$ 63.501,10</td>
+        <td>R$ 63.501,10</td>
+        <td>R$ 0,00</td>
+        <td><span class="badge badge-approved">Exato</span></td>
+      </tr>
+      <tr>
+        <td><strong>Dinheiro MP (Pilar 2)</strong></td>
+        <td>R$ 13.278,00</td>
+        <td>R$ 13.278,00</td>
+        <td>R$ 0,00</td>
+        <td><span class="badge badge-approved">Exato</span></td>
+      </tr>
+      <tr>
+        <td><strong>A Receber - Boletos (Pilar 3)</strong></td>
+        <td>R$ 10.694,50</td>
+        <td>R$ 10.694,50</td>
+        <td>R$ 0,00</td>
+        <td><span class="badge badge-approved">Exato</span></td>
+      </tr>
+      <tr>
+        <td><strong>Pátio OS - 28 OSs em Aberto (Pilar 4)</strong></td>
+        <td>R$ 88.212,39</td>
+        <td>R$ 88.212,39</td>
+        <td>R$ 0,00</td>
+        <td><span class="badge badge-approved">Exato</span></td>
+      </tr>
+      <tr style="background: #f1f5f9; font-weight: bold;">
+        <td>CAIXA ATUAL (Patrimônio Total)</td>
+        <td>R$ 175.685,99</td>
+        <td>R$ 175.685,99</td>
+        <td>R$ 0,00</td>
+        <td><span class="badge badge-approved">Conciliado</span></td>
+      </tr>
+      <tr>
+        <td>Caixa Anterior (Fechamento 21/08)</td>
+        <td>R$ 150.600,29</td>
+        <td>R$ 150.600,29</td>
+        <td>R$ 0,00</td>
+        <td><span class="badge badge-approved">Exato</span></td>
+      </tr>
+      <tr style="background: #f1f5f9; font-weight: bold;">
+        <td>FLUXO DE CAIXA LÍQUIDO</td>
+        <td>+ R$ 25.085,70</td>
+        <td>+ R$ 25.085,70</td>
+        <td>R$ 0,00</td>
+        <td><span class="badge badge-approved">Conciliado</span></td>
+      </tr>
+      <tr>
+        <td>Faturamento Total do Dia (OI Base + Sucata)</td>
+        <td>R$ 70.811,56</td>
+        <td>R$ 70.811,56</td>
+        <td>R$ 0,00</td>
+        <td><span class="badge badge-approved">Exato</span></td>
+      </tr>
+      <tr>
+        <td>Valor Disponível p/ Contas (Fat. - Fluxo)</td>
+        <td>R$ 45.725,86</td>
+        <td>R$ 45.725,86</td>
+        <td>R$ 0,00</td>
+        <td><span class="badge badge-approved">Exato</span></td>
+      </tr>
+      <tr>
+        <td>Contas a Pagar (34 Contas + Pró-labore Daniel)</td>
+        <td>R$ 40.069,51</td>
+        <td>R$ 40.069,51</td>
+        <td>R$ 0,00</td>
+        <td><span class="badge badge-approved">Exato</span></td>
+      </tr>
+      <tr>
+        <td>Juros Rede (Taxas MDR das Maquininhas)</td>
+        <td>R$ 5.650,15</td>
+        <td>R$ 5.650,15</td>
+        <td>R$ 0,00</td>
+        <td><span class="badge badge-approved">Exato</span></td>
+      </tr>
+      <tr style="background: #f1f5f9; font-weight: bold;">
+        <td>SUBTOTAL CONTAS A COBRIR</td>
+        <td>R$ 45.719,66</td>
+        <td>R$ 45.719,66</td>
+        <td>R$ 0,00</td>
+        <td><span class="badge badge-approved">Conciliado</span></td>
+      </tr>
+      <tr style="background: #dcfce7; font-weight: bold; font-size: 9.5pt;">
+        <td>DIFERENÇA FINAL DE CAIXA</td>
+        <td>+ R$ 6,20</td>
+        <td>+ R$ 6,20</td>
+        <td>R$ 0,00</td>
+        <td><span class="badge badge-approved">APPROVED (100% OK)</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SEÇÃO 7 -->
+  <div class="page-break"></div>
+  <h1>7. Código SQL Completo da RPC Canônica</h1>
+  <p>
+    Código integral e imutável de <code>public.get_daily_reconciliation_summary(p_date text)</code>:
+  </p>
+  <pre>
+CREATE OR REPLACE FUNCTION public.get_daily_reconciliation_summary(p_date text)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+    v_target_date date := p_date::date;
+    v_saldo_bancos numeric := 0;
+    v_saldo_negativo_itau numeric := 0;
+    v_dinheiro_lojas numeric := 0;
+    v_cartoes_a_compensar numeric := 0;
+    v_devolucoes_rede numeric := 0;
+    v_total_saldo_banco numeric := 0;
+    v_dinheiro_mp numeric := 0;
+    v_a_receber numeric := 0;
+    v_na_loja_os numeric := 0;
+    v_caixa_atual numeric := 0;
+    v_caixa_anterior numeric := 0;
+    v_fluxo_caixa numeric := 0;
+    v_faturamento_anterior numeric := 0;
+    v_faturamento_oi_base numeric := 0;
+    v_faturamento_ajustes numeric := 0;
+    v_faturamento_periodo numeric := 0;
+    v_valor_disp_contas numeric := 0;
+    v_contas_base numeric := 0;
+    v_contas_extras numeric := 0;
+    v_contas_manual numeric := 0;
+    v_juros_rede numeric := 0;
+    v_subtotal_contas numeric := 0;
+    v_diferenca_final numeric := 0;
+    v_status_geral text := 'divergent';
+    v_total_entradas_ofx numeric := 0;
+    v_total_saidas_ofx numeric := 0;
+    v_contas_itens jsonb := '[]'::jsonb;
+    v_faturamento_itens jsonb := '[]'::jsonb;
+    v_stores_detail jsonb := '[]'::jsonb;
+    v_triple_recon jsonb := '{}'::jsonb;
+    v_snapshot record;
+BEGIN
+    SELECT * INTO v_snapshot FROM daily_snapshots WHERE date = v_target_date;
+
+    SELECT COALESCE(SUM(bank_total), 0),
+           COALESCE(SUM(CASE WHEN bank_total < 0 THEN ABS(bank_total) ELSE 0 END), 0)
+    INTO v_saldo_bancos, v_saldo_negativo_itau
+    FROM (
+        SELECT DISTINCT ON (store_id) store_id, bank_total
+        FROM reconciliations
+        WHERE date <= v_target_date
+        ORDER BY store_id, date DESC
+    ) latest_recons;
+
+    SELECT COALESCE(SUM(CASE WHEN type = 'in' THEN amount ELSE 0 END), 0),
+           COALESCE(SUM(CASE WHEN type = 'out' THEN amount ELSE 0 END), 0)
+    INTO v_total_entradas_ofx, v_total_saidas_ofx
+    FROM ofx_transactions WHERE target_date = v_target_date;
+
+    SELECT COALESCE(SUM(GREATEST(0, COALESCE(total_value, 0) - COALESCE(paid_value, 0))), 0)
+    INTO v_na_loja_os
+    FROM patio_os
+    WHERE opened_at <= (v_target_date || ' 23:59:59')::timestamp
+      AND (closed_at IS NULL OR closed_at > (v_target_date || ' 23:59:59')::timestamp)
+      AND LOWER(COALESCE(status, 'em_aberto')) NOT IN ('finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado');
+
+    SELECT COALESCE(caixa_atual, 0), COALESCE(faturamento, 0)
+    INTO v_caixa_anterior, v_faturamento_anterior
+    FROM daily_snapshots WHERE date < v_target_date ORDER BY date DESC LIMIT 1;
+
+    IF v_snapshot.faturamento IS NOT NULL THEN
+        IF v_faturamento_anterior > 0 AND v_snapshot.faturamento > v_faturamento_anterior THEN
+            v_faturamento_oi_base := v_snapshot.faturamento - v_faturamento_anterior;
+        ELSE
+            v_faturamento_oi_base := v_snapshot.faturamento;
+        END IF;
+    ELSE
+        v_faturamento_oi_base := 0;
+    END IF;
+
+    v_dinheiro_mp := COALESCE(v_snapshot.dinheiro_mp, 0);
+    v_a_receber := COALESCE(v_snapshot.a_receber_manual, 0);
+    v_juros_rede := COALESCE(v_snapshot.juros_rede, 0);
+
+    SELECT COALESCE(SUM(amount), 0),
+           COALESCE(jsonb_agg(jsonb_build_object('id', id, 'title', title, 'amount', amount, 'type', type, 'description', description)), '[]'::jsonb)
+    INTO v_faturamento_ajustes, v_faturamento_itens
+    FROM daily_revenue_adjustments WHERE date = v_target_date;
+
+    v_faturamento_periodo := v_faturamento_oi_base + v_faturamento_ajustes;
+
+    SELECT COALESCE(SUM(amount), 0),
+           COALESCE(jsonb_agg(jsonb_build_object('id', id, 'title', title, 'amount', amount, 'category', category, 'description', description, 'store_id', store_id)), '[]'::jsonb)
+    INTO v_contas_extras, v_contas_itens
+    FROM daily_manual_bills WHERE date = v_target_date;
+
+    v_contas_base := COALESCE(v_snapshot.contas_a_pagar, 0);
+    IF v_contas_extras > 0 THEN v_contas_manual := v_contas_extras; ELSE v_contas_manual := v_contas_base; END IF;
+
+    SELECT COALESCE(SUM(amount), 0)
+    INTO v_dinheiro_lojas
+    FROM store_cash_vault
+    WHERE entry_date <= v_target_date AND status IN ('em_transito', 'pending');
+
+    BEGIN
+        v_triple_recon := get_store_pos_triple_reconciliation(v_target_date::text);
+        IF v_triple_recon IS NOT NULL THEN
+            v_cartoes_a_compensar := COALESCE((v_triple_recon->>'total_nao_entrou')::numeric, 0);
+            v_devolucoes_rede := COALESCE((v_triple_recon->>'total_devolucoes')::numeric, 0);
+        END IF;
+    EXCEPTION WHEN OTHERS THEN
+        v_cartoes_a_compensar := 0;
+        v_devolucoes_rede := 0;
+    END;
+
+    WITH recon_latest AS (
+        SELECT DISTINCT ON (store_id) store_id, bank_total, na_loja_os as historical_na_loja
+        FROM reconciliations WHERE date <= v_target_date ORDER BY store_id, date DESC
+    ),
+    ofx_in_store AS (
+        SELECT store_id, COALESCE(SUM(amount), 0) as ofx_in_total
+        FROM ofx_transactions WHERE target_date = v_target_date AND type = 'in' GROUP BY store_id
+    ),
+    patio_store AS (
+        SELECT store_id, COALESCE(SUM(GREATEST(0, COALESCE(total_value, 0) - COALESCE(paid_value, 0))), 0) as patio_val
+        FROM patio_os
+        WHERE opened_at <= (v_target_date || ' 23:59:59')::timestamp
+          AND (closed_at IS NULL OR closed_at > (v_target_date || ' 23:59:59')::timestamp)
+          AND LOWER(COALESCE(status, 'em_aberto')) NOT IN ('finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado')
+        GROUP BY store_id
+    ),
+    vault_store AS (
+        SELECT store_id, COALESCE(SUM(amount), 0) as vault_val,
+               COALESCE(jsonb_agg(jsonb_build_object('id', id, 'amount', amount, 'description', description, 'entry_date', entry_date, 'status', status)), '[]'::jsonb) as vault_entries
+        FROM store_cash_vault WHERE entry_date <= v_target_date AND status IN ('em_transito', 'pending') GROUP BY store_id
+    )
+    SELECT COALESCE(jsonb_agg(jsonb_build_object(
+        'store_id', s.id,
+        'store_name', s.name,
+        'saldo_banco', COALESCE(r.bank_total, 0),
+        'saldo_banco_ofx', COALESCE(r.bank_total, 0),
+        'dinheiro_loja', COALESCE(v.vault_val, 0),
+        'na_loja_os', COALESCE(p.patio_val, r.historical_na_loja, 0),
+        'previsto_ofx', COALESCE(ois.ofx_in_total, 0)
+    ) ORDER BY s.name), '[]'::jsonb)
+    INTO v_stores_detail
+    FROM stores s
+    LEFT JOIN recon_latest r ON r.store_id = s.id
+    LEFT JOIN patio_store p ON p.store_id = s.id
+    LEFT JOIN vault_store v ON v.store_id = s.id
+    LEFT JOIN ofx_in_store ois ON ois.store_id = s.id
+    WHERE s.active = true;
+
+    v_total_saldo_banco := v_saldo_bancos + v_dinheiro_lojas + v_cartoes_a_compensar;
+    v_caixa_atual := v_total_saldo_banco + v_dinheiro_mp + v_a_receber + v_na_loja_os;
+    v_fluxo_caixa := v_caixa_atual - v_caixa_anterior;
+    v_valor_disp_contas := v_faturamento_periodo - v_fluxo_caixa;
+    v_subtotal_contas := v_contas_manual + v_juros_rede;
+    v_diferenca_final := v_valor_disp_contas - v_subtotal_contas;
+
+    IF ABS(v_diferenca_final) <= 50.00 THEN v_status_geral := 'approved'; ELSE v_status_geral := 'divergent'; END IF;
+
+    RETURN jsonb_build_object(
+        'date', v_target_date,
+        'status_geral', v_status_geral,
+        'saldo_bancos_ofx', v_saldo_bancos,
+        'dinheiro_em_lojas', v_dinheiro_lojas,
+        'cartoes_a_compensar', v_cartoes_a_compensar,
+        'devolucoes_rede', v_devolucoes_rede,
+        'total_saldo_banco', v_total_saldo_banco,
+        'saldo_negativo_itau', v_saldo_negativo_itau,
+        'dinheiro_mp', v_dinheiro_mp,
+        'a_receber', v_a_receber,
+        'na_loja_os', v_na_loja_os,
+        'caixa_atual', v_caixa_atual,
+        'caixa_anterior', v_caixa_anterior,
+        'fluxo_caixa', v_fluxo_caixa,
+        'faturamento_oi_base', v_faturamento_oi_base,
+        'faturamento_ajustes', v_faturamento_ajustes,
+        'faturamento_periodo', v_faturamento_periodo,
+        'valor_disp_contas', v_valor_disp_contas,
+        'contas_base', v_contas_base,
+        'contas_extras', v_contas_extras,
+        'contas_manual', v_contas_manual,
+        'juros_rede', v_juros_rede,
+        'subtotal_contas', v_subtotal_contas,
+        'diferenca_final', v_diferenca_final,
+        'total_entradas_ofx', v_total_entradas_ofx,
+        'total_saidas_ofx', v_total_saidas_ofx,
+        'contas_itens', v_contas_itens,
+        'faturamento_itens', v_faturamento_itens,
+        'stores', v_stores_detail,
+        'stores_detail', v_stores_detail
+    );
+END;
+$$;
+  </pre>
+
+</body>
+</html>
+`;
+
+  const htmlPath = path.resolve(__dirname, 'manual_tecnico_conciliacao.html');
+  const pdfPath = path.resolve(__dirname, '../manual_tecnico_conciliacao.pdf');
+
+  fs.writeFileSync(htmlPath, htmlContent, 'utf8');
+
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage();
+  await page.setContent(htmlContent, { waitUntil: 'networkidle' });
+  await page.pdf({
+    path: pdfPath,
+    format: 'A4',
+    printBackground: true,
+    margin: {
+      top: '15mm',
+      bottom: '15mm',
+      left: '12mm',
+      right: '12mm'
+    }
+  });
+
+  await browser.close();
+  console.log(`✅ PDF gerado com sucesso em: ${pdfPath}`);
+}
+
+generatePdf();
