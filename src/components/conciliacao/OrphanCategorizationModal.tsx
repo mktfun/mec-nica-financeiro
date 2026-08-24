@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
-import { Check, DollarSign, Ban, Landmark, AlertCircle } from 'lucide-react';
+import { Check, TrendingUp, Ban, Landmark, AlertCircle } from 'lucide-react';
 
 interface OrphanCategorizationModalProps {
   transactionId: string;
@@ -14,17 +13,14 @@ interface OrphanCategorizationModalProps {
   categorizeOrphan: (id: string, category: string, justification: string, impactsRevenue?: boolean) => Promise<{ success: boolean, error?: string }>;
 }
 
-const CATEGORIES = [
-  { id: 'venda_sucata', label: 'Venda de Sucata', type: 'in', defaultImpact: true },
-  { id: 'deposito_avulso', label: 'Depósito Avulso (Receita)', type: 'in', defaultImpact: true },
-  { id: 'rendimento_aplicacao', label: 'Rendimento de Aplicação', type: 'in', defaultImpact: false },
-  { id: 'ajuste_marco_zero', label: 'Ajuste Marco Zero / Antigo', type: 'in', defaultImpact: false },
-  { id: 'transferencia_filiais', label: 'Transferência entre Unidades', type: 'in', defaultImpact: false },
-  { id: 'aporte_capital', label: 'Aporte de Capital / Sócios', type: 'in', defaultImpact: false },
-  { id: 'estorno', label: 'Estorno', type: 'in', defaultImpact: false },
-  { id: 'tarifa_bancaria', label: 'Tarifa Bancária', type: 'out', defaultImpact: false },
-  { id: 'pagamento_fornecedor', label: 'Pgto Fornecedor Extra', type: 'out', defaultImpact: false },
-  { id: 'outros', label: 'Outros', type: 'both', defaultImpact: true }
+const QUICK_CATEGORIES = [
+  { id: 'venda_sucata', label: 'Venda de Sucata', defaultImpact: true },
+  { id: 'deposito_avulso', label: 'Depósito Avulso', defaultImpact: true },
+  { id: 'rendimento_aplicacao', label: 'Rendimento de Aplicação', defaultImpact: false },
+  { id: 'transferencia_filiais', label: 'Transferência entre Lojas', defaultImpact: false },
+  { id: 'aporte_capital', label: 'Aporte de Sócios', defaultImpact: false },
+  { id: 'estorno', label: 'Estorno / Ajuste', defaultImpact: false },
+  { id: 'outros', label: 'Outros', defaultImpact: true }
 ];
 
 export function OrphanCategorizationModal({ 
@@ -36,15 +32,13 @@ export function OrphanCategorizationModal({
   onSuccess,
   categorizeOrphan
 }: OrphanCategorizationModalProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('Venda de Sucata');
   const [justification, setJustification] = useState('');
   const [impactsRevenue, setImpactsRevenue] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const availableCategories = CATEGORIES.filter(c => c.type === transactionType || c.type === 'both');
-
-  const handleCategorySelect = (cat: typeof CATEGORIES[0]) => {
+  const handleCategoryClick = (cat: typeof QUICK_CATEGORIES[0]) => {
     setSelectedCategory(cat.label);
     setImpactsRevenue(cat.defaultImpact);
   };
@@ -53,7 +47,7 @@ export function OrphanCategorizationModal({
     e.preventDefault();
     const finalCategory = (selectedCategory || '').trim();
     if (!finalCategory) {
-      setError('Por favor, informe ou selecione uma categoria.');
+      setError('Selecione ou digite uma categoria.');
       return;
     }
 
@@ -75,164 +69,158 @@ export function OrphanCategorizationModal({
     <Modal
       isOpen={true}
       onClose={onClose}
-      title="Justificar Lançamento Bancário"
+      title="Justificar Lançamento"
     >
-      <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Card do Lançamento Bancário */}
-        <div className="p-4 bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] uppercase font-bold text-[var(--text-tertiary)] tracking-wider">
-              Lançamento do Extrato Bancário
-            </span>
-            <Badge variant="outline" className="text-xs font-mono text-[var(--color-primary)]">
-              {transactionType === 'in' ? 'Entrada' : 'Saída'}
-            </Badge>
-          </div>
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <Landmark size={16} className="text-[var(--color-primary)] shrink-0" />
-              <p className="font-semibold text-sm text-[var(--text-primary)] truncate max-w-[260px]">
+      <form onSubmit={handleSubmit} className="space-y-4 pt-1">
+        {/* Card do Lançamento */}
+        <div className="p-3.5 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
+              <Landmark size={18} />
+            </div>
+            <div className="min-w-0">
+              <p className="font-semibold text-xs text-zinc-200 truncate" title={transactionTitle}>
                 {transactionTitle || 'Lançamento Bancário'}
               </p>
+              <span className="text-[11px] text-zinc-400">Extrato Bancário</span>
             </div>
-            <div className="text-right">
-              <span className="text-base font-bold font-mono text-[var(--text-primary)]">
-                {transactionType === 'in' ? '+' : '-'} R$ {transactionAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-              </span>
-            </div>
+          </div>
+          <div className="text-right shrink-0">
+            <span className="text-base font-bold font-mono text-emerald-400">
+              {transactionType === 'in' ? '+' : '-'} {transactionAmount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+            </span>
           </div>
         </div>
 
-        {/* 1. SELETOR DE IMPACTO NO FATURAMENTO */}
+        {/* 1. Escolha de Impacto (2 botões claros e espaçosos) */}
         {transactionType === 'in' && (
-          <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] block font-mono">
-              Impacto no Faturamento Atual da Loja <span className="text-amber-400">*</span>
+          <div className="space-y-1.5">
+            <label className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">
+              Destino da Justificativa
             </label>
-            <div className="grid grid-cols-2 gap-3">
-              {/* Opção 1: Somar */}
+            <div className="grid grid-cols-2 gap-2.5">
               <button
                 type="button"
                 onClick={() => setImpactsRevenue(true)}
-                className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${
+                className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col gap-1 ${
                   impactsRevenue
-                    ? 'bg-[var(--bg-panel)] border-[var(--color-primary)] shadow-sm ring-1 ring-[var(--color-primary)]/40'
-                    : 'bg-[var(--bg-canvas)] border-[var(--border-subtle)] opacity-60 hover:opacity-100 hover:border-[var(--text-tertiary)]'
+                    ? 'bg-emerald-500/10 border-emerald-500 text-emerald-300 ring-1 ring-emerald-500/30'
+                    : 'bg-zinc-900/60 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-300'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5 font-sans">
-                    <DollarSign size={14} className="text-[var(--color-primary)]" />
+                  <span className="text-xs font-bold flex items-center gap-1.5">
+                    <TrendingUp size={14} className={impactsRevenue ? 'text-emerald-400' : 'text-zinc-400'} />
                     Somar ao Faturamento
                   </span>
-                  {impactsRevenue && <Check size={14} className="text-[var(--color-primary)]" />}
+                  {impactsRevenue && <Check size={14} className="text-emerald-400" />}
                 </div>
-                <span className="text-[11px] text-[var(--text-tertiary)] leading-tight">
-                  Receita real da loja (venda sem OS, sucata, serviços avulsos).
+                <span className="text-[11px] text-zinc-500">
+                  Receita avulsa (Sucata, serviços)
                 </span>
               </button>
 
-              {/* Opção 2: Apenas Conciliar */}
               <button
                 type="button"
                 onClick={() => setImpactsRevenue(false)}
-                className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${
+                className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col gap-1 ${
                   !impactsRevenue
-                    ? 'bg-[var(--bg-panel)] border-[var(--color-primary)] shadow-sm ring-1 ring-[var(--color-primary)]/40'
-                    : 'bg-[var(--bg-canvas)] border-[var(--border-subtle)] opacity-60 hover:opacity-100 hover:border-[var(--text-tertiary)]'
+                    ? 'bg-zinc-800 border-zinc-600 text-zinc-200 ring-1 ring-zinc-500/30'
+                    : 'bg-zinc-900/60 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-300'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5 font-sans">
-                    <Ban size={14} className="text-[var(--color-accent-warning)]" />
-                    Apenas Conciliar (NÃO Somar)
+                  <span className="text-xs font-bold flex items-center gap-1.5">
+                    <Ban size={14} className={!impactsRevenue ? 'text-amber-400' : 'text-zinc-400'} />
+                    Apenas Conciliar
                   </span>
-                  {!impactsRevenue && <Check size={14} className="text-[var(--color-primary)]" />}
+                  {!impactsRevenue && <Check size={14} className="text-zinc-200" />}
                 </div>
-                <span className="text-[11px] text-[var(--text-tertiary)] leading-tight">
-                  Marco Zero, rendimento de aplicação, transferência, aporte.
+                <span className="text-[11px] text-zinc-500">
+                  Aporte, transferência, rendimento
                 </span>
               </button>
             </div>
           </div>
         )}
 
-        {/* 2. CATEGORIA */}
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] font-mono">
-              Categoria / Motivo <span className="text-amber-400">*</span>
-            </label>
-            <span className="text-[10px] text-[var(--text-tertiary)] font-sans">escolha abaixo ou digite</span>
-          </div>
-          
-          <input
-            type="text"
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            placeholder="Ex: Rendimento de Aplicação, Ajuste Marco Zero, Venda de Sucata..."
-            className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg px-3.5 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors placeholder:text-[var(--text-tertiary)] font-sans"
-          />
-
-          <div className="flex flex-wrap gap-1.5 pt-1">
-            {availableCategories.map(cat => (
+        {/* 2. Categoria em Chips */}
+        <div className="space-y-1.5">
+          <label className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">
+            Motivo / Categoria
+          </label>
+          <div className="flex flex-wrap gap-1.5">
+            {QUICK_CATEGORIES.map(cat => (
               <button
                 key={cat.id}
                 type="button"
-                onClick={() => handleCategorySelect(cat)}
-                className={`px-2.5 py-1 text-xs rounded-md border transition-all cursor-pointer font-sans ${
+                onClick={() => handleCategoryClick(cat)}
+                className={`px-2.5 py-1.5 text-xs rounded-lg border transition-all cursor-pointer ${
                   selectedCategory.toLowerCase() === cat.label.toLowerCase()
-                    ? 'bg-[var(--bg-surface-hover)] border-[var(--color-primary)] text-[var(--color-primary)] font-bold' 
-                    : 'bg-[var(--bg-canvas)] border-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--bg-panel)] hover:text-[var(--text-primary)]'
+                    ? 'bg-emerald-600 text-white border-emerald-500 font-semibold shadow-sm' 
+                    : 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:border-zinc-700'
                 }`}
               >
                 {cat.label}
               </button>
             ))}
           </div>
+          
+          <input
+            type="text"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            placeholder="Ou digite outra categoria..."
+            className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500 placeholder:text-zinc-600 mt-1"
+          />
         </div>
 
-        {/* 3. JUSTIFICATIVA */}
-        <div className="space-y-1.5">
-          <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] font-mono">
-            Observações Adicionais (Opcional)
+        {/* 3. Observações (Opcional) */}
+        <div className="space-y-1">
+          <label className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">
+            Observação (Opcional)
           </label>
-          <textarea
+          <input
+            type="text"
             value={justification}
             onChange={(e) => setJustification(e.target.value)}
-            placeholder="Ex: Rendimento diário automático de saldo Itaú ou ajuste do Marco Zero..."
-            className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-3 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors h-16 resize-none placeholder:text-[var(--text-tertiary)] font-sans"
+            placeholder="Ex: Venda de sucata loja Santo André..."
+            className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500 placeholder:text-zinc-600"
           />
         </div>
 
         {error && (
-          <div className="p-3 bg-[var(--color-accent-warning)]/10 border border-[var(--color-accent-warning)]/30 rounded-lg text-[var(--color-accent-warning)] text-xs font-medium flex items-center gap-2">
+          <div className="p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-lg text-amber-300 text-xs flex items-center gap-2">
             <AlertCircle size={14} className="shrink-0" />
             {error}
           </div>
         )}
 
-        <div className="pt-2 flex justify-end gap-3 border-t border-[var(--border-subtle)]">
+        {/* Rodapé de Ações */}
+        <div className="pt-2 flex justify-end gap-2 border-t border-zinc-800">
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
+            size="sm"
             onClick={onClose}
             disabled={isSubmitting}
+            className="text-xs text-zinc-400 hover:text-zinc-200"
           >
             Cancelar
           </Button>
           <Button
             type="submit"
             variant="primary"
+            size="sm"
             disabled={isSubmitting || !selectedCategory}
-            className="font-semibold gap-1.5"
+            className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold gap-1.5 px-4"
           >
             {isSubmitting ? (
-              <span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+              <span className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
             ) : (
-              <Check size={16} />
+              <Check size={14} />
             )}
-            Confirmar Justificativa
+            Salvar Justificativa
           </Button>
         </div>
       </form>

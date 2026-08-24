@@ -11,7 +11,9 @@ export function useCategorizeOrphan() {
     transactionId: string, 
     category: string, 
     justification: string,
-    impactsRevenue: boolean = true
+    impactsRevenue: boolean = true,
+    amount?: number,
+    targetDate?: string
   ) => {
     setLoading(true);
     setError(null);
@@ -25,68 +27,78 @@ export function useCategorizeOrphan() {
       const finalJustification = impactsRevenue ? cleanJustification : `${cleanJustification} [NÃO SOMAR]`.trim();
 
       // 1. Atualiza na tabela unificada transactions se existir
-      await supabase
+      const { data: updatedTx } = await supabase
         .from('transactions')
         .update({
           manual_category: finalCategory,
           manual_justification: finalJustification
         })
-        .eq('id', transactionId);
-
-      // 2. Tenta atualizar na tabela física ofx_transactions (extrato bancário)
-      const { data: ofxData, error: ofxErr } = await supabase
-        .from('ofx_transactions')
-        .update({
-          manual_category: finalCategory,
-          manual_justification: finalJustification
-        })
         .eq('id', transactionId)
-        .select();
+        .select('id, target_date, occurred_at, amount, store_id')
+        .maybeSingle();
 
-      if (!ofxErr && ofxData && ofxData.length > 0) {
-        matchedData = ofxData[0];
+      if (updatedTx) {
+        matchedData = updatedTx;
       }
 
-      // 3. Se não estiver no OFX, tenta em pos_transactions (maquininhas)
+      // 2. Atualiza em pos_transactions se existir
       if (!matchedData) {
-        const { data: posData, error: posErr } = await supabase
+        const { data: posData } = await supabase
           .from('pos_transactions')
           .update({
             manual_category: finalCategory,
             manual_justification: finalJustification
           })
           .eq('id', transactionId)
-          .select();
+          .select('id, target_date, occurred_at, net_amount, gross_amount, store_id')
+          .maybeSingle();
 
-        if (!posErr && posData && posData.length > 0) {
-          matchedData = posData[0];
+        if (posData) {
+          matchedData = posData;
         }
       }
 
-      // 4. Se não estiver em POS, tenta em manual_transactions
-      if (!matchedData) {
-        const { data: manData, error: manErr } = await supabase
-          .from('manual_transactions')
-          .update({
-            manual_category: finalCategory,
-            manual_justification: finalJustification
-          })
-          .eq('id', transactionId)
-          .select();
+      // 3. Sincroniza em daily_revenue_adjustments para impactar o faturamento oficial
+      const finalDate = targetDate 
+        || matchedData?.target_date 
+        || (matchedData?.occurred_at ? matchedData.occurred_at.split('T')[0] : new Date().toISOString().split('T')[0]);
+        
+      const finalAmount = amount 
+        || (matchedData?.amount ? Math.abs(Number(matchedData.amount)) : 0)
+        || (matchedData?.net_amount ? Math.abs(Number(matchedData.net_amount)) : 0)
+        || (matchedData?.gross_amount ? Math.abs(Number(matchedData.gross_amount)) : 0);
 
-        if (!manErr && manData && manData.length > 0) {
-          matchedData = manData[0];
-        }
+      if (impactsRevenue && finalAmount > 0) {
+        await supabase
+          .from('daily_revenue_adjustments')
+          .upsert({
+            id: transactionId,
+            date: finalDate,
+            title: cleanCategory || 'Receita Avulsa',
+            description: cleanJustification || 'Justificado na conciliação da filial',
+            type: 'venda_avulsa',
+            amount: finalAmount
+          }, { onConflict: 'id' });
+      } else {
+        // Se mudou para NÃO impactar faturamento, remove do daily_revenue_adjustments
+        await supabase
+          .from('daily_revenue_adjustments')
+          .delete()
+          .eq('id', transactionId);
       }
 
       // Invalida todos os caches de conciliação, justificativas e snapshots
-      queryClient.invalidateQueries({ queryKey: ['justified_transactions'] });
-      queryClient.invalidateQueries({ queryKey: ['daily_reconciliation_summary'] });
-      queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
-      queryClient.invalidateQueries({ queryKey: ['reconciliations'] });
-      queryClient.invalidateQueries({ queryKey: ['transactions'] });
-      queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] });
-      queryClient.invalidateQueries({ queryKey: ['extrato'] });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['justified_transactions'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily_reconciliation_summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-snapshot'] }),
+        queryClient.invalidateQueries({ queryKey: ['reconciliations'] }),
+        queryClient.invalidateQueries({ queryKey: ['transactions'] }),
+        queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] }),
+        queryClient.invalidateQueries({ queryKey: ['extrato'] })
+      ]);
 
       return { 
         success: true, 
@@ -98,7 +110,7 @@ export function useCategorizeOrphan() {
       };
     } catch (err: any) {
       console.error('Error categorizing orphan transaction:', err);
-      setError(err.message || 'Erro ao categorizar transação');
+      setError(err.message || 'Erro ao salvar justificativa');
       return { success: false, error: err.message };
     } finally {
       setLoading(false);

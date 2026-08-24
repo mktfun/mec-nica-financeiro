@@ -177,12 +177,12 @@ export function OfxSemMatchTable({ storeId, date }: { storeId: string; date: str
       {categorizingTx && (
         <OrphanCategorizationModal
           transactionId={categorizingTx.id}
-          transactionTitle={categorizingTx.title || categorizingTx.subtitle || 'Transação OFX'}
+          transactionTitle={categorizingTx.title || categorizingTx.subtitle || categorizingTx.description || 'Transação OFX'}
           transactionAmount={Number(categorizingTx.amount || 0)}
           transactionType="in"
           onClose={() => setCategorizingTx(null)}
           onSuccess={handleCategorizationSuccess}
-          categorizeOrphan={categorize}
+          categorizeOrphan={(id, cat, just, impacts) => categorize(id, cat, just, impacts, Number(categorizingTx.amount || 0), date)}
         />
       )}
 
