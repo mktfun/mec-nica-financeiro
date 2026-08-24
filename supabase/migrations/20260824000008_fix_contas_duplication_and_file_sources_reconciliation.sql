@@ -188,7 +188,7 @@ BEGIN
     INTO v_dinheiro_lojas
     FROM store_cash_vault
     WHERE entry_date <= v_target_date 
-      AND status = 'pending';
+      AND status IN ('em_transito', 'pending');
 
     BEGIN
         v_triple_recon := get_store_pos_triple_reconciliation(v_target_date);
@@ -291,7 +291,7 @@ BEGIN
     vault_store AS (
         SELECT store_id, COALESCE(SUM(amount), 0) as vault_val
         FROM store_cash_vault
-        WHERE entry_date <= v_target_date AND status = 'pending'
+        WHERE entry_date <= v_target_date AND status IN ('em_transito', 'pending')
         GROUP BY store_id
     )
     SELECT COALESCE(jsonb_agg(jsonb_build_object(
