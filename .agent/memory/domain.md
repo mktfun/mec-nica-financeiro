@@ -401,3 +401,16 @@
 **Risco identificado:** Deixar OSs órfãs no pátio indefinidamente se o relatório do mês deixar de trazê-las.
 
 **Não fazer:** Nunca descartar silenciosamente OSs que deixaram de vir na planilha sem dar a chance ao operador de decidir o status final.
+
+## [2026-08-21] — [Feature ID: 263-tabela-unificada-os-preview-com-filtros-e-edicao-livre]
+
+**Contexto:** Unificação das ordens de serviço do dia (planilhas de pátio importadas) com as ordens em aberto de dias anteriores (banco de dados) para auditoria e conferência contábil antes do fechamento.
+
+**Regra aprendida:**
+1. **Unificação no Preview:** Agrupar `results.osFiles` e `missingOsList` em `allPreviewOsList` identificando a origem (`origin: 'imported' | 'missing'`).
+2. **Mutação Imutável Reativa:** A edição de qualquer OS (da planilha ou do banco) atualiza imediatamente os cálculos globais de recebimentos do dia (`totalOs`), estoque em pátio (`totalPatioEstoqueGlobal`) e os saldos individuais de cada filial.
+3. **Persistência Integral:** Ao confirmar o fechamento, as OSs importadas são gravadas em lote e quaisquer OSs ausentes modificadas são atualizadas diretamente na tabela `patio_os`.
+
+**Risco identificado:** Dessincronização entre as OSs modificadas na UI e os reducers de faturamento/estoque das filiais.
+
+**Não fazer:** Nunca separar as OSs em tabelas desconexas sem permitir a conferência consolidada da movimentação do dia.

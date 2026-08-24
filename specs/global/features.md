@@ -170,3 +170,10 @@
 - Tabela interativa dedicada com inputs inline de **Valor Total (R$)**, **Total Pago (R$)**, **Saldo Pendente Calculado** e **Status** (`em_aberto`, `pago_parcial`, `finalizado`, `cancelado`).
 - Busca rápida por placa, OS ou loja dentro das ordens ausentes.
 - Persistência atômica das alterações em `patio_os` durante o fechamento diário (`executeDailyClosing`).
+
+## Feature 263: Tabela Unificada de OSs no Preview com Filtros Rápidos e Edição Livre
+- Tabela unificada permanente de Ordens de Serviço no Step 3 do `CentralImportWizard.tsx` consolidando OSs das planilhas importadas e OSs ausentes do banco.
+- 4 Pílulas de filtro rápido com contadores em tempo real: **Todas as OSs**, **Ausentes no Relatório**, **Recebimentos do Dia** e **Estoque em Pátio**.
+- Edição inline livre de **Valor Total OS (R$)**, **Total Pago (R$)** e **Status** com recálculo reativo dos cards de resumo e saldos por filial.
+- Busca textual por placa, número da OS e filial, com filtro por loja e paginação de 50 itens por página.
+- Persistência atômica das alterações em `patio_os` no fechamento diário (`executeDailyClosing`).

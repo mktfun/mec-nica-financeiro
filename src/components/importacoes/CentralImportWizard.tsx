@@ -182,6 +182,188 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     detectMissingOs();
   }, [step, mapping, results.osFiles, stores]);
 
+  // Estados para tabela unificada de OSs no Preview
+  const [osTabFilter, setOsTabFilter] = useState<'ALL' | 'MISSING' | 'PAID_TODAY' | 'OPEN_YARD'>('ALL');
+  const [osSearchQuery, setOsSearchQuery] = useState('');
+  const [osStoreFilter, setOsStoreFilter] = useState('ALL');
+  const [osStatusFilter, setOsStatusFilter] = useState('ALL');
+  const [osPage, setOsPage] = useState(1);
+  const OS_PAGE_SIZE = 50;
+
+  // Lista unificada de todas as OSs (Importadas da Planilha + Ausentes do Banco)
+  const allPreviewOsList = useMemo(() => {
+    const list: Array<{
+      uniqueId: string;
+      origin: 'imported' | 'missing';
+      fileName?: string;
+      storeId: string;
+      storeAlias: string;
+      storeName: string;
+      os_number: string;
+      plate: string;
+      opened_at?: string;
+      total_value: number;
+      paid_value: number;
+      status: string;
+      is_edited?: boolean;
+      original_total_value?: number;
+      original_paid_value?: number;
+      original_status?: string;
+    }> = [];
+
+    // 1. OSs dos arquivos importados
+    results.osFiles.filter(r => r.success).forEach(file => {
+      const storeId = mapping[file.storeAlias] || '';
+      const storeObj = stores.find(s => s.id === storeId);
+      const storeName = storeObj ? storeObj.name : file.storeAlias;
+
+      file.osArray.forEach(os => {
+        list.push({
+          uniqueId: `imp_${file.fileName}_${os.os_number}`,
+          origin: 'imported',
+          fileName: file.fileName,
+          storeId,
+          storeAlias: file.storeAlias,
+          storeName,
+          os_number: String(os.os_number || ''),
+          plate: os.plate || '-',
+          opened_at: os.opened_at,
+          total_value: Number(os.total_value) || 0,
+          paid_value: Number(os.paid_value) || 0,
+          status: os.status || 'em_aberto',
+          is_edited: !!os.is_edited,
+        });
+      });
+    });
+
+    // 2. OSs ausentes detectadas do banco
+    missingOsList.forEach(m => {
+      list.push({
+        uniqueId: `miss_${m.id}`,
+        origin: 'missing',
+        storeId: m.store_id,
+        storeAlias: m.store_name,
+        storeName: m.store_name,
+        os_number: String(m.os_number || ''),
+        plate: m.plate || '-',
+        opened_at: m.opened_at,
+        total_value: Number(m.total_value) || 0,
+        paid_value: Number(m.paid_value) || 0,
+        status: m.status || 'em_aberto',
+        is_edited: m.total_value !== m.original_total_value || m.paid_value !== m.original_paid_value || m.status !== m.original_status,
+        original_total_value: m.original_total_value,
+        original_paid_value: m.original_paid_value,
+        original_status: m.original_status
+      });
+    });
+
+    return list;
+  }, [results.osFiles, missingOsList, mapping, stores]);
+
+  // Contagens para as pílulas de filtro
+  const osCounts = useMemo(() => {
+    let missing = 0;
+    let paidToday = 0;
+    let openYard = 0;
+
+    allPreviewOsList.forEach(item => {
+      if (item.origin === 'missing') missing++;
+      if (item.paid_value > 0) paidToday++;
+      const st = (item.status || 'em_aberto').toLowerCase();
+      if (st === 'em_aberto' || st === 'pago_parcial' || st === 'aberta' || st === 'pendente') {
+        openYard++;
+      }
+    });
+
+    return {
+      all: allPreviewOsList.length,
+      missing,
+      paidToday,
+      openYard
+    };
+  }, [allPreviewOsList]);
+
+  // Lista filtrada
+  const filteredPreviewOsList = useMemo(() => {
+    return allPreviewOsList.filter(item => {
+      // 1. Filtro de Aba / Pílula
+      if (osTabFilter === 'MISSING' && item.origin !== 'missing') return false;
+      if (osTabFilter === 'PAID_TODAY' && item.paid_value <= 0) return false;
+      if (osTabFilter === 'OPEN_YARD') {
+        const st = (item.status || 'em_aberto').toLowerCase();
+        if (st === 'finalizado' || st === 'cancelado') return false;
+      }
+
+      // 2. Filtro de Loja
+      if (osStoreFilter !== 'ALL') {
+        const matchesStore = item.storeId === osStoreFilter || item.storeAlias === osStoreFilter || item.storeName === osStoreFilter;
+        if (!matchesStore) return false;
+      }
+
+      // 3. Filtro de Status
+      if (osStatusFilter !== 'ALL') {
+        const osStatus = (item.status || 'em_aberto').toLowerCase();
+        if (osStatusFilter === 'pendente') {
+          if (osStatus === 'finalizado' || osStatus === 'cancelado') return false;
+        } else if (osStatus !== osStatusFilter.toLowerCase()) {
+          return false;
+        }
+      }
+
+      // 4. Busca Textual
+      if (osSearchQuery.trim()) {
+        const q = osSearchQuery.toLowerCase().trim();
+        const num = item.os_number.toLowerCase();
+        const plate = item.plate.toLowerCase();
+        const store = item.storeName.toLowerCase();
+        if (!num.includes(q) && !plate.includes(q) && !store.includes(q)) return false;
+      }
+
+      return true;
+    });
+  }, [allPreviewOsList, osTabFilter, osStoreFilter, osStatusFilter, osSearchQuery]);
+
+  const totalPages = Math.ceil(filteredPreviewOsList.length / OS_PAGE_SIZE) || 1;
+  const paginatedPreviewOsList = useMemo(() => {
+    const start = (osPage - 1) * OS_PAGE_SIZE;
+    return filteredPreviewOsList.slice(start, start + OS_PAGE_SIZE);
+  }, [filteredPreviewOsList, osPage, OS_PAGE_SIZE]);
+
+  // Handler de atualização unificado
+  const updateOsRow = (uniqueId: string, field: 'total_value' | 'paid_value' | 'status', value: any) => {
+    if (uniqueId.startsWith('miss_')) {
+      const dbId = uniqueId.replace('miss_', '');
+      updateMissingOs(dbId, field, value);
+    } else if (uniqueId.startsWith('imp_')) {
+      const parts = uniqueId.split('_');
+      const osNumber = parts[parts.length - 1];
+      const fileName = parts.slice(1, parts.length - 1).join('_');
+      
+      setResults(prev => ({
+        ...prev,
+        osFiles: prev.osFiles.map(file => {
+          if (file.fileName === fileName || file.osArray.some(o => String(o.os_number) === osNumber)) {
+            return {
+              ...file,
+              osArray: file.osArray.map(os => {
+                if (String(os.os_number) === osNumber) {
+                  const updated: any = { ...os, [field]: value, is_edited: true };
+                  if (field === 'paid_value') {
+                    const numVal = Number(value) || 0;
+                    updated.delta_paid = numVal;
+                  }
+                  return updated;
+                }
+                return os;
+              })
+            };
+          }
+          return file;
+        })
+      }));
+    }
+  };
+
   // Terminal logs state
   const [importLogs, setImportLogs] = useState<ImportLogEntry[]>([]);
   const [importStages, setImportStages] = useState<AgentStage[]>(INITIAL_STAGES);
@@ -1679,103 +1861,201 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           </div>
 
           <Card className="p-8 space-y-6">
-            {/* Tabela de Ajuste Manual Direto para OSs Ausentes no Relatório Atual */}
-            {isLoadingMissingOs ? (
-              <div className="p-6 bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-2xl flex items-center justify-center gap-3 text-xs text-[var(--text-secondary)]">
-                <LoadingSpinner size="sm" text="" />
-                <span>Verificando se há OSs em aberto no banco ausentes da planilha importada...</span>
-              </div>
-            ) : missingOsList.length > 0 ? (
-              <div className="p-6 bg-[var(--bg-canvas)] border border-amber-500/30 rounded-2xl shadow-xl space-y-4">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-amber-500/20">
+            {/* Tabela Unificada de Ordens de Serviço do Preview */}
+            {allPreviewOsList.length > 0 && (
+              <div className="p-6 bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-2xl shadow-xl space-y-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-[var(--border-subtle)]">
                   <div className="flex items-center gap-2.5">
-                    <div className="p-2 bg-amber-500/10 text-amber-400 rounded-lg">
-                      <AlertCircle size={20} />
+                    <div className="p-2 bg-[var(--color-primary)]/10 text-[var(--color-primary)] rounded-lg">
+                      <FileText size={20} />
                     </div>
                     <div>
                       <h4 className="font-semibold text-sm text-[var(--text-primary)] flex items-center gap-2">
-                        OSs Pendentes Ausentes no Relatório Atual ({missingOsList.length})
-                        <Badge variant="outline" className="text-[10px] bg-amber-500/10 text-amber-400 border-amber-500/30">
-                          Ajuste Necessário
+                        Ordens de Serviço do Pátio ({allPreviewOsList.length})
+                        <Badge variant="outline" className="text-[10px] bg-emerald-500/10 text-emerald-400 border-emerald-500/30">
+                          {totalOs.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} recebidos
                         </Badge>
                       </h4>
                       <p className="text-xs text-[var(--text-tertiary)]">
-                        Estas ordens constam ativas no banco de dados, mas <b>não vieram na planilha importada</b>. Ajuste os valores ou status livremente abaixo antes de gravar:
+                        Audite e altere o Valor Total, Total Pago ou Status de qualquer OS antes de confirmar a gravação:
                       </p>
                     </div>
                   </div>
 
-                  <div className="relative">
-                    <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
-                    <input
-                      type="text"
-                      placeholder="Buscar por placa, OS, loja..."
-                      value={missingOsSearch}
-                      onChange={(e) => setMissingOsSearch(e.target.value)}
-                      className="pl-8 pr-3 py-1.5 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-amber-500 rounded-lg text-xs text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none w-48 md:w-56"
-                    />
-                    {missingOsSearch && (
-                      <button onClick={() => setMissingOsSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] hover:text-white">
-                        <X size={12} />
-                      </button>
-                    )}
+                  {/* Controles de Busca e Filtro */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="relative">
+                      <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
+                      <input
+                        type="text"
+                        placeholder="Buscar OS, Placa, Loja..."
+                        value={osSearchQuery}
+                        onChange={(e) => { setOsSearchQuery(e.target.value); setOsPage(1); }}
+                        className="pl-8 pr-3 py-1.5 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg text-xs text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none w-44 md:w-56"
+                      />
+                      {osSearchQuery && (
+                        <button onClick={() => setOsSearchQuery('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] hover:text-white">
+                          <X size={12} />
+                        </button>
+                      )}
+                    </div>
+
+                    <select
+                      value={osStoreFilter}
+                      onChange={(e) => { setOsStoreFilter(e.target.value); setOsPage(1); }}
+                      className="px-2.5 py-1.5 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none"
+                    >
+                      <option value="ALL">Todas as Lojas</option>
+                      {Array.from(new Set(allPreviewOsList.map(item => item.storeName))).map(sName => (
+                        <option key={sName} value={sName}>{sName}</option>
+                      ))}
+                    </select>
+
+                    <select
+                      value={osStatusFilter}
+                      onChange={(e) => { setOsStatusFilter(e.target.value); setOsPage(1); }}
+                      className="px-2.5 py-1.5 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none"
+                    >
+                      <option value="ALL">Todos os Status</option>
+                      <option value="pendente">Pendentes (Em Aberto / Parcial)</option>
+                      <option value="em_aberto">em_aberto</option>
+                      <option value="pago_parcial">pago_parcial</option>
+                      <option value="finalizado">finalizado</option>
+                      <option value="cancelado">cancelado</option>
+                    </select>
                   </div>
                 </div>
 
-                <div className="overflow-x-auto max-h-80 overflow-y-auto">
+                {/* Pílulas de Filtro Rápido */}
+                <div className="flex flex-wrap items-center gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => { setOsTabFilter('ALL'); setOsPage(1); }}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 ${
+                      osTabFilter === 'ALL'
+                        ? 'bg-[var(--color-primary)] text-white shadow-sm'
+                        : 'bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] hover:text-white border border-[var(--border-subtle)]'
+                    }`}
+                  >
+                    <span>Todas as OSs</span>
+                    <span className="px-1.5 py-0.5 text-[10px] rounded-full bg-black/30 font-mono font-bold">
+                      {osCounts.all}
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => { setOsTabFilter('MISSING'); setOsPage(1); }}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 ${
+                      osTabFilter === 'MISSING'
+                        ? 'bg-amber-500 text-black shadow-sm font-bold'
+                        : 'bg-[var(--bg-surface-elevated)] text-amber-400 hover:text-amber-300 border border-amber-500/30'
+                    }`}
+                  >
+                    <AlertCircle size={13} />
+                    <span>Ausentes no Relatório</span>
+                    <span className="px-1.5 py-0.5 text-[10px] rounded-full bg-black/30 font-mono font-bold">
+                      {osCounts.missing}
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => { setOsTabFilter('PAID_TODAY'); setOsPage(1); }}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 ${
+                      osTabFilter === 'PAID_TODAY'
+                        ? 'bg-emerald-600 text-white shadow-sm'
+                        : 'bg-[var(--bg-surface-elevated)] text-emerald-400 hover:text-emerald-300 border border-emerald-500/30'
+                    }`}
+                  >
+                    <span>Recebimentos do Dia</span>
+                    <span className="px-1.5 py-0.5 text-[10px] rounded-full bg-black/30 font-mono font-bold">
+                      {osCounts.paidToday}
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => { setOsTabFilter('OPEN_YARD'); setOsPage(1); }}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 ${
+                      osTabFilter === 'OPEN_YARD'
+                        ? 'bg-sky-600 text-white shadow-sm'
+                        : 'bg-[var(--bg-surface-elevated)] text-sky-400 hover:text-sky-300 border border-sky-500/30'
+                    }`}
+                  >
+                    <span>Estoque em Pátio</span>
+                    <span className="px-1.5 py-0.5 text-[10px] rounded-full bg-black/30 font-mono font-bold">
+                      {osCounts.openYard}
+                    </span>
+                  </button>
+                </div>
+
+                {/* Tabela */}
+                <div className="overflow-x-auto max-h-96 overflow-y-auto">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead className="sticky top-0 bg-[var(--bg-surface-elevated)] z-10">
                       <tr className="border-b border-[var(--border-subtle)] text-[var(--text-tertiary)] uppercase font-semibold">
                         <th className="py-2.5 px-3">Loja</th>
                         <th className="py-2.5 px-3">OS / Placa</th>
-                        <th className="py-2.5 px-3">Abertura</th>
-                        <th className="py-2.5 px-3 w-36">Valor Total (R$)</th>
+                        <th className="py-2.5 px-3">Origem</th>
+                        <th className="py-2.5 px-3 w-36">Valor Total OS (R$)</th>
                         <th className="py-2.5 px-3 w-36">Total Pago (R$)</th>
                         <th className="py-2.5 px-3">Saldo Pendente</th>
-                        <th className="py-2.5 px-3 w-40">Status</th>
+                        <th className="py-2.5 px-3 w-36">Status</th>
+                        <th className="py-2.5 px-3 text-center w-24">Edição</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[var(--border-subtle)]">
-                      {missingOsList
-                        .filter(os => {
-                          if (!missingOsSearch.trim()) return true;
-                          const q = missingOsSearch.toLowerCase().trim();
-                          return String(os.os_number).toLowerCase().includes(q) ||
-                                 String(os.plate).toLowerCase().includes(q) ||
-                                 String(os.store_name).toLowerCase().includes(q);
-                        })
-                        .map((os) => {
-                          const saldoPendente = Math.max(0, Number(os.total_value || 0) - Number(os.paid_value || 0));
-                          const isModified = os.total_value !== os.original_total_value || os.paid_value !== os.original_paid_value || os.status !== os.original_status;
+                      {paginatedPreviewOsList.length === 0 ? (
+                        <tr>
+                          <td colSpan={8} className="py-8 text-center text-[var(--text-tertiary)]">
+                            Nenhuma Ordem de Serviço encontrada para o filtro selecionado.
+                          </td>
+                        </tr>
+                      ) : (
+                        paginatedPreviewOsList.map((item) => {
+                          const saldoPendente = Math.max(0, Number(item.total_value || 0) - Number(item.paid_value || 0));
+                          const isMissing = item.origin === 'missing';
+                          const isEdited = !!item.is_edited;
 
                           return (
-                            <tr key={os.id} className={`hover:bg-white/[0.02] transition-colors ${isModified ? 'bg-amber-500/10' : ''}`}>
+                            <tr key={item.uniqueId} className={`hover:bg-white/[0.02] transition-colors ${isEdited ? 'bg-amber-500/10' : isMissing ? 'bg-amber-500/5' : ''}`}>
                               <td className="py-2.5 px-3 font-medium text-[var(--text-primary)]">
-                                {os.store_name}
+                                <span className="px-2 py-0.5 rounded bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] text-[11px]">
+                                  {item.storeName}
+                                </span>
                               </td>
                               <td className="py-2.5 px-3">
-                                <span className="font-mono font-bold text-[var(--text-primary)] block">#{os.os_number}</span>
-                                <span className="text-[10px] text-[var(--text-tertiary)]">{os.plate}</span>
+                                <span className="font-mono font-bold text-[var(--text-primary)] block">#{item.os_number}</span>
+                                <span className="text-[10px] text-[var(--text-tertiary)]">{item.plate || 'SEM PLACA'}</span>
                               </td>
-                              <td className="py-2.5 px-3 text-[var(--text-tertiary)] font-mono text-[11px]">
-                                {os.opened_at ? os.opened_at.split('T')[0].split('-').reverse().join('/') : '-'}
+                              <td className="py-2.5 px-3">
+                                {isMissing ? (
+                                  <Badge variant="outline" className="text-[10px] bg-amber-500/15 text-amber-300 border-amber-500/40">
+                                    Ausente no Relatório
+                                  </Badge>
+                                ) : (
+                                  <Badge variant="outline" className="text-[10px] bg-sky-500/10 text-sky-400 border-sky-500/30">
+                                    Planilha do Dia
+                                  </Badge>
+                                )}
                               </td>
                               <td className="py-2 px-3">
                                 <input
                                   type="number"
                                   step="0.01"
-                                  value={os.total_value}
-                                  onChange={(e) => updateMissingOs(os.id, 'total_value', Number(e.target.value))}
-                                  className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-amber-500 rounded-lg px-2.5 py-1 text-xs font-mono font-semibold text-[var(--text-primary)] focus:outline-none"
+                                  value={item.total_value ?? 0}
+                                  onChange={(e) => updateOsRow(item.uniqueId, 'total_value', Number(e.target.value))}
+                                  className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg px-2.5 py-1 text-xs font-mono font-semibold text-[var(--text-primary)] focus:outline-none"
                                 />
                               </td>
                               <td className="py-2 px-3">
                                 <input
                                   type="number"
                                   step="0.01"
-                                  value={os.paid_value}
-                                  onChange={(e) => updateMissingOs(os.id, 'paid_value', Number(e.target.value))}
-                                  className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-amber-500 rounded-lg px-2.5 py-1 text-xs font-mono font-semibold text-[var(--color-accent-teal)] focus:outline-none"
+                                  value={item.paid_value ?? 0}
+                                  onChange={(e) => updateOsRow(item.uniqueId, 'paid_value', Number(e.target.value))}
+                                  className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg px-2.5 py-1 text-xs font-mono font-semibold text-[var(--color-accent-teal)] focus:outline-none"
                                 />
                               </td>
                               <td className="py-2.5 px-3 font-mono font-bold text-[var(--color-accent-warning)]">
@@ -1783,9 +2063,9 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                               </td>
                               <td className="py-2 px-3">
                                 <select
-                                  value={os.status}
-                                  onChange={(e) => updateMissingOs(os.id, 'status', e.target.value)}
-                                  className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-amber-500 rounded-lg px-2 py-1 text-xs font-semibold text-[var(--text-primary)] focus:outline-none"
+                                  value={item.status || 'em_aberto'}
+                                  onChange={(e) => updateOsRow(item.uniqueId, 'status', e.target.value)}
+                                  className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] focus:border-[var(--color-primary)] rounded-lg px-2 py-1 text-xs font-semibold text-[var(--text-primary)] focus:outline-none"
                                 >
                                   <option value="em_aberto">em_aberto</option>
                                   <option value="pago_parcial">pago_parcial</option>
@@ -1793,14 +2073,56 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                                   <option value="cancelado">cancelado</option>
                                 </select>
                               </td>
+                              <td className="py-2.5 px-3 text-center">
+                                {isEdited ? (
+                                  <Badge variant="outline" className="text-[10px] bg-amber-500/10 text-amber-400 border-amber-500/30 px-1.5 py-0.5">
+                                    Editado
+                                  </Badge>
+                                ) : (
+                                  <span className="text-[10px] text-[var(--text-tertiary)] font-mono">Original</span>
+                                )}
+                              </td>
                             </tr>
                           );
-                        })}
+                        })
+                      )}
                     </tbody>
                   </table>
                 </div>
+
+                {/* Paginação */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-between pt-2 border-t border-[var(--border-subtle)] text-xs text-[var(--text-secondary)]">
+                    <span>
+                      Mostrando {((osPage - 1) * OS_PAGE_SIZE) + 1} - {Math.min(osPage * OS_PAGE_SIZE, filteredPreviewOsList.length)} de {filteredPreviewOsList.length} OSs
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={osPage <= 1}
+                        onClick={() => setOsPage(p => Math.max(1, p - 1))}
+                        className="h-7 text-xs px-2.5 border-[var(--border-subtle)]"
+                      >
+                        Anterior
+                      </Button>
+                      <span className="font-mono text-xs px-2">
+                        Página {osPage} de {totalPages}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={osPage >= totalPages}
+                        onClick={() => setOsPage(p => Math.min(totalPages, p + 1))}
+                        className="h-7 text-xs px-2.5 border-[var(--border-subtle)]"
+                      >
+                        Próxima
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
-            ) : null}
+            )}
 
             <h3 className="font-display text-xl font-semibold">Previsão por Loja</h3>
             
