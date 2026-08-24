@@ -118,7 +118,7 @@ export function PatioOsDetailModal({
   // Mutação para atualizar OS no banco
   const updateOsMutation = useMutation({
     mutationFn: async ({ id, total_value, paid_value, status }: { id: string; total_value: number; paid_value: number; status: string }) => {
-      const { error } = await supabase
+      const { data: updated, error } = await supabase
         .from('patio_os')
         .update({
           total_value,
@@ -126,18 +126,59 @@ export function PatioOsDetailModal({
           status,
           updated_at: new Date().toISOString()
         })
-        .eq('id', id);
+        .eq('id', id)
+        .select()
+        .single();
 
       if (error) throw error;
+
+      // Recalcula somatório de patio_os para targetDate e sincroniza daily_snapshots e reconciliations
+      const { data: allPatio } = await supabase
+        .from('patio_os')
+        .select('*')
+        .lte('opened_at', `${targetDate}T23:59:59`);
+
+      if (allPatio) {
+        const activeList = allPatio.filter((os: any) => {
+          const isClosed = ['finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado'].includes(String(os.status).toLowerCase());
+          const saldo = Number(os.total_value || 0) - Number(os.paid_value || 0);
+          return !isClosed && saldo > 0;
+        });
+        const newTotal = activeList.reduce((acc: number, os: any) => acc + (Number(os.total_value || 0) - Number(os.paid_value || 0)), 0);
+
+        // Atualiza daily_snapshots
+        await supabase
+          .from('daily_snapshots')
+          .update({ total_patio: newTotal })
+          .eq('date', targetDate);
+
+        // Atualiza reconciliations da loja afetada
+        if (updated?.store_id) {
+          const storeTotal = activeList
+            .filter((os: any) => os.store_id === updated.store_id)
+            .reduce((acc: number, os: any) => acc + (Number(os.total_value || 0) - Number(os.paid_value || 0)), 0);
+
+          await supabase
+            .from('reconciliations')
+            .update({ na_loja_os: storeTotal })
+            .eq('date', targetDate)
+            .eq('store_id', updated.store_id);
+        }
+      }
     },
     onSuccess: async () => {
       toast.success('Ordem de Serviço atualizada com sucesso!');
       setEditingId(null);
       await refetch();
-      await queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
-      await queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
-      await queryClient.invalidateQueries({ queryKey: ['availableStoreOs'] });
-      await queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily_reconciliation_summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-snapshot'] }),
+        queryClient.invalidateQueries({ queryKey: ['reconciliations'] }),
+        queryClient.invalidateQueries({ queryKey: ['availableStoreOs'] }),
+        queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] })
+      ]);
     },
     onError: (err: any) => {
       toast.error(`Erro ao salvar OS: ${err.message || err}`);

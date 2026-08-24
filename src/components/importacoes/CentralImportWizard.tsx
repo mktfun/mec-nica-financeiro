@@ -569,32 +569,45 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       updateStage(0, 'success', 'OSs e Recebíveis salvos!');
       updateStage(1, 'success', 'Maquininhas processadas!');
       
-      // Snapshot Na Loja OS
-      const allStoreIds = new Set<string>();
-      Object.values(mapping).forEach(v => {
-        if (v && v !== 'GLOBAL') allStoreIds.add(v);
-      });
-      
-      if (allStoreIds.size > 0) {
-         const { data: activeOs } = await supabase
-           .from('estoque_os_pendente')
-           .select('store_id, valor_os')
-           .eq('status', 'PENDENTE');
-           
-         if (activeOs) {
-           const snapshotPromises = Array.from(allStoreIds).map(sid => {
-              const naLojaOs = activeOs
-                .filter(o => o.store_id === sid)
-                .reduce((acc, o) => acc + Number(o.valor_os || 0), 0);
-                
-              return supabase.from('reconciliations').upsert({
-                 store_id: sid,
-                 date: targetDate,
-                 na_loja_os: naLojaOs
-              }, { onConflict: 'store_id,date' });
-           });
-           await Promise.all(snapshotPromises);
-         }
+      // Snapshot Na Loja OS Canônico direto de patio_os (Spec 270)
+      const { data: activePatio } = await supabase
+        .from('patio_os')
+        .select('store_id, total_value, paid_value, status')
+        .lte('opened_at', `${targetDate}T23:59:59`);
+
+      if (activePatio) {
+        const activeList = activePatio.filter(os => {
+          const isClosed = ['finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado'].includes(String(os.status).toLowerCase());
+          const saldo = Number(os.total_value || 0) - Number(os.paid_value || 0);
+          return !isClosed && saldo > 0;
+        });
+
+        const totalPatioReal = activeList.reduce((acc, os) => acc + (Number(os.total_value || 0) - Number(os.paid_value || 0)), 0);
+
+        // Atualiza daily_snapshots.total_patio
+        await supabase
+          .from('daily_snapshots')
+          .upsert({
+            date: targetDate,
+            total_patio: totalPatioReal
+          }, { onConflict: 'date' });
+
+        // Atualiza reconciliations por loja
+        const storeMapTotals: Record<string, number> = {};
+        activeList.forEach(os => {
+          if (os.store_id) {
+            storeMapTotals[os.store_id] = (storeMapTotals[os.store_id] || 0) + (Number(os.total_value || 0) - Number(os.paid_value || 0));
+          }
+        });
+
+        const storeUpdates = Object.entries(storeMapTotals).map(([sid, naLojaOs]) => {
+          return supabase.from('reconciliations').upsert({
+            store_id: sid,
+            date: targetDate,
+            na_loja_os: naLojaOs
+          }, { onConflict: 'store_id,date' });
+        });
+        await Promise.all(storeUpdates);
       }
       
       await new Promise(r => setTimeout(r, 200));
@@ -888,6 +901,42 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             }
           }
           addLog("✅ OSs ausentes atualizadas com sucesso no banco!", "success");
+
+          // Re-sincroniza o snapshot do pátio e reconciliações com as alterações manuais
+          const { data: updatedPatio } = await supabase
+            .from('patio_os')
+            .select('store_id, total_value, paid_value, status')
+            .lte('opened_at', `${targetDate}T23:59:59`);
+
+          if (updatedPatio) {
+            const activeList = updatedPatio.filter(os => {
+              const isClosed = ['finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado'].includes(String(os.status).toLowerCase());
+              const saldo = Number(os.total_value || 0) - Number(os.paid_value || 0);
+              return !isClosed && saldo > 0;
+            });
+
+            const totalPatioReal = activeList.reduce((acc, os) => acc + (Number(os.total_value || 0) - Number(os.paid_value || 0)), 0);
+
+            await supabase
+              .from('daily_snapshots')
+              .upsert({ date: targetDate, total_patio: totalPatioReal }, { onConflict: 'date' });
+
+            const storeMapTotals: Record<string, number> = {};
+            activeList.forEach(os => {
+              if (os.store_id) {
+                storeMapTotals[os.store_id] = (storeMapTotals[os.store_id] || 0) + (Number(os.total_value || 0) - Number(os.paid_value || 0));
+              }
+            });
+
+            const storeUpdates = Object.entries(storeMapTotals).map(([sid, naLojaOs]) => {
+              return supabase.from('reconciliations').upsert({
+                store_id: sid,
+                date: targetDate,
+                na_loja_os: naLojaOs
+              }, { onConflict: 'store_id,date' });
+            });
+            await Promise.all(storeUpdates);
+          }
         }
       }
 
