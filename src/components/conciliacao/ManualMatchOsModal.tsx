@@ -62,10 +62,10 @@ export function ManualMatchOsModal({
       );
     }
 
-    // Ordenação: 1. Match Exato -> 2. Menor Diferença -> 3. Número da OS
+    // Ordenação: 1. Match Exato no PIX -> 2. Menor Diferença -> 3. Número da OS
     return list.sort((a, b) => {
-      const valA = a.pix_transfer_value > 0 ? a.pix_transfer_value : (a.paid_value || a.total_value);
-      const valB = b.pix_transfer_value > 0 ? b.pix_transfer_value : (b.paid_value || b.total_value);
+      const valA = a.pix_transfer_value > 0 ? a.pix_transfer_value : Math.max(0, a.total_value - a.paid_value);
+      const valB = b.pix_transfer_value > 0 ? b.pix_transfer_value : Math.max(0, b.total_value - b.paid_value);
       const diffA = Math.abs(valA - txAmount);
       const diffB = Math.abs(valB - txAmount);
 
@@ -139,12 +139,12 @@ export function ManualMatchOsModal({
             placeholder="Buscar por Nº da OS, Nome do Cliente, Placa ou Forma de Pagamento..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg py-2.5 pl-10 pr-4 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--color-primary)] font-sans"
+            className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg pl-10 pr-4 py-2.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
           />
         </div>
 
-        {/* Lista de OSs da Loja */}
-        <div className="border border-[var(--border-subtle)] rounded-xl overflow-hidden max-h-[460px] overflow-y-auto">
+        {/* Lista de Candidatas da Loja */}
+        <div className="border border-[var(--border-subtle)] rounded-xl overflow-hidden max-h-80 overflow-y-auto">
           {isLoading ? (
             <div className="p-8 flex justify-center">
               <LoadingSpinner text="Carregando OSs da filial..." />
@@ -152,7 +152,7 @@ export function ManualMatchOsModal({
           ) : sortedAndDeduplicatedCandidates.length === 0 ? (
             <div className="p-8 text-center text-[var(--text-tertiary)] text-xs">
               <AlertCircle size={24} className="mx-auto mb-2 opacity-30" />
-              Nenhuma Ordem de Serviço pendente encontrada para esta filial nesta data.
+              Nenhuma Ordem de Serviço pendente com PIX encontrada para esta filial.
             </div>
           ) : (
             <table className="w-full text-xs">
@@ -161,14 +161,14 @@ export function ManualMatchOsModal({
                   <th className="py-2.5 px-3 text-left">OS #</th>
                   <th className="py-2.5 px-3 text-left">Cliente / Placa</th>
                   <th className="py-2.5 px-3 text-left">Pagamento Declarado</th>
-                  <th className="py-2.5 px-3 text-right">Valor OS</th>
+                  <th className="py-2.5 px-3 text-right">Valor PIX / Saldo</th>
                   <th className="py-2.5 px-3 text-center">Diferença</th>
                   <th className="py-2.5 px-3 text-right">Ação</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border-subtle)]">
                 {sortedAndDeduplicatedCandidates.map((os) => {
-                  const osVal = os.pix_transfer_value > 0 ? os.pix_transfer_value : (os.paid_value || os.total_value);
+                  const osVal = os.pix_transfer_value > 0 ? os.pix_transfer_value : Math.max(0, os.total_value - os.paid_value);
                   const diff = Math.abs(osVal - txAmount);
                   const isExact = diff < 0.05;
 

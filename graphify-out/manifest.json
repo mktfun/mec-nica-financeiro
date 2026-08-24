@@ -2605,8 +2605,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1787589995.3553987,
-    "ast_hash": "844a397809e1422a2a32227bd86cd55d",
+    "mtime": 1787596043.2570937,
+    "ast_hash": "e068e2115fb743e0d89482f7acfdbe10",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -6755,8 +6755,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/ManualMatchOsModal.tsx": {
-    "mtime": 1787258003.2035058,
-    "ast_hash": "2fe8922e3e9c58f6f402fb508b6d1d69",
+    "mtime": 1787597203.4480245,
+    "ast_hash": "4ab10bfbbd23d2b1e5e42175e430bb96",
     "semantic_hash": ""
   },
   "src/components/conciliacao/MaquininhasDetailModal.tsx": {
@@ -6815,8 +6815,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useManualMatch.ts": {
-    "mtime": 1786996637.9650226,
-    "ast_hash": "6c82f415d8b00ccc1e869d1aa44812cc",
+    "mtime": 1787597159.1158717,
+    "ast_hash": "11630c3de428efaf5c89ce419d5ef152",
     "semantic_hash": ""
   },
   "src/hooks/useReconciliationInsights.ts": {
@@ -7835,8 +7835,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreExtratoBancarioView.tsx": {
-    "mtime": 1787595389.718469,
-    "ast_hash": "25046ce7d844fcc80c00cc9da674250c",
+    "mtime": 1787597223.2685413,
+    "ast_hash": "33e50c1046a3d8a6fe26ca9182fdeeb7",
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreOrdensServicoView.tsx": {
@@ -8034,21 +8034,6 @@
     "ast_hash": "b47c19e15bbece753fc14e134e695e4f",
     "semantic_hash": ""
   },
-  "specs/275-previsto-entradas-ofx-e-diferenca-pendente-por-loja/design.md": {
-    "mtime": 1787594763.4868262,
-    "ast_hash": "2cebdf3ea77685629710c25936cab2c6",
-    "semantic_hash": ""
-  },
-  "specs/275-previsto-entradas-ofx-e-diferenca-pendente-por-loja/proposal.md": {
-    "mtime": 1787594723.7532744,
-    "ast_hash": "1bb27ac412afb32b731bee9ecafcb452",
-    "semantic_hash": ""
-  },
-  "specs/275-previsto-entradas-ofx-e-diferenca-pendente-por-loja/spec-plan.md": {
-    "mtime": 1787595497.355773,
-    "ast_hash": "6f1fe74decd6c1601d785f003d82d9f7",
-    "semantic_hash": ""
-  },
   "specs/archive/274-motor-automatch-rede-os-e-carryover-patio/design.md": {
     "mtime": 1787589441.9819613,
     "ast_hash": "a7b259c644d178cf798a49128eaa6d55",
@@ -8062,6 +8047,41 @@
   "specs/archive/274-motor-automatch-rede-os-e-carryover-patio/spec-plan.md": {
     "mtime": 1787589778.6415713,
     "ast_hash": "e4635313bff1e2cafc037500a46b44a9",
+    "semantic_hash": ""
+  },
+  "scripts/test-available-os.cjs": {
+    "mtime": 1787597039.7396393,
+    "ast_hash": "d8b0c6f6b286b53b27660508581fb6e2",
+    "semantic_hash": ""
+  },
+  "specs/276-refinamento-filtro-vinculo-manual-pix-os/design.md": {
+    "mtime": 1787597073.8961337,
+    "ast_hash": "7b801cc7b1a79ce142b9319d2385de5c",
+    "semantic_hash": ""
+  },
+  "specs/276-refinamento-filtro-vinculo-manual-pix-os/proposal.md": {
+    "mtime": 1787597062.6858077,
+    "ast_hash": "e38a6840ef12aa39ffb54f52c93bfd89",
+    "semantic_hash": ""
+  },
+  "specs/276-refinamento-filtro-vinculo-manual-pix-os/spec-plan.md": {
+    "mtime": 1787597310.2507267,
+    "ast_hash": "ad5d506dbda0142852374441ae92b018",
+    "semantic_hash": ""
+  },
+  "specs/archive/275-previsto-entradas-ofx-e-diferenca-pendente-por-loja/design.md": {
+    "mtime": 1787594763.4868262,
+    "ast_hash": "2cebdf3ea77685629710c25936cab2c6",
+    "semantic_hash": ""
+  },
+  "specs/archive/275-previsto-entradas-ofx-e-diferenca-pendente-por-loja/proposal.md": {
+    "mtime": 1787594723.7532744,
+    "ast_hash": "1bb27ac412afb32b731bee9ecafcb452",
+    "semantic_hash": ""
+  },
+  "specs/archive/275-previsto-entradas-ofx-e-diferenca-pendente-por-loja/spec-plan.md": {
+    "mtime": 1787595497.355773,
+    "ast_hash": "6f1fe74decd6c1601d785f003d82d9f7",
     "semantic_hash": ""
   }
 }

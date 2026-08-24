@@ -1,3 +1,15 @@
+## [2026-08-24] — [Feature ID: 276-refinamento-filtro-vinculo-manual-pix-os]
+
+**Contexto:** Refinamento dos candidatos a vínculo manual de OS com depósitos de PIX no extrato bancário.
+
+**Regra aprendida:**
+1. **Isolamento por Filial:** O modal de vínculo só pode listar OSs pertencentes ao store_id da filial atual.
+2. **Exclusão de OSs Já Vinculadas:** Subquery/verificação contra ofx_transactions (matched_os_number IS NOT NULL) para não sugerir OSs cujo PIX já foi conciliado.
+3. **Bloqueio de Cartão/Dinheiro:** OSs pagas 100% em Cartão de Crédito/Débito ou Dinheiro em Espécie (sem saldo em aberto) nunca devem ser sugeridas para depósitos de PIX.
+4. **Score de Match Real:** O valor comparado para Match Exato é o pix_transfer_value ou saldo restante em aberto, e nunca o valor de cartão.
+
+**Não fazer:** Nunca usar fallback de paid_value || total_value para depósitos de PIX quando pix_transfer_value = 0 em OSs quitadas por cartão.
+
 ## [2026-08-24] — [Feature ID: 275-previsto-entradas-ofx-e-diferenca-pendente-por-loja]
 
 **Contexto:** Padronização da visão de conciliação por filial para que o Previsto seja o Total de Entradas OFX creditadas no dia e a Diferença reflita exatamente o saldo de entradas NÃO justificadas/identificadas.

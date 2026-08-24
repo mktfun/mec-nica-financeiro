@@ -342,6 +342,7 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
           onClose={() => setMatchingTx(null)}
           transaction={matchingTx}
           storeId={storeId}
+          targetDate={date}
         />
       )}
     </div>

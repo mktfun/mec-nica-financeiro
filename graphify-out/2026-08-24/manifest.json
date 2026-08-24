@@ -435,8 +435,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1787583070.2176723,
-    "ast_hash": "e8f1fbfe013edd90efa3f888c7c24c76",
+    "mtime": 1787595366.622877,
+    "ast_hash": "38ec169c14b551cf02547d85629d1091",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -755,8 +755,8 @@
     "semantic_hash": ""
   },
   "src/routes/conciliacao.index.tsx": {
-    "mtime": 1787248177.3334,
-    "ast_hash": "b79e2a7516c7f971fe3faee3ec448a36",
+    "mtime": 1787595443.0858102,
+    "ast_hash": "662f53b9cf0dfbdb960c3734230ea204",
     "semantic_hash": ""
   },
   "src/routes/configuracoes.tsx": {
@@ -2605,8 +2605,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1787588842.9524536,
-    "ast_hash": "4e2655bea2ea25364db99554af2ac0df",
+    "mtime": 1787589995.3553987,
+    "ast_hash": "844a397809e1422a2a32227bd86cd55d",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -7835,8 +7835,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreExtratoBancarioView.tsx": {
-    "mtime": 1787584347.713269,
-    "ast_hash": "4f907fc8266cf227d02b69122af4fc0e",
+    "mtime": 1787595389.718469,
+    "ast_hash": "25046ce7d844fcc80c00cc9da674250c",
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreOrdensServicoView.tsx": {
@@ -7999,36 +7999,6 @@
     "ast_hash": "ad965b6f03de1cee91f76f224f0426a5",
     "semantic_hash": ""
   },
-  "specs/274-motor-automatch-rede-os-e-carryover-patio/design.md": {
-    "mtime": 1787589441.9819613,
-    "ast_hash": "a7b259c644d178cf798a49128eaa6d55",
-    "semantic_hash": ""
-  },
-  "specs/274-motor-automatch-rede-os-e-carryover-patio/proposal.md": {
-    "mtime": 1787589430.25157,
-    "ast_hash": "df152e63e4a27be6916c4390d7ed59bb",
-    "semantic_hash": ""
-  },
-  "specs/274-motor-automatch-rede-os-e-carryover-patio/spec-plan.md": {
-    "mtime": 1787589778.6415713,
-    "ast_hash": "e4635313bff1e2cafc037500a46b44a9",
-    "semantic_hash": ""
-  },
-  "specs/274-sincronizacao-forense-patio-os-excel-2408/design.md": {
-    "mtime": 1787589274.8130631,
-    "ast_hash": "4d468538df5eeaa243d56887959bc9dd",
-    "semantic_hash": ""
-  },
-  "specs/274-sincronizacao-forense-patio-os-excel-2408/proposal.md": {
-    "mtime": 1787589261.4978483,
-    "ast_hash": "3354494c90a95fc97f89911e64b15c76",
-    "semantic_hash": ""
-  },
-  "specs/274-sincronizacao-forense-patio-os-excel-2408/spec-plan.md": {
-    "mtime": 1787589291.233519,
-    "ast_hash": "0a14cfacd1aa4c754f4a40af94601118",
-    "semantic_hash": ""
-  },
   "specs/archive/273-varredura-calculos-rpc-e-pilares-saldo/design.md": {
     "mtime": 1787588274.3433285,
     "ast_hash": "c7317c84269cc059c45d35db9b04cedc",
@@ -8042,6 +8012,56 @@
   "specs/archive/273-varredura-calculos-rpc-e-pilares-saldo/spec-plan.md": {
     "mtime": 1787588572.4902382,
     "ast_hash": "fb6cbb40c930c1bd0227a0973909bcd1",
+    "semantic_hash": ""
+  },
+  "scripts/apply-20260824000007.cjs": {
+    "mtime": 1787595233.344447,
+    "ast_hash": "78a93e2519d7e0b0f15c6e1d280be7ca",
+    "semantic_hash": ""
+  },
+  "scripts/test-rpc-275.cjs": {
+    "mtime": 1787595267.3952584,
+    "ast_hash": "3d3301c6e864beb8298229defb07fe10",
+    "semantic_hash": ""
+  },
+  "scripts/test-store-diff.cjs": {
+    "mtime": 1787594316.7180407,
+    "ast_hash": "c5913a328d696978e600dcc9197d38be",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260824000007_fix_store_previsto_and_unjustified_diff.sql": {
+    "mtime": 1787595323.394874,
+    "ast_hash": "b47c19e15bbece753fc14e134e695e4f",
+    "semantic_hash": ""
+  },
+  "specs/275-previsto-entradas-ofx-e-diferenca-pendente-por-loja/design.md": {
+    "mtime": 1787594763.4868262,
+    "ast_hash": "2cebdf3ea77685629710c25936cab2c6",
+    "semantic_hash": ""
+  },
+  "specs/275-previsto-entradas-ofx-e-diferenca-pendente-por-loja/proposal.md": {
+    "mtime": 1787594723.7532744,
+    "ast_hash": "1bb27ac412afb32b731bee9ecafcb452",
+    "semantic_hash": ""
+  },
+  "specs/275-previsto-entradas-ofx-e-diferenca-pendente-por-loja/spec-plan.md": {
+    "mtime": 1787595497.355773,
+    "ast_hash": "6f1fe74decd6c1601d785f003d82d9f7",
+    "semantic_hash": ""
+  },
+  "specs/archive/274-motor-automatch-rede-os-e-carryover-patio/design.md": {
+    "mtime": 1787589441.9819613,
+    "ast_hash": "a7b259c644d178cf798a49128eaa6d55",
+    "semantic_hash": ""
+  },
+  "specs/archive/274-motor-automatch-rede-os-e-carryover-patio/proposal.md": {
+    "mtime": 1787589430.25157,
+    "ast_hash": "df152e63e4a27be6916c4390d7ed59bb",
+    "semantic_hash": ""
+  },
+  "specs/archive/274-motor-automatch-rede-os-e-carryover-patio/spec-plan.md": {
+    "mtime": 1787589778.6415713,
+    "ast_hash": "e4635313bff1e2cafc037500a46b44a9",
     "semantic_hash": ""
   }
 }

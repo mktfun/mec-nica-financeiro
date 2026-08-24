@@ -1,3 +1,8 @@
+### Spec 276 — Refinamento Estrito do Modal de Vínculo Manual de PIX com OS
+- **useManualMatch.ts**: useAvailableStoreOs com isolamento rigoroso por filial (storeId), exclusão de OSs já vinculadas em ofx_transactions (matched_os_number IS NOT NULL), bloqueio de OSs puramente em Cartão/Dinheiro sem saldo em aberto, e filtro estrito para pagamentos em PIX.
+- **ManualMatchOsModal.tsx**: Ordenação e match score estritamente comparando com o valor esperado de PIX (pix_transfer_value ou saldo restante) em vez de valores pagos em cartão.
+- **StoreExtratoBancarioView.tsx**: Repasse explícito de targetDate para o modal de vínculo manual.
+
 ### Spec 275 — Previsto = Total Entradas OFX, Diferença = Pendentes Não Justificados + Guardrails de Auto-Match de PIX
 - **RPC get_daily_reconciliation_summary**: Previsto por loja padronizado para soma total de entradas OFX do dia. Diferença por loja refletindo o saldo exato de entradas pendentes de identificação/justificativa.
 - **CentralImportWizard.tsx**: 4 guardrails ativos no auto-match de PIX (valor mínimo >= R$ 10, filtro de rendimentos/aplicação financeira, exigência de PIX esperado na OS > 0 e tolerância < R$ 0,10).
