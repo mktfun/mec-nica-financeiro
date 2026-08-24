@@ -126,6 +126,7 @@ export interface DailyReconciliationSummary {
   data_atual: string;
   total_saldo_banco: number;
   saldo_bancos_ofx: number;
+  dinheiro_em_lojas?: number;
   cartoes_a_compensar: number;
   dinheiro_mp: number;
   a_receber: number;

@@ -2605,8 +2605,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1787579382.7951324,
-    "ast_hash": "46e123a732fd159b5a3229dcbd95bb42",
+    "mtime": 1787587175.8933358,
+    "ast_hash": "28ba9ec3f581b5015abb25ecf0173622",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -4475,8 +4475,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useBackendConciliacao.ts": {
-    "mtime": 1787575343.8057382,
-    "ast_hash": "7fc7a9830f27524afbfee67089287b67",
+    "mtime": 1787588503.135699,
+    "ast_hash": "3711d55e3c9724d5b344858294d636cc",
     "semantic_hash": ""
   },
   "src/hooks/useBackendDashboard.ts": {
@@ -7869,21 +7869,6 @@
     "ast_hash": "ab195215db5e497395f7f6628b5d0ca3",
     "semantic_hash": ""
   },
-  "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md": {
-    "mtime": 1787585927.612475,
-    "ast_hash": "5022fae4091c5db890cec82f4c9da115",
-    "semantic_hash": ""
-  },
-  "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md": {
-    "mtime": 1787585913.1954062,
-    "ast_hash": "cbb705417e91be934991e3d824ad90cf",
-    "semantic_hash": ""
-  },
-  "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/spec-plan.md": {
-    "mtime": 1787586746.728838,
-    "ast_hash": "4d070e2bc2f605a1ff9a5e20639d0cdc",
-    "semantic_hash": ""
-  },
   "specs/archive/266-alinhamento-conciliacao-2408-excel-e-ancora-dia-anterior/design.md": {
     "mtime": 1787578042.5592537,
     "ast_hash": "4ce809edb1ca45bcc693df429c21f771",
@@ -7957,6 +7942,41 @@
   "specs/archive/271-redesign-3-abas-conciliacao-loja/spec-plan.md": {
     "mtime": 1787584472.5204608,
     "ast_hash": "f9eb2f76a6748943d621203faa178f7d",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260824000005_fix_math_caixa_atual_and_saldo_total.sql": {
+    "mtime": 1787588355.379797,
+    "ast_hash": "ff90f9d0b56517a7f0ed5d0b2be4a3a6",
+    "semantic_hash": ""
+  },
+  "specs/273-varredura-calculos-rpc-e-pilares-saldo/design.md": {
+    "mtime": 1787588274.3433285,
+    "ast_hash": "c7317c84269cc059c45d35db9b04cedc",
+    "semantic_hash": ""
+  },
+  "specs/273-varredura-calculos-rpc-e-pilares-saldo/proposal.md": {
+    "mtime": 1787588264.6275716,
+    "ast_hash": "80756201e08e08fa7be9e9558848ec75",
+    "semantic_hash": ""
+  },
+  "specs/273-varredura-calculos-rpc-e-pilares-saldo/spec-plan.md": {
+    "mtime": 1787588572.4902382,
+    "ast_hash": "fb6cbb40c930c1bd0227a0973909bcd1",
+    "semantic_hash": ""
+  },
+  "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md": {
+    "mtime": 1787585927.612475,
+    "ast_hash": "5022fae4091c5db890cec82f4c9da115",
+    "semantic_hash": ""
+  },
+  "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md": {
+    "mtime": 1787585913.1954062,
+    "ast_hash": "cbb705417e91be934991e3d824ad90cf",
+    "semantic_hash": ""
+  },
+  "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/spec-plan.md": {
+    "mtime": 1787586746.728838,
+    "ast_hash": "4d070e2bc2f605a1ff9a5e20639d0cdc",
     "semantic_hash": ""
   }
 }

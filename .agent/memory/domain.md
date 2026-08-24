@@ -1,3 +1,16 @@
+## [2026-08-24] — [Feature ID: 273-varredura-calculos-rpc-e-pilares-saldo]
+
+**Contexto:** O card principal SALDO BANCOS + DINHEIRO e o Caixa Atual da RPC get_daily_reconciliation_summary estavam omitindo dinheiro no cofre e cartões a compensar, gerando distorção no Fluxo de Caixa e no Valor Disponível de Contas.
+
+**Regra aprendida:**
+1. O Card 1 deve refletir o somatório do Pilar 1: total_saldo_banco = Saldo OFX + Dinheiro no Cofre + Cartões a Compensar.
+2. O Caixa Atual é a soma dos 4 pilares dinâmicos: total_saldo_banco + dinheiro_mp + a_receber + na_loja_os.
+3. Jamais alterar ou mutar a tabela daily_snapshots para forçar fechamentos contábeis; a RPC é a responsável pela computação dinâmica em tempo de execução.
+
+**Risco identificado:** Calcular Caixa Atual somando apenas saldos bancários puros, deixando o dinheiro físico das lojas invisível no patrimônio.
+
+**Não fazer:** Nunca reescrever valores de snapshots gravados pelo usuário para ajustar discrepâncias da RPC.
+
 ## [2026-08-24] — [Feature ID: 272-apuracao-dinheiro-loja-e-maquininhas-pendentes]
 
 **Contexto:** Pagamentos de OSs em dinheiro físico estavam sendo agrupados indevidamente como PIX no importador e o dinheiro em cofre por filial vinha zerado (`-`), gerando divergência com o fechamento do Excel (onde Dom Pedro possuía R$ 1.845,00 em cofre da OS #586, status NÃO ENTROU).

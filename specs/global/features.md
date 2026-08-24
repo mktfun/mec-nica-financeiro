@@ -1,3 +1,7 @@
+### Spec 273 — Ajuste Matemático Estrito da RPC de Conciliação
+- **get_daily_reconciliation_summary**: Unificação dinâmica de total_saldo_banco (OFX + Dinheiro Cofre + Maquininhas a Compensar) e caixa_atual sem alteração na tabela de snapshots.
+- **ResumoDiaPanel.tsx**: Consumo direto de summary.total_saldo_banco no Card 1.
+
 ### Spec 272 — Apuração Automática de Dinheiro no Cofre e Maquininhas a Compensar por Filial
 - **useOsImportProcessor.ts**: Separação canônica de pagamentos em DINHEIRO em cash_value/parsed_cash.
 - **useImportProcessor.ts**: Sincronização automática em store_cash_vault (status em_transito vs depositado com base na janela contábil).
