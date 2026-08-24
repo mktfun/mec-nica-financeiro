@@ -1,3 +1,15 @@
+## [2026-08-24] — [Feature ID: 274-motor-automatch-rede-os-e-carryover-patio]
+
+**Contexto:** Divergências entre conciliação manual no Excel e sistema decorriam de: (1) OSs pagas na maquininha sem baixa no ERP pelo atendente (ex: Rei do Módulo OS #1847 R$ 12.900) e (2) relatórios do ERP filtrados por data de abertura do mês corrente omitindo carros em pátio abertos no mês anterior (ex: Santo André OS #2326 R$ 9.218,73).
+
+**Regra aprendida:**
+1. **Auto-Match Inteligente Maquininha ↔ OS:** Quando uma venda de cartão da Rede entra no sistema para uma filial e cobre o valor de uma OS em aberto na mesma filial, o sistema deve dar baixa automática (paid_value = total_value, status = finalizada), zerando o pátio.
+2. **Carry-Over Cumulativo de Pátio:** Carros em manutenção em conciliações anteriores não podem ser apagados/zerados só porque não constam no relatório mensal do ERP; eles permanecem ativos no pátio até confirmação de faturamento/baixa.
+
+**Risco identificado:** Apagar o histórico de OSs antigas no upsert de novos relatórios mensais, fazendo sumir valores legítimos de pátio.
+
+**Não fazer:** Nunca presumir que uma OS sumiu do pátio só porque não está no arquivo de importação do dia.
+
 ## [2026-08-24] — [Feature ID: 273-varredura-calculos-rpc-e-pilares-saldo]
 
 **Contexto:** O card principal SALDO BANCOS + DINHEIRO e o Caixa Atual da RPC get_daily_reconciliation_summary estavam omitindo dinheiro no cofre e cartões a compensar, gerando distorção no Fluxo de Caixa e no Valor Disponível de Contas.

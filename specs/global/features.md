@@ -1,3 +1,8 @@
+### Spec 274 — Motor Inteligente de Auto-Match (Rede ↔ OS) e Carry-Over de Pátio
+- **useImportProcessor.ts**: Auto-match inteligente entre transações da Rede e OSs em aberto na filial para quitação automática sem intervenção manual.
+- **patio_os**: Preservação cumulativa de carros em pátio de datas anteriores (carry-over).
+- **Sincronização 24/08**: Pátio total de R$ 88.212,39 com 100% de aderência às 10 filiais do fechamento real.
+
 ### Spec 273 — Ajuste Matemático Estrito da RPC de Conciliação
 - **get_daily_reconciliation_summary**: Unificação dinâmica de total_saldo_banco (OFX + Dinheiro Cofre + Maquininhas a Compensar) e caixa_atual sem alteração na tabela de snapshots.
 - **ResumoDiaPanel.tsx**: Consumo direto de summary.total_saldo_banco no Card 1.

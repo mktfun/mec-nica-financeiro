@@ -6174,8 +6174,8 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "package_dependencies_tailwindcss_vite",
-      "community": 45,
-      "community_name": "dependencies",
+      "community": 552,
+      "community_name": "@tailwindcss/vite",
       "norm_label": "@tailwindcss/vite"
     },
     {
@@ -6185,8 +6185,8 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "tailwindcss_vite",
-      "community": 45,
-      "community_name": "dependencies",
+      "community": 552,
+      "community_name": "@tailwindcss/vite",
       "norm_label": "@tailwindcss/vite"
     },
     {
@@ -6350,8 +6350,8 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "package_dependencies_class_variance_authority",
-      "community": 1151,
-      "community_name": "class-variance-authority",
+      "community": 45,
+      "community_name": "dependencies",
       "norm_label": "class-variance-authority"
     },
     {
@@ -6361,8 +6361,8 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "class_variance_authority",
-      "community": 1151,
-      "community_name": "class-variance-authority",
+      "community": 45,
+      "community_name": "dependencies",
       "norm_label": "class-variance-authority"
     },
     {
@@ -9174,8 +9174,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_mocks_importfiles",
-      "community": 17,
-      "community_name": "WizardImportacao.tsx",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "importfiles.ts"
     },
     {
@@ -9185,8 +9185,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_mocks_importfiles_mockfiles",
-      "community": 17,
-      "community_name": "WizardImportacao.tsx",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "mockfiles"
     },
     {
@@ -9219,7 +9219,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "agenteiaconfigpanel.tsx"
     },
     {
@@ -9230,7 +9230,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_model_options",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "model_options"
     },
     {
@@ -9241,7 +9241,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_provider_labels",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "provider_labels"
     },
     {
@@ -9252,7 +9252,7 @@
       "_origin": "ast",
       "id": "src_components_agente_agenteiaconfigpanel_agenteiaconfigpanel",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "agenteiaconfigpanel()"
     },
     {
@@ -9262,7 +9262,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_cacheagentepanel",
-      "community": 0,
+      "community": 657,
       "community_name": "Card.tsx",
       "norm_label": "cacheagentepanel.tsx"
     },
@@ -9273,7 +9273,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_agente_cacheagentepanel_cacheagentepanel",
-      "community": 0,
+      "community": 657,
       "community_name": "Card.tsx",
       "norm_label": "cacheagentepanel()"
     },
@@ -9285,7 +9285,7 @@
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "configuracoespanel.tsx"
     },
     {
@@ -9296,7 +9296,7 @@
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel_configuracoespanel",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "configuracoespanel()"
     },
     {
@@ -9307,7 +9307,7 @@
       "_origin": "ast",
       "id": "src_components_agente_configuracoespanel_aisettingsform",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "aisettingsform()"
     },
     {
@@ -9317,7 +9317,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_custospanel",
-      "community": 0,
+      "community": 657,
       "community_name": "Card.tsx",
       "norm_label": "custospanel.tsx"
     },
@@ -9339,8 +9339,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_agente_logsagentepanel",
-      "community": 0,
-      "community_name": "Card.tsx",
+      "community": 419,
+      "community_name": "AppShell.tsx",
       "norm_label": "logsagentepanel.tsx"
     },
     {
@@ -9350,8 +9350,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_agente_logsagentepanel_logsagentepanel",
-      "community": 0,
-      "community_name": "Card.tsx",
+      "community": 419,
+      "community_name": "AppShell.tsx",
       "norm_label": "logsagentepanel()"
     },
     {
@@ -9362,7 +9362,7 @@
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "logsmotorpanel.tsx"
     },
     {
@@ -9373,7 +9373,7 @@
       "_origin": "ast",
       "id": "src_components_agente_logsmotorpanel_logsmotorpanel",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "logsmotorpanel()"
     },
     {
@@ -10153,8 +10153,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_legacyostable",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "legacyostable.tsx"
     },
     {
@@ -10164,8 +10164,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_conciliacao_legacyostable_legacyos",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "legacyos"
     },
     {
@@ -10175,8 +10175,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_components_conciliacao_legacyostable_legacyostable",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "legacyostable()"
     },
     {
@@ -10275,7 +10275,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel",
       "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Modulo1SaldoPanel.tsx",
       "norm_label": "modulo1saldopanel.tsx"
     },
     {
@@ -10286,7 +10286,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel_modulo1saldopanelprops",
       "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Modulo1SaldoPanel.tsx",
       "norm_label": "modulo1saldopanelprops"
     },
     {
@@ -10297,7 +10297,7 @@
       "_origin": "ast",
       "id": "src_components_conciliacao_modulo1saldopanel_modulo1saldopanel",
       "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Modulo1SaldoPanel.tsx",
       "norm_label": "modulo1saldopanel()"
     },
     {
@@ -10461,8 +10461,8 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "src_components_conciliacao_patioosdetailmodal_patioosdetailmodal",
-      "community": 495,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "patioosdetailmodal()"
     },
     {
@@ -10582,8 +10582,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_conciliacao_saldobancosdetailmodal",
-      "community": 34,
-      "community_name": "Button.tsx",
+      "community": 495,
+      "community_name": "ResumoDiaPanel.tsx",
       "norm_label": "saldobancosdetailmodal.tsx"
     },
     {
@@ -10593,8 +10593,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_components_conciliacao_saldobancosdetailmodal_saldobancosdetailmodalprops",
-      "community": 34,
-      "community_name": "Button.tsx",
+      "community": 495,
+      "community_name": "ResumoDiaPanel.tsx",
       "norm_label": "saldobancosdetailmodalprops"
     },
     {
@@ -10604,8 +10604,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "src_components_conciliacao_saldobancosdetailmodal_saldobancosdetailmodal",
-      "community": 34,
-      "community_name": "Button.tsx",
+      "community": 495,
+      "community_name": "ResumoDiaPanel.tsx",
       "norm_label": "saldobancosdetailmodal()"
     },
     {
@@ -10758,8 +10758,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_configuracoes_createusermodal",
-      "community": 34,
-      "community_name": "Button.tsx",
+      "community": 496,
+      "community_name": "supabase",
       "norm_label": "createusermodal.tsx"
     },
     {
@@ -10769,8 +10769,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_configuracoes_createusermodal_createusermodalprops",
-      "community": 34,
-      "community_name": "Button.tsx",
+      "community": 496,
+      "community_name": "supabase",
       "norm_label": "createusermodalprops"
     },
     {
@@ -10781,7 +10781,7 @@
       "_origin": "ast",
       "id": "src_components_configuracoes_createusermodal_createusermodal",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "createusermodal()"
     },
     {
@@ -10792,7 +10792,7 @@
       "_origin": "ast",
       "id": "src_components_configuracoes_dailyauditlogsview",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "dailyauditlogsview.tsx"
     },
     {
@@ -10803,7 +10803,7 @@
       "_origin": "ast",
       "id": "src_components_configuracoes_dailyauditlogsview_dailyauditlogsviewprops",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "dailyauditlogsviewprops"
     },
     {
@@ -10814,7 +10814,7 @@
       "_origin": "ast",
       "id": "src_components_configuracoes_dailyauditlogsview_dailyauditlogsview",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "dailyauditlogsview()"
     },
     {
@@ -10858,7 +10858,7 @@
       "_origin": "ast",
       "id": "src_components_configuracoes_usermanagementpanel",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "usermanagementpanel.tsx"
     },
     {
@@ -10869,7 +10869,7 @@
       "_origin": "ast",
       "id": "src_components_configuracoes_usermanagementpanel_usermanagementpanelprops",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "usermanagementpanelprops"
     },
     {
@@ -10880,7 +10880,7 @@
       "_origin": "ast",
       "id": "src_components_configuracoes_usermanagementpanel_usermanagementpanel",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "usermanagementpanel()"
     },
     {
@@ -10890,8 +10890,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "alertresolvedialog.tsx"
     },
     {
@@ -10901,8 +10901,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog_alertresolvedialogprops",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "alertresolvedialogprops"
     },
     {
@@ -10912,8 +10912,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_components_dashboard_alertresolvedialog_alertresolvedialog",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "alertresolvedialog()"
     },
     {
@@ -10968,7 +10968,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart",
       "community": 0,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "evolucaomacrochart.tsx"
     },
     {
@@ -10979,7 +10979,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_evolucaomacrochartprops",
       "community": 0,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "evolucaomacrochartprops"
     },
     {
@@ -10990,7 +10990,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatcurrency",
       "community": 0,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "formatcurrency()"
     },
     {
@@ -11001,7 +11001,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatdate",
       "community": 0,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "formatdate()"
     },
     {
@@ -11012,7 +11012,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_formatcompactcurrency",
       "community": 0,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "formatcompactcurrency()"
     },
     {
@@ -11023,7 +11023,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_evolucaomacrochart_evolucaomacrochart",
       "community": 0,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "evolucaomacrochart()"
     },
     {
@@ -11132,8 +11132,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 0,
+      "community_name": "index.tsx",
       "norm_label": "kpicard.tsx"
     },
     {
@@ -11143,8 +11143,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicolor",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 0,
+      "community_name": "index.tsx",
       "norm_label": "kpicolor"
     },
     {
@@ -11154,8 +11154,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicardprops",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 0,
+      "community_name": "index.tsx",
       "norm_label": "kpicardprops"
     },
     {
@@ -11165,8 +11165,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_color_map",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 0,
+      "community_name": "index.tsx",
       "norm_label": "color_map"
     },
     {
@@ -11176,8 +11176,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "src_components_dashboard_kpicard_kpicard",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 0,
+      "community_name": "index.tsx",
       "norm_label": "kpicard()"
     },
     {
@@ -11209,8 +11209,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog",
-      "community": 34,
-      "community_name": "Button.tsx",
+      "community": 336,
+      "community_name": "useStores",
       "norm_label": "newtransactiondialog.tsx"
     },
     {
@@ -11220,8 +11220,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialogprops",
-      "community": 34,
-      "community_name": "Button.tsx",
+      "community": 336,
+      "community_name": "useStores",
       "norm_label": "newtransactiondialogprops"
     },
     {
@@ -11231,8 +11231,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_newtransactiondialog",
-      "community": 34,
-      "community_name": "Button.tsx",
+      "community": 336,
+      "community_name": "useStores",
       "norm_label": "newtransactiondialog()"
     },
     {
@@ -11242,8 +11242,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_components_dashboard_newtransactiondialog_rationale_17",
-      "community": 34,
-      "community_name": "Button.tsx",
+      "community": 336,
+      "community_name": "useStores",
       "norm_label": "todo: implement transaction creation"
     },
     {
@@ -11253,8 +11253,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions",
-      "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "quickactions.tsx"
     },
     {
@@ -11264,8 +11264,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_container",
-      "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "container"
     },
     {
@@ -11275,8 +11275,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_item",
-      "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "item"
     },
     {
@@ -11286,8 +11286,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_components_dashboard_quickactions_quickactions",
-      "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "quickactions()"
     },
     {
@@ -11297,8 +11297,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dashboard_recentactivity",
-      "community": 336,
-      "community_name": "useStores",
+      "community": 1084,
+      "community_name": "useTransactions.ts",
       "norm_label": "recentactivity.tsx"
     },
     {
@@ -11308,8 +11308,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_components_dashboard_recentactivity_recentactivity",
-      "community": 336,
-      "community_name": "useStores",
+      "community": 1084,
+      "community_name": "useTransactions.ts",
       "norm_label": "recentactivity()"
     },
     {
@@ -11573,7 +11573,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard",
       "community": 0,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "storetabledashboard.tsx"
     },
     {
@@ -11584,7 +11584,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_storetabledashboardprops",
       "community": 0,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "storetabledashboardprops"
     },
     {
@@ -11595,7 +11595,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_fmt",
       "community": 0,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "fmt()"
     },
     {
@@ -11606,7 +11606,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_statusvariant",
       "community": 0,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "statusvariant()"
     },
     {
@@ -11617,7 +11617,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_statuslabel",
       "community": 0,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "statuslabel()"
     },
     {
@@ -11628,7 +11628,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_storetabledashboard_storetabledashboard",
       "community": 0,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "storetabledashboard()"
     },
     {
@@ -11891,8 +11891,8 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "src_components_importacoes_centralimportwizard_centralimportwizard",
-      "community": 17,
-      "community_name": "WizardImportacao.tsx",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "centralimportwizard()"
     },
     {
@@ -12001,8 +12001,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_marcozerowizard",
-      "community": 532,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 657,
+      "community_name": "Card.tsx",
       "norm_label": "marcozerowizard.tsx"
     },
     {
@@ -12012,8 +12012,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_components_importacoes_marcozerowizard_marcozerowizard",
-      "community": 532,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "marcozerowizard()"
     },
     {
@@ -12023,8 +12023,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente",
-      "community": 34,
-      "community_name": "Button.tsx",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "matchmanualospendente.tsx"
     },
     {
@@ -12034,8 +12034,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_importacoes_matchmanualospendente_matchmanualosprops",
-      "community": 34,
-      "community_name": "Button.tsx",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "matchmanualosprops"
     },
     {
@@ -12100,8 +12100,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_importacoes_purgedailymodal",
-      "community": 532,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "purgedailymodal.tsx"
     },
     {
@@ -12111,8 +12111,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_importacoes_purgedailymodal_purgedailymodalprops",
-      "community": 532,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "purgedailymodalprops"
     },
     {
@@ -12122,8 +12122,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_importacoes_purgedailymodal_purgedailymodal",
-      "community": 532,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "purgedailymodal()"
     },
     {
@@ -12199,8 +12199,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_appshell",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 419,
+      "community_name": "AppShell.tsx",
       "norm_label": "appshell.tsx"
     },
     {
@@ -12210,8 +12210,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_layout_appshell_appshell",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 419,
+      "community_name": "AppShell.tsx",
       "norm_label": "appshell()"
     },
     {
@@ -12221,7 +12221,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_bottomnav",
-      "community": 0,
+      "community": 657,
       "community_name": "Card.tsx",
       "norm_label": "bottomnav.tsx"
     },
@@ -12232,7 +12232,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_layout_bottomnav_navitems",
-      "community": 0,
+      "community": 657,
       "community_name": "Card.tsx",
       "norm_label": "navitems"
     },
@@ -12243,7 +12243,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_components_layout_bottomnav_bottomnav",
-      "community": 0,
+      "community": 657,
       "community_name": "Card.tsx",
       "norm_label": "bottomnav()"
     },
@@ -12254,8 +12254,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_sidebar",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 419,
+      "community_name": "AppShell.tsx",
       "norm_label": "sidebar.tsx"
     },
     {
@@ -12265,8 +12265,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_layout_sidebar_navitems",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 419,
+      "community_name": "AppShell.tsx",
       "norm_label": "navitems"
     },
     {
@@ -12276,8 +12276,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_components_layout_sidebar_sidebar",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 419,
+      "community_name": "AppShell.tsx",
       "norm_label": "sidebar()"
     },
     {
@@ -12287,8 +12287,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_layout_topbar",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 419,
+      "community_name": "AppShell.tsx",
       "norm_label": "topbar.tsx"
     },
     {
@@ -12298,8 +12298,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_layout_topbar_topbar",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 419,
+      "community_name": "AppShell.tsx",
       "norm_label": "topbar()"
     },
     {
@@ -12309,8 +12309,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_lojas_lojaevolutionchart",
-      "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 657,
+      "community_name": "Card.tsx",
       "norm_label": "lojaevolutionchart.tsx"
     },
     {
@@ -12320,8 +12320,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_lojas_lojaevolutionchart_dailyevolutionpoint",
-      "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 657,
+      "community_name": "Card.tsx",
       "norm_label": "dailyevolutionpoint"
     },
     {
@@ -12331,8 +12331,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "src_components_lojas_lojaevolutionchart_lojaevolutionchartprops",
-      "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 657,
+      "community_name": "Card.tsx",
       "norm_label": "lojaevolutionchartprops"
     },
     {
@@ -12342,8 +12342,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "src_components_lojas_lojaevolutionchart_lojaevolutionchart",
-      "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community": 657,
+      "community_name": "Card.tsx",
       "norm_label": "lojaevolutionchart()"
     },
     {
@@ -12354,7 +12354,7 @@
       "_origin": "ast",
       "id": "src_components_lojas_lojapiecharts",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "lojapiecharts.tsx"
     },
     {
@@ -12365,7 +12365,7 @@
       "_origin": "ast",
       "id": "src_components_lojas_lojapiecharts_lojapiechartsprops",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "lojapiechartsprops"
     },
     {
@@ -12376,7 +12376,7 @@
       "_origin": "ast",
       "id": "src_components_lojas_lojapiecharts_lojapiecharts",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "lojapiecharts()"
     },
     {
@@ -12386,8 +12386,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_maquininhas_mdrauditview",
-      "community": 34,
-      "community_name": "Button.tsx",
+      "community": 336,
+      "community_name": "useStores",
       "norm_label": "mdrauditview.tsx"
     },
     {
@@ -12397,8 +12397,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "src_components_maquininhas_mdrauditview_mdrauditview",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 336,
+      "community_name": "useStores",
       "norm_label": "mdrauditview()"
     },
     {
@@ -12409,7 +12409,7 @@
       "_origin": "ast",
       "id": "src_components_taxas_contractfeeeditormodal",
       "community": 657,
-      "community_name": "TaxasDashboardView.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "contractfeeeditormodal.tsx"
     },
     {
@@ -12420,7 +12420,7 @@
       "_origin": "ast",
       "id": "src_components_taxas_contractfeeeditormodal_contractfeeeditormodalprops",
       "community": 657,
-      "community_name": "TaxasDashboardView.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "contractfeeeditormodalprops"
     },
     {
@@ -12431,7 +12431,7 @@
       "_origin": "ast",
       "id": "src_components_taxas_contractfeeeditormodal_contractfeeeditormodal",
       "community": 657,
-      "community_name": "TaxasDashboardView.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "contractfeeeditormodal()"
     },
     {
@@ -12442,7 +12442,7 @@
       "_origin": "ast",
       "id": "src_components_taxas_taxasdashboardview",
       "community": 657,
-      "community_name": "TaxasDashboardView.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "taxasdashboardview.tsx"
     },
     {
@@ -12453,7 +12453,7 @@
       "_origin": "ast",
       "id": "src_components_taxas_taxasdashboardview_taxasdashboardviewprops",
       "community": 657,
-      "community_name": "TaxasDashboardView.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "taxasdashboardviewprops"
     },
     {
@@ -12464,7 +12464,7 @@
       "_origin": "ast",
       "id": "src_components_taxas_taxasdashboardview_taxasdashboardview",
       "community": 657,
-      "community_name": "TaxasDashboardView.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "taxasdashboardview()"
     },
     {
@@ -12573,7 +12573,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_card",
-      "community": 0,
+      "community": 657,
       "community_name": "Card.tsx",
       "norm_label": "card.tsx"
     },
@@ -12584,7 +12584,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_ui_card_cardprops",
-      "community": 0,
+      "community": 657,
       "community_name": "Card.tsx",
       "norm_label": "cardprops"
     },
@@ -12595,7 +12595,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_ui_card_card",
-      "community": 0,
+      "community": 657,
       "community_name": "Card.tsx",
       "norm_label": "card()"
     },
@@ -12716,8 +12716,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_ui_themetoggle",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 419,
+      "community_name": "AppShell.tsx",
       "norm_label": "themetoggle.tsx"
     },
     {
@@ -12727,8 +12727,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_components_ui_themetoggle_themetoggle",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 419,
+      "community_name": "AppShell.tsx",
       "norm_label": "themetoggle()"
     },
     {
@@ -12827,7 +12827,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "useaisettings.ts"
     },
     {
@@ -12838,7 +12838,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_aisettings",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "aisettings"
     },
     {
@@ -12849,7 +12849,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_useaisettings",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "useaisettings()"
     },
     {
@@ -12860,7 +12860,7 @@
       "_origin": "ast",
       "id": "src_hooks_useaisettings_usesaveaisettings",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "usesaveaisettings()"
     },
     {
@@ -12870,8 +12870,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usealerts",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "usealerts.ts"
     },
     {
@@ -12881,8 +12881,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_usealerts_usealerts",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "usealerts()"
     },
     {
@@ -12892,8 +12892,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_hooks_usealerts_useallalerts",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "useallalerts()"
     },
     {
@@ -12903,8 +12903,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "src_hooks_usealerts_useresolvealert",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "useresolvealert()"
     },
     {
@@ -12915,7 +12915,7 @@
       "_origin": "ast",
       "id": "src_hooks_useauditlogs",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "useauditlogs.ts"
     },
     {
@@ -12926,7 +12926,7 @@
       "_origin": "ast",
       "id": "src_hooks_useauditlogs_auditlogentry",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "auditlogentry"
     },
     {
@@ -12937,7 +12937,7 @@
       "_origin": "ast",
       "id": "src_hooks_useauditlogs_useauditlogs",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "useauditlogs()"
     },
     {
@@ -12948,7 +12948,7 @@
       "_origin": "ast",
       "id": "src_hooks_useauditlogs_uselogauditevent",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "uselogauditevent()"
     },
     {
@@ -12958,8 +12958,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useauth",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 419,
+      "community_name": "AppShell.tsx",
       "norm_label": "useauth.ts"
     },
     {
@@ -12969,8 +12969,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_hooks_useauth_listeners",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 419,
+      "community_name": "AppShell.tsx",
       "norm_label": "listeners"
     },
     {
@@ -12980,8 +12980,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_hooks_useauth_usesession",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 419,
+      "community_name": "AppShell.tsx",
       "norm_label": "usesession()"
     },
     {
@@ -13002,8 +13002,8 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "src_hooks_useauth_uselogout",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 419,
+      "community_name": "AppShell.tsx",
       "norm_label": "uselogout()"
     },
     {
@@ -13079,8 +13079,8 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_storereconciliationsummary",
-      "community": 34,
-      "community_name": "Button.tsx",
+      "community": 495,
+      "community_name": "ResumoDiaPanel.tsx",
       "norm_label": "storereconciliationsummary"
     },
     {
@@ -13120,7 +13120,7 @@
       "label": "useDailyReconciliationSummary()",
       "file_type": "code",
       "source_file": "src/hooks/useBackendConciliacao.ts",
-      "source_location": "L151",
+      "source_location": "L152",
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_usedailyreconciliationsummary",
       "community": 495,
@@ -13131,7 +13131,7 @@
       "label": "usePosTripleReconciliation()",
       "file_type": "code",
       "source_file": "src/hooks/useBackendConciliacao.ts",
-      "source_location": "L173",
+      "source_location": "L174",
       "_origin": "ast",
       "id": "src_hooks_usebackendconciliacao_usepostriplereconciliation",
       "community": 34,
@@ -13145,8 +13145,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 0,
+      "community_name": "index.tsx",
       "norm_label": "usebackenddashboard.ts"
     },
     {
@@ -13156,8 +13156,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_storemetrics",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 0,
+      "community_name": "index.tsx",
       "norm_label": "storemetrics"
     },
     {
@@ -13167,8 +13167,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_dashboardmetrics",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 0,
+      "community_name": "index.tsx",
       "norm_label": "dashboardmetrics"
     },
     {
@@ -13178,8 +13178,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "src_hooks_usebackenddashboard_usebackenddashboard",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 0,
+      "community_name": "index.tsx",
       "norm_label": "usebackenddashboard()"
     },
     {
@@ -13190,7 +13190,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "usebotcredentials.ts"
     },
     {
@@ -13201,7 +13201,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_botcredentialrow",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "botcredentialrow"
     },
     {
@@ -13212,7 +13212,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usebotcredentials",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "usebotcredentials()"
     },
     {
@@ -13223,7 +13223,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_useupdatebotcredential",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "useupdatebotcredential()"
     },
     {
@@ -13234,7 +13234,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotcredentials_usemarkcredentialvalid",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "usemarkcredentialvalid()"
     },
     {
@@ -13245,7 +13245,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotlogs",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "usebotlogs.ts"
     },
     {
@@ -13256,7 +13256,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_botauditlog",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "botauditlog"
     },
     {
@@ -13267,7 +13267,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotlogs",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "usebotlogs()"
     },
     {
@@ -13278,7 +13278,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotlogs_usebotauditlogs",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "usebotauditlogs()"
     },
     {
@@ -13289,7 +13289,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotruns",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "usebotruns.ts"
     },
     {
@@ -13300,7 +13300,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotruns_uselatestbotrun",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "uselatestbotrun()"
     },
     {
@@ -13311,7 +13311,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebotruns_usebotrunhistory",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "usebotrunhistory()"
     },
     {
@@ -13322,7 +13322,7 @@
       "_origin": "ast",
       "id": "src_hooks_usecashregisters",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usecashregisters.ts"
     },
     {
@@ -13333,7 +13333,7 @@
       "_origin": "ast",
       "id": "src_hooks_usecashregisters_usecashregisters",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usecashregisters()"
     },
     {
@@ -13344,7 +13344,7 @@
       "_origin": "ast",
       "id": "src_hooks_usecashregisters_useclosecashregister",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "useclosecashregister()"
     },
     {
@@ -13376,8 +13376,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usecentralimport",
-      "community": 17,
-      "community_name": "WizardImportacao.tsx",
+      "community": 4,
+      "community_name": "useCentralImport.ts",
       "norm_label": "usecentralimport.ts"
     },
     {
@@ -13387,8 +13387,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_hooks_usecentralimport_unifiedimportresult",
-      "community": 17,
-      "community_name": "WizardImportacao.tsx",
+      "community": 4,
+      "community_name": "useCentralImport.ts",
       "norm_label": "unifiedimportresult"
     },
     {
@@ -13398,8 +13398,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_hooks_usecentralimport_maquininhaitem",
-      "community": 17,
-      "community_name": "WizardImportacao.tsx",
+      "community": 4,
+      "community_name": "useCentralImport.ts",
       "norm_label": "maquininhaitem"
     },
     {
@@ -13409,8 +13409,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "src_hooks_usecentralimport_usecentralimport",
-      "community": 17,
-      "community_name": "WizardImportacao.tsx",
+      "community": 4,
+      "community_name": "useCentralImport.ts",
       "norm_label": "usecentralimport()"
     },
     {
@@ -13420,8 +13420,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao",
-      "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "useconciliacao.ts"
     },
     {
@@ -13431,8 +13431,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_isvaliduuid",
-      "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "isvaliduuid()"
     },
     {
@@ -13442,8 +13442,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_conciliacaoresumo",
-      "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "conciliacaoresumo"
     },
     {
@@ -13453,8 +13453,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usereconciliationsfordate",
-      "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "usereconciliationsfordate()"
     },
     {
@@ -13497,8 +13497,8 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usestorehistory",
-      "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "usestorehistory()"
     },
     {
@@ -13508,8 +13508,8 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usesystemtransactions",
-      "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "usesystemtransactions()"
     },
     {
@@ -13519,8 +13519,8 @@
       "source_location": "L169",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usedailyreconciliationdelta",
-      "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "usedailyreconciliationdelta()"
     },
     {
@@ -13541,8 +13541,8 @@
       "source_location": "L484",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_usemodulo1storesdata",
-      "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "usemodulo1storesdata()"
     },
     {
@@ -13563,8 +13563,8 @@
       "source_location": "L669",
       "_origin": "ast",
       "id": "src_hooks_useconciliacao_useresolveunmatchedalert",
-      "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "useresolveunmatchedalert()"
     },
     {
@@ -13673,8 +13673,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usecontasapagarimport",
-      "community": 44,
-      "community_name": "contasPagarParser.ts",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usecontasapagarimport.ts"
     },
     {
@@ -13684,8 +13684,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_hooks_usecontasapagarimport_usecontasapagarimport",
-      "community": 44,
-      "community_name": "contasPagarParser.ts",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usecontasapagarimport()"
     },
     {
@@ -13695,8 +13695,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot",
-      "community": 495,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "usedailysnapshot.ts"
     },
     {
@@ -13706,8 +13706,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_dailysnapshotrow",
-      "community": 495,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "dailysnapshotrow"
     },
     {
@@ -13717,8 +13717,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_usedailysnapshot",
-      "community": 495,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "usedailysnapshot()"
     },
     {
@@ -13750,8 +13750,8 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "src_hooks_usedailysnapshot_useavailableconciliacaodates",
-      "community": 495,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 0,
+      "community_name": "index.tsx",
       "norm_label": "useavailableconciliacaodates()"
     },
     {
@@ -13762,7 +13762,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2",
       "community": 0,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "usedashboardv2.ts"
     },
     {
@@ -13773,7 +13773,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_storemetrics",
       "community": 0,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "storemetrics"
     },
     {
@@ -13784,7 +13784,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_dashboardv2data",
       "community": 0,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "dashboardv2data"
     },
     {
@@ -13795,7 +13795,7 @@
       "_origin": "ast",
       "id": "src_hooks_usedashboardv2_usedashboardv2",
       "community": 0,
-      "community_name": "Card.tsx",
+      "community_name": "index.tsx",
       "norm_label": "usedashboardv2()"
     },
     {
@@ -13883,7 +13883,7 @@
       "_origin": "ast",
       "id": "src_hooks_usefeecontracts",
       "community": 657,
-      "community_name": "TaxasDashboardView.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "usefeecontracts.ts"
     },
     {
@@ -13894,7 +13894,7 @@
       "_origin": "ast",
       "id": "src_hooks_usefeecontracts_posfeecontract",
       "community": 657,
-      "community_name": "TaxasDashboardView.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "posfeecontract"
     },
     {
@@ -13905,7 +13905,7 @@
       "_origin": "ast",
       "id": "src_hooks_usefeecontracts_usefeecontracts",
       "community": 657,
-      "community_name": "TaxasDashboardView.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "usefeecontracts()"
     },
     {
@@ -13916,7 +13916,7 @@
       "_origin": "ast",
       "id": "src_hooks_usegoals",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "usegoals.ts"
     },
     {
@@ -13927,7 +13927,7 @@
       "_origin": "ast",
       "id": "src_hooks_usegoals_goalrow",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "goalrow"
     },
     {
@@ -13938,7 +13938,7 @@
       "_origin": "ast",
       "id": "src_hooks_usegoals_usemonthlygoal",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "usemonthlygoal()"
     },
     {
@@ -13948,8 +13948,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 336,
+      "community_name": "useStores",
       "norm_label": "useimportlogs.ts"
     },
     {
@@ -13959,8 +13959,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlog",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 336,
+      "community_name": "useStores",
       "norm_label": "importlog"
     },
     {
@@ -13970,8 +13970,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_importlogfilters",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 336,
+      "community_name": "useStores",
       "norm_label": "importlogfilters"
     },
     {
@@ -13981,8 +13981,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogs",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 336,
+      "community_name": "useStores",
       "norm_label": "useimportlogs()"
     },
     {
@@ -13992,8 +13992,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "src_hooks_useimportlogs_useimportlogdetail",
-      "community": 496,
-      "community_name": "supabase.ts",
+      "community": 336,
+      "community_name": "useStores",
       "norm_label": "useimportlogdetail()"
     },
     {
@@ -14014,8 +14014,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_hooks_useimportprocessor_parsedos",
-      "community": 532,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 4,
+      "community_name": "useCentralImport.ts",
       "norm_label": "parsedos"
     },
     {
@@ -14212,8 +14212,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usemcplogs",
-      "community": 0,
-      "community_name": "Card.tsx",
+      "community": 419,
+      "community_name": "AppShell.tsx",
       "norm_label": "usemcplogs.ts"
     },
     {
@@ -14223,8 +14223,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_usemcplogs_mcplog",
-      "community": 0,
-      "community_name": "Card.tsx",
+      "community": 419,
+      "community_name": "AppShell.tsx",
       "norm_label": "mcplog"
     },
     {
@@ -14234,8 +14234,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_hooks_usemcplogs_usemcplogs",
-      "community": 0,
-      "community_name": "Card.tsx",
+      "community": 419,
+      "community_name": "AppShell.tsx",
       "norm_label": "usemcplogs()"
     },
     {
@@ -14322,8 +14322,8 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "src_hooks_usemdraudit_usemdraudit",
-      "community": 657,
-      "community_name": "TaxasDashboardView.tsx",
+      "community": 1216,
+      "community_name": "useMdrAudit.ts",
       "norm_label": "usemdraudit()"
     },
     {
@@ -14333,7 +14333,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useoscache",
-      "community": 0,
+      "community": 657,
       "community_name": "Card.tsx",
       "norm_label": "useoscache.ts"
     },
@@ -14344,7 +14344,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_useoscache_oficinaoscache",
-      "community": 0,
+      "community": 657,
       "community_name": "Card.tsx",
       "norm_label": "oficinaoscache"
     },
@@ -14355,7 +14355,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_hooks_useoscache_useoscache",
-      "community": 0,
+      "community": 657,
       "community_name": "Card.tsx",
       "norm_label": "useoscache()"
     },
@@ -14366,8 +14366,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor",
-      "community": 17,
-      "community_name": "WizardImportacao.tsx",
+      "community": 4,
+      "community_name": "useCentralImport.ts",
       "norm_label": "useosimportprocessor.ts"
     },
     {
@@ -14377,8 +14377,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor_osimportresult",
-      "community": 17,
-      "community_name": "WizardImportacao.tsx",
+      "community": 4,
+      "community_name": "useCentralImport.ts",
       "norm_label": "osimportresult"
     },
     {
@@ -14388,8 +14388,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_hooks_useosimportprocessor_processosfiles",
-      "community": 17,
-      "community_name": "WizardImportacao.tsx",
+      "community": 4,
+      "community_name": "useCentralImport.ts",
       "norm_label": "processosfiles()"
     },
     {
@@ -14399,8 +14399,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usepatio",
-      "community": 336,
-      "community_name": "useStores",
+      "community": 1084,
+      "community_name": "useTransactions.ts",
       "norm_label": "usepatio.ts"
     },
     {
@@ -14410,8 +14410,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_usepatio_usepatioos",
-      "community": 336,
-      "community_name": "useStores",
+      "community": 1084,
+      "community_name": "useTransactions.ts",
       "norm_label": "usepatioos()"
     },
     {
@@ -14421,8 +14421,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_hooks_usepatio_useupdatepatioos",
-      "community": 336,
-      "community_name": "useStores",
+      "community": 1084,
+      "community_name": "useTransactions.ts",
       "norm_label": "useupdatepatioos()"
     },
     {
@@ -14432,8 +14432,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "src_hooks_usepatio_usepatiosummary",
-      "community": 336,
-      "community_name": "useStores",
+      "community": 1084,
+      "community_name": "useTransactions.ts",
       "norm_label": "usepatiosummary()"
     },
     {
@@ -14443,8 +14443,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_usepurgedailydata",
-      "community": 532,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "usepurgedailydata.ts"
     },
     {
@@ -14454,8 +14454,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_hooks_usepurgedailydata_usepurgedailydata",
-      "community": 532,
-      "community_name": "CentralImportWizard.tsx",
+      "community": 34,
+      "community_name": "Button.tsx",
       "norm_label": "usepurgedailydata()"
     },
     {
@@ -14553,8 +14553,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_hooks_userecebiveis",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "userecebiveis.ts"
     },
     {
@@ -14564,8 +14564,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_userecebiveis",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "userecebiveis()"
     },
     {
@@ -14575,8 +14575,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_usemarkreceived",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "usemarkreceived()"
     },
     {
@@ -14586,8 +14586,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "src_hooks_userecebiveis_usereceivablessummary",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "usereceivablessummary()"
     },
     {
@@ -14686,7 +14686,7 @@
       "_origin": "ast",
       "id": "src_hooks_usestoreanalyticbreakdown",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usestoreanalyticbreakdown.ts"
     },
     {
@@ -14697,7 +14697,7 @@
       "_origin": "ast",
       "id": "src_hooks_usestoreanalyticbreakdown_storeanalyticbreakdown",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "storeanalyticbreakdown"
     },
     {
@@ -14708,7 +14708,7 @@
       "_origin": "ast",
       "id": "src_hooks_usestoreanalyticbreakdown_usestoreanalyticbreakdown",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "usestoreanalyticbreakdown()"
     },
     {
@@ -14938,8 +14938,8 @@
       "source_location": "L260",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_useweeklyrevenuetrend",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "useweeklyrevenuetrend()"
     },
     {
@@ -14949,8 +14949,8 @@
       "source_location": "L313",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usecreateimportbatch",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usecreateimportbatch()"
     },
     {
@@ -14960,8 +14960,8 @@
       "source_location": "L328",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usebulkinsertconciliationmatches",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 532,
+      "community_name": "CentralImportWizard.tsx",
       "norm_label": "usebulkinsertconciliationmatches()"
     },
     {
@@ -14971,8 +14971,8 @@
       "source_location": "L341",
       "_origin": "ast",
       "id": "src_hooks_usetransactions_usebulkinserttransactions",
-      "community": 17,
-      "community_name": "WizardImportacao.tsx",
+      "community": 1084,
+      "community_name": "useTransactions.ts",
       "norm_label": "usebulkinserttransactions()"
     },
     {
@@ -15038,7 +15038,7 @@
       "_origin": "ast",
       "id": "src_hooks_useuserpermissions",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "useuserpermissions.ts"
     },
     {
@@ -15049,7 +15049,7 @@
       "_origin": "ast",
       "id": "src_hooks_useuserpermissions_userprofile",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "userprofile"
     },
     {
@@ -15071,7 +15071,7 @@
       "_origin": "ast",
       "id": "src_hooks_useuserpermissions_usesystemusers",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "usesystemusers()"
     },
     {
@@ -15081,8 +15081,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher",
-      "community": 25,
-      "community_name": "start.ts",
+      "community": 2,
+      "community_name": "src/server.ts",
       "norm_label": "auth-attacher.ts"
     },
     {
@@ -15092,8 +15092,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_integrations_supabase_auth_attacher_attachsupabaseauth",
-      "community": 25,
-      "community_name": "start.ts",
+      "community": 2,
+      "community_name": "src/server.ts",
       "norm_label": "attachsupabaseauth"
     },
     {
@@ -15159,7 +15159,7 @@
       "_origin": "ast",
       "id": "src_integrations_supabase_client",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "client.ts"
     },
     {
@@ -15170,7 +15170,7 @@
       "_origin": "ast",
       "id": "src_integrations_supabase_client_createsupabaseclient",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "createsupabaseclient()"
     },
     {
@@ -15181,7 +15181,7 @@
       "_origin": "ast",
       "id": "src_integrations_supabase_client_supabase",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "supabase"
     },
     {
@@ -15312,8 +15312,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_aireconciliationservice",
-      "community": 495,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 343,
+      "community_name": "aiReconciliationService.ts",
       "norm_label": "aireconciliationservice.ts"
     },
     {
@@ -15323,8 +15323,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_lib_aireconciliationservice_cashauditresult",
-      "community": 495,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 343,
+      "community_name": "aiReconciliationService.ts",
       "norm_label": "cashauditresult"
     },
     {
@@ -15334,8 +15334,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_lib_aireconciliationservice_discrepancydiagnosis",
-      "community": 495,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 343,
+      "community_name": "aiReconciliationService.ts",
       "norm_label": "discrepancydiagnosis"
     },
     {
@@ -15345,8 +15345,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_lib_aireconciliationservice_fuzzymatchresult",
-      "community": 495,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 343,
+      "community_name": "aiReconciliationService.ts",
       "norm_label": "fuzzymatchresult"
     },
     {
@@ -15356,8 +15356,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "src_lib_aireconciliationservice_callgooglegeminiapi",
-      "community": 495,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 343,
+      "community_name": "aiReconciliationService.ts",
       "norm_label": "callgooglegeminiapi()"
     },
     {
@@ -15367,8 +15367,8 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "src_lib_aireconciliationservice_auditcashinoslist",
-      "community": 495,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 343,
+      "community_name": "aiReconciliationService.ts",
       "norm_label": "auditcashinoslist()"
     },
     {
@@ -15378,8 +15378,8 @@
       "source_location": "L157",
       "_origin": "ast",
       "id": "src_lib_aireconciliationservice_diagnosereconciliationdiscrepancy",
-      "community": 495,
-      "community_name": "ResumoDiaPanel.tsx",
+      "community": 343,
+      "community_name": "aiReconciliationService.ts",
       "norm_label": "diagnosereconciliationdiscrepancy()"
     },
     {
@@ -16182,7 +16182,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations",
       "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Modulo1SaldoPanel.tsx",
       "norm_label": "modulo1calculations.ts"
     },
     {
@@ -16193,7 +16193,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_globalconciliacaoinput",
       "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Modulo1SaldoPanel.tsx",
       "norm_label": "globalconciliacaoinput"
     },
     {
@@ -16204,7 +16204,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_globalconciliacaocalculated",
       "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Modulo1SaldoPanel.tsx",
       "norm_label": "globalconciliacaocalculated"
     },
     {
@@ -16215,7 +16215,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_calculateglobalconciliacao",
       "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Modulo1SaldoPanel.tsx",
       "norm_label": "calculateglobalconciliacao()"
     },
     {
@@ -16226,7 +16226,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_storesaldostate",
       "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Modulo1SaldoPanel.tsx",
       "norm_label": "storesaldostate"
     },
     {
@@ -16237,7 +16237,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_modulo1calculated",
       "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Modulo1SaldoPanel.tsx",
       "norm_label": "modulo1calculated"
     },
     {
@@ -16248,7 +16248,7 @@
       "_origin": "ast",
       "id": "src_lib_modulo1calculations_calculatemodulo1saldo",
       "community": 29,
-      "community_name": "useConciliacao.ts",
+      "community_name": "Modulo1SaldoPanel.tsx",
       "norm_label": "calculatemodulo1saldo()"
     },
     {
@@ -16500,8 +16500,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_mapametasparser",
-      "community": 17,
-      "community_name": "WizardImportacao.tsx",
+      "community": 4,
+      "community_name": "useCentralImport.ts",
       "norm_label": "mapametasparser.ts"
     },
     {
@@ -16511,8 +16511,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_lib_parsers_mapametasparser_mapametasstore",
-      "community": 17,
-      "community_name": "WizardImportacao.tsx",
+      "community": 4,
+      "community_name": "useCentralImport.ts",
       "norm_label": "mapametasstore"
     },
     {
@@ -16522,8 +16522,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_lib_parsers_mapametasparser_mapametasresult",
-      "community": 17,
-      "community_name": "WizardImportacao.tsx",
+      "community": 4,
+      "community_name": "useCentralImport.ts",
       "norm_label": "mapametasresult"
     },
     {
@@ -16533,8 +16533,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_lib_parsers_mapametasparser_parsemapametaspdf",
-      "community": 17,
-      "community_name": "WizardImportacao.tsx",
+      "community": 4,
+      "community_name": "useCentralImport.ts",
       "norm_label": "parsemapametaspdf()"
     },
     {
@@ -16544,8 +16544,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser",
-      "community": 1216,
-      "community_name": "useMdrAudit.ts",
+      "community": 25,
+      "community_name": "marcoZeroParser.ts",
       "norm_label": "marcozeroparser.ts"
     },
     {
@@ -16555,8 +16555,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_marcozeroglobaldata",
-      "community": 1216,
-      "community_name": "useMdrAudit.ts",
+      "community": 25,
+      "community_name": "marcoZeroParser.ts",
       "norm_label": "marcozeroglobaldata"
     },
     {
@@ -16566,8 +16566,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_marcozerostoredata",
-      "community": 1216,
-      "community_name": "useMdrAudit.ts",
+      "community": 25,
+      "community_name": "marcoZeroParser.ts",
       "norm_label": "marcozerostoredata"
     },
     {
@@ -16577,8 +16577,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_marcozeroresult",
-      "community": 1216,
-      "community_name": "useMdrAudit.ts",
+      "community": 25,
+      "community_name": "marcoZeroParser.ts",
       "norm_label": "marcozeroresult"
     },
     {
@@ -16588,8 +16588,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_cleannumber",
-      "community": 1216,
-      "community_name": "useMdrAudit.ts",
+      "community": 25,
+      "community_name": "marcoZeroParser.ts",
       "norm_label": "cleannumber()"
     },
     {
@@ -16599,8 +16599,8 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_parsedate",
-      "community": 1216,
-      "community_name": "useMdrAudit.ts",
+      "community": 25,
+      "community_name": "marcoZeroParser.ts",
       "norm_label": "parsedate()"
     },
     {
@@ -16610,8 +16610,8 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_isknownstore",
-      "community": 1216,
-      "community_name": "useMdrAudit.ts",
+      "community": 25,
+      "community_name": "marcoZeroParser.ts",
       "norm_label": "isknownstore()"
     },
     {
@@ -16621,8 +16621,8 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "src_lib_parsers_marcozeroparser_parsemarcozeroplanilha",
-      "community": 1216,
-      "community_name": "useMdrAudit.ts",
+      "community": 25,
+      "community_name": "marcoZeroParser.ts",
       "norm_label": "parsemarcozeroplanilha()"
     },
     {
@@ -16687,8 +16687,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_lib_parsers_ofxparser_ofxparseresult",
-      "community": 17,
-      "community_name": "WizardImportacao.tsx",
+      "community": 4,
+      "community_name": "useCentralImport.ts",
       "norm_label": "ofxparseresult"
     },
     {
@@ -16720,8 +16720,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_redeparser",
-      "community": 1216,
-      "community_name": "useMdrAudit.ts",
+      "community": 4,
+      "community_name": "useCentralImport.ts",
       "norm_label": "redeparser.ts"
     },
     {
@@ -16731,8 +16731,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_lib_parsers_redeparser_redetransaction",
-      "community": 1216,
-      "community_name": "useMdrAudit.ts",
+      "community": 4,
+      "community_name": "useCentralImport.ts",
       "norm_label": "redetransaction"
     },
     {
@@ -16742,8 +16742,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_lib_parsers_redeparser_rederesult",
-      "community": 1216,
-      "community_name": "useMdrAudit.ts",
+      "community": 4,
+      "community_name": "useCentralImport.ts",
       "norm_label": "rederesult"
     },
     {
@@ -16753,8 +16753,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "src_lib_parsers_redeparser_parseredefile",
-      "community": 1216,
-      "community_name": "useMdrAudit.ts",
+      "community": 4,
+      "community_name": "useCentralImport.ts",
       "norm_label": "parseredefile()"
     },
     {
@@ -16830,8 +16830,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_storemapping",
-      "community": 1216,
-      "community_name": "useMdrAudit.ts",
+      "community": 25,
+      "community_name": "marcoZeroParser.ts",
       "norm_label": "storemapping.ts"
     },
     {
@@ -16841,8 +16841,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_parsers_storemapping_rede_store_mapping",
-      "community": 1216,
-      "community_name": "useMdrAudit.ts",
+      "community": 25,
+      "community_name": "marcoZeroParser.ts",
       "norm_label": "rede_store_mapping"
     },
     {
@@ -16852,8 +16852,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_lib_parsers_storemapping_normalizeredestorename",
-      "community": 1216,
-      "community_name": "useMdrAudit.ts",
+      "community": 25,
+      "community_name": "marcoZeroParser.ts",
       "norm_label": "normalizeredestorename()"
     },
     {
@@ -16864,7 +16864,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_supplierutils",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "supplierutils.ts"
     },
     {
@@ -16875,7 +16875,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_supplierutils_breakdowncategoryitem",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "breakdowncategoryitem"
     },
     {
@@ -16886,7 +16886,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_supplierutils_macro_colors_expenses",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "macro_colors_expenses"
     },
     {
@@ -16897,7 +16897,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_supplierutils_macro_colors_revenue",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "macro_colors_revenue"
     },
     {
@@ -16908,7 +16908,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_supplierutils_extractsuppliername",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "extractsuppliername()"
     },
     {
@@ -16919,7 +16919,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_supplierutils_extractrevenuecategory",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "extractrevenuecategory()"
     },
     {
@@ -16930,7 +16930,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_supplierutils_cleanrawtext",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "cleanrawtext()"
     },
     {
@@ -16941,7 +16941,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_supplierutils_grouptransactionsbysupplier",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "grouptransactionsbysupplier()"
     },
     {
@@ -16952,7 +16952,7 @@
       "_origin": "ast",
       "id": "src_lib_parsers_supplierutils_grouptransactionsbyrevenuesource",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "grouptransactionsbyrevenuesource()"
     },
     {
@@ -16995,7 +16995,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_supabase",
-      "community": 496,
+      "community": 1214,
       "community_name": "supabase.ts",
       "norm_label": "supabase.ts"
     },
@@ -17028,8 +17028,8 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "src_lib_supabase_alertrow",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "alertrow"
     },
     {
@@ -17039,8 +17039,8 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "src_lib_supabase_transactionrow",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "transactionrow"
     },
     {
@@ -17051,7 +17051,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_cashregisterrow",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "cashregisterrow"
     },
     {
@@ -17061,8 +17061,8 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "src_lib_supabase_patioosrow",
-      "community": 336,
-      "community_name": "useStores",
+      "community": 1084,
+      "community_name": "useTransactions.ts",
       "norm_label": "patioosrow"
     },
     {
@@ -17072,8 +17072,8 @@
       "source_location": "L112",
       "_origin": "ast",
       "id": "src_lib_supabase_receivablerow",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "receivablerow"
     },
     {
@@ -17084,7 +17084,7 @@
       "_origin": "ast",
       "id": "src_lib_supabase_botrunrow",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "botrunrow"
     },
     {
@@ -17094,7 +17094,7 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "src_lib_supabase_profilerow",
-      "community": 496,
+      "community": 1214,
       "community_name": "supabase.ts",
       "norm_label": "profilerow"
     },
@@ -17105,7 +17105,7 @@
       "source_location": "L144",
       "_origin": "ast",
       "id": "src_lib_supabase_interestraterow",
-      "community": 496,
+      "community": 1214,
       "community_name": "supabase.ts",
       "norm_label": "interestraterow"
     },
@@ -17116,8 +17116,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_utils",
-      "community": 34,
-      "community_name": "Button.tsx",
+      "community": 657,
+      "community_name": "Card.tsx",
       "norm_label": "utils.ts"
     },
     {
@@ -17127,7 +17127,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_lib_utils_cn",
-      "community": 0,
+      "community": 657,
       "community_name": "Card.tsx",
       "norm_label": "cn()"
     },
@@ -17138,8 +17138,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_lib_utils_getdefaultdate",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "getdefaultdate()"
     },
     {
@@ -17479,8 +17479,8 @@
       "source_location": "L481",
       "_origin": "ast",
       "id": "src_routetree_gen_routetree",
-      "community": 25,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "routetree"
     },
     {
@@ -17501,8 +17501,8 @@
       "source_location": "L488",
       "_origin": "ast",
       "id": "src_routetree_gen_register",
-      "community": 25,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "register"
     },
     {
@@ -17512,8 +17512,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_router",
-      "community": 25,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "router.tsx"
     },
     {
@@ -17523,8 +17523,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_router_getrouter",
-      "community": 25,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "getrouter()"
     },
     {
@@ -17601,7 +17601,7 @@
       "_origin": "ast",
       "id": "src_routes_alertas",
       "community": 657,
-      "community_name": "TaxasDashboardView.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "alertas.tsx"
     },
     {
@@ -17623,7 +17623,7 @@
       "_origin": "ast",
       "id": "src_routes_alertas_alertasredirectpage",
       "community": 657,
-      "community_name": "TaxasDashboardView.tsx",
+      "community_name": "Card.tsx",
       "norm_label": "alertasredirectpage()"
     },
     {
@@ -17633,8 +17633,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_bootstrap",
-      "community": 34,
-      "community_name": "Button.tsx",
+      "community": 336,
+      "community_name": "useStores",
       "norm_label": "bootstrap.tsx"
     },
     {
@@ -17853,8 +17853,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_configuracoes",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 419,
+      "community_name": "AppShell.tsx",
       "norm_label": "configuracoes.tsx"
     },
     {
@@ -17875,8 +17875,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_routes_configuracoes_configuracoespage",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 419,
+      "community_name": "AppShell.tsx",
       "norm_label": "configuracoespage()"
     },
     {
@@ -18150,8 +18150,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_index",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 0,
+      "community_name": "index.tsx",
       "norm_label": "index.tsx"
     },
     {
@@ -18172,8 +18172,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "src_routes_index_dashboardpage",
-      "community": 1084,
-      "community_name": "useTransactions.ts",
+      "community": 0,
+      "community_name": "index.tsx",
       "norm_label": "dashboardpage()"
     },
     {
@@ -18217,7 +18217,7 @@
       "_origin": "ast",
       "id": "src_routes_logs_agente",
       "community": 419,
-      "community_name": "logs.agente.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "logs.agente.tsx"
     },
     {
@@ -18227,8 +18227,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_routes_logs_agente_route",
-      "community": 419,
-      "community_name": "logs.agente.tsx",
+      "community": 1490,
+      "community_name": "FileRoutesByPath",
       "norm_label": "route"
     },
     {
@@ -18239,7 +18239,7 @@
       "_origin": "ast",
       "id": "src_routes_logs_agente_logsagentepage",
       "community": 419,
-      "community_name": "logs.agente.tsx",
+      "community_name": "AppShell.tsx",
       "norm_label": "logsagentepage()"
     },
     {
@@ -18250,7 +18250,7 @@
       "_origin": "ast",
       "id": "src_routes_logs_motor",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "logs.motor.tsx"
     },
     {
@@ -18272,7 +18272,7 @@
       "_origin": "ast",
       "id": "src_routes_logs_motor_logsmotorpage",
       "community": 496,
-      "community_name": "supabase.ts",
+      "community_name": "supabase",
       "norm_label": "logsmotorpage()"
     },
     {
@@ -18283,7 +18283,7 @@
       "_origin": "ast",
       "id": "src_routes_loja_lojaid",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "loja.$lojaid.tsx"
     },
     {
@@ -18305,7 +18305,7 @@
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_formatdate",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "formatdate()"
     },
     {
@@ -18316,7 +18316,7 @@
       "_origin": "ast",
       "id": "src_routes_loja_lojaid_lojadashboardpage",
       "community": 1214,
-      "community_name": "loja.$lojaId.tsx",
+      "community_name": "supabase.ts",
       "norm_label": "lojadashboardpage()"
     },
     {
@@ -18359,8 +18359,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_patio",
-      "community": 336,
-      "community_name": "useStores",
+      "community": 1084,
+      "community_name": "useTransactions.ts",
       "norm_label": "patio.tsx"
     },
     {
@@ -18370,8 +18370,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_routes_patio_historychange",
-      "community": 336,
-      "community_name": "useStores",
+      "community": 1084,
+      "community_name": "useTransactions.ts",
       "norm_label": "historychange"
     },
     {
@@ -18381,8 +18381,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_routes_patio_historylog",
-      "community": 336,
-      "community_name": "useStores",
+      "community": 1084,
+      "community_name": "useTransactions.ts",
       "norm_label": "historylog"
     },
     {
@@ -18403,8 +18403,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_routes_patio_filtertab",
-      "community": 336,
-      "community_name": "useStores",
+      "community": 1084,
+      "community_name": "useTransactions.ts",
       "norm_label": "filtertab"
     },
     {
@@ -18414,8 +18414,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_routes_patio_getoseffectivevalues",
-      "community": 336,
-      "community_name": "useStores",
+      "community": 1084,
+      "community_name": "useTransactions.ts",
       "norm_label": "getoseffectivevalues()"
     },
     {
@@ -18425,8 +18425,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "src_routes_patio_patiopage",
-      "community": 336,
-      "community_name": "useStores",
+      "community": 1084,
+      "community_name": "useTransactions.ts",
       "norm_label": "patiopage()"
     },
     {
@@ -18436,8 +18436,8 @@
       "source_location": "L516",
       "_origin": "ast",
       "id": "src_routes_patio_tabbtn",
-      "community": 336,
-      "community_name": "useStores",
+      "community": 1084,
+      "community_name": "useTransactions.ts",
       "norm_label": "tabbtn()"
     },
     {
@@ -18535,8 +18535,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_routes_recebiveis",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "recebiveis.tsx"
     },
     {
@@ -18557,8 +18557,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_routes_recebiveis_filtertab",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "filtertab"
     },
     {
@@ -18568,8 +18568,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_routes_recebiveis_mainview",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "mainview"
     },
     {
@@ -18579,8 +18579,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_routes_recebiveis_recebiveispage",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "recebiveispage()"
     },
     {
@@ -18590,8 +18590,8 @@
       "source_location": "L332",
       "_origin": "ast",
       "id": "src_routes_recebiveis_tabbtn",
-      "community": 4,
-      "community_name": "recebiveis.tsx",
+      "community": 1214,
+      "community_name": "supabase.ts",
       "norm_label": "tabbtn()"
     },
     {
@@ -18722,8 +18722,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_start",
-      "community": 25,
-      "community_name": "start.ts",
+      "community": 2,
+      "community_name": "src/server.ts",
       "norm_label": "start.ts"
     },
     {
@@ -18733,8 +18733,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_start_errormiddleware",
-      "community": 25,
-      "community_name": "start.ts",
+      "community": 2,
+      "community_name": "src/server.ts",
       "norm_label": "errormiddleware"
     },
     {
@@ -18744,8 +18744,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_start_startinstance",
-      "community": 25,
-      "community_name": "start.ts",
+      "community": 11,
+      "community_name": "routeTree.gen.ts",
       "norm_label": "startinstance"
     },
     {
@@ -31619,168 +31619,157 @@
       "norm_label": "tasks"
     },
     {
-      "label": "272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md",
+      "label": "273-varredura-calculos-rpc-e-pilares-saldo/design.md",
       "file_type": "document",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design",
-      "community": 343,
-      "community_name": "Design: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
-      "norm_label": "272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md"
+      "id": "specs_273_varredura_calculos_rpc_e_pilares_saldo_design",
+      "community": 548,
+      "community_name": "Design: Ajuste Matem\u00e1tico Estrito da RPC de Concilia\u00e7\u00e3o (Spec 273)",
+      "norm_label": "273-varredura-calculos-rpc-e-pilares-saldo/design.md"
     },
     {
-      "label": "Design: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "label": "Design: Ajuste Matem\u00e1tico Estrito da RPC de Concilia\u00e7\u00e3o (Spec 273)",
       "file_type": "document",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/design.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_design_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
-      "community": 343,
-      "community_name": "Design: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
-      "norm_label": "design: apuracao automatica de dinheiro no cofre das lojas por janela contabil (spec 272)"
+      "id": "specs_273_varredura_calculos_rpc_e_pilares_saldo_design_design_ajuste_matem\u00e1tico_estrito_da_rpc_de_concilia\u00e7\u00e3o_spec_273",
+      "community": 548,
+      "community_name": "Design: Ajuste Matem\u00e1tico Estrito da RPC de Concilia\u00e7\u00e3o (Spec 273)",
+      "norm_label": "design: ajuste matematico estrito da rpc de conciliacao (spec 273)"
     },
     {
-      "label": "Algoritmo de Janela Cont\u00e1bil Autom\u00e1tica",
+      "label": "Arquitetura de C\u00e1lculo Din\u00e2mico na RPC",
       "file_type": "document",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/design.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_algoritmo_de_janela_cont\u00e1bil_autom\u00e1tica",
-      "community": 343,
-      "community_name": "Design: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
-      "norm_label": "algoritmo de janela contabil automatica"
+      "id": "specs_273_varredura_calculos_rpc_e_pilares_saldo_design_arquitetura_de_c\u00e1lculo_din\u00e2mico_na_rpc",
+      "community": 548,
+      "community_name": "Design: Ajuste Matem\u00e1tico Estrito da RPC de Concilia\u00e7\u00e3o (Spec 273)",
+      "norm_label": "arquitetura de calculo dinamico na rpc"
     },
     {
-      "label": "Modifica\u00e7\u00f5es no Banco de Dados",
+      "label": "Modifica\u00e7\u00f5es no Backend",
       "file_type": "document",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md",
-      "source_location": "L43",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/design.md",
+      "source_location": "L42",
       "_origin": "ast",
-      "id": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_modifica\u00e7\u00f5es_no_banco_de_dados",
-      "community": 343,
-      "community_name": "Design: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
-      "norm_label": "modificacoes no banco de dados"
+      "id": "specs_273_varredura_calculos_rpc_e_pilares_saldo_design_modifica\u00e7\u00f5es_no_backend",
+      "community": 548,
+      "community_name": "Design: Ajuste Matem\u00e1tico Estrito da RPC de Concilia\u00e7\u00e3o (Spec 273)",
+      "norm_label": "modificacoes no backend"
     },
     {
       "label": "Modifica\u00e7\u00f5es no Frontend",
       "file_type": "document",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md",
-      "source_location": "L48",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/design.md",
+      "source_location": "L45",
       "_origin": "ast",
-      "id": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_modifica\u00e7\u00f5es_no_frontend",
-      "community": 343,
-      "community_name": "Design: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "id": "specs_273_varredura_calculos_rpc_e_pilares_saldo_design_modifica\u00e7\u00f5es_no_frontend",
+      "community": 548,
+      "community_name": "Design: Ajuste Matem\u00e1tico Estrito da RPC de Concilia\u00e7\u00e3o (Spec 273)",
       "norm_label": "modificacoes no frontend"
     },
     {
-      "label": "272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "label": "273-varredura-calculos-rpc-e-pilares-saldo/proposal.md",
       "file_type": "document",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal",
-      "community": 276,
-      "community_name": "Proposal: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
-      "norm_label": "272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md"
+      "id": "specs_273_varredura_calculos_rpc_e_pilares_saldo_proposal",
+      "community": 347,
+      "community_name": "Proposal: Ajuste Matem\u00e1tico Estrito da RPC de Concilia\u00e7\u00e3o (Spec 273)",
+      "norm_label": "273-varredura-calculos-rpc-e-pilares-saldo/proposal.md"
     },
     {
-      "label": "Proposal: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "label": "Proposal: Ajuste Matem\u00e1tico Estrito da RPC de Concilia\u00e7\u00e3o (Spec 273)",
       "file_type": "document",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/proposal.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_proposal_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
-      "community": 276,
-      "community_name": "Proposal: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
-      "norm_label": "proposal: apuracao automatica de dinheiro no cofre das lojas por janela contabil (spec 272)"
+      "id": "specs_273_varredura_calculos_rpc_e_pilares_saldo_proposal_proposal_ajuste_matem\u00e1tico_estrito_da_rpc_de_concilia\u00e7\u00e3o_spec_273",
+      "community": 347,
+      "community_name": "Proposal: Ajuste Matem\u00e1tico Estrito da RPC de Concilia\u00e7\u00e3o (Spec 273)",
+      "norm_label": "proposal: ajuste matematico estrito da rpc de conciliacao (spec 273)"
     },
     {
       "label": "Problema",
       "file_type": "document",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/proposal.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_problema",
-      "community": 276,
-      "community_name": "Proposal: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "id": "specs_273_varredura_calculos_rpc_e_pilares_saldo_proposal_problema",
+      "community": 347,
+      "community_name": "Proposal: Ajuste Matem\u00e1tico Estrito da RPC de Concilia\u00e7\u00e3o (Spec 273)",
       "norm_label": "problema"
     },
     {
-      "label": "Regra Autom\u00e1tica de Janela Cont\u00e1bil (Single Source of Truth)",
+      "label": "Solu\u00e7\u00e3o Proposta",
       "file_type": "document",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
-      "source_location": "L9",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/proposal.md",
+      "source_location": "L12",
       "_origin": "ast",
-      "id": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_regra_autom\u00e1tica_de_janela_cont\u00e1bil_single_source_of_truth",
-      "community": 276,
-      "community_name": "Proposal: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
-      "norm_label": "regra automatica de janela contabil (single source of truth)"
-    },
-    {
-      "label": "Apura\u00e7\u00e3o de Maquininhas a Compensar",
-      "file_type": "document",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
-      "source_location": "L19",
-      "_origin": "ast",
-      "id": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_apura\u00e7\u00e3o_de_maquininhas_a_compensar",
-      "community": 276,
-      "community_name": "Proposal: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
-      "norm_label": "apuracao de maquininhas a compensar"
+      "id": "specs_273_varredura_calculos_rpc_e_pilares_saldo_proposal_solu\u00e7\u00e3o_proposta",
+      "community": 347,
+      "community_name": "Proposal: Ajuste Matem\u00e1tico Estrito da RPC de Concilia\u00e7\u00e3o (Spec 273)",
+      "norm_label": "solucao proposta"
     },
     {
       "label": "Contratos de Dados",
       "file_type": "document",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/proposal.md",
       "source_location": "L22",
       "_origin": "ast",
-      "id": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_contratos_de_dados",
-      "community": 276,
-      "community_name": "Proposal: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "id": "specs_273_varredura_calculos_rpc_e_pilares_saldo_proposal_contratos_de_dados",
+      "community": 347,
+      "community_name": "Proposal: Ajuste Matem\u00e1tico Estrito da RPC de Concilia\u00e7\u00e3o (Spec 273)",
       "norm_label": "contratos de dados"
     },
     {
       "label": "Risco Principal",
       "file_type": "document",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
-      "source_location": "L34",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/proposal.md",
+      "source_location": "L29",
       "_origin": "ast",
-      "id": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_risco_principal",
-      "community": 276,
-      "community_name": "Proposal: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "id": "specs_273_varredura_calculos_rpc_e_pilares_saldo_proposal_risco_principal",
+      "community": 347,
+      "community_name": "Proposal: Ajuste Matem\u00e1tico Estrito da RPC de Concilia\u00e7\u00e3o (Spec 273)",
       "norm_label": "risco principal"
     },
     {
-      "label": "272-apuracao-dinheiro-loja-e-maquininhas-pendentes/spec-plan.md",
+      "label": "273-varredura-calculos-rpc-e-pilares-saldo/spec-plan.md",
       "file_type": "document",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/spec-plan.md",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_spec_plan",
-      "community": 347,
-      "community_name": "Spec Plan: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
-      "norm_label": "272-apuracao-dinheiro-loja-e-maquininhas-pendentes/spec-plan.md"
+      "id": "specs_273_varredura_calculos_rpc_e_pilares_saldo_spec_plan",
+      "community": 550,
+      "community_name": "Spec Plan: Ajuste Matem\u00e1tico Estrito da RPC de Concilia\u00e7\u00e3o (Spec 273)",
+      "norm_label": "273-varredura-calculos-rpc-e-pilares-saldo/spec-plan.md"
     },
     {
-      "label": "Spec Plan: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "label": "Spec Plan: Ajuste Matem\u00e1tico Estrito da RPC de Concilia\u00e7\u00e3o (Spec 273)",
       "file_type": "document",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/spec-plan.md",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/spec-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_spec_plan_spec_plan_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
-      "community": 347,
-      "community_name": "Spec Plan: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
-      "norm_label": "spec plan: apuracao automatica de dinheiro no cofre das lojas por janela contabil (spec 272)"
+      "id": "specs_273_varredura_calculos_rpc_e_pilares_saldo_spec_plan_spec_plan_ajuste_matem\u00e1tico_estrito_da_rpc_de_concilia\u00e7\u00e3o_spec_273",
+      "community": 550,
+      "community_name": "Spec Plan: Ajuste Matem\u00e1tico Estrito da RPC de Concilia\u00e7\u00e3o (Spec 273)",
+      "norm_label": "spec plan: ajuste matematico estrito da rpc de conciliacao (spec 273)"
     },
     {
       "label": "Tasks",
       "file_type": "document",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/spec-plan.md",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/spec-plan.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_spec_plan_tasks",
-      "community": 347,
-      "community_name": "Spec Plan: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "id": "specs_273_varredura_calculos_rpc_e_pilares_saldo_spec_plan_tasks",
+      "community": 550,
+      "community_name": "Spec Plan: Ajuste Matem\u00e1tico Estrito da RPC de Concilia\u00e7\u00e3o (Spec 273)",
       "norm_label": "tasks"
     },
     {
@@ -68920,6 +68909,171 @@
       "norm_label": "tasks"
     },
     {
+      "label": "272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md",
+      "file_type": "document",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design",
+      "community": 549,
+      "community_name": "Design: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "norm_label": "272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md"
+    },
+    {
+      "label": "Design: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "file_type": "document",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_design_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
+      "community": 549,
+      "community_name": "Design: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "norm_label": "design: apuracao automatica de dinheiro no cofre das lojas por janela contabil (spec 272)"
+    },
+    {
+      "label": "Algoritmo de Janela Cont\u00e1bil Autom\u00e1tica",
+      "file_type": "document",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_algoritmo_de_janela_cont\u00e1bil_autom\u00e1tica",
+      "community": 549,
+      "community_name": "Design: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "norm_label": "algoritmo de janela contabil automatica"
+    },
+    {
+      "label": "Modifica\u00e7\u00f5es no Banco de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md",
+      "source_location": "L43",
+      "_origin": "ast",
+      "id": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_modifica\u00e7\u00f5es_no_banco_de_dados",
+      "community": 549,
+      "community_name": "Design: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "norm_label": "modificacoes no banco de dados"
+    },
+    {
+      "label": "Modifica\u00e7\u00f5es no Frontend",
+      "file_type": "document",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md",
+      "source_location": "L48",
+      "_origin": "ast",
+      "id": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_modifica\u00e7\u00f5es_no_frontend",
+      "community": 549,
+      "community_name": "Design: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "norm_label": "modificacoes no frontend"
+    },
+    {
+      "label": "272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "file_type": "document",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal",
+      "community": 276,
+      "community_name": "Proposal: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "norm_label": "272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md"
+    },
+    {
+      "label": "Proposal: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "file_type": "document",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_proposal_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
+      "community": 276,
+      "community_name": "Proposal: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "norm_label": "proposal: apuracao automatica de dinheiro no cofre das lojas por janela contabil (spec 272)"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_problema",
+      "community": 276,
+      "community_name": "Proposal: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Regra Autom\u00e1tica de Janela Cont\u00e1bil (Single Source of Truth)",
+      "file_type": "document",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_regra_autom\u00e1tica_de_janela_cont\u00e1bil_single_source_of_truth",
+      "community": 276,
+      "community_name": "Proposal: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "norm_label": "regra automatica de janela contabil (single source of truth)"
+    },
+    {
+      "label": "Apura\u00e7\u00e3o de Maquininhas a Compensar",
+      "file_type": "document",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_apura\u00e7\u00e3o_de_maquininhas_a_compensar",
+      "community": 276,
+      "community_name": "Proposal: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "norm_label": "apuracao de maquininhas a compensar"
+    },
+    {
+      "label": "Contratos de Dados",
+      "file_type": "document",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_contratos_de_dados",
+      "community": 276,
+      "community_name": "Proposal: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "norm_label": "contratos de dados"
+    },
+    {
+      "label": "Risco Principal",
+      "file_type": "document",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "source_location": "L34",
+      "_origin": "ast",
+      "id": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_risco_principal",
+      "community": 276,
+      "community_name": "Proposal: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "norm_label": "risco principal"
+    },
+    {
+      "label": "272-apuracao-dinheiro-loja-e-maquininhas-pendentes/spec-plan.md",
+      "file_type": "document",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_spec_plan",
+      "community": 551,
+      "community_name": "Spec Plan: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "norm_label": "272-apuracao-dinheiro-loja-e-maquininhas-pendentes/spec-plan.md"
+    },
+    {
+      "label": "Spec Plan: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "file_type": "document",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/spec-plan.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_spec_plan_spec_plan_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
+      "community": 551,
+      "community_name": "Spec Plan: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "norm_label": "spec plan: apuracao automatica de dinheiro no cofre das lojas por janela contabil (spec 272)"
+    },
+    {
+      "label": "Tasks",
+      "file_type": "document",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/spec-plan.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_spec_plan_tasks",
+      "community": 551,
+      "community_name": "Spec Plan: Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre das Lojas por Janela Cont\u00e1bil (Spec 272)",
+      "norm_label": "tasks"
+    },
+    {
       "label": "agente-fullbleed-layout-and-clean-tabs/design.md",
       "file_type": "document",
       "source_file": "specs/archive/agente-fullbleed-layout-and-clean-tabs/design.md",
@@ -81746,10 +81900,21 @@
       "norm_label": "specs/global/features.md"
     },
     {
-      "label": "Global Features",
+      "label": "Spec 272 \u2014 Apura\u00e7\u00e3o Autom\u00e1tica de Dinheiro no Cofre e Maquininhas a Compensar por Filial",
       "file_type": "document",
       "source_file": "specs/global/features.md",
       "source_location": "L1",
+      "_origin": "ast",
+      "id": "specs_global_features_spec_272_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_e_maquininhas_a_compensar_por_filial",
+      "community": 591,
+      "community_name": "Global Features",
+      "norm_label": "spec 272 \u2014 apuracao automatica de dinheiro no cofre e maquininhas a compensar por filial"
+    },
+    {
+      "label": "Global Features",
+      "file_type": "document",
+      "source_file": "specs/global/features.md",
+      "source_location": "L6",
       "_origin": "ast",
       "id": "specs_global_features_global_features",
       "community": 591,
@@ -81760,7 +81925,7 @@
       "label": "Feature 217: Auditoria de MDR e Diverg\u00eancia Contratual Multi-Loja (Rede)",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L3",
+      "source_location": "L8",
       "_origin": "ast",
       "id": "specs_global_features_feature_217_auditoria_de_mdr_e_diverg\u00eancia_contratual_multi_loja_rede",
       "community": 591,
@@ -81771,7 +81936,7 @@
       "label": "Feature 218: Tela Dedicada de Auditoria de Taxas, MDR Di\u00e1rio e por Transa\u00e7\u00e3o (/taxas)",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L7",
+      "source_location": "L12",
       "_origin": "ast",
       "id": "specs_global_features_feature_218_tela_dedicada_de_auditoria_de_taxas_mdr_di\u00e1rio_e_por_transa\u00e7\u00e3o_taxas",
       "community": 591,
@@ -81782,7 +81947,7 @@
       "label": "Feature 219: Faturamento Atual com Justificativas e Resolu\u00e7\u00e3o de Diferen\u00e7as na Loja",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L13",
+      "source_location": "L18",
       "_origin": "ast",
       "id": "specs_global_features_feature_219_faturamento_atual_com_justificativas_e_resolu\u00e7\u00e3o_de_diferen\u00e7as_na_loja",
       "community": 591,
@@ -81793,7 +81958,7 @@
       "label": "Feature 220: Corre\u00e7\u00e3o de Justificativas no Faturamento e Redesign do Card de Diferen\u00e7a Final",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L19",
+      "source_location": "L24",
       "_origin": "ast",
       "id": "specs_global_features_feature_220_corre\u00e7\u00e3o_de_justificativas_no_faturamento_e_redesign_do_card_de_diferen\u00e7a_final",
       "community": 591,
@@ -81804,7 +81969,7 @@
       "label": "Feature 221: V\u00ednculo Manual de PIX/Banco com OS, Desvincula\u00e7\u00e3o e Prote\u00e7\u00e3o contra Duplicidade",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L24",
+      "source_location": "L29",
       "_origin": "ast",
       "id": "specs_global_features_feature_221_v\u00ednculo_manual_de_pix_banco_com_os_desvincula\u00e7\u00e3o_e_prote\u00e7\u00e3o_contra_duplicidade",
       "community": 591,
@@ -81815,7 +81980,7 @@
       "label": "Feature 222: Ajuste da Tabela de Cart\u00e3o da Maquininha (Bruto, Taxa MDR, L\u00edquido e Bandeira)",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L29",
+      "source_location": "L34",
       "_origin": "ast",
       "id": "specs_global_features_feature_222_ajuste_da_tabela_de_cart\u00e3o_da_maquininha_bruto_taxa_mdr_l\u00edquido_e_bandeira",
       "community": 591,
@@ -81826,7 +81991,7 @@
       "label": "Feature 223: Auditoria de Status de Liquida\u00e7\u00e3o Banc\u00e1ria para Cart\u00f5es e PIX de OS",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L34",
+      "source_location": "L39",
       "_origin": "ast",
       "id": "specs_global_features_feature_223_auditoria_de_status_de_liquida\u00e7\u00e3o_banc\u00e1ria_para_cart\u00f5es_e_pix_de_os",
       "community": 591,
@@ -81837,7 +82002,7 @@
       "label": "Feature 224: Concilia\u00e7\u00e3o Atemporal e Persistente de PIX (OFX-Centric)",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L39",
+      "source_location": "L44",
       "_origin": "ast",
       "id": "specs_global_features_feature_224_concilia\u00e7\u00e3o_atemporal_e_persistente_de_pix_ofx_centric",
       "community": 591,
@@ -81848,7 +82013,7 @@
       "label": "Feature 225: Justificativa com Controle de Faturamento e Redesign de V\u00ednculo de OS",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L45",
+      "source_location": "L50",
       "_origin": "ast",
       "id": "specs_global_features_feature_225_justificativa_com_controle_de_faturamento_e_redesign_de_v\u00ednculo_de_os",
       "community": 591,
@@ -81859,7 +82024,7 @@
       "label": "Feature 226: Corre\u00e7\u00e3o de Filtro PIX vs Movimenta\u00e7\u00f5es Banc\u00e1rias e Sincroniza\u00e7\u00e3o de Diferen\u00e7as por Loja",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L51",
+      "source_location": "L56",
       "_origin": "ast",
       "id": "specs_global_features_feature_226_corre\u00e7\u00e3o_de_filtro_pix_vs_movimenta\u00e7\u00f5es_banc\u00e1rias_e_sincroniza\u00e7\u00e3o_de_diferen\u00e7as_por_loja",
       "community": 591,
@@ -81870,7 +82035,7 @@
       "label": "Feature 227: M\u00e9tricas do Dashboard e Gr\u00e1fico de Evolu\u00e7\u00e3o Macro 100% no PostgreSQL RPC",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L57",
+      "source_location": "L62",
       "_origin": "ast",
       "id": "specs_global_features_feature_227_m\u00e9tricas_do_dashboard_e_gr\u00e1fico_de_evolu\u00e7\u00e3o_macro_100_no_postgresql_rpc",
       "community": 591,
@@ -81881,7 +82046,7 @@
       "label": "Feature 228: Redesign do Dashboard com Tabs de An\u00e1lise por Unidade e Tabela Horizontal",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L63",
+      "source_location": "L68",
       "_origin": "ast",
       "id": "specs_global_features_feature_228_redesign_do_dashboard_com_tabs_de_an\u00e1lise_por_unidade_e_tabela_horizontal",
       "community": 591,
@@ -81892,7 +82057,7 @@
       "label": "Feature 230: Redesign da Etapa 4 de Importa\u00e7\u00e3o Central (Orquestra\u00e7\u00e3o Multi-Agente de IA)",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L68",
+      "source_location": "L73",
       "_origin": "ast",
       "id": "specs_global_features_feature_230_redesign_da_etapa_4_de_importa\u00e7\u00e3o_central_orquestra\u00e7\u00e3o_multi_agente_de_ia",
       "community": 591,
@@ -81903,7 +82068,7 @@
       "label": "Feature 231: Diagn\u00f3stico de Concilia\u00e7\u00e3o e Cart\u00f5es a Compensar (18/08)",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L73",
+      "source_location": "L78",
       "_origin": "ast",
       "id": "specs_global_features_feature_231_diagn\u00f3stico_de_concilia\u00e7\u00e3o_e_cart\u00f5es_a_compensar_18_08",
       "community": 591,
@@ -81914,7 +82079,7 @@
       "label": "Feature 232: Whisper Dots e Audit Trail Discreto de Diverg\u00eancias na Concilia\u00e7\u00e3o",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L78",
+      "source_location": "L83",
       "_origin": "ast",
       "id": "specs_global_features_feature_232_whisper_dots_e_audit_trail_discreto_de_diverg\u00eancias_na_concilia\u00e7\u00e3o",
       "community": 591,
@@ -81925,7 +82090,7 @@
       "label": "Feature 233: Gest\u00e3o de Acessos, Permiss\u00f5es Granulares e Logs Di\u00e1rios",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L83",
+      "source_location": "L88",
       "_origin": "ast",
       "id": "specs_global_features_feature_233_gest\u00e3o_de_acessos_permiss\u00f5es_granulares_e_logs_di\u00e1rios",
       "community": 591,
@@ -81936,7 +82101,7 @@
       "label": "Feature 234: Concilia\u00e7\u00e3o Tripla de Maquininhas, Saldo a Compensar e Batimento OFX",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L89",
+      "source_location": "L94",
       "_origin": "ast",
       "id": "specs_global_features_feature_234_concilia\u00e7\u00e3o_tripla_de_maquininhas_saldo_a_compensar_e_batimento_ofx",
       "community": 591,
@@ -81947,7 +82112,7 @@
       "label": "Feature 235: Exibi\u00e7\u00e3o e Soma de Maquininhas N\u00e3o Entradas por Loja e no Consolidador Geral",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L95",
+      "source_location": "L100",
       "_origin": "ast",
       "id": "specs_global_features_feature_235_exibi\u00e7\u00e3o_e_soma_de_maquininhas_n\u00e3o_entradas_por_loja_e_no_consolidador_geral",
       "community": 591,
@@ -81958,7 +82123,7 @@
       "label": "Feature 237: Redesign Visual & Descompress\u00e3o do Painel de Resumo do Dia",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L100",
+      "source_location": "L105",
       "_origin": "ast",
       "id": "specs_global_features_feature_237_redesign_visual_descompress\u00e3o_do_painel_de_resumo_do_dia",
       "community": 591,
@@ -81969,7 +82134,7 @@
       "label": "Feature 238: RPC de Limpeza Geral At\u00f4mica & Sincroniza\u00e7\u00e3o e Desbloqueio de Datas do Marco Zero",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L109",
+      "source_location": "L114",
       "_origin": "ast",
       "id": "specs_global_features_feature_238_rpc_de_limpeza_geral_at\u00f4mica_sincroniza\u00e7\u00e3o_e_desbloqueio_de_datas_do_marco_zero",
       "community": 591,
@@ -81980,7 +82145,7 @@
       "label": "Feature 239: Redesign Widescreen do Modal de Maquininhas & Refinamento dos Cards de Lojas",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L118",
+      "source_location": "L123",
       "_origin": "ast",
       "id": "specs_global_features_feature_239_redesign_widescreen_do_modal_de_maquininhas_refinamento_dos_cards_de_lojas",
       "community": 591,
@@ -81991,7 +82156,7 @@
       "label": "Feature 240: Segrega\u00e7\u00e3o de Devolu\u00e7\u00f5es Rede (Pilar 5) & \u00c2ncora Temporal de OS P\u00e1tio",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L137",
+      "source_location": "L142",
       "_origin": "ast",
       "id": "specs_global_features_feature_240_segrega\u00e7\u00e3o_de_devolu\u00e7\u00f5es_rede_pilar_5_\u00e2ncora_temporal_de_os_p\u00e1tio",
       "community": 591,
@@ -82002,7 +82167,7 @@
       "label": "Feature 241: Restaura\u00e7\u00e3o do Layout Cl\u00e1ssico e Tokens Originais dos Cards de Lojas e Resumo do Dia",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L149",
+      "source_location": "L154",
       "_origin": "ast",
       "id": "specs_global_features_feature_241_restaura\u00e7\u00e3o_do_layout_cl\u00e1ssico_e_tokens_originais_dos_cards_de_lojas_e_resumo_do_dia",
       "community": 591,
@@ -82013,7 +82178,7 @@
       "label": "Feature 261: Saldo Total Banc\u00e1rio OFX e Tabela Interativa de Edi\u00e7\u00e3o Livre de OSs no Preview",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L160",
+      "source_location": "L165",
       "_origin": "ast",
       "id": "specs_global_features_feature_261_saldo_total_banc\u00e1rio_ofx_e_tabela_interativa_de_edi\u00e7\u00e3o_livre_de_oss_no_preview",
       "community": 591,
@@ -82024,7 +82189,7 @@
       "label": "Feature 262: Tabela Exclusiva de OSs Ausentes no Preview de Importa\u00e7\u00e3o",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L167",
+      "source_location": "L172",
       "_origin": "ast",
       "id": "specs_global_features_feature_262_tabela_exclusiva_de_oss_ausentes_no_preview_de_importa\u00e7\u00e3o",
       "community": 591,
@@ -82035,7 +82200,7 @@
       "label": "Feature 263: Tabela Unificada de OSs no Preview com Filtros R\u00e1pidos e Edi\u00e7\u00e3o Livre",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L174",
+      "source_location": "L179",
       "_origin": "ast",
       "id": "specs_global_features_feature_263_tabela_unificada_de_oss_no_preview_com_filtros_r\u00e1pidos_e_edi\u00e7\u00e3o_livre",
       "community": 591,
@@ -82046,7 +82211,7 @@
       "label": "Feature 264: Motor de Diagn\u00f3stico Pr\u00e9-Concilia\u00e7\u00e3o no Step 3",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L181",
+      "source_location": "L186",
       "_origin": "ast",
       "id": "specs_global_features_feature_264_motor_de_diagn\u00f3stico_pr\u00e9_concilia\u00e7\u00e3o_no_step_3",
       "community": 591,
@@ -82057,7 +82222,7 @@
       "label": "Feature 265: Corre\u00e7\u00e3o de RPC Tripla de Maquininhas e Transpar\u00eancia em Contas",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L186",
+      "source_location": "L191",
       "_origin": "ast",
       "id": "specs_global_features_feature_265_corre\u00e7\u00e3o_de_rpc_tripla_de_maquininhas_e_transpar\u00eancia_em_contas",
       "community": 591,
@@ -82068,7 +82233,7 @@
       "label": "Feature 266: Alinhamento de Concilia\u00e7\u00e3o com Excel Oficial e \u00c2ncora de Dia \u00datil",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L191",
+      "source_location": "L196",
       "_origin": "ast",
       "id": "specs_global_features_feature_266_alinhamento_de_concilia\u00e7\u00e3o_com_excel_oficial_e_\u00e2ncora_de_dia_\u00fatil",
       "community": 591,
@@ -82079,7 +82244,7 @@
       "label": "Feature 267: Painel de Edi\u00e7\u00e3o de OSs Ausentes no P\u00e1tio e Deduplica\u00e7\u00e3o da Rede",
       "file_type": "document",
       "source_file": "specs/global/features.md",
-      "source_location": "L196",
+      "source_location": "L201",
       "_origin": "ast",
       "id": "specs_global_features_feature_267_painel_de_edi\u00e7\u00e3o_de_oss_ausentes_no_p\u00e1tio_e_deduplica\u00e7\u00e3o_da_rede",
       "community": 591,
@@ -109336,7 +109501,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/hooks/useBackendConciliacao.ts",
-      "source_location": "L151",
+      "source_location": "L152",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_hooks_usebackendconciliacao",
@@ -109358,7 +109523,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/hooks/useBackendConciliacao.ts",
-      "source_location": "L173",
+      "source_location": "L174",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_hooks_usebackendconciliacao",
@@ -130945,133 +131110,122 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/design.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design",
-      "target": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_design_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
+      "source": "specs_273_varredura_calculos_rpc_e_pilares_saldo_design",
+      "target": "specs_273_varredura_calculos_rpc_e_pilares_saldo_design_design_ajuste_matem\u00e1tico_estrito_da_rpc_de_concilia\u00e7\u00e3o_spec_273",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/design.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_design_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
-      "target": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_algoritmo_de_janela_cont\u00e1bil_autom\u00e1tica",
+      "source": "specs_273_varredura_calculos_rpc_e_pilares_saldo_design_design_ajuste_matem\u00e1tico_estrito_da_rpc_de_concilia\u00e7\u00e3o_spec_273",
+      "target": "specs_273_varredura_calculos_rpc_e_pilares_saldo_design_arquitetura_de_c\u00e1lculo_din\u00e2mico_na_rpc",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md",
-      "source_location": "L43",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/design.md",
+      "source_location": "L42",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_design_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
-      "target": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_modifica\u00e7\u00f5es_no_banco_de_dados",
+      "source": "specs_273_varredura_calculos_rpc_e_pilares_saldo_design_design_ajuste_matem\u00e1tico_estrito_da_rpc_de_concilia\u00e7\u00e3o_spec_273",
+      "target": "specs_273_varredura_calculos_rpc_e_pilares_saldo_design_modifica\u00e7\u00f5es_no_backend",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md",
-      "source_location": "L48",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/design.md",
+      "source_location": "L45",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_design_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
-      "target": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_modifica\u00e7\u00f5es_no_frontend",
+      "source": "specs_273_varredura_calculos_rpc_e_pilares_saldo_design_design_ajuste_matem\u00e1tico_estrito_da_rpc_de_concilia\u00e7\u00e3o_spec_273",
+      "target": "specs_273_varredura_calculos_rpc_e_pilares_saldo_design_modifica\u00e7\u00f5es_no_frontend",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/proposal.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal",
-      "target": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_proposal_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
+      "source": "specs_273_varredura_calculos_rpc_e_pilares_saldo_proposal",
+      "target": "specs_273_varredura_calculos_rpc_e_pilares_saldo_proposal_proposal_ajuste_matem\u00e1tico_estrito_da_rpc_de_concilia\u00e7\u00e3o_spec_273",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
-      "source_location": "L19",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_proposal_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
-      "target": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_apura\u00e7\u00e3o_de_maquininhas_a_compensar",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/proposal.md",
       "source_location": "L22",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_proposal_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
-      "target": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_contratos_de_dados",
+      "source": "specs_273_varredura_calculos_rpc_e_pilares_saldo_proposal_proposal_ajuste_matem\u00e1tico_estrito_da_rpc_de_concilia\u00e7\u00e3o_spec_273",
+      "target": "specs_273_varredura_calculos_rpc_e_pilares_saldo_proposal_contratos_de_dados",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/proposal.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_proposal_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
-      "target": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_problema",
+      "source": "specs_273_varredura_calculos_rpc_e_pilares_saldo_proposal_proposal_ajuste_matem\u00e1tico_estrito_da_rpc_de_concilia\u00e7\u00e3o_spec_273",
+      "target": "specs_273_varredura_calculos_rpc_e_pilares_saldo_proposal_problema",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
-      "source_location": "L9",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/proposal.md",
+      "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_proposal_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
-      "target": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_regra_autom\u00e1tica_de_janela_cont\u00e1bil_single_source_of_truth",
+      "source": "specs_273_varredura_calculos_rpc_e_pilares_saldo_proposal_proposal_ajuste_matem\u00e1tico_estrito_da_rpc_de_concilia\u00e7\u00e3o_spec_273",
+      "target": "specs_273_varredura_calculos_rpc_e_pilares_saldo_proposal_risco_principal",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
-      "source_location": "L34",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/proposal.md",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_proposal_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
-      "target": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_risco_principal",
+      "source": "specs_273_varredura_calculos_rpc_e_pilares_saldo_proposal_proposal_ajuste_matem\u00e1tico_estrito_da_rpc_de_concilia\u00e7\u00e3o_spec_273",
+      "target": "specs_273_varredura_calculos_rpc_e_pilares_saldo_proposal_solu\u00e7\u00e3o_proposta",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/spec-plan.md",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/spec-plan.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_spec_plan",
-      "target": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_spec_plan_spec_plan_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
+      "source": "specs_273_varredura_calculos_rpc_e_pilares_saldo_spec_plan",
+      "target": "specs_273_varredura_calculos_rpc_e_pilares_saldo_spec_plan_spec_plan_ajuste_matem\u00e1tico_estrito_da_rpc_de_concilia\u00e7\u00e3o_spec_273",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/spec-plan.md",
+      "source_file": "specs/273-varredura-calculos-rpc-e-pilares-saldo/spec-plan.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_spec_plan_spec_plan_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
-      "target": "specs_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_spec_plan_tasks",
+      "source": "specs_273_varredura_calculos_rpc_e_pilares_saldo_spec_plan_spec_plan_ajuste_matem\u00e1tico_estrito_da_rpc_de_concilia\u00e7\u00e3o_spec_273",
+      "target": "specs_273_varredura_calculos_rpc_e_pilares_saldo_spec_plan_tasks",
       "confidence_score": 1.0
     },
     {
@@ -161052,6 +161206,138 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design",
+      "target": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_design_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_design_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
+      "target": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_algoritmo_de_janela_cont\u00e1bil_autom\u00e1tica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md",
+      "source_location": "L43",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_design_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
+      "target": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_modifica\u00e7\u00f5es_no_banco_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md",
+      "source_location": "L48",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_design_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
+      "target": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_design_modifica\u00e7\u00f5es_no_frontend",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal",
+      "target": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_proposal_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_proposal_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
+      "target": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_apura\u00e7\u00e3o_de_maquininhas_a_compensar",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_proposal_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
+      "target": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_contratos_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_proposal_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
+      "target": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_proposal_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
+      "target": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_regra_autom\u00e1tica_de_janela_cont\u00e1bil_single_source_of_truth",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md",
+      "source_location": "L34",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_proposal_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
+      "target": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_proposal_risco_principal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/spec-plan.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_spec_plan",
+      "target": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_spec_plan_spec_plan_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/archive/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/spec-plan.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_spec_plan_spec_plan_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_das_lojas_por_janela_cont\u00e1bil_spec_272",
+      "target": "specs_archive_272_apuracao_dinheiro_loja_e_maquininhas_pendentes_spec_plan_tasks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "specs/archive/agente-fullbleed-layout-and-clean-tabs/design.md",
       "source_location": "L3",
       "weight": 1.0,
@@ -171173,7 +171459,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L1",
+      "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features",
@@ -171184,7 +171470,18 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L3",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "specs_global_features",
+      "target": "specs_global_features_spec_272_apura\u00e7\u00e3o_autom\u00e1tica_de_dinheiro_no_cofre_e_maquininhas_a_compensar_por_filial",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "specs/global/features.md",
+      "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171195,7 +171492,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L7",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171206,7 +171503,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L13",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171217,7 +171514,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L19",
+      "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171228,7 +171525,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L24",
+      "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171239,7 +171536,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L29",
+      "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171250,7 +171547,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L34",
+      "source_location": "L39",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171261,7 +171558,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L39",
+      "source_location": "L44",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171272,7 +171569,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L45",
+      "source_location": "L50",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171283,7 +171580,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L51",
+      "source_location": "L56",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171294,7 +171591,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L57",
+      "source_location": "L62",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171305,7 +171602,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L63",
+      "source_location": "L68",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171316,7 +171613,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L68",
+      "source_location": "L73",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171327,7 +171624,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L73",
+      "source_location": "L78",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171338,7 +171635,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L78",
+      "source_location": "L83",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171349,7 +171646,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L83",
+      "source_location": "L88",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171360,7 +171657,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L89",
+      "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171371,7 +171668,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L95",
+      "source_location": "L100",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171382,7 +171679,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L100",
+      "source_location": "L105",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171393,7 +171690,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L109",
+      "source_location": "L114",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171404,7 +171701,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L118",
+      "source_location": "L123",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171415,7 +171712,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L137",
+      "source_location": "L142",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171426,7 +171723,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L149",
+      "source_location": "L154",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171437,7 +171734,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L160",
+      "source_location": "L165",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171448,7 +171745,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L167",
+      "source_location": "L172",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171459,7 +171756,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L174",
+      "source_location": "L179",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171470,7 +171767,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L181",
+      "source_location": "L186",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171481,7 +171778,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L186",
+      "source_location": "L191",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171492,7 +171789,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L191",
+      "source_location": "L196",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -171503,7 +171800,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "specs/global/features.md",
-      "source_location": "L196",
+      "source_location": "L201",
       "weight": 1.0,
       "_origin": "ast",
       "source": "specs_global_features_global_features",
@@ -172557,5 +172854,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "6ed5d4f2205c4b76131b705004b756c424c3e218"
+  "built_at_commit": "02337f57dea9dcc5453e7d053b141c78044c8c2d"
 }

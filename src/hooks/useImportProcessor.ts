@@ -212,6 +212,35 @@ export async function savePatioOsAndReceivables(
     for (const up of toUpdateRecs) {
       await supabase.from('receivables').update({ status: up.status }).eq('id', up.id);
     }
+
+    // Auto-match inteligente: Se transações de recebíveis/maquininhas cobrirem OSs em aberto na mesma loja
+    const { data: openStoreOs } = await supabase
+      .from('patio_os')
+      .select('id, os_number, total_value, paid_value, status')
+      .eq('store_id', storeId)
+      .not('status', 'in', '("finalizada","finalizado","paga","pago","cancelada","cancelado")');
+
+    if (openStoreOs && openStoreOs.length > 0) {
+      for (const rec of receivablesArray) {
+        const recVal = Number(rec.value || 0);
+        if (recVal <= 0) continue;
+
+        const matchedOs = openStoreOs.find(o => {
+          const saldo = Number(o.total_value || 0) - Number(o.paid_value || 0);
+          return (Math.abs(Number(o.total_value || 0) - recVal) <= 0.05) || (Math.abs(saldo - recVal) <= 0.05);
+        });
+
+        if (matchedOs) {
+          await supabase.from('patio_os').update({
+            paid_value: matchedOs.total_value,
+            status: 'finalizada',
+            raw_status: 'Finalizada (Auto-Match Maquininha)',
+            closed_at: rec.date || targetDate || new Date().toISOString().split('T')[0],
+            updated_at: new Date().toISOString()
+          }).eq('id', matchedOs.id);
+        }
+      }
+    }
   }
 }
 
