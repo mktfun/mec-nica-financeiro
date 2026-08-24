@@ -585,8 +585,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useOsImportProcessor.ts": {
-    "mtime": 1787586677.9295564,
-    "ast_hash": "07ac1ff727682de9495a1dd2af441828",
+    "mtime": 1787599889.1563036,
+    "ast_hash": "b596eb287f2df9dc71dfe8069616ca36",
     "semantic_hash": ""
   },
   "src/hooks/usePatio.ts": {
@@ -2605,8 +2605,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1787596043.2570937,
-    "ast_hash": "e068e2115fb743e0d89482f7acfdbe10",
+    "mtime": 1787597469.8668466,
+    "ast_hash": "5aed5e2f769cad243b147bfeaefda1f3",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -7790,8 +7790,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/MissingPatioOsEditor.tsx": {
-    "mtime": 1787578941.9111838,
-    "ast_hash": "f54a05666ee8805c3ef2100577b197ce",
+    "mtime": 1787600027.0369663,
+    "ast_hash": "6a8fbe8c05e3fa50b78ad75a4b13dfd5",
     "semantic_hash": ""
   },
   "supabase/migrations/20260824000002_fix_daily_summary_weekend_anchor_and_cash.sql": {
@@ -8054,21 +8054,6 @@
     "ast_hash": "d8b0c6f6b286b53b27660508581fb6e2",
     "semantic_hash": ""
   },
-  "specs/276-refinamento-filtro-vinculo-manual-pix-os/design.md": {
-    "mtime": 1787597073.8961337,
-    "ast_hash": "7b801cc7b1a79ce142b9319d2385de5c",
-    "semantic_hash": ""
-  },
-  "specs/276-refinamento-filtro-vinculo-manual-pix-os/proposal.md": {
-    "mtime": 1787597062.6858077,
-    "ast_hash": "e38a6840ef12aa39ffb54f52c93bfd89",
-    "semantic_hash": ""
-  },
-  "specs/276-refinamento-filtro-vinculo-manual-pix-os/spec-plan.md": {
-    "mtime": 1787597310.2507267,
-    "ast_hash": "ad5d506dbda0142852374441ae92b018",
-    "semantic_hash": ""
-  },
   "specs/archive/275-previsto-entradas-ofx-e-diferenca-pendente-por-loja/design.md": {
     "mtime": 1787594763.4868262,
     "ast_hash": "2cebdf3ea77685629710c25936cab2c6",
@@ -8082,6 +8067,146 @@
   "specs/archive/275-previsto-entradas-ofx-e-diferenca-pendente-por-loja/spec-plan.md": {
     "mtime": 1787595497.355773,
     "ast_hash": "6f1fe74decd6c1601d785f003d82d9f7",
+    "semantic_hash": ""
+  },
+  "scripts/apply-migration-08.cjs": {
+    "mtime": 1787600119.5008898,
+    "ast_hash": "1b314e1ab21707906813e4e4c3af43ba",
+    "semantic_hash": ""
+  },
+  "scripts/audit-excel-os-sheet.cjs": {
+    "mtime": 1787598471.137484,
+    "ast_hash": "afcfed04f47b9b0a5b6649c9a7246cd5",
+    "semantic_hash": ""
+  },
+  "scripts/compare-patio-db-excel.cjs": {
+    "mtime": 1787598543.527013,
+    "ast_hash": "85dbd342a56e5ff4cc80ad5ecff5693d",
+    "semantic_hash": ""
+  },
+  "scripts/deep-audit-system-vs-excel-2408.cjs": {
+    "mtime": 1787599338.19902,
+    "ast_hash": "532f1909b85cd6ab9ae9c5614eaf3176",
+    "semantic_hash": ""
+  },
+  "scripts/inspect-10-os-files.cjs": {
+    "mtime": 1787599667.026414,
+    "ast_hash": "a53e65c2fcc0e579dac6b4ab613727c0",
+    "semantic_hash": ""
+  },
+  "scripts/inspect-busca-contas.cjs": {
+    "mtime": 1787599641.062933,
+    "ast_hash": "4b599e9a179d6bb0eed85b60569d83e5",
+    "semantic_hash": ""
+  },
+  "scripts/inspect-conciliacao-2408-1.cjs": {
+    "mtime": 1787598379.4993567,
+    "ast_hash": "a2d9f026122caa3b6f53dc5e63270756",
+    "semantic_hash": ""
+  },
+  "scripts/inspect-formulas.cjs": {
+    "mtime": 1787598491.277439,
+    "ast_hash": "672cccd1ac30bfe4c56916af027c4bc4",
+    "semantic_hash": ""
+  },
+  "scripts/inspect-os-formulas.cjs": {
+    "mtime": 1787598510.0670016,
+    "ast_hash": "9cd2d1ae70d945b21500c47789145e56",
+    "semantic_hash": ""
+  },
+  "scripts/inspect-os-header.cjs": {
+    "mtime": 1787599719.6696994,
+    "ast_hash": "e7a9b2146a7322dadce6c5480ec2f2a4",
+    "semantic_hash": ""
+  },
+  "scripts/inspect-sheet0.cjs": {
+    "mtime": 1787598421.9845471,
+    "ast_hash": "4fae61070aebd900194891aa3c422dcc",
+    "semantic_hash": ""
+  },
+  "scripts/simulate-file-imports-2408.cjs": {
+    "mtime": 1787599615.0244355,
+    "ast_hash": "3e5af9461b2c57b0a3a18a4b98db09e0",
+    "semantic_hash": ""
+  },
+  "scripts/test-fixed-os-parser.cjs": {
+    "mtime": 1787599744.0851808,
+    "ast_hash": "e2da845f7a54b5a98888522bc9ea00b7",
+    "semantic_hash": ""
+  },
+  "scripts/test-processor-with-desktop-files.cjs": {
+    "mtime": 1787599695.415272,
+    "ast_hash": "27042880ee139b035a0eec4658d4da30",
+    "semantic_hash": ""
+  },
+  "scripts/validate-real-os-parser.cjs": {
+    "mtime": 1787599912.3355727,
+    "ast_hash": "0871f5d2cfd6009ee8fa3f51eb00bfcf",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260824000008_fix_contas_duplication_and_file_sources_reconciliation.sql": {
+    "mtime": 1787600401.7583656,
+    "ast_hash": "f3fe4245854cf80ceb151e1db90a658d",
+    "semantic_hash": ""
+  },
+  "specs/277-alinhamento-carryover-patio-wizard-vs-excel-2408/design.md": {
+    "mtime": 1787598709.4106922,
+    "ast_hash": "08ccecc11d144216d687a5ad3c212f83",
+    "semantic_hash": ""
+  },
+  "specs/277-alinhamento-carryover-patio-wizard-vs-excel-2408/proposal.md": {
+    "mtime": 1787598694.4011946,
+    "ast_hash": "1afe4009b9acde0e353f9f4efbacf960",
+    "semantic_hash": ""
+  },
+  "specs/277-alinhamento-carryover-patio-wizard-vs-excel-2408/spec-plan.md": {
+    "mtime": 1787598723.8246613,
+    "ast_hash": "3a9b7a8ebafb7546e6d2a200aed38f34",
+    "semantic_hash": ""
+  },
+  "specs/278-correcao-duplicacao-contas-e-alinhamento-caixa-2408/design.md": {
+    "mtime": 1787599406.0002818,
+    "ast_hash": "2715a662ecb45fb36c3fef08014b127c",
+    "semantic_hash": ""
+  },
+  "specs/278-correcao-duplicacao-contas-e-alinhamento-caixa-2408/proposal.md": {
+    "mtime": 1787599391.998835,
+    "ast_hash": "f0d1366bbef2a0c2be00b74e780b5bd8",
+    "semantic_hash": ""
+  },
+  "specs/278-correcao-duplicacao-contas-e-alinhamento-caixa-2408/spec-plan.md": {
+    "mtime": 1787599420.401084,
+    "ast_hash": "ea3a53b2dae4c33f95a245590367bb09",
+    "semantic_hash": ""
+  },
+  "specs/278-motor-calculo-direto-fontes-e-desduplicacao/design.md": {
+    "mtime": 1787599781.7541177,
+    "ast_hash": "7d6c3b202536c499c6d067969c986525",
+    "semantic_hash": ""
+  },
+  "specs/278-motor-calculo-direto-fontes-e-desduplicacao/proposal.md": {
+    "mtime": 1787599772.401707,
+    "ast_hash": "696dc4d15741734b7d797de209a956f8",
+    "semantic_hash": ""
+  },
+  "specs/278-motor-calculo-direto-fontes-e-desduplicacao/spec-plan.md": {
+    "mtime": 1787600692.5824673,
+    "ast_hash": "0f2b70b67fbebef748608c3671b10c01",
+    "semantic_hash": ""
+  },
+  "specs/archive/276-refinamento-filtro-vinculo-manual-pix-os/design.md": {
+    "mtime": 1787597073.8961337,
+    "ast_hash": "7b801cc7b1a79ce142b9319d2385de5c",
+    "semantic_hash": ""
+  },
+  "specs/archive/276-refinamento-filtro-vinculo-manual-pix-os/proposal.md": {
+    "mtime": 1787597062.6858077,
+    "ast_hash": "e38a6840ef12aa39ffb54f52c93bfd89",
+    "semantic_hash": ""
+  },
+  "specs/archive/276-refinamento-filtro-vinculo-manual-pix-os/spec-plan.md": {
+    "mtime": 1787597310.2507267,
+    "ast_hash": "ad5d506dbda0142852374441ae92b018",
     "semantic_hash": ""
   }
 }

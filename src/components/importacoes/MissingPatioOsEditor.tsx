@@ -135,27 +135,27 @@ export const MissingPatioOsEditor: React.FC<MissingPatioOsEditorProps> = ({
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
   return (
-    <div className="bg-zinc-900/90 border border-amber-500/40 rounded-xl overflow-hidden shadow-2xl transition-all">
+    <div className="bg-zinc-900/90 border border-sky-500/30 rounded-xl overflow-hidden shadow-2xl transition-all">
       {/* Header com Resumo e Ações Rápidas */}
       <div 
-        className="p-4 bg-gradient-to-r from-amber-950/40 via-zinc-900 to-zinc-900 border-b border-amber-500/30 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer select-none"
+        className="p-4 bg-gradient-to-r from-sky-950/30 via-zinc-900 to-zinc-900 border-b border-sky-500/20 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer select-none"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-amber-500/20 text-amber-400 rounded-lg border border-amber-500/30">
-            <AlertTriangle className="w-5 h-5 animate-pulse" />
+          <div className="p-2.5 bg-sky-500/20 text-sky-400 rounded-lg border border-sky-500/30">
+            <Car className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-base font-bold text-zinc-100 flex items-center gap-2">
-                OSs do Pátio Ausentes nos Arquivos de Hoje
-                <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono font-semibold border border-amber-500/30">
-                  {missingList.length} OSs pendentes
+                Veículos em Serviço no Pátio (Carryover)
+                <span className="text-xs px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 font-mono font-semibold border border-sky-500/30">
+                  {missingList.length} veículos preservados
                 </span>
               </h3>
             </div>
             <p className="text-xs text-zinc-400 mt-0.5">
-              Estes veículos constavam no pátio até ontem e não vieram nos relatórios .xls de hoje. Ajuste o valor ou dê baixa antes de fechar.
+              Estes veículos constavam no pátio de dias anteriores e continuam na oficina. Seus saldos são preservados automaticamente no pátio.
             </p>
           </div>
         </div>
@@ -163,10 +163,10 @@ export const MissingPatioOsEditor: React.FC<MissingPatioOsEditorProps> = ({
         {/* Resumo Financeiro no Header */}
         <div className="flex items-center gap-4 bg-zinc-950/60 p-2.5 rounded-lg border border-zinc-800" onClick={e => e.stopPropagation()}>
           <div className="text-right">
-            <span className="text-[10px] text-zinc-500 block uppercase tracking-wider">Saldo em Pátio</span>
+            <span className="text-[10px] text-zinc-500 block uppercase tracking-wider">Saldo Preservado</span>
             <div className="flex items-center gap-2">
               <span className="text-xs line-through text-zinc-500 font-mono">{formatCurrency(originalTotalSaldo)}</span>
-              <span className="text-sm font-bold text-amber-400 font-mono">{formatCurrency(novoTotalSaldo)}</span>
+              <span className="text-sm font-bold text-sky-400 font-mono">{formatCurrency(novoTotalSaldo)}</span>
             </div>
           </div>
           <div className="h-8 w-px bg-zinc-800" />
@@ -192,14 +192,14 @@ export const MissingPatioOsEditor: React.FC<MissingPatioOsEditorProps> = ({
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Filtrar por OS, Placa ou Loja..."
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-md pl-8 pr-3 py-1.5 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-amber-500/50"
+                  className="w-full bg-zinc-900 border border-zinc-800 rounded-md pl-8 pr-3 py-1.5 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-sky-500/50"
                 />
               </div>
 
               <select
                 value={selectedStore}
                 onChange={(e) => setSelectedStore(e.target.value)}
-                className="bg-zinc-900 border border-zinc-800 rounded-md px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-amber-500/50"
+                className="bg-zinc-900 border border-zinc-800 rounded-md px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-sky-500/50"
               >
                 <option value="ALL">Todas as Lojas ({missingList.length})</option>
                 {stores.map(s => (
@@ -212,19 +212,19 @@ export const MissingPatioOsEditor: React.FC<MissingPatioOsEditorProps> = ({
             <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
               <button
                 type="button"
-                onClick={() => handleBatchStatus('finalizada')}
-                className="px-3 py-1.5 text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-md hover:bg-emerald-500/20 transition-colors flex items-center gap-1.5"
+                onClick={() => handleBatchStatus('em_aberto')}
+                className="px-3 py-1.5 text-xs font-semibold bg-sky-500/20 text-sky-300 border border-sky-500/40 rounded-md hover:bg-sky-500/30 transition-colors flex items-center gap-1.5"
               >
-                <Check className="w-3.5 h-3.5" />
-                Dar Baixa em Todas (Quitadas)
+                <RotateCcw className="w-3.5 h-3.5" />
+                Manter Todas no Pátio (Padrão)
               </button>
               <button
                 type="button"
-                onClick={() => handleBatchStatus('em_aberto')}
-                className="px-3 py-1.5 text-xs font-semibold bg-zinc-800 text-zinc-300 border border-zinc-700 rounded-md hover:bg-zinc-700 transition-colors flex items-center gap-1.5"
+                onClick={() => handleBatchStatus('finalizada')}
+                className="px-3 py-1.5 text-xs font-semibold bg-zinc-800 text-zinc-400 border border-zinc-700 rounded-md hover:bg-zinc-700 hover:text-zinc-200 transition-colors flex items-center gap-1.5"
               >
-                <RotateCcw className="w-3.5 h-3.5" />
-                Manter Todas no Pátio
+                <Check className="w-3.5 h-3.5" />
+                Dar Baixa em Todas (Quitadas)
               </button>
             </div>
           </div>

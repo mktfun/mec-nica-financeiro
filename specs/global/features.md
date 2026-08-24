@@ -1,3 +1,8 @@
+### Spec 278 — Motor de Cálculo Direto das Fontes Brutas e Desduplicação de Contas
+- **useOsImportProcessor.ts**: Mapeamento estrito de R$ Total da OS e Restante na OS diretamente dos arquivos do ERP, eliminando a sobreposição de Total no Financeiro.
+- **MissingPatioOsEditor.tsx**: Preservação automática no pátio para veículos de dias anteriores (carryover de 4 OSs) por padrão sem induzir baixa acidental.
+- **RPC get_daily_reconciliation_summary**: Apuração de _contas_manual diretamente de daily_manual_bills (R$ 29.999,51) sem duplicar com contas_base do snapshot.
+
 ### Spec 276 — Refinamento Estrito do Modal de Vínculo Manual de PIX com OS
 - **useManualMatch.ts**: useAvailableStoreOs com isolamento rigoroso por filial (storeId), exclusão de OSs já vinculadas em ofx_transactions (matched_os_number IS NOT NULL), bloqueio de OSs puramente em Cartão/Dinheiro sem saldo em aberto, e filtro estrito para pagamentos em PIX.
 - **ManualMatchOsModal.tsx**: Ordenação e match score estritamente comparando com o valor esperado de PIX (pix_transfer_value ou saldo restante) em vez de valores pagos em cartão.

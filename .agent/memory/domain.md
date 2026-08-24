@@ -1,3 +1,14 @@
+## [2026-08-24] — [Feature ID: 278-motor-calculo-direto-fontes-e-desduplicacao]
+
+**Contexto:** Correção da apuração direta dos arquivos brutos de conciliação (OFX, Rede, OS ERP e Contas a Pagar), eliminando duplicação de despesas e sobreposição de colunas de OS.
+
+**Regra aprendida:**
+1. **Desduplicação de Contas a Pagar na RPC:** Quando daily_manual_bills armazena as contas detalhadas importadas do arquivo BuscaContasAPagar, _contas_manual deve usar SUM(amount) de daily_manual_bills diretamente. Nunca somar contas_base (snapshot) + contas_extras (daily_manual_bills) se ambas contêm o mesmo lote de despesas.
+2. **Parser Estrito de OS ERP:** Em ConferenciaOSxFinanceiro, a coluna R$ Total da OS (coluna 10) e Restante na OS (coluna 12) devem ser priorizadas. A coluna Total no Financeiro (coluna 13) vem zerada no ERP e NÃO pode sobrescrever 	otalValue.
+3. **Preservação Padrão de Carryover de Pátio:** Veículos que constavam no pátio de dias anteriores e não foram movimentados no relatório de hoje devem ser mantidos no pátio como padrão (status = original_status), evitando que o operador dê baixa acidental em carros em conserto.
+
+**Não fazer:** Nunca somar o total do arquivo com o total individual dos itens no banco de dados.
+
 ## [2026-08-24] — [Feature ID: 276-refinamento-filtro-vinculo-manual-pix-os]
 
 **Contexto:** Refinamento dos candidatos a vínculo manual de OS com depósitos de PIX no extrato bancário.

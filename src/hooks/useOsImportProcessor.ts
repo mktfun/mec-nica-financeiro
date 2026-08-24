@@ -89,18 +89,24 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
               if (colName === 'status' || colName === 'situação' || colName === 'situacao') colMap.status = idx;
               if (colName === 'finalizada em' || colName === 'data fim' || colName.includes('fechamento') || colName.includes('finalizada') || colName.includes('saida') || colName.includes('saída')) colMap.closedAt = idx;
               
-              const isExactTotal = ['total', 'r$ total', 'valor total', 'vlr total', 'vl total', 'valor os', 'valor da os', 'valor final', 'bruto'].includes(colName);
-              if ((colMap.totalValue === undefined || isExactTotal) && (colName.includes('total') || colName.includes('bruto') || colName.includes('valor os') || colName.includes('valor final'))) {
-                if (!colName.includes('pagto') && !colName.includes('pago') && !colName.includes('produto') && !colName.includes('serviço') && !colName.includes('servico') && !colName.includes('desconto')) {
+              const isExactTotal = ['total', 'r$ total', 'valor total', 'vlr total', 'vl total', 'valor os', 'valor da os', 'valor final', 'bruto', 'r$ total da os'].includes(colName);
+              if (isExactTotal || colName.includes('total da os') || colName.includes('valor da os')) {
+                if (!colName.includes('financeiro') && !colName.includes('pagto') && !colName.includes('pago') && !colName.includes('produto') && !colName.includes('serviço') && !colName.includes('servico') && !colName.includes('desconto')) {
+                  colMap.totalValue = idx;
+                }
+              } else if (colMap.totalValue === undefined && (colName.includes('total') || colName.includes('bruto'))) {
+                if (!colName.includes('financeiro') && !colName.includes('pagto') && !colName.includes('pago') && !colName.includes('produto') && !colName.includes('serviço') && !colName.includes('servico') && !colName.includes('desconto')) {
                   colMap.totalValue = idx;
                 }
               }
               
-              if (colName.includes('liquidado') || colName.includes('total pago') || colName.includes('valor pago') || colName.includes('vlr pago') || colName.includes('vl pago') || colName === 'pago' || colName === 'recebido' || colName.includes('pagto') || colName.includes('pgto')) {
+              if (colName.includes('total pagto') || colName.includes('liquidado') || colName.includes('total pago') || colName.includes('valor pago') || colName.includes('vlr pago') || colName.includes('vl pago') || colName === 'pago' || colName === 'recebido' || colName.includes('pagto') || colName.includes('pgto')) {
                 colMap.paidValue = idx;
               }
               
-              if (colName.includes('aberto') || colName.includes('restante') || colName.includes('falta') || colName.includes('saldo')) colMap.openValue = idx;
+              if (colName.includes('restante na os') || colName === 'restante' || colName.includes('aberto') || colName.includes('falta') || colName.includes('saldo')) {
+                colMap.openValue = idx;
+              }
               
               if (colName.includes('forma') || colName.includes('pagamento') || colName.includes('meio') || colName.includes('regra') || colName.includes('negocia')) colMap.paymentMethod = idx;
             });
