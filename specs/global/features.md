@@ -1,3 +1,8 @@
+### Spec 272 — Apuração Automática de Dinheiro no Cofre e Maquininhas a Compensar por Filial
+- **useOsImportProcessor.ts**: Separação canônica de pagamentos em DINHEIRO em cash_value/parsed_cash.
+- **useImportProcessor.ts**: Sincronização automática em store_cash_vault (status em_transito vs depositado com base na janela contábil).
+- **get_daily_reconciliation_summary**: Apuração de dinheiro_loja, saldo_banco_ofx e nao_entrou_valor consolidando com 100% de precisão no modal SaldoBancosDetailModal.
+
 # Global Features
 
 ## Feature 217: Auditoria de MDR e Divergência Contratual Multi-Loja (Rede)

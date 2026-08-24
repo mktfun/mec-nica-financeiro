@@ -140,19 +140,20 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
         const diffMs = !isNaN(start.getTime()) && !isNaN(end.getTime()) ? (end.getTime() - start.getTime()) : 0;
         const days_open = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24))) || 0;
 
-        // 1. Extração antecipada das formas de pagamento (Crédito, Débito, PIX)
+        // 1. Extração antecipada das formas de pagamento (Crédito, Débito, PIX, Dinheiro)
         const rawPaymentMethodStr = String(row[colMap.paymentMethod] || '').trim();
         const rawPaidStr = String(row[colMap.paidValue] || '').trim();
         const payment_method_str = `${rawPaymentMethodStr} ${rawPaidStr}`.trim();
         let parsed_credit = 0;
         let parsed_debit = 0;
         let parsed_pix_transfer = 0;
+        let parsed_cash = 0;
 
         if (payment_method_str) {
           const upperMethod = payment_method_str.toUpperCase();
           let foundPair = false;
 
-          const regex = /(PIX|TRANSF|DEP|DINHEIRO|DÉBITO|DEBITO|CRÉDITO|CREDITO|CARTAO|CARTÃO)[^\d]*?([\d\.,]+)/gi;
+          const regex = /(PIX|TRANSF|DEP|DINHEIRO|ESPÉCIE|ESPECIE|DÉBITO|DEBITO|CRÉDITO|CREDITO|CARTAO|CARTÃO)[^\d]*?([\d\.,]+)/gi;
           let match;
 
           while ((match = regex.exec(upperMethod)) !== null) {
@@ -161,21 +162,26 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
             const val = valStr ? parseValue(valStr) : (paidValue || rawTotalValue);
 
             if (val > 0 || !valStr) {
-              if (method.includes('CREDITO') || method.includes('CRÉDITO') || method.includes('CARTAO') || method.includes('CARTÃO')) {
+              if (method.includes('DINHEIRO') || method.includes('ESPÉCIE') || method.includes('ESPECIE')) {
+                parsed_cash += val;
+                foundPair = true;
+              } else if (method.includes('CREDITO') || method.includes('CRÉDITO') || method.includes('CARTAO') || method.includes('CARTÃO')) {
                 parsed_credit += val;
                 foundPair = true;
               } else if (method.includes('DEBITO') || method.includes('DÉBITO')) {
                 parsed_debit += val;
                 foundPair = true;
-              } else if (method.includes('PIX') || method.includes('TRANSF') || method.includes('DEP') || method.includes('DINHEIRO')) {
+              } else if (method.includes('PIX') || method.includes('TRANSF') || method.includes('DEP')) {
                 parsed_pix_transfer += val;
                 foundPair = true;
               }
             }
           }
 
-          if (!foundPair || (parsed_credit === 0 && parsed_debit === 0 && parsed_pix_transfer === 0)) {
-            if (upperMethod.includes('PIX') || upperMethod.includes('TRANSF') || upperMethod.includes('DEP') || upperMethod.includes('DINHEIRO')) {
+          if (!foundPair || (parsed_credit === 0 && parsed_debit === 0 && parsed_pix_transfer === 0 && parsed_cash === 0)) {
+            if (upperMethod.includes('DINHEIRO') || upperMethod.includes('ESPÉCIE') || upperMethod.includes('ESPECIE')) {
+              parsed_cash = paidValue || rawTotalValue;
+            } else if (upperMethod.includes('PIX') || upperMethod.includes('TRANSF') || upperMethod.includes('DEP')) {
               parsed_pix_transfer = paidValue || rawTotalValue;
             } else if (upperMethod.includes('DEBITO') || upperMethod.includes('DÉBITO')) {
               parsed_debit = paidValue || rawTotalValue;
@@ -185,7 +191,7 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
           }
         }
 
-        const sumPayments = parsed_credit + parsed_debit + parsed_pix_transfer;
+        const sumPayments = parsed_credit + parsed_debit + parsed_pix_transfer + parsed_cash;
 
         // 2. Consolidação robusta do Valor Total e Valor Pago com base contábil estrita
         let totalValue = Math.max(rawTotalValue, paidValue + openValue, sumPayments);
@@ -203,7 +209,7 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
         }
 
         // Fallback apenas se NENHUM método foi identificado no texto
-        if (parsed_credit === 0 && parsed_debit === 0 && parsed_pix_transfer === 0) {
+        if (parsed_credit === 0 && parsed_debit === 0 && parsed_pix_transfer === 0 && parsed_cash === 0) {
           parsed_credit = totalValue || finalPaidValue;
         }
 
@@ -235,7 +241,9 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
           days_open,
           parsed_credit,
           parsed_debit,
-          parsed_pix_transfer
+          parsed_pix_transfer,
+          parsed_cash,
+          cash_value: parsed_cash
         });
       }
 

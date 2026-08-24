@@ -345,8 +345,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/OfxSemMatchTable.tsx": {
-    "mtime": 1786994420.662198,
-    "ast_hash": "b3b62eb56c9ddf135e523421e1ea5f9d",
+    "mtime": 1787582357.4233282,
+    "ast_hash": "5d3c2622277a9eee29bf6fae4b188ba4",
     "semantic_hash": ""
   },
   "src/components/conciliacao/OsDetailModal.tsx": {
@@ -435,8 +435,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1787579053.3101287,
-    "ast_hash": "d2243dfbf601a410be4bcd7c91bc0f03",
+    "mtime": 1787583070.2176723,
+    "ast_hash": "e8f1fbfe013edd90efa3f888c7c24c76",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -580,13 +580,13 @@
     "semantic_hash": ""
   },
   "src/hooks/useImportProcessor.ts": {
-    "mtime": 1787328237.4277399,
-    "ast_hash": "198311973c8f0b85844a9f67844ce4f7",
+    "mtime": 1787586662.3850293,
+    "ast_hash": "36dbdb55e1c1a51fef83f00bc1f65ad4",
     "semantic_hash": ""
   },
   "src/hooks/useOsImportProcessor.ts": {
-    "mtime": 1787274252.441006,
-    "ast_hash": "dff2e98e4c9d56b2c5ad4a6657da5907",
+    "mtime": 1787586677.9295564,
+    "ast_hash": "07ac1ff727682de9495a1dd2af441828",
     "semantic_hash": ""
   },
   "src/hooks/usePatio.ts": {
@@ -750,8 +750,8 @@
     "semantic_hash": ""
   },
   "src/routes/conciliacao.$lojaId.tsx": {
-    "mtime": 1787085335.2665918,
-    "ast_hash": "998977884e4a7951b85d86fadaeec52e",
+    "mtime": 1787584415.95575,
+    "ast_hash": "86a7151dd5606a25b3de75ff3bd5cad9",
     "semantic_hash": ""
   },
   "src/routes/conciliacao.index.tsx": {
@@ -2605,8 +2605,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1787576356.1396744,
-    "ast_hash": "5f9fe45b6f30167a13f2ae04d425b77b",
+    "mtime": 1787579382.7951324,
+    "ast_hash": "46e123a732fd159b5a3229dcbd95bb42",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -5590,13 +5590,13 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/OrphanCategorizationModal.tsx": {
-    "mtime": 1787056244.677891,
-    "ast_hash": "1e5a0acfe080f8a9aae9f5f31858795c",
+    "mtime": 1787582340.3259337,
+    "ast_hash": "9bf473140362c7b02343bbb21ed51a82",
     "semantic_hash": ""
   },
   "src/hooks/useCategorizeOrphan.ts": {
-    "mtime": 1786997407.600613,
-    "ast_hash": "604b6f498bcfbc8c770add960870c639",
+    "mtime": 1787582322.6412826,
+    "ast_hash": "d62f290ff5648790077803e5907b5ff0",
     "semantic_hash": ""
   },
   "specs/180-fix-parsers-and-conciliation-rpc/design.md": {
@@ -6745,8 +6745,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/FaturamentoAtualBreakdownModal.tsx": {
-    "mtime": 1786989897.22802,
-    "ast_hash": "6d51805c493d752511f7de62968d353c",
+    "mtime": 1787582373.8201451,
+    "ast_hash": "5f0b3c72da47f82fd2750b5cbb156cb6",
     "semantic_hash": ""
   },
   "src/components/conciliacao/LinkOfxToOsModal.tsx": {
@@ -7370,8 +7370,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/PatioOsDetailModal.tsx": {
-    "mtime": 1787257896.4986322,
-    "ast_hash": "9469155e9fc2f54587d28da4ef6f5db6",
+    "mtime": 1787583000.9126081,
+    "ast_hash": "1a1394e8b3d1cedbc25660382e1329f7",
     "semantic_hash": ""
   },
   "src/components/conciliacao/SaldoBancosDetailModal.tsx": {
@@ -7799,36 +7799,6 @@
     "ast_hash": "2957aa699dcc878d323fa798f687bcdc",
     "semantic_hash": ""
   },
-  "specs/266-alinhamento-conciliacao-2408-excel-e-ancora-dia-anterior/design.md": {
-    "mtime": 1787578042.5592537,
-    "ast_hash": "4ce809edb1ca45bcc693df429c21f771",
-    "semantic_hash": ""
-  },
-  "specs/266-alinhamento-conciliacao-2408-excel-e-ancora-dia-anterior/proposal.md": {
-    "mtime": 1787578029.658528,
-    "ast_hash": "84fbf3d0185963bbb9a2eefab53045af",
-    "semantic_hash": ""
-  },
-  "specs/266-alinhamento-conciliacao-2408-excel-e-ancora-dia-anterior/spec-plan.md": {
-    "mtime": 1787578520.2180583,
-    "ast_hash": "986d71658b8e5e98f6d301ebfec320a3",
-    "semantic_hash": ""
-  },
-  "specs/267-painel-edicao-os-ausentes-patio-e-deduplicacao-rede/design.md": {
-    "mtime": 1787578748.5984967,
-    "ast_hash": "a9186eb503a16ad8f2a2b9ddc94dcedf",
-    "semantic_hash": ""
-  },
-  "specs/267-painel-edicao-os-ausentes-patio-e-deduplicacao-rede/proposal.md": {
-    "mtime": 1787578738.293252,
-    "ast_hash": "c727794d4fa05ba9fa3e24536f93ddc9",
-    "semantic_hash": ""
-  },
-  "specs/267-painel-edicao-os-ausentes-patio-e-deduplicacao-rede/spec-plan.md": {
-    "mtime": 1787579191.1247013,
-    "ast_hash": "6d983eb4e7178c270ba7805efa65827a",
-    "semantic_hash": ""
-  },
   "specs/archive/264-motor-diagnostico-pre-conciliacao/design.md": {
     "mtime": 1787571359.1197286,
     "ast_hash": "4ed330969b36640d459539fbe0391261",
@@ -7857,6 +7827,136 @@
   "specs/archive/265-correcao-rpc-tripla-maquininhas-e-auditoria-contas-dia-24/spec-plan.md": {
     "mtime": 1787576072.0860693,
     "ast_hash": "e35c9f1d62dae7c8dc1e8eceb2316676",
+    "semantic_hash": ""
+  },
+  "src/components/conciliacao/StoreCartaoMaquininhaView.tsx": {
+    "mtime": 1787584308.243772,
+    "ast_hash": "3e157f86cf257d9561821ff5492e7178",
+    "semantic_hash": ""
+  },
+  "src/components/conciliacao/StoreExtratoBancarioView.tsx": {
+    "mtime": 1787584347.713269,
+    "ast_hash": "4f907fc8266cf227d02b69122af4fc0e",
+    "semantic_hash": ""
+  },
+  "src/components/conciliacao/StoreOrdensServicoView.tsx": {
+    "mtime": 1787584376.5965903,
+    "ast_hash": "cda68f175386e077bb1eea67b2c598ea",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260824000003_unify_patio_os_source_of_truth.sql": {
+    "mtime": 1787582955.0955112,
+    "ast_hash": "1d8e9feeb8bb3a7475d571191fa5fb78",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260824000004_auto_cash_vault_window_and_pos_pending.sql": {
+    "mtime": 1787586521.8549204,
+    "ast_hash": "bd6be9e436337134db976aa29da8a33e",
+    "semantic_hash": ""
+  },
+  "specs/268-correcao-motor-importacao-e-blindagem-contas-manual/design.md": {
+    "mtime": 1787580127.0904715,
+    "ast_hash": "e5b828bdf3bba40739543522e7bc45a3",
+    "semantic_hash": ""
+  },
+  "specs/268-correcao-motor-importacao-e-blindagem-contas-manual/proposal.md": {
+    "mtime": 1787580112.0192642,
+    "ast_hash": "e593077da647f236d41c11978234e2e1",
+    "semantic_hash": ""
+  },
+  "specs/268-correcao-motor-importacao-e-blindagem-contas-manual/spec-plan.md": {
+    "mtime": 1787580136.4764876,
+    "ast_hash": "ab195215db5e497395f7f6628b5d0ca3",
+    "semantic_hash": ""
+  },
+  "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/design.md": {
+    "mtime": 1787585927.612475,
+    "ast_hash": "5022fae4091c5db890cec82f4c9da115",
+    "semantic_hash": ""
+  },
+  "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/proposal.md": {
+    "mtime": 1787585913.1954062,
+    "ast_hash": "cbb705417e91be934991e3d824ad90cf",
+    "semantic_hash": ""
+  },
+  "specs/272-apuracao-dinheiro-loja-e-maquininhas-pendentes/spec-plan.md": {
+    "mtime": 1787586746.728838,
+    "ast_hash": "4d070e2bc2f605a1ff9a5e20639d0cdc",
+    "semantic_hash": ""
+  },
+  "specs/archive/266-alinhamento-conciliacao-2408-excel-e-ancora-dia-anterior/design.md": {
+    "mtime": 1787578042.5592537,
+    "ast_hash": "4ce809edb1ca45bcc693df429c21f771",
+    "semantic_hash": ""
+  },
+  "specs/archive/266-alinhamento-conciliacao-2408-excel-e-ancora-dia-anterior/proposal.md": {
+    "mtime": 1787578029.658528,
+    "ast_hash": "84fbf3d0185963bbb9a2eefab53045af",
+    "semantic_hash": ""
+  },
+  "specs/archive/266-alinhamento-conciliacao-2408-excel-e-ancora-dia-anterior/spec-plan.md": {
+    "mtime": 1787578520.2180583,
+    "ast_hash": "986d71658b8e5e98f6d301ebfec320a3",
+    "semantic_hash": ""
+  },
+  "specs/archive/267-painel-edicao-os-ausentes-patio-e-deduplicacao-rede/design.md": {
+    "mtime": 1787578748.5984967,
+    "ast_hash": "a9186eb503a16ad8f2a2b9ddc94dcedf",
+    "semantic_hash": ""
+  },
+  "specs/archive/267-painel-edicao-os-ausentes-patio-e-deduplicacao-rede/proposal.md": {
+    "mtime": 1787578738.293252,
+    "ast_hash": "c727794d4fa05ba9fa3e24536f93ddc9",
+    "semantic_hash": ""
+  },
+  "specs/archive/267-painel-edicao-os-ausentes-patio-e-deduplicacao-rede/spec-plan.md": {
+    "mtime": 1787579191.1247013,
+    "ast_hash": "6d983eb4e7178c270ba7805efa65827a",
+    "semantic_hash": ""
+  },
+  "specs/archive/269-simplificacao-step-os-e-diagnostico-rede/design.md": {
+    "mtime": 1787581043.7172573,
+    "ast_hash": "d40f9a6e9efc8b4e15a616c7ec1f5563",
+    "semantic_hash": ""
+  },
+  "specs/archive/269-simplificacao-step-os-e-diagnostico-rede/proposal.md": {
+    "mtime": 1787581036.2693698,
+    "ast_hash": "27d795816f2410dea64c25abe6103be3",
+    "semantic_hash": ""
+  },
+  "specs/archive/269-simplificacao-step-os-e-diagnostico-rede/spec-plan.md": {
+    "mtime": 1787581270.041787,
+    "ast_hash": "dcf235309c6789a6802d57061dd0438d",
+    "semantic_hash": ""
+  },
+  "specs/archive/270-unificacao-fonte-verdade-patio-os/design.md": {
+    "mtime": 1787582852.0416186,
+    "ast_hash": "ddeae76f5a93e98848be80e902123eef",
+    "semantic_hash": ""
+  },
+  "specs/archive/270-unificacao-fonte-verdade-patio-os/proposal.md": {
+    "mtime": 1787582839.3004944,
+    "ast_hash": "c1f460ce3561b9c365c07baae9c62e91",
+    "semantic_hash": ""
+  },
+  "specs/archive/270-unificacao-fonte-verdade-patio-os/spec-plan.md": {
+    "mtime": 1787583204.763971,
+    "ast_hash": "9935836656ec15fd79f6f468bfdee378",
+    "semantic_hash": ""
+  },
+  "specs/archive/271-redesign-3-abas-conciliacao-loja/design.md": {
+    "mtime": 1787584193.4758317,
+    "ast_hash": "f878fa7dd9cfffccc6e32c8bf7d67bd4",
+    "semantic_hash": ""
+  },
+  "specs/archive/271-redesign-3-abas-conciliacao-loja/proposal.md": {
+    "mtime": 1787584177.614067,
+    "ast_hash": "38011c2f9a440dc5c589894dc407a6dd",
+    "semantic_hash": ""
+  },
+  "specs/archive/271-redesign-3-abas-conciliacao-loja/spec-plan.md": {
+    "mtime": 1787584472.5204608,
+    "ast_hash": "f9eb2f76a6748943d621203faa178f7d",
     "semantic_hash": ""
   }
 }

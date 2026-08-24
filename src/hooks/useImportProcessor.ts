@@ -16,6 +16,8 @@ export interface ParsedOS {
   parsed_credit?: number;
   parsed_debit?: number;
   parsed_pix_transfer?: number;
+  parsed_cash?: number;
+  cash_value?: number;
   is_new_os?: boolean;
   days_open?: number;
   pending_value?: number;
@@ -43,7 +45,7 @@ export async function savePatioOsAndReceivables(
   if (osArray.length > 0) {
     const { data: existingOs } = await supabase
       .from('patio_os')
-      .select('id, os_number, total_value, paid_value, status, raw_status, credit_value, debit_value, pix_transfer_value, history_log, last_payment_date')
+      .select('id, os_number, total_value, paid_value, status, raw_status, credit_value, debit_value, pix_transfer_value, cash_value, history_log, last_payment_date')
       .eq('store_id', storeId);
 
     const existingMap = new Map((existingOs || []).map(o => [String(o.os_number), o]));
@@ -66,6 +68,8 @@ export async function savePatioOsAndReceivables(
         paymentDate = targetDate || new Date().toISOString().split('T')[0];
       }
 
+      const osCash = os.parsed_cash || os.cash_value || 0;
+
       const payload = {
         store_id: storeId,
         store_name: storeName,
@@ -79,6 +83,7 @@ export async function savePatioOsAndReceivables(
         credit_value: os.parsed_credit || 0,
         debit_value: os.parsed_debit || 0,
         pix_transfer_value: os.parsed_pix_transfer || 0,
+        cash_value: osCash,
         opened_at: os.opened_at,
         closed_at: os.closed_at,
         days_open: os.days_open,
@@ -132,6 +137,33 @@ export async function savePatioOsAndReceivables(
     }
     for (const update of toUpdate) {
       await supabase.from('patio_os').update(update).eq('id', update.id);
+    }
+
+    // Sincronizar store_cash_vault para OSs com pagamento em dinheiro físico
+    const cashOsList = osArray.filter(os => (os.parsed_cash && os.parsed_cash > 0) || (os.cash_value && os.cash_value > 0));
+    if (cashOsList.length > 0) {
+      for (const cashOs of cashOsList) {
+        const cashAmount = cashOs.parsed_cash || cashOs.cash_value || 0;
+        const entryDate = targetDate || (cashOs.closed_at ? String(cashOs.closed_at).split('T')[0] : new Date().toISOString().split('T')[0]);
+        
+        const { data: existingVault } = await supabase
+          .from('store_cash_vault')
+          .select('id, status')
+          .eq('store_id', storeId)
+          .ilike('description', `%OS #${cashOs.os_number}%`)
+          .limit(1);
+
+        if (!existingVault || existingVault.length === 0) {
+          await supabase.from('store_cash_vault').insert({
+            store_id: storeId,
+            amount: cashAmount,
+            description: `OS #${cashOs.os_number} - ${storeName} (Dinheiro em Espécie)`,
+            entry_date: entryDate,
+            status: 'em_transito',
+            notes: 'Importado automaticamente via ConferenciaOSxFinanceiro'
+          });
+        }
+      }
     }
   }
 

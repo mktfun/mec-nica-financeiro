@@ -1,4 +1,17 @@
-## [2026-08-07] â€” [Feature ID: 141-fix-conciliacao-valor-contas-fluxo]
+## [2026-08-24] — [Feature ID: 272-apuracao-dinheiro-loja-e-maquininhas-pendentes]
+
+**Contexto:** Pagamentos de OSs em dinheiro físico estavam sendo agrupados indevidamente como PIX no importador e o dinheiro em cofre por filial vinha zerado (`-`), gerando divergência com o fechamento do Excel (onde Dom Pedro possuía R$ 1.845,00 em cofre da OS #586, status NÃO ENTROU).
+
+**Regra aprendida:** 
+1. **Separação Canônica de Dinheiro Físico:** Dinheiro não cai no extrato bancário. Deve ser extraído em campo próprio `cash_value` no parser de OSs e registrado em `store_cash_vault` com `status: 'em_transito'`.
+2. **Janela Contábil e Prevenção de Duplicidade:** OSs com pagamento em dinheiro de datas anteriores ao último fechamento consolidado (ex: Rudge R$ 1.900 de 18/08 e Beretta R$ 2.988,26 de 20/08) já tiveram baixa contábil e NÃO podem ser contabilizadas novamente no cofre do dia atual (`status: 'depositado'`).
+3. **Composição do Saldo por Loja no Raio-X:** `Saldo Consolidado da Filial = Saldo Extrato OFX (Itaú) + Dinheiro no Cofre (em trânsito) + Maquininhas a Compensar (não entrou no OFX)`.
+
+**Risco identificado:** Tratar dinheiro de relatórios de OSs cumulativos como receita nova sem checar a data de baixa/último fechamento, duplicando o caixa físico das lojas.
+
+**Não fazer:** Nunca misturar a forma de pagamento `DINHEIRO` com `PIX/Transferência` no importador nem somar dinheiro de OSs finalizadas antes da janela atual da conciliação.
+
+## [2026-08-07] — [Feature ID: 141-fix-conciliacao-valor-contas-fluxo]
 
 **Contexto:** O painel global de ConciliaÃ§Ã£o DiÃ¡ria estava com a matemÃ¡tica quebrada, ignorando contas originÃ¡rias de OFX e nÃ£o calculando o Fluxo de Caixa histÃ³rico. A RPC do Supabase (`get_dashboard_metrics`) desviava das fÃ³rmulas aplicadas no React.
 
