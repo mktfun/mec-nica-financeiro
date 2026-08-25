@@ -312,3 +312,23 @@ export function useReceivablesSummary(targetDate?: string) {
     enabled: !!date
   });
 }
+
+export function useAutoMatchReceivables() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (params?: { storeId?: string; date?: string }) => {
+      const { data, error } = await supabase.rpc('auto_match_receivables', {
+        p_store_id: params?.storeId || null,
+        p_date: params?.date || null,
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['receivables'] });
+      qc.invalidateQueries({ queryKey: ['receivables-by-date'] });
+      qc.invalidateQueries({ queryKey: ['receivables_summary'] });
+      qc.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+    },
+  });
+}

@@ -1,3 +1,18 @@
+## [2026-08-25] — [Feature ID: 286-automacao-recebiveis-boletos-transferencias-e-match-ofx]
+
+**Contexto:** Automação completa do ciclo de vida de Boletos Bancários e Transferências Bancárias (débitos em conta, TED, DOC, depósitos identificados), incluindo cálculo determinístico de prazos de vencimento em dias úteis e feriados nacionais (Febraban/BACEN), segregação contábil contra dupla contagem no Caixa Atual, e conciliação automática com o extrato OFX.
+
+**Regra aprendida:**
+1. **Regras de Vencimento e Calendário Bancário:**
+   - Transferências Bancárias / Débitos em Conta possuem prazo de liquidação padrão de **D+1 dia útil**.
+   - Boletos Bancários parcelados (ex: `2x`, `30/60`, `3x`) são divididos proporcionalmente em N parcelas com vencimentos em D+30, D+60, prorrogando-se para o primeiro dia útil subsequente caso caiam em feriados ou finais de semana.
+2. **Segregação Contábil (Pilar 3 vs Pilar 4):**
+   - OSs com parcelamento a prazo geram títulos na entidade `public.receivables` (Pilar 3 A Receber). O valor do título migra para o Pilar 3 e não pode continuar como passivo em aberto no pátio físico (`patio_os` / Pilar 4 Na Loja OS), evitando dupla contagem de ativo no Caixa Atual.
+3. **Idempotência de Recebíveis:**
+   - A unicidade por `(store_id, os_number, installment)` impede duplicações em re-importações de arquivos no mesmo dia e preserva o histórico de títulos já liquidados (`status = 'recebido'`).
+
+**Não fazer:** Nunca cadastrar manualmente títulos que já constem com forma de pagamento identificada na OS do ERP.
+
 ## [2026-08-25] — [Feature ID: 285-correcao-definitiva-rpc-conciliacao-e-limpeza-backend]
 
 **Contexto:** Correção da RPC canônica de conciliação (`get_daily_reconciliation_summary`), eliminando colunas fantasmas (`pix_total`/`rede_total` em `reconciliations`) que quebravam o Ramal de dias fechados, e restauração do cálculo do Saldo Bancário das 10 filiais no Ramal de dias abertos (25/08) para computar o saldo patrimonial real em conta.

@@ -24,12 +24,16 @@ export interface ParsedOS {
 }
 
 export interface ParsedReceivable {
-  type: 'Cartão Crédito' | 'Cartão Débito' | 'PIX' | 'Boleto';
+  store_id?: string;
+  store_name?: string;
+  os_number?: string | null;
+  installment?: string | null;
+  description?: string;
+  type: 'Boleto' | 'Transferência' | 'Cheque' | 'Cartão' | 'Cartão Crédito' | 'Cartão Débito' | 'PIX' | 'Outros';
   value: number;
   date: string;
   due_date: string;
-  status: 'pendente' | 'recebido';
-  os_number?: string;
+  status: 'pendente' | 'recebido' | 'vencido' | 'cancelado';
 }
 
 
@@ -182,41 +186,50 @@ export async function savePatioOsAndReceivables(
     }
   }
 
-  // 2. Process Receivables (Idempotency by store_id + type + date + value rounded)
+  // 2. Process Receivables (Idempotency by store_id + os_number + installment OR type + due_date + value)
   if (receivablesArray.length > 0) {
     const { data: existingRecs } = await supabase
       .from('receivables')
-      .select('id, type, value, date, status')
+      .select('id, os_number, installment, type, value, date, due_date, status')
       .eq('store_id', storeId);
 
     const toInsertRecs: any[] = [];
-    const toUpdateRecs: { id: string; status: string }[] = [];
+    const toUpdateRecs: { id: string; status?: string; due_date?: string; value?: number; description?: string }[] = [];
     const localSeen = new Set<string>();
 
     for (const rec of receivablesArray) {
-      const key = `${rec.type}__${rec.date}__${Math.round(rec.value * 100)}`;
+      const key = `${rec.os_number || ''}__${rec.installment || ''}__${rec.type}__${rec.due_date}__${Math.round(rec.value * 100)}`;
       if (localSeen.has(key)) continue;
       localSeen.add(key);
 
-      const existingMatch = existingRecs?.find(
-        (er) => er.type === rec.type && er.date === rec.date &&
-                Math.round(Number(er.value) * 100) === Math.round(rec.value * 100)
-      );
+      const existingMatch = existingRecs?.find((er) => {
+        if (rec.os_number && er.os_number) {
+          return er.os_number === rec.os_number && (er.installment || '1/1') === (rec.installment || '1/1');
+        }
+        return er.type === rec.type && er.due_date === rec.due_date &&
+               Math.round(Number(er.value) * 100) === Math.round(rec.value * 100);
+      });
 
       if (!existingMatch) {
         toInsertRecs.push({
           store_id: storeId,
           store_name: storeName,
+          os_number: rec.os_number || null,
+          installment: rec.installment || null,
+          description: rec.description || `OS #${rec.os_number || ''} - ${rec.type}`,
           type: rec.type,
           value: rec.value,
           status: rec.status,
           date: rec.date,
           due_date: rec.due_date,
         });
-      } else if (existingMatch.status === 'pendente' && rec.status === 'recebido') {
+      } else if (existingMatch.status === 'pendente') {
         toUpdateRecs.push({
           id: existingMatch.id,
-          status: 'recebido'
+          status: rec.status,
+          due_date: rec.due_date,
+          value: rec.value,
+          description: rec.description || undefined
         });
       }
     }
@@ -225,7 +238,12 @@ export async function savePatioOsAndReceivables(
       await supabase.from('receivables').insert(toInsertRecs);
     }
     for (const up of toUpdateRecs) {
-      await supabase.from('receivables').update({ status: up.status }).eq('id', up.id);
+      await supabase.from('receivables').update({
+        status: up.status,
+        due_date: up.due_date,
+        value: up.value,
+        ...(up.description ? { description: up.description } : {})
+      }).eq('id', up.id);
     }
 
     // Auto-match inteligente: Se transações de recebíveis/maquininhas cobrirem OSs em aberto na mesma loja

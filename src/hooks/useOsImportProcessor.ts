@@ -3,6 +3,7 @@ import { ParsedOS, ParsedReceivable } from './useImportProcessor';
 import { getDefaultDate } from '@/lib/utils';
 import { traceLog } from '@/lib/logger';
 import { extractNumber } from '@/lib/parsers/numberUtils';
+import { calculateDueDate } from '@/lib/bankingCalendar';
 
 export type OsImportResult = {
   fileName: string;
@@ -251,6 +252,101 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
           parsed_cash,
           cash_value: parsed_cash
         });
+
+        // 4. Extração Automática de Recebíveis (Boletos, Transferências, Débitos em Conta)
+        if (payment_method_str) {
+          const upperMethod = payment_method_str.toUpperCase();
+          const isBoleto = /BOLETO|BOL\b/i.test(upperMethod);
+          const isTransfer = /(?:TRANSF|TRANSFERENCIA|TRANSFERÊNCIA|TED|DOC|TEF|DEPOSITO|DEPÓSITO|DEP\s*IDENT|DEBITO\s*EM\s*CONTA|DÉBITO\s*EM\s*CONTA|PGTO\s*EM\s*CONTA|PGTO\s*CONTA|FATURAD)/i.test(upperMethod);
+          const isCheque = /CHEQUE/i.test(upperMethod);
+
+          if (isBoleto) {
+            // Verifica se há multiplicador (ex: 2X, 3X, 4X, 30/60, etc.)
+            let numInstallments = 1;
+            const xMatch = upperMethod.match(/(\d+)\s*X/i);
+            if (xMatch) {
+              numInstallments = Math.max(1, parseInt(xMatch[1], 10));
+            } else if (upperMethod.includes('30/60/90') || upperMethod.includes('15/30/45')) {
+              numInstallments = 3;
+            } else if (upperMethod.includes('30/60') || upperMethod.includes('15/30') || upperMethod.includes('28/56')) {
+              numInstallments = 2;
+            } else if (upperMethod.includes('30/60/90/120')) {
+              numInstallments = 4;
+            }
+
+            // Identifica o valor do boleto
+            const valBoletoMatch = upperMethod.match(/(?:BOLETO|BOL)[^\d]*?([\d\.,]+)/i);
+            let boletoBaseValue = valBoletoMatch ? parseValue(valBoletoMatch[1]) : 0;
+            if (boletoBaseValue === 0) {
+              boletoBaseValue = openValue > 0 ? openValue : (finalPaidValue > 0 ? finalPaidValue : totalValue);
+            }
+
+            if (boletoBaseValue > 0) {
+              const installmentVal = Number((boletoBaseValue / numInstallments).toFixed(2));
+              for (let inst = 1; inst <= numInstallments; inst++) {
+                const isLast = inst === numInstallments;
+                const instAmount = isLast 
+                  ? Number((boletoBaseValue - (installmentVal * (numInstallments - 1))).toFixed(2))
+                  : installmentVal;
+
+                const dueDate = calculateDueDate(opened_at, 'Boleto', inst, numInstallments);
+                receivablesArray.push({
+                  store_name: storeAlias,
+                  os_number: osNumber,
+                  installment: `${inst}/${numInstallments}`,
+                  description: `OS #${osNumber} - Boleto (${inst}/${numInstallments})`,
+                  type: 'Boleto',
+                  value: instAmount,
+                  date: opened_at,
+                  due_date: dueDate,
+                  status: 'pendente'
+                });
+              }
+            }
+          } else if (isTransfer) {
+            const valTransfMatch = upperMethod.match(/(?:TRANSF|TRANSFERENCIA|TED|DOC|DEPOSITO|DEP|CONTA)[^\d]*?([\d\.,]+)/i);
+            let transfBaseValue = valTransfMatch ? parseValue(valTransfMatch[1]) : 0;
+            if (transfBaseValue === 0) {
+              transfBaseValue = openValue > 0 ? openValue : (finalPaidValue > 0 ? finalPaidValue : totalValue);
+            }
+
+            if (transfBaseValue > 0) {
+              const dueDate = calculateDueDate(opened_at, 'Transferência'); // D+1 dia útil
+              receivablesArray.push({
+                store_name: storeAlias,
+                os_number: osNumber,
+                installment: '1/1',
+                description: `OS #${osNumber} - Transferência Bancária / Débito em Conta`,
+                type: 'Transferência',
+                value: transfBaseValue,
+                date: opened_at,
+                due_date: dueDate,
+                status: 'pendente'
+              });
+            }
+          } else if (isCheque) {
+            const valChequeMatch = upperMethod.match(/CHEQUE[^\d]*?([\d\.,]+)/i);
+            let chequeBaseValue = valChequeMatch ? parseValue(valChequeMatch[1]) : 0;
+            if (chequeBaseValue === 0) {
+              chequeBaseValue = openValue > 0 ? openValue : (finalPaidValue > 0 ? finalPaidValue : totalValue);
+            }
+
+            if (chequeBaseValue > 0) {
+              const dueDate = calculateDueDate(opened_at, 'Cheque', 1, 1, 30);
+              receivablesArray.push({
+                store_name: storeAlias,
+                os_number: osNumber,
+                installment: '1/1',
+                description: `OS #${osNumber} - Cheque`,
+                type: 'Cheque',
+                value: chequeBaseValue,
+                date: opened_at,
+                due_date: dueDate,
+                status: 'pendente'
+              });
+            }
+          }
+        }
       }
 
       if (osArray.length > 0) {

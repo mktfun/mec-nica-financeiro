@@ -1,3 +1,10 @@
+## [2026-08-25] — Feature 286: Automação de Recebíveis para Boletos e Transferências com Match OFX
+- **Utilitário de Calendário Bancário:** `src/lib/bankingCalendar.ts` com cálculo determinístico de feriados nacionais e dias úteis (Febraban/BACEN).
+- **Extração Automática de Formas de Pagamento em OS:** `src/hooks/useOsImportProcessor.ts` com identificação de Boletos (N parcelas), Transferências Bancárias (D+1 útil), Débito em Conta e Cheques.
+- **Persistência Idempotente de Recebíveis:** `src/hooks/useImportProcessor.ts` salvando `os_number`, `installment`, `description`, `due_date` em `public.receivables`.
+- **RPC de Baixa Automática:** `public.auto_match_receivables(p_store_id text, p_date date)` em `supabase/migrations/20260825000005_receivables_automatch_and_calendar.sql`.
+- **Hooks e Interface:** `useAutoMatchReceivables` em `src/hooks/useRecebiveis.ts` e botão Auto-Match OFX em `src/routes/recebiveis.tsx`.
+
 ## [2026-08-25] — Feature 285: Correção Definitiva RPC Conciliação e Blindagem de Performance
 - **RPC Canônica:** `public.get_daily_reconciliation_summary(p_date date, p_force_dynamic boolean DEFAULT false)` com bifurcação determinística (Ramal 1: snapshots fechados imutáveis; Ramal 2: cálculo dinâmico com saldo patrimonial real das 10 filiais).
 - **RPC Recebíveis:** `public.get_receivables_summary(p_date date)` agregação 100% no PostgreSQL.

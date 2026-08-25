@@ -16,13 +16,15 @@ import {
   UploadCloud, 
   Edit3, 
   Trash2,
-  Calendar
+  Calendar,
+  Zap
 } from 'lucide-react';
 import { 
   useReceivablesByDate, 
   ReceivableItem, 
   useMarkReceived, 
-  useDeleteReceivable 
+  useDeleteReceivable,
+  useAutoMatchReceivables
 } from '@/hooks/useRecebiveis';
 import { useStores } from '@/hooks/useStores';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
@@ -54,6 +56,23 @@ function RecebiveisPage() {
   const { data: stores = [], isLoading: loadingStores } = useStores();
   const markReceived = useMarkReceived();
   const deleteReceivable = useDeleteReceivable();
+  const autoMatch = useAutoMatchReceivables();
+
+  const handleAutoMatch = async () => {
+    try {
+      const res = await autoMatch.mutateAsync({
+        storeId: selectedStore !== 'todas' ? selectedStore : undefined,
+        date: targetDate || undefined
+      });
+      if (res && res.matched_count > 0) {
+        toast.success(`${res.matched_count} título(s) conciliado(s) automaticamente com o extrato OFX! (Total: ${formatCurrency(res.matched_amount)})`);
+      } else {
+        toast.info('Nenhuma nova correspondência encontrada com o extrato OFX nesta data.');
+      }
+    } catch (err: any) {
+      toast.error('Erro ao executar auto-match: ' + (err.message || err));
+    }
+  };
 
   const isLoading = loadingRec || loadingStores;
 
@@ -202,6 +221,18 @@ function RecebiveisPage() {
             </select>
 
             {/* Botões de Ação com Estilo Canônico */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleAutoMatch}
+              disabled={autoMatch.isPending}
+              className="inline-flex items-center gap-1.5 text-xs py-2 px-3.5 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 transition-colors"
+              title="Conciliar recebíveis pendentes com créditos do extrato OFX"
+            >
+              <Zap size={14} className={autoMatch.isPending ? 'animate-spin' : ''} />
+              {autoMatch.isPending ? 'Conciliando...' : 'Auto-Match OFX'}
+            </Button>
+
             <Button
               variant="outline"
               size="sm"

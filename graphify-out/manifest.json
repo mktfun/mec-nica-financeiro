@@ -1,7 +1,7 @@
 {
   ".council/shared_memory.json": {
-    "mtime": 1787606146.8298297,
-    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "mtime": 1787663129.440139,
+    "ast_hash": "c68c97c1f1ef298f2fcdbfb4549747af",
     "semantic_hash": ""
   },
   ".lovable/project.json": {
@@ -375,8 +375,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1787661319.5302155,
-    "ast_hash": "7eed02d9a92cf25f0b4607eac8673e9f",
+    "mtime": 1787667388.6399412,
+    "ast_hash": "15735c14d71054ee99b0dd82cfab2c72",
     "semantic_hash": ""
   },
   "src/components/dashboard/AlertResolveDialog.tsx": {
@@ -435,8 +435,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1787657780.0479138,
-    "ast_hash": "a623c211a38a8eadbb2ba93a89519dc7",
+    "mtime": 1787664545.5563433,
+    "ast_hash": "ba5fc6aae67250343ef4e80ba6c338a6",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -595,8 +595,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useRecebiveis.ts": {
-    "mtime": 1786977431.511825,
-    "ast_hash": "570592dc0232637a21e601798e7fc68e",
+    "mtime": 1787677259.1100094,
+    "ast_hash": "e4698eeb02b99762cea0d784b9d2665a",
     "semantic_hash": ""
   },
   "src/hooks/useStores.ts": {
@@ -755,8 +755,8 @@
     "semantic_hash": ""
   },
   "src/routes/conciliacao.index.tsx": {
-    "mtime": 1787595443.0858102,
-    "ast_hash": "662f53b9cf0dfbdb960c3734230ea204",
+    "mtime": 1787677220.6299708,
+    "ast_hash": "fd2540cf489bca1e5eb557ae5b1a832f",
     "semantic_hash": ""
   },
   "src/routes/configuracoes.tsx": {
@@ -815,8 +815,8 @@
     "semantic_hash": ""
   },
   "src/routes/recebiveis.tsx": {
-    "mtime": 1786977431.66886,
-    "ast_hash": "63f0794807017f338b18cf4ee66b1852",
+    "mtime": 1787668008.4165623,
+    "ast_hash": "492b5f32edf019d8ac269bb5226c6cfc",
     "semantic_hash": ""
   },
   "src/server.ts": {
@@ -925,8 +925,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1787338005.513609,
-    "ast_hash": "fd251fae05b3396d09d7fb4a32cf3797",
+    "mtime": 1787679941.3798268,
+    "ast_hash": "c99e6cfadf68633671c300641e94c965",
     "semantic_hash": ""
   },
   "specs/016-loja-cleanup/design.md": {
@@ -2605,8 +2605,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1787661777.0620165,
-    "ast_hash": "f60cc08e39e4625c28e81f200e91b8c6",
+    "mtime": 1787668510.724197,
+    "ast_hash": "e4fa83ccd5510d9a7a38b1a322ef8db4",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -4475,8 +4475,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useBackendConciliacao.ts": {
-    "mtime": 1787658512.3888247,
-    "ast_hash": "dcba75f82db9ddc03306b6dfe616a148",
+    "mtime": 1787677207.9448676,
+    "ast_hash": "6bc5f2aaccf188438aa6224e1e51dddd",
     "semantic_hash": ""
   },
   "src/hooks/useBackendDashboard.ts": {
@@ -6905,8 +6905,8 @@
     "semantic_hash": ""
   },
   ".council/round_3_synthesis.md": {
-    "mtime": 1786996455.7148743,
-    "ast_hash": "10cb0ee19231fe100e61bc0447b15cf9",
+    "mtime": 1787663167.1867728,
+    "ast_hash": "018ebf564e25ae6214a2238907113c4b",
     "semantic_hash": ""
   },
   "specs/236-correcao-somatorio-restante-os-patio-relatorios/design.md": {
@@ -8360,28 +8360,28 @@
     "semantic_hash": ""
   },
   ".council/round_1/analyst_round1.md": {
-    "mtime": 1787605891.3453698,
-    "ast_hash": "b7c36e93e56acea66ef6212365dcffd4",
+    "mtime": 1787662790.2615256,
+    "ast_hash": "cde8ba4503d03cb108d708330c2b4f7c",
     "semantic_hash": ""
   },
   ".council/round_1/architect_round1.md": {
-    "mtime": 1787606042.4016,
-    "ast_hash": "52c6bbed40b38e5c1a8d55cf63c852a1",
+    "mtime": 1787662955.5805738,
+    "ast_hash": "c6fcb15f8f76cdaa8f1c5af5064685c8",
     "semantic_hash": ""
   },
   ".council/round_1/contrarian_round1.md": {
-    "mtime": 1787605905.6362312,
-    "ast_hash": "60f237459a39313b006aab0c28a1f5b8",
+    "mtime": 1787662828.079667,
+    "ast_hash": "0e0496003628bd9fe52e604f37ed409e",
     "semantic_hash": ""
   },
   ".council/round_1/engineer_round1.md": {
-    "mtime": 1787605886.3308406,
-    "ast_hash": "92c8d150b0606f0c82c6093e6cab9d1c",
+    "mtime": 1787662842.517642,
+    "ast_hash": "35efab36c7c703e39067f07a507d43fa",
     "semantic_hash": ""
   },
   ".council/round_2/architect_round2.md": {
-    "mtime": 1787606396.9887207,
-    "ast_hash": "cff06d785f3164fedb9d8de67f6ca520",
+    "mtime": 1787663041.7995274,
+    "ast_hash": "184c2866ca5e2695bb0eb9351c477283",
     "semantic_hash": ""
   },
   "ORIGINAL_REQUEST.md": {
@@ -8447,6 +8447,131 @@
   "manual_tecnico_conciliacao.pdf": {
     "mtime": 1787604298.1066937,
     "ast_hash": "a2ab5e36a4f63694495946ae99dfb759",
+    "semantic_hash": ""
+  },
+  "scripts/generate-master-pdf.cjs": {
+    "mtime": 1787663318.6585176,
+    "ast_hash": "561213cc5e0a567cb058b789f9be2631",
+    "semantic_hash": ""
+  },
+  "src/components/recebiveis/ImportRecebiveisModal.tsx": {
+    "mtime": 1787668109.1378603,
+    "ast_hash": "88ab632e55de329e8764d62df2ea1740",
+    "semantic_hash": ""
+  },
+  "src/components/recebiveis/ReceivableFormModal.tsx": {
+    "mtime": 1787668067.3619635,
+    "ast_hash": "64ae19327c2c94532e2a9c9ffe559ec5",
+    "semantic_hash": ""
+  },
+  "src/components/recebiveis/StoreReceivablesCard.tsx": {
+    "mtime": 1787664043.333975,
+    "ast_hash": "aa511a9d9883e81903b88e2f441c6fc3",
+    "semantic_hash": ""
+  },
+  "src/lib/parsers/recebiveisParser.ts": {
+    "mtime": 1787664869.6595404,
+    "ast_hash": "a57a7533ef306a38819ff878547008b8",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260825000003_receivables_schema_and_rpc.sql": {
+    "mtime": 1787663570.1449008,
+    "ast_hash": "8b445d3ad0ba17ad53510bc75a622b6e",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260825000004_fix_canonical_reconciliation_and_performance.sql": {
+    "mtime": 1787677076.3328137,
+    "ast_hash": "9f651c71430c7157735aa3ce5bc49c4c",
+    "semantic_hash": ""
+  },
+  ".council/round_2/analyst_round2.md": {
+    "mtime": 1787663099.2919679,
+    "ast_hash": "b3a4323a4e4e05799e9ebab79a1a8518",
+    "semantic_hash": ""
+  },
+  ".council/round_2/contrarian_round2.md": {
+    "mtime": 1787663037.0582576,
+    "ast_hash": "c6b92e748590ccf277e3d85d1bd02fea",
+    "semantic_hash": ""
+  },
+  ".council/round_2/engineer_round2.md": {
+    "mtime": 1787663111.1705236,
+    "ast_hash": "931a21238af4d9890a4e8c0245f5554f",
+    "semantic_hash": ""
+  },
+  "docs/MANUAL_CONSOLIDADO_CONCILIACAO_E_RECEBIVEIS.md": {
+    "mtime": 1787663424.3411665,
+    "ast_hash": "00c95abe68f44d3431eda9ef080986c3",
+    "semantic_hash": ""
+  },
+  "docs/especificacao_modulo_recebiveis_ia.md": {
+    "mtime": 1787662653.1819272,
+    "ast_hash": "01d97f3d1ab17dc9eecaedd253e388dd",
+    "semantic_hash": ""
+  },
+  "specs/284-reestruturacao-modulo-recebiveis-por-loja-e-snapshot/design.md": {
+    "mtime": 1787667849.3444593,
+    "ast_hash": "63d28a2e5a6a9b8d15eb98da2cf0ed55",
+    "semantic_hash": ""
+  },
+  "specs/284-reestruturacao-modulo-recebiveis-por-loja-e-snapshot/proposal.md": {
+    "mtime": 1787667829.621864,
+    "ast_hash": "ac4ac4576d578ec2a54f1bc83a84888c",
+    "semantic_hash": ""
+  },
+  "specs/284-reestruturacao-modulo-recebiveis-por-loja-e-snapshot/spec-plan.md": {
+    "mtime": 1787668390.9070246,
+    "ast_hash": "0fbddcc872aff6e3688fc64e25537036",
+    "semantic_hash": ""
+  },
+  "specs/archive/281-arquitetura-e-logica-conciliacao-rede-pix-dinheiro/design.md": {
+    "mtime": 1787604038.1030462,
+    "ast_hash": "25bc5e30db048a69576770afc355fc97",
+    "semantic_hash": ""
+  },
+  "specs/archive/281-arquitetura-e-logica-conciliacao-rede-pix-dinheiro/proposal.md": {
+    "mtime": 1787604017.1843662,
+    "ast_hash": "8a95ebd73b361d447081ffc127971f03",
+    "semantic_hash": ""
+  },
+  "specs/archive/281-arquitetura-e-logica-conciliacao-rede-pix-dinheiro/spec-plan.md": {
+    "mtime": 1787604051.0017264,
+    "ast_hash": "5b591acc72ff7990bb2c6fbfa11e93fc",
+    "semantic_hash": ""
+  },
+  "specs/archive/282-auditoria-forense-e-blindagem-conciliacao-senior/design.md": {
+    "mtime": 1787655604.035308,
+    "ast_hash": "6793bfc2c9d8b50675e6b65ad8017b47",
+    "semantic_hash": ""
+  },
+  "specs/archive/282-auditoria-forense-e-blindagem-conciliacao-senior/proposal.md": {
+    "mtime": 1787655594.5061603,
+    "ast_hash": "5a96cc20a62982ca824e099092e34af9",
+    "semantic_hash": ""
+  },
+  "specs/archive/282-auditoria-forense-e-blindagem-conciliacao-senior/spec-plan.md": {
+    "mtime": 1787657623.1408432,
+    "ast_hash": "d0baadf5de17aeb179b039c8c3f3461f",
+    "semantic_hash": ""
+  },
+  "specs/archive/283-congelamento-imutavel-snapshots-e-isolamento-historico-conciliacao/design.md": {
+    "mtime": 1787657969.5840902,
+    "ast_hash": "06e712689e13f89847fe919197cb85b1",
+    "semantic_hash": ""
+  },
+  "specs/archive/283-congelamento-imutavel-snapshots-e-isolamento-historico-conciliacao/proposal.md": {
+    "mtime": 1787657957.4818308,
+    "ast_hash": "25901ca8b83d4b90d0e8c91bea703fd7",
+    "semantic_hash": ""
+  },
+  "specs/archive/283-congelamento-imutavel-snapshots-e-isolamento-historico-conciliacao/spec-plan.md": {
+    "mtime": 1787658626.5538607,
+    "ast_hash": "80e4de750449fb5549a1676ec25884c4",
+    "semantic_hash": ""
+  },
+  "docs/MANUAL_CONSOLIDADO_CONCILIACAO_E_RECEBIVEIS.pdf": {
+    "mtime": 1787663338.211738,
+    "ast_hash": "286c64cba04b1155f42c9410cbfffd49",
     "semantic_hash": ""
   }
 }
