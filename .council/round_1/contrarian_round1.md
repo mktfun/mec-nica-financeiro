@@ -1,183 +1,113 @@
-﻿## Análise Crítica — [Contrarian]
-
-> **Alvo:** Sistema de conciliação financeira multi-loja (rede de oficinas)
-> **Round:** 1 — Posição Inicial Isolada
-> **Data:** 2026-08-24
-
----
-
-### Premissas Falsas Identificadas
-
-#### 1. "A chave `(store_id, net_amount_cents, entry_date)` garante unicidade em `pos_transactions`"
-
-**FALSA.** A proposta assume que uma combinação de loja + valor + data é naturalmente única para transações de maquininha. Isso é factualmente errado:
-
-- Uma loja que processa dois pagamentos de **R$ 150,00 no mesmo dia** (ex: dois carros diferentes pagando o mesmo serviço de revisão básica) terá dois registros com `(store_id, entry_date, net_amount_cents = 15000)` — **idênticos pela chave proposta**.
-- A constraint vai rejeitar a segunda transação legítima com `unique_violation`, silenciando dados reais de faturamento.
-- Pior: se o `ON CONFLICT DO NOTHING` for adotado, o sistema registra silenciosamente menos receita do que o real. Ninguém percebe até a auditoria — e só percebe porque o dinheiro "sobrou" no banco.
-
-**Evidência no código:** A migration 000004 não mostra nenhuma coluna de identificador natural (ex: `authorization_code`, `nsu`, `terminal_id`) em `pos_transactions`. A chave proposta é puramente posicional e colidirá em operação real de uma rede de oficinas com volume significativo.
+# Análise Crítica — [Contrarian]
+**Agente:** Contrarian (O Advogado do Diabo Implacável)  
+**Tópico:** Módulo de Recebíveis (Pilar 3) — Spec 284 & Fechamento Diário Contábil  
+**Data da Análise:** 25/08/2026  
+**Veredicto Preliminar:** **NEEDS-REWORK** (Confiança: **0.95**)
 
 ---
 
-#### 2. "O guard clause `.ilike('description', '%OS #<numero>%')` é suficiente para idempotência no vault"
+## 1. Premissas Falsas & Ataque aos 4 Tópicos da Especificação
 
-**FALSA E JÁ QUEBRADA.** O código em `useImportProcessor.ts` L149–L165 faz:
-
-```typescript
-const { data: existingVault } = await supabase
-  .from('store_cash_vault')
-  .select('id, status')
-  .eq('store_id', storeId)
-  .ilike('description', `%OS #${cashOs.os_number}%`)
-  .limit(1);
-```
-
-A proposta de correção adiciona `UNIQUE CONSTRAINT em (store_id, os_number_ref)` + coluna `os_number_ref` dedicada. **Mas o código TypeScript ainda usa `.ilike()` na `description`** — a constraint do banco nunca seria acionada pelo fluxo de importação atual, porque o INSERT acontece apenas quando `existingVault.length === 0`. A proteção está no JavaScript, não no banco. A constraint seria redundante para o caminho feliz e irrelevante para o caminho perigoso (inserção direta).
+### 💥 Tópico 1 — Ciclo de Vida e Sinalização no Vencimento (`due_date == today`)
+* **A Premissa Falsa:** Assume-se que no dia do vencimento o título "deve ser cobrado/baixado" e que badges pulsantes ou alertas visuais são suficientes para guiar a operação.
+* **O Ataque Implacável:**
+  1. **Descompasso da Realidade B2B:** Clientes corporativos (ex: Orion, Massimo Pedras, Gestauto, locadoras e seguradoras) raramente liquidam exatamente na data nominal sem D+1/D+2 de compensação bancária ou rotinas próprias de tesouraria.
+  2. **Incentivo Perverso à Baixa Cega:** Criar badges de alerta urgentes na tela de recebíveis incentiva o operador a clicar em "Marcar como Recebido" apenas para "limpar a tela", antes mesmo da compensação bancária real constar no extrato. Isso viola o princípio contábil da realização da receita e gera duplicidade de saldo no fechamento patrimonial.
+  3. **A Armadilha do Status `vencido`:** Se um título não for pago no dia `due_date`, ele transita para `vencido`. Se a query de consolidação da conciliação (`get_daily_reconciliation_summary`) buscar ingenuamente por `status = 'pendente'`, **todos os títulos vencidos/inadimplentes somem do ativo circulante (Pilar 3) da noite para o dia!** No caso real de 25/08/2026, o boleto Orion OS 22529 1/3 (R$ 3.464,83) venceu em 24/08; se o filtro considerar apenas `pendente`, o total a receber desaba de R$ 11.814,50 para R$ 8.349,67, gerando uma falsa perda de patrimônio de R$ 3.464,83.
 
 ---
 
-#### 3. "ON CONFLICT DO UPDATE em `patio_os` resolve a race condition de reimportação"
-
-**FALSA.** A proposta assume que reimportar é idempotente. Veja o que acontece na prática:
-
-```
-Importação Dia 1: OS #1234 → total_value=500, paid_value=300, status=pago_parcial
-Importação Dia 2: planilha antiga (re-upload acidental) → total_value=500, paid_value=0, status=em_aberto
-```
-
-O `ON CONFLICT DO UPDATE` vai **sobrescrever** `paid_value` de 300 → 0 e `status` de `pago_parcial` → `em_aberto`. O dinheiro "desaparece" no registro.
-
-**Evidência no código:** `useImportProcessor.ts` L94–L133 tem lógica de `delta_paid` e `history_log` que tenta mitigar isso — mas só no caminho TypeScript. Se o `ON CONFLICT DO UPDATE` no banco for implementado sem cláusulas de guarda (`WHERE excluded.paid_value > patio_os.paid_value`), o banco sobrescreve cegamente.
-
----
-
-#### 4. "Soft-delete no vault resolve o problema de registros 'depositado' sumindo do cálculo"
-
-**FALSA POR DEFINIÇÃO.** O bug original é que após a baixa (`status=depositado`), a RPC filtra apenas `em_transito` e o valor some. A proposta de soft-delete **não muda nada nessa equação**: registros `depositado` continuam sendo excluídos do SUM. Migration 000010, L161–L165:
-
-```sql
-WHERE entry_date <= v_target_date
-  AND status IN ('em_transito', 'pending');
-```
-
-O registro `depositado` **continua invisível para o SUM**. A proposta resolve apenas a auditoria visual — não o bug de cálculo conforme narrado.
+### 💥 Tópico 2 — Mecânica Contábil da Baixa & A Falácia do "Auto-Match"
+* **A Premissa Falsa:** "O sistema cruza o valor do recebível com o extrato bancário OFX do dia. Ao encontrar uma entrada equivalente, dá baixa automática no recebível."
+* **O Ataque Implacável:**
+  1. **Colisão Fatal de Parcelas de Mesmo Valor:**
+     - Observando os dados reais da Mauá (MHE):
+       - `BOLETO ORION OS 22529 1/3` -> **R$ 3.464,83** (Vencimento 24/08/2026 - Vencido)
+       - `BOLETO ORION OS 22530 2/3` -> **R$ 3.464,83** (Vencimento 22/09/2026 - A Vencer)
+     - Se o cliente efetua um pagamento de **R$ 3.464,83** no banco Itaú, com qual critério o auto-match decide qual parcela baixar?
+     - Como a descrição bancária típica do Itaú vem como `PIX RECEBIDO` ou `LIQ.COBRANCA SIMPLES` (sem número de OS ou parcela), um auto-match baseado puramente em valor numérico (`amount == 3464.83`) vai selecionar aleatoriamente a primeira linha retornada pelo banco de dados. Se selecionar a parcela 2/3, a parcela 1/3 permanecerá vencida (gerando falsa cobrança indevida ao cliente e auditoria furada).
+  2. **Incapacidade de Tratar Pagamentos Agrupados (Lump-Sum):**
+     - Se a Orion liquidar os dois boletos vencidos em um único PIX consolidado de **R$ 6.929,66** (ou os 3 boletos totalizando **R$ 10.394,50**), o auto-match unitário falha em 100% dos casos. Os 3 títulos permanecem abertos em Pilar 3 e o crédito no extrato fica sem match em Pilar 1.
+  3. **Dupla Contagem Contábil Imediata (Double Counting no Caixa Atual):**
+     - A fórmula patrimonial do sistema é:
+       $$\text{Caixa Atual} = \text{Saldo Bancos (OFX)} + \text{Dinheiro Cofre} + \text{Cartões} + \text{Dinheiro MP} + \text{A Receber} + \text{Pátio OS}$$
+     - Se o crédito de R$ 3.464,83 entra na conta bancária no dia 25/08, o **Saldo Bancos (Pilar 1)** já aumenta em R$ 3.464,83.
+     - Se a baixa do boleto no **Pilar 3 (A Receber)** não ocorrer rigorosamente no mesmo milissegundo ou se houver delay operacional, o montante de R$ 3.464,83 constará SIMULTANEAMENTE no Banco e no A Receber. Isso infla artificialmente o `Caixa Atual` em R$ 3.464,83, destruindo o cálculo de `fluxo_caixa`, gerando um falso `valor_disp_contas` e estourando o batimento contábil.
 
 ---
 
-### Edge Cases Fatais
-
-#### EC-1: Migration UNIQUE em tabela com dados já duplicados → FALHA EM PRODUÇÃO
-
-```sql
--- Estado atual em produção (pos_transactions):
-(store_id='loja-1', entry_date='2026-08-20', net_amount_cents=15000)  -- linha 1 (original)
-(store_id='loja-1', entry_date='2026-08-20', net_amount_cents=15000)  -- linha 2 (duplicata existente)
-```
-
-Ao executar:
-```sql
-ALTER TABLE pos_transactions
-ADD CONSTRAINT uq_pos_tx UNIQUE (store_id, entry_date, net_amount_cents);
-```
-
-O PostgreSQL retorna:
-```
-ERROR:  could not create unique index "uq_pos_tx"
-DETAIL:  Key (store_id, entry_date, net_amount_cents)=(loja-1, 2026-08-20, 15000) is duplicated.
-```
-
-**A migration falha. O deploy trava.** Ninguém na proposta menciona o passo obrigatório de **deduplicar os dados antes** de adicionar a constraint. O mesmo risco existe para `patio_os` e `store_cash_vault`.
+### 💥 Tópico 3 — Comportamento Retroativo vs Histórico de Snapshots (`received_at > target_date`)
+* **A Premissa Falsa:** "A RPC deve avaliar `status = 'pendente' OR received_at > target_date` para dias anteriores, garantindo que o saldo histórico permaneça intacto."
+* **O Ataque Implacável:**
+  1. **A Armadilha de Timezone entre PostgreSQL (UTC) e Navegador (Brasília - UTC-3):**
+     - `target_date` é do tipo `DATE` (ex: `2026-08-25`).
+     - `received_at` é do tipo `TIMESTAMPTZ` (ex: gravado como `2026-08-26 02:00:00+00` quando o operador baixa às 23:00 de Brasília do dia 25/08).
+     - No PostgreSQL, a comparação ingênua `received_at > '2026-08-25'::date` converte a data para `'2026-08-25 00:00:00+00'`. Qualquer baixa realizada durante o dia 25/08 (ex: às 14:00 BRT = 17:00 UTC) é estritamente MAIOR que a meia-noite UTC.
+     - **Consequência:** Na consulta da conciliação do próprio dia 25/08, o PostgreSQL considerará que o título foi baixado no "futuro" e continuará somando o título em `A Receber` no dia em que ele já foi baixado!
+     - É mandatório truncar e converter com fuso explícito: `(received_at AT TIME ZONE 'America/Sao_Paulo')::date > v_target_date`.
+  2. **Violação da Imutabilidade de Fechamentos Homologados (`is_closed = true`):**
+     - Em contabilidade formal, fechamentos passados congelados não podem depender de joins dinâmicos em tabelas mutáveis. Se uma conciliação foi fechada e assinada em 24/08 com R$ 11.814,50, ela deve ler ESTRITAMENTE o valor congelado no snapshot físico (`daily_snapshots.a_receber_manual` ou `daily_snapshots.receivables_snapshot`). Permitir recálculo dinâmico em datas fechadas é vulnerabilidade de integridade contábil.
 
 ---
 
-#### EC-2: Auto-Match cria dados corrompidos que a migration não limpa
-
-`useImportProcessor.ts` L228–L242:
-
-```typescript
-const matchedOs = openStoreOs.find(o => {
-  const saldo = Number(o.total_value || 0) - Number(o.paid_value || 0);
-  return (Math.abs(Number(o.total_value || 0) - recVal) <= 0.05)
-      || (Math.abs(saldo - recVal) <= 0.05);
-});
-```
-
-- **Falsos positivos em escala:** Com 50 OSs abertas e múltiplos recebíveis do mesmo valor, `Array.find()` fecha a **primeira OS que encontrar** — sem critério de data, loja de origem, ou confirmação humana.
-- **Dados corrompidos não são limpos pelas migrations:** As OSs fechadas erroneamente já existem no banco antes das migrations. As constraints novas não corrigem isso.
-- **Sem reversão:** Reimportar a planilha pode disparar `ON CONFLICT DO UPDATE` e sobrescrever novamente.
+### 💥 Tópico 4 — Experiência do Usuário (UX) & Complexidade Desnecessária
+* **A Premissa Falsa:** Criar 10 cards em grid com Framer Motion e modais avulsos resolve a conciliação diária de recebíveis.
+* **O Ataque Implacável:**
+  - O operador não quer navegar por 10 cards isolados e clicar 10 vezes em botões de confirmação.
+  - O que a operação necessita é de uma **Mesa de Conciliação Bipartida**: Extrato Bancário OFX de um lado (com entradas não conciliadas) e Recebíveis Pendentes do outro, permitindo associação visual assistida, baixa com 1 clique e conferência imediata do impacto no fechamento diário.
 
 ---
 
-#### EC-3: Vault cresce infinito sem estratégia de limpeza
+## 2. Edge Cases Fatais Identificados
 
-300 dias/ano × 10 lojas × 5 OSs com dinheiro/dia = **15.000 registros/ano**. Em 5 anos: 75.000 registros.
-
-A RPC executa `SUM(amount) WHERE entry_date <= v_target_date AND status = 'em_transito'` — range scan crescente, sem particionamento temporal, sem TTL, sem job de arquivamento mencionado em nenhuma spec.
-
----
-
-#### EC-4: Edge Functions ignoram todos os guards TypeScript
-
-O sistema tem RPC `delete_import_batch` e lógica de backend que escreve diretamente no banco. Qualquer Edge Function que insira em `store_cash_vault` sem `os_number_ref`, ou em `pos_transactions` sem respeitar a nova constraint, rompe silenciosamente a proteção proposta. O `.ilike()` guard no TypeScript protege apenas o hook `useProcessImportedData()`.
-
----
-
-#### EC-5: `manual_transactions` acumula sem idempotência
-
-`useImportProcessor.ts` L325 (comentário explícito no código):
-
-```typescript
-// Removida a trava de idempotência por os_number para permitir transações de deltas
-```
-
-Cada reimportação que gerar `delta_paid > 0` cria **novos registros em `manual_transactions`**. O extrato acumula entradas duplicadas. Nenhuma das specs 280/281 menciona ou propõe correção para isso.
+| # | Cenário Crítico (Edge Case) | Por que quebra o sistema atual / Proposta da Spec | Impacto Financeiro / Operacional |
+|---|---|---|---|
+| **E1** | **Colisão de Parcelas Idênticas** (Ex: Orion 1/3 e 2/3 ambas de R$ 3.464,83) | O auto-match não possui chave discriminadora e baixa a parcela futura em vez da vencida. | Cobrança indevida ao cliente e inadimplência fantasma no sistema. |
+| **E2** | **Reimportação da Planilha Excel do Dia Anterior** | A tabela `receivables` da Spec NÃO possui `UNIQUE CONSTRAINT`. Ao reimportar, o parser executa `INSERT` cego, duplicando todos os títulos (R$ 11.814,50 vira R$ 23.629,00) ou reabrindo títulos baixados. | Falsa duplicação do ativo a receber da empresa e estouro do fechamento. |
+| **E3** | **Baixa com Desconto Comercial ou Juros de Mora** | Cliente com título de R$ 3.464,83 paga R$ 3.414,83 (com desconto de R$ 50) ou R$ 3.484,83 (com juros de R$ 20). A spec não prevê `discount_amount` nem `interest_amount`. | Divergência de centavos/reais na fórmula patrimonial (`diferenca_final`), reprovando a conciliação (`status = divergent`). |
+| **E4** | **Baixa Parcial de Título** | Cliente paga R$ 1.500,00 de uma OS de R$ 3.464,83 e combina pagar o saldo na semana seguinte. O schema não possui status `pago_parcial` nem campo `residual_value`. | Obriga o operador a deletar e recriar títulos manualmente ou adulterar o valor original do boleto, destruindo a trilha de auditoria. |
+| **E5** | **Filtro Temporal Excluindo Títulos Vencidos** | Query filtra `WHERE status = 'pendente'`. O título vence e vira `status = 'vencido'`. | Títulos inadimplentes evaporam do cálculo do Pilar 3, gerando redução artificial do patrimônio apurado. |
+| **E6** | **Timezone Drift em Fechamentos Noturnos** | Fechamento rodado às 23:30 (horário de Brasília) grava timestamp UTC (`02:30` do dia seguinte). | Baixa cai no dia seguinte, desbalanceando a conciliação do dia corrente. |
 
 ---
 
-### O que a proposta NÃO resolve
+## 3. O que a Especificação Atual NÃO Resolve / Omissões Graves
 
-1. **Dados corrompidos pré-existentes:** Nenhuma migration de limpeza/deduplicação retroativa. As constraints são para dados futuros; o lixo histórico permanece.
+1. **Ausência de Chave Natural de Deduplicação na Tabela `receivables`:**
+   - A migration proposta na spec (`20260825000003_receivables_schema_and_rpc.sql`) define apenas `id UUID PRIMARY KEY`.
+   - **Omissão:** Não existe `UNIQUE CONSTRAINT` ou índice único sobre `(store_id, description, due_date)` ou `(store_id, os_number, installment)`. Sem isso, qualquer upload repetido na Central de Importações ou no modal de recebíveis inserirá linhas duplicadas no banco.
 
-2. **`manual_transactions` sem idempotência:** Explicitamente removida. Fora do escopo das correções.
+2. **Falta de Estrutura Contábil para Divergências na Liquidação:**
+   - A tabela `receivables` não contém:
+     - `paid_value NUMERIC(12,2)` (Valor efetivamente liquidado)
+     - `discount_value NUMERIC(12,2)` (Descontos concedidos)
+     - `interest_value NUMERIC(12,2)` (Juros/multas auferidos)
+     - `payment_method TEXT` (PIX, TED, Boleto Itaú, Dinheiro)
+     - `settlement_account_id TEXT` (Conta bancária de destino)
 
-3. **Auto-match falso positivo:** Contamina `patio_os` e `store_cash_vault` de forma irreversível sem auditoria humana.
+3. **Inexistência de Suporte a Relacionamentos N:1 e 1:N no Match com OFX:**
+   - O campo `matched_ofx_id UUID` assume uma relação estritamente 1:1.
+   - Na prática, 1 transação OFX pode quitar 3 boletos (N:1), ou 1 boleto de alto valor pode ser liquidado em 2 transferências bancárias (1:N). O modelo proposto colapsa nesses cenários.
 
-4. **Divergência entre as duas versões da RPC:** Migration 000010 usa `status IN ('em_transito', 'pending')` — o status `'pending'` não existe no `CHECK constraint` da tabela (aceita apenas `'em_transito'`, `'depositado'`, `'cancelado'`). Dead code que mascara inconsistência futura.
+4. **Tratamento de Cancelamento e Devolução:**
+   - A spec não detalha o fluxo de cancelamento de um recebível: se um boleto for cancelado, ele deve estornar a OS vinculada no Pátio (Pilar 4) ou gerar lançamento contábil compensatório?
 
-5. **Valores hard-coded em SQL de produção:** Migration 000004, L144–L150:
-   ```sql
-   IF v_target_date = '2026-08-24'::date THEN
-       v_caixa_anterior := 150600.29;
-       v_faturamento_anterior := 746804.77;
-   ```
-   Valores financeiros reais hard-coded em SQL. Corrigir exige novo deploy de migration.
-
-6. **Ausência de transação atômica no fluxo de importação:** `savePatioOsAndReceivables` executa múltiplas operações sequenciais sem envelope de transação. Falha de rede após `patio_os.insert` e antes de `store_cash_vault.insert` deixa o banco em estado parcialmente atualizado, sem rollback.
-
----
-
-### Riscos Ocultos
-
-| # | Risco | Probabilidade | Impacto |
-|---|-------|:---:|:---:|
-| R1 | Migration falha em produção por dados duplicados pré-existentes | **ALTA** | CRÍTICO — deploy bloqueado |
-| R2 | UNIQUE em `pos_transactions` rejeita transações legítimas de mesmo valor no mesmo dia | **ALTA** | CRÍTICO — perda de receita registrada |
-| R3 | `ON CONFLICT DO UPDATE` em `patio_os` apaga `paid_value` em reimportação de planilha antiga | **MÉDIA** | CRÍTICO — dinheiro "some" do sistema |
-| R4 | Auto-match fecha OSs erradas de forma irreversível | **MÉDIA** | ALTO — distorção do pátio e do fluxo de caixa |
-| R5 | `manual_transactions` acumula duplicatas sem controle | **ALTA** | MÉDIO — extrato poluído, somas incorretas |
-| R6 | `status = 'pending'` na RPC referencia valor não permitido pela CHECK constraint | **BAIXA** | BAIXO — dead code agora, inconsistência futura |
-| R7 | Valores hard-coded `150600.29` e `746804.77` em SQL de produção | **CERTA** | MÉDIO — impossibilidade de correção sem deploy |
-| R8 | Sem transação atômica na importação → estado parcial em falha de rede | **MÉDIA** | ALTO — inconsistência sem detecção |
-| R9 | Vault cresce indefinidamente sem arquivamento → degradação de performance da RPC | **CERTA** (longo prazo) | MÉDIO — lento, mas inevitável |
-| R10 | Edge Functions escrevem direto no banco sem passar pelos guards TypeScript | **ALTA** | ALTO — todas as correções de aplicação são contornadas |
+5. **Regras de Precedência de Snapshot vs Dinâmico na RPC:**
+   - A RPC `get_daily_reconciliation_summary` não explicita a regra de fallback: para datas fechadas com snapshot existente, o valor congelado tem prioridade absoluta sobre a soma dinâmica da tabela `receivables`.
 
 ---
 
-### Recomendação Final
+## 4. Riscos Ocultos & Armadilhas Operacionais
 
-**Veredicto:** ❌ NO-GO
+* 🚨 **Risco de Falsa Aprovação de Caixa:** Um falso positivo no auto-match pode baixar um boleto não pago, ocultando uma inadimplência de milhares de reais da diretoria.
+* 🚨 **Risco de Bloqueio da Central de Importações:** Se o parser de Excel falhar ao ler formatos heterogêneos de data (ex: strings `'24/08/2026'` vs serial numérico Excel `46258`), a importação centralizada travará por completo.
+* 🚨 **Risco de Perda de Dados em Reimportação:** Sem merge defensivo (que preserve registros com `status = 'recebido'`), reimportar a planilha do mês sobrescreverá títulos já pagos de volta para `pendente`.
 
-**Confiança:** 0.85
+---
 
-**Justificativa:** A proposta corrige os sintomas mais visíveis (bug do ilike, duplicatas de POS, race condition de patio_os), mas falha em três dimensões críticas. Primeiro, **a migration vai falhar em produção** porque não há etapa de deduplicação prévia dos dados históricos — e qualquer banco que sofreu o bug a ser corrigido já tem os dados duplicados que a constraint vai rejeitar. Segundo, **a chave UNIQUE escolhida para `pos_transactions` é semanticamente incorreta** para o domínio: transações de maquininha não são naturalmente únicas por valor+data+loja, e a proposta vai rejeitar transações legítimas ou silenciar dados reais. Terceiro, **o sistema tem pelo menos dois vetores de corrupção ativos que não são endereçados** — o auto-match sem controle de falsos positivos e `manual_transactions` com idempotência explicitamente removida. O rework mínimo necessário é: (a) migration de limpeza de duplicatas antes das constraints, (b) substituição da chave de `pos_transactions` por um identificador natural do relatório da Rede (NSU, código de autorização ou hash do lote), (c) guarda no `ON CONFLICT DO UPDATE` de `patio_os` para nunca regredir `paid_value`, e (d) restauração de idempotência em `manual_transactions`.
+## 5. Recomendação Final
+
+**Veredicto:** ❌ **NEEDS-REWORK**  
+**Confiança:** **0.95**  
+**Justificativa:**  
+A iniciativa de estruturar os recebíveis loja a loja e integrá-los de forma automatizada ao Pilar 3 é essencial para eliminar a digitação manual cega. No entanto, a especificação técnica atual é perigosa e incompleta: a falta de uma chave única de deduplicação provocará duplicações catastróficas em reimportações diárias; o conceito de "auto-match" cego por valor causará baixas equivocadas em parcelas gêmeas (como o caso real da Orion); a comparação temporal sem fuso explícito e a exclusão do status `vencido` corromperão a equação patrimonial; e a ausência de suporte a juros, descontos e liquidações parciais inviabilizará o fechamento diário na operação real. A spec precisa incorporar imediatamente constraints de unicidade, tolerância a divergências na baixa, chave de relacionamento robusta e governança estrita de snapshots antes do início da implementação.

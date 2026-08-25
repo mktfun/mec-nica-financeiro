@@ -1,87 +1,106 @@
-﻿## Análise Arquitetural — [Architect]
+## Análise Arquitetural — [Architect]
 
-> **Round 1 — Posição Inicial Isolada**
-> Data: 2026-08-24 | Sistema: Conciliação Financeira Multi-Loja (Rede de Oficinas)
+### 1. Avaliação dos 4 Tópicos
+
+#### Tópico 1 — Ciclo de Vida e Sinalização no Dia do Vencimento (`due_date == target_date`)
+* **Diagnóstico Arquitetural:** O erro mais crítico em módulos financeiros é transformar estados puramente temporais (como `vencendo_hoje` ou `vencido`) em estados transacionais persistidos na coluna `status` do banco de dados. Isso gera a clássica **armadilha de estado estagnado** (*State Staleness Trap*), forçando a dependência de cron jobs frágeis para atualizar registros à meia-noite.
+* **Solução Canônica:**
+  1. A coluna `status` no PostgreSQL deve persistir estritamente eventos de ciclo de vida do negócio: `'pendente'`, `'recebido'`, `'cancelado'`.
+  2. Os estados temporais (`a_vencer`, `vencendo_hoje`, `vencido`) são **estados derivados/computados** calculados em tempo de consulta/renderização com base na comparação da `due_date` com a data de competência selecionada (`target_date`).
+* **Sinalização UX:** Arquitetura hierárquica em 2 níveis:
+  - *Nível Macro:* KPI Card **"A Vencer Hoje"** no topo do dashboard com contagem e valor somado.
+  - *Nível Micro:* Badge âmbar pulsante (`bg-amber-500/10 text-amber-400 border-amber-500/30`) na linha do título dentro do card da filial, acompanhado de botão de ação rápida com 1 clique ("Baixar / Confirmar Recebimento").
+
+#### Tópico 2 — Mecânica Contábil e Liquidação Sem Dupla-Contagem
+* **Diagnóstico Arquitetural:** A fórmula patrimonial do fechamento diário é:
+  $$\text{Caixa Atual} = \underbrace{\text{Saldo Bancos (OFX) + Cofre + Maquininhas}}_{\text{Pilar 1}} + \underbrace{\text{Dinheiro MP}}_{\text{Pilar 2}} + \underbrace{\text{A Receber}}_{\text{Pilar 3}} + \underbrace{\text{Na Loja (OS)}}_{\text{Pilar 4}}$$
+  $$\text{Fluxo de Caixa} = \text{Caixa Atual} - \text{Caixa Anterior}$$
+  $$\text{Valor Disponível para Contas} = \text{Faturamento do Período} - \text{Fluxo de Caixa}$$
+* **O Risco de Dupla-Contagem / Inflação Patrimonial:**
+  Quando um boleto (ex: Orion R$ 3.464,83) é creditado na conta Itaú da loja Mauá:
+  1. O saldo bancário sobe R$ 3.464,83 no extrato OFX (**Pilar 1** aumenta).
+  2. Se o recebível permanecer como pendente no **Pilar 3**, o Caixa Atual é inflado artificialmente em R$ 3.464,83, distorcendo o Fluxo de Caixa e gerando falsa divergência no Fechamento.
+  3. No extrato OFX haverá uma transação de crédito correspondente. Se o operador categorizá-la como novo faturamento, haverá **dupla contagem de receita**, pois a receita já foi reconhecida na emissão original da OS/serviço.
+* **Modelo Canônico de Liquidação (Modelo Híbrido Reconciliado com Vínculo Bilateral):**
+  - Adição da FK `matched_ofx_id UUID REFERENCES ofx_transactions(id) ON DELETE SET NULL` na tabela `receivables`.
+  - A liquidação contábil é uma **mera mutação patrimonial** (permutação de ativo circulante: Realizável a Curto Prazo $\rightarrow$ Disponibilidades imediatas).
+  - Quando o recebível é baixado com vínculo ao OFX (`matched_ofx_id`), a transação do OFX é sinalizada como `reconciliation_type = 'receivable_settlement'` e **não entra no cômputo de faturamento operacional do dia**, garantindo integridade estrita das partidas dobradas.
+
+#### Tópico 3 — Isolamento Temporal, Imutabilidade Histórica e Timezone
+* **Diagnóstico da Regra Lógica Retroativa:**
+  A expressão `WHERE (date <= v_target_date) AND (status = 'pendente' OR (status = 'recebido' AND received_at > v_target_date))` é a base matemática correta para reconstrução *Point-in-Time*. Contudo, apresenta duas vulnerabilidades críticas de engenharia:
+  1. **Armadilha de Timezone (UTC vs America/Sao_Paulo):** O PostgreSQL armazena `received_at` como `TIMESTAMPTZ` (UTC). Uma baixa realizada às 22:30 de 24/08 em São Paulo (UTC-3) é gravada como `2026-08-25 01:30:00+00`. Se a query comparar `received_at::date > v_target_date` sem converter o fuso, o sistema atribuirá o recebimento incorretamente a 25/08!
+     - *Mitigação Obrigatória:* `(received_at AT TIME ZONE 'America/Sao_Paulo')::date > v_target_date` ou registro da coluna explícita `received_date DATE`.
+  2. **Imutabilidade de Snapshots Fechados:** Para conciliações onde `daily_snapshots.is_closed = true`, o valor do Pilar 3 **deve ser imutável**. A RPC deve priorizar o snapshot persistido para datas fechadas, garantindo que baixas ou manutenções posteriores nunca alterem o passado contábil auditado.
+
+#### Tópico 4 — Arquitetura de Interface (UX/UI) & Componentização
+* **Avaliação da Estrutura:**
+  - A substituição da listagem linear por uma arquitetura orientada ao domínio (**Grid das 10 Filiais**) espelha com fidelidade a operação física e a planilha oficial da diretoria (`RECEBIVEIS `).
+  - **Componentes Modulares Independentes:**
+    - `src/routes/recebiveis.tsx`: Cockpit mestre com Header de data, KPIs consolidados e alternador de abas (Contas a Receber vs Auditoria MDR).
+    - `StoreReceivablesCard.tsx`: Card de filial autocontido com lista de títulos, subtotal da loja e ações contextuais.
+    - `ReceivableFormModal.tsx` & `ImportRecebiveisModal.tsx`: Modais isolados para cadastro e extração Excel via `recebiveisParser.ts`.
+  - **Integração no `ResumoDiaPanel.tsx`:** O card do Pilar 3 ("A RECEBER") deve abrir o `RecebiveisDetailModal.tsx` (seguindo o mesmo padrão de excelência de `SaldoBancosDetailModal` e `PatioOsDetailModal`), permitindo ao operador auditar a composição dos títulos sem sair da conciliação.
 
 ---
 
-### Avaliação da Proposta
+### 2. Modelo Contábil & FSM de Estados
 
-#### Contexto Arquitetural Observado
+#### 2.1 Máquina de Estados Finitos (FSM) de Recebíveis
+O ciclo de vida separa rigorosamente **Estado Transacional Persistido** de **Estado Visual/Temporal Derivado**:
 
-Após leitura integral de `useImportProcessor.ts`, das duas migrations e dos dois design specs, o sistema se organiza em três camadas:
-
-1. **Camada de Ingestão (TypeScript/cliente):** `savePatioOsAndReceivables` em `useImportProcessor.ts` — responsável por idempotência de OSs, escrita no cofre e auto-match de recebíveis. Toda a lógica de guarda anti-duplicata vive aqui, em memória, por sessão.
-2. **Camada de Persistência (PostgreSQL/Supabase):** Tabelas `patio_os`, `store_cash_vault`, `pos_transactions`, `receivables` — sem constraints estruturais de unicidade nas colunas de negócio críticas.
-3. **Camada de Cálculo/Reconciliação (RPCs PL/pgSQL):** `get_daily_reconciliation_summary` + `get_store_pos_triple_reconciliation` — agrega valores via SUM; a correção de juros e deduplicação ainda não está materializada nestas migrations lidas.
-
-O **problema central** é que a camada 1 faz trabalho que deveria ser responsabilidade da camada 2. A base de dados não impõe as invariantes de negócio; ela apenas confia que o cliente sempre se comportará corretamente — o que é estruturalmente insustentável.
-
----
-
-### Pontos Fortes Arquiteturais
-
-1. **Separação de concerns presente:** O padrão de ter RPCs calculistas desacopladas do cliente React é correto. A RPC `get_daily_reconciliation_summary` é o único ponto de verdade para o fechamento diário — isso é uma decisão arquitetural sólida.
-
-2. **Soft-delete no `store_cash_vault` está conceitualmente correto:** O domínio financeiro exige imutabilidade de auditoria. Registros de dinheiro em trânsito jamais devem ser deletados fisicamente — a transição de estado (`em_transito → depositado`) é o padrão correto para esse domínio (análogo a ledgers contábeis append-only).
-
-3. **Coluna dedicada `os_number_ref` é arquiteturalmente superior ao parse de `description`:** A proposta de substituir o guard `.ilike('description', '%OS #<numero>%')` por uma coluna estruturada `os_number_ref` é a decisão certa. Colunas de texto livre não devem ser chaves de idempotência — são dados de apresentação, não de identificação.
-
-4. **UNIQUE CONSTRAINT em `patio_os(store_id, os_number)` resolve a race condition estruturalmente:** Mover o guard do JavaScript para o banco é a única correção duradoura. O `ON CONFLICT DO UPDATE` (upsert atômico) elimina a janela de corrida entre o `SELECT existingMap` e o `INSERT` na linha 136.
-
-5. **Intenção de deduplicação em `pos_transactions` antes do SUM é correta:** Agregar com `SUM` sem deduplicar é um bug de semântica de dados — a proposta de calcular sobre registros DISTINCT/deduplicados antes de agregar é o caminho certo.
-
----
-
-### Riscos Estruturais e Dívida Técnica
-
-#### RISCO CRÍTICO 1 — Chave Natural Incorreta para `pos_transactions`
-
-A UNIQUE CONSTRAINT proposta `(store_id, entry_date, net_amount_cents)` é **semanticamente fraca** para este domínio.
-
-- **Problema:** Duas transações distintas de cartão de crédito, na mesma loja, na mesma data, com o mesmo valor líquido são perfeitamente possíveis (ex: dois clientes pagando R$ 150,00 em dias de alto volume). Esta constraint geraria **falsos positivos** — descartaria transações legítimas como se fossem duplicatas.
-- **Solução correta:** A chave natural para `pos_transactions` deve incluir um identificador externo provido pela operadora (número de lote, NSU, código de autorização), ou minimamente `(store_id, entry_date, gross_amount_cents, brand, installments)`. Se a fonte de dados não fornece NSU, a constraint deve ser `(store_id, external_batch_id)` quando disponível, ou documentada explicitamente como "melhor esforço".
-- **Dívida técnica:** Se a constraint incorreta for aplicada, ela silenciosamente descartará transações reais, gerando subcontagem — um bug pior que o de duplicata, pois não é visível.
-
-#### RISCO CRÍTICO 2 — `ON CONFLICT DO UPDATE` em `patio_os` pode sobrescrever dados corretos
-
-O código atual (linhas 94–132 de `useImportProcessor.ts`) implementa lógica inteligente de `history_log` — só faz update se houver mudança real, e registra o delta. Se o `ON CONFLICT DO UPDATE` do banco for implementado de forma ingênua (substituindo todos os campos), ele **destrói o `history_log`** e a lógica de `last_payment_date`.
-
-- **Risco específico:** Uma reimportação com dados parciais (planilha incompleta) executando `ON CONFLICT DO UPDATE SET paid_value = EXCLUDED.paid_value` pode **retroceder** `paid_value` de um OS que já teve pagamento registrado.
-- **Solução:** O `ON CONFLICT DO UPDATE` deve usar `GREATEST()` para campos cumulativos (`paid_value`) e `COALESCE()` para campos não-nulos. Ou melhor: manter a lógica de update inteligente no cliente, usando a constraint apenas para `INSERT` com `ON CONFLICT DO NOTHING` e tratando updates separadamente via `id`.
-
-#### RISCO ESTRUTURAL 3 — Soft-delete resolve o problema, mas expõe novo acoplamento temporal
-
-O filtro `WHERE status = 'em_transito'` na vault_store CTE (migration 000004, linha 283; migration 000010, linha 275) **funciona corretamente** com soft-delete — registros `depositado` somem do cálculo do cofre, o que é o comportamento desejado (o dinheiro já entrou no OFX bancário).
-
-Porém, há um **gap de dupla-contagem transitória**: entre o momento em que o usuário dá baixa (`status → depositado`) e o OFX do banco ser importado com aquela entrada, o patrimônio total aparece **reduzido** (saiu do cofre mas ainda não entrou no OFX). Isso não é erro da proposta — é latência inerente ao domínio — mas não está documentado nas specs como comportamento esperado, gerando potencial confusão de usuário.
-
-#### RISCO ESTRUTURAL 4 — RPC de juros: deduplicação pré-SUM tem edge case com ajustes parciais
-
-Se a deduplicação for implementada como `SELECT DISTINCT ON (store_id, entry_date, net_amount_cents)`, ela resolve o bug de duplicata de importação, mas **colapsa** casos onde uma mesma combinação `(loja, data, valor)` representa dois lotes distintos de maquininha. O cálculo de juros (`rede_taxas`) deve ser deduplicado por `id` de transação, não por combinação de valores.
-
-#### RISCO DE DÍVIDA TÉCNICA — Hardcoded values nas RPCs
-
-As migrations contêm **valores hardcoded** que são um alarme estrutural:
-
-```sql
--- migration 000004, linhas 144-145:
-IF v_target_date = '2026-08-24'::date THEN
-    v_caixa_anterior := 150600.29;
+```
+[Cadastro / Importação Excel]
+             │
+             ▼
+     ┌───────────────┐
+     │   PENDENTE    │ ──(due_date > target_date)──► [Badge Azul: A Vencer]
+     │ (Persistido)  │ ──(due_date == target_date)─► [Badge Âmbar: Vence Hoje (Pulsante)]
+     │               │ ──(due_date < target_date)──► [Badge Vermelho: Vencido (X dias)]
+     └───────┬───────┘
+             │
+     ┌───────┴──────────────────────────────┐
+     │ [Ação: Baixar / Match OFX]           │ [Ação: Cancelar]
+     ▼                                      ▼
+┌───────────────────────────┐    ┌───────────────────────────┐
+│         RECEBIDO          │    │         CANCELADO         │
+│ (received_at, matched_id) │    │       (cancelled_at)      │
+│ [Badge Verde: Liquidado]  │    │  [Badge Cinza: Cancelado] │
+└───────────────────────────┘    └───────────────────────────┘
 ```
 
-Isso não é um bug de curto prazo — é dívida técnica imediata. Para um sistema financeiro de múltiplas lojas, valores de saldo inicial devem estar em tabela de configuração (`daily_snapshots` ou similar), não em código de função. Qualquer auditoria futura ou migração de data base vai exigir alteração de código SQL, não de dados.
+#### 2.2 Mecânica Contábil da Liquidação (Partidas Dobradas)
 
-#### RISCO DE DÍVIDA TÉCNICA — `manual_transactions` sem constraint de idempotência
+```
+CENÁRIO: Liquidação de Boleto Orion (R$ 3.464,83) em 25/08/2026
 
-As linhas 348–350 de `useImportProcessor.ts` fazem `supabase.from('manual_transactions').insert(txToInsert)` sem nenhum guard de idempotência. Uma reimportação da mesma planilha cria N cópias de todas as transações de extrato. A proposta corrige `patio_os` e `store_cash_vault` mas deixa `manual_transactions` vulnerável.
+1. MOMENTO DA EMISSÃO DA OS (Competência do Faturamento):
+   D - Ativo Circulante: Contas a Receber (Pilar 3)  ................ R$ 3.464,83
+   C - Receita Operacional Bruta (Faturamento) ...................... R$ 3.464,83
+
+2. MOMENTO DA LIQUIDAÇÃO BANCÁRIA (Mutação Patrimonial):
+   D - Ativo Circulante: Banco Itaú c/c MHE (Pilar 1) ............... R$ 3.464,83
+   C - Ativo Circulante: Contas a Receber (Pilar 3)  ................ R$ 3.464,83
+   
+   Impacto no Caixa Total: Δ Caixa = (+3.464,83) + (-3.464,83) = R$ 0,00 (Neutro)
+   Impacto no Faturamento do Dia 25/08: R$ 0,00 (Não infla a receita)
+```
 
 ---
 
-### Recomendação Final
+### 3. Riscos Estruturais e Dívida Técnica
 
-**Veredicto:** `NEEDS-REWORK`
+| Risco Estrutural | Severidade | Impacto Arquitetural | Mitigação Mandatória |
+| :--- | :---: | :--- | :--- |
+| **Divergência de Timezone UTC** | 🔴 ALTA | Baixas noturnas (após 21h BRT) caem no dia UTC seguinte, corrompendo a conciliação. | Utilizar `(received_at AT TIME ZONE 'America/Sao_Paulo')::date` ou coluna `received_date DATE`. |
+| **Quebra de Snapshots Fechados** | 🔴 ALTA | Edições ou exclusões retroativas em `receivables` alteram caixas já homologados e fechados. | Na RPC, se `daily_snapshots.is_closed = true`, congelar valor de `a_receber_manual` / snapshot. |
+| **Dupla Contagem de Receita no OFX** | 🟠 MÉDIA | Entrada bancária do boleto ser categorizada como faturamento extra no `ResumoDiaPanel`. | Vínculo bidirecional `matched_ofx_id` excluindo a transação do cálculo de faturamento avulso. |
+| **Inconsistência de Nomes de Lojas** | 🟡 MÉDIA | Falha no parser Excel ao mapear `Recebiveis BRASICAR` vs `st-01` / Planalto. | Criar dicionário canônico de normalização de lojas em `recebiveisParser.ts` com testes unitários. |
 
-**Confiança:** 0.78
+---
 
-**Justificativa:** A direção arquitetural da proposta é correta — mover as invariantes de negócio para o banco de dados via UNIQUE CONSTRAINTs, adotar soft-delete auditável e colunas dedicadas ao invés de parse de texto livre são decisões que reduzem dívida técnica estrutural de forma significativa. O problema não é a direção, é a granularidade: a chave natural escolhida para `pos_transactions` é semanticamente incorreta para o domínio e pode introduzir perda silenciosa de dados legítimos; o `ON CONFLICT DO UPDATE` em `patio_os` precisa de semântica de merge cuidadosa para não retroceder estados; e os valores hardcoded nas RPCs precisam ser externalizados antes que o sistema seja considerado arquiteturalmente sólido. Com ajustes pontuais nesses três itens — chave composta correta para POS, merge defensivo no upsert de OS, e externalização dos saldos iniciais — a proposta fica **pronta para GO**.
+### 4. Recomendação Final
+
+**Veredicto:** **GO**  
+**Confiança:** **0.95**  
+**Justificativa:** A proposta da Spec 284 possui uma fundação arquitetural sólida, eliminando a digitação manual vulnerável e modelando com precisão o domínio multi-filiais da empresa. Com a adoção da FSM baseada em estados derivados (evitando cron jobs), a blindagem de timezone (`America/Sao_Paulo`), o vínculo contábil via `matched_ofx_id` e a proteção de imutabilidade dos snapshots fechados, o sistema atinge nível bancário de integridade patrimonial e excelente ergonomia operacional.

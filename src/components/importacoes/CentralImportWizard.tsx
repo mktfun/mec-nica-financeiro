@@ -184,6 +184,42 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     detectMissingOs();
   }, [step, mapping, results.osFiles, stores]);
 
+  // Auto-popula A Receber e Dinheiro MP para a data alvo
+  useEffect(() => {
+    async function loadDefaultsForDate() {
+      try {
+        const { data: snap } = await supabase
+          .from('daily_snapshots')
+          .select('dinheiro_mp, a_receber_manual')
+          .eq('date', targetDate)
+          .maybeSingle();
+
+        if (snap) {
+          if (snap.dinheiro_mp) setManualDinheiroMp(Number(snap.dinheiro_mp));
+          if (snap.a_receber_manual) setManualAReceber(Number(snap.a_receber_manual));
+        }
+
+        // Se a_receber_manual for 0, busca soma dos recebíveis pendentes cadastrados
+        const { data: recs } = await supabase
+          .from('receivables')
+          .select('value')
+          .lte('date', targetDate)
+          .eq('status', 'pendente');
+
+        if (recs && recs.length > 0) {
+          const totalRec = recs.reduce((acc, r) => acc + Number(r.value || 0), 0);
+          if (totalRec > 0) {
+            setManualAReceber(Number(totalRec.toFixed(2)));
+          }
+        }
+      } catch (err) {
+        console.warn('Erro ao carregar padrões para targetDate:', err);
+      }
+    }
+
+    loadDefaultsForDate();
+  }, [targetDate]);
+
   // Terminal logs state
   const [importLogs, setImportLogs] = useState<ImportLogEntry[]>([]);
   const [importStages, setImportStages] = useState<AgentStage[]>(INITIAL_STAGES);

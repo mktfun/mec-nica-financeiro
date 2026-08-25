@@ -1,3 +1,10 @@
+### Spec 284 — Reestruturação Canônica da Tela de Recebíveis e Integração do Pilar 3
+- **src/routes/recebiveis.tsx**: Alinhamento 1:1 com o padrão canônico de `src/routes/patio.tsx`, com 4 Summary Cards com `border-l-4`, abas de status (`Todas`, `Em Aberto`, `Vencidos`, `Liquidados`), timeline de boletos com badges de OS, parcela e vencimento, e paginação canônica.
+- **Filtro de Filiais Ativas**: Exibição exclusiva no dropdown e listas das lojas que possuem títulos registrados (Mauá - MHE R$ 10.394,50, Planalto - BRASICAR R$ 1.120,00, Piraporinha - EMPORIO R$ 300,00).
+- **Higienização de Banco de Dados**: Expurgados 83 registros legados mock (`Outros`), mantendo os 5 boletos autênticos de 25/08/2026 totalizando exatamente R$ 11.814,50.
+- **Integração Pilar 3 da Conciliação**: Atualização da RPC `get_daily_reconciliation_summary` e de `ResumoDiaPanel.tsx` para refletir os R$ 11.814,50 de A Receber com link de navegação rápida.
+- **Parser de Recebíveis**: `src/lib/parsers/recebiveisParser.ts` para extração automática da aba `RECEBIVEIS ` das planilhas `CONCILIAÇÃO *.xlsx`.
+
 ### Spec 283 — Congelamento Imutável de Snapshots e Isolamento Histórico de Conciliação
 - **Period Close Locking**: Implementação de colunas `is_closed` e `closed_at` em `daily_snapshots`.
 - **RPC `get_daily_reconciliation_summary`**: Bifurcação contábil (Branch 1: Leitura congelada instantânea para dias homologados com `is_closed = true`; Branch 2: Cálculo dinâmico em tempo real para dias abertos).

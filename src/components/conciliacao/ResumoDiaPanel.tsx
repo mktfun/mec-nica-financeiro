@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Button } from '@/components/ui/Button';
@@ -549,17 +550,22 @@ export function ResumoDiaPanel({
           </div>
 
           {/* 3. A Receber */}
-          <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] flex flex-col justify-between shadow-sm">
+          <Link
+            to="/recebiveis"
+            className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] hover:border-[var(--color-primary)]/50 hover:bg-[var(--bg-surface-hover)] transition-all flex flex-col justify-between shadow-sm group"
+          >
             <div>
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">A RECEBER</span>
+                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-[var(--color-primary)] transition-colors">A RECEBER</span>
                   <WhisperDot dot={insights?.dots.a_receber} />
                 </div>
-                <Receipt size={15} className="text-[var(--color-primary)]" />
+                <span className="text-[9px] font-semibold text-[var(--color-primary)] bg-[var(--color-primary)]/10 px-1.5 py-0.5 rounded group-hover:bg-[var(--color-primary)]/20 transition-all flex items-center gap-1">
+                  Ver Títulos ↗
+                </span>
               </div>
               {isEditing ? (
-                <div className="relative mt-1">
+                <div className="relative mt-1" onClick={(e) => e.preventDefault()}>
                   <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-[var(--text-tertiary)]">R$</span>
                   <input
                     type="number"
@@ -572,14 +578,14 @@ export function ResumoDiaPanel({
                 </div>
               ) : (
                 <p className="text-2xl font-bold font-sans tabular-nums text-[var(--color-primary)]">
-                  <AnimatedNumber value={aReceberValor} format="currency" />
+                  <AnimatedNumber value={summary?.a_receber ?? aReceberValor} format="currency" />
                 </p>
               )}
             </div>
             <div className="pt-2 mt-2 border-t border-[var(--border-subtle)] text-[10px] text-[var(--text-tertiary)]">
-              <span>Boletos / Descontos manuais</span>
+              <span>Títulos e boletos por filial</span>
             </div>
-          </div>
+          </Link>
 
           {/* 4. Na Loja OS */}
           <div 
