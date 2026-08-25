@@ -1,0 +1,22 @@
+# Graphify ignore rules
+specs/archive/**
+scripts/**
+setup/**
+dist/**
+.output/**
+.tanstack/**
+.wrangler/**
+.lovable/**
+node_modules/**
+graphify-out/**
+mingit/**
+scratch/**
+.agent/logs/**
+.council/**
+*.log
+*.tmp
+*.bak
+*.xls
+*.xlsx
+*.pdf
+*.zip

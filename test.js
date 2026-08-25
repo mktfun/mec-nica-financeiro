@@ -1,1 +1,0 @@
-import * as XLSX from 'xlsx'; const workbook = XLSX.readFile('C:/Users/User/Downloads/CONCILIA€ÇO 1008.xlsx'); const sheet = workbook.Sheets[workbook.SheetNames[0]]; console.log(XLSX.utils.sheet_to_json(sheet, {header: 1, raw: false}).slice(20, 45));  

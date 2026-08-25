@@ -1,3 +1,8 @@
+## [2026-08-25] — Feature 287: Limpeza de Lixo da Raiz, Configuração de .graphifyignore e Otimização do Grafo
+- **Higienização da Raiz:** 96 arquivos descartáveis (screenshots, dumps de banco, scripts de teste de uso único e temporários) removidos.
+- **Configuração de Ignore:** `.graphifyignore` criado com exclusão de `specs/archive/**`, `scripts/**`, `dist/**`, `.output/**`, `.tanstack/**`, `scratch/**`, `.council/**`.
+- **Grafo Otimizado:** Redução do grafo de 8.168 nós inflados para 1.305 nós 100% interconectados em 129 comunidades sem nós órfãos residuais.
+
 ## [2026-08-25] — Feature 286: Automação de Recebíveis para Boletos e Transferências com Match OFX
 - **Utilitário de Calendário Bancário:** `src/lib/bankingCalendar.ts` com cálculo determinístico de feriados nacionais e dias úteis (Febraban/BACEN).
 - **Extração Automática de Formas de Pagamento em OS:** `src/hooks/useOsImportProcessor.ts` com identificação de Boletos (N parcelas), Transferências Bancárias (D+1 útil), Débito em Conta e Cheques.

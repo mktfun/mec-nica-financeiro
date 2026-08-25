@@ -1,1 +1,0 @@
-{"_tag":"Error","error":{"code":"LegacyDockerRunError","message":"failed to run docker. Docker Desktop is a prerequisite for local development. Follow the official docs to install: https://docs.docker.com/desktop"}}
