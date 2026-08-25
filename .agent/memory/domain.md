@@ -1,3 +1,13 @@
+## [2026-08-25] — [Feature ID: 285-correcao-definitiva-rpc-conciliacao-e-limpeza-backend]
+
+**Contexto:** Correção da RPC canônica de conciliação (`get_daily_reconciliation_summary`), eliminando colunas fantasmas (`pix_total`/`rede_total` em `reconciliations`) que quebravam o Ramal de dias fechados, e restauração do cálculo do Saldo Bancário das 10 filiais no Ramal de dias abertos (25/08) para computar o saldo patrimonial real em conta.
+
+**Regra aprendida:**
+1. **Diferença entre Saldo Bancário e Movimentação Líquida:** O Saldo Bancário no Pilar 1 de conciliação é uma grandeza patrimonial estática acumulada (`bank_total` das 10 contas Itaú). O fluxo de entradas menos saídas (`SUM(in - out)`) do extrato OFX do dia serve apenas como indicador informativo e não pode substituir o saldo patrimonial, sob pena de gerar distorções monumentais no Fluxo de Caixa e no Valor Disponível para Contas.
+2. **Imutabilidade de Snapshots Homologados:** O Ramal 1 da RPC devolve fielmente os metadados contábeis oficiais gravados no fechamento do dia (`is_closed = true`), blindando o histórico passado de qualquer oscilação futura.
+
+**Não fazer:** Nunca substituir `reconciliations.bank_total` por `SUM(in - out)` em conciliações diárias.
+
 ## [2026-08-25] — [Feature ID: 283-congelamento-imutavel-snapshots-e-isolamento-historico-conciliacao]
 
 **Contexto:** Garantia de imutabilidade dos dias fechados oficiais (17, 18, 19, 21 e 24/08) e correção da agregação de Contas a Pagar (Base Planilha + Despesas Extras).

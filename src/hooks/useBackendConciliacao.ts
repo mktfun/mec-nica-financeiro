@@ -123,24 +123,34 @@ export interface PosTripleReconciliationResult {
 }
 
 export interface DailyReconciliationSummary {
-  data_atual: string;
+  date: string;
+  data_atual?: string;
   total_saldo_banco: number;
   saldo_bancos_ofx: number;
+  saldo_negativo_itau?: number;
   dinheiro_em_lojas?: number;
   cartoes_a_compensar: number;
   dinheiro_mp: number;
   a_receber: number;
   na_loja_os: number;
+  contas_base?: number;
+  contas_extras?: number;
   contas_manual: number;
   juros_rede: number;
   devolucoes_rede?: number;
-  ofx_out: number;
+  ofx_out?: number;
+  total_entradas_ofx?: number;
+  total_saidas_ofx?: number;
   caixa_atual: number;
   caixa_anterior: number;
   fluxo_caixa: number;
-  faturamento_ofx: number;
-  faturamento_anterior: number;
+  faturamento_ofx?: number;
+  faturamento_anterior?: number;
+  faturamento_oi_base?: number;
+  faturamento_ajustes?: number;
   faturamento_periodo: number;
+  faturamento_itens?: Array<{ id: string; title: string; amount: number; type: string; description?: string }>;
+  contas_itens?: Array<{ id: string; title: string; amount: number; category?: string; description?: string; store_id?: string }>;
   valor_disp_contas: number;
   subtotal_contas: number;
   diferenca_final: number;
@@ -148,6 +158,7 @@ export interface DailyReconciliationSummary {
   is_closed?: boolean;
   closed_at?: string | null;
   stores: StoreReconciliationSummary[];
+  stores_detail?: StoreReconciliationSummary[];
   maquininhas_detalhe?: PosTripleReconciliationResult;
 }
 

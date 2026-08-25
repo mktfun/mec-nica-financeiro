@@ -297,12 +297,18 @@ export function useRecebiveis(filters?: { status?: string; storeId?: string; sta
   });
 }
 
-export function useReceivablesSummary() {
+export function useReceivablesSummary(targetDate?: string) {
+  const date = targetDate || new Date().toISOString().substring(0, 10);
   return useQuery({
-    queryKey: ['receivables_summary'],
+    queryKey: ['receivables_summary', date],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc('get_receivables_summary' as any).catch(() => ({ data: [] }));
-      return data || [];
+      const { data, error } = await supabase.rpc('get_receivables_summary', { p_date: date });
+      if (error) {
+        console.error('Erro ao buscar resumo de recebíveis:', error);
+        throw error;
+      }
+      return data;
     },
+    enabled: !!date
   });
 }

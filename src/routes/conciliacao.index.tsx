@@ -62,7 +62,7 @@ function ConciliacaoPage() {
   };
 
   const totalSistema = storesList.reduce((acc, log) => acc + (log.previsto_ofx || 0), 0);
-  const totalBancarioIn = summary?.faturamento_ofx || 0;
+  const totalBancarioIn = summary?.total_entradas_ofx ?? summary?.faturamento_ofx ?? 0;
   const totalBancarioRaw = summary?.total_saldo_banco || 0;
   const divergenciaGlobal = summary?.diferenca_final || 0;
 
