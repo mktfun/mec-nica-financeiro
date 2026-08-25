@@ -667,12 +667,16 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       });
 
       Object.entries(redeByStore).forEach(([sid, items]) => {
-        items.forEach(item => {
+        items.forEach((item, idx) => {
+          const uniqueId = item.nsu 
+            ? `nsu_${item.nsu}_${item.authorization || ''}`
+            : (item.authorization ? `auth_${item.authorization}` : (item.tid ? `tid_${item.tid}` : `${item.method || 'rede'}_${item.grossAmount || 0}_${idx}`));
+          
           txsToInsert.push({
             id: crypto.randomUUID(),
             store_id: sid,
             store_name: item.storeName,
-            title: item.title || 'Importação Rede',
+            title: item.title || (item.nsu ? `Rede NSU ${item.nsu}` : 'Importação Rede'),
             subtitle: item.storeName,
             amount: item.netAmount || 0,
             gross_amount: item.grossAmount || item.netAmount || 0,
@@ -682,7 +686,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             target_date: targetDate,
             icon_type: 'card',
             source: 'rede',
-            dedup_hash: generateDeterministicHash(item.date || targetDate, item.netAmount || 0, item.title || 'Importação Rede', 'pos')
+            dedup_hash: generateDeterministicHash(item.date || targetDate, item.netAmount || 0, `${sid}_${uniqueId}`, 'pos')
           });
         });
       });

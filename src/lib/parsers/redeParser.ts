@@ -11,6 +11,10 @@ export interface RedeTransaction {
   interest: number;
   date: string;
   transactionType?: 'venda' | 'devolucao';
+  nsu?: string;
+  authorization?: string;
+  tid?: string;
+  time?: string;
 }
 
 export interface RedeResult {
@@ -95,6 +99,12 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
     if (storeIdx === -1) storeIdx = headers.findIndex((h: string) => h.includes('nome do estabelecimento'));
     if (storeIdx === -1) storeIdx = headers.findIndex((h: string) => h.includes('estabelecimento') && !h.includes('número') && !h.includes('numero'));
 
+    // Colunas de identificadores únicos
+    let nsuIdx = headers.findIndex((h: string) => h.includes('nsu') || h.includes('cv'));
+    let autoIdx = headers.findIndex((h: string) => h.includes('autorização') || h.includes('autorizacao') || h.includes('auto'));
+    let tidIdx = headers.findIndex((h: string) => h.includes('tid') || h.includes('id transação') || h.includes('id transacao'));
+    let timeIdx = headers.findIndex((h: string) => h.includes('hora da venda') || h.includes('hora'));
+
     // Colunas de taxas e descontos explícitos
     let totalFeeIdx = headers.findIndex((h: string) => h.includes('valor total das taxas') || h.includes('total das taxas'));
     let mdrFeeIdx = headers.findIndex((h: string) => h === 'valor mdr' || h.includes('valor mdr'));
@@ -176,6 +186,11 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
         }
       }
 
+      const nsu = nsuIdx !== -1 && row[nsuIdx] ? String(row[nsuIdx]).trim() : undefined;
+      const authorization = autoIdx !== -1 && row[autoIdx] ? String(row[autoIdx]).trim() : undefined;
+      const tid = tidIdx !== -1 && row[tidIdx] ? String(row[tidIdx]).trim() : undefined;
+      const time = timeIdx !== -1 && row[timeIdx] ? String(row[timeIdx]).trim() : undefined;
+
       transactions.push({
         storeName,
         method,
@@ -183,7 +198,11 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
         netAmount,
         interest,
         date: rowDate,
-        transactionType
+        transactionType,
+        nsu: nsu && nsu !== '-' ? nsu : undefined,
+        authorization: authorization && authorization !== '-' ? authorization : undefined,
+        tid: tid && tid !== '-' ? tid : undefined,
+        time: time && time !== '-' ? time : undefined
       });
     }
 

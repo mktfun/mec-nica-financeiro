@@ -106,7 +106,7 @@ export function ResumoDiaPanel({
       setFaturamentoInput(Number(initialFaturamento) || 0);
       setDinheiroMpInput(Number(currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? 0));
       setAReceberInput(Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber ?? 0));
-      setContasInput(Number(currentSnapshot?.contas_a_pagar ?? summary?.contas_manual ?? 0));
+      setContasInput(Number(summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0));
     }
   }, [currentSnapshot, summary, isEditing]);
 
@@ -114,7 +114,9 @@ export function ResumoDiaPanel({
   const faturamentoAcumuladoHoje = isEditing ? faturamentoInput : (currentSnapshot?.faturamento ?? faturamentoInput);
   const dinheiroMpValor = isEditing ? dinheiroMpInput : (currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? 0);
   const aReceberValor = isEditing ? aReceberInput : (currentSnapshot?.a_receber_manual ?? summary?.a_receber ?? 0);
-  const contasManualValor = isEditing ? contasInput : (summary?.contas_manual ?? currentSnapshot?.contas_a_pagar ?? 0);
+  const contasManualValor = isEditing 
+    ? (contasInput + (summary?.contas_extras || 0)) 
+    : (summary?.contas_manual ?? ((currentSnapshot?.contas_a_pagar ?? 0) + (summary?.contas_extras || 0)));
 
   // Pilares Automáticos
   const saldoBancosValor = summary?.total_saldo_banco ?? currentSnapshot?.saldo_bancario ?? totalBancarioIn;
@@ -197,7 +199,7 @@ export function ResumoDiaPanel({
     setFaturamentoInput(Number(initialFaturamento) || 0);
     setDinheiroMpInput(Number(currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? 0));
     setAReceberInput(Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber ?? 0));
-    setContasInput(Number(currentSnapshot?.contas_a_pagar ?? summary?.contas_manual ?? 0));
+    setContasInput(Number(summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0));
     setIsEditing(false);
     toast.info('Edição cancelada. Valores restaurados.');
   };
@@ -233,7 +235,7 @@ export function ResumoDiaPanel({
         faturamento: effectiveAccumulatedFaturamento,
         faturamento_outros_valor: faturamentoOutrosValor,
         faturamento_outros_desc: 'Transações Justificadas (Ajustes)',
-        contas_a_pagar: contasManualValor,
+        contas_a_pagar: isEditing ? contasInput : (summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0),
         provisao: currentSnapshot?.provisao || 0,
         saldo_negativo_itau: currentSnapshot?.saldo_negativo_itau || 0,
         juros_rede: jurosRedeValor,
@@ -417,6 +419,12 @@ export function ResumoDiaPanel({
                 <ChevronRight size={16} />
               </button>
             </div>
+
+            {summary?.is_closed && (
+              <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-xs px-2.5 py-1 flex items-center gap-1">
+                <ShieldCheck size={12} /> Dia Consolidado
+              </Badge>
+            )}
 
             {isEditing && (
               <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 text-xs px-2.5 py-1 animate-pulse">
@@ -729,7 +737,7 @@ export function ResumoDiaPanel({
                     </p>
                     <div className="text-[10px] text-[var(--text-tertiary)] flex flex-col gap-0.5 mt-0.5">
                       <span>
-                        Base Planilha: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary?.contas_base ?? contasManualValor)}
+                        Base Planilha: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0)}
                         {(summary?.contas_extras || 0) > 0 && (
                           <span className="text-amber-400 font-semibold ml-1">
                             + Extras: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary?.contas_extras || 0)}

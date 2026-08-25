@@ -1,3 +1,17 @@
+## [2026-08-25] — [Feature ID: 283-congelamento-imutavel-snapshots-e-isolamento-historico-conciliacao]
+
+**Contexto:** Garantia de imutabilidade dos dias fechados oficiais (17, 18, 19, 21 e 24/08) e correção da agregação de Contas a Pagar (Base Planilha + Despesas Extras).
+
+**Regra aprendida:**
+1. **Imutabilidade Contábil de Fechamentos (Period Close):** Uma vez que o dia é encerrado e aprovado com sucesso, a RPC e o painel devem exibir os dados consolidados do snapshot oficial, sem sofrer recalculo destrutivo por variações posteriores de estoque de OS no pátio ou baixas em D+1.
+2. **Duas Camadas em Contas a Pagar:**
+   - **Camada 1 (Base da Planilha):** Importada de `BuscaContasAPagar.xls` e armazenada em `daily_snapshots.contas_a_pagar`.
+   - **Camada 2 (Extras e Ajustes):** Lançamentos manuais isolados em `daily_manual_bills`.
+   - A soma ocorre estritamente na camada de exibição/RPC: $\text{Total Contas} = \text{Base} + \text{Extras}$.
+   - Salvar o fechamento nunca pode sobrepor a Camada 1 com o valor da soma.
+
+**Não fazer:** Nunca misturar inputs de despesas manuais extras com a coluna base da planilha no banco de dados.
+
 ## [2026-08-24] — [Feature ID: 278-motor-calculo-direto-fontes-e-desduplicacao]
 
 **Contexto:** Correção da apuração direta dos arquivos brutos de conciliação (OFX, Rede, OS ERP e Contas a Pagar), eliminando duplicação de despesas e sobreposição de colunas de OS.

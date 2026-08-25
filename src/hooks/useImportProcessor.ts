@@ -94,10 +94,19 @@ export async function savePatioOsAndReceivables(
       if (existingObj) {
         const oldTotal = Number(existingObj.total_value);
         const newTotal = Number(payload.total_value);
-        const oldPaid = Number(existingObj.paid_value);
-        const newPaid = Number(payload.paid_value);
+        const oldPaid = Number(existingObj.paid_value || 0);
+        const incomingPaid = Number(payload.paid_value || 0);
+        // Merge defensivo: quitação prévia nunca regride
+        const finalPaid = Math.max(oldPaid, incomingPaid);
+        payload.paid_value = finalPaid;
+
         const oldStatus = existingObj.status;
-        const newStatus = os.status;
+        let newStatus = os.status;
+        if (finalPaid >= newTotal && newTotal > 0) {
+          newStatus = 'finalizado';
+          payload.status = 'finalizado';
+        }
+
         const oldRawStatus = existingObj.raw_status;
         const newRawStatus = payload.raw_status;
         const oldCredit = Number(existingObj.credit_value || 0);
@@ -109,7 +118,7 @@ export async function savePatioOsAndReceivables(
         
         const changes = [];
         if (oldTotal !== newTotal) changes.push({ field: 'total_value', from: oldTotal, to: newTotal });
-        if (oldPaid !== newPaid) changes.push({ field: 'paid_value', from: oldPaid, to: newPaid });
+        if (oldPaid !== finalPaid) changes.push({ field: 'paid_value', from: oldPaid, to: finalPaid });
         if (oldStatus !== newStatus) changes.push({ field: 'status', from: oldStatus, to: newStatus });
         if (oldRawStatus !== newRawStatus) changes.push({ field: 'raw_status', from: oldRawStatus, to: newRawStatus });
         if (oldCredit !== newCredit) changes.push({ field: 'credit_value', from: oldCredit, to: newCredit });
@@ -133,35 +142,41 @@ export async function savePatioOsAndReceivables(
     }
 
     if (toInsert.length > 0) {
-      await supabase.from('patio_os').insert(toInsert);
+      await supabase.from('patio_os').upsert(toInsert, { onConflict: 'store_id,os_number', ignoreDuplicates: true });
     }
     for (const update of toUpdate) {
       await supabase.from('patio_os').update(update).eq('id', update.id);
     }
 
-    // Sincronizar store_cash_vault para OSs com pagamento em dinheiro físico
+    // Sincronizar store_cash_vault para OSs com pagamento em dinheiro físico de forma atômica
     const cashOsList = osArray.filter(os => (os.parsed_cash && os.parsed_cash > 0) || (os.cash_value && os.cash_value > 0));
     if (cashOsList.length > 0) {
       for (const cashOs of cashOsList) {
         const cashAmount = cashOs.parsed_cash || cashOs.cash_value || 0;
         const entryDate = targetDate || (cashOs.closed_at ? String(cashOs.closed_at).split('T')[0] : new Date().toISOString().split('T')[0]);
+        const osNumRef = String(cashOs.os_number);
         
         const { data: existingVault } = await supabase
           .from('store_cash_vault')
-          .select('id, status')
+          .select('id, status, amount')
           .eq('store_id', storeId)
-          .ilike('description', `%OS #${cashOs.os_number}%`)
-          .limit(1);
+          .eq('os_number_ref', osNumRef)
+          .maybeSingle();
 
-        if (!existingVault || existingVault.length === 0) {
+        if (!existingVault) {
           await supabase.from('store_cash_vault').insert({
             store_id: storeId,
+            os_number_ref: osNumRef,
             amount: cashAmount,
             description: `OS #${cashOs.os_number} - ${storeName} (Dinheiro em Espécie)`,
             entry_date: entryDate,
             status: 'em_transito',
             notes: 'Importado automaticamente via ConferenciaOSxFinanceiro'
           });
+        } else if (existingVault.status === 'em_transito' && existingVault.amount !== cashAmount) {
+          await supabase.from('store_cash_vault').update({
+            amount: cashAmount
+          }).eq('id', existingVault.id);
         }
       }
     }

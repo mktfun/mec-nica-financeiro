@@ -1,3 +1,10 @@
+### Spec 283 — Congelamento Imutável de Snapshots e Isolamento Histórico de Conciliação
+- **Period Close Locking**: Implementação de colunas `is_closed` e `closed_at` em `daily_snapshots`.
+- **RPC `get_daily_reconciliation_summary`**: Bifurcação contábil (Branch 1: Leitura congelada instantânea para dias homologados com `is_closed = true`; Branch 2: Cálculo dinâmico em tempo real para dias abertos).
+- **Isolamento de Contas a Pagar**: `daily_snapshots.contas_a_pagar` reservado exclusivamente para a Base da Planilha (`BuscaContasAPagar.xls`), com despesas manuais extras isoladas em `daily_manual_bills`.
+- **Correção da Tripla Conciliação de Maquininhas**: Remoção de cláusulas de exclusão hardcoded em `get_store_pos_triple_reconciliation`, integrando 100% das 10 filiais no cálculo de cartões a compensar.
+- **ResumoDiaPanel.tsx**: Badge visual de *Dia Consolidado (Imutável)* e proteção contra duplicação de despesas na mutação de salvamento.
+
 ### Spec 278 — Motor de Cálculo Direto das Fontes Brutas e Desduplicação de Contas
 - **useOsImportProcessor.ts**: Mapeamento estrito de R$ Total da OS e Restante na OS diretamente dos arquivos do ERP, eliminando a sobreposição de Total no Financeiro.
 - **MissingPatioOsEditor.tsx**: Preservação automática no pátio para veículos de dias anteriores (carryover de 4 OSs) por padrão sem induzir baixa acidental.

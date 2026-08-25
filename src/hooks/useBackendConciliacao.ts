@@ -145,6 +145,8 @@ export interface DailyReconciliationSummary {
   subtotal_contas: number;
   diferenca_final: number;
   status_geral: 'approved' | 'divergence';
+  is_closed?: boolean;
+  closed_at?: string | null;
   stores: StoreReconciliationSummary[];
   maquininhas_detalhe?: PosTripleReconciliationResult;
 }
