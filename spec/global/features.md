@@ -183,3 +183,7 @@
   - `get_store_financial_stats(p_store_id text, p_start_date text, p_end_date text)`
   - `get_receivables_summary(p_date text DEFAULT NULL)`
 - **Catálogo pg_proc:** 0 sobrecargas duplicadas restantes no banco.
+
+### Spec 294 — Deduplicação de Contas a Pagar e Resolução de NaN por Filial (2026-08-26)
+- **Deduplicação de Contas:** `get_daily_reconciliation_summary` unificado para priorizar `daily_manual_bills` como fonte única da verdade, eliminando contagem dupla.
+- **Fechamento por Filial:** Retorno de `maquininha`, `pix`, `previsto_ofx` e `diferenca` para todas as 10 lojas com blindagem anti-NaN no frontend.

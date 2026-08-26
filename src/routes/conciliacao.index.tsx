@@ -175,8 +175,11 @@ function ConciliacaoPage() {
                     status: 'pending' as const
                   };
 
-                  const rawPrevisto = log.previsto_ofx || 0;
-                  const diferencaCalculada = Math.max(0, log.diferenca || 0);
+                  const maquininhaVal = (log as any).maquininha ?? (log as any).rede_liquido ?? 0;
+                  const pixVal = (log as any).pix ?? (log as any).pix_os ?? 0;
+                  const naLojaVal = (log as any).na_loja_os ?? (log as any).patio_os ?? 0;
+                  const rawPrevisto = (log as any).previsto_ofx ?? (maquininhaVal + pixVal);
+                  const diferencaCalculada = Math.max(0, (log as any).diferenca ?? 0);
                   const isDiferencaOk = Math.abs(diferencaCalculada) <= 0.05 || log.status === 'conciliado';
 
                   return (
@@ -202,9 +205,9 @@ function ConciliacaoPage() {
                                     ENTROU
                                   </span>
                                 )}
-                                {(log.status_compensacao === 'parcial' || log.status_compensacao === 'nao_entrou') && (log.nao_entrou_valor || 0) > 0 && (
+                                {(log.status_compensacao === 'parcial' || log.status_compensacao === 'nao_entrou' || log.status_compensacao === 'a_compensar') && (log.nao_entrou_valor || 0) > 0 && (
                                   <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
-                                    NÃO ENTROU (+ {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(log.nao_entrou_valor || 0)})
+                                    A COMPENSAR (+ {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(log.nao_entrou_valor || 0)})
                                   </span>
                                 )}
                               </div>
@@ -222,10 +225,10 @@ function ConciliacaoPage() {
                                   Saldo Bancos + Cartões
                                 </span>
                                 <p className="font-bold text-sm text-[var(--color-accent-light-blue)] font-mono">
-                                  <AnimatedNumber value={log.saldo_banco} format="currency" />
+                                  <AnimatedNumber value={log.saldo_banco || 0} format="currency" />
                                 </p>
                                 <div className="text-[10px] text-[var(--text-tertiary)] mt-0.5 flex flex-col font-mono">
-                                  <span>OFX: <AnimatedNumber value={log.saldo_banco_ofx ?? log.saldo_banco} format="currency" /></span>
+                                  <span>OFX: <AnimatedNumber value={log.saldo_banco_ofx ?? log.saldo_banco ?? 0} format="currency" /></span>
                                   {(log.nao_entrou_valor || 0) > 0 && (
                                     <span className="text-amber-400 font-semibold">
                                       + Maq: + {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(log.nao_entrou_valor || 0)}
@@ -240,7 +243,7 @@ function ConciliacaoPage() {
                                   Maquininha
                                 </span>
                                 <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
-                                  <AnimatedNumber value={log.maquininha} format="currency" />
+                                  <AnimatedNumber value={maquininhaVal} format="currency" />
                                 </p>
                               </div>
 
@@ -250,7 +253,7 @@ function ConciliacaoPage() {
                                   PIX
                                 </span>
                                 <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
-                                  <AnimatedNumber value={log.pix} format="currency" />
+                                  <AnimatedNumber value={pixVal} format="currency" />
                                 </p>
                               </div>
 
@@ -260,7 +263,7 @@ function ConciliacaoPage() {
                                   Na Loja OS
                                 </span>
                                 <p className="font-bold text-sm text-[var(--color-accent-warning)] font-mono">
-                                  <AnimatedNumber value={log.na_loja_os} format="currency" />
+                                  <AnimatedNumber value={naLojaVal} format="currency" />
                                 </p>
                               </div>
 
@@ -273,7 +276,7 @@ function ConciliacaoPage() {
                                   <AnimatedNumber value={rawPrevisto} format="currency" />
                                 </p>
                                 <span className="text-[9px] text-[var(--text-tertiary)] block mt-0.5 font-medium">
-                                  Total Entradas OFX
+                                  Total Previsto
                                 </span>
                               </div>
 
@@ -284,11 +287,12 @@ function ConciliacaoPage() {
                                 }`}>
                                   Diferença
                                 </span>
-                                <p className={`font-bold text-sm font-mono ${isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'}`}>
+                                <p className={`font-bold text-sm font-mono ${
+                                  isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
+                                }`}>
                                   <AnimatedNumber value={diferencaCalculada} format="currency" />
                                 </p>
                               </div>
-
                             </div>
                           </div>
 

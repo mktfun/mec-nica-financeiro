@@ -608,3 +608,15 @@
 **Risco identificado:** Tentar reconciliar o lote líquido da adquirente diretamente contra ordens de serviço brutas (com MDR descontada) causa 87% de erro humano e distorce o Caixa Atual ($G21$).
 
 **Não fazer:** Nunca reintroduzir cláusulas hardcoded por filial como `s.id NOT IN ('st-01', 'st-05')`. O algoritmo deve ser 100% agnóstico e universal.
+
+## 2026-08-26 — [Feature ID: 294]
+
+**Contexto:** Duplicação de Contas a Pagar ao importar despesas (soma dupla de `daily_manual_bills` + `snapshot.contas_a_pagar`) e exibição de `R$ NaN` em Maquininha/PIX no fechamento das 10 filiais.
+
+**Regra aprendida:**
+- **Contas a Pagar (Deduplicação Canônica):** A tabela `daily_manual_bills` é a **fonte oficial da verdade** para as contas do dia. Se existirem registros em `daily_manual_bills`, `contas_manual := SUM(daily_manual_bills)`. O campo `snapshot.contas_a_pagar` atua apenas como fallback quando não há registros granulares. NUNCA some `snapshot.contas_a_pagar` junto com `daily_manual_bills`.
+- **Métricas por Filial & Anti-NaN:** No objeto de cada loja em `summary.stores`, a RPC deve retornar explicitamente `maquininha`, `rede_liquido`, `pix`, `pix_os`, `previsto_ofx` e `diferenca`. No frontend React, sempre utilize operadores de coalescência nula (`log.maquininha ?? log.rede_liquido ?? 0`) antes de passar valores para `<AnimatedNumber>`.
+
+**Risco identificado:** A importação de despesas grava tanto os registros detalhados na tabela quanto atualiza o total no snapshot; consultas que somavam ambas as fontes geravam distorção de 100% no subtotal de contas.
+
+**Não fazer:** Nunca some um acumulador em snapshot junto com as linhas detalhadas da tabela que geraram esse acumulador.
