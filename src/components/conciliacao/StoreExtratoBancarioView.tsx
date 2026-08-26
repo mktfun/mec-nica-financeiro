@@ -17,9 +17,14 @@ import {
   ArrowUpRight,
   Receipt,
   Search,
-  Calendar
+  Calendar,
+  Lock
 } from 'lucide-react';
-import { useTransactionsPorDataELoja, useStoreDailyBills } from '@/hooks/useTransactions';
+import { 
+  useTransactionsPorDataELoja, 
+  useStoreDailyBills, 
+  useHistoricalReconciledTransactions 
+} from '@/hooks/useTransactions';
 import { useCategorizeOrphan } from '@/hooks/useCategorizeOrphan';
 import { useManualMatch } from '@/hooks/useManualMatch';
 import { OrphanCategorizationModal } from './OrphanCategorizationModal';
@@ -35,11 +40,12 @@ interface StoreExtratoBancarioViewProps {
   date: string;
 }
 
-type FilterType = 'all' | 'pending' | 'in' | 'out' | 'expenses' | 'rede' | 'os_pix';
+type FilterType = 'all' | 'pending' | 'in' | 'out' | 'expenses' | 'rede' | 'os_pix' | 'locked_history';
 
 export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancarioViewProps) {
   const { data: allTransactions = [], isLoading: loadingTx } = useTransactionsPorDataELoja(date, storeId);
   const { data: dailyBills = [], isLoading: loadingBills } = useStoreDailyBills(date, storeId);
+  const { data: historicalReconciled = [], isLoading: loadingHistory } = useHistoricalReconciledTransactions(storeId);
   const { categorize } = useCategorizeOrphan();
   const { unlinkTransaction } = useManualMatch();
   const queryClient = useQueryClient();
@@ -49,7 +55,22 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
   const [categorizingTx, setCategorizingTx] = useState<any | null>(null);
   const [matchingTx, setMatchingTx] = useState<any | null>(null);
 
-  const isLoading = loadingTx || loadingBills;
+  const isLoading = loadingTx || loadingBills || loadingHistory;
+
+  // Formata data estritamente como DD/MM/AAAA (sem horário)
+  const formatDateOnly = (dateStr?: string) => {
+    if (!dateStr) return '';
+    try {
+      const clean = dateStr.split('T')[0];
+      const parts = clean.split('-');
+      if (parts.length === 3) {
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+      return clean;
+    } catch {
+      return dateStr || '';
+    }
+  };
 
   // Filtra transações originadas no OFX
   const ofxTransactions = useMemo(() => {
@@ -73,30 +94,67 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
     );
   };
 
-  // Mapeamento enriquecido com auto-match de despesas
+  // Mapeamento enriquecido com herança de conciliações anteriores/posteriores e auto-match de despesas
   const enrichedTransactions = useMemo(() => {
+    // Mapa rápido de histórico por fitid ou chave composta
+    const historyMap = new Map<string, any>();
+    historicalReconciled.forEach((h: any) => {
+      if (h.fitid) historyMap.set(h.fitid, h);
+      const compositeKey = `${h.amount}_${h.title || ''}`.toLowerCase();
+      historyMap.set(compositeKey, h);
+    });
+
     return ofxTransactions.map(tx => {
+      const txOccurredDate = (tx.occurred_at || tx.date || tx.target_date || '').split('T')[0];
+      const isDifferentDate = txOccurredDate !== '' && txOccurredDate !== date;
+
+      // 1. Procura se há conciliação prévia em histórico
+      const histByFitid = tx.fitid ? historyMap.get(tx.fitid) : null;
+      const compositeKey = `${Math.abs(Number(tx.amount || 0))}_${tx.title || ''}`.toLowerCase();
+      const histByComposite = historyMap.get(compositeKey);
+      const historicalMatch = histByFitid || histByComposite;
+
+      // Se a transação pertence a outra data contábil e já possui justificativa ou OS vinculada
+      const hasPriorJustification = !!(
+        tx.manual_category || 
+        tx.os_number || 
+        (tx as any).matched_os_number ||
+        (historicalMatch && (historicalMatch.manual_category || historicalMatch.os_number || historicalMatch.matched_os_number))
+      );
+
+      const isLockedFromOtherDate = isDifferentDate && hasPriorJustification;
+      const lockedReconciliationDate = historicalMatch?.target_date || tx.target_date || txOccurredDate;
+
+      // Herança de dados de conciliação
+      const effectiveOsNum = tx.os_number || (tx as any).matched_os_number || historicalMatch?.os_number || historicalMatch?.matched_os_number;
+      const effectiveCategory = tx.manual_category || historicalMatch?.manual_category;
+      const effectiveJustification = tx.manual_justification || historicalMatch?.manual_justification;
+
       const isRede = isRedeTx(tx);
-      const osNum = tx.os_number || (tx as any).matched_os_number;
-      const hasCategory = !!tx.manual_category;
-      
+      const osNum = effectiveOsNum;
+      const hasCategory = !!effectiveCategory;
+
       // Fuzzy auto-match para saídas (débitos)
       const expenseMatch = tx.type === 'out' ? matchExpenseWithOfxDebit(tx, dailyBills) : { isMatched: false, confidence: 0 };
-      
       const isMatchedExpense = expenseMatch.isMatched;
-      const isPending = !isRede && !osNum && !hasCategory && !isMatchedExpense;
+
+      const isPending = !isRede && !osNum && !hasCategory && !isMatchedExpense && !isLockedFromOtherDate;
 
       return {
         ...tx,
         isRede,
         osNum,
         hasCategory,
+        manual_category: effectiveCategory,
+        manual_justification: effectiveJustification,
         expenseMatch,
         isMatchedExpense,
+        isLockedFromOtherDate,
+        lockedReconciliationDate,
         isPending
       };
     });
-  }, [ofxTransactions, dailyBills]);
+  }, [ofxTransactions, dailyBills, historicalReconciled, date]);
 
   // Cálculos de Totais dos KPIs
   const totalEntradas = useMemo(() => {
@@ -117,8 +175,9 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
   const countSaidas = enrichedTransactions.filter(t => t.type === 'out').length;
   const countPendentes = enrichedTransactions.filter(t => t.isPending).length;
   const countRede = enrichedTransactions.filter(t => t.isRede).length;
-  const countOsPix = enrichedTransactions.filter(t => t.type === 'in' && t.osNum).length;
-  const countContasPagas = enrichedTransactions.filter(t => t.isMatchedExpense || (t.type === 'out' && t.hasCategory)).length;
+  const countOsPix = enrichedTransactions.filter(t => t.type === 'in' && t.osNum && !t.isLockedFromOtherDate).length;
+  const countContasPagas = enrichedTransactions.filter(t => (t.isMatchedExpense || (t.type === 'out' && t.hasCategory)) && !t.isLockedFromOtherDate).length;
+  const countLockedHistory = enrichedTransactions.filter(t => t.isLockedFromOtherDate).length;
 
   // Filtragem da tabela
   const filteredTransactions = useMemo(() => {
@@ -130,6 +189,7 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
       if (filterType === 'rede' && !tx.isRede) return false;
       if (filterType === 'os_pix' && (!tx.osNum || tx.type !== 'in')) return false;
       if (filterType === 'expenses' && (!tx.isMatchedExpense && !(tx.type === 'out' && tx.hasCategory))) return false;
+      if (filterType === 'locked_history' && !tx.isLockedFromOtherDate) return false;
 
       // 2. Busca por texto
       if (searchTerm.trim()) {
@@ -171,21 +231,6 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
       queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] }),
       queryClient.invalidateQueries({ queryKey: ['justified_transactions'] })
     ]);
-  };
-
-  // Formata data estritamente como DD/MM/AAAA (sem horário)
-  const formatDateOnly = (dateStr?: string) => {
-    if (!dateStr) return '';
-    try {
-      const clean = dateStr.split('T')[0];
-      const parts = clean.split('-');
-      if (parts.length === 3) {
-        return `${parts[2]}/${parts[1]}/${parts[0]}`;
-      }
-      return clean;
-    } catch {
-      return dateStr || '';
-    }
   };
 
   if (isLoading) {
@@ -242,7 +287,7 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
             {countPendentes > 0 ? `${countPendentes} Pendente(s)` : '100% Conciliado'}
           </p>
           <span className="text-[10px] text-zinc-500 block mt-0.5">
-            {countPendentes > 0 ? 'Aguardando vínculo ou justificativa' : 'Todos os lançamentos identificados'}
+            {countPendentes > 0 ? 'Aguardando vínculo ou justificativa' : (countLockedHistory > 0 ? `${countLockedHistory} lançamento(s) de outra data travados` : 'Todos os lançamentos identificados')}
           </span>
         </Card>
       </div>
@@ -321,6 +366,17 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
               PIX OS ({countOsPix})
             </Button>
           )}
+
+          {countLockedHistory > 0 && (
+            <Button
+              size="sm"
+              variant={filterType === 'locked_history' ? 'primary' : 'outline'}
+              onClick={() => setFilterType('locked_history')}
+              className={`text-xs h-7 px-2.5 font-medium ${filterType === 'locked_history' ? 'bg-zinc-800 text-zinc-200 border-zinc-600' : 'border-zinc-800 text-zinc-400 hover:text-zinc-300'}`}
+            >
+              🔒 Outras Conciliações ({countLockedHistory})
+            </Button>
+          )}
         </div>
 
         {/* Campo de Busca por Texto */}
@@ -345,7 +401,7 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
               Extrato Bancário Completo da Filial
             </h3>
             <p className="text-xs text-zinc-400">
-              Movimentação financeira da conta corrente: créditos recebidos e débitos/despesas conciliadas automaticamente.
+              Movimentação financeira da conta corrente: créditos recebidos, despesas conciliadas e histórico preservado de conciliações.
             </p>
           </div>
           <Badge variant="outline" className="text-xs font-mono border-zinc-700 text-zinc-300">
@@ -376,6 +432,7 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
                   const isIn = tx.type === 'in';
                   const txDate = formatDateOnly(tx.occurred_at || tx.date || tx.target_date);
                   const matchedBill = tx.expenseMatch?.matchedBill;
+                  const isLocked = tx.isLockedFromOtherDate;
 
                   return (
                     <tr key={tx.id} className="hover:bg-zinc-900/40 transition-colors">
@@ -413,7 +470,12 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
 
                       {/* Identificação / Status */}
                       <td className="py-3 px-4 text-center whitespace-nowrap">
-                        {tx.isRede ? (
+                        {isLocked ? (
+                          <Badge variant="outline" className="bg-zinc-800 text-zinc-300 border-zinc-700 text-[10px] font-semibold" title={`Conciliado originalmente na data ${formatDateOnly(tx.lockedReconciliationDate)}`}>
+                            <Lock size={11} className="mr-1 text-zinc-400" />
+                            {tx.osNum ? `OS #${tx.osNum} (${formatDateOnly(tx.lockedReconciliationDate)})` : (tx.manual_category ? `${String(tx.manual_category).replace('_', ' ')} (${formatDateOnly(tx.lockedReconciliationDate)})` : `Conciliado (${formatDateOnly(tx.lockedReconciliationDate)})`)}
+                          </Badge>
+                        ) : tx.isRede ? (
                           <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/30 text-[10px] font-semibold">
                             <CreditCard size={11} className="mr-1" />
                             Rede Liquidada
@@ -443,49 +505,56 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
 
                       {/* Ações */}
                       <td className="py-3 px-4 text-center whitespace-nowrap">
-                        <div className="flex items-center justify-center gap-1.5">
-                          {/* Botão Vincular OS (para entradas sem vínculo) */}
-                          {isIn && !tx.isRede && !tx.osNum && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => setMatchingTx(tx)}
-                              className="text-[11px] h-7 px-2.5 bg-zinc-900 border-zinc-700 text-blue-400 hover:bg-zinc-800 hover:text-blue-300 gap-1 font-medium"
-                              title="Vincular a uma Ordem de Serviço"
-                            >
-                              <Link2 size={12} />
-                              Vincular OS
-                            </Button>
-                          )}
+                        {isLocked ? (
+                          <span className="text-[10px] text-zinc-500 font-mono flex items-center justify-center gap-1">
+                            <Lock size={10} />
+                            Somente Leitura
+                          </span>
+                        ) : (
+                          <div className="flex items-center justify-center gap-1.5">
+                            {/* Botão Vincular OS (para entradas sem vínculo) */}
+                            {isIn && !tx.isRede && !tx.osNum && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setMatchingTx(tx)}
+                                className="text-[11px] h-7 px-2.5 bg-zinc-900 border-zinc-700 text-blue-400 hover:bg-zinc-800 hover:text-blue-300 gap-1 font-medium"
+                                title="Vincular a uma Ordem de Serviço"
+                              >
+                                <Link2 size={12} />
+                                Vincular OS
+                              </Button>
+                            )}
 
-                          {/* Botão Justificar / Editar (para qualquer transação pendente ou já justificada) */}
-                          {!tx.osNum && !tx.isRede && (
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => setCategorizingTx(tx)}
-                              className="text-[11px] h-7 px-2 text-zinc-400 hover:text-zinc-200 gap-1"
-                              title={tx.hasCategory ? 'Editar justificativa' : 'Justificar lançamento'}
-                            >
-                              <FileEdit size={12} />
-                              {tx.hasCategory ? 'Editar' : 'Justificar'}
-                            </Button>
-                          )}
+                            {/* Botão Justificar / Editar (para qualquer transação pendente ou já justificada) */}
+                            {!tx.osNum && !tx.isRede && (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => setCategorizingTx(tx)}
+                                className="text-[11px] h-7 px-2 text-zinc-400 hover:text-zinc-200 gap-1"
+                                title={tx.hasCategory ? 'Editar justificativa' : 'Justificar lançamento'}
+                              >
+                                <FileEdit size={12} />
+                                {tx.hasCategory ? 'Editar' : 'Justificar'}
+                              </Button>
+                            )}
 
-                          {/* Botão Desvincular OS */}
-                          {tx.osNum && (
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => handleUnlink(tx.id, tx.osNum)}
-                              className="text-[10px] h-6 px-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 gap-1 font-mono"
-                              title="Desvincular OS"
-                            >
-                              <Unlink size={11} />
-                              Desvincular
-                            </Button>
-                          )}
-                        </div>
+                            {/* Botão Desvincular OS */}
+                            {tx.osNum && (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleUnlink(tx.id, tx.osNum)}
+                                className="text-[10px] h-6 px-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 gap-1 font-mono"
+                                title="Desvincular OS"
+                              >
+                                <Unlink size={11} />
+                                Desvincular
+                              </Button>
+                            )}
+                          </div>
+                        )}
                       </td>
                     </tr>
                   );

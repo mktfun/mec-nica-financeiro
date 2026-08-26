@@ -161,3 +161,11 @@
 - **Hooks:**
   - `useTransactionsPorDataELoja` em `src/hooks/useTransactions.ts` (ordenado por `occurred_at`)
   - `useStoreDailyBills` em `src/hooks/useTransactions.ts` (consulta `daily_manual_bills`)
+
+### Feature 291: Preservação Total de Transações OFX e Herança de Conciliações Anteriores/Posteriores
+- **Status:** `CONCLUÍDO / ARQUIVADO`
+- **Data:** 26/08/2026
+- **Componentes:**
+  - `src/components/conciliacao/StoreExtratoBancarioView.tsx` (Herança de histórico, badge de lock 🔒, trava de edição e filtro de outras conciliações)
+- **Hooks:**
+  - `useHistoricalReconciledTransactions` em `src/hooks/useTransactions.ts` (busca transações justificadas de outras datas para enriquecimento)

@@ -278,6 +278,30 @@ export function useStoreDailyBills(date: string, storeId?: string) {
   });
 }
 
+export function useHistoricalReconciledTransactions(storeId?: string) {
+  return useQuery({
+    queryKey: ['transactions', 'store', storeId, 'historical_reconciled'],
+    queryFn: async () => {
+      let query = supabase
+        .from('transactions')
+        .select('id, fitid, store_id, target_date, occurred_at, manual_category, manual_justification, os_number, matched_os_number, status, title, amount')
+        .or('manual_category.not.is.null,os_number.not.is.null,matched_os_number.not.is.null')
+        .order('occurred_at', { ascending: false })
+        .limit(300);
+      
+      if (storeId && storeId !== 'all') {
+        query = query.eq('store_id', storeId);
+      }
+      
+      const { data, error } = await query;
+      if (error) throw error;
+      return data as any[];
+    },
+    enabled: !!storeId,
+  });
+}
+
+
 
 export function useWeeklyRevenueTrend(anchorDate?: string) {
   const targetDate = anchorDate ?? getDefaultDate();

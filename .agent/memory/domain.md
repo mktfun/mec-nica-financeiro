@@ -1,3 +1,16 @@
+## [2026-08-26] — [Feature ID: 291-preservacao-total-transacoes-ofx-e-heranca-conciliacoes-historicas]
+
+**Contexto:** Preservação de 100% dos lançamentos contidos em arquivos OFX (incluindo fins de semana, feriados prolongados e datas retroativas/futuras) e herança automática de justificativas/OSs com trava de segurança (read-only / lock) para lançamentos pertencentes a conciliações anteriores ou posteriores.
+
+**Regra aprendida:**
+1. **Zero Descarte em Lotes Bancários (Finais de Semana e Feriados):**
+   - O parser e o wizard de importação nunca devem cortar transações por data de liquidação. Todas as linhas `<STMTTRN>` são gravadas no banco.
+2. **Herança e Lock Contábil para Outras Conciliações:**
+   - Transações que já foram justificadas ou vinculadas a OSs em qualquer outra data contábil (ex: sexta 22/08 em lote de segunda 26/08) herdam os dados de conciliação e são travadas como `🔒 Conciliado em [DD/MM/AAAA]: [Categoria / OS]`.
+   - O bloqueio de edição protege o fechamento homologado da data original de sofrer alterações acidentais.
+
+**Não fazer:** Nunca assumir janela fixa de "D-1", pois finais de semana e feriados geram gaps de 3 a 5 dias que devem ser cobertos de forma dinâmica pelo histórico de conciliações.
+
 ## [2026-08-26] — [Feature ID: 290-extrato-bancario-completo-entradas-saidas-e-filtros]
 
 **Contexto:** Refatoração completa da tela de Extrato Bancário da Filial (`StoreExtratoBancarioView.tsx`), eliminando a ocultação de débitos/saídas, introduzindo motor de Fuzzy Auto-Match de despesas com as contas a pagar importadas (`daily_manual_bills`), e adicionando filtros nativos com contadores dinâmicos e formato estrito de data DD/MM/AAAA.
