@@ -151,3 +151,13 @@
 - **RPC `auto_match_transactions` (`supabase/migrations/20260821000010_auto_match_pending_os.sql`):** Motor de pareamento inteligente por filial (`store_id`) que busca OSs em aberto (`em_aberto`, `pago_parcial`) por correspondência com Saldo Pendente (`total_value - paid_value`), PIX ou Valor Total. Quita a OS (`status = finalizado`, `closed_at = p_date`), atualiza `paid_value`, vincula a transação OFX (`matched_os_number`) e gera os registros em `conciliation_matches`. Suporta também pareamento de créditos com lotes de cartão da Rede.
 - **Auto-Preenchimento de Contas a Pagar (`CentralImportWizard.tsx`):** Sincronização automática do valor analítico de contas a pagar no formulário de valores manuais com badge de confirmação visual.
 - **Visibilidade de Estoque em Pátio (`CentralImportWizard.tsx`):** Exibição do Delta de recebimentos do dia e do total ativo em pátio por filial.
+
+### Feature 290: Extrato Bancário Completo por Filial com Entradas, Saídas, Filtros e Fuzzy Match de Despesas
+- **Status:** `CONCLUÍDO / ARQUIVADO`
+- **Data:** 26/08/2026
+- **Componentes:**
+  - `src/components/conciliacao/StoreExtratoBancarioView.tsx` (Visão completa de extrato com entradas, saídas, 4 KPI cards e filtros)
+  - `src/lib/expenseMatcher.ts` (Motor de fuzzy auto-match de débitos OFX com contas a pagar)
+- **Hooks:**
+  - `useTransactionsPorDataELoja` em `src/hooks/useTransactions.ts` (ordenado por `occurred_at`)
+  - `useStoreDailyBills` em `src/hooks/useTransactions.ts` (consulta `daily_manual_bills`)

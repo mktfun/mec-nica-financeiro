@@ -1,3 +1,16 @@
+## [2026-08-26] — [Feature ID: 290-extrato-bancario-completo-entradas-saidas-e-filtros]
+
+**Contexto:** Refatoração completa da tela de Extrato Bancário da Filial (`StoreExtratoBancarioView.tsx`), eliminando a ocultação de débitos/saídas, introduzindo motor de Fuzzy Auto-Match de despesas com as contas a pagar importadas (`daily_manual_bills`), e adicionando filtros nativos com contadores dinâmicos e formato estrito de data DD/MM/AAAA.
+
+**Regra aprendida:**
+1. **Fuzzy Auto-Match de Saídas Bancárias com Despesas:**
+   - Cada débito (`type === 'out'`) do extrato OFX é cruzado contra `daily_manual_bills` por tolerância de valor exato (R$ 0,05) e similaridade do nome do favorecido.
+   - Débitos de boletos (ex: Servicekleen R$ 1.250) e saídas PIX (ex: FT3 Serviços R$ 60) são automaticamente vinculados e justificados com badge `🟢 Conta: [Favorecido]`, eliminando retrabalho manual.
+2. **Data Limpa no Extrato:**
+   - Exibir exclusivamente `DD/MM/AAAA`, sem horário, garantindo legibilidade e foco nos valores contábeis.
+
+**Não fazer:** Nunca filtrar `type === 'in'` na visualização geral de extrato bancário, pois isso oculta os pagamentos e distorce a conferência do operador.
+
 ## [2026-08-26] — [Feature ID: 289-correcao-duplicacao-contas-manual-e-importacao]
 
 **Contexto:** Resolução da divergência de R$ 35k em Contas a Cobrir no dia 26/08/2026, restaurando o valor correto de R$ 16.974,94 (Base BuscaContas) + R$ 1.864,89 (Juros Rede) = R$ 18.839,83 no Subtotal de Contas a Cobrir.

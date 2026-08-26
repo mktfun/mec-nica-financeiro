@@ -249,13 +249,35 @@ export function useTransactionsPorDataELoja(date: string, storeId: string) {
         .select('*')
         .eq('store_id', storeId)
         .eq('target_date', date)
-        .order('created_at', { ascending: false });
+        .order('occurred_at', { ascending: false });
       if (error) throw error;
       return data as any[];
     },
     enabled: !!storeId && !!date,
   });
 }
+
+export function useStoreDailyBills(date: string, storeId?: string) {
+  return useQuery({
+    queryKey: ['daily_manual_bills', 'store', storeId, 'date', date],
+    queryFn: async () => {
+      let query = supabase
+        .from('daily_manual_bills')
+        .select('*')
+        .eq('date', date);
+      
+      if (storeId && storeId !== 'all') {
+        query = query.or(`store_id.eq.${storeId},store_id.is.null`);
+      }
+      
+      const { data, error } = await query;
+      if (error) throw error;
+      return data as any[];
+    },
+    enabled: !!date,
+  });
+}
+
 
 export function useWeeklyRevenueTrend(anchorDate?: string) {
   const targetDate = anchorDate ?? getDefaultDate();
