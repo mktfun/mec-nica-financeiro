@@ -632,3 +632,15 @@
 - **Consistência de Totais:** O total consolidado da tabela do modal (`SaldoBancosDetailModal`) deve ser matematicamente idêntico ao valor exibido no card do topo ("SALDO BANCOS + DINHEIRO").
 
 **Não fazer:** Nunca deixe campos de agregação por loja hardcoded como `0` quando já existe a tabela física de suporte no banco de dados.
+
+## 2026-08-26 — [Feature ID: 297]
+
+**Contexto:** Falsa diferença de R$ 5k+ no fechamento por filial e descontinuidade de justificativas no extrato.
+
+**Regra aprendida:**
+- **Diferença Real por Filial:** A divergência de uma loja é calculada **estritamente pela soma de lançamentos bancários órfãos/pendentes** do dia:
+  $$\text{Diferença da Filial} = \sum \text{OFX sem OS, sem Lote Rede D-1 e sem Justificativa}$$
+  Vendas de maquininha de D0 são **A COMPENSAR** (entram no saldo do caixa, mas caem no banco em D+1/D+30) e NUNCA devem ser subtraídas do extrato de hoje.
+- **Sincronização de Justificativas:** O hook `useCategorizeOrphan` deve atualizar tanto `ofx_transactions` quanto `transactions` e `pos_transactions`. Ao justificar, o item ganha `manual_category` e a pendência da filial zera imediatamente.
+
+**Não fazer:** Nunca subtraia vendas de maquininha de hoje das entradas bancárias de hoje para calcular a diferença de uma loja.

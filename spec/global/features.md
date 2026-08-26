@@ -195,3 +195,8 @@
 ### Spec 296 — Resolução de PGRST303 e Blindagem de AI Settings (2026-08-26)
 - **Leitura Pública de Lojas:** RLS da tabela `stores` atualizada para leitura irrestrita (`USING (true)`) e auto-refresh de sessão no hook `useStores.ts`.
 - **Schema AI Settings:** Colunas `provider`, `model`, `api_key` e `user_id` adicionadas com RLS na tabela `ai_settings`.
+
+### Spec 297 — Correção da Diferença por Filial, Header Unificado e Justificativas de Extrato (2026-08-26)
+- **Diferença Real de Filial:** `get_daily_reconciliation_summary` ajustado para calcular divergência apenas sobre transações órfãs do extrato.
+- **Sincronização de Justificativas:** `useCategorizeOrphan.ts` sincroniza em `ofx_transactions` e `transactions`.
+- **Card Unificado da Filial:** Topo de `conciliacao.$lojaId.tsx` alinhado com o card executivo das 6 métricas.

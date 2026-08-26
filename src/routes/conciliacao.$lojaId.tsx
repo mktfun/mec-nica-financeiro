@@ -10,12 +10,11 @@ import { StoreOrdensServicoView } from '@/components/conciliacao/StoreOrdensServ
 import { ExtratosImportacaoModal } from '@/components/conciliacao/ExtratosImportacaoModal';
 
 import { useTransactionsPorDataELoja } from '@/hooks/useTransactions';
-import { useReconciliationViews } from '@/hooks/useConciliacao';
 import { useDailySnapshot } from '@/hooks/useDailySnapshot';
-import { usePosTripleReconciliation } from '@/hooks/useBackendConciliacao';
+import { useDailyReconciliationSummary } from '@/hooks/useBackendConciliacao';
 import { LegacyOsTable } from '@/components/conciliacao/LegacyOsTable';
 import { formatCurrency } from '@/lib/utils';
-
+import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 
 export const Route = createFileRoute('/conciliacao/$lojaId')({
   component: ConciliacaoLojaPage,
@@ -62,10 +61,10 @@ function ConciliacaoLojaPage() {
   const store = stores.find(s => s.id === lojaId);
   const { data: transactions = [] } = useTransactionsPorDataELoja(targetDate, lojaId);
   const { data: currentSnapshot } = useDailySnapshot(targetDate);
-  const { data: tripleReconData } = usePosTripleReconciliation(targetDate);
+  const { data: dailySummary } = useDailyReconciliationSummary(targetDate);
+  const storeRecon = dailySummary?.stores?.find(s => s.store_id === lojaId);
   
   const isMarcoZero = (currentSnapshot?.metadata as any)?.is_marco_zero === true;
-  const storePos = tripleReconData?.stores?.find(s => s.store_id === lojaId);
 
   if (!store) {
     return (
@@ -128,55 +127,102 @@ function ConciliacaoLojaPage() {
           </div>
         </div>
 
-        {/* Banner de Conciliação de Maquininha da Loja */}
-        {storePos && (storePos.rede_liquido > 0 || storePos.ofx_maquininhas > 0) && (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow-sm">
-            <div className="space-y-0.5">
-              <span className="text-[10px] uppercase font-bold text-zinc-400">Vendas Rede (Líquido)</span>
-              <p className="text-base font-bold font-mono text-zinc-100">
-                {formatCurrency(storePos.rede_liquido)}
-              </p>
-              <span className="text-[10px] text-zinc-500 font-mono">Bruto: {formatCurrency(storePos.rede_bruto)}</span>
-            </div>
+        {/* Painel Executivo de Fechamento da Filial */}
+        {storeRecon && (
+          <div className="bg-black/25 p-4 sm:p-5 rounded-2xl border border-white/5 font-sans tabular-nums text-xs">
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6 xl:gap-8 items-center">
+              {/* 1. Saldo Bancos + Cartões */}
+              <div>
+                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
+                  Saldo Bancos + Cartões
+                </span>
+                <p className="font-bold text-sm text-[var(--color-accent-light-blue)] font-mono">
+                  <AnimatedNumber value={storeRecon.saldo_banco || 0} format="currency" />
+                </p>
+                <div className="text-[10px] text-zinc-500 mt-0.5 flex flex-col font-mono">
+                  <span>OFX: <AnimatedNumber value={storeRecon.saldo_banco_ofx ?? storeRecon.saldo_banco ?? 0} format="currency" /></span>
+                  {(storeRecon.nao_entrou_valor || 0) > 0 && (
+                    <span className="text-amber-400 font-semibold">
+                      + Maq: + {formatCurrency(storeRecon.nao_entrou_valor || 0)}
+                    </span>
+                  )}
+                  {(storeRecon.dinheiro_loja || 0) > 0 && (
+                    <span className="text-amber-300 font-semibold">
+                      + Cofre: + {formatCurrency(storeRecon.dinheiro_loja || 0)}
+                    </span>
+                  )}
+                </div>
+              </div>
 
-            <div className="space-y-0.5">
-              <span className="text-[10px] uppercase font-bold text-zinc-400">Creditado no OFX</span>
-              <p className="text-base font-bold font-mono text-emerald-400">
-                {formatCurrency(storePos.ofx_maquininhas)}
-              </p>
-              <span className="text-[10px] text-zinc-500 font-mono">{storePos.ofx_transacoes?.length || 0} lançamento(s)</span>
-            </div>
+              {/* 2. Maquininha */}
+              <div>
+                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
+                  Maquininha
+                </span>
+                <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
+                  <AnimatedNumber value={storeRecon.maquininha || storeRecon.rede_liquido || 0} format="currency" />
+                </p>
+                <span className="text-[10px] text-zinc-500 font-mono">
+                  Líquido do dia
+                </span>
+              </div>
 
-            <div className="space-y-0.5">
-              <span className="text-[10px] uppercase font-bold text-zinc-400">A Compensar</span>
-              <p className={`text-base font-bold font-mono ${storePos.nao_entrou_valor > 0 ? 'text-amber-400' : 'text-zinc-500'}`}>
-                {storePos.nao_entrou_valor > 0 ? `+ ${formatCurrency(storePos.nao_entrou_valor)}` : 'R$ 0,00'}
-              </p>
-              <span className="text-[10px] text-zinc-500">Soma no Saldo</span>
-            </div>
+              {/* 3. PIX */}
+              <div>
+                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
+                  PIX
+                </span>
+                <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
+                  <AnimatedNumber value={storeRecon.pix || storeRecon.pix_os || 0} format="currency" />
+                </p>
+                <span className="text-[10px] text-zinc-500 font-mono">
+                  Identificado
+                </span>
+              </div>
 
-            <div className="space-y-0.5 flex flex-col justify-center items-start">
-              <span className="text-[10px] uppercase font-bold text-zinc-400 mb-1">Status de Compensação</span>
-              {storePos.status_compensacao === 'entrou' && (
-                <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                  ENTROU
+              {/* 4. Na Loja OS */}
+              <div>
+                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
+                  Na Loja OS
                 </span>
-              )}
-              {storePos.status_compensacao === 'parcial' && (
-                <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
-                  PARCIAL
+                <p className="font-bold text-sm text-amber-400 font-mono">
+                  <AnimatedNumber value={storeRecon.na_loja_os || storeRecon.patio_os || 0} format="currency" />
+                </p>
+                <span className="text-[10px] text-zinc-500 font-mono">
+                  Pátio aberto
                 </span>
-              )}
-              {storePos.status_compensacao === 'nao_entrou' && (
-                <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
-                  NÃO ENTROU
+              </div>
+
+              {/* 5. Previsto */}
+              <div>
+                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
+                  Previsto
                 </span>
-              )}
-              {storePos.status_compensacao === 'sem_movimento' && (
-                <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold text-zinc-500 border border-zinc-800">
-                  SEM MOVIMENTO
+                <p className="font-bold text-sm text-zinc-100 font-mono">
+                  <AnimatedNumber value={storeRecon.previsto_ofx || ((storeRecon.maquininha || 0) + (storeRecon.pix || 0))} format="currency" />
+                </p>
+                <span className="text-[9px] text-zinc-500 block mt-0.5 font-medium">
+                  Total Previsto
                 </span>
-              )}
+              </div>
+
+              {/* 6. Diferença & Status */}
+              <div className="xl:border-l xl:border-white/10 xl:pl-6">
+                <span className={`text-[10px] uppercase font-bold tracking-wider block mb-1 ${
+                  (storeRecon.diferenca || 0) === 0 ? 'text-emerald-400' : 'text-red-400'
+                }`}>
+                  {(storeRecon.diferenca || 0) === 0 ? 'Status' : 'Diferença'}
+                </span>
+                {(storeRecon.diferenca || 0) === 0 ? (
+                  <Badge variant="success" className="text-xs">
+                    100% Conciliado
+                  </Badge>
+                ) : (
+                  <p className="font-bold text-sm text-red-400 font-mono">
+                    <AnimatedNumber value={storeRecon.diferenca || 0} format="currency" />
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         )}

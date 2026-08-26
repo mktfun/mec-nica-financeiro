@@ -41,7 +41,22 @@ export function useCategorizeOrphan() {
         matchedData = updatedTx;
       }
 
-      // 2. Atualiza em pos_transactions se existir
+      // 2. Atualiza em ofx_transactions se existir
+      const { data: ofxData } = await supabase
+        .from('ofx_transactions')
+        .update({
+          manual_category: finalCategory,
+          manual_justification: finalJustification
+        })
+        .eq('id', transactionId)
+        .select('id, target_date, occurred_at, amount, store_id')
+        .maybeSingle();
+
+      if (ofxData && !matchedData) {
+        matchedData = ofxData;
+      }
+
+      // 3. Atualiza em pos_transactions se existir
       if (!matchedData) {
         const { data: posData } = await supabase
           .from('pos_transactions')
