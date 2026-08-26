@@ -1,3 +1,16 @@
+## [2026-08-26] — [Feature ID: 289-correcao-duplicacao-contas-manual-e-importacao]
+
+**Contexto:** Resolução da divergência de R$ 35k em Contas a Cobrir no dia 26/08/2026, restaurando o valor correto de R$ 16.974,94 (Base BuscaContas) + R$ 1.864,89 (Juros Rede) = R$ 18.839,83 no Subtotal de Contas a Cobrir.
+
+**Regra aprendida:**
+1. **Composição do Subtotal de Contas a Cobrir:** O subtotal exibido no card inferior é composto estritamente por: `Subtotal = Contas (Manual) + Juros Rede + Devoluções Rede`.
+2. **Contas (Manual) = Base Planilha + Extras:**
+   - **Base Planilha:** O montante oficial do relatório de contas do ERP (`BuscaContasAPagar.xls`).
+   - **Extras:** Despesas avulsas não faturadas ou não lançadas no ERP (ex: pró-labore, motoboy pontual).
+   - Quando não há despesas avulsas cadastradas, `Extras` deve ser estritamente zero e não aparecer na UI.
+
+**Não fazer:** Nunca duplicar o lote de contas importadas na visualização do painel.
+
 ## [2026-08-25] — [Feature ID: 286-automacao-recebiveis-boletos-transferencias-e-match-ofx]
 
 **Contexto:** Automação completa do ciclo de vida de Boletos Bancários e Transferências Bancárias (débitos em conta, TED, DOC, depósitos identificados), incluindo cálculo determinístico de prazos de vencimento em dias úteis e feriados nacionais (Febraban/BACEN), segregação contábil contra dupla contagem no Caixa Atual, e conciliação automática com o extrato OFX.

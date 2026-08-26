@@ -1725,9 +1725,9 @@
       "source_file": "package.json",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 14,
+      "community": 65,
       "norm_label": "@ai-sdk/react",
-      "community_name": "dependencies",
+      "community_name": "@ai-sdk/react",
       "id": "package_dependencies_ai_sdk_react"
     },
     {
@@ -1736,9 +1736,9 @@
       "source_file": "package.json",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 14,
+      "community": 65,
       "norm_label": "@ai-sdk/react",
-      "community_name": "dependencies",
+      "community_name": "@ai-sdk/react",
       "id": "ai_sdk_react"
     },
     {
@@ -2561,9 +2561,9 @@
       "source_file": "package.json",
       "source_location": "L53",
       "_origin": "ast",
-      "community": 65,
+      "community": 14,
       "norm_label": "class-variance-authority",
-      "community_name": "class-variance-authority",
+      "community_name": "dependencies",
       "id": "package_dependencies_class_variance_authority"
     },
     {
@@ -2572,9 +2572,9 @@
       "source_file": "package.json",
       "source_location": "L53",
       "_origin": "ast",
-      "community": 65,
+      "community": 14,
       "norm_label": "class-variance-authority",
-      "community_name": "class-variance-authority",
+      "community_name": "dependencies",
       "id": "class_variance_authority"
     },
     {
@@ -47913,5 +47913,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "a7bf625dac92287ea933e74ad701b5217867a7c4"
+  "built_at_commit": "4eec2b97e57e4a9909de045cf55b7600b01010cf"
 }

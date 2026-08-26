@@ -1,3 +1,8 @@
+## Feature 289 — Deduplicação Canônica de Contas (Manual / Importação)
+- **Migration PostgreSQL (`20260826000001_fix_contas_manual_deduplication.sql`):** RPC `get_daily_reconciliation_summary` atualizada para segregar estritamente contas importadas de ERP (`external_code IS NOT NULL`) de despesas manuais avulsas (`external_code IS NULL`).
+- **Eliminação de Dupla Contagem:** `contas_base` reflete fielmente o lote do `BuscaContasAPagar.xls` e `contas_extras` computa apenas lançamentos manuais avulsos, garantindo fechamento perfeito em R$ 18.839,83 no dia 26/08.
+- **Blindagem de Edição Manual:** `ResumoDiaPanel` e `ContasManualModal` sincronizados para permitir edição manual da base e inclusão/exclusão dinâmica de contas sem distorção contábil.
+
 ## [2026-08-25] — Feature 287: Limpeza de Lixo da Raiz, Configuração de .graphifyignore e Otimização do Grafo
 - **Higienização da Raiz:** 96 arquivos descartáveis (screenshots, dumps de banco, scripts de teste de uso único e temporários) removidos.
 - **Configuração de Ignore:** `.graphifyignore` criado com exclusão de `specs/archive/**`, `scripts/**`, `dist/**`, `.output/**`, `.tanstack/**`, `scratch/**`, `.council/**`.
