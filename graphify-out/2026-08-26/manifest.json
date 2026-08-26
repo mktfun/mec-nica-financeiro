@@ -340,9 +340,9 @@
     "semantic_hash": "fcc818ae034638ec274996c231d00f14"
   },
   "src/hooks/useTransactions.ts": {
-    "mtime": 1787579134.9226012,
-    "ast_hash": "023004881cb070d02c7ac8871f9ffd5d",
-    "semantic_hash": "023004881cb070d02c7ac8871f9ffd5d"
+    "mtime": 1787753659.5052054,
+    "ast_hash": "70dfdf93a4289f64efd3fda84e88d53b",
+    "semantic_hash": ""
   },
   "src/integrations/supabase/auth-attacher.ts": {
     "mtime": 1785428874.0,
@@ -625,8 +625,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1787682685.71941,
-    "ast_hash": "0a365f72bd55c368c1ebb2319098fdda",
+    "mtime": 1787754020.3303921,
+    "ast_hash": "3d6e8b3a924e6b0829db568dd35492bf",
     "semantic_hash": ""
   },
   "specs/016-loja-cleanup/design.md": {
@@ -2820,9 +2820,9 @@
     "semantic_hash": "3e157f86cf257d9561821ff5492e7178"
   },
   "src/components/conciliacao/StoreExtratoBancarioView.tsx": {
-    "mtime": 1787597223.2685413,
-    "ast_hash": "33e50c1046a3d8a6fe26ca9182fdeeb7",
-    "semantic_hash": "33e50c1046a3d8a6fe26ca9182fdeeb7"
+    "mtime": 1787753694.5768025,
+    "ast_hash": "61070e13aed0864eea30d359160fb10c",
+    "semantic_hash": ""
   },
   "src/components/conciliacao/StoreOrdensServicoView.tsx": {
     "mtime": 1787584376.5965903,
@@ -3093,5 +3093,30 @@
     "mtime": 1787682465.1569655,
     "ast_hash": "17488c3e5a9c310d88fdfdd8f71868c9",
     "semantic_hash": "17488c3e5a9c310d88fdfdd8f71868c9"
+  },
+  "src/lib/expenseMatcher.ts": {
+    "mtime": 1787753651.7500522,
+    "ast_hash": "9b9b78b3f1bb4b6ac3edbe45e8ad8ea0",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260826000001_fix_contas_manual_deduplication.sql": {
+    "mtime": 1787745233.71085,
+    "ast_hash": "b5c7be679b5b368a15b70ce59ed79adc",
+    "semantic_hash": ""
+  },
+  "specs/288-refatoracao-dashboard-enterprise/design.md": {
+    "mtime": 1787691896.0928845,
+    "ast_hash": "1c20fc306f37f8f94cfacf6fad7e8861",
+    "semantic_hash": ""
+  },
+  "specs/288-refatoracao-dashboard-enterprise/proposal.md": {
+    "mtime": 1787691828.4688208,
+    "ast_hash": "82225b23ba56a6f18413a21a2c795ca7",
+    "semantic_hash": ""
+  },
+  "specs/288-refatoracao-dashboard-enterprise/spec-plan.md": {
+    "mtime": 1787691896.093548,
+    "ast_hash": "ca395030213fcad0d202cecbe4b05a3c",
+    "semantic_hash": ""
   }
 }
