@@ -169,3 +169,8 @@
   - `src/components/conciliacao/StoreExtratoBancarioView.tsx` (Herança de histórico, badge de lock 🔒, trava de edição e filtro de outras conciliações)
 - **Hooks:**
   - `useHistoricalReconciledTransactions` em `src/hooks/useTransactions.ts` (busca transações justificadas de outras datas para enriquecimento)
+
+### Spec 292 — Desacoplamento Temporal da Rede, Blindagem do Motor de Conciliação e Extrato Otimizado (2026-08-26)
+- **RPCs:** `get_store_pos_triple_reconciliation`, `get_daily_reconciliation_summary` unificada e universal (sem hardcodes).
+- **Frontend:** `StoreExtratoBancarioView.tsx` com badges compactos `h-5`, saídas sem justificativa e créditos de lote com bloqueio seguro de vínculo de OS.
+- **Hooks:** `useAiSettings.ts` e `useTransactions.ts` blindados com zero erros 400 e cache de 5-10 minutos.

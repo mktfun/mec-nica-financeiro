@@ -16,13 +16,14 @@ export function useAiSettings() {
     queryKey: ['ai_settings'],
     queryFn: async () => {
       const defaultKey = (import.meta.env.VITE_GEMINI_API_KEY as string) || (import.meta.env.VITE_AI_API_KEY as string) || '';
+      const isUuid = (str?: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str || '');
 
       try {
         const { data: user } = await supabase.auth.getUser();
         const userId = user?.user?.id;
 
-        // Tenta buscar pelo id do usuário se logado
-        if (userId) {
+        // Tenta buscar pelo id do usuário se for UUID válido
+        if (userId && isUuid(userId)) {
           const { data, error } = await supabase
             .from('ai_settings')
             .select('provider, model, api_key, bot_url, bot_api_key')
@@ -39,29 +40,14 @@ export function useAiSettings() {
             };
           }
         }
-
-        // Tenta buscar pela configuração GLOBAL
-        const { data: globalData, error: globalErr } = await supabase
-          .from('ai_settings')
-          .select('provider, model, api_key, bot_url, bot_api_key')
-          .eq('user_id', 'GLOBAL')
-          .maybeSingle();
-
-        if (!globalErr && globalData) {
-          return {
-            provider: globalData.provider || 'google',
-            model: globalData.model || 'gemini-3.5-flash-lite',
-            api_key: globalData.api_key || defaultKey,
-            bot_url: globalData.bot_url || 'https://bot.tork.services',
-            bot_api_key: globalData.bot_api_key || '',
-          };
-        }
       } catch (err) {
-        console.warn('Aviso ao carregar ai_settings do Supabase:', err);
+        // Silently fallback to defaults without flooding console
       }
 
       return { provider: 'google', model: 'gemini-3.5-flash-lite', api_key: defaultKey, bot_url: 'https://bot.tork.services', bot_api_key: '' };
     },
+    staleTime: 1000 * 60 * 10,
+    retry: false,
   });
 }
 

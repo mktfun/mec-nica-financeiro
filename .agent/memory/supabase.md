@@ -244,3 +244,14 @@ Garantia de salvamento de mensagens do assistente no banco de dados e isolamento
 **Risco identificado:** Chamar RPCs no frontend com nomes de chaves divergentes da assinatura SQL do Supabase.
 
 **Não fazer:** Nunca enviar propriedades no payload do Supabase Client que não correspondam exatamente às colunas da tabela PostgREST (`target_date` em `daily_manual_bills`).
+
+## 2026-08-26 — [Feature ID: 292]
+
+**Contexto:** Correção de erros HTTP 400 no PostgREST e sobrecargas conflitantes de RPC no PostgreSQL.
+
+**Regra aprendida:**
+- Colunas do tipo `UUID` no Postgres causam erro HTTP 400 imediato no PostgREST se consultadas com strings não-UUID (ex: `.eq('user_id', 'GLOBAL')`). Sempre validar com regex `/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i` no frontend antes de disparar a query.
+- No PostgreSQL, nunca criar uma função com parâmetro default `(p_date text, p_force_dynamic boolean DEFAULT false)` e outra função `(p_date text)`, pois chamadas com 1 argumento geram `ERROR 42725 (function is not unique)`. Apenas a função com `DEFAULT false` é necessária.
+- A sintaxe de negação em OR no PostgREST JS deve ser evitada em queries compostas; prefira queries limpas com filtragem in-memory segura.
+
+**Não fazer:** Nunca passar literais arbitrários como 'GLOBAL' para colunas UUID no PostgREST.

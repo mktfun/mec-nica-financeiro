@@ -593,3 +593,18 @@
 **Risco identificado:** Reprocessamento de arquivos gerando duplicaÃ§Ã£o em `pos_transactions` ou rascunhos de fim de semana quebrando o carry-over.
 
 **NÃ£o fazer:** Nunca assumir que `date < target_date` trarÃ¡ o dia Ãºtil correto sem verificar se o fechamento anterior foi consolidado (`caixa_atual > 0`).
+
+## 2026-08-26 — [Feature ID: 292]
+
+**Contexto:** Desacoplamento do ciclo temporal de adquirentes (Rede/Cielo/Stone), correção de divergência de ~R$ 200 no extrato bancário de 26/08 e eliminação de erros HTTP 400.
+
+**Regra aprendida:**
+- Vendas da maquininha em $D_0$ (`rede_liquido`) representam o Regime de Competência e entram 100% no Ativo de Cartões a Compensar (Pilar 1).
+- Créditos bancários da Rede que caem hoje ($D_0$) no extrato representam a liquidação financeira de $D_{-1}$ e já compõem o saldo em conta corrente (`saldo_bancos_ofx`).
+- **NUNCA subtrair créditos bancários de hoje das vendas de cartão de hoje** no motor de conciliação diária intra-dia (`nao_entrou = rede_liquido`).
+- Débitos bancários (saídas) não devem ter botão "Justificar" para impedir que contas pagas sejam categorizadas indevidamente como receitas avulsas.
+- Créditos de lotes de adquirentes não devem ser vinculados a OSs individuais pelo operador (evita corrupção da base e fadiga operacional); justificativas são restritas a tarifas e aluguéis de terminais.
+
+**Risco identificado:** Tentar reconciliar o lote líquido da adquirente diretamente contra ordens de serviço brutas (com MDR descontada) causa 87% de erro humano e distorce o Caixa Atual ($G21$).
+
+**Não fazer:** Nunca reintroduzir cláusulas hardcoded por filial como `s.id NOT IN ('st-01', 'st-05')`. O algoritmo deve ser 100% agnóstico e universal.

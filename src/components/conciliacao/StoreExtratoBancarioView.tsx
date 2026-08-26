@@ -94,9 +94,8 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
     );
   };
 
-  // Mapeamento enriquecido com herança de conciliações anteriores/posteriores e auto-match de despesas
+  // Mapeamento enriquecido com herança de conciliações e auto-match
   const enrichedTransactions = useMemo(() => {
-    // Mapa rápido de histórico por fitid ou chave composta
     const historyMap = new Map<string, any>();
     historicalReconciled.forEach((h: any) => {
       if (h.fitid) historyMap.set(h.fitid, h);
@@ -108,13 +107,11 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
       const txOccurredDate = (tx.occurred_at || tx.date || tx.target_date || '').split('T')[0];
       const isDifferentDate = txOccurredDate !== '' && txOccurredDate !== date;
 
-      // 1. Procura se há conciliação prévia em histórico
       const histByFitid = tx.fitid ? historyMap.get(tx.fitid) : null;
       const compositeKey = `${Math.abs(Number(tx.amount || 0))}_${tx.title || ''}`.toLowerCase();
       const histByComposite = historyMap.get(compositeKey);
       const historicalMatch = histByFitid || histByComposite;
 
-      // Se a transação pertence a outra data contábil e já possui justificativa ou OS vinculada
       const hasPriorJustification = !!(
         tx.manual_category || 
         tx.os_number || 
@@ -125,7 +122,6 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
       const isLockedFromOtherDate = isDifferentDate && hasPriorJustification;
       const lockedReconciliationDate = historicalMatch?.target_date || tx.target_date || txOccurredDate;
 
-      // Herança de dados de conciliação
       const effectiveOsNum = tx.os_number || (tx as any).matched_os_number || historicalMatch?.os_number || historicalMatch?.matched_os_number;
       const effectiveCategory = tx.manual_category || historicalMatch?.manual_category;
       const effectiveJustification = tx.manual_justification || historicalMatch?.manual_justification;
@@ -182,7 +178,6 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
   // Filtragem da tabela
   const filteredTransactions = useMemo(() => {
     return enrichedTransactions.filter(tx => {
-      // 1. Filtro de Categoria/Aba
       if (filterType === 'pending' && !tx.isPending) return false;
       if (filterType === 'in' && tx.type !== 'in') return false;
       if (filterType === 'out' && tx.type !== 'out') return false;
@@ -191,7 +186,6 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
       if (filterType === 'expenses' && (!tx.isMatchedExpense && !(tx.type === 'out' && tx.hasCategory))) return false;
       if (filterType === 'locked_history' && !tx.isLockedFromOtherDate) return false;
 
-      // 2. Busca por texto
       if (searchTerm.trim()) {
         const term = searchTerm.toLowerCase();
         const searchTarget = `${tx.title || ''} ${tx.subtitle || ''} ${tx.counterpart_name || ''} ${tx.cnpj_cpf || ''} ${tx.amount || ''} ${tx.osNum || ''} ${tx.manual_category || ''}`.toLowerCase();
@@ -404,7 +398,7 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
               Movimentação financeira da conta corrente: créditos recebidos, despesas conciliadas e histórico preservado de conciliações.
             </p>
           </div>
-          <Badge variant="outline" className="text-xs font-mono border-zinc-700 text-zinc-300">
+          <Badge variant="outline" className="text-xs font-mono border-zinc-700 text-zinc-300 h-6 px-2.5">
             {filteredTransactions.length} de {enrichedTransactions.length} Lançamentos
           </Badge>
         </div>
@@ -419,12 +413,12 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
             <table className="w-full text-xs">
               <thead>
                 <tr className="text-zinc-400 text-[11px] uppercase tracking-wider border-b border-zinc-800 bg-zinc-900/60 font-mono">
-                  <th className="text-left py-3 px-4 font-medium">Data</th>
-                  <th className="text-left py-3 px-4 font-medium">Descrição / Histórico Bancário</th>
-                  <th className="text-left py-3 px-4 font-medium">Favorecido / Documento</th>
-                  <th className="text-right py-3 px-4 font-medium">Valor</th>
-                  <th className="text-center py-3 px-4 font-medium">Identificação / Status</th>
-                  <th className="text-center py-3 px-4 font-medium">Ações</th>
+                  <th className="text-left py-2.5 px-3 font-medium">Data</th>
+                  <th className="text-left py-2.5 px-3 font-medium">Descrição / Histórico Bancário</th>
+                  <th className="text-left py-2.5 px-3 font-medium">Favorecido / Documento</th>
+                  <th className="text-right py-2.5 px-3 font-medium">Valor</th>
+                  <th className="text-center py-2.5 px-3 font-medium">Identificação / Status</th>
+                  <th className="text-center py-2.5 px-3 font-medium">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-800/60 font-sans">
@@ -437,21 +431,21 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
                   return (
                     <tr key={tx.id} className="hover:bg-zinc-900/40 transition-colors">
                       {/* Data */}
-                      <td className="py-3 px-4 whitespace-nowrap text-zinc-400 font-mono text-[11px]">
+                      <td className="py-2 px-3 whitespace-nowrap text-zinc-400 font-mono text-[11px]">
                         <div className="flex items-center gap-1.5">
-                          <Calendar size={12} className="text-zinc-500" />
+                          <Calendar size={11} className="text-zinc-500" />
                           <span>{txDate}</span>
                         </div>
                       </td>
 
                       {/* Descrição Bancária */}
-                      <td className="py-3 px-4 font-medium text-zinc-200 max-w-[260px]">
+                      <td className="py-2 px-3 font-medium text-zinc-200 max-w-[260px]">
                         <div className="flex flex-col">
-                          <span className="truncate" title={tx.title || tx.subtitle}>
+                          <span className="truncate text-xs" title={tx.title || tx.subtitle}>
                             {tx.title || tx.subtitle || (isIn ? 'Crédito Bancário' : 'Débito Bancário')}
                           </span>
                           {tx.manual_justification && (
-                            <span className="text-[11px] text-emerald-400 italic truncate">
+                            <span className="text-[10px] text-emerald-400 italic truncate">
                               "{tx.manual_justification}"
                             </span>
                           )}
@@ -459,83 +453,91 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
                       </td>
 
                       {/* Favorecido / Documento */}
-                      <td className="py-3 px-4 text-zinc-400 font-mono text-[11px] max-w-[200px] truncate">
+                      <td className="py-2 px-3 text-zinc-400 font-mono text-[11px] max-w-[200px] truncate">
                         {tx.counterpart_name || tx.cnpj_cpf || tx.fitid || '—'}
                       </td>
 
                       {/* Valor */}
-                      <td className={`py-3 px-4 text-right font-mono font-bold whitespace-nowrap ${isIn ? 'text-emerald-400' : 'text-rose-400'}`}>
+                      <td className={`py-2 px-3 text-right font-mono font-bold whitespace-nowrap text-xs ${isIn ? 'text-emerald-400' : 'text-rose-400'}`}>
                         {isIn ? '+ ' : '- '} {formatCurrency(Math.abs(Number(tx.amount || 0)))}
                       </td>
 
-                      {/* Identificação / Status */}
-                      <td className="py-3 px-4 text-center whitespace-nowrap">
+                      {/* Identificação / Status (Compacto h-5) */}
+                      <td className="py-2 px-3 text-center whitespace-nowrap">
                         {isLocked ? (
-                          <Badge variant="outline" className="bg-zinc-800 text-zinc-300 border-zinc-700 text-[10px] font-semibold" title={`Conciliado originalmente na data ${formatDateOnly(tx.lockedReconciliationDate)}`}>
-                            <Lock size={11} className="mr-1 text-zinc-400" />
-                            {tx.osNum ? `OS #${tx.osNum} (${formatDateOnly(tx.lockedReconciliationDate)})` : (tx.manual_category ? `${String(tx.manual_category).replace('_', ' ')} (${formatDateOnly(tx.lockedReconciliationDate)})` : `Conciliado (${formatDateOnly(tx.lockedReconciliationDate)})`)}
+                          <Badge variant="outline" className="h-5 py-0 px-2 bg-zinc-800 text-zinc-300 border-zinc-700 text-[10px] font-semibold" title={`Conciliado originalmente na data ${formatDateOnly(tx.lockedReconciliationDate)}`}>
+                            <Lock size={10} className="mr-1 text-zinc-400" />
+                            {tx.osNum ? `OS #${tx.osNum}` : (tx.manual_category ? `${String(tx.manual_category).replace('_', ' ')}` : 'Conciliado')}
                           </Badge>
                         ) : tx.isRede ? (
-                          <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/30 text-[10px] font-semibold">
-                            <CreditCard size={11} className="mr-1" />
-                            Rede Liquidada
+                          <Badge variant="outline" className="h-5 py-0 px-2 bg-blue-500/10 text-blue-400 border-blue-500/30 text-[10px] font-semibold">
+                            <CreditCard size={10} className="mr-1" />
+                            Lote Rede (Ref: D-1)
                           </Badge>
                         ) : tx.osNum ? (
-                          <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[10px] font-semibold">
-                            <QrCode size={11} className="mr-1" />
+                          <Badge variant="outline" className="h-5 py-0 px-2 bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[10px] font-semibold">
+                            <QrCode size={10} className="mr-1" />
                             OS #{tx.osNum}
                           </Badge>
                         ) : tx.isMatchedExpense ? (
-                          <Badge variant="outline" className="bg-teal-500/10 text-teal-300 border-teal-500/30 text-[10px] font-semibold" title={matchedBill?.description}>
-                            <Receipt size={11} className="mr-1" />
+                          <Badge variant="outline" className="h-5 py-0 px-2 bg-teal-500/10 text-teal-300 border-teal-500/30 text-[10px] font-semibold" title={matchedBill?.description}>
+                            <Receipt size={10} className="mr-1" />
                             Conta: {matchedBill?.recipient_name || matchedBill?.title || 'Despesa'}
                           </Badge>
                         ) : tx.hasCategory ? (
-                          <Badge variant="outline" className="bg-purple-500/10 text-purple-300 border-purple-500/30 text-[10px] font-semibold">
-                            <CheckCircle2 size={11} className="mr-1" />
+                          <Badge variant="outline" className="h-5 py-0 px-2 bg-purple-500/10 text-purple-300 border-purple-500/30 text-[10px] font-semibold">
+                            <CheckCircle2 size={10} className="mr-1" />
                             {String(tx.manual_category).replace('_', ' ')}
                           </Badge>
-                        ) : (
-                          <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 text-[10px] font-semibold">
-                            <HelpCircle size={11} className="mr-1" />
+                        ) : isIn ? (
+                          <Badge variant="outline" className="h-5 py-0 px-2 bg-amber-500/10 text-amber-400 border-amber-500/30 text-[10px] font-semibold">
+                            <HelpCircle size={10} className="mr-1" />
                             Pendente
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline" className="h-5 py-0 px-2 bg-zinc-800 text-zinc-400 border-zinc-700 text-[10px] font-medium">
+                            Débito Bancário
                           </Badge>
                         )}
                       </td>
 
                       {/* Ações */}
-                      <td className="py-3 px-4 text-center whitespace-nowrap">
+                      <td className="py-2 px-3 text-center whitespace-nowrap">
                         {isLocked ? (
                           <span className="text-[10px] text-zinc-500 font-mono flex items-center justify-center gap-1">
                             <Lock size={10} />
                             Somente Leitura
                           </span>
+                        ) : !isIn ? (
+                          // SAÍDAS (DÉBITOS): NÃO TEM BOTÃO JUSTIFICAR
+                          <span className="text-[10px] text-zinc-600 font-mono">—</span>
                         ) : (
+                          // ENTRADAS (CRÉDITOS):
                           <div className="flex items-center justify-center gap-1.5">
-                            {/* Botão Vincular OS (para entradas sem vínculo) */}
-                            {isIn && !tx.isRede && !tx.osNum && (
+                            {/* Botão Vincular OS (para entradas unitárias PIX/TED - bloqueado para lotes de Rede) */}
+                            {!tx.isRede && !tx.osNum && (
                               <Button
                                 size="sm"
                                 variant="outline"
                                 onClick={() => setMatchingTx(tx)}
-                                className="text-[11px] h-7 px-2.5 bg-zinc-900 border-zinc-700 text-blue-400 hover:bg-zinc-800 hover:text-blue-300 gap-1 font-medium"
+                                className="text-[10px] h-6 px-2 bg-zinc-900 border-zinc-700 text-blue-400 hover:bg-zinc-800 hover:text-blue-300 gap-1 font-medium"
                                 title="Vincular a uma Ordem de Serviço"
                               >
-                                <Link2 size={12} />
+                                <Link2 size={11} />
                                 Vincular OS
                               </Button>
                             )}
 
-                            {/* Botão Justificar / Editar (para qualquer transação pendente ou já justificada) */}
-                            {!tx.osNum && !tx.isRede && (
+                            {/* Botão Justificar (para qualquer entrada, inclusive crédito de Rede para tarifas/aluguel) */}
+                            {!tx.osNum && (
                               <Button
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => setCategorizingTx(tx)}
-                                className="text-[11px] h-7 px-2 text-zinc-400 hover:text-zinc-200 gap-1"
-                                title={tx.hasCategory ? 'Editar justificativa' : 'Justificar lançamento'}
+                                className="text-[10px] h-6 px-2 text-zinc-400 hover:text-zinc-200 gap-1"
+                                title={tx.hasCategory ? 'Editar justificativa' : 'Justificar lançamento / tarifa'}
                               >
-                                <FileEdit size={12} />
+                                <FileEdit size={11} />
                                 {tx.hasCategory ? 'Editar' : 'Justificar'}
                               </Button>
                             )}
@@ -546,7 +548,7 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => handleUnlink(tx.id, tx.osNum)}
-                                className="text-[10px] h-6 px-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 gap-1 font-mono"
+                                className="text-[10px] h-6 px-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 gap-1 font-mono"
                                 title="Desvincular OS"
                               >
                                 <Unlink size={11} />

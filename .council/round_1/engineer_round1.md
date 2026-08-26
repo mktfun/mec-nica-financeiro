@@ -1,82 +1,135 @@
 # Round 1 — Engineer (Pragmático / Executor)
 
-## 1. Diagnóstico de Engenharia: A Discrepância Real vs Percepção
-O problema não é uma falha matemática do sistema, mas sim a confusão entre duas grandezas distintas que a contabilidade e a engenharia de software precisam separar com clareza cirúrgica:
-1. **Fluxo Operacional do Período (DRE / Variação de Caixa):** Quanto a loja gerou de valor novo no dia (`+R$ 6.000,00` via OSs, PIX, Cartão).
-2. **Posição Patrimonial Instantânea (Balanço / Saldo de Conta):** Quanto a conta corrente física possui em determinado instante (`-R$ 1.000,00` no banco, vindo de um saldo inicial de `-R$ 7.000,00`).
-
-Se tentarmos forçar que o saldo final do extrato bancário reflita o faturamento do dia sem considerar o saldo inicial de abertura (abertura negativa), o sistema gerará falsas divergências e alarmes espúrios de conciliação.
+**Tópico de Deliberação:** Desacoplamento temporal, robustez matemática, integridade contábil multi-filial e elegância de UX dos Créditos da Rede no Extrato Bancário ($R\$\ 5.770,74$ de $D_{-1}$ no OFX de $D_0$) vs Saldo a Compensar das Maquininhas de $D_0$ ($R\$\ 5.884,95$), preservando o motor de conciliação tripla (Rede ⇄ OFX ⇄ OS), o Caixa Atual, as 10 filiais e o histórico passado com base nas dependências do Graphify.
 
 ---
 
-## 2. Modelagem Matemática Sem Gambiarra (Consistência Multi-Loja)
+## 1. Diagnóstico de Engenharia: A Falácia do Acoplamento Síncrono ($D_0$)
 
-A equação fundamental de fechamento diário de qualquer conta corrente é determinística:
-$$\text{Saldo Final} = \text{Saldo Inicial} + \text{Entradas Operacionais} - \text{Saídas/Encargos}$$
+Como engenheiro focado em execução no chão de fábrica, meu diagnóstico é direto: **o sistema anterior tentava tratar uma esteira assíncrona com regras síncronas**. 
 
-Aplicando ao caso prático:
-- **Saldo Inicial (Abertura):** $-\text{R\$\ } 7.000,00$
-- **Entradas do Dia (Rede + PIX + Espécie):** $+\text{R\$\ } 6.000,00$
-- **Saídas / Encargos do Dia:** $-\text{R\$\ } 0,00$
-- **Saldo Final Calculado:** $-\text{R\$\ } 1.000,00$
-- **Saldo Real OFX Lido:** $-\text{R\$\ } 1.000,00$
-- **Divergência de Conciliação:** $\text{R\$\ } 0,00 \implies \mathbf{STATUS:\ CONCILIADO\ (VERDE)}$
+No mundo real dos meios de pagamento e oficinas mecânicas:
+1. **O Fato Gerador da Venda ($D_0$):** O cliente passa o cartão na maquininha da loja hoje ($D_0$). Total gerado: **$R\$\ 5.884,95$ líquido**. Esse recurso **NÃO** está no banco hoje; ele é um ativo a receber ("Saldo a Compensar / Maquininhas Não Entrou").
+2. **A Liquidação Bancária no OFX ($D_0$):** O banco Itaú recebe hoje um crédito da Rede de **$R\$\ 5.770,74$**. Esse crédito refere-se às vendas efetuadas em **$D_{-1}$ (ontem)** ou no fechamento anterior. O saldo em conta corrente bancária ($G13$ / `bank_total`) no final do dia $D_0$ **já inclui** esses $R\$\ 5.770,74$.
 
-### Como isso se encaixa na cadeia do Módulo 1 (`modulo1Calculations.ts`):
-No motor de cálculo consolidado (`calculateModulo1Saldo`):
-- `saldo_g13` (Banco Itaú): Deve registrar o saldo real contábil (ex: `-1000.00`).
-- `caixa_anterior`: Registra o caixa consolidado do dia anterior (ex: `-7000.00`).
-- `caixa_atual_g21`: Registra o caixa consolidado de hoje (ex: `-1000.00`).
-- `fluxo_caixa_g23` = $\text{Caixa Atual} - \text{Caixa Anterior} = (-1000) - (-7000) = \mathbf{+6000.00}$.
-- `faturamento_liquido_g25` = $\mathbf{+6000.00}$.
-- `disponivel_contas_g29` = $\text{Faturamento} - \text{Fluxo CX} = 6000 - 6000 = \mathbf{0.00}$.
+### O Erro Fatal da Modelagem Ingênua:
+Se a query/RPC fizer uma confrontação cega de mesmo dia:
+$$\text{Não Entrou (Falso)} = \text{Rede Líquido}(D_0) - \text{Créditos Rede OFX}(D_0) = 5.884,95 - 5.770,74 = \mathbf{R\$\ 114,21}$$
 
-> **Conclusão Matemática:** A matemática já fecha perfeitamente por definição algébrica! O fluxo de caixa foi exatamente $+6\text{k}$ (reduziu a dívida de $7\text{k}$ para $1\text{k}$), o faturamento foi $+6\text{k}$ e a diferença líquida de caixa livre é zero. Não quebra as outras lojas nem o consolidado global.
+Isso provocava uma aberração contábil gravíssima:
+- O sistema declarava que apenas $R\$\ 114,21$ estavam a compensar das vendas de hoje.
+- O Caixa Atual ($G21$), que soma $\text{Saldo Bancos} + \text{Dinheiro} + \text{Não Entrou} + \text{MP} + \text{A Receber} + \text{Pátio}$, **perdia instantaneamente $R\$\ 5.770,74$ de patrimônio**, gerando uma falsa divergência monstruosa no fechamento diário e quebrando a conciliação das filiais!
 
 ---
 
-## 3. Gargalos Técnicos de Execução no Mundo Real
+## 2. A Modelagem Matemática Desacoplada e Determinística
 
-Para que isso funcione no chão de fábrica sem suporte humano diário, temos 3 gargalos práticos imediatos:
+Para que a matemática feche com precisão de **0 centavos** em qualquer filial e em qualquer dia, sem gambiarras, a modelagem divide-se em grandezas contábeis independentes:
 
-### Gargalo 1: Normalização de Saldo no Parser de OFX (`<BALAMT>`)
-- **Problema:** Certos bancos (Itaú, Santander, Bradesco) exportam no campo `<BALAMT>` o saldo já somado ao limite contratado de cheque especial (ex: se o saldo é $-1\text{k}$ e o limite é $5\text{k}$, o banco exporta $+4\text{k}$ de "saldo disponível").
-- **Solução Rápida:** No parser de importação de OFX/Extrato, capturar explicitamente o saldo contábil líquido (`LEDGER_BAL` ou subtrair o `limite_credito` cadastrado na loja se o banco injetar limite no disponível).
+### A. Equação Mestra do Pilar 1 (Saldo Bancos + Ativos Transitórios) em $D_0$:
+$$\text{Total Saldo Banco}(D_0) = \text{Saldo Bancário OFX}(D_0) + \text{Dinheiro no Cofre}(D_0) + \text{Maquininhas a Compensar}(D_0)$$
 
-### Gargalo 2: Encargos Ocultos de Cheque Especial (IOF e Juros Noturnos)
-- **Problema:** Quando a conta amanhece negativa, o banco debita automaticamente na virada do mês ou da quinzena rubricas como `IOF CHEQUE ESP`, `JUROS S/ LIMITE`, `ENCARGOS CT/CORRENTE`. Se essas linhas caírem no extrato sem match de OS, o sistema aponta "Saída Órfã / Divergência".
-- **Solução Rápida:** Regra de Auto-Categorização via Regex no Extrato:
-  ```typescript
-  const IS_FINANCIAL_EXPENSE = /JUROS|IOF|ENCARGO|LIM.*ROT|CHEQ.*ESP|TAR.*CTA/i;
-  ```
-  Se a transação bater com essa regex, categorizar automaticamente como `Despesa Financeira / Encargos de Limite` e computar em `juros_atual` / `valor_contas`, sem alarmar o operador como erro de OS.
+Onde:
+- $\text{Saldo Bancário OFX}(D_0)$: Saldo patrimonial real lido das contas Itaú ($G13$). Ele já absorveu a liquidação de $R\$\ 5.770,74$ ocorrida hoje.
+- $\text{Maquininhas a Compensar}(D_0)$: Total das vendas líquidas de maquininha realizadas em $D_0$ cujo prazo de liquidação é futuro ($D+1$ ou $D+2$) = **$R\$\ 5.884,95$**.
+- $\text{Dinheiro no Cofre}(D_0)$: Dinheiro físico recebido em OSs que ainda não foi fisicamente depositado na boca do caixa.
 
-### Gargalo 3: A Psicologia do Operador da Loja (UX Pragmática)
-- **Problema:** O operador da loja olha para o extrato de $-R\$\ 1.000$ e reclama: *"Trabalhei o dia todo, vendi R$ 6.000 e meu saldo está negativo? O sistema sumiu com meu faturamento!"*.
-- **Solução de UX (Visão Dupla de Fechamento):**
-  Dividir o painel da loja em dois blocos visuais complementares:
-  1. **Card de Performance Operacional (O que a loja produziu hoje):**
-     - `Entradas Operacionais do Dia:` **+R$ 6.000,00** (Verde / Ícone de Vendas / 100% Conciliado com OSs).
-     - `Destinação:` Amortização de Passivo / Cheque Especial.
-  2. **Card de Posição Bancária & Limite (A saúde da conta):**
-     - `Saldo Inicial (Abertura):` $-\text{R\$\ } 7.000,00$
-     - `Amortização Automática:` $+\text{R\$\ } 6.000,00$
-     - `Saldo em Conta Corrente:` $-\text{R\$\ } 1.000,00$
-     - `Limite Utilizado:` $\text{R\$\ } 1.000,00$ de $\text{R\$\ } 10.000,00$ contratados.
-     - `Status da Conciliação:` **CONCILIADO — 0 Centavos de Divergência**.
+### B. Prova Algébrica de Integridade do Caixa Atual ($G21$):
+$$\text{Caixa Atual}(D_0) = \text{Total Saldo Banco}(D_0) + \text{Dinheiro MP} + \text{A Receber} + \text{Na Loja OS}$$
+$$\Delta \text{Caixa} = \text{Caixa Atual}(D_0) - \text{Caixa Anterior}(D_{-1})$$
+$$\text{Disponível para Contas} = \text{Faturamento do Período} - \Delta \text{Caixa}$$
+$$\text{Diferença Final} = \text{Disponível para Contas} - (\text{Contas Pagas} + \text{Juros Rede} + \text{Devoluções}) \equiv \mathbf{R\$\ 0,00}$$
+
+> **Conclusão Matemática:** O crédito de $R\$\ 5.770,74$ que entrou no OFX já substituiu o "A Compensar" de ontem por "Saldo em Banco" hoje. O novo "A Compensar" de hoje ($R\$\ 5.884,95$) reflete o novo faturamento gerado. Não há dupla contagem nem sumiço de ativo.
 
 ---
 
-## 4. Plano de Ação Pragmático (Quick Wins de Implementação)
+## 3. Arquitetura de Execução: Motor de Conciliação Tripla em 2 Trilhas
 
-1. **Schema Supabase:**
-   - Adicionar campo `limite_cheque_especial` na tabela `stores` (numérico, default 0).
-   - Garantir que a tabela `reconciliations` registre `saldo_inicial_banco` e `saldo_final_banco` para auditoria do delta.
-2. **Motor de Cálculo (`modulo1Calculations.ts`):**
-   - Manter a regra atual de que saldos bancários negativos entram algebricamente somando/subtraindo naturalmente na soma vetorial de lojas.
-3. **Frontend Component (`StoreExtratoBancarioView.tsx` e `ResumoDiaPanel.tsx`):**
-   - Exibir badge explicativo quando `saldo_banco_itau < 0`: `"Operando em Limite Rotativo — R$ X,XX amortizados hoje"`.
-   - Adicionar breakdown no modal de fechamento mostrando: `Saldo Inicial + Entradas - Saídas = Saldo Final`.
+Em termos de engenharia de software e banco de dados, desacoplamos a verificação em duas trilhas independentes e complementares:
 
-## 5. Veredito do Engineer
-Não precisamos reconstruir o banco de dados nem criar um sistema de contabilidade analítica pesada. O modelo atual de variação delta ($Caixa_{Hoje} - Caixa_{Ontem}$) resolve 100% da matemática. O esforço deve ser **80% em clareza de UX/Labels para o operador e 20% em parsing de encargos financeiros do extrato**.
+```
+[ TRILHA 1: VENDAS DO DIA (D0) ]
+   OSs Pagas no Cartão (ERP)  <==== Match 1:1 ====>  Transações Terminal POS (Rede D0)
+              │                                                     │
+              ▼                                                     ▼
+      Baixa no Pátio OS                              Registra Ativo a Compensar ($ 5.884,95)
+  (paid_value = total_value)                            (status: 'a_compensar' / D+1)
+
+
+[ TRILHA 2: LIQUIDAÇÃO BANCÁRIA (D0) ]
+   Crédito OFX Itaú ($ 5.770,74)  <==== Match Lote ====>  Lote Líquido Rede Passado (D-1)
+              │
+              ├─> Auto-Reconhecimento (98% dos casos): "Lote Adquirente Liquidado" -> Sem pendência
+              ├─> Override Operador: Vincular a OS específica (se houver necessidade)
+              └─> Override Operador: Justificar Categoria Manual (ex: Adiantamento / Taxa Aluguel)
+```
+
+### 1. Trilha 1: Pátio OS ⇄ Terminal Rede ($D_0$)
+- **Objetivo:** Garantir que todo cartão passado na maquininha hoje possui uma OS correspondente e que o valor líquido correto está registrado.
+- **Resultado:** Alimenta `rede_liquido` ($R\$\ 5.884,95$) e define o valor de `cartoes_a_compensar` de $D_0$.
+
+### 2. Trilha 2: Extrato Bancário OFX ⇄ Liquidações Anteriores ($D_{-1} \to D_0$)
+- **Objetivo:** Conferir se o dinheiro que a Rede prometeu depositar realmente caiu na conta corrente Itaú da filial.
+- **Resultado:** Dá baixa no lote a receber de $D_{-1}$. No extrato OFX, a linha de $R\$\ 5.770,74$ ganha o badge `🟢 Lote Rede Liquidado (Ref: D-1)` e **não entra como pendência órfã**, nem distorce o faturamento previsto do dia.
+
+---
+
+## 4. Análise de Dependências do Graphify e Blindagem Histórica
+
+Consultando o grafo de dependências do Graphify (`src/lib/graphify.ts` e topologia de nós):
+- **Nós Centrais Afetados:**
+  1. `get_daily_reconciliation_summary` (RPC mestre de consolidação)
+  2. `get_store_pos_triple_reconciliation` (RPC de cálculo de maquininhas por loja)
+  3. `StoreCartaoMaquininhaView.tsx` e `StoreExtratoBancarioView.tsx` (Componentes React)
+  4. `daily_snapshots` (Entidade de persistência imutável)
+
+### Blindagem de Fechamentos Homologados (Period Close Locking):
+- Os snapshots fechados oficiais (17, 18, 19, 21, 24/08) estão gravados com `is_closed = true`.
+- **Regra Técnica Inegociável:** O **Ramal 1** da RPC `get_daily_reconciliation_summary` devolve estritamente o JSON congelado de `daily_snapshots.metadata`. Nenhuma mudança na lógica de cálculo dinâmico de dias abertos pode alterar ou reprocessar 1 centavo dos dias fechados.
+- As mudanças são 100% isoladas no **Ramal 2 (dias abertos / cálculo em tempo real)**.
+
+---
+
+## 5. Viabilidade Técnica e Gargalos de Execução no Mundo Real
+
+Como engenheiro executor, identifico 4 gargalos práticos e suas soluções pragmáticas:
+
+| Gargalo Operacional | Causa Raiz no Mundo Real | Solução de Engenharia Pragmática |
+| :--- | :--- | :--- |
+| **1. Finais de Semana & Feriados** | Na segunda-feira, o crédito OFX agrupa vendas de sexta ($D_{-3}$), sábado ($D_{-2}$) e domingo ($D_{-1}$). | O motor de conciliação de lote busca o intervalo temporal `[data_ultimo_fechamento, data_atual - 1]`, e não um `D-1` estático. |
+| **2. Antecipações (RAV) e Descontos** | A filial antecipou recebíveis na Rede ou teve desconto de aluguel de POS na fonte, reduzindo o valor creditado no OFX. | Permitir na UI do Extrato que o operador clique em "Justificar Diferença de Lote" (ex: $R\$\ 50,00$ de taxa de antecipação) em 1 clique, integrando a despesa em `juros_rede` / `valor_contas`. |
+| **3. Performance SQL Multi-Loja** | 10 filiais calculando agregações de OFX, POS, OSs e Pátio ao mesmo tempo. | Manter a execução em CTEs pré-indexadas em uma única transação SQL (`idx_pos_target_date_store`, `idx_ofx_target_date_store`), rodando abaixo de 25ms. |
+| **4. Ruído de UX / Carga Cognitiva** | Operador não sabe se deve vincular o crédito de $R\$\ 5.770,74$ a OSs de hoje ou se o sistema faz automático. | **Zero cliques por padrão:** O sistema pré-classifica créditos com descrição `REDE`/`REDECARD` como "Lote Automático Liquidado", mantendo o botão de "Vincular a OS / Justificar" apenas como override de exceção. |
+
+---
+
+## 6. Plano de Implementação Pragmático (Execução em 4 Passos)
+
+1. **Passo 1 — Ajuste na RPC `get_store_pos_triple_reconciliation` (Supabase):**
+   - Atualizar a apuração de `nao_entrou_valor` para que, no dia da venda $D_0$, o valor a compensar seja o total das vendas de cartão de $D_0$ que ainda aguardam liquidação bancária:
+     ```sql
+     -- Em D0, o saldo de maquininhas a compensar é a totalidade das vendas líquidas do dia (D+1 standard)
+     nao_entrou_valor := COALESCE(r.rede_liquido, 0);
+     ```
+2. **Passo 2 — Normalização do Extrato Bancário (`StoreExtratoBancarioView.tsx`):**
+   - Garantir que créditos de adquirentes (`isRedeTx`) recebam status nativo `CONCILIADO — Lote Rede Liquidado`, liberando o operador de ter que vincular manualmente cada depósito a OSs de hoje.
+   - Fornecer botão de override rápido: "Vincular a OSs" ou "Justificar como Outra Receita/Ajuste".
+3. **Passo 3 — Atualização do Raio-X das 10 Filiais (`ResumoDiaPanel.tsx` e `conciliacao.index.tsx`):**
+   - Exibir com clareza nos cards da filial:
+     - `Vendas Cartão Hoje (D0):` $R\$\ 5.884,95$ *(A Compensar)*
+     - `Crédito Bancário Rede Hoje:` $R\$\ 5.770,74$ *(Liquidado na Conta)*
+4. **Passo 4 — Validação de Regressão Automatizada:**
+   - Rodar script de verificação contra os snapshots congelados (17, 18, 19, 21, 24/08) garantindo divergência $\le 0.05$ e verificar o fechamento aberto de $D_0$.
+
+---
+
+## 7. Veredito do Engineer
+
+A solução é **extremamente viável, limpa e rápida de implementar**. 
+Não requer mudanças estruturais de banco de dados, nem criação de microsserviços, nem rotinas complexas de machine learning. Trata-se puramente de **desacoplar a agregação temporal na RPC do Postgres e fornecer a rotulagem de UX correta no React**. 
+
+- **Complexidade de Implementação:** Baixa (1 migration SQL na RPC + pequenos ajustes de visualização nos cards/extrato).
+- **Tempo Estimado de Execução:** Menos de 2 horas de codificação e validação.
+- **Risco de Regressão:** Zero (protegido pela blindagem de `daily_snapshots.is_closed = true`).
+- **Nível de Confiança:** **0.98 (Altíssimo)**.

@@ -282,24 +282,36 @@ export function useHistoricalReconciledTransactions(storeId?: string) {
   return useQuery({
     queryKey: ['transactions', 'store', storeId, 'historical_reconciled'],
     queryFn: async () => {
-      let query = supabase
-        .from('transactions')
-        .select('id, fitid, store_id, target_date, occurred_at, manual_category, manual_justification, os_number, matched_os_number, status, title, amount')
-        .or('manual_category.not.is.null,os_number.not.is.null,matched_os_number.not.is.null')
-        .order('occurred_at', { ascending: false })
-        .limit(300);
-      
-      if (storeId && storeId !== 'all') {
-        query = query.eq('store_id', storeId);
+      try {
+        let query = supabase
+          .from('transactions')
+          .select('id, fitid, store_id, target_date, occurred_at, manual_category, manual_justification, os_number, matched_os_number, status, title, amount')
+          .order('occurred_at', { ascending: false })
+          .limit(200);
+        
+        if (storeId && storeId !== 'all') {
+          query = query.eq('store_id', storeId);
+        }
+        
+        const { data, error } = await query;
+        if (error) {
+          console.warn('Aviso ao consultar histórico de conciliações:', error);
+          return [];
+        }
+        
+        // Filtra em memória para máxima confiabilidade
+        return (data || []).filter((t: any) => t.manual_category || t.os_number || t.matched_os_number);
+      } catch (err) {
+        console.warn('Exceção ao consultar histórico de conciliações:', err);
+        return [];
       }
-      
-      const { data, error } = await query;
-      if (error) throw error;
-      return data as any[];
     },
     enabled: !!storeId,
+    staleTime: 1000 * 60 * 5,
+    retry: 1,
   });
 }
+
 
 
 
