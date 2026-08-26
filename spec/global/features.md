@@ -187,3 +187,7 @@
 ### Spec 294 — Deduplicação de Contas a Pagar e Resolução de NaN por Filial (2026-08-26)
 - **Deduplicação de Contas:** `get_daily_reconciliation_summary` unificado para priorizar `daily_manual_bills` como fonte única da verdade, eliminando contagem dupla.
 - **Fechamento por Filial:** Retorno de `maquininha`, `pix`, `previsto_ofx` e `diferenca` para todas as 10 lojas com blindagem anti-NaN no frontend.
+
+### Spec 295 — Vinculação de Dinheiro no Cofre e Saldo Consolidado por Filial (2026-08-26)
+- **Agregação de Cofre por Loja:** `get_daily_reconciliation_summary` atualizado com CTE `store_vault` populando `dinheiro_loja` e `vault_entries` por `store_id`.
+- **Saldo Consolidado por Filial:** `saldo_banco` agora computa `OFX + Dinheiro + Maquininhas`, equalizando o rodapé com o card do topo (R$ 52.914,85).

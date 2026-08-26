@@ -620,3 +620,15 @@
 **Risco identificado:** A importação de despesas grava tanto os registros detalhados na tabela quanto atualiza o total no snapshot; consultas que somavam ambas as fontes geravam distorção de 100% no subtotal de contas.
 
 **Não fazer:** Nunca some um acumulador em snapshot junto com as linhas detalhadas da tabela que geraram esse acumulador.
+
+## 2026-08-26 — [Feature ID: 295]
+
+**Contexto:** Dinheiro no cofre (`store_cash_vault`) não aparecia na filial correta na tabela por loja, e o Saldo Consolidado por filial não somava os três componentes da conta.
+
+**Regra aprendida:**
+- **Saldo Consolidado por Filial:** O campo `saldo_banco` no array `stores` deve representar o saldo patrimonial completo da loja:
+  $$\text{Saldo Consolidado} = \text{Extrato OFX (Itaú)} + \text{Dinheiro no Cofre} + \text{Maquininhas (A Compensar)}$$
+- **Agregação de Cofre (`store_cash_vault`):** Deve ser agrupada por `store_id` na RPC para popular `dinheiro_loja` e a lista de `vault_entries`, viabilizando o botão "Dar Baixa" em depósitos pendentes na filial correta (ex: Santo André - HD `st-08`).
+- **Consistência de Totais:** O total consolidado da tabela do modal (`SaldoBancosDetailModal`) deve ser matematicamente idêntico ao valor exibido no card do topo ("SALDO BANCOS + DINHEIRO").
+
+**Não fazer:** Nunca deixe campos de agregação por loja hardcoded como `0` quando já existe a tabela física de suporte no banco de dados.
