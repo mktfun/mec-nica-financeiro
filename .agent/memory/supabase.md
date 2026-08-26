@@ -268,3 +268,13 @@ Garantia de salvamento de mensagens do assistente no banco de dados e isolamento
 **Risco identificado:** Executar apenas `CREATE OR REPLACE FUNCTION func(text)` quando já existia `func(date, boolean DEFAULT false)` não substitui a função anterior, criando uma sobrecarga invisível no banco que quebra o PostgREST.
 
 **Não fazer:** Nunca crie múltiplas variantes com assinaturas diferentes para a mesma RPC no PostgreSQL.
+
+## 2026-08-26 — [Feature ID: 296]
+
+**Contexto:** Resolução de erro `PGRST303: JWT issued at future` na listagem de lojas (`stores`) e correção de HTTP 400 em `ai_settings`.
+
+**Regra aprendida:**
+- **Tabelas Mestres / Referência (`stores`):** A política de `SELECT` em tabelas que servem de base estrutural para a navegação do app deve ser `FOR SELECT USING (true)`. Isso impede que divergências de relógio (*clock skew*) ou sessões expiradas em navegadores de clientes bloqueiem a listagem de filiais e quebrem a aplicação inteira.
+- **Schema Completo de `ai_settings`:** A tabela `ai_settings` deve conter as colunas `id (uuid)`, `user_id (text)`, `provider (text)`, `model (text)`, `api_key (text)`, `bot_url (text)`, `bot_api_key (text)` com RLS habilitado.
+
+**Não fazer:** Nunca restrinja `SELECT` de tabelas de metadados públicos ou filiais exclusivamente a `auth.uid() IS NOT NULL` se isso puder gerar travamento em cascata da UI durante transições de sessão de auth.

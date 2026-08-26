@@ -13,16 +13,35 @@ export function useStores() {
   return useQuery({
     queryKey: ['stores'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let { data, error } = await supabase
         .from('stores')
         .select('*')
         .eq('active', true)
         .order('name');
+
+      if (error) {
+        if (error.code === 'PGRST303' || error.message?.toLowerCase().includes('jwt')) {
+          console.warn('[useStores] JWT skew/error detected, refreshing session...');
+          try {
+            await supabase.auth.refreshSession();
+            const retry = await supabase
+              .from('stores')
+              .select('*')
+              .eq('active', true)
+              .order('name');
+            data = retry.data;
+            error = retry.error;
+          } catch (e) {
+            // Ignore error
+          }
+        }
+      }
+
       if (error) {
         console.warn('Failed to fetch stores:', error);
         return [];
       }
-      return (data as StoreRow[]).map(sanitizeStore);
+      return (data as StoreRow[] || []).map(sanitizeStore);
     },
     staleTime: 5 * 60 * 1000, // 5 min cache
   });

@@ -191,3 +191,7 @@
 ### Spec 295 — Vinculação de Dinheiro no Cofre e Saldo Consolidado por Filial (2026-08-26)
 - **Agregação de Cofre por Loja:** `get_daily_reconciliation_summary` atualizado com CTE `store_vault` populando `dinheiro_loja` e `vault_entries` por `store_id`.
 - **Saldo Consolidado por Filial:** `saldo_banco` agora computa `OFX + Dinheiro + Maquininhas`, equalizando o rodapé com o card do topo (R$ 52.914,85).
+
+### Spec 296 — Resolução de PGRST303 e Blindagem de AI Settings (2026-08-26)
+- **Leitura Pública de Lojas:** RLS da tabela `stores` atualizada para leitura irrestrita (`USING (true)`) e auto-refresh de sessão no hook `useStores.ts`.
+- **Schema AI Settings:** Colunas `provider`, `model`, `api_key` e `user_id` adicionadas com RLS na tabela `ai_settings`.
