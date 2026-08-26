@@ -255,3 +255,16 @@ Garantia de salvamento de mensagens do assistente no banco de dados e isolamento
 - A sintaxe de negação em OR no PostgREST JS deve ser evitada em queries compostas; prefira queries limpas com filtragem in-memory segura.
 
 **Não fazer:** Nunca passar literais arbitrários como 'GLOBAL' para colunas UUID no PostgREST.
+
+## 2026-08-26 — [Feature ID: 293]
+
+**Contexto:** Erro `PGRST203` do PostgREST devido a sobrecargas residuais de funções no PostgreSQL (`date` vs `text`, `uuid` vs `text`), causando tela zerada no painel de conciliação diária.
+
+**Regra aprendida:**
+- O PostgREST não suporta sobrecarga de funções SQL no schema `public` com os mesmos nomes de parâmetros ou tipos compatíveis. Ele aborta com erro `PGRST203: Could not choose the best candidate function`.
+- Para garantir que nenhuma variante antiga permaneça no catálogo do PostgreSQL (`pg_proc`), **SEMPRE execute `DROP FUNCTION IF EXISTS public.nome_funcao(tipo1, tipo2...)` com a lista EXATA de tipos de cada assinatura anterior** antes de criar a versão canônica.
+- Em `ofx_transactions`, a coluna de descrição é `counterpart_name` e o identificador bancário é `fitid` (a tabela NÃO possui coluna `title`).
+
+**Risco identificado:** Executar apenas `CREATE OR REPLACE FUNCTION func(text)` quando já existia `func(date, boolean DEFAULT false)` não substitui a função anterior, criando uma sobrecarga invisível no banco que quebra o PostgREST.
+
+**Não fazer:** Nunca crie múltiplas variantes com assinaturas diferentes para a mesma RPC no PostgreSQL.

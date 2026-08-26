@@ -174,3 +174,12 @@
 - **RPCs:** `get_store_pos_triple_reconciliation`, `get_daily_reconciliation_summary` unificada e universal (sem hardcodes).
 - **Frontend:** `StoreExtratoBancarioView.tsx` com badges compactos `h-5`, saídas sem justificativa e créditos de lote com bloqueio seguro de vínculo de OS.
 - **Hooks:** `useAiSettings.ts` e `useTransactions.ts` blindados com zero erros 400 e cache de 5-10 minutos.
+
+### Spec 293 — Eliminação Definitiva de Sobrecargas de RPC (PGRST203) e Restauração Integral do Painel (2026-08-26)
+- **RPCs Desambiguadas (PostgREST Single Canonical Signature):**
+  - `get_daily_reconciliation_summary(p_date text, p_force_dynamic boolean DEFAULT false)`
+  - `get_store_pos_triple_reconciliation(p_target_date text)`
+  - `get_raw_os_data(p_store_id text, p_date text)`
+  - `get_store_financial_stats(p_store_id text, p_start_date text, p_end_date text)`
+  - `get_receivables_summary(p_date text DEFAULT NULL)`
+- **Catálogo pg_proc:** 0 sobrecargas duplicadas restantes no banco.
