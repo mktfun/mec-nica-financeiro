@@ -22,6 +22,19 @@ interface ManualMatchOsModalProps {
   targetDate: string;
 }
 
+function checkNameMatch(txCounterpart: string = '', txTitle: string = '', clientName: string = ''): { isNameMatch: boolean; matchedWords: string[] } {
+  if (!clientName || clientName.toLowerCase().trim() === 'cliente') return { isNameMatch: false, matchedWords: [] };
+  
+  const normalize = (str: string) => str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 ]/g, " ").trim();
+  const txCombined = normalize(`${txCounterpart} ${txTitle}`);
+  const txWords = txCombined.split(/\s+/).filter(w => w.length >= 3 && !['pix', 'ted', 'doc', 'transf', 'transferencia', 'deposito', 'entrada', 'saida', 'banco', 'ltda', 'eireli', 'me'].includes(w));
+  const clientWords = normalize(clientName).split(/\s+/).filter(w => w.length >= 3 && !['ltda', 'eireli', 'me', 'cliente'].includes(w));
+  
+  const matched = clientWords.filter(cw => txWords.some(tw => tw === cw || (cw.length >= 4 && (tw.includes(cw) || cw.includes(tw)))));
+  const isNameMatch = matched.length >= 2 || (matched.length === 1 && matched[0].length >= 5);
+  return { isNameMatch, matchedWords: matched };
+}
+
 export function ManualMatchOsModal({
   isOpen,
   onClose,
@@ -33,7 +46,7 @@ export function ManualMatchOsModal({
   const { data: osCandidates = [], isLoading } = useAvailableStoreOs(storeId, targetDate);
   const { linkTransactionToOs, loading: linking } = useManualMatch();
 
-  // Desduplica por os_number e ordena com matches exatos no topo
+  // Desduplica por os_number e ordena com matches inteligentes no topo
   const sortedAndDeduplicatedCandidates = useMemo(() => {
     if (!transaction) return [];
 
@@ -62,15 +75,24 @@ export function ManualMatchOsModal({
       );
     }
 
-    // Ordenação: 1. Match Exato no PIX -> 2. Menor Diferença -> 3. Número da OS
+    // Ordenação Inteligente: 1. Nome + Valor (100) -> 2. Nome (80) -> 3. Valor (60) -> 4. Menor Diferença
     return list.sort((a, b) => {
+      const matchA = checkNameMatch(transaction.counterpart_name, transaction.title, a.client_name);
+      const matchB = checkNameMatch(transaction.counterpart_name, transaction.title, b.client_name);
+
       const valA = a.pix_transfer_value > 0 ? a.pix_transfer_value : Math.max(0, a.total_value - a.paid_value);
       const valB = b.pix_transfer_value > 0 ? b.pix_transfer_value : Math.max(0, b.total_value - b.paid_value);
       const diffA = Math.abs(valA - txAmount);
       const diffB = Math.abs(valB - txAmount);
+      const exactA = diffA < 0.05;
+      const exactB = diffB < 0.05;
 
-      if (diffA < 0.05 && diffB >= 0.05) return -1;
-      if (diffB < 0.05 && diffA >= 0.05) return 1;
+      const scoreA = (matchA.isNameMatch && exactA) ? 100 : (matchA.isNameMatch ? 80 : (exactA ? 60 : 0));
+      const scoreB = (matchB.isNameMatch && exactB) ? 100 : (matchB.isNameMatch ? 80 : (exactB ? 60 : 0));
+
+      if (scoreA !== scoreB) {
+        return scoreB - scoreA;
+      }
       return diffA - diffB;
     });
   }, [osCandidates, search, transaction]);
@@ -162,7 +184,7 @@ export function ManualMatchOsModal({
                   <th className="py-2.5 px-3 text-left">Cliente / Placa</th>
                   <th className="py-2.5 px-3 text-left">Pagamento Declarado</th>
                   <th className="py-2.5 px-3 text-right">Valor PIX / Saldo</th>
-                  <th className="py-2.5 px-3 text-center">Diferença</th>
+                  <th className="py-2.5 px-3 text-center">Diferença / Match</th>
                   <th className="py-2.5 px-3 text-right">Ação</th>
                 </tr>
               </thead>
@@ -171,13 +193,18 @@ export function ManualMatchOsModal({
                   const osVal = os.pix_transfer_value > 0 ? os.pix_transfer_value : Math.max(0, os.total_value - os.paid_value);
                   const diff = Math.abs(osVal - txAmount);
                   const isExact = diff < 0.05;
+                  const nameMatch = checkNameMatch(transaction.counterpart_name, transaction.title, os.client_name);
+
+                  const isHighPriority = (nameMatch.isNameMatch && isExact) || nameMatch.isNameMatch;
 
                   return (
                     <tr
                       key={os.os_number}
                       className={`transition-colors ${
-                        isExact
-                          ? 'bg-emerald-500/10 hover:bg-emerald-500/15 border-l-2 border-emerald-500'
+                        isHighPriority
+                          ? 'bg-emerald-500/10 hover:bg-emerald-500/15 border-l-2 border-emerald-400'
+                          : isExact
+                          ? 'bg-blue-500/10 hover:bg-blue-500/15 border-l-2 border-blue-400'
                           : 'hover:bg-[var(--bg-surface-hover)]'
                       }`}
                     >
@@ -192,12 +219,12 @@ export function ManualMatchOsModal({
                       {/* Cliente / Placa */}
                       <td className="py-2.5 px-3 text-[var(--text-secondary)]">
                         <div className="flex flex-col">
-                          <span className="font-medium text-[var(--text-primary)] truncate max-w-[150px]">
+                          <span className={`font-semibold truncate max-w-[200px] ${nameMatch.isNameMatch ? 'text-emerald-300' : 'text-[var(--text-primary)]'}`}>
                             {os.client_name || 'Cliente'}
                           </span>
                           {os.plate && (
                             <span className="text-[10px] text-[var(--text-tertiary)] font-mono">
-                              {os.plate}
+                              Placa: {os.plate}
                             </span>
                           )}
                         </div>
@@ -215,11 +242,19 @@ export function ManualMatchOsModal({
                         R$ {osVal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </td>
 
-                      {/* Diferença */}
+                      {/* Diferença / Match */}
                       <td className="py-2.5 px-3 text-center font-mono">
-                        {isExact ? (
-                          <Badge variant="success" className="bg-emerald-500/20 text-emerald-400 border-emerald-500/40 text-[10px] font-bold">
-                            <CheckCircle2 size={10} className="mr-1" /> Match Exato
+                        {nameMatch.isNameMatch && isExact ? (
+                          <Badge variant="success" className="bg-emerald-500/20 text-emerald-300 border-emerald-500/40 text-[10px] font-bold">
+                            <Sparkles size={10} className="mr-1 text-emerald-400" /> Match Nome + Valor
+                          </Badge>
+                        ) : nameMatch.isNameMatch ? (
+                          <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[10px] font-bold">
+                            <Sparkles size={10} className="mr-1 text-emerald-400" /> Match por Nome
+                          </Badge>
+                        ) : isExact ? (
+                          <Badge variant="success" className="bg-blue-500/20 text-blue-300 border-blue-500/40 text-[10px] font-bold">
+                            <CheckCircle2 size={10} className="mr-1" /> Match por Valor
                           </Badge>
                         ) : (
                           <span className="text-[10px] text-amber-400 font-medium">
@@ -232,13 +267,15 @@ export function ManualMatchOsModal({
                       <td className="py-2.5 px-3 text-right">
                         <Button
                           size="sm"
-                          variant={isExact ? 'primary' : 'teal'}
+                          variant={isHighPriority || isExact ? 'primary' : 'teal'}
                           disabled={linking}
                           onClick={() => handleLink(os)}
                           className={`h-7 px-3 text-xs font-semibold gap-1 shrink-0 ${
-                            isExact
-                              ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20'
-                              : 'bg-[var(--bg-panel)] hover:bg-[var(--bg-surface-hover)] border border-[var(--border-subtle)] text-[var(--text-primary)]'
+                            isHighPriority
+                              ? 'bg-emerald-500 hover:bg-emerald-400 text-black shadow-md shadow-emerald-500/20 font-bold'
+                              : isExact
+                              ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-md shadow-blue-600/20'
+                              : 'border-[var(--color-primary)]/40 text-[var(--text-primary)] hover:bg-[var(--color-primary)]/10'
                           }`}
                         >
                           <Link2 size={12} />

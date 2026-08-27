@@ -120,7 +120,8 @@ export function ResumoDiaPanel({
     : (summary?.contas_manual ?? ((currentSnapshot?.contas_a_pagar ?? 0) + (summary?.contas_extras || 0)));
 
   // Pilares Automáticos
-  const saldoBancosValor = summary?.total_saldo_banco ?? currentSnapshot?.saldo_bancario ?? totalBancarioIn;
+  const saldoBancosValor = summary?.total_saldo_banco_positivo ?? summary?.total_saldo_banco ?? currentSnapshot?.saldo_bancario ?? totalBancarioIn;
+  const saldoNegativoItau = summary?.saldo_negativo_itau ?? currentSnapshot?.saldo_negativo_itau ?? 0;
   const naLojaValor = summary?.na_loja_os ?? currentSnapshot?.total_patio ?? 0;
   const jurosRedeValor = summary?.juros_rede ?? currentSnapshot?.juros_rede ?? 0;
   const devolucoesRedeValor = summary?.devolucoes_rede || 0;
@@ -488,7 +489,7 @@ export function ResumoDiaPanel({
               </div>
 
               <p className="text-2xl sm:text-3xl font-bold font-sans tabular-nums text-[var(--color-accent-light-blue)]">
-                <AnimatedNumber value={summary?.total_saldo_banco ?? saldoBancosValor} format="currency" />
+                <AnimatedNumber value={summary?.total_saldo_banco_positivo ?? summary?.total_saldo_banco ?? saldoBancosValor} format="currency" />
               </p>
             </div>
 
@@ -496,16 +497,17 @@ export function ResumoDiaPanel({
             {(() => {
               const hasCofre = (summary?.dinheiro_em_lojas ?? 0) > 0;
               const hasMaq = (summary?.cartoes_a_compensar ?? 0) > 0;
-              const itemsCount = 1 + (hasCofre ? 1 : 0) + (hasMaq ? 1 : 0);
+              const hasNeg = (summary?.saldo_negativo_itau ?? 0) > 0;
+              const totalItems = 1 + (hasCofre ? 1 : 0) + (hasMaq ? 1 : 0) + (hasNeg ? 1 : 0);
 
               return (
-                <div className={`grid ${itemsCount === 3 ? 'grid-cols-3' : itemsCount === 2 ? 'grid-cols-2' : 'grid-cols-1'} gap-2 pt-2.5 mt-2 border-t border-[var(--border-subtle)] text-[10px]`}>
+                <div className={`grid ${totalItems >= 4 ? 'grid-cols-2 sm:grid-cols-4' : totalItems === 3 ? 'grid-cols-3' : totalItems === 2 ? 'grid-cols-2' : 'grid-cols-1'} gap-2 pt-2.5 mt-2 border-t border-[var(--border-subtle)] text-[10px]`}>
                   <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-md px-2.5 py-1.5 flex flex-col justify-center">
                     <span className="text-[8px] text-[var(--text-tertiary)] uppercase font-semibold truncate">
-                      Extrato OFX (10 bancos)
+                      Extrato OFX (Positivo)
                     </span>
                     <span className="font-mono font-bold text-[var(--text-primary)] text-xs truncate">
-                      <AnimatedNumber value={summary?.saldo_bancos_ofx ?? saldoBancosValor} format="currency" />
+                      <AnimatedNumber value={summary?.saldo_bancos_positivo ?? summary?.saldo_bancos_ofx ?? saldoBancosValor} format="currency" />
                     </span>
                   </div>
 
@@ -523,6 +525,15 @@ export function ResumoDiaPanel({
                       <span className="text-[8px] text-emerald-400/80 uppercase font-semibold truncate">A Compensar</span>
                       <span className="font-mono font-bold text-emerald-300 text-xs truncate">
                         + <AnimatedNumber value={summary?.cartoes_a_compensar || 0} format="currency" />
+                      </span>
+                    </div>
+                  )}
+
+                  {hasNeg && (
+                    <div className="bg-red-500/10 border border-red-500/30 rounded-md px-2.5 py-1.5 flex flex-col justify-center text-red-400">
+                      <span className="text-[8px] text-red-400 uppercase font-semibold truncate">(-) Cheque Esp.</span>
+                      <span className="font-mono font-bold text-red-400 text-xs truncate">
+                        - <AnimatedNumber value={summary?.saldo_negativo_itau || 0} format="currency" />
                       </span>
                     </div>
                   )}
@@ -651,7 +662,11 @@ export function ResumoDiaPanel({
                 <p className="text-xl font-bold text-[var(--text-primary)] font-mono mt-0.5">
                   <AnimatedNumber value={caixaAtualCalculado} format="currency" />
                 </p>
-                <span className="text-[10px] text-[var(--text-tertiary)]">Patrimônio disponível</span>
+                <span className="text-[10px] text-[var(--text-tertiary)] truncate block">
+                  {saldoNegativoItau > 0
+                    ? `Ativos - ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(saldoNegativoItau)} (Negativo)`
+                    : 'Patrimônio disponível'}
+                </span>
               </div>
 
               {/* Caixa Anterior */}

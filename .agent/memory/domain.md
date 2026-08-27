@@ -1,3 +1,20 @@
+## [2026-08-27] — [Feature ID: 301-segregacao-saldo-negativo-cheque-especial-e-caixa-atual]
+
+**Contexto:** Segregação contábil e visual estrita entre saldos bancários positivos e saldos devedores (cheque especial / limite), eliminando o abatimento antecipado do negativo dentro do Card de Bancos e realizando a dedução de forma transparente e única diretamente no Caixa Atual.
+
+**Regra aprendida:**
+1. **Composição do Card de Saldo Bancos + Dinheiro:**
+   - O saldo OFX e o valor principal de destaque do Pilar 1 representam os **Ativos Brutos Disponíveis**: $\text{Saldo Bancos Positivos} + \text{Dinheiro em Cofre} + \text{Rede a Compensar}$.
+   - Se houver contas em cheque especial / saldo negativo (`saldo_negativo_itau > 0`), o valor devedor é exibido em um **sub-card/pill dedicado em vermelho**: `(-) Cheque Esp.: - R$ XX.XXX,XX`.
+2. **Dedução Única no Caixa Atual:**
+   - A dedução do passivo de cheque especial ocorre **estritamente uma única vez** no fechamento do Caixa Atual:
+     $$\text{Caixa Atual} = (\text{Total de Ativos Brutos}) - \text{Saldo Negativo (Cheque Especial)}$$
+   - O Hero Card de Caixa Atual demonstra essa transparência em seu subtexto.
+3. **Modal Raio-X de Saldos:**
+   - Divide no cabeçalho: `OFX Positivo`, `(-) Cheque Especial`, `Cofre nas Lojas`, `A Compensar (Rede)` e `Líquido Disponível`, formatando as filiais devedoras em vermelho com badge `Cheque Esp.`.
+
+**Não fazer:** Nunca subtrair o saldo de contas devedoras/negativas dentro do total bruto de bancos no Card de Bancos, pois isso mascara a liquidez real das filiais positivas e impede a conciliação clara do fechamento contábil.
+
 ## [2026-08-26] — [Feature ID: 291-preservacao-total-transacoes-ofx-e-heranca-conciliacoes-historicas]
 
 **Contexto:** Preservação de 100% dos lançamentos contidos em arquivos OFX (incluindo fins de semana, feriados prolongados e datas retroativas/futuras) e herança automática de justificativas/OSs com trava de segurança (read-only / lock) para lançamentos pertencentes a conciliações anteriores ou posteriores.

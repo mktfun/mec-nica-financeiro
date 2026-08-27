@@ -6,6 +6,7 @@ import { useSaveImportedReport } from './useConciliacao';
 export interface ParsedOS {
   os_number: string;
   plate: string;
+  client_name?: string | null;
   opened_at: string;
   closed_at: string | null;
   total_value: number;
@@ -79,6 +80,7 @@ export async function savePatioOsAndReceivables(
         store_name: storeName,
         os_number: String(os.os_number),
         plate: os.plate,
+        client_name: os.client_name || existingObj?.client_name || null,
         total_value: os.total_value,
         paid_value: os.paid_value,
         payment_method: os.payment_method,

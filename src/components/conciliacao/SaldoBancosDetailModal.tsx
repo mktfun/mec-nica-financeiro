@@ -103,16 +103,18 @@ export function SaldoBancosDetailModal({
     return rows.filter(r => r.storeName.toLowerCase().includes(term));
   }, [rows, searchTerm]);
 
-  // Totais Gerais
+  // Totais Gerais Segregados
   const totals = useMemo(() => {
     return rows.reduce(
       (acc, curr) => ({
-        ofx: acc.ofx + curr.saldoOfxPuro,
+        ofxPositivo: acc.ofxPositivo + (curr.saldoOfxPuro > 0 ? curr.saldoOfxPuro : 0),
+        ofxNegativo: acc.ofxNegativo + (curr.saldoOfxPuro < 0 ? Math.abs(curr.saldoOfxPuro) : 0),
+        ofxTotal: acc.ofxTotal + curr.saldoOfxPuro,
         dinheiro: acc.dinheiro + curr.dinheiroLoja,
         maquininhas: acc.maquininhas + curr.maquininhaNaoEntrou,
         total: acc.total + curr.saldoConsolidado
       }),
-      { ofx: 0, dinheiro: 0, maquininhas: 0, total: 0 }
+      { ofxPositivo: 0, ofxNegativo: 0, ofxTotal: 0, dinheiro: 0, maquininhas: 0, total: 0 }
     );
   }, [rows]);
 
@@ -123,6 +125,8 @@ export function SaldoBancosDetailModal({
     }
   };
 
+  const hasNegativo = totals.ofxNegativo > 0;
+
   return (
     <Modal
       isOpen={isOpen}
@@ -131,50 +135,63 @@ export function SaldoBancosDetailModal({
       size="2xl"
     >
       <div className="space-y-6">
-        {/* Header Cards com o Resumo dos 4 Componentes no padrão visual do sistema */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-4 space-y-1">
-            <div className="flex items-center gap-2 text-[var(--text-tertiary)] text-xs font-semibold uppercase tracking-wider">
-              <Landmark className="w-4 h-4 text-[var(--color-accent-light-blue)]" />
-              Extratos OFX (Bancos)
+        {/* Header Cards com o Resumo Segregado */}
+        <div className={`grid grid-cols-1 sm:grid-cols-2 ${hasNegativo ? 'lg:grid-cols-5' : 'lg:grid-cols-4'} gap-3`}>
+          <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3.5 space-y-1">
+            <div className="flex items-center gap-1.5 text-[var(--text-tertiary)] text-xs font-semibold uppercase tracking-wider">
+              <Landmark className="w-3.5 h-3.5 text-[var(--color-accent-light-blue)]" />
+              OFX Positivo
             </div>
-            <div className="text-xl font-bold font-sans tabular-nums text-[var(--text-primary)]">
-              {formatCurrency(totals.ofx)}
+            <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-[var(--text-primary)]">
+              {formatCurrency(totals.ofxPositivo)}
             </div>
-            <div className="text-[11px] text-[var(--text-tertiary)]">10 contas Itaú ativas</div>
+            <div className="text-[10px] text-[var(--text-tertiary)]">Contas com saldo ativo</div>
           </div>
 
-          <div className="bg-[var(--bg-canvas)] border border-amber-500/30 rounded-xl p-4 space-y-1">
-            <div className="flex items-center gap-2 text-amber-400 text-xs font-semibold uppercase tracking-wider">
-              <Banknote className="w-4 h-4 text-amber-400" />
-              Dinheiro no Cofre
+          {hasNegativo && (
+            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3.5 space-y-1">
+              <div className="flex items-center gap-1.5 text-red-400 text-xs font-semibold uppercase tracking-wider">
+                <Landmark className="w-3.5 h-3.5 text-red-400" />
+                (-) Cheque Especial
+              </div>
+              <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-red-400">
+                - {formatCurrency(totals.ofxNegativo)}
+              </div>
+              <div className="text-[10px] text-red-400/80">Deduzido no Caixa Atual</div>
             </div>
-            <div className="text-xl font-bold font-sans tabular-nums text-amber-300">
+          )}
+
+          <div className="bg-[var(--bg-canvas)] border border-amber-500/30 rounded-xl p-3.5 space-y-1">
+            <div className="flex items-center gap-1.5 text-amber-400 text-xs font-semibold uppercase tracking-wider">
+              <Banknote className="w-3.5 h-3.5 text-amber-400" />
+              Cofre nas Lojas
+            </div>
+            <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-amber-300">
               {formatCurrency(totals.dinheiro)}
             </div>
-            <div className="text-[11px] text-amber-400/70">Em trânsito nas lojas</div>
+            <div className="text-[10px] text-amber-400/70">Em espécie nas filiais</div>
           </div>
 
-          <div className="bg-[var(--bg-canvas)] border border-emerald-500/30 rounded-xl p-4 space-y-1">
-            <div className="flex items-center gap-2 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
-              <CreditCard className="w-4 h-4 text-emerald-400" />
-              Maquininhas (A Compensar)
+          <div className="bg-[var(--bg-canvas)] border border-emerald-500/30 rounded-xl p-3.5 space-y-1">
+            <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
+              <CreditCard className="w-3.5 h-3.5 text-emerald-400" />
+              A Compensar (Rede)
             </div>
-            <div className="text-xl font-bold font-sans tabular-nums text-emerald-300">
+            <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-emerald-300">
               {formatCurrency(totals.maquininhas)}
             </div>
-            <div className="text-[11px] text-emerald-400/70">Vendas Rede a compensar</div>
+            <div className="text-[10px] text-emerald-400/70">Vendas Rede de hoje</div>
           </div>
 
-          <div className="bg-[var(--bg-canvas)] border border-[var(--color-primary)]/40 rounded-xl p-4 space-y-1">
-            <div className="flex items-center gap-2 text-[var(--color-primary)] text-xs font-semibold uppercase tracking-wider">
-              <CheckCircle2 className="w-4 h-4 text-[var(--color-primary)]" />
-              Total Consolidado
+          <div className="bg-[var(--bg-canvas)] border border-[var(--color-primary)]/40 rounded-xl p-3.5 space-y-1">
+            <div className="flex items-center gap-1.5 text-[var(--color-primary)] text-xs font-semibold uppercase tracking-wider">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[var(--color-primary)]" />
+              Líquido Disponível
             </div>
-            <div className="text-xl font-bold font-sans tabular-nums text-[var(--text-primary)]">
+            <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-[var(--text-primary)]">
               {formatCurrency(totals.total)}
             </div>
-            <div className="text-[11px] text-[var(--text-tertiary)]">Pilar 1 do Fechamento</div>
+            <div className="text-[10px] text-[var(--text-tertiary)]">Pilar 1 Consolidado</div>
           </div>
         </div>
 
@@ -215,8 +232,14 @@ export function SaldoBancosDetailModal({
                     <Building2 className="w-4 h-4 text-[var(--text-tertiary)] shrink-0" />
                     <span className="whitespace-nowrap">{row.storeName}</span>
                   </td>
-                  <td className="py-3.5 px-5 text-right font-mono tabular-nums text-[var(--text-secondary)] whitespace-nowrap">
-                    {formatCurrency(row.saldoOfxPuro)}
+                  <td className={`py-3.5 px-5 text-right font-mono tabular-nums whitespace-nowrap ${row.saldoOfxPuro < 0 ? 'text-red-400 font-semibold' : 'text-[var(--text-secondary)]'}`}>
+                    {row.saldoOfxPuro < 0 ? (
+                      <span className="inline-flex items-center gap-1 bg-red-500/10 px-2 py-0.5 rounded border border-red-500/30">
+                        {formatCurrency(row.saldoOfxPuro)}
+                      </span>
+                    ) : (
+                      formatCurrency(row.saldoOfxPuro)
+                    )}
                   </td>
                   <td className="py-3.5 px-5 text-center whitespace-nowrap">
                     {row.dinheiroLoja > 0 ? (
@@ -257,8 +280,8 @@ export function SaldoBancosDetailModal({
                     {formatCurrency(row.saldoConsolidado)}
                   </td>
                   <td className="py-3.5 px-5 text-center whitespace-nowrap">
-                    <Badge variant={row.dinheiroLoja > 0 || row.maquininhaNaoEntrou > 0 ? 'warning' : 'success'}>
-                      {row.dinheiroLoja > 0 ? 'Com Dinheiro' : row.maquininhaNaoEntrou > 0 ? 'A Compensar' : 'Conciliado'}
+                    <Badge variant={row.saldoOfxPuro < 0 ? 'danger' : (row.dinheiroLoja > 0 || row.maquininhaNaoEntrou > 0 ? 'warning' : 'success')}>
+                      {row.saldoOfxPuro < 0 ? 'Cheque Esp.' : (row.dinheiroLoja > 0 ? 'Com Dinheiro' : row.maquininhaNaoEntrou > 0 ? 'A Compensar' : 'Conciliado')}
                     </Badge>
                   </td>
                 </tr>
@@ -267,7 +290,7 @@ export function SaldoBancosDetailModal({
             <tfoot className="bg-[var(--bg-surface-elevated)] font-bold border-t border-[var(--border-subtle)]">
               <tr>
                 <td className="py-4 px-5 text-[var(--text-primary)]">TOTAIS CONSOLIDADOS</td>
-                <td className="py-4 px-5 text-right font-mono tabular-nums text-[var(--text-primary)]">{formatCurrency(totals.ofx)}</td>
+                <td className="py-4 px-5 text-right font-mono tabular-nums text-[var(--text-primary)]">{formatCurrency(totals.ofxTotal)}</td>
                 <td className="py-4 px-5 text-center font-mono tabular-nums text-amber-300 font-semibold">{formatCurrency(totals.dinheiro)}</td>
                 <td className="py-4 px-5 text-right font-mono tabular-nums text-emerald-300 font-semibold">{formatCurrency(totals.maquininhas)}</td>
                 <td className="py-4 px-5 text-right font-mono tabular-nums text-[var(--color-primary)] font-extrabold">{formatCurrency(totals.total)}</td>

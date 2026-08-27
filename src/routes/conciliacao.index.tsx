@@ -219,29 +219,14 @@ function ConciliacaoPage() {
                           <div className="bg-black/25 p-4 sm:p-5 rounded-2xl border border-white/5 flex-1 font-sans tabular-nums text-xs">
                             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6 xl:gap-8 items-center">
                               
-                              {/* 1. Saldo Bancos + Cartões */}
+                              {/* 1. SALDO TOTAL */}
                               <div>
                                 <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
-                                  Saldo Bancos + Cartões
+                                  SALDO TOTAL
                                 </span>
-                                <p className={`font-bold text-sm font-mono ${(log.saldo_banco || 0) < 0 ? 'text-rose-400' : 'text-[var(--color-accent-light-blue)]'}`}>
+                                <p className={`font-bold text-sm sm:text-base font-mono ${(log.saldo_banco || 0) < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
                                   <AnimatedNumber value={log.saldo_banco || 0} format="currency" />
                                 </p>
-                                <div className="text-[10px] text-[var(--text-tertiary)] mt-0.5 flex flex-col font-mono">
-                                  <span className={(log.saldo_banco_ofx || 0) < 0 ? 'text-rose-400/80 font-semibold' : ''}>
-                                    OFX: <AnimatedNumber value={log.saldo_banco_ofx ?? log.saldo_banco ?? 0} format="currency" />
-                                  </span>
-                                  {(log.nao_entrou_valor || 0) > 0 && (
-                                    <span className="text-amber-400 font-semibold">
-                                      + Maq: + {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(log.nao_entrou_valor || 0)}
-                                    </span>
-                                  )}
-                                  {(log.dinheiro_loja || 0) > 0 && (
-                                    <span className="text-amber-300 font-semibold">
-                                      + Cofre: + {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(log.dinheiro_loja || 0)}
-                                    </span>
-                                  )}
-                                </div>
                               </div>
 
                               {/* 2. Maquininha */}

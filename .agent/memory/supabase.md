@@ -1,3 +1,20 @@
+## [2026-08-27] — [Feature ID: 301-segregacao-saldo-negativo-cheque-especial-e-caixa-atual]
+
+**Contexto:** Atualização da RPC `public.get_daily_reconciliation_summary` para calcular e segregar `saldo_bancos_positivo` e `saldo_negativo_itau`, além da unificação canônica da assinatura `(p_date text, p_force_dynamic boolean)` com eliminação de sobrecargas legadas.
+
+**Regra aprendida:**
+1. **Segregação de Saldos na RPC:**
+   - `saldo_bancos_positivo`: `COALESCE(SUM(CASE WHEN bank_total > 0 THEN bank_total ELSE 0 END), 0)`
+   - `saldo_negativo_itau`: `COALESCE(SUM(CASE WHEN bank_total < 0 THEN ABS(bank_total) ELSE 0 END), 0)`
+   - `total_saldo_banco_positivo`: `saldo_bancos_positivo + dinheiro_em_lojas + cartoes_a_compensar - devolucoes_rede`
+   - `caixa_atual`: `(total_saldo_banco_positivo + dinheiro_mp + a_receber + na_loja_os) - saldo_negativo_itau`
+2. **Eliminação de Sobrecargas de RPCs:**
+   - Sempre executar `DROP FUNCTION IF EXISTS` para todas as assinaturas antigas (`(date, boolean)`, `(text, boolean)`, `(text)`, `(date)`) antes de recriar a função para garantir que chamadas RPC via PostgREST/SDK não executem versões obsoletas.
+3. **Resiliência do Ramal de Dias Fechados:**
+   - Em `daily_snapshots`, campos calculados como `fluxo_caixa`, `valor_disp_contas`, `subtotal_contas`, `diferenca_final` estão armazenados no JSONB `metadata`. A leitura em PL/pgSQL deve usar `COALESCE((v_snapshot.metadata->>'chave')::numeric, fallback)`.
+
+**Não fazer:** Nunca acessar colunas inexistentes na tabela física `daily_snapshots` dentro do PL/pgSQL; sempre consultar a coluna `metadata` para campos derivados de fechamento.
+
 ## [2026-08-26] — [Feature ID: 289-correcao-duplicacao-contas-manual-e-importacao]
 
 **Contexto:** Correção definitiva da duplicação de Contas (Manual) na RPC canônica `public.get_daily_reconciliation_summary` através da discriminação estrita entre contas importadas de ERP (`external_code IS NOT NULL`) e despesas manuais avulsas (`external_code IS NULL`) na tabela `public.daily_manual_bills`.

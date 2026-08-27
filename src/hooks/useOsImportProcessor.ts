@@ -86,6 +86,7 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
             rowStr.forEach((colName, idx) => {
               if (colName === 'os' || colName === 'nº os' || colName === 'nº da os' || colName === 'numero os' || colName === 'código' || colName === 'cod') colMap.os = idx;
               if (colName === 'data' || colName.includes('data entrada') || colName.includes('abertura') || (colName.includes('data') && colMap.openedAt === undefined)) colMap.openedAt = idx;
+              if (colName === 'cliente' || colName.includes('nome do cliente') || colName.includes('cliente /') || colName === 'razao social' || colName === 'razão social' || colName === 'nome') colMap.clientName = idx;
               if (colName === 'placa' || colName === 'veículo' || colName === 'veiculo') colMap.plate = idx;
               if (colName === 'status' || colName === 'situação' || colName === 'situacao') colMap.status = idx;
               if (colName === 'finalizada em' || colName === 'data fim' || colName.includes('fechamento') || colName.includes('finalizada') || colName.includes('saida') || colName.includes('saída')) colMap.closedAt = idx;
@@ -235,9 +236,13 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
           statusEnum = 'em_aberto';
         }
 
+        const rawClientName = colMap.clientName !== undefined ? String(row[colMap.clientName] || '').trim() : '';
+        const client_name = (rawClientName && !rawClientName.toLowerCase().includes('cliente')) ? rawClientName : null;
+
         osArray.push({
           os_number: osNumber,
           plate: String(row[colMap.plate] || '').trim(),
+          client_name,
           opened_at,
           closed_at,
           total_value: totalValue,

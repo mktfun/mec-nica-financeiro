@@ -1,3 +1,15 @@
+## [2026-08-27] — Feature 301: Segregação de Saldo Negativo (Cheque Especial) e Dedução Explícita no Caixa Atual
+- **Migration PostgreSQL (`20260827000003_segregate_positive_and_negative_bank_balances.sql`):** RPC `get_daily_reconciliation_summary` atualizada com discriminação canônica de `saldo_bancos_positivo` (contas $\ge 0$) e `saldo_negativo_itau` (contas $< 0$ em módulo).
+- **Pilar 1 e Card de Bancos (`src/components/conciliacao/ResumoDiaPanel.tsx`):** Valor de destaque exibe o total bruto de ativos disponíveis (Positivos + Cofre + Rede) com pill dedicado em vermelho para contas devedoras (`(-) Cheque Esp.`).
+- **Hero Card do Caixa Atual:** Dedução explícita de passivo de cheque especial uma única vez no fechamento contábil.
+- **Modal de Raio-X de Bancos (`src/components/conciliacao/SaldoBancosDetailModal.tsx`):** 5 cards segregados no cabeçalho e tabela com formatação diferenciada para filiais com limite negativo.
+
+## [2026-08-27] — Feature 300: Simplificação dos Cards de Filiais e Importação de OS com Nome do Cliente
+- **Schema & Migration (`20260827000002_add_client_name_to_patio_os.sql`):** Adicionada coluna `client_name text` em `patio_os` e `estoque_os_pendente` com backfill automático de 347 OSs.
+- **Parsers de OS (`src/hooks/useOsImportProcessor.ts` e `src/hooks/useImportProcessor.ts`):** Mapeamento do cabeçalho `Cliente` e persistência do nome do titular da OS.
+- **Cards de Filiais (`src/routes/conciliacao.index.tsx` e `src/routes/conciliacao.$lojaId.tsx`):** Redesenhados com exibição única de `SALDO TOTAL` colorido e sem textos poluídos.
+- **Modal de Match Inteligente (`src/components/conciliacao/ManualMatchOsModal.tsx`):** Algoritmo de cruzamento por similaridade textual de nomes entre PIX e OSs.
+
 ## Feature 289 — Deduplicação Canônica de Contas (Manual / Importação)
 - **Migration PostgreSQL (`20260826000001_fix_contas_manual_deduplication.sql`):** RPC `get_daily_reconciliation_summary` atualizada para segregar estritamente contas importadas de ERP (`external_code IS NOT NULL`) de despesas manuais avulsas (`external_code IS NULL`).
 - **Eliminação de Dupla Contagem:** `contas_base` reflete fielmente o lote do `BuscaContasAPagar.xls` e `contas_extras` computa apenas lançamentos manuais avulsos, garantindo fechamento perfeito em R$ 18.839,83 no dia 26/08.

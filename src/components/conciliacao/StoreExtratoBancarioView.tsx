@@ -119,7 +119,10 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
         (historicalMatch && (historicalMatch.manual_category || historicalMatch.os_number || historicalMatch.matched_os_number))
       );
 
-      const isLockedFromOtherDate = isDifferentDate && hasPriorJustification;
+      // Só trava a edição de justificativa/vínculo se a transação for de um dia passado (ontem para trás) já conciliado
+      // No dia de hoje (ou no dia selecionado), o usuário pode editar livremente!
+      const isPastDate = txOccurredDate !== '' && txOccurredDate < date;
+      const isLockedFromOtherDate = isPastDate && hasPriorJustification && (tx.target_date ? tx.target_date < date : true);
       const lockedReconciliationDate = historicalMatch?.target_date || tx.target_date || txOccurredDate;
 
       const effectiveOsNum = tx.os_number || (tx as any).matched_os_number || historicalMatch?.os_number || historicalMatch?.matched_os_number;

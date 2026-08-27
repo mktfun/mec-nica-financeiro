@@ -1,4 +1,4 @@
-﻿// Re-export the official Supabase client (with real credentials) and shared row types.
+// Re-export the official Supabase client (with real credentials) and shared row types.
 // All app code should import from here OR from "@/integrations/supabase/client" directly.
 
 export { supabase } from '@/integrations/supabase/client';
@@ -98,6 +98,7 @@ export type PatioOSRow = {
   store_id: string | null;
   store_name: string | null;
   plate: string;
+  client_name?: string | null;
   total_value: number;
   paid_value: number;
   payment_method: string | null;
