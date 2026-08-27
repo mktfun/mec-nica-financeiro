@@ -1,69 +1,61 @@
 ---
-description: Transformação de requisitos em uma Especificação física completa (SDD) antes de qualquer linha de código — com pesquisa profunda de codebase, bloqueio de duplicações, checklist atômico e save-state de memória.
+description: Transformação de requisitos em Especificação Física (SDD) com Orquestração Multi-Agente Nativa (DB, UI, Riscos em paralelo), pesquisa profunda e save-state.
 ---
 
 <!-- OPENSPEC:START -->
 
-> ⛔ **OVERRIDE SUPREMO:** Se o usuário mencionar `/teamwork-preview`, delegar para equipe ou pedir análise conjunta, PARE IMEDIATAMENTE. Acione os subagentes via `invoke_subagent`. NUNCA ignore um pedido de delegação para continuar executando sozinho.
-
-**Guardrails**
-
-- **NÃO ESCREVA CÓDIGO** nesta fase em nenhuma circunstância. Seu único output são arquivos `.md` dentro de `specs/`.
-- **RACIOCÍNIO EXPLÍCITO OBRIGATÓRIO:** Nenhuma ação começa sem um bloco de raciocínio interno (`<think>`) explícito.
-- **DEEP RESEARCH ANTES DE AGIR:** Use ferramentas simultâneas (`grep_search` + `list_dir`) para varrer o projeto. ZERO SUPOSIÇÕES sobre o que existe ou não existe.
-- **Context Budgeting:** Para arquivos grandes, leia apenas assinaturas de funções, types/interfaces e docstrings. Extraia a "casca" — não a implementação completa.
+**Guardrails de Proposal**
+- **NÃO ESCREVA CÓDIGO DE IMPLEMENTAÇÃO** nesta fase em nenhuma circunstância. Seu único output são arquivos .md dentro de specs/<id>/.
+- **RACIOCÍNIO EXPLÍCITO OBRIGATÓRIO:** Toda ação é precedida por um pensamento estratégico claro.
+- **ORQUESTRAÇÃO MULTI-AGENTE NATIVA:** Para análises profundas, delegue frentes em paralelo para subagentes especializados via invoke_subagent.
 
 ---
 
-## Phase 1: Deep Research & Leitura de Estado Global
+## Phase 1: Orquestração Paralela de Deep Research
 
-**Step 1 — Ler Memória Modular:**
-Leia os arquivos relevantes em `.agent/memory/` para o contexto da task:
-- `memory/supabase.md` → regras de DB, RLS, schemas
-- `memory/ui.md` → padrões de design, componentes consolidados
-- `memory/ofx.md`, `memory/auth.md`, etc. → módulos específicos do projeto
-- Se ainda não existirem arquivos por categoria, leia `.agent/memory.md` geral.
+**Step 1 — Carregar Memória & Identificar Escopo:**
+Leia os arquivos relevantes em .agent/memory/:
+- memory/supabase.md → regras de DB, RLS, schemas
+- memory/ui.md → padrões de design, componentes consolidados
+- memory/domain.md → regras de negócio do domínio
 
-**Step 2 — Varredura Paralela da Codebase (AST Skeleton Mode):**
-Execute simultaneamente:
-- `list_dir` na raiz e nas pastas relevantes (src/, components/, lib/, supabase/)
-- `grep_search` pelos termos-chave da feature pedida (ex: nome do módulo, nome da tabela, nome do hook)
-- Para arquivos grandes: leia apenas as primeiras 30-50 linhas (exports, types, interfaces) — não o corpo das funções
-Objetivo: mapear TUDO que já existe sem desperdiçar tokens
+**Step 2 — Disparo do Esquadrão de Pesquisa (invoke_subagent):**
+Invoque simultaneamente os subagentes especialistas com ferramentas de leitura (research ou self):
 
-**Step 3 — Consulta ao Grafo (Graphify):**
-Se `graphify-out/graph.json` existir:
-```bash
-graphify query "<feature ou módulo central>"
-graphify explain "<Modulo>"        # para entender dependências transitivas
-graphify path "<ComponenteA>" "<ComponenteB>"   # para mapear hierarquia
+```json
+{
+  "Subagents": [
+    {
+      "TypeName": "research",
+      "Role": "Database & Backend Architect",
+      "Prompt": "Inspecione a pasta supabase/, migrations, RPCs existentes e memory/supabase.md. Mapeie quais tabelas e colunas precisam ser criadas ou alteradas para a feature pedida, quais RLS policies são necessárias e se já existe alguma estrutura parecida na base. Retorne o Contrato de Dados exato.",
+      "Workspace": "inherit"
+    },
+    {
+      "TypeName": "research",
+      "Role": "Frontend & Design Architect",
+      "Prompt": "Inspecione src/components/, src/hooks/ e memory/ui.md. Mapeie quais componentes React e Hooks já existem e quais precisarão ser criados/modificados. Garanta padrão Dark UI (Zinc-950), tipagem estrita de props e estados de loading/empty/error. Retorne a árvore de componentes e contratos de interface.",
+      "Workspace": "inherit"
+    },
+    {
+      "TypeName": "research",
+      "Role": "Risk & Edge-Case Auditor",
+      "Prompt": "Leia spec/global/features.md e graphify (se existir). Identifique dependências ocultas, efeitos colaterais em outras telas e o maior risco de regressão desta feature. Defina 2 cenários de teste críticos (SCAN -> INFER -> VERIFY -> FIX).",
+      "Workspace": "inherit"
+    }
+  ]
+}
 ```
-> Graphify é Python. Instalar com: `uv tool install graphifyy`. Comando no terminal: `graphify` (um Y).
 
-**Step 4 — Criar/Validar `spec/global/`:**
-Garanta que os 4 arquivos globais existem. Crie-os se não existirem:
-- `spec/global/overview.md` — Descrição do produto, público-alvo, propósito
-- `spec/global/architecture.md` — Stack, padrões de pastas, contratos de módulos
-- `spec/global/features.md` — **MAPA VIVO DE FEATURES JÁ EXISTENTES** (atualizado a cada archive)
-- `spec/global/constraints.md` — Regras imutáveis (ex: sem glassmorphism, headless only, sem containers locais)
-
-**Step 5 — Bloqueio Anti-Duplicação:**
-Leia `spec/global/features.md`. Verifique linha a linha:
-- O componente/hook/tabela/lógica que você planeja criar JÁ EXISTE? → **BLOQUEADO.** Use o existente ou crie um wrapper mínimo.
-- Nunca crie tabela, RPC, componente ou hook sem provar que não existe equivalente.
+*Nota: Enquanto os subagentes processam em paralelo, o Maestro aguarda o retorno dos relatórios para síntese.*
 
 ---
 
-## Phase 2: Pipeline SDD — Especificação Determinística
+## Phase 2: Síntese Determinística e Geração da Spec (SDD)
 
-**Step 6 — Constitution Review:**
-Valide o pedido do usuário contra:
-- `spec/global/constraints.md` (regras imutáveis do projeto)
-- `.agent/rules/ia.md` (regras globais da IA)
-- Se o pedido violar alguma constraint → notifique o usuário ANTES de continuar
+Após receber as análises dos 3 subagentes, o Maestro consolida e escreve os artefatos:
 
-**Step 7 — Specify (Escrever `specs/<id>/proposal.md`):**
-Crie o arquivo com o seguinte conteúdo mínimo obrigatório:
+**Step 3 — Escrever specs/<id>/proposal.md:**
 ```markdown
 # Proposal: <nome da feature> (<id>)
 
@@ -73,31 +65,25 @@ O que está quebrando ou faltando, e por quê isso importa.
 ## Solução Proposta
 O que será feito. Quais módulos serão tocados.
 
-## Contratos de Dados
+## Contratos de Dados (do Subagente Backend)
 - Tabelas Supabase envolvidas (existentes ou novas)
 - Campos e tipos exatos
 - Mutações de estado (INSERT/UPDATE/DELETE)
 - RLS policies necessárias
 
-## API / Interface
+## API / Interface (do Subagente Frontend)
 - Endpoints ou RPCs que serão criados/modificados
-- Props e eventos dos componentes React (se frontend)
+- Props e eventos dos componentes React
 - Hooks afetados
 
-## Features Existentes Impactadas
-(ref a spec/global/features.md — lista o que pode quebrar)
+## Features Existentes Impactadas (do Subagente Risco)
+- Lista de fluxos que podem sofrer efeito colateral
 
-## Risco Principal
-O que tem maior chance de dar errado e por quê.
+## Risco Principal e Mitigação
+O maior ponto de falha e como será prevenido.
 ```
 
-**Step 8 — Clarify (Zero Ambiguidade):**
-PAUSE e revise: Há algum ponto ambíguo que pode levar a interpretações diferentes?
-- Se sim → liste as dúvidas explicitamente e peça esclarecimento ao usuário antes de continuar
-- Só avance quando tiver 0 (zero) ambiguidades sobre o comportamento esperado
-
-**Step 9 — Design (Escrever `specs/<id>/design.md`):**
-Crie o arquivo com o seguinte conteúdo mínimo obrigatório:
+**Step 4 — Escrever specs/<id>/design.md:**
 ```markdown
 # Design: <nome da feature> (<id>)
 
@@ -106,78 +92,45 @@ Diagrama textual do fluxo de dados ponta a ponta.
 Ex: Componente → Hook → Supabase RPC → Tabela → Retorno
 
 ## Interfaces TypeScript
-(Cole os tipos exatos que serão usados/criados)
+(Cole os tipos exatos que serão criados em types.ts)
 
 ## Componentes / Hooks / Funções
-Lista com nome, localização no projeto e responsabilidade de cada artefato novo
+Lista com nome, localização exata e responsabilidade.
 
-## Fluxo de UI (se frontend)
-Passo a passo da jornada do usuário.
-Restrições visuais: Zinc-950, sem glassmorphism, fontes Inter/Outfit.
-
-## Infra / Deploy (se aplicável)
-Topologia: app.<dominio>, api.<dominio>, studio.<dominio>
-Variáveis de ambiente necessárias no frontend e backend.
+## Fluxo de UI
+Passo a passo da experiência visual (Dark UI sólida, Zinc-950, sem glassmorphism).
 
 ## Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
 - Cenário 1: [estado inicial] → [ação] → [resultado esperado]
 - Cenário 2: [edge case] → [ação] → [resultado esperado]
 ```
 
-**Step 10 — Tasks (Escrever `specs/<id>/spec-plan.md`):**
-Este é o arquivo mais crítico — o Save-State físico da memória.
-Crie o checklist atômico e sequencial. Use ESTRITAMENTE:
-- `- [ ] Pending` para tasks não iniciadas
-- `- [/] In Progress` para tasks em execução
-- `- [x] Completed` para tasks finalizadas
-
-Formato obrigatório:
+**Step 5 — Escrever specs/<id>/spec-plan.md (Save-State de Execução):**
+Checklist atômico estruturado por tags de especialidade para facilitar a delegação no /apply:
 ```markdown
 # Spec Plan: <nome da feature> (<id>)
 
 ## Tasks
 
-- [ ] [BACKEND] Criar tabela `<nome>` com campos X, Y, Z e RLS policy para auth.uid()
-- [ ] [BACKEND] Criar RPC `<nome_rpc>` que faz X e retorna Y
-- [ ] [FRONTEND] Atualizar hook `use<Nome>` para chamar a RPC
-- [ ] [FRONTEND] Criar componente `<Nome>` em src/components/<pasta>/
-- [ ] [TEST] Verificar cenário 1: <descrição>
-- [ ] [TEST] Verificar cenário 2 (edge case): <descrição>
+- [ ] [BACKEND] Criar migration/tabela <nome> com RLS policy para auth.uid()
+- [ ] [BACKEND] Criar RPC <nome_rpc> com validação de payload
+- [ ] [FRONTEND] Criar/atualizar hook use<Nome> tipado
+- [ ] [FRONTEND] Criar componente <Nome> em src/components/<pasta>/
+- [ ] [TEST] Executar cenário 1 e validar fluxo ponta a ponta
+- [ ] [TEST] Executar cenário 2 (edge case) e VLM Visual QA
 ```
 
-**Step 11 — Analyze (Dry-Run Mental):**
-Invoque `deciqai-bayesian-reasoning` e `adaptive-reasoning` para simular mentalmente a execução:
-- Se rodar o spec-plan do Step 1 ao último, algo quebra?
-- Há dependências entre tasks que exigem ordem específica?
-- O risco principal do `proposal.md` foi mitigado no plano?
-Ajuste o `spec-plan.md` se necessário.
-
 ---
 
-## Phase 3: Aprovação e Handoff
+## Phase 3: Apresentação e Handoff
 
-**Step 12 — Apresentação ao Usuário:**
-Apresente um resumo da spec (não cole os arquivos inteiros, apenas o essencial):
-- Arquivos que serão criados/modificados
-- O maior risco identificado
-- A lista de tasks do `spec-plan.md`
+**Step 6 — Apresentar ao Usuário:**
+Apresente um resumo executivo:
+- Resumo da solução
+- Maior risco mitigado
+- Checklist de tarefas do spec-plan.md
 
-**Step 13 — Aguardar Aprovação Explícita:**
-**NÃO INICIE O `/vibe-apply` SEM APROVAÇÃO EXPLÍCITA DO USUÁRIO.**
-Quando aprovado, instrua: *"Rode `/vibe-apply <id>` para implementar."*
-
----
-
-## Infra Topology Proposal
-
-Quando envolver deploy, domínio ou backend, propor explicitamente no `design.md`:
-- Frontend publicado (ex: Lovable), topologia de subdomínios, variáveis de ambiente necessárias
-- Nunca deixe "deploy" ou "database" implícitos na proposta
-
-## Visual QA Planning
-
-Se envolver frontend com rotas protegidas por login, adicionar no `proposal.md`:
-- Credenciais de teste necessárias (email/senha) para o VLM Loop do `/vibe-apply`
-- Salvar no `.env` isolado da IA
+**Instrução final:**
+*"Spec finalizada com sucesso. Quando estiver pronto para a implementação paralela, execute /apply <id> (ou /vibe-apply <id>)."*
 
 <!-- OPENSPEC:END -->

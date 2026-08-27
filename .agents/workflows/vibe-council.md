@@ -1,26 +1,70 @@
 ---
-description: Validação universal de ideias (The True Council). Invoca um conselho deliberativo real multi-agente, orquestrado em rodadas de posição, refutação mútua e síntese final para stress-test de projetos.
+description: Convocação do Grande Conselho Multi-Agente — Debate simultâneo entre 4 personas com refutação cruzada e síntese de decisão técnica.
 ---
 
 <!-- VIBECOUNCIL:START -->
 
 **Objetivo**
-Garantir que QUALQUER ideia sobreviva a um escrutínio rigoroso através de uma deliberação estruturada real (não apenas opiniões isoladas, mas atrito de argumentos).
+Deliberar sobre decisões arquiteturais complexas, refatorações críticas ou impasses de produto através de um debate real entre subagentes antagônicos.
 
-**Protocolo (Orquestração Mestre):**
-1. O Agente Mestre deve invocar a skill nativa `council-debate`.
-2. Para executar o Conselho, abra e leia o arquivo `skills/council-debate/SKILL.md`.
-3. Siga ESTRITAMENTE as instruções do `SKILL.md` passo a passo:
-   - Extração do tópico e criação do estado (`shared_memory.json`).
-   - ROUND 1: Invocação inicial isolada dos 4 subagentes (`architect`, `engineer`, `analyst`, `contrarian`).
-   - Merge na memória via utilitário Python (`merge_memory.py`).
-   - ROUND 2: Segunda invocação dos subagentes forçando a leitura da memória e o **Rebuttal** obrigatório (citação e refutação das falas do Round 1).
-   - Merge final na memória.
-   - ROUND 3: Invocação do subagente `synthesizer` para arbitrar o veredito.
-4. Entregue o veredito final ao usuário de forma estruturada.
+---
 
-**Guardrails:**
-- NÃO crie os prompts da sua própria cabeça. Use as personas oficiais presentes em `skills/council-debate/agents/`.
-- O Mestre apenas orquestra o pipeline usando `invoke_subagent` e roda o script de JSON. Ele não participa opinando no debate.
+## Step 1 — Disparo do Conselho de Especialistas (invoke_subagent)
+
+O Maestro convoca 4 subagentes concorrentes via invoke_subagent:
+
+```json
+{
+  "Subagents": [
+    {
+      "TypeName": "research",
+      "Role": "The Pragmatist (Custo x Benefício)",
+      "Prompt": "Analise o tema proposto com foco estrito em simplicidade, tempo de entrega, facilidade de manutenção e menor quantidade de código. Identifique a solução mais elegante e rápida.",
+      "Workspace": "inherit"
+    },
+    {
+      "TypeName": "research",
+      "Role": "The Skeptic (Caçador de Falhas)",
+      "Prompt": "Analise o tema procurando todas as brechas de performance, gargalos de banco, problemas de concorrência e riscos de segurança. Aponte onde isso vai quebrar em produção.",
+      "Workspace": "inherit"
+    },
+    {
+      "TypeName": "research",
+      "Role": "The Architect (Escalabilidade & Padrões)",
+      "Prompt": "Analise o tema sob a ótica de padrões modernos (Supabase, Next.js, Type-safety, DRY). Garanta que a arquitetura não crie débitos técnicos futuros.",
+      "Workspace": "inherit"
+    },
+    {
+      "TypeName": "research",
+      "Role": "The Devil's Advocate (Contraponto Radical)",
+      "Prompt": "Tente destruir a premissa inicial do usuário. Apresente uma alternativa completamente diferente que questione se realmente precisamos implementar isso dessa forma.",
+      "Workspace": "inherit"
+    }
+  ]
+}
+```
+
+---
+
+## Step 2 — Rodada de Refutação Cruzada
+
+O Maestro recebe os 4 posicionamentos e solicita uma réplica rápida entre as visões mais conflitantes para expor contradições.
+
+---
+
+## Step 3 — Síntese & Registro da Decisão (decision.md)
+
+O Maestro consolida o veredito e escreve em .council/<tema>-decision.md:
+```markdown
+# Decisão do Conselho: <Tema>
+
+## 1. O Impasse / Pergunta Central
+## 2. Visões do Conselho (Resumo dos Argumentos)
+## 3. A Decisão Vencedora (Consenso Arquitetural)
+## 4. Plano de Ação Recomendado (Próximos Passos no /proposal)
+## 5. Riscos Aceitos e Mitigações
+```
+
+Apresente o resultado ao usuário de forma executiva e direta.
 
 <!-- VIBECOUNCIL:END -->
