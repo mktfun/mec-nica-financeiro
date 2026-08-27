@@ -1,3 +1,23 @@
+## [2026-08-27] — Feature 310: Novo Wizard Modular de Ingestão e Conciliação Passo a Passo
+- **Fase 0 — Ingestão Global Unificada (`Stage0UnifiedIngestion.tsx`):**
+  - Dropzone multi-arquivos para upload simultâneo de OFX (10 filiais Itaú), Vendas da Rede (`.xlsx`), OSs do Pátio e Contas a Pagar (`BuscaContasAPagar.xls`).
+  - Inputs manuais de Data de Fechamento e Odômetro preliminar por loja, garantindo processamento e cruzamento em memória antes de abrir as etapas de resolução.
+- **Passo 1 — Transações sem Lançamento de Pagamento na OS (`Step1UnregisteredPayments.tsx`):**
+  - Identificação de vendas da Rede ou PIX do extrato que não tiveram o pagamento lançado na OS pelo gerente.
+  - Vínculo direto de 1 clique à OS da filial com busca rápida no pátio: herança automática e obrigatória do valor e da forma de pagamento da própria transação (`PIX`, `Crédito Visa`, `Débito Elo`), abatimento do saldo em aberto do Pátio (`NA LOJA OS`) e gravação atômica em `patio_os` e `conciliation_matches`.
+- **Passo 2 — Justificativas de Não-Faturamento (`Step2NonRevenueJustifications.tsx`):**
+  - Classificação contábil por loja de movimentações que não são vendas de serviços da oficina (Aportes, Transferências entre filiais, Estornos, Tarifas).
+  - Total liberdade para o operador editar ou cancelar as justificativas a qualquer momento antes do fechamento definitivo.
+- **Passo 3 — Conferência de Cofre & Recolhimento do Daniel (`Step3CashVaultDaniel.tsx`):**
+  - Pergunta operacional: *"O Daniel recolheu dinheiro no cofre de alguma filial hoje?"*.
+  - Tabela dos 10 cofres com saldos em tempo real e lançamento do valor recolhido por filial com baixa automática em `store_cash_vault` (`status: 'depositado'`).
+- **Passo 4 — Auditoria Final & Fechamento (`Step4FinalAuditAndClose.tsx`):**
+  - Exibição dos 5 pilares contábeis calculados em tempo real via PostgreSQL RPC `get_daily_reconciliation_summary`.
+  - Botão de reconciliação assistida padronizado estritamente para o modelo canônico `gemini-3.5-flash-lite`.
+  - Semáforo de tolerância ($\pm	ext{R\$}~50$) e gravação de snapshot imutável em `daily_snapshots`.
+- **Orquestrador Central (`UnifiedReconciliationWizard.tsx` & `useReconciliationWizardState.ts`):**
+  - Stepper visual Dark UI Zinc-950 integrado na rota `/importacoes?tab=diario` com auto-save no `localStorage`.
+
 ## [2026-08-27] — Feature 308: Padronização do Modal de OSs do Pátio, Painel Executivo da Filial e Abas
 - **Modal de OSs do Pátio (`src/components/conciliacao/PatioOsDetailModal.tsx`):**
   - Implementados 4 Summary Cards canônicos com borda lateral esquerda grossa (`border-l-4`), `<AmountCell>` em fonte mono tabular e tipografia corporativa.
@@ -120,9 +140,11 @@
 - **Advanced Trace Logging (Spec 102)**: Propaga��o de sessionId pelo useCentralImport.ts e emiss�o de array JSON completo para cada parser (ofxParser, redeParser, useOsImportProcessor, maquininha) para viabilizar debug 100% acurado no DevTools.
 # #   D e v   A u t o - I m p o r t   ( F e a t u r e   1 0 5 ) 
  -   * * S c r i p t * * :   s c r i p t s / g e n e r a t e - m o c k s . m j s   ( C o n v e r t e   e x t r a t o s   e m   B a s e 6 4   p a r a   b y p a s s a r   s e g u r a n a   d o   n a v e g a d o r   v i a   V i t e ) . 
- -   * * M a p e a m e n t o   d e   L o j a s   ( R e s i l i n c i a ) * * :   u s e U n i f i e d S t o r e M a p p i n g   s a l v a   o   s l u g   n o r m a l i z a d o   d a   l o j a   n o   l o c a l S t o r a g e   e m   v e z   d o   U U I D   q u e b r a d o ,   r e c a r r e g a n d o   a u t o m a t i c a m e n t e   a p s   r e s e t a r   o   b a n c o .  
+ -   * * M a p e a m e n t o   d e   L o j a s   ( R e s i l i n c i a ) * * :   u s e U n i f i e d S t o r e M a p p i n g   s a l v a   o   s l u g   n o r m a l i z a d o   d a   l o j a   n o   l o c a l S t o r a g e   e m   v e z   d o   U U I D   q u e b r a d o ,   r e c a r r e g a n d o   a u t o m a t i c a m e n t e   a p s   r e s e t a r   o   b a n c o . 
+ 
  - **[Backend] Performance Fixes (Specs 112-114):** A RPC `calculate_daily_conciliation` agora processa toda a matemática consolidada da Dashboard diretamente no PostgreSQL. Protegida contra falhas de digitação e schema (removido parsed_pix_transfer e payment_methods).
--   * * [ B a c k e n d   e   F r o n t e n d ]   F l u x o   d e   C a i x a   e   V a l o r   C o n t a s   ( S p e c   1 4 1 ) : * *   C o r r e c a o   d a   m a t e m a t i c a   n o   g e t _ d a s h b o a r d _ m e t r i c s   p a r a   u s a r   C a i x a   A t u a l   -   C a i x a   A n t e r i o r ,   e   n o v o   h o o k   u s e G l o b a l O f x O u t   n o   R e a c t   p a r a   g a r a n t i r   a   i n c l u s a o   d e   s a i d a s   O F X   n o   s o m a t o r i o   g l o b a l   d e   d e s p e s a s .  
+-   * * [ B a c k e n d   e   F r o n t e n d ]   F l u x o   d e   C a i x a   e   V a l o r   C o n t a s   ( S p e c   1 4 1 ) : * *   C o r r e c a o   d a   m a t e m a t i c a   n o   g e t _ d a s h b o a r d _ m e t r i c s   p a r a   u s a r   C a i x a   A t u a l   -   C a i x a   A n t e r i o r ,   e   n o v o   h o o k   u s e G l o b a l O f x O u t   n o   R e a c t   p a r a   g a r a n t i r   a   i n c l u s a o   d e   s a i d a s   O F X   n o   s o m a t o r i o   g l o b a l   d e   d e s p e s a s . 
+ 
    
 - [146] [2026-08-07] Restaura��o de import_logs, tipagem de get_store_financial_stats para text, e view transactions baseada em target_date 
 - **Feature 147 (Conciliacao):** Navegacao estrita de datas (bloqueio de dias vazios) usando o novo hook useAvailableConciliacaoDates (src/hooks/useDailySnapshot.ts). 

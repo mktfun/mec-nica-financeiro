@@ -1,3 +1,18 @@
+## [2026-08-27] — [Feature ID: 310-novo-wizard-importacao-e-conciliacao-passo-a-passo]
+
+**Contexto:** Implementação da esteira modular de conciliação diária dividida em Ingestão Global Unificada (uploads e inputs manuais juntos na entrada) e Wizard de Resolução em 4 Passos Focados (Vínculo direto de 1 clique à OS, Justificativas contábeis editáveis/canceláveis, Conferência de cofre do Daniel e Auditoria final com Gemini 3.5 Flash Lite).
+
+**Regra aprendida:**
+1. **Ingestão Global Unificada:** O sistema precisa ter em memória simultaneamente todos os arquivos (OFX das 10 filiais Itaú, Relatório de Vendas da Rede, Relatório de OSs do Pátio e Contas a Pagar) e inputs manuais preliminares (Data Alvo, Odômetro/Faturamento Acumulado) antes de abrir a resolução. Sem toda a massa de dados carregada, é impossível correlacionar PIX com OS ou diferenciar vendas de aportes/transferências.
+2. **Vínculo Direto de 1 Clique à OS (Sem Redundância):**
+   - Transações do extrato ou maquininha sem pagamento lançado na OS pelo gerente já possuem valor exato e forma de pagamento original (ex: `PIX`, `Crédito Visa`, `Débito Elo`).
+   - O operador apenas seleciona a OS correspondente da loja no pátio. O sistema herda compulsoriamente o valor e a forma de pagamento que já vieram da transação, atualiza `patio_os.paid_value`, grava `payment_method`, rebate o saldo em aberto do Pátio (`NA LOJA OS`) e vincula a transação em `conciliation_matches` em 1 clique sem dropdowns redundantes.
+3. **Justificativas Contábeis com Liberdade de Edição/Cancelamento:** Transações de não-faturamento (aportes, transferências entre lojas, estornos, tarifas) permitem edição completa e cancelamento a qualquer momento antes do fechamento final.
+4. **Cofre e Recolhimento do Daniel:** O fluxo pergunta formalmente se o Daniel recolheu dinheiro nos cofres físicos das 10 filiais para depósito. Se positivo, baixa automaticamente a sangria em `store_cash_vault` (`status: 'depositado'`).
+5. **Modelo Canônico de IA:** O modelo oficial padronizado para reconciliação assistida é compulsoriamente o **`gemini-3.5-flash-lite`** (em `llm-matcher.ts` e `useAiSettings.ts`).
+
+**Risco identificado / Anti-pattern:** Nunca pedir para o operador preencher valor ou forma de pagamento ao vincular uma transação à OS quando esses dados já constam no registro de origem da maquininha ou do extrato.
+
 ## [2026-08-27] — [Feature ID: 303-correcao-faturamento-do-dia]
 
 **Contexto:** Correção do cálculo e exibição do Card "Faturamento do Dia" para refletir com exatidão o faturamento líquido do próprio dia (diferença entre o odômetro de hoje e o de ontem: `Hoje - Ontem`), evitando a exibição do total acumulado do mês no card.
@@ -461,7 +476,8 @@
 **Regra aprendida:**
 
 ### Feature 237 - Redesign Visual e DescompressÃ£o do Painel de Resumo do Dia (ResumoDiaPanel.tsx)
-1. **Grid dos 5 Pilares:** O layout correto Ã© grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3.5 com cards individuais estilo ounded-2xl bg-zinc-900/70 border border-zinc-800/80 flex flex-col justify-between hover:border-zinc-700/80 transition-all shadow-sm.
+1. **Grid dos 5 Pilares:** O layout correto Ã© grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3.5 com cards individuais estilo 
+ounded-2xl bg-zinc-900/70 border border-zinc-800/80 flex flex-col justify-between hover:border-zinc-700/80 transition-all shadow-sm.
 2. **Sub-linhas alinhadas nos cards:** Card 1 (Saldo Bancos) mostra sub-linhas OFX: R$ ... e + Maq: + R$ ... em layout horizontal (lex justify-between) com ont-mono text-[11px], separados por order-t border-zinc-800/80.
 3. **Cockpit de Fechamento em 3 Colunas Balanceadas:** Ã�rea inferior reorganizada em 3 colunas harmoniosas - DinÃ¢mica de Caixa | OperaÃ§Ã£o & DisponÃ­vel | BalanÃ§o do Fechamento & DiferenÃ§a Final.
 4. **Tipografia dos pilares:** Valores principais usam 	ext-xl sm:text-2xl font-bold font-mono tracking-tight. Labels usam 	ext-[11px] font-bold text-zinc-400 uppercase tracking-wider.
@@ -469,7 +485,10 @@
 6. **Cores dos pilares:** Card 1 (Saldo Bancos) = cyan, Card 2 (Dinheiro MP) = emerald, uniformizar com zinc-950 como bg-canvas.
 
 ### Feature 238 - RPC Limpeza AtÃ´mica e CorreÃ§Ã£o do Marco Zero
-1. **RPC clear_all_financial_data():** FunÃ§Ã£o PL/pgSQL com SECURITY DEFINER que trunca com CASCADE as 20 tabelas transacionais: ofx_transactions, pos_transactions, patio_os, estoque_os_pendente, econciliations, econciliacoes_triplas, daily_snapshots, dashboard_daily_logs, conciliation_daily_logs, conciliation_matches, manual_transactions, eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_contas, oficina_os_cache, udit_logs, lerts.
+1. **RPC clear_all_financial_data():** FunÃ§Ã£o PL/pgSQL com SECURITY DEFINER que trunca com CASCADE as 20 tabelas transacionais: ofx_transactions, pos_transactions, patio_os, estoque_os_pendente, 
+econciliations, 
+econciliacoes_triplas, daily_snapshots, dashboard_daily_logs, conciliation_daily_logs, conciliation_matches, manual_transactions, 
+eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_contas, oficina_os_cache, udit_logs, lerts.
 2. **Fix crÃ­tico da RPC process_marco_zero_import:** Erro operator does not exist: date = text Ã© resolvido com _target_date date := p_target_date::date. Sempre fazer casting explÃ­cito de datas em RPCs PL/pgSQL.
 3. **Saldo Inicial do Marco Zero (14/08/2026):** Saldo BancÃ¡rio = R$ 170.244,95 | Dinheiro em Caixa = R$ 13.066,00 | A Receber = R$ 10.694,50 | Estoque/OS PÃ¡tio = R$ 107.229,76 | PatrimÃ´nio Inicial = R$ 289.386,12.
 4. **marcoZeroParser.ts Atualizado:** Varredura multi-linha da aba SALDO - o nome da loja estÃ¡ em uma linha e o saldo bancÃ¡rio (Saldo Banco ItaÃº:) estÃ¡ na linha seguinte. currentStoreContext Ã© mantido entre linhas para capturar corretamente o saldo de cada loja.

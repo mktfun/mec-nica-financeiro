@@ -1,3 +1,22 @@
+## [2026-08-27] — [Feature ID: 310-novo-wizard-importacao-e-conciliacao-passo-a-passo]
+
+**Contexto:** Nova esteira modular de importação e fechamento diário em `UnifiedReconciliationWizard.tsx`, estruturada em 5 etapas visuais (`0. Ingestão Global`, `1. Pagamentos sem OS`, `2. Justificativas`, `3. Cofre & Daniel`, `4. Fechamento Final`).
+
+**Regras aprendidas:**
+1. **Stepper de Navegação Superior:**
+   - Tabs superiores numeradas (`0. Ingestão Global`, `1. Pagamentos sem OS`, etc.) com `border-b-2 border-emerald-500` ativo e sem fundos verdes arbitrários, mantendo a consistência do Dark UI Zinc-950.
+2. **Vínculo Direto de 1 Clique à OS (`Step1UnregisteredPayments.tsx`):**
+   - Modal com busca instantânea de OSs em aberto (`patio_os`) por placa, cliente, carro ou número de OS.
+   - Cada card de OS possui botão *"Vincular (1 Clique)"*, aplicando a herança automática do valor e do meio de pagamento detectados na transação sem dropdowns extras.
+3. **Justificativas Editáveis / Canceláveis (`Step2NonRevenueJustifications.tsx`):**
+   - Card com botões de ação contextuais: botão primário para salvar, botão de edição para reabrir o formulário inline, e botão com `Undo2` para cancelar/desfazer a qualquer momento antes do fechamento.
+4. **Card Pergunta Operacional (`Step3CashVaultDaniel.tsx`):**
+   - Pergunta em destaque com botões de rádio estilizados `[SIM]` e `[NÃO]`, expandindo a tabela das 10 filiais apenas em caso afirmativo para não sobrecarregar visualmente o operador.
+5. **Painel de Auditoria dos 5 Pilares (`Step4FinalAuditAndClose.tsx`):**
+   - 5 cards com borda lateral esquerda (`border-l-4`), botão destacado de IA `gemini-3.5-flash-lite`, e hero card de semáforo com tolerância contábil de $\pm	ext{R\$}~50$.
+
+**Risco identificado / Anti-pattern:** Nunca quebrar a experiência do operador com modais de confirmação desnecessários em ações determinísticas já informadas pela fonte do dado.
+
 ## [2026-08-26] — [Feature ID: 291-preservacao-total-transacoes-ofx-e-heranca-conciliacoes-historicas]
 
 **Contexto:** Padrão de trava visual e filtro para transações conciliadas em outras datas.

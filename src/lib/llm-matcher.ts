@@ -78,7 +78,7 @@ export async function reconcileRedeWithOfxViaGemini(
   redeSales: RedeSaleItem[],
   ofxCredits: OfxCreditItem[],
   apiKey?: string,
-  modelName: string = 'gemini-2.5-flash'
+  modelName: string = 'gemini-3.5-flash-lite'
 ): Promise<RedeReconciliationResult> {
   const totalVendasLiquidas = redeSales.reduce((acc, s) => acc + (s.netAmount || 0), 0);
   const totalCreditadoOfx = ofxCredits.reduce((acc, o) => acc + (o.amount || 0), 0);
@@ -267,7 +267,7 @@ export async function matchPixWithOsViaGemini(
   unmatchedOs: Array<{ id: string; os_number: string; client_name: string; amount: number }>,
   unmatchedOfxPix: Array<{ id: string; fitid: string; title: string; counterpart_name?: string; amount: number }>,
   apiKey?: string,
-  modelName: string = 'gemini-2.5-flash'
+  modelName: string = 'gemini-3.5-flash-lite'
 ): Promise<AiTripleMatchResult> {
   const keyToUse = getGeminiApiKey(apiKey);
 
