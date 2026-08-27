@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { Modal } from '@/components/ui/Modal';
+import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { AmountCell } from '@/components/finance/AmountCell';
 import { supabase } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { formatCurrency } from '@/lib/utils';
@@ -266,96 +268,84 @@ export function PatioOsDetailModal({
       size="2xl"
     >
       <div className="space-y-6">
-        {/* Cards de Resumo Global */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        {/* 4 Summary Cards Canônicos (border-l-4) — Padrão Pátio */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Card 1: Total Restante no Pátio */}
-          <div className="bg-zinc-900/80 border border-amber-500/30 rounded-2xl p-4 flex flex-col justify-between shadow-sm">
-            <div>
-              <span className="text-[11px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5 mb-2">
-                <ShoppingBag size={14} className="text-amber-400" />
-                Saldo Total no Pátio
-              </span>
-              <p className="text-2xl font-bold font-mono text-amber-400 tracking-tight">
-                {formatCurrency(totalPatioGlobal)}
-              </p>
+          <Card className="border-l-4 border-l-amber-500">
+            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">
+              Saldo Total no Pátio
+            </p>
+            <p className="font-display font-bold text-2xl font-mono text-amber-400">
+              <AmountCell value={totalPatioGlobal} tone="warning" />
+            </p>
+            <div className="pt-2 mt-2 border-t border-[var(--border-subtle)] text-[11px] text-[var(--text-tertiary)] font-mono flex justify-between items-center">
+              <span>Filtrado na tela:</span>
+              <span className="text-zinc-200 font-semibold">{formatCurrency(totalPatioFiltrado)}</span>
             </div>
-            <div className="pt-2 mt-2 border-t border-zinc-800 text-[11px] text-zinc-400 font-mono flex justify-between items-center">
-              <span className="text-zinc-500">Filtrado na tela:</span>
-              <span className="text-zinc-300 font-semibold">{formatCurrency(totalPatioFiltrado)}</span>
-            </div>
-          </div>
+          </Card>
 
           {/* Card 2: Valor Total Bruto */}
-          <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-4 flex flex-col justify-between shadow-sm">
-            <div>
-              <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5 mb-2">
-                <FileText size={14} className="text-blue-400" />
-                Valor Total das OSs
-              </span>
-              <p className="text-2xl font-bold font-mono text-zinc-100 tracking-tight">
-                {formatCurrency(totalValorOriginalGlobal)}
-              </p>
-            </div>
-            <div className="pt-2 mt-2 border-t border-zinc-800 text-[11px] text-zinc-400 font-mono flex justify-between items-center">
-              <span className="text-zinc-500">Total Pago Acumulado:</span>
+          <Card className="border-l-4 border-l-blue-500">
+            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">
+              Valor Total das OSs
+            </p>
+            <p className="font-display font-bold text-2xl font-mono text-zinc-100">
+              <AmountCell value={totalValorOriginalGlobal} tone="neutral" />
+            </p>
+            <div className="pt-2 mt-2 border-t border-[var(--border-subtle)] text-[11px] text-[var(--text-tertiary)] font-mono flex justify-between items-center">
+              <span>Total Pago Acumulado:</span>
               <span className="text-emerald-400 font-semibold">{formatCurrency(totalPagoAcumuladoGlobal)}</span>
             </div>
-          </div>
+          </Card>
 
           {/* Card 3: Quantidade de Veículos / OSs */}
-          <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-4 flex flex-col justify-between shadow-sm">
-            <div>
-              <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5 mb-2">
-                <Car size={14} className="text-purple-400" />
-                Veículos no Pátio
-              </span>
-              <p className="text-2xl font-bold font-mono text-purple-400 tracking-tight">
-                {patioOsList.length} OSs
-              </p>
+          <Card className="border-l-4 border-l-purple-500">
+            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">
+              Veículos no Pátio
+            </p>
+            <p className="font-display font-bold text-2xl font-mono text-purple-400">
+              {patioOsList.length} OSs
+            </p>
+            <div className="pt-2 mt-2 border-t border-[var(--border-subtle)] text-[11px] text-[var(--text-tertiary)] font-mono flex justify-between items-center">
+              <span>Exibidas no filtro:</span>
+              <span className="text-zinc-200 font-semibold">{filteredOsList.length} OSs</span>
             </div>
-            <div className="pt-2 mt-2 border-t border-zinc-800 text-[11px] text-zinc-400 font-mono flex justify-between items-center">
-              <span className="text-zinc-500">Exibidas no filtro:</span>
-              <span className="text-zinc-300 font-semibold">{filteredOsList.length} OSs</span>
-            </div>
-          </div>
+          </Card>
 
           {/* Card 4: Filiais Ativas */}
-          <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-4 flex flex-col justify-between shadow-sm">
-            <div>
-              <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5 mb-2">
-                <Building2 size={14} className="text-emerald-400" />
-                Lojas com OS Aberta
-              </span>
-              <p className="text-2xl font-bold font-mono text-emerald-400 tracking-tight">
-                {new Set(patioOsList.map((os) => os.store_id)).size} de {stores.length}
-              </p>
+          <Card className="border-l-4 border-l-emerald-500">
+            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">
+              Lojas com OS Aberta
+            </p>
+            <p className="font-display font-bold text-2xl font-mono text-emerald-400">
+              {new Set(patioOsList.map((os) => os.store_id)).size} de {stores.length}
+            </p>
+            <div className="pt-2 mt-2 border-t border-[var(--border-subtle)] text-[11px] text-[var(--text-tertiary)] font-mono flex justify-between items-center">
+              <span>Data Base:</span>
+              <span className="text-zinc-200 font-semibold">{formattedDate}</span>
             </div>
-            <div className="pt-2 mt-2 border-t border-zinc-800 text-[11px] text-zinc-400 font-mono flex justify-between items-center">
-              <span className="text-zinc-500">Data Base:</span>
-              <span className="text-zinc-300 font-semibold">{formattedDate}</span>
-            </div>
-          </div>
+          </Card>
         </div>
 
-        {/* Barra de Filtros e Busca */}
-        <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+        {/* Barra de Filtros e Busca Padronizada */}
+        <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between bg-[var(--bg-surface)] p-3 rounded-xl border border-[var(--border-subtle)]">
           <div className="relative flex-1">
-            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
             <input
               type="text"
               placeholder="Buscar por Nº da OS, Placa, Filial..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-zinc-900 border border-zinc-700/80 rounded-xl py-2 pl-10 pr-4 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-amber-500 font-sans"
+              className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl py-2 pl-10 pr-4 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-emerald-500 font-sans"
             />
           </div>
 
           <div className="flex items-center gap-2">
-            <Filter size={15} className="text-zinc-400" />
+            <Filter size={15} className="text-[var(--text-tertiary)]" />
             <select
               value={selectedStore}
               onChange={(e) => setSelectedStore(e.target.value)}
-              className="bg-zinc-900 border border-zinc-700/80 rounded-xl py-2 px-3 text-sm text-zinc-200 focus:outline-none focus:border-amber-500 font-sans"
+              className="bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl py-2 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:border-emerald-500 font-sans cursor-pointer"
             >
               <option value="ALL">Todas as Filiais ({patioOsList.length} OSs)</option>
               {stores.map((s: any) => {
@@ -370,8 +360,8 @@ export function PatioOsDetailModal({
           </div>
         </div>
 
-        {/* Tabela de OSs com Edição Inline */}
-        <div className="border border-zinc-800 rounded-2xl overflow-hidden bg-zinc-950/60 shadow-inner">
+        {/* Tabela de OSs Padronizada */}
+        <Card className="p-0 overflow-hidden border-[var(--border-subtle)]">
           {isLoading ? (
             <div className="p-12 flex justify-center">
               <LoadingSpinner text="Carregando Ordens de Serviço do pátio..." />
@@ -382,21 +372,21 @@ export function PatioOsDetailModal({
               Nenhuma Ordem de Serviço encontrada no pátio para os filtros selecionados.
             </div>
           ) : (
-            <div className="max-h-[420px] overflow-y-auto">
+            <div className="max-h-[440px] overflow-y-auto">
               <table className="w-full text-xs">
-                <thead className="bg-zinc-900/90 sticky top-0 border-b border-zinc-800 text-zinc-400 uppercase font-mono tracking-wider z-10">
+                <thead className="bg-[var(--bg-surface-elevated)] sticky top-0 border-b border-[var(--border-subtle)] text-[11px] font-mono uppercase tracking-wider text-[var(--text-tertiary)] z-10">
                   <tr>
-                    <th className="py-3 px-4 text-left">Filial</th>
-                    <th className="py-3 px-3 text-left">OS #</th>
-                    <th className="py-3 px-3 text-left">Placa</th>
-                    <th className="py-3 px-3 text-left">Status</th>
-                    <th className="py-3 px-3 text-right">Valor Total</th>
-                    <th className="py-3 px-3 text-right">Valor Pago</th>
-                    <th className="py-3 px-4 text-right">Saldo Restante (Pátio)</th>
-                    <th className="py-3 px-4 text-center">Ações</th>
+                    <th className="py-3 px-4 text-left font-semibold">Filial</th>
+                    <th className="py-3 px-3 text-left font-semibold">OS #</th>
+                    <th className="py-3 px-3 text-left font-semibold">Placa</th>
+                    <th className="py-3 px-3 text-left font-semibold">Status</th>
+                    <th className="py-3 px-3 text-right font-semibold">Valor Total</th>
+                    <th className="py-3 px-3 text-right font-semibold">Valor Pago</th>
+                    <th className="py-3 px-4 text-right font-semibold">Saldo Restante (Pátio)</th>
+                    <th className="py-3 px-4 text-center font-semibold">Ações</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-800/60 font-sans">
+                <tbody className="divide-y divide-[var(--border-subtle)] font-sans">
                   {filteredOsList.map((os) => {
                     const isEditing = editingId === os.id;
                     const saldoRestante = isEditing ? editTotal - editPaid : os.total_value - os.paid_value;
@@ -408,13 +398,13 @@ export function PatioOsDetailModal({
                         className={`transition-colors ${
                           isEditing
                             ? 'bg-amber-500/10 border-l-2 border-amber-500'
-                            : 'hover:bg-zinc-900/50'
+                            : 'hover:bg-[var(--bg-surface-elevated)]'
                         }`}
                       >
                         {/* Filial */}
-                        <td className="py-3 px-4 font-semibold text-zinc-200">
+                        <td className="py-3 px-4 font-semibold text-white">
                           <div className="flex items-center gap-1.5">
-                            <Building2 size={13} className="text-zinc-400 shrink-0" />
+                            <Building2 size={13} className="text-[var(--text-tertiary)] shrink-0" />
                             <span className="truncate max-w-[140px]">{storeName}</span>
                           </div>
                         </td>
@@ -435,7 +425,7 @@ export function PatioOsDetailModal({
                             <select
                               value={editStatus}
                               onChange={(e) => setEditStatus(e.target.value)}
-                              className="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-zinc-100"
+                              className="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-zinc-100 focus:border-amber-500 focus:outline-none"
                             >
                               <option value="em_aberto">Em Aberto</option>
                               <option value="pago_parcial">Pago Parcial</option>
@@ -444,14 +434,9 @@ export function PatioOsDetailModal({
                             </select>
                           ) : (
                             <Badge
-                              variant="outline"
-                              className={`text-[10px] uppercase font-mono ${
-                                os.status.toLowerCase().includes('aberto')
-                                  ? 'border-amber-500/40 text-amber-400 bg-amber-500/10'
-                                  : os.status.toLowerCase().includes('parcial')
-                                  ? 'border-blue-500/40 text-blue-400 bg-blue-500/10'
-                                  : 'border-zinc-700 text-zinc-400'
-                              }`}
+                              variant={os.status.toLowerCase().includes('aberto') ? 'warning' : 'brand'}
+                              dot
+                              className="text-[10px]"
                             >
                               {os.status.replace('_', ' ')}
                             </Badge>
@@ -459,38 +444,38 @@ export function PatioOsDetailModal({
                         </td>
 
                         {/* Valor Total */}
-                        <td className="py-3 px-3 text-right font-mono text-zinc-200">
+                        <td className="py-3 px-3 text-right">
                           {isEditing ? (
                             <input
                               type="number"
                               step="0.01"
                               value={editTotal}
                               onChange={(e) => setEditTotal(Number(e.target.value))}
-                              className="w-24 bg-zinc-900 border border-amber-500 rounded px-2 py-0.5 text-right font-mono text-xs text-white"
+                              className="w-24 bg-zinc-900 border border-amber-500 rounded px-2 py-0.5 text-right font-mono text-xs text-white focus:outline-none"
                             />
                           ) : (
-                            formatCurrency(os.total_value)
+                            <AmountCell value={os.total_value} tone="neutral" />
                           )}
                         </td>
 
                         {/* Valor Pago */}
-                        <td className="py-3 px-3 text-right font-mono text-emerald-400">
+                        <td className="py-3 px-3 text-right">
                           {isEditing ? (
                             <input
                               type="number"
                               step="0.01"
                               value={editPaid}
                               onChange={(e) => setEditPaid(Number(e.target.value))}
-                              className="w-24 bg-zinc-900 border border-emerald-500 rounded px-2 py-0.5 text-right font-mono text-xs text-white"
+                              className="w-24 bg-zinc-900 border border-emerald-500 rounded px-2 py-0.5 text-right font-mono text-xs text-white focus:outline-none"
                             />
                           ) : (
-                            formatCurrency(os.paid_value)
+                            <AmountCell value={os.paid_value} tone="success" />
                           )}
                         </td>
 
                         {/* Saldo Restante */}
-                        <td className="py-3 px-4 text-right font-mono font-bold text-amber-400 text-sm">
-                          {formatCurrency(saldoRestante)}
+                        <td className="py-3 px-4 text-right">
+                          <AmountCell value={saldoRestante} tone="warning" className="font-bold text-sm" />
                         </td>
 
                         {/* Ações */}
@@ -498,21 +483,21 @@ export function PatioOsDetailModal({
                           {isEditing ? (
                             <div className="flex items-center justify-center gap-1.5">
                               <Button
-                                size="sm"
+                                size="xs"
                                 variant="primary"
                                 onClick={() => handleSaveEdit(os.id)}
                                 disabled={updateOsMutation.isPending}
-                                className="h-7 px-2.5 bg-amber-500 hover:bg-amber-400 text-black font-semibold text-xs"
+                                className="h-7 px-2.5 bg-amber-500 hover:bg-amber-400 text-black font-semibold text-xs cursor-pointer"
                                 title="Salvar alterações nesta OS"
                               >
                                 <Save size={13} className="mr-1" />
                                 {updateOsMutation.isPending ? '...' : 'Salvar'}
                               </Button>
                               <Button
-                                size="sm"
+                                size="xs"
                                 variant="ghost"
                                 onClick={handleCancelEdit}
-                                className="h-7 px-2 text-zinc-400 hover:text-white"
+                                className="h-7 px-2 text-zinc-400 hover:text-white cursor-pointer"
                                 title="Cancelar"
                               >
                                 <X size={13} />
@@ -520,10 +505,10 @@ export function PatioOsDetailModal({
                             </div>
                           ) : (
                             <Button
-                              size="sm"
+                              size="xs"
                               variant="outline"
                               onClick={() => handleStartEdit(os)}
-                              className="h-7 px-2.5 border-zinc-700 hover:border-amber-500/50 hover:bg-amber-500/10 text-zinc-300 hover:text-amber-300 text-xs"
+                              className="h-7 px-2.5 border-[var(--border-subtle)] hover:border-amber-500/50 hover:bg-amber-500/10 text-zinc-300 hover:text-amber-300 text-xs cursor-pointer"
                               title="Editar valor total ou valor pago desta OS"
                             >
                               <Edit2 size={12} className="mr-1" />
@@ -538,14 +523,14 @@ export function PatioOsDetailModal({
               </table>
             </div>
           )}
-        </div>
+        </Card>
 
         {/* Rodapé informativo */}
-        <div className="flex justify-between items-center text-xs text-zinc-400 pt-2 border-t border-zinc-800">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs text-[var(--text-tertiary)] pt-2 border-t border-[var(--border-subtle)]">
           <span>
-            Ao alterar o valor total ou valor pago de uma OS, o somatório de <strong>Na Loja OS</strong> e o <strong>Caixa Atual</strong> serão recalculados automaticamente.
+            Ao alterar o valor total ou valor pago de uma OS, o somatório de <strong className="text-white">Na Loja OS</strong> e o <strong className="text-white">Caixa Atual</strong> serão recalculados automaticamente.
           </span>
-          <Button variant="outline" onClick={onClose} className="px-5 py-1.5 text-xs text-zinc-300 border-zinc-700">
+          <Button variant="outline" onClick={onClose} className="px-5 py-1.5 text-xs text-zinc-300 border-[var(--border-subtle)] cursor-pointer">
             Fechar
           </Button>
         </div>

@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Card } from '@/components/ui/Card';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { CheckCircle2, AlertTriangle, FileText, Save, Store } from 'lucide-react';
@@ -9,6 +9,8 @@ import { parseJurosRede } from '@/lib/parsers/jurosRedeParser';
 import * as XLSX from 'xlsx';
 import { UniversalDropzone, ClassifiedFile, FileTypeCategory } from '@/components/ui/UniversalDropzone';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { Button } from '@/components/ui/Button';
+import { AmountCell } from '@/components/finance/AmountCell';
 
 export function BankReconciliationDashboard({ 
   selectedDate, 
@@ -277,19 +279,19 @@ export function BankReconciliationDashboard({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-[var(--bg-surface-elevated)] p-4 rounded-xl border border-[var(--border-subtle)]">
               <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Maquininhas Importadas</p>
-              <p className="text-xl font-bold text-[var(--color-accent-warning)]">
-                <AnimatedNumber value={Object.values(machineTotals).reduce((a,b) => a+b, 0)} format="currency" />
+              <p className="text-xl font-bold text-amber-400">
+                <AmountCell value={Object.values(machineTotals).reduce((a,b) => a+b, 0)} tone="warning" />
               </p>
             </div>
-            <div className="bg-[var(--color-accent-teal)]/10 p-4 rounded-xl border border-[var(--color-accent-teal)]/30">
-              <p className="text-xs text-[var(--color-accent-teal)] uppercase tracking-wider mb-1">Match OFX Sucesso</p>
-              <p className="text-xl font-bold text-[var(--color-accent-teal)]">
+            <div className="bg-emerald-950/20 p-4 rounded-xl border border-emerald-500/30">
+              <p className="text-xs text-emerald-400 uppercase tracking-wider mb-1">Match OFX Sucesso</p>
+              <p className="text-xl font-bold text-emerald-400 font-mono tabular-nums">
                 {Object.values(storeMatchResults).reduce((sum, mr) => sum + mr.matched.length, 0)} transações
               </p>
             </div>
-            <div className="bg-[var(--color-accent-danger)]/10 p-4 rounded-xl border border-[var(--color-accent-danger)]/30">
-              <p className="text-xs text-[var(--color-accent-danger)] uppercase tracking-wider mb-1">Incongruências OFX</p>
-              <p className="text-xl font-bold text-[var(--color-accent-danger)]">
+            <div className="bg-rose-950/20 p-4 rounded-xl border border-rose-500/30">
+              <p className="text-xs text-rose-400 uppercase tracking-wider mb-1">Incongruências OFX</p>
+              <p className="text-xl font-bold text-rose-400 font-mono tabular-nums">
                 {Object.values(storeMatchResults).reduce((sum, mr) => sum + mr.unmatchedOfx.length + mr.unmatchedSystem.length, 0)} alertas
               </p>
             </div>
@@ -298,28 +300,28 @@ export function BankReconciliationDashboard({
           {/* Renderizar Incongruencias Globalmente */}
           {Object.values(storeMatchResults).some(mr => mr.unmatchedOfx.length > 0 || mr.unmatchedSystem.length > 0) && (
              <div className="space-y-4 mt-6">
-               <h3 className="font-semibold text-[var(--color-accent-danger)] flex items-center gap-2">
+               <h3 className="font-semibold text-rose-400 flex items-center gap-2">
                  <AlertTriangle size={18} /> Incongruências / Anomalias Bancárias
                </h3>
-               <div className="bg-[var(--color-accent-danger)]/5 rounded-xl border border-[var(--color-accent-danger)]/20 max-h-64 overflow-y-auto p-2 space-y-2">
+               <div className="bg-rose-950/10 rounded-xl border border-rose-500/20 max-h-64 overflow-y-auto p-2 space-y-2">
                  {Object.entries(storeMatchResults).map(([storeId, mr]) => (
                    <React.Fragment key={storeId}>
                      {mr.unmatchedOfx.map((o, i) => (
-                       <div key={`ofx-${storeId}-${i}`} className="bg-[var(--bg-surface-elevated)] p-3 rounded-lg flex justify-between items-center text-sm border-l-2 border-[var(--color-accent-danger)]">
+                       <div key={`ofx-${storeId}-${i}`} className="bg-[var(--bg-surface-elevated)] p-3 rounded-lg flex justify-between items-center text-sm border-l-2 border-rose-500">
                          <div>
                            <p className="font-medium text-[var(--text-primary)]">Extrato: {o.memo}</p>
-                           <p className="text-xs text-[var(--color-accent-danger)]">Não consta no sistema ({stores.find(s=>s.id===storeId)?.name})</p>
+                           <p className="text-xs text-rose-400">Não consta no sistema ({stores.find(s=>s.id===storeId)?.name})</p>
                          </div>
-                         <span className="font-bold"><AnimatedNumber value={o.amount} format="currency" /></span>
+                         <AmountCell value={o.amount} tone="danger" />
                        </div>
                      ))}
                      {mr.unmatchedSystem.map((s, i) => (
-                       <div key={`sys-${storeId}-${i}`} className="bg-[var(--bg-surface-elevated)] p-3 rounded-lg flex justify-between items-center text-sm border-l-2 border-[var(--color-accent-warning)]">
+                       <div key={`sys-${storeId}-${i}`} className="bg-[var(--bg-surface-elevated)] p-3 rounded-lg flex justify-between items-center text-sm border-l-2 border-amber-500">
                          <div>
                            <p className="font-medium text-[var(--text-primary)]">Sistema: {s.description || 'Venda'}</p>
-                           <p className="text-xs text-[var(--color-accent-warning)]">Não consta no extrato ({stores.find(s=>s.id===storeId)?.name})</p>
+                           <p className="text-xs text-amber-400">Não consta no extrato ({stores.find(s=>s.id===storeId)?.name})</p>
                          </div>
-                         <span className="font-bold"><AnimatedNumber value={s.amount} format="currency" /></span>
+                         <AmountCell value={s.amount} tone="warning" />
                        </div>
                      ))}
                    </React.Fragment>
@@ -332,23 +334,27 @@ export function BankReconciliationDashboard({
 
       <div className="mt-6 flex justify-end gap-4">
         {!hasResults ? (
-          <button 
+          <Button 
             onClick={handleProcessClick}
             disabled={classifiedFiles.length === 0 || isProcessing}
-            className="bg-[var(--color-primary)] text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 hover:brightness-110 transition-all shadow-[0_0_20px_-5px_var(--color-primary)] disabled:opacity-50"
+            isLoading={isProcessing}
+            variant="primary"
+            size="md"
           >
-            {isProcessing ? <LoadingSpinner size="sm" /> : null}
-            {isProcessing ? 'Processando...' : 'Processar Arquivos'}
-          </button>
+            Processar Arquivos
+          </Button>
         ) : (
-          <button 
+          <Button 
             onClick={handleSave}
             disabled={isProcessing}
-            className="bg-[var(--color-accent-teal)] text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 hover:brightness-110 transition-all shadow-[0_0_20px_-5px_var(--color-accent-teal)] disabled:opacity-50"
+            isLoading={isProcessing}
+            variant="teal"
+            size="md"
+            className="flex items-center gap-2"
           >
-            {isProcessing ? <LoadingSpinner size="sm" /> : <Save size={20} />}
-            {isProcessing ? 'Salvando...' : 'Salvar Conciliação Massiva'}
-          </button>
+            <Save size={18} />
+            Salvar Conciliação Massiva
+          </Button>
         )}
       </div>
 

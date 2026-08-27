@@ -1,4 +1,4 @@
-﻿import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 import { Sidebar } from "./Sidebar";
 import { BottomNav } from "./BottomNav";
 import { TopBar } from "./TopBar";
@@ -40,8 +40,8 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
         <TopBar />
-        <main className="flex-1 overflow-y-auto pb-32 md:pb-24 pt-6 px-4 md:px-8">
-          <div className="max-w-[1200px] mx-auto w-full min-h-[calc(100vh-140px)] pb-16">
+        <main className="flex-1 overflow-y-auto pb-32 md:pb-24 pt-6">
+          <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto w-full px-4 md:px-6 2xl:px-8 min-h-[calc(100vh-140px)] pb-16">
             {children}
           </div>
         </main>

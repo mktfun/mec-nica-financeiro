@@ -1,29 +1,21 @@
-import { motion } from 'framer-motion';
-import { Badge } from '@/components/ui/Badge';
-import { Card } from '@/components/ui/Card';
 import { TableIcon, TrendingUp, TrendingDown } from 'lucide-react';
 import type { StoreMetrics } from '@/hooks/useDashboardV2';
 import { useMemo } from 'react';
+import {
+  TableContainer,
+  TableHeader,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+} from '@/components/ui/table';
+import { AmountCell } from '@/components/finance/AmountCell';
+import { Badge } from '@/components/ui/Badge';
 
 interface StoreTableDashboardProps {
   data: any[];
   isLoading?: boolean;
 }
-
-const fmt = (v: number) =>
-  v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0 });
-
-const statusVariant = (s: StoreMetrics['statusConciliacao']) => {
-  if (s === 'approved') return 'success';
-  if (s === 'divergence') return 'danger';
-  return 'warning';
-};
-
-const statusLabel = (s: StoreMetrics['statusConciliacao']) => {
-  if (s === 'approved') return 'OK';
-  if (s === 'divergence') return 'Divergência';
-  return 'Pendente';
-};
 
 export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProps) {
   const totais = useMemo(() => {
@@ -42,141 +34,133 @@ export function StoreTableDashboard({ data, isLoading }: StoreTableDashboardProp
 
   if (isLoading) {
     return (
-      <Card className="h-full flex flex-col">
-        <div className="h-6 w-40 bg-[var(--bg-surface-hover)] rounded mb-5 animate-pulse" />
+      <div className="rounded-[var(--radius-lg)] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-5 animate-pulse">
+        <div className="h-6 w-40 bg-zinc-800 rounded mb-5" />
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="h-11 bg-[var(--bg-surface-hover)] rounded mb-2 animate-pulse" />
+          <div key={i} className="h-11 bg-zinc-800/60 rounded mb-2" />
         ))}
-      </Card>
+      </div>
     );
   }
 
   const isTotalPositive = totais.resultado >= 0;
 
   return (
-    <Card className="h-full flex flex-col overflow-hidden">
-      <div className="mb-5 shrink-0">
-        <h3 className="font-display font-semibold text-base flex items-center gap-2">
-          <TableIcon size={16} className="text-[var(--color-primary)]" />
-          Resultado por Loja
-        </h3>
-        <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">Saldo, faturamento, contas e pátio no período</p>
+    <div className="rounded-[var(--radius-lg)] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-5 flex flex-col gap-4 shadow-sm">
+      <div className="shrink-0 flex items-center justify-between">
+        <div>
+          <h3 className="font-display font-semibold text-base flex items-center gap-2 text-[var(--text-primary)]">
+            <TableIcon size={16} className="text-[var(--color-primary)]" />
+            Resultado por Loja
+          </h3>
+          <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">Saldo, faturamento, contas e pátio no período</p>
+        </div>
       </div>
 
-      <div className="overflow-x-auto flex-1">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-[var(--border-subtle)]">
-              {['Loja', 'Saldo Bancário (Itaú)', 'Faturamento (OFX)', 'Contas (OFX)', 'Resultado Operacional', 'Pátio'].map(h => (
-                <th
-                  key={h}
-                  className="text-left pb-2.5 text-[10px] uppercase tracking-widest text-[var(--text-tertiary)] font-bold px-3 first:pl-1"
-                >
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {data.length === 0 && (
-              <tr>
-                <td colSpan={6} className="text-center py-8 text-sm text-[var(--text-tertiary)]">
-                  Sem dados para o período selecionado
-                </td>
-              </tr>
-            )}
-            {data.map((store, i) => {
-              const isPositive = store.resultado >= 0;
-              const isSaldoNegative = Number(store.saldoAtual || 0) < 0;
-
-              return (
-                <motion.tr
-                  key={store.storeId}
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.04 }}
-                  className="border-b border-[var(--border-subtle)] hover:bg-[var(--bg-surface-hover)] transition-colors"
-                >
-                  <td className="py-3 pr-3 pl-1 font-medium text-[var(--text-primary)] whitespace-nowrap">
-                    {(store.storeName || store.store_name || 'Loja').replace(/Rei do /gi, 'R. ').replace(/Mecânica Mec\. /gi, 'Mec. ')}
-                  </td>
-                  <td className="py-3 px-3 font-mono whitespace-nowrap">
-                    {isSaldoNegative ? (
-                      <span className="text-[var(--color-accent-danger)] font-bold flex items-center gap-1">
-                        {fmt(store.saldoAtual)}
-                        <span className="text-[9px] font-sans font-medium px-1 py-0.5 rounded bg-rose-500/15 text-rose-400 border border-rose-500/30">
-                          Negativo
-                        </span>
-                      </span>
-                    ) : (
-                      <span className="text-[var(--text-secondary)]">
-                        {fmt(store.saldoAtual)}
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-3 px-3 font-mono text-[var(--color-accent-teal)] whitespace-nowrap">
-                    {fmt(store.faturamento)}
-                  </td>
-                  <td className="py-3 px-3 font-mono text-[var(--color-accent-warning)] whitespace-nowrap">
-                    {fmt(store.contas)}
-                  </td>
-                  <td className="py-3 px-3 whitespace-nowrap">
-                    <span className={`font-mono font-semibold flex items-center gap-1 ${
-                      isPositive ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
-                    }`}>
-                      {isPositive ? <TrendingUp size={13} /> : <TrendingDown size={13} />}
-                      {fmt(store.resultado)}
-                    </span>
-                  </td>
-                  <td className="py-3 px-3 text-[11px] whitespace-nowrap text-[var(--text-secondary)]">
-                    {store.veiculosPatio > 0 ? (
-                      <div className="flex flex-col gap-0.5">
-                        <span className="font-semibold text-[var(--color-accent-warning)]">{store.veiculosPatio} ud.</span>
-                        <span className="font-mono text-[10px] opacity-80">{fmt(store.veiculosPatioValor)}</span>
-                      </div>
-                    ) : (
-                      <span className="text-[var(--text-tertiary)]">-</span>
-                    )}
-                  </td>
-                </motion.tr>
-              );
-            })}
-          </tbody>
-          
-          {data.length > 0 && (
-            <tfoot className="bg-[var(--bg-surface-elevated)] border-t-2 border-[var(--border-subtle)]">
-              <tr>
-                <td className="py-3 pr-3 pl-1 font-display font-bold text-[var(--text-primary)] uppercase tracking-wider text-xs">
-                  Total
-                </td>
-                <td className="py-3 px-3 font-mono font-bold text-[var(--text-primary)] whitespace-nowrap">
-                  {fmt(totais.saldoAtual)}
-                </td>
-                <td className="py-3 px-3 font-mono font-bold text-[var(--color-accent-teal)] whitespace-nowrap">
-                  {fmt(totais.faturamento)}
-                </td>
-                <td className="py-3 px-3 font-mono font-bold text-[var(--color-accent-warning)] whitespace-nowrap">
-                  {fmt(totais.contas)}
-                </td>
-                <td className="py-3 px-3 whitespace-nowrap">
-                  <span className={`font-mono font-bold flex items-center gap-1 ${
-                    isTotalPositive ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
-                  }`}>
-                    {isTotalPositive ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-                    {fmt(totais.resultado)}
-                  </span>
-                </td>
-                <td className="py-3 px-3 text-[11px] whitespace-nowrap">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="font-bold text-[var(--color-accent-warning)]">{totais.veiculosPatio} ud.</span>
-                    <span className="font-mono font-bold text-[var(--text-primary)] text-[10px]">{fmt(totais.veiculosPatioValor)}</span>
-                  </div>
-                </td>
-              </tr>
-            </tfoot>
+      <TableContainer>
+        <TableHeader>
+          <tr>
+            <TableHead>Loja</TableHead>
+            <TableHead isNumeric>Saldo Bancário (Itaú)</TableHead>
+            <TableHead isNumeric>Faturamento (OFX)</TableHead>
+            <TableHead isNumeric>Contas (OFX)</TableHead>
+            <TableHead isNumeric>Resultado Operacional</TableHead>
+            <TableHead align="center">Pátio</TableHead>
+          </tr>
+        </TableHeader>
+        <TableBody>
+          {data.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={6} align="center" className="py-8 text-[var(--text-tertiary)]">
+                Sem dados para o período selecionado
+              </TableCell>
+            </TableRow>
           )}
-        </table>
-      </div>
-    </Card>
+          {data.map((store) => {
+            const isPositive = store.resultado >= 0;
+            const isSaldoNegative = Number(store.saldoAtual || 0) < 0;
+
+            return (
+              <TableRow key={store.storeId || store.store_id || store.storeName}>
+                <TableCell className="font-medium text-[var(--text-primary)] whitespace-nowrap">
+                  {(store.storeName || store.store_name || 'Loja').replace(/Rei do /gi, 'R. ').replace(/Mecânica Mec\. /gi, 'Mec. ')}
+                </TableCell>
+                <TableCell isNumeric>
+                  {isSaldoNegative ? (
+                    <div className="inline-flex items-center gap-1.5 justify-end">
+                      <AmountCell value={store.saldoAtual} tone="danger" />
+                      <Badge variant="danger" size="sm">Negativo</Badge>
+                    </div>
+                  ) : (
+                    <AmountCell value={store.saldoAtual} tone="neutral" />
+                  )}
+                </TableCell>
+                <TableCell isNumeric>
+                  <AmountCell value={store.faturamento} tone="neutral" />
+                </TableCell>
+                <TableCell isNumeric>
+                  <AmountCell value={store.contas} tone="warning" />
+                </TableCell>
+                <TableCell isNumeric>
+                  <div className="inline-flex items-center gap-1 font-mono font-semibold justify-end">
+                    {isPositive ? (
+                      <TrendingUp size={13} className="text-emerald-400" />
+                    ) : (
+                      <TrendingDown size={13} className="text-rose-400" />
+                    )}
+                    <AmountCell value={store.resultado} tone={isPositive ? 'success' : 'danger'} />
+                  </div>
+                </TableCell>
+                <TableCell align="center" className="text-[11px] whitespace-nowrap">
+                  {store.veiculosPatio > 0 ? (
+                    <div className="flex flex-col items-center gap-0.5">
+                      <span className="font-semibold text-amber-400">{store.veiculosPatio} ud.</span>
+                      <AmountCell value={store.veiculosPatioValor} className="text-[10px] opacity-80" />
+                    </div>
+                  ) : (
+                    <span className="text-[var(--text-tertiary)]">—</span>
+                  )}
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+        
+        {data.length > 0 && (
+          <tfoot className="bg-[var(--bg-surface-elevated)] border-t-2 border-[var(--border-subtle)] text-sm font-semibold">
+            <tr>
+              <TableCell className="font-display font-bold uppercase tracking-wider text-xs">
+                Total
+              </TableCell>
+              <TableCell isNumeric className="font-bold">
+                <AmountCell value={totais.saldoAtual} />
+              </TableCell>
+              <TableCell isNumeric className="font-bold">
+                <AmountCell value={totais.faturamento} />
+              </TableCell>
+              <TableCell isNumeric className="font-bold">
+                <AmountCell value={totais.contas} tone="warning" />
+              </TableCell>
+              <TableCell isNumeric>
+                <div className="inline-flex items-center gap-1 font-mono font-bold justify-end">
+                  {isTotalPositive ? (
+                    <TrendingUp size={14} className="text-emerald-400" />
+                  ) : (
+                    <TrendingDown size={14} className="text-rose-400" />
+                  )}
+                  <AmountCell value={totais.resultado} tone={isTotalPositive ? 'success' : 'danger'} />
+                </div>
+              </TableCell>
+              <TableCell align="center" className="text-[11px] whitespace-nowrap">
+                <div className="flex flex-col items-center gap-0.5">
+                  <span className="font-bold text-amber-400">{totais.veiculosPatio} ud.</span>
+                  <AmountCell value={totais.veiculosPatioValor} className="text-[10px] font-bold" />
+                </div>
+              </TableCell>
+            </tr>
+          </tfoot>
+        )}
+      </TableContainer>
+    </div>
   );
 }

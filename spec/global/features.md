@@ -1,3 +1,17 @@
+## [2026-08-27] — Feature 308: Padronização do Modal de OSs do Pátio, Painel Executivo da Filial e Abas
+- **Modal de OSs do Pátio (`src/components/conciliacao/PatioOsDetailModal.tsx`):**
+  - Implementados 4 Summary Cards canônicos com borda lateral esquerda grossa (`border-l-4`), `<AmountCell>` em fonte mono tabular e tipografia corporativa.
+  - Toolbar de busca e seleção de filiais padronizada com a paleta `bg-[var(--bg-surface)]` e `border-[var(--border-subtle)]`.
+  - Tabela encapsulada em `<Card className="p-0 overflow-hidden">` com cabeçalho tabular `bg-[var(--bg-surface-elevated)]`, `<AmountCell>` alinhado à direita e `<Badge variant="..." dot>` para status contábil.
+- **Visão da Filial (`src/routes/conciliacao.$lojaId.tsx`):**
+  - Incorporado o painel executivo com as 6 métricas contábeis consolidadas (`SALDO TOTAL`, `Maquininha`, `PIX`, `Na Loja OS`, `Previsto`, `Diferença`), consumindo 100% diretamente da RPC `get_daily_reconciliation_summary` do PostgreSQL (zero cálculos no frontend).
+  - Abas internas (`TabBtn`) padronizadas para o estilo canônico plano 1:1 com `src/routes/patio.tsx` (`border-b-2 border-emerald-500 text-white font-semibold` na aba ativa), com remoção total do fundo esverdeado (`bg-emerald-500/5`).
+- **Harmonização da Aba 3 (`src/components/conciliacao/StoreOrdensServicoView.tsx`):**
+  - Promovidos os 4 cards da aba para o padrão canônico `border-l-4` com `<AmountCell>`.
+- **Backend & RPCs PostgreSQL:**
+  - Corrigida referência de coluna `payment_methods` para `payment_method` em `calculate_daily_conciliation`.
+  - Adicionado overload em PostgreSQL para `get_daily_reconciliation_summary(p_date date)` delegando para `p_target_date`, eliminando o erro `PGRST202 (404 Not Found in schema cache)`.
+
 ## [2026-08-27] — Feature 303: Correção do Card de Faturamento do Dia (Hoje - Ontem)
 - **Migration PostgreSQL (`20260827000003_segregate_positive_and_negative_bank_balances.sql`):** Ramal 1 atualizado para buscar `faturamento_anterior` do snapshot fechado anterior e calcular `v_faturamento_oi_base = v_snapshot.faturamento - v_faturamento_anterior`, retornando `faturamento_periodo = 23792.80` e `faturamento_anterior = 867870.82`.
 - **Frontend (`src/components/conciliacao/ResumoDiaPanel.tsx`):** Card "Faturamento do Dia" exibe o valor do próprio dia (`R$ 23.792,80`). Durante a edição do odômetro acumulado, helper em tempo real exibe `Dia: R$ ...` e `Ant: R$ ...`.

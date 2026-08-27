@@ -8,6 +8,7 @@ import { usePosTripleReconciliation } from '@/hooks/useBackendConciliacao';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { OsDetailModal } from './OsDetailModal';
 import { formatCurrency } from '@/lib/utils';
+import { AmountCell } from '@/components/finance/AmountCell';
 
 interface StoreCartaoMaquininhaViewProps {
   storeId: string;
@@ -45,86 +46,74 @@ export function StoreCartaoMaquininhaView({ storeId, date }: StoreCartaoMaquinin
 
   return (
     <div className="space-y-6">
-      {/* 4 Cards de Resumo da Maquininha */}
+      {/* 4 Summary Cards Canônicos (border-l-4) — Padrão Pátio */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Total Bruto */}
-        <Card variant="elevated" className="p-4 bg-zinc-900 border-zinc-800">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Total Cartão (Bruto)</span>
-            <CreditCard size={16} className="text-zinc-400" />
-          </div>
-          <p className="text-xl font-bold text-zinc-100 font-mono">
-            {formatCurrency(totalRedeBruto)}
+        <Card className="border-l-4 border-l-[var(--color-primary)]">
+          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Total Cartão (Bruto)</p>
+          <p className="font-display font-bold text-2xl text-[var(--text-primary)] font-mono">
+            <AmountCell value={totalRedeBruto} tone="neutral" />
           </p>
-          <span className="text-[10px] text-zinc-500 block mt-0.5">Vendas passadas na maquininha</span>
+          <span className="text-[11px] text-[var(--text-tertiary)] font-mono block mt-1">Vendas passadas na maquininha</span>
         </Card>
 
         {/* Card 2: Taxas MDR */}
-        <Card variant="elevated" className="p-4 bg-zinc-900 border-zinc-800 border-l-2 border-l-amber-500">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Taxas MDR Retidas</span>
-            <Percent size={16} className="text-amber-400" />
-          </div>
-          <p className="text-xl font-bold font-mono text-amber-400">
-            - {formatCurrency(totalTaxas)}
+        <Card className="border-l-4 border-l-amber-500">
+          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Taxas MDR Retidas</p>
+          <p className="font-display font-bold text-2xl font-mono text-amber-400">
+            - <AmountCell value={totalTaxas} tone="warning" />
           </p>
-          <span className="text-[10px] text-zinc-500 block mt-0.5">
+          <span className="text-[11px] text-[var(--text-tertiary)] font-mono block mt-1">
             Média efetiva: {totalRedeBruto > 0 ? ((totalTaxas / totalRedeBruto) * 100).toFixed(2) : '0,00'}%
           </span>
         </Card>
 
         {/* Card 3: Líquido Apurado */}
-        <Card variant="elevated" className="p-4 bg-zinc-900 border-zinc-800 border-l-2 border-l-emerald-500">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Líquido das Vendas</span>
-            <CheckCircle2 size={16} className="text-emerald-400" />
-          </div>
-          <p className="text-xl font-bold font-mono text-emerald-400">
-            {formatCurrency(totalRedeLiquido)}
+        <Card className="border-l-4 border-l-emerald-500">
+          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Líquido das Vendas</p>
+          <p className="font-display font-bold text-2xl font-mono text-emerald-400">
+            <AmountCell value={totalRedeLiquido} tone="success" />
           </p>
-          <span className="text-[10px] text-zinc-500 block mt-0.5">Crédito calculado das vendas</span>
+          <span className="text-[11px] text-[var(--text-tertiary)] font-mono block mt-1">Crédito calculado das vendas</span>
         </Card>
 
         {/* Card 4: Creditado no Banco */}
-        <Card variant="elevated" className="p-4 bg-zinc-900 border-zinc-800">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Creditado no Extrato</span>
-            <Landmark size={16} className="text-blue-400" />
-          </div>
+        <Card className="border-l-4 border-l-blue-500">
+          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Creditado no Extrato</p>
           <div className="flex items-baseline justify-between gap-2">
-            <p className="text-xl font-bold font-mono text-blue-400">
-              {formatCurrency(totalCreditadoBanco)}
+            <p className="font-display font-bold text-2xl font-mono text-blue-400">
+              <AmountCell value={totalCreditadoBanco} tone="brand" />
             </p>
             {isSettled ? (
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+              <Badge variant="success" dot className="text-[10px]">
                 ENTROU
-              </span>
+              </Badge>
             ) : (
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30">
+              <Badge variant="warning" dot className="text-[10px]">
                 A COMPENSAR
-              </span>
+              </Badge>
             )}
           </div>
-          <span className="text-[10px] text-zinc-500 block mt-0.5">
+          <span className="text-[11px] text-[var(--text-tertiary)] font-mono block mt-1">
             {valorACompensar > 0 ? `+ ${formatCurrency(valorACompensar)} a compensar` : 'Lote liquidado no banco'}
           </span>
         </Card>
       </div>
 
-      {/* Tabela Unificada de Vendas por Cartão */}
-      <Card className="p-0 overflow-hidden border-zinc-800 bg-zinc-950">
-        <div className="bg-zinc-900 p-4 border-b border-zinc-800 flex items-center justify-between">
+      {/* Tabela Unificada de Vendas por Cartão — Padrão Pátio */}
+      <Card className="p-0 overflow-hidden border-[var(--border-subtle)]">
+        <div className="bg-[var(--bg-surface-elevated)] p-4 border-b border-[var(--border-subtle)] flex items-center justify-between">
           <div>
-            <h3 className="font-display font-semibold text-base flex items-center gap-2 text-zinc-100">
+            <h3 className="font-display font-semibold text-base flex items-center gap-2 text-white">
               <CreditCard size={18} className="text-emerald-400" />
               1. Vendas em Cartão (Maquininha → Extrato Bancário)
             </h3>
-            <p className="text-xs text-zinc-400">
+            <p className="text-xs text-[var(--text-tertiary)] mt-0.5">
               Conferência individual das vendas: bandeira, valor bruto, taxa MDR retida, OS vinculada e status no extrato bancário.
             </p>
           </div>
-          <Badge variant="outline" className="text-xs font-mono border-zinc-700 text-zinc-300">
-            {rows.length} Transações
+          <Badge variant="neutral" className="text-xs font-mono">
+            {rows.length} transações
           </Badge>
         </div>
 
@@ -136,48 +125,48 @@ export function StoreCartaoMaquininhaView({ storeId, date }: StoreCartaoMaquinin
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
-              <thead>
-                <tr className="text-zinc-400 text-[11px] uppercase tracking-wider border-b border-zinc-800 bg-zinc-900/60 font-mono">
-                  <th className="text-left py-3 px-4 font-medium">Bandeira / Modalidade</th>
-                  <th className="text-right py-3 px-4 font-medium">Valor Bruto</th>
-                  <th className="text-right py-3 px-4 font-medium">Taxa MDR Retida</th>
-                  <th className="text-right py-3 px-4 font-medium">Valor Líquido</th>
-                  <th className="text-left py-3 px-4 font-medium">Referência / OS</th>
-                  <th className="text-center py-3 px-4 font-medium">Status no Banco</th>
+              <thead className="bg-[var(--bg-surface)] text-[11px] font-mono uppercase tracking-wider text-[var(--text-tertiary)] border-b border-[var(--border-subtle)]">
+                <tr>
+                  <th className="text-left py-3 px-4 font-semibold">Bandeira / Modalidade</th>
+                  <th className="text-right py-3 px-4 font-semibold">Valor Bruto</th>
+                  <th className="text-right py-3 px-4 font-semibold">Taxa MDR Retida</th>
+                  <th className="text-right py-3 px-4 font-semibold">Valor Líquido</th>
+                  <th className="text-left py-3 px-4 font-semibold">Referência / OS</th>
+                  <th className="text-center py-3 px-4 font-semibold">Status no Banco</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-800/60">
+              <tbody className="divide-y divide-[var(--border-subtle)]">
                 {rows.map((row: any, i: number) => {
                   const hasOs = !!row.os_data || (row.os_number && row.os_number !== 'Lote REDE Consolidado');
 
                   return (
-                    <tr key={i} className="hover:bg-zinc-900/40 transition-colors">
+                    <tr key={i} className="hover:bg-[var(--bg-surface-elevated)] transition-colors">
                       {/* Bandeira / Modalidade */}
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
                           <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${getBrandBadgeColor(row.bandeira)}`}>
                             {row.bandeira}
                           </span>
-                          <span className="text-zinc-300 font-medium">{row.payment_method || 'Cartão'}</span>
+                          <span className="text-[var(--text-primary)] font-medium">{row.payment_method || 'Cartão'}</span>
                         </div>
                       </td>
 
                       {/* Bruto */}
-                      <td className="py-3 px-4 text-right font-mono font-semibold text-zinc-200">
-                        {formatCurrency(row.rede_bruto)}
+                      <td className="py-3 px-4 text-right">
+                        <AmountCell value={row.rede_bruto} tone="neutral" />
                       </td>
 
                       {/* Taxa MDR */}
                       <td className="py-3 px-4 text-right font-mono text-amber-400">
-                        - {formatCurrency(row.taxa_brl)}
-                        <span className="text-[10px] text-zinc-500 block">
+                        - <AmountCell value={row.taxa_brl} tone="warning" />
+                        <span className="text-[10px] text-[var(--text-tertiary)] block">
                           ({row.taxa_percent?.toFixed(1)}%)
                         </span>
                       </td>
 
                       {/* Líquido */}
-                      <td className="py-3 px-4 text-right font-mono font-bold text-emerald-400">
-                        {formatCurrency(row.rede_liquido)}
+                      <td className="py-3 px-4 text-right">
+                        <AmountCell value={row.rede_liquido} tone="success" className="font-bold" />
                       </td>
 
                       {/* OS Vinculada */}
@@ -186,19 +175,19 @@ export function StoreCartaoMaquininhaView({ storeId, date }: StoreCartaoMaquinin
                           <div className="flex flex-col">
                             <button
                               onClick={() => setSelectedOsData(row.os_data || { os_number: row.os_number.replace('OS #', ''), total_value: row.rede_bruto, paid_value: row.rede_liquido, status: 'paga' })}
-                              className="font-semibold text-blue-400 hover:underline flex items-center gap-1 text-left"
+                              className="font-semibold text-blue-400 hover:underline flex items-center gap-1 text-left cursor-pointer"
                             >
                               {row.os_number}
                               <ExternalLink size={11} />
                             </button>
                             {row.os_data && (
-                              <span className="text-[10px] text-zinc-400 truncate max-w-[180px]">
+                              <span className="text-[10px] text-[var(--text-tertiary)] truncate max-w-[180px]">
                                 {row.os_data.client_name || row.os_data.vehicle || ''}
                               </span>
                             )}
                           </div>
                         ) : (
-                          <span className="text-[11px] text-zinc-500 italic">
+                          <span className="text-[11px] text-[var(--text-tertiary)] italic">
                             Lote Rede Consolidado
                           </span>
                         )}
@@ -207,15 +196,13 @@ export function StoreCartaoMaquininhaView({ storeId, date }: StoreCartaoMaquinin
                       {/* Status no Banco */}
                       <td className="py-3 px-4 text-center">
                         {isSettled ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                            <CheckCircle2 size={11} />
+                          <Badge variant="success" dot className="text-[10px]">
                             LIQUIDADO NO BANCO
-                          </span>
+                          </Badge>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
-                            <AlertTriangle size={11} />
+                          <Badge variant="warning" dot className="text-[10px]">
                             A COMPENSAR
-                          </span>
+                          </Badge>
                         )}
                       </td>
                     </tr>

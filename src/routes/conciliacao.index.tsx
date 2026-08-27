@@ -2,7 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { Store, Search } from 'lucide-react';
+import { Store, Search, UploadCloud, Lock } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useStores } from '@/hooks/useStores';
 import { useDailyReconciliationSummary } from '@/hooks/useBackendConciliacao';
@@ -12,7 +12,9 @@ import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { ResumoDiaPanel } from '@/components/conciliacao/ResumoDiaPanel';
 import { BreakdownModal } from '@/components/conciliacao/BreakdownModal';
 import { StoreSaldoState } from '@/lib/modulo1Calculations';
-import { UploadCloud, Lock } from 'lucide-react';
+import { PageContainer } from '@/components/layout/PageContainer';
+import { Badge } from '@/components/ui/Badge';
+import { AmountCell } from '@/components/finance/AmountCell';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -91,8 +93,7 @@ function ConciliacaoPage() {
 
   return (
     <AppShell>
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-8 max-w-5xl mx-auto pb-20 pt-2">
-        
+      <PageContainer variant="finance" className="space-y-6 pb-20 pt-2">
         {isLoading ? (
           <div className="flex justify-center p-12">
             <LoadingSpinner size="md" text="Carregando resultados do dia..." />
@@ -100,7 +101,7 @@ function ConciliacaoPage() {
         ) : (
           <>
             {/* Botão de Ação Rápida: Importação & Fechamento Diário */}
-            <div className="flex justify-between items-center bg-[var(--bg-surface)] border border-[var(--border-subtle)] p-4 rounded-2xl shadow-sm">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[var(--bg-surface)] border border-[var(--border-subtle)] p-4 rounded-xl shadow-sm">
               <div>
                 <h2 className="text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
                   Painel de Conciliação Diária
@@ -175,12 +176,7 @@ function ConciliacaoPage() {
                     status: 'pending' as const
                   };
 
-                  const maquininhaVal = (log as any).maquininha ?? (log as any).rede_liquido ?? 0;
-                  const pixVal = (log as any).pix ?? (log as any).pix_os ?? 0;
-                  const naLojaVal = (log as any).na_loja_os ?? (log as any).patio_os ?? 0;
-                  const rawPrevisto = (log as any).previsto_ofx ?? (maquininhaVal + pixVal);
-                  const diferencaCalculada = Math.max(0, (log as any).diferenca ?? 0);
-                  const isDiferencaOk = Math.abs(diferencaCalculada) <= 0.05 || log.status === 'conciliado';
+                  const isDiferencaOk = Math.abs(log.diferenca || 0) === 0 && (log.status === 'approved' || log.status === 'conciliado');
 
                   return (
                     <div key={store.id} className="relative group">
@@ -235,7 +231,7 @@ function ConciliacaoPage() {
                                   Maquininha
                                 </span>
                                 <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
-                                  <AnimatedNumber value={maquininhaVal} format="currency" />
+                                  <AnimatedNumber value={log.maquininha || 0} format="currency" />
                                 </p>
                               </div>
 
@@ -245,7 +241,7 @@ function ConciliacaoPage() {
                                   PIX
                                 </span>
                                 <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
-                                  <AnimatedNumber value={pixVal} format="currency" />
+                                  <AnimatedNumber value={log.pix || 0} format="currency" />
                                 </p>
                               </div>
 
@@ -255,7 +251,7 @@ function ConciliacaoPage() {
                                   Na Loja OS
                                 </span>
                                 <p className="font-bold text-sm text-[var(--color-accent-warning)] font-mono">
-                                  <AnimatedNumber value={naLojaVal} format="currency" />
+                                  <AnimatedNumber value={log.na_loja_os || 0} format="currency" />
                                 </p>
                               </div>
 
@@ -265,7 +261,7 @@ function ConciliacaoPage() {
                                   Previsto
                                 </span>
                                 <p className="font-bold text-sm text-[var(--text-primary)] font-mono">
-                                  <AnimatedNumber value={rawPrevisto} format="currency" />
+                                  <AnimatedNumber value={log.previsto_ofx || 0} format="currency" />
                                 </p>
                                 <span className="text-[9px] text-[var(--text-tertiary)] block mt-0.5 font-medium">
                                   Total Previsto
@@ -282,7 +278,7 @@ function ConciliacaoPage() {
                                 <p className={`font-bold text-sm font-mono ${
                                   isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
                                 }`}>
-                                  <AnimatedNumber value={diferencaCalculada} format="currency" />
+                                  <AnimatedNumber value={log.diferenca || 0} format="currency" />
                                 </p>
                               </div>
                             </div>
@@ -316,7 +312,7 @@ function ConciliacaoPage() {
             />
           </>
         )}
-      </div>
+      </PageContainer>
     </AppShell>
   );
 }

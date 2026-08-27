@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { createFileRoute, Link, useParams } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
+import { PageContainer } from '@/components/layout/PageContainer';
+import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
+import { AmountCell } from '@/components/finance/AmountCell';
 import { Store, ArrowLeft, CreditCard, Landmark, Car, TableProperties } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
 import { StoreCartaoMaquininhaView } from '@/components/conciliacao/StoreCartaoMaquininhaView';
@@ -37,13 +40,13 @@ function TabBtn({ active, onClick, icon: Icon, children }: { active: boolean; on
   return (
     <button 
       onClick={onClick} 
-      className={`px-5 py-3 border-b-2 text-sm font-medium transition-all flex items-center gap-2 whitespace-nowrap ${
+      className={`px-4 py-2.5 border-b-2 text-xs font-semibold transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
         active 
-          ? 'border-emerald-500 text-emerald-400 font-bold bg-emerald-500/5' 
-          : 'border-transparent text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
+          ? 'border-emerald-500 text-white' 
+          : 'border-transparent text-[var(--text-tertiary)] hover:text-white hover:border-zinc-700'
       }`}
     >
-      {Icon && <Icon size={16} className={active ? 'text-emerald-400' : 'text-zinc-500'} />}
+      {Icon && <Icon size={14} className={active ? 'text-emerald-400' : 'text-[var(--text-tertiary)]'} />}
       {children}
     </button>
   );
@@ -66,6 +69,18 @@ function ConciliacaoLojaPage() {
   
   const isMarcoZero = (currentSnapshot?.metadata as any)?.is_marco_zero === true;
 
+  const log = storeRecon || {
+    saldo_banco: 0,
+    maquininha: 0,
+    pix: 0,
+    na_loja_os: 0,
+    previsto_ofx: 0,
+    diferenca: 0,
+    status: 'pending' as const
+  };
+
+  const isDiferencaOk = Math.abs(log.diferenca || 0) === 0 && (log.status === 'approved' || log.status === 'conciliado');
+
   if (!store) {
     return (
       <AppShell>
@@ -82,7 +97,7 @@ function ConciliacaoLojaPage() {
 
   return (
     <AppShell>
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6 max-w-6xl mx-auto">
+      <PageContainer variant="finance" className="space-y-6 pb-20 pt-2">
         <div>
           <Link to="/conciliacao" className="inline-flex items-center gap-2 text-xs text-zinc-400 hover:text-zinc-200 transition-colors mb-3">
             <ArrowLeft size={14} /> Voltar para Fechamento
@@ -111,7 +126,7 @@ function ConciliacaoLojaPage() {
 
             <button
               onClick={() => setIsExtratosOpen(true)}
-              className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg text-xs font-medium text-zinc-300 transition-colors shadow-sm self-start sm:self-auto"
+              className="flex items-center gap-2 px-3.5 py-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-xs font-medium text-zinc-300 transition-colors shadow-sm self-start sm:self-auto cursor-pointer"
             >
               <TableProperties size={14} className="text-zinc-400" />
               📊 Extratos Brutos (Originais)
@@ -127,92 +142,78 @@ function ConciliacaoLojaPage() {
           </div>
         </div>
 
-        {/* Painel Executivo de Fechamento da Filial */}
-        {storeRecon && (
-          <div className="bg-black/25 p-4 sm:p-5 rounded-2xl border border-white/5 font-sans tabular-nums text-xs">
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6 xl:gap-8 items-center">
-              {/* 1. SALDO TOTAL */}
-              <div>
-                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
-                  SALDO TOTAL
-                </span>
-                <p className={`font-bold text-sm sm:text-base font-mono ${(storeRecon.saldo_banco || 0) < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
-                  <AnimatedNumber value={storeRecon.saldo_banco || 0} format="currency" />
-                </p>
-              </div>
+        {/* Painel Único de Fundo Contínuo Envelopando as 6 Métricas — Idêntico ao Fechamento por Filial */}
+        <div className="bg-black/25 p-4 sm:p-5 rounded-2xl border border-white/5 font-sans tabular-nums text-xs">
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6 xl:gap-8 items-center">
+            
+            {/* 1. SALDO TOTAL */}
+            <div>
+              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
+                SALDO TOTAL
+              </span>
+              <p className={`font-bold text-sm sm:text-base font-mono ${(log.saldo_banco || 0) < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
+                <AnimatedNumber value={log.saldo_banco || 0} format="currency" />
+              </p>
+            </div>
 
-              {/* 2. Maquininha */}
-              <div>
-                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
-                  Maquininha
-                </span>
-                <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
-                  <AnimatedNumber value={storeRecon.maquininha || storeRecon.rede_liquido || 0} format="currency" />
-                </p>
-                <span className="text-[10px] text-zinc-500 font-mono">
-                  Líquido do dia
-                </span>
-              </div>
+            {/* 2. Maquininha */}
+            <div>
+              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
+                Maquininha
+              </span>
+              <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
+                <AnimatedNumber value={log.maquininha} format="currency" />
+              </p>
+            </div>
 
-              {/* 3. PIX */}
-              <div>
-                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
-                  PIX
-                </span>
-                <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
-                  <AnimatedNumber value={storeRecon.pix || storeRecon.pix_os || 0} format="currency" />
-                </p>
-                <span className="text-[10px] text-zinc-500 font-mono">
-                  Identificado
-                </span>
-              </div>
+            {/* 3. PIX */}
+            <div>
+              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
+                PIX
+              </span>
+              <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
+                <AnimatedNumber value={log.pix} format="currency" />
+              </p>
+            </div>
 
-              {/* 4. Na Loja OS */}
-              <div>
-                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
-                  Na Loja OS
-                </span>
-                <p className="font-bold text-sm text-amber-400 font-mono">
-                  <AnimatedNumber value={storeRecon.na_loja_os || storeRecon.patio_os || 0} format="currency" />
-                </p>
-                <span className="text-[10px] text-zinc-500 font-mono">
-                  Pátio aberto
-                </span>
-              </div>
+            {/* 4. Na Loja OS */}
+            <div>
+              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
+                Na Loja OS
+              </span>
+              <p className="font-bold text-sm text-[var(--color-accent-warning)] font-mono">
+                <AnimatedNumber value={log.na_loja_os} format="currency" />
+              </p>
+            </div>
 
-              {/* 5. Previsto */}
-              <div>
-                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
-                  Previsto
-                </span>
-                <p className="font-bold text-sm text-zinc-100 font-mono">
-                  <AnimatedNumber value={storeRecon.previsto_ofx || ((storeRecon.maquininha || 0) + (storeRecon.pix || 0))} format="currency" />
-                </p>
-                <span className="text-[9px] text-zinc-500 block mt-0.5 font-medium">
-                  Total Previsto
-                </span>
-              </div>
+            {/* 5. Previsto */}
+            <div>
+              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
+                Previsto
+              </span>
+              <p className="font-bold text-sm text-[var(--text-primary)] font-mono">
+                <AnimatedNumber value={log.previsto_ofx} format="currency" />
+              </p>
+              <span className="text-[9px] text-[var(--text-tertiary)] block mt-0.5 font-medium">
+                Total Previsto
+              </span>
+            </div>
 
-              {/* 6. Diferença & Status */}
-              <div className="xl:border-l xl:border-white/10 xl:pl-6">
-                <span className={`text-[10px] uppercase font-bold tracking-wider block mb-1 ${
-                  (storeRecon.diferenca || 0) === 0 ? 'text-emerald-400' : 'text-red-400'
-                }`}>
-                  {(storeRecon.diferenca || 0) === 0 ? 'Status' : 'Diferença'}
-                </span>
-                {(storeRecon.diferenca || 0) === 0 ? (
-                  <Badge variant="success" className="text-xs">
-                    100% Conciliado
-                  </Badge>
-                ) : (
-                  <p className="font-bold text-sm text-red-400 font-mono">
-                    <AnimatedNumber value={storeRecon.diferenca || 0} format="currency" />
-                  </p>
-                )}
-              </div>
+            {/* 6. Diferença */}
+            <div className="xl:border-l xl:border-white/10 xl:pl-6">
+              <span className={`text-[10px] uppercase font-bold tracking-wider block mb-1 ${
+                isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
+              }`}>
+                Diferença
+              </span>
+              <p className={`font-bold text-sm font-mono ${
+                isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
+              }`}>
+                <AnimatedNumber value={log.diferenca} format="currency" />
+              </p>
             </div>
           </div>
-        )}
+        </div>
 
         {isMarcoZero ? (
           <div className="min-h-[400px]">
@@ -220,8 +221,8 @@ function ConciliacaoLojaPage() {
           </div>
         ) : (
           <>
-            {/* Navegação entre as 3 Abas */}
-            <div className="flex border-b border-zinc-800 overflow-x-auto hide-scrollbar">
+            {/* Navegação entre as 3 Abas Canônicas */}
+            <div className="flex border-b border-[var(--border-subtle)] pb-px overflow-x-auto gap-1">
               <TabBtn active={activeTab === 'cartao'} onClick={() => setActiveTab('cartao')} icon={CreditCard}>
                 1. Cartão / Maquininha
               </TabBtn>
@@ -234,14 +235,14 @@ function ConciliacaoLojaPage() {
             </div>
 
             {/* Conteúdo das Abas */}
-            <div className="min-h-[400px] pt-2">
+            <div className="min-h-[400px] pt-1">
               {activeTab === 'cartao' && <StoreCartaoMaquininhaView storeId={lojaId} date={targetDate} />}
               {activeTab === 'extrato' && <StoreExtratoBancarioView storeId={lojaId} date={targetDate} />}
               {activeTab === 'os' && <StoreOrdensServicoView storeId={lojaId} date={targetDate} />}
             </div>
           </>
         )}
-      </div>
+      </PageContainer>
     </AppShell>
   );
 }

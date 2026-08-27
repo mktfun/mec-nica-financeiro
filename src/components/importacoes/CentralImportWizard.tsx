@@ -34,6 +34,8 @@ import { useContasAPagarImport } from '@/hooks/useContasAPagarImport';
 import { useDiagnosticEngine } from '@/hooks/useDiagnosticEngine';
 import { DiagnosticPanel } from './DiagnosticPanel';
 import { MissingPatioOsEditor } from './MissingPatioOsEditor';
+import { useAiSettings } from '@/hooks/useAiSettings';
+import { reconcileRedeWithOfxViaGemini } from '@/lib/llm-matcher';
 
 export interface ImportLogEntry {
   id: string;
@@ -76,6 +78,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const { mutateAsync: insertConciliationMatches } = useBulkInsertConciliationMatches();
   const saveSnapshot = useSaveDailySnapshot();
   const { saveBills } = useContasAPagarImport();
+  const { data: aiSettings } = useAiSettings();
 
   const [step, setStep] = useState<1 | 2 | 2.5 | 3 | 3.5 | 4>(1);
   const [subStep, setSubStep] = useState<1 | 2 | 3>(1);
@@ -1154,6 +1157,29 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         await supabase.from('reconciliations').upsert(reconciliationsToUpsert, { onConflict: 'store_id,date' });
       }
 
+      // Calcula o Pátio Global Real incluindo o passivo/histórico de OSs ativas em aberto no banco
+      try {
+        const { data: allActiveOs } = await supabase
+          .from('patio_os')
+          .select('store_id, total_value, paid_value, status')
+          .lte('opened_at', `${targetDate}T23:59:59`);
+        if (allActiveOs && allActiveOs.length > 0) {
+          const activeList = allActiveOs.filter(os => {
+            const isClosed = ['finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado'].includes(String(os.status).toLowerCase());
+            const saldo = Number(os.total_value || 0) - Number(os.paid_value || 0);
+            return !isClosed && saldo > 0;
+          });
+          if (activeList.length > 0) {
+            const totalPatioReal = activeList.reduce((acc, os) => acc + (Number(os.total_value || 0) - Number(os.paid_value || 0)), 0);
+            if (totalPatioReal > 0) {
+              veiculosPatioValor = totalPatioReal;
+            }
+          }
+        }
+      } catch (patioErr) {
+        console.warn("Erro ao consolidar passivo de patio:", patioErr);
+      }
+
       // Salvar Lotes Analíticos de Contas a Pagar
       if (results.contasPagarResults && results.contasPagarResults.length > 0) {
         addLog(`📑 Salvando ${results.contasPagarResults.length} lote(s) de Contas a Pagar no banco...`, "info");
@@ -1173,7 +1199,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
       addLog("Auto-salvando Fechamento do Dia...", "info");
       const totalImportedContas = results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || 0;
-      const finalContasManual = totalImportedContas > 0 ? totalImportedContas : (contasManual > 0 ? contasManual : totalOfxOut);
+      const finalContasManual = contasManual > 0 ? contasManual : (totalImportedContas > 0 ? totalImportedContas : totalOfxOut);
       const finalFaturamento = odometroHoje > 0 ? odometroHoje : faturamentoAtual;
       try {
         const payload = {
@@ -1214,6 +1240,60 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       } catch (rpcErr: any) {
         console.warn("Erro ao chamar auto_match_transactions:", rpcErr);
         addLog("Pareamento automatico falhou mas dados foram salvos.", "warning");
+      }
+
+      // 4.1. Auditoria Inteligente de Cartões & Banco via Google Gemini
+      addLog("✨ Executando Auditoria Inteligente de Cartões da Rede via Google Gemini...", "info");
+      try {
+        const redeEntries = Object.entries(redeByStore);
+        if (redeEntries.length > 0) {
+          for (const [sId, redeItems] of redeEntries) {
+            const storeOfx = results.ofxResults.filter(o => (resolveStoreForOfx(o) || mapping[o.alias]) === sId);
+            const ofxCredits = storeOfx.flatMap(o => o.transactions.filter((t: any) => t.type === 'in' || t.amount > 0).map((t: any) => ({
+              fitid: t.fitid || '',
+              title: t.title || t.memo || '',
+              amount: Math.abs(t.amount || 0),
+              date: t.date || targetDate
+            })));
+
+            const redeSaleItems = redeItems.map(item => ({
+              nsu: item.nsu,
+              authorization: item.authorization,
+              grossAmount: item.grossAmount || item.amount || 0,
+              feeAmount: item.interest || item.feeAmount || 0,
+              netAmount: item.netAmount || item.amount || 0,
+              method: item.method || 'rede',
+              dateVenda: item.date || targetDate
+            }));
+
+            const reconResult = await reconcileRedeWithOfxViaGemini(
+              sId,
+              redeItems[0]?.storeName || sId,
+              targetDate,
+              redeSaleItems,
+              ofxCredits,
+              aiSettings?.api_key,
+              aiSettings?.model || 'gemini-2.5-flash'
+            );
+
+            if (reconResult.salesStatus && reconResult.salesStatus.length > 0) {
+              const entrouItems = reconResult.salesStatus.filter(s => s.status === 'entrou');
+              if (entrouItems.length > 0) {
+                await supabase
+                  .from('pos_transactions')
+                  .update({ settlement_status: 'entrou', settled_date: targetDate })
+                  .eq('store_id', sId)
+                  .eq('target_date', targetDate);
+              }
+            }
+
+            if (reconResult.aiUsed) {
+              addLog(`🤖 Gemini reconciliou ${reconResult.storeName}: R$ ${reconResult.totalCreditadoOfx.toFixed(2)} confirmados no banco!`, "success");
+            }
+          }
+        }
+      } catch (geminiErr: any) {
+        console.warn("[Wizard] Erro Gemini:", geminiErr);
       }
 
       addLog("📸 Sincronizando Fechamento Consolidado do Dia...", "info");

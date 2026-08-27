@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { AmountCell } from '@/components/finance/AmountCell';
 import { Modal } from '@/components/ui/Modal';
 import { 
   ShoppingBag, 
@@ -269,54 +270,51 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
 
   return (
     <div className="space-y-6">
-      {/* 4 Cards de Resumo de OSs */}
+      {/* 4 Summary Cards Canônicos (border-l-4) — Padrão Pátio */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Total Faturado */}
-        <Card variant="elevated" className="p-4 bg-zinc-900 border-zinc-800">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Total das OSs</span>
-            <FileText size={16} className="text-zinc-400" />
-          </div>
-          <p className="text-xl font-bold text-zinc-100 font-mono">
-            {formatCurrency(totalOsBruto)}
+        <Card className="border-l-4 border-l-blue-500">
+          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Total das OSs</p>
+          <p className="font-display font-bold text-2xl font-mono text-zinc-100">
+            <AmountCell value={totalOsBruto} tone="neutral" />
           </p>
-          <span className="text-[10px] text-zinc-500 block mt-0.5">{rawOsList.length} OSs cadastradas</span>
+          <span className="text-[11px] text-[var(--text-tertiary)] font-mono block mt-1">
+            {rawOsList.length} OSs cadastradas
+          </span>
         </Card>
 
         {/* Card 2: Total Pago */}
-        <Card variant="elevated" className="p-4 bg-zinc-900 border-zinc-800 border-l-2 border-l-emerald-500">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Total Recebido / Pago</span>
-            <CheckCircle2 size={16} className="text-emerald-400" />
-          </div>
-          <p className="text-xl font-bold font-mono text-emerald-400">
-            {formatCurrency(totalOsPago)}
+        <Card className="border-l-4 border-l-emerald-500">
+          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Total Recebido / Pago</p>
+          <p className="font-display font-bold text-2xl font-mono text-emerald-400">
+            <AmountCell value={totalOsPago} tone="success" />
           </p>
-          <span className="text-[10px] text-zinc-500 block mt-0.5">Pagamentos efetuados</span>
+          <span className="text-[11px] text-[var(--text-tertiary)] font-mono block mt-1">
+            Pagamentos efetuados
+          </span>
         </Card>
 
         {/* Card 3: Saldo em Pátio (Pendente) */}
-        <Card variant="elevated" className="p-4 bg-zinc-900 border-zinc-800 border-l-2 border-l-amber-500">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Saldo no Pátio (Na Loja OS)</span>
-            <ShoppingBag size={16} className="text-amber-400" />
-          </div>
-          <p className="text-xl font-bold font-mono text-amber-400">
-            {formatCurrency(totalSaldoPatio)}
+        <Card className="border-l-4 border-l-amber-500">
+          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Saldo no Pátio (Na Loja OS)</p>
+          <p className="font-display font-bold text-2xl font-mono text-amber-400">
+            <AmountCell value={totalSaldoPatio} tone="warning" />
           </p>
-          <span className="text-[10px] text-zinc-500 block mt-0.5">{openCount} veículos com saldo aberto</span>
+          <span className="text-[11px] text-[var(--text-tertiary)] font-mono block mt-1">
+            {openCount} veículos com saldo aberto
+          </span>
         </Card>
 
         {/* Card 4: Botão de Nova OS */}
-        <Card variant="elevated" className="p-4 bg-zinc-900 border-zinc-800 flex flex-col justify-between">
+        <Card className="border-l-4 border-l-[var(--color-primary)] flex flex-col justify-between">
           <div>
-            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">Ação Rápida</span>
-            <p className="text-xs text-zinc-400">Cadastre OSs ausentes manualmente no fechamento.</p>
+            <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Ação Rápida</p>
+            <p className="text-xs text-[var(--text-tertiary)] font-mono">Cadastre OSs ausentes manualmente no fechamento.</p>
           </div>
           <Button
             size="sm"
             onClick={() => setIsAddModalOpen(true)}
-            className="w-full mt-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs gap-1.5 h-8 shadow-sm"
+            className="w-full mt-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs gap-1.5 h-8 shadow-sm cursor-pointer"
           >
             <Plus size={14} />
             + Nova OS Manual

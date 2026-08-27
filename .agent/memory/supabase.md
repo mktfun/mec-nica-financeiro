@@ -336,3 +336,17 @@ Garantia de salvamento de mensagens do assistente no banco de dados e isolamento
 
 **Regra aprendida:**
 - **Trap de Record IS NOT NULL no PostgreSQL:** Em PL/pgSQL, `v_record IS NOT NULL` avalia para `FALSE` se qualquer coluna do registro for NULL. Para verificar se um `SELECT * INTO v_record` encontrou uma linha, use SEMPRE `IF FOUND THEN`.
+
+## 2026-08-27 — [Feature ID: 308]
+
+**Contexto:** Erro `PGRST202 (404 Not Found in schema cache)` ao chamar `get_daily_reconciliation_summary`, erro de coluna `payment_methods` em `calculate_daily_conciliation` e garantia de zero cálculos no frontend.
+
+**Regra aprendida:**
+- **Casamento de Nomes de Parâmetro no PostgREST:** O PostgREST busca funções no cache pelo nome EXATO das chaves enviadas no JSON do body RPC. Se a função PostgreSQL declara `p_target_date text`, enviar `{ p_date: date }` gera erro `PGRST202 (Could not find function in schema cache)`. Foi criado o overload `get_daily_reconciliation_summary(p_date date)` que delega para `p_target_date`, suportando ambos os nomes sem risco de regressão.
+- **Nomenclatura Canônica em `patio_os`:** A coluna de forma de pagamento na tabela `patio_os` é `payment_method` (singular), e NÃO `payment_methods` (plural). Consultas e RPCs devem sempre utilizar `payment_method`.
+- **Zero Cálculos Financeiros no Frontend (Regra Suprema):** Todo e qualquer valor (saldos bancários, faturamento, maquininha, pix, na loja os, previsto e diferenças) DEVE vir pré-calculado exclusivamente pelas RPCs do PostgreSQL. O frontend atua estritamente como camada de apresentação e jamais deve recalcular ou inferir valores contábeis.
+
+**Risco identificado:** Chamar RPCs com nomes de parâmetros divergentes faz o TanStack Query entrar em loop de retry com backoff exponencial (`sleep`), congelando o carregamento da tela por mais de 10 segundos.
+
+**Não fazer:** Nunca faça cálculos matemáticos ou deduções contábeis no React/frontend. Nunca altere o nome do parâmetro de uma RPC sem garantir retrocompatibilidade ou overload canônico.
+

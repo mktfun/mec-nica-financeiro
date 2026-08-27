@@ -34,6 +34,7 @@ import { formatCurrency } from '@/lib/utils';
 import { matchExpenseWithOfxDebit } from '@/lib/expenseMatcher';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
+import { AmountCell } from '@/components/finance/AmountCell';
 
 interface StoreExtratoBancarioViewProps {
   storeId: string;
@@ -236,55 +237,58 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
 
   return (
     <div className="space-y-6">
-      {/* 4 Cards de Resumo Executivo do Extrato */}
+      {/* 4 Summary Cards Canônicos (border-l-4) — Padrão Pátio */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Total Entradas */}
-        <Card variant="elevated" className="p-4 bg-zinc-900 border-zinc-800 border-l-2 border-l-emerald-500">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Total Entradas OFX</span>
-            <ArrowDownLeft size={16} className="text-emerald-400" />
-          </div>
-          <p className="text-xl font-bold text-emerald-400 font-mono">
-            + {formatCurrency(totalEntradas)}
+        <Card className="border-l-4 border-l-emerald-500">
+          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Total Entradas OFX</p>
+          <p className="font-display font-bold text-2xl text-emerald-400 font-mono">
+            <AmountCell value={totalEntradas} tone="success" showPlusSign />
           </p>
-          <span className="text-[10px] text-zinc-500 block mt-0.5">{countEntradas} crédito(s) no extrato</span>
+          <span className="text-[11px] text-[var(--text-tertiary)] font-mono block mt-1">{countEntradas} crédito(s) no extrato</span>
         </Card>
 
         {/* Card 2: Total Saídas */}
-        <Card variant="elevated" className="p-4 bg-zinc-900 border-zinc-800 border-l-2 border-l-rose-500">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Total Saídas OFX</span>
-            <ArrowUpRight size={16} className="text-rose-400" />
-          </div>
-          <p className="text-xl font-bold text-rose-400 font-mono">
-            - {formatCurrency(totalSaidas)}
+        <Card className="border-l-4 border-l-rose-500">
+          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Total Saídas OFX</p>
+          <p className="font-display font-bold text-2xl text-rose-400 font-mono">
+            <AmountCell value={-totalSaidas} tone="danger" />
           </p>
-          <span className="text-[10px] text-zinc-500 block mt-0.5">{countSaidas} débito(s) / pagamento(s)</span>
+          <span className="text-[11px] text-[var(--text-tertiary)] font-mono block mt-1">{countSaidas} débito(s) / pagamento(s)</span>
         </Card>
 
         {/* Card 3: Movimentação Líquida do Dia */}
-        <Card variant="elevated" className="p-4 bg-zinc-900 border-zinc-800 border-l-2 border-l-blue-500">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Movimentação Líquida</span>
-            <Landmark size={16} className="text-blue-400" />
-          </div>
-          <p className={`text-xl font-bold font-mono ${saldoLiquidoDia >= 0 ? 'text-blue-400' : 'text-amber-400'}`}>
-            {saldoLiquidoDia >= 0 ? `+ ${formatCurrency(saldoLiquidoDia)}` : formatCurrency(saldoLiquidoDia)}
+        <Card className="border-l-4 border-l-blue-500">
+          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Movimentação Líquida</p>
+          <p className="font-display font-bold text-2xl font-mono text-blue-400">
+            <AmountCell value={saldoLiquidoDia} tone={saldoLiquidoDia >= 0 ? "brand" : "warning"} showPlusSign />
           </p>
-          <span className="text-[10px] text-zinc-500 block mt-0.5">Entradas - Saídas do período</span>
+          <span className="text-[11px] text-[var(--text-tertiary)] font-mono block mt-1">Entradas - Saídas do período</span>
         </Card>
 
         {/* Card 4: Status de Pendências */}
-        <Card variant="elevated" className={`p-4 bg-zinc-900 border-zinc-800 ${countPendentes > 0 ? 'border-l-2 border-l-amber-500' : 'border-l-2 border-l-zinc-700'}`}>
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Status da Conciliação</span>
-            <DollarSign size={16} className={countPendentes > 0 ? 'text-amber-400' : 'text-zinc-400'} />
+        <Card className={`border-l-4 ${countPendentes > 0 ? 'border-l-amber-500' : 'border-l-emerald-500'}`}>
+          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Status da Conciliação</p>
+          <div className="flex items-baseline justify-between gap-2">
+            <p className="font-display font-bold text-2xl font-mono">
+              {countPendentes > 0 ? (
+                <span className="text-amber-400">{countPendentes} Pendente(s)</span>
+              ) : (
+                <span className="text-emerald-400">100% Conciliado</span>
+              )}
+            </p>
+            {countPendentes > 0 ? (
+              <Badge variant="warning" dot className="text-[10px]">
+                Pendências
+              </Badge>
+            ) : (
+              <Badge variant="success" dot className="text-[10px]">
+                Conciliado
+              </Badge>
+            )}
           </div>
-          <p className={`text-xl font-bold font-mono ${countPendentes > 0 ? 'text-amber-400' : 'text-zinc-200'}`}>
-            {countPendentes > 0 ? `${countPendentes} Pendente(s)` : '100% Conciliado'}
-          </p>
-          <span className="text-[10px] text-zinc-500 block mt-0.5">
-            {countPendentes > 0 ? 'Aguardando vínculo ou justificativa' : (countLockedHistory > 0 ? `${countLockedHistory} lançamento(s) de outra data travados` : 'Todos os lançamentos identificados')}
+          <span className="text-[11px] text-[var(--text-tertiary)] font-mono block mt-1">
+            {countPendentes > 0 ? 'Aguardando vínculo ou justificativa' : (countLockedHistory > 0 ? `${countLockedHistory} lançamento(s) travados` : 'Todos os lançamentos identificados')}
           </span>
         </Card>
       </div>
