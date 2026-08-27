@@ -110,8 +110,8 @@
     "semantic_hash": "5657d3d33d13441c1ffdd63784683ee9"
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1787841041.4694126,
-    "ast_hash": "e261c264c82b4990a06c595359abcbee",
+    "mtime": 1787843060.2328303,
+    "ast_hash": "02e82a11af3da5a01b80d1a74b5fd19d",
     "semantic_hash": ""
   },
   "src/components/dashboard/AlertResolveDialog.tsx": {
@@ -625,8 +625,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1787841413.438738,
-    "ast_hash": "eb86d2e6b7017b25cf6bbf73d729fd36",
+    "mtime": 1787843232.8737338,
+    "ast_hash": "6e8967368e3b0b71af19e7e2cf0780ee",
     "semantic_hash": ""
   },
   "specs/016-loja-cleanup/design.md": {
@@ -3165,8 +3165,8 @@
     "semantic_hash": ""
   },
   "supabase/migrations/20260827000003_segregate_positive_and_negative_bank_balances.sql": {
-    "mtime": 1787840956.773746,
-    "ast_hash": "65c614e97a6a9fecf676be40b1f06d7d",
+    "mtime": 1787843005.2826624,
+    "ast_hash": "5d0fc3a754c51195e63543733af05e5b",
     "semantic_hash": ""
   }
 }

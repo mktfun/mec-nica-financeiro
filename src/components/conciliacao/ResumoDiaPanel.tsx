@@ -251,6 +251,7 @@ export function ResumoDiaPanel({
           ...(currentSnapshot?.metadata || {}),
           caixa_anterior: caixaAnteriorGlobal,
           fluxo_caixa: fluxoCaixaCalculado,
+          faturamento_anterior: faturamentoAnteriorGlobal,
           faturamento_oi_base: faturamentoLiquidoDia,
           faturamento_ajustes: faturamentoAjustesValor,
           faturamento_periodo: faturamentoTotalComAjustes,
@@ -717,14 +718,24 @@ export function ResumoDiaPanel({
                   )}
                 </div>
                 {isEditing ? (
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={faturamentoInput || ''}
-                    onChange={(e) => setFaturamentoInput(Number(e.target.value))}
-                    placeholder="Faturamento OI"
-                    className="w-full bg-[var(--bg-surface)] border border-[var(--color-primary)]/40 rounded py-1 px-2 text-sm font-bold font-mono text-[var(--text-primary)] mt-1"
-                  />
+                  <div>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={faturamentoInput || ''}
+                      onChange={(e) => setFaturamentoInput(Number(e.target.value))}
+                      placeholder="Faturamento OI"
+                      className="w-full bg-[var(--bg-surface)] border border-[var(--color-primary)]/40 rounded py-1 px-2 text-sm font-bold font-mono text-[var(--text-primary)] mt-1"
+                    />
+                    <div className="text-[10px] text-emerald-400 mt-1 font-mono font-medium flex items-center justify-between">
+                      <span>Dia: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoLiquidoDia)}</span>
+                      {faturamentoAnteriorGlobal > 0 && (
+                        <span className="text-[var(--text-tertiary)]">
+                          Ant: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoAnteriorGlobal)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 ) : (
                   <div>
                     <p className="text-xl font-bold text-[var(--text-primary)] font-mono mt-0.5 group-hover:text-emerald-400 transition-colors">

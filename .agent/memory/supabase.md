@@ -1,3 +1,12 @@
+## [2026-08-27] — [Feature ID: 303-correcao-faturamento-do-dia]
+
+**Contexto:** Correção do Ramal 1 da RPC `get_daily_reconciliation_summary` para calcular `v_faturamento_oi_base = v_snapshot.faturamento - v_faturamento_anterior`, onde `v_faturamento_anterior` é buscado do snapshot fechado imediatamente anterior (`date < v_target_date ORDER BY date DESC LIMIT 1`). Retorno obrigatório de `faturamento_anterior` no payload JSON.
+
+**Regra aprendida:**
+1. No Ramal 1 da RPC, campos dependentes de diferencial de odômetro (como faturamento diário) precisam consultar o snapshot fechado do dia anterior para obter `faturamento_anterior`.
+2. O payload JSON retornado deve sempre incluir:
+   `'faturamento_oi_base', v_faturamento_oi_base, 'faturamento_periodo', v_faturamento_periodo, 'faturamento_anterior', v_faturamento_anterior`.
+
 ## [2026-08-27] — [Feature ID: 302-correcao-saldo-bancos-caixa-atual-e-acumulacao-ao-salvar]
 
 **Contexto:** Correção do Ramal 1 da RPC `get_daily_reconciliation_summary` para recalcular `saldo_bancos_positivo` e `saldo_negativo_itau` sempre dos `reconciliations`, nunca do `daily_snapshots.saldo_bancario` (que pode estar inflado). Hotfix de dados no snapshot de 27/08.

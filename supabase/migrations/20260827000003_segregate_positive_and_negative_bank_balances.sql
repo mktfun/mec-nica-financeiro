@@ -108,9 +108,29 @@ BEGIN
         v_caixa_anterior := COALESCE((v_snapshot.metadata->>'caixa_anterior')::numeric, 0);
         v_fluxo_caixa := COALESCE((v_snapshot.metadata->>'fluxo_caixa')::numeric, v_caixa_atual - v_caixa_anterior);
         
-        v_faturamento_periodo := COALESCE(v_snapshot.faturamento, 0);
-        v_faturamento_oi_base := COALESCE((v_snapshot.metadata->>'faturamento_oi_base')::numeric, v_faturamento_periodo);
+        -- Faturamento Anterior (do snapshot fechado anterior)
+        SELECT COALESCE(faturamento, 0)
+        INTO v_faturamento_anterior
+        FROM daily_snapshots
+        WHERE date < v_target_date
+        ORDER BY date DESC
+        LIMIT 1;
+
+        IF v_faturamento_anterior = 0 AND (v_snapshot.metadata->>'faturamento_anterior') IS NOT NULL THEN
+            v_faturamento_anterior := (v_snapshot.metadata->>'faturamento_anterior')::numeric;
+        END IF;
+
+        -- Faturamento do Dia (Líquido: Hoje - Ontem)
+        IF (v_snapshot.metadata->>'faturamento_oi_base') IS NOT NULL AND (v_snapshot.metadata->>'faturamento_oi_base')::numeric > 0 THEN
+            v_faturamento_oi_base := (v_snapshot.metadata->>'faturamento_oi_base')::numeric;
+        ELSIF v_snapshot.faturamento IS NOT NULL AND v_faturamento_anterior > 0 AND v_snapshot.faturamento > v_faturamento_anterior THEN
+            v_faturamento_oi_base := v_snapshot.faturamento - v_faturamento_anterior;
+        ELSE
+            v_faturamento_oi_base := COALESCE(v_snapshot.faturamento, 0);
+        END IF;
+
         v_faturamento_ajustes := COALESCE((v_snapshot.metadata->>'faturamento_ajustes')::numeric, 0);
+        v_faturamento_periodo := v_faturamento_oi_base + v_faturamento_ajustes;
         v_valor_disp_contas := COALESCE((v_snapshot.metadata->>'valor_disp_contas')::numeric, v_faturamento_periodo - v_fluxo_caixa);
         
         v_contas_manual := COALESCE(v_snapshot.contas_a_pagar, 0);
@@ -129,8 +149,14 @@ BEGIN
         v_total_saldo_banco_positivo := v_saldo_bancos_positivo + v_dinheiro_lojas + v_cartoes_a_compensar - v_devolucoes_rede;
         v_total_saldo_banco := v_saldo_bancos + v_dinheiro_lojas + v_cartoes_a_compensar - v_devolucoes_rede;
 
-        -- Carrega detalhes por loja
+        -- Carrega detalhes de maquininhas por loja para o modal
+        BEGIN
+            v_triple_recon := get_store_pos_triple_reconciliation(v_target_date::text);
+        EXCEPTION WHEN OTHERS THEN
+            v_triple_recon := '{}'::jsonb;
+        END;
 
+        -- Carrega detalhes por loja
         WITH recon_latest AS (
             SELECT DISTINCT ON (store_id) store_id, bank_total, na_loja_os as historical_na_loja
             FROM reconciliations
@@ -221,6 +247,7 @@ BEGIN
             'faturamento_oi_base', v_faturamento_oi_base,
             'faturamento_ajustes', v_faturamento_ajustes,
             'faturamento_periodo', v_faturamento_periodo,
+            'faturamento_anterior', v_faturamento_anterior,
             'valor_disp_contas', v_valor_disp_contas,
             'contas_base', v_contas_base,
             'contas_extras', v_contas_extras,

@@ -1,3 +1,19 @@
+## [2026-08-27] — [Feature ID: 303-correcao-faturamento-do-dia]
+
+**Contexto:** Correção do cálculo e exibição do Card "Faturamento do Dia" para refletir com exatidão o faturamento líquido do próprio dia (diferença entre o odômetro de hoje e o de ontem: `Hoje - Ontem`), evitando a exibição do total acumulado do mês no card.
+
+**Regra aprendida:**
+1. **Faturamento do Dia = Odômetro Hoje - Odômetro Ontem:**
+   - A coluna `daily_snapshots.faturamento` armazena o odômetro acumulado no mês (ex: `R$ 891.663,62` em 27/08).
+   - O faturamento anterior vem do snapshot fechado imediatamente anterior (`date < target_date ORDER BY date DESC LIMIT 1`, ex: `R$ 867.870,82` em 26/08).
+   - O faturamento líquido do dia é: `faturamento_oi_base = 891.663,62 - 867.870,82 = R$ 23.792,80`.
+   - O Card "Faturamento do Dia" DEVE sempre exibir `faturamento_periodo` (`R$ 23.792,80`), NUNCA o odômetro acumulado.
+2. **Exibição e Edição de Odômetro:** No modo de edição, o input aceita o odômetro acumulado, mas a interface calcula e exibe em tempo real `Dia: R$ 23.792,80 (Ant: R$ 867.870,82)` para transparência total ao operador.
+
+**Risco identificado:** Se a RPC não carregar ou retornar `faturamento_anterior`, o frontend faz fallback para 0 e o faturamento do dia acaba igualando o valor bruto acumulado.
+
+**Não fazer:** Nunca atribuir `v_faturamento_periodo := v_snapshot.faturamento` no Ramal 1 da RPC sem subtrair o faturamento anterior.
+
 ## [2026-08-27] — [Feature ID: 302-correcao-saldo-bancos-caixa-atual-e-acumulacao-ao-salvar]
 
 **Contexto:** Correção de dois bugs críticos no fechamento diário: (A) acumulação do saldo_bancario a cada clique em "Salvar" e (B) Caixa Atual não deduzia o Cheque Especial.
