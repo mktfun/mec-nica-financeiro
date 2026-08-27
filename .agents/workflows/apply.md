@@ -1,94 +1,85 @@
 ---
-description: Execução Técnica Multi-Agente com distribuição paralela de tasks (Backend, Frontend, QA), Auto-Healing com Rollback e Visual QA.
+description: Executa a implementação técnica baseada nos 3 arquivos de spec gerados no /vibe-proposal — com leitura obrigatória da spec, skills por tipo de task, save-state contínuo, auto-healing com rollback e VLM Visual QA.
 ---
 
 <!-- VIBEAPPLY:START -->
 
 **Objetivo**
-Executar o checklist de specs/<id>/spec-plan.md orquestrando subagentes especialistas para desenvolvimento concorrente e validação contínua.
+Executar o checklist de specs/<id>/spec-plan.md com extrema precisão. A spec é a lei — não improvise, não extrapole além do que está nos arquivos de spec.
 
 ---
 
-## Step 0 — Leitura Obrigatória da Spec & Skills Base
+## Step 0 — Leitura Obrigatória dos 3 Arquivos de Spec (NUNCA PULE)
 
-Antes de qualquer ação, o Maestro carrega as diretrizes:
+Antes de escrever qualquer linha de código, leia os arquivos na seguinte ordem:
+
+**Skills base (ler SEMPRE, independente do tipo de task):**
 ```
 view_file C:/Users/admin/.gemini/config/skills/adaptive-reasoning/SKILL.md
 ```
-1. specs/<id>/proposal.md — Contratos e riscos
-2. specs/<id>/design.md — Arquitetura e interfaces
-3. specs/<id>/spec-plan.md — Mapa de tasks pendentes
 
-Carregue silenciosamente as credenciais do .env sem prompts interativos:
-```powershell
-$env:SUPABASE_ACCESS_TOKEN = "<valor do .env>"
-$env:GH_TOKEN = "<valor do .env>"
-```
+1. **specs/<id>/proposal.md** — Entenda o problema, os contratos de dados e o risco principal
+2. **specs/<id>/design.md** — Entenda a arquitetura exata, os tipos TypeScript e os cenários de verificação
+3. **specs/<id>/spec-plan.md** — Identifique qual task está `[ ] Pending` e comece por ela
 
----
-
-## Step 1 — Orquestração de Execução Concorrente (invoke_subagent)
-
-O Maestro analisa as tarefas pendentes (- [ ] Pending) no spec-plan.md e dispara os especialistas simultaneamente:
-
-```json
-{
-  "Subagents": [
-    {
-      "TypeName": "self",
-      "Role": "Backend Developer",
-      "Prompt": "Execute as tasks marcadas com [BACKEND] no specs/<id>/spec-plan.md. Consulte C:/Users/admin/.gemini/config/skills/supabase/SKILL.md e C:/Users/admin/.gemini/config/skills/backend/SKILL.md. Crie as migrations, RPCs e policies de RLS necessárias. Teste as queries localmente.",
-      "Workspace": "share"
-    },
-    {
-      "TypeName": "self",
-      "Role": "Frontend Developer",
-      "Prompt": "Execute as tasks marcadas com [FRONTEND] no specs/<id>/spec-plan.md. Consulte C:/Users/admin/.gemini/config/skills/frontend-design-pro/SKILL.md e C:/Users/admin/.gemini/config/skills/frontend-design-3/SKILL.md. Crie os componentes React e Hooks seguindo a paleta Dark UI (Zinc-950).",
-      "Workspace": "share"
-    }
-  ]
-}
-```
-
-*O Maestro monitora o progresso dos subagentes e atualiza o spec-plan.md à medida que as tarefas são entregues.*
+Adicionalmente:
+- Leia a memória modular relevante (ex: memory/supabase.md, memory/ui.md, memory/domain.md)
+- Se envolver módulos existentes: `graphify explain "<Modulo>"` antes de editar qualquer arquivo
+- Carregue silenciosamente as credenciais do .env sem prompts interativos:
+  ```powershell
+  $env:SUPABASE_ACCESS_TOKEN = "<valor do .env>"
+  $env:GH_TOKEN = "<valor do .env>"
+  ```
 
 ---
 
-## Step 2 — QA, Build Gate & VLM Visual QA
+## Step 1 — Execução Task por Task (Skills Ativas por Tipo)
 
-Assim que Backend e Frontend finalizarem suas entregas:
+Para cada `- [ ] Pending` no `spec-plan.md`, marque como `- [/] In Progress`, execute e só então marque `- [x] Completed`.
 
-1. **Build Gate:**
-```bash
-cmd.exe /c "npm run build"
+**Se a task é [FRONTEND] — UI/React/Tailwind:**
+Consulte as skills antes de codar:
 ```
-Se falhar: acione o protocolo de Auto-Healing imediatamente.
-
-2. **Subagente de Testes e VLM Visual QA:**
-Dispare o especialista em QA para validar os cenários visuais e funcionais:
-```bash
-npx playwright screenshot http://localhost:8080/rota-da-feature tela_qa.png
+view_file C:/Users/admin/.gemini/config/skills/frontend-design-pro/SKILL.md
+view_file C:/Users/admin/.gemini/config/skills/frontend-design-3/SKILL.md
 ```
-O agente inspeciona a imagem gerada:
-- CSS vazou ou quebrou layout?
-- Paleta Zinc-950 e contrastes respeitados?
-- Estados de loading/empty/error funcionando?
+- Respeite SEMPRE: Dark UI sólida (Zinc-950, #050711), sem glassmorphism, tipografia Inter/Outfit
+- Estados obrigatórios em componentes interativos: Default, Hover, Loading/Skeleton, Error e Empty
+- Nunca quebre a API pública de componentes existentes (props, eventos, exports)
+
+**Se a task é [BACKEND] — Supabase/RPCs/Migrations:**
+Consulte as skills antes de qualquer operação:
+```
+view_file C:/Users/admin/.gemini/config/skills/supabase/SKILL.md
+view_file C:/Users/admin/.gemini/config/skills/backend/SKILL.md
+```
+- Confirme os tipos reais de colunas antes de criar parâmetros de RPC (Anti-Alucinação de Schema)
+- RLS obrigatório em toda tabela nova — nunca crie sem policy
+- Sempre prefira ALTER TABLE / CREATE OR REPLACE FUNCTION em estruturas existentes
+
+**Se a task é [TEST] — Verificação de Cenários & Visual QA:**
+- Execute os cenários definidos em design.md
+- **VLM Visual QA com Playwright (Obrigatório se tocou em UI):**
+  ```bash
+  npx playwright screenshot http://localhost:8080/rota tela.png
+  ```
+  Inspecione a imagem: CSS vazou? Layout quebrou? Dark UI respeitada?
 
 ---
 
-## Step 3 — Auto-Healing & Rollback Estrito
+## Step 2 — Auto-Healing & Rollback Estrito
 
-Se houver erro de compilação, quebra visual ou divergência do design.md:
-- **Tentativa 1:** Identificar e corrigir na causa raiz.
-- **Tentativa 2:** Reavaliar contratos de interfaces e tipos.
-- **Tentativa 3 (Última):** Abordagem alternativa documentada.
-- **Se falhar a 3ª:** Execute git reset --hard. Notifique o usuário com o diagnóstico exato.
+Se ocorrerem erros de build, testes falhando ou divergência do design.md:
+- **Tentativa 1:** Analise o erro. Corrija na causa raiz, não no sintoma.
+- **Tentativa 2:** Releia o design.md e o proposal.md. O erro é de implementação ou de contrato?
+- **Tentativa 3 (última):** Tente uma abordagem alternativa documentada.
+- **Se a 3ª falhar:** Execute `git reset --hard`. Notifique o usuário com o diagnóstico exato. NÃO tente uma 4ª vez.
 
 ---
 
 ## Conclusão
 
-Com todos os itens marcados como [x] Completed no spec-plan.md e build verde:
-*"Implementação concluída com sucesso. Execute /archive <id> (ou /vibe-archive <id>) para consolidar a memória, atualizar o grafo e commitar."*
+Quando todos os itens do `spec-plan.md` estiverem `[x] Completed`, avise o usuário:
+*"Implementação concluída. Rode `/archive <id>` (ou `/vibe-archive <id>`) para atualizar a memória, o grafo e fazer o commit."*
 
 <!-- VIBEAPPLY:END -->
