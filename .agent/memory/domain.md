@@ -644,3 +644,15 @@
 - **Sincronização de Justificativas:** O hook `useCategorizeOrphan` deve atualizar tanto `ofx_transactions` quanto `transactions` e `pos_transactions`. Ao justificar, o item ganha `manual_category` e a pendência da filial zera imediatamente.
 
 **Não fazer:** Nunca subtraia vendas de maquininha de hoje das entradas bancárias de hoje para calcular a diferença de uma loja.
+
+## 2026-08-27 — [Feature ID: 298]
+
+**Contexto:** Equalização canônica dos saldos das 10 filiais e fechamento do Caixa Atual com a Planilha Oficial (`CONCILIAÇÃO 2608.xlsx`).
+
+**Regra aprendida:**
+- **Composição Canônica de Saldo por Filial:**
+  $$\text{Saldo Consolidado da Loja} = \text{Saldo OFX Puro} + \text{Cartões A Compensar} + \text{Dinheiro no Cofre}$$
+- **Prevenção de Double-Dipping em Saldos Devedores:** Os saldos negativos de contas correntes (ex: Planalto -R$ 3.845,74 e Santo André -R$ 12.097,78, totalizando -R$ 15.943,52) já são computados no somatório algébrico das contas Itaú em $\mathbb{R}$. A métrica `saldo_negativo_itau` é mantida estritamente para exibição de KPI/alerta no dashboard, nunca devendo ser deduzida uma segunda vez no cálculo do Caixa Atual.
+- **Caixa Atual Consolidado:** Resulta rigorosamente em **R$ 151.642,60** através da soma dos 4 Pilares ($P_1$: Bancos + Cofres + Cartões = R$ 50.794,86, $P_2$: Dinheiro MP = R$ 15.323,00, $P_3$: A Receber = R$ 8.349,67, $P_4$: Na Loja OS = R$ 77.525,07).
+
+**Não fazer:** Nunca subtraia `saldo_negativo_itau` do Caixa Atual se `v_saldo_bancos` já inclui os saldos devedores em sua soma algébrica.

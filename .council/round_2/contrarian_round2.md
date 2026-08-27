@@ -1,219 +1,153 @@
-# 💣 ROUND 2 — CONTRARIAN: O Choque de Realidade no Conselho
-## Desconstrução da Superengenharia Acadêmica, da Ingenuidade Simplista e da Ilusão do Vínculo de Lotes
+# 💣 COUNCIL DEBATE — ROUND 2: REBUTTAL DO CONTRARIAN
+## Tópico: Equalização dos Saldos das 10 Filiais (Planilha CONCILIAÇÃO 2608.xlsx vs. Sistema), Tratamento dos Saldos Negativos e Arquitetura da RPC `get_daily_reconciliation_summary`
 
-> **Autor:** Contrarian (O Advogado do Diabo Implacável)  
-> **Persona:** Cética, Ácida, Pragmática e Cirúrgica  
-> **Tópico:** Desacoplamento Temporal dos Créditos da Rede no Extrato OFX ($D_{-1} \to D_0$) vs. Saldo a Compensar de $D_0$, Conciliação Tripla (Rede ⇄ OFX ⇄ OS), Integridade do Caixa Atual e Preservação das 10 Filiais e do Histórico Graphify.  
-> **Fase:** ROUND 2 — REBUTTAL & CONFRONTO DIALÉTICO
-
----
-
-## 1. VISÃO GERAL DO ROUND 2: DO DELÍRIO COLETIVO AO RISCO DA BIPOLARIDADE
-
-Após dissecar os memoriais do **Analyst**, do **Architect** e do **Engineer** no Round 1, registro uma vitória conceitual maiúscula: **o Conselho finalmente abandonou por unanimidade a aberração matemática de subtrair vendas de hoje do depósito de ontem ($\max(0, \text{Rede}_{D_0} - \text{OFX}_{D_0}) = \text{R\$\ } 114,21$) e expurgou os vergonhosos hardcodes de loja (`s.id NOT IN ('st-01', 'st-05')`)**. A ficção contábil do Round 0 está oficialmente morta.
-
-No entanto, o Conselho agora oscila perigosamente entre dois extremos igualmente nocivos:
-1. **A Superengenharia Acadêmica (Architect):** Propõe enfiar 3 tabelas relacionais novas (`pos_settlement_batches`, `pos_settlement_allocations`, `store_acquirer_configs`), chaves estrangeiras com cascade e máquinas de estado DDD no PostgreSQL para tentar fazer conciliação microscópica sem nem ter o arquivo de extrato eletrônico (EDI/VAN) da adquirente.
-2. **A Ingenuidade Simplista de "2 Horas" (Engineer):** Acha que tudo se resolve trocando uma linha na RPC (`nao_entrou_valor := COALESCE(r.rede_liquido, 0)`) e tacando uma regex no React, ignorando solenemente o que acontece quando a adquirente atrasa o pagamento, desconta aluguel de POS na fonte ou agrupa 3 dias de vendas na segunda-feira.
-3. **O Otimismo Estatístico Desmedido (Analyst):** Acha que uma fórmula algébrica elegante no papel vai atingir "0.0% de falsos positivos" no mundo real de oficinas mecânicas, onde existem vendas parceladas, cancelamentos de balcão e descontos de antecipação não avisados.
-
-Abaixo, desmonto ponto a ponto as ilusões dos meus distintos colegas.
+* **Agente:** `Contrarian` (O Advogado do Diabo Implacável & Auditor Forense de Falhas)
+* **Data da Sessão:** 26 de Agosto de 2026
+* **Status:** Round 2 — Rebuttal & Confrontação Direta
+* **Nível de Confiança Revisado:** **0.88 (88.0%)** *(Elevado de 0.40 para 0.88 após as concessões e convergências forenses dos colegas, sob condições estritas)*
+* **Arquivo Alvo:** `.council/round_2/contrarian_round2.md`
 
 ---
 
-## 2. CONFRONTO DIRETO DOS CLAIMS (Citação Nominal, Postura e Desconstrução)
+## 1. SUMÁRIO EXECUTIVO: O CHOQUE DE REALIDADE NO CONSELHO
+
+No Round 1, minha função foi explodir a ilusão ingênua de que a planilha `CONCILIAÇÃO 2608.xlsx` representava uma "fonte canônica perfeita de verdade matemática". Expus que o fechamento manual do Excel é uma colcha de retalhos operacionais — contendo descasamentos temporais de adquirentes, omissão de dinheiro em cofre e exceções ad-hoc aplicadas arbitrariamente entre lojas.
+
+Ao analisar as peças do **Architect**, do **Engineer** e do **Analyst** no Round 1, noto com satisfação que o Conselho foi forçado a encarar a realidade forense dos números. Houve convergência unânime em um ponto crucial: **a erradicação da dupla dedução do saldo negativo do Itaú**, que gerava um rombo fictício de R$ 15.943,52 no patrimônio da holding.
+
+Contudo, meus colegas ainda preservam **três ingenuidades graves de engenharia e modelagem contábil** que, se implementadas sem o devido rigor, quebrarão o sistema na próxima segunda-feira.
+
+Abaixo, passo a dissecar cirurgicamente os argumentos apresentados.
+
+---
+
+## 2. CITAÇÕES NOMINAIS & POSTURAS ESPECÍFICAS SOBRE OS COLEGAS
 
 ```
-┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                 MATRIZ DE CONFRONTO E REFUTAÇÃO DO ROUND 2                              │
-├────────────────────┬─────────────────────────────────────────────────────────────┬─────────────────────┤
-│ AGENTE / CLAIM     │ TESE DEFENDIDA NO ROUND 1                                   │ POSTURA CONTRARIAN  │
-├────────────────────┼─────────────────────────────────────────────────────────────┼─────────────────────┤
-│ Engineer (Claim 1) │ "Complexidade baixa, basta `nao_entrou = rede_liquido` [...]│ ❌ (REBUT)          │
-│                    │  execução em menos de 2 horas e risco zero."                │                     │
-├────────────────────┼─────────────────────────────────────────────────────────────┼─────────────────────┤
-│ Architect(Claim 2) │ "Criar 3 tabelas relacionais (`pos_settlement_batches`,     │ ⚠️ (REFINE)         │
-│                    │  `pos_settlement_allocations`, etc.) com máquina DDD."      │                     │
-├────────────────────┼─────────────────────────────────────────────────────────────┼─────────────────────┤
-│ Analyst  (Claim 3) │ "Equação Canônica $P_1 = \text{OFX} + \text{Cofre} + V^{POS}$│ ⚠️ (AGREE / REFINE) │
-│                    │  garante 0.0% de falsos positivos e 48h de payback."        │                     │
-├────────────────────┼─────────────────────────────────────────────────────────────┼─────────────────────┤
-│ Coletivo (Claim 4) │ "Manter botão para operador vincular linha de lote bancário │ ❌ (REBUT TOTAL)    │
-│ (Ponto Cego)       │  de R$ 5.770,74 a Ordens de Serviço (OSs) de hoje."         │                     │
-└────────────────────┴─────────────────────────────────────────────────────────────┴─────────────────────┘
-```
-
----
-
-### 2.1. Confronto com o Engineer: O Perigo Mortal do "Remendo Rápido de 2 Horas"
-
-> **Citação Nominal do Claim (Engineer — Seções 1, 6 e 7):**  
-> *"Não precisamos reconstruir o banco de dados nem criar microsserviços... Trata-se puramente de desacoplar a agregação temporal na RPC do Postgres (`nao_entrou_valor := COALESCE(r.rede_liquido, 0);`) e fornecer a rotulagem de UX correta no React (`isRedeTx`). Complexidade Baixa, tempo de execução menos de 2 horas, Risco Zero, Confiança 0.98."*
-
-#### Postura: **(REBUT) — Refutação Enfática e Alerta de Risco Operacional**
-
-#### Por que a solução do Engineer quebra violentamente no chão de fábrica:
-1. **O Ponto Cego da Inadimplência ou Retenção da Adquirente:**  
-   O Engineer propõe cegamente: `nao_entrou_valor := COALESCE(r.rede_liquido, 0);`.  
-   O que acontece se a Rede **NÃO** depositar os R$ 5.770,74 de ontem na conta Itaú hoje (por trava bancária, inconsistência de domicílio, erro de lote ou saldo retido)?  
-   No modelo do Engineer:
-   - O saldo do banco em $D_0$ não sobe (+R$ 0,00).
-   - O `nao_entrou_valor` registra apenas as vendas de hoje (R$ 5.884,95).
-   - **O dinheiro de ontem (R$ 5.770,74) evapora do sistema sem nenhum alarme!** O sistema assume tacitamente que ontem foi liquidado com perfeição só porque virou o dia. Isso cria um buraco negro patrimonial onde desvios da adquirente ficam invisíveis.
-2. **A Cegueira das Taxas e Descontos Ocultos no Lote:**  
-   A adquirente quase nunca deposita exatamente o valor esperado no centavo. Ela desconta aluguel de maquininhas (ex: -R$ 180,00), taxas de antecipação automática (RAV) ou estornos de clientes. Se cair no banco R$ 5.590,74 em vez de R$ 5.770,74, a rotulagem ingênua do Engineer (`isRedeTx` no React $\to$ `CONCILIADO`) marca a transação como 100% batida e joga R$ 180,00 de diferença contábil para baixo do tapete.
-3. **A Falácia das "2 Horas":**  
-   Dizer que um desacoplamento contábil que afeta 10 filiais, conciliação tripla e fechamento histórico se resolve em 2 horas com uma linha de SQL é a clássica presunção de desenvolvedor que gera chamados de emergência no fim de semana de fechamento mensal.
-
----
-
-### 2.2. Confronto com o Architect: Superengenharia Relacional e Criação de Elefantes Brancos
-
-> **Citação Nominal do Claim (Architect — Seções 4 e 9):**  
-> *"A solução ótima reside em instituir formalmente a Entidade de Liquidação Temporal de Lotes (`SettlementBatch`) criando as tabelas `pos_settlement_batches`, `pos_settlement_allocations` e `store_acquirer_configs` [...] com máquina de estados (DDD) para gerenciar o vínculo N:M entre transações OFX, lotes de captura e OSs."*
-
-#### Postura: **(REFINE) — Concordância Conceitual com Poda Drástica de Complexidade Estrutural**
-
-#### Onde o Architect acertou com maestria:
-- Diagnosticou com perfeição que o lote de liquidação é uma entidade de ponte temporal assíncrona ($D_{-1} \to D_0$) e que tentar casar eventos de dias distintos sem essa abstração é analfabetismo contábil.
-- Acertou ao exigir a parametrização de domicílios e contas centralizadoras (`store_acquirer_configs`) para exterminar definitivamente as cláusulas hardcoded no SQL.
-
-#### Onde o Architect pecou pelo excesso acadêmico (A Armadilha do Overengineering):
-1. **A Ilusão da Tabela `pos_settlement_allocations` ($N:M$):**  
-   O Architect quer criar uma tabela de junção linha a linha entre a transação OFX e cada venda/OS individual do lote.  
-   **Pergunta que o Architect não respondeu:** De onde virão esses dados de alocação no momento da importação do OFX? O OFX contém apenas uma linha agregada: `CRED REDECARD R$ 5.770,74`.  
-   Sem uma integração via API direta com a Rede ou importação de arquivo EDI (VAN), a tabela `pos_settlement_allocations` ficará vazia ou terá que ser preenchida por rotinas sintéticas e chutes probabilísticos.
-2. **Risco de Locks e Complexidade Transacional:**  
-   Adicionar 3 tabelas com Foreign Keys em cascata e triggers em um ecossistema com 10 lojas importando extratos e fechando caixas simultaneamente multiplica o risco de deadlocks e degradação de performance na RPC mestre `get_daily_reconciliation_summary`.
-3. **O Refinamento do Contrarian (Lotes Virtuais Determinísticos):**  
-   Não precisamos de uma tabela física gravando cada centavo alocado diariamente se a adquirente opera em regime determinístico ($D+1$ ou calendário bancário). A reconciliação de lotes deve ser calculada como **Lote Virtual Agregado (Virtual Settlement Aggregation)** pela própria RPC com base nas transações de POS já persistidas e nos dias úteis do `bankingCalendar.ts`, persistindo em tabela apenas as **Exceções, Divergências Reais e Configurações de Estabelecimento (PVs)**.
-
----
-
-### 2.3. Confronto com o Analyst: A Álgebra Impecável vs. O Mito dos "0.0% de Falsos Positivos"
-
-> **Citação Nominal do Claim (Analyst — Seções 4.2 e 5):**  
-> *"A Equação Canônica do Pilar 1 ($P_1(D_0) = \text{Saldo Bancos OFX}(D_0) + \text{Cofre das Lojas}(D_0) + V_{D_0}^{\text{POS\_líquido}}$) é matematicamente blindada, garante Conservação da Massa Financeira e reduz a taxa de falsos positivos para 0.0% (|Δ| ≤ R$ 50,00), com payback em menos de 48 horas."*
-
-#### Postura: **(AGREE COM RESSALVAS CRÍTICAS / REFINE)**
-
-#### Onde o Analyst foi genial:
-- Desmascarou o paradoxo contábil da modelagem anterior: ao abater o crédito bancário de ontem ($5.770,74$) das vendas de hoje ($5.884,95$), o sistema calculava um resíduo inútil de R$ 114,21 e **subavaliava o patrimônio líquido da filial em exatamente R$ 5.770,74**.
-- Provou que as vendas líquidas de hoje ($V_{D_0}^{\text{POS}}$) representam direitos creditórios vivos de curto prazo que devem integrar integralmente o Ativo Circulante ($P_1$).
-
-#### Onde o Analyst foi ingênuo e precisa de correção de rota:
-1. **O Mito dos 0.0% de Falsos Positivos:**  
-   A equação do Analyst assume que todo faturamento de cartão de $D_0$ liquidará pontualmente no próximo dia útil.  
-   E quando o cliente passa um cartão em **3x sem antecipação contratada**? As parcelas 2 e 3 só entrarão em 60 e 90 dias. Se o sistema tratar $100\%$ das vendas brutas como liquidáveis em $D+1$, o lote esperado de amanhã será inflado artificialmente, gerando falsos alarmes de divergência.
-2. **A Resolução do Contrarian:**  
-   O `cartoes_a_compensar` deve considerar a segmentação por modalidade de captura (Débito: $D+1$; Crédito à Vista: $D+1$ ou $D+30$; Crédito Parcelado: agenda futura ou antecipação ativa). Sem essa segregação de modalidade, a meta de "0.0% de erro" é uma peça de ficção estatística.
-
----
-
-### 2.4. O Ponto Cego Coletivo do Conselho: O Delírio do Vínculo Manual de Lote Bancário a OSs
-
-> **Ponto Cego Identificado nos Três Agentes (Architect, Engineer e Analyst):**  
-> Os três agentes mantiveram em seus memoriais a seguinte recomendação de UX: *"Permitir que o operador clique no crédito bancário de R$ 5.770,74 e vincule manualmente a Ordens de Serviço (OSs) do dia ou justifique."*
-
-#### Postura: **(REBUT TOTAL E INCONDICIONAL) — Veto à Corrupção de Integridade**
-
-#### A anatomia do desastre anunciado:
-```
-[ BANCO: OFX D0 ] ────────────────────────────────────────► [ O DELÍRIO DE UX PERMITIDO ]
-Depósito: R$ 5.770,74 (Lote de Ontem)                       Operador de Balcão tenta vincular a:
-                                                            - OS #1901 (R$ 450,00 - Troca de Óleo Hoje)
-                                                            - OS #1905 (R$ 1.200,00 - Freio Hoje)
-                                                            - Resíduo Órfão: R$ 4.120,74 ???
-```
-
-1. **Violação da Rastreabilidade Contábil:**  
-   Um crédito de adquirente no extrato bancário representa a **liquidação financeira agrupada de um lote de vendas passadas**. Ele **NÃO É** o pagamento direto de uma OS específica de hoje.
-2. **Corrupção de Dados por Fadiga:**  
-   Se o sistema der essa opção ao operador da oficina, ele vai vincular o depósito de R$ 5.770,74 às primeiras 3 OSs abertas na tela para "sumir com a pendência", distorcendo o status financeiro de OSs que ainda nem foram pagas pelos clientes ou que foram pagas no PIX!
-3. **Regra Inegociável do Contrarian:**  
-   - **Vínculo Manual a OS no Extrato Bancário:** Permitido **EXCLUSIVAMENTE** para transações unitárias diretas (PIX de cliente, TED identificada).
-   - **Créditos de Adquirentes (`CRED REDE / CIELO / STONE`):** O sistema deve **BLOQUEAR** a vinculação direta a OSs individuais. O batimento de adquirente é **estritamente em nível de Lote (OFX ⇄ Lote POS)**. A quitação da OS individual já ocorreu na ponta da máquina de cartão no momento da captura!
-
----
-
-## 3. OS 5 TESTES DE ESTRESSE NO CHÃO DE OFICINA
-
-Qualquer arquitetura aprovada neste Conselho deve ser submetida e aprovada sem falhas nestes 5 testes destrutivos:
-
-```
-┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                 CENÁRIOS DE TESTE DE ESTRESSE OPERACIONAL                               │
-├──────────────────────────┬─────────────────────────────────────┬───────────────────────────────────────┤
-│ CENÁRIO DE ESTRESSE      │ EVENTO REAL NO CHÃO DE LOJA         │ COMPORTAMENTO EXIGIDO DO SISTEMA      │
-├──────────────────────────┼─────────────────────────────────────┼───────────────────────────────────────┤
-│ 1. Segunda-feira         │ OFX recebe R$ 22.000 (Sex+Sáb+Dom) │ Reconhece o lote multi-diário e liquida│
-│    Pós-Fim de Semana     │ Loja fatura R$ 4.500 na segunda     │ o saldo acumulado sem zerar os R$ 4.5k│
-├──────────────────────────┼─────────────────────────────────────┼───────────────────────────────────────┤
-│ 2. Retenção / Calote     │ Loja vendeu R$ 5.770 ontem, mas a   │ Sistema NÃO finge que entrou. Alerta  │
-│    da Adquirente         │ Rede não depositou nada hoje        │ "Lote D-1 Retido / Pendente" no P1    │
-├──────────────────────────┼─────────────────────────────────────┼───────────────────────────────────────┤
-│ 3. Desconto de Aluguel   │ Rede desconta R$ 180 de aluguel de  │ Permite justificar diferença de lote  │
-│    de POS no Depósito    │ terminal: depósito cai R$ 5.590,74  │ em 1 clique categorizando em despesa  │
-├──────────────────────────┼─────────────────────────────────────┼───────────────────────────────────────┤
-│ 4. Domicílio Centralizado│ Loja 02 passa cartão, mas dinheiro  │ Registra crédito na Matriz e lança    │
-│    na Matriz             │ cai na conta bancária da Loja 01    │ Mútuo Intercompany sem quebrar caixas │
-├──────────────────────────┼─────────────────────────────────────┼───────────────────────────────────────┤
-│ 5. Proteção Histórica    │ Reimportação de OFX em dias         │ Ramal `is_closed=true` congela dados  │
-│    (Snapshots 17-24/08)  │ anteriores ou chamada de recálculo  │ históricos com zero bytes alterados   │
-└──────────────────────────┴─────────────────────────────────────┴───────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                QUADRO DE POSTURAS DO CONTRARIAN                                  │
+├──────────────────────┬───────────────────────────────┬─────────┬─────────────────────────────────┤
+│ Agente Citado        │ Argumento / Claim Específico │ Postura │ Fundamentação Forense           │
+├──────────────────────┼───────────────────────────────┼─────────┼─────────────────────────────────┤
+│ Architect & Engineer │ Fórmula intra-dia da Rede:    │ (REBUT) │ Temporal mismatch (D0 vs D-1).  │
+│                      │ GREATEST(0, Líq - Crédito)    │         │ Quebra fatal em segundas-feiras.│
+├──────────────────────┼───────────────────────────────┼─────────┼─────────────────────────────────┤
+│ Analyst & Architect  │ Fim da dupla dedução do       │ (AGREE) │ Correção matemática irrefutável.│
+│                      │ Overdraft (R$ 15.943,52)      │         │ Saldo negativo é passivo, não   │
+│                      │ como redutor adicional        │         │ redutor algébrico duplicado.    │
+├──────────────────────┼───────────────────────────────┼─────────┼─────────────────────────────────┤
+│ Engineer             │ Equalização em 3 passos via   │ (REFINE)│ Ingênuo com snapshots fechados. │
+│                      │ RPC única e Zero-Logic UI     │         │ Exige blindagem de imutabilidade│
+│                      │ sem travas de conciliação     │         │ e auditoria de cofre físico.    │
+├──────────────────────┼───────────────────────────────┼─────────┼─────────────────────────────────┤
+│ Analyst              │ Aceitação do resíduo zero de  │ (REFINE)│ Acomoda erro humano do Excel.   │
+│                      │ cartões e diferença final     │         │ Sistema deve auditar drift real │
+│                      │ de -R$ 200,10 como normal     │         │ de -R$ 200,10, não mascarar.    │
+└──────────────────────┴───────────────────────────────┴─────────┴─────────────────────────────────┘
 ```
 
 ---
 
-## 4. A SOLUÇÃO MÍNIMA INVIOLÁVEL (O Consenso Pragmático Sem Dívida Técnica)
+### 2.1. Confrontação com o ARCHITECT e o ENGINEER sobre a Fórmula de Adquirentes
+* **Argumento Citado:**
+  > *Architect (Seção 1):* "$\mathbf{Cartões\ A\ Compensar}_i = \max(0, \mathbf{Rede\ Líquido}(D_0)_i - \mathbf{Crédito\ Rede\ Entrado}(D_0)_i)$"  
+  > *Engineer (Seção 1):* "Cartões A Compensar = Vendas líquidas da Rede realizadas em $D_0$ subtraídas de eventuais créditos da adquirente já compensados no mesmo dia."
 
-Para eliminar as falhas fatais sem afundar o projeto em superengenharia de meses nem em remendos frágeis de horas:
+* **Postura do Contrarian:** **`(REBUT)` — REFUTAÇÃO CATEGÓRICA DA FÓRMULA INTRA-DIA CEGA**
 
-```
-┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                  ARQUITETURA PRAGMÁTICA DE CONCILIAÇÃO                                 │
-├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 1. CAMADA DE CONFIGURAÇÃO DE DOMICÍLIOS (`store_acquirer_configs`):                                   │
-│    - Mapeia Estabelecimento (PV), Adquirente (Rede), Loja Dono e Loja Destino do Depósito.            │
-│    - Extermina 100% dos hardcodes (`s.id NOT IN ('st-01', 'st-05')`).                                 │
-├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 2. MOTOR DE RECONCILIAÇÃO DE LOTES VIRTUAIS NA RPC (`get_daily_reconciliation_summary`):              │
-│    - P1(D0) = Saldo Bancos OFX(D0) + Cofre(D0) + Lote Vendas POS(D0).                                  │
-│    - Batimento OFX: Depósito de Adquirente casa com a Janela Temporal de Vendas Úteis Anteriores.     │
-│    - Se Δ ≤ R$ 0,50: Status `CONCILIADO_AUTOMATICO` (Sem ação humana).                                 │
-│    - Se Δ > R$ 0,50: Status `DIVERGENCIA_LOTE` (Exige justificativa de taxa/aluguel).                 │
-├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 3. GOVERNANÇA E SEGURANÇA DE UX:                                                                      │
-│    - Depósitos de adquirente recebem badge visual verde no extrato: `LIQUIDAÇÃO REDE (Ref: Lote D-1)`. │
-│    - Bloqueio estrito de vínculo manual de lotes de adquirente a Ordens de Serviço unitárias.          │
-│    - Botão de Justificativa Rápida para Tarifas/Aluguéis com integração no Subtotal de Despesas.      │
-├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 4. BLINDAGEM HISTÓRICA IMUTÁVEL (Graphify Period Close Locking):                                       │
-│    - Snapshots com `is_closed = true` (17, 18, 19, 21 e 24/08) retornam estritamente o JSON gravado.  │
-│    - Zero recálculo retroativo.                                                                        │
-└────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-```
+* **Por que a proposta dos colegas é ingênua e quebra na prática:**
+  O Architect e o Engineer continuam insistindo na aberração de subtrair o crédito bancário da Rede que caiu hoje ($D_0$) das vendas de cartão de hoje ($D_0$). Isso é um **Temporal Mismatch (Violação do Princípio da Competência e Liquidação)**.
+  1. **O crédito que caiu hoje no extrato Itaú** (ex: R$ 5.770,74 em Dom Pedro ou R$ 8.372,45 em Santo André) **não pertence às vendas de hoje**. Ele é a liquidação de vendas efetuadas ontem ($D_{-1}$) ou na sexta/sábado. Esse dinheiro já está compondo o saldo bancário OFX.
+  2. **As vendas de cartão efetuadas hoje ($D_0$)** são um ativo novo que só liquidará no banco amanhã ($D+1$).
+  3. **O Efeito Catastrófico de Segunda-Feira:** Na segunda-feira, quando caírem R$ 35.000 de créditos acumulados do fim de semana no extrato e a loja vender R$ 4.000 na maquininha na segunda-feira de manhã, a fórmula `GREATEST(0, 4.000 - 35.000)` resultará em **R$ 0,00**. O sistema simplesmente **evaporará com R$ 4.000 de recebíveis legítimos** da empresa durante todo o dia!
+  4. **A Solução Técnica Real (Clearing Ledger):** A RPC deve tratar `pos_transactions` como **Ativo Circulante a Compensar D0** e classificar os créditos OFX como **Baixa de Contas a Receber D-1**. Se a adquirente opera em D+1, as vendas de hoje ficam integralmente em `cartoes_a_compensar` até a virada do dia, sem subtrações artificiais intra-dia cruzando lotes incompatíveis.
 
 ---
 
-## 5. REVISÃO DE POSIÇÃO & NÍVEL DE CONFIANÇA FINAL
+### 2.2. Confrontação com o ANALYST e o ARCHITECT sobre a Eliminação da Dupla Subtração de Saldos Negativos
+* **Argumento Citado:**
+  > *Analyst (Seção 3.1):* "A RPC somava algebricamente todas as contas em `saldo_bancos` e depois aplicava a subtração da linha de negativos, subtraindo os R$ 15.943,52 duas vezes... A regra inviolável é: Caixa Atual = (Positivos + MP + A Receber + Pátio OS) - Saldos Devedores."  
+  > *Architect (Seção 3.1):* "Os saldos negativos de contas correntes bancárias (Planalto: -R$ 3.845,74 e Santo André: -R$ 12.097,78, totalizando -R$ 15.943,52) são absorvidos naturalmente na soma vetorial em $\mathbb{R}$ do `v_saldo_bancos`. A variável `saldo_negativo_itau` deve ser mantida estritamente como métrica informativa."
 
-### Posição Original (Round 1):
-- Ceticismo agressivo e veto a qualquer tentativa de resolver o descasamento temporal com remendos em telas ou queries intra-dia que comparam dias incompatíveis.
+* **Postura do Contrarian:** **`(AGREE)` — CONCORDÂNCIA TOTAL COM A RESOLUÇÃO MATEMÁTICA**
 
-### Posição Revisada (Round 2):
-- **Evolução da Postura:** **MANTENHO O RIGOR CÉTICO, MAS RATIFICO A CONVERGÊNCIA**.
-  - Aprovo o desacoplamento formal do Ativo Circulante no Pilar 1 ($P_1$) defendido pelo **Analyst**.
-  - Aprovo a parametrização de estabelecimentos (`store_acquirer_configs`) do **Architect**, mas **VETO** a proliferação de tabelas intermediárias desnecessárias (`pos_settlement_allocations`) em favor de reconciliação de lotes agregados.
-  - Rejeito o minimalismo ingênuo de "2 horas" do **Engineer**, exigindo tratamento explícito de finais de semana, retenções e divergências de tarifas.
-  - Imponho o **bloqueio absoluto de vínculo manual entre lotes de extrato e OSs individuais**.
+* **Por que os colegas acertaram:**
+  Este é o ponto de maior mérito de todo o debate. O sistema anterior padecia de uma esquizofrenia de implementação: somava os saldos bancários vetorialmente (onde os números negativos de Planalto e Santo André já reduziam a soma global) e, no final da query, executava uma subtração adicional de `saldo_negativo_itau`.
+  A eliminação desse "double-dipping" restaura R$ 15.943,52 ao Caixa Atual consolidado, alinhando perfeitamente a matemática do banco de dados com a lógica patrimonial. Saldo devedor em conta corrente com limite contratado é passivo de curto prazo absorvido na disponibilidade líquida da holding, e não uma penalidade contábil aplicada duas vezes.
+
+---
+
+### 2.3. Confrontação com o ENGINEER sobre a Execução da RPC e Zero-Logic UI
+* **Argumento Citado:**
+  > *Engineer (Seção 3 e 7):* "Single Source of Truth no Backend. O PostgreSQL já entrega na chave `stores[i].saldo_banco` o valor consolidado exato... O frontend apenas renderiza o que o Postgres calculou... Passo 1: Aplicar migração consolidando a lógica de `saldo_banco = bank_total + dinheiro_loja + nao_entrou_valor`."
+
+* **Postura do Contrarian:** **`(REFINE)` — CONCORDÂNCIA COM AJUSTES CRÍTICOS DE SEGURANÇA E AUDITORIA**
+
+* **Onde o Engineer foi ingênuo e o que precisa ser refinado:**
+  1. **O Risco da Regressão Histórica em Snapshots:** O Engineer propõe atualizar a RPC mestre sem detalhar as travas de isolamento. Se a nova RPC for chamada para dias históricos já homologados (dias 17, 18, 19, 21 e 24/08), os saldos passados sofrerão recomputação dinâmica e mudarão de valor na tela dos diretores!
+     - *Condição de Refinamento:* A RPC deve ter uma cláusula explícita: se `is_closed = true` na tabela `daily_reconciliations`, a query **NÃO EXECUTA CTEs DINÂMICAS**; ela cospe diretamente o JSON imutável armazenado em `daily_snapshots.metadata`.
+  2. **A Blindagem do Cofre Físico (Santo André R$ 350,00):** O Engineer adiciona `COALESCE(v.dinheiro_loja, 0)` na fórmula de `saldo_banco`. Perfeito. Mas na planilha oficial de 26/08, Santo André fechou em **-R$ 12.097,78** porque o operador **esqueceu** o cofre de R$ 350,00! Se a RPC somar os R$ 350, o saldo da filial será **-R$ 11.747,78**.
+     - *O Refinamento:* O sistema NÃO DEVE esconder os R$ 350 para forçar -R$ 12.097,78. O sistema deve exibir `-R$ 11.747,78` e emitir uma advertência visual: *"Divergência de R$ 350,00 decorrente de dinheiro físico em cofre não lançado na planilha diária"*. O software deve corrigir a planilha, e não herdar seus erros.
+
+---
+
+### 2.4. Confrontação com o ANALYST sobre a Divergência Real de -R$ 200,10
+* **Argumento Citado:**
+  > *Analyst (Seção 1 e 3.2):* "Total de Contas Pagas = R$ 19.044,52 | Disponível para Contas = R$ 18.844,42 | DIFERENÇA FINAL DO DIA = -R$ 200,10... Na planilha de 26/08, todas as transações de cartão das 10 lojas foram marcadas como ENTROU, logo o resíduo resultou em R$ 0,00."
+
+* **Postura do Contrarian:** **`(REFINE)` — ALERTA CONTRA A COPIAGEM CEGA DE METADADOS MANUAIS**
+
+* **Onde o Analyst precisa de rigor:**
+  1. O Analyst comprovou a existência de uma defasagem real de **-R$ 200,10** no fluxo financeiro de 26/08 (o faturamento disponível não cobriu integralmente as contas pagas do dia).
+  2. Isso prova a minha tese central do Round 1: **o fechamento diário da empresa não é um conto de fadas de "diferença zero"**. O status corporativo de 26/08 NÃO PODE ser forçado para `approved` com tolerância cega.
+  3. O sistema deve reportar a verdade: o Caixa Atual consolidado fecha em **R$ 151.642,60** (ou R$ 151.992,60 com o cofre de Santo André), mas a diferença de conciliação de fluxo acusa `-R$ 200,10`. Tentar mascarar esse valor é fraude gerencial.
+
+---
+
+## 3. OS 4 TESTES DE ESTRESSE FORENSE (STRESS TESTS DE PRODUÇÃO)
+
+Para garantir que a implementação final sobreviva ao mundo real, submeto o plano aos seguintes 4 testes de estresse:
+
+1. **Stress Test 1 — O Despejo de Adquirentes de Fim de Semana:**
+   - *Cenário:* Na segunda-feira de manhã, caem R$ 28.000 de créditos Rede no Itaú da loja Mauá. A loja vendeu apenas R$ 1.500 no balcão até as 11h.
+   - *Comportamento com a fórmula antiga:* Vendas a compensar = `GREATEST(0, 1.500 - 28.000) = 0`. As vendas de R$ 1.500 evaporam do sistema.
+   - *Comportamento com o modelo aprovado:* Vendas de R$ 1.500 permanecem íntegras como Ativo a Compensar. Os R$ 28.000 compõem o saldo OFX e dão baixa nas pendências do fim de semana.
+2. **Stress Test 2 — Rastreabilidade Forense do Dinheiro em Espécie:**
+   - *Cenário:* O gerente da filial Santo André guarda R$ 350 em dinheiro da OS 2398 no cofre físico da loja.
+   - *Comportamento exigido:* O modal de auditoria deve exibir o card do cofre com timestamp, botão de conferência e inclusão no Ativo de Liquidez da filial.
+3. **Stress Test 3 — Blindagem de Dias Passados:**
+   - *Cenário:* Um usuário abre a data de 19/08/2026 no sistema após a aplicação da migration da RPC.
+   - *Comportamento exigido:* O sistema retorna exatamente o snapshot estático arquivado, sem disparar joins relacionais ou recalcular saldos históricos.
+4. **Stress Test 4 — Integridade do Limite Bancário (Overdraft):**
+   - *Cenário:* Planalto opera com saldo devedor de -R$ 3.845,74 e limite de cheque especial contratado de R$ 83.554,00.
+   - *Comportamento exigido:* A RPC soma -R$ 3.845,74 na disponibilidade global da holding, exibe badge `text-rose-500` na filial e reporta nos metadados que a loja ainda dispõe de R$ 79.708,26 de limite operacional disponível.
+
+---
+
+## 4. POSIÇÃO REVISADA & VEREDITO FINAL DO CONTRARIAN
+
+### Declaração de Mudança de Postura:
+No Round 1, registrei veto preliminar contra a tentativa de "equalizar cegamente o sistema com as gambiarras da planilha".  
+No Round 2, **REVISO MINHA POSIÇÃO PARA [CONDITIONAL APPROVAL / GO COM RESSALVAS]**, uma vez que:
+1. O Conselho aceitou a eliminação definitiva da dupla dedução dos saldos negativos de Itaú.
+2. O Architect e o Engineer concordaram com o princípio de **Zero-Logic UI** no frontend, delegando toda a consistência matemática para o banco de dados.
+3. Ficou estabelecido que o cofre físico de Santo André (R$ 350) e a diferença de fluxo de -R$ 200,10 serão tratados com transparência de auditoria, e não varridos para debaixo do tapete.
 
 ### Nível de Confiança Final:
-$$\mathbf{N\acute{\imath}vel\ de\ Confian\text{ç}a:\ 0.92\ /\ 1.00}$$
-
-> **Justificativa da Confiança:**  
-> O nível subiu de 0.40 para 0.92 porque o Conselho eliminou a ilusão matemática intra-dia e concordou com a segregação de regimes (Competência em $D_0$ vs. Liquidação de $D_{-1}$). Os 0.08 restantes de risco decorrem da disciplina de implementação: se a engenharia tentar cortar caminhos ignorando a parametrização multi-loja ou permitindo que operadores vinculem lotes a OSs de balcão, o sistema voltará a sangrar dados inconsistentes.
+$$\mathbf{Confidence\ Score} = \mathbf{0.88\ (88.0\%)}$$
+*(O desconto residual de 12% decorre do risco operacional de divergências em datas com alta volatilidade de adquirentes caso a equipe de engenharia não implemente com perfeição a trava de D+1).*
 
 ---
-*Documento registrado em: `c:\Users\admin\.gemini\antigravity\scratch\financeiro\.council\round_2\contrarian_round2.md`*  
-*Status: Deliberação do Round 2 concluída com sucesso. Pronto para a Síntese Final do Conselho.*
+
+## 5. DIRETRIZES INEGOCIÁVEIS DO CONTRARIAN PARA O CONSENSO FINAL
+
+Para que a implementação seja autorizada em produção:
+
+1. **RPC Canônica sem Hardcodes:** A RPC `get_daily_reconciliation_summary` não deve conter nenhum `CASE WHEN store_id = ...` para mascarar inconsistências de lojas específicas.
+2. **Exibição Transparente dos Negativos:** Planalto (-R$ 3.845,74) e Santo André (-R$ 12.097,78 / -R$ 11.747,78) devem ser exibidas com seus valores devedores reais destacados em vermelho, provando a higidez do balanço patrimonial da holding.
+3. **Consolidação em R$ 151.642,60:** O Caixa Atual deve convergir para os R$ 151.642,60 homologados pela tesouraria corporativa, com as 10 lojas somando algebricamente no Pilar 1.
+4. **Isolamento de Snapshots:** Garantir que dias fechados continuem consumindo a tabela imutável `daily_snapshots`.
+
+---
+*Documento registrado em: `.council/round_2/contrarian_round2.md`*  
+*Status: Round 2 concluído. Posição do Contrarian submetida para elaboração do Relatório de Síntese e Consenso Final.*

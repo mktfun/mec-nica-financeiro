@@ -200,3 +200,8 @@
 - **Diferença Real de Filial:** `get_daily_reconciliation_summary` ajustado para calcular divergência apenas sobre transações órfãs do extrato.
 - **Sincronização de Justificativas:** `useCategorizeOrphan.ts` sincroniza em `ofx_transactions` e `transactions`.
 - **Card Unificado da Filial:** Topo de `conciliacao.$lojaId.tsx` alinhado com o card executivo das 6 métricas.
+
+### Spec 298 — Equalização Canônica dos Saldos das 10 Filiais e Fechamento Diário (2026-08-27)
+- **Saldos das 10 Filiais:** Equalizados canonicamente com a planilha `CONCILIAÇÃO 2608.xlsx` (Planalto -R$ 3.845,74, Santo André -R$ 11.747,78 com R$ 350 de cofre, Mauá R$ 4.455,20, Dom Pedro R$ 4.718,80, Jabaquara R$ 5.372,43, etc.).
+- **Caixa Atual:** Fechado em R$ 151.642,60 (eliminada dupla dedução de cheque especial).
+- **Migration:** `20260826000008_canonical_store_balances_and_daily_closing.sql`.

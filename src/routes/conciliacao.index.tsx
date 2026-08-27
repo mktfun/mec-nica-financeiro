@@ -224,14 +224,21 @@ function ConciliacaoPage() {
                                 <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
                                   Saldo Bancos + Cartões
                                 </span>
-                                <p className="font-bold text-sm text-[var(--color-accent-light-blue)] font-mono">
+                                <p className={`font-bold text-sm font-mono ${(log.saldo_banco || 0) < 0 ? 'text-rose-400' : 'text-[var(--color-accent-light-blue)]'}`}>
                                   <AnimatedNumber value={log.saldo_banco || 0} format="currency" />
                                 </p>
                                 <div className="text-[10px] text-[var(--text-tertiary)] mt-0.5 flex flex-col font-mono">
-                                  <span>OFX: <AnimatedNumber value={log.saldo_banco_ofx ?? log.saldo_banco ?? 0} format="currency" /></span>
+                                  <span className={(log.saldo_banco_ofx || 0) < 0 ? 'text-rose-400/80 font-semibold' : ''}>
+                                    OFX: <AnimatedNumber value={log.saldo_banco_ofx ?? log.saldo_banco ?? 0} format="currency" />
+                                  </span>
                                   {(log.nao_entrou_valor || 0) > 0 && (
                                     <span className="text-amber-400 font-semibold">
                                       + Maq: + {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(log.nao_entrou_valor || 0)}
+                                    </span>
+                                  )}
+                                  {(log.dinheiro_loja || 0) > 0 && (
+                                    <span className="text-amber-300 font-semibold">
+                                      + Cofre: + {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(log.dinheiro_loja || 0)}
                                     </span>
                                   )}
                                 </div>

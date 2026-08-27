@@ -278,3 +278,10 @@ Garantia de salvamento de mensagens do assistente no banco de dados e isolamento
 - **Schema Completo de `ai_settings`:** A tabela `ai_settings` deve conter as colunas `id (uuid)`, `user_id (text)`, `provider (text)`, `model (text)`, `api_key (text)`, `bot_url (text)`, `bot_api_key (text)` com RLS habilitado.
 
 **Não fazer:** Nunca restrinja `SELECT` de tabelas de metadados públicos ou filiais exclusivamente a `auth.uid() IS NOT NULL` se isso puder gerar travamento em cascata da UI durante transições de sessão de auth.
+
+## 2026-08-27 — [Feature ID: 298]
+
+**Contexto:** Atualização das RPCs `get_daily_reconciliation_summary` e `get_store_pos_triple_reconciliation`.
+
+**Regra aprendida:**
+- Na RPC `get_store_pos_triple_reconciliation`, o valor `nao_entrou_valor` deve calcular a fração que ainda não liquidou em conta corrente (`GREATEST(0, rede_liquido - ofx_maquininhas)`), e na RPC `get_daily_reconciliation_summary` o saldo por loja integra `bank_total + nao_entrou_valor + dinheiro_loja`.
