@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import {
   Save, AlertTriangle, CheckCircle2,
-  CalendarDays, ChevronRight, Landmark, Wallet, Receipt, ShoppingBag, Edit2, Database, ShieldCheck, X
+  CalendarDays, ChevronRight, Landmark, Wallet, Receipt, ShoppingBag, Edit2, Database, ShieldCheck, X, Lock
 } from 'lucide-react';
 import { useDailySnapshot, usePreviousDaySnapshot, useSaveDailySnapshot } from '@/hooks/useDailySnapshot';
 import { useJustifiedTransactions } from '@/hooks/useJustifiedTransactions';
@@ -227,6 +227,8 @@ export function ResumoDiaPanel({
 
       await saveSnapshot.mutateAsync({
         date: selectedDate,
+        is_closed: true,
+        closed_at: currentSnapshot?.closed_at || new Date().toISOString(),
         saldo_bancario: saldoBancosValor,
         dinheiro_mp: dinheiroMpValor,
         a_receber_manual: aReceberValor,
@@ -238,16 +240,29 @@ export function ResumoDiaPanel({
         faturamento_outros_desc: 'Transações Justificadas (Ajustes)',
         contas_a_pagar: isEditing ? contasInput : (summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0),
         provisao: currentSnapshot?.provisao || 0,
-        saldo_negativo_itau: currentSnapshot?.saldo_negativo_itau || 0,
+        saldo_negativo_itau: summary?.saldo_negativo_itau ?? currentSnapshot?.saldo_negativo_itau ?? 0,
         juros_rede: jurosRedeValor,
-        notes: 'Fechamento diário salvo via painel de conciliação.',
+        notes: 'Fechamento diário consolidado e blindado via painel de conciliação.',
         metadata: {
           ...(currentSnapshot?.metadata || {}),
-          faturamento_liquido: faturamentoTotalComAjustes,
+          caixa_anterior: caixaAnteriorGlobal,
           fluxo_caixa: fluxoCaixaCalculado,
+          faturamento_oi_base: faturamentoLiquidoDia,
+          faturamento_ajustes: faturamentoAjustesValor,
+          faturamento_periodo: faturamentoTotalComAjustes,
+          faturamento_liquido: faturamentoTotalComAjustes,
           valor_disp_contas: valorDispContasCalculado,
+          contas_manual: contasManualValor,
           subtotal_contas: subtotalContasCalculado,
+          juros_rede: jurosRedeValor,
           diferenca_final: diferencaFinalCalculada,
+          total_saldo_banco: saldoBancosValor,
+          saldo_bancos_ofx: summary?.saldo_bancos_ofx ?? saldoBancosValor,
+          cartoes_a_compensar: summary?.cartoes_a_compensar ?? 0,
+          dinheiro_em_lojas: summary?.dinheiro_em_lojas ?? 0,
+          saldo_negativo_itau: summary?.saldo_negativo_itau ?? 0,
+          status_geral: isDiferencaOk ? 'approved' : 'divergent',
+          is_closed: true,
         },
       });
 
@@ -257,7 +272,7 @@ export function ResumoDiaPanel({
 
       setIsSaved(true);
       setIsEditing(false);
-      toast.success('Fechamento diário gravado com sucesso!');
+      toast.success('Fechamento diário consolidado e blindado com sucesso!');
       setTimeout(() => setIsSaved(false), 3000);
     } catch (err: any) {
       console.error('Erro ao gravar fechamento:', err);
@@ -836,47 +851,75 @@ export function ResumoDiaPanel({
         {/* Auditoria Discreta - Observações da Conciliação */}
         <AuditTrailBar observations={insights?.observations} className="mb-6" />
 
-        {/* Barra de Ações com Trava de Edição */}
-        <div className="flex justify-end gap-3 border-t border-[var(--border-subtle)] pt-4 mt-6">
-          {!isEditing ? (
-            <Button
-              variant="outline"
-              disabled={!canEditData}
-              onClick={() => {
-                if (!canEditData) {
-                  toast.error('Você não tem permissão para editar dados.');
-                  return;
-                }
-                setIsEditing(true);
-              }}
-              title={!canEditData ? 'Apenas usuários com permissão de edição podem alterar o fechamento.' : 'Editar valores do dia'}
-              className={`gap-2 px-6 py-2 text-sm border-[var(--color-primary)]/40 text-[var(--text-primary)] hover:bg-[var(--color-primary)]/10 cursor-pointer ${!canEditData ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-              <Edit2 size={16} />
-              Editar Fechamento
-            </Button>
-          ) : (
-            <>
-              <Button
-                variant="ghost"
-                onClick={handleCancel}
-                disabled={saveSnapshot.isPending}
-                className="gap-2 px-5 py-2 text-sm text-[var(--text-tertiary)] hover:text-white cursor-pointer"
-              >
-                <X size={16} />
-                Cancelar
-              </Button>
-              <Button
-                variant="primary"
-                onClick={handleSave}
-                disabled={saveSnapshot.isPending}
-                className="gap-2 px-6 py-2 text-sm bg-[var(--color-accent-teal)] hover:bg-[var(--color-accent-teal)]/90 text-black font-semibold cursor-pointer"
-              >
-                <Save size={16} />
-                {saveSnapshot.isPending ? 'Salvando...' : 'Salvar Alterações'}
-              </Button>
-            </>
-          )}
+        {/* Barra de Ações com Trava de Edição e Status de Fechamento */}
+        <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[var(--border-subtle)] pt-4 mt-6">
+          <div className="flex items-center gap-2">
+            {(currentSnapshot?.is_closed || summary?.is_closed) ? (
+              <span className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 font-mono shadow-sm">
+                <Lock size={14} className="text-emerald-400" />
+                Fechamento Blindado & Consolidado
+              </span>
+            ) : (
+              <span className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center gap-1.5 font-mono">
+                <AlertTriangle size={14} />
+                Conciliação Aberta (Rascunho)
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-3">
+            {!isEditing ? (
+              <>
+                <Button
+                  variant="outline"
+                  disabled={!canEditData}
+                  onClick={() => {
+                    if (!canEditData) {
+                      toast.error('Você não tem permissão para editar dados.');
+                      return;
+                    }
+                    setIsEditing(true);
+                  }}
+                  title={!canEditData ? 'Apenas usuários com permissão de edição podem alterar o fechamento.' : 'Editar valores do dia'}
+                  className={`gap-2 px-5 py-2 text-sm border-[var(--color-primary)]/40 text-[var(--text-primary)] hover:bg-[var(--color-primary)]/10 cursor-pointer ${!canEditData ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  <Edit2 size={16} />
+                  Editar Fechamento
+                </Button>
+
+                <Button
+                  variant="primary"
+                  onClick={handleSave}
+                  disabled={saveSnapshot.isPending || !canEditData}
+                  className="gap-2 px-6 py-2 text-sm bg-[var(--color-accent-teal)] hover:bg-[var(--color-accent-teal)]/90 text-black font-semibold cursor-pointer shadow-lg shadow-[var(--color-accent-teal)]/20"
+                >
+                  <Save size={16} />
+                  {saveSnapshot.isPending ? 'Salvando...' : 'Salvar Fechamento'}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  variant="ghost"
+                  onClick={handleCancel}
+                  disabled={saveSnapshot.isPending}
+                  className="gap-2 px-5 py-2 text-sm text-[var(--text-tertiary)] hover:text-white cursor-pointer"
+                >
+                  <X size={16} />
+                  Cancelar
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={handleSave}
+                  disabled={saveSnapshot.isPending}
+                  className="gap-2 px-6 py-2 text-sm bg-[var(--color-accent-teal)] hover:bg-[var(--color-accent-teal)]/90 text-black font-semibold cursor-pointer shadow-lg shadow-[var(--color-accent-teal)]/20"
+                >
+                  <Save size={16} />
+                  {saveSnapshot.isPending ? 'Salvando...' : 'Salvar Alterações'}
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       </div>
 

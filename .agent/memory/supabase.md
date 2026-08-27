@@ -285,3 +285,10 @@ Garantia de salvamento de mensagens do assistente no banco de dados e isolamento
 
 **Regra aprendida:**
 - Na RPC `get_store_pos_triple_reconciliation`, o valor `nao_entrou_valor` deve calcular a fração que ainda não liquidou em conta corrente (`GREATEST(0, rede_liquido - ofx_maquininhas)`), e na RPC `get_daily_reconciliation_summary` o saldo por loja integra `bank_total + nao_entrou_valor + dinheiro_loja`.
+
+## 2026-08-27 — [Feature ID: 299]
+
+**Contexto:** Correção de verificação de registros no PL/pgSQL do PostgreSQL.
+
+**Regra aprendida:**
+- **Trap de Record IS NOT NULL no PostgreSQL:** Em PL/pgSQL, `v_record IS NOT NULL` avalia para `FALSE` se qualquer coluna do registro for NULL. Para verificar se um `SELECT * INTO v_record` encontrou uma linha, use SEMPRE `IF FOUND THEN`.

@@ -656,3 +656,13 @@
 - **Caixa Atual Consolidado:** Resulta rigorosamente em **R$ 151.642,60** através da soma dos 4 Pilares ($P_1$: Bancos + Cofres + Cartões = R$ 50.794,86, $P_2$: Dinheiro MP = R$ 15.323,00, $P_3$: A Receber = R$ 8.349,67, $P_4$: Na Loja OS = R$ 77.525,07).
 
 **Não fazer:** Nunca subtraia `saldo_negativo_itau` do Caixa Atual se `v_saldo_bancos` já inclui os saldos devedores em sua soma algébrica.
+
+## 2026-08-27 — [Feature ID: 299]
+
+**Contexto:** Blindagem definitiva de snapshots fechados contra mutações retroativas e restauração do encadeamento de fechamento diário.
+
+**Regra aprendida:**
+- **Imutabilidade de Snapshots Fechados:** Dias com `is_closed = true` NUNCA devem ser recalculados dinamicamente via queries de `patio_os` ou `ofx_transactions`. A RPC `get_daily_reconciliation_summary` deve fazer curto-circuito e retornar diretamente os dados congelados do snapshot.
+- **Ancoragem Temporal:** O `caixa_anterior` do dia D+1 lê diretamente o `caixa_atual` do snapshot de D. O congelamento de 26/08 em R$ 151.642,60 alimenta perfeitamente o dia 27/08.
+
+**Não fazer:** Nunca permita que mutações em OSs de hoje recalculem o pátio de dias passados que já foram fechados.

@@ -205,3 +205,9 @@
 - **Saldos das 10 Filiais:** Equalizados canonicamente com a planilha `CONCILIAÇÃO 2608.xlsx` (Planalto -R$ 3.845,74, Santo André -R$ 11.747,78 com R$ 350 de cofre, Mauá R$ 4.455,20, Dom Pedro R$ 4.718,80, Jabaquara R$ 5.372,43, etc.).
 - **Caixa Atual:** Fechado em R$ 151.642,60 (eliminada dupla dedução de cheque especial).
 - **Migration:** `20260826000008_canonical_store_balances_and_daily_closing.sql`.
+
+### Spec 299 — Blindagem Definitiva de Snapshots Imutáveis e Fechamento Diário (2026-08-27)
+- **Blindagem de Snapshots:** Retorno imutável de snapshots com `is_closed = true` (corrigido com `IF FOUND` no PL/pgSQL).
+- **Consolidação de 25/08 e 26/08:** 25/08 fechado em R$ 141.440,93; 26/08 fechado em R$ 151.642,60.
+- **Ancoragem de 27/08:** Caixa anterior limpo em R$ 151.642,60.
+- **UI:** Botões explícitos de Salvar e Editar no `ResumoDiaPanel.tsx`.

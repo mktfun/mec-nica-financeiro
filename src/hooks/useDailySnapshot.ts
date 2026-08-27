@@ -19,6 +19,8 @@ export type DailySnapshotRow = {
   juros_rede: number;
   notes: string | null;
   metadata?: Record<string, any> | null;
+  is_closed?: boolean | null;
+  closed_at?: string | null;
   created_at: string;
   updated_at: string;
 };
