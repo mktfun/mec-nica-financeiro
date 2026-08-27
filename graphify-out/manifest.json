@@ -110,8 +110,8 @@
     "semantic_hash": "5657d3d33d13441c1ffdd63784683ee9"
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1787837441.9273024,
-    "ast_hash": "d1731b9e88e65369313552ef0a21d0be",
+    "mtime": 1787841041.4694126,
+    "ast_hash": "e261c264c82b4990a06c595359abcbee",
     "semantic_hash": ""
   },
   "src/components/dashboard/AlertResolveDialog.tsx": {
@@ -625,8 +625,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1787837735.341388,
-    "ast_hash": "7539c16a03efd5f879b5e783d3e035ff",
+    "mtime": 1787841413.438738,
+    "ast_hash": "eb86d2e6b7017b25cf6bbf73d729fd36",
     "semantic_hash": ""
   },
   "specs/016-loja-cleanup/design.md": {
@@ -3165,38 +3165,8 @@
     "semantic_hash": ""
   },
   "supabase/migrations/20260827000003_segregate_positive_and_negative_bank_balances.sql": {
-    "mtime": 1787837590.6266952,
-    "ast_hash": "dfe949509817e48bb6e28ae1940556e9",
-    "semantic_hash": ""
-  },
-  "specs/300-simplificacao-card-filial-e-nome-cliente-os/design.md": {
-    "mtime": 1787834867.7247484,
-    "ast_hash": "5ca591f4cc108d78f9e02b23662eb1d6",
-    "semantic_hash": ""
-  },
-  "specs/300-simplificacao-card-filial-e-nome-cliente-os/proposal.md": {
-    "mtime": 1787834867.722755,
-    "ast_hash": "767b5867bdd3e86ac84560eca37f8407",
-    "semantic_hash": ""
-  },
-  "specs/300-simplificacao-card-filial-e-nome-cliente-os/spec-plan.md": {
-    "mtime": 1787834867.7257442,
-    "ast_hash": "d0b9eaadd555b05acd755756ddfd0040",
-    "semantic_hash": ""
-  },
-  "specs/301-segregacao-saldo-negativo-cheque-especial-e-caixa-atual/design.md": {
-    "mtime": 1787836850.2888818,
-    "ast_hash": "69f2b762156560c9bccdcefaf1cae057",
-    "semantic_hash": ""
-  },
-  "specs/301-segregacao-saldo-negativo-cheque-especial-e-caixa-atual/proposal.md": {
-    "mtime": 1787836850.2877004,
-    "ast_hash": "41bf68326ada9c9d6ddcc7d3b97c4ac6",
-    "semantic_hash": ""
-  },
-  "specs/301-segregacao-saldo-negativo-cheque-especial-e-caixa-atual/spec-plan.md": {
-    "mtime": 1787837607.7212899,
-    "ast_hash": "45f1bbb36b2f9a40f3b26b86ece113bb",
+    "mtime": 1787840956.773746,
+    "ast_hash": "65c614e97a6a9fecf676be40b1f06d7d",
     "semantic_hash": ""
   }
 }

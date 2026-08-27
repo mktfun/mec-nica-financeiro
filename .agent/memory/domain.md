@@ -1,3 +1,18 @@
+## [2026-08-27] — [Feature ID: 302-correcao-saldo-bancos-caixa-atual-e-acumulacao-ao-salvar]
+
+**Contexto:** Correção de dois bugs críticos no fechamento diário: (A) acumulação do saldo_bancario a cada clique em "Salvar" e (B) Caixa Atual não deduzia o Cheque Especial.
+
+**Regra aprendida:**
+1. **saldo_bancario no snapshot = OFX líquido puro:** O campo `daily_snapshots.saldo_bancario` deve armazenar exclusivamente o `saldo_bancos_ofx` (soma líquida de `bank_total` das 10 contas Itaú). Cofre (`dinheiro_em_lojas`) e Maquininhas (`cartoes_a_compensar`) NÃO entram neste campo — eles são adicionados na composição do Pilar 1 (`total_saldo_banco_positivo`) na RPC ou no frontend.
+2. **Caixa Atual = Ativos Brutos - Cheque Especial:** A fórmula canônica do frontend (e da RPC) é: `Caixa Atual = (total_saldo_banco_positivo + dinheiro_mp + a_receber + na_loja_os) - saldo_negativo_itau`. O `saldoNegativoItau` DEVE ser subtraído explicitamente — não apenas exibido como informativo.
+3. **Loop de acumulação em snapshots:** Se o handleSave grava um campo X que a RPC depois lê como entrada para recalcular X, cria-se um loop que infla o valor a cada save. A solução é: a RPC sempre busca a fonte primária (tabelas transacionais como `reconciliations`), nunca o snapshot para campos calculáveis.
+
+**Risco identificado:** O Ramal 1 da RPC, ao ler campos de snapshots históricos, pode retornar `saldo_bancos_positivo` diferente se as `reconciliations` forem retroativamente alteradas. Mitigação: o `caixa_atual` continua sendo autoridade do snapshot; apenas os sub-chips de positivo/negativo recalculam dos OFXs.
+
+**Não fazer:**
+- Nunca gravar `saldo_bancario = total_saldo_banco_positivo` (que já inclui cofre e rede) no snapshot — isso duplica esses valores na próxima leitura do Ramal 1.
+- Nunca calcular `caixaAtualCalculado = saldo + dinheiro + aReceber + patio` sem subtrair `saldoNegativoItau` — o Cheque Especial é um passivo que reduz o caixa efetivo.
+
 ## [2026-08-27] — [Feature ID: 301-segregacao-saldo-negativo-cheque-especial-e-caixa-atual]
 
 **Contexto:** Segregação contábil e visual estrita entre saldos bancários positivos e saldos devedores (cheque especial / limite), eliminando o abatimento antecipado do negativo dentro do Card de Bancos e realizando a dedução de forma transparente e única diretamente no Caixa Atual.

@@ -1,3 +1,21 @@
+## [2026-08-27] — [Feature ID: 302-correcao-saldo-bancos-caixa-atual-e-acumulacao-ao-salvar]
+
+**Contexto:** Correção do Ramal 1 da RPC `get_daily_reconciliation_summary` para recalcular `saldo_bancos_positivo` e `saldo_negativo_itau` sempre dos `reconciliations`, nunca do `daily_snapshots.saldo_bancario` (que pode estar inflado). Hotfix de dados no snapshot de 27/08.
+
+**Regra aprendida:**
+1. **Ramal 1 (is_closed=true) deve usar reconciliations para saldo bancário:**
+   ```sql
+   SELECT SUM(bank_total), SUM(CASE WHEN bank_total > 0 THEN bank_total ELSE 0 END), SUM(CASE WHEN bank_total < 0 THEN ABS(bank_total) ELSE 0 END)
+   INTO v_saldo_bancos, v_saldo_bancos_positivo, v_saldo_negativo_itau
+   FROM (SELECT DISTINCT ON (store_id) store_id, bank_total FROM reconciliations WHERE date <= v_target_date ORDER BY store_id, date DESC) lr;
+   ```
+2. **Campos de autoridade no snapshot:** `caixa_atual`, `dinheiro_mp`, `a_receber_manual`, `total_patio`, `faturamento`, `contas_a_pagar` = valores do snapshot. Apenas saldo bancário e cheque especial vêm dos reconciliations para evitar loops de acumulação.
+3. **Hotfix de snapshots corrompidos:** Para corrigir um snapshot com valores inflados, usar UPDATE direto com `jsonb_build_object` para reconstruir o metadata corretamente — não usar UPSERT da aplicação pois pode re-inflar.
+
+**Risco identificado:** Se as `reconciliations` de um dia fechado forem alteradas (por reimportação de OFX), o Ramal 1 agora retornará saldos distintos dos valores no snapshot. Este é o comportamento correto pois OFXs são a fonte da verdade.
+
+**Não fazer:** Nunca salvar `saldo_bancario = total_saldo_banco_positivo` no snapshot. O campo canônico é `saldo_bancos_ofx` (OFX líquido puro). A composição com cofre e rede ocorre na RPC/frontend, não no campo persistido.
+
 ## [2026-08-27] — [Feature ID: 301-segregacao-saldo-negativo-cheque-especial-e-caixa-atual]
 
 **Contexto:** Atualização da RPC `public.get_daily_reconciliation_summary` para calcular e segregar `saldo_bancos_positivo` e `saldo_negativo_itau`, além da unificação canônica da assinatura `(p_date text, p_force_dynamic boolean)` com eliminação de sobrecargas legadas.

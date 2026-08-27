@@ -1,27 +1,27 @@
-# Graph Report - financeiro  (2026-08-26)
+# Graph Report - financeiro  (2026-08-27)
 
 ## Corpus Check
-- 618 files · ~361,938 words
+- 634 files · ~380,020 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2925 nodes · 4222 edges · 425 communities (265 shown, 160 thin omitted)
+- 2974 nodes · 4266 edges · 425 communities (264 shown, 161 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 28 edges (avg confidence: 0.5)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `bf061f5d`
+- Built from commit: `8e1bfd41`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- conciliacao.$lojaId.tsx
+- expenseMatcher.ts
 - WizardImportacao.tsx
 - oficina.ts
 - index.tsx
 - useTransactions.ts
-- PromptInput.tsx
-- useStores
+- cn
+- utils.ts
 - routeTree.gen.ts
 - ias-hub.ts
 - CentralImportWizard.tsx
@@ -34,7 +34,7 @@
 - Global Features
 - components.json
 - devDependencies
-- importar-os.tsx
+- importacoes.tsx
 - custos.tsx
 - seed.ts
 - dependencies
@@ -42,24 +42,24 @@
 - PromptBox.tsx
 - ExtratosImportacaoModal.tsx
 - BankReconciliationDashboard.tsx
-- useStores.ts
+- useStores
 - src/server.ts
 - auditoria_conciliacao_senior.md
-- AppShell.tsx
+- Input.tsx
 - BreakdownModal.tsx
 - supabase/types.ts
-- Badge.tsx
+- Button.tsx
 - useDiagnosticEngine.ts
 - @types/node
-- Card.tsx
+- Proposal: Simplificação do Card de Filial e Nome do Cliente na Importação de OS com Match Inteligente (300)
 - bankingCalendar.ts
 - database.types.ts
 - useMdrAudit.ts
-- FileRoutesByPath
+- Tasks
 - features_clean.md
 - MANUAL_CONSOLIDADO_CONCILIACAO_E_RECEBIVEIS.md
 - StoreDonutCharts.tsx
-- Button.tsx
+- Modal.tsx
 - package.json
 - Arquivos de Referência (ler antes de qualquer análise)
 - proposta.tsx
@@ -70,10 +70,10 @@
 - resilience.test.ts
 - Proposal: Raio-X da Conciliação — Visão Transação por Transação (151)
 - Cenários de Verificação (SCAN → INFER → VERIFY → FIX)
-- patio.tsx
+- Card.tsx
 - ai-chat/deno.json
 - CategorySelector.tsx
-- Features e MÃƒÂ³dulos Existentes (Mapa Vivo Anti-DuplicaÃƒÂ§ÃƒÂ£o)
+- Atualização de OSs Pendentes, Conciliação de Órfãs & Auto-Preenchimento de Contas (Spec 260)
 - imports
 - mcp-proxy/index.ts
 - imports
@@ -118,9 +118,9 @@
 - @radix-ui/react-toggle
 - @radix-ui/react-toggle-group
 - @radix-ui/react-tooltip
-- contasPagarParser.ts
+- useCentralImport.ts
 - react-dom
-- importacoes-despesas.tsx
+- extractNumber
 - react-markdown
 - react-resizable-panels
 - BRIEFING — 2026-08-24T17:58:31-03:00
@@ -138,7 +138,7 @@
 - vite-tsconfig-paths
 - zod
 - playwright
-- prettier
+- Design: Simplificação do Card de Filial e Nome do Cliente na Importação de OS com Match Inteligente (300)
 - sync-oficina/index.ts
 - 079-fix-conciliacao-math/proposal.md
 - Proposta Técnica: Motor de Conciliação Autônoma "Zero-Touch"
@@ -162,7 +162,7 @@
 - Diagnóstico Forense: Por que o Sistema exibiu Diferença de -R$ 26.681,25?
 - Tasks
 - StoreAnalyticsTabs.tsx
-- conciliacao.index.tsx
+- Proposal: Segregação do Saldo Negativo (Cheque Especial) e Dedução Explícita no Caixa Atual (301)
 - explorer_bug2/BRIEFING.md
 - explorer_bug3/BRIEFING.md
 - Workstreams & Milestones
@@ -190,7 +190,7 @@
 - Design: Correção do Motor de Importação e Blindagem de Contas a Pagar (268)
 - Proposal: Central de Agentes IAS & Sidebar UI Alignment
 - Proposal: Corrigir Matemática de "Na Loja OS" (Restante na OS) (patio-math-fix)
-- LogsAgentePanel.tsx
+- AppShell.tsx
 - Changelog
 - BDD Scenarios
 - BDD Scenarios
@@ -223,9 +223,9 @@
 - login-fix/proposal.md
 - oficina-ai-v2/proposal.md
 - oi-system-connector/proposal.md
-- Modulo1SaldoPanel.tsx
-- historico.tsx
-- MessageList.tsx
+- recebiveisParser.ts
+- Design: Segregação do Saldo Negativo (Cheque Especial) e Dedução Explícita no Caixa Atual (301)
+- useAutonomousReconciliation.ts
 - apply.md
 - workflows/proposal.md
 - vibe-apply.md
@@ -322,7 +322,7 @@
 - Proposal 193 - Simulador de Preços (Visão 360)
 - Design: Correção da Duplicação de Contas a Pagar e Alinhamento Preciso do Fechamento 24/08 (Spec 278)
 - auto-background-ai-reconciler/design.md
-- importacoes.tsx
+- router.tsx
 - aiReconciliationService.ts
 - supabase.md
 - Original User Request
@@ -389,7 +389,7 @@
 - @types/react
 - typescript
 - typescript-eslint
-- CacheAgentePanel.tsx
+- QuickActions.tsx
 - @vitejs/plugin-react
 - spec/global/constraints.md
 - 046-correcao-ofx-cents/design.md
@@ -421,10 +421,10 @@
 - login-fix/spec-plan.md
 - oficina-ai-v2/spec-plan.md
 - oi-system-connector/spec-plan.md
-- login.tsx
+- useAuth.ts
 - taxas.tsx
-- configuracoes.tsx
-- logs.motor.tsx
+- Spec Plan: Segregação do Saldo Negativo (Cheque Especial) e Dedução Explícita no Caixa Atual (301)
+- vite
 - ai
 - @eslint/js
 
@@ -438,80 +438,80 @@
 7. `formatCurrency()` - 31 edges
 8. `Global Features` - 31 edges
 9. `Modal()` - 26 edges
-10. `AnimatedNumber()` - 24 edges
+10. `AnimatedNumber()` - 25 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `ConfiguracoesPanel()` --calls--> `useBotLogs()`  [EXTRACTED]
+  src/components/agente/ConfiguracoesPanel.tsx → src/hooks/useBotLogs.ts
+- `ConfiguracoesPanel()` --calls--> `useDeleteStore()`  [EXTRACTED]
+  src/components/agente/ConfiguracoesPanel.tsx → src/hooks/useStores.ts
+- `ConfiguracoesPanel()` --calls--> `useStores()`  [EXTRACTED]
+  src/components/agente/ConfiguracoesPanel.tsx → src/hooks/useStores.ts
 - `ModelIcon()` --calls--> `cn()`  [EXTRACTED]
   src/components/chat/PromptInput.tsx → src/lib/utils.ts
 - `AttachmentThumb()` --calls--> `cn()`  [EXTRACTED]
   src/components/chat/PromptInput.tsx → src/lib/utils.ts
-- `AttachmentGalleryModal()` --calls--> `cn()`  [EXTRACTED]
-  src/components/chat/PromptInput.tsx → src/lib/utils.ts
-- `BootstrapPage()` --calls--> `useStores()`  [EXTRACTED]
-  src/routes/bootstrap.tsx → src/hooks/useStores.ts
-- `ConfiguracoesPanel()` --calls--> `useDeleteStore()`  [EXTRACTED]
-  src/components/agente/ConfiguracoesPanel.tsx → src/hooks/useStores.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (425 total, 160 thin omitted)
+## Communities (425 total, 161 thin omitted)
 
-### Community 0 - "conciliacao.$lojaId.tsx"
-Cohesion: 0.12
-Nodes (20): LegacyOs, LegacyOsTable(), OrphanCategorizationModal(), OrphanCategorizationModalProps, QUICK_CATEGORIES, StoreCartaoMaquininhaView(), StoreCartaoMaquininhaViewProps, FilterType (+12 more)
+### Community 0 - "expenseMatcher.ts"
+Cohesion: 0.67
+Nodes (3): ExpenseMatchResult, matchExpenseWithOfxDebit(), normalizeText()
 
 ### Community 1 - "WizardImportacao.tsx"
-Cohesion: 0.14
-Nodes (22): useStoreMapping(), WizardImportacao(), WizardImportacaoProps, MaquininhaItem, useCentralImport(), OsImportResult, processOsFiles(), generateSessionId() (+14 more)
+Cohesion: 0.20
+Nodes (14): CentralImportWizard(), useStoreMapping(), WizardImportacao(), WizardImportacaoProps, useBulkInsertTransactions(), generateSessionId(), LogLevel, LogStage (+6 more)
 
 ### Community 2 - "oficina.ts"
 Cohesion: 0.06
 Nodes (56): EmpresaConfig, EmpresaMap, listEmpresas(), loadEmpresaMap(), resolveEmpresa(), run(), getTargetDate(), runSync() (+48 more)
 
 ### Community 3 - "index.tsx"
-Cohesion: 0.23
-Nodes (9): COLOR_MAP, KpiCard(), KpiCardProps, KpiColor, DashboardMetrics, StoreMetrics, useBackendDashboard(), useAvailableConciliacaoDates() (+1 more)
+Cohesion: 0.21
+Nodes (9): COLOR_MAP, KpiCard(), KpiCardProps, KpiColor, DashboardMetrics, StoreMetrics, useBackendDashboard(), DashboardPage() (+1 more)
 
 ### Community 4 - "useTransactions.ts"
-Cohesion: 0.13
-Nodes (12): RedeVsExtratoTable(), RedeVsExtratoTableProps, CashFlowChart(), HeroBalance(), MotorStatus(), AnimatedNumber(), AnimatedNumberProps, useCategorizeOrphan() (+4 more)
+Cohesion: 0.09
+Nodes (21): AlertResolveDialog(), AlertResolveDialogProps, CashFlowChart(), HeroBalance(), MotorStatus(), useAlerts(), useResolveAlert(), useBulkInsertConciliationMatches() (+13 more)
 
-### Community 5 - "PromptInput.tsx"
-Cohesion: 0.14
-Nodes (6): Attachment, AttachmentGalleryModal(), AttachmentThumb(), ModelIcon(), PromptInput, PromptInputProps
+### Community 5 - "cn"
+Cohesion: 0.08
+Nodes (21): aggregateAssistantTurns(), AggregatedTurn, extractSteps(), getMessageContent(), getToolLabel(), Message, MessageList(), sanitizeErrorText() (+13 more)
 
-### Community 6 - "useStores"
-Cohesion: 0.16
-Nodes (20): ManualOsEntry, ManualOsFallbackForm(), ManualOsFallbackFormProps, ReceivableFormModal(), ReceivableFormModalProps, StoreReceivablesCard(), StoreReceivablesCardProps, deriveTemporalStatus() (+12 more)
+### Community 6 - "utils.ts"
+Cohesion: 0.11
+Nodes (28): FaturamentoDetalhesModal(), FaturamentoDetalhesModalProps, ImportRecebiveisModal(), ImportRecebiveisModalProps, ReceivableFormModal(), ReceivableFormModalProps, StoreReceivablesCard(), StoreReceivablesCardProps (+20 more)
 
 ### Community 7 - "routeTree.gen.ts"
-Cohesion: 0.07
-Nodes (31): getRouter(), AlertasRoute, BootstrapRoute, ConciliacaoDetalhesRoute, ConciliacaoIndexRoute, ConciliacaoLojaIdRoute, ConfiguracoesRoute, CustosRoute (+23 more)
+Cohesion: 0.06
+Nodes (43): Route, Route, Route, Route, Route, Route, Route, Route (+35 more)
 
 ### Community 8 - "ias-hub.ts"
 Cohesion: 0.09
 Nodes (13): AgentReflection, ClaritasConnector, ClaritasPolicy, ClaritasPrompt, createClaritasConnector(), createGraphifyConnector(), GraphData, GraphEdge (+5 more)
 
 ### Community 9 - "CentralImportWizard.tsx"
-Cohesion: 0.09
-Nodes (25): AgentRunnerModal(), AgentRunnerModalProps, INITIAL_STAGES, AgentStage, AgentStageItem(), AgentStageItemProps, STAGE_META, SubStep (+17 more)
+Cohesion: 0.10
+Nodes (22): AgentRunnerModal(), AgentRunnerModalProps, INITIAL_STAGES, AgentStage, AgentStageItem(), AgentStageItemProps, STAGE_META, SubStep (+14 more)
 
 ### Community 10 - "supabase.ts"
-Cohesion: 0.09
-Nodes (15): AuditoriaPassivoWizard(), AuditoriaPassivoWizardProps, OsStatus, UnifiedOs, PosFeeContract, GoalRow, ImportLog, ImportLogFilters (+7 more)
+Cohesion: 0.08
+Nodes (22): CacheAgentePanel(), AuditoriaPassivoWizardProps, OsStatus, UnifiedOs, DailyEvolutionPoint, LojaEvolutionChart(), LojaEvolutionChartProps, LojaPieCharts() (+14 more)
 
 ### Community 11 - "compilerOptions"
 Cohesion: 0.07
 Nodes (26): DOM, DOM.Iterable, ES2022, eslint.config.js, src/**/*.ts, src/**/*.tsx, vite/client, vite.config.ts (+18 more)
 
 ### Community 12 - "ResumoDiaPanel.tsx"
-Cohesion: 0.21
-Nodes (14): AgenteIAConfigPanel(), AiSettingsForm(), ResumoDiaPanel(), ResumoDiaPanelProps, AiSettings, useAiSettings(), useSaveAiSettings(), DailyReconciliationSummary (+6 more)
+Cohesion: 0.12
+Nodes (25): FaturamentoAtualBreakdownModal(), FaturamentoAtualBreakdownModalProps, LegacyOs, LegacyOsTable(), ResumoDiaPanel(), ResumoDiaPanelProps, useSession(), DailyReconciliationSummary (+17 more)
 
 ### Community 13 - "supplierUtils.ts"
-Cohesion: 0.17
-Nodes (16): LojaPieChartsProps, useCashRegisters(), useCloseCashRegister(), StoreAnalyticBreakdown, useStoreAnalyticBreakdown(), BreakdownCategoryItem, cleanRawText(), extractRevenueCategory() (+8 more)
+Cohesion: 0.27
+Nodes (11): LojaPieChartsProps, StoreAnalyticBreakdown, useStoreAnalyticBreakdown(), BreakdownCategoryItem, cleanRawText(), extractRevenueCategory(), extractSupplierName(), groupTransactionsByRevenueSource() (+3 more)
 
 ### Community 15 - "compilerOptions"
 Cohesion: 0.10
@@ -527,11 +527,11 @@ Nodes (18): aliases, components, hooks, lib, ui, utils, iconLibrary, registries 
 
 ### Community 18 - "devDependencies"
 Cohesion: 0.18
-Nodes (11): eslint-plugin-prettier, eslint-plugin-react-hooks, @lovable.dev/vite-tanstack-config, devDependencies, eslint-plugin-prettier, eslint-plugin-react-hooks, @lovable.dev/vite-tanstack-config, @types/react-dom (+3 more)
+Nodes (11): eslint-plugin-prettier, eslint-plugin-react-hooks, @lovable.dev/vite-tanstack-config, devDependencies, eslint-plugin-prettier, eslint-plugin-react-hooks, @lovable.dev/vite-tanstack-config, prettier (+3 more)
 
-### Community 19 - "importar-os.tsx"
-Cohesion: 0.16
-Nodes (14): AlertResolveDialog(), AlertResolveDialogProps, useAlerts(), useResolveAlert(), useSaveImportedReport(), ParsedOS, ParsedReceivable, savePatioOsAndReceivables() (+6 more)
+### Community 19 - "importacoes.tsx"
+Cohesion: 0.19
+Nodes (15): useSaveImportedReport(), GroupedImportLog, ParsedOS, ParsedReceivable, savePatioOsAndReceivables(), useClearAllData(), useDeleteImport(), useImportsHistory() (+7 more)
 
 ### Community 21 - "seed.ts"
 Cohesion: 0.24
@@ -542,8 +542,8 @@ Cohesion: 0.06
 Nodes (33): dependencies, cors, dotenv, express, @playwright/test, @supabase/supabase-js, @types/cors, xlsx (+25 more)
 
 ### Community 23 - "ConfiguracoesPanel.tsx"
-Cohesion: 0.12
-Nodes (17): ConfiguracoesPanel(), LogsMotorPanel(), CreateUserModal(), CreateUserModalProps, DailyAuditLogsView(), DailyAuditLogsViewProps, UserManagementPanel(), UserManagementPanelProps (+9 more)
+Cohesion: 0.10
+Nodes (22): AgenteIAConfigPanel(), MODEL_OPTIONS, PROVIDER_LABELS, AiSettingsForm(), ConfiguracoesPanel(), CreateUserModal(), CreateUserModalProps, DailyAuditLogsView() (+14 more)
 
 ### Community 24 - "PromptBox.tsx"
 Cohesion: 0.12
@@ -557,9 +557,9 @@ Nodes (12): ExtratosImportacaoModal(), ExtratosImportacaoModalProps, formatCurre
 Cohesion: 0.23
 Nodes (13): BankReconciliationDashboard(), ClassifiedFile, classifyFile(), FileTypeCategory, UniversalDropzone(), UniversalDropzoneProps, useSaveBankReconciliation(), useSaveMachineTotal() (+5 more)
 
-### Community 27 - "useStores.ts"
-Cohesion: 0.12
-Nodes (18): StoreFormDialog(), StoreFormDialogProps, StoreRankingChart(), Input, InputProps, useConciliacaoDetalhes(), useConciliacaoResumo(), sanitizeStore() (+10 more)
+### Community 27 - "useStores"
+Cohesion: 0.09
+Nodes (27): ContasManualModal(), ContasManualModalProps, IntercompanyEntitiesModal(), StoreFormDialog(), StoreFormDialogProps, StoreRankingChart(), ManualOsEntry, ManualOsFallbackForm() (+19 more)
 
 ### Community 28 - "src/server.ts"
 Cohesion: 0.22
@@ -569,9 +569,9 @@ Nodes (10): attachSupabaseAuth, consumeLastCapturedError(), renderErrorPage(), b
 Cohesion: 0.07
 Nodes (28): 1. VISÃO GERAL DA ARQUITETURA & FLUXO DE DADOS PONTA A PONTA, 2.1. Os 5 Pilares do Caixa Atual ($C_{\text{atual}}$), 2.2. As 5 Equações Sequenciais de Fechamento, 2. AS 5 EQUAÇÕES CONTÁBEIS E OS 5 PILARES DO CAIXA CONSOLIDADO, 3.1. BUG 1: Dinheiro em Espécie (Idempotência Frágil & Destruição Histórica na Baixa), 3.2. BUG 2: Maquininhas/Rede (Colisão de Hash, Duplicação de Juros & Falso 'Não Entrou'), 3.3. BUG 3: Reimportação Geral (Race Conditions, Sobrescrita Cega em patio_os e manual_transactions), 3. AUDITORIA FORENSE DOS 3 BUGS CRÍTICOS (ROOT CAUSE ANALYSIS - RCA) (+20 more)
 
-### Community 30 - "AppShell.tsx"
-Cohesion: 0.20
-Nodes (10): AppShell(), BottomNav(), navItems, navItems, Sidebar(), TopBar(), ThemeToggle(), listeners (+2 more)
+### Community 30 - "Input.tsx"
+Cohesion: 0.24
+Nodes (6): NewTransactionDialogProps, TODO: Implement transaction creation, TopBar(), Input, InputProps, ThemeToggle()
 
 ### Community 31 - "BreakdownModal.tsx"
 Cohesion: 0.19
@@ -581,17 +581,17 @@ Nodes (11): BreakdownModal(), BreakdownModalProps, formatCurrency(), formatDateT
 Cohesion: 0.14
 Nodes (12): requireSupabaseAuth, supabaseAdmin, CompositeTypes, Constants, Database, DatabaseWithoutInternals, DefaultSchema, Enums (+4 more)
 
-### Community 33 - "Badge.tsx"
-Cohesion: 0.11
-Nodes (26): LinkOfxToOsModal(), LinkOfxToOsModalProps, ManualMatchOsModal(), ManualMatchOsModalProps, OfxSemMatchTable(), OsDetailModal(), OsDetailModalProps, OsVsRedeTable() (+18 more)
+### Community 33 - "Button.tsx"
+Cohesion: 0.08
+Nodes (49): LinkOfxToOsModal(), LinkOfxToOsModalProps, checkNameMatch(), ManualMatchOsModal(), ManualMatchOsModalProps, OfxSemMatchTable(), OrphanCategorizationModal(), OrphanCategorizationModalProps (+41 more)
 
 ### Community 34 - "useDiagnosticEngine.ts"
 Cohesion: 0.25
 Nodes (11): DiagnosticPanel(), DiagnosticPanelProps, formatCurrency(), formatPercent(), classifyDeviation(), SnapshotRow, useDiagnosticEngine(), DiagnosticEngineInput (+3 more)
 
-### Community 36 - "Card.tsx"
+### Community 36 - "Proposal: Simplificação do Card de Filial e Nome do Cliente na Importação de OS com Match Inteligente (300)"
 Cohesion: 0.22
-Nodes (9): MODEL_OPTIONS, PROVIDER_LABELS, MatchManualOsProps, DailyEvolutionPoint, LojaEvolutionChart(), LojaEvolutionChartProps, LojaPieCharts(), Card() (+1 more)
+Nodes (8): API / Interface, Contratos de Dados, Features Existentes Impactadas, Problema, Proposal: Simplificação do Card de Filial e Nome do Cliente na Importação de OS com Match Inteligente (300), Risco Principal, Solução Proposta, Supabase Table: `patio_os`
 
 ### Community 37 - "bankingCalendar.ts"
 Cohesion: 0.51
@@ -602,12 +602,12 @@ Cohesion: 0.18
 Nodes (10): CompositeTypes, Constants, Database, DatabaseWithoutInternals, DefaultSchema, Enums, Json, Tables (+2 more)
 
 ### Community 39 - "useMdrAudit.ts"
-Cohesion: 0.13
-Nodes (23): MdrAuditView(), BrandMdrItem, DailyMdrItem, MdrAuditData, MdrAuditFilters, StoreMdrItem, TransactionMdrItem, useMdrAudit() (+15 more)
+Cohesion: 0.20
+Nodes (14): MdrAuditView(), BrandMdrItem, DailyMdrItem, MdrAuditData, MdrAuditFilters, StoreMdrItem, TransactionMdrItem, useMdrAudit() (+6 more)
 
-### Community 40 - "FileRoutesByPath"
-Cohesion: 0.13
-Nodes (13): Route, Route, Route, Route, Route, Route, Route, Route (+5 more)
+### Community 40 - "Tasks"
+Cohesion: 0.25
+Nodes (7): Fase 1 — Banco de Dados & Schema, Fase 2 — Parsers de Importação de OS, Fase 3 — UI do Card de Filial (SALDO TOTAL), Fase 4 — Modal de Vinculação & Match Inteligente por Nome, Fase 5 — Validação e Quality Gate, Spec Plan: Simplificação do Card de Filial e Nome do Cliente na Importação de OS com Match Inteligente (300), Tasks
 
 ### Community 41 - "features_clean.md"
 Cohesion: 0.09
@@ -621,9 +621,9 @@ Nodes (18): 1.1. Os 5 Pilares do Caixa Atual Consolidado, 1.2. As 5 Equações S
 Cohesion: 0.31
 Nodes (8): cleanStoreLabel(), CONTAS_COLORS, CustomDonutTooltip(), FATURAMENTO_COLORS, formatCompact(), formatCurrency(), StoreDonutCharts(), StoreDonutChartsProps
 
-### Community 44 - "Button.tsx"
-Cohesion: 0.08
-Nodes (41): ContasManualModal(), ContasManualModalProps, FaturamentoAtualBreakdownModal(), FaturamentoAtualBreakdownModalProps, FaturamentoDetalhesModal(), FaturamentoDetalhesModalProps, MaquininhasDetailModalProps, PatioOsDetailModal() (+33 more)
+### Community 44 - "Modal.tsx"
+Cohesion: 0.14
+Nodes (12): MaquininhasDetailModalProps, SaldoBancosDetailModal(), SaldoBancosDetailModalProps, PurgeDailyModal(), PurgeDailyModalProps, ModalProps, sizeClasses, ConciliationDailyLog (+4 more)
 
 ### Community 45 - "package.json"
 Cohesion: 0.25
@@ -661,17 +661,17 @@ Nodes (18): 4 Seções de Transações, API / Interface, Contratos de Dados, Fea
 Cohesion: 0.11
 Nodes (18): Arquitetura Técnica, Cenário 1: Formatação Monetária Correta, Cenário 2: Alinhamento Contábil, Cenário 3: Badges de Status, Cenário 4: Regressão Zero em Outras Telas, Cenário 5: Build de Produção, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Componentes / Hooks / Funções (+10 more)
 
-### Community 55 - "patio.tsx"
-Cohesion: 0.23
-Nodes (9): RecentActivity(), usePatioOS(), usePatioSummary(), PatioOSRow, FilterTab, getOsEffectiveValues(), HistoryChange, HistoryLog (+1 more)
+### Community 55 - "Card.tsx"
+Cohesion: 0.11
+Nodes (20): Modulo1SaldoPanel(), Modulo1SaldoPanelProps, RecentActivity(), AnimatedNumber(), AnimatedNumberProps, Card(), CardProps, usePatioOS() (+12 more)
 
 ### Community 56 - "ai-chat/deno.json"
 Cohesion: 0.40
 Nodes (4): imports, @supabase/functions-js/, tasks, start
 
-### Community 58 - "Features e MÃƒÂ³dulos Existentes (Mapa Vivo Anti-DuplicaÃƒÂ§ÃƒÂ£o)"
-Cohesion: 0.11
-Nodes (18): [2026-08-25] — Feature 285: Correção Definitiva RPC Conciliação e Blindagem de Performance, [2026-08-25] — Feature 286: Automação de Recebíveis para Boletos e Transferências com Match OFX, [2026-08-25] — Feature 287: Limpeza de Lixo da Raiz, Configuração de .graphifyignore e Otimização do Grafo, Atualização de OSs Pendentes, Conciliação de Órfãs & Auto-Preenchimento de Contas (Spec 260), ConciliaÃƒÂ§ÃƒÂ£o & Fechamento, Dashboard Executivo (Fintech V5), Exclusão Cirúrgica por Data & Correção do Botão de Excluir Imports (Spec 259), Feature 240: Segregação de Devoluções Rede (Pilar 5) & Âncora Temporal de OS Pátio (+10 more)
+### Community 58 - "Atualização de OSs Pendentes, Conciliação de Órfãs & Auto-Preenchimento de Contas (Spec 260)"
+Cohesion: 0.07
+Nodes (26): [2026-08-25] — Feature 285: Correção Definitiva RPC Conciliação e Blindagem de Performance, [2026-08-25] — Feature 286: Automação de Recebíveis para Boletos e Transferências com Match OFX, [2026-08-25] — Feature 287: Limpeza de Lixo da Raiz, Configuração de .graphifyignore e Otimização do Grafo, Atualização de OSs Pendentes, Conciliação de Órfãs & Auto-Preenchimento de Contas (Spec 260), ConciliaÃƒÂ§ÃƒÂ£o & Fechamento, Dashboard Executivo (Fintech V5), Exclusão Cirúrgica por Data & Correção do Botão de Excluir Imports (Spec 259), Feature 240: Segregação de Devoluções Rede (Pilar 5) & Âncora Temporal de OS Pátio (+18 more)
 
 ### Community 59 - "imports"
 Cohesion: 0.50
@@ -701,13 +701,13 @@ Nodes (10): AuditTrailBar(), AuditTrailBarProps, WhisperDot(), WhisperDotProps, 
 Cohesion: 0.14
 Nodes (13): 1. Visão Geral e Propósito, 2. Stack Tecnológica, 3. Módulos Principais, 4. Banco de Dados (Tabelas Supabase), 5. Regras de Negócio Importantes, 6. Lógica de Navegação e Autenticação, 7. Acesso da Inteligência Artificial (Para a Próxima IA), A. Conciliação Diária (`/conciliacao`) (+5 more)
 
-### Community 104 - "contasPagarParser.ts"
-Cohesion: 0.23
-Nodes (10): useContasAPagarImport(), classifyExpense(), mapEmpToStore(), parseContasAPagarFile(), STORE_EMP_MAP, ContasAPagarParseResult, ExpenseCategoryRule, IntercompanyEntity (+2 more)
+### Community 104 - "useCentralImport.ts"
+Cohesion: 0.15
+Nodes (17): MaquininhaItem, useCentralImport(), useContasAPagarImport(), processOsFiles(), classifyExpense(), mapEmpToStore(), parseContasAPagarFile(), STORE_EMP_MAP (+9 more)
 
-### Community 106 - "importacoes-despesas.tsx"
-Cohesion: 0.20
-Nodes (14): ExpenseImportResult, processExpenseFiles(), useBulkInsertTransactions(), parseContasAPagar(), ParsedExpense, parseJurosRede(), extractNumber(), excelSerialToIsoDate() (+6 more)
+### Community 106 - "extractNumber"
+Cohesion: 0.15
+Nodes (20): ExpenseImportResult, processExpenseFiles(), parseContasAPagar(), ParsedExpense, parseJurosRede(), cleanNumber(), isKnownStore(), MarcoZeroGlobalData (+12 more)
 
 ### Community 109 - "BRIEFING — 2026-08-24T17:58:31-03:00"
 Cohesion: 0.17
@@ -720,6 +720,10 @@ Nodes (11): 1.1. Patronus AI & Stanford University: *FinanceBench* (2023–2024)
 ### Community 117 - "Proposal: Copiloto IA Forense & Motor de Auditoria Autônoma (Spec 257)"
 Cohesion: 0.18
 Nodes (10): 1. RPC `audit_daily_reconciliation_delta(p_date text)`:, 2. Hook `useForensicAudit(targetDate, summary)`:, 🔌 API / Interface (RPCs e Hooks), 🗄️ Contratos de Dados, 🛡️ Features Existentes Impactadas, 📌 Problema, Proposal: Copiloto IA Forense & Motor de Auditoria Autônoma (Spec 257), ⚠️ Risco Principal (+2 more)
+
+### Community 124 - "Design: Simplificação do Card de Filial e Nome do Cliente na Importação de OS com Match Inteligente (300)"
+Cohesion: 0.29
+Nodes (6): 1. Card de Filial (`conciliacao.index.tsx` & `conciliacao.$lojaId.tsx`), 2. Algoritmo de Similaridade por Nome (`ManualMatchOsModal.tsx`), Arquitetura Técnica, Cenários de Verificação (Quality Gate), Design: Simplificação do Card de Filial e Nome do Cliente na Importação de OS com Match Inteligente (300), Modificações Visuais
 
 ### Community 130 - "079-fix-conciliacao-math/proposal.md"
 Cohesion: 0.18
@@ -809,9 +813,9 @@ Nodes (8): Fase 1 — Infraestrutura de Formatação, Fase 2 — Tabela de Resul
 Cohesion: 0.33
 Nodes (8): cleanStoreLabel(), CustomDonutTooltip(), formatCompact(), formatCurrency(), PALETTES, StoreAnalyticsTabs(), StoreAnalyticsTabsProps, TabType
 
-### Community 152 - "conciliacao.index.tsx"
-Cohesion: 0.21
-Nodes (8): ConciliationDailyLog, StorePosDetail, useDailyReconciliationSummary(), JustifiedTransactionsResult, useJustifiedTransactions(), UserProfile, useUserPermissions(), ConciliacaoPage()
+### Community 152 - "Proposal: Segregação do Saldo Negativo (Cheque Especial) e Dedução Explícita no Caixa Atual (301)"
+Cohesion: 0.29
+Nodes (6): Contratos de Dados, Features Existentes Impactadas, Problema, Proposal: Segregação do Saldo Negativo (Cheque Especial) e Dedução Explícita no Caixa Atual (301), Risco Principal, Solução Proposta
 
 ### Community 153 - "explorer_bug2/BRIEFING.md"
 Cohesion: 0.25
@@ -921,9 +925,9 @@ Nodes (7): 1. Executive Summary, 2. Problem Statement, 3.1 Sidebar & UI Layout R
 Cohesion: 0.25
 Nodes (7): API / Interface, Contratos de Dados, Features Existentes Impactadas, Problema, Proposal: Corrigir Matemática de "Na Loja OS" (Restante na OS) (patio-math-fix), Risco Principal, Solução Proposta
 
-### Community 180 - "LogsAgentePanel.tsx"
-Cohesion: 0.36
-Nodes (4): LogsAgentePanel(), McpLog, useMcpLogs(), Route
+### Community 180 - "AppShell.tsx"
+Cohesion: 0.13
+Nodes (7): LogsAgentePanel(), LogsMotorPanel(), AppShell(), BotAuditLog, useBotLogs(), McpLog, useMcpLogs()
 
 ### Community 181 - "Changelog"
 Cohesion: 0.29
@@ -1053,17 +1057,13 @@ Nodes (6): API / Interface, Contratos de Dados, Features Existentes Impactadas, 
 Cohesion: 0.29
 Nodes (6): API / Interface, Contratos de Dados, Features Existentes Impactadas, Problema, Risco Principal, Solução Proposta
 
-### Community 213 - "Modulo1SaldoPanel.tsx"
-Cohesion: 0.29
-Nodes (7): Modulo1SaldoPanel(), Modulo1SaldoPanelProps, calculateModulo1Saldo(), GlobalConciliacaoCalculated, GlobalConciliacaoInput, Modulo1Calculated, StoreSaldoState
+### Community 213 - "recebiveisParser.ts"
+Cohesion: 0.38
+Nodes (6): excelSerialToIsoDate(), ParsedReceivableRow, parseRecebiveisExcel(), parseRecebiveisFromBuffer(), ParseRecebiveisResult, RECEBIVEIS_STORE_MAP
 
-### Community 214 - "historico.tsx"
-Cohesion: 0.48
-Nodes (6): useExtrato(), formatDate(), getDefaultPeriod(), getIconForMethod(), HistoricoPage(), Route
-
-### Community 215 - "MessageList.tsx"
-Cohesion: 0.27
-Nodes (9): aggregateAssistantTurns(), AggregatedTurn, extractSteps(), getMessageContent(), getToolLabel(), Message, MessageList(), sanitizeErrorText() (+1 more)
+### Community 214 - "Design: Segregação do Saldo Negativo (Cheque Especial) e Dedução Explícita no Caixa Atual (301)"
+Cohesion: 0.33
+Nodes (5): Arquitetura Técnica, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Design: Segregação do Saldo Negativo (Cheque Especial) e Dedução Explícita no Caixa Atual (301), Fluxo de UI, Interfaces TypeScript
 
 ### Community 216 - "apply.md"
 Cohesion: 0.33
@@ -1449,41 +1449,37 @@ Nodes (3): Design: Correção da Duplicação de Contas a Pagar e Alinhamento Pr
 Cohesion: 0.50
 Nodes (3): Arquitetura de Acionamento em Background, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Estrutura do Hook `useBackgroundAiReconciler`
 
-### Community 312 - "importacoes.tsx"
-Cohesion: 0.25
-Nodes (10): PurgeDailyModal(), GroupedImportLog, useClearAllData(), useDeleteImport(), useImportsHistory(), usePurgeDailyData(), formatDate(), ImportacoesPage() (+2 more)
+### Community 312 - "router.tsx"
+Cohesion: 0.40
+Nodes (4): getRouter(), Register, routeTree, startInstance
 
 ### Community 313 - "aiReconciliationService.ts"
-Cohesion: 0.40
-Nodes (5): auditCashInOsList(), callGoogleGeminiApi(), CashAuditResult, DiscrepancyDiagnosis, FuzzyMatchResult
+Cohesion: 0.38
+Nodes (6): auditCashInOsList(), callGoogleGeminiApi(), CashAuditResult, diagnoseReconciliationDiscrepancy(), DiscrepancyDiagnosis, FuzzyMatchResult
 
-### Community 379 - "CacheAgentePanel.tsx"
-Cohesion: 0.60
-Nodes (3): CacheAgentePanel(), OficinaOsCache, useOsCache()
-
-### Community 419 - "login.tsx"
-Cohesion: 0.67
-Nodes (3): useLogin(), LoginPage(), Route
+### Community 419 - "useAuth.ts"
+Cohesion: 0.47
+Nodes (4): listeners, useLogin(), LoginPage(), Route
 
 ## Knowledge Gaps
-- **1531 isolated node(s):** `name`, `version`, `description`, `bot`, `bot:server` (+1526 more)
+- **1564 isolated node(s):** `name`, `version`, `description`, `bot`, `bot:server` (+1559 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **160 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **161 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `supabase` connect `supabase.ts` to `conciliacao.$lojaId.tsx`, `WizardImportacao.tsx`, `index.tsx`, `useTransactions.ts`, `useStores`, `StoreTableDashboard.tsx`, `CentralImportWizard.tsx`, `ResumoDiaPanel.tsx`, `supplierUtils.ts`, `importar-os.tsx`, `custos.tsx`, `ConfiguracoesPanel.tsx`, `conciliacao.index.tsx`, `ExtratosImportacaoModal.tsx`, `useStores.ts`, `src/server.ts`, `AppShell.tsx`, `BreakdownModal.tsx`, `Badge.tsx`, `useDiagnosticEngine.ts`, `Card.tsx`, `useMdrAudit.ts`, `Button.tsx`, `LogsAgentePanel.tsx`, `patio.tsx`, `useReconciliationInsights.ts`, `contasPagarParser.ts`, `importacoes-despesas.tsx`, `CacheAgentePanel.tsx`?**
-  _High betweenness centrality (0.010) - this node is a cross-community bridge._
+- **Why does `supabase` connect `supabase.ts` to `WizardImportacao.tsx`, `index.tsx`, `useTransactions.ts`, `utils.ts`, `StoreTableDashboard.tsx`, `CentralImportWizard.tsx`, `ResumoDiaPanel.tsx`, `supplierUtils.ts`, `importacoes.tsx`, `ConfiguracoesPanel.tsx`, `ExtratosImportacaoModal.tsx`, `useStores`, `src/server.ts`, `BreakdownModal.tsx`, `Button.tsx`, `useDiagnosticEngine.ts`, `useAuth.ts`, `useMdrAudit.ts`, `Modal.tsx`, `AppShell.tsx`, `Card.tsx`, `useReconciliationInsights.ts`, `useAutonomousReconciliation.ts`, `useCentralImport.ts`?**
+  _High betweenness centrality (0.012) - this node is a cross-community bridge._
+- **Why does `Card()` connect `Card.tsx` to `WizardImportacao.tsx`, `index.tsx`, `useTransactions.ts`, `cn`, `utils.ts`, `StoreTableDashboard.tsx`, `CentralImportWizard.tsx`, `supabase.ts`, `ResumoDiaPanel.tsx`, `importacoes.tsx`, `ConfiguracoesPanel.tsx`, `StoreAnalyticsTabs.tsx`, `BankReconciliationDashboard.tsx`, `useStores`, `Button.tsx`, `StoreDonutCharts.tsx`, `proposta.tsx`, `FaturamentoVsContasChart.tsx`, `AppShell.tsx`?**
+  _High betweenness centrality (0.005) - this node is a cross-community bridge._
 - **Why does `dependencies` connect `dependencies` to `@ai-sdk/react`, `ai`, `package.json`, `tw-animate-css`, `class-variance-authority`, `@cloudflare/vite-plugin`, `clsx`, `cmdk`, `date-fns`, `embla-carousel-react`, `input-otp`, `vaul`, `nitro`, `xlsx`, `pg`, `@radix-ui/react-accordion`, `@radix-ui/react-alert-dialog`, `@radix-ui/react-avatar`, `@radix-ui/react-checkbox`, `@radix-ui/react-collapsible`, `@radix-ui/react-context-menu`, `@radix-ui/react-dialog`, `@radix-ui/react-dropdown-menu`, `@radix-ui/react-hover-card`, `@radix-ui/react-label`, `@radix-ui/react-menubar`, `@radix-ui/react-navigation-menu`, `@radix-ui/react-popover`, `@radix-ui/react-progress`, `@radix-ui/react-radio-group`, `@radix-ui/react-scroll-area`, `@radix-ui/react-separator`, `@radix-ui/react-slot`, `@radix-ui/react-switch`, `@radix-ui/react-tabs`, `@radix-ui/react-toggle`, `@radix-ui/react-toggle-group`, `@radix-ui/react-tooltip`, `vite-tsconfig-paths`, `react-dom`, `zod`, `react-markdown`, `@hookform/resolvers`, `dotenv`, `@radix-ui/react-aspect-ratio`, `@radix-ui/react-select`, `@radix-ui/react-slider`, `react-day-picker`, `react-dropzone`, `react-resizable-panels`, `remark-gfm`, `sonner`, `ssh2`, `@supabase/supabase-js`, `tailwind-merge`, `tailwindcss`, `@tailwindcss/vite`, `@tanstack/react-query`, `@tanstack/react-start`, `@tanstack/start-server-core`, `@types/pdfjs-dist`?**
   _High betweenness centrality (0.004) - this node is a cross-community bridge._
-- **Why does `Card()` connect `Card.tsx` to `conciliacao.$lojaId.tsx`, `WizardImportacao.tsx`, `index.tsx`, `useTransactions.ts`, `useStores`, `StoreTableDashboard.tsx`, `CentralImportWizard.tsx`, `supabase.ts`, `importar-os.tsx`, `custos.tsx`, `ConfiguracoesPanel.tsx`, `StoreAnalyticsTabs.tsx`, `conciliacao.index.tsx`, `BankReconciliationDashboard.tsx`, `useStores.ts`, `Badge.tsx`, `StoreDonutCharts.tsx`, `Button.tsx`, `proposta.tsx`, `FaturamentoVsContasChart.tsx`, `LogsAgentePanel.tsx`, `patio.tsx`, `importacoes.tsx`, `Modulo1SaldoPanel.tsx`, `historico.tsx`, `importacoes-despesas.tsx`, `CacheAgentePanel.tsx`?**
-  _High betweenness centrality (0.004) - this node is a cross-community bridge._
 - **What connects `name`, `version`, `description` to the rest of the system?**
-  _1531 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `conciliacao.$lojaId.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.11965811965811966 - nodes in this community are weakly interconnected._
-- **Should `WizardImportacao.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.14112903225806453 - nodes in this community are weakly interconnected._
+  _1564 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `oficina.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.06151062867480778 - nodes in this community are weakly interconnected._
+- **Should `useTransactions.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.0928030303030303 - nodes in this community are weakly interconnected._
+- **Should `cn` be split into smaller, more focused modules?**
+  _Cohesion score 0.08333333333333333 - nodes in this community are weakly interconnected._

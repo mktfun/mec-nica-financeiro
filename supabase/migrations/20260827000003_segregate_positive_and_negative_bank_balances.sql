@@ -73,11 +73,37 @@ BEGIN
     -- RAMAL 1: DIA FECHADO (Snapshot Consolidado e Blindado com is_closed = true)
     -- =========================================================================
     IF NOT p_force_dynamic AND v_snapshot_found AND v_snapshot.is_closed = true THEN
-        v_saldo_bancos := COALESCE(v_snapshot.saldo_bancario, 0);
+        -- RECALCULA saldo bancário dos reconciliations (fonte da verdade, não do snapshot inflado)
+        -- O snapshot.saldo_bancario pode ter sido gravado com valor incorreto (inclui cofre+rede ou acumulado)
+        -- O caixa_atual continua sendo lido do snapshot como autoridade de fechamento contábil
+        SELECT 
+            COALESCE(SUM(bank_total), 0),
+            COALESCE(SUM(CASE WHEN bank_total > 0 THEN bank_total ELSE 0 END), 0),
+            COALESCE(SUM(CASE WHEN bank_total < 0 THEN ABS(bank_total) ELSE 0 END), 0)
+        INTO v_saldo_bancos, v_saldo_bancos_positivo, v_saldo_negativo_itau
+        FROM (
+            SELECT DISTINCT ON (store_id) store_id, bank_total
+            FROM reconciliations
+            WHERE date <= v_target_date
+            ORDER BY store_id, date DESC
+        ) latest_recons;
+
+        -- Se não encontrou reconciliations, cai de volta no snapshot como fallback
+        IF v_saldo_bancos = 0 AND v_snapshot.saldo_bancario IS NOT NULL AND v_snapshot.saldo_bancario != 0 THEN
+            v_saldo_bancos := COALESCE(v_snapshot.saldo_bancario, 0);
+            v_saldo_negativo_itau := COALESCE(v_snapshot.saldo_negativo_itau, (v_snapshot.metadata->>'saldo_negativo_itau')::numeric, 0);
+            v_saldo_bancos_positivo := CASE WHEN v_saldo_negativo_itau > 0 THEN v_saldo_bancos + v_saldo_negativo_itau ELSE v_saldo_bancos END;
+        END IF;
+        
+        -- Se saldo_negativo_itau ainda 0 e snapshot tem o valor, usa snapshot
+        IF v_saldo_negativo_itau = 0 THEN
+            v_saldo_negativo_itau := COALESCE(v_snapshot.saldo_negativo_itau, (v_snapshot.metadata->>'saldo_negativo_itau')::numeric, 0);
+        END IF;
+
+        -- Lê os demais campos do snapshot (estes sim são autoridade do fechamento)
         v_dinheiro_mp := COALESCE(v_snapshot.dinheiro_mp, 0);
         v_a_receber := COALESCE(v_snapshot.a_receber_manual, 0);
         v_na_loja_os := COALESCE(v_snapshot.total_patio, 0);
-        v_saldo_negativo_itau := COALESCE(v_snapshot.saldo_negativo_itau, (v_snapshot.metadata->>'saldo_negativo_itau')::numeric, 0);
         v_caixa_atual := COALESCE(v_snapshot.caixa_atual, 0);
         v_caixa_anterior := COALESCE((v_snapshot.metadata->>'caixa_anterior')::numeric, 0);
         v_fluxo_caixa := COALESCE((v_snapshot.metadata->>'fluxo_caixa')::numeric, v_caixa_atual - v_caixa_anterior);
@@ -99,16 +125,12 @@ BEGIN
         v_cartoes_a_compensar := COALESCE((v_snapshot.metadata->>'cartoes_a_compensar')::numeric, 0);
         v_devolucoes_rede := COALESCE((v_snapshot.metadata->>'devolucoes_rede')::numeric, 0);
         
-        IF v_saldo_negativo_itau > 0 THEN
-            v_saldo_bancos_positivo := v_saldo_bancos + v_saldo_negativo_itau;
-        ELSE
-            v_saldo_bancos_positivo := v_saldo_bancos;
-        END IF;
-
+        -- Composição final do Pilar 1 com valores recalculados dos OFXs
         v_total_saldo_banco_positivo := v_saldo_bancos_positivo + v_dinheiro_lojas + v_cartoes_a_compensar - v_devolucoes_rede;
         v_total_saldo_banco := v_saldo_bancos + v_dinheiro_lojas + v_cartoes_a_compensar - v_devolucoes_rede;
 
         -- Carrega detalhes por loja
+
         WITH recon_latest AS (
             SELECT DISTINCT ON (store_id) store_id, bank_total, na_loja_os as historical_na_loja
             FROM reconciliations

@@ -148,10 +148,10 @@ export function ResumoDiaPanel({
     ? (faturamentoLiquidoDia + faturamentoOutrosValor + faturamentoAjustesValor)
     : (summary?.faturamento_periodo ?? (faturamentoLiquidoDia + faturamentoOutrosValor + faturamentoAjustesValor));
 
-  // Matemática Consolidada
+  // Matemática Consolidada — CANÔNICA: Caixa Atual = Ativos - Cheque Especial
   const caixaAtualCalculado = isEditing 
-    ? (saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor)
-    : (summary?.caixa_atual ?? (saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor));
+    ? (saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor - saldoNegativoItau)
+    : (summary?.caixa_atual ?? (saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor - saldoNegativoItau));
 
   const fluxoCaixaCalculado = isEditing 
     ? (caixaAtualCalculado - caixaAnteriorGlobal)
@@ -230,7 +230,10 @@ export function ResumoDiaPanel({
         date: selectedDate,
         is_closed: true,
         closed_at: currentSnapshot?.closed_at || new Date().toISOString(),
-        saldo_bancario: saldoBancosValor,
+        // REGRA: saldo_bancario sempre = OFX líquido puro (bank_total das 10 contas).
+        // Cofre (dinheiro_em_lojas) e Rede (cartoes_a_compensar) NÃO entram neste campo
+        // para evitar dupla contagem no Ramal 1 da RPC.
+        saldo_bancario: summary?.saldo_bancos_ofx ?? 0,
         dinheiro_mp: dinheiroMpValor,
         a_receber_manual: aReceberValor,
         total_recebiveis: dinheiroMpValor + aReceberValor,
@@ -257,13 +260,19 @@ export function ResumoDiaPanel({
           subtotal_contas: subtotalContasCalculado,
           juros_rede: jurosRedeValor,
           diferenca_final: diferencaFinalCalculada,
-          total_saldo_banco: saldoBancosValor,
-          saldo_bancos_ofx: summary?.saldo_bancos_ofx ?? saldoBancosValor,
+          // REGRA: total_saldo_banco = total_saldo_banco_positivo (Pilar 1 com cofre+rede)
+          // saldo_bancos_ofx = OFX líquido puro (bank_total das 10 contas)
+          // saldo_bancos_positivo = soma das contas com saldo >= 0
+          total_saldo_banco: summary?.total_saldo_banco_positivo ?? saldoBancosValor,
+          saldo_bancos_ofx: summary?.saldo_bancos_ofx ?? 0,
+          saldo_bancos_positivo: summary?.saldo_bancos_positivo ?? 0,
           cartoes_a_compensar: summary?.cartoes_a_compensar ?? 0,
           dinheiro_em_lojas: summary?.dinheiro_em_lojas ?? 0,
+          devolucoes_rede: summary?.devolucoes_rede ?? 0,
           saldo_negativo_itau: summary?.saldo_negativo_itau ?? 0,
           status_geral: isDiferencaOk ? 'approved' : 'divergent',
           is_closed: true,
+
         },
       });
 

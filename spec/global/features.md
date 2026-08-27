@@ -1,3 +1,11 @@
+## [2026-08-27] — Feature 302: Correção do Saldo Bancos, Caixa Atual e Eliminação do Bug de Acumulação ao Salvar
+- **Migration PostgreSQL (update `20260827000003_segregate_positive_and_negative_bank_balances.sql`):** Ramal 1 (dia fechado) passou a recalcular `saldo_bancos_positivo` e `saldo_negativo_itau` diretamente dos `reconciliations` (DISTINCT ON store_id, date <= target_date) em vez de usar `daily_snapshots.saldo_bancario` (que estava inflado). Campos de fechamento como `caixa_atual`, `dinheiro_mp`, `a_receber_manual`, `total_patio` e `faturamento` continuam vindo do snapshot como autoridade contábil.
+- **Hotfix de dados (SQL direto):** Snapshot de 27/08 corrigido com `saldo_bancario = 60575.77` (OFX líquido puro) e `caixa_atual = 163755.56` e metadata reconstruído com valores auditados dos OFXs brutos.
+- **Frontend (`src/components/conciliacao/ResumoDiaPanel.tsx`):**
+  - `caixaAtualCalculado` corrigido para subtrair `saldoNegativoItau` (Bug B).
+  - `handleSave` corrigido para gravar `saldo_bancario: summary?.saldo_bancos_ofx ?? 0` em vez de `saldoBancosValor` (eliminação do loop de acumulação — Bug A).
+  - Metadata do snapshot atualizado com campos canônicos: `saldo_bancos_ofx`, `saldo_bancos_positivo`, `total_saldo_banco`, `devolucoes_rede`.
+
 ## [2026-08-27] — Feature 301: Segregação de Saldo Negativo (Cheque Especial) e Dedução Explícita no Caixa Atual
 - **Migration PostgreSQL (`20260827000003_segregate_positive_and_negative_bank_balances.sql`):** RPC `get_daily_reconciliation_summary` atualizada com discriminação canônica de `saldo_bancos_positivo` (contas $\ge 0$) e `saldo_negativo_itau` (contas $< 0$ em módulo).
 - **Pilar 1 e Card de Bancos (`src/components/conciliacao/ResumoDiaPanel.tsx`):** Valor de destaque exibe o total bruto de ativos disponíveis (Positivos + Cofre + Rede) com pill dedicado em vermelho para contas devedoras (`(-) Cheque Esp.`).
