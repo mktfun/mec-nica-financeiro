@@ -10,10 +10,105 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5"
+    PostgrestVersion: "14.17"
   }
   public: {
     Tables: {
+      accounts_payable_imports: {
+        Row: {
+          created_at: string | null
+          date: string
+          id: string
+          source_filename: string
+          total_amount: number
+          total_bills_count: number
+        }
+        Insert: {
+          created_at?: string | null
+          date: string
+          id?: string
+          source_filename: string
+          total_amount: number
+          total_bills_count: number
+        }
+        Update: {
+          created_at?: string | null
+          date?: string
+          id?: string
+          source_filename?: string
+          total_amount?: number
+          total_bills_count?: number
+        }
+        Relationships: []
+      }
+      agent_reflections: {
+        Row: {
+          conversation_id: string
+          created_at: string
+          id: string
+          outcome_success: boolean
+          policy_evaluations: Json | null
+          reflection_notes: string
+          tool_used: string | null
+        }
+        Insert: {
+          conversation_id: string
+          created_at?: string
+          id?: string
+          outcome_success: boolean
+          policy_evaluations?: Json | null
+          reflection_notes: string
+          tool_used?: string | null
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          outcome_success?: boolean
+          policy_evaluations?: Json | null
+          reflection_notes?: string
+          tool_used?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_reflections_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_settings: {
+        Row: {
+          api_key: string | null
+          bot_api_key: string | null
+          bot_url: string | null
+          id: string | null
+          model: string | null
+          provider: string | null
+          user_id: string | null
+        }
+        Insert: {
+          api_key?: string | null
+          bot_api_key?: string | null
+          bot_url?: string | null
+          id?: string | null
+          model?: string | null
+          provider?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          api_key?: string | null
+          bot_api_key?: string | null
+          bot_url?: string | null
+          id?: string | null
+          model?: string | null
+          provider?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       alerts: {
         Row: {
           amount: number | null
@@ -73,6 +168,42 @@ export type Database = {
           },
         ]
       }
+      audit_logs: {
+        Row: {
+          action_type: string
+          created_at: string | null
+          description: string | null
+          id: string
+          metadata: Json | null
+          target_date: string
+          title: string
+          user_email: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action_type: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          target_date?: string
+          title: string
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action_type?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          target_date?: string
+          title?: string
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       cash_registers: {
         Row: {
           created_at: string | null
@@ -116,6 +247,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      claritas_policies: {
+        Row: {
+          created_at: string
+          id: string
+          policy_name: string
+          rule_definition: string
+          severity: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          policy_name: string
+          rule_definition: string
+          severity: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          policy_name?: string
+          rule_definition?: string
+          severity?: string
+        }
+        Relationships: []
+      }
+      claritas_prompts: {
+        Row: {
+          agent_role: string
+          content: string
+          created_at: string
+          id: string
+          is_active: boolean
+          version: string
+        }
+        Insert: {
+          agent_role: string
+          content: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          version?: string
+        }
+        Update: {
+          agent_role?: string
+          content?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          version?: string
+        }
+        Relationships: []
       }
       conciliation_daily_logs: {
         Row: {
@@ -220,10 +402,137 @@ export type Database = {
           },
         ]
       }
+      conversations: {
+        Row: {
+          created_at: string | null
+          id: string
+          title: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      daily_manual_bills: {
+        Row: {
+          amount: number
+          category: string | null
+          created_at: string | null
+          date: string
+          description: string | null
+          due_date: string | null
+          external_code: string | null
+          id: string
+          installment: string | null
+          intercompany_entity_id: string | null
+          is_intercompany: boolean | null
+          matched_os_number: string | null
+          payment_date: string | null
+          recipient_name: string | null
+          store_id: string | null
+          title: string
+        }
+        Insert: {
+          amount: number
+          category?: string | null
+          created_at?: string | null
+          date: string
+          description?: string | null
+          due_date?: string | null
+          external_code?: string | null
+          id?: string
+          installment?: string | null
+          intercompany_entity_id?: string | null
+          is_intercompany?: boolean | null
+          matched_os_number?: string | null
+          payment_date?: string | null
+          recipient_name?: string | null
+          store_id?: string | null
+          title: string
+        }
+        Update: {
+          amount?: number
+          category?: string | null
+          created_at?: string | null
+          date?: string
+          description?: string | null
+          due_date?: string | null
+          external_code?: string | null
+          id?: string
+          installment?: string | null
+          intercompany_entity_id?: string | null
+          is_intercompany?: boolean | null
+          matched_os_number?: string | null
+          payment_date?: string | null
+          recipient_name?: string | null
+          store_id?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_manual_bills_intercompany_entity_id_fkey"
+            columns: ["intercompany_entity_id"]
+            isOneToOne: false
+            referencedRelation: "intercompany_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "daily_manual_bills_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      daily_revenue_adjustments: {
+        Row: {
+          amount: number
+          created_at: string | null
+          date: string
+          description: string | null
+          id: string
+          title: string
+          type: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          date: string
+          description?: string | null
+          id?: string
+          title: string
+          type?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          date?: string
+          description?: string | null
+          id?: string
+          title?: string
+          type?: string
+        }
+        Relationships: []
+      }
       daily_snapshots: {
         Row: {
           a_receber_manual: number
           caixa_atual: number
+          closed_at: string | null
           contas_a_pagar: number
           created_at: string | null
           date: string
@@ -232,7 +541,9 @@ export type Database = {
           faturamento_outros_desc: string | null
           faturamento_outros_valor: number
           id: string
+          is_closed: boolean | null
           juros_rede: number
+          metadata: Json | null
           notes: string | null
           provisao: number
           saldo_bancario: number
@@ -244,6 +555,7 @@ export type Database = {
         Insert: {
           a_receber_manual?: number
           caixa_atual?: number
+          closed_at?: string | null
           contas_a_pagar?: number
           created_at?: string | null
           date: string
@@ -252,7 +564,9 @@ export type Database = {
           faturamento_outros_desc?: string | null
           faturamento_outros_valor?: number
           id?: string
+          is_closed?: boolean | null
           juros_rede?: number
+          metadata?: Json | null
           notes?: string | null
           provisao?: number
           saldo_bancario?: number
@@ -264,6 +578,7 @@ export type Database = {
         Update: {
           a_receber_manual?: number
           caixa_atual?: number
+          closed_at?: string | null
           contas_a_pagar?: number
           created_at?: string | null
           date?: string
@@ -272,7 +587,9 @@ export type Database = {
           faturamento_outros_desc?: string | null
           faturamento_outros_valor?: number
           id?: string
+          is_closed?: boolean | null
           juros_rede?: number
+          metadata?: Json | null
           notes?: string | null
           provisao?: number
           saldo_bancario?: number
@@ -345,6 +662,7 @@ export type Database = {
       }
       estoque_os_pendente: {
         Row: {
+          client_name: string | null
           created_at: string
           data_baixa: string | null
           data_os: string
@@ -355,6 +673,7 @@ export type Database = {
           valor_os: number
         }
         Insert: {
+          client_name?: string | null
           created_at?: string
           data_baixa?: string | null
           data_os: string
@@ -365,6 +684,7 @@ export type Database = {
           valor_os: number
         }
         Update: {
+          client_name?: string | null
           created_at?: string
           data_baixa?: string | null
           data_os?: string
@@ -383,6 +703,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      expense_category_rules: {
+        Row: {
+          category: string
+          created_at: string | null
+          id: string
+          pattern: string
+          priority: number | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          id?: string
+          pattern: string
+          priority?: number | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          id?: string
+          pattern?: string
+          priority?: number | null
+        }
+        Relationships: []
       }
       goals: {
         Row: {
@@ -479,6 +823,47 @@ export type Database = {
         }
         Relationships: []
       }
+      intercompany_entities: {
+        Row: {
+          cpf_cnpj: string | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          pix_keys: string[] | null
+          store_id: string | null
+          type: string
+        }
+        Insert: {
+          cpf_cnpj?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          pix_keys?: string[] | null
+          store_id?: string | null
+          type: string
+        }
+        Update: {
+          cpf_cnpj?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          pix_keys?: string[] | null
+          store_id?: string | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "intercompany_entities_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       manual_transactions: {
         Row: {
           amount: number
@@ -492,6 +877,8 @@ export type Database = {
           icon_type: string | null
           id: string
           import_batch_id: string | null
+          manual_category: string | null
+          manual_justification: string | null
           match_status: string | null
           matched_ofx_id: string | null
           occurred_at: string
@@ -518,6 +905,8 @@ export type Database = {
           icon_type?: string | null
           id?: string
           import_batch_id?: string | null
+          manual_category?: string | null
+          manual_justification?: string | null
           match_status?: string | null
           matched_ofx_id?: string | null
           occurred_at?: string
@@ -544,6 +933,8 @@ export type Database = {
           icon_type?: string | null
           id?: string
           import_batch_id?: string | null
+          manual_category?: string | null
+          manual_justification?: string | null
           match_status?: string | null
           matched_ofx_id?: string | null
           occurred_at?: string
@@ -575,6 +966,72 @@ export type Database = {
           },
         ]
       }
+      oficina_contas: {
+        Row: {
+          fornecedor: string | null
+          id: string
+          id_interno: string
+          status: string | null
+          store_id: string
+          tipo: string | null
+          updated_at: string | null
+          valor_em_aberto: number | null
+          valor_original: number | null
+          vencimento: string | null
+        }
+        Insert: {
+          fornecedor?: string | null
+          id?: string
+          id_interno: string
+          status?: string | null
+          store_id: string
+          tipo?: string | null
+          updated_at?: string | null
+          valor_em_aberto?: number | null
+          valor_original?: number | null
+          vencimento?: string | null
+        }
+        Update: {
+          fornecedor?: string | null
+          id?: string
+          id_interno?: string
+          status?: string | null
+          store_id?: string
+          tipo?: string | null
+          updated_at?: string | null
+          valor_em_aberto?: number | null
+          valor_original?: number | null
+          vencimento?: string | null
+        }
+        Relationships: []
+      }
+      oficina_os_cache: {
+        Row: {
+          id: string
+          os_number: string
+          payload_completo: Json | null
+          status_cache: string | null
+          store_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          os_number: string
+          payload_completo?: Json | null
+          status_cache?: string | null
+          store_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          os_number?: string
+          payload_completo?: Json | null
+          status_cache?: string | null
+          store_id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       ofx_transactions: {
         Row: {
           amount: number
@@ -585,6 +1042,8 @@ export type Database = {
           fitid: string
           id: string
           import_batch_id: string | null
+          manual_category: string | null
+          manual_justification: string | null
           matched_os_number: string | null
           occurred_at: string
           store_id: string | null
@@ -600,6 +1059,8 @@ export type Database = {
           fitid: string
           id?: string
           import_batch_id?: string | null
+          manual_category?: string | null
+          manual_justification?: string | null
           matched_os_number?: string | null
           occurred_at: string
           store_id?: string | null
@@ -615,6 +1076,8 @@ export type Database = {
           fitid?: string
           id?: string
           import_batch_id?: string | null
+          manual_category?: string | null
+          manual_justification?: string | null
           matched_os_number?: string | null
           occurred_at?: string
           store_id?: string | null
@@ -633,6 +1096,8 @@ export type Database = {
       }
       patio_os: {
         Row: {
+          cash_value: number | null
+          client_name: string | null
           closed_at: string | null
           credit_debit_value: number | null
           credit_value: number | null
@@ -640,6 +1105,7 @@ export type Database = {
           debit_value: number | null
           history_log: Json | null
           id: string
+          last_payment_date: string | null
           match_status: string | null
           matched_ofx_id: string | null
           opened_at: string
@@ -654,9 +1120,10 @@ export type Database = {
           store_name: string | null
           total_value: number
           updated_at: string
-          last_payment_date: string | null
         }
         Insert: {
+          cash_value?: number | null
+          client_name?: string | null
           closed_at?: string | null
           credit_debit_value?: number | null
           credit_value?: number | null
@@ -664,6 +1131,7 @@ export type Database = {
           debit_value?: number | null
           history_log?: Json | null
           id?: string
+          last_payment_date?: string | null
           match_status?: string | null
           matched_ofx_id?: string | null
           opened_at?: string
@@ -678,9 +1146,10 @@ export type Database = {
           store_name?: string | null
           total_value?: number
           updated_at?: string
-          last_payment_date?: string | null
         }
         Update: {
+          cash_value?: number | null
+          client_name?: string | null
           closed_at?: string | null
           credit_debit_value?: number | null
           credit_value?: number | null
@@ -688,6 +1157,7 @@ export type Database = {
           debit_value?: number | null
           history_log?: Json | null
           id?: string
+          last_payment_date?: string | null
           match_status?: string | null
           matched_ofx_id?: string | null
           opened_at?: string
@@ -702,7 +1172,6 @@ export type Database = {
           store_name?: string | null
           total_value?: number
           updated_at?: string
-          last_payment_date?: string | null
         }
         Relationships: [
           {
@@ -723,13 +1192,18 @@ export type Database = {
           id: string
           import_batch_id: string | null
           machine_name: string
+          manual_category: string | null
+          manual_justification: string | null
           matched_os_number: string | null
           net_amount: number
           occurred_at: string
           payment_method: string
+          settled_amount: number | null
+          settled_date: string | null
+          settlement_status: string | null
           store_id: string | null
           target_date: string | null
-          transaction_type: 'venda' | 'devolucao'
+          transaction_type: string
         }
         Insert: {
           created_at?: string | null
@@ -739,13 +1213,18 @@ export type Database = {
           id?: string
           import_batch_id?: string | null
           machine_name: string
+          manual_category?: string | null
+          manual_justification?: string | null
           matched_os_number?: string | null
           net_amount: number
           occurred_at: string
           payment_method: string
+          settled_amount?: number | null
+          settled_date?: string | null
+          settlement_status?: string | null
           store_id?: string | null
           target_date?: string | null
-          transaction_type?: 'venda' | 'devolucao'
+          transaction_type?: string
         }
         Update: {
           created_at?: string | null
@@ -755,13 +1234,18 @@ export type Database = {
           id?: string
           import_batch_id?: string | null
           machine_name?: string
+          manual_category?: string | null
+          manual_justification?: string | null
           matched_os_number?: string | null
           net_amount?: number
           occurred_at?: string
           payment_method?: string
+          settled_amount?: number | null
+          settled_date?: string | null
+          settlement_status?: string | null
           store_id?: string | null
           target_date?: string | null
-          transaction_type?: 'venda' | 'devolucao'
+          transaction_type?: string
         }
         Relationships: [
           {
@@ -775,19 +1259,28 @@ export type Database = {
       }
       profiles: {
         Row: {
+          can_edit_data: boolean | null
+          can_import: boolean | null
           created_at: string
+          email: string | null
           full_name: string | null
           id: string
           role: string
         }
         Insert: {
+          can_edit_data?: boolean | null
+          can_import?: boolean | null
           created_at?: string
+          email?: string | null
           full_name?: string | null
           id: string
           role?: string
         }
         Update: {
+          can_edit_data?: boolean | null
+          can_import?: boolean | null
           created_at?: string
+          email?: string | null
           full_name?: string | null
           id?: string
           role?: string
@@ -798,40 +1291,74 @@ export type Database = {
         Row: {
           created_at: string
           date: string
+          description: string | null
+          discount_value: number | null
           due_date: string
           id: string
+          installment: string | null
+          interest_value: number | null
+          matched_ofx_id: string | null
+          os_number: string | null
+          paid_value: number | null
+          payment_method: string | null
           received_at: string | null
           status: string
           store_id: string | null
           store_name: string | null
           type: string
+          updated_at: string | null
           value: number
         }
         Insert: {
           created_at?: string
           date?: string
+          description?: string | null
+          discount_value?: number | null
           due_date: string
           id?: string
+          installment?: string | null
+          interest_value?: number | null
+          matched_ofx_id?: string | null
+          os_number?: string | null
+          paid_value?: number | null
+          payment_method?: string | null
           received_at?: string | null
           status?: string
           store_id?: string | null
           store_name?: string | null
           type: string
+          updated_at?: string | null
           value: number
         }
         Update: {
           created_at?: string
           date?: string
+          description?: string | null
+          discount_value?: number | null
           due_date?: string
           id?: string
+          installment?: string | null
+          interest_value?: number | null
+          matched_ofx_id?: string | null
+          os_number?: string | null
+          paid_value?: number | null
+          payment_method?: string | null
           received_at?: string | null
           status?: string
           store_id?: string | null
           store_name?: string | null
           type?: string
+          updated_at?: string | null
           value?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "receivables_matched_ofx_id_fkey"
+            columns: ["matched_ofx_id"]
+            isOneToOne: false
+            referencedRelation: "ofx_transactions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "receivables_store_id_fkey"
             columns: ["store_id"]
@@ -898,6 +1425,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      reconciliation_audit_logs: {
+        Row: {
+          created_at: string | null
+          final_delta: number
+          id: string
+          initial_delta: number
+          is_conforme: boolean
+          iterations_count: number
+          steps_executed: Json
+          summary_snapshot: Json | null
+          target_date: string
+        }
+        Insert: {
+          created_at?: string | null
+          final_delta: number
+          id?: string
+          initial_delta: number
+          is_conforme?: boolean
+          iterations_count?: number
+          steps_executed?: Json
+          summary_snapshot?: Json | null
+          target_date: string
+        }
+        Update: {
+          created_at?: string | null
+          final_delta?: number
+          id?: string
+          initial_delta?: number
+          is_conforme?: boolean
+          iterations_count?: number
+          steps_executed?: Json
+          summary_snapshot?: Json | null
+          target_date?: string
+        }
+        Relationships: []
       }
       reconciliations: {
         Row: {
@@ -969,6 +1532,91 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "reconciliations_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_cash_vault: {
+        Row: {
+          amount: number
+          created_at: string | null
+          deposited_at: string | null
+          deposited_by: string | null
+          description: string
+          entry_date: string
+          id: string
+          notes: string | null
+          os_number_ref: string | null
+          status: string
+          store_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          deposited_at?: string | null
+          deposited_by?: string | null
+          description: string
+          entry_date: string
+          id?: string
+          notes?: string | null
+          os_number_ref?: string | null
+          status?: string
+          store_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          deposited_at?: string | null
+          deposited_by?: string | null
+          description?: string
+          entry_date?: string
+          id?: string
+          notes?: string | null
+          os_number_ref?: string | null
+          status?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_cash_vault_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_file_mappings: {
+        Row: {
+          created_at: string | null
+          file_alias: string
+          id: string
+          store_id: string | null
+          store_name: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          file_alias: string
+          id?: string
+          store_id?: string | null
+          store_name?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          file_alias?: string
+          id?: string
+          store_id?: string | null
+          store_name?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_file_mappings_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
             referencedRelation: "stores"
@@ -1059,6 +1707,8 @@ export type Database = {
           icon_type: string | null
           id: string | null
           import_batch_id: string | null
+          manual_category: string | null
+          manual_justification: string | null
           occurred_at: string | null
           os_number: string | null
           payment_method: string | null
@@ -1076,8 +1726,38 @@ export type Database = {
       }
     }
     Functions: {
-      auto_match_transactions: { Args: { p_date: string }; Returns: undefined }
+      admin_create_user: {
+        Args: {
+          p_can_edit_data?: boolean
+          p_can_import?: boolean
+          p_email: string
+          p_full_name: string
+          p_password: string
+          p_role?: string
+        }
+        Returns: Json
+      }
+      admin_update_user_permissions: {
+        Args: {
+          p_can_edit_data: boolean
+          p_can_import: boolean
+          p_full_name: string
+          p_role: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
+      auto_match_receivables: {
+        Args: { p_date?: string; p_store_id?: string }
+        Returns: Json
+      }
+      auto_match_transactions: { Args: { p_date: string }; Returns: Json }
       calculate_daily_conciliation: { Args: { p_date: string }; Returns: Json }
+      categorize_orphan_transaction: {
+        Args: { p_category: string; p_justification: string; p_tx_id: string }
+        Returns: Json
+      }
+      clear_all_financial_data: { Args: never; Returns: Json }
       delete_import_batch: {
         Args: {
           p_batch_created_ats?: string[]
@@ -1092,41 +1772,33 @@ export type Database = {
         Args: { p_date: string; p_store_id: string }
         Returns: Json
       }
+      get_daily_reconciliation_summary:
+        | { Args: { p_date: string }; Returns: Json }
+        | {
+            Args: { p_force_dynamic?: boolean; p_target_date?: string }
+            Returns: Json
+          }
       get_dashboard_metrics: { Args: { p_date: string }; Returns: Json }
       get_patio_summary: { Args: never; Returns: Json }
       get_raw_ofx_data: {
         Args: { p_date: string; p_store_id: string }
         Returns: Json
       }
-      get_raw_os_data:
-        | {
-            Args: { p_date: string; p_store_id: string }
-            Returns: {
-              closed_at: string
-              credit_debit_value: number
-              opened_at: string
-              os_number: string
-              paid_value: number
-              payment_method: string
-              pix_transfer_value: number
-              remaining_value: number
-              status: string
-              total_value: number
-            }[]
-          }
-        | {
-            Args: { p_date: string; p_store_id: string }
-            Returns: {
-              closed_at: string
-              opened_at: string
-              os_number: string
-              paid_value: number
-              payment_method: string
-              remaining_value: number
-              status: string
-              total_value: number
-            }[]
-          }
+      get_raw_os_data: {
+        Args: { p_date: string; p_store_id: string }
+        Returns: {
+          closed_at: string
+          credit_debit_value: number
+          opened_at: string
+          os_number: string
+          paid_value: number
+          payment_method: string
+          pix_transfer_value: number
+          remaining_value: number
+          status: string
+          total_value: number
+        }[]
+      }
       get_raw_rede_data: {
         Args: { p_date: string; p_store_id: string }
         Returns: {
@@ -1141,15 +1813,31 @@ export type Database = {
           payment_method: string
         }[]
       }
-      get_receivables_summary: { Args: never; Returns: Json }
+      get_receivables_summary: { Args: { p_date?: string }; Returns: Json }
       get_store_financial_stats: {
         Args: { p_end_date: string; p_start_date: string; p_store_id: string }
         Returns: Json
       }
+      get_store_pos_triple_reconciliation: {
+        Args: { p_target_date?: string }
+        Returns: Json
+      }
+      get_system_users: { Args: never; Returns: Json }
+      liquidate_legacy_os: { Args: { p_os_ids: string[] }; Returns: Json }
       match_bank_transactions: {
         Args: { p_date: string; p_store_id: string }
         Returns: undefined
       }
+      process_marco_zero_import: {
+        Args: { p_global: Json; p_stores: Json; p_target_date: string }
+        Returns: Json
+      }
+      purge_daily_financial_data: { Args: { p_date: string }; Returns: Json }
+      run_autonomous_reconciliation_loop: {
+        Args: { p_date: string }
+        Returns: Json
+      }
+      test_ramal_1: { Args: { p_date: string }; Returns: Json }
     }
     Enums: {
       [_ in never]: never
