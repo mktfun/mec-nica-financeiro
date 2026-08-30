@@ -1,3 +1,21 @@
+﻿## [2026-08-30] — Feature 314: Teste E2E e Fechamento da Conciliação com Arquivos Reais de 27-08
+- **Automação Playwright Ponta a Ponta (`scripts/run-e2e-conciliacao-2708.ts`):**
+  - Ingestão automatizada de 27 arquivos reais de `C:\Users\admin\Desktop\conciliacao\27-08` (10 relatórios de OS, 10 OFX Itaú, 5 Rede, 1 Contas a Pagar e 1 PDF).
+  - Execução sequencial dos 8 steps do Wizard no `localhost:8080/importacoes`:
+    - *Step 1:* Upload & parsing paralelo multi-formato.
+    - *Step 2:* Mapeamento automático das 10 filiais (OFX, OSs e Rede).
+    - *Step 3:* Preview Geral com inserção do Odômetro OI (R$ 891.663,62), Dinheiro MP (R$ 20.225,00) e A Receber (R$ 8.349,67).
+    - *Step 4:* Resolução de pagamentos sem lançamento na OS (Tela A).
+    - *Step 5:* Classificação contábil de movimentações intercompany com toggle Faturamento vs Apenas Conciliar (Tela B).
+    - *Step 6:* Confirmação de integridade física dos 10 cofres das lojas (Tela C).
+    - *Step 7:* Validação do semáforo dos 5 Pilares Contábeis (Tela D).
+    - *Step 8:* Gravação em lote no PostgreSQL/Supabase com auto-healing.
+  - Captura sequencial de 10 screenshots de evidência em `./e2e-results/screenshots/`.
+- **Balanço Contábil dos 5 Pilares (27/08/2026):**
+  - Saldo Bancos Líquido: R$ 60.575,77 (Positivo R$ 82.615,97 - Cheque Especial R$ 22.040,20).
+  - Dinheiro MP: R$ 20.225,00 | A Receber: R$ 8.349,67 | Pátio OS: R$ 65.603,74.
+  - Contas a Pagar + Juros Rede: R$ 20.752,83 | Faturamento do Dia: R$ 23.864,38.
+  - Diferença Contábil Final: -R$ 0,03 (10 filiais aprovadas com 0 divergência).
 ## [2026-08-27] — Feature 310: Novo Wizard Modular de Ingestão e Conciliação Passo a Passo
 - **Fase 0 — Ingestão Global Unificada (`Stage0UnifiedIngestion.tsx`):**
   - Dropzone multi-arquivos para upload simultâneo de OFX (10 filiais Itaú), Vendas da Rede (`.xlsx`), OSs do Pátio e Contas a Pagar (`BuscaContasAPagar.xls`).
@@ -272,3 +290,4 @@
 - **Consolidação de 25/08 e 26/08:** 25/08 fechado em R$ 141.440,93; 26/08 fechado em R$ 151.642,60.
 - **Ancoragem de 27/08:** Caixa anterior limpo em R$ 151.642,60.
 - **UI:** Botões explícitos de Salvar e Editar no `ResumoDiaPanel.tsx`.
+

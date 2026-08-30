@@ -36,6 +36,11 @@ import { DiagnosticPanel } from './DiagnosticPanel';
 import { MissingPatioOsEditor } from './MissingPatioOsEditor';
 import { useAiSettings } from '@/hooks/useAiSettings';
 import { reconcileRedeWithOfxViaGemini } from '@/lib/llm-matcher';
+import { Step1UnregisteredPayments } from './wizard/Step1UnregisteredPayments';
+import { Step2NonRevenueJustifications } from './wizard/Step2NonRevenueJustifications';
+import { Step3CashVaultDaniel } from './wizard/Step3CashVaultDaniel';
+import { Step4FinalAuditAndClose } from './wizard/Step4FinalAuditAndClose';
+import { executeAutoMatchingEngine, PendingUnmatchedTransaction } from '@/lib/matchers/autoMatchingEngine';
 
 export interface ImportLogEntry {
   id: string;
@@ -80,7 +85,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const { saveBills } = useContasAPagarImport();
   const { data: aiSettings } = useAiSettings();
 
-  const [step, setStep] = useState<1 | 2 | 2.5 | 3 | 3.5 | 4>(1);
+  const [step, setStep] = useState<1 | 2 | 2.5 | 3 | 3.5 | 4 | 5 | 6 | 7 | 8>(1);
   const [subStep, setSubStep] = useState<1 | 2 | 3>(1);
   const [isPreparing, setIsPreparing] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -106,6 +111,11 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   // Manual inputs globais
   const [manualDinheiroMp, setManualDinheiroMp] = useState<number>(0);
   const [manualAReceber, setManualAReceber] = useState<number>(0);
+
+  // Motor de Auto-Match em Memória (alimenta o Step 4)
+  const [unmatchedTransactions, setUnmatchedTransactions] = useState<PendingUnmatchedTransaction[]>([]);
+  const [autoMatchedCount, setAutoMatchedCount] = useState<number>(0);
+  const [resolvedMatches, setResolvedMatches] = useState<Array<{ storeId: string; osNumber: string; sourceId: string; type: string; amount: number; paymentMethod: string }>>([]);
 
   // OSs ausentes / órfãs detectadas para ajuste manual livre
   const [missingOsList, setMissingOsList] = useState<MissingPatioOsEdit[]>([]);
@@ -509,7 +519,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       return;
     }
     setIsSaving(true);
-    setStep(4);
+    setStep(8);
     setImportStages(JSON.parse(JSON.stringify(INITIAL_STAGES)));
     setAuditTrailUrl(null);
     setSaveFinished(false);
@@ -1454,7 +1464,14 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       <div className="flex items-center justify-between mb-6 pb-2 border-b border-[var(--border-subtle)]">
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="text-[11px] font-semibold text-[var(--color-primary)] border-[var(--color-primary)]/30 bg-[var(--color-primary)]/10 px-3 py-1">
-            {step === 1 ? '1. Upload de Arquivos' : step === 2 ? '2. Mapeamento de Filiais' : step === 3 ? '3. Conferência e Preview' : '4. Gravação e Processamento'}
+            {step === 1 ? '1. Upload de Arquivos' :
+             step === 2 ? '2. Mapeamento de Filiais' :
+             step === 3 ? '3. Conferência e Preview Geral' :
+             step === 4 ? '4. Vínculo de Pagamentos na OS (Tela A)' :
+             step === 5 ? '5. Justificativas por Loja (Tela B)' :
+             step === 6 ? '6. Conferência de Cofre do Daniel (Tela C)' :
+             step === 7 ? '7. Auditoria dos 5 Pilares (Tela D)' :
+             '8. Importação Concluída'}
           </Badge>
         </div>
       </div>
@@ -2193,21 +2210,109 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                 />
               </div>
 
-              <Button 
-                onClick={handleConfirm}
-                disabled={isSaving}
-                className="py-4 px-8 text-base font-semibold rounded-xl bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 shadow-[0_4px_20px_rgba(var(--color-primary-rgb),0.4)] flex items-center gap-2"
-              >
-                {isSaving ? <LoadingSpinner size="xs" text="Iniciando..." /> : <Sparkles size={18} />}
-                Confirmar e Gravar Importação
-              </Button>
+              <div className="flex items-center gap-3">
+                <Button
+                  onClick={handleConfirm}
+                  disabled={isSaving}
+                  variant="outline"
+                  className="py-3 px-5 text-sm font-medium rounded-xl border-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--bg-surface-elevated)] flex items-center gap-2"
+                >
+                  {isSaving ? <LoadingSpinner size="xs" text="" /> : <Sparkles size={16} />}
+                  Gravar Direto (sem Wizard)
+                </Button>
+                <Button
+                  onClick={() => {
+                    const matchResult = executeAutoMatchingEngine(results, mapping, stores, targetDate);
+                    setUnmatchedTransactions(matchResult.unmatchedTransactions);
+                    setAutoMatchedCount(matchResult.matchedCount);
+                    setResolvedMatches(matchResult.resolvedMatches);
+                    if (matchResult.matchedCount > 0) {
+                      toast.success(`${matchResult.matchedCount} transação(ões) casadas automaticamente com as OSs!`);
+                    }
+                    setStep(4);
+                  }}
+                  disabled={isSaving}
+                  className="py-4 px-8 text-base font-semibold rounded-xl bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 shadow-[0_4px_20px_rgba(var(--color-primary-rgb),0.4)] flex items-center gap-2"
+                >
+                  <ArrowRight size={18} />
+                  Avançar para Conciliação →
+                </Button>
+              </div>
             </div>
           </Card>
         </motion.div>
       )}
 
-      {/* STEP 4: PAINEL EXECUTIVO DE PROGRESSO & GRAVAÇÃO (10/10 DESIGN) */}
-      {step === 4 && (() => {
+      {/* STEP 4 (Tela A): Vínculo de Pagamentos sem Lançamento na OS */}
+      {step === 4 && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          <Step1UnregisteredPayments
+            unmatchedTransactions={unmatchedTransactions}
+            results={results}
+            mapping={mapping}
+            targetDate={targetDate}
+            stores={stores}
+            resolvedMatches={resolvedMatches}
+            onNext={() => setStep(5)}
+            onBack={() => setStep(3)}
+          />
+        </motion.div>
+      )}
+
+      {/* STEP 5 (Tela B): Justificativas de Não-Faturamento por Loja */}
+      {step === 5 && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          <Step2NonRevenueJustifications
+            results={results}
+            mapping={mapping}
+            targetDate={targetDate}
+            stores={stores}
+            onNext={() => setStep(6)}
+            onBack={() => setStep(4)}
+          />
+        </motion.div>
+      )}
+
+      {/* STEP 6 (Tela C): Conferência de Cofre do Daniel */}
+      {step === 6 && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          <Step3CashVaultDaniel
+            targetDate={targetDate}
+            onNext={() => setStep(7)}
+            onBack={() => setStep(5)}
+          />
+        </motion.div>
+      )}
+
+      {/* STEP 7 (Tela D): Auditoria Final dos 5 Pilares & Gravação */}
+      {step === 7 && (() => {
+        const manualInputs = {
+          odometroHoje: odometroHoje || 0,
+          manualDinheiroMp,
+          manualAReceber,
+          contasManual: contasManual || 0,
+        };
+
+        return (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+            <Step4FinalAuditAndClose
+              results={results}
+              mapping={mapping}
+              targetDate={targetDate}
+              stores={stores}
+              manualInputs={manualInputs}
+              missingOsList={missingOsList}
+              isSaving={isSaving}
+              onFinish={handleConfirm}
+              onBack={() => setStep(6)}
+            />
+          </motion.div>
+        );
+      })()}
+
+      {/* STEP 8: PAINEL EXECUTIVO DE PROGRESSO & GRAVAÇÃO (10/10 DESIGN) */}
+      {step === 8 && (() => {
+
         const totalOsCount = results.osFiles.filter(r => r.success).reduce((acc, curr) => acc + curr.osArray.length, 0);
         const totalRedeCount = results.redeResults.filter(r => r.success).reduce((acc, curr) => acc + curr.transactions.length, 0);
         const totalOfxCount = results.ofxResults.reduce((acc, curr) => acc + curr.transactions.length, 0);

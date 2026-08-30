@@ -1,4 +1,4 @@
-## [2026-08-27] — [Feature ID: 310-novo-wizard-importacao-e-conciliacao-passo-a-passo]
+﻿## [2026-08-27] — [Feature ID: 310-novo-wizard-importacao-e-conciliacao-passo-a-passo]
 
 **Contexto:** Implementação da esteira modular de conciliação diária dividida em Ingestão Global Unificada (uploads e inputs manuais juntos na entrada) e Wizard de Resolução em 4 Passos Focados (Vínculo direto de 1 clique à OS, Justificativas contábeis editáveis/canceláveis, Conferência de cofre do Daniel e Auditoria final com Gemini 3.5 Flash Lite).
 
@@ -733,3 +733,10 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
 - **Ancoragem Temporal:** O `caixa_anterior` do dia D+1 lê diretamente o `caixa_atual` do snapshot de D. O congelamento de 26/08 em R$ 151.642,60 alimenta perfeitamente o dia 27/08.
 
 **Não fazer:** Nunca permita que mutações em OSs de hoje recalculem o pátio de dias passados que já foram fechados.
+
+## [2026-08-30] — [Feature ID: 314] Teste E2E e Fechamento da Conciliação com Arquivos Reais de 27-08
+**Contexto:** Validação ponta a ponta no localhost:8080 do Wizard de Ingestão e Conciliação com os 27 arquivos reais de 27/08/2026.
+**Regra aprendida:**
+- **Segregação de 5 Pilares no Fechamento:** Ativos Totais (Saldo Positivo + Dinheiro MP + A Receber + Pátio OS) subtraído do Cheque Especial compõem o Caixa Atual. O Fluxo de Caixa (Caixa Hoje - Caixa Ontem) deduzido do Faturamento do Dia deve cobrir exatamente o Subtotal de Contas a Pagar + Juros de Maquininha (Tolerância $\pm$ R$ 50,00).
+- **Tratamento de Não-Faturamento:** Transferências entre filiais (Intercompany) e aportes dos sócios NUNCA devem somar ao faturamento contábil da empresa, recebendo a anotação `[NÃO SOMAR] [Apenas Conciliar]`.
+**Risco identificado / Anti-pattern:** Nunca permitir que liquidações de adquirentes ou rendimentos bancários apareçam no painel de justificativas manuais de não-faturamento.

@@ -19,7 +19,6 @@ import { useImportsHistory, useDeleteImport, useClearAllData, GroupedImportLog }
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { Modal } from '@/components/ui/Modal';
 import { CentralImportWizard } from '@/components/importacoes/CentralImportWizard';
-import { UnifiedReconciliationWizard } from '@/components/importacoes/wizard/UnifiedReconciliationWizard';
 import { MarcoZeroWizard } from '@/components/importacoes/MarcoZeroWizard';
 import { PurgeDailyModal } from '@/components/importacoes/PurgeDailyModal';
 import { toast } from 'sonner';
@@ -175,7 +174,8 @@ function ImportacoesPage() {
         {/* CONTEÚDO DAS ABAS */}
         {activeTab === 'diario' && (
           <div className="animate-in fade-in duration-300">
-            <UnifiedReconciliationWizard 
+            <CentralImportWizard 
+              onCancel={() => handleTabChange('historico')}
               initialDate={selectedDate}
             />
           </div>

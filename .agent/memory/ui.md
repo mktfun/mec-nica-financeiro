@@ -1,4 +1,4 @@
-## [2026-08-27] — [Feature ID: 310-novo-wizard-importacao-e-conciliacao-passo-a-passo]
+﻿## [2026-08-27] — [Feature ID: 310-novo-wizard-importacao-e-conciliacao-passo-a-passo]
 
 **Contexto:** Nova esteira modular de importação e fechamento diário em `UnifiedReconciliationWizard.tsx`, estruturada em 5 etapas visuais (`0. Ingestão Global`, `1. Pagamentos sem OS`, `2. Justificativas`, `3. Cofre & Daniel`, `4. Fechamento Final`).
 
@@ -290,3 +290,10 @@ Ao criar fluxos `onClick` que disparam Edge Functions lentas, sempre usar Toasts
 
 **Não fazer:** Nunca usar `bg-emerald-500/5` ou cartões com bordas ad-hoc em modais contábeis.
 
+
+## [2026-08-30] — [Feature ID: 314] Teste E2E e Automação de Screenshots do Wizard
+**Contexto:** Automação via Playwright com injeção direta de múltiplos arquivos reais e captura de screenshots de cada step do assistente.
+**Regra aprendida:**
+- **Seletores e Scroll de Wizard:** Em telas longas com múltiplas contas/filiais (ex: 10 contas OFX), botões de navegação devem ser rolados para a visão (`scrollIntoViewIfNeeded()`) antes do clique interativo.
+- **Formulário de Justificativa Canônico:** Manter paridade total entre o Passo 5 (`Step2NonRevenueJustifications.tsx`) e a tela de extrato (`OrphanCategorizationModal.tsx`), com dois botões de impacto claros (`Somar ao Faturamento` vs `Apenas Conciliar`), chips rápidos de categorias e campo de observação contábil.
+**Risco identificado / Anti-pattern:** Não utilizar `<select>` puro para decisões financeiras de alto impacto; preferir botões de cards visuais com ícones representativos (`TrendingUp` e `Ban`).
