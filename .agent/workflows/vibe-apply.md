@@ -17,7 +17,7 @@ Antes de escrever qualquer linha de código, leia os arquivos na seguinte ordem:
 
 **Skills base (ler SEMPRE, independente do tipo de task):**
 ```
-view_file C:/Users/User/.gemini/config/C:/Users/User/.gemini/config/skills/adaptive-reasoning/SKILL.md     ← protocolo de raciocínio, rollback e anti-loops
+view_file C:/Users/User/.gemini/config/skills/adaptive-reasoning/SKILL.md     ← protocolo de raciocínio, rollback e anti-loops
 ```
 
 1. **`specs/<id>/proposal.md`** — Entenda o problema, os contratos de dados e o risco principal
@@ -44,9 +44,9 @@ Para cada `- [ ] Pending` no `spec-plan.md`, marque como `- [/] In Progress`, ex
 
 Leia as skills antes de codar qualquer componente:
 ```
-view_file C:/Users/User/.gemini/config/C:/Users/User/.gemini/config/skills/frontend-design-pro/SKILL.md    ← paleta, componentes, estados obrigatórios
-view_file C:/Users/User/.gemini/config/C:/Users/User/.gemini/config/skills/frontend-design-3/SKILL.md      ← formulários, tabelas, upload, UX financeiro
-view_file C:/Users/User/.gemini/config/C:/Users/User/.gemini/config/skills/afrexai-nextjs-production/SKILL.md  ← App Router, Server vs Client, env vars
+view_file C:/Users/User/.gemini/config/skills/frontend-design-pro/SKILL.md    ← paleta, componentes, estados obrigatórios
+view_file C:/Users/User/.gemini/config/skills/frontend-design-3/SKILL.md      ← formulários, tabelas, upload, UX financeiro
+view_file C:/Users/User/.gemini/config/skills/afrexai-nextjs-production/SKILL.md  ← App Router, Server vs Client, env vars
 ```
 
 - Respeite SEMPRE: Dark UI sólido (Zinc-950, `#050711`), sem glassmorphism, tipografia Inter/Outfit
@@ -57,8 +57,8 @@ view_file C:/Users/User/.gemini/config/C:/Users/User/.gemini/config/skills/afrex
 
 Leia as skills antes de qualquer operação:
 ```
-view_file C:/Users/User/.gemini/config/C:/Users/User/.gemini/config/skills/supabase/SKILL.md    ← auth headless, schema dump, RLS, RPCs, checklist
-view_file C:/Users/User/.gemini/config/C:/Users/User/.gemini/config/skills/backend/SKILL.md     ← Server Actions, Edge Functions, segurança, anti-patterns
+view_file C:/Users/User/.gemini/config/skills/supabase/SKILL.md    ← auth headless, schema dump, RLS, RPCs, checklist
+view_file C:/Users/User/.gemini/config/skills/backend/SKILL.md     ← Server Actions, Edge Functions, segurança, anti-patterns
 ```
 
 - Execute o **Checklist da Seção 9** do `supabase/SKILL.md` antes de começar
@@ -81,7 +81,7 @@ view_file C:/Users/User/.gemini/config/C:/Users/User/.gemini/config/skills/backe
 
 Releia o framework antes de testar:
 ```
-view_file C:/Users/User/.gemini/config/C:/Users/User/.gemini/config/skills/adaptive-reasoning/SKILL.md    ← Step 4: Checklist de Coerência Final
+view_file C:/Users/User/.gemini/config/skills/adaptive-reasoning/SKILL.md    ← Step 4: Checklist de Coerência Final
 ```
 
 - Execute os cenários definidos em `specs/<id>/design.md` (seção SCAN → INFER → VERIFY → FIX)
@@ -94,7 +94,7 @@ view_file C:/Users/User/.gemini/config/C:/Users/User/.gemini/config/skills/adapt
 
 Se ocorrerem erros, releia o protocolo:
 ```
-view_file C:/Users/User/.gemini/config/C:/Users/User/.gemini/config/skills/adaptive-reasoning/SKILL.md    ← Step 3: Resultado Divergente = Nova Hipótese
+view_file C:/Users/User/.gemini/config/skills/adaptive-reasoning/SKILL.md    ← Step 3: Resultado Divergente = Nova Hipótese
 ```
 
 Se ocorrerem erros de build, testes falhando, ou resultado diferente do especificado no `design.md`:

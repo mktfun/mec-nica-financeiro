@@ -21,8 +21,8 @@ description: Transformação de requisitos em uma Especificação física comple
 
 Leia obrigatoriamente antes de qualquer ação:
 ```
-view_file C:/Users/User/.gemini/config/C:/Users/User/.gemini/config/skills/adaptive-reasoning/SKILL.md       ← protocolo de raciocínio e anti-loops
-view_file C:/Users/User/.gemini/config/C:/Users/User/.gemini/config/skills/obsidian/SKILL.md                  ← protocolo de leitura/escrita de memória
+view_file C:/Users/User/.gemini/config/skills/adaptive-reasoning/SKILL.md       ← protocolo de raciocínio e anti-loops
+view_file C:/Users/User/.gemini/config/skills/obsidian/SKILL.md                  ← protocolo de leitura/escrita de memória
 ```
 
 Depois leia os arquivos de memória relevantes em `.agent/memory/` para o contexto da task:
@@ -163,8 +163,8 @@ Formato obrigatório:
 
 Leia os frameworks de raciocínio antes de simular:
 ```
-view_file C:/Users/User/.gemini/config/C:/Users/User/.gemini/config/skills/deciqai-bayesian-reasoning/SKILL.md   ← avaliação de risco e probabilidade
-view_file C:/Users/User/.gemini/config/C:/Users/User/.gemini/config/skills/adaptive-reasoning/SKILL.md            ← checklist de coerência final
+view_file C:/Users/User/.gemini/config/skills/deciqai-bayesian-reasoning/SKILL.md   ← avaliação de risco e probabilidade
+view_file C:/Users/User/.gemini/config/skills/adaptive-reasoning/SKILL.md            ← checklist de coerência final
 ```
 
 Usando os frameworks lidos, simule mentalmente a execução do spec-plan:
