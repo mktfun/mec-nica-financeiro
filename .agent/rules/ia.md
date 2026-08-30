@@ -1,51 +1,57 @@
-# ConstituiÃ§Ã£o da IA (Rules)
+---
+trigger: always_on
+---
 
-## 1. Tratamento de Dados e Migrations
+# 🪐 Antigravity Vibe Coding Orchestration Rules v4 (2026 Edition)
 
-**Regra:** Expurgo de Legado em Migrations
-**Comportamento proibido:** Adicionar colunas restritivas (como `dedup_hash`) ou constraints de unicidade em tabelas crÃ­ticas (ex: transaÃ§Ãµes financeiras) e deixar os registros antigos preenchidos com `NULL`.
-**Guardrail:** Sempre que criar ou modificar schemas de importaÃ§Ã£o envolvendo chaves de des-duplicaÃ§Ã£o, faÃ§a um `UPDATE` imediato para preencher retroativamente os hashes usando dados da linha, ou faÃ§a um expurgo (`DELETE`) do lixo. Nunca deixe o banco vulnerÃ¡vel a duplicatas em caso de reimportaÃ§Ã£o histÃ³rica.
-**Por quÃª universal:** Tabelas com `NULL` em colunas de deduplicaÃ§Ã£o viram uma bomba-relÃ³gio em qualquer sistema de importaÃ§Ã£o, permitindo duplicatas ilimitadas de dados antigos se o usuÃ¡rio tentar reprocessar.
+## 0. ⛔ OVERRIDE SUPREMO (Prioridade Máxima — acima de tudo)
 
-## 2. Verificação de Tipos em RPCs (Anti-Alucinação de Schema)
+**Se o usuário mencionar `/teamwork-preview`, pedir uma análise conjunta ou delegar para equipe de IA: PARE TUDO IMEDIATAMENTE.** Não conclua o step atual, não tente resolver sozinho, não ignore. Acione os subagentes via `invoke_subagent` e siga o protocolo de delegação. Isto se aplica em qualquer workflow.
 
-**Regra:** Confirmar tipo de campo antes de criar parâmetro de RPC
-**Comportamento proibido:** Criar parâmetros de função PostgreSQL com tipo assumido (ex: uuid) sem verificar o tipo real da coluna no schema.
-**Guardrail:** Antes de criar qualquer RPC com parâmetro que mapeia para uma coluna de tabela, executar SELECT data_type FROM information_schema.columns WHERE table_name = ... AND column_name = ... para confirmar o tipo exato. RPCs com tipo errado compilam e retornam 0 linhas silenciosamente — sem erro, sem warning.
-**Por quê universal:** O PostgreSQL faz cast implícito em alguns casos, mas não em comparações de filtro (WHERE store_id = p_store_id quando um é text e outro uuid falha silenciosamente). Afeta qualquer projeto Supabase/PostgreSQL independente de stack.
+## 1. Core Principles
 
-## 3. Leitura de API de Componentes Antes de Usar
+- **Desconfie do Vibe Coding Puro**: Nenhuma feature grande deve ser iniciada escrevendo código direto. Toda mudança estrutural precisa de uma Especificação (Proposal) com arquivos físicos em `specs/` antes.
+- **Memória Modular**: O agente deve aprender categoricamente. Antes de qualquer task, leia os arquivos relevantes em `.agent/memory/` (ex: `memory/supabase.md`, `memory/ui.md`, `memory/ofx.md`). O que for aprendido em `/vibe-apply` deve ser consolidado por categoria em `/vibe-archive` — não jogar tudo num `memory.md` geral.
+- **Headless CLI Enforcement**: JAMAIS use comandos interativos que exijam browser ou input no terminal. Para autenticação no Github ou Supabase, carregue silenciosamente do `.env` usando SOMENTE e EXCLUSIVAMENTE variáveis de ambiente (`GH_TOKEN` e `SUPABASE_ACCESS_TOKEN`).
+- **CLI Fallback Obrigatório**: Se o comando `git` não for encontrado no `PATH`, use o caminho absoluto do MinGit: `C:\Users\admin\.gemini\antigravity\scratch\mingit\cmd\git.exe`.
+- **Regras Estritas de PowerShell**: NUNCA utilize o operador `&` para encadear comandos no PowerShell. Use `;` ou execute os comandos um por vez. Se houver erro de Execution Policy com scripts `.ps1` (como `npm.ps1`), envolva o comando em um subshell CMD: `cmd.exe /c "seu comando aqui"`.
+- **Git Identity Override**: Caso ocorra o erro "Author identity unknown" no momento do commit, configure imediatamente as propriedades locais antes de commitar: `git config user.email "ai@clawhub.com"` e `git config user.name "ClawHub Agent"`.
 
-**Regra:** Ler a interface real do componente antes de instanciar
-**Comportamento proibido:** Usar um componente passando props que não existem (ex: className, header manual interno) assumindo analogia com bibliotecas externas como shadcn, MUI ou Radix.
-**Guardrail:** Antes de usar qualquer componente existente no projeto, abrir o arquivo fonte e extrair a interface TypeScript de props. Nunca assumir props por analogia com libs externas — o projeto pode ter wrappers com APIs diferentes.
-**Por quê universal:** TypeScript não captura props extras em runtime em todos os casos. O componente pode simplesmente ignorar a prop ou quebrar visualmente sem erro no console.
+## 2. ⛔ Regra Anti-Alucinação e Repetição
 
-## 4. Cast Nativo no PostgreSQL (Supabase)
+**ANTES de criar qualquer coisa nova, você DEVE pesquisar o que já existe, ler a Memória e consultar o Grafo.**
 
-**Regra:** Cast Nativo no PostgreSQL (Supabase)
-**Comportamento proibido:** Tentar converter parÃ¢metros dinÃ¢micos via `p_date::text` ou usar `TO_CHAR(data, 'YYYY-MM-DD')` para resolver igualdades `=` contra colunas do banco que jÃ¡ sÃ£o do tipo nativo temporal (`date` ou `timestamp`).
-**Guardrail:** Sempre molde o parÃ¢metro/variÃ¡vel para o tipo nativo da coluna alvo (`::date`), garantindo que a comparaÃ§Ã£o seja feita estritamente entre (Data = Data) ou (Timestamp = Timestamp), sob pena do Postgres matar a RPC com `42883 (operator does not exist)`.
-**Por quÃª universal:** A matemÃ¡tica e seguranÃ§a de tipagem do PostgreSQL falha duramente na nuvem se a query depender de conversÃµes texto implÃ­citas com formatos arbitrÃ¡rios. Isso derruba aplicaÃ§Ãµes em produÃ§Ã£o nÃ£o importando o projeto.
+- **No Frontend**: Leia `memory/ui.md`. Consulte `spec/global/features.md`. Leia as skills antes de codar:
+  ```
+  view_file C:/Users/User/.gemini/config/skills/frontend-design-pro/SKILL.md
+  view_file C:/Users/User/.gemini/config/skills/frontend-design-3/SKILL.md
+  view_file C:/Users/User/.gemini/config/skills/afrexai-nextjs-production/SKILL.md
+  ```
+- **No Backend**: Leia `memory/supabase.md`. Verifique o schema existente. Leia as skills antes de qualquer operação no banco:
+  ```
+  view_file C:/Users/User/.gemini/config/skills/supabase/SKILL.md
+  view_file C:/Users/User/.gemini/config/skills/backend/SKILL.md
+  ```
+- **Graphify (Anti-Alucinação):** O Graphify é uma ferramenta **Python** (não NPM). Comandos corretos:
+  - Instalar: `uv tool install graphifyy` (dois Y's no pacote, um Y no comando)
+  - Consultar: `graphify query "<feature>"` ou `graphify explain "<Modulo>"`
+  - Atualizar: `graphify update`
+  - NUNCA use `npx @baml/graphify` — esse pacote não existe
+- **Geral**: Se já existe → USE. Crie um wrapper se precisar, NÃO duplique. NUNCA crie tabela, RPC, ou política sem verificar o que existe no banco e na memória.
 
-## 5. Parser Resiliente de Arquivos Customizados (Excel)
+## 3. Workflows Oficiais
 
-**Regra:** NÃ£o confiar em Ã­ndices fixos ao extrair dados de planilhas customizadas/manuais.
-**Comportamento proibido:** Extrair dados de planilhas legadas (ex: conciliaÃ§Ã£o) fixando o index de colunas (`row[6]`) ou forÃ§ando chaves `__EMPTY_6` via JSON parser.
-**Guardrail:** Em planilhas geradas/editadas por humanos, implemente um parser resiliente que varre as cÃ©lulas da linha (Row) atravÃ©s de *fuzzy matching* (includes ou replace) para encontrar o rÃ³tulo da variÃ¡vel, e pesque o valor numÃ©rico vizinho na mesma linha usando validaÃ§Ã£o forte (`cleanNumber`). 
-**Por quÃª universal:** Arquivos legados ou criados manualmente no Excel ou planilhas do Google invariavelmente sofrerÃ£o com mesclagens de colunas, espaÃ§os em branco invisÃ­veis e quebras de codificaÃ§Ã£o (ex: UTF-8 vs Latin-1). Depender de um grid posicional fixo Ã© receita infalÃ­vel para quebrar integraÃ§Ãµes financeiras quando a planilha sofrer a mÃ­nima alteraÃ§Ã£o estÃ©tica.
-  
-## 6. Vite Build / Typechecking Fallacy
+Toda iteração passa exclusivamente por estes comandos:
 
-**Regra:** O comando `npm run build` do Vite não roda typechecking por padrão.
-**Comportamento proibido:** Confiar que um build bem-sucedido via Vite/esbuild atesta a ausência de erros de tipagem ou referência (`ReferenceError`) após criar, renomear ou excluir estados/variáveis.
-**Guardrail:** NUNCA assuma que um build bem-sucedido garante código seguro se você alterou variáveis. Se criar ou renomear estados React em um projeto Vite, verifique a declaração lendo o arquivo minuciosamente ou force a verificação de tipos (`npx tsc --noEmit`) antes de concluir a task. Vite apenas transpila o código e vai mascarar `ReferenceError` fatais até o runtime.
-**Por quê universal:** Vite é o padrão na maioria dos projetos React modernos. Renomear uma variável e receber um "build successful" cria uma falsa sensação de segurança e gera bugs em produção invisíveis na compilação.
+1. `/setup`: Cria as pastas locais, memory.md e inicializa as integrações com ClawHub no projeto atual.
+2. `/vibe-proposal "Feature name"`: Planejamento guiado. Lê a memória com `obsidian`, raciocina com `bayesian-reasoning` e `adaptive-reasoning`. Cria `specs/<id>/proposal.md`, `design.md` e `spec-plan.md`.
+3. `/vibe-apply <id>`: Implementação hardcore baseada nos 3 arquivos de spec. Usa as skills especialistas (React, Supabase, etc). Salva save-state no `spec-plan.md`.
+4. `/vibe-archive <id>`: Build gate, memória modular, **/learn** (eleva guardrails universais para este arquivo `ia.md`), Graphify update, arquiva spec, commit + push.
+5. `/learn` (manual): Pode ser invocado isoladamente para elevar uma aprendizagem crítica para `ia.md` fora do ciclo normal de archive.
 
-## 7. Blindagem de Scripts Temporários e Segredos no Git
+## 4. Skills Globais (leitura explícita obrigatória)
 
-**Regra:** Diretórios de scripts temporários e testes locais (`scratch/`, `.temp/`) devem estar permanentemente no `.gitignore`.
-**Comportamento proibido:** Criar ou rodar scripts em `scratch/` que possam conter chaves, tokens de API, connection strings ou dumps locais e incluir esses arquivos no `git add .` / `git commit`.
-**Guardrail:** Antes de executar qualquer commit ou push, certifique-se de que a pasta `scratch/` (e similares de uso exclusivo do agente) esteja registrada no `.gitignore`. Scripts auxiliares de depuração são efêmeros e nunca devem ser versionados no repositório remoto.
-**Por quê universal:** O GitHub Push Protection e o Secret Scanning bloqueiam imediatamente o `git push` caso detectem tokens em scripts auxiliares, exigindo resets e limpeza de histórico em qualquer projeto.
-
+Todas as skills estão em `skills/`. Os workflows já contêm as instruções `view_file` no momento certo — **não pule essas leituras**. Skills disponíveis:
+- **Raciocínio**: `adaptive-reasoning`, `deciqai-bayesian-reasoning`
+- **Engenharia**: `frontend-design-pro`, `frontend-design-3`, `afrexai-nextjs-production`, `backend`, `supabase`
+- **Memória e DevOps**: `obsidian`, `github`

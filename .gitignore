@@ -34,13 +34,14 @@ dist-ssr
 # Configuração local
 .env.local
 .env
-.agent/
+.agent/memory/
+.agent/.env*
+.antigravity/.env*
 
 # Supabase binaries
 supabase.zip
 supabase_bin/
 
-.agent/memory/
 scratch/
 scripts/*.mjs
 scripts/*.ts
