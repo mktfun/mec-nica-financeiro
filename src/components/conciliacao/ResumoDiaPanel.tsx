@@ -126,7 +126,7 @@ export function ResumoDiaPanel({
 
   // Pilares Automáticos
   const saldoBancosValor = summary?.total_saldo_banco_positivo ?? summary?.total_saldo_banco ?? currentSnapshot?.saldo_bancario ?? totalBancarioIn;
-  const saldoNegativoItau = summary?.saldo_negativo_itau ?? currentSnapshot?.saldo_negativo_itau ?? 0;
+  const saldoNegativoItau = summary?.total_saldo_banco_negativo ?? summary?.saldo_negativo_itau ?? currentSnapshot?.saldo_negativo_itau ?? 0;
   const naLojaValor = summary?.na_loja_os ?? currentSnapshot?.total_patio ?? 0;
   const jurosRedeValor = summary?.juros_rede ?? currentSnapshot?.juros_rede ?? 0;
   const devolucoesRedeValor = summary?.devolucoes_rede || 0;

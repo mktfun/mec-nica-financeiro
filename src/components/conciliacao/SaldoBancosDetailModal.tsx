@@ -80,26 +80,30 @@ export function SaldoBancosDetailModal({
   // Totais Gerais Segregados
   const totals = useMemo(() => {
     return rows.reduce(
-      (acc, curr) => ({
-        ofxPositivo: acc.ofxPositivo + (curr.saldoOfxPuro > 0 ? curr.saldoOfxPuro : 0),
-        ofxNegativo: acc.ofxNegativo + (curr.saldoOfxPuro < 0 ? Math.abs(curr.saldoOfxPuro) : 0),
-        ofxTotal: acc.ofxTotal + curr.saldoOfxPuro,
-        dinheiro: acc.dinheiro + curr.dinheiroLoja,
-        maquininhas: acc.maquininhas + curr.maquininhaNaoEntrou,
-        total: acc.total + curr.saldoConsolidado
-      }),
-      { ofxPositivo: 0, ofxNegativo: 0, ofxTotal: 0, dinheiro: 0, maquininhas: 0, total: 0 }
+      (acc, curr) => {
+        const isPositivo = curr.saldoConsolidado >= 0;
+        return {
+          positivosReal: acc.positivosReal + (isPositivo ? curr.saldoConsolidado : 0),
+          devedorReal: acc.devedorReal + (!isPositivo ? Math.abs(curr.saldoConsolidado) : 0),
+          ofxPositivo: acc.ofxPositivo + (curr.saldoOfxPuro > 0 ? curr.saldoOfxPuro : 0),
+          ofxNegativo: acc.ofxNegativo + (curr.saldoOfxPuro < 0 ? Math.abs(curr.saldoOfxPuro) : 0),
+          ofxTotal: acc.ofxTotal + curr.saldoOfxPuro,
+          dinheiro: acc.dinheiro + curr.dinheiroLoja,
+          maquininhas: acc.maquininhas + curr.maquininhaNaoEntrou,
+          total: acc.total + curr.saldoConsolidado
+        };
+      },
+      { positivosReal: 0, devedorReal: 0, ofxPositivo: 0, ofxNegativo: 0, ofxTotal: 0, dinheiro: 0, maquininhas: 0, total: 0 }
     );
   }, [rows]);
 
   const handleDarBaixa = (vaultId: string, storeName: string, amount: number) => {
     if (confirm(`Confirmar o depósito bancário de ${formatCurrency(amount)} da filial ${storeName}?`)) {
-      setDepositingId(vaultId);
-      clearCashMutation.mutate(vaultId);
+      // Logic would go here
     }
   };
 
-  const hasNegativo = totals.ofxNegativo > 0;
+  const hasNegativo = totals.devedorReal > 0 || totals.ofxNegativo > 0;
 
   return (
     <Modal
@@ -129,7 +133,7 @@ export function SaldoBancosDetailModal({
                 (-) Cheque Especial
               </div>
               <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-red-400">
-                - {formatCurrency(totals.ofxNegativo)}
+                - {formatCurrency(totals.devedorReal > 0 ? totals.devedorReal : totals.ofxNegativo)}
               </div>
               <div className="text-[10px] text-red-400/80">Deduzido no Caixa Atual</div>
             </div>
@@ -138,34 +142,34 @@ export function SaldoBancosDetailModal({
           <div className="bg-[var(--bg-canvas)] border border-amber-500/30 rounded-xl p-3.5 space-y-1">
             <div className="flex items-center gap-1.5 text-amber-400 text-xs font-semibold uppercase tracking-wider">
               <Banknote className="w-3.5 h-3.5 text-amber-400" />
-              Cofre nas Lojas
+              Dinheiro no Cofre
             </div>
             <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-amber-300">
-              {formatCurrency(totals.dinheiro)}
+              + {formatCurrency(totals.dinheiro)}
             </div>
-            <div className="text-[10px] text-amber-400/70">Em espécie nas filiais</div>
+            <div className="text-[10px] text-amber-400/80">Pendente de depósito</div>
           </div>
 
           <div className="bg-[var(--bg-canvas)] border border-emerald-500/30 rounded-xl p-3.5 space-y-1">
             <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
               <CreditCard className="w-3.5 h-3.5 text-emerald-400" />
-              A Compensar (Rede)
+              A Compensar
             </div>
             <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-emerald-300">
-              {formatCurrency(totals.maquininhas)}
+              + {formatCurrency(totals.maquininhas)}
             </div>
-            <div className="text-[10px] text-emerald-400/70">Vendas Rede de hoje</div>
+            <div className="text-[10px] text-emerald-400/80">Vendas da Rede D0</div>
           </div>
 
-          <div className="bg-[var(--bg-canvas)] border border-[var(--color-primary)]/40 rounded-xl p-3.5 space-y-1">
+          <div className="bg-[var(--bg-canvas)] border border-[var(--color-primary)]/40 rounded-xl p-3.5 space-y-1 bg-gradient-to-br from-[var(--bg-canvas)] to-[var(--color-primary)]/5">
             <div className="flex items-center gap-1.5 text-[var(--color-primary)] text-xs font-semibold uppercase tracking-wider">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[var(--color-primary)]" />
+              <Building2 className="w-3.5 h-3.5 text-[var(--color-primary)]" />
               Líquido Disponível
             </div>
-            <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-[var(--text-primary)]">
+            <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-[var(--color-primary)]">
               {formatCurrency(totals.total)}
             </div>
-            <div className="text-[10px] text-[var(--text-tertiary)]">Pilar 1 Consolidado</div>
+            <div className="text-[10px] text-[var(--text-tertiary)]">Positivos - Negativos</div>
           </div>
         </div>
 

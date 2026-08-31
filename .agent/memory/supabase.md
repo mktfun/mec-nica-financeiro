@@ -402,3 +402,21 @@ Garantia de salvamento de mensagens do assistente no banco de dados e isolamento
 
 **Não fazer:** Nunca faça cálculos matemáticos ou deduções contábeis no React/frontend. Nunca altere o nome do parâmetro de uma RPC sem garantir retrocompatibilidade ou overload canônico.
 
+## [2026-08-31] — [Feature ID: 327] Compensação Intra-Loja e Agregação Canônica na RPC get_daily_reconciliation_summary
+
+**Contexto:** Migration `20260831000010_align_5_pillars_and_intra_store_offset.sql` para apuração correta de saldos patrimoniais com segregação de passivo/cheque especial no PostgreSQL.
+
+**Regra aprendida:**
+1. **Compensação Intra-Loja no SQL:**
+   ```sql
+   store_consolidated_balance := raw_bank_total + vault_val + nao_entrou_val;
+   saldo_devedor_real := CASE WHEN store_consolidated_balance < 0 THEN ABS(store_consolidated_balance) ELSE 0 END;
+   saldo_positivo_real := CASE WHEN store_consolidated_balance > 0 THEN store_consolidated_balance ELSE 0 END;
+   ```
+   Isso garante que o Cheque Especial holding seja a soma estrita do saldo devedor residual das filiais com déficit (`v_total_saldo_banco_negativo`), evitando dupla penalização em contas amortizadas por vendas da Rede.
+2. **Schema em `ofx_transactions` vs `daily_manual_bills`:** A tabela `ofx_transactions` usa `manual_category`, `manual_justification` e `matched_bill_id` (NÃO possui a coluna `match_status`, que existe em `daily_manual_bills`).
+3. **Agregação de Contas a Pagar:** Quando `daily_manual_bills` possui registros (`v_total_bills > 0`), ela é a fonte primária de verdade analítica, integrando base (`external_code IS NOT NULL`) e extras (`is_extra = true`).
+
+**Não fazer:** Nunca misturar colunas inexistentes (`match_status` em `ofx_transactions`) nas queries da RPC.
+
+

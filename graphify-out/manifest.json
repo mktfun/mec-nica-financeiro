@@ -110,8 +110,8 @@
     "semantic_hash": "5657d3d33d13441c1ffdd63784683ee9"
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1788183069.1681378,
-    "ast_hash": "88dc9eeafd0189ed94c9400a82077832",
+    "mtime": 1788209215.724687,
+    "ast_hash": "2cfca0fc9a3df65395b852046f984e8e",
     "semantic_hash": ""
   },
   "src/components/dashboard/AlertResolveDialog.tsx": {
@@ -170,8 +170,8 @@
     "semantic_hash": "94cd9e2d37f2296c4606ca17ed361202"
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1788179901.2050164,
-    "ast_hash": "bcf80a67de1041a156ddbb4326c99577",
+    "mtime": 1788205270.7597208,
+    "ast_hash": "9ef0a1e6826fb6ec851c3670d101e24b",
     "semantic_hash": ""
   },
   "src/components/importacoes/WizardImportacao.tsx": {
@@ -340,8 +340,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useTransactions.ts": {
-    "mtime": 1787758293.5094023,
-    "ast_hash": "3bcb33ebb1973fdcd1c565dc60ead380",
+    "mtime": 1788205230.7741814,
+    "ast_hash": "3e0db4ff3b5813309062e52f2802003e",
     "semantic_hash": ""
   },
   "src/integrations/supabase/auth-attacher.ts": {
@@ -625,8 +625,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1788126554.1946144,
-    "ast_hash": "b1f6da20ad4507cef445605aff2292b5",
+    "mtime": 1788202110.7893918,
+    "ast_hash": "d690cf2c3ca0df60f347896e0e4b982a",
     "semantic_hash": ""
   },
   "specs/016-loja-cleanup/design.md": {
@@ -930,8 +930,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1788197961.6971898,
-    "ast_hash": "7ebb9e1064c273232edf087a47eaffc2",
+    "mtime": 1788209685.469634,
+    "ast_hash": "be5a63a95e8c668ac1fa92c8ab838888",
     "semantic_hash": ""
   },
   "specs/global/overview.md": {
@@ -1405,8 +1405,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useBackendConciliacao.ts": {
-    "mtime": 1787837386.04059,
-    "ast_hash": "5481051542c2ce1fd9a090dd9e6d8feb",
+    "mtime": 1788209168.2670848,
+    "ast_hash": "d67924ac201ecd6da04125bd6b90f940",
     "semantic_hash": ""
   },
   "src/hooks/useBackendDashboard.ts": {
@@ -2390,8 +2390,8 @@
     "semantic_hash": "7a4b02ea3782dcafe458167797b393c5"
   },
   "src/components/conciliacao/ManualMatchOsModal.tsx": {
-    "mtime": 1787835263.403069,
-    "ast_hash": "1d6b5c13d9306708a767f1268b77c277",
+    "mtime": 1788200316.1792798,
+    "ast_hash": "a6024a00f2745f71a3281ab9d7962bc5",
     "semantic_hash": ""
   },
   "src/components/conciliacao/MaquininhasDetailModal.tsx": {
@@ -2450,9 +2450,9 @@
     "semantic_hash": "3adfe01451c8b2df369c268b7aa3272e"
   },
   "src/hooks/useManualMatch.ts": {
-    "mtime": 1787597159.1158717,
-    "ast_hash": "11630c3de428efaf5c89ce419d5ef152",
-    "semantic_hash": "11630c3de428efaf5c89ce419d5ef152"
+    "mtime": 1788200273.3575919,
+    "ast_hash": "8f585e711f201ce473e2318c9ccd0e2d",
+    "semantic_hash": ""
   },
   "src/hooks/useReconciliationInsights.ts": {
     "mtime": 1787084150.432938,
@@ -2500,8 +2500,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/ContasManualModal.tsx": {
-    "mtime": 1788183168.3873346,
-    "ast_hash": "148960652312c486d1382c01c01029d6",
+    "mtime": 1788198996.0206845,
+    "ast_hash": "67269ae5071e1e8511411c15e4be204d",
     "semantic_hash": ""
   },
   "src/components/conciliacao/FaturamentoDetalhesModal.tsx": {
@@ -2515,8 +2515,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/SaldoBancosDetailModal.tsx": {
-    "mtime": 1788185334.8951576,
-    "ast_hash": "32626804c9d9ab22cb7a05d53c3361ed",
+    "mtime": 1788209208.2740612,
+    "ast_hash": "214d6a72d31dc71ebe825d227aaee6ab",
     "semantic_hash": ""
   },
   "src/hooks/useAutonomousReconciliation.ts": {
@@ -3095,8 +3095,8 @@
     "semantic_hash": "17488c3e5a9c310d88fdfdd8f71868c9"
   },
   "src/lib/expenseMatcher.ts": {
-    "mtime": 1787753651.7500522,
-    "ast_hash": "9b9b78b3f1bb4b6ac3edbe45e8ad8ea0",
+    "mtime": 1788205243.1367054,
+    "ast_hash": "c394637b4bfbb46d9a39f498e8a85941",
     "semantic_hash": ""
   },
   "supabase/migrations/20260826000001_fix_contas_manual_deduplication.sql": {
@@ -3300,13 +3300,13 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/wizard/Step1UnregisteredPayments.tsx": {
-    "mtime": 1788179805.502674,
-    "ast_hash": "b5b66ac09d5b9c186db4e04e30175d3b",
+    "mtime": 1788204157.1571345,
+    "ast_hash": "d8a864fc045801482a3f38584eccd403",
     "semantic_hash": ""
   },
   "src/components/importacoes/wizard/Step2NonRevenueJustifications.tsx": {
-    "mtime": 1787865097.4871087,
-    "ast_hash": "252968b02d7e7dfc5c0951811054d236",
+    "mtime": 1788206118.094057,
+    "ast_hash": "b77ed790e3de2563fd72220357b30052",
     "semantic_hash": ""
   },
   "src/components/importacoes/wizard/Step3CashVaultDaniel.tsx": {
@@ -3315,8 +3315,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/wizard/Step4FinalAuditAndClose.tsx": {
-    "mtime": 1788181608.9486997,
-    "ast_hash": "375533109b252579085d6b5a9601d3e2",
+    "mtime": 1788209224.7357955,
+    "ast_hash": "4dc653cb83c136b179f6fec566e78c9b",
     "semantic_hash": ""
   },
   "src/components/importacoes/wizard/types.ts": {
@@ -3345,8 +3345,8 @@
     "semantic_hash": ""
   },
   "src/lib/matchers/autoMatchingEngine.ts": {
-    "mtime": 1787863796.1096127,
-    "ast_hash": "044e18848de08e0e3a93b39ad77bf3eb",
+    "mtime": 1788206154.4176147,
+    "ast_hash": "782d269d39454d0d6c961e686640e757",
     "semantic_hash": ""
   },
   "specs/311-wizard-conciliacao-passo-a-passo-pos-ingestao/design.md": {
@@ -3444,49 +3444,59 @@
     "ast_hash": "8f87400c6f81286680a273d0b39df91c",
     "semantic_hash": ""
   },
-  "specs/317-conciliacao-contas-faturamento-e-tracking-saidas/design.md": {
-    "mtime": 1788182791.9448938,
-    "ast_hash": "950bfe2ab141090fcc1d8fafa92902eb",
+  "supabase/migrations/20260831000006_fix_contas_manual_override_and_management.sql": {
+    "mtime": 1788198919.495071,
+    "ast_hash": "6836cea4ce1c6d15325bb389a451d05f",
     "semantic_hash": ""
   },
-  "specs/317-conciliacao-contas-faturamento-e-tracking-saidas/proposal.md": {
-    "mtime": 1788182779.5936627,
-    "ast_hash": "2ca1b832fb620f4ca6d6152b7ed79a1e",
+  "supabase/migrations/20260831000007_create_link_manual_pix_and_rede_rpcs.sql": {
+    "mtime": 1788200221.2494147,
+    "ast_hash": "72ed4632e39cf86eb1eaec1e96dc4250",
     "semantic_hash": ""
   },
-  "specs/317-conciliacao-contas-faturamento-e-tracking-saidas/spec-plan.md": {
-    "mtime": 1788183514.9473383,
-    "ast_hash": "51c7195236b64a2e13f2d40e6918c057",
+  "supabase/migrations/20260831000008_resolve_orphan_saida_ofx.sql": {
+    "mtime": 1788201795.5015368,
+    "ast_hash": "31cbfcf3778e3c825be6eb7b920465e8",
     "semantic_hash": ""
   },
-  "specs/318-patio-os-saldo-lojas-baixa-dinheiro/design.md": {
-    "mtime": 1788184771.2183516,
-    "ast_hash": "c4ce7d45ed8cc4d6289c9d9761b36d37",
+  "supabase/migrations/20260831000009_enhanced_auto_match_saidas.sql": {
+    "mtime": 1788202645.7589593,
+    "ast_hash": "85293d876838680eed1ad085f35027ab",
     "semantic_hash": ""
   },
-  "specs/318-patio-os-saldo-lojas-baixa-dinheiro/proposal.md": {
-    "mtime": 1788184757.4795887,
-    "ast_hash": "715c813fca8edf6c1029516799c965cd",
+  "supabase/migrations/20260831000010_align_5_pillars_and_intra_store_offset.sql": {
+    "mtime": 1788209090.1167326,
+    "ast_hash": "c1784ee5ca5687809efb8b4100278f54",
     "semantic_hash": ""
   },
-  "specs/318-patio-os-saldo-lojas-baixa-dinheiro/spec-plan.md": {
-    "mtime": 1788190878.5715115,
-    "ast_hash": "f4fae7c6ecce41d4e3024fa182ca8357",
+  "specs/323-motor-inteligente-matching-saidas-ofx-contas/design.md": {
+    "mtime": 1788202517.4309423,
+    "ast_hash": "a665a80ad02a6f420064907a284c5f5d",
     "semantic_hash": ""
   },
-  "specs/319-correcao-caixa-atual-fluxo-e-rpc-conciliacao/design.md": {
-    "mtime": 1788196862.5141683,
-    "ast_hash": "bfa7e073758a436d0415867142124f14",
+  "specs/323-motor-inteligente-matching-saidas-ofx-contas/proposal.md": {
+    "mtime": 1788202517.429665,
+    "ast_hash": "8ad769da870cef680413ac8bf3f55ec0",
     "semantic_hash": ""
   },
-  "specs/319-correcao-caixa-atual-fluxo-e-rpc-conciliacao/proposal.md": {
-    "mtime": 1788196862.5141683,
-    "ast_hash": "c1c353a293540cf56b1377c8a009837d",
+  "specs/323-motor-inteligente-matching-saidas-ofx-contas/spec-plan.md": {
+    "mtime": 1788202517.4322143,
+    "ast_hash": "cd010137aa99cdc3034dae7e77ec3906",
     "semantic_hash": ""
   },
-  "specs/319-correcao-caixa-atual-fluxo-e-rpc-conciliacao/spec-plan.md": {
-    "mtime": 1788197289.791034,
-    "ast_hash": "18277cb85685713c2f28908d5015e34b",
+  "specs/324-wizard-onboarding-revisao-pos-matching/design.md": {
+    "mtime": 1788204021.0749607,
+    "ast_hash": "86a35197969ba74e5687a870fd03915a",
+    "semantic_hash": ""
+  },
+  "specs/324-wizard-onboarding-revisao-pos-matching/proposal.md": {
+    "mtime": 1788203942.800754,
+    "ast_hash": "33bac6baa18aa5b888a25ca3600f4b82",
+    "semantic_hash": ""
+  },
+  "specs/324-wizard-onboarding-revisao-pos-matching/spec-plan.md": {
+    "mtime": 1788204480.8928764,
+    "ast_hash": "26bc086a1c940481f89223fd95dda919",
     "semantic_hash": ""
   }
 }

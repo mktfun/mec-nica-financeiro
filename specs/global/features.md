@@ -1,3 +1,10 @@
+### Spec 327 — Alinhamento Integral dos 5 Pilares e Compensação Intra-Loja (31/08/2026)
+- **Compensação Intra-Loja de Cheque Especial**: Cálculo da posição líquida de cada filial antes da agregação holding ($\text{Saldo Consolidado} = \text{OFX} + \text{Cofre} + \text{Rede a Compensar}$), segregando Ativos Positivos e Cheque Especial Real sem dupla penalização.
+- **Aportes de Sócios no Faturamento**: Consolidação de entradas justificadas como aporte no Faturamento Total do DRE (`faturamento_periodo = faturamento_oi_base + faturamento_ajustes`), equalizando o Valor Disponível para Contas.
+- **Subtotal de Contas a Pagar**: Agregação canônica de Contas Base + Pró-labore Daniel + Despesas Extras + Juros Rede.
+- **Frontend Reativo & Modais**: Header cards atualizados em `SaldoBancosDetailModal.tsx` e `ResumoDiaPanel.tsx` com Dark UI Zinc-950.
+- **Migration**: `supabase/migrations/20260831000010_align_5_pillars_and_intra_store_offset.sql`.
+
 ### Spec 319 — Correção do Caixa Atual, Fluxo Contábil e Paridade dos 5 Pilares na RPC
 - **Equação Canônica Inviolável (5 Pilares)**: $\text{Caixa Atual} = (\text{Total Saldo Banco Positivo} + \text{Dinheiro MP} + \text{A Receber} + \text{Na Loja OS}) - \text{Saldo Negativo Itaú}$.
 - **Eliminação de Congelamento Híbrido em Snapshots Fechados**: RPC `get_daily_reconciliation_summary` atualizada para computar deterministicamente o Caixa Atual em ambos os ramais, evitando divergências causadas por atualizações dinâmicas no Pátio ou Cofre.

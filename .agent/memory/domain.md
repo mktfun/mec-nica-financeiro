@@ -812,3 +812,16 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
 - **Segregação de 5 Pilares no Fechamento:** Ativos Totais (Saldo Positivo + Dinheiro MP + A Receber + Pátio OS) subtraído do Cheque Especial compõem o Caixa Atual. O Fluxo de Caixa (Caixa Hoje - Caixa Ontem) deduzido do Faturamento do Dia deve cobrir exatamente o Subtotal de Contas a Pagar + Juros de Maquininha (Tolerância $\pm$ R$ 50,00).
 - **Tratamento de Não-Faturamento:** Transferências entre filiais (Intercompany) e aportes dos sócios NUNCA devem somar ao faturamento contábil da empresa, recebendo a anotação `[NÃO SOMAR] [Apenas Conciliar]`.
 **Risco identificado / Anti-pattern:** Nunca permitir que liquidações de adquirentes ou rendimentos bancários apareçam no painel de justificativas manuais de não-faturamento.
+
+## [2026-08-31] — [Feature ID: 327] Alinhamento Integral dos 5 Pilares e Compensação Intra-Loja
+**Contexto:** Erradicação de falsas divergências contábeis no fechamento de 31/08/2026 através do alinhamento pericial entre os arquivos brutos (OFX, Rede, OS, BuscaContas) e a planilha oficial do operador.
+**Regra aprendida:**
+1. **Compensação Intra-Loja de Cheque Especial vs. Rede:**
+   Para cada filial $i$, o saldo líquido real é calculado antes da agregação holding:
+   $$\text{Saldo Consolidado}_i = \text{Saldo OFX}_i + \text{Dinheiro em Cofre}_i + \text{Rede a Compensar}_i$$
+   - Se $\text{Saldo Consolidado}_i < 0 \implies \text{Saldo Devedor Real} = |\text{Saldo Consolidado}_i|$ (Cheque Especial Líquido deduzido no Caixa Atual).
+   - Se $\text{Saldo Consolidado}_i \ge 0 \implies \text{Saldo Positivo Real} = \text{Saldo Consolidado}_i$ (Ativo bancário superavitário).
+2. **Aportes de Sócios com Impacto DRE:** Aportes bancários marcados para cobrir contas integram o `faturamento_periodo = faturamento_oi_base + faturamento_ajustes`, garantindo que o `Valor Disponível para Contas = Faturamento Total - Fluxo de Caixa` reflita a receita total do dia.
+3. **Consolidação Total de Contas a Pagar:** O Subtotal de Contas integra $Contas Base + Pró-labore Daniel + Despesas Extras + Juros Rede$.
+**Risco identificado / Anti-pattern:** Nunca subtrair cheque especial bruto do OFX sem abater as vendas de maquininhas que foram creditadas na mesma conta no dia, pois isso gera dupla penalização e distorce o Caixa Atual.
+

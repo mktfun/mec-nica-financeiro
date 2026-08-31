@@ -19,6 +19,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { executeExpenseAutoMatching } from '@/lib/expenseMatcher';
 
 export interface OFXEntry {
   id: string;
@@ -151,7 +152,7 @@ export function Step2NonRevenueJustifications({
   const [activeTab, setActiveTab] = useState<'inflows' | 'outflows'>('outflows');
 
   // 1. Débitos bancários do OFX pendentes de casamento (Saídas Órfãs Reais do Banco)
-  const { data: dbOutflows = [], isLoading: isLoadingOutflows, refetch: refetchOutflows } = useQuery({
+  const { data: dbOutflows = [], isLoading: isLoadingOutflows, isFetched: isFetchedOutflows, refetch: refetchOutflows } = useQuery({
     queryKey: ['pending-ofx-outflows', targetDate],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -166,7 +167,7 @@ export function Step2NonRevenueJustifications({
   });
 
   // 2. Entradas bancárias do OFX sem vínculo com OS (Entradas Órfãs Reais do Banco)
-  const { data: dbInflows = [], isLoading: isLoadingInflows, refetch: refetchInflows } = useQuery({
+  const { data: dbInflows = [], isLoading: isLoadingInflows, isFetched: isFetchedInflows, refetch: refetchInflows } = useQuery({
     queryKey: ['pending-ofx-inflows', targetDate],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -181,12 +182,14 @@ export function Step2NonRevenueJustifications({
   });
 
   const nonRevenueInflowEntries = useMemo<OFXEntry[]>(() => {
-    if (dbInflows.length > 0) {
+    // 1. Se houver dados no banco, usa os dados do banco (filtrando os que estão com matched_os_number nulo)
+    if (dbInflows && dbInflows.length > 0) {
       return dbInflows
         .filter((tx: any) => {
           const fullDesc = `${tx.title || ''} ${tx.counterpart_name || ''} ${tx.bank_name || ''}`.trim();
           if (EXCLUDE_ACQUIRER_REGEX.test(fullDesc)) return false;
           if (EXCLUDE_BANK_EARNINGS_REGEX.test(fullDesc)) return false;
+          if (/saldo\s+anterior|saldo\s+total/i.test(fullDesc)) return false;
           return true;
         })
         .map((tx: any) => {
@@ -206,7 +209,7 @@ export function Step2NonRevenueJustifications({
         });
     }
 
-    // Fallback em memória caso a query ainda não tenha carregado
+    // 2. Se o banco retornou vazio (modo preview / antes de salvar no banco), filtra os créditos não casados da memória
     const entries: OFXEntry[] = [];
     results.ofxResults?.forEach((ofxResult: any) => {
       const storeId = mapping[ofxResult.alias] || '';
@@ -214,12 +217,13 @@ export function Step2NonRevenueJustifications({
       const storeName = storeObj?.name || ofxResult.alias || 'Loja';
 
       (ofxResult.transactions || []).forEach((tx: any) => {
-        if (tx.type !== 'in') return;
-        const fullDesc = `${tx.title || ''} ${tx.counterpart_name || ''}`.trim();
+        if (tx.type !== 'in' && Number(tx.amount || 0) <= 0) return;
+        if (tx.matched_os_number || tx.matchedOsNumber || tx.match_status === 'matched') return;
 
+        const fullDesc = `${tx.title || ''} ${tx.counterpart_name || ''}`.trim();
         if (EXCLUDE_ACQUIRER_REGEX.test(fullDesc)) return;
         if (EXCLUDE_BANK_EARNINGS_REGEX.test(fullDesc)) return;
-        if (tx.matched_os_number) return;
+        if (/saldo\s+anterior|saldo\s+total/i.test(fullDesc)) return;
 
         const isTransferOrAporte =
           NON_REVENUE_PATTERNS.TRANSFERENCIA_ENTRE_LOJAS.test(fullDesc) ||
@@ -243,14 +247,17 @@ export function Step2NonRevenueJustifications({
       });
     });
     return entries;
-  }, [dbInflows, results, mapping, stores, targetDate]);
+  }, [dbInflows, results.ofxResults, mapping, stores, targetDate]);
 
   const nonRevenueOutflowEntries = useMemo<OFXEntry[]>(() => {
-    if (dbOutflows.length > 0) {
+    // 1. Se houver dados no banco, usa os dados do banco (filtrando os que estão com matched_bill_id nulo)
+    if (dbOutflows && dbOutflows.length > 0) {
       return dbOutflows
         .filter((tx: any) => {
           const fullDesc = `${tx.title || ''} ${tx.counterpart_name || ''} ${tx.bank_name || ''}`.trim();
-          return !EXCLUDE_BANK_EARNINGS_REGEX.test(fullDesc);
+          if (EXCLUDE_BANK_EARNINGS_REGEX.test(fullDesc)) return false;
+          if (/saldo\s+anterior|saldo\s+total/i.test(fullDesc)) return false;
+          return true;
         })
         .map((tx: any) => {
           const storeObj = stores.find(s => s.id === tx.store_id);
@@ -269,33 +276,36 @@ export function Step2NonRevenueJustifications({
         });
     }
 
-    const entries: OFXEntry[] = [];
-    results.ofxResults?.forEach((ofxResult: any) => {
-      const storeId = mapping[ofxResult.alias] || '';
-      const storeObj = stores.find(s => s.id === storeId);
-      const storeName = storeObj?.name || ofxResult.alias || 'Loja';
+    // 2. Se o banco retornou vazio (modo preview / antes de salvar no banco), calcula via motor de matching em memória
+    if (results.ofxResults && results.ofxResults.length > 0) {
+      const matchRes = executeExpenseAutoMatching(
+        results.ofxResults,
+        results.contasPagarResults || [],
+        mapping,
+        stores
+      );
 
-      (ofxResult.transactions || []).forEach((tx: any) => {
-        if (tx.type !== 'out') return;
-        if (tx.matched_bill_id) return;
+      return matchRes.orphanOutflows
+        .filter(tx => {
+          const desc = tx.description || '';
+          if (EXCLUDE_BANK_EARNINGS_REGEX.test(desc)) return false;
+          if (/saldo\s+anterior|saldo\s+total/i.test(desc)) return false;
+          return true;
+        })
+        .map(tx => ({
+          id: tx.id,
+          storeId: tx.storeId,
+          storeName: tx.storeName,
+          amount: tx.amount,
+          description: tx.description,
+          date: tx.date,
+          fitid: tx.fitid,
+          type: 'out' as const,
+        }));
+    }
 
-        const fullDesc = `${tx.title || ''} ${tx.counterpart_name || ''}`.trim();
-        if (EXCLUDE_BANK_EARNINGS_REGEX.test(fullDesc)) return;
-
-        entries.push({
-          id: tx.id || tx.fitid || `${ofxResult.alias}_${tx.amount}_${Math.random()}`,
-          storeId,
-          storeName,
-          amount: Math.abs(Number(tx.amount || 0)),
-          description: tx.counterpart_name || tx.title || 'Débito Bancário',
-          date: tx.date || targetDate,
-          fitid: tx.fitid || '',
-          type: 'out',
-        });
-      });
-    });
-    return entries;
-  }, [dbOutflows, results, mapping, stores, targetDate]);
+    return [];
+  }, [dbOutflows, results.ofxResults, results.contasPagarResults, mapping, stores, targetDate]);
 
   const { data: openBills = [] } = useQuery({
     queryKey: ['open-bills-for-step2', targetDate],

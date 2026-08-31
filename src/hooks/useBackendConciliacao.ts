@@ -81,15 +81,24 @@ export function useGlobalOfxOut(date: string) {
 export interface StoreReconciliationSummary {
   store_id: string;
   store_name: string;
+  color?: string;
   saldo_banco: number; // Saldo Consolidado (OFX + Não Entrou)
   saldo_banco_ofx?: number; // Saldo puro do extrato OFX
+  saldo_devedor_real?: number; // Cheque Especial Líquido (se saldo_banco < 0 => |saldo_banco|, senão 0)
+  saldo_positivo_real?: number; // Ativo Superavitário (se saldo_banco > 0 => saldo_banco, senão 0)
+  dinheiro_loja?: number;
+  vault_entries?: Array<{ id: string; amount: number; status: string; entry_date: string; description?: string }>;
   nao_entrou_valor?: number; // Vendas de maquininha a compensar (Não Entrou)
+  rede_bruto?: number;
   rede_liquido?: number; // Total líquido das vendas na maquininha
   rede_devolucoes?: number; // Devoluções/estornos da maquininha
-  status_compensacao?: 'entrou' | 'parcial' | 'nao_entrou' | 'sem_movimento';
+  ofx_maquininhas?: number;
+  status_compensacao?: 'entrou' | 'parcial' | 'nao_entrou' | 'sem_movimento' | string;
+  status_banco?: 'credor' | 'devedor' | 'compensado_rede' | string;
   maquininha: number;
   pix: number;
   na_loja_os: number;
+  patio_os?: number;
   previsto_ofx: number;
   diferenca: number;
   status: 'approved' | 'divergence';
@@ -127,6 +136,8 @@ export interface DailyReconciliationSummary {
   data_atual?: string;
   total_saldo_banco: number;
   total_saldo_banco_positivo?: number;
+  total_saldo_banco_negativo?: number;
+  total_ativos_positivos?: number;
   saldo_bancos_ofx: number;
   saldo_bancos_positivo?: number;
   saldo_negativo_itau?: number;

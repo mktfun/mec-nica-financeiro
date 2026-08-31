@@ -41,6 +41,7 @@ import { Step2NonRevenueJustifications } from './wizard/Step2NonRevenueJustifica
 import { Step3CashVaultDaniel } from './wizard/Step3CashVaultDaniel';
 import { Step4FinalAuditAndClose } from './wizard/Step4FinalAuditAndClose';
 import { executeAutoMatchingEngine, PendingUnmatchedTransaction } from '@/lib/matchers/autoMatchingEngine';
+import { executeExpenseAutoMatching } from '@/lib/expenseMatcher';
 import { useQueryClient } from '@tanstack/react-query';
 
 
@@ -318,6 +319,13 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       }
     }
   }, [results.contasPagarResults]);
+
+  // Executa pré-matching em memória de saídas bancárias com contas a pagar
+  useEffect(() => {
+    if (results.ofxResults?.length > 0 && results.contasPagarResults?.length > 0) {
+      executeExpenseAutoMatching(results.ofxResults, results.contasPagarResults, mapping, stores);
+    }
+  }, [results.ofxResults, results.contasPagarResults, mapping, stores]);
 
   // Helper para resolver a loja correta por mapping direto, conta bancária ou prefixo do arquivo
   const resolveStoreForOfx = useCallback((ofx: { alias: string; fileName?: string }): string => {
@@ -1539,12 +1547,19 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       setSaveFinished(true);
 
       if (advanceToWizard) {
-        queryClient.invalidateQueries({ queryKey: ['pending-ofx-outflows'] });
-        queryClient.invalidateQueries({ queryKey: ['pending-ofx-inflows'] });
-        queryClient.invalidateQueries({ queryKey: ['open-bills-for-step2'] });
-        queryClient.invalidateQueries({ queryKey: ['daily-manual-bills'] });
-        queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
-        await new Promise(r => setTimeout(r, 1000));
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ['pending-ofx-outflows', targetDate] }),
+          queryClient.invalidateQueries({ queryKey: ['pending-ofx-inflows', targetDate] }),
+          queryClient.invalidateQueries({ queryKey: ['open-bills-for-step2', targetDate] }),
+          queryClient.invalidateQueries({ queryKey: ['daily-manual-bills'] }),
+          queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
+        ]);
+        await new Promise(r => setTimeout(r, 600));
+        await Promise.all([
+          queryClient.refetchQueries({ queryKey: ['pending-ofx-outflows', targetDate] }),
+          queryClient.refetchQueries({ queryKey: ['pending-ofx-inflows', targetDate] }),
+          queryClient.refetchQueries({ queryKey: ['open-bills-for-step2', targetDate] }),
+        ]);
         const realUnmatched = await fetchRealUnmatchedTransactions(targetDate);
         setUnmatchedTransactions(realUnmatched);
         if (realUnmatched.length > 0) {

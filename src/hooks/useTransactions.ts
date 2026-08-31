@@ -450,7 +450,7 @@ export function useBulkInsertTransactions() {
                import_batch_id: t.import_batch_id || null,
                target_date: t.target_date || null
              };
-          }), { onConflict: 'store_id, fitid', ignoreDuplicates: true });
+          }), { onConflict: 'store_id, fitid' });
         if (e1) { error = e1; } else { data = d1; }
       }
 

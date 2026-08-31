@@ -104,8 +104,8 @@ export function Step4FinalAuditAndClose({
       const absDif = Math.abs(dif);
       return {
         totalSaldoBanco: Number(summary.total_saldo_banco_positivo ?? summary.total_saldo_banco ?? 0),
-        saldoBancosPositivo: Number(summary.saldo_bancos_positivo ?? summary.total_saldo_banco ?? 0),
-        saldoNegativoItau: Number(summary.saldo_negativo_itau ?? 0),
+        saldoBancosPositivo: Number(summary.total_saldo_banco_positivo ?? summary.saldo_bancos_positivo ?? summary.total_saldo_banco ?? 0),
+        saldoNegativoItau: Number(summary.total_saldo_banco_negativo ?? summary.saldo_negativo_itau ?? 0),
         dinheiroMp: Number(summary.dinheiro_mp ?? manualInputs.manualDinheiroMp ?? 0),
         aReceber: Number(summary.a_receber ?? manualInputs.manualAReceber ?? 0),
         naLojaOs: Number(summary.na_loja_os ?? 0),

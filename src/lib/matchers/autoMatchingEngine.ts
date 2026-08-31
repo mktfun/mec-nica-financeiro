@@ -1,4 +1,4 @@
-﻿import { UnifiedImportResult } from '@/hooks/useCentralImport';
+import { UnifiedImportResult } from '@/hooks/useCentralImport';
 import { ParsedOS, ParsedReceivable } from '@/hooks/useImportProcessor';
 
 export interface PendingUnmatchedTransaction {
@@ -323,6 +323,8 @@ export function executeAutoMatchingEngine(
 
         if (matchedOs) {
           matchedOsNumbers.add(String(matchedOs.os_number));
+          (tx as any).matched_os_number = String(matchedOs.os_number);
+          (tx as any).match_status = 'matched';
           resolvedMatches.push({
             storeId,
             osNumber: String(matchedOs.os_number),

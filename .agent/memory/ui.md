@@ -320,3 +320,12 @@ Ao criar fluxos `onClick` que disparam Edge Functions lentas, sempre usar Toasts
 - **Seletores e Scroll de Wizard:** Em telas longas com múltiplas contas/filiais (ex: 10 contas OFX), botões de navegação devem ser rolados para a visão (`scrollIntoViewIfNeeded()`) antes do clique interativo.
 - **Formulário de Justificativa Canônico:** Manter paridade total entre o Passo 5 (`Step2NonRevenueJustifications.tsx`) e a tela de extrato (`OrphanCategorizationModal.tsx`), com dois botões de impacto claros (`Somar ao Faturamento` vs `Apenas Conciliar`), chips rápidos de categorias e campo de observação contábil.
 **Risco identificado / Anti-pattern:** Não utilizar `<select>` puro para decisões financeiras de alto impacto; preferir botões de cards visuais com ícones representativos (`TrendingUp` e `Ban`).
+
+## [2026-08-31] — [Feature ID: 327] Redesign de Header Cards e Paridade de 5 Pilares no Resumo do Dia
+**Contexto:** Atualização visual dos cards do DRE diário (`ResumoDiaPanel.tsx`) e do modal de raio-x de saldos (`SaldoBancosDetailModal.tsx`) para refletir a segregação de Ativos Brutos, Cheque Especial Real e Faturamento Composto.
+**Regra aprendida:**
+1. **Header Cards Segregados no Modal de Saldos:** Exibir 5 cards no cabeçalho: `OFX Positivo`, `(-) Cheque Especial Real` (vermelho), `Dinheiro no Cofre` (âmbar), `A Compensar` (esmeralda) e `Líquido Disponível` (gradiente primário).
+2. **Sub-chips no Card Saldo Bancos + Dinheiro:** O Hero Card do Pilar 1 renderiza sub-chips dinâmicos demonstrando os 4 componentes ativos com fontes mono e contraste WCAG AA.
+3. **Badges de Filiais no Raio-X:** Badges contextualizados (`Compensado c/ Rede`, `Cheque Esp.`, `Com Dinheiro`, `Conciliado`).
+**Risco identificado / Anti-pattern:** Nunca esconder ou omitir o pill de Cheque Especial no topo do painel quando houver filiais com saldo devedor real.
+
