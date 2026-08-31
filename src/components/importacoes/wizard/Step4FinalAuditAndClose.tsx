@@ -19,9 +19,11 @@ import {
   RefreshCw,
   ArrowLeft,
   Loader2,
+  Calculator,
+  ArrowRight,
 } from 'lucide-react';
 
-interface MissingPatioOsEdit {
+export interface MissingPatioOsEdit {
   id: string;
   os_number: string;
   plate: string;
@@ -37,18 +39,18 @@ interface MissingPatioOsEdit {
   days_open?: number;
 }
 
-interface Props {
-  results: CentralImportResults;
-  mapping: Record<string, string>;
+export interface Step4FinalAuditAndCloseProps {
+  results?: CentralImportResults;
+  mapping?: Record<string, string>;
   targetDate: string;
-  stores: { id: string; name: string }[];
-  manualInputs: {
+  stores?: { id: string; name: string }[];
+  manualInputs?: {
     odometroHoje: number;
     manualDinheiroMp: number;
     manualAReceber: number;
     contasManual: number;
   };
-  missingOsList: MissingPatioOsEdit[];
+  missingOsList?: MissingPatioOsEdit[];
   isSaving: boolean;
   onFinish: () => void;
   onBack: () => void;
@@ -58,21 +60,23 @@ export function Step4FinalAuditAndClose({
   results,
   mapping,
   targetDate,
-  stores,
-  manualInputs,
-  missingOsList,
+  stores = [],
+  manualInputs = { odometroHoje: 0, manualDinheiroMp: 0, manualAReceber: 0, contasManual: 0 },
+  missingOsList = [],
   isSaving,
   onFinish,
   onBack,
-}: Props) {
-  const { data: summary, refetch, isLoading } = useDailyReconciliationSummary(targetDate);
+}: Step4FinalAuditAndCloseProps) {
+  const { data: summary, refetch, isLoading, isRefetching } = useDailyReconciliationSummary(targetDate);
   const { data: previousSnapshot } = usePreviousDaySnapshot(targetDate);
   const { data: aiSettings } = useAiSettings();
 
   const [runningAi, setRunningAi] = useState(false);
 
   // -------------------------------------------------------------
-  // CÁLCULO CANÔNICO EM MEMÓRIA DOS 5 PILARES & DRE DO WIZARD
+  // CÁLCULO CANÔNICO DOS 5 PILARES & DRE DO WIZARD
+  // Prioriza o summary retornado pela RPC do Supabase se disponível;
+  // Faz fallback gracioso para os cálculos em memória do wizard.
   // -------------------------------------------------------------
   const {
     totalSaldoBanco,
@@ -93,11 +97,38 @@ export function Step4FinalAuditAndClose({
     subtotalContas,
     diferencaFinal,
     isOk,
+    isWarning,
   } = useMemo(() => {
+    if (summary && summary.caixa_atual !== undefined && summary.caixa_atual !== null) {
+      const dif = Number(summary.diferenca_final || 0);
+      const absDif = Math.abs(dif);
+      return {
+        totalSaldoBanco: Number(summary.total_saldo_banco_positivo ?? summary.total_saldo_banco ?? 0),
+        saldoBancosPositivo: Number(summary.saldo_bancos_positivo ?? summary.total_saldo_banco ?? 0),
+        saldoNegativoItau: Number(summary.saldo_negativo_itau ?? 0),
+        dinheiroMp: Number(summary.dinheiro_mp ?? manualInputs.manualDinheiroMp ?? 0),
+        aReceber: Number(summary.a_receber ?? manualInputs.manualAReceber ?? 0),
+        naLojaOs: Number(summary.na_loja_os ?? 0),
+        faturamentoDia: Number(summary.faturamento_periodo ?? summary.faturamento_oi_base ?? 0),
+        fatAnterior: Number(summary.faturamento_anterior ?? 0),
+        faturamentoPeriodo: Number(summary.faturamento_periodo ?? 0),
+        caixaAtual: Number(summary.caixa_atual ?? 0),
+        caixaAnterior: Number(summary.caixa_anterior ?? 0),
+        fluxoCaixa: Number(summary.fluxo_caixa ?? 0),
+        valorDispContas: Number(summary.valor_disp_contas ?? 0),
+        jurosRede: Number(summary.juros_rede ?? 0),
+        contasFinal: Number(summary.contas_manual ?? 0),
+        subtotalContas: Number(summary.subtotal_contas ?? 0),
+        diferencaFinal: dif,
+        isOk: absDif <= 50.0,
+        isWarning: absDif > 50.0 && absDif <= 200.0,
+      };
+    }
+
     // 1. Pilar 1: Saldo Bancos OFX
     let saldoPos = 0;
     let saldoNeg = 0;
-    (results.ofxResults || []).forEach((ofx) => {
+    (results?.ofxResults || []).forEach((ofx) => {
       const bal = typeof ofx.bankBalance === 'number' ? ofx.bankBalance : 0;
       if (bal < 0) saldoNeg += Math.abs(bal);
       else saldoPos += bal;
@@ -112,7 +143,7 @@ export function Step4FinalAuditAndClose({
 
     // 4. Pilar 4: Na Loja OS (Pátio)
     let patioSum = 0;
-    (results.osFiles || [])
+    (results?.osFiles || [])
       .filter((r) => r.success)
       .forEach((f) => {
         (f.osArray || []).forEach((os) => {
@@ -144,11 +175,10 @@ export function Step4FinalAuditAndClose({
       }
     });
 
-    // Se patioSum for 0 (ex: importação só de OFX), faz fallback para a prop da RPC
     const finalPatio = patioSum > 0 ? patioSum : Number((summary as any)?.na_loja_os || 0);
 
-    // 5. Pilar 5: Faturamento (Odômetro Hoje - Odômetro Anterior)
-    const fatAnterior = Number(
+    // 5. Pilar 5: Faturamento
+    const fatAnteriorVal = Number(
       (previousSnapshot?.metadata as any)?.odometro_hoje ??
       (previousSnapshot?.metadata as any)?.faturamento_anterior ??
       (previousSnapshot?.metadata as any)?.odometro_anterior ??
@@ -157,14 +187,13 @@ export function Step4FinalAuditAndClose({
     );
     let fatBase = 0;
     if (manualInputs.odometroHoje > 0) {
-      if (fatAnterior > 0 && manualInputs.odometroHoje >= fatAnterior) {
-        fatBase = manualInputs.odometroHoje - fatAnterior;
+      if (fatAnteriorVal > 0 && manualInputs.odometroHoje >= fatAnteriorVal) {
+        fatBase = manualInputs.odometroHoje - fatAnteriorVal;
       } else {
         fatBase = manualInputs.odometroHoje;
       }
     } else {
-      // Fallback: soma faturamento das OSs faturadas
-      (results.osFiles || [])
+      (results?.osFiles || [])
         .filter((r) => r.success)
         .forEach((f) => {
           (f.osArray || []).forEach((os) => {
@@ -182,7 +211,7 @@ export function Step4FinalAuditAndClose({
     const flx = cAtual - cAnterior;
     const vDisp = fatPeriodo - flx;
 
-    const juros = (results.redeResults || [])
+    const juros = (results?.redeResults || [])
       .filter((r) => r.success)
       .reduce((acc, r) => {
         return (
@@ -192,14 +221,14 @@ export function Step4FinalAuditAndClose({
       }, 0);
 
     const contasImportadas =
-      (results.contasPagarResults || []).reduce(
+      (results?.contasPagarResults || []).reduce(
         (acc, c) => acc + (Number(c.totalAmount) || 0),
         0
       ) || 0;
     const contas = manualInputs.contasManual > 0 ? manualInputs.contasManual : contasImportadas;
     const subtotal = contas + juros;
     const dif = vDisp - subtotal;
-    const ok = Math.abs(dif) <= 50.0;
+    const absDif = Math.abs(dif);
 
     return {
       totalSaldoBanco: totalBanco,
@@ -209,7 +238,7 @@ export function Step4FinalAuditAndClose({
       aReceber: rec,
       naLojaOs: finalPatio,
       faturamentoDia: fatBase,
-      fatAnterior,
+      fatAnterior: fatAnteriorVal,
       faturamentoPeriodo: fatPeriodo,
       caixaAtual: cAtual,
       caixaAnterior: cAnterior,
@@ -219,9 +248,19 @@ export function Step4FinalAuditAndClose({
       contasFinal: contas,
       subtotalContas: subtotal,
       diferencaFinal: dif,
-      isOk: ok,
+      isOk: absDif <= 50.0,
+      isWarning: absDif > 50.0 && absDif <= 200.0,
     };
   }, [results, manualInputs, missingOsList, previousSnapshot, summary]);
+
+  const handleManualRefresh = async () => {
+    try {
+      await refetch();
+      toast.success('Diferença e 5 pilares recalculados com o banco!');
+    } catch (err: any) {
+      toast.error(`Erro ao recalcular: ${err.message}`);
+    }
+  };
 
   // Dispara matcher IA usando gemini-3.5-flash-lite
   const handleRunAiMatcher = async () => {
@@ -295,30 +334,29 @@ export function Step4FinalAuditAndClose({
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <Card className="p-5 bg-zinc-950 border-zinc-800">
+      {/* Header com Instrução Clara e Botões de Recálculo */}
+      <Card className="p-5 bg-zinc-900 border-zinc-800">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h2 className="text-lg font-display font-bold text-white flex items-center gap-2">
               <ShieldCheck className="text-emerald-400" size={20} />
-              Tela D: Auditoria Final &amp; Fechamento Consolidado
+              Passo 7: Validação dos 5 Pilares &amp; Fechamento Definitivo
             </h2>
             <p className="text-xs text-zinc-400 mt-1 max-w-2xl">
-              Confira a consolidação dos 5 pilares apurados em tempo real. Execute o
-              reconciliador IA se restarem divergências e efetue o fechamento definitivo.
+              Revise a equação contábil dos 5 pilares apurados em tempo real. Se houver alguma divergência, você pode voltar para qualquer passo anterior para ajustar antes de selar o fechamento.
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <Button
               size="sm"
               variant="secondary"
-              disabled={runningAi || isLoading}
-              onClick={() => refetch()}
-              className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs cursor-pointer border border-zinc-700"
+              disabled={runningAi || isLoading || isRefetching}
+              onClick={handleManualRefresh}
+              className="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs cursor-pointer border border-zinc-700 flex items-center gap-1.5"
             >
-              <RefreshCw size={12} className={`mr-1 ${isLoading ? 'animate-spin' : ''}`} />
-              Atualizar
+              <RefreshCw size={13} className={`${(isLoading || isRefetching) ? 'animate-spin text-emerald-400' : ''}`} />
+              Recalcular Diferença
             </Button>
 
             <Button
@@ -402,86 +440,115 @@ export function Step4FinalAuditAndClose({
         </Card>
       </div>
 
-      {/* Semáforo */}
+      {/* Semáforo & Conferência Central */}
       <Card
-        className={`p-6 border-2 ${
-          isOk ? 'border-emerald-500/40 bg-emerald-500/5' : 'border-rose-500/40 bg-rose-500/5'
+        className={`p-6 border-2 transition-all ${
+          isOk
+            ? 'border-emerald-500/40 bg-emerald-500/5 shadow-lg shadow-emerald-950/20'
+            : isWarning
+            ? 'border-amber-500/40 bg-amber-500/5 shadow-lg shadow-amber-950/20'
+            : 'border-rose-500/40 bg-rose-500/5 shadow-lg shadow-rose-950/20'
         }`}
       >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 flex-wrap">
               {isOk ? (
-                <CheckCircle2 size={18} className="text-emerald-400" />
+                <CheckCircle2 size={20} className="text-emerald-400" />
+              ) : isWarning ? (
+                <AlertTriangle size={20} className="text-amber-400" />
               ) : (
-                <AlertTriangle size={18} className="text-rose-400" />
+                <AlertTriangle size={20} className="text-rose-400" />
               )}
               <span
-                className={`text-xs font-bold uppercase tracking-wider ${
-                  isOk ? 'text-emerald-400' : 'text-rose-400'
+                className={`text-sm font-bold uppercase tracking-wider ${
+                  isOk ? 'text-emerald-400' : isWarning ? 'text-amber-400' : 'text-rose-400'
                 }`}
               >
                 {isOk
-                  ? '✓ Fechamento em Conformidade Contábil'
-                  : '⚠ Divergência Acima da Tolerância (pode prosseguir com override)'}
+                  ? '✓ Fechamento Equilibrado (Conformidade Contábil)'
+                  : isWarning
+                  ? '⚠ Divergência Residual Pequena (Dentro de Limites Aceitáveis)'
+                  : '⚠ Divergência Significativa (Verifique Vínculos e Justificativas)'}
               </span>
               <Badge
-                variant={isOk ? 'success' : 'danger'}
+                variant={isOk ? 'success' : isWarning ? 'warning' : 'danger'}
                 dot
                 className="text-[10px] font-mono"
               >
                 Tolerância ± R$ 50,00
               </Badge>
             </div>
-            <p className="text-xs text-zinc-400">
-              Diferença entre Valor Disponível de Contas e Subtotal a Cobrir.
-            </p>
+
+            {/* Demonstração da Equação Contábil */}
+            <div className="p-3 bg-zinc-950/80 rounded-lg border border-zinc-800/80 text-xs font-mono text-zinc-300 space-y-1">
+              <div className="flex items-center justify-between text-zinc-400">
+                <span>(+) Faturamento do Dia:</span>
+                <span className="text-purple-400 font-bold">R$ {faturamentoPeriodo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+              </div>
+              <div className="flex items-center justify-between text-zinc-400">
+                <span>(-) Fluxo de Caixa (Caixa Hoje - Caixa Ontem):</span>
+                <span className="text-cyan-400 font-bold">R$ {fluxoCaixa.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+              </div>
+              <div className="flex items-center justify-between text-zinc-200 border-t border-zinc-800 pt-1 font-semibold">
+                <span>(=) Valor Disponível para Contas:</span>
+                <span className="text-emerald-400">R$ {valorDispContas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+              </div>
+              <div className="flex items-center justify-between text-zinc-400">
+                <span>(-) Subtotal de Contas a Cobrir (Contas + Juros):</span>
+                <span className="text-rose-400 font-bold">R$ {subtotalContas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+              </div>
+            </div>
 
             {!isOk && (
               <p className="text-xs text-amber-400 font-semibold mt-1">
-                Atenção: botão habilitado para override manual. Confirme somente se tiver certeza.
+                💡 Dica: Se necessário, clique em "Voltar" para justificar despesas extras no Passo 5 ou ajustar vínculos de OS no Passo 4.
               </p>
             )}
           </div>
 
-          <div className="flex items-center gap-6">
-            <div className="text-right font-mono">
-              <span className="text-[10px] text-zinc-500 uppercase block">Diferença Final</span>
-              <p
-                className={`text-3xl font-bold ${isOk ? 'text-emerald-400' : 'text-rose-400'}`}
-              >
-                R$ {diferencaFinal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-              </p>
-            </div>
+          <div className="text-right shrink-0 bg-zinc-950/90 p-4 rounded-xl border border-zinc-800/80">
+            <span className="text-[10px] text-zinc-400 uppercase font-semibold block tracking-wider">Diferença Final Apurada</span>
+            <p
+              className={`text-3xl font-mono font-bold mt-1 ${
+                isOk ? 'text-emerald-400' : isWarning ? 'text-amber-400' : 'text-rose-400'
+              }`}
+            >
+              R$ {diferencaFinal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </p>
+            <span className="text-[11px] text-zinc-500 font-mono mt-1 block">
+              {isOk ? 'Diferença Zero / Dentro da Margem' : diferencaFinal > 0 ? 'Sobra de Caixa' : 'Falta de Caixa / Despesa a Cobrir'}
+            </span>
           </div>
         </div>
       </Card>
 
-      {/* Navegação */}
-      <div className="flex items-center justify-between pt-2">
+      {/* Navegação de Rodapé */}
+      <div className="flex items-center justify-between pt-4 border-t border-zinc-800">
         <Button
-          variant="secondary"
+          variant="outline"
           onClick={onBack}
-          className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 cursor-pointer flex items-center gap-2"
+          className="py-2.5 px-4 text-xs font-semibold rounded-xl border-zinc-800 text-zinc-300 hover:text-white flex items-center gap-2"
         >
-          <ArrowLeft size={14} />
-          Voltar
+          <ArrowLeft size={16} />
+          Voltar para Ajustar (Passo 6)
         </Button>
 
         <Button
           onClick={onFinish}
           disabled={isSaving}
-          className="px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-emerald-500/20 cursor-pointer text-sm shrink-0"
+          className="py-3 px-8 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-emerald-500/20 cursor-pointer text-sm shrink-0"
         >
           {isSaving ? (
             <>
               <Loader2 size={16} className="animate-spin" />
-              Gravando...
+              Selando Fechamento...
             </>
           ) : (
             <>
               <Lock size={16} />
-              Confirmar e Gravar Importação
+              Conciliar e Selar o Dia Definitivamente
+              <ArrowRight size={16} />
             </>
           )}
         </Button>

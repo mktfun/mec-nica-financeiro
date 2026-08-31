@@ -72,12 +72,18 @@ export function Step1UnregisteredPayments({
           <div className='flex items-center gap-2 shrink-0'>
             {linkedTxs.size > 0 && (
               <span className='text-xs font-mono text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-lg border border-emerald-500/20'>
-                {linkedTxs.size} vinculadas
+                {linkedTxs.size} vinculadas nesta sessão
               </span>
             )}
-            <Badge variant='warning' dot className='font-mono text-xs'>
-              {activeTxs.length} Pendentes
-            </Badge>
+            {activeTxs.length === 0 ? (
+              <Badge className='bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-xs flex items-center gap-1 font-mono'>
+                <CheckCircle2 size={12} /> 100% Conciliado
+              </Badge>
+            ) : (
+              <Badge variant='warning' dot className='font-mono text-xs'>
+                {activeTxs.length} Pendentes
+              </Badge>
+            )}
           </div>
         </div>
 
@@ -213,7 +219,7 @@ export function Step1UnregisteredPayments({
             onClick={onNext}
             className='py-2.5 px-6 text-xs font-bold rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 shadow-md shadow-emerald-950/40 flex items-center gap-2 cursor-pointer'
           >
-            Avançar ({activeTxs.length === 0 ? 'Tudo Vinculado' : `${activeTxs.length} Pendentes`})
+            Avançar para Justificativas (Passo 5)
             <ArrowRight size={16} />
           </Button>
         </div>

@@ -1544,16 +1544,15 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         queryClient.invalidateQueries({ queryKey: ['open-bills-for-step2'] });
         queryClient.invalidateQueries({ queryKey: ['daily-manual-bills'] });
         queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
-        await new Promise(r => setTimeout(r, 600));
+        await new Promise(r => setTimeout(r, 1000));
         const realUnmatched = await fetchRealUnmatchedTransactions(targetDate);
         setUnmatchedTransactions(realUnmatched);
         if (realUnmatched.length > 0) {
           toast.info(`Automações e IA concluídas! ${realUnmatched.length} transação(ões) pendentes para revisão manual.`);
-          setStep(4);
         } else {
           toast.success('🎉 100% das transações e OSs foram conciliadas automaticamente pelo motor e IA!');
-          setStep(5);
         }
+        setStep(4);
       }
     } catch(e: any) {
       console.error(e);
@@ -1588,8 +1587,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       ]);
 
       toast.success('🎉 Fechamento homologado e snapshot selado com sucesso!');
-      setSaveFinished(true);
-      setStep(8);
+      navigate({ to: '/conciliacao' });
     } catch (err: any) {
       console.error(err);
       toast.error(`Erro ao finalizar fechamento: ${err.message || 'Falha no banco'}`);
@@ -2627,7 +2625,15 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                 )}
 
                 {/* Botões de Ação Final */}
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 max-w-md mx-auto">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 max-w-lg mx-auto">
+                  <Button
+                    onClick={() => setStep(4)}
+                    variant="outline"
+                    className="w-full sm:w-auto text-xs py-2.5 px-4 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 font-medium"
+                  >
+                    Revisar Órfãos & Diferença (Wizard) →
+                  </Button>
+
                   <Button
                     onClick={() => navigate({ to: '/conciliacao' })}
                     className="w-full sm:w-auto flex-1 py-2.5 px-5 font-semibold text-xs bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 rounded-lg shadow-sm"
