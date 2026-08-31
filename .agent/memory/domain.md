@@ -1,3 +1,21 @@
+## [2026-08-31] — [Feature ID: 321-motor-automatch-ia-e-unificacao-vinculo-pix-rede-wizard]
+
+**Contexto:** Inversão da esteira do wizard de importação para rodar a persistência, auto-matching em 3 camadas e reconciliação pericial com IA (Gemini) imediatamente após a confirmação do upload, deixando para a etapa manual apenas as transações genuinamente órfãs. Unificação do modal de vínculo manual (`ManualMatchOsModal`) para suportar tanto PIX quanto vendas da Rede com isolamento estrito por filial e ordenação de candidatos por score.
+
+**Regra aprendida:**
+1. **Pipeline Automação Primeiro, Humano Depois:**
+   - O operador nunca deve ser obrigado a realizar matches manuais antes de o banco e a IA rodarem suas rotinas de alta velocidade. A etapa manual opera estritamente sobre o resíduo não conciliado.
+2. **Unificação do Vínculo Manual PIX & REDE:**
+   - O modal de vínculo inteligente calcula score de afinidade (100 = Nome + Valor, 80 = Nome, 60 = Valor) tanto para PIX quanto para Cartões da Rede, respeitando o `store_id` da filial da transação e exibindo dados contextuais (NSU, bandeira, modalidade).
+
+## [2026-08-31] — [Feature ID: 320-persistencia-contas-manual-e-gestao-de-despesas]
+
+**Contexto:** Gestão ponta a ponta de despesas em `daily_manual_bills` com modal de edição de itens (`EditBillModal`) e persistência sem reversão de ajustes manuais de Contas a Pagar no snapshot diário.
+
+**Regra aprendida:**
+1. **Edição Atômica de Despesas:**
+   - Qualquer conta importada ou avulsa pode ter seu valor, fornecedor, filial e categoria alterados via `update_manual_bill`, recalculando em tempo real o subtotal de despesas do fechamento.
+
 ## [2026-08-31] — [Feature ID: 319-correcao-caixa-atual-fluxo-e-rpc-conciliacao]
 
 **Contexto:** Correção da inconsistência matemática entre os 4 cards de ativos superiores e o Caixa Atual/Fluxo de Caixa na RPC `get_daily_reconciliation_summary` e `get_dashboard_metrics`. Eliminação da leitura estática de `daily_snapshots.caixa_atual` desatualizado no Ramal 1.

@@ -107,7 +107,12 @@ export function ResumoDiaPanel({
       setFaturamentoInput(Number(initialFaturamento) || 0);
       setDinheiroMpInput(Number(currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? 0));
       setAReceberInput(Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber ?? 0));
-      setContasInput(Number(summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0));
+      
+      const overrideVal = (currentSnapshot?.metadata as any)?.contas_manual_override ?? summary?.contas_override;
+      const initialContas = (overrideVal !== null && overrideVal !== undefined && Number(overrideVal) > 0)
+        ? (Number(overrideVal) - Number(summary?.contas_extras || 0))
+        : Number(summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0);
+      setContasInput(initialContas);
     }
   }, [currentSnapshot, summary, isEditing]);
 
@@ -226,6 +231,14 @@ export function ResumoDiaPanel({
           ? (faturamentoAnteriorGlobal + faturamentoAcumuladoHoje)
           : faturamentoAcumuladoHoje;
 
+      const hasManualOverride = isEditing
+        ? (contasInput !== (summary?.contas_base ?? 0))
+        : (summary?.has_contas_override || (currentSnapshot?.metadata as any)?.has_contas_override || false);
+
+      const effectiveContasOverride = hasManualOverride
+        ? (isEditing ? contasManualValor : (summary?.contas_override ?? (currentSnapshot?.metadata as any)?.contas_manual_override ?? contasManualValor))
+        : null;
+
       await saveSnapshot.mutateAsync({
         date: selectedDate,
         is_closed: true,
@@ -242,7 +255,7 @@ export function ResumoDiaPanel({
         faturamento: effectiveAccumulatedFaturamento,
         faturamento_outros_valor: faturamentoOutrosValor,
         faturamento_outros_desc: 'Transações Justificadas (Ajustes)',
-        contas_a_pagar: isEditing ? contasInput : (summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0),
+        contas_a_pagar: isEditing ? (effectiveContasOverride ?? contasInput) : (summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0),
         provisao: currentSnapshot?.provisao || 0,
         saldo_negativo_itau: summary?.saldo_negativo_itau ?? currentSnapshot?.saldo_negativo_itau ?? 0,
         juros_rede: jurosRedeValor,
@@ -260,6 +273,8 @@ export function ResumoDiaPanel({
           contas_base: isEditing ? contasInput : (summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0),
           contas_extras: summary?.contas_extras ?? 0,
           contas_manual: contasManualValor,
+          contas_manual_override: effectiveContasOverride,
+          has_contas_override: hasManualOverride,
           subtotal_contas: subtotalContasCalculado,
           juros_rede: jurosRedeValor,
           diferenca_final: diferencaFinalCalculada,
@@ -275,7 +290,6 @@ export function ResumoDiaPanel({
           saldo_negativo_itau: summary?.saldo_negativo_itau ?? 0,
           status_geral: isDiferencaOk ? 'approved' : 'divergent',
           is_closed: true,
-
         },
       });
 
@@ -770,9 +784,16 @@ export function ResumoDiaPanel({
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase group-hover:text-red-400 transition-colors">
-                    Contas (Manual)
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase group-hover:text-red-400 transition-colors">
+                      Contas (Manual)
+                    </span>
+                    {!isEditing && (summary?.has_contas_override || (currentSnapshot?.metadata as any)?.has_contas_override) && (
+                      <span className="text-[8px] font-semibold text-amber-400 bg-amber-500/10 px-1.5 py-0.2 rounded border border-amber-500/20">
+                        Ajustado
+                      </span>
+                    )}
+                  </div>
                   {!isEditing && (
                     <span className="text-[9px] font-semibold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded">
                       Ver Contas ↗

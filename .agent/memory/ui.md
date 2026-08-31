@@ -1,4 +1,17 @@
-﻿## [2026-08-27] — [Feature ID: 310-novo-wizard-importacao-e-conciliacao-passo-a-passo]
+## [2026-08-31] — [Feature ID: 321-motor-automatch-ia-e-unificacao-vinculo-pix-rede-wizard]
+
+**Contexto:** Unificação do `ManualMatchOsModal.tsx` para gerenciar tanto PIX quanto vendas da Rede com o mesmo modal de alta afinidade e score (100, 80, 60), isolado estritamente pela filial da transação (`store_id`), e integração direta com o Step 1 do wizard (`Step1UnregisteredPayments.tsx`).
+
+**Regras aprendidas:**
+1. **Padrão Unificado de Match:**
+   - O modal de vínculo exibe metadados ricos: NSU, bandeira e modalidade para cartões, e contraparte/banco para PIX.
+   - Os candidatos a OS são ordenados pelo score de similaridade e menor diferença de saldo, exibindo badges `Match Nome + Valor`, `Match por Nome` ou `Match por Valor`.
+
+## [2026-08-31] — [Feature ID: 320-persistencia-contas-manual-e-gestao-de-despesas]
+
+**Contexto:** Adição do `EditBillModal` dentro de `ContasManualModal.tsx` para edição rápida de despesas com botão `Pencil`, e badge visual `Ajustado` no card de *Contas (Manual)* do `ResumoDiaPanel.tsx`.
+
+## [2026-08-27] — [Feature ID: 310-novo-wizard-importacao-e-conciliacao-passo-a-passo]
 
 **Contexto:** Nova esteira modular de importação e fechamento diário em `UnifiedReconciliationWizard.tsx`, estruturada em 5 etapas visuais (`0. Ingestão Global`, `1. Pagamentos sem OS`, `2. Justificativas`, `3. Cofre & Daniel`, `4. Fechamento Final`).
 

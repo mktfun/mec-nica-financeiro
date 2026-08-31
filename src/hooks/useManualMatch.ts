@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 
 export interface StoreOsCandidate {
@@ -10,21 +10,25 @@ export interface StoreOsCandidate {
   total_value: number;
   paid_value: number;
   pix_transfer_value: number;
+  credit_value?: number;
+  debit_value?: number;
+  cash_value?: number;
+  open_balance: number;
   payment_method: string;
   status: string;
   date: string;
   matched_ofx_id?: string | null;
 }
 
-export function useAvailableStoreOs(storeId: string, date?: string) {
+export function useAvailableStoreOs(storeId: string, date?: string, matchType: 'pix' | 'rede' | 'all' = 'all') {
   return useQuery<StoreOsCandidate[]>({
-    queryKey: ['available_store_os', storeId, date],
+    queryKey: ['available_store_os', storeId, date, matchType],
     queryFn: async () => {
       if (!storeId) return [];
 
       const candidatesMap = new Map<string, StoreOsCandidate>();
 
-      // 1. Busca OSs que JÁ ESTÃO vinculadas em ofx_transactions para esta loja
+      // 1. Busca OSs que JÁ ESTÃO vinculadas em ofx_transactions ou pos_transactions para esta loja
       const { data: linkedOfx } = await supabase
         .from('ofx_transactions')
         .select('matched_os_number')
@@ -45,7 +49,7 @@ export function useAvailableStoreOs(storeId: string, date?: string) {
           .eq('store_id', storeId);
 
         if (date) {
-          patioQuery = patioQuery.lte('opened_at', `${date}T23:59:59`);
+          patioQuery = patioQuery.lte('opened_at', date + 'T23:59:59');
         }
 
         const { data: patioData } = await patioQuery;
@@ -55,23 +59,20 @@ export function useAvailableStoreOs(storeId: string, date?: string) {
             const num = String(row.os_number || '').trim();
             if (!num) return;
 
-            // Bloqueia se já estiver vinculada a outro PIX
-            if (alreadyLinkedSet.has(num)) return;
-
             const totalVal = Number(row.total_value || 0);
             const paidVal = Number(row.paid_value || 0);
             const pixVal = Number(row.pix_transfer_value || 0);
+            const creditVal = Number(row.credit_value || 0);
+            const debitVal = Number(row.debit_value || 0);
+            const cashVal = Number(row.cash_value || 0);
             const openVal = Math.max(0, totalVal - paidVal);
             const paymentMethodStr = String(row.payment_method || '').toUpperCase();
 
-            // Bloqueia OSs puramente em Cartão ou Dinheiro sem saldo em aberto
-            const isPureCardOrCash = (paymentMethodStr.includes('CREDITO') || paymentMethodStr.includes('DEBITO') || paymentMethodStr.includes('DINHEIRO') || paymentMethodStr.includes('ESPECIE')) &&
-              !paymentMethodStr.includes('PIX') && !paymentMethodStr.includes('TRANSF') && pixVal === 0 && openVal === 0;
-
-            if (isPureCardOrCash) return;
-
-            const hasPixRelevance = pixVal > 0 || paymentMethodStr.includes('PIX') || paymentMethodStr.includes('TRANSF') || openVal > 0;
-            if (!hasPixRelevance) return;
+            if (matchType === 'pix') {
+              const isPureCardOrCash = (paymentMethodStr.includes('CREDITO') || paymentMethodStr.includes('DEBITO') || paymentMethodStr.includes('DINHEIRO')) &&
+                !paymentMethodStr.includes('PIX') && !paymentMethodStr.includes('TRANSF') && pixVal === 0 && openVal === 0;
+              if (isPureCardOrCash) return;
+            }
 
             candidatesMap.set(num, {
               id: row.id,
@@ -81,10 +82,14 @@ export function useAvailableStoreOs(storeId: string, date?: string) {
               total_value: totalVal,
               paid_value: paidVal,
               pix_transfer_value: pixVal,
+              credit_value: creditVal,
+              debit_value: debitVal,
+              cash_value: cashVal,
+              open_balance: openVal,
               payment_method: row.payment_method || (pixVal > 0 ? 'PIX' : (openVal > 0 ? 'Em Aberto' : 'Outros')),
               status: row.status || 'PENDENTE',
               date: row.last_payment_date || row.closed_at || row.opened_at || date || '',
-              matched_ofx_id: null,
+              matched_ofx_id: row.matched_ofx_id || null,
             });
           });
         }
@@ -92,7 +97,7 @@ export function useAvailableStoreOs(storeId: string, date?: string) {
         console.warn('Aviso ao consultar patio_os:', e);
       }
 
-      // 3. Complementa com estoque_os_pendente (apenas da mesma loja e não vinculadas)
+      // 3. Complementa com estoque_os_pendente
       try {
         const { data: pendenteData } = await supabase
           .from('estoque_os_pendente')
@@ -102,18 +107,15 @@ export function useAvailableStoreOs(storeId: string, date?: string) {
         if (pendenteData) {
           pendenteData.forEach((row: any) => {
             const num = String(row.os_number || row.numero_os || '').trim();
-            if (!num || alreadyLinkedSet.has(num) || candidatesMap.has(num)) return;
+            if (!num || candidatesMap.has(num)) return;
 
             const totalVal = Number(row.total_value || row.valor_os || 0);
             const paidVal = Number(row.paid_value || row.valor_pago || 0);
             const pixVal = Number(row.pix_transfer_value || 0);
+            const creditVal = Number(row.credit_value || 0);
+            const debitVal = Number(row.debit_value || 0);
+            const cashVal = Number(row.cash_value || 0);
             const openVal = Math.max(0, totalVal - paidVal);
-            const paymentMethodStr = String(row.payment_method || row.forma_pagamento || '').toUpperCase();
-
-            const isPureCardOrCash = (paymentMethodStr.includes('CREDITO') || paymentMethodStr.includes('DEBITO') || paymentMethodStr.includes('DINHEIRO') || paymentMethodStr.includes('ESPECIE')) &&
-              !paymentMethodStr.includes('PIX') && !paymentMethodStr.includes('TRANSF') && pixVal === 0 && openVal === 0;
-
-            if (isPureCardOrCash) return;
 
             candidatesMap.set(num, {
               id: row.id,
@@ -123,6 +125,10 @@ export function useAvailableStoreOs(storeId: string, date?: string) {
               total_value: totalVal,
               paid_value: paidVal,
               pix_transfer_value: pixVal,
+              credit_value: creditVal,
+              debit_value: debitVal,
+              cash_value: cashVal,
+              open_balance: openVal,
               payment_method: row.payment_method || row.forma_pagamento || (pixVal > 0 ? 'PIX' : 'Em Aberto'),
               status: row.status || 'PENDENTE',
               date: row.date || row.data || date || '',
@@ -145,48 +151,42 @@ export function useManualMatch() {
   const [error, setError] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
-  const linkTransactionToOs = async (transactionId: string, osNumber: string, storeId?: string) => {
+  const linkTransactionToOs = async (
+    transactionId: string, 
+    osNumber: string, 
+    storeId?: string,
+    source: 'ofx' | 'rede' = 'ofx',
+    amount?: number
+  ) => {
     setLoading(true);
     setError(null);
     try {
-      // 1. Atualiza em transactions
-      await supabase
-        .from('transactions')
-        .update({
-          os_number: osNumber,
-          status: 'completed',
-          match_status: 'MATCHED',
-        })
-        .eq('id', transactionId);
-
-      // 2. Atualiza em ofx_transactions
-      await supabase
-        .from('ofx_transactions')
-        .update({
-          matched_os_number: osNumber,
-        })
-        .eq('id', transactionId);
-
-      // 3. Atualiza em estoque_os_pendente e patio_os
-      if (osNumber) {
-        await supabase
-          .from('estoque_os_pendente')
-          .update({ matched_ofx_id: transactionId, status: 'PAGO' })
-          .eq('os_number', osNumber);
-
-        await supabase
-          .from('patio_os')
-          .update({ matched_ofx_id: transactionId, status: 'PAGO' })
-          .eq('os_number', osNumber);
+      if (source === 'rede') {
+        const { data, error: rpcErr } = await supabase.rpc('link_manual_rede_to_os', {
+          p_pos_id: transactionId,
+          p_os_number: osNumber,
+          p_store_id: storeId || null,
+          p_amount: amount || null
+        });
+        if (rpcErr) throw rpcErr;
+      } else {
+        const { data, error: rpcErr } = await supabase.rpc('link_manual_pix_to_os', {
+          p_ofx_id: transactionId,
+          p_os_number: osNumber,
+          p_store_id: storeId || null,
+          p_amount: amount || null
+        });
+        if (rpcErr) throw rpcErr;
       }
 
-      // Invalida todos os caches de conciliação
-      queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] });
-      queryClient.invalidateQueries({ queryKey: ['available_store_os'] });
-      queryClient.invalidateQueries({ queryKey: ['justified_transactions'] });
-      queryClient.invalidateQueries({ queryKey: ['daily_reconciliation_summary'] });
-      queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
-      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      await queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] });
+      await queryClient.invalidateQueries({ queryKey: ['available_store_os'] });
+      await queryClient.invalidateQueries({ queryKey: ['justified_transactions'] });
+      await queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+      await queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
+      await queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      await queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
+      await queryClient.invalidateQueries({ queryKey: ['patio-os'] });
 
       return { success: true };
     } catch (err: any) {
@@ -198,47 +198,29 @@ export function useManualMatch() {
     }
   };
 
-  const unlinkTransaction = async (transactionId: string, osNumber?: string) => {
+  const unlinkTransaction = async (
+    transactionId: string, 
+    osNumber?: string,
+    source: 'ofx' | 'rede' = 'ofx'
+  ) => {
     setLoading(true);
     setError(null);
     try {
-      // 1. Limpa em transactions
-      await supabase
-        .from('transactions')
-        .update({
-          os_number: null,
-          match_status: 'UNMATCHED',
-        })
-        .eq('id', transactionId);
+      const { error: rpcErr } = await supabase.rpc('unlink_manual_os_match', {
+        p_transaction_type: source,
+        p_transaction_id: transactionId,
+        p_os_number: osNumber || null
+      });
+      if (rpcErr) throw rpcErr;
 
-      // 2. Limpa em ofx_transactions
-      await supabase
-        .from('ofx_transactions')
-        .update({
-          matched_os_number: null,
-        })
-        .eq('id', transactionId);
-
-      // 3. Limpa em estoque_os_pendente / patio_os se informado
-      if (osNumber) {
-        await supabase
-          .from('estoque_os_pendente')
-          .update({ matched_ofx_id: null, status: 'PENDENTE' })
-          .eq('os_number', osNumber);
-
-        await supabase
-          .from('patio_os')
-          .update({ matched_ofx_id: null, status: 'PENDENTE' })
-          .eq('os_number', osNumber);
-      }
-
-      // Invalida todos os caches de conciliação
-      queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] });
-      queryClient.invalidateQueries({ queryKey: ['available_store_os'] });
-      queryClient.invalidateQueries({ queryKey: ['justified_transactions'] });
-      queryClient.invalidateQueries({ queryKey: ['daily_reconciliation_summary'] });
-      queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
-      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      await queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] });
+      await queryClient.invalidateQueries({ queryKey: ['available_store_os'] });
+      await queryClient.invalidateQueries({ queryKey: ['justified_transactions'] });
+      await queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+      await queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
+      await queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      await queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
+      await queryClient.invalidateQueries({ queryKey: ['patio-os'] });
 
       return { success: true };
     } catch (err: any) {

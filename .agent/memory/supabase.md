@@ -1,3 +1,21 @@
+## [2026-08-31] — [Feature ID: 321-motor-automatch-ia-e-unificacao-vinculo-pix-rede-wizard]
+
+**Contexto:** Criação das RPCs atômicas `public.link_manual_pix_to_os`, `public.link_manual_rede_to_os` e `public.unlink_manual_os_match` com isolamento estrito por `store_id` e row-locking (`FOR UPDATE`), permitindo que a conciliação manual de PIX e vendas da Rede atualize OSs sem inflar o faturamento ou causar colisão entre filiais.
+
+**Regra aprendida:**
+1. **RPCs Atômicas de Vínculo:**
+   - `link_manual_pix_to_os`: Executa o matching entre OFX e OS, atualiza `ofx_transactions.matched_os_number`, `patio_os.matched_ofx_id` e baixa o saldo se a OS estiver em aberto.
+   - `link_manual_rede_to_os`: Executa o matching entre maquininha e OS, atualiza `pos_transactions.matched_os_number` e insere o par em `conciliation_matches`.
+   - `unlink_manual_os_match`: Desfaz com segurança qualquer amarração manual restaurando o status da OS para `'UNMATCHED'`.
+
+## [2026-08-31] — [Feature ID: 320-persistencia-contas-manual-e-gestao-de-despesas]
+
+**Contexto:** Criação da RPC `public.update_manual_bill` e atualização da RPC `public.get_daily_reconciliation_summary` para respeitar a precedência do ajuste manual de contas em `daily_snapshots.metadata->>'contas_manual_override'`.
+
+**Regra aprendida:**
+1. **Precedência do Contas Manual:**
+   - A RPC verifica se há `metadata->>'contas_manual_override'`. Se presente, utiliza o valor ajustado pelo operador sem reverter para o somatório bruto da planilha (`daily_manual_bills`).
+
 ## [2026-08-31] — [Feature ID: 319-correcao-caixa-atual-fluxo-e-rpc-conciliacao]
 
 **Contexto:** Atualização das RPCs `public.get_daily_reconciliation_summary`, `public.get_dashboard_metrics` e `public.calculate_daily_conciliation` para calcular o Caixa Atual determinística e dinamicamente nos 5 pilares: `(v_total_saldo_banco_positivo + v_dinheiro_mp + v_a_receber + v_na_loja_os) - v_saldo_negativo_itau`.

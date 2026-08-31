@@ -138,6 +138,9 @@ export interface DailyReconciliationSummary {
   contas_base?: number;
   contas_extras?: number;
   contas_manual: number;
+  contas_override?: number | null;
+  has_contas_override?: boolean;
+  total_bills?: number;
   juros_rede: number;
   devolucoes_rede?: number;
   ofx_out?: number;

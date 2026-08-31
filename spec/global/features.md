@@ -1,4 +1,20 @@
-﻿## [2026-08-30] — Feature 314: Teste E2E e Fechamento da Conciliação com Arquivos Reais de 27-08
+## [2026-08-31] — Feature 321: Inversão do Pipeline de Ingestão com Motor Automático + IA e Unificação do Vínculo Manual PIX & REDE
+- **Inversão da Esteira no `CentralImportWizard.tsx`:**
+  - O botão de confirmação do Preview executa imediatamente a persistência no banco (`patio_os`, `pos_transactions`, `ofx_transactions`, `daily_manual_bills`), as RPCs `auto_match_transactions`, `auto_match_saidas`, `calculate_daily_conciliation` e a auditoria de IA (Gemini).
+  - O Step 1 de pagamentos não registrados recebe e exibe apenas as transações que continuaram genuinamente órfãs / sem vínculo.
+- **Novas RPCs Atômicas (`20260831000007_create_link_manual_pix_and_rede_rpcs.sql`):**
+  - `public.link_manual_pix_to_os`: Vincula atômica e seguramente depósitos PIX a OSs do pátio com isolamento por `store_id`.
+  - `public.link_manual_rede_to_os`: Vincula vendas de cartão da Rede a OSs da mesma loja, abatendo saldo sem duplicar faturamento.
+  - `public.unlink_manual_os_match`: Desfaz o vínculo restaurando o status da OS e das transações.
+- **Unificação do Vínculo Manual (`ManualMatchOsModal.tsx` & `useManualMatch.ts`):**
+  - Suporte completo a transações REDE (com NSU, autorização, modalidade) e PIX, com ranking inteligente por Match Score (100, 80, 60) e isolamento por loja.
+
+## [2026-08-31] — Feature 320: Persistência de Contas Manual e Gestão de Despesas End-to-End
+- **RPC `public.update_manual_bill` (`20260831000006_fix_contas_manual_override_and_management.sql`):** Atualização atômica de despesas (valor, fornecedor, filial, categoria DRE e toggle contábil).
+- **Precedência Canônica de Contas (`get_daily_reconciliation_summary`):** Respeita `daily_snapshots.metadata->>'contas_manual_override'` sem reverter para a soma bruta da planilha.
+- **Edição em Tempo Real (`ContasManualModal.tsx` & `ResumoDiaPanel.tsx`):** Botão de edição em cada linha de conta a pagar (`EditBillModal`) e badge `Ajustado` no card de Contas.
+
+## [2026-08-30] — Feature 314: Teste E2E e Fechamento da Conciliação com Arquivos Reais de 27-08
 - **Automação Playwright Ponta a Ponta (`scripts/run-e2e-conciliacao-2708.ts`):**
   - Ingestão automatizada de 27 arquivos reais de `C:\Users\admin\Desktop\conciliacao\27-08` (10 relatórios de OS, 10 OFX Itaú, 5 Rede, 1 Contas a Pagar e 1 PDF).
   - Execução sequencial dos 8 steps do Wizard no `localhost:8080/importacoes`:

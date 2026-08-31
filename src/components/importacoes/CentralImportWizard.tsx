@@ -529,7 +529,67 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     }
   });
 
-  const handleConfirm = async () => {
+  const fetchRealUnmatchedTransactions = async (tDate: string): Promise<PendingUnmatchedTransaction[]> => {
+    const storeNameMap = new Map<string, string>();
+    stores.forEach(s => storeNameMap.set(s.id, s.name));
+
+    const unmatched: PendingUnmatchedTransaction[] = [];
+
+    // 1. OFX PIX / Depósitos sem OS
+    const { data: ofxTxs } = await supabase
+      .from('ofx_transactions')
+      .select('id, store_id, amount, target_date, occurred_at, title, counterpart_name, type')
+      .eq('target_date', tDate)
+      .eq('type', 'in')
+      .is('matched_os_number', null);
+
+    (ofxTxs || []).forEach((t: any) => {
+      const titleStr = String(t.title || '').toUpperCase();
+      if (titleStr.includes('REDE') || titleStr.includes('CIELO') || titleStr.includes('STONE') || titleStr.includes('PAGSEGURO')) {
+        return;
+      }
+      const sid = t.store_id || '';
+      unmatched.push({
+        id: t.id,
+        source: 'ofx_pix',
+        storeId: sid,
+        storeName: storeNameMap.get(sid) || 'Filial',
+        date: t.target_date || tDate,
+        description: t.counterpart_name || t.title || 'Depósito Bancário / PIX',
+        paymentMethod: 'PIX',
+        amount: Math.abs(Number(t.amount || 0)),
+        status: 'pendente'
+      });
+    });
+
+    // 2. Transações REDE sem OS
+    const { data: posTxs } = await supabase
+      .from('pos_transactions')
+      .select('id, store_id, net_amount, gross_amount, target_date, occurred_at, method, card_brand, nsu, authorization_code')
+      .eq('target_date', tDate)
+      .is('matched_os_number', null);
+
+    (posTxs || []).forEach((t: any) => {
+      const sid = t.store_id || '';
+      unmatched.push({
+        id: t.id,
+        source: 'rede',
+        storeId: sid,
+        storeName: storeNameMap.get(sid) || 'Filial',
+        date: t.target_date || tDate,
+        description: `Cartão ${t.card_brand || ''} ${t.method || ''} (NSU: ${t.nsu || 'S/N'})`.trim(),
+        paymentMethod: t.method || 'CARTAO',
+        amount: Math.abs(Number(t.net_amount || t.gross_amount || 0)),
+        status: 'pendente',
+        nsu: t.nsu,
+        authorizationCode: t.authorization_code
+      });
+    });
+
+    return unmatched;
+  };
+
+  const handleConfirm = async (advanceToWizard: boolean = false) => {
     if (!canImport) {
       toast.error('Você não possui permissão para importar e gravar dados.');
       return;
@@ -1453,7 +1513,6 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       updateStage(0, 'success', 'OSs e Recebíveis salvos!');
       updateStage(1, 'success', 'Maquininhas processadas!');
       updateStage(2, 'success', 'OFX conciliado!');
-      updateStage(3, 'success', 'Conciliação finalizada!');
       setImportStages(prev => prev.map(s => ({ 
         ...s, 
         status: s.id === 'auto_healing' ? s.status : 'success', 
@@ -1461,6 +1520,18 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       })));
       setSaveFinished(true);
 
+      if (advanceToWizard) {
+        await new Promise(r => setTimeout(r, 600));
+        const realUnmatched = await fetchRealUnmatchedTransactions(targetDate);
+        setUnmatchedTransactions(realUnmatched);
+        if (realUnmatched.length > 0) {
+          toast.info(`Automações e IA concluídas! ${realUnmatched.length} transação(ões) pendentes para revisão manual.`);
+          setStep(4);
+        } else {
+          toast.success('🎉 100% das transações e OSs foram conciliadas automaticamente pelo motor e IA!');
+          setStep(5);
+        }
+      }
     } catch(e: any) {
       console.error(e);
       setImportStages(prev => prev.map(s => s.status === 'running' ? { ...s, status: 'error' } : s));
@@ -2305,7 +2376,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
               <div className="flex items-center gap-3">
                 <Button
-                  onClick={handleConfirm}
+                  onClick={() => handleConfirm(false)}
                   disabled={isSaving}
                   variant="outline"
                   className="py-3 px-5 text-sm font-medium rounded-xl border-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--bg-surface-elevated)] flex items-center gap-2"
@@ -2314,21 +2385,12 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                   Gravar Direto (sem Wizard)
                 </Button>
                 <Button
-                  onClick={() => {
-                    const matchResult = executeAutoMatchingEngine(results, mapping, stores, targetDate);
-                    setUnmatchedTransactions(matchResult.unmatchedTransactions);
-                    setAutoMatchedCount(matchResult.matchedCount);
-                    setResolvedMatches(matchResult.resolvedMatches);
-                    if (matchResult.matchedCount > 0) {
-                      toast.success(`${matchResult.matchedCount} transação(ões) casadas automaticamente com as OSs!`);
-                    }
-                    setStep(4);
-                  }}
+                  onClick={() => handleConfirm(true)}
                   disabled={isSaving}
-                  className="py-4 px-8 text-base font-semibold rounded-xl bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 shadow-[0_4px_20px_rgba(var(--color-primary-rgb),0.4)] flex items-center gap-2"
+                  className="py-4 px-8 text-base font-semibold rounded-xl bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 shadow-[0_4px_20px_rgba(var(--color-primary-rgb),0.4)] flex items-center gap-2 cursor-pointer"
                 >
-                  <ArrowRight size={18} />
-                  Avançar para Conciliação →
+                  {isSaving ? <LoadingSpinner size="xs" text="" /> : <ArrowRight size={18} />}
+                  Processar e Conciliar com IA →
                 </Button>
               </div>
             </div>
@@ -2396,7 +2458,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
               manualInputs={manualInputs}
               missingOsList={missingOsList}
               isSaving={isSaving}
-              onFinish={handleConfirm}
+              onFinish={() => handleConfirm(false)}
               onBack={() => setStep(6)}
             />
           </motion.div>

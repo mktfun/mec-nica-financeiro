@@ -21,7 +21,8 @@ import {
   Link,
   Sparkles,
   Check,
-  X
+  X,
+  Pencil
 } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
@@ -130,6 +131,53 @@ export function ContasManualModal({
     },
     onError: (err: any) => {
       toast.error(err.message || 'Erro ao adicionar despesa.');
+    }
+  });
+
+  // Estado para modal de edição de despesa
+  const [editingBill, setEditingBill] = useState<any | null>(null);
+
+  // Mutação para atualizar despesa completa (RPC update_manual_bill)
+  const updateBillMutation = useMutation({
+    mutationFn: async ({
+      id,
+      title,
+      amount,
+      category,
+      storeId,
+      description,
+      contabilizarSubtotal
+    }: {
+      id: string;
+      title: string;
+      amount: number;
+      category: string;
+      storeId: string | null;
+      description: string | null;
+      contabilizarSubtotal: boolean;
+    }) => {
+      const { data, error } = await supabase.rpc('update_manual_bill', {
+        p_bill_id: id,
+        p_title: title,
+        p_amount: amount,
+        p_category: category,
+        p_store_id: storeId || '',
+        p_description: description,
+        p_contabilizar_no_subtotal: contabilizarSubtotal
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      toast.success('Despesa atualizada com sucesso!');
+      setEditingBill(null);
+      queryClient.invalidateQueries({ queryKey: ['daily-manual-bills', targetDate] });
+      queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
+      queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
+    },
+    onError: (err: any) => {
+      toast.error(`Erro ao atualizar despesa: ${err.message}`);
     }
   });
 
@@ -448,13 +496,24 @@ export function ContasManualModal({
                             </td>
 
                             <td className="py-2.5 px-3 text-center">
-                              <button
-                                onClick={() => deleteBillMutation.mutate(b.id)}
-                                className="text-zinc-500 hover:text-rose-400 p-1 rounded hover:bg-rose-500/10 transition-colors cursor-pointer"
-                                title="Excluir conta"
-                              >
-                                <Trash2 size={13} />
-                              </button>
+                              <div className="flex items-center justify-center gap-1">
+                                <button
+                                  type="button"
+                                  onClick={() => setEditingBill(b)}
+                                  className="text-zinc-500 hover:text-amber-400 p-1 rounded hover:bg-amber-500/10 transition-colors cursor-pointer"
+                                  title="Editar dados da conta"
+                                >
+                                  <Pencil size={13} />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => deleteBillMutation.mutate(b.id)}
+                                  className="text-zinc-500 hover:text-rose-400 p-1 rounded hover:bg-rose-500/10 transition-colors cursor-pointer"
+                                  title="Excluir conta"
+                                >
+                                  <Trash2 size={13} />
+                                </button>
+                              </div>
                             </td>
                           </tr>
                         );
@@ -662,6 +721,137 @@ export function ContasManualModal({
           </div>
         )}
       </div>
+
+      {/* Modal de Edição Completa da Despesa */}
+      {editingBill && (
+        <Modal
+          isOpen={!!editingBill}
+          onClose={() => setEditingBill(null)}
+          title={`Editar Despesa: ${editingBill.recipient_name || editingBill.title}`}
+          size="md"
+        >
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              const titleVal = (formData.get('title') as string) || '';
+              const rawAmount = (formData.get('amount') as string) || '0';
+              const numAmount = parseFloat(rawAmount.replace(/\./g, '').replace(',', '.'));
+              const categoryVal = (formData.get('category') as string) || 'outros';
+              const storeIdVal = (formData.get('storeId') as string) || null;
+              const descriptionVal = (formData.get('description') as string) || null;
+              const contabilizar = formData.get('contabilizar') === 'on';
+
+              if (isNaN(numAmount) || numAmount <= 0) {
+                toast.error('Informe um valor válido maior que zero.');
+                return;
+              }
+
+              updateBillMutation.mutate({
+                id: editingBill.id,
+                title: titleVal,
+                amount: numAmount,
+                category: categoryVal,
+                storeId: storeIdVal,
+                description: descriptionVal,
+                contabilizarSubtotal: contabilizar
+              });
+            }}
+            className="space-y-4 text-xs"
+          >
+            <div>
+              <label className="text-[10px] text-zinc-400 mb-1 block font-semibold">Nome / Fornecedor *</label>
+              <input
+                name="title"
+                defaultValue={editingBill.recipient_name || editingBill.title}
+                required
+                className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-100 focus:outline-none focus:border-indigo-500"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-[10px] text-zinc-400 mb-1 block font-semibold">Valor (R$) *</label>
+                <input
+                  name="amount"
+                  defaultValue={Number(editingBill.amount).toFixed(2).replace('.', ',')}
+                  required
+                  className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-100 font-mono font-bold focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] text-zinc-400 mb-1 block font-semibold">Filial</label>
+                <select
+                  name="storeId"
+                  defaultValue={editingBill.store_id || ''}
+                  className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-100 focus:outline-none focus:border-indigo-500"
+                >
+                  <option value="">Matriz / Geral</option>
+                  {stores.map(st => (
+                    <option key={st.id} value={st.id}>{st.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-[10px] text-zinc-400 mb-1 block font-semibold">Categoria DRE</label>
+                <select
+                  name="category"
+                  defaultValue={editingBill.category || 'outros'}
+                  className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-100 focus:outline-none focus:border-indigo-500"
+                >
+                  {Object.entries(CATEGORY_LABELS).map(([k, label]) => (
+                    <option key={k} value={k}>{label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-center pt-5">
+                <label className="flex items-center gap-2 text-zinc-300 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="contabilizar"
+                    defaultChecked={editingBill.contabilizar_no_subtotal !== false}
+                    className="rounded bg-zinc-900 border-zinc-700 text-indigo-500 cursor-pointer"
+                  />
+                  <span className="text-xs">Somar no Subtotal (Fechamento)</span>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-[10px] text-zinc-400 mb-1 block font-semibold">Observações / Descrição</label>
+              <textarea
+                name="description"
+                defaultValue={editingBill.description || ''}
+                rows={2}
+                className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-100 focus:outline-none focus:border-indigo-500"
+              />
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-3 border-t border-zinc-800">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setEditingBill(null)}
+                className="text-xs py-1.5 px-3"
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                disabled={updateBillMutation.isPending}
+                className="text-xs py-1.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold"
+              >
+                {updateBillMutation.isPending ? 'Salvando...' : 'Salvar Alterações'}
+              </Button>
+            </div>
+          </form>
+        </Modal>
+      )}
 
       {/* Modal de Sócios e Entidades */}
       <IntercompanyEntitiesModal
