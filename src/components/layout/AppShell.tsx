@@ -1,22 +1,13 @@
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 import { Sidebar } from "./Sidebar";
 import { BottomNav } from "./BottomNav";
 import { TopBar } from "./TopBar";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useSession } from "@/hooks/useAuth";
-import { useRouter } from "@tanstack/react-router";
+import { Navigate } from "@tanstack/react-router";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const session = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    // session === undefined → loading
-    // session === null     → não autenticado → redireciona
-    if (session === null) {
-      router.navigate({ to: '/login' });
-    }
-  }, [session, router]);
 
   // Loading: aguardando verificação de sessão
   if (session === undefined) {
@@ -27,8 +18,10 @@ export function AppShell({ children }: { children: ReactNode }) {
     );
   }
 
-  // Não autenticado — redirect em andamento, não renderiza nada
-  if (session === null) return null;
+  // Não autenticado — redireciona imediatamente para o login
+  if (session === null) {
+    return <Navigate to="/login" replace />;
+  }
 
   return (
     <div className="min-h-screen bg-[var(--bg-canvas)] text-[var(--text-primary)] font-body selection:bg-[var(--color-primary)] selection:text-white flex overflow-hidden">

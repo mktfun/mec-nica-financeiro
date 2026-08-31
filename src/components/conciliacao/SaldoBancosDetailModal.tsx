@@ -17,6 +17,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { StoreReconciliationSummary } from '@/hooks/useBackendConciliacao';
 import { toast } from 'sonner';
+import { BaixaDinheiroModal } from './BaixaDinheiroModal';
 
 interface SaldoBancosDetailModalProps {
   isOpen: boolean;
@@ -32,7 +33,7 @@ export function SaldoBancosDetailModal({
   stores = []
 }: SaldoBancosDetailModalProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [depositingId, setDepositingId] = useState<string | null>(null);
+  const [baixaModalStore, setBaixaModalStore] = useState<{ storeId: string; storeName: string; amount: number } | null>(null);
   const queryClient = useQueryClient();
 
   // Fallback via RPC se stores vier vazio
@@ -46,33 +47,6 @@ export function SaldoBancosDetailModal({
   });
 
   const effectiveStores = stores.length > 0 ? stores : (fallbackSummary?.stores || []);
-
-  // Mutação para dar baixa em dinheiro no cofre
-  const clearCashMutation = useMutation({
-    mutationFn: async (vaultId: string) => {
-      const { error } = await supabase
-        .from('store_cash_vault')
-        .update({
-          status: 'depositado',
-          deposited_at: new Date().toISOString()
-        })
-        .eq('id', vaultId);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      toast.success('Baixa de depósito realizada com sucesso! O dinheiro foi transferido para o banco.');
-      queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
-      queryClient.invalidateQueries({ queryKey: ['saldo-bancos-modal-summary'] });
-      queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
-      queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
-      setDepositingId(null);
-    },
-    onError: (err: any) => {
-      toast.error('Erro ao dar baixa: ' + (err.message || err));
-      setDepositingId(null);
-    }
-  });
 
   // Consome 100% os dados calculados diretamente no Postgres/RPC
   const rows = useMemo(() => {
@@ -247,21 +221,16 @@ export function SaldoBancosDetailModal({
                         <span className="font-mono font-semibold text-amber-300">
                           {formatCurrency(row.dinheiroLoja)}
                         </span>
-                        {row.activeVaultEntry ? (
-                          <Button
-                            size="sm"
-                            variant="secondary"
-                            onClick={() => handleDarBaixa(row.activeVaultEntry.id, row.storeName, row.dinheiroLoja)}
-                            disabled={depositingId === row.activeVaultEntry.id}
-                            className="h-6 px-2 text-[10px] bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border-amber-500/40 gap-1"
-                            title="Clique para confirmar o depósito deste valor no banco"
-                          >
-                            <ArrowDownToLine className="w-3 h-3" />
-                            {depositingId === row.activeVaultEntry.id ? 'Baixando...' : 'Dar Baixa'}
-                          </Button>
-                        ) : (
-                          <span className="text-[10px] text-amber-400 font-medium">No Cofre</span>
-                        )}
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => setBaixaModalStore({ storeId: row.storeId, storeName: row.storeName, amount: row.dinheiroLoja })}
+                          className="h-6 px-2 text-[10px] bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border-amber-500/40 gap-1 cursor-pointer"
+                          title="Clique para selecionar as OSs e confirmar o depósito deste valor no banco"
+                        >
+                          <ArrowDownToLine className="w-3 h-3" />
+                          Dar Baixa
+                        </Button>
                       </div>
                     ) : (
                       <span className="text-[var(--text-tertiary)]">-</span>
@@ -302,6 +271,22 @@ export function SaldoBancosDetailModal({
           </table>
         </div>
       </div>
+
+      {baixaModalStore && (
+        <BaixaDinheiroModal
+          isOpen={!!baixaModalStore}
+          onClose={() => setBaixaModalStore(null)}
+          storeId={baixaModalStore.storeId}
+          storeName={baixaModalStore.storeName}
+          targetDate={targetDate}
+          totalDinheiroCofre={baixaModalStore.amount}
+          onSuccess={() => {
+            queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+            queryClient.invalidateQueries({ queryKey: ['saldo-bancos-modal-summary'] });
+            queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
+          }}
+        />
+      )}
     </Modal>
   );
 }

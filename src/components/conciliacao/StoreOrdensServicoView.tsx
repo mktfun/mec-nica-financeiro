@@ -172,7 +172,7 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
 
     setIsSubmittingNew(true);
     try {
-      const { error } = await supabase
+      const { data: insertedOs, error } = await supabase
         .from('patio_os')
         .insert({
           store_id: storeId,
@@ -184,9 +184,57 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
           status: newStatus,
           payment_method: newMethod,
           opened_at: `${date}T12:00:00Z`
-        });
+        })
+        .select()
+        .single();
 
       if (error) throw error;
+
+      // Se forma de pagamento for Dinheiro e houve valor pago, registra no cofre da loja
+      if (newMethod === 'Dinheiro' && newPaid > 0) {
+        await supabase
+          .from('store_cash_vault')
+          .insert({
+            store_id: storeId,
+            amount: newPaid,
+            description: `Recebimento Dinheiro OS #${newOsNumber.trim()}`,
+            entry_date: date,
+            status: 'em_transito',
+            os_number_ref: newOsNumber.trim(),
+            patio_os_id: insertedOs?.id
+          });
+      }
+
+      // Sincronização Atômica imediata de reconciliations e daily_snapshots
+      const { data: allPatio } = await supabase
+        .from('patio_os')
+        .select('*')
+        .lte('opened_at', `${date}T23:59:59`);
+
+      if (allPatio) {
+        const activeList = allPatio.filter((os: any) => {
+          const isClosed = ['finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado'].includes(String(os.status).toLowerCase());
+          const saldo = Number(os.total_value || 0) - Number(os.paid_value || 0);
+          return !isClosed && saldo > 0;
+        });
+
+        const newTotalPatio = activeList.reduce((acc: number, os: any) => acc + (Number(os.total_value || 0) - Number(os.paid_value || 0)), 0);
+
+        await supabase
+          .from('daily_snapshots')
+          .update({ total_patio: newTotalPatio })
+          .eq('date', date);
+
+        const storeTotal = activeList
+          .filter((os: any) => os.store_id === storeId)
+          .reduce((acc: number, os: any) => acc + (Number(os.total_value || 0) - Number(os.paid_value || 0)), 0);
+
+        await supabase
+          .from('reconciliations')
+          .update({ na_loja_os: storeTotal })
+          .eq('date', date)
+          .eq('store_id', storeId);
+      }
 
       toast.success(`OS #${newOsNumber} cadastrada com sucesso!`);
       setIsAddModalOpen(false);
@@ -202,7 +250,9 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
         queryClient.invalidateQueries({ queryKey: ['daily_reconciliation_summary'] }),
         queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] }),
         queryClient.invalidateQueries({ queryKey: ['reconciliations'] }),
-        queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] })
+        queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] }),
+        queryClient.invalidateQueries({ queryKey: ['saldo-bancos-modal-summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] })
       ]);
     } catch (err: any) {
       toast.error(`Erro ao criar OS: ${err.message || err}`);
@@ -588,7 +638,17 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
                   type="number"
                   step="0.01"
                   value={newTotal || ''}
-                  onChange={(e) => setNewTotal(Number(e.target.value))}
+                  onChange={(e) => {
+                    const val = Number(e.target.value);
+                    setNewTotal(val);
+                    if (val > 0 && newPaid >= val) {
+                      setNewStatus('finalizado');
+                    } else if (newPaid > 0 && newPaid < val) {
+                      setNewStatus('pago_parcial');
+                    } else {
+                      setNewStatus('em_aberto');
+                    }
+                  }}
                   placeholder="0,00"
                   className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-zinc-100 focus:outline-none focus:border-emerald-500 font-mono font-bold"
                   required
@@ -603,11 +663,29 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
                   type="number"
                   step="0.01"
                   value={newPaid || ''}
-                  onChange={(e) => setNewPaid(Number(e.target.value))}
+                  onChange={(e) => {
+                    const val = Number(e.target.value);
+                    setNewPaid(val);
+                    if (newTotal > 0 && val >= newTotal) {
+                      setNewStatus('finalizado');
+                    } else if (val > 0 && val < newTotal) {
+                      setNewStatus('pago_parcial');
+                    } else if (val === 0) {
+                      setNewStatus('em_aberto');
+                    }
+                  }}
                   placeholder="0,00"
                   className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-emerald-400 focus:outline-none focus:border-emerald-500 font-mono font-bold"
                 />
               </div>
+            </div>
+
+            {/* Preview do Saldo no Pátio em Tempo Real */}
+            <div className="p-3 bg-zinc-900/80 border border-zinc-800 rounded-xl flex items-center justify-between text-xs font-mono">
+              <span className="text-zinc-400">Saldo no Pátio (Na Loja OS):</span>
+              <span className={`font-bold text-sm ${Math.max(0, newTotal - newPaid) > 0 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                {formatCurrency(Math.max(0, newTotal - newPaid))}
+              </span>
             </div>
 
             <div className="grid grid-cols-2 gap-3">

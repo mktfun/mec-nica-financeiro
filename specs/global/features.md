@@ -1,3 +1,10 @@
+### Spec 319 — Correção do Caixa Atual, Fluxo Contábil e Paridade dos 5 Pilares na RPC
+- **Equação Canônica Inviolável (5 Pilares)**: $\text{Caixa Atual} = (\text{Total Saldo Banco Positivo} + \text{Dinheiro MP} + \text{A Receber} + \text{Na Loja OS}) - \text{Saldo Negativo Itaú}$.
+- **Eliminação de Congelamento Híbrido em Snapshots Fechados**: RPC `get_daily_reconciliation_summary` atualizada para computar deterministicamente o Caixa Atual em ambos os ramais, evitando divergências causadas por atualizações dinâmicas no Pátio ou Cofre.
+- **Sincronização DRY no Dashboard e Conciliação**: `get_dashboard_metrics` e `calculate_daily_conciliation` agora consomem internamente o motor de `get_daily_reconciliation_summary`, garantindo coerência matemática absoluta em toda a aplicação.
+- **Frontend Reativo (`ResumoDiaPanel.tsx`)**: Paridade total na derivação em tempo real e na persistência em `daily_snapshots`.
+- **Migration**: `supabase/migrations/20260831000005_fix_caixa_atual_and_fluxo_contabil.sql`.
+
 ### Spec 316 — Pareamento de Quitações em OSs Finalizadas e Encadeamento Canônico de Odômetro (28/08 -> 31/08)
 - **Motor Auto-Matching (`auto_match_transactions`)**: 3 camadas de pareamento (Regex textual de número de OS em memo/counterpart, matching de saldo devedor em OSs abertas, e matching de quitação em OSs finalizadas na data/últimos 7 dias).
 - **Vínculo Manual Assistido (`Step1UnregisteredPayments.tsx`)**: Exibição de OSs abertas e finalizadas com badges inteligentes e ordenação por proximidade de valor. Vínculo atômico de 1 clique sem alterar saldo de pátio em OSs já quitadas.

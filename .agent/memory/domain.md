@@ -1,3 +1,22 @@
+## [2026-08-31] — [Feature ID: 319-correcao-caixa-atual-fluxo-e-rpc-conciliacao]
+
+**Contexto:** Correção da inconsistência matemática entre os 4 cards de ativos superiores e o Caixa Atual/Fluxo de Caixa na RPC `get_daily_reconciliation_summary` e `get_dashboard_metrics`. Eliminação da leitura estática de `daily_snapshots.caixa_atual` desatualizado no Ramal 1.
+
+**Regra aprendida:**
+1. **Equação Canônica Inviolável dos 5 Pilares:**
+   - $\text{Ativos} = (\text{Total Saldo Banco Positivo} + \text{Dinheiro MP} + \text{A Receber} + \text{Na Loja OS})$
+   - $\text{Caixa Atual} = \text{Ativos} - \text{Cheque Especial (Saldo Negativo Itaú)}$
+   - $\text{Fluxo de Caixa} = \text{Caixa Atual} - \text{Caixa Anterior}$
+   - $\text{Valor Disp. Contas} = \text{Faturamento do Período} - \text{Fluxo de Caixa}$
+   - $\text{Subtotal Contas} = \text{Contas (Manual)} + \text{Juros Rede}$
+   - $\text{Diferença Final} = \text{Valor Disp. Contas} - \text{Subtotal Contas}$
+2. **Eliminação de Congelamento Híbrido em Snapshots Fechados:**
+   - No Ramal 1 da RPC `get_daily_reconciliation_summary`, o `v_caixa_atual` DEVE ser sempre recalculado deterministicamente a partir dos 4 pilares dinâmicos menos o cheque especial, impedindo que edições no Pátio de OS ou Cofre quebrem a igualdade do Caixa Atual.
+3. **Sincronização DRY no Dashboard:**
+   - A RPC `get_dashboard_metrics` consome internamente o motor de `get_daily_reconciliation_summary`, garantindo divergência zero de valores, sinais e tolerâncias entre o Dashboard e a Conciliação.
+
+**Risco identificado / Anti-pattern:** Nunca atribuir `v_caixa_atual := v_snapshot.caixa_atual` no Ramal 1 quando os componentes de ativos foram recalculados dinamicamente das tabelas operacionais.
+
 ## [2026-08-31] — [Feature ID: 316-pareamento-os-finalizada-e-encadeamento-odometro]
 
 **Contexto:** Correção do pareamento automático de pagamentos de quitação em Ordens de Serviço finalizadas, encadeamento canônico do Odômetro Anterior (R$ 920.496,64 de 28/08 para 31/08) e eliminação de duplicidades por linhas de rodapé em planilhas de OS e Contas a Pagar.

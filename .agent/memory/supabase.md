@@ -1,3 +1,13 @@
+## [2026-08-31] — [Feature ID: 319-correcao-caixa-atual-fluxo-e-rpc-conciliacao]
+
+**Contexto:** Atualização das RPCs `public.get_daily_reconciliation_summary`, `public.get_dashboard_metrics` e `public.calculate_daily_conciliation` para calcular o Caixa Atual determinística e dinamicamente nos 5 pilares: `(v_total_saldo_banco_positivo + v_dinheiro_mp + v_a_receber + v_na_loja_os) - v_saldo_negativo_itau`.
+
+**Regra aprendida:**
+1. **Recálculo do Caixa Atual em Snapshots Fechados:**
+   - No Ramal 1 (dia fechado) da RPC `get_daily_reconciliation_summary`, `v_caixa_atual` não deve ser extraído de `v_snapshot.caixa_atual` se os ativos foram recalculados dinamicamente; deve ser computado pela equação canônica.
+2. **Reuso DRY na RPC `get_dashboard_metrics`:**
+   - Para evitar duplicidade de regras de negócio, `get_dashboard_metrics` invoca internamente `get_daily_reconciliation_summary(p_date::text, false)` e mapeia os campos normalizados.
+
 ## [2026-08-31] — [Feature ID: 316-pareamento-os-finalizada-e-encadeamento-odometro]
 
 **Contexto:** Atualização da RPC `public.auto_match_transactions` com 3 camadas de matching (texto regex, saldo aberto e quitações em OSs finalizadas) e da RPC `public.get_daily_reconciliation_summary` para retornar `'faturamento_anterior'` no Ramal 2 com extração canônica de `metadata.odometro_hoje`.

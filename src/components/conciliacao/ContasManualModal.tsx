@@ -15,7 +15,13 @@ import {
   Filter,
   Settings2,
   ArrowRightLeft,
-  Car
+  Car,
+  CheckCircle2,
+  AlertCircle,
+  Link,
+  Sparkles,
+  Check,
+  X
 } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
@@ -40,6 +46,9 @@ export function ContasManualModal({
   const queryClient = useQueryClient();
   const { data: stores = [] } = useStores();
 
+  // Active Tab
+  const [activeTab, setActiveTab] = useState<'contas' | 'batimento'>('contas');
+
   // Search & Filter
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStore, setSelectedStore] = useState<string>('all');
@@ -52,6 +61,7 @@ export function ContasManualModal({
   const [category, setCategory] = useState('pecas');
   const [storeId, setStoreId] = useState('');
   const [amount, setAmount] = useState('');
+  const [contabilizarSubtotal, setContabilizarSubtotal] = useState(true);
 
   // 1. Busca as contas cadastradas ou importadas
   const { data: bills = [], isLoading } = useQuery({
@@ -68,7 +78,23 @@ export function ContasManualModal({
     enabled: isOpen
   });
 
-  // 2. Mutação para adicionar nova conta avulsa
+  // 2. Busca saídas bancárias do OFX do dia
+  const { data: ofxSaidas = [], isLoading: isLoadingOfx } = useQuery({
+    queryKey: ['ofx-saidas', targetDate],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('ofx_transactions')
+        .select('*')
+        .eq('target_date', targetDate)
+        .eq('type', 'out')
+        .order('amount', { ascending: true });
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: isOpen
+  });
+
+  // 3. Mutação para adicionar nova conta avulsa
   const addBillMutation = useMutation({
     mutationFn: async () => {
       const numAmount = parseFloat(amount.replace(/\./g, '').replace(',', '.'));
@@ -86,7 +112,8 @@ export function ContasManualModal({
         description: description.trim() || null,
         category,
         store_id: storeId || null,
-        amount: numAmount
+        amount: numAmount,
+        contabilizar_no_subtotal: contabilizarSubtotal
       });
       if (error) throw error;
     },
@@ -95,6 +122,7 @@ export function ContasManualModal({
       setTitle('');
       setDescription('');
       setAmount('');
+      setContabilizarSubtotal(true);
       queryClient.invalidateQueries({ queryKey: ['daily-manual-bills', targetDate] });
       queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
       queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
@@ -105,7 +133,7 @@ export function ContasManualModal({
     }
   });
 
-  // 3. Mutação para alterar categoria inline
+  // 4. Mutação para alterar categoria inline
   const updateCategoryMutation = useMutation({
     mutationFn: async ({ id, newCategory }: { id: string; newCategory: string }) => {
       const { error } = await supabase
@@ -123,7 +151,47 @@ export function ContasManualModal({
     }
   });
 
-  // 4. Mutação para excluir conta
+  // 5. Mutação para toggle de Contabilizar no Subtotal
+  const toggleContabilizarMutation = useMutation({
+    mutationFn: async ({ id, currentState }: { id: string; currentState: boolean }) => {
+      const { error } = await supabase
+        .from('daily_manual_bills')
+        .update({ contabilizar_no_subtotal: !currentState })
+        .eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['daily-manual-bills', targetDate] });
+      queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
+      queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
+      toast.success('Status contábil atualizado!');
+    },
+    onError: (err: any) => {
+      toast.error(`Erro ao alternar status contábil: ${err.message}`);
+    }
+  });
+
+  // 6. Mutação para Auto-Match de Saídas
+  const autoMatchSaidasMutation = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.rpc('auto_match_saidas', { p_date: targetDate });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (res: any) => {
+      toast.success(`Pareamento automático concluído! ${res?.matched_saidas_count || 0} saídas vinculadas.`);
+      queryClient.invalidateQueries({ queryKey: ['daily-manual-bills', targetDate] });
+      queryClient.invalidateQueries({ queryKey: ['ofx-saidas', targetDate] });
+      queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
+    },
+    onError: (err: any) => {
+      toast.error(`Erro ao parear saídas: ${err.message}`);
+    }
+  });
+
+  // 7. Mutação para excluir conta
   const deleteBillMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from('daily_manual_bills').delete().eq('id', id);
@@ -141,8 +209,17 @@ export function ContasManualModal({
     }
   });
 
-  const totalBills = bills.reduce((acc, b) => acc + Number(b.amount || 0), 0);
-  const displayTotal = totalBills > 0 ? totalBills : fallbackTotal;
+  // Cálculos consolidados
+  const totalBillsContabilizados = bills
+    .filter(b => b.contabilizar_no_subtotal !== false)
+    .reduce((acc, b) => acc + Number(b.amount || 0), 0);
+  
+  const totalBillsNaoContabilizados = bills
+    .filter(b => b.contabilizar_no_subtotal === false)
+    .reduce((acc, b) => acc + Number(b.amount || 0), 0);
+
+  const displayTotal = totalBillsContabilizados > 0 ? totalBillsContabilizados : fallbackTotal;
+  const totalDebitosOfx = ofxSaidas.reduce((acc, tx) => acc + Math.abs(Number(tx.amount || 0)), 0);
 
   // Filtragem dos itens na tela
   const filteredBills = bills.filter(b => {
@@ -167,6 +244,38 @@ export function ContasManualModal({
       size="2xl"
     >
       <div className="space-y-6">
+        {/* Navegação de Abas */}
+        <div className="flex items-center gap-2 border-b border-[var(--border-subtle)] pb-2">
+          <button
+            type="button"
+            onClick={() => setActiveTab('contas')}
+            className={`px-4 py-2 text-xs font-semibold rounded-lg transition-colors flex items-center gap-2 cursor-pointer ${
+              activeTab === 'contas'
+                ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)]'
+            }`}
+          >
+            <Receipt size={14} />
+            Contas a Pagar ({bills.length})
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('batimento')}
+            className={`px-4 py-2 text-xs font-semibold rounded-lg transition-colors flex items-center gap-2 cursor-pointer ${
+              activeTab === 'batimento'
+                ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)]'
+            }`}
+          >
+            <ArrowRightLeft size={14} />
+            Batimento de Saídas (Contas x Débitos OFX)
+            <Badge variant="outline" className="text-[10px] ml-1 bg-indigo-500/10 text-indigo-400 border-indigo-500/30">
+              {ofxSaidas.length} débitos
+            </Badge>
+          </button>
+        </div>
+
         {/* Card Resumo do Topo */}
         <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -174,11 +283,16 @@ export function ContasManualModal({
               <Receipt className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-[var(--text-primary)]">Total de Contas a Pagar</h3>
-              <div className="flex flex-col text-xs text-[var(--text-tertiary)] mt-0.5">
-                <span>{bills.length} contas cadastradas/importadas</span>
+              <h3 className="text-sm font-semibold text-[var(--text-primary)]">Total a Cobrir no Fechamento</h3>
+              <div className="flex flex-wrap gap-2 text-xs text-[var(--text-tertiary)] mt-0.5">
+                <span>{bills.length} contas cadastradas</span>
+                {totalBillsNaoContabilizados > 0 && (
+                  <span className="text-zinc-500 line-through">
+                    (Ignoradas no DRE: {formatCurrency(totalBillsNaoContabilizados)})
+                  </span>
+                )}
                 {selectedStore !== 'all' || selectedCategory !== 'all' || searchTerm ? (
-                  <span className="text-amber-400">Filtrado: {filteredBills.length} contas ({formatCurrency(filteredBills.reduce((acc, b) => acc + Number(b.amount || 0), 0))})</span>
+                  <span className="text-amber-400">Filtrado: {filteredBills.length} ({formatCurrency(filteredBills.reduce((acc, b) => acc + (b.contabilizar_no_subtotal !== false ? Number(b.amount || 0) : 0), 0))})</span>
                 ) : null}
               </div>
             </div>
@@ -199,220 +313,354 @@ export function ContasManualModal({
               <div className="text-2xl font-bold font-mono text-rose-400">
                 {formatCurrency(displayTotal)}
               </div>
+              <span className="text-[10px] text-[var(--text-tertiary)]">Soma no Subtotal</span>
             </div>
           </div>
         </div>
 
-        {/* Filtros e Busca Rápida */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-2.5 text-[var(--text-tertiary)]" size={14} />
-            <input
-              type="text"
-              placeholder="Buscar fornecedor, código, OS..."
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-              className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-lg pl-8 pr-3 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
-            />
-          </div>
+        {/* CONTEÚDO DA ABA 1: CONTAS A PAGAR */}
+        {activeTab === 'contas' && (
+          <div className="space-y-4">
+            {/* Filtros e Busca Rápida */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-2.5 text-[var(--text-tertiary)]" size={14} />
+                <input
+                  type="text"
+                  placeholder="Buscar fornecedor, código, OS..."
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+                  className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-lg pl-8 pr-3 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
+                />
+              </div>
 
-          <div>
-            <select
-              value={selectedStore}
-              onChange={e => setSelectedStore(e.target.value)}
-              className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-lg px-3 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
-            >
-              <option value="all">Todas as Filiais ({bills.length})</option>
-              <option value="master">Matriz / Compartilhado</option>
-              {stores.map(st => (
-                <option key={st.id} value={st.id}>{st.name}</option>
-              ))}
-            </select>
-          </div>
+              <div>
+                <select
+                  value={selectedStore}
+                  onChange={e => setSelectedStore(e.target.value)}
+                  className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-lg px-3 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
+                >
+                  <option value="all">Todas as Filiais ({bills.length})</option>
+                  <option value="master">Matriz / Compartilhado</option>
+                  {stores.map(st => (
+                    <option key={st.id} value={st.id}>{st.name}</option>
+                  ))}
+                </select>
+              </div>
 
-          <div>
-            <select
-              value={selectedCategory}
-              onChange={e => setSelectedCategory(e.target.value)}
-              className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-lg px-3 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
-            >
-              <option value="all">Todas as Categorias</option>
-              {Object.entries(CATEGORY_LABELS).map(([k, label]) => (
-                <option key={k} value={k}>{label}</option>
-              ))}
-            </select>
-          </div>
-        </div>
+              <div>
+                <select
+                  value={selectedCategory}
+                  onChange={e => setSelectedCategory(e.target.value)}
+                  className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-lg px-3 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
+                >
+                  <option value="all">Todas as Categorias</option>
+                  {Object.entries(CATEGORY_LABELS).map(([k, label]) => (
+                    <option key={k} value={k}>{label}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
 
-        {/* Tabela de Contas Analítica */}
-        <div className="border border-[var(--border-subtle)] rounded-xl overflow-hidden bg-[var(--bg-canvas)]">
-          <div className="overflow-x-auto max-h-80 overflow-y-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] font-semibold sticky top-0 border-b border-[var(--border-subtle)] z-10">
-                <tr>
-                  <th className="py-2.5 px-3">Fornecedor / Título</th>
-                  <th className="py-2.5 px-3">Loja</th>
-                  <th className="py-2.5 px-3">Categoria</th>
-                  <th className="py-2.5 px-3">Detalhes / OS</th>
-                  <th className="py-2.5 px-3 text-right">Valor</th>
-                  <th className="py-2.5 px-3 text-center">Ação</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[var(--border-subtle)]">
-                {filteredBills.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="py-8 text-center text-xs text-[var(--text-tertiary)]">
-                      Nenhuma conta encontrada com os filtros selecionados.
-                    </td>
-                  </tr>
-                ) : (
-                  filteredBills.map(b => {
-                    const storeObj = stores.find(s => s.id === b.store_id);
-                    const storeLabel = storeObj ? storeObj.name : 'Matriz';
-
-                    return (
-                      <tr key={b.id} className="hover:bg-[var(--bg-surface-hover)] transition-colors">
-                        <td className="py-2.5 px-3">
-                          <div className="font-medium text-[var(--text-primary)]">
-                            {b.recipient_name || b.title}
-                          </div>
-                          {b.external_code && (
-                            <span className="text-[10px] font-mono text-[var(--text-tertiary)]">
-                              Cód: {b.external_code} • Parc: {b.installment || '1/1'}
-                            </span>
-                          )}
-                        </td>
-
-                        <td className="py-2.5 px-3 text-[var(--text-secondary)]">
-                          <span className="truncate max-w-[120px] block" title={storeLabel}>
-                            {storeLabel}
-                          </span>
-                        </td>
-
-                        <td className="py-2.5 px-3">
-                          <select
-                            value={b.category || 'outros'}
-                            onChange={(e) => updateCategoryMutation.mutate({ id: b.id, newCategory: e.target.value })}
-                            className="bg-zinc-800 text-[10px] text-zinc-200 border border-zinc-700 rounded px-1.5 py-0.5 focus:outline-none cursor-pointer"
-                          >
-                            {Object.entries(CATEGORY_LABELS).map(([k, label]) => (
-                              <option key={k} value={k}>{label}</option>
-                            ))}
-                          </select>
-                        </td>
-
-                        <td className="py-2.5 px-3">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            {b.is_intercompany && (
-                              <span className="px-1.5 py-0.5 text-[9px] font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded flex items-center gap-1">
-                                <ArrowRightLeft size={10} /> Sócio/Aporte
-                              </span>
-                            )}
-                            {b.matched_os_number && (
-                              <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded flex items-center gap-1">
-                                <Car size={10} /> OS #{b.matched_os_number}
-                              </span>
-                            )}
-                            <span className="text-[10px] text-[var(--text-tertiary)] truncate max-w-[150px]">
-                              {b.description || '-'}
-                            </span>
-                          </div>
-                        </td>
-
-                        <td className="py-2.5 px-3 text-right font-mono font-semibold text-rose-400 whitespace-nowrap">
-                          {formatCurrency(Number(b.amount))}
-                        </td>
-
-                        <td className="py-2.5 px-3 text-center">
-                          <button
-                            onClick={() => deleteBillMutation.mutate(b.id)}
-                            className="text-zinc-500 hover:text-rose-400 p-1 rounded hover:bg-rose-500/10 transition-colors cursor-pointer"
-                            title="Excluir conta"
-                          >
-                            <Trash2 size={13} />
-                          </button>
+            {/* Tabela de Contas Analítica */}
+            <div className="border border-[var(--border-subtle)] rounded-xl overflow-hidden bg-[var(--bg-canvas)]">
+              <div className="overflow-x-auto max-h-80 overflow-y-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] font-semibold sticky top-0 border-b border-[var(--border-subtle)] z-10">
+                    <tr>
+                      <th className="py-2.5 px-3">Fornecedor / Título</th>
+                      <th className="py-2.5 px-3">Loja</th>
+                      <th className="py-2.5 px-3">Categoria</th>
+                      <th className="py-2.5 px-3">Status Contábil</th>
+                      <th className="py-2.5 px-3 text-right">Valor</th>
+                      <th className="py-2.5 px-3 text-center">Ação</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[var(--border-subtle)]">
+                    {filteredBills.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="py-8 text-center text-xs text-[var(--text-tertiary)]">
+                          Nenhuma conta encontrada com os filtros selecionados.
                         </td>
                       </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
+                    ) : (
+                      filteredBills.map(b => {
+                        const storeObj = stores.find(s => s.id === b.store_id);
+                        const storeLabel = storeObj ? storeObj.name : 'Matriz';
+                        const isContabilizado = b.contabilizar_no_subtotal !== false;
+
+                        return (
+                          <tr key={b.id} className={`hover:bg-[var(--bg-surface-hover)] transition-colors ${!isContabilizado ? 'opacity-60 bg-zinc-900/30' : ''}`}>
+                            <td className="py-2.5 px-3">
+                              <div className="font-medium text-[var(--text-primary)]">
+                                {b.recipient_name || b.title}
+                              </div>
+                              {b.external_code && (
+                                <span className="text-[10px] font-mono text-[var(--text-tertiary)]">
+                                  Cód: {b.external_code} • Parc: {b.installment || '1/1'}
+                                </span>
+                              )}
+                            </td>
+
+                            <td className="py-2.5 px-3 text-[var(--text-secondary)]">
+                              <span className="truncate max-w-[120px] block" title={storeLabel}>
+                                {storeLabel}
+                              </span>
+                            </td>
+
+                            <td className="py-2.5 px-3">
+                              <select
+                                value={b.category || 'outros'}
+                                onChange={(e) => updateCategoryMutation.mutate({ id: b.id, newCategory: e.target.value })}
+                                className="bg-zinc-800 text-[10px] text-zinc-200 border border-zinc-700 rounded px-1.5 py-0.5 focus:outline-none cursor-pointer"
+                              >
+                                {Object.entries(CATEGORY_LABELS).map(([k, label]) => (
+                                  <option key={k} value={k}>{label}</option>
+                                ))}
+                              </select>
+                            </td>
+
+                            <td className="py-2.5 px-3">
+                              <div className="flex items-center gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => toggleContabilizarMutation.mutate({ id: b.id, currentState: isContabilizado })}
+                                  className={`px-2 py-0.5 text-[10px] font-semibold rounded-full border transition-all flex items-center gap-1 cursor-pointer ${
+                                    isContabilizado 
+                                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20' 
+                                      : 'bg-zinc-800 text-zinc-500 border-zinc-700 hover:bg-zinc-700'
+                                  }`}
+                                  title={isContabilizado ? 'Clique para NÃO somar no subtotal de contas' : 'Clique para somar no subtotal de contas'}
+                                >
+                                  {isContabilizado ? <Check size={10} /> : <X size={10} />}
+                                  {isContabilizado ? 'No Fechamento' : 'Apenas Conciliar'}
+                                </button>
+                                {b.matched_ofx_id && (
+                                  <span className="text-[9px] font-mono text-indigo-400 flex items-center gap-0.5" title="Vinculada a débito bancário">
+                                    <Link size={10} /> OFX
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+
+                            <td className={`py-2.5 px-3 text-right font-mono font-semibold whitespace-nowrap ${isContabilizado ? 'text-rose-400' : 'text-zinc-500 line-through'}`}>
+                              {formatCurrency(Number(b.amount))}
+                            </td>
+
+                            <td className="py-2.5 px-3 text-center">
+                              <button
+                                onClick={() => deleteBillMutation.mutate(b.id)}
+                                className="text-zinc-500 hover:text-rose-400 p-1 rounded hover:bg-rose-500/10 transition-colors cursor-pointer"
+                                title="Excluir conta"
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Formulário Retrátil para Adicionar Conta Avulsa */}
+            <details className="bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl p-3 text-xs group">
+              <summary className="font-semibold text-[var(--text-primary)] cursor-pointer flex items-center justify-between">
+                <span className="flex items-center gap-1.5 text-xs">
+                  <Plus size={13} className="text-[var(--color-primary)]" />
+                  Lançar Despesa Avulsa Manual (Não Constante no Arquivo)
+                </span>
+                <span className="text-[10px] text-[var(--text-tertiary)] group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 pt-3 mt-3 border-t border-[var(--border-subtle)]">
+                <div className="sm:col-span-4">
+                  <label className="text-[10px] text-[var(--text-tertiary)] mb-1 block">Nome / Fornecedor *</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: Peças Bosch, Aluguel..."
+                    value={title}
+                    onChange={e => setTitle(e.target.value)}
+                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg px-2.5 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
+                  />
+                </div>
+
+                <div className="sm:col-span-3">
+                  <label className="text-[10px] text-[var(--text-tertiary)] mb-1 block">Filial</label>
+                  <select
+                    value={storeId}
+                    onChange={e => setStoreId(e.target.value)}
+                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg px-2.5 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
+                  >
+                    <option value="">Matriz / Geral</option>
+                    {stores.map(st => (
+                      <option key={st.id} value={st.id}>{st.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="sm:col-span-3">
+                  <label className="text-[10px] text-[var(--text-tertiary)] mb-1 block">Categoria</label>
+                  <select
+                    value={category}
+                    onChange={e => setCategory(e.target.value)}
+                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg px-2.5 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
+                  >
+                    {Object.entries(CATEGORY_LABELS).map(([k, label]) => (
+                      <option key={k} value={k}>{label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="text-[10px] text-[var(--text-tertiary)] mb-1 block">Valor (R$) *</label>
+                  <input
+                    type="text"
+                    placeholder="0,00"
+                    value={amount}
+                    onChange={e => setAmount(e.target.value)}
+                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg px-2.5 py-1.5 text-xs font-mono text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
+                  />
+                </div>
+
+                <div className="sm:col-span-12 flex items-center justify-between pt-2 border-t border-[var(--border-subtle)]">
+                  <label className="flex items-center gap-2 cursor-pointer text-xs text-[var(--text-secondary)]">
+                    <input
+                      type="checkbox"
+                      checked={contabilizarSubtotal}
+                      onChange={e => setContabilizarSubtotal(e.target.checked)}
+                      className="rounded bg-zinc-800 border-zinc-700 text-rose-500 focus:ring-rose-500 cursor-pointer"
+                    />
+                    <span>Contabilizar no Subtotal de Contas do Fechamento</span>
+                  </label>
+
+                  <Button
+                    onClick={() => addBillMutation.mutate()}
+                    disabled={addBillMutation.isPending || !title || !amount}
+                    className="text-xs py-1.5 px-4 bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 rounded-lg flex items-center gap-1"
+                  >
+                    <Plus size={13} />
+                    {addBillMutation.isPending ? 'Salvando...' : 'Adicionar Despesa'}
+                  </Button>
+                </div>
+              </div>
+            </details>
           </div>
-        </div>
+        )}
 
-        {/* Formulário Retrátil para Adicionar Conta Avulsa */}
-        <details className="bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-xl p-3 text-xs group">
-          <summary className="font-semibold text-[var(--text-primary)] cursor-pointer flex items-center justify-between">
-            <span className="flex items-center gap-1.5 text-xs">
-              <Plus size={13} className="text-[var(--color-primary)]" />
-              Lançar Despesa Avulsa Manual (Não Constante no Arquivo)
-            </span>
-            <span className="text-[10px] text-[var(--text-tertiary)] group-open:rotate-180 transition-transform">▼</span>
-          </summary>
+        {/* CONTEÚDO DA ABA 2: BATIMENTO DE SAÍDAS */}
+        {activeTab === 'batimento' && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between bg-zinc-900/60 p-3 rounded-xl border border-zinc-800">
+              <div>
+                <h4 className="text-xs font-semibold text-zinc-200 flex items-center gap-1.5">
+                  <ArrowRightLeft size={14} className="text-indigo-400" />
+                  Confronto de Débitos Bancários x Títulos Pagos
+                </h4>
+                <p className="text-[11px] text-zinc-400 mt-0.5">
+                  Total Débitos OFX: <span className="font-mono font-bold text-rose-400">{formatCurrency(totalDebitosOfx)}</span> | Contas Registradas: <span className="font-mono font-bold text-zinc-200">{formatCurrency(displayTotal)}</span>
+                </p>
+              </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 pt-3 mt-3 border-t border-[var(--border-subtle)]">
-            <div className="sm:col-span-4">
-              <label className="text-[10px] text-[var(--text-tertiary)] mb-1 block">Nome / Fornecedor *</label>
-              <input
-                type="text"
-                placeholder="Ex: Peças Bosch, Aluguel..."
-                value={title}
-                onChange={e => setTitle(e.target.value)}
-                className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg px-2.5 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
-              />
-            </div>
-
-            <div className="sm:col-span-3">
-              <label className="text-[10px] text-[var(--text-tertiary)] mb-1 block">Filial</label>
-              <select
-                value={storeId}
-                onChange={e => setStoreId(e.target.value)}
-                className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg px-2.5 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
-              >
-                <option value="">Matriz / Geral</option>
-                {stores.map(st => (
-                  <option key={st.id} value={st.id}>{st.name}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="sm:col-span-3">
-              <label className="text-[10px] text-[var(--text-tertiary)] mb-1 block">Categoria</label>
-              <select
-                value={category}
-                onChange={e => setCategory(e.target.value)}
-                className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg px-2.5 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
-              >
-                {Object.entries(CATEGORY_LABELS).map(([k, label]) => (
-                  <option key={k} value={k}>{label}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="sm:col-span-2">
-              <label className="text-[10px] text-[var(--text-tertiary)] mb-1 block">Valor (R$) *</label>
-              <input
-                type="text"
-                placeholder="0,00"
-                value={amount}
-                onChange={e => setAmount(e.target.value)}
-                className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg px-2.5 py-1.5 text-xs font-mono text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
-              />
-            </div>
-
-            <div className="sm:col-span-12 flex justify-end">
               <Button
-                onClick={() => addBillMutation.mutate()}
-                disabled={addBillMutation.isPending || !title || !amount}
-                className="text-xs py-1.5 px-4 bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 rounded-lg flex items-center gap-1"
+                type="button"
+                onClick={() => autoMatchSaidasMutation.mutate()}
+                disabled={autoMatchSaidasMutation.isPending || ofxSaidas.length === 0}
+                className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 flex items-center gap-1.5 rounded-lg cursor-pointer"
               >
-                <Plus size={13} />
-                {addBillMutation.isPending ? 'Salvando...' : 'Adicionar Despesa'}
+                <Sparkles size={13} />
+                {autoMatchSaidasMutation.isPending ? 'Pareando...' : 'Auto-Match Saídas'}
               </Button>
             </div>
+
+            {/* Grid 2 Colunas: Débitos OFX vs Contas a Pagar */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Coluna 1: Débitos do Extrato Bancário */}
+              <div className="border border-zinc-800 rounded-xl overflow-hidden bg-zinc-950">
+                <div className="bg-zinc-900 px-3 py-2 border-b border-zinc-800 flex items-center justify-between">
+                  <span className="text-xs font-bold text-zinc-300">1. Débitos OFX ({ofxSaidas.length})</span>
+                  <span className="text-[10px] font-mono text-rose-400 font-bold">{formatCurrency(totalDebitosOfx)}</span>
+                </div>
+                <div className="max-h-72 overflow-y-auto divide-y divide-zinc-800/60 text-xs">
+                  {ofxSaidas.length === 0 ? (
+                    <div className="p-4 text-center text-zinc-500 text-xs">Nenhum débito bancário registrado.</div>
+                  ) : (
+                    ofxSaidas.map(tx => {
+                      const isMatched = !!tx.matched_bill_id;
+                      return (
+                        <div key={tx.id} className={`p-2.5 flex items-center justify-between hover:bg-zinc-900/40 transition-colors ${isMatched ? 'bg-indigo-950/10' : ''}`}>
+                          <div className="min-w-0 pr-2">
+                            <div className="font-medium text-zinc-200 truncate" title={tx.counterpart_name}>
+                              {tx.counterpart_name || 'Débito Bancário'}
+                            </div>
+                            <div className="text-[10px] text-zinc-500 flex items-center gap-1.5">
+                              <span>{tx.bank_name || 'Banco'}</span>
+                              <span>•</span>
+                              <span className="font-mono">{tx.fitid}</span>
+                            </div>
+                          </div>
+                          <div className="text-right whitespace-nowrap">
+                            <div className="font-mono font-bold text-rose-400">
+                              {formatCurrency(Math.abs(Number(tx.amount)))}
+                            </div>
+                            <span className={`text-[9px] font-semibold px-1.5 py-0.2 rounded ${
+                              isMatched ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'
+                            }`}>
+                              {isMatched ? 'Vinculado' : 'Sem Vínculo'}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+
+              {/* Coluna 2: Contas a Pagar / Despesas */}
+              <div className="border border-zinc-800 rounded-xl overflow-hidden bg-zinc-950">
+                <div className="bg-zinc-900 px-3 py-2 border-b border-zinc-800 flex items-center justify-between">
+                  <span className="text-xs font-bold text-zinc-300">2. Contas a Pagar ({bills.length})</span>
+                  <span className="text-[10px] font-mono text-zinc-300 font-bold">{formatCurrency(displayTotal)}</span>
+                </div>
+                <div className="max-h-72 overflow-y-auto divide-y divide-zinc-800/60 text-xs">
+                  {bills.length === 0 ? (
+                    <div className="p-4 text-center text-zinc-500 text-xs">Nenhuma conta cadastrada.</div>
+                  ) : (
+                    bills.map(b => {
+                      const isMatched = !!b.matched_ofx_id;
+                      const isContab = b.contabilizar_no_subtotal !== false;
+                      return (
+                        <div key={b.id} className={`p-2.5 flex items-center justify-between hover:bg-zinc-900/40 transition-colors ${isMatched ? 'bg-indigo-950/10' : ''}`}>
+                          <div className="min-w-0 pr-2">
+                            <div className="font-medium text-zinc-200 truncate" title={b.recipient_name || b.title}>
+                              {b.recipient_name || b.title}
+                            </div>
+                            <div className="text-[10px] text-zinc-500 flex items-center gap-1.5">
+                              <span>{b.category || 'Geral'}</span>
+                              {b.external_code && <span>• Cód: {b.external_code}</span>}
+                            </div>
+                          </div>
+                          <div className="text-right whitespace-nowrap">
+                            <div className={`font-mono font-bold ${isContab ? 'text-rose-400' : 'text-zinc-500 line-through'}`}>
+                              {formatCurrency(Number(b.amount))}
+                            </div>
+                            <span className={`text-[9px] font-semibold px-1.5 py-0.2 rounded ${
+                              isMatched ? 'bg-emerald-500/10 text-emerald-400' : 'bg-zinc-800 text-zinc-400'
+                            }`}>
+                              {isMatched ? 'Pareada' : (isContab ? 'Pendente OFX' : 'Ignorada')}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
-        </details>
+        )}
       </div>
 
       {/* Modal de Sócios e Entidades */}

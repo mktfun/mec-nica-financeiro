@@ -19,12 +19,12 @@ export default defineConfig({
   },
   vite: {
     resolve: {
-      alias: {
-        "framer-motion": path.resolve(__dirname, "node_modules/framer-motion/dist/es/index.mjs"),
-      },
-    },
-    ssr: {
-      noExternal: ['framer-motion'],
+      alias: [
+        {
+          find: /^framer-motion$/,
+          replacement: path.resolve(__dirname, "src/lib/framer-motion.tsx"),
+        },
+      ],
     },
   },
 });

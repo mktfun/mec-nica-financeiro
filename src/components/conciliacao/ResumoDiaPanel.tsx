@@ -117,7 +117,7 @@ export function ResumoDiaPanel({
   const aReceberValor = isEditing ? aReceberInput : (currentSnapshot?.a_receber_manual ?? summary?.a_receber ?? 0);
   const contasManualValor = isEditing 
     ? (contasInput + (summary?.contas_extras || 0)) 
-    : (summary?.contas_manual ?? ((currentSnapshot?.contas_a_pagar ?? 0) + (summary?.contas_extras || 0)));
+    : (summary?.contas_manual ?? ((summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0) + (summary?.contas_extras || 0)));
 
   // Pilares Automáticos
   const saldoBancosValor = summary?.total_saldo_banco_positivo ?? summary?.total_saldo_banco ?? currentSnapshot?.saldo_bancario ?? totalBancarioIn;
@@ -162,8 +162,8 @@ export function ResumoDiaPanel({
     : (summary?.valor_disp_contas ?? (faturamentoTotalComAjustes - fluxoCaixaCalculado));
 
   const subtotalContasCalculado = isEditing 
-    ? (jurosRedeValor + contasManualValor + devolucoesRedeValor)
-    : (summary?.subtotal_contas ?? (jurosRedeValor + contasManualValor + devolucoesRedeValor));
+    ? (jurosRedeValor + contasManualValor)
+    : (summary?.subtotal_contas ?? (jurosRedeValor + contasManualValor));
 
   const diferencaFinalCalculada = isEditing 
     ? (Math.abs(valorDispContasCalculado) - subtotalContasCalculado)
@@ -257,6 +257,8 @@ export function ResumoDiaPanel({
           faturamento_periodo: faturamentoTotalComAjustes,
           faturamento_liquido: faturamentoTotalComAjustes,
           valor_disp_contas: valorDispContasCalculado,
+          contas_base: isEditing ? contasInput : (summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0),
+          contas_extras: summary?.contas_extras ?? 0,
           contas_manual: contasManualValor,
           subtotal_contas: subtotalContasCalculado,
           juros_rede: jurosRedeValor,
