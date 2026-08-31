@@ -1,3 +1,12 @@
+### Feature 322: Idempotência do Motor de Conciliação, Conciliação de Saídas OFX x Contas e Justificativa de Despesas Órfãs
+- **Status:** COMPLETED & ARCHIVED
+- **Data:** 2026-08-31
+- **Arquivos Criados/Modificados:**
+  - `supabase/migrations/20260831000008_resolve_orphan_saida_ofx.sql`
+  - `src/components/importacoes/wizard/Step2NonRevenueJustifications.tsx`
+  - `src/components/importacoes/CentralImportWizard.tsx`
+- **Descrição:** Eliminação de dupla execução no wizard de importação, criação de rotina atômica `close_daily_snapshot` para o Step 7, suporte a resolução de saídas órfãs do OFX com abas dedicadas, toggle contábil para compor ou não despesas no DRE e vínculo manual a contas da loja em 1 clique.
+
 ## [2026-08-31] — Feature 321: Inversão do Pipeline de Ingestão com Motor Automático + IA e Unificação do Vínculo Manual PIX & REDE
 - **Inversão da Esteira no `CentralImportWizard.tsx`:**
   - O botão de confirmação do Preview executa imediatamente a persistência no banco (`patio_os`, `pos_transactions`, `ofx_transactions`, `daily_manual_bills`), as RPCs `auto_match_transactions`, `auto_match_saidas`, `calculate_daily_conciliation` e a auditoria de IA (Gemini).

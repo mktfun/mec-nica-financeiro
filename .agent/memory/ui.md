@@ -1,3 +1,13 @@
+## [2026-08-31] — [Feature ID: 322-conciliacao-saidas-ofx-contas-e-justificativa-despesas-orfas]
+
+**Contexto:** Reformulação do Step 5 (`Step2NonRevenueJustifications.tsx`) com sistema de 2 abas (Entradas Órfãs / Saídas Órfãs), chips de categoria rápida e botões de destinação contábil no padrão Dark UI Zinc-950.
+
+**Regra aprendida:**
+1. **Abas Segmentadas em Justificativas:**
+   - Permite alternância rápida entre créditos e débitos com badges de contagem e status de salvamento.
+2. **Feedback Visual Imediato no DRE:**
+   - Badges e toggles explicitam com clareza o impacto de cada movimentação (*"📈 Soma ao Faturamento"*, *"📈 Soma ao Contas a Pagar"*, *"🚫 Apenas Conciliar"*).
+
 ## [2026-08-31] — [Feature ID: 321-motor-automatch-ia-e-unificacao-vinculo-pix-rede-wizard]
 
 **Contexto:** Unificação do `ManualMatchOsModal.tsx` para gerenciar tanto PIX quanto vendas da Rede com o mesmo modal de alta afinidade e score (100, 80, 60), isolado estritamente pela filial da transação (`store_id`), e integração direta com o Step 1 do wizard (`Step1UnregisteredPayments.tsx`).

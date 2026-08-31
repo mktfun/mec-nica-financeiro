@@ -1,12 +1,23 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { AmountCell } from '@/components/finance/AmountCell';
 import { UnifiedImportResult } from '@/hooks/useCentralImport';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
-import { FileQuestion, CheckCircle2, Save, X, ArrowLeft, ArrowRight, Loader2, TrendingUp, Ban, Check } from 'lucide-react';
+import { 
+  FileQuestion, 
+  CheckCircle2, 
+  Save, 
+  ArrowLeft, 
+  ArrowRight, 
+  Loader2, 
+  TrendingUp, 
+  TrendingDown, 
+  Check, 
+  Link2 
+} from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 
 export interface OFXEntry {
   id: string;
@@ -16,6 +27,9 @@ export interface OFXEntry {
   description: string;
   date: string;
   fitid: string;
+  type: 'in' | 'out';
+  matchedBillId?: string;
+  matchedOsNumber?: string;
 }
 
 export interface QuickCategory {
@@ -25,7 +39,7 @@ export interface QuickCategory {
   color: string;
 }
 
-export const QUICK_CATEGORIES: QuickCategory[] = [
+export const QUICK_INFLOW_CATEGORIES: QuickCategory[] = [
   { id: 'transf_lojas', label: 'Transferência Entre Lojas', defaultImpact: false, color: 'text-cyan-400 border-cyan-500/30 bg-cyan-500/10' },
   { id: 'aporte_socios', label: 'Aporte de Sócios', defaultImpact: false, color: 'text-purple-400 border-purple-500/30 bg-purple-500/10' },
   { id: 'estorno', label: 'Estorno / Ajuste', defaultImpact: false, color: 'text-rose-400 border-rose-500/30 bg-rose-500/10' },
@@ -35,7 +49,17 @@ export const QUICK_CATEGORIES: QuickCategory[] = [
   { id: 'outros', label: 'Outros', defaultImpact: false, color: 'text-zinc-400 border-zinc-500/30 bg-zinc-500/10' },
 ];
 
-interface ItemState {
+export const QUICK_OUTFLOW_CATEGORIES: QuickCategory[] = [
+  { id: 'pecas_fornecedor', label: 'Peças / Fornecedor Avulso', defaultImpact: true, color: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10' },
+  { id: 'servicos_terceiros', label: 'Serviços de Terceiros / Torno', defaultImpact: true, color: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10' },
+  { id: 'impostos', label: 'Impostos / Tributos', defaultImpact: true, color: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10' },
+  { id: 'transf_lojas_out', label: 'Transferência Entre Lojas', defaultImpact: false, color: 'text-cyan-400 border-cyan-500/30 bg-cyan-500/10' },
+  { id: 'retirada_socios', label: 'Retirada de Sócios / Pró-labore', defaultImpact: false, color: 'text-purple-400 border-purple-500/30 bg-purple-500/10' },
+  { id: 'tarifa_out', label: 'Tarifa Bancária / Encargos', defaultImpact: false, color: 'text-amber-400 border-amber-500/30 bg-amber-500/10' },
+  { id: 'outras_despesas', label: 'Outras Despesas', defaultImpact: true, color: 'text-zinc-400 border-zinc-500/30 bg-zinc-500/10' },
+];
+
+interface InflowItemState {
   category: string;
   impactsRevenue: boolean;
   observacao: string;
@@ -44,23 +68,31 @@ interface ItemState {
   cancelled: boolean;
 }
 
+interface OutflowItemState {
+  category: string;
+  adicionaNoContas: boolean;
+  selectedBillId: string | null;
+  observacao: string;
+  saved: boolean;
+  saving: boolean;
+  cancelled: boolean;
+}
+
 interface Props {
   results: UnifiedImportResult;
-  mapping: Record<string, string>; // alias -> store_id
+  mapping: Record<string, string>;
   targetDate: string;
   stores: { id: string; name: string }[];
   onNext: () => void;
   onBack: () => void;
 }
 
-// 1. REGEX DE EXCLUSÃO ABSOLUTA (Adquirentes de Cartão e Rendimentos Financeiros NUNCA aparecem aqui)
 export const EXCLUDE_ACQUIRER_REGEX =
   /(?:^|[^a-zA-Z0-9])(REDE|REDECARD|CIELO|GETNET|STONE|PAGSEGURO|PAGS|BIN|ADQ|ADQUIRENTE|MAST|MASTER|MASTERCARD|VISA|VISA\s+ELECTRON|ELO|AMEX|AMERICAN\s+EXPRESS|HIPERCARD|ALELO|SODEXO|TICKET|VR|VOUCHER|LIQ[\.\s]|LIQUIDACAO|CARTAO|CRED[\.\s]?CARTAO)(?:$|[^a-zA-Z0-9])/i;
 
 export const EXCLUDE_BANK_EARNINGS_REGEX =
   /(?:^|[^a-zA-Z0-9])(REND|RENDIMENTO|REND\s+PAGO\s+APLIC|APLIC|APLICACAO|APLICAÇÃO|RESG|RESGATE|CDB|LCI|LCA|TESOURO|FUNDO|FUNDOS|JUROS|POUP|POUPANCA|POUPANÇA|AUT\s+APR|APL\s+AUT|RESG\s+AUT|IOF|REMUNERAC|IRRF\s+S\/\s+APLIC)(?:$|[^a-zA-Z0-9])/i;
 
-// 2. REGEX DE RECONHECIMENTO DE NÃO-FATURAMENTO
 export const NON_REVENUE_PATTERNS = {
   TRANSFERENCIA_ENTRE_LOJAS:
     /DHJV|MECANICA\s+DHJV|SERVICOS|SERVIÇOS|TRANSF.*(?:ENTRE|FILIAL|LOJA|MESMA\s+TITULARIDADE)|INTERCOMPANY/i,
@@ -74,7 +106,7 @@ export const NON_REVENUE_PATTERNS = {
     /SUCATA|BATID|RECICLAG/i,
 };
 
-function inferCategoryAndImpact(desc: string): { category: string; impactsRevenue: boolean } {
+function inferInflowCategory(desc: string): { category: string; impactsRevenue: boolean } {
   if (NON_REVENUE_PATTERNS.TRANSFERENCIA_ENTRE_LOJAS.test(desc)) {
     return { category: 'Transferência Entre Lojas', impactsRevenue: false };
   }
@@ -93,6 +125,19 @@ function inferCategoryAndImpact(desc: string): { category: string; impactsRevenu
   return { category: 'Transferência Entre Lojas', impactsRevenue: false };
 }
 
+function inferOutflowCategory(desc: string): { category: string; adicionaNoContas: boolean } {
+  if (NON_REVENUE_PATTERNS.TRANSFERENCIA_ENTRE_LOJAS.test(desc)) {
+    return { category: 'Transferência Entre Lojas', adicionaNoContas: false };
+  }
+  if (NON_REVENUE_PATTERNS.APORTE.test(desc)) {
+    return { category: 'Retirada de Sócios / Pró-labore', adicionaNoContas: false };
+  }
+  if (NON_REVENUE_PATTERNS.TARIFA_BANCARIA.test(desc)) {
+    return { category: 'Tarifa Bancária / Encargos', adicionaNoContas: false };
+  }
+  return { category: 'Peças / Fornecedor Avulso', adicionaNoContas: true };
+}
+
 export function Step2NonRevenueJustifications({
   results,
   mapping,
@@ -101,10 +146,10 @@ export function Step2NonRevenueJustifications({
   onNext,
   onBack,
 }: Props) {
-  // Filtro Estrito: Apenas movimentações manuais reais (Transferências entre lojas, Aportes, etc.)
-  const nonRevenueEntries = useMemo<OFXEntry[]>(() => {
-    const entries: OFXEntry[] = [];
+  const [activeTab, setActiveTab] = useState<'inflows' | 'outflows'>('inflows');
 
+  const nonRevenueInflowEntries = useMemo<OFXEntry[]>(() => {
+    const entries: OFXEntry[] = [];
     results.ofxResults?.forEach((ofxResult: any) => {
       const storeId = mapping[ofxResult.alias] || '';
       const storeObj = stores.find(s => s.id === storeId);
@@ -114,17 +159,10 @@ export function Step2NonRevenueJustifications({
         if (tx.type !== 'in') return;
         const fullDesc = `${tx.title || ''} ${tx.counterpart_name || ''}`.trim();
 
-        // 1. BLOQUEIO ABSOLUTO de liquidações da Rede / Cielo e adquirentes
         if (EXCLUDE_ACQUIRER_REGEX.test(fullDesc)) return;
-
-        // 2. BLOQUEIO ABSOLUTO de rendimentos e aplicações automáticas
         if (EXCLUDE_BANK_EARNINGS_REGEX.test(fullDesc)) return;
-
-        // 3. BLOQUEIO de transações casadas com OS
         if (tx.matched_os_number) return;
 
-        // 4. Se for PIX de cliente, ele pertence ao Step 4 (vínculo de OS) e não à Tela B,
-        // a não ser que seja explicitamente transferência entre filiais / aporte
         const isTransferOrAporte =
           NON_REVENUE_PATTERNS.TRANSFERENCIA_ENTRE_LOJAS.test(fullDesc) ||
           NON_REVENUE_PATTERNS.APORTE.test(fullDesc) ||
@@ -132,30 +170,71 @@ export function Step2NonRevenueJustifications({
           NON_REVENUE_PATTERNS.ESTORNO.test(fullDesc) ||
           NON_REVENUE_PATTERNS.SUCATA.test(fullDesc);
 
-        // Se for um crédito genérico não-adquirente e não-rendimento que sobrou
         if (isTransferOrAporte || !/PIX|QRS|CHAVE/i.test(fullDesc)) {
           entries.push({
-            id: tx.fitid || `${ofxResult.alias}_${tx.amount}_${Math.random()}`,
+            id: tx.id || tx.fitid || `${ofxResult.alias}_${tx.amount}_${Math.random()}`,
             storeId,
             storeName,
-            amount: Number(tx.amount || 0),
+            amount: Math.abs(Number(tx.amount || 0)),
             description: tx.counterpart_name || tx.title || 'Movimentação Bancária',
             date: tx.date || targetDate,
             fitid: tx.fitid || '',
+            type: 'in',
           });
         }
       });
     });
-
     return entries;
   }, [results, mapping, stores, targetDate]);
 
-  const [itemStates, setItemStates] = useState<Record<string, ItemState>>({});
+  const nonRevenueOutflowEntries = useMemo<OFXEntry[]>(() => {
+    const entries: OFXEntry[] = [];
+    results.ofxResults?.forEach((ofxResult: any) => {
+      const storeId = mapping[ofxResult.alias] || '';
+      const storeObj = stores.find(s => s.id === storeId);
+      const storeName = storeObj?.name || ofxResult.alias || 'Loja';
+
+      (ofxResult.transactions || []).forEach((tx: any) => {
+        if (tx.type !== 'out') return;
+        if (tx.matched_bill_id) return;
+
+        const fullDesc = `${tx.title || ''} ${tx.counterpart_name || ''}`.trim();
+        if (EXCLUDE_BANK_EARNINGS_REGEX.test(fullDesc)) return;
+
+        entries.push({
+          id: tx.id || tx.fitid || `${ofxResult.alias}_${tx.amount}_${Math.random()}`,
+          storeId,
+          storeName,
+          amount: Math.abs(Number(tx.amount || 0)),
+          description: tx.counterpart_name || tx.title || 'Débito Bancário',
+          date: tx.date || targetDate,
+          fitid: tx.fitid || '',
+          type: 'out',
+        });
+      });
+    });
+    return entries;
+  }, [results, mapping, stores, targetDate]);
+
+  const { data: openBills = [] } = useQuery({
+    queryKey: ['open-bills-for-step2', targetDate],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('daily_manual_bills')
+        .select('id, title, recipient_name, amount, store_id, category')
+        .eq('date', targetDate)
+        .is('matched_ofx_id', null);
+      return data || [];
+    }
+  });
+
+  const [inflowStates, setInflowStates] = useState<Record<string, InflowItemState>>({});
+  const [outflowStates, setOutflowStates] = useState<Record<string, OutflowItemState>>({});
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const getState = (id: string, desc = ''): ItemState => {
-    if (itemStates[id]) return itemStates[id];
-    const inferred = inferCategoryAndImpact(desc);
+  const getInflowState = (id: string, desc = ''): InflowItemState => {
+    if (inflowStates[id]) return inflowStates[id];
+    const inferred = inferInflowCategory(desc);
     return {
       category: inferred.category,
       impactsRevenue: inferred.impactsRevenue,
@@ -166,334 +245,497 @@ export function Step2NonRevenueJustifications({
     };
   };
 
-  const updateState = (id: string, partial: Partial<ItemState>, desc = '') => {
-    setItemStates(prev => ({
+  const updateInflowState = (id: string, partial: Partial<InflowItemState>, desc = '') => {
+    setInflowStates(prev => ({
       ...prev,
-      [id]: { ...getState(id, desc), ...partial },
+      [id]: { ...getInflowState(id, desc), ...partial },
     }));
   };
 
-  const handleSave = async (entry: OFXEntry) => {
-    const state = getState(entry.id, entry.description);
-    updateState(entry.id, { saving: true }, entry.description);
+  const getOutflowState = (id: string, desc = ''): OutflowItemState => {
+    if (outflowStates[id]) return outflowStates[id];
+    const inferred = inferOutflowCategory(desc);
+    return {
+      category: inferred.category,
+      adicionaNoContas: inferred.adicionaNoContas,
+      selectedBillId: null,
+      observacao: '',
+      saved: false,
+      saving: false,
+      cancelled: false,
+    };
+  };
 
+  const updateOutflowState = (id: string, partial: Partial<OutflowItemState>, desc = '') => {
+    setOutflowStates(prev => ({
+      ...prev,
+      [id]: { ...getOutflowState(id, desc), ...partial },
+    }));
+  };
+
+  const handleSaveInflow = async (entry: OFXEntry) => {
+    const state = getInflowState(entry.id, entry.description);
+    updateInflowState(entry.id, { saving: true }, entry.description);
     try {
       const cleanCategory = state.category.replace(/\s*\[Apenas Conciliar\]/gi, '').trim();
       const finalCategory = state.impactsRevenue ? cleanCategory : `${cleanCategory} [Apenas Conciliar]`;
       const cleanJustification = state.observacao.replace(/\s*\[NÃO SOMAR\]/gi, '').trim();
       const finalJustification = state.impactsRevenue ? cleanJustification : `${cleanJustification} [NÃO SOMAR]`.trim();
 
-      // 1. Inserir em daily_manual_bills
-      const { error: insertError } = await supabase.from('daily_manual_bills').insert({
-        date: targetDate,
-        store_id: entry.storeId || null,
-        title: entry.description,
-        amount: entry.amount,
-        category: finalCategory,
-        external_code: null,
-        description: finalJustification || null,
-      });
+      const { error: ofxErr } = await supabase
+        .from('ofx_transactions')
+        .update({
+          manual_category: finalCategory,
+          manual_justification: finalJustification,
+          match_status: state.impactsRevenue ? 'REVENUE_ADJUSTED' : 'JUSTIFIED',
+        })
+        .or(`id.eq.${entry.id},fitid.eq.${entry.fitid}`);
 
-      if (insertError) throw insertError;
+      if (ofxErr) throw ofxErr;
 
-      // 2. Atualizar em transactions se existir fitid
-      if (entry.fitid) {
-        await supabase
-          .from('transactions')
-          .update({
-            manual_category: finalCategory,
-            manual_justification: finalJustification,
-          })
-          .eq('fitid', entry.fitid);
-      }
-
-      updateState(entry.id, { saving: false, saved: true }, entry.description);
+      updateInflowState(entry.id, { saving: false, saved: true }, entry.description);
       setEditingId(null);
-      toast.success(
-        `Justificativa salva! (${state.impactsRevenue ? '📈 Soma ao Faturamento' : '🚫 Apenas Conciliar'})`
-      );
+      toast.success(`Justificativa salva! (${state.impactsRevenue ? '📈 Soma ao Faturamento' : '🚫 Apenas Conciliar'})`);
     } catch (err: any) {
-      updateState(entry.id, { saving: false }, entry.description);
-      toast.error(`Erro ao salvar: ${err.message}`);
+      updateInflowState(entry.id, { saving: false }, entry.description);
+      toast.error(`Erro ao salvar entrada: ${err.message}`);
     }
   };
 
-  const handleCancel = (id: string, desc = '') => {
-    updateState(id, { cancelled: true }, desc);
-    setEditingId(null);
+  const handleSaveOutflow = async (entry: OFXEntry) => {
+    const state = getOutflowState(entry.id, entry.description);
+    updateOutflowState(entry.id, { saving: true }, entry.description);
+    try {
+      const { data, error } = await supabase.rpc('resolve_orphan_saida_ofx', {
+        p_ofx_id: entry.id,
+        p_category: state.category,
+        p_justification: state.observacao || entry.description,
+        p_contabilizar_no_subtotal: state.adicionaNoContas,
+        p_store_id: entry.storeId || null,
+        p_amount: entry.amount,
+        p_target_date: targetDate,
+        p_bill_id: state.selectedBillId || null,
+      });
+
+      if (error) throw error;
+
+      updateOutflowState(entry.id, { saving: false, saved: true }, entry.description);
+      setEditingId(null);
+      if (state.selectedBillId) {
+        toast.success('Débito vinculado à conta existente com sucesso!');
+      } else if (state.adicionaNoContas) {
+        toast.success('Despesa Extra adicionada ao Contas a Pagar com sucesso!');
+      } else {
+        toast.success('Saída justificada sem impacto no Contas a Pagar.');
+      }
+    } catch (err: any) {
+      updateOutflowState(entry.id, { saving: false }, entry.description);
+      toast.error(`Erro ao resolver saída: ${err.message}`);
+    }
   };
 
-  const visibleEntries = nonRevenueEntries.filter(e => !getState(e.id, e.description).cancelled);
-  const savedCount = nonRevenueEntries.filter(e => getState(e.id, e.description).saved).length;
+  const visibleInflows = nonRevenueInflowEntries.filter(e => !getInflowState(e.id, e.description).cancelled);
+  const savedInflowCount = nonRevenueInflowEntries.filter(e => getInflowState(e.id, e.description).saved).length;
+
+  const visibleOutflows = nonRevenueOutflowEntries.filter(e => !getOutflowState(e.id, e.description).cancelled);
+  const savedOutflowCount = nonRevenueOutflowEntries.filter(e => getOutflowState(e.id, e.description).saved).length;
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* Header */}
-      <Card className="p-5 bg-zinc-900 border-zinc-800">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <Card className='p-5 bg-zinc-900 border-zinc-800'>
+        <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
           <div>
-            <h2 className="text-lg font-display font-bold text-white flex items-center gap-2">
-              <FileQuestion className="text-amber-400" size={20} />
+            <h2 className='text-lg font-display font-bold text-white flex items-center gap-2'>
+              <FileQuestion className='text-amber-400' size={20} />
               Passo 5: Justificativas de Movimentações por Loja
             </h2>
-            <p className="text-xs text-zinc-400 mt-1 max-w-3xl">
-              Classifique entradas bancárias manuais e defina se somam ao faturamento (ex: Venda de Sucata) ou se são apenas conciliação interna (ex: Transferência entre Lojas, Aportes e Devoluções).
+            <p className='text-xs text-zinc-400 mt-1 max-w-3xl'>
+              Classifique entradas e saídas bancárias que não foram casadas automaticamente. Defina se somam ao Faturamento (Entradas), se viram Despesa Extra no Contas a Pagar (Saídas) ou se são apenas transferências internas.
             </p>
           </div>
 
-          <Badge variant="brand" className="font-mono text-xs shrink-0">
-            {savedCount}/{visibleEntries.length} Justificadas
-          </Badge>
+          <div className='flex items-center gap-2 bg-zinc-950 p-1 rounded-xl border border-zinc-800 shrink-0'>
+            <button
+              onClick={() => setActiveTab('inflows')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer ${
+                activeTab === 'inflows' ? 'bg-zinc-800 text-white border border-zinc-700' : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              <TrendingUp size={14} className='text-emerald-400' />
+              Entradas Órfãs ({visibleInflows.length})
+              {savedInflowCount > 0 && <span className='text-[10px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded font-mono'>{savedInflowCount}</span>}
+            </button>
+            <button
+              onClick={() => setActiveTab('outflows')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer ${
+                activeTab === 'outflows' ? 'bg-zinc-800 text-white border border-zinc-700' : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              <TrendingDown size={14} className='text-rose-400' />
+              Saídas Órfãs ({visibleOutflows.length})
+              {savedOutflowCount > 0 && <span className='text-[10px] bg-rose-500/20 text-rose-400 px-1.5 py-0.5 rounded font-mono'>{savedOutflowCount}</span>}
+            </button>
+          </div>
         </div>
       </Card>
 
-      {/* Lista de Entradas a Justificar */}
-      <div className="space-y-3">
-        {visibleEntries.length === 0 ? (
-          <Card className="p-12 text-center text-zinc-500 bg-zinc-900/30 border-zinc-800">
-            <CheckCircle2 size={40} className="mx-auto mb-3 text-emerald-400/60" />
-            <p className="text-base font-semibold text-zinc-200">
-              Nenhuma movimentação pendente de justificativa!
-            </p>
-            <p className="text-xs text-zinc-500 mt-1">
-              Todas as entradas do extrato bancário estão devidamente conciliadas com as OSs e Adquirentes.
-            </p>
-          </Card>
-        ) : (
-          visibleEntries.map(entry => {
-            const state = getState(entry.id, entry.description);
-            const isEditing = editingId === entry.id;
+      {/* ABA 1: ENTRADAS ÓRFÃS */}
+      {activeTab === 'inflows' && (
+        <div className='space-y-4'>
+          {visibleInflows.length === 0 ? (
+            <Card className='p-12 text-center border-zinc-800 bg-zinc-900/40'>
+              <CheckCircle2 size={40} className='mx-auto mb-3 text-emerald-500' />
+              <p className='text-sm font-semibold text-zinc-200'>Nenhuma entrada bancária órfã para justificar!</p>
+              <p className='text-xs text-zinc-500 mt-1'>Todas as entradas foram casadas com OSs ou são liquidações de cartão.</p>
+            </Card>
+          ) : (
+            visibleInflows.map(entry => {
+              const state = getInflowState(entry.id, entry.description);
+              const isEditing = editingId === entry.id;
 
-            return (
-              <Card
-                key={entry.id}
-                className={`p-4 bg-zinc-950 border-zinc-800 hover:border-zinc-700 transition-all ${
-                  state.saved ? 'border-emerald-800/40 shadow-[0_0_15px_rgba(16,185,129,0.05)]' : ''
-                }`}
-              >
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                  {/* Info da Transação */}
-                  <div className="space-y-1 flex-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-bold text-white text-sm">{entry.storeName}</span>
-                      <span className="text-[10px] text-zinc-500 font-mono">• {entry.date}</span>
+              return (
+                <Card
+                  key={entry.id}
+                  className={`p-4 border transition-all ${
+                    state.saved
+                      ? 'bg-emerald-950/10 border-emerald-500/30'
+                      : isEditing
+                      ? 'bg-zinc-900 border-amber-500/50 shadow-lg shadow-amber-950/20'
+                      : 'bg-zinc-900/60 border-zinc-800 hover:border-zinc-700'
+                  }`}
+                >
+                  <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
+                    <div className='flex items-start gap-3'>
+                      <div className='p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0 mt-0.5'>
+                        <TrendingUp size={18} />
+                      </div>
+                      <div>
+                        <div className='flex items-center gap-2'>
+                          <span className='font-semibold text-sm text-zinc-100'>{entry.storeName}</span>
+                          <span className='text-xs text-zinc-500 font-mono'>({entry.date})</span>
+                          {state.saved && (
+                            <Badge variant='brand' className='text-[10px] bg-emerald-500/20 text-emerald-400 border-emerald-500/30 font-mono'>
+                              <Check size={10} className='mr-1 inline' /> Salvo
+                            </Badge>
+                          )}
+                        </div>
+                        <p className='text-xs text-zinc-300 mt-0.5 max-w-xl break-words font-sans'>{entry.description}</p>
+                      </div>
+                    </div>
+
+                    <div className='flex items-center gap-4 shrink-0'>
+                      <div className='text-right'>
+                        <span className='text-[10px] text-zinc-500 uppercase block font-semibold'>Crédito OFX</span>
+                        <span className='text-base font-bold font-mono text-emerald-400'>
+                          +R$ {entry.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        </span>
+                      </div>
+
+                      {!isEditing && !state.saved && (
+                        <Button
+                          size='sm'
+                          onClick={() => setEditingId(entry.id)}
+                          className='text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 font-semibold cursor-pointer'
+                        >
+                          Classificar
+                        </Button>
+                      )}
                       {state.saved && (
-                        <>
-                          <span
-                            className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
-                              state.impactsRevenue
-                                ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10'
-                                : 'text-amber-400 border-amber-500/30 bg-amber-500/10'
-                            }`}
-                          >
-                            {state.impactsRevenue ? '📈 Soma ao Faturamento' : '🚫 Apenas Conciliar'}
-                          </span>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono border text-zinc-300 border-zinc-700 bg-zinc-900">
-                            {state.category}
-                          </span>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-semibold border text-emerald-400 border-emerald-500/30 bg-emerald-500/10">
-                            ✓ Salvo
-                          </span>
-                        </>
+                        <Button
+                          size='sm'
+                          variant='ghost'
+                          onClick={() => setEditingId(entry.id)}
+                          className='text-xs text-zinc-400 hover:text-white'
+                        >
+                          Alterar
+                        </Button>
                       )}
                     </div>
-                    <p className="text-xs text-zinc-300 font-mono truncate max-w-2xl" title={entry.description}>
-                      {entry.description}
-                    </p>
-                    {state.saved && state.observacao && (
-                      <p className="text-xs text-zinc-400 italic mt-1">
-                        Obs: {state.observacao}
-                      </p>
-                    )}
                   </div>
 
-                  {/* Valor e Ações */}
-                  <div className="flex items-center gap-4 shrink-0">
-                    <div className="text-right">
-                      <span className="text-[10px] text-zinc-500 block">Valor</span>
-                      <AmountCell
-                        value={entry.amount}
-                        tone="success"
-                        className="text-sm font-bold"
-                      />
-                    </div>
+                  {isEditing && (
+                    <div className='mt-4 pt-4 border-t border-zinc-800/80 space-y-4'>
+                      <div>
+                        <label className='block text-[11px] font-bold uppercase text-zinc-400 mb-2'>Selecione a Categoria da Entrada:</label>
+                        <div className='flex flex-wrap gap-2'>
+                          {QUICK_INFLOW_CATEGORIES.map(cat => {
+                            const isSelected = state.category === cat.label;
+                            return (
+                              <button
+                                key={cat.id}
+                                type='button'
+                                onClick={() => updateInflowState(entry.id, { category: cat.label, impactsRevenue: cat.defaultImpact }, entry.description)}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                                  isSelected
+                                    ? `${cat.color} ring-2 ring-emerald-400/40 font-bold`
+                                    : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
+                                }`}
+                              >
+                                {cat.label}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
 
-                    {!state.saved && (
-                      <div className="flex items-center gap-2">
+                      <div className='flex items-center justify-between p-3 rounded-xl bg-zinc-950 border border-zinc-800'>
+                        <div>
+                          <span className='text-xs font-bold text-zinc-200 block'>Entra no Faturamento do Dia?</span>
+                          <span className='text-[11px] text-zinc-500'>
+                            {state.impactsRevenue ? '📈 SIM: Será somado ao Faturamento do Fechamento' : '🚫 NÃO: É apenas movimentação/transferência interna'}
+                          </span>
+                        </div>
+                        <div className='flex items-center gap-2'>
+                          <button
+                            type='button'
+                            onClick={() => updateInflowState(entry.id, { impactsRevenue: false }, entry.description)}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                              !state.impactsRevenue ? 'bg-cyan-500 text-zinc-950' : 'bg-zinc-900 text-zinc-400 hover:text-white'
+                            }`}
+                          >
+                            Apenas Conciliar
+                          </button>
+                          <button
+                            type='button'
+                            onClick={() => updateInflowState(entry.id, { impactsRevenue: true }, entry.description)}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                              state.impactsRevenue ? 'bg-emerald-500 text-zinc-950' : 'bg-zinc-900 text-zinc-400 hover:text-white'
+                            }`}
+                          >
+                            + Faturamento
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className='flex items-center justify-end gap-2 pt-2'>
                         <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={() => setEditingId(isEditing ? null : entry.id)}
-                          className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 cursor-pointer"
+                          size='sm'
+                          variant='ghost'
+                          onClick={() => setEditingId(null)}
+                          className='text-xs text-zinc-400 hover:text-white'
                         >
-                          {isEditing ? 'Fechar' : 'Classificar'}
+                          Cancelar
                         </Button>
                         <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleCancel(entry.id, entry.description)}
-                          className="text-xs text-zinc-500 hover:text-zinc-300 cursor-pointer"
-                          title="Ignorar esta entrada"
+                          size='sm'
+                          disabled={state.saving}
+                          onClick={() => handleSaveInflow(entry)}
+                          className='text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-zinc-950 cursor-pointer flex items-center gap-1'
                         >
-                          <X size={14} />
+                          {state.saving ? <Loader2 size={12} className='animate-spin' /> : <Save size={12} />}
+                          Salvar Classificação
                         </Button>
                       </div>
-                    )}
-                  </div>
-                </div>
+                    </div>
+                  )}
+                </Card>
+              );
+            })
+          )}
+        </div>
+      )}
 
-                {/* Formulário de Classificação Inline Completo (Padrão Extrato) */}
-                {isEditing && !state.saved && (
-                  <div className="mt-4 pt-4 border-t border-zinc-800 space-y-4">
-                    {/* 1. Escolha de Impacto (2 botões claros de Faturamento vs Apenas Conciliar) */}
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold uppercase text-zinc-400 block">
-                        Destino da Justificativa *
-                      </label>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                        <button
-                          type="button"
-                          onClick={() => updateState(entry.id, { impactsRevenue: true }, entry.description)}
-                          className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col gap-1 ${
-                            state.impactsRevenue
-                              ? 'bg-emerald-500/10 border-emerald-500 text-emerald-300 ring-1 ring-emerald-500/30'
-                              : 'bg-zinc-900/60 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-300'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold flex items-center gap-1.5">
-                              <TrendingUp size={14} className={state.impactsRevenue ? 'text-emerald-400' : 'text-zinc-400'} />
-                              Somar ao Faturamento
-                            </span>
-                            {state.impactsRevenue && <Check size={14} className="text-emerald-400" />}
-                          </div>
-                          <span className="text-[11px] text-zinc-500">
-                            Receita avulsa da loja (Venda de sucata, serviços ou depósitos sem OS)
-                          </span>
-                        </button>
+      {/* ABA 2: SAÍDAS ÓRFÃS */}
+      {activeTab === 'outflows' && (
+        <div className='space-y-4'>
+          {visibleOutflows.length === 0 ? (
+            <Card className='p-12 text-center border-zinc-800 bg-zinc-900/40'>
+              <CheckCircle2 size={40} className='mx-auto mb-3 text-emerald-500' />
+              <p className='text-sm font-semibold text-zinc-200'>Nenhuma saída bancária órfã pendente!</p>
+              <p className='text-xs text-zinc-500 mt-1'>Todos os débitos bancários foram casados com contas a pagar importadas.</p>
+            </Card>
+          ) : (
+            visibleOutflows.map(entry => {
+              const state = getOutflowState(entry.id, entry.description);
+              const isEditing = editingId === entry.id;
+              const storeOpenBills = openBills.filter((b: any) => !entry.storeId || !b.store_id || b.store_id === entry.storeId);
 
-                        <button
-                          type="button"
-                          onClick={() => updateState(entry.id, { impactsRevenue: false }, entry.description)}
-                          className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col gap-1 ${
-                            !state.impactsRevenue
-                              ? 'bg-amber-500/10 border-amber-500 text-amber-300 ring-1 ring-amber-500/30'
-                              : 'bg-zinc-900/60 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-300'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold flex items-center gap-1.5">
-                              <Ban size={14} className={!state.impactsRevenue ? 'text-amber-400' : 'text-zinc-400'} />
-                              Apenas Conciliar
-                            </span>
-                            {!state.impactsRevenue && <Check size={14} className="text-amber-400" />}
-                          </div>
-                          <span className="text-[11px] text-zinc-500">
-                            Não soma no faturamento (Transferência entre lojas, aporte, estorno, tarifa)
-                          </span>
-                        </button>
+              return (
+                <Card
+                  key={entry.id}
+                  className={`p-4 border transition-all ${
+                    state.saved
+                      ? 'bg-rose-950/10 border-rose-500/30'
+                      : isEditing
+                      ? 'bg-zinc-900 border-amber-500/50 shadow-lg shadow-amber-950/20'
+                      : 'bg-zinc-900/60 border-zinc-800 hover:border-zinc-700'
+                  }`}
+                >
+                  <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
+                    <div className='flex items-start gap-3'>
+                      <div className='p-2.5 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20 shrink-0 mt-0.5'>
+                        <TrendingDown size={18} />
+                      </div>
+                      <div>
+                        <div className='flex items-center gap-2'>
+                          <span className='font-semibold text-sm text-zinc-100'>{entry.storeName}</span>
+                          <span className='text-xs text-zinc-500 font-mono'>({entry.date})</span>
+                          {state.saved && (
+                            <Badge variant='brand' className='text-[10px] bg-rose-500/20 text-rose-400 border-rose-500/30 font-mono'>
+                              <Check size={10} className='mr-1 inline' /> Salvo
+                            </Badge>
+                          )}
+                        </div>
+                        <p className='text-xs text-zinc-300 mt-0.5 max-w-xl break-words font-sans'>{entry.description}</p>
                       </div>
                     </div>
 
-                    {/* 2. Chips de Categorias Rápidas */}
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold uppercase text-zinc-400 block">
-                        Categoria Sugerida
-                      </label>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        {QUICK_CATEGORIES.map(cat => {
-                          const isSelected = state.category === cat.label;
-                          return (
-                            <button
-                              key={cat.id}
-                              type="button"
-                              onClick={() =>
-                                updateState(
-                                  entry.id,
-                                  { category: cat.label, impactsRevenue: cat.defaultImpact },
-                                  entry.description
-                                )
-                              }
-                              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
-                                isSelected
-                                  ? 'bg-zinc-100 text-zinc-950 font-bold border-white shadow-sm'
-                                  : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
-                              }`}
-                            >
-                              {cat.label}
-                            </button>
-                          );
-                        })}
+                    <div className='flex items-center gap-4 shrink-0'>
+                      <div className='text-right'>
+                        <span className='text-[10px] text-zinc-500 uppercase block font-semibold'>Débito OFX</span>
+                        <span className='text-base font-bold font-mono text-rose-400'>
+                          -R$ {entry.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        </span>
                       </div>
-                    </div>
 
-                    {/* 3. Observação / Justificativa detalhada */}
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold uppercase text-zinc-400 block">
-                        Observação / Descrição Detalhada
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Ex: Transferência autorizada pelo sócio para cobrir folha/fornecedor..."
-                        value={state.observacao}
-                        onChange={e =>
-                          updateState(entry.id, { observacao: e.target.value }, entry.description)
-                        }
-                        className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-amber-500"
-                      />
-                    </div>
-
-                    {/* 4. Botões de Ação */}
-                    <div className="flex justify-end gap-2 pt-2 border-t border-zinc-800/80">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => setEditingId(null)}
-                        className="text-xs text-zinc-400 cursor-pointer"
-                      >
-                        Cancelar
-                      </Button>
-                      <Button
-                        size="sm"
-                        onClick={() => handleSave(entry)}
-                        disabled={state.saving}
-                        className={`text-xs font-bold flex items-center gap-1.5 cursor-pointer ${
-                          state.impactsRevenue
-                            ? 'bg-emerald-500 hover:bg-emerald-400 text-zinc-950'
-                            : 'bg-amber-500 hover:bg-amber-400 text-zinc-950'
-                        }`}
-                      >
-                        {state.saving ? (
-                          <Loader2 size={12} className="animate-spin" />
-                        ) : (
-                          <Save size={12} />
-                        )}
-                        Salvar Justificativa
-                      </Button>
+                      {!isEditing && !state.saved && (
+                        <Button
+                          size='sm'
+                          onClick={() => setEditingId(entry.id)}
+                          className='text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 font-semibold cursor-pointer'
+                        >
+                          Destinar Débito
+                        </Button>
+                      )}
+                      {state.saved && (
+                        <Button
+                          size='sm'
+                          variant='ghost'
+                          onClick={() => setEditingId(entry.id)}
+                          className='text-xs text-zinc-400 hover:text-white'
+                        >
+                          Alterar
+                        </Button>
+                      )}
                     </div>
                   </div>
-                )}
-              </Card>
-            );
-          })
-        )}
-      </div>
+
+                  {isEditing && (
+                    <div className='mt-4 pt-4 border-t border-zinc-800/80 space-y-4'>
+                      {storeOpenBills.length > 0 && (
+                        <div className='p-3 rounded-xl bg-zinc-950 border border-zinc-800'>
+                          <label className='block text-[11px] font-bold uppercase text-zinc-400 mb-1 flex items-center gap-1'>
+                            <Link2 size={12} className='text-cyan-400' />
+                            Vincular a uma Conta Existente da Loja (1-Clique):
+                          </label>
+                          <select
+                            value={state.selectedBillId || ''}
+                            onChange={e => updateOutflowState(entry.id, { selectedBillId: e.target.value || null, adicionaNoContas: false }, entry.description)}
+                            className='w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-200 focus:outline-none focus:border-cyan-500'
+                          >
+                            <option value=''>-- Não vincular a conta existente (Criar Extra ou Apenas Justificar) --</option>
+                            {storeOpenBills.map((b: any) => (
+                              <option key={b.id} value={b.id}>
+                                {b.title || b.recipient_name} — R$ {Number(b.amount).toFixed(2)} ({b.category || 'Despesa'})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
+
+                      {!state.selectedBillId && (
+                        <>
+                          <div>
+                            <label className='block text-[11px] font-bold uppercase text-zinc-400 mb-2'>Selecione a Categoria da Saída:</label>
+                            <div className='flex flex-wrap gap-2'>
+                              {QUICK_OUTFLOW_CATEGORIES.map(cat => {
+                                const isSelected = state.category === cat.label;
+                                return (
+                                  <button
+                                    key={cat.id}
+                                    type='button'
+                                    onClick={() => updateOutflowState(entry.id, { category: cat.label, adicionaNoContas: cat.defaultImpact }, entry.description)}
+                                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                                      isSelected
+                                        ? `${cat.color} ring-2 ring-rose-400/40 font-bold`
+                                        : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
+                                    }`}
+                                  >
+                                    {cat.label}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          <div className='flex items-center justify-between p-3 rounded-xl bg-zinc-950 border border-zinc-800'>
+                            <div>
+                              <span className='text-xs font-bold text-zinc-200 block'>Adicionar ao Contas a Pagar (Despesa Extra)?</span>
+                              <span className='text-[11px] text-zinc-500'>
+                                {state.adicionaNoContas 
+                                  ? '📈 SIM: Soma no Subtotal Contas a Pagar do Fechamento' 
+                                  : '🚫 NÃO: Apenas justifica a saída sem inflar as despesas operacionais'}
+                              </span>
+                            </div>
+                            <div className='flex items-center gap-2'>
+                              <button
+                                type='button'
+                                onClick={() => updateOutflowState(entry.id, { adicionaNoContas: false }, entry.description)}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                                  !state.adicionaNoContas ? 'bg-cyan-500 text-zinc-950' : 'bg-zinc-900 text-zinc-400 hover:text-white'
+                                }`}
+                              >
+                                Apenas Justificar
+                              </button>
+                              <button
+                                type='button'
+                                onClick={() => updateOutflowState(entry.id, { adicionaNoContas: true }, entry.description)}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                                  state.adicionaNoContas ? 'bg-rose-500 text-zinc-950' : 'bg-zinc-900 text-zinc-400 hover:text-white'
+                                }`}
+                              >
+                                + Despesa Extra
+                              </button>
+                            </div>
+                          </div>
+                        </>
+                      )}
+
+                      <div className='flex items-center justify-end gap-2 pt-2'>
+                        <Button
+                          size='sm'
+                          variant='ghost'
+                          onClick={() => setEditingId(null)}
+                          className='text-xs text-zinc-400 hover:text-white'
+                        >
+                          Cancelar
+                        </Button>
+                        <Button
+                          size='sm'
+                          disabled={state.saving}
+                          onClick={() => handleSaveOutflow(entry)}
+                          className='text-xs font-bold bg-rose-500 hover:bg-rose-400 text-zinc-950 cursor-pointer flex items-center gap-1'
+                        >
+                          {state.saving ? <Loader2 size={12} className='animate-spin' /> : <Save size={12} />}
+                          Salvar Destinação
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </Card>
+              );
+            })
+          )}
+        </div>
+      )}
 
       {/* Navegação de Rodapé */}
-      <div className="flex items-center justify-between pt-2">
+      <div className='flex items-center justify-between pt-4 border-t border-zinc-800'>
         <Button
-          variant="outline"
+          variant='outline'
           onClick={onBack}
-          className="flex items-center gap-2 text-sm border-zinc-700 text-zinc-400 hover:text-zinc-200 cursor-pointer"
+          className='py-2.5 px-4 text-xs font-semibold rounded-xl border-zinc-800 text-zinc-400 hover:text-white flex items-center gap-2'
         >
           <ArrowLeft size={16} />
-          Voltar ao Passo 4
+          Voltar
         </Button>
+
         <Button
           onClick={onNext}
-          className="flex items-center gap-2 text-sm bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 cursor-pointer shadow-md shadow-emerald-950/30"
+          className='py-2.5 px-6 text-xs font-bold rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 shadow-md shadow-emerald-950/40 flex items-center gap-2 cursor-pointer'
         >
-          Próximo: Conferência de Cofre
+          Avançar para Cofres
           <ArrowRight size={16} />
         </Button>
       </div>

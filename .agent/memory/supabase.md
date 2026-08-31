@@ -1,3 +1,14 @@
+## [2026-08-31] — [Feature ID: 322-conciliacao-saidas-ofx-contas-e-justificativa-despesas-orfas]
+
+**Contexto:** Criação das RPCs atômicas `public.resolve_orphan_saida_ofx` e `public.close_daily_snapshot` com extensão da coluna `is_extra` em `daily_manual_bills`.
+
+**Regra aprendida:**
+1. **RPC `resolve_orphan_saida_ofx`:**
+   - Recebe `p_ofx_id`, `p_category`, `p_justification`, `p_contabilizar_no_subtotal`, `p_store_id`, `p_amount`, `p_target_date`, `p_bill_id`.
+   - Executa row-locking em `ofx_transactions` e resolve atômico em 3 modos: `linked_existing`, `created_extra_bill` ou `justified_only`.
+2. **RPC `close_daily_snapshot`:**
+   - Executa `get_daily_reconciliation_summary(p_date, true)` dinâmico e faz upsert em `daily_snapshots` com `is_closed = true`, persistindo os 5 pilares canônicos no snapshot.
+
 ## [2026-08-31] — [Feature ID: 321-motor-automatch-ia-e-unificacao-vinculo-pix-rede-wizard]
 
 **Contexto:** Criação das RPCs atômicas `public.link_manual_pix_to_os`, `public.link_manual_rede_to_os` e `public.unlink_manual_os_match` com isolamento estrito por `store_id` e row-locking (`FOR UPDATE`), permitindo que a conciliação manual de PIX e vendas da Rede atualize OSs sem inflar o faturamento ou causar colisão entre filiais.

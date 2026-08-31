@@ -1,3 +1,21 @@
+## [2026-08-31] — [Feature ID: 322-conciliacao-saidas-ofx-contas-e-justificativa-despesas-orfas]
+
+**Contexto:** Idempotência estrita do motor de conciliação (persistência e auto-matches rodando estritamente uma única vez no Step de Ingestão e Step 7 efetuando selamento atômico) e tratamento completo de Saídas Órfãs do OFX com abas dedicadas e toggle contábil para compor ou não o Contas a Pagar do DRE.
+
+**Regra aprendida:**
+1. **Idempotência Estrita da Ingestão e Fechamento:**
+   - No Step 3 (Processar e Conciliar com IA), a esteira grava as transações, roda as RPCs `auto_match_transactions`, `auto_match_saidas`, `calculate_daily_conciliation` e o Gemini IA **uma única vez**.
+   - No Step 7 (Finalizar Fechamento), o sistema NÃO reexecuta inserts nem repete batches: chama a RPC atômica `public.close_daily_snapshot` para selar o snapshot (`is_closed = true`).
+2. **Segregação Contábil de Saídas Órfãs do OFX:**
+   - Débitos bancários do extrato OFX sem correspondência em contas a pagar importadas podem ser:
+     - **Despesas Operacionais Reais:** Marcadas com toggle *"Adicionar ao Contas a Pagar (Despesa Extra)"*, gerando registro em `daily_manual_bills` com `is_extra = true` e `contabilizar_no_subtotal = true`.
+     - **Movimentações Não-Operacionais:** (ex: Transferência entre Lojas, Aportes, Tarifas, Sangrias) mantidas fora do subtotal de contas (`contabilizar_no_subtotal = false`) para não gerar falsa divergência contábil de 1:1 na Diferença Final.
+     - **Vínculo Manual a Conta Existente:** Pareadas diretamente com um clique com contas da mesma filial em aberto.
+3. **Bloqueio de Inversão de Natureza Contábil:**
+   - Entradas bancárias (créditos) justificadas no wizard **NUNCA** devem ser inseridas em `daily_manual_bills`, sendo mantidas em `ofx_transactions.manual_category` para evitar inflar o subtotal de contas a pagar.
+
+**Risco identificado / Anti-pattern:** Nunca inserir créditos bancários na tabela `daily_manual_bills` e nunca permitir que transferências entre filiais entrem no `subtotal_contas` com `contabilizar_no_subtotal = true`.
+
 ## [2026-08-31] — [Feature ID: 321-motor-automatch-ia-e-unificacao-vinculo-pix-rede-wizard]
 
 **Contexto:** Inversão da esteira do wizard de importação para rodar a persistência, auto-matching em 3 camadas e reconciliação pericial com IA (Gemini) imediatamente após a confirmação do upload, deixando para a etapa manual apenas as transações genuinamente órfãs. Unificação do modal de vínculo manual (`ManualMatchOsModal`) para suportar tanto PIX quanto vendas da Rede com isolamento estrito por filial e ordenação de candidatos por score.

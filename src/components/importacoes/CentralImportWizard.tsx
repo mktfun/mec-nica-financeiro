@@ -1541,6 +1541,40 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     }
   };
 
+  const handleFinalizeClosing = async () => {
+    setIsSaving(true);
+    try {
+      addLog("🔒 Homologando e selando fechamento definitivo do dia...", "info");
+      const { data, error } = await supabase.rpc('close_daily_snapshot', {
+        p_date: targetDate,
+        p_notes: 'Fechamento homologado via Central de Conciliação',
+        p_metadata: {
+          odometro_hoje: odometroHoje || 0,
+          manual_dinheiro_mp: manualDinheiroMp || 0,
+          manual_a_receber: manualAReceber || 0,
+        }
+      });
+
+      if (error) throw error;
+
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] }),
+        queryClient.invalidateQueries({ queryKey: ['dashboard-v2'] }),
+      ]);
+
+      toast.success('🎉 Fechamento homologado e snapshot selado com sucesso!');
+      setSaveFinished(true);
+      setStep(8);
+    } catch (err: any) {
+      console.error(err);
+      toast.error(`Erro ao finalizar fechamento: ${err.message || 'Falha no banco'}`);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   // Totais (Com Filtro Estrito para Preview)
   let filteredOsCount = 0;
   let allOsCount = 0;
@@ -2458,7 +2492,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
               manualInputs={manualInputs}
               missingOsList={missingOsList}
               isSaving={isSaving}
-              onFinish={() => handleConfirm(false)}
+              onFinish={handleFinalizeClosing}
               onBack={() => setStep(6)}
             />
           </motion.div>
