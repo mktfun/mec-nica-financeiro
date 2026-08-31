@@ -15,9 +15,10 @@ import {
   TrendingUp, 
   TrendingDown, 
   Check, 
-  Link2 
+  Link2,
+  RefreshCw
 } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 export interface OFXEntry {
   id: string;
@@ -146,9 +147,66 @@ export function Step2NonRevenueJustifications({
   onNext,
   onBack,
 }: Props) {
-  const [activeTab, setActiveTab] = useState<'inflows' | 'outflows'>('inflows');
+  const queryClient = useQueryClient();
+  const [activeTab, setActiveTab] = useState<'inflows' | 'outflows'>('outflows');
+
+  // 1. Débitos bancários do OFX pendentes de casamento (Saídas Órfãs Reais do Banco)
+  const { data: dbOutflows = [], isLoading: isLoadingOutflows, refetch: refetchOutflows } = useQuery({
+    queryKey: ['pending-ofx-outflows', targetDate],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('ofx_transactions')
+        .select('id, store_id, bank_name, type, amount, occurred_at, fitid, counterpart_name, title, matched_bill_id, match_status, manual_category, manual_justification, target_date, contabilizar_no_subtotal')
+        .or(`target_date.eq.${targetDate},occurred_at.gte.${targetDate}T00:00:00,occurred_at.lte.${targetDate}T23:59:59`)
+        .eq('type', 'out')
+        .is('matched_bill_id', null);
+      if (error) throw error;
+      return data || [];
+    }
+  });
+
+  // 2. Entradas bancárias do OFX sem vínculo com OS (Entradas Órfãs Reais do Banco)
+  const { data: dbInflows = [], isLoading: isLoadingInflows, refetch: refetchInflows } = useQuery({
+    queryKey: ['pending-ofx-inflows', targetDate],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('ofx_transactions')
+        .select('id, store_id, bank_name, type, amount, occurred_at, fitid, counterpart_name, title, matched_os_number, match_status, manual_category, manual_justification, target_date')
+        .or(`target_date.eq.${targetDate},occurred_at.gte.${targetDate}T00:00:00,occurred_at.lte.${targetDate}T23:59:59`)
+        .eq('type', 'in')
+        .is('matched_os_number', null);
+      if (error) throw error;
+      return data || [];
+    }
+  });
 
   const nonRevenueInflowEntries = useMemo<OFXEntry[]>(() => {
+    if (dbInflows.length > 0) {
+      return dbInflows
+        .filter((tx: any) => {
+          const fullDesc = `${tx.title || ''} ${tx.counterpart_name || ''} ${tx.bank_name || ''}`.trim();
+          if (EXCLUDE_ACQUIRER_REGEX.test(fullDesc)) return false;
+          if (EXCLUDE_BANK_EARNINGS_REGEX.test(fullDesc)) return false;
+          return true;
+        })
+        .map((tx: any) => {
+          const storeObj = stores.find(s => s.id === tx.store_id);
+          const storeName = storeObj?.name || tx.store_id || 'Loja';
+          return {
+            id: tx.id,
+            storeId: tx.store_id || '',
+            storeName,
+            amount: Math.abs(Number(tx.amount || 0)),
+            description: tx.counterpart_name || tx.title || tx.bank_name || 'Movimentação Bancária',
+            date: tx.target_date || (tx.occurred_at ? String(tx.occurred_at).slice(0, 10) : targetDate),
+            fitid: tx.fitid || '',
+            type: 'in' as const,
+            matchedOsNumber: tx.matched_os_number || undefined,
+          };
+        });
+    }
+
+    // Fallback em memória caso a query ainda não tenha carregado
     const entries: OFXEntry[] = [];
     results.ofxResults?.forEach((ofxResult: any) => {
       const storeId = mapping[ofxResult.alias] || '';
@@ -185,9 +243,32 @@ export function Step2NonRevenueJustifications({
       });
     });
     return entries;
-  }, [results, mapping, stores, targetDate]);
+  }, [dbInflows, results, mapping, stores, targetDate]);
 
   const nonRevenueOutflowEntries = useMemo<OFXEntry[]>(() => {
+    if (dbOutflows.length > 0) {
+      return dbOutflows
+        .filter((tx: any) => {
+          const fullDesc = `${tx.title || ''} ${tx.counterpart_name || ''} ${tx.bank_name || ''}`.trim();
+          return !EXCLUDE_BANK_EARNINGS_REGEX.test(fullDesc);
+        })
+        .map((tx: any) => {
+          const storeObj = stores.find(s => s.id === tx.store_id);
+          const storeName = storeObj?.name || tx.store_id || 'Loja';
+          return {
+            id: tx.id,
+            storeId: tx.store_id || '',
+            storeName,
+            amount: Math.abs(Number(tx.amount || 0)),
+            description: tx.counterpart_name || tx.title || tx.bank_name || 'Débito Bancário',
+            date: tx.target_date || (tx.occurred_at ? String(tx.occurred_at).slice(0, 10) : targetDate),
+            fitid: tx.fitid || '',
+            type: 'out' as const,
+            matchedBillId: tx.matched_bill_id || undefined,
+          };
+        });
+    }
+
     const entries: OFXEntry[] = [];
     results.ofxResults?.forEach((ofxResult: any) => {
       const storeId = mapping[ofxResult.alias] || '';
@@ -214,7 +295,7 @@ export function Step2NonRevenueJustifications({
       });
     });
     return entries;
-  }, [results, mapping, stores, targetDate]);
+  }, [dbOutflows, results, mapping, stores, targetDate]);
 
   const { data: openBills = [] } = useQuery({
     queryKey: ['open-bills-for-step2', targetDate],
@@ -289,12 +370,14 @@ export function Step2NonRevenueJustifications({
           manual_justification: finalJustification,
           match_status: state.impactsRevenue ? 'REVENUE_ADJUSTED' : 'JUSTIFIED',
         })
-        .or(`id.eq.${entry.id},fitid.eq.${entry.fitid}`);
+        .eq('id', entry.id);
 
       if (ofxErr) throw ofxErr;
 
       updateInflowState(entry.id, { saving: false, saved: true }, entry.description);
       setEditingId(null);
+      refetchInflows();
+      queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
       toast.success(`Justificativa salva! (${state.impactsRevenue ? '📈 Soma ao Faturamento' : '🚫 Apenas Conciliar'})`);
     } catch (err: any) {
       updateInflowState(entry.id, { saving: false }, entry.description);
@@ -321,6 +404,11 @@ export function Step2NonRevenueJustifications({
 
       updateOutflowState(entry.id, { saving: false, saved: true }, entry.description);
       setEditingId(null);
+      refetchOutflows();
+      queryClient.invalidateQueries({ queryKey: ['open-bills-for-step2'] });
+      queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['daily-manual-bills'] });
+
       if (state.selectedBillId) {
         toast.success('Débito vinculado à conta existente com sucesso!');
       } else if (state.adicionaNoContas) {
@@ -332,6 +420,12 @@ export function Step2NonRevenueJustifications({
       updateOutflowState(entry.id, { saving: false }, entry.description);
       toast.error(`Erro ao resolver saída: ${err.message}`);
     }
+  };
+
+  const handleRefresh = () => {
+    refetchOutflows();
+    refetchInflows();
+    toast.info('Atualizando transações pendentes do banco...');
   };
 
   const visibleInflows = nonRevenueInflowEntries.filter(e => !getInflowState(e.id, e.description).cancelled);
@@ -350,369 +444,255 @@ export function Step2NonRevenueJustifications({
               <FileQuestion className='text-amber-400' size={20} />
               Passo 5: Justificativas de Movimentações por Loja
             </h2>
-            <p className='text-xs text-zinc-400 mt-1 max-w-3xl'>
+            <p className='text-sm text-zinc-400 mt-1'>
               Classifique entradas e saídas bancárias que não foram casadas automaticamente. Defina se somam ao Faturamento (Entradas), se viram Despesa Extra no Contas a Pagar (Saídas) ou se são apenas transferências internas.
             </p>
           </div>
-
-          <div className='flex items-center gap-2 bg-zinc-950 p-1 rounded-xl border border-zinc-800 shrink-0'>
-            <button
-              onClick={() => setActiveTab('inflows')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer ${
-                activeTab === 'inflows' ? 'bg-zinc-800 text-white border border-zinc-700' : 'text-zinc-400 hover:text-white'
-              }`}
+          <div className='flex items-center gap-2 shrink-0'>
+            <Button
+              variant='outline'
+              size='sm'
+              onClick={handleRefresh}
+              className='bg-zinc-800/80 border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-700'
             >
-              <TrendingUp size={14} className='text-emerald-400' />
-              Entradas Órfãs ({visibleInflows.length})
-              {savedInflowCount > 0 && <span className='text-[10px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded font-mono'>{savedInflowCount}</span>}
-            </button>
-            <button
-              onClick={() => setActiveTab('outflows')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer ${
-                activeTab === 'outflows' ? 'bg-zinc-800 text-white border border-zinc-700' : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              <TrendingDown size={14} className='text-rose-400' />
-              Saídas Órfãs ({visibleOutflows.length})
-              {savedOutflowCount > 0 && <span className='text-[10px] bg-rose-500/20 text-rose-400 px-1.5 py-0.5 rounded font-mono'>{savedOutflowCount}</span>}
-            </button>
+              <RefreshCw size={14} className={(isLoadingOutflows || isLoadingInflows) ? 'animate-spin' : ''} />
+              Atualizar
+            </Button>
+            <Badge variant='outline' className='bg-zinc-800 border-zinc-700 text-zinc-300 text-xs px-3 py-1.5'>
+              {activeTab === 'inflows' ? (
+                <span>{savedInflowCount} de {visibleInflows.length} entradas justificadas</span>
+              ) : (
+                <span>{savedOutflowCount} de {visibleOutflows.length} saídas tratadas</span>
+              )}
+            </Badge>
           </div>
+        </div>
+
+        {/* Tab Navigation */}
+        <div className='flex border-b border-zinc-800 mt-5'>
+          <button
+            onClick={() => setActiveTab('outflows')}
+            className={`flex items-center gap-2 px-5 py-3 text-sm font-medium border-b-2 transition-all ${
+              activeTab === 'outflows'
+                ? 'border-rose-500 text-rose-400 bg-rose-500/5'
+                : 'border-transparent text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40'
+            }`}
+          >
+            <TrendingDown size={16} className='text-rose-400' />
+            <span>Saídas Órfãs ({visibleOutflows.length})</span>
+            {savedOutflowCount === visibleOutflows.length && visibleOutflows.length > 0 && (
+              <Check size={14} className='text-emerald-400' />
+            )}
+          </button>
+
+          <button
+            onClick={() => setActiveTab('inflows')}
+            className={`flex items-center gap-2 px-5 py-3 text-sm font-medium border-b-2 transition-all ${
+              activeTab === 'inflows'
+                ? 'border-emerald-500 text-emerald-400 bg-emerald-500/5'
+                : 'border-transparent text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40'
+            }`}
+          >
+            <TrendingUp size={16} className='text-emerald-400' />
+            <span>Entradas Órfãs ({visibleInflows.length})</span>
+            {savedInflowCount === visibleInflows.length && visibleInflows.length > 0 && (
+              <Check size={14} className='text-emerald-400' />
+            )}
+          </button>
         </div>
       </Card>
 
-      {/* ABA 1: ENTRADAS ÓRFÃS */}
-      {activeTab === 'inflows' && (
-        <div className='space-y-4'>
-          {visibleInflows.length === 0 ? (
-            <Card className='p-12 text-center border-zinc-800 bg-zinc-900/40'>
-              <CheckCircle2 size={40} className='mx-auto mb-3 text-emerald-500' />
-              <p className='text-sm font-semibold text-zinc-200'>Nenhuma entrada bancária órfã para justificar!</p>
-              <p className='text-xs text-zinc-500 mt-1'>Todas as entradas foram casadas com OSs ou são liquidações de cartão.</p>
-            </Card>
-          ) : (
-            visibleInflows.map(entry => {
-              const state = getInflowState(entry.id, entry.description);
-              const isEditing = editingId === entry.id;
-
-              return (
-                <Card
-                  key={entry.id}
-                  className={`p-4 border transition-all ${
-                    state.saved
-                      ? 'bg-emerald-950/10 border-emerald-500/30'
-                      : isEditing
-                      ? 'bg-zinc-900 border-amber-500/50 shadow-lg shadow-amber-950/20'
-                      : 'bg-zinc-900/60 border-zinc-800 hover:border-zinc-700'
-                  }`}
-                >
-                  <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
-                    <div className='flex items-start gap-3'>
-                      <div className='p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0 mt-0.5'>
-                        <TrendingUp size={18} />
-                      </div>
-                      <div>
-                        <div className='flex items-center gap-2'>
-                          <span className='font-semibold text-sm text-zinc-100'>{entry.storeName}</span>
-                          <span className='text-xs text-zinc-500 font-mono'>({entry.date})</span>
-                          {state.saved && (
-                            <Badge variant='brand' className='text-[10px] bg-emerald-500/20 text-emerald-400 border-emerald-500/30 font-mono'>
-                              <Check size={10} className='mr-1 inline' /> Salvo
-                            </Badge>
-                          )}
-                        </div>
-                        <p className='text-xs text-zinc-300 mt-0.5 max-w-xl break-words font-sans'>{entry.description}</p>
-                      </div>
-                    </div>
-
-                    <div className='flex items-center gap-4 shrink-0'>
-                      <div className='text-right'>
-                        <span className='text-[10px] text-zinc-500 uppercase block font-semibold'>Crédito OFX</span>
-                        <span className='text-base font-bold font-mono text-emerald-400'>
-                          +R$ {entry.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                        </span>
-                      </div>
-
-                      {!isEditing && !state.saved && (
-                        <Button
-                          size='sm'
-                          onClick={() => setEditingId(entry.id)}
-                          className='text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 font-semibold cursor-pointer'
-                        >
-                          Classificar
-                        </Button>
-                      )}
-                      {state.saved && (
-                        <Button
-                          size='sm'
-                          variant='ghost'
-                          onClick={() => setEditingId(entry.id)}
-                          className='text-xs text-zinc-400 hover:text-white'
-                        >
-                          Alterar
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-
-                  {isEditing && (
-                    <div className='mt-4 pt-4 border-t border-zinc-800/80 space-y-4'>
-                      <div>
-                        <label className='block text-[11px] font-bold uppercase text-zinc-400 mb-2'>Selecione a Categoria da Entrada:</label>
-                        <div className='flex flex-wrap gap-2'>
-                          {QUICK_INFLOW_CATEGORIES.map(cat => {
-                            const isSelected = state.category === cat.label;
-                            return (
-                              <button
-                                key={cat.id}
-                                type='button'
-                                onClick={() => updateInflowState(entry.id, { category: cat.label, impactsRevenue: cat.defaultImpact }, entry.description)}
-                                className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
-                                  isSelected
-                                    ? `${cat.color} ring-2 ring-emerald-400/40 font-bold`
-                                    : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
-                                }`}
-                              >
-                                {cat.label}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-
-                      <div className='flex items-center justify-between p-3 rounded-xl bg-zinc-950 border border-zinc-800'>
-                        <div>
-                          <span className='text-xs font-bold text-zinc-200 block'>Entra no Faturamento do Dia?</span>
-                          <span className='text-[11px] text-zinc-500'>
-                            {state.impactsRevenue ? '📈 SIM: Será somado ao Faturamento do Fechamento' : '🚫 NÃO: É apenas movimentação/transferência interna'}
-                          </span>
-                        </div>
-                        <div className='flex items-center gap-2'>
-                          <button
-                            type='button'
-                            onClick={() => updateInflowState(entry.id, { impactsRevenue: false }, entry.description)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                              !state.impactsRevenue ? 'bg-cyan-500 text-zinc-950' : 'bg-zinc-900 text-zinc-400 hover:text-white'
-                            }`}
-                          >
-                            Apenas Conciliar
-                          </button>
-                          <button
-                            type='button'
-                            onClick={() => updateInflowState(entry.id, { impactsRevenue: true }, entry.description)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                              state.impactsRevenue ? 'bg-emerald-500 text-zinc-950' : 'bg-zinc-900 text-zinc-400 hover:text-white'
-                            }`}
-                          >
-                            + Faturamento
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className='flex items-center justify-end gap-2 pt-2'>
-                        <Button
-                          size='sm'
-                          variant='ghost'
-                          onClick={() => setEditingId(null)}
-                          className='text-xs text-zinc-400 hover:text-white'
-                        >
-                          Cancelar
-                        </Button>
-                        <Button
-                          size='sm'
-                          disabled={state.saving}
-                          onClick={() => handleSaveInflow(entry)}
-                          className='text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-zinc-950 cursor-pointer flex items-center gap-1'
-                        >
-                          {state.saving ? <Loader2 size={12} className='animate-spin' /> : <Save size={12} />}
-                          Salvar Classificação
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                </Card>
-              );
-            })
-          )}
-        </div>
+      {/* Loading state */}
+      {(isLoadingOutflows || isLoadingInflows) && (
+        <Card className='p-6 bg-zinc-950/80 border-zinc-800 flex items-center justify-center gap-3 text-zinc-400'>
+          <Loader2 className='animate-spin text-emerald-400' size={20} />
+          <span>Sincronizando movimentações pendentes com o banco...</span>
+        </Card>
       )}
 
-      {/* ABA 2: SAÍDAS ÓRFÃS */}
+      {/* Content: TAB OUTFLOWS */}
       {activeTab === 'outflows' && (
         <div className='space-y-4'>
           {visibleOutflows.length === 0 ? (
-            <Card className='p-12 text-center border-zinc-800 bg-zinc-900/40'>
-              <CheckCircle2 size={40} className='mx-auto mb-3 text-emerald-500' />
-              <p className='text-sm font-semibold text-zinc-200'>Nenhuma saída bancária órfã pendente!</p>
-              <p className='text-xs text-zinc-500 mt-1'>Todos os débitos bancários foram casados com contas a pagar importadas.</p>
+            <Card className='p-8 bg-zinc-950/40 border-zinc-800 text-center'>
+              <CheckCircle2 size={40} className='text-emerald-400 mx-auto mb-3' />
+              <p className='text-base font-semibold text-white'>Nenhuma Saída Bancária Órfã!</p>
+              <p className='text-sm text-zinc-400 mt-1 max-w-md mx-auto'>
+                Todos os débitos bancários do extrato OFX foram pareados automaticamente com o Contas a Pagar pelo motor de matching.
+              </p>
             </Card>
           ) : (
             visibleOutflows.map(entry => {
               const state = getOutflowState(entry.id, entry.description);
-              const isEditing = editingId === entry.id;
+              const isEditing = editingId === entry.id || !state.saved;
               const storeOpenBills = openBills.filter((b: any) => !entry.storeId || !b.store_id || b.store_id === entry.storeId);
 
               return (
                 <Card
                   key={entry.id}
-                  className={`p-4 border transition-all ${
+                  className={`p-4 transition-all ${
                     state.saved
-                      ? 'bg-rose-950/10 border-rose-500/30'
-                      : isEditing
-                      ? 'bg-zinc-900 border-amber-500/50 shadow-lg shadow-amber-950/20'
-                      : 'bg-zinc-900/60 border-zinc-800 hover:border-zinc-700'
+                      ? 'bg-zinc-950/40 border-zinc-800/60 opacity-80'
+                      : 'bg-zinc-900 border-zinc-700/80 shadow-lg'
                   }`}
                 >
-                  <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
-                    <div className='flex items-start gap-3'>
-                      <div className='p-2.5 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20 shrink-0 mt-0.5'>
-                        <TrendingDown size={18} />
-                      </div>
-                      <div>
-                        <div className='flex items-center gap-2'>
-                          <span className='font-semibold text-sm text-zinc-100'>{entry.storeName}</span>
-                          <span className='text-xs text-zinc-500 font-mono'>({entry.date})</span>
+                  <div className='flex flex-col gap-3'>
+                    {/* Linha superior: Dados do débito OFX */}
+                    <div className='flex items-start justify-between gap-3'>
+                      <div className='flex-1 min-w-0'>
+                        <div className='flex items-center gap-2 flex-wrap'>
+                          <Badge variant='outline' className='bg-zinc-800 text-zinc-300 text-xs'>
+                            {entry.storeName}
+                          </Badge>
+                          <span className='text-xs text-zinc-400 font-mono'>
+                            {entry.date ? `(${entry.date})` : ''}
+                          </span>
                           {state.saved && (
-                            <Badge variant='brand' className='text-[10px] bg-rose-500/20 text-rose-400 border-rose-500/30 font-mono'>
-                              <Check size={10} className='mr-1 inline' /> Salvo
+                            <Badge className='bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-xs flex items-center gap-1'>
+                              <Check size={12} /> Salvo
                             </Badge>
                           )}
                         </div>
-                        <p className='text-xs text-zinc-300 mt-0.5 max-w-xl break-words font-sans'>{entry.description}</p>
+                        <p className='text-sm font-semibold text-zinc-200 mt-1 truncate'>
+                          {entry.description}
+                        </p>
+                      </div>
+
+                      <div className='text-right shrink-0'>
+                        <span className='text-xs text-zinc-400 block'>Débito OFX</span>
+                        <span className='text-base font-mono font-bold text-rose-400'>
+                          -R$ {entry.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </span>
                       </div>
                     </div>
 
-                    <div className='flex items-center gap-4 shrink-0'>
-                      <div className='text-right'>
-                        <span className='text-[10px] text-zinc-500 uppercase block font-semibold'>Débito OFX</span>
-                        <span className='text-base font-bold font-mono text-rose-400'>
-                          -R$ {entry.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                        </span>
-                      </div>
+                    {/* Linha de Ação: Selecionar Categoria e Destino Contábil */}
+                    {isEditing ? (
+                      <div className='mt-2 pt-3 border-t border-zinc-800/80 space-y-3'>
+                        {/* Categorias Rápidas */}
+                        <div>
+                          <label className='text-xs text-zinc-400 block mb-1.5 font-medium'>
+                            1. Selecione a Categoria da Saída:
+                          </label>
+                          <div className='flex flex-wrap gap-1.5'>
+                            {QUICK_OUTFLOW_CATEGORIES.map(cat => (
+                              <button
+                                key={cat.id}
+                                type='button'
+                                onClick={() => updateOutflowState(entry.id, { 
+                                  category: cat.label, 
+                                  adicionaNoContas: cat.defaultImpact,
+                                  selectedBillId: null 
+                                }, entry.description)}
+                                className={`text-xs px-2.5 py-1 rounded-md border transition-all ${
+                                  state.category === cat.label
+                                    ? `${cat.color} font-semibold ring-1 ring-white/20`
+                                    : 'bg-zinc-800/60 border-zinc-700/50 text-zinc-400 hover:text-zinc-200'
+                                }`}
+                              >
+                                {cat.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
 
-                      {!isEditing && !state.saved && (
+                        {/* Vínculo Direto a Contas Existentes */}
+                        {storeOpenBills.length > 0 && (
+                          <div>
+                            <label className='text-xs text-zinc-400 block mb-1.5 font-medium flex items-center gap-1'>
+                              <Link2 size={12} className='text-cyan-400' />
+                              Ou Vincular a uma Conta em Aberto da Loja ({storeOpenBills.length} disponíveis):
+                            </label>
+                            <select
+                              value={state.selectedBillId || ''}
+                              onChange={e => {
+                                const bId = e.target.value || null;
+                                if (bId) {
+                                  const bill = storeOpenBills.find((b: any) => b.id === bId);
+                                  updateOutflowState(entry.id, {
+                                    selectedBillId: bId,
+                                    category: bill?.category || state.category,
+                                    adicionaNoContas: false // Já existe na base, só vincula
+                                  }, entry.description);
+                                } else {
+                                  updateOutflowState(entry.id, { selectedBillId: null }, entry.description);
+                                }
+                              }}
+                              className='w-full bg-zinc-950 border border-zinc-700 rounded-md px-3 py-1.5 text-xs text-zinc-200 focus:ring-1 focus:ring-cyan-500'
+                            >
+                              <option value=''>-- Não vincular (Criar Despesa Extra ou Apenas Justificar) --</option>
+                              {storeOpenBills.map((b: any) => (
+                                <option key={b.id} value={b.id}>
+                                  {b.recipient_name || b.title} - R$ {Number(b.amount).toFixed(2)} ({b.category || 'Geral'})
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        )}
+
+                        {/* Toggle Contábil: Adicionar ao Contas a Pagar */}
+                        {!state.selectedBillId && (
+                          <div className='flex items-center justify-between bg-zinc-950/60 p-2.5 rounded-md border border-zinc-800'>
+                            <div>
+                              <span className='text-xs font-medium text-zinc-200 block'>
+                                Adicionar ao Contas a Pagar (Despesa Extra)?
+                              </span>
+                              <span className='text-[11px] text-zinc-400'>
+                                {state.adicionaNoContas
+                                  ? '📈 Sim, somará ao Subtotal de Contas a Pagar no fechamento diário.'
+                                  : '🚫 Não, apenas justifica o débito (ex: transferência entre lojas, sangria, tarifa).'}
+                              </span>
+                            </div>
+                            <button
+                              type='button'
+                              onClick={() => updateOutflowState(entry.id, { adicionaNoContas: !state.adicionaNoContas }, entry.description)}
+                              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                                state.adicionaNoContas ? 'bg-emerald-600' : 'bg-zinc-700'
+                              }`}
+                            >
+                              <span
+                                className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                                  state.adicionaNoContas ? 'translate-x-4' : 'translate-x-1'
+                                }`}
+                              />
+                            </button>
+                          </div>
+                        )}
+
+                        {/* Botão de Salvar Linha */}
+                        <div className='flex items-center justify-end gap-2 pt-1'>
+                          <Button
+                            size='sm'
+                            onClick={() => handleSaveOutflow(entry)}
+                            disabled={state.saving}
+                            className='bg-rose-600 hover:bg-rose-500 text-white text-xs px-4 h-8 flex items-center gap-1.5'
+                          >
+                            {state.saving ? <Loader2 size={12} className='animate-spin' /> : <Save size={12} />}
+                            Salvar Destinação
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className='flex items-center justify-between pt-2 border-t border-zinc-800/40'>
+                        <div className='flex items-center gap-2'>
+                          <Badge variant='outline' className='text-xs bg-zinc-800/40 text-zinc-300'>
+                            {state.category}
+                          </Badge>
+                          <span className='text-xs text-zinc-400'>
+                            {state.selectedBillId ? '🔗 Vinculado a Conta Aberta' : (state.adicionaNoContas ? '📈 Soma no Contas a Pagar' : '🚫 Apenas Conciliar')}
+                          </span>
+                        </div>
                         <Button
-                          size='sm'
-                          onClick={() => setEditingId(entry.id)}
-                          className='text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 font-semibold cursor-pointer'
-                        >
-                          Destinar Débito
-                        </Button>
-                      )}
-                      {state.saved && (
-                        <Button
-                          size='sm'
                           variant='ghost'
+                          size='sm'
                           onClick={() => setEditingId(entry.id)}
-                          className='text-xs text-zinc-400 hover:text-white'
+                          className='text-xs text-zinc-400 hover:text-white h-7 px-2'
                         >
                           Alterar
                         </Button>
-                      )}
-                    </div>
-                  </div>
-
-                  {isEditing && (
-                    <div className='mt-4 pt-4 border-t border-zinc-800/80 space-y-4'>
-                      {storeOpenBills.length > 0 && (
-                        <div className='p-3 rounded-xl bg-zinc-950 border border-zinc-800'>
-                          <label className='block text-[11px] font-bold uppercase text-zinc-400 mb-1 flex items-center gap-1'>
-                            <Link2 size={12} className='text-cyan-400' />
-                            Vincular a uma Conta Existente da Loja (1-Clique):
-                          </label>
-                          <select
-                            value={state.selectedBillId || ''}
-                            onChange={e => updateOutflowState(entry.id, { selectedBillId: e.target.value || null, adicionaNoContas: false }, entry.description)}
-                            className='w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-200 focus:outline-none focus:border-cyan-500'
-                          >
-                            <option value=''>-- Não vincular a conta existente (Criar Extra ou Apenas Justificar) --</option>
-                            {storeOpenBills.map((b: any) => (
-                              <option key={b.id} value={b.id}>
-                                {b.title || b.recipient_name} — R$ {Number(b.amount).toFixed(2)} ({b.category || 'Despesa'})
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      )}
-
-                      {!state.selectedBillId && (
-                        <>
-                          <div>
-                            <label className='block text-[11px] font-bold uppercase text-zinc-400 mb-2'>Selecione a Categoria da Saída:</label>
-                            <div className='flex flex-wrap gap-2'>
-                              {QUICK_OUTFLOW_CATEGORIES.map(cat => {
-                                const isSelected = state.category === cat.label;
-                                return (
-                                  <button
-                                    key={cat.id}
-                                    type='button'
-                                    onClick={() => updateOutflowState(entry.id, { category: cat.label, adicionaNoContas: cat.defaultImpact }, entry.description)}
-                                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
-                                      isSelected
-                                        ? `${cat.color} ring-2 ring-rose-400/40 font-bold`
-                                        : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
-                                    }`}
-                                  >
-                                    {cat.label}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
-
-                          <div className='flex items-center justify-between p-3 rounded-xl bg-zinc-950 border border-zinc-800'>
-                            <div>
-                              <span className='text-xs font-bold text-zinc-200 block'>Adicionar ao Contas a Pagar (Despesa Extra)?</span>
-                              <span className='text-[11px] text-zinc-500'>
-                                {state.adicionaNoContas 
-                                  ? '📈 SIM: Soma no Subtotal Contas a Pagar do Fechamento' 
-                                  : '🚫 NÃO: Apenas justifica a saída sem inflar as despesas operacionais'}
-                              </span>
-                            </div>
-                            <div className='flex items-center gap-2'>
-                              <button
-                                type='button'
-                                onClick={() => updateOutflowState(entry.id, { adicionaNoContas: false }, entry.description)}
-                                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                                  !state.adicionaNoContas ? 'bg-cyan-500 text-zinc-950' : 'bg-zinc-900 text-zinc-400 hover:text-white'
-                                }`}
-                              >
-                                Apenas Justificar
-                              </button>
-                              <button
-                                type='button'
-                                onClick={() => updateOutflowState(entry.id, { adicionaNoContas: true }, entry.description)}
-                                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                                  state.adicionaNoContas ? 'bg-rose-500 text-zinc-950' : 'bg-zinc-900 text-zinc-400 hover:text-white'
-                                }`}
-                              >
-                                + Despesa Extra
-                              </button>
-                            </div>
-                          </div>
-                        </>
-                      )}
-
-                      <div className='flex items-center justify-end gap-2 pt-2'>
-                        <Button
-                          size='sm'
-                          variant='ghost'
-                          onClick={() => setEditingId(null)}
-                          className='text-xs text-zinc-400 hover:text-white'
-                        >
-                          Cancelar
-                        </Button>
-                        <Button
-                          size='sm'
-                          disabled={state.saving}
-                          onClick={() => handleSaveOutflow(entry)}
-                          className='text-xs font-bold bg-rose-500 hover:bg-rose-400 text-zinc-950 cursor-pointer flex items-center gap-1'
-                        >
-                          {state.saving ? <Loader2 size={12} className='animate-spin' /> : <Save size={12} />}
-                          Salvar Destinação
-                        </Button>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </Card>
               );
             })
@@ -720,23 +700,170 @@ export function Step2NonRevenueJustifications({
         </div>
       )}
 
-      {/* Navegação de Rodapé */}
+      {/* Content: TAB INFLOWS */}
+      {activeTab === 'inflows' && (
+        <div className='space-y-4'>
+          {visibleInflows.length === 0 ? (
+            <Card className='p-8 bg-zinc-950/40 border-zinc-800 text-center'>
+              <CheckCircle2 size={40} className='text-emerald-400 mx-auto mb-3' />
+              <p className='text-base font-semibold text-white'>Nenhuma Entrada Órfã!</p>
+              <p className='text-sm text-zinc-400 mt-1 max-w-md mx-auto'>
+                Todas as entradas bancárias do OFX foram vinculadas a Ordens de Serviço ou faturamento do dia.
+              </p>
+            </Card>
+          ) : (
+            visibleInflows.map(entry => {
+              const state = getInflowState(entry.id, entry.description);
+              const isEditing = editingId === entry.id || !state.saved;
+
+              return (
+                <Card
+                  key={entry.id}
+                  className={`p-4 transition-all ${
+                    state.saved
+                      ? 'bg-zinc-950/40 border-zinc-800/60 opacity-80'
+                      : 'bg-zinc-900 border-zinc-700/80 shadow-lg'
+                  }`}
+                >
+                  <div className='flex flex-col gap-3'>
+                    <div className='flex items-start justify-between gap-3'>
+                      <div className='flex-1 min-w-0'>
+                        <div className='flex items-center gap-2 flex-wrap'>
+                          <Badge variant='outline' className='bg-zinc-800 text-zinc-300 text-xs'>
+                            {entry.storeName}
+                          </Badge>
+                          <span className='text-xs text-zinc-400 font-mono'>
+                            {entry.date ? `(${entry.date})` : ''}
+                          </span>
+                          {state.saved && (
+                            <Badge className='bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-xs flex items-center gap-1'>
+                              <Check size={12} /> Salvo
+                            </Badge>
+                          )}
+                        </div>
+                        <p className='text-sm font-semibold text-zinc-200 mt-1 truncate'>
+                          {entry.description}
+                        </p>
+                      </div>
+
+                      <div className='text-right shrink-0'>
+                        <span className='text-xs text-zinc-400 block'>Crédito OFX</span>
+                        <span className='text-base font-mono font-bold text-emerald-400'>
+                          +R$ {entry.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </span>
+                      </div>
+                    </div>
+
+                    {isEditing ? (
+                      <div className='mt-2 pt-3 border-t border-zinc-800/80 space-y-3'>
+                        <div>
+                          <label className='text-xs text-zinc-400 block mb-1.5 font-medium'>
+                            1. Selecione o Tipo de Entrada:
+                          </label>
+                          <div className='flex flex-wrap gap-1.5'>
+                            {QUICK_INFLOW_CATEGORIES.map(cat => (
+                              <button
+                                key={cat.id}
+                                type='button'
+                                onClick={() => updateInflowState(entry.id, { 
+                                  category: cat.label, 
+                                  impactsRevenue: cat.defaultImpact 
+                                }, entry.description)}
+                                className={`text-xs px-2.5 py-1 rounded-md border transition-all ${
+                                  state.category === cat.label
+                                    ? `${cat.color} font-semibold ring-1 ring-white/20`
+                                    : 'bg-zinc-800/60 border-zinc-700/50 text-zinc-400 hover:text-zinc-200'
+                                }`}
+                              >
+                                {cat.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className='flex items-center justify-between bg-zinc-950/60 p-2.5 rounded-md border border-zinc-800'>
+                          <div>
+                            <span className='text-xs font-medium text-zinc-200 block'>
+                              Entra no Faturamento do Dia?
+                            </span>
+                            <span className='text-[11px] text-zinc-400'>
+                              {state.impactsRevenue
+                                ? '📈 Sim, somará ao Faturamento Apurado no fechamento diário.'
+                                : '🚫 Não, apenas justifica a entrada (ex: transferência entre lojas, aporte, estorno).'}
+                            </span>
+                          </div>
+                          <button
+                            type='button'
+                            onClick={() => updateInflowState(entry.id, { impactsRevenue: !state.impactsRevenue }, entry.description)}
+                            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                              state.impactsRevenue ? 'bg-emerald-600' : 'bg-zinc-700'
+                            }`}
+                          >
+                            <span
+                              className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                                state.impactsRevenue ? 'translate-x-4' : 'translate-x-1'
+                              }`}
+                            />
+                          </button>
+                        </div>
+
+                        <div className='flex items-center justify-end gap-2 pt-1'>
+                          <Button
+                            size='sm'
+                            onClick={() => handleSaveInflow(entry)}
+                            disabled={state.saving}
+                            className='bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-4 h-8 flex items-center gap-1.5'
+                          >
+                            {state.saving ? <Loader2 size={12} className='animate-spin' /> : <Save size={12} />}
+                            Salvar Entrada
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className='flex items-center justify-between pt-2 border-t border-zinc-800/40'>
+                        <div className='flex items-center gap-2'>
+                          <Badge variant='outline' className='text-xs bg-zinc-800/40 text-zinc-300'>
+                            {state.category}
+                          </Badge>
+                          <span className='text-xs text-zinc-400'>
+                            {state.impactsRevenue ? '📈 Soma no Faturamento' : '🚫 Apenas Conciliar'}
+                          </span>
+                        </div>
+                        <Button
+                          variant='ghost'
+                          size='sm'
+                          onClick={() => setEditingId(entry.id)}
+                          className='text-xs text-zinc-400 hover:text-white h-7 px-2'
+                        >
+                          Alterar
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </Card>
+              );
+            })
+          )}
+        </div>
+      )}
+
+      {/* Bottom Actions */}
       <div className='flex items-center justify-between pt-4 border-t border-zinc-800'>
         <Button
           variant='outline'
           onClick={onBack}
-          className='py-2.5 px-4 text-xs font-semibold rounded-xl border-zinc-800 text-zinc-400 hover:text-white flex items-center gap-2'
+          className='bg-zinc-800/80 border-zinc-700 text-zinc-300 hover:text-white'
         >
-          <ArrowLeft size={16} />
+          <ArrowLeft size={16} className='mr-2' />
           Voltar
         </Button>
 
         <Button
           onClick={onNext}
-          className='py-2.5 px-6 text-xs font-bold rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 shadow-md shadow-emerald-950/40 flex items-center gap-2 cursor-pointer'
+          className='bg-emerald-600 hover:bg-emerald-500 text-white px-6 font-semibold shadow-lg'
         >
-          Avançar para Cofres
-          <ArrowRight size={16} />
+          Avançar para Conferência de Cofre
+          <ArrowRight size={16} className='ml-2' />
         </Button>
       </div>
     </div>

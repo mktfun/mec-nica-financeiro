@@ -41,6 +41,8 @@ import { Step2NonRevenueJustifications } from './wizard/Step2NonRevenueJustifica
 import { Step3CashVaultDaniel } from './wizard/Step3CashVaultDaniel';
 import { Step4FinalAuditAndClose } from './wizard/Step4FinalAuditAndClose';
 import { executeAutoMatchingEngine, PendingUnmatchedTransaction } from '@/lib/matchers/autoMatchingEngine';
+import { useQueryClient } from '@tanstack/react-query';
+
 
 export interface ImportLogEntry {
   id: string;
@@ -75,6 +77,7 @@ const INITIAL_STAGES: AgentStage[] = [
 
 export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () => void, initialDate?: string }) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data: stores = [] } = useStores();
   const { mapping, updateMapping } = useStoreFileMappings(stores);
   const { processFiles, isProcessing, results, setResults } = useCentralImport();
@@ -1369,6 +1372,21 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         addLog("Pareamento automatico falhou mas dados foram salvos.", "warning");
       }
 
+      addLog("📑 Pareando débitos bancários com Contas a Pagar importadas...", "info");
+      try {
+        const { data: saidasData, error: saidasErr } = await supabase.rpc('auto_match_saidas', { p_date: targetDate });
+        if (saidasErr) {
+          console.warn("auto_match_saidas retornou erro (nao critico):", saidasErr);
+          addLog(`Pareamento de saídas parcial: ${saidasErr.message}`, "warning");
+        } else {
+          const matchedSaidas = (saidasData as any)?.matched_saidas_count || 0;
+          addLog(`🤖 Pareamento de saídas concluído: ${matchedSaidas} débito(s) bancário(s) vinculados a contas a pagar!`, "success");
+        }
+      } catch (saidasRpcErr: any) {
+        console.warn("Erro ao chamar auto_match_saidas:", saidasRpcErr);
+        addLog("Pareamento de saídas falhou mas dados foram salvos.", "warning");
+      }
+
       // 4.1. Auditoria Inteligente de Cartões & Banco via Google Gemini
       addLog("✨ Executando Auditoria Inteligente de Cartões da Rede via Google Gemini...", "info");
       try {
@@ -1521,6 +1539,11 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       setSaveFinished(true);
 
       if (advanceToWizard) {
+        queryClient.invalidateQueries({ queryKey: ['pending-ofx-outflows'] });
+        queryClient.invalidateQueries({ queryKey: ['pending-ofx-inflows'] });
+        queryClient.invalidateQueries({ queryKey: ['open-bills-for-step2'] });
+        queryClient.invalidateQueries({ queryKey: ['daily-manual-bills'] });
+        queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
         await new Promise(r => setTimeout(r, 600));
         const realUnmatched = await fetchRealUnmatchedTransactions(targetDate);
         setUnmatchedTransactions(realUnmatched);
