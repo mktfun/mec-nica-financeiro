@@ -50,7 +50,6 @@ export function usePreviousDaySnapshot(date: string) {
         .from('daily_snapshots')
         .select('*')
         .lt('date', date)
-        .gt('caixa_atual', 0)
         .order('date', { ascending: false })
         .limit(1)
         .maybeSingle();

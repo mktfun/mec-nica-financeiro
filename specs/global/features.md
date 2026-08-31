@@ -1,3 +1,10 @@
+### Spec 316 — Pareamento de Quitações em OSs Finalizadas e Encadeamento Canônico de Odômetro (28/08 -> 31/08)
+- **Motor Auto-Matching (`auto_match_transactions`)**: 3 camadas de pareamento (Regex textual de número de OS em memo/counterpart, matching de saldo devedor em OSs abertas, e matching de quitação em OSs finalizadas na data/últimos 7 dias).
+- **Vínculo Manual Assistido (`Step1UnregisteredPayments.tsx`)**: Exibição de OSs abertas e finalizadas com badges inteligentes e ordenação por proximidade de valor. Vínculo atômico de 1 clique sem alterar saldo de pátio em OSs já quitadas.
+- **Encadeamento de Odômetro Anterior**: Retorno de `'faturamento_anterior'` no Ramal 2 da RPC `get_daily_reconciliation_summary` com extração canônica de `metadata.odometro_hoje` (R$ 920.496,64 para o fechamento de 28/08).
+- **Interface Reativa do Wizard (`CentralImportWizard.tsx` & `Step4FinalAuditAndClose.tsx`)**: Exibição do Odômetro Anterior e cálculo do Delta de Faturamento do Dia em tempo real nos Steps 3 e 4.
+- **Migration**: `supabase/migrations/20260831000002_fix_automatch_and_odometro_encadeamento.sql`.
+
 ### Spec 284 — Reestruturação Canônica da Tela de Recebíveis e Integração do Pilar 3
 - **src/routes/recebiveis.tsx**: Alinhamento 1:1 com o padrão canônico de `src/routes/patio.tsx`, com 4 Summary Cards com `border-l-4`, abas de status (`Todas`, `Em Aberto`, `Vencidos`, `Liquidados`), timeline de boletos com badges de OS, parcela e vencimento, e paginação canônica.
 - **Filtro de Filiais Ativas**: Exibição exclusiva no dropdown e listas das lojas que possuem títulos registrados (Mauá - MHE R$ 10.394,50, Planalto - BRASICAR R$ 1.120,00, Piraporinha - EMPORIO R$ 300,00).

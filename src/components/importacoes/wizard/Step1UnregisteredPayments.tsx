@@ -69,45 +69,39 @@ export function Step1UnregisteredPayments({
     return set;
   }, [resolvedMatches, linkedTxs]);
 
-  // Busca OSs ativas do banco patio_os estritamente para a filial da transação ativa
+  // Busca OSs da filial no banco patio_os (abertas e finalizadas) para permitir vínculo assistido
   const { data: dbOsList = [], isLoading: isLoadingDbOs } = useQuery({
     queryKey: ['patio-os-for-linking-db', activeTx?.storeId],
     queryFn: async () => {
       if (!activeTx?.storeId) return [];
       const { data } = await supabase
         .from('patio_os')
-        .select('id, os_number, plate, client_name, model, total_value, paid_value, status, payment_method, credit_value, debit_value, pix_transfer_value, cash_value')
+        .select('id, os_number, plate, client_name, model, total_value, paid_value, status, payment_method, credit_value, debit_value, pix_transfer_value, cash_value, opened_at, closed_at')
         .eq('store_id', activeTx.storeId)
-        .neq('status', 'finalizada')
         .order('opened_at', { ascending: false })
-        .limit(150);
+        .limit(200);
       return data || [];
     },
     enabled: !!activeTx?.storeId
   });
 
-  // FONTE DUPLA FILTRADA: Apenas OSs da MESMA LOJA que NÃO foram vinculadas
+  // FONTE DUPLA FILTRADA: OSs da MESMA LOJA (Memória do Lote + Banco)
   const candidateOsList = useMemo<StoreOsCandidate[]>(() => {
     if (!activeTx?.storeId) return [];
     const map = new Map<string, StoreOsCandidate>();
 
-    // 1. Fonte Memória (Lote importado atual) — Estritamente da mesma loja
+    // 1. Fonte Memória (Lote importado atual)
     results.osFiles
       .filter(r => r.success && mapping[r.storeAlias] === activeTx.storeId)
       .forEach(file => {
         file.osArray.forEach(os => {
           const num = String(os.os_number || '').trim();
           if (!num) return;
-
-          // Se já foi casada ou vinculada, não exibir
           if (alreadyMatchedOsNumbers.has(num)) return;
 
           const total = Number(os.total_value || 0);
           const paid = Number(os.paid_value || 0);
           const open = Math.max(0, total - paid);
-
-          // Se está 100% quitada no arquivo e sem saldo em aberto, não poluir a lista
-          if (open === 0 && paid >= total && total > 0) return;
 
           map.set(num, {
             id: `mem-${num}`,
@@ -118,7 +112,7 @@ export function Step1UnregisteredPayments({
             total_value: total,
             paid_value: paid,
             open_balance: open,
-            payment_method: os.payment_method || 'Aberto',
+            payment_method: os.payment_method || (open === 0 ? 'Quitada / Finalizada' : 'Aberto'),
             parsed_credit: Number(os.parsed_credit || 0),
             parsed_debit: Number(os.parsed_debit || 0),
             parsed_pix: Number(os.parsed_pix_transfer || 0),
@@ -128,7 +122,7 @@ export function Step1UnregisteredPayments({
         });
       });
 
-    // 2. Fonte Banco de Dados (patio_os) — Estritamente da mesma loja
+    // 2. Fonte Banco de Dados (patio_os)
     dbOsList.forEach((row: any) => {
       const num = String(row.os_number || '').trim();
       if (!num || map.has(num)) return;
@@ -137,8 +131,6 @@ export function Step1UnregisteredPayments({
       const total = Number(row.total_value || 0);
       const paid = Number(row.paid_value || 0);
       const open = Math.max(0, total - paid);
-
-      if (open === 0 && paid >= total && total > 0) return;
 
       map.set(num, {
         id: row.id,
@@ -149,7 +141,7 @@ export function Step1UnregisteredPayments({
         total_value: total,
         paid_value: paid,
         open_balance: open,
-        payment_method: row.payment_method || 'Aberto',
+        payment_method: row.payment_method || (open === 0 ? 'Quitada / Finalizada' : 'Aberto'),
         parsed_credit: Number(row.credit_value || 0),
         parsed_debit: Number(row.debit_value || 0),
         parsed_pix: Number(row.pix_transfer_value || 0),
@@ -158,13 +150,25 @@ export function Step1UnregisteredPayments({
       });
     });
 
-    // Ordenar: primeiro as que têm valor compatível com a transação ativa
+    // Ordenar: primeiro as que têm valor compatível com a transação ativa (Sugestões Inteligentes)
     const list = Array.from(map.values());
     if (activeTx) {
       const txAmt = activeTx.amount;
       list.sort((a, b) => {
-        const matchA = Math.abs(a.open_balance - txAmt) <= 0.10 || Math.abs(a.total_value - txAmt) <= 0.10 ? 1 : 0;
-        const matchB = Math.abs(b.open_balance - txAmt) <= 0.10 || Math.abs(b.total_value - txAmt) <= 0.10 ? 1 : 0;
+        const matchA =
+          Math.abs(a.open_balance - txAmt) <= 0.10 ||
+          Math.abs(a.total_value - txAmt) <= 0.10 ||
+          Math.abs((a.parsed_pix || 0) - txAmt) <= 0.10 ||
+          Math.abs(a.paid_value - txAmt) <= 0.10
+            ? 1
+            : 0;
+        const matchB =
+          Math.abs(b.open_balance - txAmt) <= 0.10 ||
+          Math.abs(b.total_value - txAmt) <= 0.10 ||
+          Math.abs((b.parsed_pix || 0) - txAmt) <= 0.10 ||
+          Math.abs(b.paid_value - txAmt) <= 0.10
+            ? 1
+            : 0;
         return matchB - matchA;
       });
     }
@@ -187,6 +191,13 @@ export function Step1UnregisteredPayments({
   // Renderizador de Badges de Pagamento
   const renderPaymentBadges = (os: StoreOsCandidate) => {
     const badges = [];
+    if (os.open_balance === 0) {
+      badges.push(
+        <span key="done" className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          ✓ Quitada / Saldo Zerado
+        </span>
+      );
+    }
     if (os.parsed_credit && os.parsed_credit > 0) {
       badges.push(
         <span key="cred" className="px-2 py-0.5 rounded text-[10px] font-mono bg-blue-500/10 text-blue-400 border border-blue-500/20">
@@ -225,7 +236,7 @@ export function Step1UnregisteredPayments({
       } else {
         badges.push(
           <span key="open" className="px-2 py-0.5 rounded text-[10px] font-mono bg-rose-500/10 text-rose-400 border border-rose-500/20">
-            ⏳ Sem Pagamento Lançado
+            ⏳ Em Aberto no Pátio
           </span>
         );
       }
@@ -239,16 +250,31 @@ export function Step1UnregisteredPayments({
     setLinking(true);
     try {
       if (os.source === 'banco_patio') {
-        const newPaid = Number(os.paid_value || 0) + activeTx.amount;
-        const newStatus = newPaid >= os.total_value ? 'finalizada' : 'pago_parcial';
-        await supabase
-          .from('patio_os')
-          .update({
-            paid_value: newPaid,
-            payment_method: activeTx.paymentMethod,
-            status: newStatus
-          })
-          .eq('id', os.id);
+        if (os.open_balance > 0) {
+          const newPaid = Math.min(os.total_value, Number(os.paid_value || 0) + activeTx.amount);
+          const newStatus = newPaid >= (os.total_value - 0.05) ? 'finalizada' : 'pago_parcial';
+          await supabase
+            .from('patio_os')
+            .update({
+              paid_value: newPaid,
+              payment_method: activeTx.paymentMethod || os.payment_method,
+              status: newStatus,
+              matched_ofx_id: activeTx.id,
+              last_payment_date: targetDate,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', os.id);
+        } else {
+          // Se já está finalizada, apenas vincula o matched_ofx_id sem alterar valores
+          await supabase
+            .from('patio_os')
+            .update({
+              matched_ofx_id: activeTx.id,
+              match_status: 'MATCHED',
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', os.id);
+        }
       }
 
       await supabase.from('conciliation_matches').insert({
@@ -261,6 +287,31 @@ export function Step1UnregisteredPayments({
         payment_method: activeTx.paymentMethod,
         source: activeTx.source
       });
+
+      if (activeTx.source === 'ofx_pix' || activeTx.source === 'ofx_outros') {
+        await supabase
+          .from('ofx_transactions')
+          .update({
+            matched_os_number: os.os_number,
+            manual_category: 'Recebimento OS',
+            status: 'MATCHED'
+          })
+          .eq('id', activeTx.id);
+
+        try {
+          await supabase
+            .from('transactions')
+            .update({
+              os_number: os.os_number,
+              manual_category: 'Recebimento OS',
+              match_status: 'MATCHED',
+              status: 'completed'
+            })
+            .eq('id', activeTx.id);
+        } catch {
+          // Tabela legada opcional
+        }
+      }
 
       if (onLinkToOs) {
         onLinkToOs(activeTx.id, os.os_number, activeTx.amount, activeTx.paymentMethod);

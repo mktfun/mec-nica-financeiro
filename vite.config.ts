@@ -20,7 +20,7 @@ export default defineConfig({
   vite: {
     resolve: {
       alias: {
-        "framer-motion": path.resolve(__dirname, "node_modules/framer-motion/dist/cjs/index.js"),
+        "framer-motion": path.resolve(__dirname, "node_modules/framer-motion/dist/es/index.mjs"),
       },
     },
     ssr: {

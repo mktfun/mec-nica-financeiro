@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -7,6 +7,7 @@ import { CentralImportResults } from '@/lib/parsers/centralImportManager';
 import { useAiSettings } from '@/hooks/useAiSettings';
 import { reconcileRedeWithOfxViaGemini } from '@/lib/llm-matcher';
 import { useDailyReconciliationSummary } from '@/hooks/useBackendConciliacao';
+import { usePreviousDaySnapshot } from '@/hooks/useDailySnapshot';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import {
@@ -65,9 +66,162 @@ export function Step4FinalAuditAndClose({
   onBack,
 }: Props) {
   const { data: summary, refetch, isLoading } = useDailyReconciliationSummary(targetDate);
+  const { data: previousSnapshot } = usePreviousDaySnapshot(targetDate);
   const { data: aiSettings } = useAiSettings();
 
   const [runningAi, setRunningAi] = useState(false);
+
+  // -------------------------------------------------------------
+  // CÁLCULO CANÔNICO EM MEMÓRIA DOS 5 PILARES & DRE DO WIZARD
+  // -------------------------------------------------------------
+  const {
+    totalSaldoBanco,
+    saldoBancosPositivo,
+    saldoNegativoItau,
+    dinheiroMp,
+    aReceber,
+    naLojaOs,
+    faturamentoDia,
+    fatAnterior,
+    faturamentoPeriodo,
+    caixaAtual,
+    caixaAnterior,
+    fluxoCaixa,
+    valorDispContas,
+    jurosRede,
+    contasFinal,
+    subtotalContas,
+    diferencaFinal,
+    isOk,
+  } = useMemo(() => {
+    // 1. Pilar 1: Saldo Bancos OFX
+    let saldoPos = 0;
+    let saldoNeg = 0;
+    (results.ofxResults || []).forEach((ofx) => {
+      const bal = typeof ofx.bankBalance === 'number' ? ofx.bankBalance : 0;
+      if (bal < 0) saldoNeg += Math.abs(bal);
+      else saldoPos += bal;
+    });
+    const totalBanco = saldoPos - saldoNeg;
+
+    // 2. Pilar 2: Dinheiro MP
+    const mp = manualInputs.manualDinheiroMp || 0;
+
+    // 3. Pilar 3: A Receber
+    const rec = manualInputs.manualAReceber || 0;
+
+    // 4. Pilar 4: Na Loja OS (Pátio)
+    let patioSum = 0;
+    (results.osFiles || [])
+      .filter((r) => r.success)
+      .forEach((f) => {
+        (f.osArray || []).forEach((os) => {
+          const st = String(os.status || '').toLowerCase();
+          const isPendente =
+            st.includes('em_aberto') ||
+            st.includes('pago_parcial') ||
+            st.includes('em_andamento') ||
+            st === 'aberta' ||
+            st === 'aberto' ||
+            st === 'pendente';
+          if (isPendente) {
+            patioSum += Math.max(0, (Number(os.total_value) || 0) - (Number(os.paid_value) || 0));
+          }
+        });
+      });
+
+    (missingOsList || []).forEach((m) => {
+      const st = String(m.status || '').toLowerCase();
+      const isPendente =
+        st.includes('em_aberto') ||
+        st.includes('pago_parcial') ||
+        st.includes('em_andamento') ||
+        st === 'aberta' ||
+        st === 'aberto' ||
+        st === 'pendente';
+      if (isPendente) {
+        patioSum += Math.max(0, (Number(m.total_value) || 0) - (Number(m.paid_value) || 0));
+      }
+    });
+
+    // Se patioSum for 0 (ex: importação só de OFX), faz fallback para a prop da RPC
+    const finalPatio = patioSum > 0 ? patioSum : Number((summary as any)?.na_loja_os || 0);
+
+    // 5. Pilar 5: Faturamento (Odômetro Hoje - Odômetro Anterior)
+    const fatAnterior = Number(
+      (previousSnapshot?.metadata as any)?.odometro_hoje ??
+      (previousSnapshot?.metadata as any)?.faturamento_anterior ??
+      (previousSnapshot?.metadata as any)?.odometro_anterior ??
+      previousSnapshot?.faturamento ??
+      0
+    );
+    let fatBase = 0;
+    if (manualInputs.odometroHoje > 0) {
+      if (fatAnterior > 0 && manualInputs.odometroHoje >= fatAnterior) {
+        fatBase = manualInputs.odometroHoje - fatAnterior;
+      } else {
+        fatBase = manualInputs.odometroHoje;
+      }
+    } else {
+      // Fallback: soma faturamento das OSs faturadas
+      (results.osFiles || [])
+        .filter((r) => r.success)
+        .forEach((f) => {
+          (f.osArray || []).forEach((os) => {
+            const p = Number(os.paid_value) || 0;
+            if (p > 0) fatBase += p;
+          });
+        });
+    }
+
+    const fatPeriodo = fatBase;
+
+    // DRE & Semáforo
+    const cAtual = (saldoPos + mp + rec + finalPatio) - saldoNeg;
+    const cAnterior = Number(previousSnapshot?.caixa_atual || 0);
+    const flx = cAtual - cAnterior;
+    const vDisp = fatPeriodo - flx;
+
+    const juros = (results.redeResults || [])
+      .filter((r) => r.success)
+      .reduce((acc, r) => {
+        return (
+          acc +
+          (r.transactions || []).reduce((s, t) => s + (Number(t.interest) || 0), 0)
+        );
+      }, 0);
+
+    const contasImportadas =
+      (results.contasPagarResults || []).reduce(
+        (acc, c) => acc + (Number(c.totalAmount) || 0),
+        0
+      ) || 0;
+    const contas = manualInputs.contasManual > 0 ? manualInputs.contasManual : contasImportadas;
+    const subtotal = contas + juros;
+    const dif = vDisp - subtotal;
+    const ok = Math.abs(dif) <= 50.0;
+
+    return {
+      totalSaldoBanco: totalBanco,
+      saldoBancosPositivo: saldoPos,
+      saldoNegativoItau: saldoNeg,
+      dinheiroMp: mp,
+      aReceber: rec,
+      naLojaOs: finalPatio,
+      faturamentoDia: fatBase,
+      fatAnterior,
+      faturamentoPeriodo: fatPeriodo,
+      caixaAtual: cAtual,
+      caixaAnterior: cAnterior,
+      fluxoCaixa: flx,
+      valorDispContas: vDisp,
+      jurosRede: juros,
+      contasFinal: contas,
+      subtotalContas: subtotal,
+      diferencaFinal: dif,
+      isOk: ok,
+    };
+  }, [results, manualInputs, missingOsList, previousSnapshot, summary]);
 
   // Dispara matcher IA usando gemini-3.5-flash-lite
   const handleRunAiMatcher = async () => {
@@ -121,7 +275,7 @@ export function Step4FinalAuditAndClose({
             );
 
             if (res.salesStatus && res.salesStatus.length > 0) {
-              totalResolved += res.salesStatus.filter(s => s.status === 'entrou').length;
+              totalResolved += res.salesStatus.filter((s) => s.status === 'entrou').length;
             }
           }
         }
@@ -139,9 +293,6 @@ export function Step4FinalAuditAndClose({
     }
   };
 
-  const diferenca = (summary as any)?.diferenca_final ?? 0;
-  const isOk = Math.abs(diferenca) <= 50;
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -153,7 +304,7 @@ export function Step4FinalAuditAndClose({
               Tela D: Auditoria Final &amp; Fechamento Consolidado
             </h2>
             <p className="text-xs text-zinc-400 mt-1 max-w-2xl">
-              Confira a consolidação dos 5 pilares apurados pelo banco de dados. Execute o
+              Confira a consolidação dos 5 pilares apurados em tempo real. Execute o
               reconciliador IA se restarem divergências e efetue o fechamento definitivo.
             </p>
           </div>
@@ -198,7 +349,7 @@ export function Step4FinalAuditAndClose({
             1. Saldo Bancos + Cofre
           </span>
           <p className="text-lg font-bold font-mono text-cyan-400 mt-1">
-            <AmountCell value={(summary as any)?.total_saldo_banco || 0} />
+            <AmountCell value={totalSaldoBanco} />
           </p>
         </Card>
 
@@ -207,7 +358,7 @@ export function Step4FinalAuditAndClose({
             2. Dinheiro MP
           </span>
           <p className="text-lg font-bold font-mono text-emerald-400 mt-1">
-            <AmountCell value={(summary as any)?.dinheiro_mp || manualInputs.manualDinheiroMp} />
+            <AmountCell value={dinheiroMp} />
           </p>
         </Card>
 
@@ -216,7 +367,7 @@ export function Step4FinalAuditAndClose({
             3. A Receber
           </span>
           <p className="text-lg font-bold font-mono text-blue-400 mt-1">
-            <AmountCell value={(summary as any)?.a_receber_manual || manualInputs.manualAReceber} />
+            <AmountCell value={aReceber} />
           </p>
         </Card>
 
@@ -225,17 +376,29 @@ export function Step4FinalAuditAndClose({
             4. Na Loja OS (Pátio)
           </span>
           <p className="text-lg font-bold font-mono text-amber-400 mt-1">
-            <AmountCell value={(summary as any)?.na_loja_os || 0} />
+            <AmountCell value={naLojaOs} />
           </p>
         </Card>
 
         <Card className="p-4 bg-zinc-950 border-l-4 border-l-purple-500 border-zinc-800 col-span-2 md:col-span-1">
-          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">
-            5. Faturamento do Dia
-          </span>
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">
+              5. Faturamento do Dia
+            </span>
+            {fatAnterior > 0 && (
+              <span className="text-[9px] font-mono text-zinc-400">
+                Ant: {fatAnterior.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </span>
+            )}
+          </div>
           <p className="text-lg font-bold font-mono text-purple-400 mt-1">
-            <AmountCell value={(summary as any)?.faturamento || 0} />
+            <AmountCell value={faturamentoDia} />
           </p>
+          {manualInputs.odometroHoje > 0 && fatAnterior > 0 && (
+            <span className="text-[10px] text-zinc-400 block mt-0.5 font-mono">
+              Hoje: {manualInputs.odometroHoje.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            </span>
+          )}
         </Card>
       </div>
 
@@ -287,7 +450,7 @@ export function Step4FinalAuditAndClose({
               <p
                 className={`text-3xl font-bold ${isOk ? 'text-emerald-400' : 'text-rose-400'}`}
               >
-                R$ {diferenca.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                R$ {diferencaFinal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </p>
             </div>
           </div>

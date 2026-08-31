@@ -25,7 +25,7 @@ import { traceLog, generateSessionId } from '@/lib/logger';
 import { generateDeterministicHash } from '@/lib/parsers/hashUtils';
 import { useCentralImport, UnifiedImportResult } from '@/hooks/useCentralImport';
 import { useBulkInsertTransactions, useCreateImportBatch, useBulkInsertConciliationMatches } from '@/hooks/useTransactions';
-import { useSaveDailySnapshot } from '@/hooks/useDailySnapshot';
+import { useSaveDailySnapshot, usePreviousDaySnapshot } from '@/hooks/useDailySnapshot';
 import { supabase } from '@/lib/supabase';
 import { useNavigate } from '@tanstack/react-router';
 import { savePatioOsAndReceivables, ParsedReceivable } from '@/hooks/useImportProcessor';
@@ -247,6 +247,22 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const [isManualLocked, setIsManualLocked] = useState<boolean>(true);
   const [copiedJson, setCopiedJson] = useState(false);
   const [autoHealingData, setAutoHealingData] = useState<any>(null);
+
+  // Encadeamento do Fechamento Anterior
+  const { data: previousSnapshot } = usePreviousDaySnapshot(targetDate);
+  const previousOdometro = useMemo(() => {
+    if (!previousSnapshot) return 0;
+    const meta = (previousSnapshot.metadata as any) || {};
+    return Number(meta.odometro_hoje ?? meta.faturamento_anterior ?? meta.odometro_anterior ?? previousSnapshot.faturamento ?? 0);
+  }, [previousSnapshot]);
+
+  const deltaFaturamentoCalculado = useMemo(() => {
+    if (!odometroHoje) return 0;
+    if (previousOdometro > 0 && odometroHoje >= previousOdometro) {
+      return odometroHoje - previousOdometro;
+    }
+    return odometroHoje;
+  }, [odometroHoje, previousOdometro]);
 
   // Computados e Hook do Motor de Diagnóstico Pré-Fechamento
   const computedTotalOfxIn = useMemo(() => {
@@ -1177,7 +1193,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           const activeList = allActiveOs.filter(os => {
             const isClosed = ['finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado'].includes(String(os.status).toLowerCase());
             const saldo = Number(os.total_value || 0) - Number(os.paid_value || 0);
-            return !isClosed && saldo > 0;
+            return !isClosed && saldo > 0 && Number(os.total_value || 0) < 100000;
           });
           if (activeList.length > 0) {
             const totalPatioReal = activeList.reduce((acc, os) => acc + (Number(os.total_value || 0) - Number(os.paid_value || 0)), 0);
@@ -1211,6 +1227,24 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       const totalImportedContas = results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || 0;
       const finalContasManual = contasManual > 0 ? contasManual : (totalImportedContas > 0 ? totalImportedContas : totalOfxOut);
       const finalFaturamento = odometroHoje > 0 ? odometroHoje : faturamentoAtual;
+
+      // Puxa snapshot anterior para compor DRE completa
+      const { data: prevSnap } = await supabase
+        .from('daily_snapshots')
+        .select('*')
+        .lt('date', targetDate)
+        .order('date', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      const caixaAnt = Number(prevSnap?.caixa_atual || 0);
+      const fatAnt = Number(prevSnap?.faturamento || (prevSnap?.metadata as any)?.odometro_hoje || 0);
+      const fatOiBase = (odometroHoje > 0 && fatAnt > 0 && odometroHoje > fatAnt) ? (odometroHoje - fatAnt) : (odometroHoje > 0 ? odometroHoje : faturamentoAtual);
+      const fluxoCalculado = caixaAtualCalculado - caixaAnt;
+      const valorDispCalculado = fatOiBase - fluxoCalculado;
+      const subtotalContasCalculado = finalContasManual + jurosRedeTotal;
+      const diferencaCalculada = valorDispCalculado - subtotalContasCalculado;
+
       try {
         const payload = {
           date: targetDate,
@@ -1227,7 +1261,30 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           provisao: 0,
           saldo_negativo_itau: saldoNegativoItau,
           juros_rede: jurosRedeTotal,
-          notes: 'Valores calculados via Importacao',
+          is_closed: true,
+          closed_at: new Date().toISOString(),
+          notes: 'Valores calculados via Importacao Centralizada',
+          metadata: {
+            caixa_atual: caixaAtualCalculado,
+            caixa_anterior: caixaAnt,
+            fluxo_caixa: fluxoCalculado,
+            faturamento_anterior: fatAnt,
+            faturamento_oi_base: fatOiBase,
+            odometro_hoje: odometroHoje,
+            faturamento_periodo: fatOiBase,
+            valor_disp_contas: valorDispCalculado,
+            subtotal_contas: subtotalContasCalculado,
+            diferenca_final: diferencaCalculada,
+            total_saldo_banco: saldoBancosPositivo,
+            saldo_bancos_ofx: saldoBancosLiquido,
+            saldo_bancos_positivo: saldoBancosPositivo,
+            saldo_negativo_itau: saldoNegativoItau,
+            dinheiro_mp: manualDinheiroMp,
+            a_receber_manual: manualAReceber,
+            total_patio: veiculosPatioValor,
+            status_geral: Math.abs(diferencaCalculada) <= 50 ? 'approved' : 'divergent',
+            is_closed: true,
+          }
         };
         await saveSnapshot.mutateAsync(payload);
         addLog("Historico de conciliacao atualizado automaticamente!", "success");
@@ -1322,7 +1379,30 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           provisao: 0,
           saldo_negativo_itau: saldoNegativoItau,
           juros_rede: jurosRedeTotal,
-          updated_at: new Date().toISOString()
+          is_closed: true,
+          closed_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          metadata: {
+            caixa_atual: caixaAtualCalculado,
+            caixa_anterior: caixaAnt,
+            fluxo_caixa: fluxoCalculado,
+            faturamento_anterior: fatAnt,
+            faturamento_oi_base: fatOiBase,
+            odometro_hoje: odometroHoje,
+            faturamento_periodo: fatOiBase,
+            valor_disp_contas: valorDispCalculado,
+            subtotal_contas: subtotalContasCalculado,
+            diferenca_final: diferencaCalculada,
+            total_saldo_banco: saldoBancosPositivo,
+            saldo_bancos_ofx: saldoBancosLiquido,
+            saldo_bancos_positivo: saldoBancosPositivo,
+            saldo_negativo_itau: saldoNegativoItau,
+            dinheiro_mp: manualDinheiroMp,
+            a_receber_manual: manualAReceber,
+            total_patio: veiculosPatioValor,
+            status_geral: Math.abs(diferencaCalculada) <= 50 ? 'approved' : 'divergent',
+            is_closed: true,
+          }
         };
         await supabase.from('daily_snapshots').upsert(payload, { onConflict: 'date' });
         addLog("✅ Histórico de conciliação atualizado automaticamente!", "success");
@@ -2082,16 +2162,29 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 font-mono">
-                <div>
-                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Faturamento Oficina Inteligente (Acumulado)</label>
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)]">Odômetro OI (Acumulado)</label>
+                    {previousOdometro > 0 && (
+                      <span className="text-[10px] font-mono text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/20">
+                        Ant: {previousOdometro.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                      </span>
+                    )}
+                  </div>
                   <input 
                     type="number" 
                     step="0.01"
                     disabled={isManualLocked}
                     value={odometroHoje || ''} 
                     onChange={e => setOdometroHoje(Number(e.target.value))}
+                    placeholder="Ex: 945000.00"
                     className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)] font-bold text-[var(--text-primary)]"
                   />
+                  {odometroHoje > 0 && previousOdometro > 0 && (
+                    <p className="text-[11px] font-mono text-emerald-400">
+                      Δ Faturamento: <span className="font-bold">{deltaFaturamentoCalculado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Dinheiro MP</label>

@@ -42,3 +42,7 @@ supabase_bin/
 
 .agent/memory/
 scratch/
+scripts/*.mjs
+scripts/*.ts
+scripts/*.cjs
+e2e-results/

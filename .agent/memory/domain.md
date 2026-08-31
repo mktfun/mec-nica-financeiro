@@ -1,4 +1,21 @@
-﻿## [2026-08-27] — [Feature ID: 310-novo-wizard-importacao-e-conciliacao-passo-a-passo]
+## [2026-08-31] — [Feature ID: 316-pareamento-os-finalizada-e-encadeamento-odometro]
+
+**Contexto:** Correção do pareamento automático de pagamentos de quitação em Ordens de Serviço finalizadas, encadeamento canônico do Odômetro Anterior (R$ 920.496,64 de 28/08 para 31/08) e eliminação de duplicidades por linhas de rodapé em planilhas de OS e Contas a Pagar.
+
+**Regra aprendida:**
+1. **Pareamento de Quitações em OSs Finalizadas:**
+   - Se um PIX ou transferência entra no extrato bancário (OFX) referente a uma OS que já foi fechada/baixada na loja, o auto-match e o vínculo manual devem permitir vincular `ofx_transactions.matched_os_number` e `patio_os.matched_ofx_id`.
+   - Se a OS já está finalizada/quitada (`open_balance == 0`), o vínculo **NÃO** altera o saldo do pátio (`na_loja_os`) nem altera o `paid_value`, evitando distorções contábeis no pátio devedor.
+2. **Encadeamento do Odômetro Acumulado:**
+   - Ao conciliar um novo dia (ex: 31/08), o sistema recupera com precedência: `metadata.odometro_hoje ?? metadata.faturamento_anterior ?? faturamento` do fechamento anterior consolidado (28/08 = R$ 920.496,64).
+   - O Faturamento Líquido do Dia no Pilar 5 é: $\Delta \text{ Faturamento} = \text{Odômetro Hoje} - \text{Odômetro Anterior}$.
+3. **Linhas de Rodapé em Planilhas Excel do ERP:**
+   - Planilhas de conferência de OSs (`ConferenciaOSxFinanceiro.xls`) e de Contas a Pagar (`BuscaContasAPagar.xls`) possuem linhas de rodapé agregadas (`Consumidor`, `Total no Financeiro`, `Tl. Pago`).
+   - O parser deve sempre filtrar essas linhas de rodapé para evitar somatórios duplicados (ex: Contas a Pagar somando R$ 80k em vez dos R$ 40k reais).
+
+**Risco identificado / Anti-pattern:** Nunca permitir que o pareamento de um PIX com uma OS finalizada incremente novamente o saldo em aberto do Pátio ou reabra uma OS que já estava quitada.
+
+## [2026-08-27] — [Feature ID: 310-novo-wizard-importacao-e-conciliacao-passo-a-passo]
 
 **Contexto:** Implementação da esteira modular de conciliação diária dividida em Ingestão Global Unificada (uploads e inputs manuais juntos na entrada) e Wizard de Resolução em 4 Passos Focados (Vínculo direto de 1 clique à OS, Justificativas contábeis editáveis/canceláveis, Conferência de cofre do Daniel e Auditoria final com Gemini 3.5 Flash Lite).
 

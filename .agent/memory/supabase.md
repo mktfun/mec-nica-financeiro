@@ -1,3 +1,16 @@
+## [2026-08-31] — [Feature ID: 316-pareamento-os-finalizada-e-encadeamento-odometro]
+
+**Contexto:** Atualização da RPC `public.auto_match_transactions` com 3 camadas de matching (texto regex, saldo aberto e quitações em OSs finalizadas) e da RPC `public.get_daily_reconciliation_summary` para retornar `'faturamento_anterior'` no Ramal 2 com extração canônica de `metadata.odometro_hoje`.
+
+**Regra aprendida:**
+1. **Match de Quitação em OS Finalizada sem Inflar Pátio:**
+   - Na RPC `auto_match_transactions(p_date)`, se a transação OFX for compatível com uma OS finalizada recentemente, o vínculo deve atualizar `ofx_transactions.matched_os_number` e `patio_os.matched_ofx_id`.
+   - Se a OS já está com status `'finalizada'`, o PL/pgSQL **NÃO** deve alterar `paid_value` nem `status`, garantindo que o somatório dinâmico de `na_loja_os` permaneça inalterado.
+2. **Retorno do Ramal 2 com `faturamento_anterior`:**
+   - O objeto JSONB do Ramal 2 (dia aberto/draft) deve conter explicitamente a propriedade `'faturamento_anterior', ROUND(v_faturamento_anterior, 2)`.
+   - `v_faturamento_anterior` busca do snapshot fechado anterior com a cadeia de fallback:
+     `COALESCE((metadata->>'odometro_hoje')::numeric, (metadata->>'faturamento_anterior')::numeric, faturamento, 0)`.
+
 ## [2026-08-27] — [Feature ID: 303-correcao-faturamento-do-dia]
 
 **Contexto:** Correção do Ramal 1 da RPC `get_daily_reconciliation_summary` para calcular `v_faturamento_oi_base = v_snapshot.faturamento - v_faturamento_anterior`, onde `v_faturamento_anterior` é buscado do snapshot fechado imediatamente anterior (`date < v_target_date ORDER BY date DESC LIMIT 1`). Retorno obrigatório de `faturamento_anterior` no payload JSON.
