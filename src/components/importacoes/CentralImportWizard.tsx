@@ -895,6 +895,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           
           const txId = crypto.randomUUID();
           const isPix = tx.title?.toUpperCase().includes('PIX') ? 'pix' : null;
+          const realTxDate = tx.date ? tx.date.split('T')[0] : targetDate;
           txsToInsert.push({
             id: txId,
             store_id: matched_store_id,
@@ -905,7 +906,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             type: (tx.type === 'in' || tx.type === 'income' || tx.amount > 0) ? 'in' : 'out',
             occurred_at: tx.date || targetDate || new Date().toISOString(),
             date: tx.date || targetDate,
-            target_date: targetDate,
+            target_date: realTxDate,
             icon_type: 'bank',
             source: 'ofx',
             os_number: matched_os_number,
@@ -918,7 +919,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           if (matched_os_number && matched_store_id) {
             matchesToInsert.push({
               store_id: matched_store_id,
-              target_date: targetDate,
+              target_date: realTxDate,
               system_os_number: matched_os_number,
               ofx_transaction_id: txId,
               _fitid: tx.fitid || null,

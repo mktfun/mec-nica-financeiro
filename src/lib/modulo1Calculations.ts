@@ -36,9 +36,9 @@ export function calculateGlobalConciliacao(input: GlobalConciliacaoInput): Globa
   const a_receber = Number(input.a_receber_manual || 0);
   const na_loja = Number(input.na_loja_os || 0);
 
-  // Caixa atual = (Soma Saldos + Dinheiro MP + A Receber + Na Loja)
-  // Nota: saldo_negativo_itau foi removido da dedução pois saldos negativos no banco já abatem a soma.
-  const caixa_atual = saldo + dinheiro_mp + a_receber + na_loja;
+  // Caixa atual = (Soma Saldos Positivos + Dinheiro MP + A Receber + Na Loja) - Saldo Negativo Itaú
+  const saldoNegativo = Number(input.saldo_negativo_itau || 0);
+  const caixa_atual = (saldo + dinheiro_mp + a_receber + na_loja) - saldoNegativo;
 
   // Fluxo CX = caixa atual (conciliacao hoje) - caixa anterior (caixa da conciliacao anterior)
   const fluxo_cx = caixa_atual - Number(input.caixa_anterior || 0);

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## [2026-08-31] — [Feature ID: 328-equalizacao-definitiva-5-pilares-conciliacao-3108]
 
 **Contexto:** Equalização canônica dos 5 pilares contábeis, compensação intra-loja de cheque especial vs maquininha da Rede, integração de aportes de sócios ao faturamento DRE e consolidação integral de despesas extras e pró-labore no Subtotal de Contas a Pagar.
@@ -89,6 +90,31 @@
 
 ## [2026-08-27] — [Feature ID: 310-novo-wizard-importacao-e-conciliacao-passo-a-passo]
 ## [2026-08-27] � [Feature ID: 310-novo-wizard-importacao-e-conciliacao-passo-a-passo] (fix: normalize all workflow view_file paths to global skills directory)
+=======
+## [2026-09-01] — [Feature ID: 314-auditoria-saldo-deduplicacao-ofx-rede]
+
+**Contexto:** Resolucao de duplicidade contabil no ciclo de vida de recebiveis da Rede vs. Extratos OFX e consolidacao canonica da matematica dos 5 Pilares.
+
+**Regra aprendida:**
+1. **Formulas Canonicas dos 5 Pilares:**
+   - Saldo Bancos Positivo = Soma dos saldos de filiais onde bank_total > 0
+   - Cheque Especial (-) = Soma dos saldos devedores onde bank_total < 0
+   - Pilar 1 (Total Saldo Banco) = Saldo Bancos Positivo + Dinheiro em Lojas + Cartoes a Compensar - Devolucoes Rede
+   - Caixa Atual = (Pilar 1 + Dinheiro MP + A Receber + Na Loja OS) - Saldo Negativo Itau
+   - Fluxo de Caixa = Caixa Atual (D) - Caixa Anterior (D-1)
+   - Valor Disp. Contas = Faturamento Periodo - Fluxo de Caixa
+   - Subtotal Contas = Contas Manual + Juros Rede + Devolucoes Rede
+   - Diferenca Final = Valor Disp. Contas - Subtotal Contas
+2. **Ciclo de Liquidacao da Rede:**
+   - Venda no cartao da Rede gera recebivel / a compensar no dia da venda.
+   - Ao ser liquidada e depositada no banco Itau (D+1 ou D0), o credito entra no extrato OFX.
+   - O credito no OFX aumenta o bank_total e simultaneamente reduz o cartoes_a_compensar na conciliacao tripla, evitando qualquer dupla contagem no Pilar 1 e no Caixa Atual.
+
+**Risco identificado / Anti-pattern:** Somar vendas de cartao e depositos bancarios concomitantemente sem deduzir a liquidacao correspondente.
+
+
+## [2026-08-27] � [Feature ID: 310-novo-wizard-importacao-e-conciliacao-passo-a-passo]
+>>>>>>> 67d8357 (feat(314): auditoria de integridade de saldos, deduplicacao ofx multi-dias e ciclo rede)
 
 **Contexto:** Implementa��o da esteira modular de concilia��o di�ria dividida em Ingest�o Global Unificada (uploads e inputs manuais juntos na entrada) e Wizard de Resolu��o em 4 Passos Focados (V�nculo direto de 1 clique � OS, Justificativas cont�beis edit�veis/cancel�veis, Confer�ncia de cofre do Daniel e Auditoria final com Gemini 3.5 Flash Lite).
 
@@ -827,6 +853,7 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
 ## [2026-08-30] � [Feature ID: 314] Teste E2E e Fechamento da Concilia��o com Arquivos Reais de 27-08
 **Contexto:** Valida��o ponta a ponta no localhost:8080 do Wizard de Ingest�o e Concilia��o com os 27 arquivos reais de 27/08/2026.
 **Regra aprendida:**
+<<<<<<< HEAD
 - **Segregação de 5 Pilares no Fechamento:** Ativos Totais (Saldo Positivo + Dinheiro MP + A Receber + Pátio OS) subtraído do Cheque Especial compõem o Caixa Atual. O Fluxo de Caixa (Caixa Hoje - Caixa Ontem) deduzido do Faturamento do Dia deve cobrir exatamente o Subtotal de Contas a Pagar + Juros de Maquininha (Tolerância $\pm$ R$ 50,00).
 - **Tratamento de Não-Faturamento:** Transferências entre filiais (Intercompany) e aportes dos sócios NUNCA devem somar ao faturamento contábil da empresa, recebendo a anotação `[NÃO SOMAR] [Apenas Conciliar]`.
 **Risco identificado / Anti-pattern:** Nunca permitir que liquidações de adquirentes ou rendimentos bancários apareçam no painel de justificativas manuais de não-faturamento.
@@ -846,3 +873,8 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
 - **Segrega��o de 5 Pilares no Fechamento:** Ativos Totais (Saldo Positivo + Dinheiro MP + A Receber + P�tio OS) subtra�do do Cheque Especial comp�em o Caixa Atual. O Fluxo de Caixa (Caixa Hoje - Caixa Ontem) deduzido do Faturamento do Dia deve cobrir exatamente o Subtotal de Contas a Pagar + Juros de Maquininha (Toler�ncia $\pm$ R$ 50,00).
 - **Tratamento de N�o-Faturamento:** Transfer�ncias entre filiais (Intercompany) e aportes dos s�cios NUNCA devem somar ao faturamento cont�bil da empresa, recebendo a anota��o `[N�O SOMAR] [Apenas Conciliar]`.
 **Risco identificado / Anti-pattern:** Nunca permitir que liquida��es de adquirentes ou rendimentos banc�rios apare�am no painel de justificativas manuais de n�o-faturamento. (fix: normalize all workflow view_file paths to global skills directory)
+=======
+- **Segrega��o de 5 Pilares no Fechamento:** Ativos Totais (Saldo Positivo + Dinheiro MP + A Receber + P�tio OS) subtra�do do Cheque Especial comp�em o Caixa Atual. O Fluxo de Caixa (Caixa Hoje - Caixa Ontem) deduzido do Faturamento do Dia deve cobrir exatamente o Subtotal de Contas a Pagar + Juros de Maquininha (Toler�ncia $\pm$ R$ 50,00).
+- **Tratamento de N�o-Faturamento:** Transfer�ncias entre filiais (Intercompany) e aportes dos s�cios NUNCA devem somar ao faturamento cont�bil da empresa, recebendo a anota��o `[N�O SOMAR] [Apenas Conciliar]`.
+**Risco identificado / Anti-pattern:** Nunca permitir que liquida��es de adquirentes ou rendimentos banc�rios apare�am no painel de justificativas manuais de n�o-faturamento.
+>>>>>>> 67d8357 (feat(314): auditoria de integridade de saldos, deduplicacao ofx multi-dias e ciclo rede)

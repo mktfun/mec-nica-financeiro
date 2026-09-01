@@ -213,16 +213,22 @@ export function ResumoDiaPanel({
 
   const handleSave = async () => {
     try {
-      // Gravar na_loja_os no histórico de cada loja se disponível
+      // Gravar na_loja_os e preservar bank_total no histórico de cada loja se disponível
       if (storesData && storesData.length > 0) {
-        const promises = Object.values(storesData).map(s => 
-          supabase.from('reconciliations').upsert({
+        const promises = Object.values(storesData).map(s => {
+          const payload: any = {
             store_id: s.store_id || (s as any).id,
             date: selectedDate,
             na_loja_os: s.na_loja_os,
             status: 'validated'
-          }, { onConflict: 'store_id,date' })
-        );
+          };
+          if (s.saldo_banco_itau !== undefined && s.saldo_banco_itau !== null) {
+            payload.bank_total = s.saldo_banco_itau;
+          } else if ((s as any).saldo_banco !== undefined && (s as any).saldo_banco !== null) {
+            payload.bank_total = (s as any).saldo_banco;
+          }
+          return supabase.from('reconciliations').upsert(payload, { onConflict: 'store_id,date' });
+        });
         await Promise.all(promises);
       }
 

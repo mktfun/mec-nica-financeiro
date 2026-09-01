@@ -448,7 +448,7 @@ export function useBulkInsertTransactions() {
                cnpj_cpf: t.cnpj_cpf || null,
                matched_os_number: t.os_number || t.matched_os_number || null,
                import_batch_id: t.import_batch_id || null,
-               target_date: t.target_date || null
+               target_date: t.target_date || (t.occurred_at ? t.occurred_at.split('T')[0] : (t.date ? t.date.split('T')[0] : null))
              };
           }), { onConflict: 'store_id, fitid' });
         if (e1) { error = e1; } else { data = d1; }
