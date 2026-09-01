@@ -348,3 +348,9 @@ ao_entrou_valor (cartÃµes a compensar) sem hardcodes legados de filiais, apurand
 - Alteração na definição de 'diferenca' por loja para 'orphans' ao invés de previsto-realizado absoluto (evita pânico em dias sem importação da Rede).
 - UI bloqueia fallbacks de '0' e renderiza N/D quando há quebra de infraestrutura (isMissingData).
 
+
+### [2026-09-01] 331-fix-nulls-and-revert-diferenca
+**Status:** âœ… ConcluÃ­do
+**Arquivos Modificados:**
+- `src/components/importacoes/CentralImportWizard.tsx` (CorreÃ§Ã£o do target_date de fds e fallback de sid pra rede)
+- `supabase/migrations/20260901000008_fix_nulls_and_revert_diferenca.sql` (ReversÃ£o DiferenÃ§a e COALESCE em Nulos)

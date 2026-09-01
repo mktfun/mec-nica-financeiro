@@ -838,3 +838,10 @@ Contexto: Correcao de regressao na RPC get_daily_reconciliation_summary onde um 
 Regra aprendida: JOINs de UUID com TEXT falham e silenciam operacoes no supabase. Usar CAST ou ::text. O Frontend nao pode usar fallback || 0 cegamente para saldos. Renderize N/D.
 Nao fazer: Nunca permita que excecoes estruturais sejam traduzidas em status contabeis falsos (ex: R$ 0,00).
 
+
+## [2026-09-01] — [Feature ID: 331-fix-nulls-and-revert-diferenca]
+**Contexto:** Restauração do cálculo de Diferença por Filial e correção de R$ 0,00 na métrica de Maquininha causada por `transaction_type` nulo.
+**Regra aprendida:**
+1. **Diferença Canônica (Previsto - Realizado):** A fórmula exigida pelo usuário para "Diferença" no Dashboard é `(Rede Líquido + PIX_previsto) - (OFX Maquininhas + PIX_realizado)`, que se simplifica para `Rede Líquido - OFX Maquininhas`. Nunca use "órfãos do OFX" como base de divergência geral sem aprovação expressa.
+2. **Blindagem de Nulos em CTEs:** Colunas que não são `NOT NULL` (como `transaction_type` adicionada via migration tardia) avaliam expressões como `NULL != 'devolucao'` como `NULL`. Isso faz com que blocos `CASE WHEN` caiam no `ELSE` e zerem agregações de faturamento/maquininha. SEMPRE envolva colunas suscetíveis a nulo com `COALESCE(coluna, '') != 'valor'`.
+**Risco identificado / Anti-pattern:** Usar operadores de comparação (`!=`, `=`) diretamente em colunas sem `NOT NULL` em scripts de agregação `SUM()`, pois isso contamina silenciosamente a matemática com valores `NULL`.

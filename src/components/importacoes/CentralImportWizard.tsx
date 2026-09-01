@@ -655,15 +655,13 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       // Maquininha (fallback)
       const maqByStore: Record<string, any[]> = {};
       results.maquininhaItems.forEach(item => {
-        let sid: string | null = mapping[item.storeName];
-        if (sid === 'GLOBAL') sid = null;
-        if (sid) {
-          if (!maqByStore[sid]) maqByStore[sid] = [];
-          maqByStore[sid].push(item);
-        }
+        let sid: string = mapping[item.storeName] || 'GLOBAL';
+        if (!maqByStore[sid]) maqByStore[sid] = [];
+        maqByStore[sid].push(item);
       });
       const maqPromises = Object.entries(maqByStore).map(([sid, items]) => {
         const storeName = items[0].storeName;
+        const targetSid = sid === 'GLOBAL' ? null : sid;
         const parsedRecs: ParsedReceivable[] = items.map(item => ({
           type: 'Cartão Crédito',
           value: item.amount,
@@ -671,7 +669,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           due_date: item.dateCredito || targetDate,
           status: 'recebido'
         }));
-        return savePatioOsAndReceivables(sid, storeName, [], parsedRecs, targetDate);
+        return savePatioOsAndReceivables(targetSid, storeName, [], parsedRecs, targetDate);
       });
 
       // Rede
@@ -681,16 +679,14 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       const redeByStore: Record<string, any[]> = {};
       results.redeResults.filter(r => r.success).forEach(r => {
         r.transactions.forEach(t => {
-          let sid: string | null = mapping[t.storeName];
-          if (sid === 'GLOBAL') sid = null;
-          if (sid) {
-            if (!redeByStore[sid]) redeByStore[sid] = [];
-            redeByStore[sid].push(t);
-          }
+          let sid: string = mapping[t.storeName] || 'GLOBAL';
+          if (!redeByStore[sid]) redeByStore[sid] = [];
+          redeByStore[sid].push(t);
         });
       });
       const redePromises = Object.entries(redeByStore).map(([sid, items]) => {
         const storeName = items[0].storeName;
+        const targetSid = sid === 'GLOBAL' ? null : sid;
         const parsedRecs: ParsedReceivable[] = items.map(item => ({
           type: item.method,
           value: item.netAmount,
@@ -698,7 +694,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           due_date: item.date || targetDate,
           status: 'recebido'
         }));
-        return savePatioOsAndReceivables(sid, storeName, [], parsedRecs, targetDate);
+        return savePatioOsAndReceivables(targetSid, storeName, [], parsedRecs, targetDate);
       });
 
       await Promise.all([...osPromises, ...maqPromises, ...redePromises]);
@@ -782,10 +778,11 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
       // Insere Maquininhas e Rede na tabela transactions para a Conciliação Diária
       Object.entries(maqByStore).forEach(([sid, items]) => {
+        const targetSid = sid === 'GLOBAL' ? null : sid;
         items.forEach(item => {
           txsToInsert.push({
             id: crypto.randomUUID(),
-            store_id: sid,
+            store_id: targetSid,
             store_name: item.storeName,
             title: item.title || 'Importação Maquininha',
             subtitle: item.storeName,
@@ -803,6 +800,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       });
 
       Object.entries(redeByStore).forEach(([sid, items]) => {
+        const targetSid = sid === 'GLOBAL' ? null : sid;
         items.forEach((item, idx) => {
           const uniqueId = item.nsu 
             ? `nsu_${item.nsu}_${item.authorization || ''}`
@@ -810,7 +808,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           
           txsToInsert.push({
             id: crypto.randomUUID(),
-            store_id: sid,
+            store_id: targetSid,
             store_name: item.storeName,
             title: item.title || (item.nsu ? `Rede NSU ${item.nsu}` : 'Importação Rede'),
             subtitle: item.storeName,
@@ -895,7 +893,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           
           const txId = crypto.randomUUID();
           const isPix = tx.title?.toUpperCase().includes('PIX') ? 'pix' : null;
-          const realTxDate = tx.date ? tx.date.split('T')[0] : targetDate;
+          const realTxDate = targetDate; // Força a data alvo da conciliação
           txsToInsert.push({
             id: txId,
             store_id: matched_store_id,
