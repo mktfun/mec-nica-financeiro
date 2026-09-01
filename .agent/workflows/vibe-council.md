@@ -9,7 +9,7 @@ Garantir que QUALQUER ideia sobreviva a um escrutínio rigoroso através de uma 
 
 **Protocolo (Orquestração Mestre):**
 1. O Agente Mestre deve invocar a skill nativa `council-debate`.
-2. Para executar o Conselho, abra e leia o arquivo `C:/Users/User/.gemini/config/skills/council-debate/SKILL.md`.
+2. Para executar o Conselho, abra e leia o arquivo `skills/council-debate/SKILL.md`.
 3. Siga ESTRITAMENTE as instruções do `SKILL.md` passo a passo:
    - Extração do tópico e criação do estado (`shared_memory.json`).
    - ROUND 1: Invocação inicial isolada dos 4 subagentes (`architect`, `engineer`, `analyst`, `contrarian`).

@@ -60,7 +60,7 @@ Leia `spec/global/features.md`. Verifique linha a linha:
 - Nunca crie tabela, RPC, componente ou hook sem provar que não existe equivalente.
 
 **Step 5b — Se envolver Supabase (banco, RPC, RLS, Edge Function):**
-Leia obrigatoriamente `C:/Users/User/.gemini/config/skills/supabase/SKILL.md` inteiro e execute a **Seção 2 (Inspecionar Schema)** antes de propor qualquer mudança no banco:
+Leia obrigatoriamente `skills/supabase/SKILL.md` inteiro e execute a **Seção 2 (Inspecionar Schema)** antes de propor qualquer mudança no banco:
 ```bash
 supabase db dump --linked --schema public > /tmp/schema_dump.sql
 ```
