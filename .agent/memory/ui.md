@@ -1,3 +1,27 @@
+## [2026-09-01] — [Feature ID: 335-justificativa-saidas-ofx-e-equalizacao-matematica-cards]
+
+**Contexto:** Atualização do modal `OrphanCategorizationModal.tsx` para suporte polimórfico a saídas (com temas visuais Rose, categorias de despesas e seleção de impacto no Contas a Pagar vs Apenas Conciliar) e liberação do botão "Justificar / Editar" em débitos na view `StoreExtratoBancarioView.tsx`. Atualização dos sub-rótulos descritivos do Split Dual no `StoreCardModulo1.tsx`.
+
+**Regra aprendida:**
+1. **Modal Polimórfico de Transações Órfãs (`OrphanCategorizationModal.tsx`):**
+   - Se `transactionType === 'out'`: adota paleta Rose, categorias de fornecedores, autopeças, pró-labore, impostos, e toggle explícito de destino contábil.
+   - Se `transactionType === 'in'`: adota paleta Emerald/Purple, categorias de aportes, seguros, transferências e toggle para faturamento.
+2. **Sub-rótulos Explicativos nos Cards:**
+   - Exibir no bloco de Entradas: `OFX Entradas (Lote Rede D-1 / Crédito no Banco) | Conciliado (Lotes Identificados) | Dif. a Justificar`.
+   - Exibir no bloco de Saídas: `Saídas OFX (Débito no Banco) | Contas / Boletos (Despesas da Loja) | Dif. a Justificar`.
+
+---
+
+## [2026-09-01] — [Feature ID: 334-transparencia-entradas-ofx-empilhamento-cards-rpc]
+
+**Contexto:** Refatoração de layout no `StoreCardModulo1.tsx` com `Vertical Stack` (linhas individuais para Saldo Total, Rede Total e Saldo em Pátio) evitando compressão horizontal e truncamento de texto.
+
+**Regra aprendida:**
+1. **Vertical Stack em Cartões de Painel:**
+   - Em layouts compactos com números monetários de até 8 dígitos e badges adjacentes, empilhar verticalmente os blocos evita estouro de largura e garante legibilidade sem truncamentos `...`.
+
+---
+
 ## [2026-09-01] — [Feature ID: 279-correcao-fechamento-por-filial-e-detalhamento-lojas]
 
 **Contexto:** Modularização do card de filiais em `StoreCardModulo1.tsx` e container `ConciliacaoLojasView.tsx` com Dark UI Zinc-950 e preservação de data na navegação.
@@ -371,3 +395,9 @@ Contexto: Tratamento de falhas de rede/infra em cards contabeis (StoreCardModulo
 Regra aprendida: Substituido fallback silencioso '|| 0' por verificacao 'isMissingData' e null-safety, renderizando 'N/D' e bloqueando interacoes.
 Nao fazer: Nunca fazer fallbacks automaticos para zero em dados criticos contabeis ausentes do backend.
 
+## [2026-09-01] — [Feature ID: 332-conciliacao-lojas-diferenca-ui]
+**Contexto:** Ajuste nos cards de fechamento por loja (`StoreCardModulo1.tsx`) e na rota `/conciliacao/$lojaId`.
+**Regra aprendida:**
+1. **Formatação de Diferença R$ 0,00:** Tratar tolerância de centavos (`Math.abs(diferenca) <= 0.05`) para exibir badges semânticos (`ENTROU` verde esmeralda).
+2. **Suporte a Query Params:** `conciliacao.index.tsx` deve declarar `validateSearch: { date }` para ler imediatamente a data passada pela URL ao renderizar.
+3. **Resiliência de Identificador de Filial:** Ao cruzar o resumo consolidado com as lojas, validar `s.store_id === lojaId || s.store_id === store?.id || s.store_name === store?.name`.

@@ -494,8 +494,9 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
                             Pendente
                           </Badge>
                         ) : (
-                          <Badge variant="outline" className="h-5 py-0 px-2 bg-zinc-800 text-zinc-400 border-zinc-700 text-[10px] font-medium">
-                            Débito Bancário
+                          <Badge variant="outline" className="h-5 py-0 px-2 bg-amber-500/10 text-amber-400 border-amber-500/30 text-[10px] font-semibold">
+                            <HelpCircle size={10} className="mr-1" />
+                            Débito Pendente
                           </Badge>
                         )}
                       </td>
@@ -508,8 +509,19 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
                             Somente Leitura
                           </span>
                         ) : !isIn ? (
-                          // SAÍDAS (DÉBITOS): NÃO TEM BOTÃO JUSTIFICAR
-                          <span className="text-[10px] text-zinc-600 font-mono">—</span>
+                          // SAÍDAS (DÉBITOS): Habilita botão Justificar / Editar
+                          <div className="flex items-center justify-center gap-1.5">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => setCategorizingTx(tx)}
+                              className="text-[10px] h-6 px-2 text-zinc-400 hover:text-zinc-200 gap-1"
+                              title={tx.hasCategory ? 'Editar justificativa do débito' : 'Justificar débito bancário'}
+                            >
+                              <FileEdit size={11} />
+                              {tx.hasCategory ? 'Editar' : 'Justificar'}
+                            </Button>
+                          </div>
                         ) : (
                           // ENTRADAS (CRÉDITOS):
                           <div className="flex items-center justify-center gap-1.5">
@@ -573,9 +585,13 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
           transactionTitle={categorizingTx.title || categorizingTx.subtitle || categorizingTx.counterpart_name || 'Transação OFX'}
           transactionAmount={Number(categorizingTx.amount || 0)}
           transactionType={categorizingTx.type}
+          storeId={storeId}
+          targetDate={date}
           onClose={() => setCategorizingTx(null)}
           onSuccess={handleCategorizationSuccess}
-          categorizeOrphan={(id, cat, just, impacts) => categorize(id, cat, just, impacts, Number(categorizingTx.amount || 0), date)}
+          categorizeOrphan={(id, cat, just, impacts) => 
+            categorize(id, cat, just, impacts, Number(categorizingTx.amount || 0), date, categorizingTx.type, storeId)
+          }
         />
       )}
 

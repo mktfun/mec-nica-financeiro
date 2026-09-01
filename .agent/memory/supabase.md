@@ -1,3 +1,27 @@
+## [2026-09-01] — [Feature ID: 335-justificativa-saidas-ofx-e-equalizacao-matematica-cards]
+
+**Contexto:** Refinamento da RPC `get_daily_reconciliation_summary` em `supabase/migrations/20260901000012_fix_store_split_linear_subtraction_and_expenses.sql` para garantir subtração linear estrita nas lojas e blindar o cálculo de `contas_loja_total` contra dupla contagem de despesas extras.
+
+**Regra aprendida:**
+1. **Linearidade na Decomposição de Filiais:**
+   - A RPC calcula `entradas_conciliadas := (oe.ofx_entradas_total - oe.entradas_orfas)` e `contas_conciliadas := (sofx.ofx_saidas_total - sofx.saidas_orfas)`.
+   - O retorno garante que `diferenca_entradas = ofx_entradas_total - entradas_conciliadas` e `diferenca_saidas = ofx_saidas_total - contas_conciliadas`.
+2. **SSOT de Despesas na CTE `bills_store_agg`:**
+   - Despesas extras criadas via `resolve_orphan_saida_ofx` residem em `daily_manual_bills` com `contabilizar_no_subtotal = true`.
+   - `contas_loja_total` consome `COALESCE(bst.contas_loja_total, 0)`, sem somar novamente `sofx.saidas_justificadas`, prevenindo duplicação de despesas.
+
+---
+
+## [2026-09-01] — [Feature ID: 334-transparencia-entradas-ofx-empilhamento-cards-rpc]
+
+**Contexto:** Ajuste das CTEs de agregação de filiais na RPC `get_daily_reconciliation_summary` (`20260901000011_fix_canonical_store_ofx_entries_and_split.sql`) calculando `ofx_entradas_total` a partir de 100% dos créditos OFX e somando justificativas ao previsto.
+
+**Regra aprendida:**
+1. **Extrato OFX Imutável:**
+   - Créditos bancários reais nunca são expurgados do total de extrato. Transações justificadas compõem a base prevista da filial.
+
+---
+
 ## [2026-09-01] — [Feature ID: 279-correcao-fechamento-por-filial-e-detalhamento-lojas]
 
 **Contexto:** Atualização da RPC `get_daily_reconciliation_summary` para calcular e retornar as métricas de Saldo Total, Maquininha (Rede Líquido), PIX, Na Loja OS, Previsto e Diferença por Loja para as 10 filiais através de CTEs pré-agrupadas e padronização de `store_id` como `TEXT`.
@@ -463,7 +487,7 @@ Garantia de salvamento de mensagens do assistente no banco de dados e isolamento
 **Não fazer:** Nunca misturar colunas inexistentes (`match_status` em `ofx_transactions`) nas queries da RPC.
 
 
-=======
+
 ## [2026-09-01] — [Feature ID: 314-auditoria-saldo-deduplicacao-ofx-rede]
 
 **Contexto:** Eliminação definitiva de trigger legada destrutiva (update_reconciliation_bank_total) que corrompia 
@@ -831,7 +855,6 @@ Garantia de salvamento de mensagens do assistente no banco de dados e isolamento
 
 **Não fazer:** Nunca faça cálculos matemáticos ou deduções contábeis no React/frontend. Nunca altere o nome do parâmetro de uma RPC sem garantir retrocompatibilidade ou overload canônico.
 
->>>>>>> 67d8357 (feat(314): auditoria de integridade de saldos, deduplicacao ofx multi-dias e ciclo rede)
 
 ## [2026-09-01] - [Feature ID: 330]
 Contexto: Correcao de regressao na RPC get_daily_reconciliation_summary onde um JOIN de UUID com texto provocou panico estrutural.
@@ -845,3 +868,10 @@ Nao fazer: Nunca permita que excecoes estruturais sejam traduzidas em status con
 1. **Diferença Canônica (Previsto - Realizado):** A fórmula exigida pelo usuário para "Diferença" no Dashboard é `(Rede Líquido + PIX_previsto) - (OFX Maquininhas + PIX_realizado)`, que se simplifica para `Rede Líquido - OFX Maquininhas`. Nunca use "órfãos do OFX" como base de divergência geral sem aprovação expressa.
 2. **Blindagem de Nulos em CTEs:** Colunas que não são `NOT NULL` (como `transaction_type` adicionada via migration tardia) avaliam expressões como `NULL != 'devolucao'` como `NULL`. Isso faz com que blocos `CASE WHEN` caiam no `ELSE` e zerem agregações de faturamento/maquininha. SEMPRE envolva colunas suscetíveis a nulo com `COALESCE(coluna, '') != 'valor'`.
 **Risco identificado / Anti-pattern:** Usar operadores de comparação (`!=`, `=`) diretamente em colunas sem `NOT NULL` em scripts de agregação `SUM()`, pois isso contamina silenciosamente a matemática com valores `NULL`.
+
+## [2026-09-01] — [Feature ID: 332-fix-store-difference-and-ofx-pendencias]
+**Contexto:** Migration `20260901000009` corrigindo a apuração da diferença por filial na RPC `get_daily_reconciliation_summary`.
+**Regra aprendida:**
+1. **CTE `ofx_unreconciled_agg`:** Agrega entradas órfãs (créditos sem OS, sem categoria manual e sem adquirentes) e saídas órfãs (débitos sem conta vinculada e sem categoria). A diferença por loja passa a ser `COALESCE(unrec.total_pendencias, 0)`.
+2. **Campos de Snapshot em Ramal 1:** `daily_snapshots` não possui as colunas `caixa_anterior`, `fluxo_caixa`, `faturamento_anterior`, `faturamento_periodo` ou `valor_disp_contas`. Tais propriedades devem ser lidas estritamente de `(v_snapshot.metadata->>'nome_campo')::numeric`.
+**Risco identificado / Anti-pattern:** Tentar acessar colunas inexistentes diretamente no record `v_snapshot` do PL/pgSQL, o que gera erro de runtime `42703 (has no field caixa_anterior)` no PostgREST.

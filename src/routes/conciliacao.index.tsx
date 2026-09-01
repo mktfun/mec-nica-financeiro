@@ -21,11 +21,17 @@ import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/conciliacao/')({
+  validateSearch: (search: Record<string, unknown>) => {
+    return {
+      date: (search.date as string) || undefined,
+    };
+  },
   component: ConciliacaoPage,
 });
 
 function ConciliacaoPage() {
-  const [selectedDate, setSelectedDate] = useState('');
+  const { date: searchDate } = Route.useSearch();
+  const [selectedDate, setSelectedDate] = useState(searchDate || '');
   const [breakdownStore, setBreakdownStore] = useState<{ id: string; name: string } | null>(null);
   const navigate = Route.useNavigate();
   const queryClient = useQueryClient();
@@ -37,12 +43,14 @@ function ConciliacaoPage() {
   const { data: justifiedData } = useJustifiedTransactions(selectedDate);
 
   useEffect(() => {
-    if (!selectedDate && availableDates.length > 0) {
+    if (searchDate && searchDate !== selectedDate) {
+      setSelectedDate(searchDate);
+    } else if (!selectedDate && availableDates.length > 0) {
       setSelectedDate(availableDates[availableDates.length - 1]);
     } else if (!selectedDate && !loadingDates) {
       setSelectedDate(new Date().toISOString().substring(0, 10));
     }
-  }, [availableDates, loadingDates, selectedDate]);
+  }, [availableDates, loadingDates, selectedDate, searchDate]);
 
   const isLoading = loadingStores || loadingSummary || loadingDates || !selectedDate;
 

@@ -102,6 +102,13 @@ export interface StoreReconciliationSummary {
   previsto_ofx: number;
   diferenca: number;
   status: 'approved' | 'divergence';
+  // Split Dual de Diagnóstico
+  entradas_realizadas?: number;
+  entradas_previsto?: number;
+  diferenca_entradas?: number;
+  saidas_ofx?: number;
+  contas_loja?: number;
+  diferenca_saidas?: number;
 }
 
 export interface StoreCardData {
@@ -114,6 +121,16 @@ export interface StoreCardData {
   naLojaOs: number | null;
   previsto: number | null;
   diferenca: number | null;
+  // Novos campos do split
+  entradasRealizadas?: number | null;
+  entradasPrevisto?: number | null;
+  diferencaEntradas?: number | null;
+  saidasOfx?: number | null;
+  contasLoja?: number | null;
+  diferencaSaidas?: number | null;
+  dinheiroLoja?: number | null;
+  ofxMaquininhas?: number | null;
+  pixTotal?: number | null;
   statusCompensacao: 'entrou' | 'parcial' | 'nao_entrou' | 'a_compensar' | 'sem_movimento' | string;
   naoEntrouValor: number | null;
   status: 'approved' | 'divergence' | 'conciliado' | 'pending';

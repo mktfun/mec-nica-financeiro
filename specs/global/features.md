@@ -1,3 +1,14 @@
+### Spec 335 — Justificativa de Saídas OFX, Integração com Contas a Pagar e Equalização Matemática Linear dos Cards
+- **Subtração Linear dos Cards de Filial**: O split dos cards em `StoreCardModulo1.tsx` adota a equação linear explícita ($A - B = C$): $\text{OFX Entradas} - \text{Créditos Conciliados} = \text{Dif. a Justificar}$ e $\text{Saídas OFX} - \text{Contas Conciliadas} = \text{Dif. a Justificar}$, eliminando comparações ambíguas entre balcão D-0 e extratos D-1.
+- **Justificativa Polimórfica de Débitos Bancários**: `OrphanCategorizationModal.tsx` suporta transações de saída (`type === 'out'`) com paleta Rose, categorias de autopeças/fornecedores/serviços e escolha de destino: *"Somar ao Contas a Pagar"* (`contabilizar_no_subtotal = true`) vs *"Apenas Conciliar"*.
+- **Habilitação de Ações de Saída**: `StoreExtratoBancarioView.tsx` libera o botão "Justificar / Editar" para todas as saídas no extrato da filial, disparando a RPC atômica `resolve_orphan_saida_ofx`.
+- **SSOT de Despesas sem Duplicação**: Migration `supabase/migrations/20260901000012_fix_store_split_linear_subtraction_and_expenses.sql` ajustando a RPC `get_daily_reconciliation_summary` com blindagem contra dupla contagem de despesas.
+
+### Spec 334 — Transparência de Entradas OFX, Empilhamento Visual dos Cards e Centralização dos Cálculos na RPC
+- **Vertical Stack no Card de Filiais**: Reestruturação do bloco esquerdo em `StoreCardModulo1.tsx` com empilhamento vertical de *Saldo Total*, *Rede Total (com badge de compensação)* e *Saldo em Pátio*, eliminando qualquer truncamento com reticências (`...`).
+- **Extrato OFX Imutável**: Migration `supabase/migrations/20260901000011_fix_canonical_store_ofx_entries_and_split.sql` garantindo que `ofx_entradas_total` reflita 100% dos créditos bancários da filial.
+- **Zero Recálculo no Frontend**: Todas as métricas de filiais derivam de propriedades retornadas pela RPC `get_daily_reconciliation_summary`.
+
 ### Spec 279 — Correção do Fechamento por Filial, Agregação Canônica e Cálculo de Diferença por Loja
 - **Agregação Canônica por CTEs na RPC**: RPC `get_daily_reconciliation_summary` atualizada com CTEs isoladas (`rede_agg`, `ofx_rede_agg`, `pix_agg`, `patio_agg`, `vault_agg`, `recon_latest`) e tratamento de `store_id` como `TEXT`, garantindo agregação sem perda para as 10 lojas ativas (Mauá UUID e IDs curtos `st-01` a `st-09`).
 - **Cálculo da Diferença por Loja**: $\text{Previsto Loja} = \text{Rede Líquido} + \text{PIX}$, $\text{Realizado Loja} = \text{OFX Maquininhas} + \text{PIX}$, $\text{Diferença Loja} = \text{Realizado Loja} - \text{Previsto Loja}$.
@@ -532,4 +543,9 @@ ao_entrou_valor (cartões a compensar) sem hardcodes legados de filiais, apurand
 ## Feature 267: Painel de Edição de OSs Ausentes no Pátio e Deduplicação da Rede
 - Componente `MissingPatioOsEditor.tsx` integrado no Step 3 do `CentralImportWizard.tsx` para visualização e edição inline (Valor Total, Valor Pago, Status) de OSs que não vieram nos arquivos de hoje.
 - Sincronização individual e granular de todas as 69 OSs do Excel oficial no banco `patio_os` (totalizando R$ 88.212,39 exatos).
-- Deduplicação determinística em `useTransactions.ts` para `pos_transactions` e eliminação de transações repetidas da Rede em Santo André. (feat(314): auditoria de integridade de saldos, deduplicacao ofx multi-dias e ciclo rede)
+- Deduplicação determinística em `useTransactions.ts` para `pos_transactions` e eliminação de transações repetidas da Rede em Santo André.
+
+## Feature 332: Correção da Diferença no Fechamento por Loja e Pendências OFX
+- **Backend (`20260901000009_fix_store_difference_and_ofx_pendencias.sql`):** Atualizada a RPC `get_daily_reconciliation_summary` para calcular a Diferença por Loja estritamente pela CTE `ofx_unreconciled_agg` (soma de entradas OFX sem vínculo/categoria menos saídas sem conta a pagar).
+- **Frontend (`StoreCardModulo1.tsx` & `conciliacao.$lojaId.tsx`):** Corrigido erro de digitação `"Diferena"`, ajustada a tolerância de centavos e sincronizado o cabeçalho das 6 métricas da filial com suporte nativo a query param `date`.
+

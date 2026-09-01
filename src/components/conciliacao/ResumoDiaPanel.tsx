@@ -122,7 +122,9 @@ export function ResumoDiaPanel({
   const aReceberValor = isEditing ? aReceberInput : (currentSnapshot?.a_receber_manual ?? summary?.a_receber ?? 0);
   const contasManualValor = isEditing 
     ? (contasInput + (summary?.contas_extras || 0)) 
-    : (summary?.contas_manual ?? ((summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0) + (summary?.contas_extras || 0)));
+    : ((summary?.contas_manual && summary.contas_manual > 0) 
+        ? summary.contas_manual 
+        : ((summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0) + (summary?.contas_extras || 0)));
 
   // Pilares Automáticos
   const saldoBancosValor = summary?.total_saldo_banco_positivo ?? summary?.total_saldo_banco ?? currentSnapshot?.saldo_bancario ?? totalBancarioIn;
