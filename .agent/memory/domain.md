@@ -1,3 +1,16 @@
+## [2026-09-01] — [Feature ID: 279-correcao-fechamento-por-filial-e-detalhamento-lojas]
+
+**Contexto:** Correção e padronização da rastreabilidade da divergência global loja a loja.
+
+**Regra aprendida:**
+1. **Rastreabilidade da Diferença por Filial:**
+   - A soma das diferenças por loja DEVE refletir a divergência operacional da holding naquele dia. Cada filial compara o total de recebimentos previstos ($\text{Maquininha Líquido} + \text{PIX}$) contra o que efetivamente transitou no extrato Itaú da unidade ($\text{OFX Maquininhas} + \text{PIX}$).
+2. **Classificação de Status da Compensação:**
+   - `sem_movimento`: Maquininha e entradas OFX zeradas no dia.
+   - `entrou`: 100% das vendas de cartão foram liquidadas e creditadas no extrato bancário.
+   - `parcial`: Parte das vendas de cartão entrou no banco e parte ainda está a compensar.
+   - `a_compensar`: Vendas registradas na adquirente aguardando crédito em conta corrente.
+
 ## [2026-09-01] — [Feature ID: 315-correcao-rpc-conciliacao-e-blindagem-snapshots]
 
 **Contexto:** Correção do odômetro de faturamento da Oficina Inteligente e proteção contra corrupção do fechamento diário e histórico de filiais.

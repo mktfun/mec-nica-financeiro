@@ -1,3 +1,20 @@
+## [2026-09-01] — [Feature ID: 279-correcao-fechamento-por-filial-e-detalhamento-lojas]
+
+**Contexto:** Atualização da RPC `get_daily_reconciliation_summary` para calcular e retornar as métricas de Saldo Total, Maquininha (Rede Líquido), PIX, Na Loja OS, Previsto e Diferença por Loja para as 10 filiais através de CTEs pré-agrupadas e padronização de `store_id` como `TEXT`.
+
+**Regra aprendida:**
+1. **Padronização de Chaves de Lojas (`store_id` como `TEXT`):**
+   - 9 lojas usam IDs curtos (`st-01` a `st-09`) e Mauá usa UUID nativo (`3a3dd7ce...`). NUNCA faça cast para `UUID` (`store_id::uuid`), pois causará erro PostgreSQL 22P02. Todas as CTEs e joins devem tratar `store_id` como `TEXT`.
+2. **CTEs Pré-Agrupadas por Loja:**
+   - Para evitar produto cartesiano e garantir 100% de integridade com as 10 filiais, os agrupamentos de `pos_transactions`, `ofx_transactions`, `patio_os` e `store_cash_vault` DEVEM ser calculados em CTEs isoladas com `GROUP BY store_id` antes do `LEFT JOIN` com `stores`.
+3. **Cálculo da Diferença por Loja:**
+   - $\text{Previsto Loja}_i = \text{Rede Líquido}_i + \text{PIX}_i$.
+   - $\text{Realizado Loja}_i = \text{OFX Maquininhas}_i + \text{PIX}_i$.
+   - $\text{Diferença Loja}_i = \text{Realizado Loja}_i - \text{Previsto Loja}_i = \text{OFX Maquininhas}_i - \text{Rede Líquido}_i$.
+
+**Risco identificado / Anti-pattern:**
+- NUNCA fazer `LEFT JOIN` direto entre múltiplas tabelas transacionais brutas sem pré-agrupamento em CTEs, pois multiplica os valores das transações ($N \times M$).
+
 ## [2026-09-01] — [Feature ID: 315-correcao-rpc-conciliacao-e-blindagem-snapshots]
 
 **Contexto:** Correção crítica da RPC `get_daily_reconciliation_summary` para garantir a inclusão de `'stores'` (detalhamento das 10 filiais) no Ramal 1 (`is_closed = true`), correção da lógica de odômetro delta evitando vazamento de faturamento acumulado, e blindagem da RPC `close_daily_snapshot` com `RAISE EXCEPTION` caso o detalhamento por filial esteja corrompido.

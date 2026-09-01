@@ -104,6 +104,21 @@ export interface StoreReconciliationSummary {
   status: 'approved' | 'divergence';
 }
 
+export interface StoreCardData {
+  storeId: string;
+  storeName: string;
+  avatarUrl?: string | null;
+  saldoBanco: number;
+  maquininha: number;
+  pix: number;
+  naLojaOs: number;
+  previsto: number;
+  diferenca: number;
+  statusCompensacao: 'entrou' | 'parcial' | 'nao_entrou' | 'a_compensar' | 'sem_movimento';
+  naoEntrouValor: number;
+  status: 'approved' | 'divergence' | 'conciliado' | 'pending';
+}
+
 export interface StorePosDetail {
   store_id: string;
   store_name: string;

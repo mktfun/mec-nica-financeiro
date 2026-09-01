@@ -65,7 +65,8 @@ function ConciliacaoLojaPage() {
   const { data: transactions = [] } = useTransactionsPorDataELoja(targetDate, lojaId);
   const { data: currentSnapshot } = useDailySnapshot(targetDate);
   const { data: dailySummary } = useDailyReconciliationSummary(targetDate);
-  const storeRecon = dailySummary?.stores?.find(s => s.store_id === lojaId);
+  const storesList = dailySummary?.stores || dailySummary?.stores_detail || [];
+  const storeRecon = storesList.find(s => s.store_id === lojaId);
   
   const isMarcoZero = (currentSnapshot?.metadata as any)?.is_marco_zero === true;
 
@@ -87,7 +88,7 @@ function ConciliacaoLojaPage() {
         <div className="flex flex-col items-center justify-center py-20 text-zinc-500">
           <Store size={48} className="mb-4 opacity-20" />
           <h2 className="text-xl font-display">Loja não encontrada</h2>
-          <Link to="/conciliacao" className="mt-4 text-emerald-400 hover:underline">Voltar para a conciliação</Link>
+          <Link to="/conciliacao" search={{ date: targetDate }} className="mt-4 text-emerald-400 hover:underline">Voltar para a conciliação</Link>
         </div>
       </AppShell>
     );
@@ -99,7 +100,7 @@ function ConciliacaoLojaPage() {
     <AppShell>
       <PageContainer variant="finance" className="space-y-6 pb-20 pt-2">
         <div>
-          <Link to="/conciliacao" className="inline-flex items-center gap-2 text-xs text-zinc-400 hover:text-zinc-200 transition-colors mb-3">
+          <Link to="/conciliacao" search={{ date: targetDate }} className="inline-flex items-center gap-2 text-xs text-zinc-400 hover:text-zinc-200 transition-colors mb-3">
             <ArrowLeft size={14} /> Voltar para Fechamento
           </Link>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -162,7 +163,7 @@ function ConciliacaoLojaPage() {
                 Maquininha
               </span>
               <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
-                <AnimatedNumber value={log.maquininha} format="currency" />
+                <AnimatedNumber value={log.maquininha || 0} format="currency" />
               </p>
             </div>
 
@@ -172,7 +173,7 @@ function ConciliacaoLojaPage() {
                 PIX
               </span>
               <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
-                <AnimatedNumber value={log.pix} format="currency" />
+                <AnimatedNumber value={log.pix || 0} format="currency" />
               </p>
             </div>
 
@@ -182,7 +183,7 @@ function ConciliacaoLojaPage() {
                 Na Loja OS
               </span>
               <p className="font-bold text-sm text-[var(--color-accent-warning)] font-mono">
-                <AnimatedNumber value={log.na_loja_os} format="currency" />
+                <AnimatedNumber value={log.na_loja_os || 0} format="currency" />
               </p>
             </div>
 
@@ -192,7 +193,7 @@ function ConciliacaoLojaPage() {
                 Previsto
               </span>
               <p className="font-bold text-sm text-[var(--text-primary)] font-mono">
-                <AnimatedNumber value={log.previsto_ofx} format="currency" />
+                <AnimatedNumber value={log.previsto_ofx || 0} format="currency" />
               </p>
               <span className="text-[9px] text-[var(--text-tertiary)] block mt-0.5 font-medium">
                 Total Previsto
@@ -209,7 +210,7 @@ function ConciliacaoLojaPage() {
               <p className={`font-bold text-sm font-mono ${
                 isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
               }`}>
-                <AnimatedNumber value={log.diferenca} format="currency" />
+                <AnimatedNumber value={log.diferenca || 0} format="currency" />
               </p>
             </div>
           </div>

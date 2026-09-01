@@ -1,3 +1,15 @@
+## [2026-09-01] — [Feature ID: 279-correcao-fechamento-por-filial-e-detalhamento-lojas]
+
+**Contexto:** Modularização do card de filiais em `StoreCardModulo1.tsx` e container `ConciliacaoLojasView.tsx` com Dark UI Zinc-950 e preservação de data na navegação.
+
+**Regra aprendida:**
+1. **Componentização Modular de Cards de Loja:**
+   - O layout das 6 métricas (Saldo Total, Maquininha, PIX, Na Loja OS, Previsto, Diferença) foi isolado em `StoreCardModulo1.tsx` com a interface `StoreCardData`, eliminando casts `(rawLog as any)` e duplicações de código.
+2. **Badges de Status Informativas:**
+   - `ENTROU` (emerald), `A COMPENSAR (+ R$)` (amber), `DIVERGÊNCIA` (rose), `SEM MOVIMENTO` (zinc).
+3. **Preservação de Contexto Temporal na Navegação:**
+   - Ao navegar de `/conciliacao` para `/conciliacao/:lojaId` e retornar, o link deve sempre repassar o search param `search={{ date: targetDate }}` para não perder a data selecionada pelo usuário.
+
 ## [2026-09-01] — [Feature ID: 315-correcao-rpc-conciliacao-e-blindagem-snapshots]
 
 **Contexto:** Implementação de guarda visual de integridade `isStoreBreakdownCorrupted` e resolução resiliente de propriedades por filial na interface de conciliação diária.

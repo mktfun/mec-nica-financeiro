@@ -1,3 +1,15 @@
+### Feature 279: Correção do Fechamento por Filial, Agregação Canônica e Cálculo de Diferença por Loja
+- **Status:** COMPLETED & ARCHIVED
+- **Data:** 2026-09-01
+- **Arquivos Criados/Modificados:**
+  - `supabase/migrations/20260901000003_fix_store_breakdown_metrics_and_differences.sql`
+  - `src/components/conciliacao/StoreCardModulo1.tsx`
+  - `src/components/conciliacao/ConciliacaoLojasView.tsx`
+  - `src/routes/conciliacao.index.tsx`
+  - `src/routes/conciliacao.$lojaId.tsx`
+  - `src/hooks/useBackendConciliacao.ts`
+- **Descrição:** Agregação de dados por loja com CTEs isoladas na RPC `get_daily_reconciliation_summary`, padronização de `store_id` como `TEXT` (Mauá UUID e IDs curtos perfeitamente compatibilizados), cálculo exato da diferença e previsto por filial, componentização modular do card de 6 métricas em Dark UI Zinc-950 e preservação do parâmetro temporal na navegação.
+
 ### Feature 322: Idempotência do Motor de Conciliação, Conciliação de Saídas OFX x Contas e Justificativa de Despesas Órfãs
 - **Status:** COMPLETED & ARCHIVED
 - **Data:** 2026-08-31

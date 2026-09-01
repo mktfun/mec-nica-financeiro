@@ -1,3 +1,10 @@
+### Spec 279 — Correção do Fechamento por Filial, Agregação Canônica e Cálculo de Diferença por Loja
+- **Agregação Canônica por CTEs na RPC**: RPC `get_daily_reconciliation_summary` atualizada com CTEs isoladas (`rede_agg`, `ofx_rede_agg`, `pix_agg`, `patio_agg`, `vault_agg`, `recon_latest`) e tratamento de `store_id` como `TEXT`, garantindo agregação sem perda para as 10 lojas ativas (Mauá UUID e IDs curtos `st-01` a `st-09`).
+- **Cálculo da Diferença por Loja**: $\text{Previsto Loja} = \text{Rede Líquido} + \text{PIX}$, $\text{Realizado Loja} = \text{OFX Maquininhas} + \text{PIX}$, $\text{Diferença Loja} = \text{Realizado Loja} - \text{Previsto Loja}$.
+- **Componentização Modular no Frontend**: Criação de `StoreCardModulo1.tsx` e `ConciliacaoLojasView.tsx` no padrão Dark UI Zinc-950 com badges `ENTROU`, `A COMPENSAR (+ R$)`, `DIVERGÊNCIA` e `SEM MOVIMENTO`.
+- **Preservação de Contexto Temporal**: Correção do botão de retorno em `conciliacao.$lojaId.tsx` mantendo `search={{ date: targetDate }}`.
+- **Migration**: `supabase/migrations/20260901000003_fix_store_breakdown_metrics_and_differences.sql`.
+
 ### Spec 315 — Correção Crítica da RPC de Conciliação, Cálculo de Faturamento e Blindagem de Snapshots
 - **Retorno de Lojas em Snapshots Fechados (Ramal 1)**: Inclusão obrigatória de `'stores'` com as 10 filiais preenchidas no retorno da RPC `get_daily_reconciliation_summary` para dias homologados (`is_closed = true`).
 - **Cálculo de Odômetro Estável**: Odômetro delta corrigido (`IF v_faturamento_oi_base >= v_faturamento_anterior THEN v_faturamento_oi_base - v_faturamento_anterior`), evitando vazamento do acumulado histórico como receita do dia quando o faturamento não muda.
