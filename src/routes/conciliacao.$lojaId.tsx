@@ -5,7 +5,7 @@ import { PageContainer } from '@/components/layout/PageContainer';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { AmountCell } from '@/components/finance/AmountCell';
-import { Store, ArrowLeft, CreditCard, Landmark, Car, TableProperties } from 'lucide-react';
+import { Store, ArrowLeft, CreditCard, Landmark, Car, TableProperties, AlertTriangle } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
 import { StoreCartaoMaquininhaView } from '@/components/conciliacao/StoreCartaoMaquininhaView';
 import { StoreExtratoBancarioView } from '@/components/conciliacao/StoreExtratoBancarioView';
@@ -70,17 +70,20 @@ function ConciliacaoLojaPage() {
   
   const isMarcoZero = (currentSnapshot?.metadata as any)?.is_marco_zero === true;
 
-  const log = storeRecon || {
-    saldo_banco: 0,
-    maquininha: 0,
-    pix: 0,
-    na_loja_os: 0,
-    previsto_ofx: 0,
-    diferenca: 0,
-    status: 'pending' as const
+  const rawLog: any = storeRecon;
+  const isMissing = !rawLog;
+  const log = {
+    saldo_banco: isMissing ? null : Number(rawLog?.saldo_banco ?? rawLog?.saldo_banco_ofx ?? 0),
+    maquininha: isMissing ? null : Number(rawLog?.maquininha ?? rawLog?.rede_liquido ?? 0),
+    pix: isMissing ? null : Number(rawLog?.pix ?? rawLog?.pix_os ?? 0),
+    na_loja_os: isMissing ? null : Number(rawLog?.na_loja_os ?? rawLog?.patio_os ?? 0),
+    previsto_ofx: isMissing ? null : Number(rawLog?.previsto_ofx ?? rawLog?.previsto ?? 0),
+    diferenca: isMissing ? null : Number(rawLog?.diferenca ?? 0),
+    status: rawLog?.status || 'pending',
+    isMissingData: isMissing
   };
 
-  const isDiferencaOk = Math.abs(log.diferenca || 0) === 0 && (log.status === 'approved' || log.status === 'conciliado');
+  const isDiferencaOk = Math.abs(log.diferenca) === 0 && (log.status === 'approved' || log.status === 'conciliado');
 
   if (!store) {
     return (
@@ -143,6 +146,20 @@ function ConciliacaoLojaPage() {
           </div>
         </div>
 
+        {!storeRecon && (
+          <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-4 flex items-start gap-3">
+            <AlertTriangle className="text-red-400 mt-0.5 shrink-0" size={18} />
+            <div>
+              <h3 className="text-red-400 font-semibold text-sm">Dados Ausentes na Agregação</h3>
+              <p className="text-red-300/80 text-xs mt-1 leading-relaxed">
+                A rotina de conciliação do dia não retornou os dados estruturais para esta filial. 
+                Isso pode ocorrer se a filial não possui transações (extrato bancário, OS ou maquininha) nesta data,
+                ou devido a uma falha na consolidação do sistema. Os cards abaixo exibirão "N/D" (Não Disponível).
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Painel Único de Fundo Contínuo Envelopando as 6 Métricas — Idêntico ao Fechamento por Filial */}
         <div className="bg-black/25 p-4 sm:p-5 rounded-2xl border border-white/5 font-sans tabular-nums text-xs">
           <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6 xl:gap-8 items-center">
@@ -152,8 +169,8 @@ function ConciliacaoLojaPage() {
               <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
                 SALDO TOTAL
               </span>
-              <p className={`font-bold text-sm sm:text-base font-mono ${(log.saldo_banco || 0) < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
-                <AnimatedNumber value={log.saldo_banco || 0} format="currency" />
+              <p className={`font-bold text-sm sm:text-base font-mono ${log.isMissingData ? 'text-zinc-500' : (log.saldo_banco || 0) < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
+                {log.isMissingData ? 'N/D' : <AnimatedNumber value={log.saldo_banco || 0} format="currency" />}
               </p>
             </div>
 
@@ -162,8 +179,8 @@ function ConciliacaoLojaPage() {
               <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
                 Maquininha
               </span>
-              <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
-                <AnimatedNumber value={log.maquininha || 0} format="currency" />
+              <p className={`font-bold text-sm font-mono ${log.isMissingData ? 'text-zinc-500' : 'text-[var(--color-primary)]'}`}>
+                {log.isMissingData ? 'N/D' : <AnimatedNumber value={log.maquininha || 0} format="currency" />}
               </p>
             </div>
 
@@ -172,8 +189,8 @@ function ConciliacaoLojaPage() {
               <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
                 PIX
               </span>
-              <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
-                <AnimatedNumber value={log.pix || 0} format="currency" />
+              <p className={`font-bold text-sm font-mono ${log.isMissingData ? 'text-zinc-500' : 'text-[var(--color-primary)]'}`}>
+                {log.isMissingData ? 'N/D' : <AnimatedNumber value={log.pix || 0} format="currency" />}
               </p>
             </div>
 
@@ -182,8 +199,8 @@ function ConciliacaoLojaPage() {
               <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
                 Na Loja OS
               </span>
-              <p className="font-bold text-sm text-[var(--color-accent-warning)] font-mono">
-                <AnimatedNumber value={log.na_loja_os || 0} format="currency" />
+              <p className={`font-bold text-sm font-mono ${log.isMissingData ? 'text-zinc-500' : 'text-[var(--color-accent-warning)]'}`}>
+                {log.isMissingData ? 'N/D' : <AnimatedNumber value={log.na_loja_os || 0} format="currency" />}
               </p>
             </div>
 
@@ -192,8 +209,8 @@ function ConciliacaoLojaPage() {
               <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
                 Previsto
               </span>
-              <p className="font-bold text-sm text-[var(--text-primary)] font-mono">
-                <AnimatedNumber value={log.previsto_ofx || 0} format="currency" />
+              <p className={`font-bold text-sm font-mono ${log.isMissingData ? 'text-zinc-500' : 'text-[var(--text-primary)]'}`}>
+                {log.isMissingData ? 'N/D' : <AnimatedNumber value={log.previsto_ofx || 0} format="currency" />}
               </p>
               <span className="text-[9px] text-[var(--text-tertiary)] block mt-0.5 font-medium">
                 Total Previsto
@@ -203,14 +220,14 @@ function ConciliacaoLojaPage() {
             {/* 6. Diferença */}
             <div className="xl:border-l xl:border-white/10 xl:pl-6">
               <span className={`text-[10px] uppercase font-bold tracking-wider block mb-1 ${
-                isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
+                log.isMissingData ? 'text-zinc-500' : isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
               }`}>
                 Diferença
               </span>
               <p className={`font-bold text-sm font-mono ${
-                isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
+                log.isMissingData ? 'text-zinc-500' : isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
               }`}>
-                <AnimatedNumber value={log.diferenca || 0} format="currency" />
+                {log.isMissingData ? 'N/D' : <AnimatedNumber value={log.diferenca || 0} format="currency" />}
               </p>
             </div>
           </div>

@@ -342,3 +342,9 @@ ao_entrou_valor (cartÃµes a compensar) sem hardcodes legados de filiais, apurand
 - **Ancoragem de 27/08:** Caixa anterior limpo em R$ 151.642,60.
 - **UI:** BotÃµes explÃ­citos de Salvar e Editar no `ResumoDiaPanel.tsx`.
 
+
+## Spec 330: Correção de Regressão nas Filiais
+- Ajuste nos JOINs de UUID na RPC de summary
+- Alteração na definição de 'diferenca' por loja para 'orphans' ao invés de previsto-realizado absoluto (evita pânico em dias sem importação da Rede).
+- UI bloqueia fallbacks de '0' e renderiza N/D quando há quebra de infraestrutura (isMissingData).
+

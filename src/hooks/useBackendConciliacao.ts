@@ -108,15 +108,16 @@ export interface StoreCardData {
   storeId: string;
   storeName: string;
   avatarUrl?: string | null;
-  saldoBanco: number;
-  maquininha: number;
-  pix: number;
-  naLojaOs: number;
-  previsto: number;
-  diferenca: number;
-  statusCompensacao: 'entrou' | 'parcial' | 'nao_entrou' | 'a_compensar' | 'sem_movimento';
-  naoEntrouValor: number;
+  saldoBanco: number | null;
+  maquininha: number | null;
+  pix: number | null;
+  naLojaOs: number | null;
+  previsto: number | null;
+  diferenca: number | null;
+  statusCompensacao: 'entrou' | 'parcial' | 'nao_entrou' | 'a_compensar' | 'sem_movimento' | string;
+  naoEntrouValor: number | null;
   status: 'approved' | 'divergence' | 'conciliado' | 'pending';
+  isMissingData?: boolean;
 }
 
 export interface StorePosDetail {

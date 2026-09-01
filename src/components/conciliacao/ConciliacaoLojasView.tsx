@@ -22,29 +22,22 @@ export const ConciliacaoLojasView: React.FC<ConciliacaoLojasViewProps> = ({
     return stores.map(store => {
       const rawLog = storesList.find(l => l.store_id === store.id);
       
-      const saldoBanco = Number(rawLog?.saldo_banco ?? rawLog?.saldo_banco_itau ?? rawLog?.saldo_banco_ofx ?? 0);
-      const maquininha = Number(rawLog?.maquininha ?? rawLog?.rede_liquido ?? 0);
-      const pix = Number(rawLog?.pix ?? rawLog?.pix_os ?? 0);
-      const naLojaOs = Number(rawLog?.na_loja_os ?? rawLog?.patio_os ?? 0);
-      const previsto = Number(rawLog?.previsto_ofx ?? (maquininha + pix));
-      const diferenca = Number(rawLog?.diferenca ?? 0);
-      const naoEntrouValor = Number(rawLog?.nao_entrou_valor ?? 0);
-      const statusCompensacao = (rawLog?.status_compensacao || 'sem_movimento') as StoreCardData['statusCompensacao'];
-      const status = (rawLog?.status || 'pending') as StoreCardData['status'];
+      const isMissing = !rawLog;
 
       return {
         storeId: store.id,
         storeName: store.name,
         avatarUrl: store.avatar_url,
-        saldoBanco,
-        maquininha,
-        pix,
-        naLojaOs,
-        previsto,
-        diferenca,
-        statusCompensacao,
-        naoEntrouValor,
-        status
+        saldoBanco: isMissing ? null : Number(rawLog?.saldo_banco ?? rawLog?.saldo_banco_itau ?? rawLog?.saldo_banco_ofx ?? 0),
+        maquininha: isMissing ? null : Number(rawLog?.maquininha ?? rawLog?.rede_liquido ?? 0),
+        pix: isMissing ? null : Number(rawLog?.pix ?? rawLog?.pix_os ?? 0),
+        naLojaOs: isMissing ? null : Number(rawLog?.na_loja_os ?? rawLog?.patio_os ?? 0),
+        previsto: isMissing ? null : Number(rawLog?.previsto_ofx ?? (Number(rawLog?.maquininha ?? rawLog?.rede_liquido ?? 0) + Number(rawLog?.pix ?? rawLog?.pix_os ?? 0))),
+        diferenca: isMissing ? null : Number(rawLog?.diferenca ?? 0),
+        statusCompensacao: (rawLog?.status_compensacao || 'sem_movimento') as StoreCardData['statusCompensacao'],
+        naoEntrouValor: isMissing ? null : Number(rawLog?.nao_entrou_valor ?? 0),
+        status: (rawLog?.status || 'pending') as StoreCardData['status'],
+        isMissingData: isMissing
       };
     });
   }, [stores, storesList]);

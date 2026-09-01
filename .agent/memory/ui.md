@@ -365,3 +365,9 @@ Ao criar fluxos `onClick` que disparam Edge Functions lentas, sempre usar Toasts
 - **Seletores e Scroll de Wizard:** Em telas longas com m�ltiplas contas/filiais (ex: 10 contas OFX), bot�es de navega��o devem ser rolados para a vis�o (`scrollIntoViewIfNeeded()`) antes do clique interativo.
 - **Formul�rio de Justificativa Can�nico:** Manter paridade total entre o Passo 5 (`Step2NonRevenueJustifications.tsx`) e a tela de extrato (`OrphanCategorizationModal.tsx`), com dois bot�es de impacto claros (`Somar ao Faturamento` vs `Apenas Conciliar`), chips r�pidos de categorias e campo de observa��o cont�bil.
 **Risco identificado / Anti-pattern:** N�o utilizar `<select>` puro para decis�es financeiras de alto impacto; preferir bot�es de cards visuais com �cones representativos (`TrendingUp` e `Ban`). (fix: normalize all workflow view_file paths to global skills directory)
+
+## [2026-09-01] - [Feature ID: 330]
+Contexto: Tratamento de falhas de rede/infra em cards contabeis (StoreCardModulo1 e ConciliacaoLojasView).
+Regra aprendida: Substituido fallback silencioso '|| 0' por verificacao 'isMissingData' e null-safety, renderizando 'N/D' e bloqueando interacoes.
+Nao fazer: Nunca fazer fallbacks automaticos para zero em dados criticos contabeis ausentes do backend.
+

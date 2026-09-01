@@ -832,3 +832,9 @@ Garantia de salvamento de mensagens do assistente no banco de dados e isolamento
 **Não fazer:** Nunca faça cálculos matemáticos ou deduções contábeis no React/frontend. Nunca altere o nome do parâmetro de uma RPC sem garantir retrocompatibilidade ou overload canônico.
 
 >>>>>>> 67d8357 (feat(314): auditoria de integridade de saldos, deduplicacao ofx multi-dias e ciclo rede)
+
+## [2026-09-01] - [Feature ID: 330]
+Contexto: Correcao de regressao na RPC get_daily_reconciliation_summary onde um JOIN de UUID com texto provocou panico estrutural.
+Regra aprendida: JOINs de UUID com TEXT falham e silenciam operacoes no supabase. Usar CAST ou ::text. O Frontend nao pode usar fallback || 0 cegamente para saldos. Renderize N/D.
+Nao fazer: Nunca permita que excecoes estruturais sejam traduzidas em status contabeis falsos (ex: R$ 0,00).
+

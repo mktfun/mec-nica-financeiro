@@ -79,19 +79,11 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
   }, [allTransactions]);
 
   const isRedeTx = (t: any) => {
-    const title = `${t.title || ''} ${t.subtitle || ''} ${t.counterpart_name || ''} ${t.fitid || ''}`.toUpperCase();
+    const title = `${t.title || ''} ${t.subtitle || ''} ${t.counterpart_name || ''} ${t.description || ''}`.toUpperCase();
     return (
-      title.includes('REDE') ||
-      title.includes('CIELO') ||
-      title.includes('GETNET') ||
-      title.includes('PAGSEGURO') ||
-      title.includes('STONE') ||
-      title.includes('ADQ') ||
-      title.includes('CART') ||
-      title.includes('REDECARD') ||
-      title.includes('MAST') ||
-      title.includes('VISA') ||
-      title.includes('ELO')
+      /\b(REDE|REDECARD|CIELO|GETNET|PAGSEGURO|STONE|BIN|SIPAG|VERO)\b/.test(title) ||
+      /\b(CARTAO|CARTOES)\b.*\b(CREDITO|DEBITO)\b/.test(title) ||
+      /\b(LIQ|LIQUIDACAO)\b.*\b(CARTAO|CARTOES|REDE|CIELO)\b/.test(title)
     );
   };
 

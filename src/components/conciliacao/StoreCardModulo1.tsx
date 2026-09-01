@@ -16,7 +16,9 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
 
   // Cor da barra lateral
   let barColorClass = 'bg-[var(--color-accent-teal)]';
-  if (hasACompensar) {
+  if (data.isMissingData) {
+    barColorClass = 'bg-red-600';
+  } else if (hasACompensar) {
     barColorClass = 'bg-amber-500';
   } else if (!isDiferencaOk && !isSemMovimento) {
     barColorClass = 'bg-[var(--color-accent-danger)]';
@@ -33,6 +35,7 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
         className="block transition-all hover:scale-[1.005] duration-200"
       >
         <Card className={`p-4 sm:p-5 border flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-6 transition-all shadow-md hover:shadow-xl cursor-pointer ${
+          data.isMissingData ? 'border-red-900/50 hover:border-red-500/50' :
           isDiferencaOk ? 'hover:border-[var(--color-accent-teal)]/40' : (hasACompensar ? 'hover:border-amber-500/40' : 'hover:border-[var(--color-accent-danger)]/40')
         }`}>
           {/* Nome da Loja & Badges */}
@@ -41,25 +44,34 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <p className="font-semibold text-base sm:text-lg text-white leading-tight">{data.storeName}</p>
-                {data.statusCompensacao === 'entrou' && (
-                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                    ENTROU
+                
+                {data.isMissingData ? (
+                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-red-900/40 text-red-400 border border-red-500/30 flex items-center gap-1">
+                    ⚠️ FALHA RPC: DADOS AUSENTES
                   </span>
-                )}
-                {hasACompensar && (
-                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
-                    A COMPENSAR (+ {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(data.naoEntrouValor || 0)})
-                  </span>
-                )}
-                {!isDiferencaOk && !hasACompensar && !isSemMovimento && (
-                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/30">
-                    DIVERGÊNCIA
-                  </span>
-                )}
-                {isSemMovimento && (
-                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-zinc-800 text-zinc-400 border border-zinc-700">
-                    SEM MOVIMENTO
-                  </span>
+                ) : (
+                  <>
+                    {data.statusCompensacao === 'entrou' && (
+                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                        ENTROU
+                      </span>
+                    )}
+                    {hasACompensar && (
+                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                        A COMPENSAR (+ {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(data.naoEntrouValor || 0)})
+                      </span>
+                    )}
+                    {!isDiferencaOk && !hasACompensar && !isSemMovimento && (
+                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/30">
+                        DIVERGÊNCIA
+                      </span>
+                    )}
+                    {isSemMovimento && (
+                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-zinc-800 text-zinc-400 border border-zinc-700">
+                        SEM MOVIMENTO
+                      </span>
+                    )}
+                  </>
                 )}
               </div>
               <p className="text-xs text-[var(--text-tertiary)] font-mono mt-0.5">ID: {data.storeId}</p>
@@ -74,8 +86,8 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                 <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
                   SALDO TOTAL
                 </span>
-                <p className={`font-bold text-sm sm:text-base font-mono ${(data.saldoBanco || 0) < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
-                  <AnimatedNumber value={data.saldoBanco || 0} format="currency" />
+                <p className={`font-bold text-sm sm:text-base font-mono ${data.isMissingData ? 'text-zinc-500' : (data.saldoBanco || 0) < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
+                  {data.isMissingData ? 'N/D' : <AnimatedNumber value={data.saldoBanco || 0} format="currency" />}
                 </p>
               </div>
 
@@ -84,8 +96,8 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                 <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
                   Maquininha
                 </span>
-                <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
-                  <AnimatedNumber value={data.maquininha || 0} format="currency" />
+                <p className={`font-bold text-sm font-mono ${data.isMissingData ? 'text-zinc-500' : 'text-[var(--color-primary)]'}`}>
+                  {data.isMissingData ? 'N/D' : <AnimatedNumber value={data.maquininha || 0} format="currency" />}
                 </p>
               </div>
 
@@ -94,8 +106,8 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                 <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
                   PIX
                 </span>
-                <p className="font-bold text-sm text-[var(--color-primary)] font-mono">
-                  <AnimatedNumber value={data.pix || 0} format="currency" />
+                <p className={`font-bold text-sm font-mono ${data.isMissingData ? 'text-zinc-500' : 'text-[var(--color-primary)]'}`}>
+                  {data.isMissingData ? 'N/D' : <AnimatedNumber value={data.pix || 0} format="currency" />}
                 </p>
               </div>
 
@@ -104,8 +116,8 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                 <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
                   Na Loja OS
                 </span>
-                <p className="font-bold text-sm text-[var(--color-accent-warning)] font-mono">
-                  <AnimatedNumber value={data.naLojaOs || 0} format="currency" />
+                <p className={`font-bold text-sm font-mono ${data.isMissingData ? 'text-zinc-500' : 'text-[var(--color-accent-warning)]'}`}>
+                  {data.isMissingData ? 'N/D' : <AnimatedNumber value={data.naLojaOs || 0} format="currency" />}
                 </p>
               </div>
 
@@ -114,25 +126,25 @@ export const StoreCardModulo1: React.FC<StoreCardModulo1Props> = ({ data, date }
                 <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
                   Previsto
                 </span>
-                <p className="font-bold text-sm text-[var(--text-primary)] font-mono">
-                  <AnimatedNumber value={data.previsto || 0} format="currency" />
+                <p className={`font-bold text-sm font-mono ${data.isMissingData ? 'text-zinc-500' : 'text-[var(--text-primary)]'}`}>
+                  {data.isMissingData ? 'N/D' : <AnimatedNumber value={data.previsto || 0} format="currency" />}
                 </p>
                 <span className="text-[9px] text-[var(--text-tertiary)] block mt-0.5 font-medium">
                   Total Previsto
                 </span>
               </div>
 
-              {/* 6. Diferença */}
+              {/* 6. Diferena */}
               <div className="xl:border-l xl:border-white/10 xl:pl-6">
                 <span className={`text-[10px] uppercase font-bold tracking-wider block mb-1 ${
-                  isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
+                  data.isMissingData ? 'text-zinc-500' : isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
                 }`}>
-                  Diferença
+                  Diferena
                 </span>
                 <p className={`font-bold text-sm font-mono ${
-                  isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
+                  data.isMissingData ? 'text-zinc-500' : isDiferencaOk ? 'text-[var(--color-accent-teal)]' : 'text-[var(--color-accent-danger)]'
                 }`}>
-                  <AnimatedNumber value={data.diferenca || 0} format="currency" />
+                  {data.isMissingData ? 'N/D' : <AnimatedNumber value={data.diferenca || 0} format="currency" />}
                 </p>
               </div>
             </div>
