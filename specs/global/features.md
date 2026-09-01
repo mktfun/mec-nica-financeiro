@@ -1,3 +1,13 @@
+### Spec 341 — Criação de Nova OS com Baixa Granular e Vínculo de Pagamento Manual no Wizard
+- **Criação de OS On-the-Fly no Step 1**: Adição de formulário na aba *"➕ Criar Nova OS na Filial"* no modal `ManualMatchOsModal.tsx` com campos de Loja, Nº da OS, Cliente, Placa, Forma de Pagamento e opção de Liquidação Integral vs Parcial.
+- **RPC Atômica `create_and_link_manual_os`**: Migration `supabase/migrations/20260901000016_create_and_link_manual_os_rpc.sql` gravando a OS em `patio_os`, incrementando `pix_transfer_value`, `credit_value` ou `debit_value`, atualizando `paid_value` e recalculando `status` ('finalizada' vs 'pago_parcial').
+- **Hook `useManualMatch.ts`**: Mutation `createAndLinkOs` com invalidação coordenada de cache do TanStack Query (`patio_os`, `available_store_os`, `reconciliation_views`, `daily-reconciliation-summary`).
+
+### Spec 340 — Motor de Auto-Match com OSs Finalizadas, Roteamento Corporativo e Orquestração Linear de Steps
+- **Pareamento com OSs Finalizadas**: Migration `supabase/migrations/20260901000015_auto_match_finalized_os_and_corporate_routing.sql` expandindo a RPC `auto_match_daily_transactions` para casar tanto OSs abertas quanto finalizadas que possuam `pix_transfer_value` ou `credit_value`/`debit_value` correspondentes.
+- **Auto-Tagging e Roteamento Corporativo**: Pré-classificação de Empréstimos, Seguros, Sinistros e Transferências Interlojas diretamente para o Step 2 (Justificativas), despoluindo a fila do Step 1.
+- **Orquestração Suave de Steps no Frontend**: Remoção do timer artificial e do flash da tela final de sucesso em `CentralImportWizard.tsx`, transicionando diretamente para o Step 1 com controle 100% manual do operador.
+
 ### Spec 335 — Justificativa de Saídas OFX, Integração com Contas a Pagar e Equalização Matemática Linear dos Cards
 - **Subtração Linear dos Cards de Filial**: O split dos cards em `StoreCardModulo1.tsx` adota a equação linear explícita ($A - B = C$): $\text{OFX Entradas} - \text{Créditos Conciliados} = \text{Dif. a Justificar}$ e $\text{Saídas OFX} - \text{Contas Conciliadas} = \text{Dif. a Justificar}$, eliminando comparações ambíguas entre balcão D-0 e extratos D-1.
 - **Justificativa Polimórfica de Débitos Bancários**: `OrphanCategorizationModal.tsx` suporta transações de saída (`type === 'out'`) com paleta Rose, categorias de autopeças/fornecedores/serviços e escolha de destino: *"Somar ao Contas a Pagar"* (`contabilizar_no_subtotal = true`) vs *"Apenas Conciliar"*.

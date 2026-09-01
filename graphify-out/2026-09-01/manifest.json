@@ -205,9 +205,9 @@
     "semantic_hash": "5d3c2622277a9eee29bf6fae4b188ba4"
   },
   "src/components/conciliacao/OrphanCategorizationModal.tsx": {
-    "mtime": 1787582340.3259337,
-    "ast_hash": "9bf473140362c7b02343bbb21ed51a82",
-    "semantic_hash": "9bf473140362c7b02343bbb21ed51a82"
+    "mtime": 1788287784.8507807,
+    "ast_hash": "afbb77f19654207603d67a779f46bd48",
+    "semantic_hash": ""
   },
   "src/components/conciliacao/OsDetailModal.tsx": {
     "mtime": 1787258027.4867642,
@@ -240,8 +240,8 @@
     "semantic_hash": "5657d3d33d13441c1ffdd63784683ee9"
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1788283409.707902,
-    "ast_hash": "1d68ec8d47ed0eb5a2f51bf7c39e1330",
+    "mtime": 1788286288.9041948,
+    "ast_hash": "afd5f6f2854245dece79281bcf3d6e5b",
     "semantic_hash": ""
   },
   "src/components/conciliacao/SaldoBancosDetailModal.tsx": {
@@ -255,8 +255,8 @@
     "semantic_hash": "62bf4be7b0e41945dd09d240a314b7a8"
   },
   "src/components/conciliacao/StoreExtratoBancarioView.tsx": {
-    "mtime": 1788283409.707902,
-    "ast_hash": "9b17cbf5d01f3e02a940d1c971340b1d",
+    "mtime": 1788288013.4193563,
+    "ast_hash": "6bad7e777cb969d8772155c3fce80a42",
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreOrdensServicoView.tsx": {
@@ -655,8 +655,8 @@
     "semantic_hash": "43d7881346dbd48b48bea308ff8f45d5"
   },
   "src/hooks/useBackendConciliacao.ts": {
-    "mtime": 1788283409.7194562,
-    "ast_hash": "0440889ebfc173653d9b855c545bf108",
+    "mtime": 1788288095.81658,
+    "ast_hash": "02eb8f95522c8f2764667985b45436ba",
     "semantic_hash": ""
   },
   "src/hooks/useBackendDashboard.ts": {
@@ -685,9 +685,9 @@
     "semantic_hash": "5d30c370897450ba6da850a0e5316a00"
   },
   "src/hooks/useCategorizeOrphan.ts": {
-    "mtime": 1787768909.2713132,
-    "ast_hash": "a78afa1658d7c983f2d838277285802a",
-    "semantic_hash": "a78afa1658d7c983f2d838277285802a"
+    "mtime": 1788287964.4224243,
+    "ast_hash": "ee9814c3de1b6e06b2ea74dd148b22f7",
+    "semantic_hash": ""
   },
   "src/hooks/useCentralImport.ts": {
     "mtime": 1787327115.4880548,
@@ -1940,13 +1940,13 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/ConciliacaoLojasView.tsx": {
-    "mtime": 1788283409.7045405,
-    "ast_hash": "3207a45fd58fb083f0c0e880c202c1cc",
+    "mtime": 1788288059.1702592,
+    "ast_hash": "691c6fbffa0a2d0817f9f11582f83401",
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreCardModulo1.tsx": {
-    "mtime": 1788284097.506955,
-    "ast_hash": "d7e12f5550fbbd752c4cd165ac21d922",
+    "mtime": 1788288039.0864289,
+    "ast_hash": "e6954d57bcec9bd924d44071aadb5d8c",
     "semantic_hash": ""
   },
   "supabase/migrations/20260901000003_fix_store_breakdown_metrics_and_differences.sql": {
@@ -3455,8 +3455,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1788283409.7009132,
-    "ast_hash": "c1c258262b546cf18e1a539ca90304a7",
+    "mtime": 1788288690.7267625,
+    "ast_hash": "e0c2053c4872dbb50d477f0c48c575f8",
     "semantic_hash": ""
   },
   "specs/global/features_clean.md": {
@@ -3617,6 +3617,66 @@
   "specs/332-correcao-diferenca-fechamento-por-loja-e-pendencias-ofx/spec-plan.md": {
     "mtime": 1788284665.3077378,
     "ast_hash": "4ec660e398cde8a52b4ea5f919367090",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260901000010_fix_revenue_adjustments_contas_and_store_split.sql": {
+    "mtime": 1788286249.337035,
+    "ast_hash": "fb96e30d1a26184b2bf31b8b0d0a84b7",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260901000011_fix_canonical_store_ofx_entries_and_split.sql": {
+    "mtime": 1788287137.1281757,
+    "ast_hash": "436f762bfabeed604d90ea9622f1f8bb",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260901000012_fix_store_split_linear_subtraction_and_expenses.sql": {
+    "mtime": 1788287917.7732508,
+    "ast_hash": "26eee2be279d9e8a5582918565886841",
+    "semantic_hash": ""
+  },
+  "specs/333-contabilizacao-justificativas-faturamento-contas-split-cards-lojas/design.md": {
+    "mtime": 1788285627.9434786,
+    "ast_hash": "31db228b7bb68b2e3f8d277652e607c1",
+    "semantic_hash": ""
+  },
+  "specs/333-contabilizacao-justificativas-faturamento-contas-split-cards-lojas/proposal.md": {
+    "mtime": 1788285614.2318516,
+    "ast_hash": "fd1d6f2c4aadacd4f2add27d256d8e1d",
+    "semantic_hash": ""
+  },
+  "specs/333-contabilizacao-justificativas-faturamento-contas-split-cards-lojas/spec-plan.md": {
+    "mtime": 1788286626.3874865,
+    "ast_hash": "48b4cb3027ba2c73524133639eae49ae",
+    "semantic_hash": ""
+  },
+  "specs/334-transparencia-entradas-ofx-empilhamento-cards-rpc/design.md": {
+    "mtime": 1788286811.1545453,
+    "ast_hash": "0af61fbb38b69c6429124aef24661278",
+    "semantic_hash": ""
+  },
+  "specs/334-transparencia-entradas-ofx-empilhamento-cards-rpc/proposal.md": {
+    "mtime": 1788286796.2156765,
+    "ast_hash": "b8d68fc072a37811bfd4c1650b6580cb",
+    "semantic_hash": ""
+  },
+  "specs/334-transparencia-entradas-ofx-empilhamento-cards-rpc/spec-plan.md": {
+    "mtime": 1788287379.5972004,
+    "ast_hash": "ed63c169880a7a5c60d65afdc94b0db8",
+    "semantic_hash": ""
+  },
+  "specs/335-justificativa-saidas-ofx-e-equalizacao-matematica-cards/design.md": {
+    "mtime": 1788287820.71417,
+    "ast_hash": "d0142f3d7bcf5e19424b855983ff8840",
+    "semantic_hash": ""
+  },
+  "specs/335-justificativa-saidas-ofx-e-equalizacao-matematica-cards/proposal.md": {
+    "mtime": 1788287807.8006895,
+    "ast_hash": "29cde430d0344396a3f80420a7e7fe28",
+    "semantic_hash": ""
+  },
+  "specs/335-justificativa-saidas-ofx-e-equalizacao-matematica-cards/spec-plan.md": {
+    "mtime": 1788288346.722248,
+    "ast_hash": "3f867fbf721d1836c253d661f2501e3b",
     "semantic_hash": ""
   }
 }

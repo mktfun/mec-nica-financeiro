@@ -146,10 +146,60 @@ export function useAvailableStoreOs(storeId: string, date?: string, matchType: '
   });
 }
 
+export interface CreateAndLinkOsParams {
+  transactionType: 'ofx' | 'rede' | 'pix';
+  transactionId: string;
+  storeId: string;
+  osNumber: string;
+  clientName?: string;
+  plate?: string;
+  totalValue?: number;
+  paymentMethod?: string;
+  linkAmount?: number;
+}
+
 export function useManualMatch() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const queryClient = useQueryClient();
+
+  const createAndLinkOs = async (params: CreateAndLinkOsParams) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data, error: rpcErr } = await supabase.rpc('create_and_link_manual_os', {
+        p_transaction_type: params.transactionType,
+        p_transaction_id: params.transactionId,
+        p_store_id: params.storeId,
+        p_os_number: params.osNumber,
+        p_client_name: params.clientName || null,
+        p_plate: params.plate || null,
+        p_total_value: params.totalValue || null,
+        p_payment_method: params.paymentMethod || null,
+        p_link_amount: params.linkAmount || null
+      });
+
+      if (rpcErr) throw rpcErr;
+
+      await queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] });
+      await queryClient.invalidateQueries({ queryKey: ['available_store_os'] });
+      await queryClient.invalidateQueries({ queryKey: ['justified_transactions'] });
+      await queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+      await queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
+      await queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      await queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
+      await queryClient.invalidateQueries({ queryKey: ['patio-os'] });
+      await queryClient.invalidateQueries({ queryKey: ['patio_os'] });
+
+      return { success: true, data };
+    } catch (err: any) {
+      console.error('Erro ao criar OS e vincular transação:', err);
+      setError(err.message || 'Erro ao criar OS e vincular transação');
+      return { success: false, error: err.message };
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const linkTransactionToOs = async (
     transactionId: string, 
@@ -187,6 +237,7 @@ export function useManualMatch() {
       await queryClient.invalidateQueries({ queryKey: ['transactions'] });
       await queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
       await queryClient.invalidateQueries({ queryKey: ['patio-os'] });
+      await queryClient.invalidateQueries({ queryKey: ['patio_os'] });
 
       return { success: true };
     } catch (err: any) {
@@ -221,6 +272,7 @@ export function useManualMatch() {
       await queryClient.invalidateQueries({ queryKey: ['transactions'] });
       await queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
       await queryClient.invalidateQueries({ queryKey: ['patio-os'] });
+      await queryClient.invalidateQueries({ queryKey: ['patio_os'] });
 
       return { success: true };
     } catch (err: any) {
@@ -232,5 +284,5 @@ export function useManualMatch() {
     }
   };
 
-  return { linkTransactionToOs, unlinkTransaction, loading, error };
+  return { linkTransactionToOs, createAndLinkOs, unlinkTransaction, loading, error };
 }

@@ -401,3 +401,16 @@ Nao fazer: Nunca fazer fallbacks automaticos para zero em dados criticos contabe
 1. **Formatação de Diferença R$ 0,00:** Tratar tolerância de centavos (`Math.abs(diferenca) <= 0.05`) para exibir badges semânticos (`ENTROU` verde esmeralda).
 2. **Suporte a Query Params:** `conciliacao.index.tsx` deve declarar `validateSearch: { date }` para ler imediatamente a data passada pela URL ao renderizar.
 3. **Resiliência de Identificador de Filial:** Ao cruzar o resumo consolidado com as lojas, validar `s.store_id === lojaId || s.store_id === store?.id || s.store_name === store?.name`.
+
+## [2026-09-01] — [Feature ID: 340] Orquestração Linear de Steps e Eliminação de Flash Visual
+**Contexto:** Correção de bugs de UX no Wizard de Importação onde a tela de fechamento final piscava antes de entrar nos passos de conferência.
+**Regra aprendida:**
+1. **Transições Sem Timers Cegos:** Nunca utilizar `setTimeout` para avançar steps automaticamente após mutações de importação. Ao salvar o lote, direcione o usuário para o Step 1 e mantenha-o no step até que o botão "Próximo" seja clicado explicitamente.
+2. **Controle de Estado de Conclusão:** O flag `saveFinished` deve ser ativado exclusivamente no último step de fechamento (`Step 7 / Step 4 Final Audit`), e não ao salvar arquivos preliminares de extratos e pátio.
+
+## [2026-09-01] — [Feature ID: 341] Modal com Sistema Dual de Abas (Vínculo Existente vs Criar Nova OS)
+**Contexto:** Modal de match manual (`ManualMatchOsModal.tsx`) estendido para permitir criação on-the-fly de novas Ordens de Serviço.
+**Regra aprendida:**
+1. **Segmented Control de Abas:** Implementar alternância fluida entre *"🔍 Vincular à OS Existente"* e *"➕ Criar Nova OS na Filial"* com preservação dos dados da transação (valor, contraparte e filial).
+2. **Liquidação Integral vs Parcial:** Disponibilizar opção rápida de liquidação total (default: valor total = valor do pagamento) ou parcial (campo para informar o valor total real do serviço, calculando o saldo remanescente em aberto em tempo real).
+3. **Padrão Dark UI Zinc-950:** Manter contrastes `bg-zinc-950`, `border-zinc-800`, botões `bg-emerald-500` com hover vibrante e feedback em toasts Sonner.

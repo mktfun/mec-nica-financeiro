@@ -749,3 +749,15 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
    - Se 100% dos lançamentos do extrato estiverem identificados (lotes de adquirente, PIX com OS vinculado ou transações categorizadas), a diferença da filial é **R$ 0,00** e o status é **approved (Conciliado / Verde)**.
 2. **Desacoplamento do Ativo "A Compensar":** A diferença entre vendas de maquininha do dia e liquidação em conta corrente (GREATEST(0, rede_liquido - ofx_maquininhas)) é um ativo de curto prazo (*Cartões a Compensar*) e NÃO uma divergência operacional da loja.
 **Risco identificado / Anti-pattern:** Subtrair o extrato bancário de maquininhas das vendas do dia para calcular "diferença da loja" quando há lotes de dias anteriores caindo no mesmo extrato.
+
+## [2026-09-01] — [Feature ID: 340] Motor de Pareamento com OSs Finalizadas e Roteamento Corporativo
+**Contexto:** No fechamento diário, muitos PIXs e vendas de cartão de clientes caem no mesmo dia em que o serviço é finalizado e a OS é marcada como finalizada no ERP da oficina.
+**Regra aprendida:**
+1. **Pareamento Integral com OSs Finalizadas:** A conciliação automática deve checar se uma OS já finalizada possui `pix_transfer_value` ou `credit_value`/`debit_value` correspondentes ao valor da transação do extrato/maquininha, vinculando-a automaticamente para que o operador não precise fazer match manual de dezenas de transações que já foram pagas.
+2. **Roteamento Corporativo de Despesas/Entradas:** Transações com descrições financeiras corporativas (Empréstimos Capital de Giro, Pagamentos de Seguradoras como Itaú Seguros, Distribuidoras de Óleo e Aplicações Financeiras) devem ser pré-categorizadas e isoladas no Step 2 de Justificativas.
+
+## [2026-09-01] — [Feature ID: 341] Criação de Nova OS e Baixa Granular de Pagamento
+**Contexto:** Quando uma transação de PIX ou Cartão sobra sem OS no Step 1, o operador precisa poder cadastrar a OS diretamente no modal de match.
+**Regra aprendida:**
+1. **Garantia de Formas de Pagamento e Saldo de Pátio:** Ao criar ou vincular a OS, o valor deve ser somado especificamente na coluna da forma de pagamento (`pix_transfer_value`, `credit_value` ou `debit_value`), somado em `paid_value` e o saldo em aberto recalculado para garantir precisão contábil no Pilar 4 (Na Loja OS).
+2. **Prevenção de Duplicidade de Faturamento:** A transação vinculada a uma OS não deve ser somada aos ajustes de receita do DRE, evitando dupla contagem com o Odômetro do ERP.

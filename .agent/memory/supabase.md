@@ -875,3 +875,17 @@ Nao fazer: Nunca permita que excecoes estruturais sejam traduzidas em status con
 1. **CTE `ofx_unreconciled_agg`:** Agrega entradas órfãs (créditos sem OS, sem categoria manual e sem adquirentes) e saídas órfãs (débitos sem conta vinculada e sem categoria). A diferença por loja passa a ser `COALESCE(unrec.total_pendencias, 0)`.
 2. **Campos de Snapshot em Ramal 1:** `daily_snapshots` não possui as colunas `caixa_anterior`, `fluxo_caixa`, `faturamento_anterior`, `faturamento_periodo` ou `valor_disp_contas`. Tais propriedades devem ser lidas estritamente de `(v_snapshot.metadata->>'nome_campo')::numeric`.
 **Risco identificado / Anti-pattern:** Tentar acessar colunas inexistentes diretamente no record `v_snapshot` do PL/pgSQL, o que gera erro de runtime `42703 (has no field caixa_anterior)` no PostgREST.
+
+## [2026-09-01] — [Feature ID: 340]
+**Contexto:** Ampliação do motor de auto-match no backend para cobrir OSs já finalizadas e auto-tagging de movimentações corporativas.
+**Regra aprendida:**
+1. **Auto-Match com OSs Finalizadas:** No ERP das oficinas mecânicas, clientes frequentemente pagam no mesmo dia em que o carro é entregue e a OS é marcada como `finalizada` na planilha do pátio. A RPC `auto_match_daily_transactions` deve casar tanto OSs com saldo em aberto quanto OSs finalizadas confrontando `pix_transfer_value` e `credit_value`/`debit_value`.
+2. **Auto-Tagging Corporativo:** Transações de capital de giro (`EMPREST`), seguros (`ITAU SEGUROS`), transferências corporativas de óleo (`EMPORIO DO OLEO`) e rendimentos bancários (`APLIC`/`RESG`) devem ser pré-marcadas como movimentações não operacionais, direcionadas exclusivamente ao Step 2 de justificativas.
+**Risco identificado / Anti-pattern:** Limitar o auto-matching estritamente a OSs com status `'em_aberto'`, deixando dezenas de transações de PIX e Cartão de clientes orfãs no Step 1.
+
+## [2026-09-01] — [Feature ID: 341]
+**Contexto:** Nova RPC atômica `create_and_link_manual_os` (Migration 16) para cadastro instantâneo de OS e baixa de pagamentos com garantia das formas de liquidação.
+**Regra aprendida:**
+1. **Atomicidade e Incremento de Saldos:** Ao criar uma nova OS on-the-fly a partir de um pagamento avulso, a RPC deve inserir o registro em `patio_os`, atribuir o valor à coluna específica (`pix_transfer_value`, `credit_value` ou `debit_value`), somar em `paid_value` e calcular `status = CASE WHEN paid_value >= (total_value - 0.05) THEN 'finalizada' ELSE 'pago_parcial' END`.
+2. **Idempotência por Filial:** Se o número da OS já existir na filial, a RPC reaproveita o registro em vez de duplicar, preservando a integridade das 10 lojas.
+**Risco identificado / Anti-pattern:** Inserir a OS via mutation direta de frontend sem atualizar `matched_os_number` no extrato bancário ou maquininha e sem registrar em `conciliation_matches`.
