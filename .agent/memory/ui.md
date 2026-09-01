@@ -1,3 +1,13 @@
+## [2026-09-01] — [Feature ID: 315-correcao-rpc-conciliacao-e-blindagem-snapshots]
+
+**Contexto:** Implementação de guarda visual de integridade `isStoreBreakdownCorrupted` e resolução resiliente de propriedades por filial na interface de conciliação diária.
+
+**Regra aprendida:**
+1. **Guarda Visual Anti-Corrupção em Painéis de Ação:**
+   - Quando o detalhamento das 10 filiais estiver zerado enquanto houver movimentação macro consolidada, o botão "Salvar Fechamento" deve ser desabilitado (`disabled={isStoreBreakdownCorrupted}`) com classe `disabled:opacity-50 disabled:cursor-not-allowed` e tooltip de advertência para evitar salvamento de dados inválidos.
+2. **Resolução Resiliente de Propriedades de Lojas:**
+   - Em `conciliacao.index.tsx`, utilizar fallback encadeado: `saldo_banco ?? saldo_banco_itau ?? saldo_banco_ofx`, `maquininha ?? rede_liquido`, `pix ?? pix_os`, `na_loja_os ?? patio_os`, garantindo que os cards das filiais sempre renderizem corretamente tanto em modo aberto quanto em modo de snapshot histórico.
+
 ## [2026-08-31] — [Feature ID: 328-equalizacao-definitiva-5-pilares-conciliacao-3108]
 
 **Contexto:** Atualização dos Header Cards no `SaldoBancosDetailModal.tsx` e `ResumoDiaPanel.tsx` para apresentar de forma clara e segregada os saldos Bancos Positivos (Real) e (-) Cheque Especial (Real) com compensação intra-loja, além da decomposição de receitas e despesas.

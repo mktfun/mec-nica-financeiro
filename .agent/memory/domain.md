@@ -1,4 +1,16 @@
-<<<<<<< HEAD
+## [2026-09-01] — [Feature ID: 315-correcao-rpc-conciliacao-e-blindagem-snapshots]
+
+**Contexto:** Correção do odômetro de faturamento da Oficina Inteligente e proteção contra corrupção do fechamento diário e histórico de filiais.
+
+**Regra aprendida:**
+1. **Diferença de Odômetro Acumulado vs Receita Diária:**
+   - O faturamento extraído do pátio é um odômetro acumulado contínuo. Se `faturamento_hoje >= faturamento_ontem`, o faturamento do dia é estritamente `faturamento_hoje - faturamento_ontem`. Quando os valores forem idênticos (sem novas OSs abertas no dia), o faturamento do período é R$ 0,00 e JAMAIS o montante acumulado.
+2. **Imutabilidade e Fotografia Congelada dos Dias Passados:**
+   - Dias fechados (`is_closed = true`) devem manter congeladas as 10 filiais e todos os ativos e passivos da data, sem sofrer desvios contábeis decorrentes de movimentações do dia atual.
+
+**Risco identificado / Anti-pattern:**
+- Tratar odômetro inalterado caindo em `ELSE` como receita total do dia, o que causava a distorção de R$ 1.010.869,29 na conciliação.
+
 ## [2026-08-31] — [Feature ID: 328-equalizacao-definitiva-5-pilares-conciliacao-3108]
 
 **Contexto:** Equalização canônica dos 5 pilares contábeis, compensação intra-loja de cheque especial vs maquininha da Rede, integração de aportes de sócios ao faturamento DRE e consolidação integral de despesas extras e pró-labore no Subtotal de Contas a Pagar.

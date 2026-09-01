@@ -69,20 +69,20 @@ function ConciliacaoPage() {
   const divergenciaGlobal = summary?.diferenca_final || 0;
 
   const storesState: StoreSaldoState[] = stores.map(s => {
-    const log = storesList.find(l => l.store_id === s.id);
+    const rawLog = storesList.find(l => l.store_id === s.id);
     return {
       store_id: s.id,
       store_name: s.name,
-      saldo_banco_itau: log?.saldo_banco || 0,
+      saldo_banco_itau: rawLog?.saldo_banco ?? (rawLog as any)?.saldo_banco_itau ?? (rawLog as any)?.saldo_banco_ofx ?? 0,
       limite_credito: 0,
-      cartao_entrou: log?.maquininha || (log as any)?.rede_liquido || 0,
-      cartao_nao_entrou: (log as any)?.nao_entrou_valor || 0,
-      dinheiro_loja: (log as any)?.dinheiro_loja || 0,
+      cartao_entrou: rawLog?.maquininha ?? (rawLog as any)?.rede_liquido ?? 0,
+      cartao_nao_entrou: (rawLog as any)?.nao_entrou_valor ?? 0,
+      dinheiro_loja: (rawLog as any)?.dinheiro_loja ?? 0,
       a_receber: 0,
-      na_loja_os: log?.na_loja_os || 0,
-      pix_os: log?.pix || 0,
-      pix_os_expected: log?.pix || 0,
-      faturamento_atual: log?.previsto_ofx || 0,
+      na_loja_os: rawLog?.na_loja_os ?? (rawLog as any)?.patio_os ?? 0,
+      pix_os: rawLog?.pix ?? (rawLog as any)?.pix_os ?? 0,
+      pix_os_expected: rawLog?.pix ?? (rawLog as any)?.pix_os ?? 0,
+      faturamento_atual: rawLog?.previsto_ofx ?? (rawLog as any)?.rede_bruto ?? 0,
       faturamento_anterior: 0,
       seguro_sinistro: 0,
       juros_atual: 0,
@@ -163,17 +163,20 @@ function ConciliacaoPage() {
               
               <div className="grid grid-cols-1 gap-4">
                 {stores.map((store) => {
-                  const log = storesList.find(l => l.store_id === store.id) || {
-                    saldo_banco: 0,
-                    saldo_banco_ofx: 0,
-                    maquininha: 0,
-                    pix: 0,
-                    na_loja_os: 0,
-                    previsto_ofx: 0,
-                    diferenca: 0,
-                    status_compensacao: 'sem_movimento' as const,
-                    nao_entrou_valor: 0,
-                    status: 'pending' as const
+                  const rawLog = storesList.find(l => l.store_id === store.id);
+                  const log = {
+                    saldo_banco: rawLog?.saldo_banco ?? (rawLog as any)?.saldo_banco_itau ?? (rawLog as any)?.saldo_banco_ofx ?? 0,
+                    saldo_banco_ofx: rawLog?.saldo_banco_ofx ?? rawLog?.saldo_banco ?? 0,
+                    maquininha: rawLog?.maquininha ?? (rawLog as any)?.rede_liquido ?? 0,
+                    rede_bruto: (rawLog as any)?.rede_bruto ?? 0,
+                    rede_liquido: (rawLog as any)?.rede_liquido ?? rawLog?.maquininha ?? 0,
+                    pix: rawLog?.pix ?? (rawLog as any)?.pix_os ?? 0,
+                    na_loja_os: rawLog?.na_loja_os ?? (rawLog as any)?.patio_os ?? 0,
+                    previsto_ofx: rawLog?.previsto_ofx ?? (rawLog as any)?.rede_bruto ?? 0,
+                    diferenca: rawLog?.diferenca ?? (rawLog as any)?.nao_entrou_valor ?? 0,
+                    status_compensacao: (rawLog?.status_compensacao || 'sem_movimento') as any,
+                    nao_entrou_valor: (rawLog as any)?.nao_entrou_valor ?? 0,
+                    status: (rawLog?.status || 'pending') as any
                   };
 
                   const isDiferencaOk = Math.abs(log.diferenca || 0) === 0 && (log.status === 'approved' || log.status === 'conciliado');

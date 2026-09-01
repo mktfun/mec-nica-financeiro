@@ -1,4 +1,18 @@
-<<<<<<< HEAD
+## [2026-09-01] — [Feature ID: 315-correcao-rpc-conciliacao-e-blindagem-snapshots]
+
+**Contexto:** Correção crítica da RPC `get_daily_reconciliation_summary` para garantir a inclusão de `'stores'` (detalhamento das 10 filiais) no Ramal 1 (`is_closed = true`), correção da lógica de odômetro delta evitando vazamento de faturamento acumulado, e blindagem da RPC `close_daily_snapshot` com `RAISE EXCEPTION` caso o detalhamento por filial esteja corrompido.
+
+**Regra aprendida:**
+1. **Obrigatoriedade de `'stores'` em Dias Fechados (Ramal 1):**
+   - Ao ler um snapshot fechado, a RPC `get_daily_reconciliation_summary` DEVE sempre incluir a chave `'stores'` no JSON com os dados congelados de cada filial a partir de `reconciliations(date <= v_target_date)`. O frontend depende dessa chave para renderizar o "Fechamento por Filial".
+2. **Cálculo de Odômetro Estável:**
+   - Se `v_faturamento_oi_base >= v_faturamento_anterior` e `v_faturamento_anterior > 0`, a receita do período é `v_faturamento_oi_base - v_faturamento_anterior` (se forem iguais, resulta em R$ 0,00 e NUNCA no valor total acumulado).
+3. **Guarda Impeditiva no `close_daily_snapshot`:**
+   - A RPC de fechamento valida se `stores` possui as 10 lojas antes de gravar em `daily_snapshots`. Se estiver vazio havendo saldo bancário consolidado, a transação aborta com `RAISE EXCEPTION`.
+
+**Risco identificado / Anti-pattern:**
+- NUNCA fechar um snapshot ou retornar um payload de conciliação omitindo o array `'stores'`, pois isso provoca efeito cascata zerando as 10 lojas no frontend e sobrescrevendo `reconciliations` com zero.
+
 ## [2026-08-31] — [Feature ID: 328-equalizacao-definitiva-5-pilares-conciliacao-3108]
 
 **Contexto:** Saneamento pontual de dados históricos (baixa de OS paga em cartão na tabela `patio_os`, seeding de aporte de sócios em `daily_revenue_adjustments` e despesas extras em `daily_manual_bills`) e garantia de genericidade estrita na RPC `get_daily_reconciliation_summary` para operar em qualquer data do calendário sem ramais hardcoded.

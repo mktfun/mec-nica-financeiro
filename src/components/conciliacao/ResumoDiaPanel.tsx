@@ -200,6 +200,26 @@ export function ResumoDiaPanel({
     return () => { active = false; };
   }, [selectedDate, saldoBancosValor, faturamentoLiquidoDia, fluxoCaixaCalculado, valorDispContasCalculado, contasManualValor, jurosRedeValor, devolucoesRedeValor, diferencaFinalCalculada, aiSettings?.api_key]);
 
+  // Guarda de Integridade: Detecta se há movimento macro consolidado mas as filiais estão zeradas
+  const hasMacroMovement =
+    Number(summary?.faturamento_periodo ?? 0) > 0 ||
+    Number(summary?.total_entradas_ofx ?? 0) > 0 ||
+    Number(summary?.total_saldo_banco_positivo ?? 0) > 0 ||
+    Number(saldoBancosValor ?? 0) > 0;
+
+  const totalStoreMovement = (storesData || []).reduce((acc, s) => {
+    return (
+      acc +
+      Math.abs(Number(s.saldo_banco_itau ?? (s as any).saldo_banco ?? 0)) +
+      Math.abs(Number(s.cartao_entrou ?? (s as any).maquininha ?? (s as any).rede_liquido ?? 0)) +
+      Math.abs(Number(s.pix_os ?? (s as any).pix ?? 0)) +
+      Math.abs(Number(s.na_loja_os ?? 0)) +
+      Math.abs(Number(s.faturamento_atual ?? (s as any).previsto_ofx ?? (s as any).rede_bruto ?? 0))
+    );
+  }, 0);
+
+  const isStoreBreakdownCorrupted = hasMacroMovement && (!storesData || storesData.length === 0 || totalStoreMovement === 0);
+
   const handleCancel = () => {
     const initialFaturamento = currentSnapshot?.faturamento 
       ?? (summary?.faturamento_anterior && summary?.faturamento_ofx ? (summary.faturamento_anterior + summary.faturamento_ofx) : (summary?.faturamento_ofx || 0));
@@ -213,6 +233,14 @@ export function ResumoDiaPanel({
 
   const handleSave = async () => {
     try {
+      if (isStoreBreakdownCorrupted) {
+        toast.error(
+          '⛔ Bloqueio de Segurança: O detalhamento por filiais está zerado enquanto há movimentação bancária consolidada. Fechamento abortado para evitar perda de dados.',
+          { duration: 7000 }
+        );
+        return;
+      }
+
       // Gravar na_loja_os e preservar bank_total no histórico de cada loja se disponível
       if (storesData && storesData.length > 0) {
         const promises = Object.values(storesData).map(s => {
@@ -222,9 +250,9 @@ export function ResumoDiaPanel({
             na_loja_os: s.na_loja_os,
             status: 'validated'
           };
-          if (s.saldo_banco_itau !== undefined && s.saldo_banco_itau !== null) {
+          if (s.saldo_banco_itau !== undefined && s.saldo_banco_itau !== null && s.saldo_banco_itau !== 0) {
             payload.bank_total = s.saldo_banco_itau;
-          } else if ((s as any).saldo_banco !== undefined && (s as any).saldo_banco !== null) {
+          } else if ((s as any).saldo_banco !== undefined && (s as any).saldo_banco !== null && (s as any).saldo_banco !== 0) {
             payload.bank_total = (s as any).saldo_banco;
           }
           return supabase.from('reconciliations').upsert(payload, { onConflict: 'store_id,date' });
@@ -954,8 +982,9 @@ export function ResumoDiaPanel({
                 <Button
                   variant="primary"
                   onClick={handleSave}
-                  disabled={saveSnapshot.isPending || !canEditData}
-                  className="gap-2 px-6 py-2 text-sm bg-[var(--color-accent-teal)] hover:bg-[var(--color-accent-teal)]/90 text-black font-semibold cursor-pointer shadow-lg shadow-[var(--color-accent-teal)]/20"
+                  disabled={saveSnapshot.isPending || !canEditData || isStoreBreakdownCorrupted}
+                  title={isStoreBreakdownCorrupted ? 'Detalhamento por filiais está zerado. Recalcule antes de fechar.' : undefined}
+                  className="gap-2 px-6 py-2 text-sm bg-[var(--color-accent-teal)] hover:bg-[var(--color-accent-teal)]/90 text-black font-semibold cursor-pointer shadow-lg shadow-[var(--color-accent-teal)]/20 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Save size={16} />
                   {saveSnapshot.isPending ? 'Salvando...' : 'Salvar Fechamento'}
@@ -975,8 +1004,9 @@ export function ResumoDiaPanel({
                 <Button
                   variant="primary"
                   onClick={handleSave}
-                  disabled={saveSnapshot.isPending}
-                  className="gap-2 px-6 py-2 text-sm bg-[var(--color-accent-teal)] hover:bg-[var(--color-accent-teal)]/90 text-black font-semibold cursor-pointer shadow-lg shadow-[var(--color-accent-teal)]/20"
+                  disabled={saveSnapshot.isPending || isStoreBreakdownCorrupted}
+                  title={isStoreBreakdownCorrupted ? 'Detalhamento por filiais está zerado. Recalcule antes de fechar.' : undefined}
+                  className="gap-2 px-6 py-2 text-sm bg-[var(--color-accent-teal)] hover:bg-[var(--color-accent-teal)]/90 text-black font-semibold cursor-pointer shadow-lg shadow-[var(--color-accent-teal)]/20 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Save size={16} />
                   {saveSnapshot.isPending ? 'Salvando...' : 'Salvar Alterações'}

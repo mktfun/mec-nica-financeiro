@@ -1,3 +1,10 @@
+### Spec 315 — Correção Crítica da RPC de Conciliação, Cálculo de Faturamento e Blindagem de Snapshots
+- **Retorno de Lojas em Snapshots Fechados (Ramal 1)**: Inclusão obrigatória de `'stores'` com as 10 filiais preenchidas no retorno da RPC `get_daily_reconciliation_summary` para dias homologados (`is_closed = true`).
+- **Cálculo de Odômetro Estável**: Odômetro delta corrigido (`IF v_faturamento_oi_base >= v_faturamento_anterior THEN v_faturamento_oi_base - v_faturamento_anterior`), evitando vazamento do acumulado histórico como receita do dia quando o faturamento não muda.
+- **Guarda Anti-Corrupção no Frontend**: Implementada a trava `isStoreBreakdownCorrupted` em `ResumoDiaPanel.tsx` que desabilita o botão "Salvar Fechamento" e impede mutações com dados de filiais zerados, além de blindar `reconciliations` contra sobrescrita com zeros.
+- **Guarda Impeditiva no Backend**: RPC `close_daily_snapshot` com `RAISE EXCEPTION` impedindo selamento com filiais zeradas havendo movimentação financeira consolidada.
+- **Migration**: `supabase/migrations/20260901000002_fix_daily_reconciliation_stores_and_snapshot_guard.sql`.
+
 ### Spec 328 — Equalização Definitiva dos 5 Pilares e Fechamento Canônico de 31/08/2026
 - **Saneamento e Paridade Pericial**: Equalização integral dos 5 pilares com paridade estrita à planilha `CONCILIAÇÃO 3108.xlsx` com Diferença Final de **+R$ 8,94 (Sobra de Caixa Aprovada)**.
 - **Compensação Intra-Loja de Cheque Especial vs Rede**: Cálculo dinâmico para as 10 filiais, agregando Bancos Positivos (R$ 231.813,81) e (-) Cheque Especial Holding (R$ 13.188,08).
