@@ -118,19 +118,19 @@ export function SaldoBancosDetailModal({
           <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3.5 space-y-1">
             <div className="flex items-center gap-1.5 text-[var(--text-tertiary)] text-xs font-semibold uppercase tracking-wider">
               <Landmark className="w-3.5 h-3.5 text-[var(--color-accent-light-blue)]" />
-              OFX Positivo
+              Bancos Positivos (Real)
             </div>
             <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-[var(--text-primary)]">
-              {formatCurrency(totals.ofxPositivo)}
+              {formatCurrency(totals.positivosReal > 0 ? totals.positivosReal : totals.ofxPositivo)}
             </div>
-            <div className="text-[10px] text-[var(--text-tertiary)]">Contas com saldo ativo</div>
+            <div className="text-[10px] text-[var(--text-tertiary)]">Contas e filiais credoras</div>
           </div>
 
           {hasNegativo && (
             <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3.5 space-y-1">
               <div className="flex items-center gap-1.5 text-red-400 text-xs font-semibold uppercase tracking-wider">
                 <Landmark className="w-3.5 h-3.5 text-red-400" />
-                (-) Cheque Especial
+                (-) Cheque Especial (Real)
               </div>
               <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-red-400">
                 - {formatCurrency(totals.devedorReal > 0 ? totals.devedorReal : totals.ofxNegativo)}
@@ -158,18 +158,18 @@ export function SaldoBancosDetailModal({
             <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-emerald-300">
               + {formatCurrency(totals.maquininhas)}
             </div>
-            <div className="text-[10px] text-emerald-400/80">Vendas da Rede D0</div>
+            <div className="text-[10px] text-emerald-400/80">Rede D+1 / Cartões</div>
           </div>
 
-          <div className="bg-[var(--bg-canvas)] border border-[var(--color-primary)]/40 rounded-xl p-3.5 space-y-1 bg-gradient-to-br from-[var(--bg-canvas)] to-[var(--color-primary)]/5">
-            <div className="flex items-center gap-1.5 text-[var(--color-primary)] text-xs font-semibold uppercase tracking-wider">
-              <Building2 className="w-3.5 h-3.5 text-[var(--color-primary)]" />
-              Líquido Disponível
+          <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3.5 space-y-1">
+            <div className="flex items-center gap-1.5 text-[var(--text-tertiary)] text-xs font-semibold uppercase tracking-wider">
+              <Building2 className="w-3.5 h-3.5 text-[var(--color-accent-light-blue)]" />
+              Líquido Holding
             </div>
-            <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-[var(--color-primary)]">
+            <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-[var(--text-primary)]">
               {formatCurrency(totals.total)}
             </div>
-            <div className="text-[10px] text-[var(--text-tertiary)]">Positivos - Negativos</div>
+            <div className="text-[10px] text-[var(--text-tertiary)]">Saldo Consolidado 10 Filiais</div>
           </div>
         </div>
 

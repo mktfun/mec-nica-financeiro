@@ -533,7 +533,7 @@ export function ResumoDiaPanel({
                       Extrato OFX (Positivo)
                     </span>
                     <span className="font-mono font-bold text-[var(--text-primary)] text-xs truncate">
-                      <AnimatedNumber value={summary?.saldo_bancos_positivo ?? summary?.saldo_bancos_ofx ?? saldoBancosValor} format="currency" />
+                      <AnimatedNumber value={summary?.saldo_bancos_ofx_positivo ?? summary?.saldo_bancos_positivo ?? summary?.total_saldo_banco_positivo ?? saldoBancosValor} format="currency" />
                     </span>
                   </div>
 

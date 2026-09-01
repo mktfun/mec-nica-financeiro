@@ -1,3 +1,20 @@
+## [2026-08-31] — [Feature ID: 328-equalizacao-definitiva-5-pilares-conciliacao-3108]
+
+**Contexto:** Equalização canônica dos 5 pilares contábeis, compensação intra-loja de cheque especial vs maquininha da Rede, integração de aportes de sócios ao faturamento DRE e consolidação integral de despesas extras e pró-labore no Subtotal de Contas a Pagar.
+
+**Regra aprendida:**
+1. **Compensação Intra-Loja de Cheque Especial vs Rede:**
+   - Cada filial possui seu próprio saldo consolidado: $\text{Saldo Loja}_i = \text{OFX}_i + \text{Cofre}_i + \text{Rede a Compensar}_i$.
+   - Apenas se $\text{Saldo Loja}_i < 0$ o valor residual negativo compõe o Cheque Especial Holding ($\text{total\_saldo\_banco\_negativo}$).
+   - Se $\text{Saldo Loja}_i \ge 0$, a loja compõe o somatório de Bancos Positivos ($\text{total\_saldo\_banco\_positivo}$).
+2. **Genericidade Absoluta das RPCs Contábeis:**
+   - A RPC `get_daily_reconciliation_summary` DEVE ser 100% dinâmica para QUALQUER data (`p_date`), calculando dinamicamente e preservando `v_snapshot.caixa_atual` e valores específicos do dia selecionado, NUNCA introduzindo ramais hardcoded.
+3. **Decomposição do Faturamento e Contas no DRE:**
+   - Faturamento Total = Base da Oficina Inteligente ($\Delta \text{Odômetro}$) + Aportes de Sócios / Receitas Extras (`daily_revenue_adjustments`).
+   - Subtotal Contas = Contas Base (`daily_manual_bills` com `is_extra = false`) + Contas Extras/Pró-labore (`is_extra = true`) + Juros Rede.
+
+**Risco identificado / Anti-pattern:** Nunca hardcodar valores de um dia de fechamento específico na RPC `get_daily_reconciliation_summary` que atenda múltiplos dias do calendário.
+
 ## [2026-08-31] — [Feature ID: 322-conciliacao-saidas-ofx-contas-e-justificativa-despesas-orfas]
 
 **Contexto:** Idempotência estrita do motor de conciliação (persistência e auto-matches rodando estritamente uma única vez no Step de Ingestão e Step 7 efetuando selamento atômico) e tratamento completo de Saídas Órfãs do OFX com abas dedicadas e toggle contábil para compor ou não o Contas a Pagar do DRE.

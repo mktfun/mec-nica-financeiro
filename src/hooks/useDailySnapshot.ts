@@ -86,10 +86,6 @@ export function useAvailableConciliacaoDates() {
     queryFn: async () => {
       const dates = new Set<string>();
 
-      // Adiciona a data de hoje por padrão
-      const todayStr = new Date().toISOString().substring(0, 10);
-      dates.add(todayStr);
-
       // 1. Busca datas de daily_snapshots
       const { data: snapshotsData } = await supabase
         .from('daily_snapshots')

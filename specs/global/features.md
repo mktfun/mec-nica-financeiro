@@ -1,3 +1,11 @@
+### Spec 328 — Equalização Definitiva dos 5 Pilares e Fechamento Canônico de 31/08/2026
+- **Saneamento e Paridade Pericial**: Equalização integral dos 5 pilares com paridade estrita à planilha `CONCILIAÇÃO 3108.xlsx` com Diferença Final de **+R$ 8,94 (Sobra de Caixa Aprovada)**.
+- **Compensação Intra-Loja de Cheque Especial vs Rede**: Cálculo dinâmico para as 10 filiais, agregando Bancos Positivos (R$ 231.813,81) e (-) Cheque Especial Holding (R$ 13.188,08).
+- **Faturamento DRE Composto**: Faturamento Base da Oficina Inteligente (R$ 55.420,95) + Aporte de Sócios (R$ 5.000,00) = R$ 60.420,95.
+- **Subtotal de Contas a Pagar**: Base Planilha (R$ 46.848,95) + Pró-labore Daniel (R$ 5.000,00) + DIF Joaci (R$ 1.714,84) + Juros Rede (R$ 3.932,35) = R$ 57.496,14.
+- **RPC Genérica e Preservação de Snapshots**: RPC `get_daily_reconciliation_summary` 100% dinâmica para todas as datas com preservação do `caixa_atual` em snapshots homologados.
+- **Migration**: `supabase/migrations/20260831000011_spec_328_forensic_reconciliation_3108.sql`.
+
 ### Spec 327 — Alinhamento Integral dos 5 Pilares e Compensação Intra-Loja (31/08/2026)
 - **Compensação Intra-Loja de Cheque Especial**: Cálculo da posição líquida de cada filial antes da agregação holding ($\text{Saldo Consolidado} = \text{OFX} + \text{Cofre} + \text{Rede a Compensar}$), segregando Ativos Positivos e Cheque Especial Real sem dupla penalização.
 - **Aportes de Sócios no Faturamento**: Consolidação de entradas justificadas como aporte no Faturamento Total do DRE (`faturamento_periodo = faturamento_oi_base + faturamento_ajustes`), equalizando o Valor Disponível para Contas.

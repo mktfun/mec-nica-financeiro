@@ -73,6 +73,10 @@ export function Step4FinalAuditAndClose({
 
   const [runningAi, setRunningAi] = useState(false);
 
+  React.useEffect(() => {
+    refetch();
+  }, [targetDate, refetch]);
+
   // -------------------------------------------------------------
   // CÁLCULO CANÔNICO DOS 5 PILARES & DRE DO WIZARD
   // Prioriza o summary retornado pela RPC do Supabase se disponível;

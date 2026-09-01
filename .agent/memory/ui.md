@@ -1,3 +1,13 @@
+## [2026-08-31] — [Feature ID: 328-equalizacao-definitiva-5-pilares-conciliacao-3108]
+
+**Contexto:** Atualização dos Header Cards no `SaldoBancosDetailModal.tsx` e `ResumoDiaPanel.tsx` para apresentar de forma clara e segregada os saldos Bancos Positivos (Real) e (-) Cheque Especial (Real) com compensação intra-loja, além da decomposição de receitas e despesas.
+
+**Regra aprendida:**
+1. **Header Cards Segregados no Modal de Bancos:**
+   - 5 Header Cards no padrão Dark UI: *Bancos Positivos (Real)*, *(-) Cheque Especial (Real)*, *Dinheiro no Cofre*, *A Compensar*, e *Líquido Holding*.
+2. **Sub-chips Adaptativos no Painel de Conciliação:**
+   - O card do Pilar 1 renderiza chips com tipagem e valores normalizados vindos da RPC, mantendo a harmonia visual em qualquer resolução.
+
 ## [2026-08-31] — [Feature ID: 322-conciliacao-saidas-ofx-contas-e-justificativa-despesas-orfas]
 
 **Contexto:** Reformulação do Step 5 (`Step2NonRevenueJustifications.tsx`) com sistema de 2 abas (Entradas Órfãs / Saídas Órfãs), chips de categoria rápida e botões de destinação contábil no padrão Dark UI Zinc-950.

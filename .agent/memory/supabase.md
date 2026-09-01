@@ -1,3 +1,14 @@
+## [2026-08-31] — [Feature ID: 328-equalizacao-definitiva-5-pilares-conciliacao-3108]
+
+**Contexto:** Saneamento pontual de dados históricos (baixa de OS paga em cartão na tabela `patio_os`, seeding de aporte de sócios em `daily_revenue_adjustments` e despesas extras em `daily_manual_bills`) e garantia de genericidade estrita na RPC `get_daily_reconciliation_summary` para operar em qualquer data do calendário sem ramais hardcoded.
+
+**Regra aprendida:**
+1. **Genericidade da RPC `get_daily_reconciliation_summary`:**
+   - A RPC deve computar todos os agregadores a partir do parâmetro `p_date`.
+   - Se `v_snapshot.is_closed = true` e não forçado dynamic, preserva o `v_snapshot.caixa_atual` cadastrado do snapshot e reconstrói os componentes a partir das tabelas daquele dia específico (`reconciliations`, `ofx_transactions`, `daily_manual_bills`).
+2. **Compatibilidade de Nomes de Propriedades no JSONB:**
+   - O payload JSONB retornado inclui: `total_saldo_banco_positivo`, `total_saldo_banco_negativo`, `total_saldo_banco`, `saldo_bancos_ofx`, `saldo_bancos_ofx_positivo`, `saldo_bancos_ofx_negativo`, `total_ativos_positivos`, `faturamento_total`, `valor_disp_contas`, `subtotal_contas`, `diferenca_final`.
+
 ## [2026-08-31] — [Feature ID: 322-conciliacao-saidas-ofx-contas-e-justificativa-despesas-orfas]
 
 **Contexto:** Criação das RPCs atômicas `public.resolve_orphan_saida_ofx` e `public.close_daily_snapshot` com extensão da coluna `is_extra` em `daily_manual_bills`.
