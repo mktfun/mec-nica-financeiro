@@ -139,7 +139,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   // Detecção de OSs ativas no banco que não vieram no relatório importado do mês
   useEffect(() => {
     async function detectMissingOs() {
-      if (step !== 3) return;
+      if (step !== 3 && step !== 4) return;
 
       const mappedStoreIds = Object.values(mapping).filter(id => id && id !== 'GLOBAL');
       if (mappedStoreIds.length === 0) return;
@@ -576,7 +576,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     // 2. Transações REDE sem OS
     const { data: posTxs } = await supabase
       .from('pos_transactions')
-      .select('id, store_id, net_amount, gross_amount, target_date, occurred_at, method, card_brand, nsu, authorization_code')
+      .select('id, store_id, net_amount, gross_amount, fee_amount, target_date, occurred_at, payment_method, machine_name, dedup_hash, transaction_type')
       .eq('target_date', tDate)
       .is('matched_os_number', null);
 
@@ -588,12 +588,10 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         storeId: sid,
         storeName: storeNameMap.get(sid) || 'Filial',
         date: t.target_date || tDate,
-        description: `Cartão ${t.card_brand || ''} ${t.method || ''} (NSU: ${t.nsu || 'S/N'})`.trim(),
-        paymentMethod: t.method || 'CARTAO',
+        description: `${t.machine_name || 'Maquininha'} - ${t.payment_method || 'Cartão'}`.trim(),
+        paymentMethod: t.payment_method || 'CARTAO',
         amount: Math.abs(Number(t.net_amount || t.gross_amount || 0)),
-        status: 'pendente',
-        nsu: t.nsu,
-        authorizationCode: t.authorization_code
+        status: 'pendente'
       });
     });
 
@@ -815,6 +813,8 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             amount: item.netAmount || 0,
             gross_amount: item.grossAmount || item.netAmount || 0,
             fee_amount: item.interest || 0,
+            payment_method: item.method || 'Cartão',
+            transaction_type: item.transactionType || 'venda',
             type: 'in',
             occurred_at: item.date || `${targetDate}T12:00:00Z`,
             target_date: targetDate,
@@ -1545,29 +1545,17 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       })));
       setSaveFinished(true);
 
-      if (advanceToWizard) {
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: ['pending-ofx-outflows', targetDate] }),
-          queryClient.invalidateQueries({ queryKey: ['pending-ofx-inflows', targetDate] }),
-          queryClient.invalidateQueries({ queryKey: ['open-bills-for-step2', targetDate] }),
-          queryClient.invalidateQueries({ queryKey: ['daily-manual-bills'] }),
-          queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
-        ]);
-        await new Promise(r => setTimeout(r, 600));
-        await Promise.all([
-          queryClient.refetchQueries({ queryKey: ['pending-ofx-outflows', targetDate] }),
-          queryClient.refetchQueries({ queryKey: ['pending-ofx-inflows', targetDate] }),
-          queryClient.refetchQueries({ queryKey: ['open-bills-for-step2', targetDate] }),
-        ]);
-        const realUnmatched = await fetchRealUnmatchedTransactions(targetDate);
-        setUnmatchedTransactions(realUnmatched);
-        if (realUnmatched.length > 0) {
-          toast.info(`Automações e IA concluídas! ${realUnmatched.length} transação(ões) pendentes para revisão manual.`);
-        } else {
-          toast.success('🎉 100% das transações e OSs foram conciliadas automaticamente pelo motor e IA!');
-        }
-        setStep(4);
-      }
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['pending-ofx-outflows', targetDate] }),
+        queryClient.invalidateQueries({ queryKey: ['pending-ofx-inflows', targetDate] }),
+        queryClient.invalidateQueries({ queryKey: ['open-bills-for-step2', targetDate] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-manual-bills'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] }),
+        queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] }),
+        queryClient.invalidateQueries({ queryKey: ['dashboard-v2'] }),
+      ]);
+      toast.success('🎉 100% das transações e OSs foram conciliadas e gravadas no banco!');
     } catch(e: any) {
       console.error(e);
       setImportStages(prev => prev.map(s => s.status === 'running' ? { ...s, status: 'error' } : s));
@@ -1578,36 +1566,8 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   };
 
   const handleFinalizeClosing = async () => {
-    setIsSaving(true);
-    try {
-      addLog("🔒 Homologando e selando fechamento definitivo do dia...", "info");
-      const { data, error } = await supabase.rpc('close_daily_snapshot', {
-        p_date: targetDate,
-        p_notes: 'Fechamento homologado via Central de Conciliação',
-        p_metadata: {
-          odometro_hoje: odometroHoje || 0,
-          manual_dinheiro_mp: manualDinheiroMp || 0,
-          manual_a_receber: manualAReceber || 0,
-        }
-      });
-
-      if (error) throw error;
-
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] }),
-        queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
-        queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] }),
-        queryClient.invalidateQueries({ queryKey: ['dashboard-v2'] }),
-      ]);
-
-      toast.success('🎉 Fechamento homologado e snapshot selado com sucesso!');
-      navigate({ to: '/conciliacao' });
-    } catch (err: any) {
-      console.error(err);
-      toast.error(`Erro ao finalizar fechamento: ${err.message || 'Falha no banco'}`);
-    } finally {
-      setIsSaving(false);
-    }
+    // Executa a gravação completa atômica de todos os dados auditados no Step 8
+    await handleConfirm(false);
   };
 
   // Totais (Com Filtro Estrito para Preview)
@@ -2094,378 +2054,194 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         })()}
 
         {step === 3 && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-          {/* Header de Resumo */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="p-6 bg-[var(--bg-surface-elevated)] border-l-4 border-l-[var(--color-primary)]">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Total OS (Recebimentos do Dia)</span>
-                <FileText size={18} className="text-[var(--color-primary)]" />
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 max-w-5xl mx-auto">
+          {/* 3 KPIs rápidos do dia */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 border-l-4 border-l-indigo-500 shadow-lg">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Total OS (Recebimentos)</span>
+                <FileText size={16} className="text-indigo-400" />
               </div>
-              <p className="text-2xl font-bold text-[var(--text-primary)]">
+              <p className="text-2xl font-bold text-zinc-100 font-mono">
                 <AnimatedNumber value={totalOs} format="currency" />
               </p>
-              <div className="flex flex-col gap-0.5 mt-1 text-xs text-[var(--text-secondary)]">
-                <span>{filteredOsCount} novos pagamentos no dia</span>
-                {totalPatioEstoqueGlobal > 0 && (
-                  <span className="text-[11px] font-medium text-emerald-400">
-                    Estoque em Pátio: {totalPatioEstoqueGlobal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} ({allOsCount} OSs)
-                  </span>
-                )}
-              </div>
-            </Card>
-
-            <Card className="p-6 bg-[var(--bg-surface-elevated)] border-l-4 border-l-[var(--color-accent-teal)]">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Maquininha (Rede Líquido)</span>
-                <CreditCard size={18} className="text-[var(--color-accent-teal)]" />
-              </div>
-              <p className="text-2xl font-bold text-[var(--text-primary)]">
-                <AnimatedNumber value={totalMaq} format="currency" />
-              </p>
-              <p className="text-xs text-[var(--text-secondary)] mt-1">{redeFiltered.length} transações de cartão</p>
-            </Card>
-
-            <Card className="p-6 bg-[var(--bg-surface-elevated)] border-l-4 border-l-sky-500">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Saldo Total Bancário (OFX)</span>
-                <Database size={18} className="text-sky-400" />
-              </div>
-              <p className="text-2xl font-bold text-[var(--text-primary)]">
-                <AnimatedNumber value={totalOfxIn} format="currency" />
-              </p>
-              <p className="text-xs text-[var(--text-secondary)] mt-1">{allOfxTx.length} lançamentos no total dos extratos</p>
-            </Card>
-          </div>
-
-          <Card className="p-8 space-y-6">
-            {/* Editor de OSs do Pátio Ausentes nos Arquivos de Hoje */}
-            <MissingPatioOsEditor
-              missingList={missingOsList}
-              onChangeList={setMissingOsList}
-              isSaving={isSaving}
-            />
-
-            {/* Painel de Auditoria Pré-Fechamento */}
-            <DiagnosticPanel
-              diagnostic={diagnostic}
-              isLoading={isLoadingDiagnostic}
-              onRefresh={refetchHistory}
-            />
-
-            <h3 className="font-display text-xl font-semibold">Previsão por Loja</h3>
-            
-            {/* Aviso Anti-Zero */}
-            {Object.keys(mapping).length === 0 && (results.osFiles.length > 0 || results.ofxResults.length > 0) && (
-              <div className="p-4 bg-[var(--color-accent-warning)]/10 border border-[var(--color-accent-warning)] rounded-xl flex items-start gap-3">
-                <AlertCircle className="text-[var(--color-accent-warning)] shrink-0 mt-0.5" size={20} />
-                <div>
-                  <p className="text-sm font-semibold text-[var(--color-accent-warning)]">
-                    Alerta Crítico: Nenhuma loja foi mapeada!
-                  </p>
-                  <p className="text-xs text-[var(--text-secondary)] mt-1">
-                    Você está prestes a concluir uma conciliação com todas as vendas ignoradas. Volte para a aba "Mapeamento" e defina a loja correta para cada arquivo, senão todas as lojas ficarão com faturamento zerado no fechamento.
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    className="mt-3 text-xs border-[var(--color-accent-warning)] text-[var(--color-accent-warning)] hover:bg-[var(--color-accent-warning)]/20"
-                    onClick={() => setStep(2)}
-                  >
-                    Voltar e Mapear Lojas
-                  </Button>
-                </div>
-              </div>
-            )}
-            
-            <div className="space-y-4">
-              {stores.map(store => {
-                const storeId = store.id;
-                
-                const rawOsMaq = results.osFiles.filter(r => r.success && mapping[r.storeAlias] === storeId).reduce((acc, curr) => {
-                  let sum = 0;
-                  curr.osArray.forEach(os => {
-                      const totalOsValue = os.paid_value > 0 ? os.paid_value : 1;
-                      const creditRatio = (os.parsed_credit_debit || 0) / totalOsValue;
-                      if (creditRatio > 0) {
-                        sum += (os.paid_value * creditRatio);
-                      } else {
-                        const methodLower = (os.payment_method || '').toLowerCase();
-                        if (!methodLower.includes('pix') && !methodLower.includes('transf') && !methodLower.includes('dinheiro')) {
-                          sum += os.paid_value;
-                        }
-                      }
-                  });
-                  return acc + sum;
-                }, 0);
-
-                let storeRedeNet = results.redeResults.filter(r => r.success).reduce((acc, r) => {
-                  const txs = r.transactions.filter(tx => mapping[tx.storeName] === storeId);
-                  return acc + txs.reduce((sum, tx) => sum + tx.netAmount, 0);
-                }, 0);
-
-                storeRedeNet += results.maquininhaItems.filter(item => mapping[item.storeName] === storeId).reduce((acc, item) => acc + (item.amount || 0), 0);
-
-                const storeOfxIn = results.ofxResults.filter(r => (resolveStoreForOfx(r) || mapping[r.alias]) === storeId).reduce((acc, r) => {
-                  const txs = r.transactions.filter(tx => tx.type === 'in');
-                  return acc + txs.reduce((sum, tx) => sum + tx.amount, 0);
-                }, 0);
-
-                const storeBankTotal = results.ofxResults.filter(r => (resolveStoreForOfx(r) || mapping[r.alias]) === storeId).reduce((acc, r) => {
-                  return acc + (r.bankBalance || 0);
-                }, 0);
-
-                if (rawOsMaq === 0 && storeRedeNet === 0 && storeOfxIn === 0 && storeBankTotal === 0) return null;
-
-                return (
-                  <div key={store.id} className="p-4 bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl hover:border-[var(--color-primary)]/50 transition-colors">
-                    <div className="flex justify-between items-center mb-3">
-                      <h5 className="font-semibold text-[var(--text-primary)] flex items-center gap-2">
-                        <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-primary)]"></div>
-                        {store.name}
-                      </h5>
-                      <div className="flex items-center gap-2">
-                        {storeBankTotal !== 0 && (
-                          <span className="text-xs font-mono font-bold text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/20">
-                            Saldo: {storeBankTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                          </span>
-                        )}
-                        <Badge variant="outline" className="text-xs">
-                          {storeRedeNet > 0 ? 'Rede Ativa' : 'OFX Direct'}
-                        </Badge>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                      <div>
-                        <span className="text-[var(--text-tertiary)] uppercase">OS (Pátio)</span>
-                        <p className="font-bold text-[var(--text-primary)] text-sm">{rawOsMaq.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-                      </div>
-                      <div>
-                        <span className="text-[var(--text-tertiary)] uppercase">Maquininha (Rede Líquida)</span>
-                        <p className="font-bold text-[var(--color-accent-teal)] text-sm">{storeRedeNet.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-                      </div>
-                      <div>
-                        <span className="text-[var(--text-tertiary)] uppercase">Entradas Banco (OFX)</span>
-                        <p className="font-bold text-emerald-400 text-sm">{storeOfxIn.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+              <p className="text-xs text-zinc-400 mt-1">{filteredOsCount} pagamentos no dia · {allOsCount} OSs total</p>
             </div>
 
-            {/* Contas a Pagar Analíticas Importadas */}
-            {results.contasPagarResults && results.contasPagarResults.length > 0 && (
-              <div className="p-4 bg-rose-500/10 border border-rose-500/30 rounded-xl space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Receipt size={16} className="text-rose-400" />
-                    <h5 className="font-semibold text-sm text-[var(--text-primary)]">
-                      Contas a Pagar Importadas Analiticamente
-                    </h5>
-                  </div>
-                  <Badge variant="default" className="text-xs bg-rose-500/20 text-rose-300 border-rose-500/30">
-                    {results.contasPagarResults.reduce((acc, c) => acc + c.totalBills, 0)} contas processadas
-                  </Badge>
-                </div>
-
-                <div className="flex items-center justify-between text-xs font-mono pt-1">
-                  <span className="text-[var(--text-secondary)]">Total a ser gravado em Contas a Pagar:</span>
-                  <span className="text-base font-bold text-rose-400">
-                    {results.contasPagarResults.reduce((acc, c) => acc + c.totalAmount, 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                  </span>
-                </div>
+            <div className="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 border-l-4 border-l-teal-500 shadow-lg">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Maquininha (Rede Líquido)</span>
+                <CreditCard size={16} className="text-teal-400" />
               </div>
-            )}
+              <p className="text-2xl font-bold text-zinc-100 font-mono">
+                <AnimatedNumber value={totalMaq} format="currency" />
+              </p>
+              <p className="text-xs text-zinc-400 mt-1">{redeFiltered.length} transações de cartão</p>
+            </div>
 
-            {/* Início: Valores Manuais Globais */}
-            <div className="pt-6 border-t border-[var(--border-subtle)] space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-semibold text-lg text-[var(--text-primary)]">Valores Manuais do Dia</h4>
-                  <p className="text-sm text-[var(--text-secondary)]">
-                    Preencha os dados abaixo. Eles serão salvos no fechamento diário e travados para evitar alterações acidentais.
-                  </p>
+            <div className="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 border-l-4 border-l-sky-500 shadow-lg">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Saldo Bancário (OFX)</span>
+                <Database size={16} className="text-sky-400" />
+              </div>
+              <p className="text-2xl font-bold text-zinc-100 font-mono">
+                <AnimatedNumber value={totalOfxIn} format="currency" />
+              </p>
+              <p className="text-xs text-zinc-400 mt-1">{allOfxTx.length} lançamentos nos extratos</p>
+            </div>
+          </div>
+
+          {/* Card Central: Data Base + 4 Inputs Manuais */}
+          <Card className="p-6 bg-zinc-900/80 border-zinc-800 shadow-xl space-y-6">
+            {/* Cabeçalho */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800/80">
+              <div>
+                <h3 className="font-display text-lg font-bold text-zinc-100">Passo 3: Parâmetros Diários & Valores Manuais</h3>
+                <p className="text-xs text-zinc-400 mt-0.5">Informe os saldos manuais do fechamento antes de avançar para a conciliação.</p>
+              </div>
+              <div className="flex items-center gap-3 shrink-0">
+                {/* Data Base */}
+                <div className="flex items-center gap-2 bg-zinc-950 border border-zinc-800 px-3 py-1.5 rounded-xl">
+                  <span className="text-[10px] font-bold uppercase text-zinc-500">Data Base:</span>
+                  <input
+                    type="date"
+                    value={targetDate}
+                    onChange={e => setTargetDate(e.target.value)}
+                    className="bg-transparent text-xs font-mono text-zinc-200 focus:outline-none cursor-pointer"
+                  />
                 </div>
-
+                {/* Trava de segurança */}
                 <button
                   type="button"
                   onClick={() => setIsManualLocked(!isManualLocked)}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer ${
-                    isManualLocked 
-                      ? 'bg-zinc-800 text-zinc-300 border border-zinc-700 hover:bg-zinc-700' 
-                      : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer ${
+                    isManualLocked
+                      ? 'bg-zinc-800 text-zinc-300 border border-zinc-700 hover:bg-zinc-700'
+                      : 'bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30'
                   }`}
                 >
                   {isManualLocked ? <Lock size={13} /> : <Unlock size={13} />}
-                  {isManualLocked ? 'Trava Ativa' : 'Destravado'}
+                  {isManualLocked ? 'Travado' : 'Destravado'}
                 </button>
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 font-mono">
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)]">Odômetro OI (Acumulado)</label>
-                    {previousOdometro > 0 && (
-                      <span className="text-[10px] font-mono text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/20">
-                        Ant: {previousOdometro.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                      </span>
-                    )}
-                  </div>
-                  <input 
-                    type="number" 
-                    step="0.01"
-                    disabled={isManualLocked}
-                    value={odometroHoje || ''} 
-                    onChange={e => setOdometroHoje(Number(e.target.value))}
-                    placeholder="Ex: 945000.00"
-                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)] font-bold text-[var(--text-primary)]"
-                  />
-                  {odometroHoje > 0 && previousOdometro > 0 && (
-                    <p className="text-[11px] font-mono text-emerald-400">
-                      Δ Faturamento: <span className="font-bold">{deltaFaturamentoCalculado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-                    </p>
+            </div>
+
+            {/* Grid dos 4 Inputs Manuais */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
+              {/* 1. Odômetro OI */}
+              <div className="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] font-bold uppercase text-zinc-400">Odômetro OI (Acumulado)</label>
+                  {previousOdometro > 0 && (
+                    <span className="text-[10px] text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/20">
+                      Ant: {previousOdometro.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                    </span>
                   )}
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Dinheiro MP</label>
-                  <input 
-                    type="number" 
-                    step="0.01"
-                    disabled={isManualLocked}
-                    value={manualDinheiroMp || ''} 
-                    onChange={e => setManualDinheiroMp(Number(e.target.value))}
-                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)] font-bold text-[var(--text-primary)]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">A Receber</label>
-                  <input 
-                    type="number" 
-                    step="0.01"
-                    disabled={isManualLocked}
-                    value={manualAReceber || ''} 
-                    onChange={e => setManualAReceber(Number(e.target.value))}
-                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)] font-bold text-[var(--text-primary)]"
-                  />
-                </div>
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="text-xs font-semibold uppercase text-[var(--text-secondary)]">Contas a Pagar</label>
-                    {results.contasPagarResults && results.contasPagarResults.length > 0 && (
-                      <span className="text-[10px] text-rose-400 font-semibold flex items-center gap-1">
-                        <Receipt size={10} /> Auto-preenchido ({results.contasPagarResults.reduce((acc, c) => acc + c.totalBills, 0)} contas)
-                      </span>
-                    )}
-                  </div>
-                  <input 
-                    type="number" 
-                    step="0.01"
-                    disabled={isManualLocked}
-                    value={contasManual || (results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || '')} 
-                    onChange={e => setContasManual(Number(e.target.value))}
-                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-subtle)] disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)] font-bold text-[var(--text-primary)]"
-                  />
-                </div>
-              </div>
-            </div>
-            {/* Fim: Valores Manuais Globais */}
-
-            {/* Inspetor JSON de Conciliação */}
-            <div className="pt-4 border-t border-[var(--border-subtle)]">
-              <details className="group p-4 bg-zinc-950 rounded-xl border border-zinc-800">
-                <summary className="cursor-pointer flex items-center justify-between text-xs font-mono text-zinc-300 select-none hover:text-zinc-100">
-                  <span className="flex items-center gap-2">
-                    <Code2 size={16} className="text-emerald-400" />
-                    Inspetor de Conciliação (Payload JSON que será enviado ao Backend)
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigator.clipboard.writeText(JSON.stringify({
-                          target_date: targetDate,
-                          manual_inputs: {
-                            odometro_hoje: odometroHoje,
-                            dinheiro_mp: manualDinheiroMp,
-                            a_receber: manualAReceber,
-                            contas_manual: contasManual
-                          },
-                          file_mappings: mapping,
-                          orphan_os_modifications: missingOsList.filter(
-                            os => os.total_value !== os.original_total_value || os.paid_value !== os.original_paid_value || os.status !== os.original_status
-                          ),
-                          ofx_results_count: results.ofxResults.length,
-                          os_files_count: results.osFiles.length,
-                          rede_results_count: results.redeResults.length
-                        }, null, 2));
-                        setCopiedJson(true);
-                        toast.success('JSON de conciliação copiado!');
-                        setTimeout(() => setCopiedJson(false), 2000);
-                      }}
-                      className="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] font-mono rounded flex items-center gap-1 cursor-pointer"
-                    >
-                      {copiedJson ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
-                      {copiedJson ? 'Copiado!' : 'Copiar JSON'}
-                    </button>
-                    <span className="text-[10px] text-zinc-500 group-open:rotate-180 transition-transform">▼</span>
-                  </div>
-                </summary>
-                <div className="mt-3 p-3 bg-zinc-950 border-t border-zinc-800 font-mono text-[11px] text-emerald-400 overflow-x-auto max-h-60">
-                  <pre>{JSON.stringify({
-                    target_date: targetDate,
-                    manual_inputs: {
-                      odometro_hoje: odometroHoje,
-                      dinheiro_mp: manualDinheiroMp,
-                      a_receber: manualAReceber,
-                      contas_manual: contasManual
-                    },
-                    file_mappings: mapping,
-                    orphan_os_modifications: missingOsList.filter(
-                      os => os.total_value !== os.original_total_value || os.paid_value !== os.original_paid_value || os.status !== os.original_status
-                    ),
-                    ofx_results_count: results.ofxResults.length,
-                    os_files_count: results.osFiles.length,
-                    rede_results_count: results.redeResults.length
-                  }, null, 2)}</pre>
-                </div>
-              </details>
-            </div>
-
-            <div className="pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between">
-              <div>
-                <label className="block text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">Data Base da Conciliação</label>
-                <input 
-                  type="date" 
-                  value={targetDate} 
-                  onChange={e => setTargetDate(e.target.value)} 
-                  className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-lg p-2.5 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)]"
+                <input
+                  type="number"
+                  step="0.01"
+                  disabled={isManualLocked}
+                  value={odometroHoje || ''}
+                  onChange={e => setOdometroHoje(Number(e.target.value))}
+                  placeholder="0.00"
+                  className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-50 rounded-lg p-2.5 text-sm font-bold text-zinc-100 focus:outline-none focus:border-indigo-500"
                 />
+                {odometroHoje > 0 && previousOdometro > 0 && (
+                  <p className="text-[11px] text-emerald-400 font-semibold truncate">
+                    Δ Fat: {deltaFaturamentoCalculado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                  </p>
+                )}
               </div>
+
+              {/* 2. Dinheiro MP */}
+              <div className="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-2">
+                <label className="block text-[10px] font-bold uppercase text-zinc-400">Dinheiro MP</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  disabled={isManualLocked}
+                  value={manualDinheiroMp || ''}
+                  onChange={e => setManualDinheiroMp(Number(e.target.value))}
+                  placeholder="0.00"
+                  className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-50 rounded-lg p-2.5 text-sm font-bold text-zinc-100 focus:outline-none focus:border-indigo-500"
+                />
+                <p className="text-[10px] text-zinc-500">Espécie / Mercado Pago</p>
+              </div>
+
+              {/* 3. A Receber */}
+              <div className="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-2">
+                <label className="block text-[10px] font-bold uppercase text-zinc-400">A Receber</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  disabled={isManualLocked}
+                  value={manualAReceber || ''}
+                  onChange={e => setManualAReceber(Number(e.target.value))}
+                  placeholder="0.00"
+                  className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-50 rounded-lg p-2.5 text-sm font-bold text-zinc-100 focus:outline-none focus:border-indigo-500"
+                />
+                <p className="text-[10px] text-zinc-500">Saldo a liquidar</p>
+              </div>
+
+              {/* 4. Contas a Pagar */}
+              <div className="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] font-bold uppercase text-zinc-400">Contas a Pagar</label>
+                  {results.contasPagarResults && results.contasPagarResults.length > 0 && (
+                    <span className="text-[10px] text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/20 font-semibold">
+                      Auto ({results.contasPagarResults.reduce((acc, c) => acc + c.totalBills, 0)})
+                    </span>
+                  )}
+                </div>
+                <input
+                  type="number"
+                  step="0.01"
+                  disabled={isManualLocked}
+                  value={contasManual || (results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || '')}
+                  onChange={e => setContasManual(Number(e.target.value))}
+                  placeholder="0.00"
+                  className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-50 rounded-lg p-2.5 text-sm font-bold text-rose-400 focus:outline-none focus:border-rose-500"
+                />
+                <p className="text-[10px] text-zinc-500">Compromissos do dia</p>
+              </div>
+            </div>
+
+            {/* Navegação Rodapé */}
+            <div className="flex items-center justify-between pt-4 border-t border-zinc-800">
+              <Button
+                variant="outline"
+                onClick={() => setStep(2)}
+                className="py-2.5 px-4 text-xs font-semibold rounded-xl border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 flex items-center gap-1.5"
+              >
+                <ArrowLeft size={14} />
+                Voltar para Mapeamento
+              </Button>
 
               <div className="flex items-center gap-3">
                 <Button
                   onClick={() => handleConfirm(false)}
                   disabled={isSaving}
                   variant="outline"
-                  className="py-3 px-5 text-sm font-medium rounded-xl border-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--bg-surface-elevated)] flex items-center gap-2"
+                  className="py-2.5 px-4 text-xs font-medium rounded-xl border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 flex items-center gap-1.5"
                 >
-                  {isSaving ? <LoadingSpinner size="xs" text="" /> : <Sparkles size={16} />}
+                  {isSaving ? <LoadingSpinner size="xs" text="" /> : <Sparkles size={13} className="text-amber-400" />}
                   Gravar Direto (sem Wizard)
                 </Button>
+
                 <Button
-                  onClick={() => handleConfirm(true)}
+                  onClick={() => setStep(4)}
                   disabled={isSaving}
-                  className="py-4 px-8 text-base font-semibold rounded-xl bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 shadow-[0_4px_20px_rgba(var(--color-primary-rgb),0.4)] flex items-center gap-2 cursor-pointer"
+                  className="py-3 px-6 text-sm font-bold rounded-xl bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 shadow-[0_4px_20px_rgba(var(--color-primary-rgb),0.4)] flex items-center gap-2 cursor-pointer"
                 >
-                  {isSaving ? <LoadingSpinner size="xs" text="" /> : <ArrowRight size={18} />}
-                  Processar e Conciliar com IA →
+                  <ArrowRight size={16} />
+                  Avançar para Conciliação de OSs & Pagamentos (Passo 4) →
                 </Button>
               </div>
             </div>
           </Card>
         </motion.div>
-      )}
+        )}
 
       {/* STEP 4 (Tela A): Vínculo de Pagamentos sem Lançamento na OS */}
       {step === 4 && (
@@ -2477,6 +2253,9 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             targetDate={targetDate}
             stores={stores}
             resolvedMatches={resolvedMatches}
+            missingOsList={missingOsList}
+            onChangeMissingOsList={setMissingOsList}
+            isSaving={isSaving}
             onNext={() => setStep(5)}
             onBack={() => setStep(3)}
           />

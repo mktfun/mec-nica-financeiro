@@ -50,6 +50,21 @@ const KNOWN_ACCOUNT_DEFAULTS: Record<string, string> = {
   'BRA': 'st-06',
   'EMP': 'st-05',
 
+  // Nomes normalizados da Rede (storeMapping.ts)
+  'Dom Pedro - DP': 'st-01',
+  'Jabaquara - JAB': 'st-02',
+  'Jorge Beretta - DHJV': 'st-03',
+  'Kennedy - MP': 'st-04',
+  'Piraporinha - EMPORIO': 'st-05',
+  'Planalto - BRASICAR': 'st-06',
+  'Rudge Ramos - CAP': 'st-07',
+  'Santo André - HD': 'st-08',
+  'Santo Andre - HD': 'st-08',
+  'Rei do Módulo - MP': 'st-09',
+  'Rei do Modulo - MP': 'st-09',
+  'Maua - MHE': '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f',
+  'Mauá - MHE': '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f',
+
   // PVs Maquininha Rede
   '76347036': 'st-04', // Kennedy MP
   '71854878': 'st-01', // Dom Pedro
