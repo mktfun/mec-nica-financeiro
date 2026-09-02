@@ -339,12 +339,12 @@ export function Step4FinalAuditAndClose({
   return (
     <div className="space-y-6">
       {/* Header com Instrução Clara e Botões de Recálculo */}
-      <Card className="p-5 bg-zinc-900 border-zinc-800">
+      <Card className="p-6 bg-zinc-900/60 border-zinc-800">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-lg font-display font-bold text-white flex items-center gap-2">
+            <h2 className="text-lg font-bold text-zinc-100 flex items-center gap-2">
               <ShieldCheck className="text-emerald-400" size={20} />
-              Passo 7: Validação dos 5 Pilares &amp; Fechamento Definitivo
+              Validação dos 5 Pilares &amp; Fechamento Definitivo
             </h2>
             <p className="text-xs text-zinc-400 mt-1 max-w-2xl">
               Revise a equação contábil dos 5 pilares apurados em tempo real. Se houver alguma divergência, você pode voltar para qualquer passo anterior para ajustar antes de selar o fechamento.
@@ -357,7 +357,7 @@ export function Step4FinalAuditAndClose({
               variant="secondary"
               disabled={runningAi || isLoading || isRefetching}
               onClick={handleManualRefresh}
-              className="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs cursor-pointer border border-zinc-700 flex items-center gap-1.5"
+              className="bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold cursor-pointer border border-zinc-800 flex items-center gap-1.5 rounded-xl px-3 py-1.5"
             >
               <RefreshCw size={13} className={`${(isLoading || isRefetching) ? 'animate-spin text-emerald-400' : ''}`} />
               Recalcular Diferença
@@ -365,10 +365,9 @@ export function Step4FinalAuditAndClose({
 
             <Button
               size="sm"
-              variant="secondary"
               disabled={runningAi}
               onClick={handleRunAiMatcher}
-              className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs font-semibold cursor-pointer shrink-0"
+              className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs font-semibold cursor-pointer shrink-0 rounded-xl px-3.5 py-1.5"
             >
               <Sparkles size={14} className="mr-1.5 text-purple-400" />
               {runningAi ? (
@@ -386,45 +385,45 @@ export function Step4FinalAuditAndClose({
 
       {/* Cards dos 5 pilares */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
-        <Card className="p-4 bg-zinc-950 border-l-4 border-l-cyan-500 border-zinc-800">
-          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">
+        <Card className="p-4 bg-zinc-900/60 border-l-4 border-l-cyan-500 border-zinc-800 rounded-xl">
+          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block font-sans">
             1. Saldo Bancos + Cofre
           </span>
-          <p className="text-lg font-bold font-mono text-cyan-400 mt-1">
+          <p className="text-lg font-bold font-mono text-cyan-400 mt-1 tabular-nums">
             <AmountCell value={totalSaldoBanco} />
           </p>
         </Card>
 
-        <Card className="p-4 bg-zinc-950 border-l-4 border-l-emerald-500 border-zinc-800">
-          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">
+        <Card className="p-4 bg-zinc-900/60 border-l-4 border-l-emerald-500 border-zinc-800 rounded-xl">
+          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block font-sans">
             2. Dinheiro MP
           </span>
-          <p className="text-lg font-bold font-mono text-emerald-400 mt-1">
+          <p className="text-lg font-bold font-mono text-emerald-400 mt-1 tabular-nums">
             <AmountCell value={dinheiroMp} />
           </p>
         </Card>
 
-        <Card className="p-4 bg-zinc-950 border-l-4 border-l-blue-500 border-zinc-800">
-          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">
+        <Card className="p-4 bg-zinc-900/60 border-l-4 border-l-blue-500 border-zinc-800 rounded-xl">
+          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block font-sans">
             3. A Receber
           </span>
-          <p className="text-lg font-bold font-mono text-blue-400 mt-1">
+          <p className="text-lg font-bold font-mono text-blue-400 mt-1 tabular-nums">
             <AmountCell value={aReceber} />
           </p>
         </Card>
 
-        <Card className="p-4 bg-zinc-950 border-l-4 border-l-amber-500 border-zinc-800">
-          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">
+        <Card className="p-4 bg-zinc-900/60 border-l-4 border-l-amber-500 border-zinc-800 rounded-xl">
+          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block font-sans">
             4. Na Loja OS (Pátio)
           </span>
-          <p className="text-lg font-bold font-mono text-amber-400 mt-1">
+          <p className="text-lg font-bold font-mono text-amber-400 mt-1 tabular-nums">
             <AmountCell value={naLojaOs} />
           </p>
         </Card>
 
-        <Card className="p-4 bg-zinc-950 border-l-4 border-l-purple-500 border-zinc-800 col-span-2 md:col-span-1">
+        <Card className="p-4 bg-zinc-900/60 border-l-4 border-l-purple-500 border-zinc-800 rounded-xl col-span-2 md:col-span-1">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">
+            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block font-sans">
               5. Faturamento do Dia
             </span>
             {fatAnterior > 0 && (
@@ -433,7 +432,7 @@ export function Step4FinalAuditAndClose({
               </span>
             )}
           </div>
-          <p className="text-lg font-bold font-mono text-purple-400 mt-1">
+          <p className="text-lg font-bold font-mono text-purple-400 mt-1 tabular-nums">
             <AmountCell value={faturamentoDia} />
           </p>
           {manualInputs.odometroHoje > 0 && fatAnterior > 0 && (
@@ -446,7 +445,7 @@ export function Step4FinalAuditAndClose({
 
       {/* Semáforo & Conferência Central */}
       <Card
-        className={`p-6 border-2 transition-all ${
+        className={`p-6 border-2 transition-all rounded-2xl ${
           isOk
             ? 'border-emerald-500/40 bg-emerald-500/5 shadow-lg shadow-emerald-950/20'
             : isWarning
@@ -455,7 +454,7 @@ export function Step4FinalAuditAndClose({
         }`}
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2">
+          <div className="space-y-3 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
               {isOk ? (
                 <CheckCircle2 size={20} className="text-emerald-400" />
@@ -476,52 +475,51 @@ export function Step4FinalAuditAndClose({
                   : '⚠ Divergência Significativa (Verifique Vínculos e Justificativas)'}
               </span>
               <Badge
-                variant={isOk ? 'success' : isWarning ? 'warning' : 'danger'}
-                dot
-                className="text-[10px] font-mono"
+                variant="outline"
+                className="text-[10px] font-mono bg-zinc-950 border-zinc-800 text-zinc-400"
               >
                 Tolerância ± R$ 50,00
               </Badge>
             </div>
 
             {/* Demonstração da Equação Contábil */}
-            <div className="p-3 bg-zinc-950/80 rounded-lg border border-zinc-800/80 text-xs font-mono text-zinc-300 space-y-1">
+            <div className="p-4 bg-zinc-950/90 rounded-xl border border-zinc-800 text-xs font-mono text-zinc-300 space-y-1.5">
               <div className="flex items-center justify-between text-zinc-400">
-                <span>(+) Faturamento do Dia:</span>
-                <span className="text-purple-400 font-bold">R$ {faturamentoPeriodo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                <span className="font-sans font-medium">(+) Faturamento do Dia:</span>
+                <span className="text-purple-400 font-bold tabular-nums">R$ {faturamentoPeriodo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
               </div>
               <div className="flex items-center justify-between text-zinc-400">
-                <span>(-) Fluxo de Caixa (Caixa Hoje - Caixa Ontem):</span>
-                <span className="text-cyan-400 font-bold">R$ {fluxoCaixa.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                <span className="font-sans font-medium">(-) Fluxo de Caixa (Caixa Hoje - Caixa Ontem):</span>
+                <span className="text-cyan-400 font-bold tabular-nums">R$ {fluxoCaixa.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
               </div>
-              <div className="flex items-center justify-between text-zinc-200 border-t border-zinc-800 pt-1 font-semibold">
-                <span>(=) Valor Disponível para Contas:</span>
-                <span className="text-emerald-400">R$ {valorDispContas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+              <div className="flex items-center justify-between text-zinc-200 border-t border-zinc-800 pt-1.5 font-bold">
+                <span className="font-sans">(=) Valor Disponível para Contas:</span>
+                <span className="text-emerald-400 tabular-nums">R$ {valorDispContas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
               </div>
               <div className="flex items-center justify-between text-zinc-400">
-                <span>(-) Subtotal de Contas a Cobrir (Contas + Juros):</span>
-                <span className="text-rose-400 font-bold">R$ {subtotalContas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                <span className="font-sans font-medium">(-) Subtotal de Contas a Cobrir (Contas + Juros):</span>
+                <span className="text-rose-400 font-bold tabular-nums">R$ {subtotalContas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
               </div>
             </div>
 
             {!isOk && (
               <p className="text-xs text-amber-400 font-semibold mt-1">
-                💡 Dica: Se necessário, clique em "Voltar" para justificar despesas extras no Passo 5 ou ajustar vínculos de OS no Passo 4.
+                💡 Dica: Se necessário, clique em "Voltar" para justificar despesas extras no Passo 4 ou ajustar vínculos de OS no Passo 3.
               </p>
             )}
           </div>
 
-          <div className="text-right shrink-0 bg-zinc-950/90 p-4 rounded-xl border border-zinc-800/80">
-            <span className="text-[10px] text-zinc-400 uppercase font-semibold block tracking-wider">Diferença Final Apurada</span>
+          <div className="text-right shrink-0 bg-zinc-950/90 p-5 rounded-2xl border border-zinc-800 min-w-[220px]">
+            <span className="text-[10px] text-zinc-400 uppercase font-bold block tracking-wider font-sans">Diferença Final Apurada</span>
             <p
-              className={`text-3xl font-mono font-bold mt-1 ${
+              className={`text-3xl font-mono font-bold mt-1 tabular-nums ${
                 isOk ? 'text-emerald-400' : isWarning ? 'text-amber-400' : 'text-rose-400'
               }`}
             >
               R$ {diferencaFinal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
             <span className="text-[11px] text-zinc-500 font-mono mt-1 block">
-              {isOk ? 'Diferença Zero / Dentro da Margem' : diferencaFinal > 0 ? 'Sobra de Caixa' : 'Falta de Caixa / Despesa a Cobrir'}
+              {isOk ? 'Diferença Zero / Na Margem' : diferencaFinal > 0 ? 'Sobra de Caixa' : 'Falta de Caixa / A Cobrir'}
             </span>
           </div>
         </div>
@@ -532,16 +530,16 @@ export function Step4FinalAuditAndClose({
         <Button
           variant="outline"
           onClick={onBack}
-          className="py-2.5 px-4 text-xs font-semibold rounded-xl border-zinc-800 text-zinc-300 hover:text-white flex items-center gap-2"
+          className="py-2.5 px-4 text-xs font-semibold rounded-xl border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white hover:bg-zinc-800 flex items-center gap-2"
         >
           <ArrowLeft size={16} />
-          Voltar para Ajustar (Passo 6)
+          Voltar para Ajustar
         </Button>
 
         <Button
           onClick={onFinish}
           disabled={isSaving}
-          className="py-3 px-8 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-emerald-500/20 cursor-pointer text-sm shrink-0"
+          className="py-3 px-8 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-emerald-950/50 cursor-pointer text-sm shrink-0 transition-all"
         >
           {isSaving ? (
             <>

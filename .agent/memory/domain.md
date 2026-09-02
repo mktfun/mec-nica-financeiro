@@ -1,3 +1,31 @@
+## [2026-09-01] — [Feature ID: 335-justificativa-saidas-ofx-e-equalizacao-matematica-cards]
+
+**Contexto:** Justificativa de débitos bancários (saídas OFX) com escolha de impacto no Contas a Pagar (`daily_manual_bills`) vs Apenas Conciliar, e equalização matemática linear ($A - B = C$) nos cards de fechamento por filial.
+
+**Regra aprendida:**
+1. **Subtração Linear dos Cards ($A - B = C$):**
+   - Na linha de Entradas: $\text{OFX Entradas (Banco)} - \text{Créditos Conciliados (Lotes Rede + PIX OS)} = \text{Dif. a Justificar (Créditos Órfãos)}$.
+   - Na linha de Saídas: $\text{Saídas OFX (Banco)} - \text{Contas Conciliadas (Boletos + Justificadas)} = \text{Dif. a Justificar (Débitos Órfãos)}$.
+   - Esta linearidade elimina a dissonância cognitiva de comparar na mesma linha vendas brutas do balcão ($D-0$) com créditos bancários de lotes liquidados de $D-1$.
+2. **Justificativa Polimórfica de Saídas:**
+   - Débitos bancários não provisionados podem ser justificados com a opção *"Somar ao Contas a Pagar (Despesa Extra)"* (insere em `daily_manual_bills` com `is_extra = true`, somando na holding e na loja) ou *"Apenas Conciliar"* (não operacional / transferência / pró-labore), zerando a `dif_saidas` em ambos os casos.
+3. **SSOT de Despesas sem Duplicação:**
+   - `daily_manual_bills` com `contabilizar_no_subtotal = true` é a fonte única da verdade de despesas. A RPC nunca deve somar `bills_store_agg` com `sofx.saidas_justificadas` concorrentemente.
+
+---
+
+## [2026-09-01] — [Feature ID: 334-transparencia-entradas-ofx-empilhamento-cards-rpc]
+
+**Contexto:** Empilhamento vertical dos saldos de filiais para eliminar cortes visuais e centralização dos cálculos 100% no PostgreSQL via RPC `get_daily_reconciliation_summary`.
+
+**Regra aprendida:**
+1. **Vertical Stack nos Cards de Filiais:**
+   - Saldo Total, Rede Total (com badge de compensação `[ENTROU]`, `[A COMPENSAR]`, `[SEM MOV.]`) e Saldo em Pátio são dispostos em linhas individuais, garantindo leitura integral de valores grandes e negativos sem truncamento (`...`).
+2. **Zero Cálculo no JSX:**
+   - Componentes visuais apenas consom propriedades calculadas do backend (`saldo_banco`, `entradas_conciliadas`, `dif_entradas`, `contas_conciliadas`, `dif_saidas`), garantindo paridade absoluta com auditorias SQL.
+
+---
+
 ## [2026-09-01] — [Feature ID: 279-correcao-fechamento-por-filial-e-detalhamento-lojas]
 
 **Contexto:** Correção e padronização da rastreabilidade da divergência global loja a loja.
@@ -688,218 +716,48 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
 
 ## [2026-08-21] — [Feature ID: 256-importacao-contas-a-pagar-e-conciliacao-aportes-intercompany]
 
-**Contexto:** O valor de Contas a Pagar era inserido de forma manual ou global. Foi implementado o parser analítico do arquivo `BuscaContasAPagar.xls` (Oficina Inteligente / ERP), mapeamento das 10 filiais pela coluna `Emp`, categorização inteligente de despesas (Sócios, Cartão/Tech, Peças, Despesas Bancárias, Uber OS) e motor de cruzamento triangular de aportes/transferências entre lojas e sócios.
+**Contexto:** O valor de Contas a Pagar era inserido de forma manual ou global. Foi implementado o parser analítico do arquivo BuscaContasAPagar.xls (Oficina Inteligente / ERP), mapeamento das 10 filiais pela coluna Emp, categorização inteligente de despesas (Sócios, Cartão/Tech, Peças, Despesas Bancárias, Uber OS) e motor de cruzamento triangular de aportes/transferências entre lojas e sócios.
 
 **Regra aprendida:**
 1. **Estrutura do BuscaContasAPagar.xls:**
-   - O arquivo possui linha de cabeçalho variável e linha final de totalizador geral que deve ser ignorada para evitar duplicação do valor total (`195.066,04`).
-   - Mapeamento de lojas pela coluna `Emp` normalizada (`MPJorgeBeretta` -> `st-03`, `ReiDoModulo` -> `st-09`, `MPpiraporinha` -> `st-05`, etc.).
-   - Extração de OS em Uber: Recibos com padrão `UBER OS[0-9]+` têm o número da OS extraído automaticamente para vinculação de custo logístico ao pátio.
+   - O arquivo possui linha de cabeçalho variável e linha final de totalizador geral que deve ser ignorada para evitar duplicação do valor total (195.066,04).
+   - Mapeamento de lojas pela coluna Emp normalizada (MPJorgeBeretta -> st-03, ReiDoModulo -> st-09, MPpiraporinha -> st-05, etc.).
+   - Extração de OS em Uber: Recibos com padrão UBER OS[0-9]+ têm o número da OS extraído automaticamente para vinculação de custo logístico ao pátio.
 2. **Cruzamento Triangular Intercompany:**
    - Quando um sócio retira de uma loja (despesa do ERP) e aporta em outra loja (crédito no OFX):
-     - Registra o Aporte no Faturamento (`daily_revenue_adjustments`).
-     - Vincula a retirada do ERP da loja de origem (`daily_manual_bills`).
-     - Lança o delta residual não faturado como despesa manual (`daily_manual_bills` com tag *"Aporte Intercompany Residual"*).
+     - Registra o Aporte no Faturamento (daily_revenue_adjustments).
+     - Vincula a retirada do ERP da loja de origem (daily_manual_bills).
+     - Lança o delta residual não faturado como despesa manual (daily_manual_bills com tag "Aporte Intercompany Residual").
      - Isso zera o fechamento pericial com partidas dobradas transparentes.
-
-**Risco identificado:** Tratar PIX de cliente como aporte de sócio. Mitigado com cadastro formal e chaves PIX em `intercompany_entities`.
-
-**Não fazer:** Nunca descartar despesas com nomes novos; sempre aplicar fallback para `outros` e permitir reclassificação em 1 clique no modal.
-
-## [2026-08-21] — [Feature ID: 259-exclusao-cirurgica-por-data-e-correcao-exclusao-imports]
-
-**Contexto:** O botão de exclusão de lote no histórico de importações disparava pop-ups de `alert()` nativos bloqueantes e não existia mecanismo para resetar apenas os dados de um dia específico (como o dia 21) para reprocessamento limpo sem perder o Marco Zero ou o histórico de outros dias.
-
-**Regra aprendida:**
-1. **Exclusão Cirúrgica por Data (`purge_daily_financial_data`):**
-   - Deve apagar de forma transacional apenas os registros correspondentes ao `p_date` selecionado (snapshots, reconciliações, conciliation_matches, extratos OFX, maquininhas, despesas manuais, logs de auditoria e contas a pagar).
-   - Não toca em lojas, Marco Zero, regras contábeis nem em outros dias do calendário.
-2. **Eliminação de `alert()`:** Todas as ações de mutação e exclusão devem sempre usar `toast.success` ou `toast.error` (Sonner) para evitar travar a thread da UI.
-3. **Ponto de Retorno (Checkpoint):** Em operações periciais de conciliação, sempre fornecer backup estruturado em JSON com script de restore em 1 comando (`node scratch/restore_checkpoint_day_21.cjs`).
-
-**Risco identificado:** Apagar dados globais por engano se a data for nula. Mitigado com verificação estrita `IF p_date IS NULL THEN RAISE EXCEPTION` na RPC Postgres.
-
-**Não fazer:** Nunca usar `clear_all_financial_data` para refazer apenas um dia; sempre usar a exclusão cirúrgica por data.
-
-## [2026-08-21] — [Feature ID: 260-atualizacao-os-pendentes-e-conciliacao-orfas]
-
-**Contexto:** OSs em aberto no pátio não eram baixadas automaticamente quando o cliente realizava o pagamento via PIX (extrato OFX) ou cartão (Rede) em dias posteriores, deixando as transações bancárias como órfãs e a OS como pendente. Além disso, o valor analítico de Contas a Pagar não auto-preenchia o campo de entrada do fechamento.
-
-**Regra aprendida:**
-1. **Pareamento Inteligente por Saldo Pendente (`auto_match_transactions`):**
-   - O motor busca OSs com `status IN ('em_aberto', 'pago_parcial')` da filial correspondente.
-   - Prioriza correspondência com o **Saldo Pendente** (`total_value - paid_value`), depois PIX e depois Valor Total.
-   - Atualiza a OS: incrementa `paid_value`, define `status = 'finalizado'`, preenche `closed_at = p_date`, vincula `matched_ofx_id` e gera o registro em `conciliation_matches`.
-2. **Auto-Preenchimento de Contas a Pagar:** Quando um lote analítico de contas a pagar é importado (`results.contasPagarResults`), o formulário de valores manuais é auto-preenchido e sinalizado para evitar digitação manual redundante.
-3. **Visibilidade de Estoque em Pátio:** No Card de OS do preview, exibir sempre os pagamentos do dia e o total ativo de veículos/serviços em pátio.
-
-**Risco identificado:** Parear uma OS de outra filial ou com valor aproximado incorreto. Mitigado com correspondência estrita por `store_id` e tolerância de 0.05 centavos.
-
-**Não fazer:** Nunca exigir `closed_at >= D-3` para OSs em aberto, pois OSs podem ter sido abertas há mais tempo no pátio e quitadas hoje.
-
-## [2026-08-21] — [Feature ID: 261-saldo-total-ofx-e-tabela-edicao-os-preview]
-
-**Contexto:** O extrato bancário (OFX) importado contém o saldo acumulado dos extratos das filiais. O operador precisa conferir o valor consolidado do extrato sob o título "Saldo Total Bancário (OFX)" e poder auditar/editar o Valor Total da OS e o Total Pago diretamente no Step 3 de conferência da importação.
-
-**Regra aprendida:**
-1. **Nomenclatura do Card Bancário:** O Card 3 da Central de Importação exibe "Saldo Total Bancário (OFX)", refletindo com transparência o montante consolidado dos extratos bancários importados e o número total de lançamentos.
-2. **Edição Livre de OSs no Preview:** Na etapa 3 do Wizard, disponibilizar tabela pesquisável e paginada de todas as OSs importadas com inputs editáveis para `total_value`, `paid_value` e seletor de `status`.
-3. **Persistência Reativa dos Valores Editados:** Toda alteração feita pelo usuário recalcula os cards do topo em tempo real e é gravada diretamente nas tabelas `patio_os`, `reconciliations` e `daily_snapshots` ao confirmar o fechamento.
-
-**Risco identificado:** Tentar restringir o extrato bancário por data quando o operador precisa da conferência global do saldo em conta.
-
-**Não fazer:** Nunca ocultar ou bloquear a edição de valores de OSs quando o operador detecta que uma ordem de serviço veio com valor divergente da planilha original.
-
-## [2026-08-21] — [Feature ID: 262-restaurar-tabela-exclusiva-os-ausentes-preview]
-
-**Contexto:** Auditoria e fechamento de ordens de serviço ativas no banco de dados que não constam na planilha mensal/diária do pátio.
-
-**Regra aprendida:**
-1. **Detecção Precisa de OSs Ausentes (`detectMissingOs`):** Buscar no Supabase ordens com status ativo (`em_aberto`, `pago_parcial`, `ABERTA`, `PENDENTE`) das filiais mapeadas e cruzar contra todas as OSs contidas nos arquivos importados (`results.osFiles`). As que sobrarem são as OSs ausentes.
-2. **Persistência no Fechamento:** Ao confirmar o fechamento, as OSs ausentes modificadas pelo operador são atualizadas diretamente em `patio_os` com `total_value`, `paid_value`, `status` e `closed_at: targetDate` caso finalizadas.
-
-**Risco identificado:** Deixar OSs órfãs no pátio indefinidamente se o relatório do mês deixar de trazê-las.
-
-**Não fazer:** Nunca descartar silenciosamente OSs que deixaram de vir na planilha sem dar a chance ao operador de decidir o status final.
-
-## [2026-08-21] — [Feature ID: 263-tabela-unificada-os-preview-com-filtros-e-edicao-livre]
-
-**Contexto:** Unificação das ordens de serviço do dia (planilhas de pátio importadas) com as ordens em aberto de dias anteriores (banco de dados) para auditoria e conferência contábil antes do fechamento.
-
-**Regra aprendida:**
-1. **Unificação no Preview:** Agrupar `results.osFiles` e `missingOsList` em `allPreviewOsList` identificando a origem (`origin: 'imported' | 'missing'`).
-2. **Mutação Imutável Reativa:** A edição de qualquer OS (da planilha ou do banco) atualiza imediatamente os cálculos globais de recebimentos do dia (`totalOs`), estoque em pátio (`totalPatioEstoqueGlobal`) e os saldos individuais de cada filial.
-3. **Persistência Integral:** Ao confirmar o fechamento, as OSs importadas são gravadas em lote e quaisquer OSs ausentes modificadas são atualizadas diretamente na tabela `patio_os`.
-
-**Risco identificado:** Dessincronização entre as OSs modificadas na UI e os reducers de faturamento/estoque das filiais.
-
-**Não fazer:** Nunca separar as OSs em tabelas desconexas sem permitir a conferência consolidada da movimentação do dia.
-
-## [2026-08-24] — [Feature ID: 264 & 265]
-
-**Contexto:** Diagnóstico de Contas a Pagar e impacto de despesas manuais avulsas (`daily_manual_bills`) na Diferença Final.
-
-**Regra aprendida:**
-- `Subtotal Contas a Cobrir = Contas Base (Planilha) + Despesas Manuais Avulsas (daily_manual_bills) + Juros Rede`.
-- Ao cadastrar uma despesa avulsa em `daily_manual_bills`, o total de contas a pagar aumenta, aumentando a necessidade de cobertura operacional e ampliando o déficit de fechamento se o faturamento não subir.
-- Retiradas de Sócios ou aportes que explicam divergências de caixa devem ser tratados como Ajustes de Faturamento (`daily_revenue_adjustments`) ou Justificativas, e não como contas a pagar a fornecedores.
-
-**Risco identificado:** Confundir despesa operacional a pagar com retirada/ajuste patrimonial.
-
-**Não fazer:** Não somar despesas manuais duas vezes se a planilha importada já contém a conta em sua totalidade.
-
-## [2026-08-24] — [Feature ID: 266 & 267]
-
-**Contexto:** Alinhamento de conciliação com Excel oficial, âncora de dias úteis anteriores, sincronização granular de OSs e deduplicação de maquininhas.
-
-**Regra aprendida:**
-- A conciliação de segunda-feira deve sempre ancorar na última sexta-feira com fechamento consolidado (`caixa_atual > 0`), ignorando rascunhos vazios de fim de semana.
-- Saldos bancários negativos do Itaú devem ser deduzidos na apuração do Caixa Atual Líquido (`Caixa Atual = Patrimônio Bruto - Negativo Itaú`).
-- Transações de POS (Rede) devem possuir deduplicação determinística (`dedup_hash`) para evitar que relatórios importados em duplicidade gerem falsos alertas de "não entrou".
-- OSs do pátio que estavam ativas no dia anterior e não constam no arquivo .xls de hoje devem ser auditadas pelo operador no Step 3 antes da consolidação.
-
-**Risco identificado:** Reprocessamento de arquivos gerando duplicação em `pos_transactions` ou rascunhos de fim de semana quebrando o carry-over.
-
-**Não fazer:** Nunca assumir que `date < target_date` trará o dia útil correto sem verificar se o fechamento anterior foi consolidado (`caixa_atual > 0`).
-
-## 2026-08-26 � [Feature ID: 292]
-
-**Contexto:** Desacoplamento do ciclo temporal de adquirentes (Rede/Cielo/Stone), corre��o de diverg�ncia de ~R$ 200 no extrato banc�rio de 26/08 e elimina��o de erros HTTP 400.
-
-**Regra aprendida:**
-- Vendas da maquininha em $D_0$ (`rede_liquido`) representam o Regime de Compet�ncia e entram 100% no Ativo de Cart�es a Compensar (Pilar 1).
-- Cr�ditos banc�rios da Rede que caem hoje ($D_0$) no extrato representam a liquida��o financeira de $D_{-1}$ e j� comp�em o saldo em conta corrente (`saldo_bancos_ofx`).
-- **NUNCA subtrair cr�ditos banc�rios de hoje das vendas de cart�o de hoje** no motor de concilia��o di�ria intra-dia (`nao_entrou = rede_liquido`).
-- D�bitos banc�rios (sa�das) n�o devem ter bot�o "Justificar" para impedir que contas pagas sejam categorizadas indevidamente como receitas avulsas.
-- Cr�ditos de lotes de adquirentes n�o devem ser vinculados a OSs individuais pelo operador (evita corrup��o da base e fadiga operacional); justificativas s�o restritas a tarifas e alugu�is de terminais.
-
-**Risco identificado:** Tentar reconciliar o lote l�quido da adquirente diretamente contra ordens de servi�o brutas (com MDR descontada) causa 87% de erro humano e distorce o Caixa Atual ($G21$).
-
-**N�o fazer:** Nunca reintroduzir cl�usulas hardcoded por filial como `s.id NOT IN ('st-01', 'st-05')`. O algoritmo deve ser 100% agn�stico e universal.
-
-## 2026-08-26 � [Feature ID: 294]
-
-**Contexto:** Duplica��o de Contas a Pagar ao importar despesas (soma dupla de `daily_manual_bills` + `snapshot.contas_a_pagar`) e exibi��o de `R$ NaN` em Maquininha/PIX no fechamento das 10 filiais.
-
-**Regra aprendida:**
-- **Contas a Pagar (Deduplica��o Can�nica):** A tabela `daily_manual_bills` � a **fonte oficial da verdade** para as contas do dia. Se existirem registros em `daily_manual_bills`, `contas_manual := SUM(daily_manual_bills)`. O campo `snapshot.contas_a_pagar` atua apenas como fallback quando n�o h� registros granulares. NUNCA some `snapshot.contas_a_pagar` junto com `daily_manual_bills`.
-- **M�tricas por Filial & Anti-NaN:** No objeto de cada loja em `summary.stores`, a RPC deve retornar explicitamente `maquininha`, `rede_liquido`, `pix`, `pix_os`, `previsto_ofx` e `diferenca`. No frontend React, sempre utilize operadores de coalesc�ncia nula (`log.maquininha ?? log.rede_liquido ?? 0`) antes de passar valores para `<AnimatedNumber>`.
-
-**Risco identificado:** A importa��o de despesas grava tanto os registros detalhados na tabela quanto atualiza o total no snapshot; consultas que somavam ambas as fontes geravam distor��o de 100% no subtotal de contas.
-
-**N�o fazer:** Nunca some um acumulador em snapshot junto com as linhas detalhadas da tabela que geraram esse acumulador.
-
-## 2026-08-26 � [Feature ID: 295]
-
-**Contexto:** Dinheiro no cofre (`store_cash_vault`) n�o aparecia na filial correta na tabela por loja, e o Saldo Consolidado por filial n�o somava os tr�s componentes da conta.
-
-**Regra aprendida:**
-- **Saldo Consolidado por Filial:** O campo `saldo_banco` no array `stores` deve representar o saldo patrimonial completo da loja:
-  $$\text{Saldo Consolidado} = \text{Extrato OFX (Ita�)} + \text{Dinheiro no Cofre} + \text{Maquininhas (A Compensar)}$$
-- **Agrega��o de Cofre (`store_cash_vault`):** Deve ser agrupada por `store_id` na RPC para popular `dinheiro_loja` e a lista de `vault_entries`, viabilizando o bot�o "Dar Baixa" em dep�sitos pendentes na filial correta (ex: Santo Andr� - HD `st-08`).
-- **Consist�ncia de Totais:** O total consolidado da tabela do modal (`SaldoBancosDetailModal`) deve ser matematicamente id�ntico ao valor exibido no card do topo ("SALDO BANCOS + DINHEIRO").
-
-**N�o fazer:** Nunca deixe campos de agrega��o por loja hardcoded como `0` quando j� existe a tabela f�sica de suporte no banco de dados.
-
-## 2026-08-26 � [Feature ID: 297]
-
-**Contexto:** Falsa diferen�a de R$ 5k+ no fechamento por filial e descontinuidade de justificativas no extrato.
-
-**Regra aprendida:**
-- **Diferen�a Real por Filial:** A diverg�ncia de uma loja � calculada **estritamente pela soma de lan�amentos banc�rios �rf�os/pendentes** do dia:
-  $$\text{Diferen�a da Filial} = \sum \text{OFX sem OS, sem Lote Rede D-1 e sem Justificativa}$$
-  Vendas de maquininha de D0 s�o **A COMPENSAR** (entram no saldo do caixa, mas caem no banco em D+1/D+30) e NUNCA devem ser subtra�das do extrato de hoje.
-- **Sincroniza��o de Justificativas:** O hook `useCategorizeOrphan` deve atualizar tanto `ofx_transactions` quanto `transactions` e `pos_transactions`. Ao justificar, o item ganha `manual_category` e a pend�ncia da filial zera imediatamente.
-
-**N�o fazer:** Nunca subtraia vendas de maquininha de hoje das entradas banc�rias de hoje para calcular a diferen�a de uma loja.
-
-## 2026-08-27 � [Feature ID: 298]
-
-**Contexto:** Equaliza��o can�nica dos saldos das 10 filiais e fechamento do Caixa Atual com a Planilha Oficial (`CONCILIA��O 2608.xlsx`).
-
-**Regra aprendida:**
-- **Composi��o Can�nica de Saldo por Filial:**
-  $$\text{Saldo Consolidado da Loja} = \text{Saldo OFX Puro} + \text{Cart�es A Compensar} + \text{Dinheiro no Cofre}$$
-- **Preven��o de Double-Dipping em Saldos Devedores:** Os saldos negativos de contas correntes (ex: Planalto -R$ 3.845,74 e Santo Andr� -R$ 12.097,78, totalizando -R$ 15.943,52) j� s�o computados no somat�rio alg�brico das contas Ita� em $\mathbb{R}$. A m�trica `saldo_negativo_itau` � mantida estritamente para exibi��o de KPI/alerta no dashboard, nunca devendo ser deduzida uma segunda vez no c�lculo do Caixa Atual.
-- **Caixa Atual Consolidado:** Resulta rigorosamente em **R$ 151.642,60** atrav�s da soma dos 4 Pilares ($P_1$: Bancos + Cofres + Cart�es = R$ 50.794,86, $P_2$: Dinheiro MP = R$ 15.323,00, $P_3$: A Receber = R$ 8.349,67, $P_4$: Na Loja OS = R$ 77.525,07).
-
-**N�o fazer:** Nunca subtraia `saldo_negativo_itau` do Caixa Atual se `v_saldo_bancos` j� inclui os saldos devedores em sua soma alg�brica.
-
-## 2026-08-27 � [Feature ID: 299]
-
-**Contexto:** Blindagem definitiva de snapshots fechados contra muta��es retroativas e restaura��o do encadeamento de fechamento di�rio.
-
-**Regra aprendida:**
-- **Imutabilidade de Snapshots Fechados:** Dias com `is_closed = true` NUNCA devem ser recalculados dinamicamente via queries de `patio_os` ou `ofx_transactions`. A RPC `get_daily_reconciliation_summary` deve fazer curto-circuito e retornar diretamente os dados congelados do snapshot.
-- **Ancoragem Temporal:** O `caixa_anterior` do dia D+1 l� diretamente o `caixa_atual` do snapshot de D. O congelamento de 26/08 em R$ 151.642,60 alimenta perfeitamente o dia 27/08.
-
-**N�o fazer:** Nunca permita que muta��es em OSs de hoje recalculem o p�tio de dias passados que j� foram fechados.
-
-## [2026-08-30] � [Feature ID: 314] Teste E2E e Fechamento da Concilia��o com Arquivos Reais de 27-08
-**Contexto:** Valida��o ponta a ponta no localhost:8080 do Wizard de Ingest�o e Concilia��o com os 27 arquivos reais de 27/08/2026.
-**Regra aprendida:**
-<<<<<<< HEAD
-- **Segregação de 5 Pilares no Fechamento:** Ativos Totais (Saldo Positivo + Dinheiro MP + A Receber + Pátio OS) subtraído do Cheque Especial compõem o Caixa Atual. O Fluxo de Caixa (Caixa Hoje - Caixa Ontem) deduzido do Faturamento do Dia deve cobrir exatamente o Subtotal de Contas a Pagar + Juros de Maquininha (Tolerância $\pm$ R$ 50,00).
-- **Tratamento de Não-Faturamento:** Transferências entre filiais (Intercompany) e aportes dos sócios NUNCA devem somar ao faturamento contábil da empresa, recebendo a anotação `[NÃO SOMAR] [Apenas Conciliar]`.
-**Risco identificado / Anti-pattern:** Nunca permitir que liquidações de adquirentes ou rendimentos bancários apareçam no painel de justificativas manuais de não-faturamento.
 
 ## [2026-08-31] — [Feature ID: 327] Alinhamento Integral dos 5 Pilares e Compensação Intra-Loja
 **Contexto:** Erradicação de falsas divergências contábeis no fechamento de 31/08/2026 através do alinhamento pericial entre os arquivos brutos (OFX, Rede, OS, BuscaContas) e a planilha oficial do operador.
 **Regra aprendida:**
 1. **Compensação Intra-Loja de Cheque Especial vs. Rede:**
-   Para cada filial $i$, o saldo líquido real é calculado antes da agregação holding:
-   $$\text{Saldo Consolidado}_i = \text{Saldo OFX}_i + \text{Dinheiro em Cofre}_i + \text{Rede a Compensar}_i$$
-   - Se $\text{Saldo Consolidado}_i < 0 \implies \text{Saldo Devedor Real} = |\text{Saldo Consolidado}_i|$ (Cheque Especial Líquido deduzido no Caixa Atual).
-   - Se $\text{Saldo Consolidado}_i \ge 0 \implies \text{Saldo Positivo Real} = \text{Saldo Consolidado}_i$ (Ativo bancário superavitário).
-2. **Aportes de Sócios com Impacto DRE:** Aportes bancários marcados para cobrir contas integram o `faturamento_periodo = faturamento_oi_base + faturamento_ajustes`, garantindo que o `Valor Disponível para Contas = Faturamento Total - Fluxo de Caixa` reflita a receita total do dia.
-3. **Consolidação Total de Contas a Pagar:** O Subtotal de Contas integra $Contas Base + Pró-labore Daniel + Despesas Extras + Juros Rede$.
-**Risco identificado / Anti-pattern:** Nunca subtrair cheque especial bruto do OFX sem abater as vendas de maquininhas que foram creditadas na mesma conta no dia, pois isso gera dupla penalização e distorce o Caixa Atual.
+   Para cada filial i, o saldo líquido real é calculado antes da agregação holding:
+   Saldo Consolidado_i = Saldo OFX_i + Dinheiro em Cofre_i + Rede a Compensar_i
+   - Se Saldo Consolidado_i < 0 => Saldo Devedor Real = |Saldo Consolidado_i| (Cheque Especial Líquido deduzido no Caixa Atual).
+   - Se Saldo Consolidado_i >= 0 => Saldo Positivo Real = Saldo Consolidado_i (Ativo bancário superavitário).
+2. **Aportes de Sócios com Impacto DRE:** Aportes bancários marcados para cobrir contas integram o faturamento_periodo = faturamento_oi_base + faturamento_ajustes.
+3. **Consolidação Total de Contas a Pagar:** O Subtotal de Contas integra Contas Base + Pró-labore Daniel + Despesas Extras + Juros Rede.
 
-- **Segrega��o de 5 Pilares no Fechamento:** Ativos Totais (Saldo Positivo + Dinheiro MP + A Receber + P�tio OS) subtra�do do Cheque Especial comp�em o Caixa Atual. O Fluxo de Caixa (Caixa Hoje - Caixa Ontem) deduzido do Faturamento do Dia deve cobrir exatamente o Subtotal de Contas a Pagar + Juros de Maquininha (Toler�ncia $\pm$ R$ 50,00).
-- **Tratamento de N�o-Faturamento:** Transfer�ncias entre filiais (Intercompany) e aportes dos s�cios NUNCA devem somar ao faturamento cont�bil da empresa, recebendo a anota��o `[N�O SOMAR] [Apenas Conciliar]`.
-**Risco identificado / Anti-pattern:** Nunca permitir que liquida��es de adquirentes ou rendimentos banc�rios apare�am no painel de justificativas manuais de n�o-faturamento. (fix: normalize all workflow view_file paths to global skills directory)
-=======
-- **Segrega��o de 5 Pilares no Fechamento:** Ativos Totais (Saldo Positivo + Dinheiro MP + A Receber + P�tio OS) subtra�do do Cheque Especial comp�em o Caixa Atual. O Fluxo de Caixa (Caixa Hoje - Caixa Ontem) deduzido do Faturamento do Dia deve cobrir exatamente o Subtotal de Contas a Pagar + Juros de Maquininha (Toler�ncia $\pm$ R$ 50,00).
-- **Tratamento de N�o-Faturamento:** Transfer�ncias entre filiais (Intercompany) e aportes dos s�cios NUNCA devem somar ao faturamento cont�bil da empresa, recebendo a anota��o `[N�O SOMAR] [Apenas Conciliar]`.
-**Risco identificado / Anti-pattern:** Nunca permitir que liquida��es de adquirentes ou rendimentos banc�rios apare�am no painel de justificativas manuais de n�o-faturamento.
->>>>>>> 67d8357 (feat(314): auditoria de integridade de saldos, deduplicacao ofx multi-dias e ciclo rede)
+## [2026-09-01] — [Feature ID: 332] Correção da Diferença no Fechamento por Loja e Pendências OFX
+**Contexto:** Resolução de falsa divergência de -R$ 9.484,70 no card de Dom Pedro (st-01) gerada por subtração de lotes de adquirente em D-1 do OFX contra vendas do dia.
+**Regra aprendida:**
+1. **Diferença Real no Fechamento por Loja:** A métrica "Diferença" no card de cada filial representa rigorosamente a **soma de pendências e lançamentos não conciliados no extrato OFX da loja**:
+   $$\text{Diferença da Filial} = \sum (\text{Entradas OFX Órfãs}) - \sum (\text{Saídas OFX Sem Conta})$$
+   - Se 100% dos lançamentos do extrato estiverem identificados (lotes de adquirente, PIX com OS vinculado ou transações categorizadas), a diferença da filial é **R$ 0,00** e o status é **approved (Conciliado / Verde)**.
+2. **Desacoplamento do Ativo "A Compensar":** A diferença entre vendas de maquininha do dia e liquidação em conta corrente (GREATEST(0, rede_liquido - ofx_maquininhas)) é um ativo de curto prazo (*Cartões a Compensar*) e NÃO uma divergência operacional da loja.
+**Risco identificado / Anti-pattern:** Subtrair o extrato bancário de maquininhas das vendas do dia para calcular "diferença da loja" quando há lotes de dias anteriores caindo no mesmo extrato.
+
+## [2026-09-01] — [Feature ID: 340] Motor de Pareamento com OSs Finalizadas e Roteamento Corporativo
+**Contexto:** No fechamento diário, muitos PIXs e vendas de cartão de clientes caem no mesmo dia em que o serviço é finalizado e a OS é marcada como finalizada no ERP da oficina.
+**Regra aprendida:**
+1. **Pareamento Integral com OSs Finalizadas:** A conciliação automática deve checar se uma OS já finalizada possui `pix_transfer_value` ou `credit_value`/`debit_value` correspondentes ao valor da transação do extrato/maquininha, vinculando-a automaticamente para que o operador não precise fazer match manual de dezenas de transações que já foram pagas.
+2. **Roteamento Corporativo de Despesas/Entradas:** Transações com descrições financeiras corporativas (Empréstimos Capital de Giro, Pagamentos de Seguradoras como Itaú Seguros, Distribuidoras de Óleo e Aplicações Financeiras) devem ser pré-categorizadas e isoladas no Step 2 de Justificativas.
+
+## [2026-09-01] — [Feature ID: 341] Criação de Nova OS e Baixa Granular de Pagamento
+**Contexto:** Quando uma transação de PIX ou Cartão sobra sem OS no Step 1, o operador precisa poder cadastrar a OS diretamente no modal de match.
+**Regra aprendida:**
+1. **Garantia de Formas de Pagamento e Saldo de Pátio:** Ao criar ou vincular a OS, o valor deve ser somado especificamente na coluna da forma de pagamento (`pix_transfer_value`, `credit_value` ou `debit_value`), somado em `paid_value` e o saldo em aberto recalculado para garantir precisão contábil no Pilar 4 (Na Loja OS).
+2. **Prevenção de Duplicidade de Faturamento:** A transação vinculada a uma OS não deve ser somada aos ajustes de receita do DRE, evitando dupla contagem com o Odômetro do ERP.

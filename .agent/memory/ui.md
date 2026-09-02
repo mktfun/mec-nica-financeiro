@@ -1,3 +1,27 @@
+## [2026-09-01] — [Feature ID: 335-justificativa-saidas-ofx-e-equalizacao-matematica-cards]
+
+**Contexto:** Atualização do modal `OrphanCategorizationModal.tsx` para suporte polimórfico a saídas (com temas visuais Rose, categorias de despesas e seleção de impacto no Contas a Pagar vs Apenas Conciliar) e liberação do botão "Justificar / Editar" em débitos na view `StoreExtratoBancarioView.tsx`. Atualização dos sub-rótulos descritivos do Split Dual no `StoreCardModulo1.tsx`.
+
+**Regra aprendida:**
+1. **Modal Polimórfico de Transações Órfãs (`OrphanCategorizationModal.tsx`):**
+   - Se `transactionType === 'out'`: adota paleta Rose, categorias de fornecedores, autopeças, pró-labore, impostos, e toggle explícito de destino contábil.
+   - Se `transactionType === 'in'`: adota paleta Emerald/Purple, categorias de aportes, seguros, transferências e toggle para faturamento.
+2. **Sub-rótulos Explicativos nos Cards:**
+   - Exibir no bloco de Entradas: `OFX Entradas (Lote Rede D-1 / Crédito no Banco) | Conciliado (Lotes Identificados) | Dif. a Justificar`.
+   - Exibir no bloco de Saídas: `Saídas OFX (Débito no Banco) | Contas / Boletos (Despesas da Loja) | Dif. a Justificar`.
+
+---
+
+## [2026-09-01] — [Feature ID: 334-transparencia-entradas-ofx-empilhamento-cards-rpc]
+
+**Contexto:** Refatoração de layout no `StoreCardModulo1.tsx` com `Vertical Stack` (linhas individuais para Saldo Total, Rede Total e Saldo em Pátio) evitando compressão horizontal e truncamento de texto.
+
+**Regra aprendida:**
+1. **Vertical Stack em Cartões de Painel:**
+   - Em layouts compactos com números monetários de até 8 dígitos e badges adjacentes, empilhar verticalmente os blocos evita estouro de largura e garante legibilidade sem truncamentos `...`.
+
+---
+
 ## [2026-09-01] — [Feature ID: 279-correcao-fechamento-por-filial-e-detalhamento-lojas]
 
 **Contexto:** Modularização do card de filiais em `StoreCardModulo1.tsx` e container `ConciliacaoLojasView.tsx` com Dark UI Zinc-950 e preservação de data na navegação.
@@ -370,4 +394,32 @@ Ao criar fluxos `onClick` que disparam Edge Functions lentas, sempre usar Toasts
 Contexto: Tratamento de falhas de rede/infra em cards contabeis (StoreCardModulo1 e ConciliacaoLojasView).
 Regra aprendida: Substituido fallback silencioso '|| 0' por verificacao 'isMissingData' e null-safety, renderizando 'N/D' e bloqueando interacoes.
 Nao fazer: Nunca fazer fallbacks automaticos para zero em dados criticos contabeis ausentes do backend.
+
+## [2026-09-01] — [Feature ID: 332-conciliacao-lojas-diferenca-ui]
+**Contexto:** Ajuste nos cards de fechamento por loja (`StoreCardModulo1.tsx`) e na rota `/conciliacao/$lojaId`.
+**Regra aprendida:**
+1. **Formatação de Diferença R$ 0,00:** Tratar tolerância de centavos (`Math.abs(diferenca) <= 0.05`) para exibir badges semânticos (`ENTROU` verde esmeralda).
+2. **Suporte a Query Params:** `conciliacao.index.tsx` deve declarar `validateSearch: { date }` para ler imediatamente a data passada pela URL ao renderizar.
+3. **Resiliência de Identificador de Filial:** Ao cruzar o resumo consolidado com as lojas, validar `s.store_id === lojaId || s.store_id === store?.id || s.store_name === store?.name`.
+
+## [2026-09-01] — [Feature ID: 340] Orquestração Linear de Steps e Eliminação de Flash Visual
+**Contexto:** Correção de bugs de UX no Wizard de Importação onde a tela de fechamento final piscava antes de entrar nos passos de conferência.
+**Regra aprendida:**
+1. **Transições Sem Timers Cegos:** Nunca utilizar `setTimeout` para avançar steps automaticamente após mutações de importação. Ao salvar o lote, direcione o usuário para o Step 1 e mantenha-o no step até que o botão "Próximo" seja clicado explicitamente.
+2. **Controle de Estado de Conclusão:** O flag `saveFinished` deve ser ativado exclusivamente no último step de fechamento (`Step 7 / Step 4 Final Audit`), e não ao salvar arquivos preliminares de extratos e pátio.
+
+## [2026-09-01] — [Feature ID: 341] Modal com Sistema Dual de Abas (Vínculo Existente vs Criar Nova OS)
+**Contexto:** Modal de match manual (`ManualMatchOsModal.tsx`) estendido para permitir criação on-the-fly de novas Ordens de Serviço.
+**Regra aprendida:**
+1. **Segmented Control de Abas:** Implementar alternância fluida entre *"🔍 Vincular à OS Existente"* e *"➕ Criar Nova OS na Filial"* com preservação dos dados da transação (valor, contraparte e filial).
+2. **Liquidação Integral vs Parcial:** Disponibilizar opção rápida de liquidação total (default: valor total = valor do pagamento) ou parcial (campo para informar o valor total real do serviço, calculando o saldo remanescente em aberto em tempo real).
+3. **Padrão Dark UI Zinc-950:** Manter contrastes `bg-zinc-950`, `border-zinc-800`, botões `bg-emerald-500` com hover vibrante e feedback em toasts Sonner.
+
+## [2026-09-02] — [Feature ID: 349] Terminal de Logs macOS/Linux & Banner de Diagnóstico Estruturado
+**Contexto:** Refatoração do terminal de logs e painéis de erro do `CentralImportWizard.tsx` com criação dos componentes `ImportExecutionTerminal.tsx` e `ExecutionErrorBanner.tsx`.
+**Regra aprendida:**
+1. **Auto-Scroll sem Pulo de Viewport:** Nunca use `element.scrollIntoView()` em containers de logs dinâmicos, pois isso causa saltos na página inteira a cada evento. Use scroll imperativo no container local: `containerRef.current.scrollTop = containerRef.current.scrollHeight`.
+2. **Filtros e Cópia 1-Clique:** Terminais de execução técnica devem conter filtros rápidos (`Todos`, `Erros ❌`, `Avisos ⚠️`, `OK ✅`) e botão de copiar logs formatados para diagnóstico imediato.
+3. **Tradução Amigável de Erros Supabase:** Banners de erro (`ExecutionErrorBanner`) devem traduzir códigos técnicos do PostgreSQL/PostgREST para diagnósticos em português legíveis, preservando o stack trace e payload JSON em gavetas colapsáveis.
+4. **Preservação de Contexto no Botão de Retry:** Ao tentar novamente após um erro de gravação, garanta que o callback invoque `handleConfirm(true)` para que o operador avance normalmente para o Wizard sem perda de estado.
 

@@ -1,28 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { AppShell } from '@/components/layout/AppShell';
-import { KpiCard } from '@/components/dashboard/KpiCard';
-import { StoreTableDashboard } from '@/components/dashboard/StoreTableDashboard';
-import { StoreAnalyticsTabs } from '@/components/dashboard/StoreAnalyticsTabs';
-import { EvolucaoMacroChart } from '@/components/dashboard/EvolucaoMacroChart';
-import { useBackendDashboard } from '@/hooks/useBackendDashboard';
-import { useAvailableConciliacaoDates } from '@/hooks/useDailySnapshot';
-import {
-  Landmark,
-  Wallet,
-  CreditCard,
-  Scale,
-  TrendingUp,
-  ArrowRightLeft,
-  Clock,
-  Car,
-  CalendarCheck2,
-  ChevronLeft,
-  ChevronRight
-} from 'lucide-react';
-import { motion } from 'framer-motion';
-import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { Card } from '@/components/ui/Card';
 import { useState, useEffect } from 'react';
+import { AppShell } from '@/components/layout/AppShell';
+import { useAvailableConciliacaoDates } from '@/hooks/useDailySnapshot';
+import { useExecutiveDashboard } from '@/hooks/useExecutiveDashboard';
+import { ExecutiveHeader } from '@/components/dashboard/ExecutiveHeader';
+import { ExecutiveKpiBentoGrid } from '@/components/dashboard/ExecutiveKpiBentoGrid';
+import { ExecutiveFivePillarsBar } from '@/components/dashboard/ExecutiveFivePillarsBar';
+import { ExecutiveStoreMatrix } from '@/components/dashboard/ExecutiveStoreMatrix';
+import { ExecutiveMacroCharts } from '@/components/dashboard/ExecutiveMacroCharts';
 
 export const Route = createFileRoute('/')({
   component: DashboardPage,
@@ -38,238 +23,44 @@ function DashboardPage() {
     }
   }, [availableDates, selectedDate]);
 
-  const { data, isLoading } = useBackendDashboard(selectedDate || '');
-
-  const handleNavigateDate = (direction: 'prev' | 'next') => {
-    if (availableDates.length === 0) return;
-    const currentIndex = availableDates.indexOf(selectedDate);
-    if (currentIndex === -1) {
-      setSelectedDate(availableDates[availableDates.length - 1]);
-      return;
-    }
-    const newIndex = direction === 'prev' ? currentIndex - 1 : currentIndex + 1;
-    if (newIndex >= 0 && newIndex < availableDates.length) {
-      setSelectedDate(availableDates[newIndex]);
-    }
-  };
-
-  const isFirstDate = availableDates.length > 0 && selectedDate === availableDates[0];
-  const isLastDate = availableDates.length > 0 && selectedDate === availableDates[availableDates.length - 1];
+  const { data, isLoading } = useExecutiveDashboard(selectedDate || '2026-09-01');
 
   return (
     <AppShell>
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6">
+      <div className="animate-in fade-in slide-in-from-bottom-3 duration-500 space-y-6 pb-12">
+        
+        {/* ── 1. HEADER EXECUTIVO & SELETOR DE FECHAMENTOS ── */}
+        <ExecutiveHeader
+          data={data}
+          isLoading={isLoading || loadingDates}
+          selectedDate={selectedDate || data?.date || '2026-09-01'}
+          onSelectDate={setSelectedDate}
+          availableDates={availableDates}
+        />
 
-        {/* ── HEADER ── */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h1 className="font-display font-bold text-3xl text-white">Visão Geral</h1>
-            <p className="text-xs text-zinc-400 mt-0.5">Indicadores consolidados em tempo real</p>
-          </div>
-          
-          <div className="flex items-center gap-1 bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] p-1 rounded-xl shadow-sm">
-            <button
-              type="button"
-              onClick={() => handleNavigateDate('prev')}
-              disabled={loadingDates || isFirstDate || availableDates.length === 0}
-              className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 disabled:opacity-25 disabled:cursor-not-allowed transition-all cursor-pointer"
-              title="Data anterior com fechamento"
-            >
-              <ChevronLeft size={18} />
-            </button>
+        {/* ── 2. BENTO GRID DOS 6 KPIS MESTRES ── */}
+        <ExecutiveKpiBentoGrid
+          data={data}
+          isLoading={isLoading}
+        />
 
-            <div className="flex items-center gap-2 px-2 py-1">
-              <CalendarCheck2 size={16} className="text-[var(--color-primary)]" />
-              <input 
-                type="date"
-                value={selectedDate || data?.dataAtual || ''}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                className="bg-transparent border-none outline-none text-sm text-white font-medium w-[130px] p-0 focus:ring-0 [&::-webkit-calendar-picker-indicator]:invert-[0.6] cursor-pointer"
-              />
-            </div>
+        {/* ── 3. EQUAÇÃO DOS 5 PILARES DE CAIXA ── */}
+        <ExecutiveFivePillarsBar
+          data={data}
+          isLoading={isLoading}
+        />
 
-            <button
-              type="button"
-              onClick={() => handleNavigateDate('next')}
-              disabled={loadingDates || isLastDate || availableDates.length === 0}
-              className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 disabled:opacity-25 disabled:cursor-not-allowed transition-all cursor-pointer"
-              title="Próxima data com fechamento"
-            >
-              <ChevronRight size={18} />
-            </button>
-          </div>
-        </div>
+        {/* ── 4. MATRIZ DE PERFORMANCE DAS 10 FILIAIS ── */}
+        <ExecutiveStoreMatrix
+          stores={data?.stores || []}
+          isLoading={isLoading}
+        />
 
-        {/* ── FAIXA TOPO — 4 KPIs críticos ── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <KpiCard
-            label="Saldo Total"
-            value={data?.saldoTotal ?? 0}
-            icon={Landmark}
-            color="primary"
-            isLoading={isLoading}
-            index={0}
-            tooltip="Soma dos saldos bancários de todas as lojas no fechamento."
-          />
-          <KpiCard
-            label="Caixa Atual"
-            value={data?.caixaAtual ?? 0}
-            icon={Wallet}
-            color="teal"
-            isLoading={isLoading}
-            index={1}
-            tooltip="Saldo Total + Dinheiro MP + A Receber + Pátio na Loja. Posição de caixa oficial."
-          />
-          <KpiCard
-            label="Contas a Pagar"
-            value={data?.contasAPagar ?? 0}
-            icon={CreditCard}
-            color="warning"
-            isLoading={isLoading}
-            index={2}
-            tooltip="Total de contas a pagar e despesas do dia apuradas no fechamento."
-          />
-          <KpiCard
-            label="Diferença Final"
-            value={data?.diferenca ?? 0}
-            icon={Scale}
-            color={!data || Math.abs(data.diferenca) < 1.0 ? 'teal' : 'danger'}
-            isLoading={isLoading}
-            index={3}
-            tooltip="Diferença apurada no fechamento da conciliação do dia (zerada quando balanceado)."
-          />
-        </div>
-
-        {/* ── FAIXA MEIO — 3 blocos analíticos ── */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-
-          {/* Faturamento Atual vs Anterior — 2/4 */}
-          <Card className="md:col-span-2 p-5 flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-[var(--color-primary)]/15 flex items-center justify-center">
-                  <TrendingUp size={16} className="text-[var(--color-primary)]" />
-                </div>
-                <div>
-                  <span className="text-[10px] uppercase tracking-widest text-[var(--text-tertiary)] font-bold block">
-                    Faturamento do Período
-                  </span>
-                  <span className="text-[10px] text-[var(--text-secondary)]">
-                    Incremento apurado via Mapa de Metas
-                  </span>
-                </div>
-              </div>
-
-              {Boolean(data?.faturamentoOdometroAtual && data.faturamentoOdometroAtual > 0) && (
-                <span className="text-[10px] font-mono text-[var(--text-tertiary)] bg-[var(--bg-surface-hover)] px-2 py-0.5 rounded border border-[var(--border-subtle)]" title="Odômetro Acumulado no Mês">
-                  Odômetro: R$ {(Number(data?.faturamentoOdometroAtual || 0) / 1000).toFixed(1)}k
-                </span>
-              )}
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 mt-1">
-              <div>
-                <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">
-                  Atual ({data?.dataAtual ? data.dataAtual.split('-').reverse().slice(0, 2).join('/') : 'Dia'})
-                </p>
-                <p className="font-mono font-bold text-2xl text-[var(--color-accent-teal)]">
-                  {isLoading ? (
-                    <span className="animate-pulse h-7 w-28 bg-[var(--bg-surface-hover)] rounded block" />
-                  ) : (
-                    <AnimatedNumber value={data?.faturamentoAtual ?? 0} format="currency" />
-                  )}
-                </p>
-              </div>
-              <div>
-                <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">
-                  Anterior ({data?.dataAnterior ? data.dataAnterior.split('-').reverse().slice(0, 2).join('/') : 'Ant.'})
-                </p>
-                <p className="font-mono font-bold text-2xl text-[var(--text-secondary)]">
-                  {isLoading ? (
-                    <span className="animate-pulse h-7 w-28 bg-[var(--bg-surface-hover)] rounded block" />
-                  ) : (
-                    <AnimatedNumber value={data?.faturamentoAnterior ?? 0} format="currency" />
-                  )}
-                </p>
-              </div>
-            </div>
-            {!isLoading && data && (
-              <div className="flex items-center justify-between text-xs mt-0.5">
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className={`font-medium flex items-center gap-1 ${
-                    data.variacaoFaturamento >= 0
-                      ? 'text-[var(--color-accent-teal)]'
-                      : 'text-[var(--color-accent-danger)]'
-                  }`}
-                >
-                  <TrendingUp size={12} />
-                  {data.variacaoFaturamento >= 0 ? '+' : ''}
-                  {data.variacaoFaturamento.toFixed(1)}% vs FECHAMENTO ANTERIOR
-                </motion.div>
-              </div>
-            )}
-          </Card>
-
-          {/* A Receber — 1/4 */}
-          <KpiCard
-            label="A Receber"
-            value={data?.aReceber ?? 0}
-            icon={Clock}
-            color="warning"
-            isLoading={isLoading}
-            index={4}
-            tooltip="Diferença entre total_value e paid_value das OSs com status em_aberto ou pago_parcial no pátio."
-          />
-
-          {/* Fluxo de Caixa — 1/4 */}
-          <KpiCard
-            label="Fluxo de Caixa"
-            value={data?.fluxoCaixa ?? 0}
-            icon={ArrowRightLeft}
-            color={!data || data.fluxoCaixa >= 0 ? 'teal' : 'danger'}
-            isLoading={isLoading}
-            index={5}
-            tooltip="Variação do Saldo Total entre a conciliação atual e a conciliação imediatamente anterior."
-          />
-        </div>
-
-        {/* ── BANNER PÁTIO ── */}
-        {!isLoading && data && data.veiculosPatio > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-3 px-4 py-3 rounded-[var(--radius-md)] bg-[var(--color-accent-warning)]/10 border border-[var(--color-accent-warning)]/20"
-          >
-            <Car size={16} className="text-[var(--color-accent-warning)] shrink-0" />
-            <span className="text-sm text-[var(--color-accent-warning)] font-medium">
-              <strong>{data.veiculosPatio}</strong> veículo{data.veiculosPatio !== 1 ? 's' : ''} em pátio com valor retido total de{' '}
-              <strong>
-                {data.veiculosPatioValor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-              </strong>
-            </span>
-          </motion.div>
-        )}
-
-        {/* ── FAIXA BASE — Gráfico Macro + Tabs de Análise Setorial + Tabela de Resultado ── */}
-        <div className="space-y-6">
-          {/* 1. Topo - Widescreen Chart */}
-          <div className="w-full">
-            <EvolucaoMacroChart data={data?.historicoMacro ?? []} isLoading={isLoading} />
-          </div>
-          
-          {/* 2. Meio - Widescreen Análise Setorial por Filiais em Tabs (Saldo | Faturamento OFX | Contas OFX) */}
-          <div className="w-full">
-            <StoreAnalyticsTabs data={data?.porLoja ?? []} isLoading={isLoading} />
-          </div>
-
-          {/* 3. Base - Widescreen Tabela de Resultado por Loja */}
-          <div className="w-full">
-            <StoreTableDashboard data={data?.porLoja ?? []} isLoading={isLoading} />
-          </div>
-        </div>
-
+        {/* ── 5. GRÁFICOS DE TENDÊNCIA MACRO ── */}
+        <ExecutiveMacroCharts
+          historicoMacro={data?.historicoMacro || []}
+          isLoading={isLoading}
+        />
 
       </div>
     </AppShell>

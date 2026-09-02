@@ -1,4 +1,4 @@
-﻿import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
@@ -145,7 +145,7 @@ function PatioPage() {
           <div>
             <div className="flex items-center gap-3">
               <h1 className="font-display font-bold text-3xl">Carros no Pátio</h1>
-              <Badge variant="success" className="uppercase tracking-wider">{open.length} OS em aberto</Badge>
+              <Badge variant="success" className="uppercase tracking-wider">{noPayment} OS em aberto</Badge>
             </div>
             <p className="text-sm text-[var(--text-secondary)] mt-1">Ordens de serviço abertas e pagamentos pendentes lidos diretamente do Supabase.</p>
           </div>

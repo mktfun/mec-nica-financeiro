@@ -157,8 +157,8 @@ export function Step2NonRevenueJustifications({
     queryFn: async () => {
       const { data, error } = await supabase
         .from('ofx_transactions')
-        .select('id, store_id, bank_name, type, amount, occurred_at, fitid, counterpart_name, title, matched_bill_id, match_status, manual_category, manual_justification, target_date, contabilizar_no_subtotal')
-        .or(`target_date.eq.${targetDate},occurred_at.gte.${targetDate}T00:00:00,occurred_at.lte.${targetDate}T23:59:59`)
+        .select('id, store_id, bank_name, type, amount, occurred_at, fitid, counterpart_name, matched_bill_id, manual_category, manual_justification, target_date, contabilizar_no_subtotal')
+        .eq('target_date', targetDate)
         .eq('type', 'out')
         .is('matched_bill_id', null);
       if (error) throw error;
@@ -172,8 +172,8 @@ export function Step2NonRevenueJustifications({
     queryFn: async () => {
       const { data, error } = await supabase
         .from('ofx_transactions')
-        .select('id, store_id, bank_name, type, amount, occurred_at, fitid, counterpart_name, title, matched_os_number, match_status, manual_category, manual_justification, target_date')
-        .or(`target_date.eq.${targetDate},occurred_at.gte.${targetDate}T00:00:00,occurred_at.lte.${targetDate}T23:59:59`)
+        .select('id, store_id, bank_name, type, amount, occurred_at, fitid, counterpart_name, matched_os_number, manual_category, manual_justification, target_date')
+        .eq('target_date', targetDate)
         .eq('type', 'in')
         .is('matched_os_number', null);
       if (error) throw error;
@@ -373,21 +373,50 @@ export function Step2NonRevenueJustifications({
       const cleanJustification = state.observacao.replace(/\s*\[NÃO SOMAR\]/gi, '').trim();
       const finalJustification = state.impactsRevenue ? cleanJustification : `${cleanJustification} [NÃO SOMAR]`.trim();
 
+      // 1. Atualizar ofx_transactions
       const { error: ofxErr } = await supabase
         .from('ofx_transactions')
         .update({
           manual_category: finalCategory,
           manual_justification: finalJustification,
-          match_status: state.impactsRevenue ? 'REVENUE_ADJUSTED' : 'JUSTIFIED',
         })
         .eq('id', entry.id);
 
       if (ofxErr) throw ofxErr;
 
+      // 2. Sincronizar daily_revenue_adjustments para a RPC get_daily_reconciliation_summary somar no Faturamento
+      if (state.impactsRevenue && entry.amount > 0) {
+        const { error: adjErr } = await supabase
+          .from('daily_revenue_adjustments')
+          .upsert({
+            id: entry.id,
+            date: entry.date || targetDate,
+            title: cleanCategory || 'Receita Avulsa OFX',
+            description: cleanJustification || entry.description || 'Justificado no Wizard',
+            type: 'venda_avulsa',
+            amount: entry.amount
+          }, { onConflict: 'id' });
+
+        if (adjErr) console.warn('Erro ao atualizar daily_revenue_adjustments:', adjErr);
+      } else {
+        await supabase
+          .from('daily_revenue_adjustments')
+          .delete()
+          .eq('id', entry.id);
+      }
+
       updateInflowState(entry.id, { saving: false, saved: true }, entry.description);
       setEditingId(null);
       refetchInflows();
-      queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['daily_reconciliation_summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] }),
+        queryClient.invalidateQueries({ queryKey: ['justified_transactions'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-snapshot'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-snapshots'] }),
+      ]);
       toast.success(`Justificativa salva! (${state.impactsRevenue ? '📈 Soma ao Faturamento' : '🚫 Apenas Conciliar'})`);
     } catch (err: any) {
       updateInflowState(entry.id, { saving: false }, entry.description);
@@ -415,9 +444,17 @@ export function Step2NonRevenueJustifications({
       updateOutflowState(entry.id, { saving: false, saved: true }, entry.description);
       setEditingId(null);
       refetchOutflows();
-      queryClient.invalidateQueries({ queryKey: ['open-bills-for-step2'] });
-      queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
-      queryClient.invalidateQueries({ queryKey: ['daily-manual-bills'] });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['open-bills-for-step2'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily_reconciliation_summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-manual-bills'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-snapshot'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-snapshots'] }),
+        queryClient.invalidateQueries({ queryKey: ['justified_transactions'] }),
+      ]);
 
       if (state.selectedBillId) {
         toast.success('Débito vinculado à conta existente com sucesso!');
@@ -447,14 +484,14 @@ export function Step2NonRevenueJustifications({
   return (
     <div className='space-y-6'>
       {/* Header */}
-      <Card className='p-5 bg-zinc-900 border-zinc-800'>
+      <Card className='p-6 bg-zinc-900/60 border-zinc-800'>
         <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
           <div>
-            <h2 className='text-lg font-display font-bold text-white flex items-center gap-2'>
+            <h2 className='text-lg font-bold text-zinc-100 flex items-center gap-2'>
               <FileQuestion className='text-amber-400' size={20} />
-              Passo 5: Justificativas de Movimentações por Loja
+              Justificativas de Movimentações por Loja
             </h2>
-            <p className='text-sm text-zinc-400 mt-1'>
+            <p className='text-xs text-zinc-400 mt-1 max-w-3xl'>
               Classifique entradas e saídas bancárias que não foram casadas automaticamente. Defina se somam ao Faturamento (Entradas), se viram Despesa Extra no Contas a Pagar (Saídas) ou se são apenas transferências internas.
             </p>
           </div>
@@ -463,12 +500,12 @@ export function Step2NonRevenueJustifications({
               variant='outline'
               size='sm'
               onClick={handleRefresh}
-              className='bg-zinc-800/80 border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-700'
+              className='bg-zinc-900 border-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-800 rounded-xl text-xs font-semibold'
             >
-              <RefreshCw size={14} className={(isLoadingOutflows || isLoadingInflows) ? 'animate-spin' : ''} />
+              <RefreshCw size={14} className={(isLoadingOutflows || isLoadingInflows) ? 'animate-spin mr-1.5' : 'mr-1.5'} />
               Atualizar
             </Button>
-            <Badge variant='outline' className='bg-zinc-800 border-zinc-700 text-zinc-300 text-xs px-3 py-1.5'>
+            <Badge variant='outline' className='bg-zinc-950/80 border-zinc-800 text-zinc-300 text-xs px-3 py-1.5 font-mono'>
               {activeTab === 'inflows' ? (
                 <span>{savedInflowCount} de {visibleInflows.length} entradas justificadas</span>
               ) : (
@@ -479,34 +516,34 @@ export function Step2NonRevenueJustifications({
         </div>
 
         {/* Tab Navigation */}
-        <div className='flex border-b border-zinc-800 mt-5'>
+        <div className='flex border-b border-zinc-800/80 mt-6'>
           <button
             onClick={() => setActiveTab('outflows')}
-            className={`flex items-center gap-2 px-5 py-3 text-sm font-medium border-b-2 transition-all ${
+            className={`flex items-center gap-2 px-5 py-3 text-xs font-bold border-b-2 transition-all cursor-pointer ${
               activeTab === 'outflows'
-                ? 'border-rose-500 text-rose-400 bg-rose-500/5'
-                : 'border-transparent text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40'
+                ? 'border-rose-500 text-rose-400 bg-rose-500/10 rounded-t-xl'
+                : 'border-transparent text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/30'
             }`}
           >
-            <TrendingDown size={16} className='text-rose-400' />
+            <TrendingDown size={15} className='text-rose-400' />
             <span>Saídas Órfãs ({visibleOutflows.length})</span>
             {savedOutflowCount === visibleOutflows.length && visibleOutflows.length > 0 && (
-              <Check size={14} className='text-emerald-400' />
+              <Check size={13} className='text-emerald-400' />
             )}
           </button>
 
           <button
             onClick={() => setActiveTab('inflows')}
-            className={`flex items-center gap-2 px-5 py-3 text-sm font-medium border-b-2 transition-all ${
+            className={`flex items-center gap-2 px-5 py-3 text-xs font-bold border-b-2 transition-all cursor-pointer ${
               activeTab === 'inflows'
-                ? 'border-emerald-500 text-emerald-400 bg-emerald-500/5'
-                : 'border-transparent text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40'
+                ? 'border-emerald-500 text-emerald-400 bg-emerald-500/10 rounded-t-xl'
+                : 'border-transparent text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/30'
             }`}
           >
-            <TrendingUp size={16} className='text-emerald-400' />
+            <TrendingUp size={15} className='text-emerald-400' />
             <span>Entradas Órfãs ({visibleInflows.length})</span>
             {savedInflowCount === visibleInflows.length && visibleInflows.length > 0 && (
-              <Check size={14} className='text-emerald-400' />
+              <Check size={13} className='text-emerald-400' />
             )}
           </button>
         </div>
@@ -514,8 +551,8 @@ export function Step2NonRevenueJustifications({
 
       {/* Loading state */}
       {(isLoadingOutflows || isLoadingInflows) && (
-        <Card className='p-6 bg-zinc-950/80 border-zinc-800 flex items-center justify-center gap-3 text-zinc-400'>
-          <Loader2 className='animate-spin text-emerald-400' size={20} />
+        <Card className='p-6 bg-zinc-950/80 border-zinc-800 flex items-center justify-center gap-3 text-zinc-400 text-xs'>
+          <Loader2 className='animate-spin text-emerald-400' size={18} />
           <span>Sincronizando movimentações pendentes com o banco...</span>
         </Card>
       )}
@@ -524,10 +561,10 @@ export function Step2NonRevenueJustifications({
       {activeTab === 'outflows' && (
         <div className='space-y-4'>
           {visibleOutflows.length === 0 ? (
-            <Card className='p-8 bg-zinc-950/40 border-zinc-800 text-center'>
-              <CheckCircle2 size={40} className='text-emerald-400 mx-auto mb-3' />
-              <p className='text-base font-semibold text-white'>Nenhuma Saída Bancária Órfã!</p>
-              <p className='text-sm text-zinc-400 mt-1 max-w-md mx-auto'>
+            <Card className='p-12 bg-zinc-900/40 border-zinc-800 text-center'>
+              <CheckCircle2 size={40} className='text-emerald-400/60 mx-auto mb-3' />
+              <p className='text-sm font-bold text-zinc-100'>Nenhuma Saída Bancária Órfã!</p>
+              <p className='text-xs text-zinc-400 mt-1 max-w-md mx-auto'>
                 Todos os débitos bancários do extrato OFX foram pareados automaticamente com o Contas a Pagar pelo motor de matching.
               </p>
             </Card>
@@ -542,8 +579,8 @@ export function Step2NonRevenueJustifications({
                   key={entry.id}
                   className={`p-4 transition-all ${
                     state.saved
-                      ? 'bg-zinc-950/40 border-zinc-800/60 opacity-80'
-                      : 'bg-zinc-900 border-zinc-700/80 shadow-lg'
+                      ? 'bg-zinc-950/60 border-zinc-850 opacity-90'
+                      : 'bg-zinc-900/90 border-zinc-700 shadow-md'
                   }`}
                 >
                   <div className='flex flex-col gap-3'>
@@ -551,26 +588,26 @@ export function Step2NonRevenueJustifications({
                     <div className='flex items-start justify-between gap-3'>
                       <div className='flex-1 min-w-0'>
                         <div className='flex items-center gap-2 flex-wrap'>
-                          <Badge variant='outline' className='bg-zinc-800 text-zinc-300 text-xs'>
+                          <Badge variant='outline' className='bg-zinc-800 text-zinc-300 text-[11px] font-bold'>
                             {entry.storeName}
                           </Badge>
                           <span className='text-xs text-zinc-400 font-mono'>
                             {entry.date ? `(${entry.date})` : ''}
                           </span>
                           {state.saved && (
-                            <Badge className='bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-xs flex items-center gap-1'>
-                              <Check size={12} /> Salvo
+                            <Badge className='bg-emerald-500/20 text-emerald-300 border-emerald-500/40 text-[11px] flex items-center gap-1 font-mono'>
+                              <Check size={11} /> Salvo
                             </Badge>
                           )}
                         </div>
-                        <p className='text-sm font-semibold text-zinc-200 mt-1 truncate'>
+                        <p className='text-sm font-bold text-zinc-100 mt-1.5 truncate'>
                           {entry.description}
                         </p>
                       </div>
 
                       <div className='text-right shrink-0'>
-                        <span className='text-xs text-zinc-400 block'>Débito OFX</span>
-                        <span className='text-base font-mono font-bold text-rose-400'>
+                        <span className='text-[10px] uppercase font-bold text-zinc-500 block font-sans'>Débito OFX</span>
+                        <span className='text-base font-mono font-bold text-rose-400 tabular-nums'>
                           -R$ {entry.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                       </div>
@@ -578,10 +615,10 @@ export function Step2NonRevenueJustifications({
 
                     {/* Linha de Ação: Selecionar Categoria e Destino Contábil */}
                     {isEditing ? (
-                      <div className='mt-2 pt-3 border-t border-zinc-800/80 space-y-3'>
+                      <div className='mt-2 pt-3 border-t border-zinc-800 space-y-3'>
                         {/* Categorias Rápidas */}
                         <div>
-                          <label className='text-xs text-zinc-400 block mb-1.5 font-medium'>
+                          <label className='text-xs text-zinc-400 block mb-1.5 font-bold'>
                             1. Selecione a Categoria da Saída:
                           </label>
                           <div className='flex flex-wrap gap-1.5'>
@@ -594,10 +631,10 @@ export function Step2NonRevenueJustifications({
                                   adicionaNoContas: cat.defaultImpact,
                                   selectedBillId: null 
                                 }, entry.description)}
-                                className={`text-xs px-2.5 py-1 rounded-md border transition-all ${
+                                className={`text-xs px-3 py-1.5 rounded-xl border transition-all cursor-pointer ${
                                   state.category === cat.label
-                                    ? `${cat.color} font-semibold ring-1 ring-white/20`
-                                    : 'bg-zinc-800/60 border-zinc-700/50 text-zinc-400 hover:text-zinc-200'
+                                    ? `${cat.color} font-bold ring-1 ring-white/20 shadow-sm`
+                                    : 'bg-zinc-950/60 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
                                 }`}
                               >
                                 {cat.label}
@@ -609,7 +646,7 @@ export function Step2NonRevenueJustifications({
                         {/* Vínculo Direto a Contas Existentes */}
                         {storeOpenBills.length > 0 && (
                           <div>
-                            <label className='text-xs text-zinc-400 block mb-1.5 font-medium flex items-center gap-1'>
+                            <label className='text-xs text-zinc-400 block mb-1.5 font-bold flex items-center gap-1'>
                               <Link2 size={12} className='text-cyan-400' />
                               Ou Vincular a uma Conta em Aberto da Loja ({storeOpenBills.length} disponíveis):
                             </label>
@@ -628,7 +665,7 @@ export function Step2NonRevenueJustifications({
                                   updateOutflowState(entry.id, { selectedBillId: null }, entry.description);
                                 }
                               }}
-                              className='w-full bg-zinc-950 border border-zinc-700 rounded-md px-3 py-1.5 text-xs text-zinc-200 focus:ring-1 focus:ring-cyan-500'
+                              className='w-full bg-zinc-950 border border-zinc-700/80 rounded-xl px-3 py-2 text-xs text-zinc-100 font-mono focus:ring-1 focus:ring-emerald-500'
                             >
                               <option value=''>-- Não vincular (Criar Despesa Extra ou Apenas Justificar) --</option>
                               {storeOpenBills.map((b: any) => (
@@ -642,12 +679,12 @@ export function Step2NonRevenueJustifications({
 
                         {/* Toggle Contábil: Adicionar ao Contas a Pagar */}
                         {!state.selectedBillId && (
-                          <div className='flex items-center justify-between bg-zinc-950/60 p-2.5 rounded-md border border-zinc-800'>
+                          <div className='flex items-center justify-between bg-zinc-950/60 p-3 rounded-xl border border-zinc-800'>
                             <div>
-                              <span className='text-xs font-medium text-zinc-200 block'>
+                              <span className='text-xs font-bold text-zinc-100 block'>
                                 Adicionar ao Contas a Pagar (Despesa Extra)?
                               </span>
-                              <span className='text-[11px] text-zinc-400'>
+                              <span className='text-[11px] text-zinc-400 mt-0.5 block'>
                                 {state.adicionaNoContas
                                   ? '📈 Sim, somará ao Subtotal de Contas a Pagar no fechamento diário.'
                                   : '🚫 Não, apenas justifica o débito (ex: transferência entre lojas, sangria, tarifa).'}
@@ -656,8 +693,8 @@ export function Step2NonRevenueJustifications({
                             <button
                               type='button'
                               onClick={() => updateOutflowState(entry.id, { adicionaNoContas: !state.adicionaNoContas }, entry.description)}
-                              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                                state.adicionaNoContas ? 'bg-emerald-600' : 'bg-zinc-700'
+                              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer ${
+                                state.adicionaNoContas ? 'bg-emerald-500' : 'bg-zinc-700'
                               }`}
                             >
                               <span
@@ -675,7 +712,7 @@ export function Step2NonRevenueJustifications({
                             size='sm'
                             onClick={() => handleSaveOutflow(entry)}
                             disabled={state.saving}
-                            className='bg-rose-600 hover:bg-rose-500 text-white text-xs px-4 h-8 flex items-center gap-1.5'
+                            className='bg-rose-500 hover:bg-rose-400 text-zinc-950 font-bold text-xs px-4 h-8 flex items-center gap-1.5 rounded-xl cursor-pointer shadow-sm'
                           >
                             {state.saving ? <Loader2 size={12} className='animate-spin' /> : <Save size={12} />}
                             Salvar Destinação
@@ -683,9 +720,9 @@ export function Step2NonRevenueJustifications({
                         </div>
                       </div>
                     ) : (
-                      <div className='flex items-center justify-between pt-2 border-t border-zinc-800/40'>
+                      <div className='flex items-center justify-between pt-2 border-t border-zinc-800/60'>
                         <div className='flex items-center gap-2'>
-                          <Badge variant='outline' className='text-xs bg-zinc-800/40 text-zinc-300'>
+                          <Badge variant='outline' className='text-xs bg-zinc-900 border-zinc-800 text-zinc-300 font-semibold'>
                             {state.category}
                           </Badge>
                           <span className='text-xs text-zinc-400'>
@@ -696,7 +733,7 @@ export function Step2NonRevenueJustifications({
                           variant='ghost'
                           size='sm'
                           onClick={() => setEditingId(entry.id)}
-                          className='text-xs text-zinc-400 hover:text-white h-7 px-2'
+                          className='text-xs text-zinc-400 hover:text-white h-7 px-2 font-semibold'
                         >
                           Alterar
                         </Button>
@@ -714,10 +751,10 @@ export function Step2NonRevenueJustifications({
       {activeTab === 'inflows' && (
         <div className='space-y-4'>
           {visibleInflows.length === 0 ? (
-            <Card className='p-8 bg-zinc-950/40 border-zinc-800 text-center'>
-              <CheckCircle2 size={40} className='text-emerald-400 mx-auto mb-3' />
-              <p className='text-base font-semibold text-white'>Nenhuma Entrada Órfã!</p>
-              <p className='text-sm text-zinc-400 mt-1 max-w-md mx-auto'>
+            <Card className='p-12 bg-zinc-900/40 border-zinc-800 text-center'>
+              <CheckCircle2 size={40} className='text-emerald-400/60 mx-auto mb-3' />
+              <p className='text-sm font-bold text-zinc-100'>Nenhuma Entrada Órfã!</p>
+              <p className='text-xs text-zinc-400 mt-1 max-w-md mx-auto'>
                 Todas as entradas bancárias do OFX foram vinculadas a Ordens de Serviço ou faturamento do dia.
               </p>
             </Card>
@@ -731,43 +768,43 @@ export function Step2NonRevenueJustifications({
                   key={entry.id}
                   className={`p-4 transition-all ${
                     state.saved
-                      ? 'bg-zinc-950/40 border-zinc-800/60 opacity-80'
-                      : 'bg-zinc-900 border-zinc-700/80 shadow-lg'
+                      ? 'bg-zinc-950/60 border-zinc-850 opacity-90'
+                      : 'bg-zinc-900/90 border-zinc-700 shadow-md'
                   }`}
                 >
                   <div className='flex flex-col gap-3'>
                     <div className='flex items-start justify-between gap-3'>
                       <div className='flex-1 min-w-0'>
                         <div className='flex items-center gap-2 flex-wrap'>
-                          <Badge variant='outline' className='bg-zinc-800 text-zinc-300 text-xs'>
+                          <Badge variant='outline' className='bg-zinc-800 text-zinc-300 text-[11px] font-bold'>
                             {entry.storeName}
                           </Badge>
                           <span className='text-xs text-zinc-400 font-mono'>
                             {entry.date ? `(${entry.date})` : ''}
                           </span>
                           {state.saved && (
-                            <Badge className='bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-xs flex items-center gap-1'>
-                              <Check size={12} /> Salvo
+                            <Badge className='bg-emerald-500/20 text-emerald-300 border-emerald-500/40 text-[11px] flex items-center gap-1 font-mono'>
+                              <Check size={11} /> Salvo
                             </Badge>
                           )}
                         </div>
-                        <p className='text-sm font-semibold text-zinc-200 mt-1 truncate'>
+                        <p className='text-sm font-bold text-zinc-100 mt-1.5 truncate'>
                           {entry.description}
                         </p>
                       </div>
 
                       <div className='text-right shrink-0'>
-                        <span className='text-xs text-zinc-400 block'>Crédito OFX</span>
-                        <span className='text-base font-mono font-bold text-emerald-400'>
+                        <span className='text-[10px] uppercase font-bold text-zinc-500 block font-sans'>Crédito OFX</span>
+                        <span className='text-base font-mono font-bold text-emerald-400 tabular-nums'>
                           +R$ {entry.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                       </div>
                     </div>
 
                     {isEditing ? (
-                      <div className='mt-2 pt-3 border-t border-zinc-800/80 space-y-3'>
+                      <div className='mt-2 pt-3 border-t border-zinc-800 space-y-3'>
                         <div>
-                          <label className='text-xs text-zinc-400 block mb-1.5 font-medium'>
+                          <label className='text-xs text-zinc-400 block mb-1.5 font-bold'>
                             1. Selecione o Tipo de Entrada:
                           </label>
                           <div className='flex flex-wrap gap-1.5'>
@@ -779,10 +816,10 @@ export function Step2NonRevenueJustifications({
                                   category: cat.label, 
                                   impactsRevenue: cat.defaultImpact 
                                 }, entry.description)}
-                                className={`text-xs px-2.5 py-1 rounded-md border transition-all ${
+                                className={`text-xs px-3 py-1.5 rounded-xl border transition-all cursor-pointer ${
                                   state.category === cat.label
-                                    ? `${cat.color} font-semibold ring-1 ring-white/20`
-                                    : 'bg-zinc-800/60 border-zinc-700/50 text-zinc-400 hover:text-zinc-200'
+                                    ? `${cat.color} font-bold ring-1 ring-white/20 shadow-sm`
+                                    : 'bg-zinc-950/60 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
                                 }`}
                               >
                                 {cat.label}
@@ -791,12 +828,12 @@ export function Step2NonRevenueJustifications({
                           </div>
                         </div>
 
-                        <div className='flex items-center justify-between bg-zinc-950/60 p-2.5 rounded-md border border-zinc-800'>
+                        <div className='flex items-center justify-between bg-zinc-950/60 p-3 rounded-xl border border-zinc-800'>
                           <div>
-                            <span className='text-xs font-medium text-zinc-200 block'>
+                            <span className='text-xs font-bold text-zinc-100 block'>
                               Entra no Faturamento do Dia?
                             </span>
-                            <span className='text-[11px] text-zinc-400'>
+                            <span className='text-[11px] text-zinc-400 mt-0.5 block'>
                               {state.impactsRevenue
                                 ? '📈 Sim, somará ao Faturamento Apurado no fechamento diário.'
                                 : '🚫 Não, apenas justifica a entrada (ex: transferência entre lojas, aporte, estorno).'}
@@ -805,8 +842,8 @@ export function Step2NonRevenueJustifications({
                           <button
                             type='button'
                             onClick={() => updateInflowState(entry.id, { impactsRevenue: !state.impactsRevenue }, entry.description)}
-                            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                              state.impactsRevenue ? 'bg-emerald-600' : 'bg-zinc-700'
+                            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer ${
+                              state.impactsRevenue ? 'bg-emerald-500' : 'bg-zinc-700'
                             }`}
                           >
                             <span
@@ -822,7 +859,7 @@ export function Step2NonRevenueJustifications({
                             size='sm'
                             onClick={() => handleSaveInflow(entry)}
                             disabled={state.saving}
-                            className='bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-4 h-8 flex items-center gap-1.5'
+                            className='bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs px-4 h-8 flex items-center gap-1.5 rounded-xl cursor-pointer shadow-sm'
                           >
                             {state.saving ? <Loader2 size={12} className='animate-spin' /> : <Save size={12} />}
                             Salvar Entrada
@@ -830,9 +867,9 @@ export function Step2NonRevenueJustifications({
                         </div>
                       </div>
                     ) : (
-                      <div className='flex items-center justify-between pt-2 border-t border-zinc-800/40'>
+                      <div className='flex items-center justify-between pt-2 border-t border-zinc-800/60'>
                         <div className='flex items-center gap-2'>
-                          <Badge variant='outline' className='text-xs bg-zinc-800/40 text-zinc-300'>
+                          <Badge variant='outline' className='text-xs bg-zinc-900 border-zinc-800 text-zinc-300 font-semibold'>
                             {state.category}
                           </Badge>
                           <span className='text-xs text-zinc-400'>
@@ -843,7 +880,7 @@ export function Step2NonRevenueJustifications({
                           variant='ghost'
                           size='sm'
                           onClick={() => setEditingId(entry.id)}
-                          className='text-xs text-zinc-400 hover:text-white h-7 px-2'
+                          className='text-xs text-zinc-400 hover:text-white h-7 px-2 font-semibold'
                         >
                           Alterar
                         </Button>
@@ -862,18 +899,18 @@ export function Step2NonRevenueJustifications({
         <Button
           variant='outline'
           onClick={onBack}
-          className='bg-zinc-800/80 border-zinc-700 text-zinc-300 hover:text-white'
+          className='py-2.5 px-4 text-xs font-semibold rounded-xl border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white hover:bg-zinc-800 flex items-center gap-2'
         >
-          <ArrowLeft size={16} className='mr-2' />
+          <ArrowLeft size={16} />
           Voltar
         </Button>
 
         <Button
           onClick={onNext}
-          className='bg-emerald-600 hover:bg-emerald-500 text-white px-6 font-semibold shadow-lg'
+          className='py-2.5 px-6 text-xs font-bold rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 shadow-md shadow-emerald-950/50 flex items-center gap-2 cursor-pointer transition-all'
         >
           Avançar para Conferência de Cofre
-          <ArrowRight size={16} className='ml-2' />
+          <ArrowRight size={16} />
         </Button>
       </div>
     </div>

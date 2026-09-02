@@ -1,3 +1,27 @@
+## [2026-09-01] — [Feature ID: 335-justificativa-saidas-ofx-e-equalizacao-matematica-cards]
+
+**Contexto:** Refinamento da RPC `get_daily_reconciliation_summary` em `supabase/migrations/20260901000012_fix_store_split_linear_subtraction_and_expenses.sql` para garantir subtração linear estrita nas lojas e blindar o cálculo de `contas_loja_total` contra dupla contagem de despesas extras.
+
+**Regra aprendida:**
+1. **Linearidade na Decomposição de Filiais:**
+   - A RPC calcula `entradas_conciliadas := (oe.ofx_entradas_total - oe.entradas_orfas)` e `contas_conciliadas := (sofx.ofx_saidas_total - sofx.saidas_orfas)`.
+   - O retorno garante que `diferenca_entradas = ofx_entradas_total - entradas_conciliadas` e `diferenca_saidas = ofx_saidas_total - contas_conciliadas`.
+2. **SSOT de Despesas na CTE `bills_store_agg`:**
+   - Despesas extras criadas via `resolve_orphan_saida_ofx` residem em `daily_manual_bills` com `contabilizar_no_subtotal = true`.
+   - `contas_loja_total` consome `COALESCE(bst.contas_loja_total, 0)`, sem somar novamente `sofx.saidas_justificadas`, prevenindo duplicação de despesas.
+
+---
+
+## [2026-09-01] — [Feature ID: 334-transparencia-entradas-ofx-empilhamento-cards-rpc]
+
+**Contexto:** Ajuste das CTEs de agregação de filiais na RPC `get_daily_reconciliation_summary` (`20260901000011_fix_canonical_store_ofx_entries_and_split.sql`) calculando `ofx_entradas_total` a partir de 100% dos créditos OFX e somando justificativas ao previsto.
+
+**Regra aprendida:**
+1. **Extrato OFX Imutável:**
+   - Créditos bancários reais nunca são expurgados do total de extrato. Transações justificadas compõem a base prevista da filial.
+
+---
+
 ## [2026-09-01] — [Feature ID: 279-correcao-fechamento-por-filial-e-detalhamento-lojas]
 
 **Contexto:** Atualização da RPC `get_daily_reconciliation_summary` para calcular e retornar as métricas de Saldo Total, Maquininha (Rede Líquido), PIX, Na Loja OS, Previsto e Diferença por Loja para as 10 filiais através de CTEs pré-agrupadas e padronização de `store_id` como `TEXT`.
@@ -463,7 +487,7 @@ Garantia de salvamento de mensagens do assistente no banco de dados e isolamento
 **Não fazer:** Nunca misturar colunas inexistentes (`match_status` em `ofx_transactions`) nas queries da RPC.
 
 
-=======
+
 ## [2026-09-01] — [Feature ID: 314-auditoria-saldo-deduplicacao-ofx-rede]
 
 **Contexto:** Eliminação definitiva de trigger legada destrutiva (update_reconciliation_bank_total) que corrompia 
@@ -831,7 +855,6 @@ Garantia de salvamento de mensagens do assistente no banco de dados e isolamento
 
 **Não fazer:** Nunca faça cálculos matemáticos ou deduções contábeis no React/frontend. Nunca altere o nome do parâmetro de uma RPC sem garantir retrocompatibilidade ou overload canônico.
 
->>>>>>> 67d8357 (feat(314): auditoria de integridade de saldos, deduplicacao ofx multi-dias e ciclo rede)
 
 ## [2026-09-01] - [Feature ID: 330]
 Contexto: Correcao de regressao na RPC get_daily_reconciliation_summary onde um JOIN de UUID com texto provocou panico estrutural.
@@ -845,3 +868,33 @@ Nao fazer: Nunca permita que excecoes estruturais sejam traduzidas em status con
 1. **Diferença Canônica (Previsto - Realizado):** A fórmula exigida pelo usuário para "Diferença" no Dashboard é `(Rede Líquido + PIX_previsto) - (OFX Maquininhas + PIX_realizado)`, que se simplifica para `Rede Líquido - OFX Maquininhas`. Nunca use "órfãos do OFX" como base de divergência geral sem aprovação expressa.
 2. **Blindagem de Nulos em CTEs:** Colunas que não são `NOT NULL` (como `transaction_type` adicionada via migration tardia) avaliam expressões como `NULL != 'devolucao'` como `NULL`. Isso faz com que blocos `CASE WHEN` caiam no `ELSE` e zerem agregações de faturamento/maquininha. SEMPRE envolva colunas suscetíveis a nulo com `COALESCE(coluna, '') != 'valor'`.
 **Risco identificado / Anti-pattern:** Usar operadores de comparação (`!=`, `=`) diretamente em colunas sem `NOT NULL` em scripts de agregação `SUM()`, pois isso contamina silenciosamente a matemática com valores `NULL`.
+
+## [2026-09-01] — [Feature ID: 332-fix-store-difference-and-ofx-pendencias]
+**Contexto:** Migration `20260901000009` corrigindo a apuração da diferença por filial na RPC `get_daily_reconciliation_summary`.
+**Regra aprendida:**
+1. **CTE `ofx_unreconciled_agg`:** Agrega entradas órfãs (créditos sem OS, sem categoria manual e sem adquirentes) e saídas órfãs (débitos sem conta vinculada e sem categoria). A diferença por loja passa a ser `COALESCE(unrec.total_pendencias, 0)`.
+2. **Campos de Snapshot em Ramal 1:** `daily_snapshots` não possui as colunas `caixa_anterior`, `fluxo_caixa`, `faturamento_anterior`, `faturamento_periodo` ou `valor_disp_contas`. Tais propriedades devem ser lidas estritamente de `(v_snapshot.metadata->>'nome_campo')::numeric`.
+**Risco identificado / Anti-pattern:** Tentar acessar colunas inexistentes diretamente no record `v_snapshot` do PL/pgSQL, o que gera erro de runtime `42703 (has no field caixa_anterior)` no PostgREST.
+
+## [2026-09-01] — [Feature ID: 340]
+**Contexto:** Ampliação do motor de auto-match no backend para cobrir OSs já finalizadas e auto-tagging de movimentações corporativas.
+**Regra aprendida:**
+1. **Auto-Match com OSs Finalizadas:** No ERP das oficinas mecânicas, clientes frequentemente pagam no mesmo dia em que o carro é entregue e a OS é marcada como `finalizada` na planilha do pátio. A RPC `auto_match_daily_transactions` deve casar tanto OSs com saldo em aberto quanto OSs finalizadas confrontando `pix_transfer_value` e `credit_value`/`debit_value`.
+2. **Auto-Tagging Corporativo:** Transações de capital de giro (`EMPREST`), seguros (`ITAU SEGUROS`), transferências corporativas de óleo (`EMPORIO DO OLEO`) e rendimentos bancários (`APLIC`/`RESG`) devem ser pré-marcadas como movimentações não operacionais, direcionadas exclusivamente ao Step 2 de justificativas.
+**Risco identificado / Anti-pattern:** Limitar o auto-matching estritamente a OSs com status `'em_aberto'`, deixando dezenas de transações de PIX e Cartão de clientes orfãs no Step 1.
+
+## [2026-09-01] — [Feature ID: 341]
+**Contexto:** Nova RPC atômica `create_and_link_manual_os` (Migration 16) para cadastro instantâneo de OS e baixa de pagamentos com garantia das formas de liquidação.
+**Regra aprendida:**
+1. **Atomicidade e Incremento de Saldos:** Ao criar uma nova OS on-the-fly a partir de um pagamento avulso, a RPC deve inserir o registro em `patio_os`, atribuir o valor à coluna específica (`pix_transfer_value`, `credit_value` ou `debit_value`), somar em `paid_value` e calcular `status = CASE WHEN paid_value >= (total_value - 0.05) THEN 'finalizada' ELSE 'pago_parcial' END`.
+2. **Idempotência por Filial:** Se o número da OS já existir na filial, a RPC reaproveita o registro em vez de duplicar, preservando a integridade das 10 lojas.
+**Risco identificado / Anti-pattern:** Inserir a OS via mutation direta de frontend sem atualizar `matched_os_number` no extrato bancário ou maquininha e sem registrar em `conciliation_matches`.
+
+## [2026-09-02] — [Feature ID: 349]
+**Contexto:** Blindagem contra erro de Check Constraint `daily_manual_bills_amount_check` e Foreign Keys na tabela `daily_manual_bills`.
+**Regra aprendida:**
+1. **Check Constraint `amount > 0` em `daily_manual_bills`:** A tabela `daily_manual_bills` rejeita categoricamente registros com `amount <= 0` ou nulos. Parsers e hooks de importação de Contas a Pagar (`BuscaContasAPagar.xls`) DEVEM filtrar estritamente `if (!amount || amount <= 0 || isNaN(amount)) continue;` antes de submeter lotes ao Supabase.
+2. **Sanitização de Foreign Keys (`store_id` e `intercompany_entity_id`):** O campo `store_id` referencia `stores(id)`. Se for `'master'` ou não pertencer ao cadastro ativo de `stores`, deve ser passado como `null` para evitar `23503 (violates foreign key constraint)`.
+3. **Resiliência em Chunks de Inserção:** Ao salvar em lotes de 100 itens via Supabase Client, caso ocorra qualquer erro imprevisto em um chunk, deve haver fallback linha a linha para persistir todas as contas válidas sem abortar a gravação inteira.
+**Risco identificado / Anti-pattern:** Inserir linhas de títulos cancelados ou estornos com valor 0.00 na tabela de contas a pagar, causando abortamento total do chunk de 100 itens.
+

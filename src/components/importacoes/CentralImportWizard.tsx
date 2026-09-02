@@ -14,8 +14,8 @@ import { Badge } from '@/components/ui/Badge';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { 
   UploadCloud, CheckCircle2, FileType2, Link as LinkIcon, ArrowRight, ArrowLeft, 
-  Database, Search, X, TrendingDown, TrendingUp, AlertCircle, CreditCard, FileText, 
-  Terminal, Sparkles, FileSpreadsheet, Layers, RefreshCcw, Loader2, Code2, Copy, Check, Lock, Unlock, Receipt
+  Database, Search, X, AlertCircle, CreditCard, FileText, 
+  Terminal, Sparkles, FileSpreadsheet, RefreshCcw, Loader2, Code2, Copy, Check, Lock, Unlock, Receipt
 } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
 import { useStoreFileMappings } from '@/hooks/useStoreFileMappings';
@@ -31,26 +31,23 @@ import { useNavigate } from '@tanstack/react-router';
 import { savePatioOsAndReceivables, ParsedReceivable } from '@/hooks/useImportProcessor';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useContasAPagarImport } from '@/hooks/useContasAPagarImport';
-import { useDiagnosticEngine } from '@/hooks/useDiagnosticEngine';
-import { DiagnosticPanel } from './DiagnosticPanel';
-import { MissingPatioOsEditor } from './MissingPatioOsEditor';
 import { useAiSettings } from '@/hooks/useAiSettings';
 import { reconcileRedeWithOfxViaGemini } from '@/lib/llm-matcher';
 import { Step1UnregisteredPayments } from './wizard/Step1UnregisteredPayments';
 import { Step2NonRevenueJustifications } from './wizard/Step2NonRevenueJustifications';
 import { Step3CashVaultDaniel } from './wizard/Step3CashVaultDaniel';
 import { Step4FinalAuditAndClose } from './wizard/Step4FinalAuditAndClose';
+import { convertOcrToOsImportResults } from '@/lib/parsers/ocrOsAdapter';
+import { useOcrOsProcessor, ExtractedOcrOsItem } from '@/hooks/useOcrOsProcessor';
+import { OcrBatchStoreCarryoverList, PendingPatioOsItem } from './OcrBatchStoreCarryoverList';
+import { OcrBatchDropzoneAndPaste } from './OcrBatchDropzoneAndPaste';
+import { OcrBatchProgressBar } from './OcrBatchProgressBar';
+import { OcrBatchReviewGrid } from './OcrBatchReviewGrid';
 import { executeAutoMatchingEngine, PendingUnmatchedTransaction } from '@/lib/matchers/autoMatchingEngine';
 import { executeExpenseAutoMatching } from '@/lib/expenseMatcher';
 import { useQueryClient } from '@tanstack/react-query';
-
-
-export interface ImportLogEntry {
-  id: string;
-  timestamp: string;
-  type: 'info' | 'success' | 'warning' | 'error';
-  message: string;
-}
+import { ImportExecutionTerminal, ImportLogEntry } from './ImportExecutionTerminal';
+import { ExecutionErrorBanner } from './ExecutionErrorBanner';
 
 export interface MissingPatioOsEdit {
   id: string;
@@ -89,7 +86,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const { saveBills } = useContasAPagarImport();
   const { data: aiSettings } = useAiSettings();
 
-  const [step, setStep] = useState<1 | 2 | 2.5 | 3 | 3.5 | 4 | 5 | 6 | 7 | 8>(1);
+  const [step, setStep] = useState<1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4 | 5 | 6 | 7 | 8>(1);
   const [subStep, setSubStep] = useState<1 | 2 | 3>(1);
   const [isPreparing, setIsPreparing] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -114,7 +111,29 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   
   // Manual inputs globais
   const [manualDinheiroMp, setManualDinheiroMp] = useState<number>(0);
+  const [isDinheiroMpUserEdited, setIsDinheiroMpUserEdited] = useState<boolean>(false);
   const [manualAReceber, setManualAReceber] = useState<number>(0);
+
+  // Encadeamento do Fechamento Anterior
+  const { data: previousSnapshot } = usePreviousDaySnapshot(targetDate);
+  const previousOdometro = useMemo(() => {
+    if (!previousSnapshot) return 0;
+    const meta = (previousSnapshot.metadata as any) || {};
+    return Number(meta.odometro_hoje ?? meta.faturamento_anterior ?? meta.odometro_anterior ?? previousSnapshot.faturamento ?? 0);
+  }, [previousSnapshot]);
+
+  const previousDinheiroMp = useMemo(() => {
+    if (!previousSnapshot) return 0;
+    return Number(previousSnapshot.dinheiro_mp || 0);
+  }, [previousSnapshot]);
+
+  // Ingestão OCR Embutida (Step 1.5)
+  const { isProcessing: isOcrProcessing, progress: ocrProgress, processBatchQueue: processOcrBatchQueue } = useOcrOsProcessor();
+  const [pendingOcrOsList, setPendingOcrOsList] = useState<PendingPatioOsItem[]>([]);
+  const [extraOcrOsList, setExtraOcrOsList] = useState<PendingPatioOsItem[]>([]);
+  const [selectedOcrStoreId, setSelectedOcrStoreId] = useState<string>('ALL');
+  const [extractedOcrItems, setExtractedOcrItems] = useState<ExtractedOcrOsItem[]>([]);
+  const [isOcrInjecting, setIsOcrInjecting] = useState<boolean>(false);
 
   // Motor de Auto-Match em Memória (alimenta o Step 4)
   const [unmatchedTransactions, setUnmatchedTransactions] = useState<PendingUnmatchedTransaction[]>([]);
@@ -124,6 +143,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   // OSs ausentes / órfãs detectadas para ajuste manual livre
   const [missingOsList, setMissingOsList] = useState<MissingPatioOsEdit[]>([]);
   const [isLoadingMissingOs, setIsLoadingMissingOs] = useState(false);
+  const [isOcrModalOpen, setIsOcrModalOpen] = useState(false);
 
   const updateMissingOs = (id: string, field: 'total_value' | 'paid_value' | 'status', value: any) => {
     setMissingOsList(prev => prev.map(item => {
@@ -139,7 +159,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   // Detecção de OSs ativas no banco que não vieram no relatório importado do mês
   useEffect(() => {
     async function detectMissingOs() {
-      if (step !== 3 && step !== 4) return;
+      if (step !== 3) return;
 
       const mappedStoreIds = Object.values(mapping).filter(id => id && id !== 'GLOBAL');
       if (mappedStoreIds.length === 0) return;
@@ -211,22 +231,31 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           .eq('date', targetDate)
           .maybeSingle();
 
-        if (snap) {
-          if (snap.dinheiro_mp) setManualDinheiroMp(Number(snap.dinheiro_mp));
-          if (snap.a_receber_manual) setManualAReceber(Number(snap.a_receber_manual));
+        if (snap && snap.dinheiro_mp !== null && snap.dinheiro_mp !== undefined && Number(snap.dinheiro_mp) > 0) {
+          if (!isDinheiroMpUserEdited) {
+            setManualDinheiroMp(Number(snap.dinheiro_mp));
+          }
+        } else if (previousSnapshot?.dinheiro_mp !== undefined && previousSnapshot?.dinheiro_mp !== null) {
+          if (!isDinheiroMpUserEdited) {
+            setManualDinheiroMp(Number(previousSnapshot.dinheiro_mp));
+          }
         }
 
-        // Se a_receber_manual for 0, busca soma dos recebíveis pendentes cadastrados
-        const { data: recs } = await supabase
-          .from('receivables')
-          .select('value')
-          .lte('date', targetDate)
-          .eq('status', 'pendente');
+        if (snap && snap.a_receber_manual) {
+          setManualAReceber(Number(snap.a_receber_manual));
+        } else {
+          // Se a_receber_manual for 0, busca soma dos recebíveis pendentes cadastrados
+          const { data: recs } = await supabase
+            .from('receivables')
+            .select('value')
+            .lte('date', targetDate)
+            .eq('status', 'pendente');
 
-        if (recs && recs.length > 0) {
-          const totalRec = recs.reduce((acc, r) => acc + Number(r.value || 0), 0);
-          if (totalRec > 0) {
-            setManualAReceber(Number(totalRec.toFixed(2)));
+          if (recs && recs.length > 0) {
+            const totalRec = recs.reduce((acc, r) => acc + Number(r.value || 0), 0);
+            if (totalRec > 0) {
+              setManualAReceber(Number(totalRec.toFixed(2)));
+            }
           }
         }
       } catch (err) {
@@ -235,7 +264,127 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     }
 
     loadDefaultsForDate();
-  }, [targetDate]);
+  }, [targetDate, previousSnapshot, isDinheiroMpUserEdited]);
+
+  // Carrega lista de OSs pendentes do pátio para o Step 1.5 (Guia de Missão OCR)
+  useEffect(() => {
+    if (step !== 1.5) return;
+    async function fetchOcrPendingPatio() {
+      try {
+        const { data, error } = await supabase.rpc('get_pending_patio_os_for_ocr', {
+          p_target_date: targetDate || new Date().toISOString().split('T')[0]
+        });
+        if (!error && data) {
+          setPendingOcrOsList(data as PendingPatioOsItem[]);
+        }
+      } catch (e) {
+        console.warn('Erro ao carregar OSs pendentes para OCR:', e);
+      }
+    }
+    fetchOcrPendingPatio();
+  }, [step, targetDate]);
+
+  const handleStartOcrProcessing = async (images: Array<{ id: string; base64: string; name: string }>) => {
+    const itemsToProcess = images.map(img => ({
+      ...img,
+      storeId: selectedOcrStoreId !== 'ALL' ? selectedOcrStoreId : undefined,
+    }));
+    const extracted = await processOcrBatchQueue(itemsToProcess, stores, { batchSize: 2, delayMs: 1500 });
+    setExtractedOcrItems(prev => [...prev, ...extracted]);
+    if (extracted.length > 0) {
+      toast.success(`${extracted.length} print(s) extraído(s) com sucesso pelo Mistral Vision!`);
+    }
+  };
+
+  const handleAddExtraOcrOs = (storeId: string, osData: Partial<PendingPatioOsItem>) => {
+    const newExtra: PendingPatioOsItem = {
+      id: `extra-${Date.now()}-${osData.os_number}`,
+      os_number: String(osData.os_number || '').trim(),
+      store_id: storeId,
+      store_name: osData.store_name || stores.find(s => s.id === storeId)?.name || 'Filial',
+      client_name: osData.client_name || 'Cliente Avulso',
+      plate: (osData.plate || 'S/ Placa').toUpperCase(),
+      total_value: Number(osData.total_value) || 0,
+      paid_value: 0,
+      pending_value: Number(osData.total_value) || 0,
+      days_open: 1,
+      opened_at: targetDate,
+      status: 'em_aberto',
+      isExtraManual: true
+    };
+    setExtraOcrOsList(prev => [...prev, newExtra]);
+    toast.success(`OS #${newExtra.os_number} adicionada ao checklist!`);
+  };
+
+  const handleChangeOcrItem = (id: string, field: keyof ExtractedOcrOsItem, value: any) => {
+    setExtractedOcrItems(prev =>
+      prev.map(item => (item.id === id ? { ...item, [field]: value } : item))
+    );
+  };
+
+  const handleDeleteOcrItem = (id: string) => {
+    setExtractedOcrItems(prev => prev.filter(item => item.id !== id));
+  };
+
+  const handleSaveAndAdvanceOcr = async () => {
+    if (extractedOcrItems.length === 0) {
+      toast.error('Nenhum print de OS foi extraído ainda.');
+      return;
+    }
+    setIsOcrInjecting(true);
+    try {
+      // 1. Converter itens OCR em OsImportResult[]
+      const convertedOsFiles = convertOcrToOsImportResults(extractedOcrItems, stores, targetDate);
+      
+      // 2. Persistir IMEDIATAMENTE no banco (patio_os, receivables, store_cash_vault) de forma atômica e resiliente
+      for (const file of convertedOsFiles) {
+        const storeObj = stores.find(s => s.name === file.storeAlias || s.id === file.storeAlias);
+        const storeId = storeObj ? storeObj.id : file.storeAlias;
+        const storeName = storeObj ? storeObj.name : file.storeAlias;
+
+        if (storeId && file.osArray.length > 0) {
+          await savePatioOsAndReceivables(storeId, storeName, file.osArray, file.receivablesArray || [], targetDate);
+        }
+      }
+
+      // 3. Dispara auto-pareamento bancário pós-ingestão em background
+      try {
+        await supabase.rpc('auto_match_daily_transactions', { p_date: targetDate });
+      } catch (matchErr) {
+        console.warn('Auto match pós OCR:', matchErr);
+      }
+
+      // 4. Injetar no estado de results do Wizard de forma não destrutiva
+      setResults(prev => ({
+        ...prev,
+        osFiles: convertedOsFiles
+      }));
+
+      // 5. Auto-mapear as lojas das OSs extraídas
+      convertedOsFiles.forEach(file => {
+        const storeObj = stores.find(s => s.name === file.storeAlias || s.id === file.storeAlias);
+        if (storeObj) {
+          updateMapping(file.storeAlias, storeObj.id, storeObj.name);
+        }
+      });
+
+      toast.success(`✅ ${extractedOcrItems.length} OS(s) do OCR salvas no banco de dados e integradas na esteira!`);
+
+      // 6. Se houver outros arquivos (OFX/Rede) com aliases não mapeados, vai pro Step 2; senão vai pro Step 3
+      const hasUnmappedOfx = results.ofxResults.some(o => !mapping[o.alias]);
+      const hasUnmappedRede = results.redeResults.some(r => r.transactions.some(t => !mapping[t.storeName]));
+
+      if (hasUnmappedOfx || hasUnmappedRede) {
+        setStep(2);
+      } else {
+        setStep(3);
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Erro ao persistir e integrar OSs do OCR.');
+    } finally {
+      setIsOcrInjecting(false);
+    }
+  };
 
   // Terminal logs state
   const [importLogs, setImportLogs] = useState<ImportLogEntry[]>([]);
@@ -251,14 +400,6 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const [isManualLocked, setIsManualLocked] = useState<boolean>(true);
   const [copiedJson, setCopiedJson] = useState(false);
   const [autoHealingData, setAutoHealingData] = useState<any>(null);
-
-  // Encadeamento do Fechamento Anterior
-  const { data: previousSnapshot } = usePreviousDaySnapshot(targetDate);
-  const previousOdometro = useMemo(() => {
-    if (!previousSnapshot) return 0;
-    const meta = (previousSnapshot.metadata as any) || {};
-    return Number(meta.odometro_hoje ?? meta.faturamento_anterior ?? meta.odometro_anterior ?? previousSnapshot.faturamento ?? 0);
-  }, [previousSnapshot]);
 
   const deltaFaturamentoCalculado = useMemo(() => {
     if (!odometroHoje) return 0;
@@ -297,18 +438,6 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       return acc + r.transactions.reduce((sum, t) => sum + (t.interest || 0), 0);
     }, 0);
   }, [results.redeResults]);
-
-  const { diagnostic, isLoading: isLoadingDiagnostic, refetchHistory } = useDiagnosticEngine({
-    step,
-    targetDate,
-    isLoadingMissingOs,
-    totalOfxIn: computedTotalOfxIn,
-    totalPatioEstoqueGlobal: computedTotalPatioEstoque,
-    manualDinheiroMp,
-    manualAReceber,
-    contasManual,
-    jurosRedeTotal: computedJurosRede
-  });
 
   // Sincroniza automaticamente o valor de Contas a Pagar quando importado analiticamente
   useEffect(() => {
@@ -445,16 +574,34 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     });
   };
 
-  const addLog = (message: string, type: 'info' | 'success' | 'warning' | 'error' = 'info') => {
+  const addLog = (
+    message: string, 
+    type: 'info' | 'success' | 'warning' | 'error' = 'info',
+    meta?: { source?: ImportLogEntry['source']; error?: any; details?: any }
+  ) => {
     const timestamp = new Date().toLocaleTimeString('pt-BR');
-    setImportLogs(prev => [...prev, { id: crypto.randomUUID(), timestamp, type, message }]);
-  };
-
-  useEffect(() => {
-    if (logsEndRef.current) {
-      logsEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    let structuredError: any;
+    if (meta?.error) {
+      structuredError = {
+        code: meta.error.code || meta.error.status || undefined,
+        message: meta.error.message || String(meta.error),
+        details: meta.error.details || undefined,
+        hint: meta.error.hint || undefined,
+        stack: meta.error.stack || undefined,
+        payload: meta.details
+      };
     }
-  }, [importLogs]);
+
+    setImportLogs(prev => [...prev, { 
+      id: crypto.randomUUID(), 
+      timestamp, 
+      type, 
+      message,
+      source: meta?.source,
+      error: structuredError,
+      details: meta?.details
+    }]);
+  };
 
   useEffect(() => {
     const checkSnapshots = async () => {
@@ -487,6 +634,15 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     const parsedResults = await processFiles(acceptedFiles, { sessionId: newSessionId });
     
     if (parsedResults) {
+      // Auto-Detecção: Se não há planilha de OSs (virada de pátio), avança direto para o Step 1.5 (OCR)
+      const hasOsFiles = parsedResults.osFiles && parsedResults.osFiles.filter(r => r.success).length > 0;
+      
+      if (!hasOsFiles) {
+        toast.info('Nenhuma planilha .xls de OS detectada (Virada de Pátio). Avançando automaticamente para Ingestão OCR...', { duration: 4000 });
+        setStep(1.5);
+        return;
+      }
+
       const aliases = new Set<string>();
       parsedResults.osFiles.filter(r => r.success).forEach(r => aliases.add(r.storeAlias));
       parsedResults.maquininhaItems.forEach(i => aliases.add(i.storeName));
@@ -546,54 +702,73 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
     const unmatched: PendingUnmatchedTransaction[] = [];
 
-    // 1. OFX PIX / Depósitos sem OS
-    const { data: ofxTxs } = await supabase
-      .from('ofx_transactions')
-      .select('id, store_id, amount, target_date, occurred_at, title, counterpart_name, type')
-      .eq('target_date', tDate)
-      .eq('type', 'in')
-      .is('matched_os_number', null);
+    try {
+      // 1. OFX PIX / Depósitos sem OS (Filtro Estrito por target_date)
+      const { data: ofxTxs, error: ofxErr } = await supabase
+        .from('ofx_transactions')
+        .select('id, store_id, amount, target_date, occurred_at, bank_name, counterpart_name, type, manual_category')
+        .eq('target_date', tDate)
+        .eq('type', 'in')
+        .is('matched_os_number', null);
 
-    (ofxTxs || []).forEach((t: any) => {
-      const titleStr = String(t.title || '').toUpperCase();
-      if (titleStr.includes('REDE') || titleStr.includes('CIELO') || titleStr.includes('STONE') || titleStr.includes('PAGSEGURO')) {
-        return;
-      }
-      const sid = t.store_id || '';
-      unmatched.push({
-        id: t.id,
-        source: 'ofx_pix',
-        storeId: sid,
-        storeName: storeNameMap.get(sid) || 'Filial',
-        date: t.target_date || tDate,
-        description: t.counterpart_name || t.title || 'Depósito Bancário / PIX',
-        paymentMethod: 'PIX',
-        amount: Math.abs(Number(t.amount || 0)),
-        status: 'pendente'
+      if (ofxErr) console.warn('Erro ao consultar ofx_transactions pendentes:', ofxErr);
+
+      (ofxTxs || []).forEach((t: any) => {
+        // Se já possui categoria corporativa (Empréstimo, Seguros, Transferência, Rendimento), vai para o Step 2
+        if (t.manual_category && t.manual_category !== 'PIX / Recebimento OS') {
+          return;
+        }
+
+        const desc = `${t.counterpart_name || ''} ${t.bank_name || ''}`.toUpperCase();
+        if (desc.includes('REDE') || desc.includes('CIELO') || desc.includes('STONE') || desc.includes('PAGSEGURO') || desc.includes('REND') || desc.includes('APLIC') || desc.includes('EMPREST') || desc.includes('CAPITAL DE GIRO') || desc.includes('SEGURO') || desc.includes('EMPORIO DO OLEO')) {
+          return;
+        }
+        const sid = t.store_id || '';
+        unmatched.push({
+          id: t.id,
+          source: 'ofx_pix',
+          storeId: sid,
+          storeName: storeNameMap.get(sid) || 'Filial',
+          date: t.target_date || tDate,
+          description: t.counterpart_name || t.bank_name || 'Depósito Bancário / PIX',
+          paymentMethod: 'PIX',
+          amount: Math.abs(Number(t.amount || 0)),
+          status: 'pendente'
+        });
       });
-    });
 
-    // 2. Transações REDE sem OS
-    const { data: posTxs } = await supabase
-      .from('pos_transactions')
-      .select('id, store_id, net_amount, gross_amount, fee_amount, target_date, occurred_at, payment_method, machine_name, dedup_hash, transaction_type')
-      .eq('target_date', tDate)
-      .is('matched_os_number', null);
+      // 2. Transações REDE sem OS (Filtro Estrito por target_date)
+      const { data: posTxs, error: posErr } = await supabase
+        .from('pos_transactions')
+        .select('id, store_id, net_amount, gross_amount, target_date, occurred_at, payment_method, machine_name')
+        .eq('target_date', tDate)
+        .is('matched_os_number', null);
 
-    (posTxs || []).forEach((t: any) => {
-      const sid = t.store_id || '';
-      unmatched.push({
-        id: t.id,
-        source: 'rede',
-        storeId: sid,
-        storeName: storeNameMap.get(sid) || 'Filial',
-        date: t.target_date || tDate,
-        description: `${t.machine_name || 'Maquininha'} - ${t.payment_method || 'Cartão'}`.trim(),
-        paymentMethod: t.payment_method || 'CARTAO',
-        amount: Math.abs(Number(t.net_amount || t.gross_amount || 0)),
-        status: 'pendente'
+      if (posErr) console.warn('Erro ao consultar pos_transactions pendentes:', posErr);
+
+      (posTxs || []).forEach((t: any) => {
+        const sid = t.store_id || '';
+        unmatched.push({
+          id: t.id,
+          source: 'rede',
+          storeId: sid,
+          storeName: storeNameMap.get(sid) || 'Filial',
+          date: t.target_date || tDate,
+          description: t.machine_name || `Venda Cartão ${t.payment_method || 'REDE'}`.trim(),
+          paymentMethod: t.payment_method || 'CARTAO',
+          amount: Math.abs(Number(t.net_amount || t.gross_amount || 0)),
+          status: 'pendente'
+        });
       });
-    });
+    } catch (err) {
+      console.warn('Erro no fetchRealUnmatchedTransactions DB, usando fallback em memória:', err);
+    }
+
+    // Fallback inteligente para o motor de match em memória caso o DB ainda não tenha indexado
+    if (unmatched.length === 0 && results) {
+      const memoryMatch = executeAutoMatchingEngine(results, mapping, stores, tDate);
+      return memoryMatch.unmatchedTransactions;
+    }
 
     return unmatched;
   };
@@ -745,7 +920,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       // 2. Transações e OFX
       const ofxCount = results.ofxResults.reduce((acc, curr) => acc + curr.transactions.length, 0);
       updateStage(2, 'running', `Conciliando OFX (${ofxCount} lançamentos)...`);
-      addLog(`ðŸ ¦ Conciliando Extratos OFX (${ofxCount} lançamentos bancários)...`, "info");
+      addLog(`🏦 Conciliando Extratos OFX (${ofxCount} lançamentos bancários)...`, "info", { source: 'ofx' });
 
       const validAmounts = new Set<number>();
       results.osFiles.filter(r => r.success).forEach(r => r.osArray.forEach(os => {
@@ -813,8 +988,6 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             amount: item.netAmount || 0,
             gross_amount: item.grossAmount || item.netAmount || 0,
             fee_amount: item.interest || 0,
-            payment_method: item.method || 'Cartão',
-            transaction_type: item.transactionType || 'venda',
             type: 'in',
             occurred_at: item.date || `${targetDate}T12:00:00Z`,
             target_date: targetDate,
@@ -930,14 +1103,14 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
       updateStage(2, 'success', 'Extratos processados!');
       updateStage(3, 'running', `Gravando batch de ${txsToInsert.length} transações...`);
-      addLog(`âš™ï¸  Gravando batch de ${txsToInsert.length} transações no banco...`, "info");
+      addLog(`⚙️ Gravando batch de ${txsToInsert.length} transações no banco...`, "info", { source: 'database' });
       const batch = await createImportBatch({ target_date: targetDate });
       
       await saveTransactions({ transactions: txsToInsert, storeBankBalances, storePreviousBalances, import_batch_id: batch.id } as any);
-      addLog("âœ… Transações do extrato e adquirente salvas com sucesso!", "success");
+      addLog("✅ Transações do extrato e adquirente salvas com sucesso!", "success", { source: 'database' });
 
       if (matchesToInsert.length > 0) {
-        addLog(`ðŸ”— Vinculando ${matchesToInsert.length} pares perfeitos de conciliação...`, "info");
+        addLog(`🔗 Vinculando ${matchesToInsert.length} pares perfeitos de conciliação...`, "info", { source: 'database' });
         
         try {
           // 1. Coletar fitids para consultar o DB
@@ -997,25 +1170,25 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           }));
 
           await insertConciliationMatches(sanitizedMatches);
-          addLog("âœ… Pares de conciliação salvos com sucesso!", "success");
+          addLog("✅ Pares de conciliação salvos com sucesso!", "success", { source: 'database' });
         } catch (matchErr: any) {
           console.warn("Aviso ao salvar pares de conciliação:", matchErr);
-          addLog(`âš ï¸ Pares de conciliação salvos parcialmente (transações garantidas no banco).`, "warning");
+          addLog(`⚠️ Pares de conciliação salvos parcialmente (transações garantidas no banco).`, "warning", { source: 'database', error: matchErr });
         }
       }
 
       if (manualOsMatches.length > 0) {
-        addLog(`🔧 Dando baixa em ${manualOsMatches.length} OSs do Estoque Passivo...`, "info");
+        addLog(`🔧 Dando baixa em ${manualOsMatches.length} OSs do Estoque Passivo...`, "info", { source: 'patio' });
         try {
           const osIds = manualOsMatches.map(m => m.osId);
           await supabase
             .from('estoque_os_pendente')
             .update({ status: 'PAGA', data_baixa: new Date().toISOString() })
             .in('id', osIds);
-          addLog("✅ OSs do passivo baixadas com sucesso!", "success");
+          addLog("✅ OSs do passivo baixadas com sucesso!", "success", { source: 'patio' });
         } catch (err: any) {
           console.error("Erro ao baixar OS passiva", err);
-          addLog("⚠️ Erro ao dar baixa em OSs do passivo.", "warning");
+          addLog("⚠️ Erro ao dar baixa em OSs do passivo.", "warning", { source: 'patio', error: err });
         }
       }
 
@@ -1028,7 +1201,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         );
 
         if (modifiedMissing.length > 0) {
-          addLog(`🔧 Atualizando ${modifiedMissing.length} OSs ausentes editadas pelo operador...`, "info");
+          addLog(`🔧 Atualizando ${modifiedMissing.length} OSs ausentes editadas pelo operador...`, "info", { source: 'patio' });
           for (const item of modifiedMissing) {
             try {
               await supabase
@@ -1045,7 +1218,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
               console.warn("Erro ao atualizar OS ausente:", err);
             }
           }
-          addLog("✅ OSs ausentes atualizadas com sucesso no banco!", "success");
+          addLog("✅ OSs ausentes atualizadas com sucesso no banco!", "success", { source: 'patio' });
 
           // Re-sincroniza o snapshot do pátio e reconciliações com as alterações manuais
           const { data: updatedPatio } = await supabase
@@ -1086,7 +1259,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       }
 
       // Log de Importação
-      addLog("ðŸ“ Atualizando histórico de importação (import_logs)...", "info");
+      addLog("📋 Atualizando histórico de importação (import_logs)...", "info", { source: 'system' });
       
       const logsByStore = new Map<string, any>();
       
@@ -1278,14 +1451,14 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
       // Salvar Lotes Analíticos de Contas a Pagar
       if (results.contasPagarResults && results.contasPagarResults.length > 0) {
-        addLog(`📑 Salvando ${results.contasPagarResults.length} lote(s) de Contas a Pagar no banco...`, "info");
+        addLog(`📑 Salvando ${results.contasPagarResults.length} lote(s) de Contas a Pagar no banco...`, "info", { source: 'contas' });
         for (const cResult of results.contasPagarResults) {
           try {
             await saveBills({ parseResult: cResult, targetDate });
-            addLog(`✅ ${cResult.totalBills} contas salvas com sucesso! Total: R$ ${cResult.totalAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, "success");
+            addLog(`✅ ${cResult.totalBills} contas salvas com sucesso! Total: R$ ${cResult.totalAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, "success", { source: 'contas' });
           } catch (cErr: any) {
             console.warn("Erro ao salvar contas a pagar:", cErr);
-            addLog(`⚠️ Falha ao salvar contas a pagar: ${cErr.message}`, "warning");
+            addLog(`⚠️ Falha ao salvar contas a pagar: ${cErr.message}`, "warning", { source: 'contas', error: cErr });
           }
         }
       }
@@ -1363,35 +1536,21 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         addLog("Aviso: Falha ao gravar fechamento do dia.", "warning");
       }
 
-      addLog("Pareando transações importadas com Ordens de Serviço em aberto...", "info");
+      addLog("🤖 Pareando Vendas Rede, PIX e Contas a Pagar com OSs em aberto por loja...", "info");
       try {
-        const { data: matchData, error: matchErr } = await supabase.rpc('auto_match_transactions', { p_date: targetDate });
+        const { data: matchData, error: matchErr } = await supabase.rpc('auto_match_daily_transactions', { p_date: targetDate });
         if (matchErr) {
-          console.warn("auto_match_transactions retornou erro (nao critico):", matchErr);
-          addLog(`Pareamento automatico parcial: ${matchErr.message}`, "warning");
+          console.warn("auto_match_daily_transactions retornou erro (não crítico):", matchErr);
+          addLog(`Pareamento automático parcial: ${matchErr.message}`, "warning");
         } else {
-          const osCount = (matchData as any)?.matched_os_count || 0;
-          const redeCount = (matchData as any)?.matched_rede_count || 0;
-          addLog(`🤖 Pareamento inteligente concluído: ${osCount} OS(s) em aberto quitadas/conciliadas e ${redeCount} lote(s) de cartão vinculados!`, "success");
+          const posCount = (matchData as any)?.matched_pos_count || 0;
+          const pixCount = (matchData as any)?.matched_pix_count || 0;
+          const saidasCount = (matchData as any)?.saidas_result?.matched_saidas_count || 0;
+          addLog(`🤖 Pareamento Inteligente Concluído: ${posCount} Venda(s) REDE e ${pixCount} PIX casados com OSs em pátio! (${saidasCount} despesas conciliadas)`, "success");
         }
       } catch (rpcErr: any) {
-        console.warn("Erro ao chamar auto_match_transactions:", rpcErr);
-        addLog("Pareamento automatico falhou mas dados foram salvos.", "warning");
-      }
-
-      addLog("📑 Pareando débitos bancários com Contas a Pagar importadas...", "info");
-      try {
-        const { data: saidasData, error: saidasErr } = await supabase.rpc('auto_match_saidas', { p_date: targetDate });
-        if (saidasErr) {
-          console.warn("auto_match_saidas retornou erro (nao critico):", saidasErr);
-          addLog(`Pareamento de saídas parcial: ${saidasErr.message}`, "warning");
-        } else {
-          const matchedSaidas = (saidasData as any)?.matched_saidas_count || 0;
-          addLog(`🤖 Pareamento de saídas concluído: ${matchedSaidas} débito(s) bancário(s) vinculados a contas a pagar!`, "success");
-        }
-      } catch (saidasRpcErr: any) {
-        console.warn("Erro ao chamar auto_match_saidas:", saidasRpcErr);
-        addLog("Pareamento de saídas falhou mas dados foram salvos.", "warning");
+        console.warn("Erro ao chamar auto_match_daily_transactions:", rpcErr);
+        addLog("Pareamento automático finalizado com observações.", "warning");
       }
 
       // 4.1. Auditoria Inteligente de Cartões & Banco via Google Gemini
@@ -1464,8 +1623,8 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           provisao: 0,
           saldo_negativo_itau: saldoNegativoItau,
           juros_rede: jurosRedeTotal,
-          is_closed: true,
-          closed_at: new Date().toISOString(),
+          is_closed: advanceToWizard ? false : true,
+          closed_at: advanceToWizard ? null : new Date().toISOString(),
           updated_at: new Date().toISOString(),
           metadata: {
             caixa_atual: caixaAtualCalculado,
@@ -1486,7 +1645,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             a_receber_manual: manualAReceber,
             total_patio: veiculosPatioValor,
             status_geral: Math.abs(diferencaCalculada) <= 50 ? 'approved' : 'divergent',
-            is_closed: true,
+            is_closed: advanceToWizard ? false : true,
           }
         };
         await supabase.from('daily_snapshots').upsert(payload, { onConflict: 'date' });
@@ -1543,19 +1702,31 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         status: s.id === 'auto_healing' ? s.status : 'success', 
         subSteps: s.subSteps.map(sub => ({ ...sub, status: 'success' })) 
       })));
-      setSaveFinished(true);
 
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ['pending-ofx-outflows', targetDate] }),
-        queryClient.invalidateQueries({ queryKey: ['pending-ofx-inflows', targetDate] }),
-        queryClient.invalidateQueries({ queryKey: ['open-bills-for-step2', targetDate] }),
-        queryClient.invalidateQueries({ queryKey: ['daily-manual-bills'] }),
-        queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
-        queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] }),
-        queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] }),
-        queryClient.invalidateQueries({ queryKey: ['dashboard-v2'] }),
-      ]);
-      toast.success('🎉 100% das transações e OSs foram conciliadas e gravadas no banco!');
+      if (advanceToWizard) {
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ['pending-ofx-outflows', targetDate] }),
+          queryClient.invalidateQueries({ queryKey: ['pending-ofx-inflows', targetDate] }),
+          queryClient.invalidateQueries({ queryKey: ['open-bills-for-step2', targetDate] }),
+          queryClient.invalidateQueries({ queryKey: ['daily-manual-bills'] }),
+          queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
+        ]);
+        await Promise.all([
+          queryClient.refetchQueries({ queryKey: ['pending-ofx-outflows', targetDate] }),
+          queryClient.refetchQueries({ queryKey: ['pending-ofx-inflows', targetDate] }),
+          queryClient.refetchQueries({ queryKey: ['open-bills-for-step2', targetDate] }),
+        ]);
+        const realUnmatched = await fetchRealUnmatchedTransactions(targetDate);
+        setUnmatchedTransactions(realUnmatched);
+        if (realUnmatched.length > 0) {
+          toast.info(`Automações e IA concluídas! ${realUnmatched.length} transação(ões) pendentes para revisão manual.`);
+        } else {
+          toast.success('🎉 100% das transações e OSs foram conciliadas automaticamente pelo motor e IA!');
+        }
+        setStep(4);
+      } else {
+        setSaveFinished(true);
+      }
     } catch(e: any) {
       console.error(e);
       setImportStages(prev => prev.map(s => s.status === 'running' ? { ...s, status: 'error' } : s));
@@ -1566,8 +1737,36 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   };
 
   const handleFinalizeClosing = async () => {
-    // Executa a gravação completa atômica de todos os dados auditados no Step 8
-    await handleConfirm(false);
+    setIsSaving(true);
+    try {
+      addLog("🔒 Homologando e selando fechamento definitivo do dia...", "info");
+      const { data, error } = await supabase.rpc('close_daily_snapshot', {
+        p_date: targetDate,
+        p_notes: 'Fechamento homologado via Central de Conciliação',
+        p_metadata: {
+          odometro_hoje: odometroHoje || 0,
+          manual_dinheiro_mp: manualDinheiroMp || 0,
+          manual_a_receber: manualAReceber || 0,
+        }
+      });
+
+      if (error) throw error;
+
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] }),
+        queryClient.invalidateQueries({ queryKey: ['dashboard-v2'] }),
+      ]);
+
+      toast.success('🎉 Fechamento homologado e snapshot selado com sucesso!');
+      navigate({ to: '/conciliacao' });
+    } catch (err: any) {
+      console.error(err);
+      toast.error(`Erro ao finalizar fechamento: ${err.message || 'Falha no banco'}`);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Totais (Com Filtro Estrito para Preview)
@@ -1619,40 +1818,97 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const totalOfxOut = allOfxTx.filter(t => t.type === 'out').reduce((a,b) => a + b.amount, 0);
   const totalOfxIn = allOfxTx.filter(t => t.type === 'in').reduce((a,b) => a + b.amount, 0);
 
+  const WIZARD_PHASES = [
+    { id: 1, name: 'Upload Global', desc: 'OFX, Rede, OS, Contas', stepTarget: 1, matches: (s: number) => s === 1 || s === 1.5 },
+    { id: 2, name: 'Mapeamento & Preview', desc: 'Lojas e Inputs Manuais', stepTarget: 3, matches: (s: number) => s === 2 || s === 2.5 || s === 3 || s === 3.5 || (s === 8 && isSaving) },
+    { id: 3, name: 'Pagamentos sem OS', desc: 'Vínculo Rede e PIX', stepTarget: 4, matches: (s: number) => s === 4 },
+    { id: 4, name: 'Justificativas', desc: 'Entradas e Saídas', stepTarget: 5, matches: (s: number) => s === 5 },
+    { id: 5, name: 'Cofre & Fechamento', desc: 'Auditoria 5 Pilares', stepTarget: 6, matches: (s: number) => s === 6 || s === 7 || (s === 8 && saveFinished) },
+  ];
+
+  const currentPhaseIndex = WIZARD_PHASES.findIndex(p => p.matches(step));
+
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="flex items-center gap-4 mb-8">
-        <button onClick={onCancel} className="p-2 hover:bg-[var(--bg-surface-hover)] rounded-full transition-colors text-[var(--text-secondary)]">
-          <ArrowLeft size={20} />
-        </button>
-        <div>
-          <h2 className="text-2xl font-display font-bold text-[var(--text-primary)]">Central de Importação</h2>
-          <p className="text-sm text-[var(--text-secondary)]">Importe OSs do Pátio, Vendas da Maquininha (Rede) e Extratos Bancários (OFX).</p>
+    <div className="space-y-6 animate-in fade-in duration-500">
+      {/* Cabeçalho Principal */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={onCancel} 
+            className="p-2 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 rounded-xl transition-colors text-zinc-400 hover:text-zinc-100"
+            title="Voltar ao início"
+          >
+            <ArrowLeft size={18} />
+          </button>
+          <div>
+            <h2 className="text-xl font-bold text-zinc-100 flex items-center gap-2">
+              Central de Importação e Conciliação
+            </h2>
+            <p className="text-xs text-zinc-400">
+              Ingestão de OSs do Pátio, Vendas da Rede, Contas a Pagar e Extratos Bancários (OFX).
+            </p>
+          </div>
         </div>
+
         {import.meta.env.DEV && (
           <button 
             onClick={handleDevAutoLoad} 
-            className="ml-auto flex items-center gap-2 px-4 py-2 bg-[var(--bg-surface-elevated)] border border-[var(--color-primary)] text-[var(--color-primary)] rounded-full hover:bg-[var(--color-primary)] hover:text-white transition-colors text-sm font-semibold shadow-sm"
+            className="flex items-center gap-2 px-3.5 py-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-xl hover:bg-emerald-500/20 transition-all text-xs font-semibold shadow-sm"
           >
-            <Sparkles size={16} />
+            <Sparkles size={14} />
             Auto-Load Mocks
           </button>
         )}
       </div>
 
-      {/* Header com indicador limpo de etapa */}
-      <div className="flex items-center justify-between mb-6 pb-2 border-b border-[var(--border-subtle)]">
-        <div className="flex items-center gap-2">
-          <Badge variant="outline" className="text-[11px] font-semibold text-[var(--color-primary)] border-[var(--color-primary)]/30 bg-[var(--color-primary)]/10 px-3 py-1">
-            {step === 1 ? '1. Upload de Arquivos' :
-             step === 2 ? '2. Mapeamento de Filiais' :
-             step === 3 ? '3. Conferência e Preview Geral' :
-             step === 4 ? '4. Vínculo de Pagamentos na OS (Tela A)' :
-             step === 5 ? '5. Justificativas por Loja (Tela B)' :
-             step === 6 ? '6. Conferência de Cofre do Daniel (Tela C)' :
-             step === 7 ? '7. Auditoria dos 5 Pilares (Tela D)' :
-             '8. Importação Concluída'}
-          </Badge>
+      {/* STEPPER SUPERIOR UNIFICADO DE 5 FASES */}
+      <div className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-2.5 sm:p-3.5">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+          {WIZARD_PHASES.map((phase, idx) => {
+            const isActive = phase.matches(step);
+            const isCompleted = currentPhaseIndex > idx;
+            const isClickable = isCompleted || isActive;
+
+            return (
+              <button
+                key={phase.id}
+                type="button"
+                disabled={!isClickable}
+                onClick={() => {
+                  if (isCompleted) {
+                    setStep(phase.stepTarget as any);
+                  }
+                }}
+                className={`flex items-center gap-2.5 p-2 rounded-xl text-left transition-all ${
+                  isActive 
+                    ? 'bg-zinc-800/90 border border-emerald-500/40 shadow-sm shadow-emerald-950/40' 
+                    : isCompleted 
+                    ? 'hover:bg-zinc-800/50 cursor-pointer border border-transparent' 
+                    : 'opacity-40 cursor-not-allowed border border-transparent'
+                }`}
+              >
+                <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 text-xs font-bold font-mono transition-all ${
+                  isActive
+                    ? 'bg-emerald-500 text-zinc-950 shadow-sm shadow-emerald-500/40'
+                    : isCompleted
+                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                    : 'bg-zinc-800 text-zinc-500'
+                }`}>
+                  {isCompleted ? <Check size={14} className="stroke-[3]" /> : idx + 1}
+                </div>
+                <div className="min-w-0">
+                  <p className={`text-xs font-bold truncate leading-tight ${
+                    isActive ? 'text-zinc-100' : isCompleted ? 'text-emerald-300' : 'text-zinc-500'
+                  }`}>
+                    {phase.name}
+                  </p>
+                  <p className="text-[10px] text-zinc-500 truncate hidden sm:block">
+                    {phase.desc}
+                  </p>
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -1663,35 +1919,35 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             {/* Dropzone Principal */}
             <div 
               {...getRootProps()} 
-              className={`border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center cursor-pointer transition-colors duration-200
+              className={`border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center cursor-pointer transition-all duration-200
                 ${isDragActive 
-                  ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/5' 
-                  : 'border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:border-[var(--border-strong)]'
+                  ? 'border-emerald-500 bg-emerald-500/10 shadow-lg shadow-emerald-950/50' 
+                  : 'border-zinc-800 bg-zinc-900/40 hover:border-zinc-700 hover:bg-zinc-900/60'
                 }
               `}
             >
               <input {...getInputProps()} />
-              <div className="w-12 h-12 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--color-primary)] mb-4">
-                <UploadCloud size={24} />
+              <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-emerald-400 mb-4 shadow-sm">
+                <UploadCloud size={28} />
               </div>
-              <h3 className="font-semibold text-lg mb-1.5 text-center text-[var(--text-primary)]">
-                {isDragActive ? 'Solte os arquivos para importar' : 'Importar Arquivos de Conciliação'}
+              <h3 className="font-bold text-lg mb-1.5 text-center text-zinc-100">
+                {isDragActive ? 'Solte os arquivos aqui para importar' : 'Importar Lote de Arquivos do Dia'}
               </h3>
-              <p className="text-[var(--text-secondary)] text-xs text-center max-w-sm mb-5 leading-relaxed">
-                Arraste os arquivos da pasta do dia ou clique para selecionar. O sistema processará automaticamente:
+              <p className="text-zinc-400 text-xs text-center max-w-sm mb-5 leading-relaxed">
+                Arraste todos os arquivos da pasta do dia de uma só vez ou clique para selecionar:
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-2">
-                <span className="px-2.5 py-1 rounded-md bg-[var(--bg-canvas)] border border-[var(--border-subtle)] text-[11px] font-mono text-[var(--text-secondary)]">
+                <span className="px-2.5 py-1 rounded-lg bg-sky-500/10 border border-sky-500/30 text-[11px] font-mono text-sky-300 font-semibold">
                   Extratos (.ofx)
                 </span>
-                <span className="px-2.5 py-1 rounded-md bg-[var(--bg-canvas)] border border-[var(--border-subtle)] text-[11px] font-mono text-[var(--text-secondary)]">
+                <span className="px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-[11px] font-mono text-amber-300 font-semibold">
                   Ordens de Serviço (.xls)
                 </span>
-                <span className="px-2.5 py-1 rounded-md bg-[var(--bg-canvas)] border border-[var(--border-subtle)] text-[11px] font-mono text-[var(--text-secondary)]">
+                <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-[11px] font-mono text-emerald-300 font-semibold">
                   Vendas Rede (.xlsx)
                 </span>
-                <span className="px-2.5 py-1 rounded-md bg-rose-500/10 border border-rose-500/30 text-[11px] font-mono text-rose-300">
+                <span className="px-2.5 py-1 rounded-lg bg-rose-500/10 border border-rose-500/30 text-[11px] font-mono text-rose-300 font-semibold">
                   Contas a Pagar (.xls)
                 </span>
               </div>
@@ -1699,15 +1955,15 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             
             {/* Marco Zero (Se aplicável) */}
             {!hasDailySnapshots && (
-              <div className="border border-[var(--border-subtle)] bg-[var(--bg-surface)] rounded-2xl p-8 flex flex-col items-center justify-between text-center">
+              <div className="border border-zinc-800 bg-zinc-900/40 rounded-2xl p-8 flex flex-col items-center justify-between text-center">
                 <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-4">
                   <Database size={24} />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg mb-1 text-[var(--text-primary)]">
+                  <h3 className="font-bold text-lg mb-1 text-zinc-100">
                     Implantação Inicial (Marco Zero)
                   </h3>
-                  <p className="text-[var(--text-secondary)] text-xs max-w-xs leading-relaxed">
+                  <p className="text-zinc-400 text-xs max-w-xs leading-relaxed">
                     Carregue a planilha histórica para inicializar os saldos das lojas e estoque pendente pela primeira vez.
                   </p>
                 </div>
@@ -1715,7 +1971,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                 <Button 
                   onClick={() => setShowMarcoZero(true)}
                   variant="outline"
-                  className="w-full mt-6 text-xs h-10 border-[var(--border-subtle)] hover:bg-[var(--bg-surface-elevated)]"
+                  className="w-full mt-6 text-xs h-10 border-zinc-800 hover:bg-zinc-800 text-zinc-300"
                 >
                   <FileSpreadsheet className="mr-2" size={15} /> Abrir Assistente Marco Zero
                 </Button>
@@ -1723,14 +1979,143 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             )}
           </div>
           
+          {/* Banner Informativo de Virada de Mês / OCR */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-gradient-to-r from-indigo-950/40 via-zinc-900/60 to-zinc-900/40 border border-indigo-500/30">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
+                  Virada de Mês / Pátio sem relatório do ERP?
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-mono">
+                    Mistral OCR Vision Integrado
+                  </span>
+                </h4>
+                <p className="text-xs text-zinc-400 mt-0.5">
+                  Se você não tiver o arquivo .xls de OSs, solte os extratos OFX e Rede acima que o sistema entrará automaticamente na esteira de prints.
+                </p>
+              </div>
+            </div>
+            <Button
+              type="button"
+              onClick={() => setStep(1.5)}
+              className="bg-indigo-600/30 hover:bg-indigo-600/40 border border-indigo-500/40 text-indigo-200 text-xs font-semibold px-4 py-2 rounded-xl flex items-center gap-2 shrink-0"
+            >
+              <Sparkles className="w-4 h-4 text-indigo-400" />
+              Abrir Guia OCR Diretamente
+            </Button>
+          </div>
+          
           {isProcessing && (
             <div className="mt-8 flex justify-center">
-               <div className="flex items-center gap-3 animate-pulse text-[var(--text-secondary)]">
+               <div className="flex items-center gap-3 animate-pulse text-zinc-400 text-sm">
                  <LoadingSpinner size="sm" text="" /> 
-                 <span>Analisando Padrões dos Arquivos...</span>
+                 <span>Analisando Padrões e Integridade dos Arquivos...</span>
                </div>
             </div>
           )}
+        </motion.div>
+      )}
+
+      {/* STEP 1.5: Ingestão OCR Embutida (Seamless) */}
+      {step === 1.5 && (
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-4">
+          {/* Header Subtitle da Etapa OCR */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-zinc-800/80 mb-2 px-1 gap-2">
+            <div>
+              <h3 className="text-base font-bold text-zinc-100 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-indigo-400" />
+                Ingestão Visual OCR de Ordens de Serviço (Virada de Pátio)
+              </h3>
+              <p className="text-xs text-zinc-400 mt-0.5">
+                Data do Fechamento: <span className="font-mono text-indigo-300 font-bold">{targetDate}</span> · Abra cada OS no Oficina Inteligente e dê <kbd className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-200 font-mono text-[11px] border border-zinc-700">Ctrl + V</kbd> do print da aba <strong className="text-emerald-400">Pagamentos</strong>
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/30 font-mono font-semibold">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+                Mistral Pixtral-12B (JSON Mode)
+              </span>
+            </div>
+          </div>
+
+          {/* 2 Colunas: Guia Ativo de Missão (5 cols) | Dropzone, Progress & Review Grid (7 cols) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 min-h-[560px]">
+            {/* Left Column: Guia de Missão por Loja */}
+            <div className="lg:col-span-5 h-[600px]">
+              <OcrBatchStoreCarryoverList
+                stores={stores}
+                pendingOsList={pendingOcrOsList}
+                extraOsList={extraOcrOsList}
+                extractedItems={extractedOcrItems}
+                selectedStoreId={selectedOcrStoreId}
+                onSelectStore={setSelectedOcrStoreId}
+                onAddExtraOs={handleAddExtraOcrOs}
+                targetDate={targetDate}
+              />
+            </div>
+
+            {/* Right Column: Dropzone, Progress & Review Grid */}
+            <div className="lg:col-span-7 flex flex-col h-[600px] space-y-3">
+              <OcrBatchDropzoneAndPaste
+                onStartProcessing={handleStartOcrProcessing}
+                isProcessing={isOcrProcessing}
+                selectedStoreName={selectedOcrStoreId !== 'ALL' ? stores.find(s => s.id === selectedOcrStoreId)?.name : undefined}
+              />
+
+              <OcrBatchProgressBar progress={ocrProgress} isProcessing={isOcrProcessing} />
+
+              <div className="flex-1 min-h-0">
+                <OcrBatchReviewGrid
+                  items={extractedOcrItems}
+                  stores={stores}
+                  onChangeItem={handleChangeOcrItem}
+                  onDeleteItem={handleDeleteOcrItem}
+                  onInject={handleSaveAndAdvanceOcr}
+                  isInjecting={isOcrInjecting}
+                  onClearAll={() => setExtractedOcrItems([])}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Barra de Navegação Inferior do Step 1.5 */}
+          <div className="flex items-center justify-between pt-3 border-t border-zinc-800">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setStep(1)}
+              className="border-zinc-800 hover:bg-zinc-800 text-zinc-300 text-xs"
+            >
+              ← Voltar para Upload
+            </Button>
+
+            <div className="flex items-center gap-3">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => {
+                  const hasUnmapped = results.ofxResults.some(o => !mapping[o.alias]) ||
+                                      results.redeResults.some(r => r.transactions.some(t => !mapping[t.storeName]));
+                  setStep(hasUnmapped ? 2 : 3);
+                }}
+                className="text-zinc-500 hover:text-zinc-300 text-xs"
+              >
+                Pular Ingestão de OS (Continuar sem OSs)
+              </Button>
+
+              <Button
+                type="button"
+                onClick={handleSaveAndAdvanceOcr}
+                disabled={isOcrInjecting || extractedOcrItems.length === 0}
+                className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-lg shadow-emerald-950/50 flex items-center gap-2"
+              >
+                <Sparkles className="w-4 h-4 text-emerald-200" />
+                {isOcrInjecting ? 'Integrando OSs na Esteira...' : `Salvar e Avançar Fluxo (${extractedOcrItems.length} OSs) →`}
+              </Button>
+            </div>
+          </div>
         </motion.div>
       )}
 
@@ -1752,31 +2137,31 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
               
               return (
                 <div className="mb-8 animate-in fade-in slide-in-from-right-4 duration-300">
-                  <h4 className="font-display font-semibold text-[var(--color-primary)] flex items-center gap-2 mb-4">
-                    <Database size={20} /> 1. Extratos Bancários (OFX)
+                  <h4 className="font-bold text-base text-emerald-400 flex items-center gap-2 mb-4">
+                    <Database size={18} /> 1. Extratos Bancários (OFX)
                   </h4>
                   {ofxAliases.length === 0 ? (
-                    <div className="p-6 text-center border border-dashed border-[var(--border-subtle)] rounded-lg text-[var(--text-tertiary)]">
+                    <div className="p-6 text-center border border-dashed border-zinc-800 rounded-xl text-zinc-500">
                       Nenhum arquivo OFX importado.
                     </div>
                   ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       {ofxAliases.map(alias => {
                         const ofx = results.ofxResults.find(o => o.alias === alias);
                         const fileName = ofx?.fileName;
                         const effectiveStoreId = mapping[alias] || (ofx ? resolveStoreForOfx(ofx) : '');
                         return (
-                          <div key={`ofx-${alias}`} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
+                          <div key={`ofx-${alias}`} className="flex items-center gap-6 p-4 rounded-xl bg-zinc-950/60 border border-zinc-800">
                             <div className="flex-1">
-                              <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase">Identificado no Arquivo</span><br/>
-                              <span className="font-mono text-lg font-semibold text-[var(--text-primary)]">{alias}</span>
+                              <span className="text-[10px] font-bold text-zinc-500 uppercase">Identificado no Arquivo</span><br/>
+                              <span className="font-mono text-base font-bold text-zinc-100">{alias}</span>
                               {fileName && (
-                                <div className="mt-1 text-xs text-[var(--text-secondary)]">
-                                  <span className="font-semibold text-[var(--color-primary)]">Origem:</span> {fileName}
+                                <div className="mt-0.5 text-xs text-zinc-400">
+                                  <span className="font-semibold text-emerald-400">Origem:</span> {fileName}
                                 </div>
                               )}
                             </div>
-                            <LinkIcon className="text-[var(--color-primary)]/50 shrink-0" size={24} />
+                            <LinkIcon className="text-emerald-500/50 shrink-0" size={20} />
                             <div className="flex-1">
                               <select 
                                 value={effectiveStoreId} 
@@ -1784,8 +2169,8 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                                   const s = stores.find(st => st.id === e.target.value);
                                   updateMapping(alias, e.target.value, s?.name);
                                 }}
-                                className={`w-full bg-[var(--bg-surface-elevated)] border rounded p-3 text-sm focus:outline-none 
-                                  ${effectiveStoreId ? 'border-[var(--color-accent-teal)] text-[var(--text-primary)]' : 'border-[var(--color-accent-warning)] text-[var(--text-secondary)] animate-pulse'}`}
+                                className={`w-full bg-zinc-900 border rounded-xl p-2.5 text-xs font-semibold focus:outline-none 
+                                  ${effectiveStoreId ? 'border-emerald-500/50 text-zinc-100' : 'border-amber-500/50 text-amber-300 animate-pulse'}`}
                               >
                                 <option value="">-- Selecione a Loja do Sistema --</option>
                                 <option value="GLOBAL">-- CONTA GLOBAL / INTERNA --</option>
@@ -1802,20 +2187,20 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
                   {/* Tabela de Auditoria e Diagnóstico de Saldos Bancários OFX */}
                   {results.ofxResults.length > 0 && (
-                    <div className="mt-8 pt-6 border-t border-[var(--border-subtle)] space-y-4">
+                    <div className="mt-8 pt-6 border-t border-zinc-800 space-y-4">
                       <div className="flex justify-between items-center">
-                        <h5 className="font-display font-semibold text-sm text-[var(--text-primary)] flex items-center gap-2">
-                          <CheckCircle2 size={16} className="text-[var(--color-accent-teal)]" />
+                        <h5 className="font-bold text-sm text-zinc-100 flex items-center gap-2">
+                          <CheckCircle2 size={16} className="text-emerald-400" />
                           Auditoria de Saldos dos Extratos (.OFX) Extraídos
                         </h5>
-                        <Badge variant="outline" className="text-xs font-mono">
+                        <Badge variant="outline" className="text-xs font-mono bg-zinc-900 border-zinc-800 text-zinc-400">
                           {results.ofxResults.length} contas lidas
                         </Badge>
                       </div>
 
-                      <div className="overflow-x-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)]">
+                      <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950/60">
                         <table className="w-full text-left text-xs font-sans">
-                          <thead className="bg-[var(--bg-canvas)] border-b border-[var(--border-subtle)] text-[var(--text-tertiary)] uppercase font-semibold">
+                          <thead className="bg-zinc-900/60 border-b border-zinc-800 text-zinc-400 uppercase font-semibold">
                             <tr>
                               <th className="p-3">Arquivo / Conta</th>
                               <th className="p-3">Filial Vinculada</th>
@@ -1825,7 +2210,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                               <th className="p-3 text-right">Saldo Final (OFX)</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-[var(--border-subtle)] font-mono">
+                          <tbody className="divide-y divide-zinc-800/60 font-mono">
                             {results.ofxResults.map((ofx, idx) => {
                               const storeId = resolveStoreForOfx(ofx) || mapping[ofx.alias];
                               const storeObj = stores.find(s => s.id === storeId);
@@ -1833,32 +2218,32 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                               const totalOut = ofx.transactions.filter(t => t.type === 'out').reduce((s, t) => s + Math.abs(t.amount), 0);
 
                               return (
-                                <tr key={idx} className="hover:bg-[var(--bg-surface-hover)]">
+                                <tr key={idx} className="hover:bg-zinc-800/30">
                                   <td className="p-3 font-sans">
-                                    <div className="font-semibold text-[var(--text-primary)]">{ofx.fileName || 'Extrato'}</div>
-                                    <div className="text-[10px] text-[var(--text-tertiary)]">{ofx.alias}</div>
+                                    <div className="font-semibold text-zinc-100">{ofx.fileName || 'Extrato'}</div>
+                                    <div className="text-[10px] text-zinc-500">{ofx.alias}</div>
                                   </td>
                                   <td className="p-3 font-sans">
                                     {storeObj ? (
-                                      <span className="text-[var(--color-accent-teal)] font-medium">{storeObj.name}</span>
+                                      <span className="text-emerald-400 font-semibold">{storeObj.name}</span>
                                     ) : (
                                       <span className="text-amber-400 font-medium flex items-center gap-1">
                                         <AlertCircle size={12} /> Não vinculada
                                       </span>
                                     )}
                                   </td>
-                                  <td className="p-3 text-right text-[var(--text-secondary)]">
+                                  <td className="p-3 text-right text-zinc-400 tabular-nums">
                                     {ofx.previousBalance !== undefined ? (
                                       ofx.previousBalance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
                                     ) : '-'}
                                   </td>
-                                  <td className="p-3 text-right text-emerald-400">
+                                  <td className="p-3 text-right text-emerald-400 tabular-nums font-semibold">
                                     +{totalIn.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                   </td>
-                                  <td className="p-3 text-right text-rose-400">
+                                  <td className="p-3 text-right text-rose-400 tabular-nums font-semibold">
                                     -{totalOut.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                   </td>
-                                  <td className="p-3 text-right font-bold text-sky-400">
+                                  <td className="p-3 text-right font-bold text-sky-400 tabular-nums">
                                     {ofx.bankBalance !== undefined ? (
                                       ofx.bankBalance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
                                     ) : '-'}
@@ -1867,21 +2252,21 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                               );
                             })}
                           </tbody>
-                          <tfoot className="bg-[var(--bg-canvas)] border-t border-[var(--border-subtle)] font-bold">
+                          <tfoot className="bg-zinc-900/60 border-t border-zinc-800 font-bold">
                             <tr>
-                              <td colSpan={2} className="p-3 font-sans text-right text-[var(--text-secondary)] uppercase">
+                              <td colSpan={2} className="p-3 font-sans text-right text-zinc-400 uppercase text-[11px]">
                                 Total Geral Consolidado ({results.ofxResults.length} Contas):
                               </td>
-                              <td className="p-3 text-right text-[var(--text-secondary)]">
+                              <td className="p-3 text-right text-zinc-400 tabular-nums">
                                 {results.ofxResults.reduce((s, o) => s + (o.previousBalance || 0), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                               </td>
-                              <td className="p-3 text-right text-emerald-400">
+                              <td className="p-3 text-right text-emerald-400 tabular-nums font-bold">
                                 +{results.ofxResults.reduce((s, o) => s + o.transactions.filter(t => t.type === 'in').reduce((st, t) => st + t.amount, 0), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                               </td>
-                              <td className="p-3 text-right text-rose-400">
+                              <td className="p-3 text-right text-rose-400 tabular-nums font-bold">
                                 -{results.ofxResults.reduce((s, o) => s + o.transactions.filter(t => t.type === 'out').reduce((st, t) => st + Math.abs(t.amount), 0), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                               </td>
-                              <td className="p-3 text-right text-lg text-sky-400 font-bold">
+                              <td className="p-3 text-right text-sm text-sky-400 font-bold tabular-nums">
                                 {results.ofxResults.reduce((s, o) => s + (o.bankBalance || 0), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                               </td>
                             </tr>
@@ -1892,7 +2277,9 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                   )}
 
                   <div className="flex justify-end mt-6">
-                    <Button onClick={() => setSubStep(2)}>Próximo: OS (Pátio) â†’</Button>
+                    <Button onClick={() => setSubStep(2)} className="bg-emerald-500 text-zinc-950 hover:bg-emerald-400 font-bold text-xs">
+                      Próximo: OS (Pátio) →
+                    </Button>
                   </div>
                 </div>
               );
@@ -1906,22 +2293,22 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
               return (
                 <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                  <h4 className="font-display font-semibold text-[var(--color-accent-teal)] flex items-center gap-2 mb-4">
-                    <FileText size={20} /> 2. Ordens de Serviço (Pátio)
+                  <h4 className="font-bold text-base text-amber-400 flex items-center gap-2 mb-4">
+                    <FileText size={18} /> 2. Ordens de Serviço (Pátio)
                   </h4>
                   {aliasArray.length === 0 ? (
-                    <div className="p-6 text-center border border-dashed border-[var(--border-subtle)] rounded-lg text-[var(--text-tertiary)]">
+                    <div className="p-6 text-center border border-dashed border-zinc-800 rounded-xl text-zinc-500">
                       Nenhuma planilha de OS identificada.
                     </div>
                   ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       {aliasArray.map(alias => (
-                        <div key={`os-${alias}`} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
+                        <div key={`os-${alias}`} className="flex items-center gap-6 p-4 rounded-xl bg-zinc-950/60 border border-zinc-800">
                           <div className="flex-1">
-                            <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase">Loja na Planilha</span><br/>
-                            <span className="font-mono text-lg font-semibold text-[var(--text-primary)]">{alias}</span>
+                            <span className="text-[10px] font-bold text-zinc-500 uppercase">Loja na Planilha</span><br/>
+                            <span className="font-mono text-base font-bold text-zinc-100">{alias}</span>
                           </div>
-                          <LinkIcon className="text-[var(--color-accent-teal)]/50 shrink-0" size={24} />
+                          <LinkIcon className="text-amber-500/50 shrink-0" size={20} />
                           <div className="flex-1">
                             <select 
                               value={mapping[alias] || ''} 
@@ -1929,8 +2316,8 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                                 const s = stores.find(st => st.id === e.target.value);
                                 updateMapping(alias, e.target.value, s?.name);
                               }}
-                              className={`w-full bg-[var(--bg-surface-elevated)] border rounded p-3 text-sm focus:outline-none 
-                                ${mapping[alias] ? 'border-[var(--color-accent-teal)] text-[var(--text-primary)]' : 'border-[var(--color-accent-warning)] text-[var(--text-secondary)]'}`}
+                              className={`w-full bg-zinc-900 border rounded-xl p-2.5 text-xs font-semibold focus:outline-none 
+                                ${mapping[alias] ? 'border-amber-500/50 text-zinc-100' : 'border-rose-500/50 text-rose-300'}`}
                             >
                               <option value="">-- Selecione a Loja Correspondente --</option>
                               <option value="GLOBAL">-- NÃO VINCULAR / IGNORAR --</option>
@@ -1945,8 +2332,12 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                   )}
 
                   <div className="flex justify-between mt-6">
-                    <Button variant="ghost" onClick={() => setSubStep(1)}>← Voltar para OFX</Button>
-                    <Button onClick={() => setSubStep(3)}>Próximo: Maquininhas (Rede) →</Button>
+                    <Button variant="ghost" onClick={() => setSubStep(1)} className="text-zinc-400 hover:text-white text-xs">
+                      ← Voltar para OFX
+                    </Button>
+                    <Button onClick={() => setSubStep(3)} className="bg-emerald-500 text-zinc-950 hover:bg-emerald-400 font-bold text-xs">
+                      Próximo: Maquininhas (Rede) →
+                    </Button>
                   </div>
                 </div>
               );
@@ -1964,22 +2355,22 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
               return (
                 <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                  <h4 className="font-display font-semibold text-[var(--color-accent-warning)] flex items-center gap-2 mb-4">
-                    <CreditCard size={20} /> 3. Maquininhas (Rede)
+                  <h4 className="font-bold text-base text-teal-400 flex items-center gap-2 mb-4">
+                    <CreditCard size={18} /> 3. Maquininhas (Rede)
                   </h4>
                   {aliasArray.length === 0 ? (
-                    <div className="p-6 text-center border border-dashed border-[var(--border-subtle)] rounded-lg text-[var(--text-tertiary)]">
+                    <div className="p-6 text-center border border-dashed border-zinc-800 rounded-xl text-zinc-500">
                       Nenhum relatório de maquininha identificado.
                     </div>
                   ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       {aliasArray.map(alias => (
-                        <div key={`rede-${alias}`} className="flex items-center gap-6 p-4 rounded-[var(--radius-md)] bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
+                        <div key={`rede-${alias}`} className="flex items-center gap-6 p-4 rounded-xl bg-zinc-950/60 border border-zinc-800">
                           <div className="flex-1">
-                            <span className="text-xs font-medium text-[var(--text-tertiary)] uppercase">Nº de Estabelecimento / Loja</span><br/>
-                            <span className="font-mono text-lg font-semibold text-[var(--text-primary)]">{alias}</span>
+                            <span className="text-[10px] font-bold text-zinc-500 uppercase">Nº de Estabelecimento / Loja</span><br/>
+                            <span className="font-mono text-base font-bold text-zinc-100">{alias}</span>
                           </div>
-                          <LinkIcon className="text-[var(--color-accent-warning)]/50 shrink-0" size={24} />
+                          <LinkIcon className="text-teal-500/50 shrink-0" size={20} />
                           <div className="flex-1">
                             <select 
                               value={mapping[alias] || ''} 
@@ -1987,8 +2378,8 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                                 const s = stores.find(st => st.id === e.target.value);
                                 updateMapping(alias, e.target.value, s?.name);
                               }}
-                              className={`w-full bg-[var(--bg-surface-elevated)] border rounded p-3 text-sm focus:outline-none 
-                                ${mapping[alias] ? 'border-[var(--color-accent-warning)] text-[var(--text-primary)]' : 'border-red-500/50 text-[var(--text-secondary)]'}`}
+                              className={`w-full bg-zinc-900 border rounded-xl p-2.5 text-xs font-semibold focus:outline-none 
+                                ${mapping[alias] ? 'border-teal-500/50 text-zinc-100' : 'border-rose-500/50 text-rose-300'}`}
                             >
                               <option value="">-- Selecione a Loja Correspondente --</option>
                               <option value="GLOBAL">-- NÃO VINCULAR / IGNORAR --</option>
@@ -2003,9 +2394,12 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                   )}
 
                   <div className="flex justify-between mt-6">
-                    <Button variant="ghost" onClick={() => setSubStep(2)}>← Voltar para OS</Button>
+                    <Button variant="ghost" onClick={() => setSubStep(2)} className="text-zinc-400 hover:text-white text-xs">
+                      ← Voltar para OS
+                    </Button>
                     <Button 
                       onClick={() => setStep(needsFallback ? 3.5 : (cloudOsData.length > 0 ? 2.5 : 3))}
+                      className="bg-emerald-500 text-zinc-950 hover:bg-emerald-400 font-bold text-xs"
                     >
                       Avançar para Auditoria / Preview →
                     </Button>
@@ -2054,194 +2448,269 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         })()}
 
         {step === 3 && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 max-w-5xl mx-auto">
-          {/* 3 KPIs rápidos do dia */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          {/* Header de Resumo */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 border-l-4 border-l-indigo-500 shadow-lg">
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Total OS (Recebimentos)</span>
-                <FileText size={16} className="text-indigo-400" />
+            <Card className="p-5 bg-zinc-900/60 border border-zinc-800 border-l-4 border-l-emerald-500">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Total OS (Recebimentos do Dia)</span>
+                <FileText size={18} className="text-emerald-400" />
               </div>
-              <p className="text-2xl font-bold text-zinc-100 font-mono">
+              <p className="text-2xl font-bold font-mono text-zinc-100 tabular-nums">
                 <AnimatedNumber value={totalOs} format="currency" />
               </p>
-              <p className="text-xs text-zinc-400 mt-1">{filteredOsCount} pagamentos no dia · {allOsCount} OSs total</p>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 border-l-4 border-l-teal-500 shadow-lg">
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Maquininha (Rede Líquido)</span>
-                <CreditCard size={16} className="text-teal-400" />
+              <div className="flex flex-col gap-0.5 mt-1 text-xs text-zinc-400">
+                <span>{filteredOsCount} novos pagamentos no dia</span>
+                {totalPatioEstoqueGlobal > 0 && (
+                  <span className="text-[11px] font-mono font-medium text-emerald-400 tabular-nums">
+                    Estoque em Pátio: {totalPatioEstoqueGlobal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} ({allOsCount} OSs)
+                  </span>
+                )}
               </div>
-              <p className="text-2xl font-bold text-zinc-100 font-mono">
+            </Card>
+
+            <Card className="p-5 bg-zinc-900/60 border border-zinc-800 border-l-4 border-l-teal-500">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Maquininha (Rede Líquido)</span>
+                <CreditCard size={18} className="text-teal-400" />
+              </div>
+              <p className="text-2xl font-bold font-mono text-zinc-100 tabular-nums">
                 <AnimatedNumber value={totalMaq} format="currency" />
               </p>
               <p className="text-xs text-zinc-400 mt-1">{redeFiltered.length} transações de cartão</p>
-            </div>
+            </Card>
 
-            <div className="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 border-l-4 border-l-sky-500 shadow-lg">
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Saldo Bancário (OFX)</span>
-                <Database size={16} className="text-sky-400" />
+            <Card className="p-5 bg-zinc-900/60 border border-zinc-800 border-l-4 border-l-sky-500">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Saldo Total Bancário (OFX)</span>
+                <Database size={18} className="text-sky-400" />
               </div>
-              <p className="text-2xl font-bold text-zinc-100 font-mono">
+              <p className="text-2xl font-bold font-mono text-zinc-100 tabular-nums">
                 <AnimatedNumber value={totalOfxIn} format="currency" />
               </p>
-              <p className="text-xs text-zinc-400 mt-1">{allOfxTx.length} lançamentos nos extratos</p>
-            </div>
+              <p className="text-xs text-zinc-400 mt-1">{allOfxTx.length} lançamentos no total dos extratos</p>
+            </Card>
           </div>
 
-          {/* Card Central: Data Base + 4 Inputs Manuais */}
-          <Card className="p-6 bg-zinc-900/80 border-zinc-800 shadow-xl space-y-6">
-            {/* Cabeçalho */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800/80">
-              <div>
-                <h3 className="font-display text-lg font-bold text-zinc-100">Passo 3: Parâmetros Diários & Valores Manuais</h3>
-                <p className="text-xs text-zinc-400 mt-0.5">Informe os saldos manuais do fechamento antes de avançar para a conciliação.</p>
-              </div>
-              <div className="flex items-center gap-3 shrink-0">
-                {/* Data Base */}
-                <div className="flex items-center gap-2 bg-zinc-950 border border-zinc-800 px-3 py-1.5 rounded-xl">
-                  <span className="text-[10px] font-bold uppercase text-zinc-500">Data Base:</span>
-                  <input
-                    type="date"
-                    value={targetDate}
-                    onChange={e => setTargetDate(e.target.value)}
-                    className="bg-transparent text-xs font-mono text-zinc-200 focus:outline-none cursor-pointer"
-                  />
+          <Card className="p-6 bg-zinc-900/60 border border-zinc-800 space-y-6">
+            {/* Início: Valores Manuais Globais */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-bold text-base text-zinc-100 flex items-center gap-2">
+                    Valores Manuais do Dia
+                  </h4>
+                  <p className="text-xs text-zinc-400 mt-0.5">
+                    Preencha os dados abaixo. Eles serão salvos no fechamento diário e travados para evitar alterações acidentais.
+                  </p>
                 </div>
-                {/* Trava de segurança */}
+
                 <button
                   type="button"
                   onClick={() => setIsManualLocked(!isManualLocked)}
-                  className={`px-3 py-1.5 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer ${
-                    isManualLocked
-                      ? 'bg-zinc-800 text-zinc-300 border border-zinc-700 hover:bg-zinc-700'
-                      : 'bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30'
+                  className={`px-3 py-1.5 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer ${
+                    isManualLocked 
+                      ? 'bg-zinc-800 text-zinc-300 border border-zinc-700 hover:bg-zinc-700' 
+                      : 'bg-amber-500/15 text-amber-300 border border-amber-500/40 shadow-sm shadow-amber-950/30'
                   }`}
                 >
                   {isManualLocked ? <Lock size={13} /> : <Unlock size={13} />}
-                  {isManualLocked ? 'Travado' : 'Destravado'}
+                  {isManualLocked ? 'Trava Ativa' : 'Destravado'}
                 </button>
               </div>
-            </div>
-
-            {/* Grid dos 4 Inputs Manuais */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
-              {/* 1. Odômetro OI */}
-              <div className="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="text-[10px] font-bold uppercase text-zinc-400">Odômetro OI (Acumulado)</label>
-                  {previousOdometro > 0 && (
-                    <span className="text-[10px] text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/20">
-                      Ant: {previousOdometro.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                    </span>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
+                {/* 1. Odômetro */}
+                <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between min-h-[22px]">
+                      <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">Odômetro OI (Acumulado)</label>
+                      {previousOdometro > 0 && (
+                        <span className="text-[10px] font-mono text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/30">
+                          Ant: {previousOdometro.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                        </span>
+                      )}
+                    </div>
+                    <input 
+                      type="number" 
+                      step="0.01"
+                      disabled={isManualLocked}
+                      value={odometroHoje || ''} 
+                      onChange={e => setOdometroHoje(Number(e.target.value))}
+                      placeholder="Ex: 945000.00"
+                      className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                    />
+                  </div>
+                  {odometroHoje > 0 && previousOdometro > 0 && (
+                    <p className="text-[11px] font-mono text-emerald-400 pt-0.5">
+                      Δ Faturamento: <span className="font-bold tabular-nums">{deltaFaturamentoCalculado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                    </p>
                   )}
                 </div>
-                <input
-                  type="number"
-                  step="0.01"
-                  disabled={isManualLocked}
-                  value={odometroHoje || ''}
-                  onChange={e => setOdometroHoje(Number(e.target.value))}
-                  placeholder="0.00"
-                  className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-50 rounded-lg p-2.5 text-sm font-bold text-zinc-100 focus:outline-none focus:border-indigo-500"
-                />
-                {odometroHoje > 0 && previousOdometro > 0 && (
-                  <p className="text-[11px] text-emerald-400 font-semibold truncate">
-                    Δ Fat: {deltaFaturamentoCalculado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                  </p>
-                )}
-              </div>
 
-              {/* 2. Dinheiro MP */}
-              <div className="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-2">
-                <label className="block text-[10px] font-bold uppercase text-zinc-400">Dinheiro MP</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  disabled={isManualLocked}
-                  value={manualDinheiroMp || ''}
-                  onChange={e => setManualDinheiroMp(Number(e.target.value))}
-                  placeholder="0.00"
-                  className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-50 rounded-lg p-2.5 text-sm font-bold text-zinc-100 focus:outline-none focus:border-indigo-500"
-                />
-                <p className="text-[10px] text-zinc-500">Espécie / Mercado Pago</p>
-              </div>
-
-              {/* 3. A Receber */}
-              <div className="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-2">
-                <label className="block text-[10px] font-bold uppercase text-zinc-400">A Receber</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  disabled={isManualLocked}
-                  value={manualAReceber || ''}
-                  onChange={e => setManualAReceber(Number(e.target.value))}
-                  placeholder="0.00"
-                  className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-50 rounded-lg p-2.5 text-sm font-bold text-zinc-100 focus:outline-none focus:border-indigo-500"
-                />
-                <p className="text-[10px] text-zinc-500">Saldo a liquidar</p>
-              </div>
-
-              {/* 4. Contas a Pagar */}
-              <div className="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="text-[10px] font-bold uppercase text-zinc-400">Contas a Pagar</label>
-                  {results.contasPagarResults && results.contasPagarResults.length > 0 && (
-                    <span className="text-[10px] text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/20 font-semibold">
-                      Auto ({results.contasPagarResults.reduce((acc, c) => acc + c.totalBills, 0)})
-                    </span>
-                  )}
+                {/* 2. Dinheiro MP (Preenchido com saldo de ontem + Badge) */}
+                <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between min-h-[22px]">
+                      <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">Dinheiro MP</label>
+                      {previousDinheiroMp > 0 && (
+                        <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">
+                          Saldo de ontem: {previousDinheiroMp.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                        </span>
+                      )}
+                    </div>
+                    <input 
+                      type="number" 
+                      step="0.01"
+                      disabled={isManualLocked}
+                      value={manualDinheiroMp || ''} 
+                      onChange={e => {
+                        setManualDinheiroMp(Number(e.target.value));
+                        setIsDinheiroMpUserEdited(true);
+                      }}
+                      placeholder="0,00"
+                      className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                    />
+                  </div>
                 </div>
-                <input
-                  type="number"
-                  step="0.01"
-                  disabled={isManualLocked}
-                  value={contasManual || (results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || '')}
-                  onChange={e => setContasManual(Number(e.target.value))}
-                  placeholder="0.00"
-                  className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-50 rounded-lg p-2.5 text-sm font-bold text-rose-400 focus:outline-none focus:border-rose-500"
-                />
-                <p className="text-[10px] text-zinc-500">Compromissos do dia</p>
+
+                {/* 3. A Receber */}
+                <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between min-h-[22px]">
+                      <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">A Receber</label>
+                      {manualAReceber > 0 && (
+                        <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30">
+                          Pendente
+                        </span>
+                      )}
+                    </div>
+                    <input 
+                      type="number" 
+                      step="0.01"
+                      disabled={isManualLocked}
+                      value={manualAReceber || ''} 
+                      onChange={e => setManualAReceber(Number(e.target.value))}
+                      placeholder="0,00"
+                      className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                    />
+                  </div>
+                </div>
+
+                {/* 4. Contas a Pagar */}
+                <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between min-h-[22px]">
+                      <label className="text-[11px] font-bold uppercase text-zinc-400 font-sans">Contas a Pagar</label>
+                      {results.contasPagarResults && results.contasPagarResults.length > 0 && (
+                        <span className="text-[10px] text-rose-400 font-semibold flex items-center gap-1 font-mono bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/30">
+                          <Receipt size={10} /> ({results.contasPagarResults.reduce((acc, c) => acc + c.totalBills, 0)} contas)
+                        </span>
+                      )}
+                    </div>
+                    <input 
+                      type="number" 
+                      step="0.01"
+                      disabled={isManualLocked}
+                      value={contasManual || (results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || '')} 
+                      onChange={e => setContasManual(Number(e.target.value))}
+                      placeholder="0,00"
+                      className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
+            {/* Fim: Valores Manuais Globais */}
 
-            {/* Navegação Rodapé */}
-            <div className="flex items-center justify-between pt-4 border-t border-zinc-800">
-              <Button
-                variant="outline"
-                onClick={() => setStep(2)}
-                className="py-2.5 px-4 text-xs font-semibold rounded-xl border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 flex items-center gap-1.5"
-              >
-                <ArrowLeft size={14} />
-                Voltar para Mapeamento
-              </Button>
+            {/* Inspetor JSON de Conciliação */}
+            <div className="pt-4 border-t border-zinc-800">
+              <details className="group p-4 bg-zinc-950 rounded-xl border border-zinc-800">
+                <summary className="cursor-pointer flex items-center justify-between text-xs font-mono text-zinc-300 select-none hover:text-zinc-100">
+                  <span className="flex items-center gap-2">
+                    <Code2 size={16} className="text-emerald-400" />
+                    Inspetor de Conciliação (Payload JSON que será enviado ao Backend)
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigator.clipboard.writeText(JSON.stringify({
+                          target_date: targetDate,
+                          manual_inputs: {
+                            odometro_hoje: odometroHoje,
+                            dinheiro_mp: manualDinheiroMp,
+                            a_receber: manualAReceber,
+                            contas_manual: contasManual
+                          },
+                          file_mappings: mapping,
+                          orphan_os_modifications: missingOsList.filter(
+                            os => os.total_value !== os.original_total_value || os.paid_value !== os.original_paid_value || os.status !== os.original_status
+                          ),
+                          ofx_results_count: results.ofxResults.length,
+                          os_files_count: results.osFiles.length,
+                          rede_results_count: results.redeResults.length
+                        }, null, 2));
+                        setCopiedJson(true);
+                        toast.success('JSON de conciliação copiado!');
+                        setTimeout(() => setCopiedJson(false), 2000);
+                      }}
+                      className="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] font-mono rounded flex items-center gap-1 cursor-pointer"
+                    >
+                      {copiedJson ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
+                      {copiedJson ? 'Copiado!' : 'Copiar JSON'}
+                    </button>
+                    <span className="text-[10px] text-zinc-500 group-open:rotate-180 transition-transform">▼</span>
+                  </div>
+                </summary>
+                <div className="mt-3 p-3 bg-zinc-950 border-t border-zinc-800 font-mono text-[11px] text-emerald-400 overflow-x-auto max-h-60">
+                  <pre>{JSON.stringify({
+                    target_date: targetDate,
+                    manual_inputs: {
+                      odometro_hoje: odometroHoje,
+                      dinheiro_mp: manualDinheiroMp,
+                      a_receber: manualAReceber,
+                      contas_manual: contasManual
+                    },
+                    file_mappings: mapping,
+                    orphan_os_modifications: missingOsList.filter(
+                      os => os.total_value !== os.original_total_value || os.paid_value !== os.original_paid_value || os.status !== os.original_status
+                    ),
+                    ofx_results_count: results.ofxResults.length,
+                    os_files_count: results.osFiles.length,
+                    rede_results_count: results.redeResults.length
+                  }, null, 2)}</pre>
+                </div>
+              </details>
+            </div>
 
-              <div className="flex items-center gap-3">
+            {/* Rodapé com Botão Único */}
+            <div className="pt-4 border-t border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <label className="block text-xs font-semibold uppercase text-zinc-400 mb-1">Data Base da Conciliação</label>
+                <input 
+                  type="date" 
+                  value={targetDate} 
+                  onChange={e => setTargetDate(e.target.value)} 
+                  className="bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-sm text-zinc-100 focus:outline-none focus:border-emerald-500 font-mono"
+                />
+              </div>
+
+              <div className="flex items-center">
                 <Button
-                  onClick={() => handleConfirm(false)}
+                  onClick={() => handleConfirm(true)}
                   disabled={isSaving}
-                  variant="outline"
-                  className="py-2.5 px-4 text-xs font-medium rounded-xl border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 flex items-center gap-1.5"
+                  className="w-full sm:w-auto py-3 px-6 text-sm font-bold rounded-xl bg-emerald-500 text-zinc-950 hover:bg-emerald-400 shadow-md shadow-emerald-950/50 flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.98]"
                 >
-                  {isSaving ? <LoadingSpinner size="xs" text="" /> : <Sparkles size={13} className="text-amber-400" />}
-                  Gravar Direto (sem Wizard)
-                </Button>
-
-                <Button
-                  onClick={() => setStep(4)}
-                  disabled={isSaving}
-                  className="py-3 px-6 text-sm font-bold rounded-xl bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 shadow-[0_4px_20px_rgba(var(--color-primary-rgb),0.4)] flex items-center gap-2 cursor-pointer"
-                >
-                  <ArrowRight size={16} />
-                  Avançar para Conciliação de OSs & Pagamentos (Passo 4) →
+                  {isSaving ? <LoadingSpinner size="xs" text="" /> : <ArrowRight size={16} className="text-zinc-950 stroke-[2.5]" />}
+                  Processar e Avançar Conciliação →
                 </Button>
               </div>
             </div>
           </Card>
         </motion.div>
-        )}
+      )}
 
       {/* STEP 4 (Tela A): Vínculo de Pagamentos sem Lançamento na OS */}
       {step === 4 && (
@@ -2253,9 +2722,6 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             targetDate={targetDate}
             stores={stores}
             resolvedMatches={resolvedMatches}
-            missingOsList={missingOsList}
-            onChangeMissingOsList={setMissingOsList}
-            isSaving={isSaving}
             onNext={() => setStep(5)}
             onBack={() => setStep(3)}
           />
@@ -2336,44 +2802,44 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
               <motion.div 
                 initial={{ opacity: 0, y: 4 }} 
                 animate={{ opacity: 1, y: 0 }} 
-                className="rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] p-8 text-center space-y-6"
+                className="rounded-2xl bg-zinc-900/60 border border-zinc-800 p-8 text-center space-y-6"
               >
-                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
-                  <CheckCircle2 size={24} />
+                <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto shadow-sm">
+                  <CheckCircle2 size={28} />
                 </div>
 
                 <div>
-                  <h2 className="text-xl font-bold text-[var(--text-primary)] tracking-tight">
-                    Importação Concluída com Sucesso
+                  <h2 className="text-xl font-bold text-zinc-100 tracking-tight">
+                    Importação e Conciliação Concluída com Sucesso
                   </h2>
-                  <p className="text-xs text-[var(--text-secondary)] max-w-md mx-auto mt-1">
+                  <p className="text-xs text-zinc-400 max-w-md mx-auto mt-1">
                     Os arquivos foram auditados, as OSs e transações foram persistidas no banco e os saldos consolidados para {formattedTargetDate}.
                   </p>
                 </div>
 
                 {/* 4 Cards de Métricas do Lote */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto pt-1">
-                  <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3 text-left">
-                    <span className="text-[10px] font-mono uppercase text-[var(--text-tertiary)] block">OSs Gravadas</span>
-                    <p className="text-lg font-bold font-mono text-[var(--text-primary)] mt-0.5">{totalOsCount}</p>
-                    <span className="text-[10px] text-[var(--text-tertiary)]">{results.osFiles.length} arquivos</span>
+                  <div className="bg-zinc-950/60 border border-zinc-800 rounded-xl p-3 text-left">
+                    <span className="text-[10px] font-mono uppercase text-zinc-500 block font-sans">OSs Gravadas</span>
+                    <p className="text-lg font-bold font-mono text-zinc-100 mt-0.5 tabular-nums">{totalOsCount}</p>
+                    <span className="text-[10px] text-zinc-500">{results.osFiles.length} arquivos</span>
                   </div>
 
-                  <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3 text-left">
-                    <span className="text-[10px] font-mono uppercase text-[var(--text-tertiary)] block">Vendas Rede</span>
-                    <p className="text-lg font-bold font-mono text-[var(--text-primary)] mt-0.5">{totalRedeCount}</p>
-                    <span className="text-[10px] text-[var(--text-tertiary)]">{results.redeResults.length} relatórios</span>
+                  <div className="bg-zinc-950/60 border border-zinc-800 rounded-xl p-3 text-left">
+                    <span className="text-[10px] font-mono uppercase text-zinc-500 block font-sans">Vendas Rede</span>
+                    <p className="text-lg font-bold font-mono text-zinc-100 mt-0.5 tabular-nums">{totalRedeCount}</p>
+                    <span className="text-[10px] text-zinc-500">{results.redeResults.length} relatórios</span>
                   </div>
 
-                  <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3 text-left">
-                    <span className="text-[10px] font-mono uppercase text-[var(--text-tertiary)] block">Extratos OFX</span>
-                    <p className="text-lg font-bold font-mono text-[var(--text-primary)] mt-0.5">{totalOfxCount}</p>
-                    <span className="text-[10px] text-[var(--text-tertiary)]">{results.ofxResults.length} contas</span>
+                  <div className="bg-zinc-950/60 border border-zinc-800 rounded-xl p-3 text-left">
+                    <span className="text-[10px] font-mono uppercase text-zinc-500 block font-sans">Extratos OFX</span>
+                    <p className="text-lg font-bold font-mono text-zinc-100 mt-0.5 tabular-nums">{totalOfxCount}</p>
+                    <span className="text-[10px] text-zinc-500">{results.ofxResults.length} contas</span>
                   </div>
 
-                  <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-3 text-left">
-                    <span className="text-[10px] font-mono uppercase text-[var(--text-tertiary)] block">Data Base</span>
-                    <p className="text-lg font-bold font-mono text-[var(--text-primary)] mt-0.5">{formattedTargetDate}</p>
+                  <div className="bg-zinc-950/60 border border-zinc-800 rounded-xl p-3 text-left">
+                    <span className="text-[10px] font-mono uppercase text-zinc-500 block font-sans">Data Base</span>
+                    <p className="text-lg font-bold font-mono text-zinc-100 mt-0.5 tabular-nums">{formattedTargetDate}</p>
                     <span className="text-[10px] text-emerald-400 font-medium">Consolidado</span>
                   </div>
                 </div>
@@ -2388,7 +2854,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <Sparkles size={16} className={autoHealingData.is_conforme ? 'text-emerald-400' : 'text-amber-400'} />
-                        <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
+                        <span className="text-xs font-bold uppercase tracking-wider text-zinc-100">
                           Auditoria Pericial & Auto-Healing
                         </span>
                       </div>
@@ -2397,17 +2863,17 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                       </Badge>
                     </div>
 
-                    <div className="flex items-center gap-4 text-xs font-mono text-[var(--text-secondary)] mb-2">
-                      <span>Delta Inicial: <b className="text-[var(--text-primary)]">R$ {Number(autoHealingData.initial_delta).toFixed(2)}</b></span>
+                    <div className="flex items-center gap-4 text-xs font-mono text-zinc-400 mb-2">
+                      <span>Delta Inicial: <b className="text-zinc-100">R$ {Number(autoHealingData.initial_delta).toFixed(2)}</b></span>
                       <span>➔</span>
                       <span>Delta Final: <b className={autoHealingData.is_conforme ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'}>R$ {Number(autoHealingData.final_delta).toFixed(2)}</b></span>
-                      <span className="text-[10px] text-[var(--text-tertiary)]">({autoHealingData.iterations_count} {autoHealingData.iterations_count === 1 ? 'iteração' : 'iterações'})</span>
+                      <span className="text-[10px] text-zinc-500">({autoHealingData.iterations_count} {autoHealingData.iterations_count === 1 ? 'iteração' : 'iterações'})</span>
                     </div>
 
                     {autoHealingData.steps_executed && autoHealingData.steps_executed.length > 0 && (
-                      <div className="space-y-1.5 pt-2 border-t border-[var(--border-subtle)] text-[11px]">
+                      <div className="space-y-1.5 pt-2 border-t border-zinc-800 text-[11px]">
                         {autoHealingData.steps_executed.map((st: any, idx: number) => (
-                          <div key={idx} className="flex items-start gap-2 text-[var(--text-secondary)]">
+                          <div key={idx} className="flex items-start gap-2 text-zinc-400">
                             <span className="text-emerald-400 font-bold">✓</span>
                             <span>{st.details}</span>
                           </div>
@@ -2422,21 +2888,21 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                   <Button
                     onClick={() => setStep(4)}
                     variant="outline"
-                    className="w-full sm:w-auto text-xs py-2.5 px-4 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 font-medium"
+                    className="w-full sm:w-auto text-xs py-2.5 px-4 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 font-semibold"
                   >
                     Revisar Órfãos & Diferença (Wizard) →
                   </Button>
 
                   <Button
                     onClick={() => navigate({ to: '/conciliacao' })}
-                    className="w-full sm:w-auto flex-1 py-2.5 px-5 font-semibold text-xs bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 rounded-lg shadow-sm"
+                    className="w-full sm:w-auto flex-1 py-2.5 px-5 font-bold text-xs bg-emerald-500 text-zinc-950 hover:bg-emerald-400 rounded-xl shadow-md shadow-emerald-950/50"
                   >
                     Ir para a Conciliação do Dia →
                   </Button>
 
                   {auditTrailUrl && (
                     <a href={auditTrailUrl} download={`auditoria-conciliacao-${new Date().getTime()}.json`} className="w-full sm:w-auto">
-                      <Button variant="outline" className="w-full text-xs py-2.5 px-4 border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
+                      <Button variant="outline" className="w-full text-xs py-2.5 px-4 border-zinc-800 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800">
                         <Download size={14} className="mr-1.5" />
                         Auditoria JSON
                       </Button>
@@ -2446,7 +2912,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                   <Button
                     onClick={() => setStep(1)}
                     variant="ghost"
-                    className="w-full sm:w-auto text-xs py-2.5 px-3 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                    className="w-full sm:w-auto text-xs py-2.5 px-3 text-zinc-500 hover:text-zinc-300"
                   >
                     Nova Importação
                   </Button>
@@ -2454,20 +2920,20 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
               </motion.div>
             ) : (
               /* CARD DE PROCESSAMENTO EM ANDAMENTO */
-              <div className="rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] p-6 space-y-5">
+              <div className="rounded-2xl bg-zinc-900/60 border border-zinc-800 p-6 space-y-5">
                 
                 {/* Header */}
-                <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)]">
+                <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
                   <div>
-                    <h3 className="font-semibold text-sm text-[var(--text-primary)]">
+                    <h3 className="font-bold text-sm text-zinc-100">
                       Processamento dos Arquivos
                     </h3>
-                    <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                    <p className="text-xs text-zinc-400 mt-0.5">
                       Ingestão de OSs, auditoria de taxas e conciliação para {formattedTargetDate}.
                     </p>
                   </div>
 
-                  <Badge variant="outline" className="text-xs font-mono px-3 py-1 bg-[var(--bg-canvas)] border-[var(--border-subtle)] text-[var(--text-secondary)]">
+                  <Badge variant="outline" className="text-xs font-mono px-3 py-1 bg-zinc-950 border-zinc-800 text-zinc-400">
                     {progressPct}% Concluído
                   </Badge>
                 </div>
@@ -2481,46 +2947,25 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
               </div>
             )}
 
-            {/* Logs Técnicos de Depuração Colapsáveis */}
-            {importLogs.length > 0 && (
-              <details className="p-3.5 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] group">
-                <summary className="text-xs font-mono text-[var(--text-tertiary)] cursor-pointer flex items-center justify-between hover:text-[var(--text-secondary)] select-none">
-                  <span className="flex items-center gap-2">
-                    <Terminal size={13} />
-                    Logs de Execução ({importLogs.length} eventos)
-                  </span>
-                  <span className="text-[10px] text-[var(--text-tertiary)] group-open:rotate-180 transition-transform">▼</span>
-                </summary>
-                <div className="mt-2.5 max-h-40 overflow-y-auto space-y-1 text-[11px] font-mono text-[var(--text-secondary)] border-t border-[var(--border-subtle)] pt-2.5">
-                  {importLogs.map((log) => (
-                    <div key={log.id} className="flex gap-2">
-                      <span className="text-[var(--text-tertiary)] shrink-0">[{log.timestamp}]</span>
-                      <span className={log.type === 'error' ? 'text-rose-400' : log.type === 'success' ? 'text-emerald-400' : 'text-[var(--text-secondary)]'}>
-                        {log.message}
-                      </span>
-                    </div>
-                  ))}
-                  <div ref={logsEndRef} />
-                </div>
-              </details>
+            {/* Banner de Erro Estruturado */}
+            {importLogs.some(l => l.type === 'error') && !saveFinished && (
+              <ExecutionErrorBanner
+                error={importLogs.slice().reverse().find(l => l.type === 'error')?.error || importLogs.slice().reverse().find(l => l.type === 'error')?.message || 'Erro desconhecido'}
+                isRetrying={isSaving}
+                onRetry={() => handleConfirm(true)}
+              />
             )}
 
-            {/* Alerta de Erro se houver */}
-            {importLogs.some(l => l.type === 'error') && !saveFinished && (
-              <div className="bg-rose-500/10 border border-rose-500/20 p-4 rounded-xl flex items-start justify-between gap-4">
-                <div className="flex items-start gap-3">
-                  <AlertCircle size={18} className="text-rose-400 shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-semibold text-rose-400 text-xs">Falha durante o processamento</h4>
-                    <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                      {importLogs.find(l => l.type === 'error')?.message}
-                    </p>
-                  </div>
-                </div>
-                <Button onClick={handleConfirm} disabled={isSaving} className="bg-rose-500 hover:bg-rose-600 text-white text-xs px-3 py-1.5 shrink-0 rounded-lg">
-                  Tentar Novamente
-                </Button>
-              </div>
+            {/* Terminal de Logs Profissional */}
+            {importLogs.length > 0 && (
+              <ImportExecutionTerminal
+                logs={importLogs}
+                isRunning={isSaving}
+                isFinished={saveFinished}
+                hasError={importLogs.some(l => l.type === 'error')}
+                onRetry={() => handleConfirm(true)}
+                targetDate={targetDate}
+              />
             )}
 
           </motion.div>

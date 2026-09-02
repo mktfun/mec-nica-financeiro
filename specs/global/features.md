@@ -1,3 +1,31 @@
+### Spec 349 — Blindagem do Salvamento de Contas a Pagar e Refatoração do Terminal de Logs
+- **Blindagem no Parser de Contas a Pagar**: `contasPagarParser.ts` descarta estritamente linhas com `amount <= 0 || isNaN(amount)` (ex: títulos cancelados ou estornos), eliminando na causa raiz a violação da check constraint `daily_manual_bills_amount_check` do PostgreSQL.
+- **Sanitização de Foreign Keys e Deduplicação**: `useContasAPagarImport.ts` sanitiza `store_id` (deixa `null` se `'master'` ou se não existir em `stores`), `intercompany_entity_id`, valida campos obrigatórios, deduplica itens em memória e aplica fallback granular individual para inserções resilientes em chunks de 100.
+- **Terminal de Logs Profissional (`ImportExecutionTerminal.tsx`)**: Layout Dark Zinc-950 estilo macOS com dots de cabeçalho, filtros rápidos por severidade (`Todos`, `Erros ❌`, `Avisos ⚠️`, `OK ✅`), botão de cópia de logs 1-clique e auto-scroll suave interno no container (sem saltos de viewport).
+- **Banner de Diagnóstico de Erros (`ExecutionErrorBanner.tsx`)**: Card de alta visibilidade com diagnóstico amigável em português para erros comuns de banco, visualizador colapsável de payload JSON/Stack Trace e botão de retry inteligente (`handleConfirm(true)`).
+- **Saneamento de UTF-8 / Mojibake**: Todas as mensagens de log em `CentralImportWizard.tsx` saneadas para caracteres UTF-8 limpos com emojis válidos.
+
+### Spec 341 — Criação de Nova OS com Baixa Granular e Vínculo de Pagamento Manual no Wizard
+- **Criação de OS On-the-Fly no Step 1**: Adição de formulário na aba *"➕ Criar Nova OS na Filial"* no modal `ManualMatchOsModal.tsx` com campos de Loja, Nº da OS, Cliente, Placa, Forma de Pagamento e opção de Liquidação Integral vs Parcial.
+- **RPC Atômica `create_and_link_manual_os`**: Migration `supabase/migrations/20260901000016_create_and_link_manual_os_rpc.sql` gravando a OS em `patio_os`, incrementando `pix_transfer_value`, `credit_value` ou `debit_value`, atualizando `paid_value` e recalculando `status` ('finalizada' vs 'pago_parcial').
+- **Hook `useManualMatch.ts`**: Mutation `createAndLinkOs` com invalidação coordenada de cache do TanStack Query (`patio_os`, `available_store_os`, `reconciliation_views`, `daily-reconciliation-summary`).
+
+### Spec 340 — Motor de Auto-Match com OSs Finalizadas, Roteamento Corporativo e Orquestração Linear de Steps
+- **Pareamento com OSs Finalizadas**: Migration `supabase/migrations/20260901000015_auto_match_finalized_os_and_corporate_routing.sql` expandindo a RPC `auto_match_daily_transactions` para casar tanto OSs abertas quanto finalizadas que possuam `pix_transfer_value` ou `credit_value`/`debit_value` correspondentes.
+- **Auto-Tagging e Roteamento Corporativo**: Pré-classificação de Empréstimos, Seguros, Sinistros e Transferências Interlojas diretamente para o Step 2 (Justificativas), despoluindo a fila do Step 1.
+- **Orquestração Suave de Steps no Frontend**: Remoção do timer artificial e do flash da tela final de sucesso em `CentralImportWizard.tsx`, transicionando diretamente para o Step 1 com controle 100% manual do operador.
+
+### Spec 335 — Justificativa de Saídas OFX, Integração com Contas a Pagar e Equalização Matemática Linear dos Cards
+- **Subtração Linear dos Cards de Filial**: O split dos cards em `StoreCardModulo1.tsx` adota a equação linear explícita ($A - B = C$): $\text{OFX Entradas} - \text{Créditos Conciliados} = \text{Dif. a Justificar}$ e $\text{Saídas OFX} - \text{Contas Conciliadas} = \text{Dif. a Justificar}$, eliminando comparações ambíguas entre balcão D-0 e extratos D-1.
+- **Justificativa Polimórfica de Débitos Bancários**: `OrphanCategorizationModal.tsx` suporta transações de saída (`type === 'out'`) com paleta Rose, categorias de autopeças/fornecedores/serviços e escolha de destino: *"Somar ao Contas a Pagar"* (`contabilizar_no_subtotal = true`) vs *"Apenas Conciliar"*.
+- **Habilitação de Ações de Saída**: `StoreExtratoBancarioView.tsx` libera o botão "Justificar / Editar" para todas as saídas no extrato da filial, disparando a RPC atômica `resolve_orphan_saida_ofx`.
+- **SSOT de Despesas sem Duplicação**: Migration `supabase/migrations/20260901000012_fix_store_split_linear_subtraction_and_expenses.sql` ajustando a RPC `get_daily_reconciliation_summary` com blindagem contra dupla contagem de despesas.
+
+### Spec 334 — Transparência de Entradas OFX, Empilhamento Visual dos Cards e Centralização dos Cálculos na RPC
+- **Vertical Stack no Card de Filiais**: Reestruturação do bloco esquerdo em `StoreCardModulo1.tsx` com empilhamento vertical de *Saldo Total*, *Rede Total (com badge de compensação)* e *Saldo em Pátio*, eliminando qualquer truncamento com reticências (`...`).
+- **Extrato OFX Imutável**: Migration `supabase/migrations/20260901000011_fix_canonical_store_ofx_entries_and_split.sql` garantindo que `ofx_entradas_total` reflita 100% dos créditos bancários da filial.
+- **Zero Recálculo no Frontend**: Todas as métricas de filiais derivam de propriedades retornadas pela RPC `get_daily_reconciliation_summary`.
+
 ### Spec 279 — Correção do Fechamento por Filial, Agregação Canônica e Cálculo de Diferença por Loja
 - **Agregação Canônica por CTEs na RPC**: RPC `get_daily_reconciliation_summary` atualizada com CTEs isoladas (`rede_agg`, `ofx_rede_agg`, `pix_agg`, `patio_agg`, `vault_agg`, `recon_latest`) e tratamento de `store_id` como `TEXT`, garantindo agregação sem perda para as 10 lojas ativas (Mauá UUID e IDs curtos `st-01` a `st-09`).
 - **Cálculo da Diferença por Loja**: $\text{Previsto Loja} = \text{Rede Líquido} + \text{PIX}$, $\text{Realizado Loja} = \text{OFX Maquininhas} + \text{PIX}$, $\text{Diferença Loja} = \text{Realizado Loja} - \text{Previsto Loja}$.
@@ -532,4 +560,9 @@ ao_entrou_valor (cartões a compensar) sem hardcodes legados de filiais, apurand
 ## Feature 267: Painel de Edição de OSs Ausentes no Pátio e Deduplicação da Rede
 - Componente `MissingPatioOsEditor.tsx` integrado no Step 3 do `CentralImportWizard.tsx` para visualização e edição inline (Valor Total, Valor Pago, Status) de OSs que não vieram nos arquivos de hoje.
 - Sincronização individual e granular de todas as 69 OSs do Excel oficial no banco `patio_os` (totalizando R$ 88.212,39 exatos).
-- Deduplicação determinística em `useTransactions.ts` para `pos_transactions` e eliminação de transações repetidas da Rede em Santo André. (feat(314): auditoria de integridade de saldos, deduplicacao ofx multi-dias e ciclo rede)
+- Deduplicação determinística em `useTransactions.ts` para `pos_transactions` e eliminação de transações repetidas da Rede em Santo André.
+
+## Feature 332: Correção da Diferença no Fechamento por Loja e Pendências OFX
+- **Backend (`20260901000009_fix_store_difference_and_ofx_pendencias.sql`):** Atualizada a RPC `get_daily_reconciliation_summary` para calcular a Diferença por Loja estritamente pela CTE `ofx_unreconciled_agg` (soma de entradas OFX sem vínculo/categoria menos saídas sem conta a pagar).
+- **Frontend (`StoreCardModulo1.tsx` & `conciliacao.$lojaId.tsx`):** Corrigido erro de digitação `"Diferena"`, ajustada a tolerância de centavos e sincronizado o cabeçalho das 6 métricas da filial com suporte nativo a query param `date`.
+

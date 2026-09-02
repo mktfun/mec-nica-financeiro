@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
+    "dev:log": "node scripts/dev-server-logger.mjs",
+    "audit:logs": "node scripts/audit-logs.mjs",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",

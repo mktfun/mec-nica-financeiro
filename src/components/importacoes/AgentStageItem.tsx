@@ -54,18 +54,18 @@ export function AgentStageItem({ stage }: AgentStageItemProps) {
     <div 
       className={`border rounded-xl transition-all duration-200 overflow-hidden ${
         isRunning 
-          ? 'bg-[var(--bg-surface-elevated)] border-[var(--color-primary)]/40 shadow-sm' 
+          ? 'bg-zinc-900 border-emerald-500/30 shadow-sm' 
           : isSuccess 
-            ? 'bg-[var(--bg-surface)] border-[var(--border-subtle)]' 
-            : 'bg-[var(--bg-canvas)] border-[var(--border-subtle)]/60 opacity-60'
+            ? 'bg-zinc-900/60 border-zinc-800' 
+            : 'bg-zinc-950/40 border-zinc-800/60 opacity-60'
       }`}
     >
       {/* Header do Card */}
-      <div className="flex items-center justify-between px-4 py-3 bg-[var(--bg-surface)] border-b border-[var(--border-subtle)]">
+      <div className="flex items-center justify-between px-4 py-3 bg-zinc-950/60 border-b border-zinc-800">
         <div className="flex items-center gap-3">
           <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border ${
             isRunning 
-              ? 'bg-[var(--color-primary)]/10 border-[var(--color-primary)]/30 text-[var(--color-primary)]' 
+              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
               : isSuccess 
                 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
                 : 'bg-zinc-800/40 border-zinc-700/40 text-zinc-400'
@@ -75,28 +75,28 @@ export function AgentStageItem({ stage }: AgentStageItemProps) {
 
           <div>
             <div className="flex items-center gap-2">
-              <h4 className={`font-semibold text-xs tracking-tight ${isSuccess ? 'text-[var(--text-primary)]' : isRunning ? 'text-[var(--text-primary)] font-bold' : 'text-[var(--text-secondary)]'}`}>
+              <h4 className={`font-bold text-xs tracking-tight ${isSuccess ? 'text-zinc-100' : isRunning ? 'text-zinc-100' : 'text-zinc-400'}`}>
                 {stage.title}
               </h4>
               {isRunning && (
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-medium">
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-md bg-emerald-500/15 text-emerald-400 font-bold">
                   Processando
                 </span>
               )}
               {isSuccess && (
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-medium">
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 font-bold">
                   OK
                 </span>
               )}
             </div>
-            <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">
+            <p className="text-[11px] text-zinc-500 mt-0.5">
               {meta.role}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          {isRunning && <Loader2 size={14} className="animate-spin text-[var(--color-primary)]" />}
+          {isRunning && <Loader2 size={14} className="animate-spin text-emerald-400" />}
           {isSuccess && <CheckCircle2 size={14} className="text-emerald-400" />}
           {isPending && <Circle size={14} className="text-zinc-600" />}
           {isError && <AlertCircle size={14} className="text-rose-400" />}
@@ -105,7 +105,7 @@ export function AgentStageItem({ stage }: AgentStageItemProps) {
 
       {/* Sub-Etapas */}
       {stage.subSteps.length > 0 && (
-        <div className="p-3 pl-12 flex flex-col gap-1.5 bg-[var(--bg-canvas)]">
+        <div className="p-3 pl-12 flex flex-col gap-1.5 bg-zinc-950/40">
           {stage.subSteps.map((sub) => {
             const effectiveSubStatus = isSuccess ? 'success' : sub.status;
             return (
@@ -128,5 +128,6 @@ export function AgentStageItem({ stage }: AgentStageItemProps) {
         </div>
       )}
     </div>
+
   );
 }

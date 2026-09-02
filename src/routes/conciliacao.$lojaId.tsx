@@ -64,14 +64,14 @@ function ConciliacaoLojaPage() {
   const store = stores.find(s => s.id === lojaId);
   const { data: transactions = [] } = useTransactionsPorDataELoja(targetDate, lojaId);
   const { data: currentSnapshot } = useDailySnapshot(targetDate);
-  const { data: dailySummary } = useDailyReconciliationSummary(targetDate);
+  const { data: dailySummary, isLoading: isLoadingSummary } = useDailyReconciliationSummary(targetDate);
   const storesList = dailySummary?.stores || dailySummary?.stores_detail || [];
-  const storeRecon = storesList.find(s => s.store_id === lojaId);
+  const storeRecon = storesList.find(s => s.store_id === lojaId || s.store_id === store?.id || s.store_name?.toLowerCase() === store?.name?.toLowerCase());
   
   const isMarcoZero = (currentSnapshot?.metadata as any)?.is_marco_zero === true;
 
   const rawLog: any = storeRecon;
-  const isMissing = !rawLog;
+  const isMissing = !isLoadingSummary && !rawLog;
   const log = {
     saldo_banco: isMissing ? null : Number(rawLog?.saldo_banco ?? rawLog?.saldo_banco_ofx ?? 0),
     maquininha: isMissing ? null : Number(rawLog?.maquininha ?? rawLog?.rede_liquido ?? 0),
@@ -83,7 +83,7 @@ function ConciliacaoLojaPage() {
     isMissingData: isMissing
   };
 
-  const isDiferencaOk = Math.abs(log.diferenca) === 0 && (log.status === 'approved' || log.status === 'conciliado');
+  const isDiferencaOk = Math.abs(log.diferenca || 0) <= 0.05 && (log.status === 'approved' || log.status === 'conciliado');
 
   if (!store) {
     return (
@@ -146,7 +146,7 @@ function ConciliacaoLojaPage() {
           </div>
         </div>
 
-        {!storeRecon && (
+        {!isLoadingSummary && !storeRecon && (
           <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-4 flex items-start gap-3">
             <AlertTriangle className="text-red-400 mt-0.5 shrink-0" size={18} />
             <div>
