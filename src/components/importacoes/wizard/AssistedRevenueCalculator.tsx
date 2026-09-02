@@ -25,6 +25,7 @@ interface AssistedRevenueCalculatorProps {
   onToggleLock: () => void;
   onChangeOdometro: (value: number) => void;
   deltaFaturamento: number;
+  onChangeFaturamentoMesAnterior?: (value: number) => void;
 }
 
 export const AssistedRevenueCalculator: React.FC<AssistedRevenueCalculatorProps> = ({
@@ -37,6 +38,7 @@ export const AssistedRevenueCalculator: React.FC<AssistedRevenueCalculatorProps>
   onToggleLock,
   onChangeOdometro,
   deltaFaturamento,
+  onChangeFaturamentoMesAnterior,
 }) => {
   const [faturamentoMesAnterior, setFaturamentoMesAnterior] = useState<number | ''>(
     initialFaturamentoMesAnterior || (previousOdometro > 100000 ? Math.floor(previousOdometro / 100000) * 100000 : '')
@@ -44,6 +46,12 @@ export const AssistedRevenueCalculator: React.FC<AssistedRevenueCalculatorProps>
   const [mapaMetasFaturamento, setMapaMetasFaturamento] = useState<number | ''>(
     initialMapaMetasFaturamento || ''
   );
+
+  useEffect(() => {
+    if (initialFaturamentoMesAnterior > 0 && (faturamentoMesAnterior === '' || faturamentoMesAnterior === 0)) {
+      setFaturamentoMesAnterior(initialFaturamentoMesAnterior);
+    }
+  }, [initialFaturamentoMesAnterior]);
 
   // Sincronizar se prop mudar
   useEffect(() => {
@@ -143,7 +151,13 @@ export const AssistedRevenueCalculator: React.FC<AssistedRevenueCalculatorProps>
             placeholder="0.00"
             disabled={isLocked}
             value={faturamentoMesAnterior}
-            onChange={e => setFaturamentoMesAnterior(e.target.value === '' ? '' : Number(e.target.value))}
+            onChange={e => {
+              const val = e.target.value === '' ? '' : Number(e.target.value);
+              setFaturamentoMesAnterior(val);
+              if (typeof val === 'number' && onChangeFaturamentoMesAnterior) {
+                onChangeFaturamentoMesAnterior(val);
+              }
+            }}
             className="w-full bg-zinc-950 border border-zinc-700/80 rounded-lg px-2.5 py-1 text-sm font-mono font-bold text-indigo-300 focus:outline-none focus:border-indigo-500 disabled:opacity-50"
           />
           <span className="text-[10px] text-zinc-500 block">Base de encadeamento</span>

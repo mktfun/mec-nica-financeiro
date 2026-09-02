@@ -38,7 +38,8 @@ import { Step1UnregisteredPayments } from './wizard/Step1UnregisteredPayments';
 import { Step2NonRevenueJustifications } from './wizard/Step2NonRevenueJustifications';
 import { Step3CashVaultDaniel } from './wizard/Step3CashVaultDaniel';
 import { Step4FinalAuditAndClose } from './wizard/Step4FinalAuditAndClose';
-import { convertOcrToOsImportResults } from '@/lib/parsers/ocrOsAdapter';
+import { convertOcrToOsImportResults, convertManualPatioToOsImportResults } from '@/lib/parsers/ocrOsAdapter';
+import { AssistedRevenueCalculator } from './wizard/AssistedRevenueCalculator';
 import { useOcrOsProcessor, ExtractedOcrOsItem } from '@/hooks/useOcrOsProcessor';
 import { OcrBatchStoreCarryoverList, PendingPatioOsItem } from './OcrBatchStoreCarryoverList';
 import { OcrBatchDropzoneAndPaste } from './OcrBatchDropzoneAndPaste';
@@ -119,6 +120,14 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
   // Encadeamento do Fechamento Anterior
   const { data: previousSnapshot } = usePreviousDaySnapshot(targetDate);
+  const [manualFaturamentoMesAnterior, setManualFaturamentoMesAnterior] = useState<number>(0);
+
+  useEffect(() => {
+    if (previousSnapshot?.metadata && (previousSnapshot.metadata as any).faturamento_mes_anterior) {
+      setManualFaturamentoMesAnterior(Number((previousSnapshot.metadata as any).faturamento_mes_anterior));
+    }
+  }, [previousSnapshot]);
+
   const previousOdometro = useMemo(() => {
     if (!previousSnapshot) return 0;
     const meta = (previousSnapshot.metadata as any) || {};
@@ -530,12 +539,28 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           console.warn('Auto match pós pátio manual:', matchErr);
         }
 
+        const manualOsFiles = convertManualPatioToOsImportResults(manualPatioItems, stores, targetDate);
+        if (manualOsFiles.length > 0) {
+          setResults(prev => ({
+            ...prev,
+            osFiles: manualOsFiles
+          }));
+        }
+
         toast.success(`${modifiedItems.length} OS(s) atualizadas com formas de pagamento no pátio!`);
       } catch (err: any) {
         console.error('Erro ao salvar pátio manual no step 1.5:', err);
         toast.error(`Falha ao salvar pátio: ${err.message}`);
       } finally {
         setIsOcrInjecting(false);
+      }
+    } else if (manualPatioItems.length > 0 && results.osFiles.length === 0) {
+      const manualOsFiles = convertManualPatioToOsImportResults(manualPatioItems, stores, targetDate);
+      if (manualOsFiles.length > 0) {
+        setResults(prev => ({
+          ...prev,
+          osFiles: manualOsFiles
+        }));
       }
     }
 
@@ -602,7 +627,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     if (results.contasPagarResults && results.contasPagarResults.length > 0) {
       const total = results.contasPagarResults.reduce((acc, c) => acc + c.totalAmount, 0);
       if (total > 0) {
-        setContasManual(total);
+        setContasManual(Number(total.toFixed(2)));
       }
     }
   }, [results.contasPagarResults]);
@@ -1638,9 +1663,25 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         .limit(1)
         .maybeSingle();
 
+      const isNoOsMode = results.osFiles.filter(r => r.success && r.osArray.length > 0).length === 0;
+      const mapaMetasVal = results.mapaMetasResults?.[0]?.totalFaturamento || 0;
+
       const caixaAnt = Number(prevSnap?.caixa_atual || 0);
       const fatAnt = Number(prevSnap?.faturamento || (prevSnap?.metadata as any)?.odometro_hoje || 0);
-      const fatOiBase = (odometroHoje > 0 && fatAnt > 0 && odometroHoje > fatAnt) ? (odometroHoje - fatAnt) : (odometroHoje > 0 ? odometroHoje : faturamentoAtual);
+      
+      let fatOiBase = 0;
+      if (!isNoOsMode) {
+        fatOiBase = (odometroHoje > 0 && fatAnt > 0 && odometroHoje > fatAnt) ? (odometroHoje - fatAnt) : (odometroHoje > 0 ? odometroHoje : faturamentoAtual);
+      } else {
+        if (mapaMetasVal > 0) {
+          fatOiBase = mapaMetasVal;
+        } else if (odometroHoje > 0 && fatAnt > 0 && odometroHoje > fatAnt) {
+          fatOiBase = odometroHoje - fatAnt;
+        } else {
+          fatOiBase = odometroHoje > 0 ? odometroHoje : faturamentoAtual;
+        }
+      }
+
       const fluxoCalculado = caixaAtualCalculado - caixaAnt;
       const valorDispCalculado = fatOiBase - fluxoCalculado;
       const subtotalContasCalculado = finalContasManual + jurosRedeTotal;
@@ -1664,15 +1705,18 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           juros_rede: jurosRedeTotal,
           is_closed: true,
           closed_at: new Date().toISOString(),
-          notes: 'Valores calculados via Importacao Centralizada',
+          notes: isNoOsMode ? 'Fechamento Assistido via Mapa de Metas (Sem Arquivo de OS)' : 'Valores calculados via Importacao Centralizada',
           metadata: {
             caixa_atual: caixaAtualCalculado,
             caixa_anterior: caixaAnt,
             fluxo_caixa: fluxoCalculado,
             faturamento_anterior: fatAnt,
+            faturamento_mes_anterior: manualFaturamentoMesAnterior,
             faturamento_oi_base: fatOiBase,
             odometro_hoje: odometroHoje,
             faturamento_periodo: fatOiBase,
+            source_mode: isNoOsMode ? 'mapa_metas' : 'odometro_os',
+            has_os_files: !isNoOsMode,
             valor_disp_contas: valorDispCalculado,
             subtotal_contas: subtotalContasCalculado,
             diferenca_final: diferencaCalculada,
@@ -2749,128 +2793,207 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                     </div>
                   </div>
 
-                  {/* GRID UNIFICADO DE 4 COLUNAS (DARK UI ZINC-950) */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
-                    {/* 1. Odômetro / Faturamento */}
-                    <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between min-h-[22px]">
-                          <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">
-                            {hasNoOsFiles ? 'Faturamento / Odômetro' : 'Odômetro OI (Acumulado)'}
-                          </label>
-                          {previousOdometro > 0 && (
-                            <span className="text-[10px] font-mono text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/30">
-                              Ant: {previousOdometro.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                            </span>
-                          )}
-                        </div>
-                        <input 
-                          type="number" 
-                          step="0.01"
-                          disabled={isManualLocked}
-                          value={odometroHoje || ''} 
-                          onChange={e => setOdometroHoje(Number(e.target.value))}
-                          placeholder="0,00"
-                          className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
-                        />
-                      </div>
+                  {/* SELEÇÃO CONDICIONAL: SE SEM OS -> MODO ASSISTIDO COMPLETO; SE COM OS -> GRID CLÁSSICO */}
+                  {hasNoOsFiles ? (
+                    <div className="space-y-4">
+                      <AssistedRevenueCalculator
+                        previousOdometro={previousOdometro}
+                        initialFaturamentoMesAnterior={manualFaturamentoMesAnterior || Number((previousSnapshot?.metadata as any)?.faturamento_mes_anterior || 0)}
+                        initialMapaMetasFaturamento={mapaMetasFaturamentoTotal}
+                        odometroHoje={odometroHoje}
+                        onApplyCalculatedValue={(val) => {
+                          setOdometroHoje(Number(val.toFixed(2)));
+                          toast.success(`Faturamento calculado de R$ ${val.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} aplicado ao dia!`);
+                        }}
+                        isLocked={isManualLocked}
+                        onToggleLock={() => setIsManualLocked(!isManualLocked)}
+                        onChangeOdometro={val => setOdometroHoje(Number(val.toFixed(2)))}
+                        deltaFaturamento={deltaFaturamentoCalculado}
+                        onChangeFaturamentoMesAnterior={val => setManualFaturamentoMesAnterior(Number(val.toFixed(2)))}
+                      />
 
-                      {/* Sugestão Inteligente Discreta */}
-                      {hasNoOsFiles && suggestedRevenue > 0 && (
-                        <div className="flex items-center justify-between pt-2 border-t border-zinc-800/60 text-[11px] font-sans">
-                          <span className="text-zinc-400 truncate text-[10px]">
-                            💡 Sugestão: <strong className="text-amber-300 font-mono">{suggestedRevenue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
-                          </span>
-                          <button
-                            type="button"
+                      {/* GRID DE 3 COLUNAS COM DEMAIS VALORES DO DIA */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono">
+                        {/* 1. Dinheiro MP */}
+                        <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between min-h-[22px]">
+                              <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">Dinheiro MP</label>
+                              {previousDinheiroMp > 0 && (
+                                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">
+                                  Ontem: {previousDinheiroMp.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                </span>
+                              )}
+                            </div>
+                            <input 
+                              type="number" 
+                              step="0.01"
+                              disabled={isManualLocked}
+                              value={manualDinheiroMp || ''} 
+                              onChange={e => {
+                                setManualDinheiroMp(Number(e.target.value));
+                                setIsDinheiroMpUserEdited(true);
+                              }}
+                              placeholder="0,00"
+                              className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                            />
+                          </div>
+                        </div>
+
+                        {/* 2. A Receber */}
+                        <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between min-h-[22px]">
+                              <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">A Receber</label>
+                              {manualAReceber > 0 && (
+                                <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30">
+                                  Pendente
+                                </span>
+                              )}
+                            </div>
+                            <input 
+                              type="number" 
+                              step="0.01"
+                              disabled={isManualLocked}
+                              value={manualAReceber || ''} 
+                              onChange={e => setManualAReceber(Number(e.target.value))}
+                              placeholder="0,00"
+                              className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                            />
+                          </div>
+                        </div>
+
+                        {/* 3. Contas a Pagar */}
+                        <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between min-h-[22px]">
+                              <label className="text-[11px] font-bold uppercase text-zinc-400 font-sans">Contas a Pagar</label>
+                              {results.contasPagarResults && results.contasPagarResults.length > 0 && (
+                                <span className="text-[10px] text-rose-400 font-semibold flex items-center gap-1 font-mono bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/30">
+                                  <Receipt size={10} /> ({results.contasPagarResults.reduce((acc, c) => acc + c.totalBills, 0)} contas)
+                                </span>
+                              )}
+                            </div>
+                            <input 
+                              type="number" 
+                              step="0.01"
+                              disabled={isManualLocked}
+                              value={contasManual ? Number(contasManual.toFixed(2)) : (results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) ? Number(results.contasPagarResults.reduce((acc, c) => acc + c.totalAmount, 0).toFixed(2)) : '')} 
+                              onChange={e => setContasManual(Number(Number(e.target.value).toFixed(2)))}
+                              placeholder="0,00"
+                              className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    /* GRID CLÁSSICO ORIGINAL (QUANDO HÁ ARQUIVOS DE OS IMPORTADOS) */
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
+                      {/* 1. Odômetro OI (Acumulado) */}
+                      <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between min-h-[22px]">
+                            <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">
+                              Odômetro OI (Acumulado)
+                            </label>
+                            {previousOdometro > 0 && (
+                              <span className="text-[10px] font-mono text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/30">
+                                Ant: {previousOdometro.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                              </span>
+                            )}
+                          </div>
+                          <input 
+                            type="number" 
+                            step="0.01"
                             disabled={isManualLocked}
-                            onClick={() => setOdometroHoje(suggestedRevenue)}
-                            className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 transition-colors cursor-pointer disabled:opacity-50 shrink-0 ml-1"
-                          >
-                            Usar
-                          </button>
+                            value={odometroHoje || ''} 
+                            onChange={e => setOdometroHoje(Number(e.target.value))}
+                            placeholder="0,00"
+                            className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                          />
                         </div>
-                      )}
 
-                      {odometroHoje > 0 && previousOdometro > 0 && !hasNoOsFiles && (
-                        <p className="text-[11px] font-mono text-emerald-400 pt-0.5">
-                          Δ Faturamento: <span className="font-bold tabular-nums">{deltaFaturamentoCalculado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-                        </p>
-                      )}
-                    </div>
+                        {odometroHoje > 0 && previousOdometro > 0 && (
+                          <p className="text-[11px] font-mono text-emerald-400 pt-0.5">
+                            Δ Faturamento: <span className="font-bold tabular-nums">{deltaFaturamentoCalculado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                          </p>
+                        )}
+                      </div>
 
-                    {/* 2. Dinheiro MP */}
-                    <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between min-h-[22px]">
-                          <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">Dinheiro MP</label>
-                          {previousDinheiroMp > 0 && (
-                            <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">
-                              Ontem: {previousDinheiroMp.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                            </span>
-                          )}
+                      {/* 2. Dinheiro MP */}
+                      <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between min-h-[22px]">
+                            <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">Dinheiro MP</label>
+                            {previousDinheiroMp > 0 && (
+                              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">
+                                Ontem: {previousDinheiroMp.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                              </span>
+                            )}
+                          </div>
+                          <input 
+                            type="number" 
+                            step="0.01"
+                            disabled={isManualLocked}
+                            value={manualDinheiroMp || ''} 
+                            onChange={e => {
+                              setManualDinheiroMp(Number(e.target.value));
+                              setIsDinheiroMpUserEdited(true);
+                            }}
+                            placeholder="0,00"
+                            className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                          />
                         </div>
-                        <input 
-                          type="number" 
-                          step="0.01"
-                          disabled={isManualLocked}
-                          value={manualDinheiroMp || ''} 
-                          onChange={e => {
-                            setManualDinheiroMp(Number(e.target.value));
-                            setIsDinheiroMpUserEdited(true);
-                          }}
-                          placeholder="0,00"
-                          className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
-                        />
+                      </div>
+
+                      {/* 3. A Receber */}
+                      <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between min-h-[22px]">
+                            <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">A Receber</label>
+                            {manualAReceber > 0 && (
+                              <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30">
+                                Pendente
+                              </span>
+                            )}
+                          </div>
+                          <input 
+                            type="number" 
+                            step="0.01"
+                            disabled={isManualLocked}
+                            value={manualAReceber || ''} 
+                            onChange={e => setManualAReceber(Number(e.target.value))}
+                            placeholder="0,00"
+                            className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                          />
+                        </div>
+                      </div>
+
+                      {/* 4. Contas a Pagar */}
+                      <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between min-h-[22px]">
+                            <label className="text-[11px] font-bold uppercase text-zinc-400 font-sans">Contas a Pagar</label>
+                            {results.contasPagarResults && results.contasPagarResults.length > 0 && (
+                              <span className="text-[10px] text-rose-400 font-semibold flex items-center gap-1 font-mono bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/30">
+                                <Receipt size={10} /> ({results.contasPagarResults.reduce((acc, c) => acc + c.totalBills, 0)} contas)
+                              </span>
+                            )}
+                          </div>
+                          <input 
+                            type="number" 
+                            step="0.01"
+                            disabled={isManualLocked}
+                            value={contasManual ? Number(contasManual.toFixed(2)) : (results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) ? Number(results.contasPagarResults.reduce((acc, c) => acc + c.totalAmount, 0).toFixed(2)) : '')} 
+                            onChange={e => setContasManual(Number(Number(e.target.value).toFixed(2)))}
+                            placeholder="0,00"
+                            className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                          />
+                        </div>
                       </div>
                     </div>
-
-                    {/* 3. A Receber */}
-                    <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between min-h-[22px]">
-                          <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">A Receber</label>
-                          {manualAReceber > 0 && (
-                            <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30">
-                              Pendente
-                            </span>
-                          )}
-                        </div>
-                        <input 
-                          type="number" 
-                          step="0.01"
-                          disabled={isManualLocked}
-                          value={manualAReceber || ''} 
-                          onChange={e => setManualAReceber(Number(e.target.value))}
-                          placeholder="0,00"
-                          className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
-                        />
-                      </div>
-                    </div>
-
-                    {/* 4. Contas a Pagar */}
-                    <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between min-h-[22px]">
-                          <label className="text-[11px] font-bold uppercase text-zinc-400 font-sans">Contas a Pagar</label>
-                          {results.contasPagarResults && results.contasPagarResults.length > 0 && (
-                            <span className="text-[10px] text-rose-400 font-semibold flex items-center gap-1 font-mono bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/30">
-                              <Receipt size={10} /> ({results.contasPagarResults.reduce((acc, c) => acc + c.totalBills, 0)} contas)
-                            </span>
-                          )}
-                        </div>
-                        <input 
-                          type="number" 
-                          step="0.01"
-                          disabled={isManualLocked}
-                          value={contasManual || (results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || '')} 
-                          onChange={e => setContasManual(Number(e.target.value))}
-                          placeholder="0,00"
-                          className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
-                        />
-                      </div>
-                    </div>
-                  </div>
+                  )}
                 </div>
               );
             })()}

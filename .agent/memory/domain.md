@@ -1,3 +1,19 @@
+## [2026-09-02] — [Feature ID: 357-faturamento-assistido-sem-os-e-patio-excel]
+
+**Contexto:** Integração e ativação do cálculo de faturamento assistido exclusivamente para cenários sem arquivos de OS (`results.osFiles.length === 0`), sanitização de ponto flutuante em contas a pagar e unificação com o pátio manual.
+
+**Regra aprendida:**
+1. **Guarda Estrita de Faturamento sem OS:**
+   - O cálculo assistido $(\text{Fat. Concil. Anterior} - \text{Fat. Mês Anterior}) + \text{Mapa de Metas} = \text{Fat. Atual}$ só deve ser renderizado quando `results.osFiles.length === 0`.
+   - Se houver arquivos de OS importados (`results.osFiles.length > 0`), o fluxo clássico de Odômetro OI (Acumulado) e $\Delta$ de Faturamento permanece 100% inalterado.
+   - O valor de fechamento do mês anterior deve ser persistido no snapshot (`metadata.faturamento_mes_anterior`) para encadear os dias subsequentes do mesmo mês sem re-digitação.
+2. **Sanitização de Ponto Flutuante IEEE 754:**
+   - Todo somatório de Contas a Pagar (`reduce`) e inputs monetários devem aplicar `toFixed(2)` e `Number()`, prevenindo dízimas visuais (ex: `91200,72000000002`).
+3. **Propagação de Pátio Manual para o Wizard:**
+   - Qualquer modificação no acordeão estilo Excel de Pátio (`PatioExcelStoreAccordion`) no Step 1.5 deve ser convertida via `convertManualPatioToOsImportResults` e injetada em `results.osFiles`, alimentando imediatamente as etapas posteriores de conciliação.
+
+---
+
 ## [2026-09-02] — [Feature ID: 356-sincronizacao-canonica-patio-57k]
 
 **Contexto:** Sincronização canônica e expurgo definitivo de dezenas de OSs antigas/inativas que inflavam o saldo de pátio em aberto para R$ 130k. Alinhamento rigoroso com a planilha oficial `CONCILIAÇÃO 0109.xlsx` (saldo "NA LOJA" de R$ 56.796,63 - R$ 57.780,63).

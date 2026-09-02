@@ -56,7 +56,12 @@ export interface OcrBatchProgress {
   currentStoreName?: string;
 }
 
-const MISTRAL_API_KEY = import.meta.env.VITE_MISTRAL_API_KEY || 'THzNUzZaUm490FThCycu6H46IW6CsCLQ';
+export function sanitizeOsNumber(raw: string): string {
+  if (!raw) return '';
+  const cleaned = raw.replace(/(?:faturamento|faturada|fatura|fatur|fat|ordem|os|nº|num)[\s:]*/gi, '').trim();
+  const matchDigits = cleaned.match(/\d+/);
+  return matchDigits ? matchDigits[0] : cleaned.replace(/[^a-zA-Z0-9]/g, '');
+}
 
 function matchStoreId(rawName: string, stores: StoreRow[], fallbackStoreId?: string): { storeId: string; storeName: string } {
   if (!rawName && fallbackStoreId) {
@@ -223,9 +228,11 @@ Return JSON object: { "service_order": { ... } }`
         canonicalStatus = 'pago_parcial';
       }
 
+      const cleanOsNumber = sanitizeOsNumber(String(data.os_number || ''));
+
       return {
         id: `ocr-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
-        os_number: String(data.os_number || '').trim(),
+        os_number: cleanOsNumber,
         store_id: storeId,
         store_name: storeName,
         raw_store_name: data.empresa_loja || '',
@@ -298,7 +305,12 @@ Return JSON object: { "service_order": { ... } }`
 
       const chunkResults = await Promise.all(chunkPromises);
       chunkResults.forEach(res => {
-        if (res) results.push(res);
+        if (res && res.os_number) {
+          const key = `${res.store_id}::${res.os_number}`;
+          if (!results.some(r => `${r.store_id}::${r.os_number}` === key)) {
+            results.push(res);
+          }
+        }
       });
 
       setProgress(prev => ({

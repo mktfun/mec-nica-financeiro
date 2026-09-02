@@ -164,3 +164,148 @@ export function convertOcrToOsImportResults(
 
   return results;
 }
+
+/**
+ * Converte as OSs gerenciadas/editadas no Pátio Manual (EditablePatioOsItem[])
+ * em OsImportResult[] para que o Step 3 e 4 reconheçam as OSs e seus pagamentos.
+ */
+export function convertManualPatioToOsImportResults(
+  items: Array<{
+    id: string;
+    os_number: string;
+    store_id: string;
+    store_name: string;
+    plate?: string;
+    client_name?: string | null;
+    total_value: number;
+    paid_value: number;
+    pending_value?: number;
+    payment_method?: string;
+    status: string;
+    opened_at?: string;
+    closed_at?: string | null;
+    credit_value?: number;
+    debit_value?: number;
+    pix_transfer_value?: number;
+    cash_value?: number;
+    days_open?: number;
+    isNewManual?: boolean;
+  }>,
+  stores: StoreRow[],
+  targetDate: string
+): OsImportResult[] {
+  if (!items || items.length === 0) {
+    return [];
+  }
+
+  const byStore = new Map<string, typeof items>();
+  items.forEach(item => {
+    const list = byStore.get(item.store_id) || [];
+    list.push(item);
+    byStore.set(item.store_id, list);
+  });
+
+  const results: OsImportResult[] = [];
+
+  byStore.forEach((storeItems, storeId) => {
+    const storeObj = stores.find(s => s.id === storeId);
+    const storeName = storeObj?.name || storeItems[0]?.store_name || 'Filial';
+
+    const osArray: ParsedOS[] = storeItems.map(item => {
+      const totalVal = Number(item.total_value) || 0;
+      const paidVal = Number(item.paid_value) || 0;
+      const pendingVal = item.pending_value !== undefined ? Number(item.pending_value) : Math.max(0, totalVal - paidVal);
+
+      let canonicalStatus: 'em_aberto' | 'pago_parcial' | 'finalizado' = 'em_aberto';
+      if (item.status === 'finalizada' || item.status === 'finalizado' || (pendingVal <= 0.05 && totalVal > 0)) {
+        canonicalStatus = 'finalizado';
+      } else if (paidVal > 0 && pendingVal > 0.05) {
+        canonicalStatus = 'pago_parcial';
+      }
+
+      const openedAt = item.opened_at || targetDate;
+      const closedAt = item.closed_at || (canonicalStatus === 'finalizado' ? targetDate : null);
+
+      const parsedCash = Number(item.cash_value) || 0;
+      const parsedCredit = Number(item.credit_value) || 0;
+      const parsedDebit = Number(item.debit_value) || 0;
+      const parsedPix = Number(item.pix_transfer_value) || 0;
+
+      return {
+        os_number: String(item.os_number || '').trim(),
+        plate: (item.plate || 'S/ Placa').toUpperCase().replace(/[^A-Z0-9]/g, ''),
+        client_name: item.client_name || null,
+        opened_at: openedAt,
+        closed_at: closedAt,
+        total_value: totalVal,
+        paid_value: paidVal,
+        payment_method: item.payment_method || null,
+        status: canonicalStatus,
+        raw_status: item.status || (canonicalStatus === 'finalizado' ? 'Finalizada' : 'Em Aberto'),
+        parsed_credit: parsedCredit,
+        parsed_debit: parsedDebit,
+        parsed_pix_transfer: parsedPix,
+        parsed_cash: parsedCash,
+        cash_value: parsedCash,
+        pending_value: pendingVal,
+        days_open: item.days_open || 1,
+        is_new_os: !!item.isNewManual,
+        delta_paid: paidVal,
+      };
+    });
+
+    const receivablesArray: ParsedReceivable[] = [];
+    storeItems.forEach(item => {
+      const openedAt = item.opened_at || targetDate;
+      const osNum = String(item.os_number || '').trim();
+
+      if (item.credit_value && Number(item.credit_value) > 0) {
+        receivablesArray.push({
+          store_id: item.store_id,
+          store_name: storeName,
+          os_number: osNum,
+          type: 'Cartão Crédito',
+          value: Number(item.credit_value),
+          date: openedAt,
+          due_date: openedAt,
+          status: 'recebido'
+        });
+      }
+      if (item.debit_value && Number(item.debit_value) > 0) {
+        receivablesArray.push({
+          store_id: item.store_id,
+          store_name: storeName,
+          os_number: osNum,
+          type: 'Cartão Débito',
+          value: Number(item.debit_value),
+          date: openedAt,
+          due_date: openedAt,
+          status: 'recebido'
+        });
+      }
+      if (item.pix_transfer_value && Number(item.pix_transfer_value) > 0) {
+        receivablesArray.push({
+          store_id: item.store_id,
+          store_name: storeName,
+          os_number: osNum,
+          type: 'PIX',
+          value: Number(item.pix_transfer_value),
+          date: openedAt,
+          due_date: openedAt,
+          status: 'recebido'
+        });
+      }
+    });
+
+    results.push({
+      fileName: `Patio_Manual_${storeName.replace(/\s+/g, '_')}`,
+      storeAlias: storeName,
+      success: true,
+      osArray,
+      receivablesArray,
+      osCount: osArray.filter(o => o.status === 'finalizado').length,
+    });
+  });
+
+  return results;
+}

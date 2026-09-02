@@ -1,3 +1,9 @@
+### Spec 357 — Faturamento Assistido sem OS e Integração Pátio Excel
+- **Cálculo Assistido sem OS**: Integração do `AssistedRevenueCalculator.tsx` sob guarda `results.osFiles.length === 0`, calculando $(F_{\text{ant}} - F_{\text{mês\_ant}}) + F_{\text{metas}}$ com persistência de `metadata.faturamento_mes_anterior`.
+- **Sanitização Numérica**: Arredondamento com `toFixed(2)` em Contas a Pagar eliminando dízimas periódicas.
+- **Sanitização de OCR**: Limpeza de termos colados (`601Fatura` -> `601`) via `sanitizeOsNumber` e deduplicação de OSs.
+- **Pátio Manual para o Wizard**: Conversão de lançamentos do `PatioExcelStoreAccordion` para `results.osFiles` via `convertManualPatioToOsImportResults`.
+
 ### Spec 356 — Sincronização Canônica Estrita de Pátio (R$ 56.796,63 - R$ 57.780,63)
 - **Expurgo e Encerramento de Resíduos**: Encerradas todas as OSs que não pertenciam ao balanço contábil da virada de mês em `patio_os`.
 - **Alinhamento Rigoroso com Planilha Oficial**: Sincronizadas as OSs ativas com valores exatos por filial, eliminando desvios e cravando o saldo em aberto em R$ 56.796,63.
