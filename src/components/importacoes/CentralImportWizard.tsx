@@ -37,17 +37,17 @@ import { Step1UnregisteredPayments } from './wizard/Step1UnregisteredPayments';
 import { Step2NonRevenueJustifications } from './wizard/Step2NonRevenueJustifications';
 import { Step3CashVaultDaniel } from './wizard/Step3CashVaultDaniel';
 import { Step4FinalAuditAndClose } from './wizard/Step4FinalAuditAndClose';
+import { convertOcrToOsImportResults } from '@/lib/parsers/ocrOsAdapter';
+import { useOcrOsProcessor, ExtractedOcrOsItem } from '@/hooks/useOcrOsProcessor';
+import { OcrBatchStoreCarryoverList, PendingPatioOsItem } from './OcrBatchStoreCarryoverList';
+import { OcrBatchDropzoneAndPaste } from './OcrBatchDropzoneAndPaste';
+import { OcrBatchProgressBar } from './OcrBatchProgressBar';
+import { OcrBatchReviewGrid } from './OcrBatchReviewGrid';
 import { executeAutoMatchingEngine, PendingUnmatchedTransaction } from '@/lib/matchers/autoMatchingEngine';
 import { executeExpenseAutoMatching } from '@/lib/expenseMatcher';
 import { useQueryClient } from '@tanstack/react-query';
-
-
-export interface ImportLogEntry {
-  id: string;
-  timestamp: string;
-  type: 'info' | 'success' | 'warning' | 'error';
-  message: string;
-}
+import { ImportExecutionTerminal, ImportLogEntry } from './ImportExecutionTerminal';
+import { ExecutionErrorBanner } from './ExecutionErrorBanner';
 
 export interface MissingPatioOsEdit {
   id: string;
@@ -86,7 +86,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const { saveBills } = useContasAPagarImport();
   const { data: aiSettings } = useAiSettings();
 
-  const [step, setStep] = useState<1 | 2 | 2.5 | 3 | 3.5 | 4 | 5 | 6 | 7 | 8>(1);
+  const [step, setStep] = useState<1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4 | 5 | 6 | 7 | 8>(1);
   const [subStep, setSubStep] = useState<1 | 2 | 3>(1);
   const [isPreparing, setIsPreparing] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -111,7 +111,29 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   
   // Manual inputs globais
   const [manualDinheiroMp, setManualDinheiroMp] = useState<number>(0);
+  const [isDinheiroMpUserEdited, setIsDinheiroMpUserEdited] = useState<boolean>(false);
   const [manualAReceber, setManualAReceber] = useState<number>(0);
+
+  // Encadeamento do Fechamento Anterior
+  const { data: previousSnapshot } = usePreviousDaySnapshot(targetDate);
+  const previousOdometro = useMemo(() => {
+    if (!previousSnapshot) return 0;
+    const meta = (previousSnapshot.metadata as any) || {};
+    return Number(meta.odometro_hoje ?? meta.faturamento_anterior ?? meta.odometro_anterior ?? previousSnapshot.faturamento ?? 0);
+  }, [previousSnapshot]);
+
+  const previousDinheiroMp = useMemo(() => {
+    if (!previousSnapshot) return 0;
+    return Number(previousSnapshot.dinheiro_mp || 0);
+  }, [previousSnapshot]);
+
+  // Ingestão OCR Embutida (Step 1.5)
+  const { isProcessing: isOcrProcessing, progress: ocrProgress, processBatchQueue: processOcrBatchQueue } = useOcrOsProcessor();
+  const [pendingOcrOsList, setPendingOcrOsList] = useState<PendingPatioOsItem[]>([]);
+  const [extraOcrOsList, setExtraOcrOsList] = useState<PendingPatioOsItem[]>([]);
+  const [selectedOcrStoreId, setSelectedOcrStoreId] = useState<string>('ALL');
+  const [extractedOcrItems, setExtractedOcrItems] = useState<ExtractedOcrOsItem[]>([]);
+  const [isOcrInjecting, setIsOcrInjecting] = useState<boolean>(false);
 
   // Motor de Auto-Match em Memória (alimenta o Step 4)
   const [unmatchedTransactions, setUnmatchedTransactions] = useState<PendingUnmatchedTransaction[]>([]);
@@ -121,6 +143,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   // OSs ausentes / órfãs detectadas para ajuste manual livre
   const [missingOsList, setMissingOsList] = useState<MissingPatioOsEdit[]>([]);
   const [isLoadingMissingOs, setIsLoadingMissingOs] = useState(false);
+  const [isOcrModalOpen, setIsOcrModalOpen] = useState(false);
 
   const updateMissingOs = (id: string, field: 'total_value' | 'paid_value' | 'status', value: any) => {
     setMissingOsList(prev => prev.map(item => {
@@ -208,22 +231,31 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           .eq('date', targetDate)
           .maybeSingle();
 
-        if (snap) {
-          if (snap.dinheiro_mp) setManualDinheiroMp(Number(snap.dinheiro_mp));
-          if (snap.a_receber_manual) setManualAReceber(Number(snap.a_receber_manual));
+        if (snap && snap.dinheiro_mp !== null && snap.dinheiro_mp !== undefined && Number(snap.dinheiro_mp) > 0) {
+          if (!isDinheiroMpUserEdited) {
+            setManualDinheiroMp(Number(snap.dinheiro_mp));
+          }
+        } else if (previousSnapshot?.dinheiro_mp !== undefined && previousSnapshot?.dinheiro_mp !== null) {
+          if (!isDinheiroMpUserEdited) {
+            setManualDinheiroMp(Number(previousSnapshot.dinheiro_mp));
+          }
         }
 
-        // Se a_receber_manual for 0, busca soma dos recebíveis pendentes cadastrados
-        const { data: recs } = await supabase
-          .from('receivables')
-          .select('value')
-          .lte('date', targetDate)
-          .eq('status', 'pendente');
+        if (snap && snap.a_receber_manual) {
+          setManualAReceber(Number(snap.a_receber_manual));
+        } else {
+          // Se a_receber_manual for 0, busca soma dos recebíveis pendentes cadastrados
+          const { data: recs } = await supabase
+            .from('receivables')
+            .select('value')
+            .lte('date', targetDate)
+            .eq('status', 'pendente');
 
-        if (recs && recs.length > 0) {
-          const totalRec = recs.reduce((acc, r) => acc + Number(r.value || 0), 0);
-          if (totalRec > 0) {
-            setManualAReceber(Number(totalRec.toFixed(2)));
+          if (recs && recs.length > 0) {
+            const totalRec = recs.reduce((acc, r) => acc + Number(r.value || 0), 0);
+            if (totalRec > 0) {
+              setManualAReceber(Number(totalRec.toFixed(2)));
+            }
           }
         }
       } catch (err) {
@@ -232,7 +264,127 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     }
 
     loadDefaultsForDate();
-  }, [targetDate]);
+  }, [targetDate, previousSnapshot, isDinheiroMpUserEdited]);
+
+  // Carrega lista de OSs pendentes do pátio para o Step 1.5 (Guia de Missão OCR)
+  useEffect(() => {
+    if (step !== 1.5) return;
+    async function fetchOcrPendingPatio() {
+      try {
+        const { data, error } = await supabase.rpc('get_pending_patio_os_for_ocr', {
+          p_target_date: targetDate || new Date().toISOString().split('T')[0]
+        });
+        if (!error && data) {
+          setPendingOcrOsList(data as PendingPatioOsItem[]);
+        }
+      } catch (e) {
+        console.warn('Erro ao carregar OSs pendentes para OCR:', e);
+      }
+    }
+    fetchOcrPendingPatio();
+  }, [step, targetDate]);
+
+  const handleStartOcrProcessing = async (images: Array<{ id: string; base64: string; name: string }>) => {
+    const itemsToProcess = images.map(img => ({
+      ...img,
+      storeId: selectedOcrStoreId !== 'ALL' ? selectedOcrStoreId : undefined,
+    }));
+    const extracted = await processOcrBatchQueue(itemsToProcess, stores, { batchSize: 2, delayMs: 1500 });
+    setExtractedOcrItems(prev => [...prev, ...extracted]);
+    if (extracted.length > 0) {
+      toast.success(`${extracted.length} print(s) extraído(s) com sucesso pelo Mistral Vision!`);
+    }
+  };
+
+  const handleAddExtraOcrOs = (storeId: string, osData: Partial<PendingPatioOsItem>) => {
+    const newExtra: PendingPatioOsItem = {
+      id: `extra-${Date.now()}-${osData.os_number}`,
+      os_number: String(osData.os_number || '').trim(),
+      store_id: storeId,
+      store_name: osData.store_name || stores.find(s => s.id === storeId)?.name || 'Filial',
+      client_name: osData.client_name || 'Cliente Avulso',
+      plate: (osData.plate || 'S/ Placa').toUpperCase(),
+      total_value: Number(osData.total_value) || 0,
+      paid_value: 0,
+      pending_value: Number(osData.total_value) || 0,
+      days_open: 1,
+      opened_at: targetDate,
+      status: 'em_aberto',
+      isExtraManual: true
+    };
+    setExtraOcrOsList(prev => [...prev, newExtra]);
+    toast.success(`OS #${newExtra.os_number} adicionada ao checklist!`);
+  };
+
+  const handleChangeOcrItem = (id: string, field: keyof ExtractedOcrOsItem, value: any) => {
+    setExtractedOcrItems(prev =>
+      prev.map(item => (item.id === id ? { ...item, [field]: value } : item))
+    );
+  };
+
+  const handleDeleteOcrItem = (id: string) => {
+    setExtractedOcrItems(prev => prev.filter(item => item.id !== id));
+  };
+
+  const handleSaveAndAdvanceOcr = async () => {
+    if (extractedOcrItems.length === 0) {
+      toast.error('Nenhum print de OS foi extraído ainda.');
+      return;
+    }
+    setIsOcrInjecting(true);
+    try {
+      // 1. Converter itens OCR em OsImportResult[]
+      const convertedOsFiles = convertOcrToOsImportResults(extractedOcrItems, stores, targetDate);
+      
+      // 2. Persistir IMEDIATAMENTE no banco (patio_os, receivables, store_cash_vault) de forma atômica e resiliente
+      for (const file of convertedOsFiles) {
+        const storeObj = stores.find(s => s.name === file.storeAlias || s.id === file.storeAlias);
+        const storeId = storeObj ? storeObj.id : file.storeAlias;
+        const storeName = storeObj ? storeObj.name : file.storeAlias;
+
+        if (storeId && file.osArray.length > 0) {
+          await savePatioOsAndReceivables(storeId, storeName, file.osArray, file.receivablesArray || [], targetDate);
+        }
+      }
+
+      // 3. Dispara auto-pareamento bancário pós-ingestão em background
+      try {
+        await supabase.rpc('auto_match_daily_transactions', { p_date: targetDate });
+      } catch (matchErr) {
+        console.warn('Auto match pós OCR:', matchErr);
+      }
+
+      // 4. Injetar no estado de results do Wizard de forma não destrutiva
+      setResults(prev => ({
+        ...prev,
+        osFiles: convertedOsFiles
+      }));
+
+      // 5. Auto-mapear as lojas das OSs extraídas
+      convertedOsFiles.forEach(file => {
+        const storeObj = stores.find(s => s.name === file.storeAlias || s.id === file.storeAlias);
+        if (storeObj) {
+          updateMapping(file.storeAlias, storeObj.id, storeObj.name);
+        }
+      });
+
+      toast.success(`✅ ${extractedOcrItems.length} OS(s) do OCR salvas no banco de dados e integradas na esteira!`);
+
+      // 6. Se houver outros arquivos (OFX/Rede) com aliases não mapeados, vai pro Step 2; senão vai pro Step 3
+      const hasUnmappedOfx = results.ofxResults.some(o => !mapping[o.alias]);
+      const hasUnmappedRede = results.redeResults.some(r => r.transactions.some(t => !mapping[t.storeName]));
+
+      if (hasUnmappedOfx || hasUnmappedRede) {
+        setStep(2);
+      } else {
+        setStep(3);
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Erro ao persistir e integrar OSs do OCR.');
+    } finally {
+      setIsOcrInjecting(false);
+    }
+  };
 
   // Terminal logs state
   const [importLogs, setImportLogs] = useState<ImportLogEntry[]>([]);
@@ -248,14 +400,6 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const [isManualLocked, setIsManualLocked] = useState<boolean>(true);
   const [copiedJson, setCopiedJson] = useState(false);
   const [autoHealingData, setAutoHealingData] = useState<any>(null);
-
-  // Encadeamento do Fechamento Anterior
-  const { data: previousSnapshot } = usePreviousDaySnapshot(targetDate);
-  const previousOdometro = useMemo(() => {
-    if (!previousSnapshot) return 0;
-    const meta = (previousSnapshot.metadata as any) || {};
-    return Number(meta.odometro_hoje ?? meta.faturamento_anterior ?? meta.odometro_anterior ?? previousSnapshot.faturamento ?? 0);
-  }, [previousSnapshot]);
 
   const deltaFaturamentoCalculado = useMemo(() => {
     if (!odometroHoje) return 0;
@@ -430,16 +574,34 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     });
   };
 
-  const addLog = (message: string, type: 'info' | 'success' | 'warning' | 'error' = 'info') => {
+  const addLog = (
+    message: string, 
+    type: 'info' | 'success' | 'warning' | 'error' = 'info',
+    meta?: { source?: ImportLogEntry['source']; error?: any; details?: any }
+  ) => {
     const timestamp = new Date().toLocaleTimeString('pt-BR');
-    setImportLogs(prev => [...prev, { id: crypto.randomUUID(), timestamp, type, message }]);
-  };
-
-  useEffect(() => {
-    if (logsEndRef.current) {
-      logsEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    let structuredError: any;
+    if (meta?.error) {
+      structuredError = {
+        code: meta.error.code || meta.error.status || undefined,
+        message: meta.error.message || String(meta.error),
+        details: meta.error.details || undefined,
+        hint: meta.error.hint || undefined,
+        stack: meta.error.stack || undefined,
+        payload: meta.details
+      };
     }
-  }, [importLogs]);
+
+    setImportLogs(prev => [...prev, { 
+      id: crypto.randomUUID(), 
+      timestamp, 
+      type, 
+      message,
+      source: meta?.source,
+      error: structuredError,
+      details: meta?.details
+    }]);
+  };
 
   useEffect(() => {
     const checkSnapshots = async () => {
@@ -472,6 +634,15 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     const parsedResults = await processFiles(acceptedFiles, { sessionId: newSessionId });
     
     if (parsedResults) {
+      // Auto-Detecção: Se não há planilha de OSs (virada de pátio), avança direto para o Step 1.5 (OCR)
+      const hasOsFiles = parsedResults.osFiles && parsedResults.osFiles.filter(r => r.success).length > 0;
+      
+      if (!hasOsFiles) {
+        toast.info('Nenhuma planilha .xls de OS detectada (Virada de Pátio). Avançando automaticamente para Ingestão OCR...', { duration: 4000 });
+        setStep(1.5);
+        return;
+      }
+
       const aliases = new Set<string>();
       parsedResults.osFiles.filter(r => r.success).forEach(r => aliases.add(r.storeAlias));
       parsedResults.maquininhaItems.forEach(i => aliases.add(i.storeName));
@@ -749,7 +920,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       // 2. Transações e OFX
       const ofxCount = results.ofxResults.reduce((acc, curr) => acc + curr.transactions.length, 0);
       updateStage(2, 'running', `Conciliando OFX (${ofxCount} lançamentos)...`);
-      addLog(`ðŸ ¦ Conciliando Extratos OFX (${ofxCount} lançamentos bancários)...`, "info");
+      addLog(`🏦 Conciliando Extratos OFX (${ofxCount} lançamentos bancários)...`, "info", { source: 'ofx' });
 
       const validAmounts = new Set<number>();
       results.osFiles.filter(r => r.success).forEach(r => r.osArray.forEach(os => {
@@ -932,14 +1103,14 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
       updateStage(2, 'success', 'Extratos processados!');
       updateStage(3, 'running', `Gravando batch de ${txsToInsert.length} transações...`);
-      addLog(`âš™ï¸  Gravando batch de ${txsToInsert.length} transações no banco...`, "info");
+      addLog(`⚙️ Gravando batch de ${txsToInsert.length} transações no banco...`, "info", { source: 'database' });
       const batch = await createImportBatch({ target_date: targetDate });
       
       await saveTransactions({ transactions: txsToInsert, storeBankBalances, storePreviousBalances, import_batch_id: batch.id } as any);
-      addLog("âœ… Transações do extrato e adquirente salvas com sucesso!", "success");
+      addLog("✅ Transações do extrato e adquirente salvas com sucesso!", "success", { source: 'database' });
 
       if (matchesToInsert.length > 0) {
-        addLog(`ðŸ”— Vinculando ${matchesToInsert.length} pares perfeitos de conciliação...`, "info");
+        addLog(`🔗 Vinculando ${matchesToInsert.length} pares perfeitos de conciliação...`, "info", { source: 'database' });
         
         try {
           // 1. Coletar fitids para consultar o DB
@@ -999,25 +1170,25 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           }));
 
           await insertConciliationMatches(sanitizedMatches);
-          addLog("âœ… Pares de conciliação salvos com sucesso!", "success");
+          addLog("✅ Pares de conciliação salvos com sucesso!", "success", { source: 'database' });
         } catch (matchErr: any) {
           console.warn("Aviso ao salvar pares de conciliação:", matchErr);
-          addLog(`âš ï¸ Pares de conciliação salvos parcialmente (transações garantidas no banco).`, "warning");
+          addLog(`⚠️ Pares de conciliação salvos parcialmente (transações garantidas no banco).`, "warning", { source: 'database', error: matchErr });
         }
       }
 
       if (manualOsMatches.length > 0) {
-        addLog(`🔧 Dando baixa em ${manualOsMatches.length} OSs do Estoque Passivo...`, "info");
+        addLog(`🔧 Dando baixa em ${manualOsMatches.length} OSs do Estoque Passivo...`, "info", { source: 'patio' });
         try {
           const osIds = manualOsMatches.map(m => m.osId);
           await supabase
             .from('estoque_os_pendente')
             .update({ status: 'PAGA', data_baixa: new Date().toISOString() })
             .in('id', osIds);
-          addLog("✅ OSs do passivo baixadas com sucesso!", "success");
+          addLog("✅ OSs do passivo baixadas com sucesso!", "success", { source: 'patio' });
         } catch (err: any) {
           console.error("Erro ao baixar OS passiva", err);
-          addLog("⚠️ Erro ao dar baixa em OSs do passivo.", "warning");
+          addLog("⚠️ Erro ao dar baixa em OSs do passivo.", "warning", { source: 'patio', error: err });
         }
       }
 
@@ -1030,7 +1201,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         );
 
         if (modifiedMissing.length > 0) {
-          addLog(`🔧 Atualizando ${modifiedMissing.length} OSs ausentes editadas pelo operador...`, "info");
+          addLog(`🔧 Atualizando ${modifiedMissing.length} OSs ausentes editadas pelo operador...`, "info", { source: 'patio' });
           for (const item of modifiedMissing) {
             try {
               await supabase
@@ -1047,7 +1218,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
               console.warn("Erro ao atualizar OS ausente:", err);
             }
           }
-          addLog("✅ OSs ausentes atualizadas com sucesso no banco!", "success");
+          addLog("✅ OSs ausentes atualizadas com sucesso no banco!", "success", { source: 'patio' });
 
           // Re-sincroniza o snapshot do pátio e reconciliações com as alterações manuais
           const { data: updatedPatio } = await supabase
@@ -1088,7 +1259,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       }
 
       // Log de Importação
-      addLog("ðŸ“ Atualizando histórico de importação (import_logs)...", "info");
+      addLog("📋 Atualizando histórico de importação (import_logs)...", "info", { source: 'system' });
       
       const logsByStore = new Map<string, any>();
       
@@ -1280,14 +1451,14 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
       // Salvar Lotes Analíticos de Contas a Pagar
       if (results.contasPagarResults && results.contasPagarResults.length > 0) {
-        addLog(`📑 Salvando ${results.contasPagarResults.length} lote(s) de Contas a Pagar no banco...`, "info");
+        addLog(`📑 Salvando ${results.contasPagarResults.length} lote(s) de Contas a Pagar no banco...`, "info", { source: 'contas' });
         for (const cResult of results.contasPagarResults) {
           try {
             await saveBills({ parseResult: cResult, targetDate });
-            addLog(`✅ ${cResult.totalBills} contas salvas com sucesso! Total: R$ ${cResult.totalAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, "success");
+            addLog(`✅ ${cResult.totalBills} contas salvas com sucesso! Total: R$ ${cResult.totalAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, "success", { source: 'contas' });
           } catch (cErr: any) {
             console.warn("Erro ao salvar contas a pagar:", cErr);
-            addLog(`⚠️ Falha ao salvar contas a pagar: ${cErr.message}`, "warning");
+            addLog(`⚠️ Falha ao salvar contas a pagar: ${cErr.message}`, "warning", { source: 'contas', error: cErr });
           }
         }
       }
@@ -1648,7 +1819,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const totalOfxIn = allOfxTx.filter(t => t.type === 'in').reduce((a,b) => a + b.amount, 0);
 
   const WIZARD_PHASES = [
-    { id: 1, name: 'Upload Global', desc: 'OFX, Rede, OS, Contas', stepTarget: 1, matches: (s: number) => s === 1 },
+    { id: 1, name: 'Upload Global', desc: 'OFX, Rede, OS, Contas', stepTarget: 1, matches: (s: number) => s === 1 || s === 1.5 },
     { id: 2, name: 'Mapeamento & Preview', desc: 'Lojas e Inputs Manuais', stepTarget: 3, matches: (s: number) => s === 2 || s === 2.5 || s === 3 || s === 3.5 || (s === 8 && isSaving) },
     { id: 3, name: 'Pagamentos sem OS', desc: 'Vínculo Rede e PIX', stepTarget: 4, matches: (s: number) => s === 4 },
     { id: 4, name: 'Justificativas', desc: 'Entradas e Saídas', stepTarget: 5, matches: (s: number) => s === 5 },
@@ -1808,6 +1979,34 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             )}
           </div>
           
+          {/* Banner Informativo de Virada de Mês / OCR */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-gradient-to-r from-indigo-950/40 via-zinc-900/60 to-zinc-900/40 border border-indigo-500/30">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
+                  Virada de Mês / Pátio sem relatório do ERP?
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-mono">
+                    Mistral OCR Vision Integrado
+                  </span>
+                </h4>
+                <p className="text-xs text-zinc-400 mt-0.5">
+                  Se você não tiver o arquivo .xls de OSs, solte os extratos OFX e Rede acima que o sistema entrará automaticamente na esteira de prints.
+                </p>
+              </div>
+            </div>
+            <Button
+              type="button"
+              onClick={() => setStep(1.5)}
+              className="bg-indigo-600/30 hover:bg-indigo-600/40 border border-indigo-500/40 text-indigo-200 text-xs font-semibold px-4 py-2 rounded-xl flex items-center gap-2 shrink-0"
+            >
+              <Sparkles className="w-4 h-4 text-indigo-400" />
+              Abrir Guia OCR Diretamente
+            </Button>
+          </div>
+          
           {isProcessing && (
             <div className="mt-8 flex justify-center">
                <div className="flex items-center gap-3 animate-pulse text-zinc-400 text-sm">
@@ -1816,6 +2015,107 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                </div>
             </div>
           )}
+        </motion.div>
+      )}
+
+      {/* STEP 1.5: Ingestão OCR Embutida (Seamless) */}
+      {step === 1.5 && (
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-4">
+          {/* Header Subtitle da Etapa OCR */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-zinc-800/80 mb-2 px-1 gap-2">
+            <div>
+              <h3 className="text-base font-bold text-zinc-100 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-indigo-400" />
+                Ingestão Visual OCR de Ordens de Serviço (Virada de Pátio)
+              </h3>
+              <p className="text-xs text-zinc-400 mt-0.5">
+                Data do Fechamento: <span className="font-mono text-indigo-300 font-bold">{targetDate}</span> · Abra cada OS no Oficina Inteligente e dê <kbd className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-200 font-mono text-[11px] border border-zinc-700">Ctrl + V</kbd> do print da aba <strong className="text-emerald-400">Pagamentos</strong>
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/30 font-mono font-semibold">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+                Mistral Pixtral-12B (JSON Mode)
+              </span>
+            </div>
+          </div>
+
+          {/* 2 Colunas: Guia Ativo de Missão (5 cols) | Dropzone, Progress & Review Grid (7 cols) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 min-h-[560px]">
+            {/* Left Column: Guia de Missão por Loja */}
+            <div className="lg:col-span-5 h-[600px]">
+              <OcrBatchStoreCarryoverList
+                stores={stores}
+                pendingOsList={pendingOcrOsList}
+                extraOsList={extraOcrOsList}
+                extractedItems={extractedOcrItems}
+                selectedStoreId={selectedOcrStoreId}
+                onSelectStore={setSelectedOcrStoreId}
+                onAddExtraOs={handleAddExtraOcrOs}
+                targetDate={targetDate}
+              />
+            </div>
+
+            {/* Right Column: Dropzone, Progress & Review Grid */}
+            <div className="lg:col-span-7 flex flex-col h-[600px] space-y-3">
+              <OcrBatchDropzoneAndPaste
+                onStartProcessing={handleStartOcrProcessing}
+                isProcessing={isOcrProcessing}
+                selectedStoreName={selectedOcrStoreId !== 'ALL' ? stores.find(s => s.id === selectedOcrStoreId)?.name : undefined}
+              />
+
+              <OcrBatchProgressBar progress={ocrProgress} isProcessing={isOcrProcessing} />
+
+              <div className="flex-1 min-h-0">
+                <OcrBatchReviewGrid
+                  items={extractedOcrItems}
+                  stores={stores}
+                  onChangeItem={handleChangeOcrItem}
+                  onDeleteItem={handleDeleteOcrItem}
+                  onInject={handleSaveAndAdvanceOcr}
+                  isInjecting={isOcrInjecting}
+                  onClearAll={() => setExtractedOcrItems([])}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Barra de Navegação Inferior do Step 1.5 */}
+          <div className="flex items-center justify-between pt-3 border-t border-zinc-800">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setStep(1)}
+              className="border-zinc-800 hover:bg-zinc-800 text-zinc-300 text-xs"
+            >
+              ← Voltar para Upload
+            </Button>
+
+            <div className="flex items-center gap-3">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => {
+                  const hasUnmapped = results.ofxResults.some(o => !mapping[o.alias]) ||
+                                      results.redeResults.some(r => r.transactions.some(t => !mapping[t.storeName]));
+                  setStep(hasUnmapped ? 2 : 3);
+                }}
+                className="text-zinc-500 hover:text-zinc-300 text-xs"
+              >
+                Pular Ingestão de OS (Continuar sem OSs)
+              </Button>
+
+              <Button
+                type="button"
+                onClick={handleSaveAndAdvanceOcr}
+                disabled={isOcrInjecting || extractedOcrItems.length === 0}
+                className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-lg shadow-emerald-950/50 flex items-center gap-2"
+              >
+                <Sparkles className="w-4 h-4 text-emerald-200" />
+                {isOcrInjecting ? 'Integrando OSs na Esteira...' : `Salvar e Avançar Fluxo (${extractedOcrItems.length} OSs) →`}
+              </Button>
+            </div>
+          </div>
         </motion.div>
       )}
 
@@ -2220,24 +2520,27 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
-                <div className="bg-zinc-950/60 p-3.5 rounded-xl border border-zinc-800 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">Odômetro OI (Acumulado)</label>
-                    {previousOdometro > 0 && (
-                      <span className="text-[10px] font-mono text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/30">
-                        Ant: {previousOdometro.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                      </span>
-                    )}
+                {/* 1. Odômetro */}
+                <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between min-h-[22px]">
+                      <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">Odômetro OI (Acumulado)</label>
+                      {previousOdometro > 0 && (
+                        <span className="text-[10px] font-mono text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/30">
+                          Ant: {previousOdometro.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                        </span>
+                      )}
+                    </div>
+                    <input 
+                      type="number" 
+                      step="0.01"
+                      disabled={isManualLocked}
+                      value={odometroHoje || ''} 
+                      onChange={e => setOdometroHoje(Number(e.target.value))}
+                      placeholder="Ex: 945000.00"
+                      className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                    />
                   </div>
-                  <input 
-                    type="number" 
-                    step="0.01"
-                    disabled={isManualLocked}
-                    value={odometroHoje || ''} 
-                    onChange={e => setOdometroHoje(Number(e.target.value))}
-                    placeholder="Ex: 945000.00"
-                    className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
-                  />
                   {odometroHoje > 0 && previousOdometro > 0 && (
                     <p className="text-[11px] font-mono text-emerald-400 pt-0.5">
                       Δ Faturamento: <span className="font-bold tabular-nums">{deltaFaturamentoCalculado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
@@ -2245,47 +2548,76 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                   )}
                 </div>
 
-                <div className="bg-zinc-950/60 p-3.5 rounded-xl border border-zinc-800 space-y-2">
-                  <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">Dinheiro MP</label>
-                  <input 
-                    type="number" 
-                    step="0.01"
-                    disabled={isManualLocked}
-                    value={manualDinheiroMp || ''} 
-                    onChange={e => setManualDinheiroMp(Number(e.target.value))}
-                    className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
-                  />
-                </div>
-
-                <div className="bg-zinc-950/60 p-3.5 rounded-xl border border-zinc-800 space-y-2">
-                  <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">A Receber</label>
-                  <input 
-                    type="number" 
-                    step="0.01"
-                    disabled={isManualLocked}
-                    value={manualAReceber || ''} 
-                    onChange={e => setManualAReceber(Number(e.target.value))}
-                    className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
-                  />
-                </div>
-
-                <div className="bg-zinc-950/60 p-3.5 rounded-xl border border-zinc-800 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <label className="text-[11px] font-bold uppercase text-zinc-400 font-sans">Contas a Pagar</label>
-                    {results.contasPagarResults && results.contasPagarResults.length > 0 && (
-                      <span className="text-[10px] text-rose-400 font-semibold flex items-center gap-1 font-mono">
-                        <Receipt size={10} /> ({results.contasPagarResults.reduce((acc, c) => acc + c.totalBills, 0)} contas)
-                      </span>
-                    )}
+                {/* 2. Dinheiro MP (Preenchido com saldo de ontem + Badge) */}
+                <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between min-h-[22px]">
+                      <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">Dinheiro MP</label>
+                      {previousDinheiroMp > 0 && (
+                        <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">
+                          Saldo de ontem: {previousDinheiroMp.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                        </span>
+                      )}
+                    </div>
+                    <input 
+                      type="number" 
+                      step="0.01"
+                      disabled={isManualLocked}
+                      value={manualDinheiroMp || ''} 
+                      onChange={e => {
+                        setManualDinheiroMp(Number(e.target.value));
+                        setIsDinheiroMpUserEdited(true);
+                      }}
+                      placeholder="0,00"
+                      className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                    />
                   </div>
-                  <input 
-                    type="number" 
-                    step="0.01"
-                    disabled={isManualLocked}
-                    value={contasManual || (results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || '')} 
-                    onChange={e => setContasManual(Number(e.target.value))}
-                    className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
-                  />
+                </div>
+
+                {/* 3. A Receber */}
+                <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between min-h-[22px]">
+                      <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">A Receber</label>
+                      {manualAReceber > 0 && (
+                        <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30">
+                          Pendente
+                        </span>
+                      )}
+                    </div>
+                    <input 
+                      type="number" 
+                      step="0.01"
+                      disabled={isManualLocked}
+                      value={manualAReceber || ''} 
+                      onChange={e => setManualAReceber(Number(e.target.value))}
+                      placeholder="0,00"
+                      className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                    />
+                  </div>
+                </div>
+
+                {/* 4. Contas a Pagar */}
+                <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between min-h-[22px]">
+                      <label className="text-[11px] font-bold uppercase text-zinc-400 font-sans">Contas a Pagar</label>
+                      {results.contasPagarResults && results.contasPagarResults.length > 0 && (
+                        <span className="text-[10px] text-rose-400 font-semibold flex items-center gap-1 font-mono bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/30">
+                          <Receipt size={10} /> ({results.contasPagarResults.reduce((acc, c) => acc + c.totalBills, 0)} contas)
+                        </span>
+                      )}
+                    </div>
+                    <input 
+                      type="number" 
+                      step="0.01"
+                      disabled={isManualLocked}
+                      value={contasManual || (results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || '')} 
+                      onChange={e => setContasManual(Number(e.target.value))}
+                      placeholder="0,00"
+                      className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -2353,6 +2685,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
               </details>
             </div>
 
+            {/* Rodapé com Botão Único */}
             <div className="pt-4 border-t border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <label className="block text-xs font-semibold uppercase text-zinc-400 mb-1">Data Base da Conciliação</label>
@@ -2364,23 +2697,14 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                 />
               </div>
 
-              <div className="flex items-center gap-3">
-                <Button
-                  onClick={() => handleConfirm(false)}
-                  disabled={isSaving}
-                  variant="outline"
-                  className="py-2.5 px-4 text-xs font-semibold rounded-xl border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white hover:bg-zinc-800 flex items-center gap-2"
-                >
-                  {isSaving ? <LoadingSpinner size="xs" text="" /> : <Sparkles size={14} />}
-                  Gravar Direto (sem Wizard)
-                </Button>
+              <div className="flex items-center">
                 <Button
                   onClick={() => handleConfirm(true)}
                   disabled={isSaving}
-                  className="py-3 px-6 text-sm font-bold rounded-xl bg-emerald-500 text-zinc-950 hover:bg-emerald-400 shadow-md shadow-emerald-950/50 flex items-center gap-2 cursor-pointer transition-all"
+                  className="w-full sm:w-auto py-3 px-6 text-sm font-bold rounded-xl bg-emerald-500 text-zinc-950 hover:bg-emerald-400 shadow-md shadow-emerald-950/50 flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.98]"
                 >
-                  {isSaving ? <LoadingSpinner size="xs" text="" /> : <ArrowRight size={16} />}
-                  Processar e Conciliar com IA →
+                  {isSaving ? <LoadingSpinner size="xs" text="" /> : <ArrowRight size={16} className="text-zinc-950 stroke-[2.5]" />}
+                  Processar e Avançar Conciliação →
                 </Button>
               </div>
             </div>
@@ -2623,46 +2947,25 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
               </div>
             )}
 
-            {/* Logs Técnicos de Depuração Colapsáveis */}
-            {importLogs.length > 0 && (
-              <details className="p-3.5 rounded-xl bg-zinc-900/60 border border-zinc-800 group">
-                <summary className="text-xs font-mono text-zinc-400 cursor-pointer flex items-center justify-between hover:text-zinc-200 select-none">
-                  <span className="flex items-center gap-2">
-                    <Terminal size={13} />
-                    Logs de Execução ({importLogs.length} eventos)
-                  </span>
-                  <span className="text-[10px] text-zinc-500 group-open:rotate-180 transition-transform">▼</span>
-                </summary>
-                <div className="mt-2.5 max-h-40 overflow-y-auto space-y-1 text-[11px] font-mono text-zinc-400 border-t border-zinc-800 pt-2.5">
-                  {importLogs.map((log) => (
-                    <div key={log.id} className="flex gap-2">
-                      <span className="text-zinc-500 shrink-0">[{log.timestamp}]</span>
-                      <span className={log.type === 'error' ? 'text-rose-400' : log.type === 'success' ? 'text-emerald-400' : 'text-zinc-400'}>
-                        {log.message}
-                      </span>
-                    </div>
-                  ))}
-                  <div ref={logsEndRef} />
-                </div>
-              </details>
+            {/* Banner de Erro Estruturado */}
+            {importLogs.some(l => l.type === 'error') && !saveFinished && (
+              <ExecutionErrorBanner
+                error={importLogs.slice().reverse().find(l => l.type === 'error')?.error || importLogs.slice().reverse().find(l => l.type === 'error')?.message || 'Erro desconhecido'}
+                isRetrying={isSaving}
+                onRetry={() => handleConfirm(true)}
+              />
             )}
 
-            {/* Alerta de Erro se houver */}
-            {importLogs.some(l => l.type === 'error') && !saveFinished && (
-              <div className="bg-rose-500/10 border border-rose-500/20 p-4 rounded-xl flex items-start justify-between gap-4">
-                <div className="flex items-start gap-3">
-                  <AlertCircle size={18} className="text-rose-400 shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-semibold text-rose-400 text-xs">Falha durante o processamento</h4>
-                    <p className="text-xs text-zinc-400 mt-0.5">
-                      {importLogs.find(l => l.type === 'error')?.message}
-                    </p>
-                  </div>
-                </div>
-                <Button onClick={handleConfirm} disabled={isSaving} className="bg-rose-500 hover:bg-rose-600 text-white text-xs px-3 py-1.5 shrink-0 rounded-lg font-bold">
-                  Tentar Novamente
-                </Button>
-              </div>
+            {/* Terminal de Logs Profissional */}
+            {importLogs.length > 0 && (
+              <ImportExecutionTerminal
+                logs={importLogs}
+                isRunning={isSaving}
+                isFinished={saveFinished}
+                hasError={importLogs.some(l => l.type === 'error')}
+                onRetry={() => handleConfirm(true)}
+                targetDate={targetDate}
+              />
             )}
 
           </motion.div>

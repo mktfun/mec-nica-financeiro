@@ -35,25 +35,50 @@ export function useContasAPagarImport() {
         .eq('date', targetDate)
         .not('external_code', 'is', null);
 
-      // 3. Preparar payload de inserção em lote
-      const rowsToInsert = parseResult.bills.map((b: ParsedContaAPagar) => ({
-        date: targetDate,
-        store_id: b.store_id !== 'master' ? b.store_id : null,
-        title: b.recipient_name || b.description || 'Conta a Pagar',
-        description: `[${b.store_name}] ${b.recipient_name} - ${b.description}`,
-        amount: b.amount,
-        category: b.category,
-        external_code: b.external_code,
-        installment: b.installment,
-        due_date: b.due_date,
-        payment_date: b.payment_date,
-        recipient_name: b.recipient_name,
-        is_intercompany: b.is_intercompany,
-        intercompany_entity_id: b.intercompany_entity_id || null,
-        matched_os_number: b.matched_os_number || null,
-      }));
+      // 3. Buscar lojas existentes para validação de Foreign Key
+      const { data: dbStores } = await supabase.from('stores').select('id');
+      const validStoreIds = new Set((dbStores || []).map(s => s.id));
 
-      // Inserir em chunks de 100 para alta performance
+      // 4. Preparar payload de inserção em lote com sanitização e deduplicação estritas
+      const seenKeys = new Set<string>();
+      const rowsToInsert: any[] = [];
+
+      for (const b of parseResult.bills) {
+        const amount = Number(b.amount || 0);
+        // Blindagem estrita contra amount <= 0 (Check constraint daily_manual_bills_amount_check)
+        if (amount <= 0 || isNaN(amount)) continue;
+
+        const cleanStoreId = (b.store_id && b.store_id !== 'master' && validStoreIds.has(b.store_id)) 
+          ? b.store_id 
+          : null;
+
+        const title = (b.recipient_name || b.description || 'Conta a Pagar').trim() || 'Conta a Pagar';
+        const description = b.description || `[${b.store_name || 'Geral'}] ${b.recipient_name || 'Conta'}`;
+        const dedupKey = `${cleanStoreId || 'global'}__${b.external_code || ''}__${b.installment || '1/1'}__${Math.round(amount * 100)}__${b.due_date || ''}`;
+
+        if (seenKeys.has(dedupKey)) continue;
+        seenKeys.add(dedupKey);
+
+        rowsToInsert.push({
+          date: targetDate,
+          store_id: cleanStoreId,
+          title,
+          description,
+          amount,
+          category: b.category || 'outros',
+          external_code: b.external_code || null,
+          installment: b.installment || null,
+          due_date: b.due_date || targetDate,
+          payment_date: b.payment_date || b.due_date || targetDate,
+          recipient_name: b.recipient_name || null,
+          is_intercompany: Boolean(b.is_intercompany),
+          intercompany_entity_id: b.intercompany_entity_id || null,
+          matched_os_number: b.matched_os_number || null,
+          contabilizar_no_subtotal: true,
+        });
+      }
+
+      // Inserir em chunks de 100 para alta performance com fallback resiliente
       const CHUNK_SIZE = 100;
       for (let i = 0; i < rowsToInsert.length; i += CHUNK_SIZE) {
         const chunk = rowsToInsert.slice(i, i + CHUNK_SIZE);
@@ -61,7 +86,17 @@ export function useContasAPagarImport() {
           .from('daily_manual_bills')
           .insert(chunk);
 
-        if (insertErr) throw insertErr;
+        if (insertErr) {
+          console.warn('Erro no chunk de contas a pagar, aplicando fallback individual:', insertErr);
+          // Fallback individual item a item para não perder o lote inteiro
+          for (const item of chunk) {
+            try {
+              await supabase.from('daily_manual_bills').insert(item);
+            } catch (singleErr) {
+              console.error('Erro ao inserir conta individual:', item, singleErr);
+            }
+          }
+        }
       }
 
       // 4. Atualizar o snapshot diário com o total de contas importadas

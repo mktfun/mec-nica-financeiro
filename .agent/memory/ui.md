@@ -414,3 +414,12 @@ Nao fazer: Nunca fazer fallbacks automaticos para zero em dados criticos contabe
 1. **Segmented Control de Abas:** Implementar alternância fluida entre *"🔍 Vincular à OS Existente"* e *"➕ Criar Nova OS na Filial"* com preservação dos dados da transação (valor, contraparte e filial).
 2. **Liquidação Integral vs Parcial:** Disponibilizar opção rápida de liquidação total (default: valor total = valor do pagamento) ou parcial (campo para informar o valor total real do serviço, calculando o saldo remanescente em aberto em tempo real).
 3. **Padrão Dark UI Zinc-950:** Manter contrastes `bg-zinc-950`, `border-zinc-800`, botões `bg-emerald-500` com hover vibrante e feedback em toasts Sonner.
+
+## [2026-09-02] — [Feature ID: 349] Terminal de Logs macOS/Linux & Banner de Diagnóstico Estruturado
+**Contexto:** Refatoração do terminal de logs e painéis de erro do `CentralImportWizard.tsx` com criação dos componentes `ImportExecutionTerminal.tsx` e `ExecutionErrorBanner.tsx`.
+**Regra aprendida:**
+1. **Auto-Scroll sem Pulo de Viewport:** Nunca use `element.scrollIntoView()` em containers de logs dinâmicos, pois isso causa saltos na página inteira a cada evento. Use scroll imperativo no container local: `containerRef.current.scrollTop = containerRef.current.scrollHeight`.
+2. **Filtros e Cópia 1-Clique:** Terminais de execução técnica devem conter filtros rápidos (`Todos`, `Erros ❌`, `Avisos ⚠️`, `OK ✅`) e botão de copiar logs formatados para diagnóstico imediato.
+3. **Tradução Amigável de Erros Supabase:** Banners de erro (`ExecutionErrorBanner`) devem traduzir códigos técnicos do PostgreSQL/PostgREST para diagnósticos em português legíveis, preservando o stack trace e payload JSON em gavetas colapsáveis.
+4. **Preservação de Contexto no Botão de Retry:** Ao tentar novamente após um erro de gravação, garanta que o callback invoque `handleConfirm(true)` para que o operador avance normalmente para o Wizard sem perda de estado.
+

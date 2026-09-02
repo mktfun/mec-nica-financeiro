@@ -1,3 +1,10 @@
+### Spec 349 — Blindagem do Salvamento de Contas a Pagar e Refatoração do Terminal de Logs
+- **Blindagem no Parser de Contas a Pagar**: `contasPagarParser.ts` descarta estritamente linhas com `amount <= 0 || isNaN(amount)` (ex: títulos cancelados ou estornos), eliminando na causa raiz a violação da check constraint `daily_manual_bills_amount_check` do PostgreSQL.
+- **Sanitização de Foreign Keys e Deduplicação**: `useContasAPagarImport.ts` sanitiza `store_id` (deixa `null` se `'master'` ou se não existir em `stores`), `intercompany_entity_id`, valida campos obrigatórios, deduplica itens em memória e aplica fallback granular individual para inserções resilientes em chunks de 100.
+- **Terminal de Logs Profissional (`ImportExecutionTerminal.tsx`)**: Layout Dark Zinc-950 estilo macOS com dots de cabeçalho, filtros rápidos por severidade (`Todos`, `Erros ❌`, `Avisos ⚠️`, `OK ✅`), botão de cópia de logs 1-clique e auto-scroll suave interno no container (sem saltos de viewport).
+- **Banner de Diagnóstico de Erros (`ExecutionErrorBanner.tsx`)**: Card de alta visibilidade com diagnóstico amigável em português para erros comuns de banco, visualizador colapsável de payload JSON/Stack Trace e botão de retry inteligente (`handleConfirm(true)`).
+- **Saneamento de UTF-8 / Mojibake**: Todas as mensagens de log em `CentralImportWizard.tsx` saneadas para caracteres UTF-8 limpos com emojis válidos.
+
 ### Spec 341 — Criação de Nova OS com Baixa Granular e Vínculo de Pagamento Manual no Wizard
 - **Criação de OS On-the-Fly no Step 1**: Adição de formulário na aba *"➕ Criar Nova OS na Filial"* no modal `ManualMatchOsModal.tsx` com campos de Loja, Nº da OS, Cliente, Placa, Forma de Pagamento e opção de Liquidação Integral vs Parcial.
 - **RPC Atômica `create_and_link_manual_os`**: Migration `supabase/migrations/20260901000016_create_and_link_manual_os_rpc.sql` gravando a OS em `patio_os`, incrementando `pix_transfer_value`, `credit_value` ou `debit_value`, atualizando `paid_value` e recalculando `status` ('finalizada' vs 'pago_parcial').

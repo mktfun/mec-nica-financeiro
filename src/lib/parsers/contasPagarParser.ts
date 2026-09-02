@@ -167,7 +167,8 @@ export async function parseContasAPagarFile(file: File | ArrayBuffer, fileName: 
       const vlAPagar = extractNumber(row[vlAPagarIdx]);
       const amount = vlPago > 0 ? vlPago : vlAPagar;
 
-      if (amount <= 0 && !codRaw) continue;
+      // Blindagem estrita contra Check Constraint (amount > 0)
+      if (!amount || amount <= 0 || isNaN(amount)) continue;
 
       const store = mapEmpToStore(empRaw);
       const classification = classifyExpense(fornRaw, descRaw);

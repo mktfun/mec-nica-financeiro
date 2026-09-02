@@ -889,3 +889,12 @@ Nao fazer: Nunca permita que excecoes estruturais sejam traduzidas em status con
 1. **Atomicidade e Incremento de Saldos:** Ao criar uma nova OS on-the-fly a partir de um pagamento avulso, a RPC deve inserir o registro em `patio_os`, atribuir o valor à coluna específica (`pix_transfer_value`, `credit_value` ou `debit_value`), somar em `paid_value` e calcular `status = CASE WHEN paid_value >= (total_value - 0.05) THEN 'finalizada' ELSE 'pago_parcial' END`.
 2. **Idempotência por Filial:** Se o número da OS já existir na filial, a RPC reaproveita o registro em vez de duplicar, preservando a integridade das 10 lojas.
 **Risco identificado / Anti-pattern:** Inserir a OS via mutation direta de frontend sem atualizar `matched_os_number` no extrato bancário ou maquininha e sem registrar em `conciliation_matches`.
+
+## [2026-09-02] — [Feature ID: 349]
+**Contexto:** Blindagem contra erro de Check Constraint `daily_manual_bills_amount_check` e Foreign Keys na tabela `daily_manual_bills`.
+**Regra aprendida:**
+1. **Check Constraint `amount > 0` em `daily_manual_bills`:** A tabela `daily_manual_bills` rejeita categoricamente registros com `amount <= 0` ou nulos. Parsers e hooks de importação de Contas a Pagar (`BuscaContasAPagar.xls`) DEVEM filtrar estritamente `if (!amount || amount <= 0 || isNaN(amount)) continue;` antes de submeter lotes ao Supabase.
+2. **Sanitização de Foreign Keys (`store_id` e `intercompany_entity_id`):** O campo `store_id` referencia `stores(id)`. Se for `'master'` ou não pertencer ao cadastro ativo de `stores`, deve ser passado como `null` para evitar `23503 (violates foreign key constraint)`.
+3. **Resiliência em Chunks de Inserção:** Ao salvar em lotes de 100 itens via Supabase Client, caso ocorra qualquer erro imprevisto em um chunk, deve haver fallback linha a linha para persistir todas as contas válidas sem abortar a gravação inteira.
+**Risco identificado / Anti-pattern:** Inserir linhas de títulos cancelados ou estornos com valor 0.00 na tabela de contas a pagar, causando abortamento total do chunk de 100 itens.
+

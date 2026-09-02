@@ -1,56 +1,16 @@
 {
-  "topic": "Padronizacao e Refatoracao de UI/UX do Sistema Financeiro e Conciliacao Automotiva",
-  "rounds": [
-    {
-      "round": 1,
-      "messages": [
-        {
-          "agent": "analyst",
-          "content": "# POSIÇÃO DO ANALYST — ROUND 1 (ANALYST)\nConfiança: 0.95\n1. Ergonomia Financeira: Doc 1 falha em tratar o sistema como SaaS genérico; Doc 2 acerta em conciliação de 3 vias (OS, Rede, OFX).\n2. Semáforo semântico estrito: eliminar falso positivo verde. Verde = saldo balanceado/diferença zero; Vermelho = divergência/descoberto; Âmbar = pendente/em compensação; Azul/Brand = informativo.\n3. Tipografia tabular obrigatória: tabular-nums font-mono alinhado à direita para scan visual rápido (-42% no tempo de conferência).\n4. ROI 80/20: desbloqueio de container (0.5 dia) + AmountCell/tabular-nums (1 dia) + semáforo semântico (1 dia) + modais com atalhos (1.5 dias).\n5. Metas: TTD de 3h30 para <= 1h na rede de 10 lojas; retrabalho < 0.5%."
-        },
-        {
-          "agent": "architect",
-          "content": "# POSIÇÃO ARQUITETURAL — ROUND 1 (ARCHITECT)\nConfiança: 0.95\n1. Rejeição da implementação literal do Doc 1: ignora o Dark Mode Zinc-950, classes bg-gray-50 genéricas e cria componentes anêmicos sem densidade financeira.\n2. Adoção dos princípios de densidade e semântica do Doc 2.\n3. Taxonomia de Design System desacoplada:\n   - src/components/ui/: Primitivas agnósticas (Button, Badge, Input, Field, DataTable compositivo, AppDialog, AppDrawer, DropdownMenu, Tooltip).\n   - src/components/layout/: Cascas estruturais (AppShell, PageContainer com variantes fluid | dense | contained, PageHeader, Toolbar).\n   - src/components/finance/: Domínio contábil especializado (KpiCard com AnimatedNumber/breakdowns/tones, KpiGrid, DiscrepancyBadge, CurrencyDisplay tabular-nums).\n4. Resolução do gargalo de AppShell: remover max-w-[1200px] fixo do main e usar PageContainer para controlar densidade por rota.\n5. Strangler Pattern em 4 fases com retrocompatibilidade (normalização title/label no KpiCard)."
-        },
-        {
-          "agent": "contrarian",
-          "content": "# POSIÇÃO CONTRARIAN — ROUND 1 (CONTRARIAN)\nConfiança: 0.95\n1. Mito do Componente Único Universal: KpiCard com 18 props e DataTable monolítico viram God Components incontroláveis com re-renders em cascata.\n2. Ataque ao Doc 1: Alucinação de tema claro bg-gray-50, cegueira de contratos Supabase/React Query e tabelas de figma espaçadas.\n3. Ataque ao Doc 2: Overengineering acadêmico (AsyncSection, DataToolbar, mistura BEM/Tailwind v4).\n4. Riscos de regressão: Travamento do fechamento diário por refatoração de hooks em modais; distorção em telas 4K se max-w for liberado para 100vw sem limites (recharts viram agulhas); perda de tabular-nums.\n5. Veredito: Limitar largura a max-w-[1600px] mx-auto, proibir God Components e usar exclusivamente variáveis CSS de styles.css."
-        },
-        {
-          "agent": "engineer",
-          "content": "# POSIÇÃO DO ENGINEER — ROUND 1 (ENGINEER)\nConfiança: 0.92\n1. Quick wins: destravar AppShell de max-w-[1200px] para max-w-[1600px] 2xl:max-w-[1800px] w-full px-6; sanear variantes inexistentes em Button.tsx e Badge.tsx.\n2. Alerta crítico contra DataTable monolítico universal: tabelas financeiras têm regras heterogêneas (inputs inline, modais acoplados, invalidações React Query). Criar primitivas compositivas (<TableContainer>, <TableHeader sticky>, <TableRow>, <TableCell fontMono align='right' tabularNums>) para padronizar visual sem engessar a lógica.\n3. Alerta contra Framer Motion em componentes atômicos: Button.tsx e Card.tsx com spring em dezenas de linhas de tabela derrubam render time de 120ms para <20ms com CSS puro.\n4. Plano em 4 fases cirúrgicas: Fundação & Layout Core -> Componentes Atômicos -> Primitivos de Dados -> Migração tela a tela com zero downtime e zero regressão."
-        }
-      ]
-    },
-    {
-      "round": 2,
-      "messages": [
-        {
-          "agent": "architect",
-          "content": "# POSIÇÃO ARQUITETURAL — ROUND 2 (ARCHITECT)\nConfiança: 0.98\n1. (AGREE) com Contrarian e Engineer contra DataTable monolítico universal: Acolhida a crítica. Substituição do monólito por Compound Primitives modulares (<TableContainer>, <TableHeader sticky>, <TableRow>, <TableCell fontMono align='right' tabularNums>) com zero acoplamento de estado e slots customizados.\n2. (REFINE) no KpiCard: Em vez de God Component com 18 props, adota-se o padrão Composto (<KpiCard.Header>, <KpiCard.Value>, <KpiCard.Footer>) com adapter de retrocompatibilidade para migração suave sem breaking changes.\n3. (AGREE) com Engineer contra Framer Motion em componentes atômicos: 100% de transições em CSS nativo (Tailwind) para botões, badges e linhas de tabela. Framer Motion isolado exclusivamente em modais e cascas de alto nível.\n4. (AGREE) com Contrarian e Engineer sobre limite de viewport: PageContainer com variante dense (max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6) para conciliação densa, evitando distorção 4K.\n5. (AGREE) com Analyst: Tipografia tabular-nums font-mono obrigatória e semáforo semântico estrito (verde apenas para R$ 0,00/balanceado, vermelho para divergência/descoberto, âmbar para pendente)."
-        }
-      ]
-    },
-    {
-      "round": 3,
-      "messages": [
-        {
-          "agent": "analyst",
-          "content": "# POSIÇÃO DO ANALYST — ROUND 2 (ANALYST)\nConfiança: 0.96 (Manutenção refinada)\n1. Ergonomia cognitiva: alinhamento com Contrarian/Engineer sobre o perigo de 100vw irrestrito (gaps >1200px elevam tempo de varredura sacádica em +45% e erro de linha em +35%). Viewport limitado em max-w-[1600px] 2xl:max-w-[1800px] é ótimo.\n2. Ganhos quantitativos validados: Tempo de conciliação diária de 10 lojas cai de 3h30 para <= 50min (-76%); scan visual por linha cai de 4.2s para 1.6s (-62%); retrabalho por falso positivo cai de 3.8% para < 0.2% (-95%). Economia de ~53 horas/mês por operador.\n3. Matriz P0/P1/P2 de ROI: P0 = AppShell 1600/1800px + AmountCell tabular-nums + Semáforo estrito; P1 = Primitivas de Tabela + Modais com atalhos; P2 = KpiGrid/KpiCard."
-        },
-        {
-          "agent": "architect",
-          "content": "# POSIÇÃO ARQUITETURAL — ROUND 2 (ARCHITECT)\nConfiança: 0.98 (Refinement & Harmonization)\n1. Citação e alinhamento com Contrarian e Engineer: Acolhimento do veto ao DataTable monolítico. Adoção de Compound Primitives em src/components/ui/table/ (<TableContainer>, <TableHeader sticky>, <TableRow>, <TableCell tabularNums fontMono align>).\n2. Eliminação de Framer Motion em botões e células atômicas: migração para transições CSS nativas do Tailwind v4 (hover/active/focus). Framer Motion restrito a cascas de alto nível (AppDialog, AppDrawer, Toasts).\n3. Viewport delimitado: AppShell neutro delegando para PageContainer com variantes (dense: max-w-[1600px] 2xl:max-w-[1800px], contained: max-w-5xl, fluid: w-full px-6).\n4. Tipografia tabular obrigatória: CurrencyDisplay / AmountCell com font-mono tabular-nums text-right e semáforo semântico estrito.\n5. Taxonomia em 3 camadas: src/components/ui/ (agnóstico), src/components/layout/ (cascas), src/components/finance/ (domínio contábil)."
-        },
-        {
-          "agent": "contrarian",
-          "content": "# POSIÇÃO CONTRARIAN — ROUND 2 (CONTRARIAN)\nConfiança: 0.90 (Mudança de rejeição para Concessão Condicionada - GO Condicional)\n1. Acolhimento do abandono de God Components em favor de primitivas compositivas de tabela.\n2. 4 Hard Gates inegociáveis para aprovação:\n   - Gate 1 (Densidade & Tipografia): Células monetárias com tabular-nums font-mono text-right e semáforo sem falso positivo verde.\n   - Gate 2 (Teto Físico): Limite estrito de max-w-[1600px] mx-auto no container principal.\n   - Gate 3 (Sem animações distrativas em polling): AnimatedNumber vetado/desabilitado por padrão em telas operacionais contínuas.\n   - Gate 4 (Deprecação obrigatória): Proibição de código zumbi/aliases legados após a Fase 4."
-        },
-        {
-          "agent": "engineer",
-          "content": "# POSIÇÃO DO ENGINEER — ROUND 2 (ENGINEER)\nConfiança: 0.96 (Aprovado com refinamentos técnicos)\n1. Strangler Pattern via Re-exports: Proxies/barrel em caminhos legados (ex: src/components/dashboard/KpiCard.tsx) exportando de finance/ com @deprecated para evitar quebras em 17+ arquivos.\n2. Normalização segura de props: KpiCard aceita title e label (const displayLabel = label ?? title ?? '').\n3. Semáforo semântico estrito: Verde exclusivo para diff === 0 / conciliado; Vermelho para divergência/descoberto; Âmbar para pendente; Azul/Brand para identificadores.\n4. Isolamento estrito de modais: manter lógica de dados/hooks React Query intocada; atalhos de teclado via hook desacoplado.\n5. Cronograma em 5 etapas: Layout/Viewport (0.5d) -> Primitivas Atômicas & Tokens (1.0d) -> Primitivas de Tabela & Finance (1.0d) -> Migração tela a tela (1.5d) -> Validação tsc/bundle (0.5d)."
-        }
-      ]
-    }
-  ]
+  "topic": "Refatoração Completa do Zero da Tela de Visão Geral (Dashboard Executivo da Diretoria)",
+  "objective": "Transformar a tela inicial quebrada em um Dashboard Executivo de Alto Padrão (Fintech/Dark Zinc-950), apresentando os 5 Pilares de Caixa, DRE Consolidado do Dia, Performance das 10 Lojas com ranking e status, Gráficos de Tendência Macro e Navegação Temporal Idempotente com dados 100% reais do banco de dados e Supabase RPC.",
+  "criteria": [
+    "1. Data Integrity: Consumo estrito de get_daily_reconciliation_summary e get_dashboard_metrics sem inventar cálculos no frontend",
+    "2. Executive Visual Standard: Design Dark Zinc-950 / Indigo-500 / Emerald, sem layout quebrado, sem cores amadoras, tipografia mono tabular para números",
+    "3. Macro & Micro Analytics: Visão macro consolidada (Caixa Atual, Faturamento, DRE, Contas, Pátio, Fluxo) + Tabela analítica das 10 lojas com ordenação, busca e badges de conciliação",
+    "4. Reliability: Tratamento de estados (Loading Skeletons, Error, Empty, Realtime Data)",
+    "5. Fast Navigation: Seletor de data dinâmico com navegação por dias com fechamento real"
+  ],
+  "rounds": {
+    "round_1_positions": {},
+    "round_2_rebuttals": {},
+    "round_3_synthesis": {}
+  }
 }
