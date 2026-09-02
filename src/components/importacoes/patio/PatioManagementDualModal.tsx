@@ -340,68 +340,49 @@ export const PatioManagementDualModal: React.FC<PatioManagementDualModalProps> =
     >
       <div className="flex flex-col h-full space-y-4">
         {/* HEADER DO MODAL */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-zinc-800 gap-3">
-          <div>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center">
-                <Car size={18} />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-zinc-100 flex items-center gap-2">
-                  Gestão de Pátio & Veículos (Sem Planilha XLS)
-                </h3>
-                <p className="text-xs text-zinc-400">
-                  Data Base: <span className="font-mono text-emerald-400 font-bold">{targetDate}</span> · Atualize as OSs por filial ou importe prints do sistema.
-                </p>
-              </div>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-zinc-800 gap-3">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center">
+              <Car size={16} />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-zinc-100 flex items-center gap-2">
+                Gestão de Pátio & Veículos
+              </h3>
+              <p className="text-xs text-zinc-400">
+                Data: <span className="font-mono text-emerald-400 font-bold">{targetDate}</span> · Baixe as OSs pendentes ou adicione avulsas.
+              </p>
             </div>
           </div>
 
-          {/* KPIS DE PÁTIO */}
-          <div className="flex items-center gap-3">
-            <div className="bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-1.5 text-left">
-              <span className="text-[9px] font-mono uppercase text-zinc-500 block">Pátio em Aberto</span>
-              <span className="text-xs font-mono font-bold text-amber-400">
-                R$ {totalPatioAberto.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-              </span>
-            </div>
+          <div className="flex items-center gap-2">
+            {/* CONTROLE DE ABAS (2 ABAS) */}
+            <div className="flex items-center gap-1 bg-zinc-900 p-1 rounded-xl border border-zinc-800">
+              <button
+                type="button"
+                onClick={() => setActiveTab('manual')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  activeTab === 'manual'
+                    ? 'bg-zinc-800 text-emerald-400 shadow-sm'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                📋 Registro Manual
+              </button>
 
-            <div className="bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-1.5 text-left">
-              <span className="text-[9px] font-mono uppercase text-zinc-500 block">Quitadas Hoje</span>
-              <span className="text-xs font-mono font-bold text-emerald-400">
-                {totalQuitadasHoje} OS(s)
-              </span>
+              <button
+                type="button"
+                onClick={() => setActiveTab('ocr')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  activeTab === 'ocr'
+                    ? 'bg-zinc-800 text-indigo-400 shadow-sm'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                📸 OCR / Prints {extractedItems.length > 0 && `(${extractedItems.length})`}
+              </button>
             </div>
           </div>
-        </div>
-
-        {/* CONTROLE DE ABAS (2 ABAS) */}
-        <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
-          <button
-            type="button"
-            onClick={() => setActiveTab('manual')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-              activeTab === 'manual'
-                ? 'bg-emerald-500 text-zinc-950 shadow-md shadow-emerald-950/50'
-                : 'bg-zinc-900/80 border border-zinc-800 text-zinc-400 hover:text-zinc-200'
-            }`}
-          >
-            <Layers size={14} />
-            1. Baixa Manual por Filial (Chips 1-Clique)
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab('ocr')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-              activeTab === 'ocr'
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-950/50'
-                : 'bg-zinc-900/80 border border-zinc-800 text-zinc-400 hover:text-zinc-200'
-            }`}
-          >
-            <Camera size={14} />
-            2. Importação por Imagem / OCR IA (Prints ERP)
-          </button>
         </div>
 
         {/* CORPO DO MODAL */}

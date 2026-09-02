@@ -46,7 +46,6 @@ import { OcrBatchProgressBar } from './OcrBatchProgressBar';
 import { OcrBatchReviewGrid } from './OcrBatchReviewGrid';
 import { PatioManagementDualModal } from './patio/PatioManagementDualModal';
 import { PatioManualStoreGrid, EditablePatioOsItem } from './patio/PatioManualStoreGrid';
-import { AssistedRevenueCalculator } from './wizard/AssistedRevenueCalculator';
 import { executeAutoMatchingEngine, PendingUnmatchedTransaction } from '@/lib/matchers/autoMatchingEngine';
 import { executeExpenseAutoMatching } from '@/lib/expenseMatcher';
 import { useQueryClient } from '@tanstack/react-query';
@@ -2186,55 +2185,39 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             <div>
               <h3 className="text-base font-bold text-zinc-100 flex items-center gap-2">
                 <Car className="w-5 h-5 text-emerald-400" />
-                Gestão de Pátio & Veículos (Sem Planilhas XLS)
+                Gestão de Pátio & Veículos
               </h3>
               <p className="text-xs text-zinc-400 mt-0.5">
-                Data do Fechamento: <span className="font-mono text-emerald-400 font-bold">{targetDate}</span> · Baixe as OSs pendentes por filial com formas de pagamento rápidas ou faça ingestão por prints.
+                Data: <span className="font-mono text-emerald-400 font-bold">{targetDate}</span> · Baixe as OSs pendentes por filial ou adicione avulsas.
               </p>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 font-mono font-semibold">
-                <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                Motor Inteligente de Pátio
-              </span>
+
+            {/* Controle de Abas no Step 1.5 */}
+            <div className="flex items-center gap-1.5 bg-zinc-900 p-1 rounded-xl border border-zinc-800">
+              <button
+                type="button"
+                onClick={() => setStep15Tab('manual')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  step15Tab === 'manual'
+                    ? 'bg-zinc-800 text-emerald-400 shadow-sm'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                📋 Registro Manual ({manualPatioItems.length})
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setStep15Tab('ocr')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  step15Tab === 'ocr'
+                    ? 'bg-zinc-800 text-indigo-400 shadow-sm'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                📸 Print / OCR {extractedOcrItems.length > 0 && `(${extractedOcrItems.length})`}
+              </button>
             </div>
-          </div>
-
-          {/* Controle de Abas no Step 1.5 */}
-          <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
-            <button
-              type="button"
-              onClick={() => setStep15Tab('manual')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                step15Tab === 'manual'
-                  ? 'bg-emerald-500 text-zinc-950 shadow-md shadow-emerald-950/50'
-                  : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-200'
-              }`}
-            >
-              <span>📋 1. Baixa Manual por Filial (Chips 1-Clique)</span>
-              <Badge variant="outline" className={`text-[10px] font-mono px-1.5 py-0 ${
-                step15Tab === 'manual' ? 'bg-zinc-950 text-emerald-400 border-zinc-900' : 'bg-zinc-800 text-zinc-400'
-              }`}>
-                {manualPatioItems.length}
-              </Badge>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setStep15Tab('ocr')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                step15Tab === 'ocr'
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-950/50'
-                  : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-200'
-              }`}
-            >
-              <span>📸 2. Importação por Imagem / OCR IA</span>
-              {extractedOcrItems.length > 0 && (
-                <Badge variant="outline" className="text-[10px] font-mono bg-indigo-950 text-indigo-300 border-indigo-500/40 px-1.5 py-0">
-                  {extractedOcrItems.length} extraídas
-                </Badge>
-              )}
-            </button>
           </div>
 
           {/* Conteúdo da Aba 1: Gestão Manual por Filial */}
@@ -2717,6 +2700,11 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
               const mapaMetasFaturamentoTotal = results.mapaMetasResults?.[0]?.totalFaturamento || 0;
               const previousMonthClosing = previousSnapshot?.faturamento ? Number(previousSnapshot.faturamento) : 0;
 
+              const baseMesAnterior = Math.max(0, previousOdometro - previousMonthClosing);
+              const suggestedRevenue = (baseMesAnterior + mapaMetasFaturamentoTotal > 0)
+                ? (baseMesAnterior + mapaMetasFaturamentoTotal)
+                : (previousOdometro + mapaMetasFaturamentoTotal);
+
               return (
                 <div className="space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -2730,9 +2718,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                         )}
                       </h4>
                       <p className="text-xs text-zinc-400 mt-0.5">
-                        {hasNoOsFiles 
-                          ? 'Cálculo assistido de faturamento ativado via Mapa de Metas para virada de mês.' 
-                          : 'Preencha os dados abaixo. Eles serão salvos no fechamento diário e travados para evitar alterações acidentais.'}
+                        Preencha os dados abaixo para o fechamento diário.
                       </p>
                     </div>
 
@@ -2742,7 +2728,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                         variant="outline"
                         size="sm"
                         onClick={() => setIsOcrModalOpen(true)}
-                        className="text-xs bg-zinc-900 border-zinc-800 text-emerald-400 hover:bg-zinc-800 hover:text-emerald-300 flex items-center gap-1.5 rounded-xl shadow-sm"
+                        className="text-xs bg-zinc-900 border-zinc-800 text-emerald-400 hover:bg-zinc-800 hover:text-emerald-300 flex items-center gap-1.5 rounded-xl shadow-sm cursor-pointer"
                       >
                         <Car size={13} />
                         Gerenciar Pátio & Baixas
@@ -2763,199 +2749,128 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                     </div>
                   </div>
 
-                  {/* SE NÃO HOUVER OSs IMPORTADAS: CALCULADORA ASSISTIDA + 3 CARDS MANUAIS */}
-                  {hasNoOsFiles ? (
-                    <div className="space-y-4">
-                      <AssistedRevenueCalculator
-                        previousOdometro={previousOdometro}
-                        initialFaturamentoMesAnterior={previousMonthClosing}
-                        initialMapaMetasFaturamento={mapaMetasFaturamentoTotal}
-                        odometroHoje={odometroHoje}
-                        onApplyCalculatedValue={(val) => setOdometroHoje(val)}
-                        isLocked={isManualLocked}
-                        onToggleLock={() => setIsManualLocked(!isManualLocked)}
-                        onChangeOdometro={(val) => setOdometroHoje(val)}
-                        deltaFaturamento={deltaFaturamentoCalculado}
-                      />
-
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono">
-                        {/* 1. Dinheiro MP */}
-                        <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between min-h-[22px]">
-                              <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">Dinheiro MP</label>
-                              {previousDinheiroMp > 0 && (
-                                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">
-                                  Ontem: {previousDinheiroMp.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                                </span>
-                              )}
-                            </div>
-                            <input 
-                              type="number" 
-                              step="0.01"
-                              disabled={isManualLocked}
-                              value={manualDinheiroMp || ''} 
-                              onChange={e => {
-                                setManualDinheiroMp(Number(e.target.value));
-                                setIsDinheiroMpUserEdited(true);
-                              }}
-                              placeholder="0,00"
-                              className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
-                            />
-                          </div>
+                  {/* GRID UNIFICADO DE 4 COLUNAS (DARK UI ZINC-950) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
+                    {/* 1. Odômetro / Faturamento */}
+                    <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between min-h-[22px]">
+                          <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">
+                            {hasNoOsFiles ? 'Faturamento / Odômetro' : 'Odômetro OI (Acumulado)'}
+                          </label>
+                          {previousOdometro > 0 && (
+                            <span className="text-[10px] font-mono text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/30">
+                              Ant: {previousOdometro.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                            </span>
+                          )}
                         </div>
+                        <input 
+                          type="number" 
+                          step="0.01"
+                          disabled={isManualLocked}
+                          value={odometroHoje || ''} 
+                          onChange={e => setOdometroHoje(Number(e.target.value))}
+                          placeholder="0,00"
+                          className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                        />
+                      </div>
 
-                        {/* 2. A Receber */}
-                        <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between min-h-[22px]">
-                              <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">A Receber</label>
-                              {manualAReceber > 0 && (
-                                <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30">
-                                  Pendente
-                                </span>
-                              )}
-                            </div>
-                            <input 
-                              type="number" 
-                              step="0.01"
-                              disabled={isManualLocked}
-                              value={manualAReceber || ''} 
-                              onChange={e => setManualAReceber(Number(e.target.value))}
-                              placeholder="0,00"
-                              className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
-                            />
-                          </div>
+                      {/* Sugestão Inteligente Discreta */}
+                      {hasNoOsFiles && suggestedRevenue > 0 && (
+                        <div className="flex items-center justify-between pt-2 border-t border-zinc-800/60 text-[11px] font-sans">
+                          <span className="text-zinc-400 truncate text-[10px]">
+                            💡 Sugestão: <strong className="text-amber-300 font-mono">{suggestedRevenue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
+                          </span>
+                          <button
+                            type="button"
+                            disabled={isManualLocked}
+                            onClick={() => setOdometroHoje(suggestedRevenue)}
+                            className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 transition-colors cursor-pointer disabled:opacity-50 shrink-0 ml-1"
+                          >
+                            Usar
+                          </button>
                         </div>
+                      )}
 
-                        {/* 3. Contas a Pagar */}
-                        <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between min-h-[22px]">
-                              <label className="text-[11px] font-bold uppercase text-zinc-400 font-sans">Contas a Pagar</label>
-                              {results.contasPagarResults && results.contasPagarResults.length > 0 && (
-                                <span className="text-[10px] text-rose-400 font-semibold flex items-center gap-1 font-mono bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/30">
-                                  <Receipt size={10} /> ({results.contasPagarResults.reduce((acc, c) => acc + c.totalBills, 0)} contas)
-                                </span>
-                              )}
-                            </div>
-                            <input 
-                              type="number" 
-                              step="0.01"
-                              disabled={isManualLocked}
-                              value={contasManual || (results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || '')} 
-                              onChange={e => setContasManual(Number(e.target.value))}
-                              placeholder="0,00"
-                              className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
-                            />
-                          </div>
+                      {odometroHoje > 0 && previousOdometro > 0 && !hasNoOsFiles && (
+                        <p className="text-[11px] font-mono text-emerald-400 pt-0.5">
+                          Δ Faturamento: <span className="font-bold tabular-nums">{deltaFaturamentoCalculado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                        </p>
+                      )}
+                    </div>
+
+                    {/* 2. Dinheiro MP */}
+                    <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between min-h-[22px]">
+                          <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">Dinheiro MP</label>
+                          {previousDinheiroMp > 0 && (
+                            <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">
+                              Ontem: {previousDinheiroMp.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                            </span>
+                          )}
                         </div>
+                        <input 
+                          type="number" 
+                          step="0.01"
+                          disabled={isManualLocked}
+                          value={manualDinheiroMp || ''} 
+                          onChange={e => {
+                            setManualDinheiroMp(Number(e.target.value));
+                            setIsDinheiroMpUserEdited(true);
+                          }}
+                          placeholder="0,00"
+                          className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                        />
                       </div>
                     </div>
-                  ) : (
-                    /* SE HOUVER OSs IMPORTADAS: GRID NORMAL DE 4 COLUNAS */
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
-                      {/* 1. Odômetro */}
-                      <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between min-h-[22px]">
-                            <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">Odômetro OI (Acumulado)</label>
-                            {previousOdometro > 0 && (
-                              <span className="text-[10px] font-mono text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/30">
-                                Ant: {previousOdometro.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                              </span>
-                            )}
-                          </div>
-                          <input 
-                            type="number" 
-                            step="0.01"
-                            disabled={isManualLocked}
-                            value={odometroHoje || ''} 
-                            onChange={e => setOdometroHoje(Number(e.target.value))}
-                            placeholder="Ex: 945000.00"
-                            className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
-                          />
-                        </div>
-                        {odometroHoje > 0 && previousOdometro > 0 && (
-                          <p className="text-[11px] font-mono text-emerald-400 pt-0.5">
-                            Δ Faturamento: <span className="font-bold tabular-nums">{deltaFaturamentoCalculado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-                          </p>
-                        )}
-                      </div>
 
-                      {/* 2. Dinheiro MP */}
-                      <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between min-h-[22px]">
-                            <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">Dinheiro MP</label>
-                            {previousDinheiroMp > 0 && (
-                              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">
-                                Saldo de ontem: {previousDinheiroMp.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                              </span>
-                            )}
-                          </div>
-                          <input 
-                            type="number" 
-                            step="0.01"
-                            disabled={isManualLocked}
-                            value={manualDinheiroMp || ''} 
-                            onChange={e => {
-                              setManualDinheiroMp(Number(e.target.value));
-                              setIsDinheiroMpUserEdited(true);
-                            }}
-                            placeholder="0,00"
-                            className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
-                          />
+                    {/* 3. A Receber */}
+                    <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between min-h-[22px]">
+                          <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">A Receber</label>
+                          {manualAReceber > 0 && (
+                            <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30">
+                              Pendente
+                            </span>
+                          )}
                         </div>
-                      </div>
-
-                      {/* 3. A Receber */}
-                      <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between min-h-[22px]">
-                            <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">A Receber</label>
-                            {manualAReceber > 0 && (
-                              <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30">
-                                Pendente
-                              </span>
-                            )}
-                          </div>
-                          <input 
-                            type="number" 
-                            step="0.01"
-                            disabled={isManualLocked}
-                            value={manualAReceber || ''} 
-                            onChange={e => setManualAReceber(Number(e.target.value))}
-                            placeholder="0,00"
-                            className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
-                          />
-                        </div>
-                      </div>
-
-                      {/* 4. Contas a Pagar */}
-                      <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between min-h-[22px]">
-                            <label className="text-[11px] font-bold uppercase text-zinc-400 font-sans">Contas a Pagar</label>
-                            {results.contasPagarResults && results.contasPagarResults.length > 0 && (
-                              <span className="text-[10px] text-rose-400 font-semibold flex items-center gap-1 font-mono bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/30">
-                                <Receipt size={10} /> ({results.contasPagarResults.reduce((acc, c) => acc + c.totalBills, 0)} contas)
-                              </span>
-                            )}
-                          </div>
-                          <input 
-                            type="number" 
-                            step="0.01"
-                            disabled={isManualLocked}
-                            value={contasManual || (results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || '')} 
-                            onChange={e => setContasManual(Number(e.target.value))}
-                            placeholder="0,00"
-                            className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
-                          />
-                        </div>
+                        <input 
+                          type="number" 
+                          step="0.01"
+                          disabled={isManualLocked}
+                          value={manualAReceber || ''} 
+                          onChange={e => setManualAReceber(Number(e.target.value))}
+                          placeholder="0,00"
+                          className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                        />
                       </div>
                     </div>
-                  )}
+
+                    {/* 4. Contas a Pagar */}
+                    <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between min-h-[22px]">
+                          <label className="text-[11px] font-bold uppercase text-zinc-400 font-sans">Contas a Pagar</label>
+                          {results.contasPagarResults && results.contasPagarResults.length > 0 && (
+                            <span className="text-[10px] text-rose-400 font-semibold flex items-center gap-1 font-mono bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/30">
+                              <Receipt size={10} /> ({results.contasPagarResults.reduce((acc, c) => acc + c.totalBills, 0)} contas)
+                            </span>
+                          )}
+                        </div>
+                        <input 
+                          type="number" 
+                          step="0.01"
+                          disabled={isManualLocked}
+                          value={contasManual || (results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || '')} 
+                          onChange={e => setContasManual(Number(e.target.value))}
+                          placeholder="0,00"
+                          className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               );
             })()}

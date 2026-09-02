@@ -1,3 +1,7 @@
+### Spec 353 — Redesign Minimalista e Ergonômico de Pátio e Faturamento
+- **Ergonomia e Redesign no Step 1.5 e Modal de Pátio**: Redesenhado `PatioManualStoreGrid.tsx` e `PatioManagementDualModal.tsx` eliminando poluição visual, com 3 botões claros de pagamento rápido (`PIX`, `Cartão`, `Dinheiro`), seletor enxuto de filial e formulário inline de apenas 3 campos.
+- **Grid Padronizado de 4 Cards no Step 3**: Removida a calculadora volumosa em `CentralImportWizard.tsx`, estabelecendo um grid simétrico e limpo com botão/badge discreto `💡 Sugestão [Usar]` quando não houver arquivos de OS.
+
 ### Spec 352 — Correção de Import do Ícone Car em CentralImportWizard
 - **Inclusão do Ícone `Car`**: Adicionado `Car` no import de `lucide-react` em `CentralImportWizard.tsx`, eliminando o erro de execução `ReferenceError: Car is not defined` ao carregar as abas de Pátio e botões de atalho no Step 1.5 e Step 3.
 

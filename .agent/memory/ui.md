@@ -1,3 +1,17 @@
+## [2026-09-02] — [Feature ID: 353-redesign-clean-patio-e-faturamento-manual]
+
+**Contexto:** Redesign radical e simplificação de UI no Step 1.5 (Pátio sem planilhas) e Step 3 (Valores Manuais), eliminando poluição visual ("cockpit de avião") em favor de um layout Dark UI Zinc-950 sóbrio, com botões 1-clique essenciais e formulários inline compactos.
+
+**Regra aprendida:**
+1. **Ergonomia e Densidade de Informação em Pátio (`PatioManualStoreGrid.tsx`):**
+   - Evitar sobrecarregar tabelas com dezenas de botões e badges concorrentes.
+   - Fornecer 3 botões claros de pagamento (`[ PIX ]`, `[ Cartão ]`, `[ Dinheiro ]`) e formulário de adição rápida de OS em apenas 3 campos essenciais (`Nº OS`, `Valor R$`, `Forma de Pagamento`).
+2. **Grid Unificado e Consistente de 4 Cards Manuais (`CentralImportWizard.tsx`):**
+   - Evitar bifurcar o layout do Step 3 com calculadoras volumosas.
+   - Manter sempre os 4 cards simétricos (`Faturamento/Odômetro`, `Dinheiro MP`, `A Receber`, `Contas a Pagar`), inserindo a sugestão calculada do Mapa de Metas de forma discreta (`💡 Sugestão [Usar]`) diretamente dentro do primeiro card.
+
+---
+
 ## [2026-09-02] — [Feature ID: 352-fix-runtime-car-icon-import]
 
 **Contexto:** Correção de importação do ícone `Car` de `lucide-react` em `CentralImportWizard.tsx` para sanar o erro em tempo de execução `ReferenceError: Car is not defined`.
