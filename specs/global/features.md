@@ -1,3 +1,9 @@
+### Spec 350 — Faturamento Assistido por Mapa de Metas e Gestão Dual de Pátio sem Import de OS
+- **Calculadora Condicional Assistida de Faturamento (`AssistedRevenueCalculator.tsx`)**: Ativada no Step 3 exclusivamente quando `results.osFiles.length === 0`, calcula $\text{Faturamento Sugerido} = (\text{Concil. Anterior} - \text{Mês Anterior}) + \text{Mapa de Metas}$, com botão *"⚡ Aplicar ao Faturamento do Dia"*, mantendo o odômetro padrão 100% inalterado quando houver planilhas XLS.
+- **Gestão de Pátio com Chips de Pagamento 1-Clique (`PatioManualStoreGrid.tsx`)**: Tabela por filial em Dark UI Zinc-950 com chips de 1-clique (`[ ⚡ PIX ]`, `[ ⚡ Crédito ]`, `[ ⚡ Débito ]`, `[ ⚡ Dinheiro ]`), preenchendo automaticamente os campos numéricos de split (`pix_transfer_value`, `credit_value`, `debit_value`, `cash_value`) para alimentar o auto-match com a Rede e o OFX.
+- **Modal Unificado Dual de Pátio (`PatioManagementDualModal.tsx`)**: 2 abas integradas (Aba 1: Baixa Manual por Filial e Aba 2: Importação por Imagem / OCR IA) com persistência atômica via RPC `batch_upsert_patio_os`.
+- **Integração no Wizard (`CentralImportWizard.tsx`)**: Step 1.5 renovado com abas fluidas e Step 3 com card de faturamento assistido e botão *"🚗 Gerenciar Pátio & Baixas"*.
+
 ### Spec 349 — Blindagem do Salvamento de Contas a Pagar e Refatoração do Terminal de Logs
 - **Blindagem no Parser de Contas a Pagar**: `contasPagarParser.ts` descarta estritamente linhas com `amount <= 0 || isNaN(amount)` (ex: títulos cancelados ou estornos), eliminando na causa raiz a violação da check constraint `daily_manual_bills_amount_check` do PostgreSQL.
 - **Sanitização de Foreign Keys e Deduplicação**: `useContasAPagarImport.ts` sanitiza `store_id` (deixa `null` se `'master'` ou se não existir em `stores`), `intercompany_entity_id`, valida campos obrigatórios, deduplica itens em memória e aplica fallback granular individual para inserções resilientes em chunks de 100.

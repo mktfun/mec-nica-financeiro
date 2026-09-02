@@ -1,3 +1,15 @@
+## [2026-09-02] — [Feature ID: 350-faturamento-assistido-mapa-metas-e-gestao-patio-sem-os]
+
+**Contexto:** Criação dos componentes `PatioManualStoreGrid.tsx` e `PatioManagementDualModal.tsx` com 2 abas (Gestão Manual com chips de 1-clique para formas de pagamento e Ingestão OCR), e `AssistedRevenueCalculator.tsx` para o cálculo automático de faturamento no Step 3 na ausência de arquivos XLS de OS.
+
+**Regra aprendida:**
+1. **Chips Rápidos de 1-Clique para Meios de Pagamento (`PatioManualStoreGrid.tsx`):**
+   - Ao fornecer chips rápidos (`[ ⚡ PIX ]`, `[ ⚡ Crédito ]`, `[ ⚡ Débito ]`, `[ ⚡ Dinheiro ]`), popular instantaneamente tanto o valor pago quanto a coluna numérica específica de split (`pix_transfer_value`, `credit_value`, `debit_value`, `cash_value`) para permitir o auto-match determinístico subsequente com o extrato OFX e a Rede.
+2. **Calculadora Condicional Assistida de Faturamento (`AssistedRevenueCalculator.tsx`):**
+   - Exibir a equação interativa `(Faturamento Conciliação Ant. - Faturamento Mês Ant.) + Faturamento Mapa de Metas = Faturamento Sugerido` **estritamente quando `results.osFiles.length === 0`**, mantendo o odômetro padrão 100% inalterado quando houver planilhas de OS.
+
+---
+
 ## [2026-09-01] — [Feature ID: 335-justificativa-saidas-ofx-e-equalizacao-matematica-cards]
 
 **Contexto:** Atualização do modal `OrphanCategorizationModal.tsx` para suporte polimórfico a saídas (com temas visuais Rose, categorias de despesas e seleção de impacto no Contas a Pagar vs Apenas Conciliar) e liberação do botão "Justificar / Editar" em débitos na view `StoreExtratoBancarioView.tsx`. Atualização dos sub-rótulos descritivos do Split Dual no `StoreCardModulo1.tsx`.

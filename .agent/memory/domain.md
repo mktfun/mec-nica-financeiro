@@ -1,3 +1,16 @@
+## [2026-09-02] — [Feature ID: 350-faturamento-assistido-mapa-metas-e-gestao-patio-sem-os]
+
+**Contexto:** Definição da regra canônica de faturamento para virada de mês ou fechamentos ágeis sem arquivos de OS, e sincronização de pátio por filial com formas de pagamento.
+
+**Regra aprendida:**
+1. **Fórmula de Faturamento Assistido na Ausência de Arquivos de OS:**
+   $$\text{Faturamento Sugerido} = (\text{Faturamento Conciliação Ant.} - \text{Faturamento Mês Ant.}) + \text{Faturamento Mapa de Metas}$$
+   - Esta equação permite apurar o faturamento do dia de forma precisa a partir do Mapa de Metas sem exigir o upload de planilhas XLS de ordens de serviço.
+2. **Propagação de Formas de Pagamento no Pátio:**
+   - Ao liquidar ou atualizar ordens de serviço do pátio no Step 1.5, o meio de pagamento (`PIX`, `CARTAO_CREDITO`, `CARTAO_DEBITO`, `DINHEIRO`) deve popular diretamente os campos numéricos específicos na `patio_os`. Isso permite que o motor de auto-match (`auto_match_daily_transactions`) e o Step 4 façam o casamento automático com as transações bancárias e de adquirente.
+
+---
+
 ## [2026-09-01] — [Feature ID: 335-justificativa-saidas-ofx-e-equalizacao-matematica-cards]
 
 **Contexto:** Justificativa de débitos bancários (saídas OFX) com escolha de impacto no Contas a Pagar (`daily_manual_bills`) vs Apenas Conciliar, e equalização matemática linear ($A - B = C$) nos cards de fechamento por filial.

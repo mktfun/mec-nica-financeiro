@@ -43,6 +43,9 @@ import { OcrBatchStoreCarryoverList, PendingPatioOsItem } from './OcrBatchStoreC
 import { OcrBatchDropzoneAndPaste } from './OcrBatchDropzoneAndPaste';
 import { OcrBatchProgressBar } from './OcrBatchProgressBar';
 import { OcrBatchReviewGrid } from './OcrBatchReviewGrid';
+import { PatioManagementDualModal } from './patio/PatioManagementDualModal';
+import { PatioManualStoreGrid, EditablePatioOsItem } from './patio/PatioManualStoreGrid';
+import { AssistedRevenueCalculator } from './wizard/AssistedRevenueCalculator';
 import { executeAutoMatchingEngine, PendingUnmatchedTransaction } from '@/lib/matchers/autoMatchingEngine';
 import { executeExpenseAutoMatching } from '@/lib/expenseMatcher';
 import { useQueryClient } from '@tanstack/react-query';
@@ -129,6 +132,8 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
   // Ingestão OCR Embutida (Step 1.5)
   const { isProcessing: isOcrProcessing, progress: ocrProgress, processBatchQueue: processOcrBatchQueue } = useOcrOsProcessor();
+  const [step15Tab, setStep15Tab] = useState<'manual' | 'ocr'>('manual');
+  const [manualPatioItems, setManualPatioItems] = useState<EditablePatioOsItem[]>([]);
   const [pendingOcrOsList, setPendingOcrOsList] = useState<PendingPatioOsItem[]>([]);
   const [extraOcrOsList, setExtraOcrOsList] = useState<PendingPatioOsItem[]>([]);
   const [selectedOcrStoreId, setSelectedOcrStoreId] = useState<string>('ALL');
@@ -266,7 +271,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     loadDefaultsForDate();
   }, [targetDate, previousSnapshot, isDinheiroMpUserEdited]);
 
-  // Carrega lista de OSs pendentes do pátio para o Step 1.5 (Guia de Missão OCR)
+  // Carrega lista de OSs pendentes do pátio para o Step 1.5 (Guia de Missão OCR & Gestão Manual)
   useEffect(() => {
     if (step !== 1.5) return;
     async function fetchOcrPendingPatio() {
@@ -276,13 +281,106 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         });
         if (!error && data) {
           setPendingOcrOsList(data as PendingPatioOsItem[]);
+          const mapped: EditablePatioOsItem[] = (data as any[]).map(os => ({
+            id: os.os_id || os.id || crypto.randomUUID(),
+            os_number: String(os.os_number || ''),
+            store_id: os.store_id || 'st-01',
+            store_name: os.store_name || 'Filial',
+            client_name: os.client_name || 'Cliente',
+            plate: os.plate || 'S/ PLACA',
+            total_value: Number(os.total_value) || 0,
+            paid_value: Number(os.paid_value) || 0,
+            pending_value: Number(os.pending_value) || 0,
+            days_open: Number(os.days_open) || 0,
+            opened_at: os.opened_at || targetDate,
+            status: (os.status || 'em_aberto') as any,
+            payment_method: 'EM_ABERTO',
+            pix_transfer_value: 0,
+            credit_value: 0,
+            debit_value: 0,
+            cash_value: 0,
+            isModified: false
+          }));
+          setManualPatioItems(mapped);
         }
       } catch (e) {
-        console.warn('Erro ao carregar OSs pendentes para OCR:', e);
+        console.warn('Erro ao carregar OSs pendentes para OCR / Manual:', e);
       }
     }
     fetchOcrPendingPatio();
   }, [step, targetDate]);
+
+  const handleChangeManualPatioItem = (id: string, updates: Partial<EditablePatioOsItem>) => {
+    setManualPatioItems(prev => prev.map(item => {
+      if (item.id !== id) return item;
+      const merged = { ...item, ...updates, isModified: true };
+      merged.pending_value = Math.max(0, (merged.total_value || 0) - (merged.paid_value || 0));
+      return merged;
+    }));
+  };
+
+  const handleQuickPayManualPatioItem = (id: string, method: PaymentMethodOption) => {
+    setManualPatioItems(prev => prev.map(item => {
+      if (item.id !== id) return item;
+      if (method === 'EM_ABERTO') {
+        return {
+          ...item,
+          payment_method: 'EM_ABERTO',
+          paid_value: 0,
+          pending_value: item.total_value || 0,
+          status: 'em_aberto',
+          pix_transfer_value: 0,
+          credit_value: 0,
+          debit_value: 0,
+          cash_value: 0,
+          isModified: true
+        };
+      }
+      const fullAmount = item.total_value > 0 ? item.total_value : (item.paid_value || 100);
+      return {
+        ...item,
+        payment_method: method,
+        paid_value: fullAmount,
+        pending_value: 0,
+        status: 'finalizada',
+        pix_transfer_value: method === 'PIX' || method === 'TRANSFERENCIA' ? fullAmount : 0,
+        credit_value: method === 'CARTAO_CREDITO' ? fullAmount : 0,
+        debit_value: method === 'CARTAO_DEBITO' ? fullAmount : 0,
+        cash_value: method === 'DINHEIRO' ? fullAmount : 0,
+        isModified: true
+      };
+    }));
+  };
+
+  const handleAddManualPatioOs = (storeId: string, os: Partial<EditablePatioOsItem>) => {
+    const newItem: EditablePatioOsItem = {
+      id: crypto.randomUUID(),
+      os_number: os.os_number || '0000',
+      store_id: storeId,
+      store_name: os.store_name || stores.find(s => s.id === storeId)?.name || 'Filial',
+      client_name: os.client_name || 'Cliente Balcão',
+      plate: os.plate || 'S/ PLACA',
+      total_value: os.total_value || 0,
+      paid_value: os.paid_value || 0,
+      pending_value: Math.max(0, (os.total_value || 0) - (os.paid_value || 0)),
+      days_open: 0,
+      opened_at: targetDate,
+      status: os.status || 'em_aberto',
+      payment_method: os.payment_method || 'EM_ABERTO',
+      pix_transfer_value: os.pix_transfer_value || 0,
+      credit_value: os.credit_value || 0,
+      debit_value: os.debit_value || 0,
+      cash_value: os.cash_value || 0,
+      isNewManual: true,
+      isModified: true
+    };
+    setManualPatioItems(prev => [newItem, ...prev]);
+    toast.success(`OS #${newItem.os_number} inserida no pátio!`);
+  };
+
+  const handleRemoveManualPatioOs = (id: string) => {
+    setManualPatioItems(prev => prev.filter(x => x.id !== id));
+  };
 
   const handleStartOcrProcessing = async (images: Array<{ id: string; base64: string; name: string }>) => {
     const itemsToProcess = images.map(img => ({
@@ -384,6 +482,66 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     } finally {
       setIsOcrInjecting(false);
     }
+  };
+
+  const handleSaveAndAdvanceStep15 = async () => {
+    // Se estiver na aba OCR e tiver prints extraídos
+    if (step15Tab === 'ocr' && extractedOcrItems.length > 0) {
+      await handleSaveAndAdvanceOcr();
+      return;
+    }
+
+    // Se estiver na aba Manual e tiver itens modificados
+    const modifiedItems = manualPatioItems.filter(x => x.isModified);
+    if (modifiedItems.length > 0) {
+      setIsOcrInjecting(true);
+      try {
+        const byStore: Record<string, any[]> = {};
+        modifiedItems.forEach(item => {
+          if (!byStore[item.store_id]) byStore[item.store_id] = [];
+          byStore[item.store_id].push({
+            os_number: item.os_number,
+            plate: item.plate,
+            client_name: item.client_name,
+            total_value: item.total_value,
+            paid_value: item.paid_value,
+            credit_value: item.credit_value || (item.payment_method === 'CARTAO_CREDITO' ? item.paid_value : 0),
+            debit_value: item.debit_value || (item.payment_method === 'CARTAO_DEBITO' ? item.paid_value : 0),
+            pix_val: item.pix_transfer_value || (item.payment_method === 'PIX' ? item.paid_value : 0),
+            cash_val: item.cash_value || (item.payment_method === 'DINHEIRO' ? item.paid_value : 0),
+            status: item.status,
+            raw_status: item.status,
+            opened_at: item.opened_at,
+            payment_method: item.payment_method
+          });
+        });
+
+        for (const storeId of Object.keys(byStore)) {
+          await supabase.rpc('batch_upsert_patio_os', {
+            p_store_id: storeId,
+            p_target_date: targetDate,
+            p_os_records: byStore[storeId]
+          });
+        }
+
+        try {
+          await supabase.rpc('auto_match_daily_transactions', { p_date: targetDate });
+        } catch (matchErr) {
+          console.warn('Auto match pós pátio manual:', matchErr);
+        }
+
+        toast.success(`${modifiedItems.length} OS(s) atualizadas com formas de pagamento no pátio!`);
+      } catch (err: any) {
+        console.error('Erro ao salvar pátio manual no step 1.5:', err);
+        toast.error(`Falha ao salvar pátio: ${err.message}`);
+      } finally {
+        setIsOcrInjecting(false);
+      }
+    }
+
+    const hasUnmapped = results.ofxResults.some(o => !mapping[o.alias]) ||
+                        results.redeResults.some(r => r.transactions.some(t => !mapping[t.storeName]));
+    setStep(hasUnmapped ? 2 : 3);
   };
 
   // Terminal logs state
@@ -2019,66 +2177,125 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       )}
 
       {/* STEP 1.5: Ingestão OCR Embutida (Seamless) */}
+      {/* STEP 1.5: Gestão Unificada de Pátio & Ingestão OCR (Sem Planilha XLS) */}
       {step === 1.5 && (
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-4">
-          {/* Header Subtitle da Etapa OCR */}
+          {/* Header Subtitle da Etapa de Pátio */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-zinc-800/80 mb-2 px-1 gap-2">
             <div>
               <h3 className="text-base font-bold text-zinc-100 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-indigo-400" />
-                Ingestão Visual OCR de Ordens de Serviço (Virada de Pátio)
+                <Car className="w-5 h-5 text-emerald-400" />
+                Gestão de Pátio & Veículos (Sem Planilhas XLS)
               </h3>
               <p className="text-xs text-zinc-400 mt-0.5">
-                Data do Fechamento: <span className="font-mono text-indigo-300 font-bold">{targetDate}</span> · Abra cada OS no Oficina Inteligente e dê <kbd className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-200 font-mono text-[11px] border border-zinc-700">Ctrl + V</kbd> do print da aba <strong className="text-emerald-400">Pagamentos</strong>
+                Data do Fechamento: <span className="font-mono text-emerald-400 font-bold">{targetDate}</span> · Baixe as OSs pendentes por filial com formas de pagamento rápidas ou faça ingestão por prints.
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/30 font-mono font-semibold">
-                <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-                Mistral Pixtral-12B (JSON Mode)
+              <span className="flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 font-mono font-semibold">
+                <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                Motor Inteligente de Pátio
               </span>
             </div>
           </div>
 
-          {/* 2 Colunas: Guia Ativo de Missão (5 cols) | Dropzone, Progress & Review Grid (7 cols) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 min-h-[560px]">
-            {/* Left Column: Guia de Missão por Loja */}
-            <div className="lg:col-span-5 h-[600px]">
-              <OcrBatchStoreCarryoverList
+          {/* Controle de Abas no Step 1.5 */}
+          <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+            <button
+              type="button"
+              onClick={() => setStep15Tab('manual')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                step15Tab === 'manual'
+                  ? 'bg-emerald-500 text-zinc-950 shadow-md shadow-emerald-950/50'
+                  : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              <span>📋 1. Baixa Manual por Filial (Chips 1-Clique)</span>
+              <Badge variant="outline" className={`text-[10px] font-mono px-1.5 py-0 ${
+                step15Tab === 'manual' ? 'bg-zinc-950 text-emerald-400 border-zinc-900' : 'bg-zinc-800 text-zinc-400'
+              }`}>
+                {manualPatioItems.length}
+              </Badge>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setStep15Tab('ocr')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                step15Tab === 'ocr'
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-950/50'
+                  : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              <span>📸 2. Importação por Imagem / OCR IA</span>
+              {extractedOcrItems.length > 0 && (
+                <Badge variant="outline" className="text-[10px] font-mono bg-indigo-950 text-indigo-300 border-indigo-500/40 px-1.5 py-0">
+                  {extractedOcrItems.length} extraídas
+                </Badge>
+              )}
+            </button>
+          </div>
+
+          {/* Conteúdo da Aba 1: Gestão Manual por Filial */}
+          {step15Tab === 'manual' && (
+            <div className="p-1">
+              <PatioManualStoreGrid
                 stores={stores}
-                pendingOsList={pendingOcrOsList}
-                extraOsList={extraOcrOsList}
-                extractedItems={extractedOcrItems}
                 selectedStoreId={selectedOcrStoreId}
                 onSelectStore={setSelectedOcrStoreId}
-                onAddExtraOs={handleAddExtraOcrOs}
+                osItems={manualPatioItems}
+                onChangeItem={handleChangeManualPatioItem}
+                onQuickPay={handleQuickPayManualPatioItem}
+                onAddManualOs={handleAddManualPatioOs}
+                onRemoveManualOs={handleRemoveManualPatioOs}
                 targetDate={targetDate}
               />
             </div>
+          )}
 
-            {/* Right Column: Dropzone, Progress & Review Grid */}
-            <div className="lg:col-span-7 flex flex-col h-[600px] space-y-3">
-              <OcrBatchDropzoneAndPaste
-                onStartProcessing={handleStartOcrProcessing}
-                isProcessing={isOcrProcessing}
-                selectedStoreName={selectedOcrStoreId !== 'ALL' ? stores.find(s => s.id === selectedOcrStoreId)?.name : undefined}
-              />
+          {/* Conteúdo da Aba 2: OCR por Imagem */}
+          {step15Tab === 'ocr' && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 min-h-[500px]">
+                {/* Guia Lateral */}
+                <div className="lg:col-span-5 h-[540px]">
+                  <OcrBatchStoreCarryoverList
+                    stores={stores}
+                    pendingOsList={pendingOcrOsList}
+                    extraOsList={extraOcrOsList}
+                    extractedItems={extractedOcrItems}
+                    selectedStoreId={selectedOcrStoreId}
+                    onSelectStore={setSelectedOcrStoreId}
+                    onAddExtraOs={handleAddExtraOcrOs}
+                    targetDate={targetDate}
+                  />
+                </div>
 
-              <OcrBatchProgressBar progress={ocrProgress} isProcessing={isOcrProcessing} />
+                {/* Dropzone e Grid */}
+                <div className="lg:col-span-7 flex flex-col h-[540px] space-y-3">
+                  <OcrBatchDropzoneAndPaste
+                    onStartProcessing={handleStartOcrProcessing}
+                    isProcessing={isOcrProcessing}
+                    selectedStoreName={selectedOcrStoreId !== 'ALL' ? stores.find(s => s.id === selectedOcrStoreId)?.name : undefined}
+                  />
 
-              <div className="flex-1 min-h-0">
-                <OcrBatchReviewGrid
-                  items={extractedOcrItems}
-                  stores={stores}
-                  onChangeItem={handleChangeOcrItem}
-                  onDeleteItem={handleDeleteOcrItem}
-                  onInject={handleSaveAndAdvanceOcr}
-                  isInjecting={isOcrInjecting}
-                  onClearAll={() => setExtractedOcrItems([])}
-                />
+                  <OcrBatchProgressBar progress={ocrProgress} isProcessing={isOcrProcessing} />
+
+                  <div className="flex-1 min-h-0">
+                    <OcrBatchReviewGrid
+                      items={extractedOcrItems}
+                      stores={stores}
+                      onChangeItem={handleChangeOcrItem}
+                      onDeleteItem={handleDeleteOcrItem}
+                      onInject={handleSaveAndAdvanceOcr}
+                      isInjecting={isOcrInjecting}
+                      onClearAll={() => setExtractedOcrItems([])}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Barra de Navegação Inferior do Step 1.5 */}
           <div className="flex items-center justify-between pt-3 border-t border-zinc-800">
@@ -2102,17 +2319,17 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                 }}
                 className="text-zinc-500 hover:text-zinc-300 text-xs"
               >
-                Pular Ingestão de OS (Continuar sem OSs)
+                Pular Pátio (Continuar sem OSs)
               </Button>
 
               <Button
                 type="button"
-                onClick={handleSaveAndAdvanceOcr}
-                disabled={isOcrInjecting || extractedOcrItems.length === 0}
+                onClick={handleSaveAndAdvanceStep15}
+                disabled={isOcrInjecting}
                 className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-lg shadow-emerald-950/50 flex items-center gap-2"
               >
                 <Sparkles className="w-4 h-4 text-emerald-200" />
-                {isOcrInjecting ? 'Integrando OSs na Esteira...' : `Salvar e Avançar Fluxo (${extractedOcrItems.length} OSs) →`}
+                {isOcrInjecting ? 'Salvando Pátio no Banco...' : 'Salvar Alterações e Avançar →'}
               </Button>
             </div>
           </div>
@@ -2494,133 +2711,253 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
           <Card className="p-6 bg-zinc-900/60 border border-zinc-800 space-y-6">
             {/* Início: Valores Manuais Globais */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-bold text-base text-zinc-100 flex items-center gap-2">
-                    Valores Manuais do Dia
-                  </h4>
-                  <p className="text-xs text-zinc-400 mt-0.5">
-                    Preencha os dados abaixo. Eles serão salvos no fechamento diário e travados para evitar alterações acidentais.
-                  </p>
-                </div>
+            {(() => {
+              const hasNoOsFiles = results.osFiles.filter(r => r.success && r.osArray.length > 0).length === 0;
+              const mapaMetasFaturamentoTotal = results.mapaMetasResults?.[0]?.totalFaturamento || 0;
+              const previousMonthClosing = previousSnapshot?.faturamento ? Number(previousSnapshot.faturamento) : 0;
 
-                <button
-                  type="button"
-                  onClick={() => setIsManualLocked(!isManualLocked)}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer ${
-                    isManualLocked 
-                      ? 'bg-zinc-800 text-zinc-300 border border-zinc-700 hover:bg-zinc-700' 
-                      : 'bg-amber-500/15 text-amber-300 border border-amber-500/40 shadow-sm shadow-amber-950/30'
-                  }`}
-                >
-                  {isManualLocked ? <Lock size={13} /> : <Unlock size={13} />}
-                  {isManualLocked ? 'Trava Ativa' : 'Destravado'}
-                </button>
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
-                {/* 1. Odômetro */}
-                <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between min-h-[22px]">
-                      <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">Odômetro OI (Acumulado)</label>
-                      {previousOdometro > 0 && (
-                        <span className="text-[10px] font-mono text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/30">
-                          Ant: {previousOdometro.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                        </span>
-                      )}
+              return (
+                <div className="space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <h4 className="font-bold text-base text-zinc-100 flex items-center gap-2">
+                        Valores Manuais do Dia
+                        {hasNoOsFiles && (
+                          <Badge variant="outline" className="text-[10px] font-mono bg-amber-500/10 text-amber-300 border-amber-500/30">
+                            Sem Planilhas de OS (Modo Assistido)
+                          </Badge>
+                        )}
+                      </h4>
+                      <p className="text-xs text-zinc-400 mt-0.5">
+                        {hasNoOsFiles 
+                          ? 'Cálculo assistido de faturamento ativado via Mapa de Metas para virada de mês.' 
+                          : 'Preencha os dados abaixo. Eles serão salvos no fechamento diário e travados para evitar alterações acidentais.'}
+                      </p>
                     </div>
-                    <input 
-                      type="number" 
-                      step="0.01"
-                      disabled={isManualLocked}
-                      value={odometroHoje || ''} 
-                      onChange={e => setOdometroHoje(Number(e.target.value))}
-                      placeholder="Ex: 945000.00"
-                      className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
-                    />
+
+                    <div className="flex items-center gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setIsOcrModalOpen(true)}
+                        className="text-xs bg-zinc-900 border-zinc-800 text-emerald-400 hover:bg-zinc-800 hover:text-emerald-300 flex items-center gap-1.5 rounded-xl shadow-sm"
+                      >
+                        <Car size={13} />
+                        Gerenciar Pátio & Baixas
+                      </Button>
+
+                      <button
+                        type="button"
+                        onClick={() => setIsManualLocked(!isManualLocked)}
+                        className={`px-3 py-1.5 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer ${
+                          isManualLocked 
+                            ? 'bg-zinc-800 text-zinc-300 border border-zinc-700 hover:bg-zinc-700' 
+                            : 'bg-amber-500/15 text-amber-300 border border-amber-500/40 shadow-sm shadow-amber-950/30'
+                        }`}
+                      >
+                        {isManualLocked ? <Lock size={13} /> : <Unlock size={13} />}
+                        {isManualLocked ? 'Trava Ativa' : 'Destravado'}
+                      </button>
+                    </div>
                   </div>
-                  {odometroHoje > 0 && previousOdometro > 0 && (
-                    <p className="text-[11px] font-mono text-emerald-400 pt-0.5">
-                      Δ Faturamento: <span className="font-bold tabular-nums">{deltaFaturamentoCalculado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-                    </p>
+
+                  {/* SE NÃO HOUVER OSs IMPORTADAS: CALCULADORA ASSISTIDA + 3 CARDS MANUAIS */}
+                  {hasNoOsFiles ? (
+                    <div className="space-y-4">
+                      <AssistedRevenueCalculator
+                        previousOdometro={previousOdometro}
+                        initialFaturamentoMesAnterior={previousMonthClosing}
+                        initialMapaMetasFaturamento={mapaMetasFaturamentoTotal}
+                        odometroHoje={odometroHoje}
+                        onApplyCalculatedValue={(val) => setOdometroHoje(val)}
+                        isLocked={isManualLocked}
+                        onToggleLock={() => setIsManualLocked(!isManualLocked)}
+                        onChangeOdometro={(val) => setOdometroHoje(val)}
+                        deltaFaturamento={deltaFaturamentoCalculado}
+                      />
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono">
+                        {/* 1. Dinheiro MP */}
+                        <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between min-h-[22px]">
+                              <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">Dinheiro MP</label>
+                              {previousDinheiroMp > 0 && (
+                                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">
+                                  Ontem: {previousDinheiroMp.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                </span>
+                              )}
+                            </div>
+                            <input 
+                              type="number" 
+                              step="0.01"
+                              disabled={isManualLocked}
+                              value={manualDinheiroMp || ''} 
+                              onChange={e => {
+                                setManualDinheiroMp(Number(e.target.value));
+                                setIsDinheiroMpUserEdited(true);
+                              }}
+                              placeholder="0,00"
+                              className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                            />
+                          </div>
+                        </div>
+
+                        {/* 2. A Receber */}
+                        <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between min-h-[22px]">
+                              <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">A Receber</label>
+                              {manualAReceber > 0 && (
+                                <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30">
+                                  Pendente
+                                </span>
+                              )}
+                            </div>
+                            <input 
+                              type="number" 
+                              step="0.01"
+                              disabled={isManualLocked}
+                              value={manualAReceber || ''} 
+                              onChange={e => setManualAReceber(Number(e.target.value))}
+                              placeholder="0,00"
+                              className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                            />
+                          </div>
+                        </div>
+
+                        {/* 3. Contas a Pagar */}
+                        <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between min-h-[22px]">
+                              <label className="text-[11px] font-bold uppercase text-zinc-400 font-sans">Contas a Pagar</label>
+                              {results.contasPagarResults && results.contasPagarResults.length > 0 && (
+                                <span className="text-[10px] text-rose-400 font-semibold flex items-center gap-1 font-mono bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/30">
+                                  <Receipt size={10} /> ({results.contasPagarResults.reduce((acc, c) => acc + c.totalBills, 0)} contas)
+                                </span>
+                              )}
+                            </div>
+                            <input 
+                              type="number" 
+                              step="0.01"
+                              disabled={isManualLocked}
+                              value={contasManual || (results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || '')} 
+                              onChange={e => setContasManual(Number(e.target.value))}
+                              placeholder="0,00"
+                              className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    /* SE HOUVER OSs IMPORTADAS: GRID NORMAL DE 4 COLUNAS */
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
+                      {/* 1. Odômetro */}
+                      <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between min-h-[22px]">
+                            <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">Odômetro OI (Acumulado)</label>
+                            {previousOdometro > 0 && (
+                              <span className="text-[10px] font-mono text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/30">
+                                Ant: {previousOdometro.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                              </span>
+                            )}
+                          </div>
+                          <input 
+                            type="number" 
+                            step="0.01"
+                            disabled={isManualLocked}
+                            value={odometroHoje || ''} 
+                            onChange={e => setOdometroHoje(Number(e.target.value))}
+                            placeholder="Ex: 945000.00"
+                            className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                          />
+                        </div>
+                        {odometroHoje > 0 && previousOdometro > 0 && (
+                          <p className="text-[11px] font-mono text-emerald-400 pt-0.5">
+                            Δ Faturamento: <span className="font-bold tabular-nums">{deltaFaturamentoCalculado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                          </p>
+                        )}
+                      </div>
+
+                      {/* 2. Dinheiro MP */}
+                      <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between min-h-[22px]">
+                            <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">Dinheiro MP</label>
+                            {previousDinheiroMp > 0 && (
+                              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">
+                                Saldo de ontem: {previousDinheiroMp.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                              </span>
+                            )}
+                          </div>
+                          <input 
+                            type="number" 
+                            step="0.01"
+                            disabled={isManualLocked}
+                            value={manualDinheiroMp || ''} 
+                            onChange={e => {
+                              setManualDinheiroMp(Number(e.target.value));
+                              setIsDinheiroMpUserEdited(true);
+                            }}
+                            placeholder="0,00"
+                            className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                          />
+                        </div>
+                      </div>
+
+                      {/* 3. A Receber */}
+                      <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between min-h-[22px]">
+                            <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">A Receber</label>
+                            {manualAReceber > 0 && (
+                              <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30">
+                                Pendente
+                              </span>
+                            )}
+                          </div>
+                          <input 
+                            type="number" 
+                            step="0.01"
+                            disabled={isManualLocked}
+                            value={manualAReceber || ''} 
+                            onChange={e => setManualAReceber(Number(e.target.value))}
+                            placeholder="0,00"
+                            className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                          />
+                        </div>
+                      </div>
+
+                      {/* 4. Contas a Pagar */}
+                      <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between min-h-[22px]">
+                            <label className="text-[11px] font-bold uppercase text-zinc-400 font-sans">Contas a Pagar</label>
+                            {results.contasPagarResults && results.contasPagarResults.length > 0 && (
+                              <span className="text-[10px] text-rose-400 font-semibold flex items-center gap-1 font-mono bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/30">
+                                <Receipt size={10} /> ({results.contasPagarResults.reduce((acc, c) => acc + c.totalBills, 0)} contas)
+                              </span>
+                            )}
+                          </div>
+                          <input 
+                            type="number" 
+                            step="0.01"
+                            disabled={isManualLocked}
+                            value={contasManual || (results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || '')} 
+                            onChange={e => setContasManual(Number(e.target.value))}
+                            placeholder="0,00"
+                            className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
+                          />
+                        </div>
+                      </div>
+                    </div>
                   )}
                 </div>
-
-                {/* 2. Dinheiro MP (Preenchido com saldo de ontem + Badge) */}
-                <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between min-h-[22px]">
-                      <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">Dinheiro MP</label>
-                      {previousDinheiroMp > 0 && (
-                        <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">
-                          Saldo de ontem: {previousDinheiroMp.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                        </span>
-                      )}
-                    </div>
-                    <input 
-                      type="number" 
-                      step="0.01"
-                      disabled={isManualLocked}
-                      value={manualDinheiroMp || ''} 
-                      onChange={e => {
-                        setManualDinheiroMp(Number(e.target.value));
-                        setIsDinheiroMpUserEdited(true);
-                      }}
-                      placeholder="0,00"
-                      className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
-                    />
-                  </div>
-                </div>
-
-                {/* 3. A Receber */}
-                <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between min-h-[22px]">
-                      <label className="block text-[11px] font-bold uppercase text-zinc-400 font-sans">A Receber</label>
-                      {manualAReceber > 0 && (
-                        <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30">
-                          Pendente
-                        </span>
-                      )}
-                    </div>
-                    <input 
-                      type="number" 
-                      step="0.01"
-                      disabled={isManualLocked}
-                      value={manualAReceber || ''} 
-                      onChange={e => setManualAReceber(Number(e.target.value))}
-                      placeholder="0,00"
-                      className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
-                    />
-                  </div>
-                </div>
-
-                {/* 4. Contas a Pagar */}
-                <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800 space-y-2 flex flex-col justify-between">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between min-h-[22px]">
-                      <label className="text-[11px] font-bold uppercase text-zinc-400 font-sans">Contas a Pagar</label>
-                      {results.contasPagarResults && results.contasPagarResults.length > 0 && (
-                        <span className="text-[10px] text-rose-400 font-semibold flex items-center gap-1 font-mono bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/30">
-                          <Receipt size={10} /> ({results.contasPagarResults.reduce((acc, c) => acc + c.totalBills, 0)} contas)
-                        </span>
-                      )}
-                    </div>
-                    <input 
-                      type="number" 
-                      step="0.01"
-                      disabled={isManualLocked}
-                      value={contasManual || (results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || '')} 
-                      onChange={e => setContasManual(Number(e.target.value))}
-                      placeholder="0,00"
-                      className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+              );
+            })()}
             {/* Fim: Valores Manuais Globais */}
 
             {/* Inspetor JSON de Conciliação */}
@@ -2980,6 +3317,16 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           if (pendingFiles.length > 0) {
             await processFiles(pendingFiles);
           }
+        }}
+      />
+
+      <PatioManagementDualModal
+        isOpen={isOcrModalOpen}
+        onClose={() => setIsOcrModalOpen(false)}
+        targetDate={targetDate}
+        stores={stores}
+        onSuccess={() => {
+          toast.success('Pátio sincronizado com sucesso!');
         }}
       />
     </div>
