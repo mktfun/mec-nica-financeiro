@@ -1,3 +1,7 @@
+### Spec 351 — Correção de Case Sensitivity em Importações UI para Deploy Linux / Lovable
+- **Normalização de Imports PascalCase**: `OcrBatchDropzoneAndPaste.tsx` e `OcrBatchReviewGrid.tsx` atualizados para importar `Button` de `@/components/ui/Button` em conformidade estrita com o sistema de arquivos case-sensitive Linux (Lovable/Cloudflare/CI).
+- **Blindagem no `tsconfig.json`**: Inserida a opção `"forceConsistentCasingInFileNames": true` nas `compilerOptions` para detecção estática no ambiente de desenvolvimento local.
+
 ### Spec 350 — Faturamento Assistido por Mapa de Metas e Gestão Dual de Pátio sem Import de OS
 - **Calculadora Condicional Assistida de Faturamento (`AssistedRevenueCalculator.tsx`)**: Ativada no Step 3 exclusivamente quando `results.osFiles.length === 0`, calcula $\text{Faturamento Sugerido} = (\text{Concil. Anterior} - \text{Mês Anterior}) + \text{Mapa de Metas}$, com botão *"⚡ Aplicar ao Faturamento do Dia"*, mantendo o odômetro padrão 100% inalterado quando houver planilhas XLS.
 - **Gestão de Pátio com Chips de Pagamento 1-Clique (`PatioManualStoreGrid.tsx`)**: Tabela por filial em Dark UI Zinc-950 com chips de 1-clique (`[ ⚡ PIX ]`, `[ ⚡ Crédito ]`, `[ ⚡ Débito ]`, `[ ⚡ Dinheiro ]`), preenchendo automaticamente os campos numéricos de split (`pix_transfer_value`, `credit_value`, `debit_value`, `cash_value`) para alimentar o auto-match com a Rede e o OFX.

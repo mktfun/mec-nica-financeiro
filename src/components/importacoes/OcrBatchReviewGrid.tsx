@@ -2,7 +2,7 @@ import React from 'react';
 import { StoreRow } from '@/lib/supabase';
 import { ExtractedOcrOsItem } from '@/hooks/useOcrOsProcessor';
 import { Trash2, CheckCircle2, AlertCircle, Sparkles, Building2, CreditCard, Banknote, DollarSign } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 
 interface OcrBatchReviewGridProps {
   items: ExtractedOcrOsItem[];

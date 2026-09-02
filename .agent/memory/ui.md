@@ -1,3 +1,14 @@
+## [2026-09-02] — [Feature ID: 351-fix-case-sensitive-ui-button-imports]
+
+**Contexto:** Correção de case sensitivity em importações de componentes UI (`Button` em vez de `button`) para compatibilidade com ambiente Linux / Lovable / Cloudflare.
+
+**Regra aprendida:**
+1. **Case-Sensitivity Estrito em Imports de UI (`src/components/ui/`):**
+   - Sempre usar PascalCase idêntico ao arquivo no disco (`import { Button } from '@/components/ui/Button'`).
+   - A diretiva `"forceConsistentCasingInFileNames": true` no `tsconfig.json` atua como guardrail estático.
+
+---
+
 ## [2026-09-02] — [Feature ID: 350-faturamento-assistido-mapa-metas-e-gestao-patio-sem-os]
 
 **Contexto:** Criação dos componentes `PatioManualStoreGrid.tsx` e `PatioManagementDualModal.tsx` com 2 abas (Gestão Manual com chips de 1-clique para formas de pagamento e Ingestão OCR), e `AssistedRevenueCalculator.tsx` para o cálculo automático de faturamento no Step 3 na ausência de arquivos XLS de OS.
