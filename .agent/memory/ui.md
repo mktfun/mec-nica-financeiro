@@ -1,3 +1,16 @@
+## [2026-09-02] — [Feature ID: 354-controle-os-excel-accordion-por-loja]
+
+**Contexto:** Implementação da visualização de Controle de OS Estilo Planilha Excel por Loja em blocos expansíveis (Accordion) com tabela de split completa (Pix, Crédito, Débito, Dinheiro, Total Pago, Restante) e mini popover flutuante para lançamentos múltiplos/cumulativos na própria linha.
+
+**Regra aprendida:**
+1. **Excel UI & Lançamentos em Linha (`PatioExcelStoreAccordion.tsx`):**
+   - Apresentar as lojas como blocos sanfona independentes com métricas em tempo real (`Total OS`, `Total Pago`, `Restante`).
+   - Salvar o estado de expansão/recolhimento das lojas em `localStorage` (`patio_expanded_stores:v2`).
+   - Usar mini popover inline (com atalho `[ ⚡ Usar restante ]` e botão `Zerar`) para lançar múltiplos meios de pagamento sem modais intrusivos.
+   - Decompor visualmente os splits de pagamento nas colunas correspondentes e recalcular automaticamente `paid_value` e `pending_value`.
+
+---
+
 ## [2026-09-02] — [Feature ID: 353-redesign-clean-patio-e-faturamento-manual]
 
 **Contexto:** Redesign radical e simplificação de UI no Step 1.5 (Pátio sem planilhas) e Step 3 (Valores Manuais), eliminando poluição visual ("cockpit de avião") em favor de um layout Dark UI Zinc-950 sóbrio, com botões 1-clique essenciais e formulários inline compactos.

@@ -285,13 +285,13 @@ export const PatioManagementDualModal: React.FC<PatioManagementDualModalProps> =
             client_name: item.client_name,
             total_value: item.total_value,
             paid_value: item.paid_value,
-            credit_value: item.credit_value || (item.payment_method === 'CARTAO_CREDITO' ? item.paid_value : 0),
-            debit_value: item.debit_value || (item.payment_method === 'CARTAO_DEBITO' ? item.paid_value : 0),
-            pix_val: item.pix_transfer_value || (item.payment_method === 'PIX' ? item.paid_value : 0),
-            cash_val: item.cash_value || (item.payment_method === 'DINHEIRO' ? item.paid_value : 0),
+            credit_value: Number(item.credit_value || (item.payment_method === 'CARTAO_CREDITO' ? item.paid_value : 0)),
+            debit_value: Number(item.debit_value || (item.payment_method === 'CARTAO_DEBITO' ? item.paid_value : 0)),
+            pix_val: Number(item.pix_transfer_value || (item.payment_method === 'PIX' ? item.paid_value : 0)),
+            cash_val: Number(item.cash_value || (item.payment_method === 'DINHEIRO' ? item.paid_value : 0)),
             status: item.status,
             raw_status: item.status,
-            opened_at: item.opened_at,
+            opened_at: item.opened_at || targetDate,
             payment_method: item.payment_method
           });
         });

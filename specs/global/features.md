@@ -1,3 +1,7 @@
+### Spec 354 — Controle de OS Estilo Planilha Excel por Loja com Accordion
+- **Visão em Blocos Expansíveis por Loja (Accordion)**: Criado `PatioExcelStoreAccordion.tsx` com cabeçalho de totais em tempo real, persistência de expansão em `localStorage` e adição inline de novas OSs.
+- **Tabela Estilo Excel & Mini Popover de Lançamento**: Decomposição transparente de formas de pagamento (Pix, Crédito, Débito, Dinheiro, Total Pago, Restante) com popover inline flutuante de lançamento cumulativo (`[ ⚡ Usar restante ]` e botão `Zerar`).
+
 ### Spec 353 — Redesign Minimalista e Ergonômico de Pátio e Faturamento
 - **Ergonomia e Redesign no Step 1.5 e Modal de Pátio**: Redesenhado `PatioManualStoreGrid.tsx` e `PatioManagementDualModal.tsx` eliminando poluição visual, com 3 botões claros de pagamento rápido (`PIX`, `Cartão`, `Dinheiro`), seletor enxuto de filial e formulário inline de apenas 3 campos.
 - **Grid Padronizado de 4 Cards no Step 3**: Removida a calculadora volumosa em `CentralImportWizard.tsx`, estabelecendo um grid simétrico e limpo com botão/badge discreto `💡 Sugestão [Usar]` quando não houver arquivos de OS.
