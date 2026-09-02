@@ -1,3 +1,13 @@
+## [2026-09-02] — [Feature ID: 352-fix-runtime-car-icon-import]
+
+**Contexto:** Correção de importação do ícone `Car` de `lucide-react` em `CentralImportWizard.tsx` para sanar o erro em tempo de execução `ReferenceError: Car is not defined`.
+
+**Regra aprendida:**
+1. **Importação Explícita de Ícones Lucide:**
+   - Todo e qualquer componente visual instanciado em JSX (`<Car />`, `<Zap />`, etc.) deve estar explicitamente incluído no bloco de desestruturação de `lucide-react` do arquivo pai para evitar falhas de runtime na montagem do componente no browser.
+
+---
+
 ## [2026-09-02] — [Feature ID: 351-fix-case-sensitive-ui-button-imports]
 
 **Contexto:** Correção de case sensitivity em importações de componentes UI (`Button` em vez de `button`) para compatibilidade com ambiente Linux / Lovable / Cloudflare.

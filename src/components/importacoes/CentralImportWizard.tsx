@@ -15,7 +15,8 @@ import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { 
   UploadCloud, CheckCircle2, FileType2, Link as LinkIcon, ArrowRight, ArrowLeft, 
   Database, Search, X, AlertCircle, CreditCard, FileText, 
-  Terminal, Sparkles, FileSpreadsheet, RefreshCcw, Loader2, Code2, Copy, Check, Lock, Unlock, Receipt
+  Terminal, Sparkles, FileSpreadsheet, RefreshCcw, Loader2, Code2, Copy, Check, Lock, Unlock, Receipt,
+  Car
 } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
 import { useStoreFileMappings } from '@/hooks/useStoreFileMappings';

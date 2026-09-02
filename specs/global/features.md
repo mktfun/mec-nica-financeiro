@@ -1,3 +1,6 @@
+### Spec 352 — Correção de Import do Ícone Car em CentralImportWizard
+- **Inclusão do Ícone `Car`**: Adicionado `Car` no import de `lucide-react` em `CentralImportWizard.tsx`, eliminando o erro de execução `ReferenceError: Car is not defined` ao carregar as abas de Pátio e botões de atalho no Step 1.5 e Step 3.
+
 ### Spec 351 — Correção de Case Sensitivity em Importações UI para Deploy Linux / Lovable
 - **Normalização de Imports PascalCase**: `OcrBatchDropzoneAndPaste.tsx` e `OcrBatchReviewGrid.tsx` atualizados para importar `Button` de `@/components/ui/Button` em conformidade estrita com o sistema de arquivos case-sensitive Linux (Lovable/Cloudflare/CI).
 - **Blindagem no `tsconfig.json`**: Inserida a opção `"forceConsistentCasingInFileNames": true` nas `compilerOptions` para detecção estática no ambiente de desenvolvimento local.
