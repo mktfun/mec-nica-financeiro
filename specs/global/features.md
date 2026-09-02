@@ -1,3 +1,7 @@
+### Spec 355 — Expurgo de OSs Zumbis/Antigas e Blindagem de Consulta do Pátio Ativo
+- **Limpeza Canônica de Pátio**: Aplicada a migration `20260902000022_cleanup_patio_os_zombies.sql` eliminando registros espúrios (`%Faturamento%` e datas anômalas < 2026-07-01 ou anos anteriores como 2020).
+- **Blindagem da RPC `get_pending_patio_os_for_ocr`**: Inseridos guardrails de janela temporal de 60 dias e exclusão permanente de termos contábeis de faturamento nas OSs.
+
 ### Spec 354 — Controle de OS Estilo Planilha Excel por Loja com Accordion
 - **Visão em Blocos Expansíveis por Loja (Accordion)**: Criado `PatioExcelStoreAccordion.tsx` com cabeçalho de totais em tempo real, persistência de expansão em `localStorage` e adição inline de novas OSs.
 - **Tabela Estilo Excel & Mini Popover de Lançamento**: Decomposição transparente de formas de pagamento (Pix, Crédito, Débito, Dinheiro, Total Pago, Restante) com popover inline flutuante de lançamento cumulativo (`[ ⚡ Usar restante ]` e botão `Zerar`).

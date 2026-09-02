@@ -1,3 +1,14 @@
+## [2026-09-02] — [Feature ID: 355-cleanup-patio-os-zombies-e-blindagem-rpc]
+
+**Contexto:** Expurgo definitivo de registros espúrios/zumbis em `patio_os` (ex: datas anômalas < 2026-07-01, anos como 2020 e OSs artificiais com sufixo "Faturamento") e blindagem defensiva da RPC `get_pending_patio_os_for_ocr` via migration `20260902000022_cleanup_patio_os_zombies.sql`.
+
+**Regra aprendida:**
+1. **SSOT do Pátio e Sanitização de Nomes (`patio_os`):**
+   - Registros de métricas de faturamento contábil NUNCA devem ser inseridos como ordens de serviço em `patio_os`.
+   - A RPC `get_pending_patio_os_for_ocr` possui cláusula permanente `AND p.os_number NOT ILIKE '%faturamento%'` e janela operacional estrita de 60 dias da data base (`p.opened_at >= (p_target_date - INTERVAL '60 days')`), prevenindo que OSs esquecidas de meses/anos anteriores poluam a tela do operador.
+
+---
+
 ## [2026-09-01] — [Feature ID: 335-justificativa-saidas-ofx-e-equalizacao-matematica-cards]
 
 **Contexto:** Refinamento da RPC `get_daily_reconciliation_summary` em `supabase/migrations/20260901000012_fix_store_split_linear_subtraction_and_expenses.sql` para garantir subtração linear estrita nas lojas e blindar o cálculo de `contas_loja_total` contra dupla contagem de despesas extras.
