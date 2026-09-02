@@ -88,7 +88,7 @@ AS $$
     FROM public.patio_os p
     LEFT JOIN public.stores s ON (s.id = p.store_id)
     WHERE p.opened_at::date <= p_target_date
-      AND p.opened_at >= (p_target_date - INTERVAL '60 days')
+      AND p.opened_at >= (p_target_date - INTERVAL '90 days')
       AND p.os_number NOT ILIKE '%faturamento%'
       AND p.os_number NOT ILIKE '%fat%'
       AND (

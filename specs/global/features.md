@@ -1,3 +1,7 @@
+### Spec 356 — Sincronização Canônica Estrita de Pátio (R$ 56.796,63 - R$ 57.780,63)
+- **Expurgo e Encerramento de Resíduos**: Encerradas todas as OSs que não pertenciam ao balanço contábil da virada de mês em `patio_os`.
+- **Alinhamento Rigoroso com Planilha Oficial**: Sincronizadas as OSs ativas com valores exatos por filial, eliminando desvios e cravando o saldo em aberto em R$ 56.796,63.
+
 ### Spec 355 — Expurgo de OSs Zumbis/Antigas e Blindagem de Consulta do Pátio Ativo
 - **Limpeza Canônica de Pátio**: Aplicada a migration `20260902000022_cleanup_patio_os_zombies.sql` eliminando registros espúrios (`%Faturamento%` e datas anômalas < 2026-07-01 ou anos anteriores como 2020).
 - **Blindagem da RPC `get_pending_patio_os_for_ocr`**: Inseridos guardrails de janela temporal de 60 dias e exclusão permanente de termos contábeis de faturamento nas OSs.

@@ -1,3 +1,15 @@
+## [2026-09-02] — [Feature ID: 356-sincronizacao-canonica-patio-57k]
+
+**Contexto:** Sincronização canônica e expurgo definitivo de dezenas de OSs antigas/inativas que inflavam o saldo de pátio em aberto para R$ 130k. Alinhamento rigoroso com a planilha oficial `CONCILIAÇÃO 0109.xlsx` (saldo "NA LOJA" de R$ 56.796,63 - R$ 57.780,63).
+
+**Regra aprendida:**
+1. **SSOT Canônica de Pátio ("NA LOJA"):**
+   - O pátio ativo no banco (`patio_os`) deve representar estritamente a fotografia física dos veículos aguardando liberação/pagamento na virada de data.
+   - Qualquer OS de ciclos passados que não conste na conciliação oficial deve ser marcada como `finalizada` com quitação integral, prevenindo resíduos zumbis que distorcem o balanço patrimonial.
+   - NUNCA duplicar OSs entre lojas: o número da OS pertence exclusivamente a uma filial (`store_id`).
+
+---
+
 ## [2026-09-02] — [Feature ID: 350-faturamento-assistido-mapa-metas-e-gestao-patio-sem-os]
 
 **Contexto:** Definição da regra canônica de faturamento para virada de mês ou fechamentos ágeis sem arquivos de OS, e sincronização de pátio por filial com formas de pagamento.
