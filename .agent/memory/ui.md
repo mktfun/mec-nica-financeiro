@@ -1,3 +1,19 @@
+## [2026-09-03] — [Feature ID: 360-conciliacao-conversacional-fullscreen-chat]
+
+**Contexto:** Implementação do Workspace Conversacional de Conciliação em Tela Cheia com a IA Hydra, eliminação de clichês de "vibecoding de IA" (zero emojis, zero gradientes roxos extravagantes) e adoção de Dark UI Zinc-950 corporativa com atalhos de teclado.
+
+**Regra aprendida:**
+1. **Design System Corporativo Sóbrio em Chats Financeiros:**
+   - Interfaces financeiras voltadas para fechamento e auditoria não devem utilizar emojis nem mascotes de robô informais.
+   - Usar tipografia monospaçada para valores contábeis (`font-mono tabular-nums`), ícones exclusivamente funcionais da biblioteca `lucide-react` (`Building2`, `Check`, `X`, `FileText`) e cores semânticas sóbrias (`emerald-400` para conformidade, `rose-400` para divergência).
+2. **Cartões de Decisão Inline com Atalhos Físicos (`InlineDecisionCard.tsx`):**
+   - Em vez de modais flutuantes que bloqueiam a visão do histórico, propostas de conciliação geradas pela IA devem ser renderizadas inline dentro do próprio fluxo do balão esquerdo do assistente.
+   - Suportar atalhos de teclado globais seguros (`1`/`Enter` para confirmar, `2`/`Esc` para rejeitar) com guarda estrita contra interceptação de digitação em inputs/textareas.
+3. **Alternância Não-Disruptiva de Rota (`src/routes/conciliacao.index.tsx`):**
+   - Ao adicionar modos de exibição (ex: `view: 'classic' | 'chat'`), NUNCA tornar o search param obrigatório no `validateSearch` do TanStack Router, pois isso quebra chamadas de navegação existentes em outras rotas filhas. Ler preferência de `localStorage` e URL query params com fallback resiliente.
+
+---
+
 ## [2026-09-02] — [Feature ID: 358-motor-conciliacao-lojas-ofx-e-equalizacao-0209]
 
 **Contexto:** Blindagem contra campos zerados em `ConciliacaoLojasView.tsx` e `StoreCardModulo1.tsx`, pré-compressão Canvas de screenshots no Dropzone do OCR e criação do componente `RevenueAdjustmentsCard.tsx`.

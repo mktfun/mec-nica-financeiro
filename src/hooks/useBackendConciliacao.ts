@@ -206,6 +206,12 @@ export interface DailyReconciliationSummary {
   status_geral: 'approved' | 'divergence';
   is_closed?: boolean;
   closed_at?: string | null;
+  // Campos Bicanais (Spec 359)
+  caixa_tesouraria?: number;
+  status_tesouraria?: 'equilibrado' | 'descoberto' | string;
+  patio_wip?: number;
+  variacao_patio_delta_p4?: number;
+  fast_path_eligible?: boolean;
   stores: StoreReconciliationSummary[];
   stores_detail?: StoreReconciliationSummary[];
   maquininhas_detalhe?: PosTripleReconciliationResult;

@@ -173,8 +173,8 @@ export function ResumoDiaPanel({
     : (summary?.subtotal_contas ?? (jurosRedeValor + contasManualValor));
 
   const diferencaFinalCalculada = isEditing 
-    ? (Math.abs(valorDispContasCalculado) - subtotalContasCalculado)
-    : (summary?.diferenca_final ?? (Math.abs(valorDispContasCalculado) - subtotalContasCalculado));
+    ? (valorDispContasCalculado - subtotalContasCalculado)
+    : (summary?.diferenca_final ?? (valorDispContasCalculado - subtotalContasCalculado));
 
   const diferencaAbs = Math.abs(diferencaFinalCalculada);
   const isDiferencaOk = diferencaAbs <= 50;

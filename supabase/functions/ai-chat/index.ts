@@ -6,6 +6,7 @@ import { createGoogleGenerativeAI } from 'npm:@ai-sdk/google@latest'
 import { createAnthropic } from 'npm:@ai-sdk/anthropic@latest'
 import { toolsLocal } from './tools-local.ts'
 import { toolsOficina } from './tools-oficina.ts'
+import { toolsConcilia, HYDRA_SYSTEM_PROMPT_XML } from './tools-concilia.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -147,14 +148,20 @@ Deno.serve(async (req) => {
       llmModel = google(settings?.model || 'gemini-2.0-flash')
     }
 
+    const isConciliacaoMode = body?.context_module === 'conciliacao' || !!body?.target_date;
+    const finalSystemPrompt = isConciliacaoMode 
+      ? `${SYSTEM_PROMPT}\n\n${HYDRA_SYSTEM_PROMPT_XML}`
+      : SYSTEM_PROMPT;
+
     const mcpTools = {
       ...toolsLocal(supabaseClient),
-      ...toolsOficina(supabaseClient, settings, user.id)
+      ...toolsOficina(supabaseClient, settings, user.id),
+      ...toolsConcilia(supabaseClient)
     };
 
     const result = streamText({
       model: llmModel,
-      system: SYSTEM_PROMPT,
+      system: finalSystemPrompt,
       messages: formattedMessages,
       tools: mcpTools,
       stopWhen: stepCountIs(5),

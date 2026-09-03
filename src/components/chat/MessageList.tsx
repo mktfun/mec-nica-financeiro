@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { cn } from '../../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { InlineDecisionCard, type InlineDecisionProposal } from '../conciliacao/chat/InlineDecisionCard';
 
 export type Message = {
   id: string;
@@ -26,6 +27,7 @@ export type Message = {
   parts?: any[];
   isError?: boolean;
   error?: any;
+  proposal?: InlineDecisionProposal | null;
 };
 
 export type StepItem = {
@@ -75,6 +77,16 @@ const getToolLabel = (name: string, args?: any): string => {
       return 'Buscando contas a pagar na API da oficina';
     case 'consulta_conciliacao_periodo':
       return 'Analisando resumos de conciliação por período';
+    case 'obtem_resumo_conciliacao':
+      return 'Consolidando os 5 Pilares e apurando o Delta no PostgreSQL';
+    case 'executa_auto_match':
+      return 'Executando motor determinístico de batimento de PIX e maquininhas';
+    case 'resolve_transacao_orfa':
+      return 'Aplicando resolução de transação com recálculo atômico';
+    case 'ajusta_faturamento_dre':
+      return 'Registrando receita corporativa extraordinária na DRE';
+    case 'consulta_transacoes_orfas':
+      return 'Consultando transações bancárias pendentes de conciliação';
     default:
       return name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   }
@@ -257,6 +269,7 @@ export type AggregatedTurn = {
   steps: StepItem[];
   isError?: boolean;
   error?: any;
+  proposal?: InlineDecisionProposal | null;
 };
 
 export const aggregateAssistantTurns = (messages: Message[]): AggregatedTurn[] => {
@@ -267,6 +280,7 @@ export const aggregateAssistantTurns = (messages: Message[]): AggregatedTurn[] =
     const text = getMessageContent(msg);
     const steps = extractSteps(msg);
     const isError = msg.isError || (msg as any).status === 'error';
+    const proposal = msg.proposal;
 
     if (isUser) {
       turns.push({
@@ -288,6 +302,9 @@ export const aggregateAssistantTurns = (messages: Message[]): AggregatedTurn[] =
             lastTurn.steps.push(s);
           }
         });
+        if (proposal) {
+          lastTurn.proposal = proposal;
+        }
         if (isError) {
           lastTurn.isError = true;
           lastTurn.error = msg.error || (msg as any).error;
@@ -299,7 +316,8 @@ export const aggregateAssistantTurns = (messages: Message[]): AggregatedTurn[] =
           textContent: text,
           steps: [...steps],
           isError,
-          error: msg.error || (msg as any).error
+          error: msg.error || (msg as any).error,
+          proposal: proposal || null
         });
       }
     }
@@ -308,7 +326,19 @@ export const aggregateAssistantTurns = (messages: Message[]): AggregatedTurn[] =
   return turns;
 };
 
-export function MessageList({ messages, isLoading }: { messages: Message[], isLoading?: boolean }) {
+export function MessageList({
+  messages,
+  isLoading,
+  onConfirmProposal,
+  onRejectProposal,
+  assistantName = "Analista de Conciliação"
+}: {
+  messages: Message[];
+  isLoading?: boolean;
+  onConfirmProposal?: (proposal: InlineDecisionProposal) => void;
+  onRejectProposal?: (proposal: InlineDecisionProposal) => void;
+  assistantName?: string;
+}) {
   const turns = aggregateAssistantTurns(messages);
   const lastTurn = turns[turns.length - 1];
   const isStreamingAssistant = isLoading && (!lastTurn || lastTurn.role === 'user' || (lastTurn.role === 'assistant' && !lastTurn.textContent.trim()));
@@ -316,7 +346,7 @@ export function MessageList({ messages, isLoading }: { messages: Message[], isLo
   return (
     <div className="flex flex-col gap-6 py-6 max-w-4xl mx-auto px-4 md:px-0">
       {turns.length > 0 && (
-        <div className="text-center text-[10px] uppercase tracking-widest text-[var(--text-tertiary)] font-medium opacity-50 my-2">
+        <div className="text-center text-[10px] uppercase tracking-widest text-zinc-500 font-medium opacity-50 my-2">
           Hoje
         </div>
       )}
@@ -329,8 +359,8 @@ export function MessageList({ messages, isLoading }: { messages: Message[], isLo
           const isUser = turn.role === 'user';
           const isError = turn.isError;
 
-          // Se o assistente não tem texto nem passos nem erro, não renderizar balão em branco
-          if (!isUser && !hasText && steps.length === 0 && !isError) {
+          // Se o assistente não tem texto nem passos nem erro nem proposta, não renderizar balão em branco
+          if (!isUser && !hasText && steps.length === 0 && !isError && !turn.proposal) {
             return null;
           }
 
@@ -355,7 +385,7 @@ export function MessageList({ messages, isLoading }: { messages: Message[], isLo
                 isUser ? "items-end" : "items-start"
               )}>
                 <span className="text-[11px] font-medium text-zinc-500 px-1">
-                  {isUser ? 'Você' : 'Oficina GPT'}
+                  {isUser ? 'Você' : assistantName}
                 </span>
 
                 {/* PASSO A PASSO EXPANSÍVEL (REASONING & TOOLS) */}
@@ -381,7 +411,7 @@ export function MessageList({ messages, isLoading }: { messages: Message[], isLo
                       "px-5 py-3.5 whitespace-pre-wrap text-[15px] leading-relaxed shadow-sm break-words transition-all", 
                       isUser 
                         ? "bg-zinc-800 text-zinc-100 rounded-[22px] rounded-tr-[4px]" 
-                        : "bg-transparent border border-zinc-800/80 text-zinc-200 rounded-[22px] rounded-tl-[4px] backdrop-blur-sm shadow-none"
+                        : "bg-zinc-900/60 border border-zinc-800/80 text-zinc-200 rounded-[22px] rounded-tl-[4px] shadow-none"
                     )}>
                       {isUser ? (
                         textContent
@@ -419,6 +449,16 @@ export function MessageList({ messages, isLoading }: { messages: Message[], isLo
                       )}
                     </div>
                   )
+                )}
+
+                {/* CARD DE DECISÃO INLINE (PROPOSAL) */}
+                {!isUser && turn.proposal && (
+                  <InlineDecisionCard
+                    proposal={turn.proposal}
+                    onConfirm={(p) => onConfirmProposal?.(p)}
+                    onReject={(p) => onRejectProposal?.(p)}
+                    disabled={isLoading}
+                  />
                 )}
               </div>
             </motion.div>

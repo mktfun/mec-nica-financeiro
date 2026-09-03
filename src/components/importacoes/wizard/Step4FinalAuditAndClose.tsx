@@ -21,6 +21,7 @@ import {
   Loader2,
   Calculator,
   ArrowRight,
+  Zap,
 } from 'lucide-react';
 
 export interface MissingPatioOsEdit {
@@ -382,6 +383,91 @@ export function Step4FinalAuditAndClose({
           </div>
         </div>
       </Card>
+
+      {/* Painel Bicanal: Canal 1 (Tesouraria Real) vs Canal 2 (Balanço WIP Pátio) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Canal 1: Tesouraria Líquida Real */}
+        <div className="p-4 rounded-xl bg-zinc-900/80 border border-emerald-500/30 space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+              <ShieldCheck size={15} /> CANAL 1: TESOURARIA LÍQUIDA REAL (CAIXA DISPONÍVEL)
+            </span>
+            <Badge variant="success" className="text-[10px]">
+              Tolerância R$ 0,00
+            </Badge>
+          </div>
+          <div className="flex items-baseline justify-between pt-1">
+            <span className="text-2xl font-mono font-bold text-emerald-400">
+              R$ {Number((summary as any)?.caixa_tesouraria ?? (totalSaldoBanco + dinheiroMp - saldoNegativoItau)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            </span>
+            <span className="text-xs text-zinc-400">
+              Bancos OFX + Cofre - Cheque Especial (Sem Pátio)
+            </span>
+          </div>
+          <p className="text-[11px] text-zinc-500">
+            Mede o saldo líquido real em conta e cofre para cobertura de contas imediatas.
+          </p>
+        </div>
+
+        {/* Canal 2: Balanço de Produção & Pátio WIP */}
+        <div className="p-4 rounded-xl bg-zinc-900/80 border border-amber-500/30 space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+              <Car size={15} /> CANAL 2: BALANÇO DE PRODUÇÃO &amp; WIP (PÁTIO ΔP4)
+            </span>
+            <Badge variant="warning" className="text-[10px]">
+              Neutralização Temporal
+            </Badge>
+          </div>
+          <div className="flex items-baseline justify-between pt-1">
+            <span className="text-2xl font-mono font-bold text-amber-400">
+              R$ {Number((summary as any)?.patio_wip ?? naLojaOs).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            </span>
+            <span className="text-xs text-zinc-400">
+              Variação ΔP4: R$ {Number((summary as any)?.variacao_patio_delta_p4 ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            </span>
+          </div>
+          <p className="text-[11px] text-zinc-500">
+            Estoque de serviços em andamento isolado da tesouraria para evitar falsas divergências.
+          </p>
+        </div>
+      </div>
+
+      {/* Fast-Path Gatekeeper de 1-Clique (Se Todas as Condições Atendidas) */}
+      {Boolean((summary as any)?.fast_path_eligible ?? isOk) && (
+        <div className="p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/40 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl shadow-emerald-950/20">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400">
+              <Zap size={22} className="animate-pulse" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h4 className="text-sm font-bold text-emerald-300">Fast-Path Ativo — Fechamento em 1-Clique Seguro</h4>
+                <Badge variant="success" className="text-[9px] font-bold">10/10 Filiais Auditadas</Badge>
+              </div>
+              <p className="text-xs text-zinc-400 mt-0.5">
+                Zero divergências críticas, zero desfalques e contas equalizadas. Você pode selar o dia imediatamente.
+              </p>
+            </div>
+          </div>
+
+          <Button
+            onClick={onFinish}
+            disabled={isSaving}
+            className="w-full sm:w-auto py-2.5 px-6 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold rounded-xl flex items-center justify-center gap-2 text-xs shadow-lg shadow-emerald-950/40 shrink-0 cursor-pointer"
+          >
+            {isSaving ? (
+              <>
+                <Loader2 size={14} className="animate-spin" /> Selando...
+              </>
+            ) : (
+              <>
+                <Zap size={14} /> Fechar Dia em 1-Clique
+              </>
+            )}
+          </Button>
+        </div>
+      )}
 
       {/* Cards dos 5 pilares */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">

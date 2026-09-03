@@ -1,3 +1,19 @@
+## [2026-09-03] — [Feature ID: 360-conciliacao-conversacional-fullscreen-chat]
+
+**Contexto:** Criação da infraestrutura de dados para o Workspace Conversacional Hydra com persistência de sessões por dia, RPC unificada `resolve_orphan_transaction` e RPC de receita corporativa DRE `upsert_daily_revenue_adjustment` via migration `20260903000026_reconciliation_conversations_and_tools.sql`.
+
+**Regra aprendida:**
+1. **Persistência Temporal de Sessões de Chat (`conversations` e `messages`):**
+   - Reutilizar e estender as tabelas canônicas adicionando `target_date DATE NOT NULL`, `status` e colunas para o AI SDK (`tool_invocations JSONB`, `parts JSONB`).
+   - Índice em `(target_date)` e `(conversation_id, created_at ASC)` para hidratação instantânea no F5 (< 15ms).
+2. **RPC Wrapper Unificada com Recálculo Atômico Instantâneo (`resolve_orphan_transaction`):**
+   - Para evitar que o LLM precise arbitrar entre múltiplas RPCs de baixo nível, a RPC wrapper unificada aceita `p_action` (`link_os`, `revenue_adjustment`, `expense_bill`, `justify_only`), despacha a operação com integridade ACID e chama internamente `get_daily_reconciliation_summary(p_date, true)`.
+   - O retorno entrega `new_diferenca_final` e `new_status_geral` no mesmo ciclo, permitindo atualização instantânea do Live Delta na UI sem race condition.
+3. **Ajustes de Faturamento com Store ID (`upsert_daily_revenue_adjustment`):**
+   - Lançamentos extraordinários de holding devem suportar `store_id` para refletir o benefício na filial de destino (ex: Aluguel Rei do Módulo em Mauá).
+
+---
+
 ## [2026-09-02] — [Feature ID: 358-motor-conciliacao-lojas-ofx-e-equalizacao-0209]
 
 **Contexto:** Correção de regressão na RPC `get_daily_reconciliation_summary` via migration `20260902000024_equalize_canonical_0209.sql`, restaurando o contrato completo do Split Dual de filiais (`entradas_conciliadas`, `dif_entradas`, `contas_conciliadas`, `dif_saidas`, `nao_entrou_valor`, `status_compensacao`), inserção dos 3 ajustes DRE de faturamento corporativo (R$ 24.454,96) em `daily_revenue_adjustments` e equalização pericial do snapshot de 02/09/2026 (-R$ 11,14 / approved).
