@@ -41,6 +41,8 @@ export function Fase1PatioOsReview({
   const [hasChanges, setHasChanges] = useState(false);
   const [selectedStoreId, setSelectedStoreId] = useState<string>('');
   const [importedOsKeys, setImportedOsKeys] = useState<Set<string>>(new Set());
+  const [viewMode, setViewMode] = useState<'drop' | 'review'>('drop');
+  const [hasInitialLoaded, setHasInitialLoaded] = useState(false);
 
   // 1. Carregar OSs existentes do banco de dados para a data (incluindo passivo em aberto)
   const loadPatioOs = useCallback(async (currentImportedKeys: Set<string> = importedOsKeys) => {
@@ -85,6 +87,7 @@ export function Fase1PatioOsReview({
           };
         });
         setOsItems(mapped);
+        setViewMode('review');
       } else {
         setOsItems([]);
       }
@@ -93,6 +96,7 @@ export function Fase1PatioOsReview({
       toast.error(`Falha ao carregar OSs: ${err.message}`);
     } finally {
       setIsLoading(false);
+      setHasInitialLoaded(true);
     }
   }, [targetDate, importedOsKeys]);
 
@@ -304,10 +308,91 @@ export function Fase1PatioOsReview({
   const formatBrl = (v: number) => 
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
+  // Loading inicial de verificação no banco
+  if (!hasInitialLoaded && isLoading) {
+    return (
+      <div className="py-24 flex flex-col items-center justify-center space-y-3">
+        <LoadingSpinner size="lg" text="Verificando ordens de serviço do pátio..." />
+      </div>
+    );
+  }
+
+  // =========================================================================
+  // MODO 1: CLEAN DROP STATE (Sem arquivos importados)
+  // =========================================================================
+  if (viewMode === 'drop') {
+    return (
+      <div className={`space-y-6 ${className}`}>
+        {/* Cabeçalho Minimalista da Fase 1 */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-800">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 font-mono text-xs font-bold">
+                FASE 1 DE 4
+              </span>
+              <h2 className="text-xl font-bold text-zinc-100">
+                Ordens de Serviço & Pátio das Filiais
+              </h2>
+            </div>
+            <p className="text-xs text-zinc-400 mt-1">
+              Importe exclusivamente as planilhas de OS das 10 filiais para consolidar o pátio e o faturamento base.
+            </p>
+          </div>
+
+          {osItems.length > 0 && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setViewMode('review')}
+              className="h-8 px-3 text-xs border-zinc-700 text-zinc-300 hover:bg-zinc-800 rounded-xl flex items-center gap-1.5 self-start sm:self-auto"
+            >
+              Ver {osItems.length} OSs já carregadas →
+            </Button>
+          )}
+        </div>
+
+        {/* CARD DROPZONE CENTRALIZADO E AMPLO */}
+        <div className="max-w-2xl mx-auto my-6">
+          <div 
+            {...getRootProps()} 
+            className={`border-2 border-dashed rounded-3xl p-10 sm:p-14 flex flex-col items-center justify-center cursor-pointer transition-all duration-200
+              ${isDragActive 
+                ? 'border-emerald-500 bg-emerald-500/10 shadow-2xl shadow-emerald-500/10 scale-[1.01]' 
+                : 'border-zinc-800 bg-zinc-900/40 hover:border-zinc-700 hover:bg-zinc-900/70 shadow-xl'
+              }
+            `}
+          >
+            <input {...getInputProps()} />
+            <div className="w-16 h-16 rounded-2xl bg-zinc-800/90 border border-zinc-700 flex items-center justify-center text-emerald-400 mb-4 shadow-inner">
+              <UploadCloud size={32} />
+            </div>
+            <h4 className="font-bold text-base text-zinc-100 text-center">
+              {isDragActive ? 'Solte as planilhas de OS aqui' : 'Arraste as planilhas de Ordens de Serviço'}
+            </h4>
+            <p className="text-zinc-400 text-xs text-center mt-1.5 max-w-md">
+              Arraste os arquivos de todas as filiais (.xlsx, .xls, .csv). O sistema identifica as lojas e consolida os veículos no pátio automaticamente.
+            </p>
+            <div className="mt-5 flex items-center gap-2">
+              <span className="px-3 py-1 rounded-full bg-zinc-800/80 border border-zinc-700/80 text-[11px] font-mono text-zinc-300">
+                Multi-arquivos suportados
+              </span>
+              <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[11px] font-mono text-emerald-400 font-semibold">
+                10 Filiais
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // =========================================================================
+  // MODO 2: REVIEW STATE (Dropzone oculto, tabela e conferência em tela cheia)
+  // =========================================================================
   return (
     <div className={`space-y-6 ${className}`}>
-      {/* CABEÇALHO DA ETAPA 1 */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-800">
+      {/* CABEÇALHO DA ETAPA 1 COM TOTALIZADORES E BOTÃO DE REIMPORTAR */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-3 border-b border-zinc-800">
         <div>
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 font-mono text-xs font-bold">
@@ -318,52 +403,43 @@ export function Fase1PatioOsReview({
             </h2>
           </div>
           <p className="text-xs text-zinc-400 mt-1">
-            Importe exclusivamente as planilhas de OS ou ajuste manualmente as ordens pendentes loja a loja.
+            Conferência loja a loja das ordens de serviço e veículos no pátio.
           </p>
         </div>
 
-        {/* Totalizadores da Fase 1 */}
-        <div className="flex items-center gap-4 bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-xl text-xs font-mono">
-          <div>
-            <span className="text-zinc-500 block text-[10px]">TOTAL OS</span>
-            <span className="text-zinc-200 font-bold">{formatBrl(metrics.total)}</span>
-          </div>
-          <div className="h-6 w-px bg-zinc-800" />
-          <div>
-            <span className="text-zinc-500 block text-[10px]">PAGO BALCÃO</span>
-            <span className="text-emerald-400 font-bold">{formatBrl(metrics.paid)}</span>
-          </div>
-          <div className="h-6 w-px bg-zinc-800" />
-          <div>
-            <span className="text-zinc-500 block text-[10px]">RESTANTE PÁTIO</span>
-            <span className="text-amber-400 font-bold">{formatBrl(metrics.pending)}</span>
+        {/* Ações de Reimportação e Totalizadores */}
+        <div className="flex flex-wrap items-center gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setViewMode('drop')}
+            className="h-9 px-3 text-xs border-zinc-700 text-zinc-300 hover:bg-zinc-800 rounded-xl flex items-center gap-1.5"
+            title="Importar mais planilhas ou substituir arquivos"
+          >
+            <UploadCloud size={14} className="text-emerald-400" />
+            Reimportar Planilhas
+          </Button>
+
+          <div className="flex items-center gap-4 bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-xl text-xs font-mono">
+            <div>
+              <span className="text-zinc-500 block text-[10px]">TOTAL OS</span>
+              <span className="text-zinc-200 font-bold">{formatBrl(metrics.total)}</span>
+            </div>
+            <div className="h-6 w-px bg-zinc-800" />
+            <div>
+              <span className="text-zinc-500 block text-[10px]">PAGO BALCÃO</span>
+              <span className="text-emerald-400 font-bold">{formatBrl(metrics.paid)}</span>
+            </div>
+            <div className="h-6 w-px bg-zinc-800" />
+            <div>
+              <span className="text-zinc-500 block text-[10px]">RESTANTE PÁTIO</span>
+              <span className="text-amber-400 font-bold">{formatBrl(metrics.pending)}</span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* DROPZONE EXCLUSIVA DE OS */}
-      <div 
-        {...getRootProps()} 
-        className={`border-2 border-dashed rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all duration-200
-          ${isDragActive 
-            ? 'border-emerald-500 bg-emerald-500/10' 
-            : 'border-zinc-800 bg-zinc-900/40 hover:border-zinc-700 hover:bg-zinc-900/60'
-          }
-        `}
-      >
-        <input {...getInputProps()} />
-        <div className="w-11 h-11 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-emerald-400 mb-2">
-          <UploadCloud size={22} />
-        </div>
-        <h4 className="font-bold text-sm text-zinc-200 text-center">
-          {isDragActive ? 'Solte as planilhas de OS aqui' : 'Arraste as planilhas de Ordens de Serviço (.xlsx, .xls, .csv)'}
-        </h4>
-        <p className="text-zinc-400 text-xs text-center mt-0.5">
-          O sistema processa automaticamente as 10 filiais e consolida os veículos no pátio.
-        </p>
-      </div>
-
-      {/* TABELA DE GESTÃO SANFONA ESTILO EXCEL */}
+      {/* TABELA DE GESTÃO SANFONA ESTILO EXCEL (TELA CHEIA) */}
       {isLoading ? (
         <div className="py-12 flex justify-center">
           <LoadingSpinner size="md" text="Carregando ordens de serviço do pátio..." />
@@ -378,7 +454,7 @@ export function Fase1PatioOsReview({
               <Button
                 type="button"
                 variant="outline"
-                onClick={loadPatioOs}
+                onClick={() => loadPatioOs()}
                 className="h-8 text-xs border-zinc-700 text-zinc-300 hover:bg-zinc-800"
               >
                 <RefreshCw size={13} className="mr-1.5" /> Atualizar

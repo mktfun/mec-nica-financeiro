@@ -1,3 +1,18 @@
+## [2026-09-03] — [Feature ID: 365-clean-dropzone-flow-and-recalibrated-rede-os-matching]
+
+**Contexto:** Eliminação do ruído visual e da poluição de dropzones permanentes nas 4 etapas do Fechamento Manual (`FechamentoManualWizard.tsx` / `Fase1PatioOsReview.tsx`, `Fase2RedeVsOsReview.tsx`, `Fase3OfxReconciliation.tsx`, `Fase4ContasVsSaidasReview.tsx`), introduzindo o padrão arquitetural de 2 Modos (`viewMode: 'drop' | 'review'`).
+
+**Regra aprendida:**
+1. **Padrão de UX dos 2 Modos em Esteiras de Importação (`Clean Drop State` vs `Review State`):**
+   - **Momento 1 — Clean Drop State (`viewMode === 'drop'`):** Quando não há arquivos importados na sessão ou para a data contábil, a tela DEVE renderizar APENAS o Card Dropzone focado, amplo e centralizado (`max-w-2xl mx-auto p-10 sm:p-14`). NUNCA poluir a tela com KPIs zerados (R$ 0,00), tabelas sanfona vazias ou botões de salvar antes do upload.
+   - **Momento 2 — Review State (`viewMode === 'review'`):** Imediatamente após o processamento dos arquivos ou quando já existirem registros para a data, o dropzone DEVE SUMIR por completo da visão principal, liberando 100% da altura da tela para as tabelas sanfona, Live Delta, grids de batimento e ações de conferência.
+   - **Ação de Reversão / Reimportação Limpa:** A reimportação de novos arquivos ou substituição de planilhas é disponibilizada exclusivamente através de um botão compacto e elegante no cabeçalho superior (`[Reimportar Planilhas / Arquivos]` com ícone `UploadCloud`), que recolapsa a tela de volta para o `Clean Drop State` sob demanda do operador.
+2. **Hidratação Inicial sem Flicks:**
+   - Durante a primeira busca no banco (`!hasInitialLoaded && isLoading`), exibir `LoadingSpinner` centralizado antes de decidir entre o modo `drop` e o modo `review`, impedindo que a tela dê piscada com o dropzone antes de renderizar os dados existentes.
+**Risco identificado / Anti-pattern:** Manter o dropzone permanentemente fixo no topo da página empurrando tabelas financeiras para fora da dobra (fold), forçando o operador a scrollar a cada linha de conferência.
+
+---
+
 ## [2026-09-03] — [Feature ID: 362-fix-os-rejeitadas-e-filtro-ausentes-relatorio]
 
 **Contexto:** Implementação do modo "Apenas Fora do Relatório" em `PatioExcelStoreAccordion.tsx` com Segmented Control e quitação direta por botão de 1-clique, atendendo à necessidade do operador de auditar apenas as ordens de pátio não constantes da planilha do dia.

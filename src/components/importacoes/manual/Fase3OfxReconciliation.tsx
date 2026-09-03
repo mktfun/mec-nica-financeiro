@@ -53,6 +53,8 @@ export function Fase3OfxReconciliation({
 
   const [isLoading, setIsLoading] = useState(false);
   const [inflowList, setInflowList] = useState<OfxInflowItem[]>([]);
+  const [viewMode, setViewMode] = useState<'drop' | 'review'>('drop');
+  const [hasInitialLoaded, setHasInitialLoaded] = useState(false);
   const [storeRedeSettlement, setStoreRedeSettlement] = useState<Array<{
     storeId: string;
     storeName: string;
@@ -93,6 +95,9 @@ export function Fase3OfxReconciliation({
         };
       });
       setInflowList(mapped);
+      if (mapped.length > 0) {
+        setViewMode('review');
+      }
 
       // 2. Apurar liquidação da Rede por loja (Rede apurado vs OFX entrou)
       const { data: posData } = await supabase
@@ -141,6 +146,7 @@ export function Fase3OfxReconciliation({
       toast.error(`Falha ao carregar extratos: ${err.message}`);
     } finally {
       setIsLoading(false);
+      setHasInitialLoaded(true);
     }
   }, [targetDate, stores]);
 
@@ -254,10 +260,104 @@ export function Fase3OfxReconciliation({
   const formatBrl = (v: number) => 
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
+  // Loading inicial de verificação no banco
+  if (!hasInitialLoaded && isLoading) {
+    return (
+      <div className="py-24 flex flex-col items-center justify-center space-y-3">
+        <LoadingSpinner size="lg" text="Verificando extratos bancários e compensações..." />
+      </div>
+    );
+  }
+
+  // =========================================================================
+  // MODO 1: CLEAN DROP STATE (Sem arquivos importados)
+  // =========================================================================
+  if (viewMode === 'drop') {
+    return (
+      <div className={`space-y-6 ${className}`}>
+        {/* Cabeçalho Minimalista da Fase 3 */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-800">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 font-mono text-xs font-bold">
+                FASE 3 DE 4
+              </span>
+              <h2 className="text-xl font-bold text-zinc-100">
+                Extratos Bancários OFX (Entradas, PIX & Rede)
+              </h2>
+            </div>
+            <p className="text-xs text-zinc-400 mt-1">
+              Importe os extratos bancários das 10 filiais para conferir créditos em conta, compensações da Rede e PIX.
+            </p>
+          </div>
+
+          {inflowList.length > 0 && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setViewMode('review')}
+              className="h-8 px-3 text-xs border-zinc-700 text-zinc-300 hover:bg-zinc-800 rounded-xl flex items-center gap-1.5 self-start sm:self-auto"
+            >
+              Ver {inflowList.length} créditos já carregados →
+            </Button>
+          )}
+        </div>
+
+        {/* CARD DROPZONE CENTRALIZADO E AMPLO */}
+        <div className="max-w-2xl mx-auto my-6">
+          <div 
+            {...getRootProps()} 
+            className={`border-2 border-dashed rounded-3xl p-10 sm:p-14 flex flex-col items-center justify-center cursor-pointer transition-all duration-200
+              ${isDragActive 
+                ? 'border-emerald-500 bg-emerald-500/10 shadow-2xl shadow-emerald-500/10 scale-[1.01]' 
+                : 'border-zinc-800 bg-zinc-900/40 hover:border-zinc-700 hover:bg-zinc-900/70 shadow-xl'
+              }
+            `}
+          >
+            <input {...getInputProps()} />
+            <div className="w-16 h-16 rounded-2xl bg-zinc-800/90 border border-zinc-700 flex items-center justify-center text-emerald-400 mb-4 shadow-inner">
+              <UploadCloud size={32} />
+            </div>
+            <h4 className="font-bold text-base text-zinc-100 text-center">
+              {isDragActive ? 'Solte os extratos OFX aqui' : 'Arraste os 10 arquivos de extrato bancário'}
+            </h4>
+            <p className="text-zinc-400 text-xs text-center mt-1.5 max-w-md">
+              Arraste todos os arquivos de extrato (.ofx). O sistema reconhece automaticamente as filiais pelo número da conta bancária.
+            </p>
+            <div className="mt-5 flex items-center gap-2">
+              <span className="px-3 py-1 rounded-full bg-zinc-800/80 border border-zinc-700/80 text-[11px] font-mono text-zinc-300">
+                10 Contas Correntes
+              </span>
+              <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[11px] font-mono text-emerald-400 font-semibold">
+                PIX & D+1 Automático
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* BOTÃO DE RETORNO */}
+        <div className="pt-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onBack}
+            className="h-10 px-4 border-zinc-700 text-zinc-300 hover:bg-zinc-800 text-xs font-semibold rounded-xl"
+          >
+            <ArrowLeft size={15} className="mr-2" />
+            Voltar para Fase 2: Vendas Rede
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // =========================================================================
+  // MODO 2: REVIEW STATE (Dropzone oculto, conferência bancária completa)
+  // =========================================================================
   return (
     <div className={`space-y-6 ${className}`}>
-      {/* CABEÇALHO DA ETAPA 3 */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-800">
+      {/* CABEÇALHO DA ETAPA 3 COM TOTALIZADORES E BOTÃO DE REIMPORTAR */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-3 border-b border-zinc-800">
         <div>
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 font-mono text-xs font-bold">
@@ -272,45 +372,36 @@ export function Fase3OfxReconciliation({
           </p>
         </div>
 
-        {/* Totalizadores da Fase 3 */}
-        <div className="flex items-center gap-4 bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-xl text-xs font-mono">
-          <div>
-            <span className="text-zinc-500 block text-[10px]">TOTAL CRÉDITOS OFX</span>
-            <span className="text-emerald-400 font-bold">{formatBrl(totals.totalIn)}</span>
-          </div>
-          <div className="h-6 w-px bg-zinc-800" />
-          <div>
-            <span className="text-zinc-500 block text-[10px]">REDE ENTROU CONTA</span>
-            <span className="text-zinc-200 font-bold">{formatBrl(totals.totalRedeEntrou)}</span>
-          </div>
-          <div className="h-6 w-px bg-zinc-800" />
-          <div>
-            <span className="text-zinc-500 block text-[10px]">A COMPENSAR (D+1)</span>
-            <span className="text-indigo-400 font-bold">{formatBrl(totals.totalACompensar)}</span>
-          </div>
-        </div>
-      </div>
+        {/* Ações de Reimportação e Totalizadores */}
+        <div className="flex flex-wrap items-center gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setViewMode('drop')}
+            className="h-9 px-3 text-xs border-zinc-700 text-zinc-300 hover:bg-zinc-800 rounded-xl flex items-center gap-1.5"
+            title="Importar outros extratos OFX ou adicionar arquivos"
+          >
+            <UploadCloud size={14} className="text-emerald-400" />
+            Reimportar Extratos OFX
+          </Button>
 
-      {/* DROPZONE EXCLUSIVA DE OFX */}
-      <div 
-        {...getRootProps()} 
-        className={`border-2 border-dashed rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all duration-200
-          ${isDragActive 
-            ? 'border-emerald-500 bg-emerald-500/10' 
-            : 'border-zinc-800 bg-zinc-900/40 hover:border-zinc-700 hover:bg-zinc-900/60'
-          }
-        `}
-      >
-        <input {...getInputProps()} />
-        <div className="w-11 h-11 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-emerald-400 mb-2">
-          <UploadCloud size={22} />
+          <div className="flex items-center gap-4 bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-xl text-xs font-mono">
+            <div>
+              <span className="text-zinc-500 block text-[10px]">TOTAL CRÉDITOS OFX</span>
+              <span className="text-emerald-400 font-bold">{formatBrl(totals.totalIn)}</span>
+            </div>
+            <div className="h-6 w-px bg-zinc-800" />
+            <div>
+              <span className="text-zinc-500 block text-[10px]">REDE ENTROU CONTA</span>
+              <span className="text-zinc-200 font-bold">{formatBrl(totals.totalRedeEntrou)}</span>
+            </div>
+            <div className="h-6 w-px bg-zinc-800" />
+            <div>
+              <span className="text-zinc-500 block text-[10px]">A COMPENSAR (D+1)</span>
+              <span className="text-indigo-400 font-bold">{formatBrl(totals.totalACompensar)}</span>
+            </div>
+          </div>
         </div>
-        <h4 className="font-bold text-sm text-zinc-200 text-center">
-          {isDragActive ? 'Solte os extratos OFX aqui' : 'Arraste os 10 arquivos de extrato bancário (.ofx)'}
-        </h4>
-        <p className="text-zinc-400 text-xs text-center mt-0.5">
-          O sistema reconhece automaticamente as filiais pelo número da conta corrente.
-        </p>
       </div>
 
       {/* GRIDS DE CONFERÊNCIA: PIX CASADO X ÓRFÃO E LIQUIDAÇÃO DE REDE */}

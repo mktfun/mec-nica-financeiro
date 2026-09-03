@@ -1,3 +1,22 @@
+### Feature 365: Fluxo Visual Limpo por Etapas (2 Modos) e Recalibração do Motor de Matching Rede x OS
+- **Status:** COMPLETED & ARCHIVED
+- **Data:** 2026-09-03
+- **Arquivos Criados/Modificados:**
+  - `supabase/migrations/20260903000029_recalibrate_match_stage2_rede_os.sql` (RPC `match_stage2_rede_os` com isolamento temporal na data alvo, exclusão em memória de OSs pareadas `v_matched_os_ids`, cascata de 3 Tiers e desempate determinístico)
+  - `src/components/importacoes/manual/Fase1PatioOsReview.tsx` (Padrão 2 modos: Dropzone limpo focado vs Review com grade sanfona em tela cheia e botão `[Reimportar Planilhas]`)
+  - `src/components/importacoes/manual/Fase2RedeVsOsReview.tsx` (Padrão 2 modos: Dropzone limpo vs Review com conferência de Vendas Casadas/Sobras e botão `[Reimportar Arquivo Rede]`)
+  - `src/components/importacoes/manual/Fase3OfxReconciliation.tsx` (Padrão 2 modos: Dropzone limpo para 10 OFX vs Review com apuração de liquidação Rede e PIX e botão `[Reimportar Extratos OFX]`)
+  - `src/components/importacoes/manual/Fase4ContasVsSaidasReview.tsx` (Padrão 2 modos: Dropzone limpo vs Review com Live Delta Tracker, DRE e botão `[Reimportar Contas]`)
+- **Descrição:** Eliminação da poluição visual e ruído de dropzones permanentemente fixos nas 4 fases da esteira manual através do padrão `Clean Drop State` vs `Review State`. Recalibração completa da RPC `match_stage2_rede_os`, eliminando falsas colisões provocadas por busca irrestrita em OSs antigas da oficina e restaurando o auto-match real entre vendas capturadas nas maquininhas e ordens de serviço de balcão.
+
+### Feature 364: Correção de `updated_at` em `pos_transactions` e RPC `match_stage2_rede_os`
+- **Status:** COMPLETED & ARCHIVED
+- **Data:** 2026-09-03
+- **Arquivos Criados/Modificados:**
+  - `supabase/migrations/20260903000028_add_updated_at_to_pos_transactions.sql` (Adiciona `updated_at TIMESTAMPTZ`, trigger e recompilação idempotente da RPC)
+  - `src/integrations/supabase/types.ts` (Atualização das definições TypeScript de Row, Insert e Update)
+- **Descrição:** Resolução do erro PostgreSQL `42703` (`column "updated_at" of relation "pos_transactions" does not exist`) ao disparar a conciliação automática da Fase 2.
+
 ### Feature 363: Correção de `occurred_at` em `pos_transactions` e Blindagem de Contratos na Esteira Manual
 - **Status:** COMPLETED & ARCHIVED
 - **Data:** 2026-09-03

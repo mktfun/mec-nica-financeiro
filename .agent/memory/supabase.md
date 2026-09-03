@@ -1,3 +1,35 @@
+## [2026-09-03] — [Feature ID: 365-clean-dropzone-flow-and-recalibrated-rede-os-matching]
+
+**Contexto:** Recalibração definitiva da RPC `public.match_stage2_rede_os(p_target_date date, p_store_id text)` via migration `20260903000029_recalibrate_match_stage2_rede_os.sql` para sanar falsas colisões em massa e restaurar a taxa de match real entre vendas da adquirente Rede e ordens de serviço de balcão.
+
+**Regra aprendida:**
+1. **Isolamento Temporal Estrito no Matching de Cartões:**
+   - A consulta à tabela `patio_os` NUNCA deve varrer o histórico global da filial sem restrição de data.
+   - Deve priorizar OSs da data alvo (`opened_at::date = p_target_date` ou `last_payment_date = p_target_date`), ou passivo em aberto recente da mesma filial ($\le$ 60 dias com `(total_value - paid_value) > 0`).
+2. **Cascata de Matching em 3 Tiers:**
+   - **Tier 1 (Específico de Cartão):** Match exato por `credit_value`, `debit_value` ou `credit_debit_value`.
+   - **Tier 2 (Saldo Remanescente):** Match por saldo pendente da OS (`total_value - paid_value`).
+   - **Tier 3 (Total da OS):** Match pelo valor total da OS (`total_value`) criada ou finalizada na data alvo.
+3. **Exclusão em Cascata de OSs já Pareadas:**
+   - Filtrar `match_status <> 'MATCHED'` e manter um array em memória (`v_matched_os_ids`) para que uma OS casada no Tier 1 não concorra e não gere colisão com outra transação subsequente no Tier 2 ou 3.
+4. **Desempate Determinístico Temporal:**
+   - Havendo múltiplos candidatos no dia, desempata pela proximidade horária (`occurred_at`). Colisões (`collision`) só devem ser disparadas e suspensas para intervenção manual quando houver duplicidade legítima de valor idêntico na mesma filial e no mesmo dia.
+**Risco identificado / Anti-pattern:** Comparar transações de cartão com todo o histórico aberto de filiais mecânicas sem filtro de data, gerando falsas colisões para qualquer valor comum (R$ 50, R$ 100, R$ 150) e bloqueando o auto-match legítimo.
+
+---
+
+## [2026-09-03] — [Feature ID: 364-fix-pos-transactions-updated-at-in-match-stage2-rede-os]
+
+**Contexto:** Resolução do erro PostgreSQL `42703` (`column "updated_at" of relation "pos_transactions" does not exist`) na execução da RPC `match_stage2_rede_os` via migration `20260903000028_add_updated_at_to_pos_transactions.sql`.
+
+**Regra aprendida:**
+1. **Coluna `updated_at` em `pos_transactions`:**
+   - Adicionada com `TIMESTAMPTZ DEFAULT now()` e trigger automático `update_pos_transactions_updated_at` antes de updates.
+   - Atualizados os tipos no cliente TypeScript (`src/integrations/supabase/types.ts`).
+**Risco identificado / Anti-pattern:** Usar `SET updated_at = now()` em RPCs sem assegurar previamente a existência da coluna na DDL física da tabela no PostgreSQL.
+
+---
+
 ## [2026-09-03] — [Feature ID: 363-fix-pos-transactions-occurred-at-and-manual-pipeline-contracts]
 
 **Contexto:** Resolução do erro PostgreSQL `23502` (`null value in column "occurred_at" of relation "pos_transactions" violates not-null constraint`) ao importar vendas da Rede na Fase 2, e saneamento preventivo dos contratos das tabelas `ofx_transactions` e `daily_manual_bills`.

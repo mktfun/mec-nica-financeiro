@@ -55,6 +55,8 @@ export function Fase4ContasVsSaidasReview({
   const [outflows, setOutflows] = useState<OutflowItem[]>([]);
   const [summary, setSummary] = useState<any>(null);
   const [revenueAdjustmentsTotal, setRevenueAdjustmentsTotal] = useState(0);
+  const [viewMode, setViewMode] = useState<'drop' | 'review'>('drop');
+  const [hasInitialLoaded, setHasInitialLoaded] = useState(false);
 
   // 1. Carregar débitos bancários (OFX type = 'out') e resumo dos 5 Pilares
   const loadData = useCallback(async () => {
@@ -95,11 +97,22 @@ export function Fase4ContasVsSaidasReview({
       if (!sumErr && sumData) {
         setSummary(sumData);
       }
+
+      // 3. Verificar se já existem títulos de contas a pagar gravados
+      const { count: billsCount } = await (supabase as any)
+        .from('daily_manual_bills')
+        .select('*', { count: 'exact', head: true })
+        .eq('date', targetDate);
+
+      if ((billsCount && billsCount > 0) || (sumData?.subtotal_contas && sumData.subtotal_contas > 0)) {
+        setViewMode('review');
+      }
     } catch (err: any) {
       console.error('Erro ao carregar Fase 4:', err);
       toast.error(`Falha ao carregar dados: ${err.message}`);
     } finally {
       setIsLoading(false);
+      setHasInitialLoaded(true);
     }
   }, [targetDate, stores]);
 
@@ -215,10 +228,112 @@ export function Fase4ContasVsSaidasReview({
   const delta = Number(summary?.diferenca_final || 0);
   const isApproved = Math.abs(delta) <= 50;
 
+  // Loading inicial de verificação no banco
+  if (!hasInitialLoaded && isLoading) {
+    return (
+      <div className="py-24 flex flex-col items-center justify-center space-y-3">
+        <LoadingSpinner size="lg" text="Verificando contas a pagar e saídas bancárias..." />
+      </div>
+    );
+  }
+
+  // =========================================================================
+  // MODO 1: CLEAN DROP STATE (Sem arquivos importados)
+  // =========================================================================
+  if (viewMode === 'drop') {
+    return (
+      <div className={`space-y-6 ${className}`}>
+        {/* Cabeçalho Minimalista da Fase 4 */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-800">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 font-mono text-xs font-bold">
+                FASE 4 DE 4
+              </span>
+              <h2 className="text-xl font-bold text-zinc-100">
+                Contas a Pagar, Saídas Bancárias & Selagem do Dia
+              </h2>
+            </div>
+            <p className="text-xs text-zinc-400 mt-1">
+              Importe a planilha de Contas a Pagar do ERP ou avance direto para conciliar as saídas do extrato.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setViewMode('review')}
+              className="h-8 px-3 text-xs border-zinc-700 text-zinc-300 hover:bg-zinc-800 rounded-xl flex items-center gap-1.5"
+            >
+              Pular / Ver Saídas do Extrato →
+            </Button>
+          </div>
+        </div>
+
+        {/* CARD DROPZONE CENTRALIZADO E AMPLO */}
+        <div className="max-w-2xl mx-auto my-6">
+          <div 
+            {...getRootProps()} 
+            className={`border-2 border-dashed rounded-3xl p-10 sm:p-14 flex flex-col items-center justify-center cursor-pointer transition-all duration-200
+              ${isDragActive 
+                ? 'border-emerald-500 bg-emerald-500/10 shadow-2xl shadow-emerald-500/10 scale-[1.01]' 
+                : 'border-zinc-800 bg-zinc-900/40 hover:border-zinc-700 hover:bg-zinc-900/70 shadow-xl'
+              }
+            `}
+          >
+            <input {...getInputProps()} />
+            <div className="w-16 h-16 rounded-2xl bg-zinc-800/90 border border-zinc-700 flex items-center justify-center text-emerald-400 mb-4 shadow-inner">
+              <UploadCloud size={32} />
+            </div>
+            <h4 className="font-bold text-base text-zinc-100 text-center">
+              {isDragActive ? 'Solte a planilha de Contas a Pagar aqui' : 'Arraste a planilha de Contas a Pagar do ERP'}
+            </h4>
+            <p className="text-zinc-400 text-xs text-center mt-1.5 max-w-md">
+              Planilha de títulos pagos/vencidos no dia (.xlsx, .csv). O motor cruza os pagamentos automaticamente contra os débitos das contas correntes.
+            </p>
+            <div className="mt-5 flex items-center gap-2">
+              <span className="px-3 py-1 rounded-full bg-zinc-800/80 border border-zinc-700/80 text-[11px] font-mono text-zinc-300">
+                ERP / Sistema de Gestão
+              </span>
+              <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[11px] font-mono text-emerald-400 font-semibold">
+                Auto-Match de Débitos
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* BOTÕES DE NAVEGAÇÃO INFERIOR */}
+        <div className="flex items-center justify-between pt-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onBack}
+            className="h-10 px-4 border-zinc-700 text-zinc-300 hover:bg-zinc-800 text-xs font-semibold rounded-xl"
+          >
+            <ArrowLeft size={15} className="mr-2" />
+            Voltar para Fase 3: OFX
+          </Button>
+
+          <Button
+            type="button"
+            onClick={() => setViewMode('review')}
+            className="h-10 px-5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold rounded-xl"
+          >
+            Sem planilha de contas hoje? Avançar direto →
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // =========================================================================
+  // MODO 2: REVIEW STATE (Dropzone oculto, conferência e selagem em tela cheia)
+  // =========================================================================
   return (
     <div className={`space-y-6 ${className}`}>
-      {/* CABEÇALHO DA ETAPA 4 */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-800">
+      {/* CABEÇALHO DA ETAPA 4 COM LIVE DELTA TRACKER E BOTÃO DE REIMPORTAR */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-3 border-b border-zinc-800">
         <div>
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 font-mono text-xs font-bold">
@@ -233,47 +348,38 @@ export function Fase4ContasVsSaidasReview({
           </p>
         </div>
 
-        {/* Live Delta Tracker dos 5 Pilares */}
-        <div className="flex items-center gap-4 bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-xl text-xs font-mono">
-          <div>
-            <span className="text-zinc-500 block text-[10px]">SUBTOTAL CONTAS</span>
-            <span className="text-rose-400 font-bold">{formatBrl(summary?.subtotal_contas)}</span>
-          </div>
-          <div className="h-6 w-px bg-zinc-800" />
-          <div>
-            <span className="text-zinc-500 block text-[10px]">DISPONÍVEL</span>
-            <span className="text-zinc-200 font-bold">{formatBrl(summary?.valor_disponivel)}</span>
-          </div>
-          <div className="h-6 w-px bg-zinc-800" />
-          <div>
-            <span className="text-zinc-500 block text-[10px]">DIFERENÇA FINAL (Δ)</span>
-            <span className={`font-bold ${isApproved ? 'text-emerald-400' : 'text-rose-400'}`}>
-              {formatBrl(delta)}
-            </span>
-          </div>
-        </div>
-      </div>
+        {/* Ações de Reimportação e Live Delta Tracker dos 5 Pilares */}
+        <div className="flex flex-wrap items-center gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setViewMode('drop')}
+            className="h-9 px-3 text-xs border-zinc-700 text-zinc-300 hover:bg-zinc-800 rounded-xl flex items-center gap-1.5"
+            title="Importar outra planilha de Contas a Pagar"
+          >
+            <UploadCloud size={14} className="text-emerald-400" />
+            Reimportar Contas
+          </Button>
 
-      {/* DROPZONE EXCLUSIVA DE CONTAS A PAGAR */}
-      <div 
-        {...getRootProps()} 
-        className={`border-2 border-dashed rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all duration-200
-          ${isDragActive 
-            ? 'border-emerald-500 bg-emerald-500/10' 
-            : 'border-zinc-800 bg-zinc-900/40 hover:border-zinc-700 hover:bg-zinc-900/60'
-          }
-        `}
-      >
-        <input {...getInputProps()} />
-        <div className="w-11 h-11 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-emerald-400 mb-2">
-          <UploadCloud size={22} />
+          <div className="flex items-center gap-4 bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-xl text-xs font-mono">
+            <div>
+              <span className="text-zinc-500 block text-[10px]">SUBTOTAL CONTAS</span>
+              <span className="text-rose-400 font-bold">{formatBrl(summary?.subtotal_contas)}</span>
+            </div>
+            <div className="h-6 w-px bg-zinc-800" />
+            <div>
+              <span className="text-zinc-500 block text-[10px]">DISPONÍVEL</span>
+              <span className="text-zinc-200 font-bold">{formatBrl(summary?.valor_disponivel)}</span>
+            </div>
+            <div className="h-6 w-px bg-zinc-800" />
+            <div>
+              <span className="text-zinc-500 block text-[10px]">DIFERENÇA FINAL (Δ)</span>
+              <span className={`font-bold ${isApproved ? 'text-emerald-400' : 'text-rose-400'}`}>
+                {formatBrl(delta)}
+              </span>
+            </div>
+          </div>
         </div>
-        <h4 className="font-bold text-sm text-zinc-200 text-center">
-          {isDragActive ? 'Solte a planilha de Contas a Pagar aqui' : 'Arraste a planilha de Contas a Pagar do ERP (.xlsx, .csv)'}
-        </h4>
-        <p className="text-zinc-400 text-xs text-center mt-0.5">
-          O motor cruza os pagamentos automaticamente contra os débitos das contas correntes.
-        </p>
       </div>
 
       {/* RECEITAS EXTRAS CORPORATIVAS DRE */}

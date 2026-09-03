@@ -2210,8 +2210,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1788447115.256122,
-    "ast_hash": "e29e13ce9a34e094e8015cae85d427b6",
+    "mtime": 1788449122.4665673,
+    "ast_hash": "81d80ef4021b077ac145f374d26cf3b4",
     "semantic_hash": ""
   },
   "spec/global/overview.md": {
@@ -3885,18 +3885,18 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/manual/Fase2RedeVsOsReview.tsx": {
-    "mtime": 1788446830.6833377,
-    "ast_hash": "ecd39c7437e754e6b4a13cb2a8330e80",
+    "mtime": 1788451090.1098917,
+    "ast_hash": "0e3e29c00362cfb6d9af83e60c3d88a3",
     "semantic_hash": ""
   },
   "src/components/importacoes/manual/Fase3OfxReconciliation.tsx": {
-    "mtime": 1788446835.0828269,
-    "ast_hash": "68d942b06ba157edd7e729e7248b4392",
+    "mtime": 1788451114.934657,
+    "ast_hash": "b23e9e643649afcb95f61d8b3ead4d60",
     "semantic_hash": ""
   },
   "src/components/importacoes/manual/Fase4ContasVsSaidasReview.tsx": {
-    "mtime": 1788446841.6666217,
-    "ast_hash": "c5e035f4a221899a0fdb54cde7096e63",
+    "mtime": 1788451131.1933732,
+    "ast_hash": "15f5e07551967e05ba96c2b4aa72f72a",
     "semantic_hash": ""
   },
   "src/components/importacoes/manual/FechamentoManualWizard.tsx": {
@@ -3974,19 +3974,19 @@
     "ast_hash": "8be4728798f9aecbfefd072c3467e86e",
     "semantic_hash": ""
   },
-  "specs/362-fix-os-rejeitadas-e-filtro-ausentes-relatorio/design.md": {
-    "mtime": 1788448239.9278052,
-    "ast_hash": "c52801abbe69c3895b076c1d0a539a2e",
+  "specs/363-fix-pos-transactions-occurred-at-and-manual-pipeline-contracts/design.md": {
+    "mtime": 1788451051.5761292,
+    "ast_hash": "8fe85cac3aeb80857e6fdcc510a067e5",
     "semantic_hash": ""
   },
-  "specs/362-fix-os-rejeitadas-e-filtro-ausentes-relatorio/proposal.md": {
-    "mtime": 1788448230.823333,
-    "ast_hash": "b2fa8c747fa28f83c9b3cfe0dbf697bc",
+  "specs/363-fix-pos-transactions-occurred-at-and-manual-pipeline-contracts/proposal.md": {
+    "mtime": 1788450802.5748868,
+    "ast_hash": "1fc7b95aa1fc4cf6f201803ce98f458f",
     "semantic_hash": ""
   },
-  "specs/362-fix-os-rejeitadas-e-filtro-ausentes-relatorio/spec-plan.md": {
-    "mtime": 1788448812.3205037,
-    "ast_hash": "e5f527fe88c324d95edc27838bc365e5",
+  "specs/363-fix-pos-transactions-occurred-at-and-manual-pipeline-contracts/spec-plan.md": {
+    "mtime": 1788451153.863194,
+    "ast_hash": "058216482f340ff93155d1f811cfd2b9",
     "semantic_hash": ""
   }
 }
