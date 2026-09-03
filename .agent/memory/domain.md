@@ -1,3 +1,15 @@
+## [2026-09-03] — [Feature ID: 363-fix-pos-transactions-occurred-at-and-manual-pipeline-contracts]
+
+**Contexto:** Blindagem da ingestão sequencial de dados da Central de Fechamento Manual (Fase 2 Rede, Fase 3 OFX, Fase 4 Contas) e garantia de unicidade contábil.
+
+**Regra aprendida:**
+1. **Idempotência de Cartões na Fase 2:**
+   - O re-upload da mesma planilha da Rede não pode duplicar vendas nem inflar o montante de "Cartões a Compensar". O uso de `dedup_hash` com entropia completa (`loja + data + líquido + bruto + NSU/Auth/TID`) garante que apenas novos lançamentos sejam acrescidos.
+2. **Integridade de Estornos e Devoluções da Rede:**
+   - Transações de estorno/cancelamento gravam explicitamente `transaction_type = 'devolucao'`, permitindo que a RPC `get_daily_reconciliation_summary` abata corretamente as devoluções de cartões no cômputo da liquidez diária e previna distorção contábil no faturamento consolidado.
+
+---
+
 ## [2026-09-03] — [Feature ID: 362-fix-os-rejeitadas-e-filtro-ausentes-relatorio]
 
 **Contexto:** Carga cumulativa do passivo de pátio em aberto na conferência diária da Fase 1 (`Fase1PatioOsReview.tsx`) e distinção precisa entre OSs do dia e carryover de pátio anterior.

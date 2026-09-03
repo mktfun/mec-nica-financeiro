@@ -1,3 +1,26 @@
+## [2026-09-03] — [Feature ID: 363-fix-pos-transactions-occurred-at-and-manual-pipeline-contracts]
+
+**Contexto:** Resolução do erro PostgreSQL `23502` (`null value in column "occurred_at" of relation "pos_transactions" violates not-null constraint`) ao importar vendas da Rede na Fase 2, e saneamento preventivo dos contratos das tabelas `ofx_transactions` e `daily_manual_bills`.
+
+**Regra aprendida:**
+1. **Contrato Estrito de `pos_transactions`:**
+   - Colunas obrigatórias NOT NULL: `occurred_at TIMESTAMPTZ NOT NULL`, `machine_name TEXT NOT NULL`, `payment_method TEXT NOT NULL`, `gross_amount NUMERIC NOT NULL`, `net_amount NUMERIC NOT NULL`, `fee_amount NUMERIC NOT NULL`, `transaction_type CHECK (transaction_type IN ('venda', 'devolucao'))`.
+   - A coluna `fee_amount` deve ler `Math.abs(t.interest || 0)` do parser da Rede (não `feeAmount`).
+   - `occurred_at` deve ser formatado em ISO 8601 UTC (`${baseDate}T${time}Z`) com fallback `${targetDate}T12:00:00Z`.
+   - Inserções devem ser idempotentes via `generateDeterministicHash` e `.upsert(txs, { onConflict: 'store_id, dedup_hash', ignoreDuplicates: true })`.
+   - Se a filial não for mapeada, persistir `null` em `store_id` em vez de `'st-default'`, prevenindo violação de FK `23503`.
+2. **Contrato Estrito de `ofx_transactions`:**
+   - Colunas obrigatórias NOT NULL: `bank_name TEXT NOT NULL`, `occurred_at TIMESTAMPTZ NOT NULL`, `amount NUMERIC NOT NULL`, `fitid TEXT NOT NULL`.
+   - A coluna física para histórico/favorecido é `counterpart_name` (não `description`).
+   - Unique constraint: `UNIQUE(store_id, fitid)`. Usar `.upsert(txs, { onConflict: 'store_id, fitid', ignoreDuplicates: true })`.
+3. **Contrato Estrito de `daily_manual_bills`:**
+   - Coluna obrigatória NOT NULL: `title TEXT NOT NULL` (não `description`).
+   - A tabela NÃO possui coluna `status` (utiliza `match_status` e `contabilizar_no_subtotal`).
+   - A RPC canônica de batimento é `public.auto_match_saidas(p_date DATE)` (o parâmetro é `p_date`, NÃO `p_target_date`).
+**Risco identificado / Anti-pattern:** Omitir `occurred_at` ou `bank_name` presumindo defaults inexistentes no banco, ou enviar strings genéricas como `'st-default'` em colunas com chave estrangeira.
+
+---
+
 ## [2026-09-03] — [Feature ID: 361-fluxo-ingestao-controlada-4-etapas-com-bifurcacao-chat]
 
 **Contexto:** Criação da tabela de sessões do pipeline e RPCs determinísticas para a esteira manual de 4 fases (ZERO IA) via migration `20260903000027_reconciliation_pipeline_sessions.sql`.

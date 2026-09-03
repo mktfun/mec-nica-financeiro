@@ -1,3 +1,12 @@
+### Feature 363: Correção de `occurred_at` em `pos_transactions` e Blindagem de Contratos na Esteira Manual
+- **Status:** COMPLETED & ARCHIVED
+- **Data:** 2026-09-03
+- **Arquivos Criados/Modificados:**
+  - `src/components/importacoes/manual/Fase2RedeVsOsReview.tsx` (Composição de `occurred_at`, `fee_amount` via `interest`, `transaction_type`, `dedup_hash`, fallback `null` para `store_id`, e upsert idempotente)
+  - `src/components/importacoes/manual/Fase3OfxReconciliation.tsx` (Adição mandatória de `bank_name`, `occurred_at`, `counterpart_name`, `fitid`, sanitização de `store_id` e upsert idempotente)
+  - `src/components/importacoes/manual/Fase4ContasVsSaidasReview.tsx` (Mapeamento de `title` NOT NULL, remoção de `status: 'pendente'`, leitura de `counterpart_name` e correção da RPC `auto_match_saidas(p_date)`)
+- **Descrição:** Resolução do erro PostgreSQL `23502` (`null value in column "occurred_at" of relation "pos_transactions" violates not-null constraint`) ao importar vendas da Rede na Fase 2, e saneamento preventivo das constraints NOT NULL e assinaturas de RPC nas Fases 3 (`ofx_transactions`) e 4 (`daily_manual_bills`).
+
 ### Feature 362: Correção de OSs Rejeitadas (Planalto/Brasicar e Rei do Módulo) e Modo Fora do Relatório no Pátio
 - **Status:** COMPLETED & ARCHIVED
 - **Data:** 2026-09-03

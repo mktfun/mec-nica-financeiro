@@ -21,6 +21,7 @@ import { useStoreFileMappings } from '@/hooks/useStoreFileMappings';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { parseCentralImports } from '@/lib/parsers/centralImportManager';
+import { generateDeterministicHash } from '@/lib/parsers/hashUtils';
 
 export interface Fase2RedeVsOsReviewProps {
   targetDate: string;
@@ -164,31 +165,69 @@ export function Fase2RedeVsOsReview({
         return;
       }
 
-      const txsToInsert: any[] = [];
+      const txsMap = new Map<string, any>();
 
       for (const r of redeResults) {
-        for (const t of r.transactions) {
+        r.transactions.forEach((t, idx) => {
           let storeId = mapping[t.storeName];
           if (storeId === 'GLOBAL') storeId = null as any;
           const storeObj = stores.find(s => s.id === storeId || s.name === t.storeName);
-          const resolvedStoreId = storeId || storeObj?.id || 'st-default';
+          const resolvedStoreId = storeId || storeObj?.id || null;
 
-          txsToInsert.push({
+          const baseDate = t.date && /^\d{4}-\d{2}-\d{2}$/.test(t.date) ? t.date : targetDate;
+
+          let occurredAt: string;
+          if (t.time && /^\d{1,2}:\d{2}(:\d{2})?$/.test(t.time.trim())) {
+            const parts = t.time.trim().split(':');
+            const hh = parts[0].padStart(2, '0');
+            const mm = parts[1].padStart(2, '0');
+            const ss = (parts[2] || '00').padStart(2, '0');
+            occurredAt = `${baseDate}T${hh}:${mm}:${ss}Z`;
+          } else {
+            occurredAt = `${baseDate}T12:00:00Z`;
+          }
+
+          const uniqueEntropy = t.nsu
+            ? `nsu_${t.nsu}${t.authorization ? `_auth_${t.authorization}` : ''}`
+            : (t.authorization
+                ? `auth_${t.authorization}${t.tid ? `_tid_${t.tid}` : ''}`
+                : (t.tid
+                    ? `tid_${t.tid}`
+                    : `${t.method || 'rede'}_${t.time || ''}_${idx}`));
+
+          const dedupHash = generateDeterministicHash(
+            baseDate,
+            t.netAmount || 0,
+            `${resolvedStoreId || 'global'}_${uniqueEntropy}`,
+            'pos'
+          );
+
+          const payload = {
             id: crypto.randomUUID(),
             store_id: resolvedStoreId,
             target_date: targetDate,
-            gross_amount: t.grossAmount || t.netAmount,
-            net_amount: t.netAmount,
-            fee_amount: t.feeAmount || 0,
+            gross_amount: Math.abs(t.grossAmount || t.netAmount || 0),
+            net_amount: Math.abs(t.netAmount || 0),
+            fee_amount: Math.abs(t.interest || (t as any).feeAmount || 0),
             payment_method: t.method || 'Cartão Crédito/Débito',
-            machine_name: t.storeName,
-            settlement_status: 'a_compensar'
-          });
-        }
+            machine_name: t.storeName || 'Rede',
+            settlement_status: 'a_compensar',
+            occurred_at: occurredAt,
+            dedup_hash: dedupHash,
+            transaction_type: t.transactionType === 'devolucao' ? 'devolucao' : 'venda'
+          };
+
+          const mapKey = `${resolvedStoreId || 'null'}_${dedupHash}`;
+          txsMap.set(mapKey, payload);
+        });
       }
 
+      const txsToInsert = Array.from(txsMap.values());
+
       if (txsToInsert.length > 0) {
-        const { error: insErr } = await supabase.from('pos_transactions').insert(txsToInsert);
+        const { error: insErr } = await supabase
+          .from('pos_transactions')
+          .upsert(txsToInsert, { onConflict: 'store_id, dedup_hash', ignoreDuplicates: true });
         if (insErr) throw insErr;
         toast.success(`${txsToInsert.length} vendas da Rede importadas com sucesso!`);
       }

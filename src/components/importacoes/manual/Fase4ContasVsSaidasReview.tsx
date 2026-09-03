@@ -79,7 +79,7 @@ export function Fase4ContasVsSaidasReview({
           store_id: t.store_id,
           store_name: storeObj?.name || t.store_id,
           amount: Number(t.amount || 0),
-          description: t.description || t.title || 'Débito Bancário',
+          description: t.counterpart_name || t.bank_name || 'Débito Bancário',
           matched_bill_id: t.matched_bill_id,
           manual_category: t.manual_category
         };
@@ -130,31 +130,30 @@ export function Fase4ContasVsSaidasReview({
           let storeId = mapping[storeName];
           if (storeId === 'GLOBAL') storeId = null as any;
           const storeObj = stores.find(s => s.id === storeId || s.name === storeName);
-          const resolvedStoreId = storeId || storeObj?.id || 'st-default';
+          const resolvedStoreId = storeId || storeObj?.id || null;
           const dueDate = (b as any).dueDate || b.due_date || targetDate;
 
           billsToInsert.push({
             store_id: resolvedStoreId,
             date: targetDate,
             due_date: dueDate,
-            amount: b.amount,
-            description: b.description || 'Título a Pagar',
+            amount: Math.abs(b.amount),
+            title: b.description || b.title || 'Título a Pagar',
             category: b.category || 'Geral',
-            status: 'pendente',
             contabilizar_no_subtotal: true
           });
         }
       }
 
       if (billsToInsert.length > 0) {
-        const { error: insErr } = await supabase.from('daily_manual_bills').insert(billsToInsert);
+        const { error: insErr } = await (supabase as any).from('daily_manual_bills').insert(billsToInsert);
         if (insErr) throw insErr;
         toast.success(`${billsToInsert.length} títulos de Contas a Pagar importados!`);
       }
 
       // Executa auto-match de saídas determinístico
       await (supabase as any).rpc('auto_match_saidas', {
-        p_target_date: targetDate
+        p_date: targetDate
       });
 
       await loadData();

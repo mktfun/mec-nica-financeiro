@@ -21,6 +21,7 @@ import { useStoreFileMappings } from '@/hooks/useStoreFileMappings';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { parseCentralImports } from '@/lib/parsers/centralImportManager';
+import { generateDeterministicHash } from '@/lib/parsers/hashUtils';
 
 export interface Fase3OfxReconciliationProps {
   targetDate: string;
@@ -84,9 +85,9 @@ export function Fase3OfxReconciliation({
           store_id: t.store_id,
           store_name: storeObj?.name || t.store_id,
           amount: Number(t.amount || 0),
-          description: t.description || t.title || 'Crédito Bancário',
+          description: t.counterpart_name || t.bank_name || 'Crédito Bancário',
           fitid: t.fitid,
-          date: t.date || targetDate,
+          date: t.occurred_at ? t.occurred_at.split('T')[0] : (t.target_date || targetDate),
           matched_os_number: t.matched_os_number,
           manual_category: t.manual_category
         };
@@ -163,30 +164,51 @@ export function Fase3OfxReconciliation({
       }
 
       let totalInserted = 0;
-      const txsToInsert: any[] = [];
+      const ofxMap = new Map<string, any>();
 
       for (const r of ofxResults) {
         let storeId = mapping[r.accountKey] || mapping[r.storeAlias];
         if (storeId === 'GLOBAL') storeId = null as any;
         const storeObj = stores.find(s => s.id === storeId || s.name === r.storeAlias);
-        const resolvedStoreId = storeId || storeObj?.id || 'st-default';
+        const resolvedStoreId = storeId || storeObj?.id || null;
+        const bankName = r.storeAlias?.split(' - ')[0]?.trim() || r.alias?.split(' - ')[0]?.trim() || 'Itaú';
 
         for (const t of r.transactions) {
-          txsToInsert.push({
+          const baseDate = t.date && /^\d{4}-\d{2}-\d{2}$/.test(t.date) ? t.date : targetDate;
+          const occurredAt = `${baseDate}T12:00:00Z`;
+          const effectiveFitid = t.fitid || generateDeterministicHash(
+            baseDate,
+            Math.abs(t.amount || 0),
+            t.title || t.counterpart_name || t.memo || 'ofx',
+            'ofx'
+          );
+          const normalizedType: 'in' | 'out' = (t.type === 'in' || t.amount > 0) ? 'in' : 'out';
+
+          const payload = {
             id: crypto.randomUUID(),
             store_id: resolvedStoreId,
             target_date: targetDate,
-            amount: Math.abs(t.amount),
-            type: t.amount > 0 ? 'in' : 'out',
-            description: t.memo || t.payee || 'Lançamento OFX',
-            fitid: t.fitid,
-            date: t.date || targetDate
-          });
+            bank_name: bankName,
+            amount: Math.abs(t.amount || 0),
+            type: normalizedType,
+            counterpart_name: t.counterpart_name || t.title || t.memo || t.payee || 'Lançamento OFX',
+            cnpj_cpf: t.cnpj_cpf || null,
+            fitid: effectiveFitid,
+            occurred_at: occurredAt,
+            contabilizar_no_subtotal: true
+          };
+
+          const mapKey = `${resolvedStoreId || 'null'}_${effectiveFitid}`;
+          ofxMap.set(mapKey, payload);
         }
       }
 
+      const txsToInsert = Array.from(ofxMap.values());
+
       if (txsToInsert.length > 0) {
-        const { error: insErr } = await supabase.from('ofx_transactions').insert(txsToInsert);
+        const { error: insErr } = await (supabase as any)
+          .from('ofx_transactions')
+          .upsert(txsToInsert, { onConflict: 'store_id, fitid', ignoreDuplicates: true });
         if (insErr) throw insErr;
         totalInserted = txsToInsert.length;
         toast.success(`${totalInserted} lançamentos de extrato OFX importados!`);
