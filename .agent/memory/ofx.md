@@ -47,3 +47,11 @@
 4. **Aliases Conhecidos no Mapeamento:** Termos canônicos como `BRASICAR`, `brasicar`, `Planalto (BRASICAR)`, `Rei do Módulo`, `Rei do Modulo`, `REI DO MODULO` DEVEM constar em `KNOWN_ACCOUNT_DEFAULTS` e `REDE_STORE_MAPPING`, evitando o fallback `st-default` que zera a loja.
 **Risco identificado / Anti-pattern:** Limitar a busca de cabeçalho a 20 linhas e engolir erros de parsing de OS em `centralImportManager.ts`, emitindo aviso genérico de "Arquivo ignorado" em vez de registrar a falha real.
 
+## [2026-09-03] — [Feature ID: 368-fix-ofx-sgml-parsing-and-auto-store-mapping-persistence]
+**Contexto:** Correção de extratos bancários Itaú Empresas gerando 0 transações e saldos zerados devido à ausência de tags de fechamento `</STMTTRN>` (OFX 1.0 SGML), e perda de mapeamento de lojas de arquivos no formato `Extrato_{agencia}_{conta}_{data}.ofx`.
+**Regra aprendida:**
+1. **Parser OFX SGML Resiliente:** Extratos OFX 1.0 (Itaú) abrem `<STMTTRN>` mas NUNCA fecham `</STMTTRN>`. A extração não pode depender de `/<STMTTRN>([\s\S]*?)<\/STMTTRN>/gi`. Deve usar split por `<STMTTRN>` delimitado pelo próximo bloco ou tags de fechamento/balanço (`(?:<\/BANKTRANLIST>|<LEDGERBAL>|<PRVBAL>|<AVAILBAL>|$)`).
+2. **Decodificação Windows-1252 / ISO-8859-1:** Ler arquivos OFX via `file.arrayBuffer()` com `TextDecoder('windows-1252')` antes de converter para string, prevenindo corrupção de caracteres acentuados nos memos.
+3. **Normalização e Extração de Agência e Conta:** Verificar `<BRANCHID>` além de `<ACCTID>`. Se a conta tiver menos de 8 dígitos, compor `{agencia}{conta}`. Efetuar fallback inteligente via regex no nome do arquivo: `Extrato_(\d{4})_(\d{5,8})`.
+4. **Mapeamento Persistente no PostgreSQL:** Todos os aliases canônicos (`{agencia}{conta}`, `{agencia}_{conta}`, `{conta}`, `Extrato_{agencia}_{conta}`, `ITAU - {agencia}{conta}`) DEVEM estar persistidos na tabela `public.store_file_mappings` via migration SQL e sincronizados automaticamente na primeira importação.
+**Risco identificado / Anti-pattern:** Exigir tag de fechamento XML em padrões bancários SGML legados e manter mapeamentos de lojas voláteis apenas em memória transitória ou localStorage.

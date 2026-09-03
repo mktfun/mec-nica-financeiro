@@ -12,17 +12,57 @@ export interface StoreFileMapping {
 const LOCAL_STORAGE_KEY = 'mecanica_store_file_mappings';
 
 const KNOWN_ACCOUNT_DEFAULTS: Record<string, string> = {
-  // Contas Bancárias OFX
+  // Contas Bancárias OFX - Canônicas (Agência + Conta)
   '8813984633': 'st-01', // Dom Pedro (DP)
+  '8813_984633': 'st-01',
+  '984633': 'st-01',
+  'Extrato_8813_984633': 'st-01',
+
   '8813984112': 'st-02', // Jabaquara (JAB)
+  '8813_984112': 'st-02',
+  '984112': 'st-02',
+  'Extrato_8813_984112': 'st-02',
+
   '3385988047': 'st-03', // Jorge Beretta (DHJV)
+  '3385_988047': 'st-03',
+  '988047': 'st-03',
+  'Extrato_3385_988047': 'st-03',
+
   '7386175298': 'st-04', // Kennedy (MP)
+  '7386_175298': 'st-04',
+  '175298': 'st-04',
+  'Extrato_7386_175298': 'st-04',
+
   '7386162601': 'st-05', // Piraporinha (EMPORIO)
+  '7386_162601': 'st-05',
+  '162601': 'st-05',
+  'Extrato_7386_162601': 'st-05',
+
   '7386166586': 'st-06', // Planalto (BRASICAR)
+  '7386_166586': 'st-06',
+  '166586': 'st-06',
+  'Extrato_7386_166586': 'st-06',
+
   '0263811531': 'st-07', // Rudge Ramos (CAP)
+  '0263_811531': 'st-07',
+  '811531': 'st-07',
+  'Extrato_0263_811531': 'st-07',
+
   '8813994293': 'st-08', // Santo André (HD)
+  '8813_994293': 'st-08',
+  '994293': 'st-08',
+  'Extrato_8813_994293': 'st-08',
+
   '8813992677': 'st-09', // Rei do Módulo (MP)
+  '8813_992677': 'st-09',
+  '992677': 'st-09',
+  'Extrato_8813_992677': 'st-09',
+
   '2783070820': '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f', // Mauá (MHE)
+  '2783_070820': '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f',
+  '070820': '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f',
+  '70820': '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f',
+  'Extrato_2783_070820': '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f',
   
   // OS Aliases das Planilhas de Pátio
   'MPrudge': 'st-07',
@@ -174,6 +214,16 @@ export function useStoreFileMappings(stores: StoreRow[] = []) {
       // Auto-vínculo para o próprio nome da loja
       if (!combined[s.name]) combined[s.name] = s.id;
       if (!combined[cleanStoreName]) combined[cleanStoreName] = s.id;
+    });
+
+    // 2.4 Auto-match para aliases contendo padrões de agência e conta
+    Object.keys(combined).forEach(key => {
+      const matchKey = key.match(/(\d{4})_(\d{5,8})/);
+      if (matchKey) {
+        const sid = combined[key];
+        combined[`${matchKey[1]}${matchKey[2]}`] = sid;
+        combined[`Extrato_${matchKey[1]}_${matchKey[2]}`] = sid;
+      }
     });
 
     setLocalMapping(combined);

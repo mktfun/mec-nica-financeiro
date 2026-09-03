@@ -644,8 +644,28 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   // Helper para resolver a loja correta por mapping direto, conta bancária ou prefixo do arquivo
   const resolveStoreForOfx = useCallback((ofx: { alias: string; fileName?: string }): string => {
     if (mapping[ofx.alias]) return mapping[ofx.alias];
+
+    // 1. Tenta por chave direta de dígitos contínuos
+    const cleanDigits = (ofx.alias || '').replace(/\D/g, '');
+    if (cleanDigits && mapping[cleanDigits]) return mapping[cleanDigits];
+
+    // 2. Extrai padrão Extrato_{agencia}_{conta} ou {agencia}_{conta} do nome do arquivo ou do alias
+    const sourceStr = `${ofx.fileName || ''} ${ofx.alias || ''}`;
+    const fileMatch = sourceStr.match(/(\d{4})_(\d{5,8})/);
+    if (fileMatch) {
+      const agency = fileMatch[1];
+      const account = fileMatch[2];
+      const combined = `${agency}${account}`;
+      if (mapping[combined]) return mapping[combined];
+      if (mapping[`${agency}_${account}`]) return mapping[`${agency}_${account}`];
+      if (mapping[account]) return mapping[account];
+    }
+
+    // 3. Match por 8 a 12 dígitos contínuos
     const acctMatch = ofx.alias.match(/(\d{8,12})/);
     if (acctMatch && mapping[acctMatch[1]]) return mapping[acctMatch[1]];
+
+    // 4. Mnemônicos no nome do arquivo
     if (ofx.fileName) {
       const upper = ofx.fileName.toUpperCase();
       if (upper.includes('_DP') || upper.includes('DOM PEDRO') || upper.includes('DOM_PEDRO')) return 'st-01';
@@ -661,6 +681,21 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     }
     return '';
   }, [mapping]);
+
+  // Auto-associação e persistência de OFX quando identificados
+  useEffect(() => {
+    if (results.ofxResults && results.ofxResults.length > 0) {
+      results.ofxResults.forEach(ofx => {
+        if (!mapping[ofx.alias]) {
+          const resolvedId = resolveStoreForOfx(ofx);
+          if (resolvedId) {
+            const storeObj = stores.find(s => s.id === resolvedId);
+            updateMapping(ofx.alias, resolvedId, storeObj?.name);
+          }
+        }
+      });
+    }
+  }, [results.ofxResults, mapping, resolveStoreForOfx, stores, updateMapping]);
 
   const handleCloudDataSuccess = (cloudData: any[], fallback: boolean) => {
     setIsAgentModalOpen(false);
@@ -2376,27 +2411,39 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                         const ofx = results.ofxResults.find(o => o.alias === alias);
                         const fileName = ofx?.fileName;
                         const effectiveStoreId = mapping[alias] || (ofx ? resolveStoreForOfx(ofx) : '');
+                        const matchedStore = stores.find(st => st.id === effectiveStoreId);
+
+                        // Identifica agência e conta formatada se presente
+                        const acctInfoMatch = `${alias} ${fileName || ''}`.match(/(\d{4})_(\d{5,8})/) || 
+                                              `${alias} ${fileName || ''}`.match(/(\d{4})(\d{5,8})/);
+                        const formattedAcct = acctInfoMatch ? `Itaú • Ag. ${acctInfoMatch[1]} / Conta ${acctInfoMatch[2]}` : null;
+
                         return (
-                          <div key={`ofx-${alias}`} className="flex items-center gap-6 p-4 rounded-xl bg-zinc-950/60 border border-zinc-800">
-                            <div className="flex-1">
-                              <span className="text-[10px] font-bold text-zinc-500 uppercase">Identificado no Arquivo</span><br/>
-                              <span className="font-mono text-base font-bold text-zinc-100">{alias}</span>
-                              {fileName && (
-                                <div className="mt-0.5 text-xs text-zinc-400">
-                                  <span className="font-semibold text-emerald-400">Origem:</span> {fileName}
+                          <div key={`ofx-${alias}`} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 p-4 rounded-xl bg-zinc-950/60 border border-zinc-800">
+                            <div className="flex-1 min-w-0">
+                              <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Identificado no Extrato</span><br/>
+                              <span className="font-mono text-base font-bold text-zinc-100 break-all">{alias}</span>
+                              {formattedAcct && (
+                                <div className="text-xs font-semibold text-emerald-400 mt-0.5">
+                                  {formattedAcct}
+                                </div>
+                              )}
+                              {fileName && fileName !== alias && (
+                                <div className="mt-0.5 text-xs text-zinc-500 truncate">
+                                  <span className="font-semibold text-zinc-400">Origem:</span> {fileName}
                                 </div>
                               )}
                             </div>
-                            <LinkIcon className="text-emerald-500/50 shrink-0" size={20} />
-                            <div className="flex-1">
+                            <LinkIcon className="text-emerald-500/50 shrink-0 hidden sm:block" size={20} />
+                            <div className="flex-1 w-full sm:w-auto">
                               <select 
                                 value={effectiveStoreId} 
                                 onChange={e => {
                                   const s = stores.find(st => st.id === e.target.value);
                                   updateMapping(alias, e.target.value, s?.name);
                                 }}
-                                className={`w-full bg-zinc-900 border rounded-xl p-2.5 text-xs font-semibold focus:outline-none 
-                                  ${effectiveStoreId ? 'border-emerald-500/50 text-zinc-100' : 'border-amber-500/50 text-amber-300 animate-pulse'}`}
+                                className={`w-full bg-zinc-900 border rounded-xl p-2.5 text-xs font-semibold focus:outline-none transition-all
+                                  ${effectiveStoreId ? 'border-emerald-500/50 text-emerald-300' : 'border-amber-500/50 text-amber-300 animate-pulse'}`}
                               >
                                 <option value="">-- Selecione a Loja do Sistema --</option>
                                 <option value="GLOBAL">-- CONTA GLOBAL / INTERNA --</option>
@@ -2404,6 +2451,11 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                                   <option key={s.id} value={s.id}>{s.name}</option>
                                 ))}
                               </select>
+                              {matchedStore && (
+                                <div className="mt-1 text-[11px] text-emerald-400/90 font-medium flex items-center gap-1.5">
+                                  <span>✓ Vinculada: <strong>{matchedStore.name}</strong></span>
+                                </div>
+                              )}
                             </div>
                           </div>
                         );

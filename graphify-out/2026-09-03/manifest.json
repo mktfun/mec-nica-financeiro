@@ -1110,8 +1110,8 @@
     "semantic_hash": "5bbd53000fae29c39d6adc1bff9861d5"
   },
   "src/routes/importacoes.tsx": {
-    "mtime": 1788442855.83585,
-    "ast_hash": "10f98338961048985ac2264879f55ebc",
+    "mtime": 1788467226.5247483,
+    "ast_hash": "36536857ec15a8269f49d5df56a22b24",
     "semantic_hash": ""
   },
   "src/routes/importar-os.tsx": {
@@ -1955,43 +1955,43 @@
     "semantic_hash": "775e647325518f7b38710dd6999ccc3f"
   },
   ".agent/memory.md": {
-    "mtime": 1788361129.182898,
+    "mtime": 1788467400.9266732,
     "ast_hash": "3978a9f9edd428eeb9455ac32e00f4f4",
     "semantic_hash": ""
   },
   ".agent/rules/ia.md": {
-    "mtime": 1788465889.642702,
-    "ast_hash": "d4b3c7aaf773d19a1e480a7ca2a8dcde",
+    "mtime": 1788467400.9794936,
+    "ast_hash": "218c0b9a00009fcbacf1dd6c374f60a3",
     "semantic_hash": ""
   },
   ".agent/workflows/config-antigravity.md": {
-    "mtime": 1788465889.6182125,
+    "mtime": 1788467400.982274,
     "ast_hash": "600887be6e2197c5e24b375049b03ff7",
     "semantic_hash": ""
   },
   ".agent/workflows/setup.md": {
-    "mtime": 1788465889.6199489,
+    "mtime": 1788467400.9843094,
     "ast_hash": "498e377080e9faa1fe603f0f9cf2cadd",
     "semantic_hash": ""
   },
   ".agent/workflows/vibe-apply.md": {
-    "mtime": 1788465889.626914,
+    "mtime": 1788467400.990605,
     "ast_hash": "4f02245602271027fef084bbea5e3e9b",
     "semantic_hash": ""
   },
   ".agent/workflows/vibe-archive.md": {
-    "mtime": 1788465889.6289563,
+    "mtime": 1788467400.992951,
     "ast_hash": "a81ce82d7617c9ecc01fbe98ef3fc03f",
     "semantic_hash": ""
   },
   ".agent/workflows/vibe-council.md": {
-    "mtime": 1788465889.6314225,
+    "mtime": 1788467400.9952302,
     "ast_hash": "3653a9ce5a96856136aa81f886abb990",
     "semantic_hash": ""
   },
   ".agent/workflows/vibe-proposal.md": {
-    "mtime": 1788465889.640401,
-    "ast_hash": "5b4899bc11e3e59b3ed2e42d7b5f9ac9",
+    "mtime": 1788467401.0038545,
+    "ast_hash": "3e2b1901b0c92607624e43050b444a87",
     "semantic_hash": ""
   },
   ".agents/ORIGINAL_REQUEST.md": {
@@ -2210,8 +2210,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1788465253.7722123,
-    "ast_hash": "25213e73d513b67c2a0c146aaf1c5983",
+    "mtime": 1788466374.1155248,
+    "ast_hash": "2ac7a33fb5ddc7eaafba83a9ef00dd89",
     "semantic_hash": ""
   },
   "spec/global/overview.md": {
@@ -3875,8 +3875,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/bifurcacao/FechamentoModeSelector.tsx": {
-    "mtime": 1788442559.9057345,
-    "ast_hash": "782a9710c5455e69da76873d5f635e1c",
+    "mtime": 1788467256.5685682,
+    "ast_hash": "9e242244e05adb57f4dc67458fdf3737",
     "semantic_hash": ""
   },
   "src/components/importacoes/manual/Fase1PatioOsReview.tsx": {
@@ -3910,42 +3910,42 @@
     "semantic_hash": ""
   },
   ".agent/agents/auditor-agent.md": {
-    "mtime": 1788465889.6449127,
-    "ast_hash": "f69f6a83d066f6ed361d476e5d9909b5",
+    "mtime": 1788467400.9286723,
+    "ast_hash": "becdcaa7a062913fff2129d1ede037e0",
     "semantic_hash": ""
   },
   ".agent/agents/backend-agent.md": {
-    "mtime": 1788465889.6468468,
-    "ast_hash": "7b994f9147c99fc9b3dd810dac0d7796",
+    "mtime": 1788467400.930703,
+    "ast_hash": "c4aef2a1833e4aaacbee68d10730021c",
     "semantic_hash": ""
   },
   ".agent/agents/bug-agent.md": {
-    "mtime": 1788465889.6490927,
-    "ast_hash": "3d5cabe43fd270c1d8aeede0c55c6918",
+    "mtime": 1788467400.9326706,
+    "ast_hash": "f1473961c4eaab6f0db9aba6d5fe566f",
     "semantic_hash": ""
   },
   ".agent/agents/database-agent.md": {
-    "mtime": 1788465889.6508055,
-    "ast_hash": "48a06c4f078b3596224cf656f91712f8",
+    "mtime": 1788467400.9346886,
+    "ast_hash": "837eb4a3d87ce84e1f6c018a406865d9",
     "semantic_hash": ""
   },
   ".agent/agents/frontend-agent.md": {
-    "mtime": 1788465889.6532013,
-    "ast_hash": "6012e20a09555014bedb064cca99ca70",
+    "mtime": 1788467400.937072,
+    "ast_hash": "500195e901657158cbecc02fe381e705",
     "semantic_hash": ""
   },
   ".agent/agents/research-agent.md": {
-    "mtime": 1788465889.6549888,
-    "ast_hash": "68768c8d1ca3f38addb394814ed582ef",
+    "mtime": 1788467400.9388473,
+    "ast_hash": "9f6a6c7277dc938303fe9cd0b8931161",
     "semantic_hash": ""
   },
   ".agent/agents/validator-agent.md": {
-    "mtime": 1788465889.6572134,
-    "ast_hash": "8173cb6512ae06dd6f780e367130ee02",
+    "mtime": 1788467400.9411044,
+    "ast_hash": "5bedbbfe9f5c332678486cdecaef3772",
     "semantic_hash": ""
   },
   ".agent/catalog/README.md": {
-    "mtime": 1788272826.4329453,
+    "mtime": 1788467400.943453,
     "ast_hash": "17c1586235ebca7f48058254110b1bcc",
     "semantic_hash": ""
   },
@@ -3955,22 +3955,22 @@
     "semantic_hash": ""
   },
   ".agent/policies/activation-rules.md": {
-    "mtime": 1788447024.8468,
+    "mtime": 1788467400.9684823,
     "ast_hash": "4568384a2e1026269e42163e3c39bb59",
     "semantic_hash": ""
   },
   ".agent/policies/context-budget.md": {
-    "mtime": 1788447024.851568,
+    "mtime": 1788467400.9725325,
     "ast_hash": "5049544da62a9dd62f1a16242e1e4241",
     "semantic_hash": ""
   },
   ".agent/policies/sync-upstream.md": {
-    "mtime": 1788447024.856508,
+    "mtime": 1788467400.9760244,
     "ast_hash": "35ca0f824d343b4636e8c3cff5499ec2",
     "semantic_hash": ""
   },
   ".agent/workflows/vibe-debug.md": {
-    "mtime": 1788465889.6337805,
+    "mtime": 1788467400.9969697,
     "ast_hash": "8be4728798f9aecbfefd072c3467e86e",
     "semantic_hash": ""
   },
@@ -3990,38 +3990,38 @@
     "semantic_hash": ""
   },
   ".agent/workflows/vibe-apply-solo.md": {
-    "mtime": 1788465889.6222072,
-    "ast_hash": "97609c0886f485c776aa555fc787af4e",
+    "mtime": 1788467400.98631,
+    "ast_hash": "a5df9af6966ad1071ae3a02f00e8ff79",
     "semantic_hash": ""
   },
   ".agent/workflows/vibe-apply-team.md": {
-    "mtime": 1788465889.6248844,
+    "mtime": 1788467400.9883447,
     "ast_hash": "4f02245602271027fef084bbea5e3e9b",
     "semantic_hash": ""
   },
   ".agent/workflows/vibe-proposal-solo.md": {
-    "mtime": 1788465889.6359465,
+    "mtime": 1788467400.9993489,
     "ast_hash": "3c6d68774acea6e1549d7a67d6afd275",
     "semantic_hash": ""
   },
   ".agent/workflows/vibe-proposal-team.md": {
-    "mtime": 1788465889.6381996,
-    "ast_hash": "5b4899bc11e3e59b3ed2e42d7b5f9ac9",
+    "mtime": 1788467401.0020432,
+    "ast_hash": "3e2b1901b0c92607624e43050b444a87",
     "semantic_hash": ""
   },
-  "specs/366-fix-match-stage2-rede-os-record-55000/design.md": {
-    "mtime": 1788466080.7953684,
-    "ast_hash": "841778d214b551dc74bc6f3b3d1859d5",
+  "specs/367-restore-central-import-wizard-for-manual-mode/design.md": {
+    "mtime": 1788467030.8592563,
+    "ast_hash": "36a9c2f72a61f2e1e44ec312d3679a1c",
     "semantic_hash": ""
   },
-  "specs/366-fix-match-stage2-rede-os-record-55000/proposal.md": {
-    "mtime": 1788466075.1090798,
-    "ast_hash": "af4a753d352883e6af8cc37a1fa309fe",
+  "specs/367-restore-central-import-wizard-for-manual-mode/proposal.md": {
+    "mtime": 1788467024.2360108,
+    "ast_hash": "b354cad63ce81fc540a9fd3e6ed51078",
     "semantic_hash": ""
   },
-  "specs/366-fix-match-stage2-rede-os-record-55000/spec-plan.md": {
-    "mtime": 1788466237.260325,
-    "ast_hash": "4d059c12f3ce68487baffea1cbbe6b53",
+  "specs/367-restore-central-import-wizard-for-manual-mode/spec-plan.md": {
+    "mtime": 1788467277.2632596,
+    "ast_hash": "303e1dbe58f6a3d98d68ea9e076e5862",
     "semantic_hash": ""
   }
 }

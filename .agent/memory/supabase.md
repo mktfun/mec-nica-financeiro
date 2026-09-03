@@ -1026,3 +1026,9 @@ Nao fazer: Nunca permita que excecoes estruturais sejam traduzidas em status con
 3. **Resiliência em Chunks de Inserção:** Ao salvar em lotes de 100 itens via Supabase Client, caso ocorra qualquer erro imprevisto em um chunk, deve haver fallback linha a linha para persistir todas as contas válidas sem abortar a gravação inteira.
 **Risco identificado / Anti-pattern:** Inserir linhas de títulos cancelados ou estornos com valor 0.00 na tabela de contas a pagar, causando abortamento total do chunk de 100 itens.
 
+## [2026-09-03] — [Feature ID: 368-seed-ofx-store-file-mappings]
+**Contexto:** Seed de 81 mapeamentos oficiais das 10 filiais diretamente no PostgreSQL via migration `20260903000031_seed_ofx_store_file_mappings.sql` na tabela `public.store_file_mappings`.
+**Regra aprendida:**
+1. **Persistência Central de Chaves Bancárias:** A tabela `public.store_file_mappings` possui chave única em `file_alias`. Sempre que novos padrões de arquivos de extrato ou faturamento forem homologados (ex: `Extrato_{agencia}_{conta}` ou `{agencia}_{conta}`), insira-os no banco com `ON CONFLICT (file_alias) DO UPDATE SET store_id = EXCLUDED.store_id, store_name = EXCLUDED.store_name, updated_at = now()`.
+2. **UUIDs Canônicos de Lojas:** `Mauá - MHE` utiliza o UUID `3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f`, enquanto as demais lojas utilizam o padrão `st-01` a `st-09`. Qualquer seed de mapeamento deve respeitar estritamente essas chaves de filial.
+**Risco identificado / Anti-pattern:** Deixar chaves de mapeamento de arquivos dependerem apenas de defaults em arquivos `.ts` do frontend ou de cache em `localStorage`, que se perdem na troca de máquina ou limpeza de dados do navegador.

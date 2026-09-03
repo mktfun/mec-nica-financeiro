@@ -40,22 +40,48 @@ function extractDocument(memo: string): { doc: string | undefined; name: string 
 }
 
 export async function parseOFXFile(file: File, options?: { sessionId?: string }): Promise<OfxParseResult> {
-  const text = await file.text();
+  let text = '';
+  try {
+    const buffer = await file.arrayBuffer();
+    // Decodifica como windows-1252 (padrão Itaú/bancos BR) e fallback
+    text = new TextDecoder('windows-1252').decode(buffer);
+  } catch {
+    text = await file.text();
+  }
   
-  // Tenta achar a tag ORG (Banco), BANKID e ACCTID (Conta)
-  const orgMatch = text.match(/<ORG>(.+?)(?:\r?\n|<)/);
-  const bankIdMatch = text.match(/<BANKID>(.+?)(?:\r?\n|<)/);
-  const acctMatch = text.match(/<ACCTID>(.+?)(?:\r?\n|<)/);
+  // Tenta achar a tag ORG (Banco), BANKID, BRANCHID e ACCTID (Conta)
+  const orgMatch = text.match(/<ORG>(.+?)(?:\r?\n|<)/i);
+  const bankIdMatch = text.match(/<BANKID>(.+?)(?:\r?\n|<)/i);
+  const branchIdMatch = text.match(/<BRANCHID>(.+?)(?:\r?\n|<)/i);
+  const acctMatch = text.match(/<ACCTID>(.+?)(?:\r?\n|<)/i);
   
   let banco = orgMatch ? orgMatch[1].trim() : '';
   if (!banco || banco === 'BANCO DESCONHECIDO') {
     if (bankIdMatch && (bankIdMatch[1].trim() === '0341' || bankIdMatch[1].trim() === '341')) {
       banco = 'ITAU';
     } else {
-      banco = 'BANCO DESCONHECIDO';
+      banco = 'ITAU';
     }
   }
-  const conta = acctMatch ? acctMatch[1].trim() : 'CONTA DESCONHECIDA';
+
+  let conta = acctMatch ? acctMatch[1].trim() : '';
+  const branch = branchIdMatch ? branchIdMatch[1].trim().replace(/\D/g, '') : '';
+  if (branch && conta && conta.replace(/\D/g, '').length < 8) {
+    conta = `${branch}${conta.replace(/\D/g, '')}`;
+  }
+  
+  // Fallback robusto por nome do arquivo: Extrato_0263_811531_03-09-2026.ofx ou 0263_811531
+  const fnMatch = file.name.match(/Extrato_(\d{4})_(\d{5,8})/i) || file.name.match(/(\d{4})_(\d{5,8})/);
+  if (fnMatch) {
+    const combinedKey = `${fnMatch[1]}${fnMatch[2]}`;
+    if (!conta || conta.replace(/\D/g, '').length < 8) {
+      conta = combinedKey;
+    }
+  }
+
+  if (!conta) {
+    conta = 'CONTA DESCONHECIDA';
+  }
   
   // O alias gerado será "BANCO - CONTA"
   const alias = `${banco} - ${conta}`;
@@ -63,17 +89,32 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
   const transactions: OfxTransaction[] = [];
   let previousBalance: number | undefined;
   
-  // Regex to match each STMTTRN block
-  const stmtTrnRegex = /<STMTTRN>([\s\S]*?)<\/STMTTRN>/g;
-  let match;
+  // Extração de blocos STMTTRN suportando:
+  // 1. Tags com fechamento </STMTTRN> (XML padrão)
+  // 2. Tags abertas SGML sem fechamento (Itaú OFX 1.0)
+  const stmtTrnBlocks: string[] = [];
+  const stmtTrnWithClose = /<STMTTRN>([\s\S]*?)<\/STMTTRN>/gi;
+  let matchClose;
+  while ((matchClose = stmtTrnWithClose.exec(text)) !== null) {
+    stmtTrnBlocks.push(matchClose[1]);
+  }
+
+  if (stmtTrnBlocks.length === 0) {
+    const bankTranListMatch = text.match(/<BANKTRANLIST>([\s\S]*?)(?:<\/BANKTRANLIST>|<LEDGERBAL>|<PRVBAL>|<AVAILBAL>|$)/i);
+    const trnContent = bankTranListMatch ? bankTranListMatch[1] : text;
+    const rawParts = trnContent.split(/<STMTTRN>/i);
+    rawParts.shift(); // remove cabeçalho antes da 1a ocorrência
+    rawParts.forEach(part => {
+      const trimmed = part.trim();
+      if (trimmed) stmtTrnBlocks.push(trimmed);
+    });
+  }
   
   const hashOccurrences = new Map<string, number>();
   
-  while ((match = stmtTrnRegex.exec(text)) !== null) {
-    const trnBlock = match[1];
-    
+  for (const trnBlock of stmtTrnBlocks) {
     // Extract TRNAMT
-    const amtMatch = trnBlock.match(/<TRNAMT>([^\r\n<]+)/);
+    const amtMatch = trnBlock.match(/<TRNAMT>([^\r\n<]+)/i);
     let amount = 0;
     if (amtMatch) {
       const rawValue = amtMatch[1].trim();
@@ -87,11 +128,11 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
     if (isNaN(amount) || amount === 0) continue;
     
     // Extract FITID (unique transaction ID from bank) - Ignore it and use deterministic hash
-    const fitidMatch = trnBlock.match(/<FITID>([^\r\n<]+)/);
+    const fitidMatch = trnBlock.match(/<FITID>([^\r\n<]+)/i);
     const originalFitid = fitidMatch ? fitidMatch[1].trim() : undefined;
     
     // Extract DTPOSTED
-    const dtMatch = trnBlock.match(/<DTPOSTED>([^\r\n<]+)/);
+    const dtMatch = trnBlock.match(/<DTPOSTED>([^\r\n<]+)/i);
     let dateStr = new Date().toISOString();
     if (dtMatch) {
       const rawDate = dtMatch[1].trim();
@@ -112,11 +153,11 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
     }
     
     // Extract TRNTYPE
-    const typeMatch = trnBlock.match(/<TRNTYPE>([A-Z]+)/);
-    const trnType = typeMatch ? typeMatch[1].trim() : '';
+    const typeMatch = trnBlock.match(/<TRNTYPE>([A-Za-z]+)/i);
+    const trnType = typeMatch ? typeMatch[1].trim().toUpperCase() : '';
 
     // Extract MEMO
-    const memoMatch = trnBlock.match(/<MEMO>([^\r\n<]+)/);
+    const memoMatch = trnBlock.match(/<MEMO>([^\r\n<]+)/i);
     const rawMemo = memoMatch ? memoMatch[1].trim() : 'Transação Bancária';
     
     // Capture SALDO ANTERIOR and all Brazilian bank variations before filtering out

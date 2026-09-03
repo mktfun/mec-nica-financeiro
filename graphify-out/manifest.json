@@ -415,8 +415,8 @@
     "semantic_hash": "6b6e0037087e02fa13aece702ccd933b"
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1788442466.572837,
-    "ast_hash": "edc6d354aa3cbb5b9e53ceb70a3cc0db",
+    "mtime": 1788468397.7178855,
+    "ast_hash": "56a1b7d22bd52d65b0c5731c63be571a",
     "semantic_hash": ""
   },
   "src/components/importacoes/DiagnosticPanel.tsx": {
@@ -815,8 +815,8 @@
     "semantic_hash": "625133a7b3128ea1d3afa69c3aa20ab1"
   },
   "src/hooks/useStoreFileMappings.ts": {
-    "mtime": 1788448548.793202,
-    "ast_hash": "883db6df34cfa149292a240ec2428503",
+    "mtime": 1788468349.5816216,
+    "ast_hash": "4aa45e47af2b8b13a246eb79ab3d099f",
     "semantic_hash": ""
   },
   "src/hooks/useStores.ts": {
@@ -960,9 +960,9 @@
     "semantic_hash": ""
   },
   "src/lib/ofxParser.ts": {
-    "mtime": 1788128883.8228078,
-    "ast_hash": "933e3dc3ae30e4418047f33780493519",
-    "semantic_hash": "933e3dc3ae30e4418047f33780493519"
+    "mtime": 1788468530.0003188,
+    "ast_hash": "9161db065b3eee7685a81a7401d2c599",
+    "semantic_hash": ""
   },
   "src/lib/parsers/centralImportManager.ts": {
     "mtime": 1788448572.1984198,
@@ -1005,9 +1005,9 @@
     "semantic_hash": "7c4db6407df7befc1f118fd21e501179"
   },
   "src/lib/parsers/ofxParser.ts": {
-    "mtime": 1788128883.8286684,
-    "ast_hash": "4b700254d523ea82ac243ce791013920",
-    "semantic_hash": "4b700254d523ea82ac243ce791013920"
+    "mtime": 1788468308.0612578,
+    "ast_hash": "06e18e8e8257ce82cffd9a4ef76d2bd3",
+    "semantic_hash": ""
   },
   "src/lib/parsers/recebiveisParser.ts": {
     "mtime": 1788128883.8292367,
@@ -2210,8 +2210,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1788466374.1155248,
-    "ast_hash": "2ac7a33fb5ddc7eaafba83a9ef00dd89",
+    "mtime": 1788467424.2219925,
+    "ast_hash": "f30940a870e82548bd99147fd1b0d139",
     "semantic_hash": ""
   },
   "spec/global/overview.md": {
@@ -3890,8 +3890,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/manual/Fase3OfxReconciliation.tsx": {
-    "mtime": 1788464937.3212276,
-    "ast_hash": "db14035ba18bc59932acb81a3d101b19",
+    "mtime": 1788468407.594897,
+    "ast_hash": "1f8605686f65833f8da31926faeade64",
     "semantic_hash": ""
   },
   "src/components/importacoes/manual/Fase4ContasVsSaidasReview.tsx": {
@@ -4009,19 +4009,24 @@
     "ast_hash": "3e2b1901b0c92607624e43050b444a87",
     "semantic_hash": ""
   },
-  "specs/367-restore-central-import-wizard-for-manual-mode/design.md": {
-    "mtime": 1788467030.8592563,
-    "ast_hash": "36a9c2f72a61f2e1e44ec312d3679a1c",
+  "supabase/migrations/20260903000031_seed_ofx_store_file_mappings.sql": {
+    "mtime": 1788468208.7275133,
+    "ast_hash": "3bb9cb5f05ccec55ed5207f16a8a4fc8",
     "semantic_hash": ""
   },
-  "specs/367-restore-central-import-wizard-for-manual-mode/proposal.md": {
-    "mtime": 1788467024.2360108,
-    "ast_hash": "b354cad63ce81fc540a9fd3e6ed51078",
+  "specs/368-fix-ofx-sgml-parsing-and-auto-store-mapping-persistence/design.md": {
+    "mtime": 1788468153.8840523,
+    "ast_hash": "dbb43849c66b9ecd047a079db65904a7",
     "semantic_hash": ""
   },
-  "specs/367-restore-central-import-wizard-for-manual-mode/spec-plan.md": {
-    "mtime": 1788467277.2632596,
-    "ast_hash": "303e1dbe58f6a3d98d68ea9e076e5862",
+  "specs/368-fix-ofx-sgml-parsing-and-auto-store-mapping-persistence/proposal.md": {
+    "mtime": 1788468144.0699272,
+    "ast_hash": "1402793310d148c2ee44687dc39725b9",
+    "semantic_hash": ""
+  },
+  "specs/368-fix-ofx-sgml-parsing-and-auto-store-mapping-persistence/spec-plan.md": {
+    "mtime": 1788468481.6132114,
+    "ast_hash": "c58bb730c411740987aa9cefbdd1ab5c",
     "semantic_hash": ""
   }
 }

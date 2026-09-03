@@ -8,19 +8,33 @@ export interface OFXTransaction {
 
 export function parseOFX(ofxString: string): OFXTransaction[] {
   const transactions: OFXTransaction[] = [];
-  const stmttrnRegex = /<STMTTRN>([\s\S]*?)<\/STMTTRN>/g;
+  const stmtTrnBlocks: string[] = [];
   
+  const stmttrnRegex = /<STMTTRN>([\s\S]*?)<\/STMTTRN>/gi;
   let match;
   while ((match = stmttrnRegex.exec(ofxString)) !== null) {
-    const block = match[1];
-    
+    stmtTrnBlocks.push(match[1]);
+  }
+
+  if (stmtTrnBlocks.length === 0) {
+    const bankTranListMatch = ofxString.match(/<BANKTRANLIST>([\s\S]*?)(?:<\/BANKTRANLIST>|<LEDGERBAL>|<PRVBAL>|<AVAILBAL>|$)/i);
+    const trnContent = bankTranListMatch ? bankTranListMatch[1] : ofxString;
+    const rawParts = trnContent.split(/<STMTTRN>/i);
+    rawParts.shift();
+    rawParts.forEach(part => {
+      const trimmed = part.trim();
+      if (trimmed) stmtTrnBlocks.push(trimmed);
+    });
+  }
+  
+  for (const block of stmtTrnBlocks) {
     const typeMatch = block.match(/<TRNTYPE>(.+?)(?:\r?\n|<)/);
     const amountMatch = block.match(/<TRNAMT>(.+?)(?:\r?\n|<)/);
     const dateMatch = block.match(/<DTPOSTED>(.+?)(?:\r?\n|<)/);
     const memoMatch = block.match(/<MEMO>(.+?)(?:\r?\n|<)/);
     const fitidMatch = block.match(/<FITID>(.+?)(?:\r?\n|<)/);
 
-    if (typeMatch && amountMatch && dateMatch && memoMatch) {
+    if (typeMatch && amountMatch && dateMatch) {
       // Parse date format YYYYMMDDHHMMSS
       const rawDate = dateMatch[1].trim();
       const year = parseInt(rawDate.substring(0, 4), 10);
@@ -31,9 +45,9 @@ export function parseOFX(ofxString: string): OFXTransaction[] {
       
       transactions.push({
         type: typeMatch[1].trim(),
-        amount: parseFloat(amountMatch[1].trim()),
+        amount: parseFloat(amountMatch[1].trim().replace(',', '.')),
         date: parsedDate,
-        memo: memoMatch[1].trim(),
+        memo: memoMatch ? memoMatch[1].trim() : '',
         fitid: fitidMatch ? fitidMatch[1].trim() : undefined,
       });
     }

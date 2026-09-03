@@ -173,7 +173,14 @@ export function Fase3OfxReconciliation({
       const ofxMap = new Map<string, any>();
 
       for (const r of ofxResults) {
-        let storeId = mapping[r.accountKey] || mapping[r.storeAlias];
+        let storeId = mapping[r.accountKey] || mapping[r.storeAlias] || mapping[r.alias];
+        if (!storeId && r.fileName) {
+          const fileMatch = r.fileName.match(/(\d{4})_(\d{5,8})/);
+          if (fileMatch) {
+            const combined = `${fileMatch[1]}${fileMatch[2]}`;
+            storeId = mapping[combined] || mapping[`${fileMatch[1]}_${fileMatch[2]}`] || mapping[fileMatch[2]];
+          }
+        }
         if (storeId === 'GLOBAL') storeId = null as any;
         const storeObj = stores.find(s => s.id === storeId || s.name === r.storeAlias);
         const resolvedStoreId = storeId || storeObj?.id || null;
