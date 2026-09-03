@@ -42,7 +42,7 @@ Para cada task `- [ ] Pending` no `spec-plan.md`, atualize o arquivo para `- [/]
 
 ### Se a task é [DB] — Banco de Dados / Supabase
 - Leia: `view_file C:/Users/User/.gemini/config/skills/database/SKILL.md`
-- Se envolver RLS: `view_file C:/Users/User/.gemini/config/skills/database/references/rls-patterns.md`
+- Se envolver RLS: `view_file skills/database/references/rls-patterns.md`
 - Inspecione as colunas existentes antes de alterar:
   ```bash
   supabase db execute --project-ref $env:SUPABASE_PROJECT_ID \

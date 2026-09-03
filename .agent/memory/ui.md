@@ -1,3 +1,17 @@
+## [2026-09-03] — [Feature ID: 367-restore-central-import-wizard-for-manual-mode]
+
+**Contexto:** Restauração do `CentralImportWizard` clássico como componente oficial ao selecionar o "Modo Manual" na Central de Fechamento Diário (`/importacoes?tab=diario`), mantendo o dropzone universal em lote para todas as 10 filiais e arquivos (.xlsx, .ofx, .csv) de uma só vez, acompanhado de barra de navegação superior para alternância rápida entre modo manual e o workspace IA (Hydra).
+
+**Regra aprendida:**
+1. **Preferência Operacional por Ingestão Universal em Lote:**
+   - Para operadores habituados a arrastar 30 a 40 arquivos simultâneos matinalmente, segregar a ingestão em etapas sequenciais rígidas (4 fases) cria atrito e lentidão excessiva.
+   - O "Modo Manual" deve preservar o dropzone unificado (`CentralImportWizard`), processando todas as filiais e arquivos juntos no pipeline de batch.
+2. **Alternância Suave entre Abordagens:**
+   - A barra superior contextual (`[← Voltar à Seleção de Modo]` e `[Abrir Workspace Conversacional com IA]`) oferece reversibilidade instantânea sem perda de contexto ou desorientação do operador.
+**Risco identificado / Anti-pattern:** Impor divisão excessiva de formulários ou múltiplos dropzones setorizados quando o workflow natural do cliente exige drop massivo e conciliação em cadeia.
+
+---
+
 ## [2026-09-03] — [Feature ID: 365-clean-dropzone-flow-and-recalibrated-rede-os-matching]
 
 **Contexto:** Eliminação do ruído visual e da poluição de dropzones permanentes nas 4 etapas do Fechamento Manual (`FechamentoManualWizard.tsx` / `Fase1PatioOsReview.tsx`, `Fase2RedeVsOsReview.tsx`, `Fase3OfxReconciliation.tsx`, `Fase4ContasVsSaidasReview.tsx`), introduzindo o padrão arquitetural de 2 Modos (`viewMode: 'drop' | 'review'`).

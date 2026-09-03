@@ -76,7 +76,7 @@ view_file C:/Users/User/.gemini/config/skills/obsidian/SKILL.md
 <se backend>   view_file C:/Users/User/.gemini/config/skills/backend-patterns/SKILL.md
 <se backend>   view_file C:/Users/User/.gemini/config/skills/auth/SKILL.md
 <se banco>     view_file C:/Users/User/.gemini/config/skills/database/SKILL.md
-<se banco>     view_file C:/Users/User/.gemini/config/skills/database/references/rls-patterns.md
+<se banco>     view_file skills/database/references/rls-patterns.md
 
 [PROTOCOLO DE PESQUISA]
 view_file .agent/agents/research-agent.md

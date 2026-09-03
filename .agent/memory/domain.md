@@ -1,3 +1,15 @@
+## [2026-09-03] — [Feature ID: 367-restore-central-import-wizard-for-manual-mode]
+
+**Contexto:** Unificação operacional da rotina de fechamento diário manual com restauração do `CentralImportWizard` para ingestão em lote único de arquivos das 10 filiais.
+
+**Regra aprendida:**
+1. **Fluxo Real de Fechamento das Lojas:**
+   - A operação diária dos postos de atendimento gera pacotes mistos de arquivos simultâneos (OSs geradas pelos sistemas locais, relatórios consolidados da Rede, extratos bancários das 10 contas correntes e contas pagas do dia).
+   - O modo manual deve permitir a ingestão conjunta de todos esses arquivos no mesmo dropzone para disparar o pipeline de distribuição automática por filial, sem forçar o operador a separar arquivos manualmente em 4 pastas ou uploads distintos.
+   - A conciliação assistida subsequente (etapas 1 a 4 do wizard) permite sanar inconsistências mantendo a visão global de caixa do dia.
+
+---
+
 ## [2026-09-03] — [Feature ID: 363-fix-pos-transactions-occurred-at-and-manual-pipeline-contracts]
 
 **Contexto:** Blindagem da ingestão sequencial de dados da Central de Fechamento Manual (Fase 2 Rede, Fase 3 OFX, Fase 4 Contas) e garantia de unicidade contábil.

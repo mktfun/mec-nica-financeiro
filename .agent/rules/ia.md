@@ -2,116 +2,133 @@
 trigger: always_on
 ---
 
-# 🪐 Antigravity Vibe Coding Orchestration Rules v5 (2026 Edition)
+# 🪐 Antigravity Vibe Coding Orchestration Rules v5 (2026 Edition — XML Protocol)
 
-## 0. ⛔ OVERRIDE SUPREMO (Prioridade Máxima — acima de tudo)
+<constitution version="5.0" platform="Antigravity 2.0">
 
-**Se o usuário mencionar `/teamwork-preview`, pedir uma análise conjunta ou delegar para equipe de IA: PARE TUDO IMEDIATAMENTE.** Não conclua o step atual, não tente resolver sozinho, não ignore. Acione os subagentes via `invoke_subagent` e siga o protocolo de delegação. Isto se aplica em qualquer workflow.
+<override_supremo priority="critical">
+Se o usuário mencionar `/teamwork-preview`, pedir análise conjunta ou delegar para equipe de IA: **PARE TUDO IMEDIATAMENTE**. Não conclua o step atual, não tente resolver sozinho. Acione os subagentes via `invoke_subagent` e siga o protocolo de delegação.
+</override_supremo>
 
-## 0.1 🛑 TRAVA INVIOLÁVEL 1: PROIBIÇÃO ABSOLUTA DE AUTO-APPLY NO PROPOSAL
+<circuit_breakers>
+<breaker name="anti-auto-apply" phase="proposal_completion">
+<rule>O workflow sdd-proposal / vibe-proposal é EXCLUSIVAMENTE de especificação e planejamento.</rule>
+<enforcement>
+- Ao finalizar proposal.md, design.md e spec-plan.md: PARE IMEDIATAMENTE.
+- TERMINANTEMENTE PROIBIDO criar ou editar arquivos de código (src/, lib/, supabase/) após o proposal.
+- TERMINANTEMENTE PROIBIDO marcar tasks no spec-plan.md sem comando explícito.
+- O turno DEVE terminar aguardando a aprovação do usuário com o comando /vibe-apply <id> ou /sdd-apply <id>.
+</enforcement>
+</breaker>
 
-**O workflow `/vibe-proposal` é EXCLUSIVAMENTE de Especificação e Planejamento.**
-- Ao finalizar a escrita de `specs/<id>/proposal.md`, `design.md` e `spec-plan.md`: **PARE IMEDIATAMENTE.**
-- **É TERMINANTEMENTE PROIBIDO** começar a codificar, editar arquivos de código (`src/`, `lib/`, `supabase/`, etc.) ou marcar tasks do `spec-plan.md` após o proposal.
-- A IA **JAMAIS** pode "engatar" a implementação automaticamente sem o usuário enviar explicitamente o comando `/vibe-apply <id>` em uma nova mensagem.
-- O turno da IA **DEVE TERMINAR** com a apresentação da Spec e a frase: *"Aguardando aprovação. Digite `/vibe-apply <id>` para implementar."* — **SEM NENHUMA CHAMADA DE FERRAMENTA POSTERIOR.**
+<breaker name="anti-auto-archive" phase="apply_completion">
+<rule>O workflow sdd-apply / vibe-apply é EXCLUSIVAMENTE de implementação e verificação local.</rule>
+<enforcement>
+- Ao concluir as tasks, rodar o Visual QA e obter [AUDIT_PASSED]: PARE IMEDIATAMENTE.
+- TERMINANTEMENTE PROIBIDO avançar automaticamente para o archive, rodar git commit/push ou mover specs/.
+- O usuário DEVE testar a aplicação em localhost/preview antes de qualquer arquivamento.
+- O turno DEVE terminar solicitando o teste humano e aguardando o comando /vibe-archive <id> ou /sdd-archive <id>.
+</enforcement>
+</breaker>
+</circuit_breakers>
 
-## 0.2 🛑 TRAVA INVIOLÁVEL 2: PROIBIÇÃO ABSOLUTA DE AUTO-ARCHIVE NO APPLY
+<core_principles>
+<principle name="sdd_first">
+Nenhuma feature ou refatoração estrutural começa sem especificação física prévia em specs/<id>/.
+</principle>
 
-**O workflow `/vibe-apply` é EXCLUSIVAMENTE de Implementação e Verificação Local.**
-- Ao concluir todas as tasks do `spec-plan.md`, rodar o Visual QA e obter `[AUDIT_PASSED]`: **PARE IMEDIATAMENTE.**
-- **É TERMINANTEMENTE PROIBIDO** avançar automaticamente para o `/vibe-archive`, rodar `git commit`, `git push`, mover pastas para `specs/archive/` ou escrever nos arquivos `.agent/memory/` dentro do apply.
-- O usuário **DEVE** ter a oportunidade de testar o app em `localhost` ou preview antes que qualquer arquivo seja arquivado ou commitado.
-- A IA **JAMAIS** pode auto-arquivar. O turno da IA **DEVE TERMINAR** reportando a aprovação do Auditor e a frase: *"Implementação concluída e auditada com sucesso. Teste suas alterações e, quando estiver pronto, digite `/vibe-archive <id>` para consolidar e commitar."* — **SEM NENHUMA CHAMADA DE FERRAMENTA POSTERIOR.**
+<principle name="modular_memory">
+A memória reside em arquivos .agent/memory/<categoria>.md (Obsidian), nunca no contexto transitório da IA. Leia antes de propor, consulte antes de aplicar e escreva no archive.
+</principle>
 
-## 1. Core Principles
+<principle name="headless_cli">
+Operação 100% headless. Jamais use comandos que exijam login interativo no navegador. Injete GH_TOKEN e SUPABASE_ACCESS_TOKEN via ambiente silenciosamente.
+</principle>
 
-- **Desconfie do Vibe Coding Puro**: Nenhuma feature grande deve ser iniciada escrevendo código direto. Toda mudança estrutural precisa de uma Especificação (Proposal) com arquivos físicos em `specs/` antes.
-- **Memória Modular (Obsidian)**: O agente deve aprender categoricamente. Antes de qualquer task, leia os arquivos relevantes em `.agent/memory/`. O que for aprendido em `/vibe-apply` deve ser consolidado por categoria em `/vibe-archive` — nunca num `memory.md` geral.
-- **Headless CLI Enforcement**: JAMAIS use comandos interativos que exijam browser ou input no terminal. Para autenticação no Github ou Supabase, carregue silenciosamente do `.env` usando SOMENTE variáveis de ambiente (`GH_TOKEN` e `SUPABASE_ACCESS_TOKEN`).
-- **CLI Fallback Obrigatório**: Se o comando `git` não for encontrado no `PATH`, use o caminho absoluto do MinGit: `C:\Users\admin\.gemini\antigravity\scratch\mingit\cmd\git.exe`.
-- **Regras Estritas de PowerShell**: NUNCA utilize o operador `&` para encadear comandos no PowerShell. Use `;` ou execute um por vez. Se houver erro de Execution Policy com scripts `.ps1`, envolva em CMD: `cmd.exe /c "seu comando aqui"`.
-- **Git Identity Override**: Caso ocorra "Author identity unknown", configure antes do commit: `git config user.email "ai@clawhub.com"` e `git config user.name "ClawHub Agent"`.
+<principle name="doe_self_annealing">
+Erros de execução e bugs são fontes obrigatórias de endurecimento do sistema. Toda resolução em sdd-debug atualiza a memória Obsidian e eleva regras universais para prevenir repetição.
+</principle>
 
-## 2. ⛔ Regra Anti-Alucinação — Obsidian + Grafo ANTES de qualquer ação
+<principle name="clean_workspace">
+Arquivos temporários e dumps de dados residem exclusivamente em .tmp/ e NUNCA são commitados no repositório. Entregáveis residem em specs/, src/ e supabase/.
+</principle>
 
-**ANTES de criar qualquer coisa nova, você DEVE pesquisar o que já existe, ler a Memória e consultar o Grafo.**
+<principle name="cli_fallbacks">
+- Se git não estiver no PATH: use C:\Users\admin\.gemini\antigravity\scratch\mingit\cmd\git.exe
+- Se PowerShell acusar erro de Execution Policy: envolva em cmd.exe /c "<comando>"
+- Em caso de "Author identity unknown": configure git config user.email "ai@clawhub.com" antes de commitar.
+</principle>
+</core_principles>
 
-- **Sempre leia o INDEX antes de escolher skills:**
-  ```
-  view_file skills/INDEX.md
-  ```
+<anti_hallucination>
+<directive>ANTES de criar qualquer código, pesquise o código legado, consulte a memória e execute o grafo topológico.</directive>
 
-- **No Frontend**: Leia `memory/ui.md`. Consulte `spec/global/features.md`. Leia as skills:
-  ```
-  view_file C:/Users/User/.gemini/config/skills/ui-components/SKILL.md
-  view_file C:/Users/User/.gemini/config/skills/ui-motion/SKILL.md         ← se envolver animações
-  view_file C:/Users/User/.gemini/config/skills/deploy-production/SKILL.md ← se envolver SSR/deploy
-  ```
+<domain_checks>
+<check domain="Frontend">
+Leia .agent/memory/ui.md e consulte spec/global/features.md.
+Carregue: skills/ui-components/SKILL.md e skills/ui-motion/SKILL.md (se houver animações).
+</check>
 
-- **No Backend**: Leia `memory/supabase.md`. Verifique o schema existente. Leia as skills:
-  ```
-  view_file C:/Users/User/.gemini/config/skills/backend-patterns/SKILL.md
-  view_file C:/Users/User/.gemini/config/skills/auth/SKILL.md              ← se envolver autenticação
-  ```
+<check domain="Backend">
+Leia .agent/memory/supabase.md e memory/auth.md.
+Carregue: skills/backend-patterns/SKILL.md e skills/auth/SKILL.md.
+</check>
 
-- **No Banco**: Leia `memory/supabase.md`. Leia as skills:
-  ```
-  view_file C:/Users/User/.gemini/config/skills/database/SKILL.md
-  view_file C:/Users/User/.gemini/config/skills/database/references/rls-patterns.md  ← se envolver RLS
-  ```
+<check domain="Database">
+Inspecione o schema real via SQL antes de propor tabelas ou colunas.
+Carregue: skills/database/SKILL.md e skills/database/references/rls-patterns.md.
+</check>
 
-- **Graphify (Anti-Alucinação):** O Graphify é **Python** (não NPM). Comandos corretos:
-  - Instalar: `uv tool install graphifyy` (dois Y's no pacote, um Y no comando)
-  - Consultar: `graphify query "<feature>"` ou `graphify explain "<Modulo>"`
-  - Atualizar: `graphify update`
-  - NUNCA use `npx @baml/graphify` — esse pacote não existe
+<check domain="Graphify">
+Graphify é uma ferramenta Python (pacote graphifyy com dois Y's, comando graphify com um Y):
+- Consultar: graphify query "<termo>" e graphify explain "<modulo>"
+- Atualizar: graphify update
+- NUNCA use npx @baml/graphify.
+</check>
+</domain_checks>
+</anti_hallucination>
 
-- **Geral**: Se já existe → USE. Crie um wrapper se precisar, NÃO duplique. NUNCA crie tabela, RPC, ou política sem verificar o que existe no banco e na memória.
+<workflows_and_skills>
+<mode name="Solo" type="Direct Execution">
+Ideal para bugs pontuais, refatores locais e tarefas diretas com 1 único agente:
+- /vibe-proposal-solo: Planejamento direto com leitura de legado e grafo -> Hard Stop.
+- /vibe-apply-solo: Implementação sequencial com build local e Visual QA -> Hard Stop.
+</mode>
 
-## 3. Workflows Oficiais
+<mode name="Team" type="Multi-Agent Orchestrated">
+Ideal para features completas, módulos novos e arquiteturas full-stack:
+- /vibe-proposal (ou /sdd-proposal): Orchestrator despacha Research Agents por domínio e valida com Validator Agent -> Hard Stop.
+- /vibe-apply (ou /sdd-apply): Orchestrator delega tasks para agentes especialistas, valida com Validator e audita com Auditor Agent -> Hard Stop.
+</mode>
 
-Toda iteração passa exclusivamente por estes comandos, separados por modo de operação:
+<lifecycle_closing>
+- /vibe-archive (ou /sdd-archive): Quality Gate, escrita no Obsidian, /learn, graphify update e git commit controlado.
+- /vibe-debug (ou /sdd-debug): Diagnóstico forense com logs reais, inspeção SQL e repair bayesiano em até 3 tentativas.
+</lifecycle_closing>
+</workflows_and_skills>
 
-### Modo Solo (Rápido, Direto — Sem Subagentes):
-Use para bugs pontuais, refatores locais, correções de parsers ou quando preferir que um único agente faça tudo direto com menos consumo de tokens e sem latência de subagentes:
-- `/vibe-proposal-solo "Nome"`: Planejamento direto por um único agente. Lê skills, memória Obsidian, roda Grafo e extrai tipos reais do código legado. Cria `specs/<id>/` e **para no Hard Stop**.
-- `/vibe-apply-solo <id>`: Implementação direta sequencial por um único agente. Executa as tasks do `spec-plan.md` passo a passo, roda Visual QA e build local, e **para no Hard Stop** (sem auto-archive).
+<specialized_agents>
+Os agentes especializados residem em .agent/agents/:
+- research-agent.md: Pesquisa profunda multi-domínio, inspeção de código legado (AST Skeleton) e Grafo.
+- frontend-agent.md: Implementação UI/React/shadcn com ui-components e ui-motion.
+- backend-agent.md: Server Actions tipadas, validação Zod e fluxos de Auth.
+- database-agent.md: Schema Supabase, migrations SQL e policies RLS.
+- validator-agent.md: Revisão independente de specs e outputs de código antes do merge.
+- auditor-agent.md: Auditoria de final de ciclo (7 dimensões) antes do archive.
+- bug-agent.md: Investigação de falhas em logs e banco com hipóteses bayesianas.
+</specialized_agents>
 
-### Modo Equipe / Multi-Agente (Orquestração Especializada):
-Use para features completas, módulos novos, arquitetura full-stack ou quando quiser pesquisa profunda paralela e validação cruzada independente:
-- `/vibe-proposal` (ou `/vibe-proposal-team`): Orquestrador lança Research Agents especializados por domínio (com skills e memória injetadas), escreve a spec e submete ao Validator Agent. **Para no Hard Stop**.
-- `/vibe-apply` (ou `/vibe-apply-team`): Orquestrador delega tasks para Frontend Agent, Backend Agent e Database Agent, valida com Validator Agent, executa Auditor Agent no final, e **para no Hard Stop**.
+<skill_catalog>
+Consulte sempre skills/INDEX.md para o roteamento de contexto:
+- saas-scaffold: Criação de projetos SaaS do zero (Next.js + Supabase + shadcn).
+- ui-components: Componentes universais, Dark UI Zinc-950 e landing pages cinematográficas.
+- ui-motion: Animações Magic UI e micro-interações.
+- database: Padrões de banco, RLS multi-tenant e migrations.
+- auth: Autenticação segura SSR Supabase JWT.
+- backend-patterns: Server Actions tipadas ActionResult<T>.
+- deploy-production: Prontidão para produção e Core Web Vitals.
+- obsidian: Gestão da memória modular persistente do projeto.
+- council-debate: Conselho multi-agente para stress-test de decisões arquiteturais.
+</skill_catalog>
 
-### Ciclo de Encerramento e Diagnóstico:
-- `/vibe-archive <id>`: Quality Gate, escrita obrigatória na memória Obsidian por categoria, **/learn** (eleva guardrails para `ia.md`), `graphify update`, arquiva spec e faz o commit + push.
-- `/vibe-debug <id-ou-modulo>`: Diagnóstico cirúrgico de bugs com varredura de logs (Next.js/Supabase/Edge), inspeção SQL do banco e repair bayesiano em até 3 tentativas.
-- `/learn` (manual): Eleva uma aprendizagem crítica para `ia.md` fora do ciclo normal de archive.
-
-## 4. Agentes Especializados (usar via invoke_subagent nos workflows)
-
-Os agentes especializados ficam em `.agent/agents/`. Sempre leia o arquivo do agente antes de lançá-lo — ele contém o protocolo, skills e memória que devem ser injetados no prompt:
-
-| Arquivo | Quando usar |
-|---|---|
-| `.agent/agents/research-agent.md` | Deep research multi-domínio no `/vibe-proposal` (Obsidian + Grafo) |
-| `.agent/agents/frontend-agent.md` | Tasks `[FRONTEND]` — UI/React/shadcn |
-| `.agent/agents/backend-agent.md` | Tasks `[BACKEND]` — Server Actions/Auth |
-| `.agent/agents/database-agent.md` | Tasks `[DB]` — Schema/RLS/Migrations |
-| `.agent/agents/validator-agent.md` | Validar output de todos os agentes antes de marcar `[x]` |
-| `.agent/agents/auditor-agent.md` | Auditoria Suprema de Final de Ciclo (Fidelidade à Spec, Regressão/Grafo, Build, Segurança) antes do Archive |
-| `.agent/agents/bug-agent.md` | Qualquer erro de build/runtime — acionado antes de qualquer tentativa manual |
-
-## 5. Skills Disponíveis
-
-Todas as skills estão em `skills/`. Consulte `skills/INDEX.md` para saber qual usar. Os workflows já contêm as instruções `view_file` no momento certo — **não pule essas leituras**:
-
-- **Raciocínio**: `adaptive-reasoning`, `deciqai-bayesian-reasoning`
-- **UI**: `ui-components` (consolida todos os blocos), `ui-motion` (animações)
-- **Backend**: `backend-patterns`, `auth`
-- **Banco**: `database`
-- **Scaffold**: `saas-scaffold` (criar projeto do zero)
-- **Deploy**: `deploy-production`
-- **DevOps**: `github-ops`
-- **Memória**: `obsidian`
-- **Debate**: `council-debate`
+</constitution>
