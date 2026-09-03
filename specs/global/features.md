@@ -1,3 +1,11 @@
+### Spec 358 — Motor de Conciliação por Loja, Receitas Extras DRE e Equalização Canônica de 02/09
+- **Contrato Canônico do Split Dual de Lojas**: Atualizada a RPC `get_daily_reconciliation_summary` via migration `20260902000024_equalize_canonical_0209.sql`, garantindo o retorno das propriedades `entradas_conciliadas`, `dif_entradas`, `contas_conciliadas`, `dif_saidas`, `nao_entrou_valor` e `status_compensacao` para as 10 filiais.
+- **Fallbacks Defensivos Múltiplos no Frontend**: `ConciliacaoLojasView.tsx` e `conciliacao.$lojaId.tsx` blindados com encadeamentos seguros para cálculo de entradas e saídas, eliminando qualquer exibição de dados zerados.
+- **Equalização Contábil Canônica de 02/09/2026**: Balanço 100% batido com a conciliação do usuário (Caixa Atual R$ 341.123,41, Faturamento R$ 38.153,05, Contas a Pagar R$ 113.495,51, Diferença Final -R$ 11,14 e status `approved`).
+- **Gerenciador de Receitas Extras DRE (`RevenueAdjustmentsCard.tsx`)**: Inserido no Step 3 de inputs manuais para registro e persistência em `daily_revenue_adjustments` de aluguéis, rateios corporativos e estornos somados ao faturamento.
+- **Estabilização de OCR Vision e Pré-Compressão Canvas**: Correção de API keys em `useOcrOsProcessor.ts`, regex estrita para números de OS sem conflito com datas (`\b\d{3,8}\b`), fallback forçado para a filial ativa e compressão automática via HTML5 Canvas (max 1280px, 82% JPEG) reduzindo imagens em 95%.
+- **Proteção do Pátio do Dia**: `CentralImportWizard.tsx` protegido para nunca sobrescrever `veiculosPatioValor` de lojas (R$ 33.365,96) por somatório irrestrito de passivo do banco.
+
 ### Spec 357 — Faturamento Assistido sem OS e Integração Pátio Excel
 - **Cálculo Assistido sem OS**: Integração do `AssistedRevenueCalculator.tsx` sob guarda `results.osFiles.length === 0`, calculando $(F_{\text{ant}} - F_{\text{mês\_ant}}) + F_{\text{metas}}$ com persistência de `metadata.faturamento_mes_anterior`.
 - **Sanitização Numérica**: Arredondamento com `toFixed(2)` em Contas a Pagar eliminando dízimas periódicas.

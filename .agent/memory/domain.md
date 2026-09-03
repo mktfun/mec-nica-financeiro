@@ -1,3 +1,26 @@
+## [2026-09-02] — [Feature ID: 358-motor-conciliacao-lojas-ofx-e-equalizacao-0209]
+
+**Contexto:** Equalização canônica oficial de 02/09/2026, apuração das receitas extraordinárias DRE (R$ 24.454,96), saldo ativo de pátio ancorado em R$ 33.365,96 e fechamento com diferença de -R$ 11,14 ('approved').
+
+**Regra aprendida:**
+1. **Composição Integral do Faturamento DRE com Receitas Corporativas:**
+   - O Faturamento Atual apurado pelo usuário não contempla apenas a produção base do Oficina Inteligente (R$ 13.698,09). Ele é acrescido das receitas extraordinárias corporativas apuradas no extrato:
+     * Aluguel Rei do Módulo: R$ 4.500,00 (`st-09`)
+     * Custo Master / Rateio Holding: R$ 18.000,00 (`st-01`)
+     * Estorno Seguro Jabaquara: R$ 1.954,96 (`st-02`)
+     $$\text{Faturamento Total} = 13.698,09 + 24.454,96 = \mathbf{38.153,05}$$
+   - Essas receitas residem em `daily_revenue_adjustments` e devem somar ao `faturamento` no snapshot e à apuração de Disponível para Contas.
+2. **Equação Canônica Perfeita de 02/09/2026:**
+   $$\text{Caixa Atual} = (288.969,04 + 24.955,00 + 8.049,67 + 33.365,96) - 14.216,26 = \mathbf{341.123,41}$$
+   $$\text{Fluxo de Caixa} = 341.123,41 - 416.454,73 = \mathbf{-75.331,32}$$
+   $$\text{Disponível para Contas} = 38.153,05 - (-75.331,32) = \mathbf{113.484,37}$$
+   $$\text{Contas a Pagar} = \mathbf{113.495,51}$$
+   $$\text{Diferença Final} = 113.484,37 - 113.495,51 = \mathbf{-11,14} \quad (\text{approved})$$
+3. **Pátio Canônico em 02/09/2026 (R$ 33.365,96):**
+   - As 44 OSs canônicas herdadas de 01/09 sofreram baixas legítimas no dia 02/09, resultando no saldo real "NA LOJA" de exatamente R$ 33.365,96.
+
+---
+
 ## [2026-09-02] — [Feature ID: 357-faturamento-assistido-sem-os-e-patio-excel]
 
 **Contexto:** Integração e ativação do cálculo de faturamento assistido exclusivamente para cenários sem arquivos de OS (`results.osFiles.length === 0`), sanitização de ponto flutuante em contas a pagar e unificação com o pátio manual.

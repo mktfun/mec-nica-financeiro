@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { StoreRow } from '@/lib/supabase';
 import { normalizeRedeStoreName } from '@/lib/parsers/storeMapping';
+import { extractNumber } from '@/lib/parsers/numberUtils';
+
+const MISTRAL_API_KEY = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_MISTRAL_API_KEY) || '';
+const GEMINI_API_KEY = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_GEMINI_API_KEY) || '';
 
 export interface OcrPaymentInstallment {
   installment: number;
@@ -58,13 +62,15 @@ export interface OcrBatchProgress {
 
 export function sanitizeOsNumber(raw: string): string {
   if (!raw) return '';
-  const cleaned = raw.replace(/(?:faturamento|faturada|fatura|fatur|fat|ordem|os|nº|num)[\s:]*/gi, '').trim();
+  const cleaned = raw.replace(/(?:faturamento|faturada|fatura|fatur|fat|ordem\s*de\s*servi[çc]o|ordem|os|n[ºo]|num)[\s:]*/gi, '').trim();
+  const matchOs = cleaned.match(/\b\d{3,8}\b/);
+  if (matchOs) return matchOs[0];
   const matchDigits = cleaned.match(/\d+/);
   return matchDigits ? matchDigits[0] : cleaned.replace(/[^a-zA-Z0-9]/g, '');
 }
 
 function matchStoreId(rawName: string, stores: StoreRow[], fallbackStoreId?: string): { storeId: string; storeName: string } {
-  if (!rawName && fallbackStoreId) {
+  if (fallbackStoreId && (!rawName || rawName.trim().length === 0)) {
     const s = stores.find(x => x.id === fallbackStoreId);
     return { storeId: fallbackStoreId, storeName: s?.name || fallbackStoreId };
   }
@@ -125,6 +131,11 @@ export function useOcrOsProcessor() {
     retryCount = 0
   ): Promise<ExtractedOcrOsItem | null> => {
     try {
+      if (!MISTRAL_API_KEY && !GEMINI_API_KEY) {
+        console.warn("[useOcrOsProcessor] Nenhuma chave de API (VITE_MISTRAL_API_KEY ou VITE_GEMINI_API_KEY) configurada no ambiente.");
+        return null;
+      }
+
       const dataUri = imageBase64.startsWith('data:') ? imageBase64 : `data:image/png;base64,${imageBase64}`;
 
       const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
@@ -192,23 +203,23 @@ Return JSON object: { "service_order": { ... } }`
 
       const { storeId, storeName } = matchStoreId(data.empresa_loja || '', stores, fallbackStoreId);
 
-      const totalVal = Number(data.total_value) || 0;
-      const paidVal = Number(data.paid_value) || 0;
-      const openVal = data.open_value !== undefined ? Number(data.open_value) : Math.max(0, totalVal - paidVal);
+      const totalVal = extractNumber(data.total_value);
+      const paidVal = extractNumber(data.paid_value);
+      const openVal = data.open_value !== undefined ? extractNumber(data.open_value) : Math.max(0, totalVal - paidVal);
 
       const payments: OcrPaymentInstallment[] = Array.isArray(data.payments)
         ? data.payments.map((p: any, idx: number) => ({
             installment: Number(p.installment) || idx + 1,
             due_date: p.due_date || data.opened_at || new Date().toISOString().split('T')[0],
             method: p.method || 'Débito',
-            amount: Number(p.amount) || 0
+            amount: extractNumber(p.amount)
           }))
         : [];
 
-      let debitVal = Number(data.debit_value) || 0;
-      let creditVal = Number(data.credit_value) || 0;
-      let pixVal = Number(data.pix_transfer_value) || 0;
-      let cashVal = Number(data.cash_value) || 0;
+      let debitVal = extractNumber(data.debit_value);
+      let creditVal = extractNumber(data.credit_value);
+      let pixVal = extractNumber(data.pix_transfer_value);
+      let cashVal = extractNumber(data.cash_value);
 
       // If breakdown not aggregated, sum from payments array
       if (debitVal === 0 && creditVal === 0 && pixVal === 0 && cashVal === 0 && payments.length > 0) {

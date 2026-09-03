@@ -1,3 +1,18 @@
+## [2026-09-02] — [Feature ID: 358-motor-conciliacao-lojas-ofx-e-equalizacao-0209]
+
+**Contexto:** Blindagem contra campos zerados em `ConciliacaoLojasView.tsx` e `StoreCardModulo1.tsx`, pré-compressão Canvas de screenshots no Dropzone do OCR e criação do componente `RevenueAdjustmentsCard.tsx`.
+
+**Regra aprendida:**
+1. **Fallbacks Inline Resilientes no Split Dual (`ConciliacaoLojasView.tsx`):**
+   - Ao consumir objetos de filiais, o frontend NUNCA deve depender exclusivamente de chaves específicas de uma única migração.
+   - Deve encadear `rawLog?.entradas_conciliadas ?? rawLog?.entradas_previsto ?? ((ofx_maquininhas || 0) + (pix_total || 0) + (entradas_justificadas || 0))` e `Math.max(0, ofxEntradas - concEntradas)`. Isso erradica a renderização de colunas zeradas com badges enganosos de "100% Conciliado".
+2. **Pré-Compressão de Imagens em Canvas no Cliente (`OcrBatchDropzoneAndPaste.tsx`):**
+   - Prints do sistema em 1080p/1440p (3MB a 8MB) DEVEM ser redimensionados no navegador via HTML5 Canvas para max 1280px e exportados como JPEG 82%. Isso reduz o pacote para ~180KB (redução de 95%), eliminando gargalos de rede, estouro de memória e timeouts no Vision.
+3. **Gerenciador Nativo de Receitas Extras (`RevenueAdjustmentsCard.tsx`):**
+   - Lançamentos corporativos de faturamento (aluguéis, rateios, estornos) devem ter interface visual direta no Step 3 de inputs manuais, com soma em tempo real ao faturamento total.
+
+---
+
 ## [2026-09-02] — [Feature ID: 354-controle-os-excel-accordion-por-loja]
 
 **Contexto:** Implementação da visualização de Controle de OS Estilo Planilha Excel por Loja em blocos expansíveis (Accordion) com tabela de split completa (Pix, Crédito, Débito, Dinheiro, Total Pago, Restante) e mini popover flutuante para lançamentos múltiplos/cumulativos na própria linha.

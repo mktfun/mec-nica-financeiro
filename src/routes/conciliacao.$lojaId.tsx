@@ -75,10 +75,10 @@ function ConciliacaoLojaPage() {
   const log = {
     saldo_banco: isMissing ? null : Number(rawLog?.saldo_banco ?? rawLog?.saldo_banco_ofx ?? 0),
     maquininha: isMissing ? null : Number(rawLog?.maquininha ?? rawLog?.rede_liquido ?? 0),
-    pix: isMissing ? null : Number(rawLog?.pix ?? rawLog?.pix_os ?? 0),
+    pix: isMissing ? null : Number(rawLog?.pix ?? rawLog?.pix_os ?? rawLog?.pix_total ?? 0),
     na_loja_os: isMissing ? null : Number(rawLog?.na_loja_os ?? rawLog?.patio_os ?? 0),
-    previsto_ofx: isMissing ? null : Number(rawLog?.previsto_ofx ?? rawLog?.previsto ?? 0),
-    diferenca: isMissing ? null : Number(rawLog?.diferenca ?? 0),
+    previsto_ofx: isMissing ? null : Number(rawLog?.previsto_ofx ?? rawLog?.previsto ?? rawLog?.previsto_total ?? rawLog?.entradas_conciliadas ?? 0),
+    diferenca: isMissing ? null : Number(rawLog?.diferenca ?? rawLog?.diferenca_total ?? 0),
     status: rawLog?.status || 'pending',
     isMissingData: isMissing
   };

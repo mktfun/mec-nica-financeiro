@@ -1,3 +1,15 @@
+## [2026-09-02] — [Feature ID: 358-motor-conciliacao-lojas-ofx-e-equalizacao-0209]
+
+**Contexto:** Correção de regressão na RPC `get_daily_reconciliation_summary` via migration `20260902000024_equalize_canonical_0209.sql`, restaurando o contrato completo do Split Dual de filiais (`entradas_conciliadas`, `dif_entradas`, `contas_conciliadas`, `dif_saidas`, `nao_entrou_valor`, `status_compensacao`), inserção dos 3 ajustes DRE de faturamento corporativo (R$ 24.454,96) em `daily_revenue_adjustments` e equalização pericial do snapshot de 02/09/2026 (-R$ 11,14 / approved).
+
+**Regra aprendida:**
+1. **Contrato Canônico Obrigatório de Filiais na RPC (`v_stores_detail`):**
+   - Ao gerar o JSON de lojas, a RPC NUNCA deve omitir as propriedades agregadas `entradas_conciliadas` (`ofx_maquininhas + pix_total + entradas_justificadas`), `dif_entradas` (`ofx_entradas_total - entradas_conciliadas`), `contas_conciliadas` (`contas_loja_total + saidas_justificadas`) e `dif_saidas` (`ofx_saidas_total - contas_conciliadas`). A omissão dessas chaves causava `0,00` nos cards de todas as 10 lojas.
+2. **Reserva Imutável de Sobrescrita de Pátio (`veiculosPatioValor`):**
+   - No `CentralImportWizard.tsx`, quando o pátio do dia é apurado via relatórios de OS ou edição manual por loja (`veiculosPatioValor > 0`), JAMAIS sobrescrever com query global de `patio_os`, pois ressuscita OSs zumbis e inflaciona o pátio para centenas de milhares de reais.
+
+---
+
 ## [2026-09-02] — [Feature ID: 355-cleanup-patio-os-zombies-e-blindagem-rpc]
 
 **Contexto:** Expurgo definitivo de registros espúrios/zumbis em `patio_os` (ex: datas anômalas < 2026-07-01, anos como 2020 e OSs artificiais com sufixo "Faturamento") e blindagem defensiva da RPC `get_pending_patio_os_for_ocr` via migration `20260902000022_cleanup_patio_os_zombies.sql`.

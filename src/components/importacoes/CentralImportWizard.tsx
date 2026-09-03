@@ -38,6 +38,7 @@ import { Step1UnregisteredPayments } from './wizard/Step1UnregisteredPayments';
 import { Step2NonRevenueJustifications } from './wizard/Step2NonRevenueJustifications';
 import { Step3CashVaultDaniel } from './wizard/Step3CashVaultDaniel';
 import { Step4FinalAuditAndClose } from './wizard/Step4FinalAuditAndClose';
+import { RevenueAdjustmentsCard } from './wizard/RevenueAdjustmentsCard';
 import { convertOcrToOsImportResults, convertManualPatioToOsImportResults } from '@/lib/parsers/ocrOsAdapter';
 import { AssistedRevenueCalculator } from './wizard/AssistedRevenueCalculator';
 import { useOcrOsProcessor, ExtractedOcrOsItem } from '@/hooks/useOcrOsProcessor';
@@ -580,6 +581,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   // Manual inputs extras com trava
   const [odometroHoje, setOdometroHoje] = useState<number>(0);
   const [contasManual, setContasManual] = useState<number>(0);
+  const [totalRevenueAdjustments, setTotalRevenueAdjustments] = useState<number>(0);
   const [isManualLocked, setIsManualLocked] = useState<boolean>(true);
   const [copiedJson, setCopiedJson] = useState(false);
   const [autoHealingData, setAutoHealingData] = useState<any>(null);
@@ -1609,22 +1611,27 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         await supabase.from('reconciliations').upsert(reconciliationsToUpsert, { onConflict: 'store_id,date' });
       }
 
-      // Calcula o Pátio Global Real incluindo o passivo/histórico de OSs ativas em aberto no banco
+      // Calcula o Pátio Global Real incluindo o passivo/histórico de OSs ativas em aberto no banco apenas como fallback se veiculosPatioValor estiver zerado
       try {
-        const { data: allActiveOs } = await supabase
-          .from('patio_os')
-          .select('store_id, total_value, paid_value, status')
-          .lte('opened_at', `${targetDate}T23:59:59`);
-        if (allActiveOs && allActiveOs.length > 0) {
-          const activeList = allActiveOs.filter(os => {
-            const isClosed = ['finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado'].includes(String(os.status).toLowerCase());
-            const saldo = Number(os.total_value || 0) - Number(os.paid_value || 0);
-            return !isClosed && saldo > 0 && Number(os.total_value || 0) < 100000;
-          });
-          if (activeList.length > 0) {
-            const totalPatioReal = activeList.reduce((acc, os) => acc + (Number(os.total_value || 0) - Number(os.paid_value || 0)), 0);
-            if (totalPatioReal > 0) {
-              veiculosPatioValor = totalPatioReal;
+        if (veiculosPatioValor === 0) {
+          const { data: allActiveOs } = await supabase
+            .from('patio_os')
+            .select('store_id, total_value, paid_value, status')
+            .lte('opened_at', `${targetDate}T23:59:59`)
+            .gte('opened_at', `${new Date(new Date(targetDate).getTime() - 90 * 86400000).toISOString().split('T')[0]}`)
+            .not('os_number', 'ilike', '%faturamento%')
+            .not('os_number', 'ilike', '%fat%');
+          if (allActiveOs && allActiveOs.length > 0) {
+            const activeList = allActiveOs.filter(os => {
+              const isClosed = ['finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado'].includes(String(os.status).toLowerCase());
+              const saldo = Number(os.total_value || 0) - Number(os.paid_value || 0);
+              return !isClosed && saldo > 0.05 && Number(os.total_value || 0) < 100000;
+            });
+            if (activeList.length > 0) {
+              const totalPatioReal = activeList.reduce((acc, os) => acc + (Number(os.total_value || 0) - Number(os.paid_value || 0)), 0);
+              if (totalPatioReal > 0) {
+                veiculosPatioValor = totalPatioReal;
+              }
             }
           }
         }
@@ -1682,8 +1689,9 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         }
       }
 
+      const fatTotalComAjustes = fatOiBase + totalRevenueAdjustments;
       const fluxoCalculado = caixaAtualCalculado - caixaAnt;
-      const valorDispCalculado = fatOiBase - fluxoCalculado;
+      const valorDispCalculado = fatTotalComAjustes - fluxoCalculado;
       const subtotalContasCalculado = finalContasManual + jurosRedeTotal;
       const diferencaCalculada = valorDispCalculado - subtotalContasCalculado;
 
@@ -1691,14 +1699,14 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         const payload = {
           date: targetDate,
           caixa_atual: caixaAtualCalculado,
-          faturamento: finalFaturamento,
+          faturamento: finalFaturamento + totalRevenueAdjustments,
           dinheiro_mp: manualDinheiroMp,
           total_recebiveis: totalRecebiveis,
           total_patio: veiculosPatioValor,
           saldo_bancario: saldoBancosLiquido,
           a_receber_manual: manualAReceber,
-          faturamento_outros_valor: 0,
-          faturamento_outros_desc: null,
+          faturamento_outros_valor: totalRevenueAdjustments,
+          faturamento_outros_desc: totalRevenueAdjustments > 0 ? 'Receitas Extras e Ajustes DRE' : null,
           contas_a_pagar: finalContasManual,
           provisao: 0,
           saldo_negativo_itau: saldoNegativoItau,
@@ -1713,8 +1721,9 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             faturamento_anterior: fatAnt,
             faturamento_mes_anterior: manualFaturamentoMesAnterior,
             faturamento_oi_base: fatOiBase,
+            faturamento_ajustes: totalRevenueAdjustments,
             odometro_hoje: odometroHoje,
-            faturamento_periodo: fatOiBase,
+            faturamento_periodo: fatTotalComAjustes,
             source_mode: isNoOsMode ? 'mapa_metas' : 'odometro_os',
             has_os_files: !isNoOsMode,
             valor_disp_contas: valorDispCalculado,
@@ -2994,6 +3003,16 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                       </div>
                     </div>
                   )}
+
+                  {/* Bloco Unificado: Receitas Extras e Ajustes DRE */}
+                  <div className="pt-3">
+                    <RevenueAdjustmentsCard
+                      targetDate={targetDate}
+                      stores={stores}
+                      isLocked={isManualLocked}
+                      onTotalChange={(total) => setTotalRevenueAdjustments(total)}
+                    />
+                  </div>
                 </div>
               );
             })()}
