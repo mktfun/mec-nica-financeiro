@@ -30,3 +30,10 @@
 2. **Deduplicação de Títulos:** Múltiplas linhas do mesmo título na mesma data devem ser deduplicadas por chave `external_code + installment + recipient_name + amount + due_date` antes da inserção em `daily_manual_bills`.
 **Risco identificado / Anti-pattern:** Criar objetos `ParsedContaAPagar` com `amount: 0`, que acionam a check constraint do banco de dados e abortam lotes inteiros de importação.
 
+## [2026-09-03] — [Feature ID: 361-fix-planilhas-os-central-imports]
+**Contexto:** Correção de falha `TypeError: Cannot read properties of undefined (reading 'filter')` na ingestão de planilhas de OS e centralização do motor de parsing em `centralImportManager.ts`.
+**Regra aprendida:**
+1. **Coleções Sempre Inicializadas:** Todo parser central ou função de despacho multi-arquivo (`parseCentralImports`) DEVE retornar todas as coleções de saída como arrays inicializados `[]` (`osFiles: []`, `redeResults: []`, `ofxResults: []`, `contasPagarResults: []`, `contasAPagarResults: []`, `maquininhaItems: []`, `mapaMetasResults: []`). Nunca permita que um campo de lista seja `undefined`.
+2. **Normalização de Contrato OFX:** Extratos bancários OFX nativos não possuem o campo booleano `success`. O motor central deve normalizar cada item com `success: true`, `storeAlias: r.alias` e `accountKey: r.alias` para evitar descarte em filtros como `ofxResults.filter(r => r.success)`.
+3. **Mapeamento de Meios de Pagamento de OS:** Na extração de OS (`ParsedOS`), os meios de pagamento residem em `parsed_credit`, `parsed_debit`, `parsed_pix_transfer`, `parsed_cash`. Ao montar o payload para a RPC `batch_upsert_patio_os`, use sempre fallback seguro `credit_value: (os as any).credit_value ?? os.parsed_credit ?? 0` para evitar gravar R$ 0,00 no banco.
+**Risco identificado / Anti-pattern:** Manter stubs vazios de parsers ou acessar propriedades de coleções de parsing (`parseResult.osFiles.filter(...)`) sem fallback defensivo `(parseResult?.osFiles || []).filter(...)`.

@@ -154,7 +154,7 @@ export function Fase3OfxReconciliation({
 
     try {
       const parseResult = await parseCentralImports(acceptedFiles);
-      const ofxResults = parseResult.ofxResults.filter(r => r.success);
+      const ofxResults = (parseResult?.ofxResults || []).filter(r => r.success);
 
       if (ofxResults.length === 0) {
         toast.warning('Nenhum arquivo válido de extrato bancário OFX foi identificado.');

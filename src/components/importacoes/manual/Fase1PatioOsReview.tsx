@@ -98,7 +98,7 @@ export function Fase1PatioOsReview({
 
     try {
       const parseResult = await parseCentralImports(acceptedFiles);
-      const osResults = parseResult.osFiles.filter(r => r.success);
+      const osResults = (parseResult?.osFiles || []).filter(r => r.success);
 
       if (osResults.length === 0) {
         toast.warning('Nenhum arquivo válido de Ordem de Serviço foi identificado.');
@@ -127,10 +127,10 @@ export function Fase1PatioOsReview({
           raw_status: os.status,
           opened_at: os.opened_at || `${targetDate}T08:00:00`,
           payment_method: os.payment_method || 'NÃO INFORMADO',
-          credit_value: os.credit_value || 0,
-          debit_value: os.debit_value || 0,
-          pix_transfer_value: os.pix_transfer_value || 0,
-          cash_value: os.cash_value || 0
+          credit_value: (os as any).credit_value ?? os.parsed_credit ?? 0,
+          debit_value: (os as any).debit_value ?? os.parsed_debit ?? 0,
+          pix_transfer_value: (os as any).pix_transfer_value ?? os.parsed_pix_transfer ?? 0,
+          cash_value: (os as any).cash_value ?? os.parsed_cash ?? 0
         }));
 
         const { error: upsertErr } = await supabase.rpc('batch_upsert_patio_os', {

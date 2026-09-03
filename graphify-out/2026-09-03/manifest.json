@@ -415,9 +415,9 @@
     "semantic_hash": "6b6e0037087e02fa13aece702ccd933b"
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1788383011.2790253,
-    "ast_hash": "8cfa5701fe27402e16b9265b77c4b9c5",
-    "semantic_hash": "8cfa5701fe27402e16b9265b77c4b9c5"
+    "mtime": 1788442466.572837,
+    "ast_hash": "edc6d354aa3cbb5b9e53ceb70a3cc0db",
+    "semantic_hash": ""
   },
   "src/components/importacoes/DiagnosticPanel.tsx": {
     "mtime": 1788357099.6555016,
@@ -1110,9 +1110,9 @@
     "semantic_hash": "5bbd53000fae29c39d6adc1bff9861d5"
   },
   "src/routes/importacoes.tsx": {
-    "mtime": 1788128883.8423033,
-    "ast_hash": "a29d05f7df50a1b201beefa95df4d1a4",
-    "semantic_hash": "a29d05f7df50a1b201beefa95df4d1a4"
+    "mtime": 1788442855.83585,
+    "ast_hash": "10f98338961048985ac2264879f55ebc",
+    "semantic_hash": ""
   },
   "src/routes/importar-os.tsx": {
     "mtime": 1788128883.843293,
@@ -1205,8 +1205,8 @@
     "semantic_hash": "147434dfc06fde47f6aad5cc349a434b"
   },
   "supabase/functions/ai-chat/index.ts": {
-    "mtime": 1788440654.2619154,
-    "ast_hash": "3f1316898b5b0ac28b859acb38d15f37",
+    "mtime": 1788441722.0478058,
+    "ast_hash": "1bed8e25e3ce3960f1fdc907a5e3882a",
     "semantic_hash": ""
   },
   "supabase/functions/ai-chat/tools-local.ts": {
@@ -3790,8 +3790,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/chat/ReconciliationChatWorkspace.tsx": {
-    "mtime": 1788440837.2616963,
-    "ast_hash": "d79127aae8b0c84ddf74b542660c753b",
+    "mtime": 1788442794.2188559,
+    "ast_hash": "ae6944d91dd74c1bbbe525d05c35f741",
     "semantic_hash": ""
   },
   "src/components/importacoes/wizard/SmartResolutionStrip.tsx": {
@@ -3892,6 +3892,56 @@
   "specs/360-conciliacao-conversacional-fullscreen-chat/spec-plan.md": {
     "mtime": 1788441068.7091718,
     "ast_hash": "4c6e7e7b9e1e682b99b2cad94319ce7e",
+    "semantic_hash": ""
+  },
+  "src/components/importacoes/bifurcacao/FechamentoModeSelector.tsx": {
+    "mtime": 1788442559.9057345,
+    "ast_hash": "782a9710c5455e69da76873d5f635e1c",
+    "semantic_hash": ""
+  },
+  "src/components/importacoes/manual/Fase1PatioOsReview.tsx": {
+    "mtime": 1788442600.588552,
+    "ast_hash": "68485043b883ae347aade1d982950f2e",
+    "semantic_hash": ""
+  },
+  "src/components/importacoes/manual/Fase2RedeVsOsReview.tsx": {
+    "mtime": 1788442640.6552663,
+    "ast_hash": "c395ada7bc756310c7a922e99f80fb6d",
+    "semantic_hash": ""
+  },
+  "src/components/importacoes/manual/Fase3OfxReconciliation.tsx": {
+    "mtime": 1788442679.5218613,
+    "ast_hash": "06180e627a73bb356222b7f860dec5ee",
+    "semantic_hash": ""
+  },
+  "src/components/importacoes/manual/Fase4ContasVsSaidasReview.tsx": {
+    "mtime": 1788442718.279965,
+    "ast_hash": "4aaea5700f82219ceb1c78decf96e37c",
+    "semantic_hash": ""
+  },
+  "src/components/importacoes/manual/FechamentoManualWizard.tsx": {
+    "mtime": 1788442750.4714477,
+    "ast_hash": "db80d28aab6f30a383c578465043f799",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260903000027_reconciliation_pipeline_sessions.sql": {
+    "mtime": 1788442498.1736426,
+    "ast_hash": "e40a611566df0172bd2031d0c8ae3d96",
+    "semantic_hash": ""
+  },
+  "specs/361-fluxo-ingestao-controlada-4-etapas-com-bifurcacao-chat/design.md": {
+    "mtime": 1788442253.8795211,
+    "ast_hash": "62bd8700340b90d4ba5a78514529fd7e",
+    "semantic_hash": ""
+  },
+  "specs/361-fluxo-ingestao-controlada-4-etapas-com-bifurcacao-chat/proposal.md": {
+    "mtime": 1788442242.0836205,
+    "ast_hash": "445fbfc066c20861ef93301afff35335",
+    "semantic_hash": ""
+  },
+  "specs/361-fluxo-ingestao-controlada-4-etapas-com-bifurcacao-chat/spec-plan.md": {
+    "mtime": 1788442926.5791955,
+    "ast_hash": "3654c626258097342bbc0dece2fa706a",
     "semantic_hash": ""
   }
 }

@@ -114,7 +114,7 @@ export function Fase4ContasVsSaidasReview({
 
     try {
       const parseResult = await parseCentralImports(acceptedFiles);
-      const billsResults = parseResult.contasAPagarResults.filter(r => r.success);
+      const billsResults = (parseResult?.contasAPagarResults || parseResult?.contasPagarResults || []).filter(r => r.success);
 
       if (billsResults.length === 0) {
         toast.warning('Nenhum arquivo válido de Contas a Pagar foi identificado.');
@@ -126,15 +126,17 @@ export function Fase4ContasVsSaidasReview({
 
       for (const r of billsResults) {
         for (const b of r.bills) {
-          let storeId = mapping[b.storeName];
+          const storeName = (b as any).storeName || b.store_name;
+          let storeId = mapping[storeName];
           if (storeId === 'GLOBAL') storeId = null as any;
-          const storeObj = stores.find(s => s.id === storeId || s.name === b.storeName);
+          const storeObj = stores.find(s => s.id === storeId || s.name === storeName);
           const resolvedStoreId = storeId || storeObj?.id || 'st-default';
+          const dueDate = (b as any).dueDate || b.due_date || targetDate;
 
           billsToInsert.push({
             store_id: resolvedStoreId,
             date: targetDate,
-            due_date: b.dueDate || targetDate,
+            due_date: dueDate,
             amount: b.amount,
             description: b.description || 'Título a Pagar',
             category: b.category || 'Geral',

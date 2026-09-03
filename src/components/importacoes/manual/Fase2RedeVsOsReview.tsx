@@ -156,7 +156,7 @@ export function Fase2RedeVsOsReview({
 
     try {
       const parseResult = await parseCentralImports(acceptedFiles);
-      const redeResults = parseResult.redeResults.filter(r => r.success);
+      const redeResults = (parseResult?.redeResults || []).filter(r => r.success);
 
       if (redeResults.length === 0) {
         toast.warning('Nenhum arquivo válido da Adquirente Rede foi identificado.');

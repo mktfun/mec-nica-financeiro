@@ -1,4 +1,17 @@
-### Feature 279: CorreÃ§Ã£o do Fechamento por Filial, AgregaÃ§Ã£o CanÃ´nica e CÃ¡lculo de DiferenÃ§a por Loja
+### Feature 361: Correção de Ingestão de Planilhas de OS e Motor Central de Imports
+- **Status:** COMPLETED & ARCHIVED
+- **Data:** 2026-09-03
+- **Arquivos Criados/Modificados:**
+  - `src/lib/parsers/centralImportManager.ts` (Implementação canônica pura de `parseCentralImports` e interface `CentralImportResults`)
+  - `src/hooks/useCentralImport.ts` (Desacoplamento e delegação para `centralImportManager.ts`)
+  - `src/components/importacoes/manual/Fase1PatioOsReview.tsx` (Blindagem defensiva e correção de leitura de meios de pagamento para `batch_upsert_patio_os`)
+  - `src/components/importacoes/manual/Fase2RedeVsOsReview.tsx` (Guarda defensiva `redeResults || []`)
+  - `src/components/importacoes/manual/Fase3OfxReconciliation.tsx` (Guarda defensiva `ofxResults || []` e normalização de `success: true`)
+  - `src/components/importacoes/manual/Fase4ContasVsSaidasReview.tsx` (Guarda defensiva de contas e normalização de `storeName`/`dueDate`)
+  - `src/components/importacoes/wizard/Step4FinalAuditAndClose.tsx` (Compatibilização com `CentralImportResults`)
+- **Descrição:** Substituição do stub incompleto de `centralImportManager.ts` por motor puro de roteamento multi-formato (`.ofx`, `.ret`, `.pdf`, `.xlsx`, `.xls`, `.csv`), garantindo coleções de saída sempre inicializadas (`[]`), eliminando o erro `TypeError: Cannot read properties of undefined (reading 'filter')` em todas as fases do Fechamento Manual e corrigindo o mapeamento de meios de pagamento (`parsed_credit`, `parsed_debit`, `parsed_pix_transfer`, `parsed_cash`).
+
+### Feature 279: Correção do Fechamento por Filial, Agregação Canônica e Cálculo de Diferença por Loja
 - **Status:** COMPLETED & ARCHIVED
 - **Data:** 2026-09-01
 - **Arquivos Criados/Modificados:**
