@@ -1,3 +1,16 @@
+## [2026-09-03] — [Feature ID: 362-fix-os-rejeitadas-e-filtro-ausentes-relatorio]
+
+**Contexto:** Carga cumulativa do passivo de pátio em aberto na conferência diária da Fase 1 (`Fase1PatioOsReview.tsx`) e distinção precisa entre OSs do dia e carryover de pátio anterior.
+
+**Regra aprendida:**
+1. **Carga Ampla do Passivo Ativo de Pátio:**
+   - A query de inicialização de OSs da data DEVE buscar tanto as ordens abertas na data quanto todo o passivo em aberto pendente de baixa: `.or('opened_at.gte.${targetDate}T00:00:00,last_payment_date.eq.${targetDate},status.ilike.%aberto%,status.ilike.%parcial%,status.ilike.%pendente%')`.
+   - O conjunto de OSs que vieram no upload atual (`importedOsKeys: Set<string>`) serve de máscara para segregar o que é produção reportada hoje do que é veículo remanescente no pátio exigindo baixa manual.
+2. **Preservação de Integridade Contábil:**
+   - OSs fora do relatório mantêm seu status ativo no banco até que o operador deliberadamente clique em "Baixar" ou lance o pagamento correspondente.
+
+---
+
 ## [2026-09-03] — [Feature ID: 361-fluxo-ingestao-controlada-4-etapas-com-bifurcacao-chat]
 
 **Contexto:** Definição canônica do encadeamento contábil e de auditoria da Nova Central de Fechamento: segregação entre o Modo Manual (4 Fases Determinísticas sem IA) e o Modo Conversacional Hydra (Com IA em Tela Cheia).

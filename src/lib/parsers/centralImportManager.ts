@@ -204,14 +204,19 @@ export async function parseCentralImports(
     }
 
     // C) Testa se é OS
+    const isOsName = file.name.toLowerCase().includes('conferencia') || file.name.toLowerCase().includes('os');
+    let osErrorDetail = '';
+
     try {
       const osRes = await processOsFiles([file], { sessionId: options?.sessionId });
       if (osRes && osRes[0] && osRes[0].success && osRes[0].osArray && osRes[0].osArray.length > 0) {
         results.osFiles.push(osRes[0]);
         continue;
+      } else if (osRes && osRes[0] && !osRes[0].success && osRes[0].error) {
+        osErrorDetail = osRes[0].error;
       }
-    } catch (e) {
-      // Não é OS
+    } catch (e: any) {
+      osErrorDetail = e.message || String(e);
     }
 
     // D) Fallback para Contas a Pagar caso o nome não contivesse "contas"/"pagar"
@@ -235,7 +240,9 @@ export async function parseCentralImports(
         results.maquininhaItems.push(...maqItems);
         continue;
       } else {
-        const msg = `Arquivo ${file.name} ignorado: Não é OS, Rede, Contas nem Maquininha reconhecida.`;
+        const msg = isOsName && osErrorDetail
+          ? `Falha no processamento de OS ${file.name}: ${osErrorDetail}`
+          : `Arquivo ${file.name} ignorado: Não é OS, Rede, Contas nem Maquininha reconhecida.`;
         console.warn(msg);
         results.errors.push(msg);
       }

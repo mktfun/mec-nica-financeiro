@@ -17,7 +17,8 @@ import {
   RotateCcw,
   CheckCircle2,
   Clock,
-  Layers
+  Layers,
+  AlertTriangle
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -33,6 +34,8 @@ export type PaymentMethodOption =
   | 'EM_ABERTO';
 
 export type QuickPaymentType = 'PIX' | 'CARTAO_CREDITO' | 'CARTAO_DEBITO' | 'DINHEIRO';
+
+export type PatioFilterMode = 'outside_report' | 'all';
 
 export interface EditablePatioOsItem {
   id: string;
@@ -54,6 +57,8 @@ export interface EditablePatioOsItem {
   cash_value?: number;
   isModified?: boolean;
   isNewManual?: boolean;
+  isMissingFromReport?: boolean;
+  isFromReport?: boolean;
 }
 
 export interface PatioExcelStoreAccordionProps {
@@ -65,6 +70,8 @@ export interface PatioExcelStoreAccordionProps {
   targetDate: string;
   selectedStoreId?: string;
   onSelectStore?: (storeId: string) => void;
+  hasReportImported?: boolean;
+  defaultFilterMode?: PatioFilterMode;
 }
 
 // ----------------------------------------------------------------------------
@@ -291,9 +298,28 @@ export const PatioExcelStoreAccordion: React.FC<PatioExcelStoreAccordionProps> =
   onAddManualOs,
   onRemoveManualOs,
   targetDate,
+  hasReportImported,
+  defaultFilterMode,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activePopoverId, setActivePopoverId] = useState<string | null>(null);
+
+  // Contagem de OSs que não vieram no relatório da sessão
+  const countOutsideReport = useMemo(() => {
+    return osItems.filter(i => i.isMissingFromReport).length;
+  }, [osItems]);
+
+  const [filterMode, setFilterMode] = useState<PatioFilterMode>(() => {
+    if (defaultFilterMode) return defaultFilterMode;
+    return 'all';
+  });
+
+  // Atualiza filterMode se houver itens fora do relatório após importação de planilhas
+  useEffect(() => {
+    if (hasReportImported && countOutsideReport > 0) {
+      setFilterMode('outside_report');
+    }
+  }, [hasReportImported, countOutsideReport]);
 
   // Armazenamento de Lojas Abertas / Recolhidas via LocalStorage
   const [expandedStores, setExpandedStores] = useState<Record<string, boolean>>(() => {
@@ -463,8 +489,8 @@ export const PatioExcelStoreAccordion: React.FC<PatioExcelStoreAccordionProps> =
     <div className="space-y-4">
       {/* BARRA SUPERIOR DE CONTROLE & BUSCA */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-zinc-900/90 border border-zinc-800 p-3 rounded-2xl">
-        <div className="flex items-center gap-2 flex-1 max-w-md">
-          <div className="relative w-full">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 flex-1">
+          <div className="relative w-full max-w-xs">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
             <input
               type="text"
@@ -482,6 +508,43 @@ export const PatioExcelStoreAccordion: React.FC<PatioExcelStoreAccordionProps> =
                 <X size={12} />
               </button>
             )}
+          </div>
+
+          {/* FILTRO: FORA DO RELATÓRIO vs TODAS AS OSs */}
+          <div className="flex items-center bg-zinc-950 p-1 rounded-xl border border-zinc-800 gap-1">
+            <button
+              type="button"
+              onClick={() => setFilterMode('outside_report')}
+              className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+                filterMode === 'outside_report'
+                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm'
+                  : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              <AlertTriangle size={13} className={countOutsideReport > 0 ? 'text-amber-400' : 'text-zinc-500'} />
+              <span>Fora do Relatório</span>
+              <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold ${
+                countOutsideReport > 0 ? 'bg-amber-500 text-zinc-950' : 'bg-zinc-800 text-zinc-400'
+              }`}>
+                {countOutsideReport}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setFilterMode('all')}
+              className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+                filterMode === 'all'
+                  ? 'bg-zinc-800 text-zinc-100 border border-zinc-700 shadow-sm'
+                  : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              <Layers size={13} />
+              <span>Todas as OSs</span>
+              <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-zinc-800 text-zinc-400">
+                {osItems.length}
+              </span>
+            </button>
           </div>
         </div>
 
@@ -536,9 +599,13 @@ export const PatioExcelStoreAccordion: React.FC<PatioExcelStoreAccordionProps> =
         {stores.map(store => {
           const storeItems = osByStore.get(store.id) || [];
           const isExpanded = !!expandedStores[store.id];
+          const storeMissingCount = storeItems.filter(i => i.isMissingFromReport).length;
 
-          // Filtragem interna por busca
+          // Filtragem interna por busca e por filterMode
           const filteredItems = storeItems.filter(item => {
+            if (filterMode === 'outside_report' && !item.isMissingFromReport) {
+              return false;
+            }
             if (!searchTerm.trim()) return true;
             const q = searchTerm.toLowerCase();
             return (
@@ -575,6 +642,12 @@ export const PatioExcelStoreAccordion: React.FC<PatioExcelStoreAccordionProps> =
                     <Badge variant="outline" className="bg-zinc-800/60 border-zinc-700 text-zinc-300 text-[10px] font-mono px-2 py-0.5">
                       {storeItems.length} OS(s)
                     </Badge>
+                    {storeMissingCount > 0 && (
+                      <Badge className="bg-amber-500/20 border border-amber-500/30 text-amber-300 text-[10px] font-mono px-2 py-0.5 flex items-center gap-1">
+                        <AlertTriangle size={10} />
+                        {storeMissingCount} fora do relatório
+                      </Badge>
+                    )}
                   </div>
                 </div>
 
@@ -619,8 +692,22 @@ export const PatioExcelStoreAccordion: React.FC<PatioExcelStoreAccordionProps> =
                     <tbody className="divide-y divide-zinc-800/60 font-mono">
                       {filteredItems.length === 0 ? (
                         <tr>
-                          <td colSpan={10} className="py-6 text-center text-zinc-500 italic text-xs">
-                            Nenhuma OS encontrada para esta loja. Clique em "+ Adicionar OS" para lançar.
+                          <td colSpan={10} className="py-8 text-center bg-zinc-950/40">
+                            {filterMode === 'outside_report' ? (
+                              <div className="flex flex-col items-center justify-center text-zinc-400 gap-1.5 py-4">
+                                <CheckCircle2 size={24} className="text-emerald-400" />
+                                <p className="text-xs font-semibold text-zinc-200">
+                                  Todas as OSs desta filial vieram no relatório.
+                                </p>
+                                <p className="text-[11px] text-zinc-500">
+                                  Nenhuma ordem pendente de atualização manual em {store.name}.
+                                </p>
+                              </div>
+                            ) : (
+                              <span className="text-zinc-500 italic text-xs">
+                                Nenhuma OS encontrada para esta loja. Clique em "+ Adicionar OS" para lançar.
+                              </span>
+                            )}
                           </td>
                         </tr>
                       ) : (
@@ -661,10 +748,18 @@ export const PatioExcelStoreAccordion: React.FC<PatioExcelStoreAccordionProps> =
                                     className="w-24 px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 rounded text-xs text-zinc-100 font-bold focus:outline-none focus:border-emerald-500"
                                   />
                                 ) : (
-                                  <div className="flex items-center gap-1 font-bold text-zinc-200">
-                                    <span>#{item.os_number}</span>
-                                    {item.plate && item.plate !== 'N/I' && item.plate !== 'SEM PLACA' && (
-                                      <span className="text-[10px] text-zinc-500 font-normal">({item.plate})</span>
+                                  <div className="flex flex-col gap-0.5">
+                                    <div className="flex items-center gap-1 font-bold text-zinc-200">
+                                      <span>#{item.os_number}</span>
+                                      {item.plate && item.plate !== 'N/I' && item.plate !== 'SEM PLACA' && (
+                                        <span className="text-[10px] text-zinc-500 font-normal">({item.plate})</span>
+                                      )}
+                                    </div>
+                                    {item.isMissingFromReport && (
+                                      <span className="text-[9px] font-mono font-semibold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1 w-fit">
+                                        <AlertTriangle size={9} />
+                                        Fora do Relatório
+                                      </span>
                                     )}
                                   </div>
                                 )}
@@ -765,6 +860,29 @@ export const PatioExcelStoreAccordion: React.FC<PatioExcelStoreAccordionProps> =
                                   >
                                     {isFullyPaid ? 'Editar' : 'Lançar'}
                                   </button>
+
+                                  {/* Ação Rápida: Dar Baixa se estiver fora do relatório e não quitada */}
+                                  {!isFullyPaid && item.isMissingFromReport && (
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const tot = Number(item.total_value || 0);
+                                        onChangeItem(item.id, {
+                                          paid_value: tot,
+                                          pending_value: 0,
+                                          cash_value: tot > 0 && Number(item.cash_value || 0) === 0 && Number(item.pix_transfer_value || 0) === 0 && Number(item.credit_value || 0) === 0 && Number(item.debit_value || 0) === 0 ? tot : item.cash_value,
+                                          status: 'finalizada',
+                                          isModified: true
+                                        });
+                                        toast.success(`OS #${item.os_number} baixada com sucesso!`);
+                                      }}
+                                      className="px-2 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-[10px] font-semibold border border-emerald-500/30 flex items-center gap-1 cursor-pointer"
+                                      title="Dar baixa integral nesta OS fora do relatório"
+                                    >
+                                      <Check size={11} />
+                                      Baixar
+                                    </button>
+                                  )}
 
                                   {/* Botão Remover se for OS nova avulsa */}
                                   {item.isNewManual && onRemoveManualOs && (

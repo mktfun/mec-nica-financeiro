@@ -40,41 +40,50 @@ export function Fase1PatioOsReview({
   const [osItems, setOsItems] = useState<EditablePatioOsItem[]>([]);
   const [hasChanges, setHasChanges] = useState(false);
   const [selectedStoreId, setSelectedStoreId] = useState<string>('');
+  const [importedOsKeys, setImportedOsKeys] = useState<Set<string>>(new Set());
 
-  // 1. Carregar OSs existentes do banco de dados para a data
-  const loadPatioOs = useCallback(async () => {
+  // 1. Carregar OSs existentes do banco de dados para a data (incluindo passivo em aberto)
+  const loadPatioOs = useCallback(async (currentImportedKeys: Set<string> = importedOsKeys) => {
     if (!targetDate) return;
     setIsLoading(true);
     try {
       const { data, error } = await supabase
         .from('patio_os')
         .select('*')
-        .or(`opened_at.gte.${targetDate}T00:00:00,last_payment_date.eq.${targetDate}`)
+        .or(`opened_at.gte.${targetDate}T00:00:00,last_payment_date.eq.${targetDate},status.ilike.%aberto%,status.ilike.%parcial%,status.ilike.%pendente%`)
         .order('store_id', { ascending: true })
         .order('opened_at', { ascending: false });
 
       if (error) throw error;
 
       if (data && data.length > 0) {
-        const mapped: EditablePatioOsItem[] = data.map((d: any) => ({
-          id: d.id,
-          os_number: d.os_number,
-          store_id: d.store_id || '',
-          store_name: d.store_name || '',
-          client_name: d.client_name || 'Cliente',
-          plate: d.plate || 'N/I',
-          total_value: Number(d.total_value || 0),
-          paid_value: Number(d.paid_value || 0),
-          pending_value: Math.max(0, Number(d.total_value || 0) - Number(d.paid_value || 0)),
-          days_open: Number(d.days_open || 0),
-          opened_at: d.opened_at || `${targetDate}T08:00:00`,
-          status: d.status || 'em_aberto',
-          payment_method: (d.payment_method as any) || 'EM_ABERTO',
-          debit_value: Number(d.debit_value || 0),
-          credit_value: Number(d.credit_value || 0),
-          pix_transfer_value: Number(d.pix_transfer_value || 0),
-          cash_value: Number(d.cash_value || 0),
-        }));
+        const mapped: EditablePatioOsItem[] = data.map((d: any) => {
+          const cleanNum = String(d.os_number || '').trim();
+          const isFromReport = currentImportedKeys.has(`${d.store_id}_${cleanNum}`) || currentImportedKeys.has(cleanNum);
+          const isMissing = currentImportedKeys.size > 0 ? !isFromReport : false;
+
+          return {
+            id: d.id,
+            os_number: d.os_number,
+            store_id: d.store_id || '',
+            store_name: d.store_name || '',
+            client_name: d.client_name || 'Cliente',
+            plate: d.plate || 'N/I',
+            total_value: Number(d.total_value || 0),
+            paid_value: Number(d.paid_value || 0),
+            pending_value: Math.max(0, Number(d.total_value || 0) - Number(d.paid_value || 0)),
+            days_open: Number(d.days_open || 0),
+            opened_at: d.opened_at || `${targetDate}T08:00:00`,
+            status: d.status || 'em_aberto',
+            payment_method: (d.payment_method as any) || 'EM_ABERTO',
+            debit_value: Number(d.debit_value || 0),
+            credit_value: Number(d.credit_value || 0),
+            pix_transfer_value: Number(d.pix_transfer_value || 0),
+            cash_value: Number(d.cash_value || 0),
+            isMissingFromReport: isMissing,
+            isFromReport: isFromReport
+          };
+        });
         setOsItems(mapped);
       } else {
         setOsItems([]);
@@ -85,7 +94,7 @@ export function Fase1PatioOsReview({
     } finally {
       setIsLoading(false);
     }
-  }, [targetDate]);
+  }, [targetDate, importedOsKeys]);
 
   useEffect(() => {
     loadPatioOs();
@@ -107,7 +116,7 @@ export function Fase1PatioOsReview({
       }
 
       let totalImported = 0;
-      const newItems: EditablePatioOsItem[] = [];
+      const nextImportedKeys = new Set(importedOsKeys);
 
       for (const res of osResults) {
         let storeId = mapping[res.storeAlias];
@@ -116,6 +125,15 @@ export function Fase1PatioOsReview({
         const storeObj = stores.find(s => s.id === storeId || s.name === res.storeAlias);
         const resolvedStoreId = storeId || storeObj?.id || 'st-default';
         const resolvedStoreName = storeObj?.name || res.storeAlias;
+
+        // Registra chaves importadas para calcular quem veio ou não no relatório
+        res.osArray.forEach(os => {
+          const cleanNum = String(os.os_number || '').trim();
+          if (cleanNum) {
+            nextImportedKeys.add(`${resolvedStoreId}_${cleanNum}`);
+            nextImportedKeys.add(cleanNum);
+          }
+        });
 
         // Persistir no banco via batch_upsert_patio_os
         const recordsToUpsert = res.osArray.map(os => ({
@@ -140,14 +158,16 @@ export function Fase1PatioOsReview({
         });
 
         if (upsertErr) {
-          console.error('Erro no upsert de OS:', upsertErr);
+          console.error(`Erro ao salvar OSs de ${resolvedStoreName}:`, upsertErr);
+          toast.error(`Erro ao salvar OSs de ${resolvedStoreName}: ${upsertErr.message}`);
         } else {
           totalImported += recordsToUpsert.length;
         }
       }
 
+      setImportedOsKeys(nextImportedKeys);
       toast.success(`${totalImported} OS(s) importada(s) e integradas ao pátio da data!`);
-      await loadPatioOs();
+      await loadPatioOs(nextImportedKeys);
     } catch (err: any) {
       console.error('Erro ao processar planilhas de OS:', err);
       toast.error(`Falha no processamento: ${err.message}`);
@@ -384,6 +404,7 @@ export function Fase1PatioOsReview({
             targetDate={targetDate}
             selectedStoreId={selectedStoreId}
             onSelectStore={setSelectedStoreId}
+            hasReportImported={importedOsKeys.size > 0}
           />
         </div>
       )}

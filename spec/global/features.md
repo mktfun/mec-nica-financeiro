@@ -1,3 +1,14 @@
+### Feature 362: Correção de OSs Rejeitadas (Planalto/Brasicar e Rei do Módulo) e Modo Fora do Relatório no Pátio
+- **Status:** COMPLETED & ARCHIVED
+- **Data:** 2026-09-03
+- **Arquivos Criados/Modificados:**
+  - `src/hooks/useOsImportProcessor.ts` (Varredura estendida até 60 linhas, regex tolerante para cabeçalhos e captura de `storeAlias` com hífens)
+  - `src/hooks/useStoreFileMappings.ts` e `src/lib/parsers/storeMapping.ts` (Mapeamento explícito de `BRASICAR`, `Planalto (BRASICAR)`, `Rei do Módulo`, `Rei do Modulo`)
+  - `src/lib/parsers/centralImportManager.ts` (Preservação de detalhes do erro de OS em `results.errors`)
+  - `src/components/importacoes/manual/Fase1PatioOsReview.tsx` (Rastreamento de `importedOsKeys`, carga de passivo em aberto e marcação `isMissingFromReport`)
+  - `src/components/importacoes/patio/PatioExcelStoreAccordion.tsx` (Modo "Apenas Fora do Relatório" com Segmented Control, badges de ausentes, empty state contextual e botão de 1-clique "Baixar")
+- **Descrição:** Eliminação da rejeição de planilhas de OS com metadados/cabeçalhos deslocados e resolução de lojas zeradas (`Planalto - BRASICAR` e `Rei do Módulo - MP`). Adição de modo focado na tela de conferência de OSs para que o operador filtre e baixe exclusivamente os veículos remanescentes no pátio que não constavam no relatório da data, mantendo intactos os totalizadores e faturamento contábil das filiais.
+
 ### Feature 361: Correção de Ingestão de Planilhas de OS e Motor Central de Imports
 - **Status:** COMPLETED & ARCHIVED
 - **Data:** 2026-09-03

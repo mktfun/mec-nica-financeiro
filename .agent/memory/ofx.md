@@ -37,3 +37,13 @@
 2. **Normalização de Contrato OFX:** Extratos bancários OFX nativos não possuem o campo booleano `success`. O motor central deve normalizar cada item com `success: true`, `storeAlias: r.alias` e `accountKey: r.alias` para evitar descarte em filtros como `ofxResults.filter(r => r.success)`.
 3. **Mapeamento de Meios de Pagamento de OS:** Na extração de OS (`ParsedOS`), os meios de pagamento residem em `parsed_credit`, `parsed_debit`, `parsed_pix_transfer`, `parsed_cash`. Ao montar o payload para a RPC `batch_upsert_patio_os`, use sempre fallback seguro `credit_value: (os as any).credit_value ?? os.parsed_credit ?? 0` para evitar gravar R$ 0,00 no banco.
 **Risco identificado / Anti-pattern:** Manter stubs vazios de parsers ou acessar propriedades de coleções de parsing (`parseResult.osFiles.filter(...)`) sem fallback defensivo `(parseResult?.osFiles || []).filter(...)`.
+
+## [2026-09-03] — [Feature ID: 362-fix-os-rejeitadas-e-filtro-ausentes-relatorio]
+**Contexto:** Correção de rejeição de planilhas de OS das lojas Planalto (BRASICAR) e Rei do Módulo (MP) que resultavam em cartões zerados (R$ 0,00) no fechamento, devido a cabeçalho após linha 20, colunas com rótulos variantes e hífens no nome de loja.
+**Regra aprendida:**
+1. **Varredura Estendida e Tolerância a Metadados de Topo:** Em relatórios de OS de certas filiais, linhas em branco e blocos de cabeçalho do ERP empurram as colunas para a linha 25-35. O scanner em `useOsImportProcessor.ts` DEVE varrer até 60 linhas (`Math.min(60, data.length)`).
+2. **Regex Tolerante a Rótulos de Colunas:** A detecção de cabeçalho não pode depender de `rowStr.includes('status')`. Deve testar regex flexível: `/^(status|situa[çc][ãa]o|sit\b|estado|fase)$/i` e `/^(os|n[ºo°.]?\s*os|n[ºo°.]?\s*da\s*os|n[úu]mero\s*(?:da\s*)?os|ordem\s*de\s*servi[çc]o|c[óo]d(?:igo)?(?:\s*os)?)$/i`.
+3. **Regex de Store Alias com Hífens:** Nomes de lojas com hífen (ex: `Planalto - BRASICAR`, `Rei do Módulo - MP`) quebravam regex `([A-Za-z0-9\s]+?)\s*[-–—]`. O parser deve quebrar pelo delimitador `por data d[ae] os` ou usar regex gulosa para capturar o nome composto inteiro.
+4. **Aliases Conhecidos no Mapeamento:** Termos canônicos como `BRASICAR`, `brasicar`, `Planalto (BRASICAR)`, `Rei do Módulo`, `Rei do Modulo`, `REI DO MODULO` DEVEM constar em `KNOWN_ACCOUNT_DEFAULTS` e `REDE_STORE_MAPPING`, evitando o fallback `st-default` que zera a loja.
+**Risco identificado / Anti-pattern:** Limitar a busca de cabeçalho a 20 linhas e engolir erros de parsing de OS em `centralImportManager.ts`, emitindo aviso genérico de "Arquivo ignorado" em vez de registrar a falha real.
+

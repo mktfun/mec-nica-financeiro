@@ -1,3 +1,18 @@
+## [2026-09-03] — [Feature ID: 362-fix-os-rejeitadas-e-filtro-ausentes-relatorio]
+
+**Contexto:** Implementação do modo "Apenas Fora do Relatório" em `PatioExcelStoreAccordion.tsx` com Segmented Control e quitação direta por botão de 1-clique, atendendo à necessidade do operador de auditar apenas as ordens de pátio não constantes da planilha do dia.
+
+**Regra aprendida:**
+1. **Segregação Estrita: Totalizadores Globais Master vs Tabela Filtrada (`PatioExcelStoreAccordion.tsx`):**
+   - Em grades contábeis com filtros visuais parciais (`filterMode: 'outside_report' | 'all'`), os KPIs consolidados (Total OS, Total Pago, Aberto) e os totalizadores do cabeçalho da loja DEVEM continuar sendo computados sobre o array master completo de `osItems`.
+   - O filtro afeta estritamente o `filteredItems` consumido pelo `<tbody>`. Isso impede que o faturamento da loja aparente ter caído para R$ 0,00 quando o operador estiver no modo de conferência de pendências.
+2. **Empty State Contextual e Informativo:**
+   - No modo "Apenas Fora do Relatório", filiais cujas OSs vieram 100% no relatório devem exibir uma mensagem de conformidade verde com `CheckCircle2` (*"Todas as OSs desta filial vieram no relatório. Nenhuma ordem pendente de atualização manual em [Loja]"*), evitando que o operador presuma erro de carregamento.
+3. **Ações de Quitação Rápida sem Popover:**
+   - Para OSs pendentes fora do relatório, fornecer um botão direto *"Baixar"* na linha que quita o valor integral e marca `isModified: true`, poupando dezenas de cliques em popovers durante a rotina matinal.
+
+---
+
 ## [2026-09-03] — [Feature ID: 361-fluxo-ingestao-controlada-4-etapas-com-bifurcacao-chat]
 
 **Contexto:** Implementação da Bifurcação Inicial da Central de Fechamento Diário (`/importacoes?tab=diario`), remoção de poluição visual (banner supérfluo de virada de mês/carro) e criação do Modo Manual Passo a Passo em 4 Fases (100% Sem IA / ZERO LLM) vs Modo Conversacional Hydra em Tela Cheia (Com IA).

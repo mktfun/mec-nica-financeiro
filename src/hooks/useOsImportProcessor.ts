@@ -35,7 +35,14 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
         const row = data[i];
         if (Array.isArray(row)) {
           const rowText = row.map(c => String(c || '')).join(' ');
-          const match = rowText.match(/(?:LOJA|UNIDADE)\s+([A-Za-zÀ-ÿ0-9\s]+)|([A-Za-z0-9À-ÿ\s]+?)\s*[-–—]\s*Por Data d[ae] OS/i);
+          if (/por data d[ae] os/i.test(rowText)) {
+            const parts = rowText.split(/[-–—]\s*por data d/i);
+            if (parts.length > 1 && parts[0].trim()) {
+              storeAlias = parts[0].replace(/^(?:listagem.*?\(.*?\)\s*)?/i, '').replace(/[-–—]\s*$/, '').trim();
+              break;
+            }
+          }
+          const match = rowText.match(/(?:LOJA|UNIDADE)\s+([A-Za-zÀ-ÿ0-9\s-]+)|([A-Za-z0-9À-ÿ\s-]+?)\s*[-–—]\s*Por Data d[ae] OS/i);
           if (match) {
             storeAlias = (match[1] || match[2]).trim();
             break;
@@ -77,21 +84,26 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
       let headerRowIndex = -1;
       let colMap: Record<string, number> = {};
 
-      for (let i = 0; i < Math.min(20, data.length); i++) {
+      for (let i = 0; i < Math.min(60, data.length); i++) {
         const row = data[i];
         if (Array.isArray(row)) {
           const rowStr = row.map(c => String(c || '').toLowerCase().trim());
-          if ((rowStr.includes('os') || rowStr.includes('nº os')) && rowStr.includes('status')) {
+          const hasOsCol = rowStr.some(c => /^(os|n[ºo°.]?\s*os|n[ºo°.]?\s*da\s*os|n[úu]mero\s*(?:da\s*)?os|ordem\s*de\s*servi[çc]o|c[óo]d(?:igo)?(?:\s*os)?)$/i.test(c.trim()));
+          const hasStatusCol = rowStr.some(c => /^(status|situa[çc][ãa]o|sit\b|estado|fase)$/i.test(c.trim()));
+          const hasValueCol = rowStr.some(c => /(total|valor|pago|saldo)/i.test(c.trim()));
+
+          if (hasOsCol && (hasStatusCol || hasValueCol)) {
             headerRowIndex = i;
-            rowStr.forEach((colName, idx) => {
-              if (colName === 'os' || colName === 'nº os' || colName === 'nº da os' || colName === 'numero os' || colName === 'código' || colName === 'cod') colMap.os = idx;
+            rowStr.forEach((rawColName, idx) => {
+              const colName = rawColName.replace(/[^\w\s]/g, ' ').replace(/\s+/g, ' ').trim();
+              if (/^(os|n[ºo°.]?\s*os|n[ºo°.]?\s*da\s*os|n[úu]mero\s*(?:da\s*)?os|ordem\s*de\s*servi[çc]o|c[óo]d(?:igo)?(?:\s*os)?)$/i.test(rawColName.trim())) colMap.os = idx;
               if (colName === 'data' || colName.includes('data entrada') || colName.includes('abertura') || (colName.includes('data') && colMap.openedAt === undefined)) colMap.openedAt = idx;
-              if (colName === 'cliente' || colName.includes('nome do cliente') || colName.includes('cliente /') || colName === 'razao social' || colName === 'razão social' || colName === 'nome') colMap.clientName = idx;
-              if (colName === 'placa' || colName === 'veículo' || colName === 'veiculo') colMap.plate = idx;
-              if (colName === 'status' || colName === 'situação' || colName === 'situacao') colMap.status = idx;
+              if (colName === 'cliente' || colName.includes('nome do cliente') || colName.includes('cliente') || colName === 'razao social' || colName === 'razão social' || colName === 'nome') colMap.clientName = idx;
+              if (colName === 'placa' || colName === 'veiculo' || colName === 'veículo') colMap.plate = idx;
+              if (/^(status|situa[çc][ãa]o|sit|estado|fase)$/i.test(rawColName.trim())) colMap.status = idx;
               if (colName === 'finalizada em' || colName === 'data fim' || colName.includes('fechamento') || colName.includes('finalizada') || colName.includes('saida') || colName.includes('saída')) colMap.closedAt = idx;
               
-              const isExactTotal = ['total', 'r$ total', 'valor total', 'vlr total', 'vl total', 'valor os', 'valor da os', 'valor final', 'bruto', 'r$ total da os'].includes(colName);
+              const isExactTotal = ['total', 'r total', 'valor total', 'vlr total', 'vl total', 'valor os', 'valor da os', 'valor final', 'bruto', 'r total da os'].includes(colName);
               if (isExactTotal || colName.includes('total da os') || colName.includes('valor da os')) {
                 if (!colName.includes('financeiro') && !colName.includes('pagto') && !colName.includes('pago') && !colName.includes('produto') && !colName.includes('serviço') && !colName.includes('servico') && !colName.includes('desconto')) {
                   colMap.totalValue = idx;
