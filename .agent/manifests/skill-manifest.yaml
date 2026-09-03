@@ -1,0 +1,51 @@
+# skill-manifest.yaml
+schema_version: "2.0"
+maintainer: "antigravity"
+
+skills:
+  - id: deciqai-bayesian-reasoning
+    local_path: skills/deciqai-bayesian-reasoning/SKILL.md
+    source: clawhub
+    category: reasoning
+
+  - id: obsidian
+    local_path: skills/obsidian/SKILL.md
+    source: clawhub
+    category: memory
+
+  - id: frontend-design-pro
+    local_path: skills/frontend-design-pro/SKILL.md
+    source: clawhub
+    category: frontend
+
+  - id: frontend-design-3
+    local_path: skills/frontend-design-3/SKILL.md
+    source: clawhub
+    category: frontend
+
+  - id: afrexai-nextjs-production
+    local_path: skills/afrexai-nextjs-production/SKILL.md
+    source: clawhub
+    category: engineering
+
+  - id: backend
+    local_path: skills/backend/SKILL.md
+    source: clawhub
+    category: backend
+
+  - id: supabase
+    local_path: skills/supabase/SKILL.md
+    source: clawhub
+    category: backend
+
+  - id: adaptive-reasoning
+    local_path: skills/adaptive-reasoning/SKILL.md
+    source: clawhub
+    category: reasoning
+
+  - id: github
+    local_path: skills/github/SKILL.md
+    source: clawhub
+    category: devops
+
+bundles: []

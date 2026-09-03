@@ -1,134 +1,205 @@
 ---
-description: Executa a implementação técnica baseada nos 3 arquivos de spec gerados no /vibe-proposal — com leitura obrigatória da spec, skills por tipo de task, save-state contínuo, auto-healing com rollback e VLM Visual QA.
+description: Executa a implementação técnica como Orchestrator multi-agente — lê spec-plan.md, injeta skills + memória Obsidian em subagentes especializados por domínio, valida com Validator Agent e aciona Bug Agent automaticamente em caso de erro.
 ---
 
 <!-- VIBEAPPLY:START -->
 
-> ⛔ **OVERRIDE SUPREMO:** Se o usuário mencionar `/teamwork-preview`, delegar para equipe ou pedir análise conjunta, PARE IMEDIATAMENTE. Acione os subagentes via `invoke_subagent`. NUNCA ignore um pedido de delegação.
+> ⛔ **OVERRIDE SUPREMO:** Se o usuário mencionar `/teamwork-preview` ou pedir análise conjunta, PARE IMEDIATAMENTE. Acione os subagentes via `invoke_subagent`. NUNCA ignore.
 
 **Objetivo**
-Executar o checklist de `specs/<id>/spec-plan.md` com extrema precisão. A spec é a lei — não improvise, não extrapole além do que está nos arquivos de spec.
+Executar o checklist de `specs/<id>/spec-plan.md` via subagentes especializados, cada um recebendo suas skills e memória Obsidian injetadas. A spec é a lei — não improvise, não extrapole.
 
 ---
 
-## Step 0 — Leitura Obrigatória dos 3 Arquivos de Spec (NUNCA PULE)
+## Step 0 — Leitura Obrigatória (Orchestrator)
 
-Antes de escrever qualquer linha de código, leia os arquivos na seguinte ordem:
-
-**Skills base (ler SEMPRE, independente do tipo de task):**
+**Skills base do Orchestrator:**
 ```
-view_file C:/Users/User/.gemini/config/skills/adaptive-reasoning/SKILL.md     ← protocolo de raciocínio, rollback e anti-loops
+view_file C:/Users/User/.gemini/config/skills/adaptive-reasoning/SKILL.md
+view_file C:/Users/User/.gemini/config/skills/obsidian/SKILL.md
 ```
 
-1. **`specs/<id>/proposal.md`** — Entenda o problema, os contratos de dados e o risco principal
-2. **`specs/<id>/design.md`** — Entenda a arquitetura exata, os tipos TypeScript e os cenários de verificação
-3. **`specs/<id>/spec-plan.md`** — Este é o seu mapa de execução. Identifique qual task está `[ ] Pending` e comece por ela
+**Arquivos de spec (ler nesta ordem):**
+1. `specs/<id>/proposal.md` — problema, contratos de dados, risco principal
+2. `specs/<id>/design.md` — arquitetura, tipos TypeScript, cenários de verificação
+3. `specs/<id>/spec-plan.md` — mapa de execução (tasks `[ ] Pending`)
 
-Adicionalmente:
-- Leia a memória modular relevante (ex: `memory/supabase.md`, `memory/ui.md`, `memory/ofx.md`)
-- Se envolver módulos existentes: `graphify explain "<Modulo>"` antes de editar qualquer arquivo
-- Carregue silenciosamente as credenciais do `.env` **sem pedir nada ao usuário**:
-  ```
-  $env:SUPABASE_ACCESS_TOKEN = "<valor do .env>"
-  $env:GH_TOKEN = "<valor do .env>"
-  ```
-  **É EXTREMAMENTE PROIBIDO pedir para o usuário fazer login, rodar supabase login ou qualquer comando de autenticação interativo.**
+**Carregar credenciais silenciosamente:**
+```powershell
+$env:SUPABASE_ACCESS_TOKEN = "<valor do .env>"
+$env:SUPABASE_PROJECT_ID   = "<valor do .env>"
+$env:GH_TOKEN              = "<valor do .env>"
+```
 
 ---
 
-## Step 1 — Execução Task por Task (Skills Ativas por Tipo)
+## Step 1 — Leitura da Memória Obsidian (Orchestrator)
 
-Para cada `- [ ] Pending` no `spec-plan.md`, marque como `- [/] In Progress`, execute e só então marque `- [x] Completed`.
+Antes de lançar qualquer subagente, leia as memories que serão injetadas:
 
-**Se a task é [FRONTEND] — UI/React/Tailwind:**
-
-Leia as skills antes de codar qualquer componente:
 ```
-view_file C:/Users/User/.gemini/config/skills/frontend-design-pro/SKILL.md    ← paleta, componentes, estados obrigatórios
-view_file C:/Users/User/.gemini/config/skills/frontend-design-3/SKILL.md      ← formulários, tabelas, upload, UX financeiro
-view_file C:/Users/User/.gemini/config/skills/afrexai-nextjs-production/SKILL.md  ← App Router, Server vs Client, env vars
+view_file .agent/memory/ui.md         ← se há tasks [FRONTEND]
+view_file .agent/memory/supabase.md   ← se há tasks [DB] ou [BACKEND]
+view_file .agent/memory/auth.md       ← se há tasks de autenticação
+view_file .agent/memory/domain.md     ← se há lógica de negócio
 ```
 
-- Respeite SEMPRE: Dark UI sólido (Zinc-950, `#050711`), sem glassmorphism, tipografia Inter/Outfit
-- Consulte `spec/global/features.md` antes de criar qualquer componente novo — não duplique
-- Nunca quebre a API pública de componentes existentes (props, eventos, exports) sem isso estar na spec
-
-**Se a task é [BACKEND] — Supabase/RPCs/Migrations:**
-
-Leia as skills antes de qualquer operação:
-```
-view_file C:/Users/User/.gemini/config/skills/supabase/SKILL.md    ← auth headless, schema dump, RLS, RPCs, checklist
-view_file C:/Users/User/.gemini/config/skills/backend/SKILL.md     ← Server Actions, Edge Functions, segurança, anti-patterns
-```
-
-- Execute o **Checklist da Seção 9** do `supabase/SKILL.md` antes de começar
-- Carregue `SUPABASE_ACCESS_TOKEN` e `SUPABASE_PROJECT_ID` do `.env` silenciosamente
-- Inspecione o schema atual antes de criar qualquer coisa:
-  ```sql
-  supabase db execute --project-ref $SUPABASE_PROJECT_ID \
-    --sql "SELECT table_name, column_name FROM information_schema.columns WHERE table_schema = 'public' ORDER BY table_name;"
-  ```
-- RLS obrigatório em toda tabela nova — nunca crie sem policy (ver Seção 4 da skill supabase)
-- Nunca crie tabela, RPC ou policy sem verificar que não existe equivalente no schema atual
-- Use `SUPABASE_SERVICE_ROLE_KEY` para webhooks e operações que precisam bypassar RLS (ver Seção 5)
-
-**Se a task é [INFRA] — Deploy/VPS/DNS:**
-- Leia `.antigravity/state.json` para entender o impacto real (UI only, app+backend, infra only)
-- Se `supabase.mode=self_hosted_vps`: acesso exclusivamente via SSH remoto — NUNCA container local
-- Configure DNS Cloudflare via API (POST) se necessário — nunca via dashboard manual
-
-**Se a task é [TEST] — Verificação de Cenários:**
-
-Releia o framework antes de testar:
-```
-view_file C:/Users/User/.gemini/config/skills/adaptive-reasoning/SKILL.md    ← Step 4: Checklist de Coerência Final
-```
-
-- Execute os cenários definidos em `specs/<id>/design.md` (seção SCAN → INFER → VERIFY → FIX)
-- Para cada cenário: descreva o estado inicial, execute a ação, verifique o resultado esperado
-- Se o resultado divergir do esperado → acione o auto-healing (Step 2)
+Salve o conteúdo desses arquivos — você vai injetar nos prompts dos subagentes.
 
 ---
 
-## Step 2 — Auto-Healing & Rollback Estrito
+## Step 2 — Consulta ao Grafo (Orchestrator)
 
-Se ocorrerem erros, releia o protocolo:
-```
-view_file C:/Users/User/.gemini/config/skills/adaptive-reasoning/SKILL.md    ← Step 3: Resultado Divergente = Nova Hipótese
-```
-
-Se ocorrerem erros de build, testes falhando, ou resultado diferente do especificado no `design.md`:
-
-- **Tentativa 1:** Analise o erro. Corrija na causa raiz, não no sintoma.
-- **Tentativa 2:** Releia o `design.md` e o `proposal.md`. O erro é de implementação ou de spec?
-- **Tentativa 3 (última):** Tente uma abordagem alternativa documentada na spec.
-- **Se a 3ª falhar:** Execute `git reset --hard` imediatamente. Notifique o usuário com o diagnóstico exato. Anote o erro no `spec-plan.md`. **NÃO tente uma 4ª vez.**
-
----
-
-## Step 3 — VLM Visual QA (Obrigatório se [FRONTEND])
-
-É **PROIBIDO** dizer "não tenho olhos" ou "não consigo verificar visualmente" se a task tocou em UI.
+Para cada módulo que será tocado pelas tasks:
 
 ```bash
-npx playwright screenshot <url-de-preview-ou-localhost> tela.png
+graphify explain "<modulo-central>"   ← dependências do módulo
 ```
 
-1. Se a rota for protegida por login: recupere as credenciais do `.env` isolado e autentique primeiro
-2. Leia a imagem gerada e verifique contra os critérios do `design.md`:
+Salve o output — você vai incluir no prompt dos agentes relevantes.
+
+---
+
+## Step 3 — Agrupamento e Execução por Domínio
+
+Identifique os domínios das tasks pendentes no `spec-plan.md` e agrupe:
+
+| Domínio | Agente | Skills Injetadas | Memory Injetada |
+|---|---|---|---|
+| `[DB]` | Database Agent | `database/SKILL.md` | `memory/supabase.md` |
+| `[BACKEND]` | Backend Agent | `backend-patterns/SKILL.md` + `auth/SKILL.md` | `memory/auth.md` + `memory/supabase.md` |
+| `[FRONTEND]` | Frontend Agent | `ui-components/SKILL.md` + `ui-motion/SKILL.md` | `memory/ui.md` |
+| `[TEST]` | Test (via Orchestrator) | `adaptive-reasoning/SKILL.md` | todos os memory relevantes |
+
+**Ordem de execução obrigatória:**
+1. `[DB]` primeiro — banco deve existir antes do backend
+2. `[BACKEND]` segundo — Server Actions dependem das tabelas
+3. `[FRONTEND]` terceiro — UI consome as Server Actions
+4. `[TEST]` por último — valida o que foi implementado
+
+**Para cada grupo, leia o arquivo do agente antes de lançá-lo:**
+```
+view_file .agent/agents/database-agent.md
+view_file .agent/agents/backend-agent.md
+view_file .agent/agents/frontend-agent.md
+```
+
+**Construa o prompt do subagente com este template:**
+
+```markdown
+[CONTEXTO DO AGENTE]
+Você é o <Tipo> Specialist Agent do vibe-apply.
+Feature em execução: <nome da feature> (<id>)
+Leia .agent/agents/<tipo>-agent.md para entender seu papel e protocolo completo.
+
+[MEMÓRIA DO PROJETO — via Obsidian]
+<cole o conteúdo dos arquivos memory relevantes aqui>
+
+[CONTEXTO DO GRAFO — via Graphify]
+<cole o output do graphify explain aqui>
+
+[TASKS QUE SÃO SUAS]
+<lista das tasks [TIPO] do spec-plan.md>
+
+[SPEC DE REFERÊNCIA]
+- proposal.md: <cole os Contratos de Dados e o Risco Principal>
+- design.md: <cole as Interfaces TypeScript e os Cenários de Verificação>
+```
+
+Marque as tasks como `[/] In Progress` no `spec-plan.md` ao lançar o agente.
+
+---
+
+## Step 4 — Validação (Validator Agent)
+
+Após cada grupo de agentes retornar seus relatórios, **leia o Validator Agent e lance-o:**
+
+```
+view_file .agent/agents/validator-agent.md
+```
+
+**Construa o prompt do Validator com:**
+
+```markdown
+[CONTEXTO DO VALIDATOR]
+Você é o Validator Agent independente.
+Leia .agent/agents/validator-agent.md para o protocolo completo.
+
+[SPEC DE REFERÊNCIA]
+<cole os 3 arquivos de spec>
+
+[MEMÓRIA DO PROJETO]
+<cole as memories relevantes>
+
+[RELATÓRIOS DOS AGENTES]
+<cole os relatórios retornados pelos agentes especializados>
+```
+
+**Processar o veredito do Validator:**
+
+- `[PASS]` → Marque tasks como `[x] Completed` no spec-plan. Avance.
+- `[FAIL: <AgentX>]` → Relance APENAS o agente problemático com o motivo do FAIL no prompt. Máximo **3 iterações totais**.
+- `[CONFLICT]` → Relance os agentes em conflito, explicitando o conflito no prompt.
+- `[ESCALATE]` → Pare. Reporte ao usuário com o diagnóstico completo. **Não tente de novo.**
+
+---
+
+## Step 5 — Auto-Healing com Bug Agent
+
+Se um agente retornar `Status: FAILED` por erro de build, runtime ou teste:
+
+```
+view_file .agent/agents/bug-agent.md
+```
+
+**Lançar Bug Agent com:**
+
+```markdown
+[CONTEXTO DO BUG AGENT]
+Leia .agent/agents/bug-agent.md para o protocolo completo.
+
+[ERRO REPORTADO]
+<cole o erro exato do relatório do agente>
+
+[MEMÓRIA DO MÓDULO]
+<cole o conteúdo de memory/<modulo>.md>
+
+[CONTEXTO DO GRAFO]
+<cole o graphify explain do módulo com bug>
+
+[ARQUIVOS MODIFICADOS ANTES DO ERRO]
+<lista dos arquivos que foram tocados>
+```
+
+O Bug Agent executa até 3 tentativas de repair. Se `[ESCALATE]`:
+```bash
+git reset --hard HEAD
+```
+Reporte ao usuário com diagnóstico completo.
+
+---
+
+## Step 6 — VLM Visual QA (Obrigatório se [FRONTEND])
+
+É **PROIBIDO** dizer "não tenho olhos" se a task tocou em UI.
+
+```bash
+npx playwright screenshot <url-de-preview-ou-localhost> screenshot.png
+```
+
+1. Se rota protegida: recupere credenciais do `.env` e autentique primeiro
+2. Leia a imagem e verifique contra `design.md`:
    - CSS vazou para outros componentes?
-   - Contraste e legibilidade estão corretos?
-   - Z-index quebrou algum overlay?
-   - A paleta Zinc-950 foi respeitada?
-   - O layout está alinhado como especificado?
-3. Se encontrar quebra visual → corrija o código e repita antes de marcar a task como `[x]`
+   - Paleta Zinc-950 respeitada?
+   - Layout alinhado como especificado?
+3. Se encontrar quebra visual → corrija e repita antes de marcar `[x]`
 
 ---
 
 ## Conclusão
 
-Quando **todos** os itens do `spec-plan.md` estiverem `[x] Completed`, avise o usuário:
+Quando **todos** os itens do `spec-plan.md` estiverem `[x] Completed` e o Validator tiver emitido `[PASS]`:
 
-*"Implementação concluída. Rode `/vibe-archive <id>` para atualizar a memória, o grafo e fazer o commit."*
+*"Implementação concluída. Rode `/vibe-archive <id>` para atualizar a memória Obsidian, o grafo e fazer o commit."*
 
 <!-- VIBEAPPLY:END -->
