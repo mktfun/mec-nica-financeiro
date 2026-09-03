@@ -21,11 +21,16 @@ import { Modal } from '@/components/ui/Modal';
 import { CentralImportWizard } from '@/components/importacoes/CentralImportWizard';
 import { MarcoZeroWizard } from '@/components/importacoes/MarcoZeroWizard';
 import { PurgeDailyModal } from '@/components/importacoes/PurgeDailyModal';
+import { FechamentoModeSelector, FechamentoMode } from '@/components/importacoes/bifurcacao/FechamentoModeSelector';
+import { FechamentoManualWizard } from '@/components/importacoes/manual/FechamentoManualWizard';
+import { ReconciliationChatWorkspace } from '@/components/conciliacao/chat/ReconciliationChatWorkspace';
 import { toast } from 'sonner';
 
 interface ImportacoesSearchParams {
   tab?: 'diario' | 'marco-zero' | 'historico';
   date?: string;
+  mode?: 'manual' | 'ai';
+  phase?: number;
 }
 
 export const Route = createFileRoute('/importacoes')({
@@ -33,6 +38,8 @@ export const Route = createFileRoute('/importacoes')({
     return {
       tab: (search.tab as any) || 'diario',
       date: (search.date as string) || undefined,
+      mode: (search.mode as any) || undefined,
+      phase: search.phase ? Number(search.phase) : undefined,
     };
   },
   component: ImportacoesPage,
@@ -174,10 +181,47 @@ function ImportacoesPage() {
         {/* CONTEÚDO DAS ABAS */}
         {activeTab === 'diario' && (
           <div className="animate-in fade-in duration-300">
-            <CentralImportWizard 
-              onCancel={() => handleTabChange('historico')}
-              initialDate={selectedDate}
-            />
+            {/* 1. MODO CONVERSACIONAL COM IA (HYDRA) */}
+            {search.mode === 'ai' && (
+              <div className="space-y-4">
+                <ReconciliationChatWorkspace
+                  targetDate={selectedDate || new Date().toISOString().split('T')[0]}
+                  onReturnToSelector={() => navigate({ search: (prev) => ({ ...prev, mode: undefined }) })}
+                  onSwitchToClassicView={() => navigate({ search: (prev) => ({ ...prev, mode: 'manual', phase: 1 }) })}
+                />
+              </div>
+            )}
+
+            {/* 2. MODO MANUAL PASSO A PASSO (ZERO IA) */}
+            {search.mode === 'manual' && (
+              <FechamentoManualWizard
+                targetDate={selectedDate || new Date().toISOString().split('T')[0]}
+                initialPhase={(search.phase as any) || 1}
+                onBackToSelector={() => navigate({ search: (prev) => ({ ...prev, mode: undefined }) })}
+                onSwitchToAi={() => navigate({ search: (prev) => ({ ...prev, mode: 'ai' }) })}
+                onCompleteClose={() => {
+                  toast.success('Fechamento manual concluído!');
+                  navigate({ search: (prev) => ({ ...prev, mode: undefined, tab: 'historico' }) });
+                }}
+              />
+            )}
+
+            {/* 3. SELETOR INICIAL DE MODALIDADE (DEFAULT) */}
+            {!search.mode && (
+              <FechamentoModeSelector
+                selectedDate={selectedDate || new Date().toISOString().split('T')[0]}
+                onDateChange={(newDate) => navigate({ search: (prev) => ({ ...prev, date: newDate }) })}
+                onSelectMode={(chosenMode) => {
+                  navigate({
+                    search: (prev) => ({
+                      ...prev,
+                      mode: chosenMode,
+                      phase: chosenMode === 'manual' ? 1 : undefined
+                    })
+                  });
+                }}
+              />
+            )}
           </div>
         )}
 

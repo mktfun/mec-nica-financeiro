@@ -1,3 +1,22 @@
+## [2026-09-03] — [Feature ID: 361-fluxo-ingestao-controlada-4-etapas-com-bifurcacao-chat]
+
+**Contexto:** Implementação da Bifurcação Inicial da Central de Fechamento Diário (`/importacoes?tab=diario`), remoção de poluição visual (banner supérfluo de virada de mês/carro) e criação do Modo Manual Passo a Passo em 4 Fases (100% Sem IA / ZERO LLM) vs Modo Conversacional Hydra em Tela Cheia (Com IA).
+
+**Regra aprendida:**
+1. **Bifurcação Consciente na Entrada (`FechamentoModeSelector.tsx`):**
+   - O operador deve ter escolha deliberada de modalidade logo no início do dia via 2 cards institucionais de alto contraste: Modo Manual Passo a Passo (Sem IA) vs Modo Conversacional Hydra (Com IA).
+   - Não impor automação de IA para quem prefere controle manual por tabelas e grades Excel.
+2. **Esteira Manual Controlada em 4 Fases Estritas (`FechamentoManualWizard.tsx`):**
+   - A importação caótica de 40 arquivos de uma vez foi segregada em 4 etapas sequenciais com dropzone e tela de conferência dedicada por tipo de arquivo:
+     - **Fase 1:** Só OSs do pátio com `PatioExcelStoreAccordion` e edição inline de pendentes.
+     - **Fase 2:** Só Vendas Rede com pré-matching balcão x OS (`match_stage2_rede_os`), visualização de sobras e desempate via `SmartResolutionStrip`.
+     - **Fase 3:** Só 10 OFX Itaú com batimento PIX x OS e apuração de lotes de cartões Rede creditados vs a compensar ($D+1$).
+     - **Fase 4:** Só Contas a Pagar com batimento de saídas, receitas extras via `RevenueAdjustmentsCard` e selagem contábil oficial.
+3. **Persistência de Sessão e Não-Interrupção no F5:**
+   - O estado da esteira manual e o modo selecionado são salvos em `reconciliation_pipeline_sessions`, permitindo ao operador atualizar a página sem perder o progresso.
+
+---
+
 ## [2026-09-03] — [Feature ID: 360-conciliacao-conversacional-fullscreen-chat]
 
 **Contexto:** Implementação do Workspace Conversacional de Conciliação em Tela Cheia com a IA Hydra, eliminação de clichês de "vibecoding de IA" (zero emojis, zero gradientes roxos extravagantes) e adoção de Dark UI Zinc-950 corporativa com atalhos de teclado.

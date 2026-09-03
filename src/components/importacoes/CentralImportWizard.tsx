@@ -2190,34 +2190,6 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             )}
           </div>
           
-          {/* Banner Informativo de Virada de Mês / OCR */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-gradient-to-r from-indigo-950/40 via-zinc-900/60 to-zinc-900/40 border border-indigo-500/30">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">
-                <Sparkles className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
-                  Virada de Mês / Pátio sem relatório do ERP?
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-mono">
-                    Mistral OCR Vision Integrado
-                  </span>
-                </h4>
-                <p className="text-xs text-zinc-400 mt-0.5">
-                  Se você não tiver o arquivo .xls de OSs, solte os extratos OFX e Rede acima que o sistema entrará automaticamente na esteira de prints.
-                </p>
-              </div>
-            </div>
-            <Button
-              type="button"
-              onClick={() => setStep(1.5)}
-              className="bg-indigo-600/30 hover:bg-indigo-600/40 border border-indigo-500/40 text-indigo-200 text-xs font-semibold px-4 py-2 rounded-xl flex items-center gap-2 shrink-0"
-            >
-              <Sparkles className="w-4 h-4 text-indigo-400" />
-              Abrir Guia OCR Diretamente
-            </Button>
-          </div>
-          
           {isProcessing && (
             <div className="mt-8 flex justify-center">
                <div className="flex items-center gap-3 animate-pulse text-zinc-400 text-sm">

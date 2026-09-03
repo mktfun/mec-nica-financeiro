@@ -71,7 +71,9 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { messages, conversation_id } = await req.json()
+    const body = await req.json();
+    const { messages, conversation_id } = body;
+    console.log(`[ai-chat] Mensagens recebidas: ${messages?.length || 0} | Conv ID: ${conversation_id} | Modulo: ${body?.context_module}`);
     if (!Array.isArray(messages) || messages.length === 0) {
       throw new Error('Invalid prompt: prompt or messages must be defined')
     }

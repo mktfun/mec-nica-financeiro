@@ -1,3 +1,18 @@
+## [2026-09-03] — [Feature ID: 361-fluxo-ingestao-controlada-4-etapas-com-bifurcacao-chat]
+
+**Contexto:** Definição canônica do encadeamento contábil e de auditoria da Nova Central de Fechamento: segregação entre o Modo Manual (4 Fases Determinísticas sem IA) e o Modo Conversacional Hydra (Com IA em Tela Cheia).
+
+**Regra aprendida:**
+1. **Encadeamento Contábil de 4 Fases no Modo Manual:**
+   - **Fase 1 (Só OSs):** Estabelece a produção física de balcão e os veículos que pernoitam no pátio. O operador audita e edita OSs pendentes uma a uma antes de mexer em dinheiro bancário.
+   - **Fase 2 (Só Rede):** Captura a produção de cartões na adquirente e abate diretamente nas OSs de cartão do balcão (`match_stage2_rede_os`), separando vendas casadas de sobras não faturadas no balcão.
+   - **Fase 3 (Só OFX):** Ingestão dos extratos bancários. Bate PIX recebidos contra OSs de PIX da Fase 1 e confronta os créditos de maquininha contra as vendas da Rede da Fase 2, segregando o que entrou em conta do Ativo Circulante a Compensar ($D+1$ / $D+30$).
+   - **Fase 4 (Só Contas):** Ingestão dos títulos a pagar do ERP. Bate débitos bancários contra contas cadastradas (`auto_match_saidas`), insere receitas extraordinárias DRE e sela o balanço final dos 5 Pilares.
+2. **SSOT e Convergência de Snapshot:**
+   - Ambos os modos (Manual 4 Fases e Conversacional Hydra) utilizam as mesmas tabelas de produção e chamam a mesma RPC `close_daily_snapshot(p_date)` para selagem oficial do dia, garantindo equivalência matemática absoluta.
+
+---
+
 ## [2026-09-02] — [Feature ID: 358-motor-conciliacao-lojas-ofx-e-equalizacao-0209]
 
 **Contexto:** Equalização canônica oficial de 02/09/2026, apuração das receitas extraordinárias DRE (R$ 24.454,96), saldo ativo de pátio ancorado em R$ 33.365,96 e fechamento com diferença de -R$ 11,14 ('approved').

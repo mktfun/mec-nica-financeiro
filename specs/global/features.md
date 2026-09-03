@@ -1,3 +1,18 @@
+### Spec 361 — Bifurcação Inicial da Central de Fechamento: Modo Manual Passo a Passo (Sem IA) vs Modo Conversacional Hydra (Com IA)
+- **Limpeza Visual Mandatória**: Excluído o banner supérfluo *"Virada de Mês / OCR e Carro"* de `CentralImportWizard.tsx`.
+- **Seletor de Modalidade Inicial (`FechamentoModeSelector.tsx`)**: Chaveamento explícito e deliberado logo na entrada da aba Fechamento Diário (`/importacoes?tab=diario`), com Date Picker corporativo e dois cards de escolha: Modo Manual Passo a Passo (Sem IA) vs Modo Conversacional Hydra (Com IA).
+- **Esteira Manual Controlada em 4 Fases Sem IA (`FechamentoManualWizard.tsx`)**:
+  - `Fase1PatioOsReview.tsx`: Dropzone exclusiva de OSs + integração da grade sanfona `PatioExcelStoreAccordion` com ajuste de OSs pendentes uma a uma.
+  - `Fase2RedeVsOsReview.tsx`: Dropzone exclusiva de relatórios da Rede + pré-matching balcão x OS (`match_stage2_rede_os`) + tabela de sobras da Rede + desempate via `SmartResolutionStrip`.
+  - `Fase3OfxReconciliation.tsx`: Dropzone exclusiva dos 10 OFX Itaú + batimento de PIX vs OS + apuração dos lotes da Rede creditados em conta vs Ativo Circulante a Compensar ($D+1$).
+  - `Fase4ContasVsSaidasReview.tsx`: Dropzone exclusiva de Contas a Pagar + batimento de saídas bancárias (`auto_match_saidas`) + receitas extras DRE via `RevenueAdjustmentsCard` + selagem final oficial via `close_daily_snapshot`.
+- **Persistência de Sessão e RPCs no PostgreSQL (Migration 27)**: Tabela `reconciliation_pipeline_sessions` com RLS, e RPCs determinísticas `get_pipeline_session_state`, `save_pipeline_step_progress` e `match_stage2_rede_os`.
+
+### Spec 360 — Conciliação Conversacional em Tela Cheia com a IA Hydra
+- **Workspace Conversacional Fullscreen (`ReconciliationChatWorkspace.tsx`)**: Interface de chat em tela inteira sem modais flutuantes, feed centralizado, balões do assistente com blocos expansíveis de investigação de ferramentas e balões do operador à direita.
+- **Cartões de Decisão Inline com Atalhos Físicos (`InlineDecisionCard.tsx`)**: Propostas acionáveis com aprovação por teclado (`1` / `Enter` para confirmar, `2` / `Esc` para rejeitar) com Live Delta Tracker e recálculo instantâneo dos 5 Pilares no PostgreSQL.
+- **Infraestrutura Supabase & Tool Calling (Migration 26)**: Tabelas `conversations` e `messages` com suporte temporal por data, RPC `resolve_orphan_transaction` e RPC `upsert_daily_revenue_adjustment`.
+
 ### Spec 358 — Motor de Conciliação por Loja, Receitas Extras DRE e Equalização Canônica de 02/09
 - **Contrato Canônico do Split Dual de Lojas**: Atualizada a RPC `get_daily_reconciliation_summary` via migration `20260902000024_equalize_canonical_0209.sql`, garantindo o retorno das propriedades `entradas_conciliadas`, `dif_entradas`, `contas_conciliadas`, `dif_saidas`, `nao_entrou_valor` e `status_compensacao` para as 10 filiais.
 - **Fallbacks Defensivos Múltiplos no Frontend**: `ConciliacaoLojasView.tsx` e `conciliacao.$lojaId.tsx` blindados com encadeamentos seguros para cálculo de entradas e saídas, eliminando qualquer exibição de dados zerados.

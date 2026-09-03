@@ -23,6 +23,7 @@ import { toast } from 'sonner';
 export interface ReconciliationChatWorkspaceProps {
   targetDate: string;
   onSwitchToClassicView?: () => void;
+  onReturnToSelector?: () => void;
   className?: string;
 }
 
@@ -34,6 +35,7 @@ const formatBrl = (val?: number) => {
 export const ReconciliationChatWorkspace: React.FC<ReconciliationChatWorkspaceProps> = ({
   targetDate,
   onSwitchToClassicView,
+  onReturnToSelector,
   className
 }) => {
   const [showStoreBreakdown, setShowStoreBreakdown] = useState(false);
@@ -165,6 +167,17 @@ export const ReconciliationChatWorkspace: React.FC<ReconciliationChatWorkspacePr
               <span className="hidden sm:inline">10 Lojas</span>
               {showStoreBreakdown ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
             </button>
+
+            {onReturnToSelector && (
+              <button
+                type="button"
+                onClick={onReturnToSelector}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-zinc-300 hover:text-white bg-zinc-850 border border-zinc-700 hover:bg-zinc-800 transition-colors"
+                title="Voltar para a tela de escolha de modalidade"
+              >
+                <span>↩ Escolha de Modo</span>
+              </button>
+            )}
 
             {onSwitchToClassicView && (
               <button

@@ -1,3 +1,19 @@
+## [2026-09-03] — [Feature ID: 361-fluxo-ingestao-controlada-4-etapas-com-bifurcacao-chat]
+
+**Contexto:** Criação da tabela de sessões do pipeline e RPCs determinísticas para a esteira manual de 4 fases (ZERO IA) via migration `20260903000027_reconciliation_pipeline_sessions.sql`.
+
+**Regra aprendida:**
+1. **Tabela de Sessões `reconciliation_pipeline_sessions`:**
+   - Mantém `target_date UNIQUE`, `current_step INT (1 a 5)`, `selected_mode ('undecided', 'manual', 'ai')`, `steps_completed JSONB`, `step_data JSONB` e `chat_conversation_id UUID`.
+   - Permite pausar e retomar a esteira a qualquer momento sem perder os arquivos já ingeridos nem o avanço das fases.
+2. **RPC `get_pipeline_session_state(p_target_date)`:**
+   - Retorna o estado completo da sessão mais contadores atômicos em tempo real de cada uma das 4 etapas (`stage1_os`, `stage2_rede`, `stage3_ofx`, `stage4_contas`) e o resumo dos 5 Pilares no PostgreSQL.
+3. **RPC `match_stage2_rede_os(p_target_date, p_store_id)`:**
+   - Executa batimento estritamente determinístico entre vendas capturadas na Rede (`pos_transactions`) e ordens de serviço (`patio_os`) na mesma filial.
+   - **Guarda de Unicidade Estrita:** Só executa o match automático se houver exatamente 1 candidato (`candidates_count = 1`). Se houver colisão (`candidates_count > 1`), suspende o match e retorna no payload `collisions` para desempate do operador via teclado (`1`, `2`).
+
+---
+
 ## [2026-09-03] — [Feature ID: 360-conciliacao-conversacional-fullscreen-chat]
 
 **Contexto:** Criação da infraestrutura de dados para o Workspace Conversacional Hydra com persistência de sessões por dia, RPC unificada `resolve_orphan_transaction` e RPC de receita corporativa DRE `upsert_daily_revenue_adjustment` via migration `20260903000026_reconciliation_conversations_and_tools.sql`.
