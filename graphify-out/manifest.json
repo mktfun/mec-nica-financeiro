@@ -1960,38 +1960,38 @@
     "semantic_hash": ""
   },
   ".agent/rules/ia.md": {
-    "mtime": 1788447024.9004571,
-    "ast_hash": "376ab71f020a6d54774f96161df17ecd",
+    "mtime": 1788465889.642702,
+    "ast_hash": "d4b3c7aaf773d19a1e480a7ca2a8dcde",
     "semantic_hash": ""
   },
   ".agent/workflows/config-antigravity.md": {
-    "mtime": 1788447024.8696592,
+    "mtime": 1788465889.6182125,
     "ast_hash": "600887be6e2197c5e24b375049b03ff7",
     "semantic_hash": ""
   },
   ".agent/workflows/setup.md": {
-    "mtime": 1788447024.8870728,
+    "mtime": 1788465889.6199489,
     "ast_hash": "498e377080e9faa1fe603f0f9cf2cadd",
     "semantic_hash": ""
   },
   ".agent/workflows/vibe-apply.md": {
-    "mtime": 1788447024.8896382,
+    "mtime": 1788465889.626914,
     "ast_hash": "4f02245602271027fef084bbea5e3e9b",
     "semantic_hash": ""
   },
   ".agent/workflows/vibe-archive.md": {
-    "mtime": 1788447024.891702,
+    "mtime": 1788465889.6289563,
     "ast_hash": "a81ce82d7617c9ecc01fbe98ef3fc03f",
     "semantic_hash": ""
   },
   ".agent/workflows/vibe-council.md": {
-    "mtime": 1788447024.893836,
+    "mtime": 1788465889.6314225,
     "ast_hash": "3653a9ce5a96856136aa81f886abb990",
     "semantic_hash": ""
   },
   ".agent/workflows/vibe-proposal.md": {
-    "mtime": 1788447024.898458,
-    "ast_hash": "3e2b1901b0c92607624e43050b444a87",
+    "mtime": 1788465889.640401,
+    "ast_hash": "5b4899bc11e3e59b3ed2e42d7b5f9ac9",
     "semantic_hash": ""
   },
   ".agents/ORIGINAL_REQUEST.md": {
@@ -2210,8 +2210,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1788455970.5452814,
-    "ast_hash": "ffd72a036566f09100b4d89f3d844972",
+    "mtime": 1788465253.7722123,
+    "ast_hash": "25213e73d513b67c2a0c146aaf1c5983",
     "semantic_hash": ""
   },
   "spec/global/overview.md": {
@@ -3910,37 +3910,37 @@
     "semantic_hash": ""
   },
   ".agent/agents/auditor-agent.md": {
-    "mtime": 1788447024.9029596,
+    "mtime": 1788465889.6449127,
     "ast_hash": "f69f6a83d066f6ed361d476e5d9909b5",
     "semantic_hash": ""
   },
   ".agent/agents/backend-agent.md": {
-    "mtime": 1788447024.905082,
+    "mtime": 1788465889.6468468,
     "ast_hash": "7b994f9147c99fc9b3dd810dac0d7796",
     "semantic_hash": ""
   },
   ".agent/agents/bug-agent.md": {
-    "mtime": 1788447024.907192,
+    "mtime": 1788465889.6490927,
     "ast_hash": "3d5cabe43fd270c1d8aeede0c55c6918",
     "semantic_hash": ""
   },
   ".agent/agents/database-agent.md": {
-    "mtime": 1788447024.9093208,
-    "ast_hash": "e9a92ea596bef5b2d2ca9b082ed709f0",
+    "mtime": 1788465889.6508055,
+    "ast_hash": "48a06c4f078b3596224cf656f91712f8",
     "semantic_hash": ""
   },
   ".agent/agents/frontend-agent.md": {
-    "mtime": 1788447024.911388,
+    "mtime": 1788465889.6532013,
     "ast_hash": "6012e20a09555014bedb064cca99ca70",
     "semantic_hash": ""
   },
   ".agent/agents/research-agent.md": {
-    "mtime": 1788447024.9140198,
-    "ast_hash": "ed4f62ad65dec07dbfe397584a2ccdee",
+    "mtime": 1788465889.6549888,
+    "ast_hash": "68768c8d1ca3f38addb394814ed582ef",
     "semantic_hash": ""
   },
   ".agent/agents/validator-agent.md": {
-    "mtime": 1788447024.9160218,
+    "mtime": 1788465889.6572134,
     "ast_hash": "8173cb6512ae06dd6f780e367130ee02",
     "semantic_hash": ""
   },
@@ -3955,22 +3955,22 @@
     "semantic_hash": ""
   },
   ".agent/policies/activation-rules.md": {
-    "mtime": 1788447024.9180212,
+    "mtime": 1788447024.8468,
     "ast_hash": "4568384a2e1026269e42163e3c39bb59",
     "semantic_hash": ""
   },
   ".agent/policies/context-budget.md": {
-    "mtime": 1788447024.9201887,
+    "mtime": 1788447024.851568,
     "ast_hash": "5049544da62a9dd62f1a16242e1e4241",
     "semantic_hash": ""
   },
   ".agent/policies/sync-upstream.md": {
-    "mtime": 1788447024.9227903,
+    "mtime": 1788447024.856508,
     "ast_hash": "35ca0f824d343b4636e8c3cff5499ec2",
     "semantic_hash": ""
   },
   ".agent/workflows/vibe-debug.md": {
-    "mtime": 1788447024.895924,
+    "mtime": 1788465889.6337805,
     "ast_hash": "8be4728798f9aecbfefd072c3467e86e",
     "semantic_hash": ""
   },
@@ -3984,34 +3984,44 @@
     "ast_hash": "6bb689970d7928e94d444e9d6d0d2aae",
     "semantic_hash": ""
   },
-  "specs/364-fix-pos-transactions-updated-at-in-match-stage2-rede-os/design.md": {
-    "mtime": 1788457977.407139,
-    "ast_hash": "04e01be576cb12c1f031e9203768b656",
+  "supabase/migrations/20260903000030_fix_match_stage2_rede_os_v_chosen_os_record.sql": {
+    "mtime": 1788466165.964434,
+    "ast_hash": "3e22821951daa6019c07f6aa22ad6ad1",
     "semantic_hash": ""
   },
-  "specs/364-fix-pos-transactions-updated-at-in-match-stage2-rede-os/proposal.md": {
-    "mtime": 1788457970.7987554,
-    "ast_hash": "bd2f8cf17382437aba0e6f47e7b18d6d",
+  ".agent/workflows/vibe-apply-solo.md": {
+    "mtime": 1788465889.6222072,
+    "ast_hash": "97609c0886f485c776aa555fc787af4e",
     "semantic_hash": ""
   },
-  "specs/364-fix-pos-transactions-updated-at-in-match-stage2-rede-os/spec-plan.md": {
-    "mtime": 1788458365.2590263,
-    "ast_hash": "2324fa3e3dbfb3294d62f74f05ab3a95",
+  ".agent/workflows/vibe-apply-team.md": {
+    "mtime": 1788465889.6248844,
+    "ast_hash": "4f02245602271027fef084bbea5e3e9b",
     "semantic_hash": ""
   },
-  "specs/365-clean-dropzone-flow-and-recalibrated-rede-os-matching/design.md": {
-    "mtime": 1788464581.90422,
-    "ast_hash": "139926e1eee5f81c30efa15abf938db8",
+  ".agent/workflows/vibe-proposal-solo.md": {
+    "mtime": 1788465889.6359465,
+    "ast_hash": "3c6d68774acea6e1549d7a67d6afd275",
     "semantic_hash": ""
   },
-  "specs/365-clean-dropzone-flow-and-recalibrated-rede-os-matching/proposal.md": {
-    "mtime": 1788464573.7818522,
-    "ast_hash": "7d6e2223beb02c95fca196e0bcfc9508",
+  ".agent/workflows/vibe-proposal-team.md": {
+    "mtime": 1788465889.6381996,
+    "ast_hash": "5b4899bc11e3e59b3ed2e42d7b5f9ac9",
     "semantic_hash": ""
   },
-  "specs/365-clean-dropzone-flow-and-recalibrated-rede-os-matching/spec-plan.md": {
-    "mtime": 1788465015.5731382,
-    "ast_hash": "a97118de26a28d36fca97c080d0ccecb",
+  "specs/366-fix-match-stage2-rede-os-record-55000/design.md": {
+    "mtime": 1788466080.7953684,
+    "ast_hash": "841778d214b551dc74bc6f3b3d1859d5",
+    "semantic_hash": ""
+  },
+  "specs/366-fix-match-stage2-rede-os-record-55000/proposal.md": {
+    "mtime": 1788466075.1090798,
+    "ast_hash": "af4a753d352883e6af8cc37a1fa309fe",
+    "semantic_hash": ""
+  },
+  "specs/366-fix-match-stage2-rede-os-record-55000/spec-plan.md": {
+    "mtime": 1788466237.260325,
+    "ast_hash": "4d059c12f3ce68487baffea1cbbe6b53",
     "semantic_hash": ""
   }
 }

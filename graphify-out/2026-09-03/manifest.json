@@ -865,9 +865,9 @@
     "semantic_hash": "bc45a76c9242c4b85d6d4345625c46e9"
   },
   "src/integrations/supabase/types.ts": {
-    "mtime": 1788128883.8097308,
-    "ast_hash": "73a7413168bae600dc27bd1f1c1e1dbc",
-    "semantic_hash": "73a7413168bae600dc27bd1f1c1e1dbc"
+    "mtime": 1788458340.7610524,
+    "ast_hash": "7d5370a078d7a3282923ff9a04665a61",
+    "semantic_hash": ""
   },
   "src/lib/aiReconciliationService.ts": {
     "mtime": 1788128883.810706,
@@ -2210,8 +2210,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1788449122.4665673,
-    "ast_hash": "81d80ef4021b077ac145f374d26cf3b4",
+    "mtime": 1788455970.5452814,
+    "ast_hash": "ffd72a036566f09100b4d89f3d844972",
     "semantic_hash": ""
   },
   "spec/global/overview.md": {
@@ -3880,23 +3880,23 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/manual/Fase1PatioOsReview.tsx": {
-    "mtime": 1788448617.1572466,
-    "ast_hash": "88462bd46cc4a4e50c22d45ef18870cf",
+    "mtime": 1788464841.200584,
+    "ast_hash": "dad459ea1465edf3e54a0fd7dfc4cba8",
     "semantic_hash": ""
   },
   "src/components/importacoes/manual/Fase2RedeVsOsReview.tsx": {
-    "mtime": 1788451090.1098917,
-    "ast_hash": "0e3e29c00362cfb6d9af83e60c3d88a3",
+    "mtime": 1788464899.4149787,
+    "ast_hash": "a0fc58dc7027fbeee2767e85258d3a4c",
     "semantic_hash": ""
   },
   "src/components/importacoes/manual/Fase3OfxReconciliation.tsx": {
-    "mtime": 1788451114.934657,
-    "ast_hash": "b23e9e643649afcb95f61d8b3ead4d60",
+    "mtime": 1788464937.3212276,
+    "ast_hash": "db14035ba18bc59932acb81a3d101b19",
     "semantic_hash": ""
   },
   "src/components/importacoes/manual/Fase4ContasVsSaidasReview.tsx": {
-    "mtime": 1788451131.1933732,
-    "ast_hash": "15f5e07551967e05ba96c2b4aa72f72a",
+    "mtime": 1788464988.8210237,
+    "ast_hash": "529ef3290ed4bb0ba25cd8af4da9be07",
     "semantic_hash": ""
   },
   "src/components/importacoes/manual/FechamentoManualWizard.tsx": {
@@ -3974,19 +3974,44 @@
     "ast_hash": "8be4728798f9aecbfefd072c3467e86e",
     "semantic_hash": ""
   },
-  "specs/363-fix-pos-transactions-occurred-at-and-manual-pipeline-contracts/design.md": {
-    "mtime": 1788451051.5761292,
-    "ast_hash": "8fe85cac3aeb80857e6fdcc510a067e5",
+  "supabase/migrations/20260903000028_add_updated_at_to_pos_transactions.sql": {
+    "mtime": 1788458260.3738399,
+    "ast_hash": "f25ab4e181ec2044976abea3d59563c1",
     "semantic_hash": ""
   },
-  "specs/363-fix-pos-transactions-occurred-at-and-manual-pipeline-contracts/proposal.md": {
-    "mtime": 1788450802.5748868,
-    "ast_hash": "1fc7b95aa1fc4cf6f201803ce98f458f",
+  "supabase/migrations/20260903000029_recalibrate_match_stage2_rede_os.sql": {
+    "mtime": 1788464756.6929836,
+    "ast_hash": "6bb689970d7928e94d444e9d6d0d2aae",
     "semantic_hash": ""
   },
-  "specs/363-fix-pos-transactions-occurred-at-and-manual-pipeline-contracts/spec-plan.md": {
-    "mtime": 1788451153.863194,
-    "ast_hash": "058216482f340ff93155d1f811cfd2b9",
+  "specs/364-fix-pos-transactions-updated-at-in-match-stage2-rede-os/design.md": {
+    "mtime": 1788457977.407139,
+    "ast_hash": "04e01be576cb12c1f031e9203768b656",
+    "semantic_hash": ""
+  },
+  "specs/364-fix-pos-transactions-updated-at-in-match-stage2-rede-os/proposal.md": {
+    "mtime": 1788457970.7987554,
+    "ast_hash": "bd2f8cf17382437aba0e6f47e7b18d6d",
+    "semantic_hash": ""
+  },
+  "specs/364-fix-pos-transactions-updated-at-in-match-stage2-rede-os/spec-plan.md": {
+    "mtime": 1788458365.2590263,
+    "ast_hash": "2324fa3e3dbfb3294d62f74f05ab3a95",
+    "semantic_hash": ""
+  },
+  "specs/365-clean-dropzone-flow-and-recalibrated-rede-os-matching/design.md": {
+    "mtime": 1788464581.90422,
+    "ast_hash": "139926e1eee5f81c30efa15abf938db8",
+    "semantic_hash": ""
+  },
+  "specs/365-clean-dropzone-flow-and-recalibrated-rede-os-matching/proposal.md": {
+    "mtime": 1788464573.7818522,
+    "ast_hash": "7d6e2223beb02c95fca196e0bcfc9508",
+    "semantic_hash": ""
+  },
+  "specs/365-clean-dropzone-flow-and-recalibrated-rede-os-matching/spec-plan.md": {
+    "mtime": 1788465015.5731382,
+    "ast_hash": "a97118de26a28d36fca97c080d0ccecb",
     "semantic_hash": ""
   }
 }

@@ -1,3 +1,10 @@
+### Feature 366: Correção de `v_chosen_os RECORD` (Erro 55000) na RPC `match_stage2_rede_os`
+- **Status:** COMPLETED & ARCHIVED
+- **Data:** 2026-09-03
+- **Arquivos Criados/Modificados:**
+  - `supabase/migrations/20260903000030_fix_match_stage2_rede_os_v_chosen_os_record.sql` (Substituição de `v_chosen_os RECORD;` por escalares tipados `v_chosen_os_id`, `v_chosen_os_number`, `v_chosen_os_total_value`, `v_chosen_os_paid_value`, `v_chosen_os_status` com reset atômico por loop)
+- **Descrição:** Resolução do erro PostgreSQL SQLSTATE `55000` (`record "v_chosen_os" is not assigned yet` / `The tuple structure of a not-yet-assigned record is indeterminate.`) ao processar vendas da Rede na Fase 2.
+
 ### Feature 365: Fluxo Visual Limpo por Etapas (2 Modos) e Recalibração do Motor de Matching Rede x OS
 - **Status:** COMPLETED & ARCHIVED
 - **Data:** 2026-09-03

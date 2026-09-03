@@ -1,3 +1,21 @@
+## [2026-09-03] — [Feature ID: 366-fix-match-stage2-rede-os-record-55000]
+
+**Contexto:** Resolução do erro PostgreSQL SQLSTATE `55000` (`record "v_chosen_os" is not assigned yet` / `The tuple structure of a not-yet-assigned record is indeterminate.`) na execução da RPC `match_stage2_rede_os` via migration `20260903000030_fix_match_stage2_rede_os_v_chosen_os_record.sql`.
+
+**Regra aprendida:**
+1. **Anti-pattern de `RECORD` Polimórfico em Loops PL/pgSQL:**
+   - Variáveis declaradas como `RECORD` não possuem layout ou descritor de tupla definido antes de receberem uma linha completa via `SELECT ... INTO v_record`.
+   - Se a atribuição for condicional (ex.: `IF v_candidates_count > 0 THEN SELECT ... INTO v_record`), e essa condição não for satisfeita em alguma iteração, a variável permanece não atribuída (`not yet assigned`).
+   - Tentar inspecionar qualquer propriedade como `IF v_record.id IS NOT NULL THEN` em um `RECORD` não atribuído dispara imediatamente o erro crítico `55000`.
+   - Além disso, reatribuir `v_record := NULL;` pode invalidar o descritor de tupla em iterações seguintes.
+2. **Padrão Arquitetural Obrigatório — Escalares Tipados:**
+   - Em vez de `RECORD`, declarar variáveis escalares explícitas: `v_var_id UUID;`, `v_var_number TEXT;`, `v_var_value NUMERIC;`, etc.
+   - No topo de loops (`FOR ... IN ... LOOP`), inicializar todos os escalares explicitamente como `NULL`.
+   - Direcionar o `SELECT ... INTO` diretamente para os escalares e validar com `IF v_var_id IS NOT NULL THEN`.
+**Risco identificado / Anti-pattern:** Usar `v_rec RECORD;` para acumular resultados condicionais dentro de loops e acessar `.field` sem garantia de atribuição prévia.
+
+---
+
 ## [2026-09-03] — [Feature ID: 365-clean-dropzone-flow-and-recalibrated-rede-os-matching]
 
 **Contexto:** Recalibração definitiva da RPC `public.match_stage2_rede_os(p_target_date date, p_store_id text)` via migration `20260903000029_recalibrate_match_stage2_rede_os.sql` para sanar falsas colisões em massa e restaurar a taxa de match real entre vendas da adquirente Rede e ordens de serviço de balcão.
