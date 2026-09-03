@@ -196,10 +196,55 @@ npx playwright screenshot <url-de-preview-ou-localhost> screenshot.png
 
 ---
 
+## Step 7 — Auditoria Final de Ciclo (Auditor Agent — OBRIGATÓRIO)
+
+Após todas as tasks estarem marcadas como `[x]` e o Visual QA concluído, **o Orchestrator DEVE acionar o Auditor Supremo** antes de liberar a entrega:
+
+```
+view_file .agent/agents/auditor-agent.md
+```
+
+**Lançar o Auditor Agent com o prompt:**
+
+```markdown
+[CONTEXTO DO AUDITOR]
+Você é o Auditor Supremo de final de ciclo.
+Sua missão é realizar a auditoria técnica implacável antes do arquivamento e commit da Spec <id>.
+Leia .agent/agents/auditor-agent.md para o checklist completo de 7 dimensões.
+
+[SPEC DE REFERÊNCIA]
+- proposal.md: <conteúdo>
+- design.md: <conteúdo>
+- spec-plan.md: <conteúdo com todas as tasks marcadas>
+
+[ARQUIVOS MODIFICADOS/CRIADOS (git status)]
+<cole a saída de git status -s>
+
+[MEMÓRIA DO PROJETO]
+<cole as memories relevantes de .agent/memory/>
+
+Execute o checklist das 7 dimensões:
+1. Fidelidade à Spec
+2. Regressão e Grafo (execute graphify explain nos módulos modificados)
+3. Build e Tipagem Estrita (execute npm run build)
+4. Segurança e Vazamento de Segredos
+5. Conformidade com a Memória Obsidian
+6. Visual QA & UI
+7. Limpeza do Workspace
+
+Retorne o relatório estruturado com o Veredito: [AUDIT_PASSED | AUDIT_FAILED].
+```
+
+**Tratar o Veredito do Auditor:**
+- `[AUDIT_PASSED 🟢]` → A implementação está verdadeiramente blindada. Avance para a Conclusão.
+- `[AUDIT_FAILED 🔴]` → **ENTREGA BLOQUEADA.** O Orchestrator deve analisar os blockers apontados, corrigi-los (ou acionar o subagente correspondente) e re-submeter ao Auditor. **NUNCA avance para o `/vibe-archive` com auditoria reprovada.**
+
+---
+
 ## Conclusão
 
-Quando **todos** os itens do `spec-plan.md` estiverem `[x] Completed` e o Validator tiver emitido `[PASS]`:
+Quando todos os itens do `spec-plan.md` estiverem `[x] Completed`, o Validator tiver emitido `[PASS]` e o Auditor tiver emitido `[AUDIT_PASSED]`:
 
-*"Implementação concluída. Rode `/vibe-archive <id>` para atualizar a memória Obsidian, o grafo e fazer o commit."*
+*"Implementação concluída e auditada com sucesso [AUDIT_PASSED]. Rode `/vibe-archive <id>` para consolidar a memória Obsidian, atualizar o grafo e fazer o commit."*
 
 <!-- VIBEAPPLY:END -->

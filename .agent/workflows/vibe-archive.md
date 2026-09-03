@@ -11,14 +11,18 @@ Garantir que a entrega não quebrou o build, consolidar o conhecimento gerado em
 
 ---
 
-## Step 1 — Quality Gate (Build)
+## Step 1 — Quality Gate & Auditor Verification (Build + Auditor Sign-Off)
+
+Antes de qualquer arquivamento ou escrita de memória, garanta que a entrega foi auditada:
 
 ```bash
 cmd.exe /c "npm run build"
 ```
 
-- Se o build **falhar**: NÃO avance. Corrija ou acione `/vibe-debug <id>`
-- Se o build **passar**: confirme que não houve erros de TypeScript nem warnings críticos
+- **Verificação do Auditor:** O Auditor Agent (`.agent/agents/auditor-agent.md`) emitiu `[AUDIT_PASSED 🟢]` no final do `/vibe-apply`?
+  - Se SIM: avance com segurança total.
+  - Se NÃO (ou se o apply pulou o auditor): **LANCE O AUDITOR AGENT AGORA** antes de prosseguir.
+- Se o build **falhar** ou houver blockers no Auditor: **NÃO AVANCE.** Acione `/vibe-debug <id>` ou corrija imediatamente. O archive é estritamente proibido em código reprovado.
 
 ---
 

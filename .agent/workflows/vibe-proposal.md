@@ -36,40 +36,83 @@ Salve o conteúdo lido — será injetado no prompt do Research Agent.
 
 ## Phase 1 — Research Agent (Pesquisa Multi-Domínio)
 
-Leia o protocolo do Research Agent:
+Antes de lançar os agentes, execute no contexto do Orchestrator:
 ```
 view_file .agent/agents/research-agent.md
+view_file .agent/memory/ui.md
+view_file .agent/memory/supabase.md
+view_file .agent/memory/auth.md
+```
+
+Execute também as queries do grafo agora:
+```bash
+graphify query "<feature pedida pelo usuário>"
+graphify explain "<modulo-central da feature>"
 ```
 
 **Identifique os domínios da feature e lance um Research Agent por domínio:**
 
-| Se a feature envolve | Lance Research Agent com domínio |
-|---|---|
-| UI / Telas / Componentes | `frontend` |
-| Server Actions / APIs / Auth | `backend` |
-| Banco / Schema / RLS / RPCs | `banco` |
-| Feature full-stack | lance 2-3 agentes em paralelo |
+| Se a feature envolve | Domínio | Skills a injetar |
+|---|---|---|
+| UI / Telas / Componentes | `frontend` | `ui-components/SKILL.md` |
+| Server Actions / APIs / Auth | `backend` | `backend-patterns/SKILL.md` + `auth/SKILL.md` |
+| Banco / Schema / RLS / RPCs | `banco` | `database/SKILL.md` + `database/references/rls-patterns.md` |
+| Feature full-stack | todos | lance 2-3 agentes em paralelo |
 
-**Template de prompt para cada Research Agent:**
+> ⛔ **PROIBIDO lançar Research Agents sem as seções `[SKILLS OBRIGATÓRIAS]`, `[MEMÓRIA DO PROJETO]` e `[FORMATO DE RETORNO]` no prompt.** Sem isso o agente trabalha às cegas e gera spec com alucinações.
+
+**Template OBRIGATÓRIO — copie, preencha e use EXATAMENTE assim:**
 
 ```markdown
 [CONTEXTO DO AGENTE]
 Você é o Research Specialist da fase de vibe-proposal.
 Feature solicitada: "<feature descrita pelo usuário>"
 Domínio desta pesquisa: <frontend | backend | banco>
-Leia .agent/agents/research-agent.md para o protocolo completo.
 
-[MEMÓRIA DO PROJETO — via Obsidian]
-<cole o conteúdo de memory/ui.md e/ou memory/supabase.md e/ou memory/auth.md>
+[SKILLS OBRIGATÓRIAS — execute estes view_file ANTES de qualquer pesquisa]
+view_file C:/Users/User/.gemini/config/skills/adaptive-reasoning/SKILL.md
+view_file C:/Users/User/.gemini/config/skills/obsidian/SKILL.md
+<se frontend>  view_file C:/Users/User/.gemini/config/skills/ui-components/SKILL.md
+<se backend>   view_file C:/Users/User/.gemini/config/skills/backend-patterns/SKILL.md
+<se backend>   view_file C:/Users/User/.gemini/config/skills/auth/SKILL.md
+<se banco>     view_file C:/Users/User/.gemini/config/skills/database/SKILL.md
+<se banco>     view_file skills/database/references/rls-patterns.md
+
+[PROTOCOLO DE PESQUISA]
+view_file .agent/agents/research-agent.md
+Siga ESTRITAMENTE o protocolo do arquivo acima.
+
+[MEMÓRIA DO PROJETO — conteúdo injetado pelo Orchestrator]
+<cole aqui o conteúdo COMPLETO de memory/ui.md — se frontend>
+<cole aqui o conteúdo COMPLETO de memory/supabase.md — se banco ou backend>
+<cole aqui o conteúdo COMPLETO de memory/auth.md — se envolve autenticação>
 
 [SPEC GLOBAL EXISTENTE]
-<cole o conteúdo de spec/global/features.md se existir>
+<cole aqui o conteúdo de spec/global/features.md se existir>
 
 [CONTEXTO DO GRAFO]
-<cole o output de: graphify query "<feature>" e graphify explain "<modulo-central>">
+<cole aqui o output COMPLETO de graphify query e graphify explain>
+
+[FORMATO DE RETORNO OBRIGATÓRIO — não retorne nada fora deste formato]
+## Relatório Research Agent — Domínio: <X>
+
+### O que JÁ EXISTE (não deve ser recriado)
+- [artefato]: localização + o que faz
+
+### O que SERÁ IMPACTADO (pode quebrar)
+- [arquivo]: motivo do impacto
+
+### Anti-patterns da Memória (aplicáveis a esta feature)
+- [regra]: arquivo de memória de origem
+
+### O que NÃO EXISTE (pode ser criado com segurança)
+- [artefato]: confirmado ausente em todas as fontes
+
+### Riscos identificados
+- [risco]: probabilidade alta/média/baixa + evidência
 ```
 
-Aguarde os relatórios de todos os Research Agents antes de avançar.
+Aguarde os relatórios de TODOS os Research Agents antes de avançar.
 
 ---
 

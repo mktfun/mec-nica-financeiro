@@ -70,10 +70,12 @@ Os agentes especializados ficam em `.agent/agents/`. Sempre leia o arquivo do ag
 
 | Arquivo | Quando usar |
 |---|---|
+| `.agent/agents/research-agent.md` | Deep research multi-domínio no `/vibe-proposal` (Obsidian + Grafo) |
 | `.agent/agents/frontend-agent.md` | Tasks `[FRONTEND]` — UI/React/shadcn |
 | `.agent/agents/backend-agent.md` | Tasks `[BACKEND]` — Server Actions/Auth |
 | `.agent/agents/database-agent.md` | Tasks `[DB]` — Schema/RLS/Migrations |
 | `.agent/agents/validator-agent.md` | Validar output de todos os agentes antes de marcar `[x]` |
+| `.agent/agents/auditor-agent.md` | Auditoria Suprema de Final de Ciclo (Fidelidade à Spec, Regressão/Grafo, Build, Segurança) antes do Archive |
 | `.agent/agents/bug-agent.md` | Qualquer erro de build/runtime — acionado antes de qualquer tentativa manual |
 
 ## 5. Skills Disponíveis
