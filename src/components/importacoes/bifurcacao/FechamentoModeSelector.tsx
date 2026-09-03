@@ -12,7 +12,8 @@ import {
   FileSpreadsheet,
   Coins,
   Receipt,
-  Scale
+  Scale,
+  UploadCloud
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -145,7 +146,7 @@ export function FechamentoModeSelector({
 
       {/* 3. OS 2 CARDS DE ESCOLHA ESTRATÉGICA */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* CARD 1: MODO MANUAL PASSO A PASSO (ZERO IA) */}
+        {/* CARD 1: MODO MANUAL (IMPORTAÇÃO EM MASSA / CLÁSSICO) */}
         <div 
           onClick={() => onSelectMode('manual')}
           className="group relative bg-zinc-900/60 hover:bg-zinc-900 border-2 border-zinc-800 hover:border-emerald-500/60 rounded-2xl p-7 transition-all duration-200 cursor-pointer flex flex-col justify-between shadow-lg shadow-black/30 hover:shadow-emerald-950/20"
@@ -153,36 +154,36 @@ export function FechamentoModeSelector({
           <div>
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-all">
-                <Layers size={24} />
+                <UploadCloud size={24} />
               </div>
               <span className="px-2.5 py-1 rounded-full text-[11px] font-mono font-bold bg-zinc-800 text-emerald-400 border border-emerald-500/30">
-                Sem IA · 100% Determinístico
+                Sem IA · Import em Massa
               </span>
             </div>
 
             <h3 className="text-lg font-bold text-zinc-100 group-hover:text-emerald-300 transition-colors">
-              Modo Manual Passo a Passo
+              Modo Manual (Importação em Massa)
             </h3>
             <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
-              Você no controle total de cada etapa. Ingestão setorizada por tipo de documento em 4 fases sequenciais com tabelas de conferência estilo Excel, sem qualquer intervenção de inteligência artificial.
+              Você no controle total. Solte todas as planilhas e arquivos (.xlsx, .ofx, .csv) de uma vez só no dropzone central, com processamento em lote e esteira de conciliação assistida.
             </p>
 
             <div className="mt-6 space-y-2.5 border-t border-zinc-800/80 pt-4">
               <div className="flex items-start gap-2 text-xs text-zinc-300">
+                <UploadCloud size={14} className="text-emerald-400 mt-0.5 shrink-0" />
+                <span><strong>Dropzone Universal:</strong> Arraste OSs das lojas, vendas Rede, extratos OFX e contas todos juntos.</span>
+              </div>
+              <div className="flex items-start gap-2 text-xs text-zinc-300">
                 <FileSpreadsheet size={14} className="text-emerald-400 mt-0.5 shrink-0" />
-                <span><strong>Fase 1:</strong> Só OSs do pátio com grade sanfona e ajuste de pendentes 1 a 1.</span>
+                <span><strong>Processamento em Lote:</strong> Leitura automática e distribuição dos dados para as 10 filiais.</span>
               </div>
               <div className="flex items-start gap-2 text-xs text-zinc-300">
                 <Coins size={14} className="text-emerald-400 mt-0.5 shrink-0" />
-                <span><strong>Fase 2:</strong> Só Vendas Rede, pré-matching de cartões e resolução de sobras.</span>
+                <span><strong>Auto-Match & Resolução:</strong> Conciliação assistida de cartões, PIX e despesas órfãs.</span>
               </div>
               <div className="flex items-start gap-2 text-xs text-zinc-300">
                 <Scale size={14} className="text-emerald-400 mt-0.5 shrink-0" />
-                <span><strong>Fase 3:</strong> Só 10 OFX Itaú, batimento de PIX e cálculo do que entrou vs D+1.</span>
-              </div>
-              <div className="flex items-start gap-2 text-xs text-zinc-300">
-                <Receipt size={14} className="text-emerald-400 mt-0.5 shrink-0" />
-                <span><strong>Fase 4:</strong> Só Contas a Pagar, batimento de saídas e receitas DRE até fechar.</span>
+                <span><strong>Fechamento Seguro:</strong> Selagem final e cálculo do delta na mesma esteira consolidada.</span>
               </div>
             </div>
           </div>
@@ -192,7 +193,7 @@ export function FechamentoModeSelector({
               type="button" 
               className="w-full h-11 bg-zinc-800 group-hover:bg-emerald-600 text-zinc-200 group-hover:text-white font-bold text-xs flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm"
             >
-              Iniciar Fechamento Manual (4 Fases)
+              Iniciar Importação em Massa (Clássico)
               <ArrowRight size={15} />
             </Button>
           </div>

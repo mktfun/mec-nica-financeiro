@@ -1,3 +1,11 @@
+### Feature 367: Restauração do CentralImportWizard no Modo Manual (Importação em Massa)
+- **Status:** COMPLETED & ARCHIVED
+- **Data:** 2026-09-03
+- **Arquivos Criados/Modificados:**
+  - `src/routes/importacoes.tsx` (Renderização de `CentralImportWizard` com barra contextual ao selecionar modo manual)
+  - `src/components/importacoes/bifurcacao/FechamentoModeSelector.tsx` (Card 1 atualizado para "Modo Manual (Importação em Massa)" com dropzone universal para todos os arquivos juntos)
+- **Descrição:** Restauração do fluxo clássico de fechamento manual em lote para as 10 filiais através do `CentralImportWizard`, permitindo soltar todos os arquivos de uma vez só com esteira assistida de resolução.
+
 ### Feature 366: Correção de `v_chosen_os RECORD` (Erro 55000) na RPC `match_stage2_rede_os`
 - **Status:** COMPLETED & ARCHIVED
 - **Data:** 2026-09-03

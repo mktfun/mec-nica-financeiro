@@ -13,8 +13,11 @@ import {
   History,
   Sparkles,
   CalendarX,
-  RotateCcw
+  RotateCcw,
+  ArrowLeft,
+  Cpu
 } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 import { useImportsHistory, useDeleteImport, useClearAllData, GroupedImportLog } from '@/hooks/useImportProcessor';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { Modal } from '@/components/ui/Modal';
@@ -192,18 +195,32 @@ function ImportacoesPage() {
               </div>
             )}
 
-            {/* 2. MODO MANUAL PASSO A PASSO (ZERO IA) */}
+            {/* 2. MODO MANUAL (IMPORTAÇÃO EM MASSA / WIZARD CENTRAL CLÁSSICO) */}
             {search.mode === 'manual' && (
-              <FechamentoManualWizard
-                targetDate={selectedDate || new Date().toISOString().split('T')[0]}
-                initialPhase={(search.phase as any) || 1}
-                onBackToSelector={() => navigate({ search: (prev) => ({ ...prev, mode: undefined }) })}
-                onSwitchToAi={() => navigate({ search: (prev) => ({ ...prev, mode: 'ai' }) })}
-                onCompleteClose={() => {
-                  toast.success('Fechamento manual concluído!');
-                  navigate({ search: (prev) => ({ ...prev, mode: undefined, tab: 'historico' }) });
-                }}
-              />
+              <div className="space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => navigate({ search: (prev) => ({ ...prev, mode: undefined }) })}
+                    className="h-8 px-3 text-xs border-zinc-700 text-zinc-300 hover:bg-zinc-800 rounded-xl flex items-center gap-1.5"
+                  >
+                    <ArrowLeft size={14} /> Voltar à Seleção de Modo
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => navigate({ search: (prev) => ({ ...prev, mode: 'ai' }) })}
+                    className="h-8 px-3 text-xs border-indigo-500/30 text-indigo-300 hover:bg-indigo-950/30 rounded-xl flex items-center gap-1.5"
+                  >
+                    <Cpu size={14} className="text-indigo-400" /> Abrir Workspace Conversacional com IA
+                  </Button>
+                </div>
+                <CentralImportWizard 
+                  onCancel={() => navigate({ search: (prev) => ({ ...prev, mode: undefined }) })}
+                  initialDate={selectedDate || new Date().toISOString().split('T')[0]}
+                />
+              </div>
             )}
 
             {/* 3. SELETOR INICIAL DE MODALIDADE (DEFAULT) */}
@@ -215,8 +232,7 @@ function ImportacoesPage() {
                   navigate({
                     search: (prev) => ({
                       ...prev,
-                      mode: chosenMode,
-                      phase: chosenMode === 'manual' ? 1 : undefined
+                      mode: chosenMode
                     })
                   });
                 }}
