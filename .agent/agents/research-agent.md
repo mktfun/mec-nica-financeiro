@@ -26,7 +26,7 @@ Analise o que foi injetado. Liste:
 - Anti-patterns registrados que se aplicam a esta feature
 - Riscos identificados anteriormente neste mesmo módulo
 
-### Step 2 — Varredura da Codebase
+### Step 2 — Varredura da Codebase e Código Legado
 ```bash
 list_dir src/
 list_dir src/components/
@@ -35,19 +35,29 @@ list_dir supabase/migrations/
 grep_search "<termo-chave da feature>" src/
 grep_search "<nome do módulo central>" .
 ```
-Para arquivos grandes: leia apenas exports, types e primeiras 30 linhas.
 
-### Step 3 — Consulta ao Grafo
+### Step 2b — Extração de Assinaturas Reais do Código Legado (AST Skeleton Mode)
+Para cada arquivo legado relevante para a feature (ex: parsers existentes, wizards, hooks centrais):
+1. Use `view_file` para ler as **interfaces TypeScript reais**, types exportados e assinaturas das funções.
+2. Identifique o tipo exato de retorno (ex: se retorna `T[]`, `T | null`, ou `{ error?: string }`). **É TERMINANTEMENTE PROIBIDO supor tipos de cabeça.**
+3. Identifique se o arquivo legado possui stubs temporários, stubs vazios ou mocks que estejam gerando `undefined` em runtime.
+4. Anote as assinaturas canônicas para garantir que o novo código reutilize a lógica existente em vez de recriar do zero.
+
+### Step 3 — Consulta Obrigatória ao Grafo (Graphify)
 ```bash
 graphify query "<termo-chave da feature>"
-graphify explain "<modulo-central>"
+graphify explain "<modulo-central-ou-legado>"
 ```
+- **Mapeamento de Impacto:** O `graphify explain` revela todos os nós e componentes que dependem do arquivo que você quer mexer.
+- Se o objetivo for refatorar ou unificar um arquivo legado (ex: `centralImportManager.ts`), você **deve mapear 100% dos arquivos que importam dele** para garantir risco zero de regressão.
+- Se o Grafo não estiver instalado ou falhar: execute `grep_search "from '.*<modulo>'" src/` como fallback estático obrigatório.
 
 ### Step 4 — Inspeção do Banco (se feature envolve dados)
 ```bash
 supabase db execute --project-ref $env:SUPABASE_PROJECT_ID \
-  --sql "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name;"
+  --sql "SELECT column_name, data_type, is_nullable FROM information_schema.columns WHERE table_name = '<tabela>' AND table_schema = 'public';"
 ```
+Cruze as colunas reais do banco com os campos retornados pelo código legado para evitar mismatch de tipos.
 
 ## Retorno ao Orchestrator
 

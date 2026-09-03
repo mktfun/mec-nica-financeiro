@@ -18,11 +18,11 @@ view_file C:/Users/User/.gemini/config/skills/database/SKILL.md
 ```
 Para patterns de RLS multi-tenant:
 ```
-view_file skills/database/references/rls-patterns.md
+view_file C:/Users/User/.gemini/config/skills/database/references/rls-patterns.md
 ```
 Para schemas padrão (profiles, orgs, subscriptions):
 ```
-view_file skills/database/references/schema-patterns.md
+view_file C:/Users/User/.gemini/config/skills/database/references/schema-patterns.md
 ```
 
 ## Memória do Projeto (injetada pelo Orchestrator)

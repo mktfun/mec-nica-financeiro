@@ -58,7 +58,7 @@ trigger: always_on
 - **No Banco**: Leia `memory/supabase.md`. Leia as skills:
   ```
   view_file C:/Users/User/.gemini/config/skills/database/SKILL.md
-  view_file skills/database/references/rls-patterns.md  ← se envolver RLS
+  view_file C:/Users/User/.gemini/config/skills/database/references/rls-patterns.md  ← se envolver RLS
   ```
 
 - **Graphify (Anti-Alucinação):** O Graphify é **Python** (não NPM). Comandos corretos:
@@ -71,14 +71,22 @@ trigger: always_on
 
 ## 3. Workflows Oficiais
 
-Toda iteração passa exclusivamente por estes comandos:
+Toda iteração passa exclusivamente por estes comandos, separados por modo de operação:
 
-1. `/setup`: Configura ambiente headless, cria `.agent/memory/*.md` (Obsidian bootstrap) e indexa o grafo (`graphify .`).
-2. `/vibe-proposal "Feature name"`: Planejamento multi-agente. Lê Obsidian + consulta Graphify, lança agentes especializados com skills injetadas, valida com Validator Agent. Cria `specs/<id>/proposal.md`, `design.md` e `spec-plan.md`.
-3. `/vibe-apply <id>`: Implementação via Orchestrator multi-agente. Cada domínio (DB, Backend, Frontend) é executado por um subagente com suas skills e memória Obsidian injetadas. Validator Agent revisa antes de marcar como concluído.
-4. `/vibe-archive <id>`: Build gate, escrita obrigatória na memória Obsidian por categoria, **/learn** (eleva guardrails universais para `ia.md`), `graphify update`, arquiva spec, commit + push.
-5. `/vibe-debug <id-ou-modulo>`: Bug Agent com pesquisa real — logs Next.js + Supabase, inspeção de banco, hipótese bayesiana, repair em 3 tentativas antes de rollback.
-6. `/learn` (manual): Eleva uma aprendizagem crítica para `ia.md` fora do ciclo normal de archive.
+### Modo Solo (Rápido, Direto — Sem Subagentes):
+Use para bugs pontuais, refatores locais, correções de parsers ou quando preferir que um único agente faça tudo direto com menos consumo de tokens e sem latência de subagentes:
+- `/vibe-proposal-solo "Nome"`: Planejamento direto por um único agente. Lê skills, memória Obsidian, roda Grafo e extrai tipos reais do código legado. Cria `specs/<id>/` e **para no Hard Stop**.
+- `/vibe-apply-solo <id>`: Implementação direta sequencial por um único agente. Executa as tasks do `spec-plan.md` passo a passo, roda Visual QA e build local, e **para no Hard Stop** (sem auto-archive).
+
+### Modo Equipe / Multi-Agente (Orquestração Especializada):
+Use para features completas, módulos novos, arquitetura full-stack ou quando quiser pesquisa profunda paralela e validação cruzada independente:
+- `/vibe-proposal` (ou `/vibe-proposal-team`): Orquestrador lança Research Agents especializados por domínio (com skills e memória injetadas), escreve a spec e submete ao Validator Agent. **Para no Hard Stop**.
+- `/vibe-apply` (ou `/vibe-apply-team`): Orquestrador delega tasks para Frontend Agent, Backend Agent e Database Agent, valida com Validator Agent, executa Auditor Agent no final, e **para no Hard Stop**.
+
+### Ciclo de Encerramento e Diagnóstico:
+- `/vibe-archive <id>`: Quality Gate, escrita obrigatória na memória Obsidian por categoria, **/learn** (eleva guardrails para `ia.md`), `graphify update`, arquiva spec e faz o commit + push.
+- `/vibe-debug <id-ou-modulo>`: Diagnóstico cirúrgico de bugs com varredura de logs (Next.js/Supabase/Edge), inspeção SQL do banco e repair bayesiano em até 3 tentativas.
+- `/learn` (manual): Eleva uma aprendizagem crítica para `ia.md` fora do ciclo normal de archive.
 
 ## 4. Agentes Especializados (usar via invoke_subagent nos workflows)
 
