@@ -8,6 +8,22 @@ trigger: always_on
 
 **Se o usuário mencionar `/teamwork-preview`, pedir uma análise conjunta ou delegar para equipe de IA: PARE TUDO IMEDIATAMENTE.** Não conclua o step atual, não tente resolver sozinho, não ignore. Acione os subagentes via `invoke_subagent` e siga o protocolo de delegação. Isto se aplica em qualquer workflow.
 
+## 0.1 🛑 TRAVA INVIOLÁVEL 1: PROIBIÇÃO ABSOLUTA DE AUTO-APPLY NO PROPOSAL
+
+**O workflow `/vibe-proposal` é EXCLUSIVAMENTE de Especificação e Planejamento.**
+- Ao finalizar a escrita de `specs/<id>/proposal.md`, `design.md` e `spec-plan.md`: **PARE IMEDIATAMENTE.**
+- **É TERMINANTEMENTE PROIBIDO** começar a codificar, editar arquivos de código (`src/`, `lib/`, `supabase/`, etc.) ou marcar tasks do `spec-plan.md` após o proposal.
+- A IA **JAMAIS** pode "engatar" a implementação automaticamente sem o usuário enviar explicitamente o comando `/vibe-apply <id>` em uma nova mensagem.
+- O turno da IA **DEVE TERMINAR** com a apresentação da Spec e a frase: *"Aguardando aprovação. Digite `/vibe-apply <id>` para implementar."* — **SEM NENHUMA CHAMADA DE FERRAMENTA POSTERIOR.**
+
+## 0.2 🛑 TRAVA INVIOLÁVEL 2: PROIBIÇÃO ABSOLUTA DE AUTO-ARCHIVE NO APPLY
+
+**O workflow `/vibe-apply` é EXCLUSIVAMENTE de Implementação e Verificação Local.**
+- Ao concluir todas as tasks do `spec-plan.md`, rodar o Visual QA e obter `[AUDIT_PASSED]`: **PARE IMEDIATAMENTE.**
+- **É TERMINANTEMENTE PROIBIDO** avançar automaticamente para o `/vibe-archive`, rodar `git commit`, `git push`, mover pastas para `specs/archive/` ou escrever nos arquivos `.agent/memory/` dentro do apply.
+- O usuário **DEVE** ter a oportunidade de testar o app em `localhost` ou preview antes que qualquer arquivo seja arquivado ou commitado.
+- A IA **JAMAIS** pode auto-arquivar. O turno da IA **DEVE TERMINAR** reportando a aprovação do Auditor e a frase: *"Implementação concluída e auditada com sucesso. Teste suas alterações e, quando estiver pronto, digite `/vibe-archive <id>` para consolidar e commitar."* — **SEM NENHUMA CHAMADA DE FERRAMENTA POSTERIOR.**
+
 ## 1. Core Principles
 
 - **Desconfie do Vibe Coding Puro**: Nenhuma feature grande deve ser iniciada escrevendo código direto. Toda mudança estrutural precisa de uma Especificação (Proposal) com arquivos físicos em `specs/` antes.

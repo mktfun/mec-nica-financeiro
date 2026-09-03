@@ -242,19 +242,26 @@ Verifique:
 
 ---
 
-## Phase 4 — Apresentação e Aprovação
+## Phase 4 — Apresentação, Hard Stop e Espera Obrigatória
 
 Após o Validator emitir `[PASS]`, apresente ao usuário:
 
-- Arquivos criados: `proposal.md`, `design.md`, `spec-plan.md`
+- Arquivos criados: `specs/<id>/proposal.md`, `specs/<id>/design.md`, `specs/<id>/spec-plan.md`
 - **O que os Research Agents descobriram que já existe** (será reutilizado)
 - **O que será criado do zero**
 - O maior risco identificado
-- A lista de tasks do `spec-plan.md`
+- A lista de tasks do `spec-plan.md` (todas rigorosamente mantidas como `- [ ] Pending`)
 
-**NÃO INICIE O `/vibe-apply` SEM APROVAÇÃO EXPLÍCITA DO USUÁRIO.**
-
-Quando aprovado: *"Rode `/vibe-apply <id>` para implementar."*
+> 🛑 **CIRCUIT BREAKER — PARADA OBRIGATÓRIA (HARD STOP):**
+> 
+> **A IA DEVE PARAR SEU TURNO IMEDIATAMENTE AQUI.**
+> - **NÃO CHAME NENHUMA FERRAMENTA ADICIONAL.**
+> - **NÃO toque em nenhum arquivo de código-fonte (`.ts`, `.tsx`, `.sql`, etc.).**
+> - **NÃO marque nenhuma task como `[/]` ou `[x]`.**
+> - **NÃO inicie o `/vibe-apply` por conta própria sob NENHUMA hipótese.**
+> 
+> Finalize sua mensagem exclusivamente informando:
+> *"Especificação da Spec <id> concluída e validada com sucesso. Aguardando sua revisão e aprovação. Para iniciar a implementação, envie o comando: `/vibe-apply <id>`."*
 
 ---
 

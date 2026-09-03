@@ -241,10 +241,23 @@ Retorne o relatório estruturado com o Veredito: [AUDIT_PASSED | AUDIT_FAILED].
 
 ---
 
-## Conclusão
+## Conclusão e Hard Stop (Proibição Absoluta de Auto-Archive)
 
 Quando todos os itens do `spec-plan.md` estiverem `[x] Completed`, o Validator tiver emitido `[PASS]` e o Auditor tiver emitido `[AUDIT_PASSED]`:
 
-*"Implementação concluída e auditada com sucesso [AUDIT_PASSED]. Rode `/vibe-archive <id>` para consolidar a memória Obsidian, atualizar o grafo e fazer o commit."*
+> 🛑 **CIRCUIT BREAKER — PARADA OBRIGATÓRIA (HARD STOP):**
+> 
+> **A IA DEVE PARAR SEU TURNO IMEDIATAMENTE AQUI.**
+> - **NÃO inicie o `/vibe-archive` sob NENHUMA hipótese.**
+> - **NÃO execute `git commit`, `git push` ou `git add`.**
+> - **NÃO mova pastas de `specs/` para `specs/archive/`.**
+> - **NÃO escreva nos arquivos de memória `.agent/memory/` dentro do apply.**
+> - **ENCERRE SEU TURNO AGORA.** O usuário precisa testar em localhost/preview antes de commitar.
+
+Apresente o resumo final ao usuário:
+1. Tasks concluídas do `spec-plan.md` (todas marcadas como `[x] Completed`)
+2. Relatório resumido do Auditor (`[AUDIT_PASSED 🟢]`)
+3. Mensagem final padrão:
+   *"Implementação concluída e auditada com sucesso [AUDIT_PASSED]. Por favor, teste a aplicação no seu ambiente. Quando estiver satisfeito e pronto para consolidar a memória e commitar no Git, envie o comando: `/vibe-archive <id>`."*
 
 <!-- VIBEAPPLY:END -->
