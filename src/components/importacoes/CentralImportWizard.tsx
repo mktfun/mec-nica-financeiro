@@ -53,22 +53,8 @@ import { executeExpenseAutoMatching } from '@/lib/expenseMatcher';
 import { useQueryClient } from '@tanstack/react-query';
 import { ImportExecutionTerminal, ImportLogEntry } from './ImportExecutionTerminal';
 import { ExecutionErrorBanner } from './ExecutionErrorBanner';
-
-export interface MissingPatioOsEdit {
-  id: string;
-  os_number: string;
-  plate: string;
-  store_id: string;
-  store_name: string;
-  original_total_value: number;
-  original_paid_value: number;
-  original_status: string;
-  total_value: number;
-  paid_value: number;
-  status: string;
-  opened_at?: string;
-  days_open?: number;
-}
+import { MissingPatioOsEditor, MissingPatioOsEdit } from './MissingPatioOsEditor';
+export type { MissingPatioOsEdit };
 
 const INITIAL_STAGES: AgentStage[] = [
   { id: 'os',         title: 'Importando OS do pátio',             status: 'pending', subSteps: [] },
@@ -171,70 +157,111 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
   const [missingOsSearch, setMissingOsSearch] = useState('');
 
+  const [isSavingMissingOs, setIsSavingMissingOs] = useState(false);
+
   // Detecção de OSs ativas no banco que não vieram no relatório importado do mês
-  useEffect(() => {
-    async function detectMissingOs() {
-      if (step !== 3) return;
+  const detectMissingOs = useCallback(async () => {
+    const mappedStoreIds = Object.values(mapping).filter(id => id && id !== 'GLOBAL');
+    if (mappedStoreIds.length === 0) return;
 
-      const mappedStoreIds = Object.values(mapping).filter(id => id && id !== 'GLOBAL');
-      if (mappedStoreIds.length === 0) return;
+    setIsLoadingMissingOs(true);
+    try {
+      const { data: dbActiveOs, error } = await supabase
+        .from('patio_os')
+        .select('id, os_number, plate, store_id, store_name, total_value, paid_value, status, opened_at, days_open')
+        .in('store_id', mappedStoreIds)
+        .or('status.ilike.%aberto%,status.ilike.%parcial%,status.ilike.%pendente%,status.eq.ABERTA,status.eq.PENDENTE');
 
-      setIsLoadingMissingOs(true);
-      try {
-        const { data: dbActiveOs, error } = await supabase
-          .from('patio_os')
-          .select('id, os_number, plate, store_id, store_name, total_value, paid_value, status, opened_at, days_open')
-          .in('store_id', mappedStoreIds)
-          .or('status.ilike.%aberto%,status.ilike.%parcial%,status.ilike.%pendente%,status.eq.ABERTA,status.eq.PENDENTE');
+      if (error) {
+        console.error("Erro ao buscar OSs ativas no banco:", error);
+        return;
+      }
 
-        if (error) {
-          console.error("Erro ao buscar OSs ativas no banco:", error);
-          return;
-        }
-
-        const importedOsNumbersByStore = new Set<string>();
-        results.osFiles.filter(f => f.success).forEach(file => {
-          const storeId = mapping[file.storeAlias];
-          file.osArray.forEach(os => {
-            const cleanNum = String(os.os_number || '').trim();
-            if (storeId) importedOsNumbersByStore.add(`${storeId}_${cleanNum}`);
-            importedOsNumbersByStore.add(cleanNum);
-          });
+      const importedOsNumbersByStore = new Set<string>();
+      results.osFiles.filter(f => f.success).forEach(file => {
+        const storeId = mapping[file.storeAlias];
+        file.osArray.forEach(os => {
+          const cleanNum = String(os.os_number || '').trim();
+          if (storeId) importedOsNumbersByStore.add(`${storeId}_${cleanNum}`);
+          importedOsNumbersByStore.add(cleanNum);
         });
+      });
 
-        const missing: MissingPatioOsEdit[] = (dbActiveOs || [])
-          .filter(dbOs => {
-            const cleanNum = String(dbOs.os_number || '').trim();
-            const hasWithStore = importedOsNumbersByStore.has(`${dbOs.store_id}_${cleanNum}`);
-            const hasDirect = importedOsNumbersByStore.has(cleanNum);
-            return !hasWithStore && !hasDirect;
-          })
-          .map(dbOs => ({
-            id: dbOs.id,
-            os_number: String(dbOs.os_number),
-            plate: dbOs.plate || '-',
-            store_id: dbOs.store_id,
-            store_name: dbOs.store_name || stores.find(s => s.id === dbOs.store_id)?.name || 'Loja',
-            original_total_value: Number(dbOs.total_value) || 0,
-            original_paid_value: Number(dbOs.paid_value) || 0,
-            original_status: dbOs.status || 'em_aberto',
-            total_value: Number(dbOs.total_value) || 0,
-            paid_value: Number(dbOs.paid_value) || 0,
-            status: dbOs.status || 'em_aberto',
-            opened_at: dbOs.opened_at,
-            days_open: dbOs.days_open
-          }));
+      const normalizeStatus = (st: string): 'em_aberto' | 'pago_parcial' | 'finalizada' | 'cancelada' => {
+        const lower = (st || '').toLowerCase();
+        if (lower.includes('finaliz') || lower.includes('paga') || lower.includes('conclu')) return 'finalizada';
+        if (lower.includes('cancel')) return 'cancelada';
+        if (lower.includes('parcial')) return 'pago_parcial';
+        return 'em_aberto';
+      };
 
-        setMissingOsList(missing);
-      } catch (err) {
-        console.error("Erro ao detectar OSs ausentes:", err);
+      const missing: MissingPatioOsEdit[] = (dbActiveOs || [])
+        .filter(dbOs => {
+          const cleanNum = String(dbOs.os_number || '').trim();
+          const hasWithStore = importedOsNumbersByStore.has(`${dbOs.store_id}_${cleanNum}`);
+          const hasDirect = importedOsNumbersByStore.has(cleanNum);
+          return !hasWithStore && !hasDirect;
+        })
+        .map(dbOs => ({
+          id: dbOs.id,
+          os_number: String(dbOs.os_number),
+          plate: dbOs.plate || '-',
+          store_id: dbOs.store_id,
+          store_name: dbOs.store_name || stores.find(s => s.id === dbOs.store_id)?.name || 'Loja',
+          original_total_value: Number(dbOs.total_value) || 0,
+          original_paid_value: Number(dbOs.paid_value) || 0,
+          original_status: dbOs.status || 'em_aberto',
+          total_value: Number(dbOs.total_value) || 0,
+          paid_value: Number(dbOs.paid_value) || 0,
+          status: normalizeStatus(dbOs.status),
+          opened_at: dbOs.opened_at,
+          days_open: dbOs.days_open
+        }));
+
+      setMissingOsList(missing);
+    } catch (err) {
+      console.error("Erro ao detectar OSs ausentes:", err);
+    } finally {
+      setIsLoadingMissingOs(false);
+    }
+  }, [mapping, results.osFiles, stores]);
+
+  useEffect(() => {
+    if (step === 2 || step === 2.5 || step === 3) {
+      detectMissingOs();
+    }
+  }, [step, detectMissingOs]);
+
+  const handleSaveAndAdvanceMissingOs = async () => {
+    const modified = missingOsList.filter(
+      os => os.total_value !== os.original_total_value || os.paid_value !== os.original_paid_value || os.status !== os.original_status
+    );
+    if (modified.length > 0) {
+      setIsSavingMissingOs(true);
+      try {
+        for (const item of modified) {
+          await supabase
+            .from('patio_os')
+            .update({
+              total_value: item.total_value,
+              paid_value: item.paid_value,
+              status: item.status,
+              closed_at: (item.status === 'finalizada' || item.status === 'cancelada') ? targetDate : null,
+              last_payment_date: item.paid_value > item.original_paid_value ? targetDate : undefined,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', item.id);
+        }
+        toast.success(`${modified.length} OSs do pátio atualizadas com sucesso!`);
+      } catch (e: any) {
+        console.error('Erro ao salvar OSs ausentes:', e);
+        toast.error('Erro ao salvar atualizações das OSs.');
       } finally {
-        setIsLoadingMissingOs(false);
+        setIsSavingMissingOs(false);
       }
     }
-
-    detectMissingOs();
-  }, [step, mapping, results.osFiles, stores]);
+    setStep(3);
+  };
 
   // Auto-popula A Receber e Dinheiro MP para a data alvo
   useEffect(() => {
@@ -723,63 +750,6 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     }
   };
 
-  // Detecção de OSs ativas no banco que não vieram no relatório importado do mês
-  useEffect(() => {
-    async function detectMissingOs() {
-      if (step !== 3) return;
-
-      const mappedStoreIds = Object.values(mapping).filter(id => id && id !== 'GLOBAL');
-      if (mappedStoreIds.length === 0) return;
-
-      setIsLoadingMissingOs(true);
-      try {
-        const { data: dbActiveOs, error } = await supabase
-          .from('patio_os')
-          .select('id, os_number, plate, store_id, store_name, total_value, paid_value, status, opened_at, days_open')
-          .in('store_id', mappedStoreIds)
-          .not('status', 'in', '("finalizada","finalizado","paga","pago","cancelada","cancelado")');
-
-        if (error) {
-          console.error("Erro ao buscar OSs ativas no banco:", error);
-          return;
-        }
-
-        const importedOsNumbersByStore = new Set<string>();
-        results.osFiles.filter(f => f.success).forEach(file => {
-          const storeId = mapping[file.storeAlias];
-          file.osArray.forEach(os => {
-            importedOsNumbersByStore.add(`${storeId}_${String(os.os_number).trim()}`);
-          });
-        });
-
-        const missing: MissingPatioOsEdit[] = (dbActiveOs || [])
-          .filter(dbOs => !importedOsNumbersByStore.has(`${dbOs.store_id}_${String(dbOs.os_number).trim()}`))
-          .map(dbOs => ({
-            id: dbOs.id,
-            os_number: String(dbOs.os_number),
-            plate: dbOs.plate || '-',
-            store_id: dbOs.store_id,
-            store_name: dbOs.store_name || stores.find(s => s.id === dbOs.store_id)?.name || 'Loja',
-            original_total_value: Number(dbOs.total_value) || 0,
-            original_paid_value: Number(dbOs.paid_value) || 0,
-            original_status: dbOs.status || 'em_aberto',
-            total_value: Number(dbOs.total_value) || 0,
-            paid_value: Number(dbOs.paid_value) || 0,
-            status: dbOs.status || 'em_aberto',
-            opened_at: dbOs.opened_at,
-            days_open: dbOs.days_open
-          }));
-
-        setMissingOsList(missing);
-      } catch (err) {
-        console.error("Erro ao detectar OSs ausentes:", err);
-      } finally {
-        setIsLoadingMissingOs(false);
-      }
-    }
-
-    detectMissingOs();
-  }, [step, mapping, results.osFiles, stores]);
 
   
   const updateStage = (stageIdx: number, status: 'pending'|'running'|'success'|'error', subLabel?: string) => {
@@ -2676,10 +2646,10 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                       ← Voltar para OS
                     </Button>
                     <Button 
-                      onClick={() => setStep(needsFallback ? 3.5 : (cloudOsData.length > 0 ? 2.5 : 3))}
+                      onClick={() => setStep(needsFallback ? 3.5 : 2.5)}
                       className="bg-emerald-500 text-zinc-950 hover:bg-emerald-400 font-bold text-xs"
                     >
-                      Avançar para Auditoria / Preview →
+                      Avançar para OSs do Pátio (Ausentes) →
                     </Button>
                   </div>
                 </div>
@@ -2689,19 +2659,81 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         </motion.div>
       )}
 
-      {step === 2.5 && (() => {
-        const firstStoreId = Object.values(mapping).find(id => id && id !== 'GLOBAL');
-        return (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <AuditoriaPassivoWizard 
-              storeId={firstStoreId || ''} 
-              cloudOsData={cloudOsData}
-              onComplete={() => setStep(3)}
-              onCancel={() => setStep(2)}
-            />
-          </div>
-        );
-      })()}
+      {step === 2.5 && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          <Card className="p-6 bg-zinc-900/60 border border-zinc-800 space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-zinc-800">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20 font-mono">
+                    ETAPA 2.5
+                  </span>
+                  <h3 className="text-lg font-bold text-zinc-100 flex items-center gap-2">
+                    <Car className="text-sky-400" size={20} />
+                    Atualização de OSs do Pátio (Ausentes no Relatório)
+                  </h3>
+                </div>
+                <p className="text-xs text-zinc-400 mt-1">
+                  Revise e atualize os veículos que constavam no pátio de dias anteriores e não vieram nas planilhas importadas de hoje antes de preencher os valores manuais.
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => detectMissingOs()}
+                  className="text-xs bg-zinc-900 border-zinc-800 text-zinc-300 hover:text-white flex items-center gap-1.5 rounded-xl cursor-pointer"
+                >
+                  <RefreshCcw size={13} className={isLoadingMissingOs ? "animate-spin" : ""} />
+                  Recarregar OSs
+                </Button>
+              </div>
+            </div>
+
+            {isLoadingMissingOs ? (
+              <div className="p-12 text-center text-zinc-400 flex flex-col items-center gap-3">
+                <LoadingSpinner size="md" />
+                <p className="text-xs">Cruzando banco de dados com os relatórios importados...</p>
+              </div>
+            ) : missingOsList.length > 0 ? (
+              <MissingPatioOsEditor
+                missingList={missingOsList}
+                onChangeList={setMissingOsList}
+              />
+            ) : (
+              <div className="p-8 text-center rounded-xl bg-zinc-950/60 border border-zinc-800 space-y-2">
+                <CheckCircle2 size={32} className="mx-auto text-emerald-400 mb-2" />
+                <h4 className="text-sm font-bold text-zinc-200">Zero OSs Ausentes no Relatório</h4>
+                <p className="text-xs text-zinc-400 max-w-md mx-auto">
+                  Todas as ordens de serviço ativas no banco de dados foram encontradas nas planilhas importadas de hoje. Não há pendências antigas de pátio a baixar.
+                </p>
+              </div>
+            )}
+
+            <div className="flex items-center justify-between pt-4 border-t border-zinc-800">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setStep(2)}
+                className="text-zinc-400 hover:text-white text-xs"
+              >
+                ← Voltar para Mapeamento de Lojas
+              </Button>
+
+              <Button
+                type="button"
+                onClick={handleSaveAndAdvanceMissingOs}
+                disabled={isSavingMissingOs}
+                className="bg-emerald-500 text-zinc-950 hover:bg-emerald-400 font-bold text-xs flex items-center gap-2"
+              >
+                {isSavingMissingOs ? <LoadingSpinner size="xs" text="" /> : <ArrowRight size={15} />}
+                Salvar OSs e Avançar para Valores Manuais (Step 3) →
+              </Button>
+            </div>
+          </Card>
+        </motion.div>
+      )}
 
       
         {step === 3.5 && (() => {
@@ -2800,6 +2832,17 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                     </div>
 
                     <div className="flex items-center gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setStep(2.5)}
+                        className="text-xs bg-zinc-900 border-zinc-800 text-sky-400 hover:bg-zinc-800 hover:text-sky-300 flex items-center gap-1.5 rounded-xl shadow-sm cursor-pointer"
+                      >
+                        <Car size={13} />
+                        OSs Ausentes ({missingOsList.length})
+                      </Button>
+
                       <Button
                         type="button"
                         variant="outline"
@@ -3042,6 +3085,16 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             })()}
             {/* Fim: Valores Manuais Globais */}
 
+            {/* Bloco: OSs Ausentes / Carryover do Pátio */}
+            {missingOsList.length > 0 && (
+              <div className="pt-2">
+                <MissingPatioOsEditor
+                  missingList={missingOsList}
+                  onChangeList={setMissingOsList}
+                />
+              </div>
+            )}
+
             {/* Inspetor JSON de Conciliação */}
             <div className="pt-4 border-t border-zinc-800">
               <details className="group p-4 bg-zinc-950 rounded-xl border border-zinc-800">
@@ -3104,16 +3157,27 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
               </details>
             </div>
 
-            {/* Rodapé com Botão Único */}
+            {/* Rodapé com Navegação */}
             <div className="pt-4 border-t border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <label className="block text-xs font-semibold uppercase text-zinc-400 mb-1">Data Base da Conciliação</label>
-                <input 
-                  type="date" 
-                  value={targetDate} 
-                  onChange={e => setTargetDate(e.target.value)} 
-                  className="bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-sm text-zinc-100 focus:outline-none focus:border-emerald-500 font-mono"
-                />
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setStep(2.5)}
+                  className="text-zinc-400 hover:text-white text-xs self-start sm:self-auto"
+                >
+                  ← Voltar para OSs do Pátio
+                </Button>
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase text-zinc-400 mb-1">Data Base da Conciliação</label>
+                  <input 
+                    type="date" 
+                    value={targetDate} 
+                    onChange={e => setTargetDate(e.target.value)} 
+                    className="bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-sm text-zinc-100 focus:outline-none focus:border-emerald-500 font-mono"
+                  />
+                </div>
               </div>
 
               <div className="flex items-center">
