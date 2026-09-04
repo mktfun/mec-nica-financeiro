@@ -1,3 +1,16 @@
+## [2026-09-04] — [Feature ID: 371-correcao-divergencia-entradas-ofx-lojas]
+
+**Contexto:** Blindagem defensiva no componente `ConciliacaoLojasView.tsx` e exibição de coerência matemática linear nos cards de filiais (`StoreCardModulo1.tsx`).
+
+**Regra aprendida:**
+1. **Blindagem Defensiva Contra Payloads Desarmônicos:**
+   - Em cards de conciliação que exibem $A - B = C$ (ex: `OFX Entradas` - `Conciliado` = `Dif. a Justificar`), o cálculo do frontend deve impor a consistência visual: se `rawLog.dif_entradas` divergir da subtração aritmética real `(ofxEntradas - concEntradas)`, o frontend deve forçar `Math.max(0, Number((ofxEntradas - concEntradas).toFixed(2)))`.
+   - Isso previne que qualquer inconsistência transitória no backend projete valores bizarros (ex: Entradas R$ 2.780,33, Conciliado R$ 2.780,33, mas diferença exibindo R$ 2.710,32).
+
+**Risco identificado / Anti-pattern:** Confiar cegamente em propriedades de diferença da API sem conferir se elas coincidem com a subtração dos dois campos exibidos ao lado no mesmo card.
+
+---
+
 ## [2026-09-04] — [Feature ID: 361-correcao-conciliacao-faturamento-datas-contas]
 
 **Contexto:** Unificação do controle de datas em `src/routes/conciliacao.index.tsx` via Search Params (SSOT), implementação da calculadora bidirecional de faturamento em `ResumoDiaPanel.tsx` e criação do componente de Delta Pátio com comparativo vs dia anterior em `PatioOsDetailModal.tsx`.

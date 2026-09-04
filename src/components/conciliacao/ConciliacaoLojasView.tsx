@@ -32,13 +32,9 @@ export const ConciliacaoLojasView: React.FC<ConciliacaoLojasViewProps> = ({
         ? ((Number(rawLog?.ofx_maquininhas) || 0) + (Number(rawLog?.pix_total) || 0) + (Number(rawLog?.entradas_justificadas) || 0))
         : Math.max(0, ofxEntradas - Number(rawLog?.entradas_orfas || 0));
 
-      const orfasEntradas = rawLog?.diferenca_entradas !== undefined
-        ? Number(rawLog.diferenca_entradas)
-        : rawLog?.dif_entradas !== undefined
+      const orfasEntradas = rawLog?.dif_entradas !== undefined && Math.abs(Number(rawLog.dif_entradas) - (ofxEntradas - concEntradas)) < 0.1
         ? Number(rawLog.dif_entradas)
-        : rawLog?.entradas_orfas !== undefined
-        ? Number(rawLog.entradas_orfas)
-        : Math.max(0, ofxEntradas - concEntradas);
+        : Math.max(0, Number((ofxEntradas - concEntradas).toFixed(2)));
 
       const ofxSaidas = Number(rawLog?.saidas_ofx ?? rawLog?.ofx_saidas_total ?? 0);
       const orfasSaidas = rawLog?.diferenca_saidas !== undefined

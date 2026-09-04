@@ -1,7 +1,7 @@
 # Graph Report - mec-nica-financeiro  (2026-09-04)
 
 ## Corpus Check
-- 798 files · ~567,810 words
+- 799 files · ~569,332 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `a8e20400`
+- Built from commit: `0bbab507`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -33,7 +33,7 @@
 - ImportExecutionTerminal.tsx
 - CentralImportWizard.tsx
 - auditoria_conciliacao_senior.md
-- 📋 Proposta: Correção de Divergências de Saídas OFX por Filial (Kennedy e Santo André)
+- 📐 Design: Correção de Divergência de Entradas OFX por Filial e Sanear Créditos Órfãos
 - dependencies
 - features_clean.md
 - index.tsx
@@ -66,7 +66,7 @@
 - Design: Motor Bicanal, Saneamento Contábil e Fast-Path Seguro (359)
 - Design: Workspace Conversacional de Conciliação Financeira com Arquitetura Hydra Especializada (360)
 - Feature 267: Painel de Edição de OSs Ausentes no Pátio e Deduplicação da Rede
-- extractNumber
+- useMdrAudit.ts
 - 📄 Documento Técnico: Especificação e Desafio Arquitetural do Módulo de Recebíveis (Spec 284)
 - Contexto do Projeto: Sistema de Fechamento de Caixa (Mecânica Financeiro)
 - PromptInput.tsx
@@ -152,7 +152,7 @@
 - Proposal: Central de Agentes IAS & Sidebar UI Alignment
 - Proposal: Corrigir Matemática de "Na Loja OS" (Restante na OS) (patio-math-fix)
 - importacoes.tsx
-- 📐 Design Técnico: Correção de Divergências de Saídas OFX por Filial
+- 📋 Proposta: Correção de Divergência de Entradas OFX por Filial e Sanear Créditos Órfãos
 - start.ts
 - ia.md
 - Step1UnregisteredPayments.tsx
@@ -312,7 +312,7 @@
 - Proposal: Equalizacao da Conciliacao com a Planilha Oficial (CONCILIACAO 2708.xlsx) (304)
 - Proposal: Padronização e Refatoração de UI/UX (305)
 - auto-background-ai-reconciler/design.md
-- marcoZeroParser.ts
+- extractNumber
 - supabase.ts
 - CategorySelector.tsx
 - CacheAgentePanel.tsx
@@ -405,14 +405,16 @@
 - @radix-ui/react-dialog
 - @radix-ui/react-dropdown-menu
 - @radix-ui/react-hover-card
-- 📋 Plano de Implementação: Correção de Divergências de Saídas OFX por Filial
+- 📋 Plano de Implementação: Correção de Divergência de Entradas OFX por Filial
 - @radix-ui/react-menubar
 - @radix-ui/react-navigation-menu
 - @radix-ui/react-progress
 - @radix-ui/react-radio-group
 - @radix-ui/react-scroll-area
 - @radix-ui/react-separator
+- clsx
 - @radix-ui/react-slot
+- eslint
 - @radix-ui/react-toggle
 - @radix-ui/react-toggle-group
 - Spec Plan: Motor Bicanal, Saneamento Contábil e Fast-Path Seguro (359)
@@ -490,13 +492,11 @@
 - 334-simplify-step3-and-integrate-missing-os-into-step4/spec-plan.md
 - Política: Regras de Ativação de Skills
 - vibe-debug.md
-- @eslint/js
 - llm-matcher.ts
 - input-otp
 - backend-agent.md
 - database-agent.md
 - frontend-agent.md
-- ai
 - cn
 - useBackendDashboard.ts
 - @radix-ui/react-avatar
@@ -603,13 +603,13 @@ Nodes (59): AgentRunnerModal(), AgentRunnerModalProps, INITIAL_STAGES, AgentStag
 Cohesion: 0.07
 Nodes (28): 1. VISÃO GERAL DA ARQUITETURA & FLUXO DE DADOS PONTA A PONTA, 2.1. Os 5 Pilares do Caixa Atual ($C_{\text{atual}}$), 2.2. As 5 Equações Sequenciais de Fechamento, 2. AS 5 EQUAÇÕES CONTÁBEIS E OS 5 PILARES DO CAIXA CONSOLIDADO, 3.1. BUG 1: Dinheiro em Espécie (Idempotência Frágil & Destruição Histórica na Baixa), 3.2. BUG 2: Maquininhas/Rede (Colisão de Hash, Duplicação de Juros & Falso 'Não Entrou'), 3.3. BUG 3: Reimportação Geral (Race Conditions, Sobrescrita Cega em patio_os e manual_transactions), 3. AUDITORIA FORENSE DOS 3 BUGS CRÍTICOS (ROOT CAUSE ANALYSIS - RCA) (+20 more)
 
-### Community 18 - "📋 Proposta: Correção de Divergências de Saídas OFX por Filial (Kennedy e Santo André)"
+### Community 18 - "📐 Design: Correção de Divergência de Entradas OFX por Filial e Sanear Créditos Órfãos"
 Cohesion: 0.15
-Nodes (12): 1.1 Caso Kennedy - MP (`st-04`), 1.2 Caso Santo André - HD (`st-08`), 1.3 Caso Planalto - BRASICAR (`st-06`), 1. O Problema, 2.1 Sanear a Regra Contábil de Saídas na RPC `get_daily_reconciliation_summary`, 2.2 Vínculo e Atribuição de Contas Corporativas (`store_id IS NULL`) à Loja Pagadora, 2.3 Persistência de Pareamento no Frontend (`StoreExtratoBancarioView.tsx`), 2. Solução Proposta (+4 more)
+Nodes (12): 1. Arquitetura e Fluxo de Dados, 2.1 CTE `ofx_entradas_agg` na RPC `get_daily_reconciliation_summary`:, 2.2 Projeção em `v_stores_detail`:, 2.3 Status Consistente por Loja:, 2. Contratos SQL & Mudanças no PostgreSQL, 3. Mutações em Arquivos Existentes [MODIFY], 4. Cenários de Verificação (SCAN -> INFER -> VERIFY -> FIX), Cenário 1: Filiais com Lotes de Cartão e Justificativas de Sucata (Ex: Dom Pedro `st-01`, Kennedy `st-04`) (+4 more)
 
 ### Community 19 - "dependencies"
 Cohesion: 0.12
-Nodes (17): clsx, framer-motion, motion, dependencies, clsx, framer-motion, motion, @radix-ui/react-label (+9 more)
+Nodes (17): ai, framer-motion, motion, dependencies, ai, framer-motion, motion, @radix-ui/react-label (+9 more)
 
 ### Community 20 - "features_clean.md"
 Cohesion: 0.09
@@ -629,11 +629,11 @@ Nodes (11): componentCache, createMotionComponent(), motion, MotionChildRenderer
 
 ### Community 24 - "devDependencies"
 Cohesion: 0.15
-Nodes (13): eslint, eslint-plugin-react-hooks, eslint-plugin-react-refresh, devDependencies, eslint, eslint-plugin-react-hooks, eslint-plugin-react-refresh, playwright (+5 more)
+Nodes (13): @eslint/js, eslint-plugin-react-hooks, eslint-plugin-react-refresh, devDependencies, @eslint/js, eslint-plugin-react-hooks, eslint-plugin-react-refresh, playwright (+5 more)
 
 ### Community 25 - "specs/global/features.md"
 Cohesion: 0.06
-Nodes (32): Spec 272 — Apuração Automática de Dinheiro no Cofre e Maquininhas a Compensar por Filial, Spec 273 — Ajuste Matemático Estrito da RPC de Conciliação, Spec 274 — Motor Inteligente de Auto-Match (Rede ↔ OS) e Carry-Over de Pátio, Spec 275 — Previsto = Total Entradas OFX, Diferença = Pendentes Não Justificados + Guardrails de Auto-Match de PIX, Spec 276 — Refinamento Estrito do Modal de Vínculo Manual de PIX com OS, Spec 278 — Motor de Cálculo Direto das Fontes Brutas e Desduplicação de Contas, Spec 279 — Correção do Fechamento por Filial, Agregação Canônica e Cálculo de Diferença por Loja, Spec 283 — Congelamento Imutável de Snapshots e Isolamento Histórico de Conciliação (+24 more)
+Nodes (33): Spec 272 — Apuração Automática de Dinheiro no Cofre e Maquininhas a Compensar por Filial, Spec 273 — Ajuste Matemático Estrito da RPC de Conciliação, Spec 274 — Motor Inteligente de Auto-Match (Rede ↔ OS) e Carry-Over de Pátio, Spec 275 — Previsto = Total Entradas OFX, Diferença = Pendentes Não Justificados + Guardrails de Auto-Match de PIX, Spec 276 — Refinamento Estrito do Modal de Vínculo Manual de PIX com OS, Spec 278 — Motor de Cálculo Direto das Fontes Brutas e Desduplicação de Contas, Spec 279 — Correção do Fechamento por Filial, Agregação Canônica e Cálculo de Diferença por Loja, Spec 283 — Congelamento Imutável de Snapshots e Isolamento Histórico de Conciliação (+25 more)
 
 ### Community 26 - "compilerOptions"
 Cohesion: 0.10
@@ -735,9 +735,9 @@ Nodes (11): 1. `src/routes/conciliacao.index.tsx`, 2. `src/components/chat/Messa
 Cohesion: 0.20
 Nodes (10): Feature 267: Painel de Edição de OSs Ausentes no Pátio e Deduplicação da Rede, Spec 272 — Apuração Automática de Dinheiro no Cofre e Maquininhas a Compensar por Filial, Spec 273 — Ajuste Matemático Estrito da RPC de Conciliação, Spec 274 — Motor Inteligente de Auto-Match (Rede ↔ OS) e Carry-Over de Pátio, Spec 275 — Previsto = Total Entradas OFX, Diferença = Pendentes Não Justificados + Guardrails de Auto-Match de PIX, Spec 276 — Refinamento Estrito do Modal de Vínculo Manual de PIX com OS, Spec 278 — Motor de Cálculo Direto das Fontes Brutas e Desduplicação de Contas, Spec 283 — Congelamento Imutável de Snapshots e Isolamento Histórico de Conciliação (+2 more)
 
-### Community 51 - "extractNumber"
-Cohesion: 0.15
-Nodes (23): MdrAuditView(), ExpenseImportResult, processExpenseFiles(), BrandMdrItem, DailyMdrItem, MdrAuditData, MdrAuditFilters, StoreMdrItem (+15 more)
+### Community 51 - "useMdrAudit.ts"
+Cohesion: 0.20
+Nodes (14): MdrAuditView(), BrandMdrItem, DailyMdrItem, MdrAuditData, MdrAuditFilters, StoreMdrItem, TransactionMdrItem, useMdrAudit() (+6 more)
 
 ### Community 52 - "📄 Documento Técnico: Especificação e Desafio Arquitetural do Módulo de Recebíveis (Spec 284)"
 Cohesion: 0.14
@@ -1071,9 +1071,9 @@ Nodes (7): API / Interface, Contratos de Dados, Features Existentes Impactadas, 
 Cohesion: 0.18
 Nodes (13): FechamentoMode, FechamentoModeSelector(), FechamentoModeSelectorProps, FechamentoManualWizard(), PurgeDailyModal(), PurgeDailyModalProps, useClearAllData(), useDeleteImport() (+5 more)
 
-### Community 137 - "📐 Design Técnico: Correção de Divergências de Saídas OFX por Filial"
-Cohesion: 0.18
-Nodes (10): 1.1 Ciclo de Vida dos Dados, 1. Arquitetura de Fluxo Ponta a Ponta, 2.1 Interface do Card por Filial (`StoreCardData`), 2.2 Estrutura de Retorno da Loja na RPC, 2. Interfaces TypeScript Reais, 3. Lista de Módulos Modificados e Criados, 4. Cenários de Teste Detalhados [SCAN -> INFER -> VERIFY -> FIX], Cenário 1: Kennedy - MP (`st-04`) com Contas Corporativas de Holding (+2 more)
+### Community 137 - "📋 Proposta: Correção de Divergência de Entradas OFX por Filial e Sanear Créditos Órfãos"
+Cohesion: 0.20
+Nodes (9): 1. O Problema, 2. Causa Raiz, 3.1 Correção Canônica na RPC `get_daily_reconciliation_summary` (PostgreSQL), 3.2 Blindagem Defensiva no Frontend (`ConciliacaoLojasView.tsx`), 3. Solução Proposta, 4. Risco Principal & Mitigação, Exemplos do Sintoma Identificado pelo Usuário:, O Defeito Técnico: (+1 more)
 
 ### Community 138 - "start.ts"
 Cohesion: 0.25
@@ -1691,9 +1691,9 @@ Nodes (3): Problema, Proposal: Padronização e Refatoração de UI/UX (305), So
 Cohesion: 0.50
 Nodes (3): Arquitetura de Acionamento em Background, Cenários de Verificação (SCAN → INFER → VERIFY → FIX), Estrutura do Hook `useBackgroundAiReconciler`
 
-### Community 299 - "marcoZeroParser.ts"
-Cohesion: 0.31
-Nodes (8): cleanNumber(), isKnownStore(), MarcoZeroGlobalData, MarcoZeroResult, MarcoZeroStoreData, parseDate(), parseMarcoZeroPlanilha(), REDE_STORE_MAPPING
+### Community 299 - "extractNumber"
+Cohesion: 0.18
+Nodes (17): ExpenseImportResult, processExpenseFiles(), parseContasAPagar(), ParsedExpense, parseJurosRede(), cleanNumber(), isKnownStore(), MarcoZeroGlobalData (+9 more)
 
 ### Community 300 - "supabase.ts"
 Cohesion: 0.07
@@ -1755,7 +1755,7 @@ Nodes (16): formatBrlCurrency(), CurrencyDisplay(), CurrencyDisplayProps, Discre
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `supabase` connect `supabase` to `useBackendConciliacao.ts`, `WizardImportacao.tsx`, `useAutonomousReconciliation.ts`, `supabase/types.ts`, `Badge.tsx`, `loja.$lojaId.tsx`, `importacoes.tsx`, `recebiveis.tsx`, `start.ts`, `CentralImportWizard.tsx`, `index.tsx`, `Step2NonRevenueJustifications.tsx`, `useReconciliationInsights.ts`, `supplierUtils.ts`, `useImportProcessor.ts`, `supabase.ts`, `patio.tsx`, `CacheAgentePanel.tsx`, `LogsAgentePanel.tsx`, `ExtratosImportacaoModal.tsx`, `extractNumber`, `BreakdownModal.tsx`, `useDiagnosticEngine.ts`, `centralImportManager.ts`, `MessageList.tsx`, `Button.tsx`, `useTransactions.ts`, `EvolucaoMacroChart.tsx`, `llm-matcher.ts`, `useBackendDashboard.ts`?**
+- **Why does `supabase` connect `supabase` to `useBackendConciliacao.ts`, `WizardImportacao.tsx`, `useAutonomousReconciliation.ts`, `supabase/types.ts`, `Badge.tsx`, `loja.$lojaId.tsx`, `importacoes.tsx`, `recebiveis.tsx`, `start.ts`, `CentralImportWizard.tsx`, `index.tsx`, `Step2NonRevenueJustifications.tsx`, `useReconciliationInsights.ts`, `supplierUtils.ts`, `useImportProcessor.ts`, `supabase.ts`, `patio.tsx`, `CacheAgentePanel.tsx`, `LogsAgentePanel.tsx`, `ExtratosImportacaoModal.tsx`, `useMdrAudit.ts`, `BreakdownModal.tsx`, `useDiagnosticEngine.ts`, `centralImportManager.ts`, `MessageList.tsx`, `Button.tsx`, `useTransactions.ts`, `EvolucaoMacroChart.tsx`, `llm-matcher.ts`, `useBackendDashboard.ts`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
 - **Why does `Card()` connect `supabase` to `useBackendConciliacao.ts`, `WizardImportacao.tsx`, `Badge.tsx`, `importacoes.tsx`, `loja.$lojaId.tsx`, `recebiveis.tsx`, `Step1UnregisteredPayments.tsx`, `CentralImportWizard.tsx`, `Step2NonRevenueJustifications.tsx`, `useImportProcessor.ts`, `supabase.ts`, `patio.tsx`, `CacheAgentePanel.tsx`, `LogsAgentePanel.tsx`, `FaturamentoVsContasChart.tsx`, `proposta.tsx`, `BankReconciliationDashboard.tsx`, `Button.tsx`, `useTransactions.ts`, `EvolucaoMacroChart.tsx`, `StoreAnalyticsTabs.tsx`, `StoreDonutCharts.tsx`, `cn`?**
   _High betweenness centrality (0.006) - this node is a cross-community bridge._

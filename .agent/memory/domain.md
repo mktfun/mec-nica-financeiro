@@ -1,3 +1,20 @@
+## [2026-09-04] — [Feature ID: 371-correcao-divergencia-entradas-ofx-lojas]
+
+**Contexto:** Saneamento contábil dos cards de fechamento por filial em `/conciliacao`. Eliminação da classificação de liquidações bancárias de cartão da Rede como créditos órfãos, restaurando a coerência visual e matemática de 100% Conciliado nas 10 lojas monitoradas.
+
+**Regra aprendida:**
+1. **Linearidade Matemática dos Cards de Filial ($A - B = C$):**
+   - Na linha de Entradas:
+     $$\text{OFX Entradas} - \text{Créditos Conciliados (Rede + PIX OS + Justificados)} = \text{Dif. a Justificar (Crédito Órfão)}$$
+   - A coluna "Dif. a Justificar" reflete única e exclusivamente depósitos no extrato bancário que não possuem origem contábil identificada.
+   - Quando o extrato bancário contiver exclusivamente vendas de cartão liquidadas pela Rede, PIX de ordens de serviço e entradas devidamente justificadas (ex: venda de sucata), a diferença é exatamente R$ 0,00 e o status é `100% Conciliado` (Verde).
+2. **Separação entre Lotes de Cartão e OSs:**
+   - Lotes de adquirente (`ofx_maquininhas`) representam a liquidação agrupada das vendas de cartão (D+1 ou D0). Eles nunca devem ser exigidos de ter `matched_os_number`, pois o matching individual de vendas de cartão com OSs ocorre na Fase 2 (Rede x OS) e não no extrato do banco.
+
+**Risco identificado / Anti-pattern:** Exibir no card que o OFX Entradas é R$ X, o Conciliado é R$ X, mas apontar diferença diferente de zero. A matemática exibida ao usuário deve ser linear e auto-evidente ($A - B = C$).
+
+---
+
 ## [2026-09-04] — [Feature ID: 361-correcao-conciliacao-faturamento-datas-contas]
 
 **Contexto:** Resolução dos 6 problemas de integridade na tela de Conciliação Diária (`/conciliacao`): navegação de datas travada por duplicação de estado, distorção do odômetro de faturamento gerando falsa divergência de R$ 49k, estagnação do subtotal de contas manuais que ignorava novos lançamentos, salto descontrolado de boletos a receber para mais de R$ 20k, e falta de transparência na variação legítima do saldo de pátio (R$ 28k para R$ 11k).

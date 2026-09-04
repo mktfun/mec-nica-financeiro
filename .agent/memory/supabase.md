@@ -1,3 +1,25 @@
+## [2026-09-04] — [Feature ID: 371-correcao-divergencia-entradas-ofx-lojas]
+
+**Contexto:** Correção da apuração de créditos órfãos e da equação linear de entradas por filial na RPC `get_daily_reconciliation_summary` via migration `20260904000035_fix_store_entradas_orfas.sql`. A CTE anterior classificava indevidamente todos os depósitos de cartão de adquirentes (Rede, Cielo, Stone) como órfãos por não terem OS de balcão e nem justificativa manual, gerando falsas divergências de milhares de reais em todas as lojas monitoradas.
+
+**Regra aprendida:**
+1. **Definição Canônica Estrita de Créditos Órfãos no Extrato Bancário:**
+   - Um crédito bancário só pode ser somado em `entradas_orfas` se cumulativamente:
+     - NÃO for identificado como lote de adquirente (`NOT (counterpart_name ILIKE '%REDE%' OR counterpart_name ILIKE '%CARD%' OR counterpart_name ILIKE '%CIELO%' OR counterpart_name ILIKE '%STONE%' OR counterpart_name ILIKE '%PAGSEGURO%' OR manual_category ILIKE '%REDE%')`);
+     - NÃO tiver vínculo com OS de balcão (`matched_os_number IS NULL`);
+     - NÃO possuir categoria ou justificativa manual (`(manual_category IS NULL OR TRIM(manual_category) = '') AND (manual_justification IS NULL OR TRIM(manual_justification) = '')`).
+2. **Equação Linear Canônica de Entradas ($A - B = C$):**
+   - $A = \text{OFX Entradas Total}$
+   - $B = \text{Créditos Conciliados} = \text{Lotes Adquirentes} + \text{PIX OS} + \text{Entradas Justificadas}$
+   - $C = \text{Diferença de Entradas} = A - B$
+   - A RPC calcula deterministicamente `dif_entradas = ofx_entradas_total - entradas_conciliadas`, garantindo que se todas as movimentações estiverem explicadas, a diferença é compulsoriamente R$ 0,00.
+3. **Critério Canônico de Aprovação da Filial:**
+   - O status da filial é `'approved'` quando `ABS(dif_entradas) <= 0.05 AND ABS(dif_saidas) <= 0.05`.
+
+**Risco identificado / Anti-pattern:** Usar `matched_os_number IS NULL AND manual_category IS NULL` para identificar créditos órfãos sem excluir os depósitos de adquirentes de cartão (`REDE`/`CARD`). Isso faz com que todo o faturamento em cartão recebido no banco seja classificado como divergência não explicada.
+
+---
+
 ## [2026-09-04] — [Feature ID: 361-correcao-conciliacao-faturamento-datas-contas]
 
 **Contexto:** Atualização da RPC `public.get_daily_reconciliation_summary` via migration `20260904000033_reactive_reconciliation_summary.sql` para garantir dinamismo no cálculo de `contas_manual` a partir de `daily_manual_bills`, priorização de `metadata->>'faturamento_oi_base'` e carry-over seguro de ativos transitórios.

@@ -1,3 +1,14 @@
+### Spec 371 — Correção Canônica de Divergência de Entradas OFX por Filial e Sanear Créditos Órfãos
+- **Database (Migration `20260904000035_fix_store_entradas_orfas.sql`)**:
+  - Exclusão estrita de liquidações bancárias de cartão de adquirentes (`REDE`, `CARD`, `CIELO`, `STONE`, `PAGSEGURO`) da agregação de `entradas_orfas`.
+  - Implementação da equação linear canônica de entradas na RPC `get_daily_reconciliation_summary`:
+    `dif_entradas = ofx_entradas_total - (ofx_maquininhas + pix_total + entradas_justificadas)`
+  - Classificação consistente de status de filial: `'approved'` quando `ABS(dif_entradas) <= 0.05 AND ABS(dif_saidas) <= 0.05`.
+- **Frontend Conciliação por Loja (`ConciliacaoLojasView.tsx`)**:
+  - Blindagem defensiva em `orfasEntradas` assegurando que a diferença respeite compulsoriamente a subtração `ofxEntradas - concEntradas`, eliminando discrepâncias visuais nos cards.
+- **Equalização Contábil Integral por Filial (04/09/2026)**:
+  - 10 de 10 lojas auditadas e 100% aprovadas (`status: approved`), com Entradas e Saídas rigorosamente zeradas (`dif_entradas = R$ 0,00` e `dif_saidas = R$ 0,00`), eliminando os falsos créditos órfãos de Dom Pedro (+R$ 2.710,32), Jabaquara (+R$ 6.149,86), Jorge Beretta (+R$ 3.107,02) e Kennedy (+R$ 2.206,49).
+
 ### Spec 370 — Correção Canônica de Divergências de Saídas OFX por Filial e Anti-Dupla Contagem
 - **Database (Migration `20260904000034_fix_store_saidas_divergences.sql`)**:
   - Nova fórmula canônica anti-dupla contagem na RPC `get_daily_reconciliation_summary`:
