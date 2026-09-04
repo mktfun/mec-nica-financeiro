@@ -240,8 +240,8 @@
     "semantic_hash": "5657d3d33d13441c1ffdd63784683ee9"
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1788531432.8019269,
-    "ast_hash": "6d1c33367c6d9857a419fd4af6b25dae",
+    "mtime": 1788544156.9085753,
+    "ast_hash": "5500ff64fee6f98f72b242757496a304",
     "semantic_hash": ""
   },
   "src/components/conciliacao/SaldoBancosDetailModal.tsx": {
@@ -3455,8 +3455,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1788533628.276966,
-    "ast_hash": "0022f105d320b90f6c09dc0becb02cd2",
+    "mtime": 1788534858.220953,
+    "ast_hash": "7d0b37eacc9f8298de267634363beb3b",
     "semantic_hash": ""
   },
   "specs/global/features_clean.md": {
@@ -4014,19 +4014,24 @@
     "ast_hash": "8688eba5a7ac7898626e738f33570705",
     "semantic_hash": ""
   },
-  "specs/371-correcao-divergencia-entradas-ofx-lojas/design.md": {
-    "mtime": 1788534250.7434778,
-    "ast_hash": "319673e560c9c8935d811ad0edf647e7",
+  "supabase/migrations/20260904000036_fix_reconciliation_exact_balances_0409.sql": {
+    "mtime": 1788544050.3058102,
+    "ast_hash": "4059dc0f3355d4b98aa62048e1e9547c",
     "semantic_hash": ""
   },
-  "specs/371-correcao-divergencia-entradas-ofx-lojas/proposal.md": {
-    "mtime": 1788534240.723948,
-    "ast_hash": "16d0d0ba291800828aa0504458b74822",
+  "specs/372-simulacao-real-import-0409-equalizacao-saldos/design.md": {
+    "mtime": 1788543637.1999228,
+    "ast_hash": "c7994fecbc7d873fb5df43452fe5ac2b",
     "semantic_hash": ""
   },
-  "specs/371-correcao-divergencia-entradas-ofx-lojas/spec-plan.md": {
-    "mtime": 1788534605.6045613,
-    "ast_hash": "1c20018f8bd01090e498a48db17d135b",
+  "specs/372-simulacao-real-import-0409-equalizacao-saldos/proposal.md": {
+    "mtime": 1788543624.7636201,
+    "ast_hash": "1937d674cb05b0d02a21c57edaab5899",
+    "semantic_hash": ""
+  },
+  "specs/372-simulacao-real-import-0409-equalizacao-saldos/spec-plan.md": {
+    "mtime": 1788544423.6356122,
+    "ast_hash": "cd8aa91808fc2b0cd21581edfc552dbd",
     "semantic_hash": ""
   }
 }

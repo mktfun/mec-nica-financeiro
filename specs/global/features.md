@@ -1,3 +1,20 @@
+### Spec 372 — Simulação Real de Importação (04/09/2026), Equalização de Saldos e Saneamento Contábil
+- **Database (Migration `20260904000036_fix_reconciliation_exact_balances_0409.sql`)**:
+  - Eliminação definitiva da dupla contagem de cartões da adquirente Rede na RPC `get_daily_reconciliation_summary`: o campo `cartoes_a_compensar` agora filtra estritamente `settlement_status IN ('nao_entrou', 'a_compensar')`. Se as vendas em cartão (R$ 24.547,32) já foram creditadas no extrato bancário de D+1 (04/09), o residual a compensar é R$ 0,00, mantendo o saldo de bancos positivo puro em R$ 290.994,62 (ao invés de R$ 315.541,94).
+  - Saneamento do Dinheiro em Trânsito / Cofre (`store_cash_vault`): a consulta passa a acumular todos os lançamentos em trânsito ainda não baixados com `status IN ('em_transito', 'pending') AND entry_date <= target_date`, recuperando os R$ 9.113,90 recolhidos pelo gestor das filiais (Santo André R$ 2.336,40, Dom Pedro R$ 2.637,50, Rei do Módulo R$ 4.140,00).
+  - Enriquecimento da CTE `vault_agg` com agrupamento de `vault_entries` em formato JSON por loja, alimentando a interface com as entradas atômicas em aberto.
+  - Compatibilidade universal com duplo retorno de chaves: `dinheiro_lojas` / `dinheiro_em_lojas` e `saldo_bancos_positivo` / `saldo_bancos_ofx_positivo`.
+- **Frontend Conciliação & Modais (`ResumoDiaPanel.tsx` & `SaldoBancosDetailModal.tsx`)**:
+  - Card 1 (`SALDO BANCOS + DINHEIRO`): Exibição do número total consolidado (R$ 300.108,52), com sub-chips dinâmicos para Extrato OFX Positivo (R$ 290.994,62), Dinheiro no Cofre (+R$ 9.113,90) e (-) Cheque Especial (-R$ 1.653,79).
+  - Modal Raio-X de Saldos por Filial: Exibição dos 10 bancos com seus valores OFX puros e acoplamento do botão de ação `[Dar Baixa]` conectado diretamente ao `BaixaDinheiroModal` nas 3 filiais com dinheiro em trânsito.
+- **Equalização Contábil Oficial 04/09/2026**:
+  - Saldos Bancos Positivos: R$ 290.994,62 (9 contas Itaú apuradas ao centavo).
+  - Cheque Especial: -R$ 1.653,79 (LIS Planalto).
+  - Cartões a Compensar: R$ 0,00 (100% creditado no extrato).
+  - Dinheiro no Cofre: R$ 9.113,90.
+  - Caixa Atual: R$ 343.261,66.
+  - 10 de 10 lojas auditadas com status `approved` e zero divergências.
+
 ### Spec 371 — Correção Canônica de Divergência de Entradas OFX por Filial e Sanear Créditos Órfãos
 - **Database (Migration `20260904000035_fix_store_entradas_orfas.sql`)**:
   - Exclusão estrita de liquidações bancárias de cartão de adquirentes (`REDE`, `CARD`, `CIELO`, `STONE`, `PAGSEGURO`) da agregação de `entradas_orfas`.

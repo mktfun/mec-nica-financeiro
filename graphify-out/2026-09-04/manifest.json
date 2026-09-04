@@ -1940,8 +1940,8 @@
     "semantic_hash": "11a03775bc7ad83958ed19e4c0c18257"
   },
   "src/components/conciliacao/ConciliacaoLojasView.tsx": {
-    "mtime": 1788533058.660448,
-    "ast_hash": "aa384ae152fb9c0e472d48ce4a2abc95",
+    "mtime": 1788534554.3846955,
+    "ast_hash": "3e7569d1d2d5e41f494e43bf2e3ac6cc",
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreCardModulo1.tsx": {
@@ -3455,8 +3455,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1788530940.1887732,
-    "ast_hash": "5d5eba51de7f2d5b38a89ca3a67a1852",
+    "mtime": 1788533628.276966,
+    "ast_hash": "0022f105d320b90f6c09dc0becb02cd2",
     "semantic_hash": ""
   },
   "specs/global/features_clean.md": {
@@ -4009,19 +4009,24 @@
     "ast_hash": "40b69c4c81867e39512e0d0437ce6ee4",
     "semantic_hash": ""
   },
-  "specs/370-correcao-divergencia-lojas-saidas-ofx/design.md": {
-    "mtime": 1788532852.0454133,
-    "ast_hash": "a36b7bc3a0d207f8584fc2b8cdc93341",
+  "supabase/migrations/20260904000035_fix_store_entradas_orfas.sql": {
+    "mtime": 1788534506.7600315,
+    "ast_hash": "8688eba5a7ac7898626e738f33570705",
     "semantic_hash": ""
   },
-  "specs/370-correcao-divergencia-lojas-saidas-ofx/proposal.md": {
-    "mtime": 1788532839.6223683,
-    "ast_hash": "40f71df99c59eb21f0c40cbdd5b97b85",
+  "specs/371-correcao-divergencia-entradas-ofx-lojas/design.md": {
+    "mtime": 1788534250.7434778,
+    "ast_hash": "319673e560c9c8935d811ad0edf647e7",
     "semantic_hash": ""
   },
-  "specs/370-correcao-divergencia-lojas-saidas-ofx/spec-plan.md": {
-    "mtime": 1788533190.0655522,
-    "ast_hash": "e6db0252e535d4ae9f849e04a64ff2ad",
+  "specs/371-correcao-divergencia-entradas-ofx-lojas/proposal.md": {
+    "mtime": 1788534240.723948,
+    "ast_hash": "16d0d0ba291800828aa0504458b74822",
+    "semantic_hash": ""
+  },
+  "specs/371-correcao-divergencia-entradas-ofx-lojas/spec-plan.md": {
+    "mtime": 1788534605.6045613,
+    "ast_hash": "1c20018f8bd01090e498a48db17d135b",
     "semantic_hash": ""
   }
 }

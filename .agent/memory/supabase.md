@@ -1087,3 +1087,13 @@ Nao fazer: Nunca permita que excecoes estruturais sejam traduzidas em status con
    $$\text{dif\_saidas} = \text{ofx\_saidas\_total} - \text{contas\_conciliadas}$$
 2. **Atribuição de Contas Corporativas (`store_id IS NULL`) à Filial Pagadora:** Contas matriz/holding pagas pela conta bancária de uma filial devem ser vinculadas via `matched_ofx_id` / `matched_bill_id` e agrupadas na respectiva filial na CTE `bills_store_agg` (`COALESCE(b.store_id, ot.store_id)`).
 **Risco identificado / Anti-pattern:** Somar cegamente contas previstas com transações bancárias justificadas sem deduzir a cobertura, gerando diferenças negativas falsas no fechamento das filiais.
+
+## [2026-09-04] — [Feature ID: 372-simulacao-real-import-0409-equalizacao-saldos]
+**Contexto:** Saneamento da RPC `get_daily_reconciliation_summary` para eliminar dupla contagem de cartões da Rede (R$ 290k vs R$ 315k) e recuperar dinheiro em trânsito acumulado do cofre (`store_cash_vault`).
+**Regra aprendida:**
+1. **Anti-Dupla Contagem de Cartões a Compensar:** Em `get_daily_reconciliation_summary`, a query em `pos_transactions` deve filtrar estritamente `WHERE settlement_status IN ('nao_entrou', 'a_compensar')` ao totalizar `v_cartoes_a_compensar`. Transações com `settlement_status = 'entrou'` já caíram na conta corrente em D+1 e compõem o saldo bancário `bank_total` extraído do OFX (`LEDGERBAL`). Somar novamente essas transações ao saldo de bancos positivo duplica o valor creditado.
+2. **Dinheiro em Trânsito Acumulado (`store_cash_vault`):** O dinheiro em espécie recolhido pelos gestores nas filiais (`store_cash_vault`) permanece em trânsito até a confirmação de depósito ou baixa no caixa central. O filtro da RPC deve acumular todos os registros com `status IN ('em_transito', 'pending') AND entry_date <= v_target_date::date` (em vez de `= target_date`).
+3. **Array `vault_entries` em `stores_detail`:** A CTE `vault_agg` agora agrupa e retorna `vault_entries` como JSON array contendo os registros individuais em aberto de cada loja, permitindo que a UI renderize dinamicamente o botão `[Dar Baixa]` individualmente para as filiais que possuem dinheiro pendente de depósito.
+4. **Duplo Nome de Propriedades para Compatibilidade:** A RPC deve retornar tanto `dinheiro_lojas` quanto `dinheiro_em_lojas`, e tanto `saldo_bancos_positivo` quanto `saldo_bancos_ofx_positivo`, garantindo compatibilidade universal com todos os componentes legados e novos do frontend.
+**Risco identificado / Anti-pattern:** Usar `entry_date = target_date` para entidades de custódia transitória (cofre), o que faz ativos físicos desaparecerem da apuração contábil no dia seguinte.
+

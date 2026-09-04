@@ -933,3 +933,21 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
 2. **Prevenção de Dupla Contagem:** Nunca somar o total de contas cadastradas com saídas bancárias justificadas quando uma saída bancária (ex: remessa SISPAG ou saque em dinheiro) é o próprio meio de pagamento daquelas contas.
 3. **Contas Corporativas / Holding Pagas por Filiais:** Se uma conta com `store_id IS NULL` foi paga pela conta bancária de uma filial, o sistema deve atribuir essa conta à respectiva filial, preservando a coerência visual entre a tela de extrato e o card geral.
 **Risco identificado / Anti-pattern:** Criar divergência negativa cobrando contas a pagar E transferências de caixa concomitantemente.
+
+## [2026-09-04] — [Feature ID: 372-simulacao-real-import-0409-equalizacao-saldos] Equalização de Saldos Bancários, Cofre Acumulado e Anti-Dupla Contagem de Cartões
+**Contexto:** Saneamento pericial do fechamento contábil com eliminação de dupla contagem da Rede (R$ 290k inflado para R$ 315k) e recuperação do dinheiro em trânsito com o gestor (Cofre R$ 9.113,90).
+**Regra aprendida:**
+1. **Regra Canônica de Cartões a Compensar (Rede a cair):**
+   - Vendas em cartão da adquirente (Rede) efetuadas em D-1 já são creditadas pelo banco em D+1 logo no início da manhã.
+   - O saldo bancário final do extrato OFX (`LEDGERBAL` / `BALAMT`) JÁ CONTÉM esses depósitos de cartão.
+   - Portanto, `cartoes_a_compensar` deve considerar estritamente transações que AINDA NÃO ENTRARAM no banco (`settlement_status IN ('nao_entrou', 'a_compensar')`).
+   - Se 100% das vendas já foram creditadas em conta corrente, o saldo a compensar residual é R$ 0,00. Somar novamente as vendas ao saldo do extrato é uma dupla contagem grave.
+2. **Dinheiro em Trânsito / Cofre Acumulado (`store_cash_vault`):**
+   - O dinheiro recolhido das lojas pelos gestores para depósito posterior não pertence apenas à data do recolhimento, mas permanece como Ativo Circulante até a efetivação do depósito bancário ou baixa.
+   - A consulta deve acumular todos os lançamentos com `status IN ('em_transito', 'pending') AND entry_date <= data_alvo`.
+   - No painel, o subchip `Dinheiro no Cofre` soma esse ativo e o modal `SaldoBancosDetailModal` exibe individualmente o botão `[Dar Baixa]` acoplado ao `BaixaDinheiroModal`.
+3. **Equação do Card 1 (Saldo Bancos + Dinheiro):**
+   $$\text{Total Card 1} = \text{Bancos Positivos (OFX)} + \text{Dinheiro em Cofre} + \text{Cartões a Compensar}$$
+   Para 04/09/2026: R$ 290.994,62 (Extrato Positivo) + R$ 9.113,90 (Cofre) = R$ 300.108,52. Cheque Especial devedor (LIS -R$ 1.653,79) é deduzido no Caixa Atual final.
+**Risco identificado / Anti-pattern:** Filtrar `store_cash_vault` com `WHERE entry_date = target_date`, fazendo dinheiro em trânsito de dias anteriores sumir no dia seguinte sem ter sido baixado.
+

@@ -367,7 +367,8 @@ export function ResumoDiaPanel({
           saldo_bancos_ofx: summary?.saldo_bancos_ofx ?? 0,
           saldo_bancos_positivo: summary?.saldo_bancos_positivo ?? 0,
           cartoes_a_compensar: summary?.cartoes_a_compensar ?? 0,
-          dinheiro_em_lojas: summary?.dinheiro_em_lojas ?? 0,
+          dinheiro_em_lojas: summary?.dinheiro_em_lojas ?? summary?.dinheiro_lojas ?? 0,
+          dinheiro_lojas: summary?.dinheiro_lojas ?? summary?.dinheiro_em_lojas ?? 0,
           devolucoes_rede: summary?.devolucoes_rede ?? 0,
           saldo_negativo_itau: summary?.saldo_negativo_itau ?? 0,
           status_geral: isDiferencaOk ? 'approved' : 'divergent',
@@ -603,7 +604,7 @@ export function ResumoDiaPanel({
 
             {/* Sub-chips Dinâmicos e Adaptativos */}
             {(() => {
-              const hasCofre = (summary?.dinheiro_em_lojas ?? 0) > 0;
+              const hasCofre = (summary?.dinheiro_em_lojas ?? summary?.dinheiro_lojas ?? 0) > 0;
               const hasMaq = (summary?.cartoes_a_compensar ?? 0) > 0;
               const hasNeg = (summary?.saldo_negativo_itau ?? 0) > 0;
               const totalItems = 1 + (hasCofre ? 1 : 0) + (hasMaq ? 1 : 0) + (hasNeg ? 1 : 0);
@@ -623,7 +624,7 @@ export function ResumoDiaPanel({
                     <div className="bg-[var(--bg-canvas)] border border-amber-500/30 rounded-md px-2.5 py-1.5 flex flex-col justify-center text-amber-400">
                       <span className="text-[8px] text-amber-400/80 uppercase font-semibold truncate">Dinheiro no Cofre</span>
                       <span className="font-mono font-bold text-amber-300 text-xs truncate">
-                        + <AnimatedNumber value={summary?.dinheiro_em_lojas ?? 0} format="currency" />
+                        + <AnimatedNumber value={summary?.dinheiro_em_lojas ?? summary?.dinheiro_lojas ?? 0} format="currency" />
                       </span>
                     </div>
                   )}
