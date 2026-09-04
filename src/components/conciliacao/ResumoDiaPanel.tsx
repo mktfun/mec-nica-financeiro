@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { formatCurrency } from '@/lib/utils';
 import {
   Save, AlertTriangle, CheckCircle2,
   CalendarDays, ChevronRight, Landmark, Wallet, Receipt, ShoppingBag, Edit2, Database, ShieldCheck, X, Lock
