@@ -88,24 +88,18 @@ Graphify é uma ferramenta Python (pacote graphifyy com dois Y's, comando graphi
 </domain_checks>
 </anti_hallucination>
 
-<workflows_and_skills>
-<mode name="Solo" type="Direct Execution">
-Ideal para bugs pontuais, refatores locais e tarefas diretas com 1 único agente:
-- /vibe-proposal-solo: Planejamento direto com leitura de legado e grafo -> Hard Stop.
-- /vibe-apply-solo: Implementação sequencial com build local e Visual QA -> Hard Stop.
-</mode>
+<execution_architecture mode="direct_single_agent">
+<principle>
+O Antigravity opera em MODO DIRETO (SINGLE-AGENT). O próprio agente executa a pesquisa, a especificação, a implementação e a validação, eliminando latência de orquestração, loops de subagentes e sobrecarga de contexto, mantendo rigor técnico absoluto.
+</principle>
 
-<mode name="Team" type="Multi-Agent Orchestrated">
-Ideal para features completas, módulos novos e arquiteturas full-stack:
-- /vibe-proposal (ou /sdd-proposal): Orchestrator despacha Research Agents por domínio e valida com Validator Agent -> Hard Stop.
-- /vibe-apply (ou /sdd-apply): Orchestrator delega tasks para agentes especialistas, valida com Validator e audita com Auditor Agent -> Hard Stop.
-</mode>
-
-<lifecycle_closing>
-- /vibe-archive (ou /sdd-archive): Quality Gate, escrita no Obsidian, /learn, graphify update e git commit controlado.
-- /vibe-debug (ou /sdd-debug): Diagnóstico forense com logs reais, inspeção SQL e repair bayesiano em até 3 tentativas.
-</lifecycle_closing>
-</workflows_and_skills>
+<core_workflows>
+- /vibe-proposal (ou /sdd-proposal): Planejamento direto em 1 turno (Memória Obsidian + Grafo + Código Legado -> Tríade SDD -> Hard Stop).
+- /vibe-apply (ou /sdd-apply): Implementação direta sequencial em 1 turno (Tasks -> Auto-healing -> Visual QA -> Build Gate -> Hard Stop).
+- /vibe-archive (ou /sdd-archive): Quality Gate, escrita no Obsidian por categoria, elevação de regras /learn, graphify update e git commit controlado.
+- /vibe-debug (ou /sdd-debug): Diagnóstico forense rápido em logs reais e banco via SQL com repair em até 3 tentativas.
+</core_workflows>
+</execution_architecture>
 
 <specialized_agents>
 Os agentes especializados residem em .agent/agents/:

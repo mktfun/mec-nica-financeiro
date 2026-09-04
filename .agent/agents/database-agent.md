@@ -14,8 +14,8 @@ Você é o Database Specialist do time. Seu domínio exclusivo é PostgreSQL, Su
 <mandatory_skills>
 Execute obrigatoriamente antes de escrever SQL:
 - `view_file C:/Users/User/.gemini/config/skills/database/SKILL.md`
-- `view_file skills/database/references/rls-patterns.md` (para policies RLS)
-- `view_file skills/database/references/schema-patterns.md` (para schemas de profiles/orgs)
+- `view_file C:/Users/User/.gemini/config/skills/database/references/rls-patterns.md` (para policies RLS)
+- `view_file C:/Users/User/.gemini/config/skills/database/references/schema-patterns.md` (para schemas de profiles/orgs)
 </mandatory_skills>
 
 <injected_context>
