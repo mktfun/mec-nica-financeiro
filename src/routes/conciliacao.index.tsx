@@ -2,7 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { Store, Search, UploadCloud, Lock, MessageSquare, SlidersHorizontal } from 'lucide-react';
+import { Store, Search, UploadCloud, Lock, SlidersHorizontal } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useStores } from '@/hooks/useStores';
 import { useDailyReconciliationSummary } from '@/hooks/useBackendConciliacao';
@@ -18,7 +18,6 @@ import { Badge } from '@/components/ui/Badge';
 import { AmountCell } from '@/components/finance/AmountCell';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useQueryClient } from '@tanstack/react-query';
-import { ReconciliationChatWorkspace } from '@/components/conciliacao/chat/ReconciliationChatWorkspace';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/conciliacao/')({
@@ -38,32 +37,6 @@ function ConciliacaoPage() {
   const queryClient = useQueryClient();
   const { canImport } = useUserPermissions();
 
-  // Controle de alternância de modo (Painel Clássico vs Workspace Conversacional)
-  const [viewMode, setViewMode] = useState<'classic' | 'chat'>(() => {
-    try {
-      if (typeof window !== 'undefined') {
-        const urlParams = new URLSearchParams(window.location.search);
-        const urlView = urlParams.get('view');
-        if (urlView === 'chat' || urlView === 'classic') return urlView;
-      }
-      const saved = localStorage.getItem('conciliacao_view_mode');
-      return saved === 'chat' ? 'chat' : 'classic';
-    } catch {
-      return 'classic';
-    }
-  });
-
-  const handleViewChange = (mode: 'classic' | 'chat') => {
-    setViewMode(mode);
-    try {
-      localStorage.setItem('conciliacao_view_mode', mode);
-      if (typeof window !== 'undefined') {
-        const url = new URL(window.location.href);
-        url.searchParams.set('view', mode);
-        window.history.replaceState({}, '', url.toString());
-      }
-    } catch {}
-  };
 
   const { data: availableDates = [], isLoading: loadingDates } = useAvailableConciliacaoDates();
   const { data: stores = [], isLoading: loadingStores } = useStores();
@@ -128,18 +101,6 @@ function ConciliacaoPage() {
     };
   });
 
-  // MODO CONVERSACIONAL EM TELA CHEIA (FULL-PAGE CHAT HYDRA)
-  if (viewMode === 'chat' && selectedDate) {
-    return (
-      <AppShell>
-        <ReconciliationChatWorkspace
-          targetDate={selectedDate}
-          onSwitchToClassicView={() => handleViewChange('classic')}
-        />
-      </AppShell>
-    );
-  }
-
   return (
     <AppShell>
       <PageContainer variant="finance" className="space-y-6 pb-20 pt-2">
@@ -161,17 +122,6 @@ function ConciliacaoPage() {
               </div>
 
               <div className="flex items-center gap-2">
-                {/* BOTÃO PARA ALTERNAR PARA O WORKSPACE CONVERSACIONAL */}
-                <button
-                  type="button"
-                  onClick={() => handleViewChange('chat')}
-                  className="px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all bg-zinc-900 border border-zinc-700/80 hover:bg-zinc-800 text-zinc-200 cursor-pointer shadow-sm"
-                  title="Abrir a conciliação em tela cheia com o Analista Hydra"
-                >
-                  <MessageSquare size={15} className="text-zinc-400" />
-                  <span>Workspace Conversacional</span>
-                </button>
-
                 <button
                   onClick={() => {
                     if (!canImport) {
