@@ -1,3 +1,18 @@
+### Spec 370 — Correção Canônica de Divergências de Saídas OFX por Filial e Anti-Dupla Contagem
+- **Database (Migration `20260904000034_fix_store_saidas_divergences.sql`)**:
+  - Nova fórmula canônica anti-dupla contagem na RPC `get_daily_reconciliation_summary`:
+    `contas_conciliadas = LEAST(ofx_saidas, contas_loja) + LEAST(saidas_justificadas, GREATEST(0, ofx_saidas - contas_loja))`
+    `dif_saidas = ofx_saidas - contas_conciliadas`
+  - Agrupamento na CTE `bills_store_agg` vinculando contas corporativas (`store_id IS NULL`) às filiais com base em débitos pareados (`matched_ofx_id` ou `matched_bill_id`).
+  - Backfill determinístico de 6 despesas corporativas pagas pela filial Kennedy (`st-04`) e auto-pareamento por valor e data em todas as lojas.
+- **Frontend Conciliação por Loja (`ConciliacaoLojasView.tsx`)**:
+  - Consumo direto de `rawLog.contas_conciliadas` e `rawLog.dif_saidas` retornados pela RPC, eliminando re-somas arbitrárias e fallbacks matematicamente inconsistentes no cliente.
+- **Frontend Extrato Bancário (`StoreExtratoBancarioView.tsx`)**:
+  - Reconhecimento com 100% de confiança de `matched_bill_id` já persistido no banco.
+  - Botão de ação rápida no header da tabela para consolidar em lote vínculos identificados pelo algoritmo fuzzy de conciliação de despesas (`batch_link_expenses`), persistindo `matched_bill_id` e `matched_ofx_id` no Supabase.
+- **Equalização Contábil por Filial 04/09/2026**:
+  - 10 de 10 filiais equalizadas com `dif_saidas = R$ 0,00` e status `approved`, eliminando desvios artificiais de Kennedy (+R$ 5.089,20), Santo André (-R$ 4.944,29) e Planalto (-R$ 5.000,00).
+
 ### Spec 361 (v2) — Correção Canônica da Conciliação Diária (Faturamento, Datas, Contas, A Receber e Pátio)
 - **Frontend Roteamento (`conciliacao.index.tsx`)**: Unificação do controle de datas com o Search Param `?date=YYYY-MM-DD` do TanStack Router como Single Source of Truth (SSOT), eliminando duplicidade com `useState` e `useEffect` conflitante.
 - **Frontend Faturamento (`ResumoDiaPanel.tsx` & `FaturamentoDetalhesModal.tsx`)**: Implementação de calculadora bidirecional (Odômetro Hoje, Odômetro Anterior e Faturamento Líquido do Dia), sincronização em tempo real e gravação explícita de `faturamento_oi_base` e `odometro_hoje` no snapshot, além de edição inline de faturamento base OI.

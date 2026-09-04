@@ -155,9 +155,9 @@
     "semantic_hash": "8b47f371359b8fc9a1c71efc6cfd3b41"
   },
   "src/components/conciliacao/ContasManualModal.tsx": {
-    "mtime": 1788264214.042575,
-    "ast_hash": "67269ae5071e1e8511411c15e4be204d",
-    "semantic_hash": "67269ae5071e1e8511411c15e4be204d"
+    "mtime": 1788530164.3212478,
+    "ast_hash": "12bbd22addb00c4028e2b64dd63f87bb",
+    "semantic_hash": ""
   },
   "src/components/conciliacao/ExtratosImportacaoModal.tsx": {
     "mtime": 1788128883.6975124,
@@ -170,9 +170,9 @@
     "semantic_hash": "5f0b3c72da47f82fd2750b5cbb156cb6"
   },
   "src/components/conciliacao/FaturamentoDetalhesModal.tsx": {
-    "mtime": 1788128883.6986349,
-    "ast_hash": "d218d0780279b7bcbb735a608126c2ce",
-    "semantic_hash": "d218d0780279b7bcbb735a608126c2ce"
+    "mtime": 1788530298.1319664,
+    "ast_hash": "ab15774c5d18f68bfaf498ddce8b1e5e",
+    "semantic_hash": ""
   },
   "src/components/conciliacao/LegacyOsTable.tsx": {
     "mtime": 1788128883.6997643,
@@ -220,9 +220,9 @@
     "semantic_hash": "56e349f639258d2d4591d0e997d3dfb9"
   },
   "src/components/conciliacao/PatioOsDetailModal.tsx": {
-    "mtime": 1788128883.710111,
-    "ast_hash": "a176c173d6586f19b828a94736e5aad2",
-    "semantic_hash": "a176c173d6586f19b828a94736e5aad2"
+    "mtime": 1788530227.771907,
+    "ast_hash": "cc8d6b5253cc50cf680c40767516740a",
+    "semantic_hash": ""
   },
   "src/components/conciliacao/PixVsOfxTable.tsx": {
     "mtime": 1788128883.7111382,
@@ -240,8 +240,8 @@
     "semantic_hash": "5657d3d33d13441c1ffdd63784683ee9"
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1788437255.4519522,
-    "ast_hash": "45b9bc066e6395fe22462eee3546d542",
+    "mtime": 1788530195.0980859,
+    "ast_hash": "42acdf742bbbfc54256b9cdd2ca36bc8",
     "semantic_hash": ""
   },
   "src/components/conciliacao/SaldoBancosDetailModal.tsx": {
@@ -415,8 +415,8 @@
     "semantic_hash": "6b6e0037087e02fa13aece702ccd933b"
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1788469335.7424896,
-    "ast_hash": "a5040a324d9e07170f8c391ffd19faa2",
+    "mtime": 1788530173.4281235,
+    "ast_hash": "b4692d075060bf0f1bca98c466738d82",
     "semantic_hash": ""
   },
   "src/components/importacoes/DiagnosticPanel.tsx": {
@@ -1085,8 +1085,8 @@
     "semantic_hash": "575eb3da339eaa3d4bd53b4628acbd94"
   },
   "src/routes/conciliacao.index.tsx": {
-    "mtime": 1788522992.6008565,
-    "ast_hash": "4189a148947b99f3ebefe421e12d6b7e",
+    "mtime": 1788529639.5510867,
+    "ast_hash": "68e5762dbdfd37d1b3e1fa1a1b3fc7f7",
     "semantic_hash": ""
   },
   "src/routes/configuracoes.tsx": {
@@ -1960,38 +1960,38 @@
     "semantic_hash": ""
   },
   ".agent/rules/ia.md": {
-    "mtime": 1788467400.9794936,
-    "ast_hash": "218c0b9a00009fcbacf1dd6c374f60a3",
+    "mtime": 1788529143.894249,
+    "ast_hash": "67341fc6a8d200918ffa6c91346e0882",
     "semantic_hash": ""
   },
   ".agent/workflows/config-antigravity.md": {
-    "mtime": 1788467400.982274,
+    "mtime": 1788529143.864047,
     "ast_hash": "600887be6e2197c5e24b375049b03ff7",
     "semantic_hash": ""
   },
   ".agent/workflows/setup.md": {
-    "mtime": 1788467400.9843094,
+    "mtime": 1788529143.8660545,
     "ast_hash": "498e377080e9faa1fe603f0f9cf2cadd",
     "semantic_hash": ""
   },
   ".agent/workflows/vibe-apply.md": {
-    "mtime": 1788467400.990605,
-    "ast_hash": "4f02245602271027fef084bbea5e3e9b",
+    "mtime": 1788529143.8686922,
+    "ast_hash": "5f95c87003d32c9a2e355752af551b18",
     "semantic_hash": ""
   },
   ".agent/workflows/vibe-archive.md": {
-    "mtime": 1788467400.992951,
+    "mtime": 1788529143.8707266,
     "ast_hash": "a81ce82d7617c9ecc01fbe98ef3fc03f",
     "semantic_hash": ""
   },
   ".agent/workflows/vibe-council.md": {
-    "mtime": 1788467400.9952302,
+    "mtime": 1788529143.873728,
     "ast_hash": "3653a9ce5a96856136aa81f886abb990",
     "semantic_hash": ""
   },
   ".agent/workflows/vibe-proposal.md": {
-    "mtime": 1788467401.0038545,
-    "ast_hash": "3e2b1901b0c92607624e43050b444a87",
+    "mtime": 1788529143.8919773,
+    "ast_hash": "3ce6f325b13e697333c2babb92516ff2",
     "semantic_hash": ""
   },
   ".agents/ORIGINAL_REQUEST.md": {
@@ -3455,8 +3455,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1788468702.3126118,
-    "ast_hash": "3038de3eae67361dce78f77120561e06",
+    "mtime": 1788525681.4491346,
+    "ast_hash": "ac8b4fd0c53a1a4d7e7551aa4418135a",
     "semantic_hash": ""
   },
   "specs/global/features_clean.md": {
@@ -3910,42 +3910,42 @@
     "semantic_hash": ""
   },
   ".agent/agents/auditor-agent.md": {
-    "mtime": 1788467400.9286723,
+    "mtime": 1788529143.8959825,
     "ast_hash": "becdcaa7a062913fff2129d1ede037e0",
     "semantic_hash": ""
   },
   ".agent/agents/backend-agent.md": {
-    "mtime": 1788467400.930703,
+    "mtime": 1788529143.8982234,
     "ast_hash": "c4aef2a1833e4aaacbee68d10730021c",
     "semantic_hash": ""
   },
   ".agent/agents/bug-agent.md": {
-    "mtime": 1788467400.9326706,
+    "mtime": 1788529143.9002285,
     "ast_hash": "f1473961c4eaab6f0db9aba6d5fe566f",
     "semantic_hash": ""
   },
   ".agent/agents/database-agent.md": {
-    "mtime": 1788467400.9346886,
-    "ast_hash": "837eb4a3d87ce84e1f6c018a406865d9",
+    "mtime": 1788529143.9022257,
+    "ast_hash": "fe51bf6c0a4d295a9a6e7c9300639fac",
     "semantic_hash": ""
   },
   ".agent/agents/frontend-agent.md": {
-    "mtime": 1788467400.937072,
+    "mtime": 1788529143.9037676,
     "ast_hash": "500195e901657158cbecc02fe381e705",
     "semantic_hash": ""
   },
   ".agent/agents/research-agent.md": {
-    "mtime": 1788467400.9388473,
+    "mtime": 1788529143.9058037,
     "ast_hash": "9f6a6c7277dc938303fe9cd0b8931161",
     "semantic_hash": ""
   },
   ".agent/agents/validator-agent.md": {
-    "mtime": 1788467400.9411044,
+    "mtime": 1788529143.9077785,
     "ast_hash": "5bedbbfe9f5c332678486cdecaef3772",
     "semantic_hash": ""
   },
   ".agent/catalog/README.md": {
-    "mtime": 1788467400.943453,
+    "mtime": 1788467400.8692362,
     "ast_hash": "17c1586235ebca7f48058254110b1bcc",
     "semantic_hash": ""
   },
@@ -3955,22 +3955,22 @@
     "semantic_hash": ""
   },
   ".agent/policies/activation-rules.md": {
-    "mtime": 1788467400.9684823,
+    "mtime": 1788467400.8716738,
     "ast_hash": "4568384a2e1026269e42163e3c39bb59",
     "semantic_hash": ""
   },
   ".agent/policies/context-budget.md": {
-    "mtime": 1788467400.9725325,
+    "mtime": 1788467400.8740897,
     "ast_hash": "5049544da62a9dd62f1a16242e1e4241",
     "semantic_hash": ""
   },
   ".agent/policies/sync-upstream.md": {
-    "mtime": 1788467400.9760244,
+    "mtime": 1788467400.8764906,
     "ast_hash": "35ca0f824d343b4636e8c3cff5499ec2",
     "semantic_hash": ""
   },
   ".agent/workflows/vibe-debug.md": {
-    "mtime": 1788467400.9969697,
+    "mtime": 1788529143.8761396,
     "ast_hash": "8be4728798f9aecbfefd072c3467e86e",
     "semantic_hash": ""
   },
@@ -3989,26 +3989,6 @@
     "ast_hash": "3e22821951daa6019c07f6aa22ad6ad1",
     "semantic_hash": ""
   },
-  ".agent/workflows/vibe-apply-solo.md": {
-    "mtime": 1788467400.98631,
-    "ast_hash": "a5df9af6966ad1071ae3a02f00e8ff79",
-    "semantic_hash": ""
-  },
-  ".agent/workflows/vibe-apply-team.md": {
-    "mtime": 1788467400.9883447,
-    "ast_hash": "4f02245602271027fef084bbea5e3e9b",
-    "semantic_hash": ""
-  },
-  ".agent/workflows/vibe-proposal-solo.md": {
-    "mtime": 1788467400.9993489,
-    "ast_hash": "3c6d68774acea6e1549d7a67d6afd275",
-    "semantic_hash": ""
-  },
-  ".agent/workflows/vibe-proposal-team.md": {
-    "mtime": 1788467401.0020432,
-    "ast_hash": "3e2b1901b0c92607624e43050b444a87",
-    "semantic_hash": ""
-  },
   "supabase/migrations/20260903000031_seed_ofx_store_file_mappings.sql": {
     "mtime": 1788468208.7275133,
     "ast_hash": "3bb9cb5f05ccec55ed5207f16a8a4fc8",
@@ -4019,19 +3999,24 @@
     "ast_hash": "b1272aa41b4da68ea7d8fce81dad4655",
     "semantic_hash": ""
   },
-  "specs/369-fix-car-icon-reference-error-and-rpc-ambiguity/design.md": {
-    "mtime": 1788524810.058592,
-    "ast_hash": "b67af9f8b0b8932098b835e5241128cd",
+  "supabase/migrations/20260904000033_reactive_reconciliation_summary.sql": {
+    "mtime": 1788529696.804554,
+    "ast_hash": "cb6fdf87c71fbb9f13ea12fddbffc54b",
     "semantic_hash": ""
   },
-  "specs/369-fix-car-icon-reference-error-and-rpc-ambiguity/proposal.md": {
-    "mtime": 1788524798.735698,
-    "ast_hash": "a330ce4ea25d967479294a2de4c2a472",
+  "specs/361-correcao-conciliacao-faturamento-datas-contas/design.md": {
+    "mtime": 1788529556.9200926,
+    "ast_hash": "784f0fdae9f0f8d8d4e541682e04160a",
     "semantic_hash": ""
   },
-  "specs/369-fix-car-icon-reference-error-and-rpc-ambiguity/spec-plan.md": {
-    "mtime": 1788525386.543317,
-    "ast_hash": "a6e282eecb676880f341b312ff9d1d1c",
+  "specs/361-correcao-conciliacao-faturamento-datas-contas/proposal.md": {
+    "mtime": 1788529545.6454973,
+    "ast_hash": "c801300bb9f7ed84bbe0908289dc359d",
+    "semantic_hash": ""
+  },
+  "specs/361-correcao-conciliacao-faturamento-datas-contas/spec-plan.md": {
+    "mtime": 1788530331.5175798,
+    "ast_hash": "a7ce8dcfe0426a822e2b562fc3a2fe6b",
     "semantic_hash": ""
   }
 }

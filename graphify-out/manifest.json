@@ -240,8 +240,8 @@
     "semantic_hash": "5657d3d33d13441c1ffdd63784683ee9"
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1788530195.0980859,
-    "ast_hash": "42acdf742bbbfc54256b9cdd2ca36bc8",
+    "mtime": 1788531432.8019269,
+    "ast_hash": "6d1c33367c6d9857a419fd4af6b25dae",
     "semantic_hash": ""
   },
   "src/components/conciliacao/SaldoBancosDetailModal.tsx": {
@@ -255,9 +255,9 @@
     "semantic_hash": "62bf4be7b0e41945dd09d240a314b7a8"
   },
   "src/components/conciliacao/StoreExtratoBancarioView.tsx": {
-    "mtime": 1788357099.6471262,
-    "ast_hash": "0d798fa7ddcac6b5e6414f63e08195cd",
-    "semantic_hash": "0d798fa7ddcac6b5e6414f63e08195cd"
+    "mtime": 1788533126.114471,
+    "ast_hash": "436dd4ebb901762fb35d193d0cd8f0b5",
+    "semantic_hash": ""
   },
   "src/components/conciliacao/StoreOrdensServicoView.tsx": {
     "mtime": 1788264214.0470421,
@@ -1940,9 +1940,9 @@
     "semantic_hash": "11a03775bc7ad83958ed19e4c0c18257"
   },
   "src/components/conciliacao/ConciliacaoLojasView.tsx": {
-    "mtime": 1788382841.9585013,
-    "ast_hash": "ae8013fe6d0d2a726f76b747d983987d",
-    "semantic_hash": "ae8013fe6d0d2a726f76b747d983987d"
+    "mtime": 1788533058.660448,
+    "ast_hash": "aa384ae152fb9c0e472d48ce4a2abc95",
+    "semantic_hash": ""
   },
   "src/components/conciliacao/StoreCardModulo1.tsx": {
     "mtime": 1788357099.6451247,
@@ -2210,8 +2210,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1788467424.2219925,
-    "ast_hash": "f30940a870e82548bd99147fd1b0d139",
+    "mtime": 1788530926.7657456,
+    "ast_hash": "22996070728af05bac76e8033e4cdc6b",
     "semantic_hash": ""
   },
   "spec/global/overview.md": {
@@ -3455,8 +3455,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1788525681.4491346,
-    "ast_hash": "ac8b4fd0c53a1a4d7e7551aa4418135a",
+    "mtime": 1788530940.1887732,
+    "ast_hash": "5d5eba51de7f2d5b38a89ca3a67a1852",
     "semantic_hash": ""
   },
   "specs/global/features_clean.md": {
@@ -4004,19 +4004,24 @@
     "ast_hash": "cb6fdf87c71fbb9f13ea12fddbffc54b",
     "semantic_hash": ""
   },
-  "specs/361-correcao-conciliacao-faturamento-datas-contas/design.md": {
-    "mtime": 1788529556.9200926,
-    "ast_hash": "784f0fdae9f0f8d8d4e541682e04160a",
+  "supabase/migrations/20260904000034_fix_store_saidas_divergences.sql": {
+    "mtime": 1788533027.9350116,
+    "ast_hash": "40b69c4c81867e39512e0d0437ce6ee4",
     "semantic_hash": ""
   },
-  "specs/361-correcao-conciliacao-faturamento-datas-contas/proposal.md": {
-    "mtime": 1788529545.6454973,
-    "ast_hash": "c801300bb9f7ed84bbe0908289dc359d",
+  "specs/370-correcao-divergencia-lojas-saidas-ofx/design.md": {
+    "mtime": 1788532852.0454133,
+    "ast_hash": "a36b7bc3a0d207f8584fc2b8cdc93341",
     "semantic_hash": ""
   },
-  "specs/361-correcao-conciliacao-faturamento-datas-contas/spec-plan.md": {
-    "mtime": 1788530331.5175798,
-    "ast_hash": "a7ce8dcfe0426a822e2b562fc3a2fe6b",
+  "specs/370-correcao-divergencia-lojas-saidas-ofx/proposal.md": {
+    "mtime": 1788532839.6223683,
+    "ast_hash": "40f71df99c59eb21f0c40cbdd5b97b85",
+    "semantic_hash": ""
+  },
+  "specs/370-correcao-divergencia-lojas-saidas-ofx/spec-plan.md": {
+    "mtime": 1788533190.0655522,
+    "ast_hash": "e6db0252e535d4ae9f849e04a64ff2ad",
     "semantic_hash": ""
   }
 }

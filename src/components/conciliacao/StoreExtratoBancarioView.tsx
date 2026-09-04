@@ -35,6 +35,7 @@ import { matchExpenseWithOfxDebit } from '@/lib/expenseMatcher';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import { AmountCell } from '@/components/finance/AmountCell';
+import { supabase } from '@/lib/supabase';
 
 interface StoreExtratoBancarioViewProps {
   storeId: string;
@@ -127,7 +128,10 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
       const hasCategory = !!effectiveCategory;
 
       // Fuzzy auto-match para saídas (débitos)
-      const expenseMatch = tx.type === 'out' ? matchExpenseWithOfxDebit(tx, dailyBills) : { isMatched: false, confidence: 0 };
+      const linkedBill = tx.matched_bill_id ? dailyBills.find((b: any) => b.id === tx.matched_bill_id) : null;
+      const expenseMatch = tx.type === 'out' 
+        ? (linkedBill ? { isMatched: true, matchedBill: linkedBill, confidence: 1.0 } : matchExpenseWithOfxDebit(tx, dailyBills)) 
+        : { isMatched: false, confidence: 0 };
       const isMatchedExpense = expenseMatch.isMatched;
 
       const isPending = !isRede && !osNum && !hasCategory && !isMatchedExpense && !isLockedFromOtherDate;
@@ -147,6 +151,60 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
       };
     });
   }, [ofxTransactions, dailyBills, historicalReconciled, date]);
+
+  const [persistingMatches, setPersistingMatches] = useState(false);
+
+  const unpersistedMatches = useMemo(() => {
+    return enrichedTransactions.filter(
+      t => t.type === 'out' && t.isMatchedExpense && !t.matched_bill_id && t.expenseMatch?.matchedBill
+    );
+  }, [enrichedTransactions]);
+
+  const handlePersistAutoMatches = async () => {
+    if (unpersistedMatches.length === 0) return;
+    setPersistingMatches(true);
+    try {
+      for (const tx of unpersistedMatches) {
+        const bill = tx.expenseMatch?.matchedBill;
+        if (!bill) continue;
+
+        await supabase
+          .from('ofx_transactions')
+          .update({
+            matched_bill_id: bill.id,
+            manual_category: 'Conta / Despesa Filial',
+            manual_justification: bill.recipient_name || bill.title,
+            contabilizar_no_subtotal: true,
+          })
+          .eq('id', tx.id);
+
+        await supabase
+          .from('daily_manual_bills')
+          .update({
+            matched_ofx_id: tx.id,
+            store_id: storeId,
+            match_status: 'matched',
+          })
+          .eq('id', bill.id);
+      }
+
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['transactions'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily_manual_bills'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-manual-bills'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily_reconciliation_summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] }),
+      ]);
+
+      toast.success(`${unpersistedMatches.length} conta(s) vinculada(s) e confirmada(s) no banco com sucesso!`);
+    } catch (err: any) {
+      console.error('Erro ao persistir vínculos de contas:', err);
+      toast.error(`Erro ao salvar vínculos no banco: ${err.message}`);
+    } finally {
+      setPersistingMatches(false);
+    }
+  };
 
   // Cálculos de Totais dos KPIs
   const totalEntradas = useMemo(() => {
@@ -387,7 +445,7 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
 
       {/* Tabela do Extrato Bancário */}
       <Card className="p-0 overflow-hidden border-zinc-800 bg-zinc-950">
-        <div className="bg-zinc-900 p-4 border-b border-zinc-800 flex items-center justify-between">
+        <div className="bg-zinc-900 p-4 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h3 className="font-display font-semibold text-base flex items-center gap-2 text-zinc-100">
               <Landmark size={18} className="text-emerald-400" />
@@ -397,9 +455,27 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
               Movimentação financeira da conta corrente: créditos recebidos, despesas conciliadas e histórico preservado de conciliações.
             </p>
           </div>
-          <Badge variant="outline" className="text-xs font-mono border-zinc-700 text-zinc-300 h-6 px-2.5">
-            {filteredTransactions.length} de {enrichedTransactions.length} Lançamentos
-          </Badge>
+          <div className="flex items-center gap-2 flex-wrap">
+            {unpersistedMatches.length > 0 && (
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={persistingMatches}
+                onClick={handlePersistAutoMatches}
+                className="text-xs h-7 px-3 bg-teal-500/10 border-teal-500/40 text-teal-300 hover:bg-teal-500/20 gap-1.5 font-medium shadow-sm"
+              >
+                {persistingMatches ? (
+                  <LoadingSpinner size="sm" />
+                ) : (
+                  <CheckCircle2 size={13} className="text-teal-400" />
+                )}
+                Confirmar {unpersistedMatches.length} Vínculo(s) no Banco
+              </Button>
+            )}
+            <Badge variant="outline" className="text-xs font-mono border-zinc-700 text-zinc-300 h-6 px-2.5">
+              {filteredTransactions.length} de {enrichedTransactions.length} Lançamentos
+            </Badge>
+          </div>
         </div>
 
         {filteredTransactions.length === 0 ? (

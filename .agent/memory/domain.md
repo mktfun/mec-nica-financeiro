@@ -906,3 +906,13 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
 2. **Priorização de Dados Dinâmicos vs Snapshot Congelado:** Quando o usuário avança pelo Wizard de Importação (`p_force_dynamic = true`), o sistema recalcula em tempo real todas as movimentações recém-submetidas, desconsiderando metadados congelados de snapshots anteriores para `status_geral` e `diferenca_final`.
 3. **Resiliência no Auto-Healing Pericial:** O loop autônomo (`run_autonomous_reconciliation_loop`) executa até 3 iterações para absorver cofres em trânsito e aportes de sócios antes de emitir relatório forense. A chamada ao resumo diário deve ser 100% determinística para não interromper a transação com erros 400.
 **Risco identificado / Anti-pattern:** Exibir status "approved" de snapshot antigo enquanto novos dados de importação do dia revelam desvios no fluxo financeiro.
+
+## [2026-09-04] — [Feature ID: 370-correcao-divergencia-lojas-saidas-ofx] Fechamento Canônico de Saídas por Filial
+**Contexto:** Eliminação de divergências artificiais no split de Saídas nos cards de filiais (Kennedy R$ 5k, Santo André -R$ 4.9k, Planalto -R$ 5k).
+**Regra aprendida:**
+1. **Conceito Contábil de "Dif. a Justificar" em Saídas:** No fechamento por loja, a diferença de saídas deve responder estritamente aos débitos bancários do extrato que ainda não foram conciliados (sem conta vinculada e sem categoria):
+   $$\text{dif\_saidas} = \text{saidas\_orfas}$$
+   Quando todas as saídas bancárias forem explicadas (seja por boletos da loja, seja por transferências matriz justificadas), `dif_saidas = 0` e a loja atinge 100% Conciliado.
+2. **Prevenção de Dupla Contagem:** Nunca somar o total de contas cadastradas com saídas bancárias justificadas quando uma saída bancária (ex: remessa SISPAG ou saque em dinheiro) é o próprio meio de pagamento daquelas contas.
+3. **Contas Corporativas / Holding Pagas por Filiais:** Se uma conta com `store_id IS NULL` foi paga pela conta bancária de uma filial, o sistema deve atribuir essa conta à respectiva filial, preservando a coerência visual entre a tela de extrato e o card geral.
+**Risco identificado / Anti-pattern:** Criar divergência negativa cobrando contas a pagar E transferências de caixa concomitantemente.

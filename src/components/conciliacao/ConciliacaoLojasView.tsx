@@ -41,21 +41,19 @@ export const ConciliacaoLojasView: React.FC<ConciliacaoLojasViewProps> = ({
         : Math.max(0, ofxEntradas - concEntradas);
 
       const ofxSaidas = Number(rawLog?.saidas_ofx ?? rawLog?.ofx_saidas_total ?? 0);
-      const concSaidas = rawLog?.contas_conciliadas !== undefined
-        ? Number(rawLog.contas_conciliadas)
-        : rawLog?.contas_loja !== undefined
-        ? Number(rawLog.contas_loja)
-        : rawLog?.contas_loja_total !== undefined
-        ? (Number(rawLog.contas_loja_total) + (Number(rawLog?.saidas_justificadas) || 0))
-        : Math.max(0, ofxSaidas - Number(rawLog?.saidas_orfas || 0));
-
       const orfasSaidas = rawLog?.diferenca_saidas !== undefined
         ? Number(rawLog.diferenca_saidas)
         : rawLog?.dif_saidas !== undefined
         ? Number(rawLog.dif_saidas)
         : rawLog?.saidas_orfas !== undefined
         ? Number(rawLog.saidas_orfas)
-        : Math.max(0, ofxSaidas - concSaidas);
+        : 0;
+
+      const concSaidas = rawLog?.contas_conciliadas !== undefined
+        ? Number(rawLog.contas_conciliadas)
+        : rawLog?.contas_loja !== undefined
+        ? Number(rawLog.contas_loja)
+        : Math.max(0, ofxSaidas - orfasSaidas);
 
       return {
         storeId: store.id,

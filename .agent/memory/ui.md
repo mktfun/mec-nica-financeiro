@@ -601,3 +601,10 @@ Nao fazer: Nunca fazer fallbacks automaticos para zero em dados criticos contabe
 3. **Auditoria Dinâmica com `forceDynamic`:** No Step 4 de fechamento de importação, a chamada a `useDailyReconciliationSummary(targetDate, true)` garante que novos dados inseridos no dia sejam calculados on-the-fly, prevenindo exibição de valores congelados em snapshots anteriores.
 **Risco identificado / Anti-pattern:** Utilizar asserções `(objeto as any)` em cascata no JSX, o que esconde referências nulas e variáveis não importadas que só explodem em runtime no navegador do cliente.
 
+## [2026-09-04] — [Feature ID: 370-correcao-divergencia-lojas-saidas-ofx] Consumo Canônico de Saídas por Filial & Persistência de Vínculos
+**Contexto:** Resolução de falsas divergências nos cards de filiais (`StoreCardModulo1.tsx` e `ConciliacaoLojasView.tsx`) e persistência de vínculos de contas no extrato analítico da filial (`StoreExtratoBancarioView.tsx`).
+**Regra aprendida:**
+1. **Consumo Direto de Propriedades Pré-Calculadas pela RPC:** `ConciliacaoLojasView.tsx` deve consumir diretamente `rawLog.contas_conciliadas` e `rawLog.dif_saidas` da RPC. Nunca criar fallbacks aditivos no frontend que reintroduzam somas duplicadas de contas com débitos bancários.
+2. **Persistência Explícita de Vínculos Fuzzy:** Algoritmos em memória de pareamento de contas a pagar (`matchExpenseWithOfxDebit`) devem oferecer um botão de confirmação e gravação em lote (`Confirmar X Vínculo(s) no Banco`) no cabeçalho do extrato, gravando `matched_bill_id` em `ofx_transactions` e `matched_ofx_id` em `daily_manual_bills`.
+3. **Reconhecimento com Confiança Máxima:** Quando `tx.matched_bill_id` já estiver presente no banco, `StoreExtratoBancarioView` deve considerá-lo com `confidence = 1.0`, renderizando o badge "Conta: <Favorecido>" imediatamente.
+**Risco identificado / Anti-pattern:** Deixar correspondências fuzzy existirem apenas na memória volátil do navegador, fazendo com que o banco de dados e os cards gerais continuem exibindo divergências por falta de vínculo persistido.

@@ -1056,3 +1056,12 @@ Nao fazer: Nunca permita que excecoes estruturais sejam traduzidas em status con
 2. **Alinhamento Ordinal em `patio_os%ROWTYPE`:** Variáveis declaradas como `%ROWTYPE` de tabelas exigem que as queries usem `SELECT * INTO v_record FROM tabela ...`. Se você fizer `SELECT col1, col2, col3... INTO v_record`, a atribuição é estritamente **posicional física** baseada nas colunas da tabela e não nos nomes do SELECT, causando corrupção de tipos (ex: converter nome de cliente em coluna numérica, erro `22P02`) ou erro `55000`.
 3. **Invocação Explícita em PL/pgSQL:** Funções internas orquestradoras (como `run_autonomous_reconciliation_loop`) devem chamar dependências com número exato de argumentos (`get_daily_reconciliation_summary(p_date, false)`) para prevenir desvios de resolução no catálogo `pg_proc`.
 **Risco identificado / Anti-pattern:** Usar `SELECT col1, col2... INTO v_rowtype` ao invés de `SELECT * INTO v_rowtype` com tipos compostos `%ROWTYPE`.
+
+## [2026-09-04] — [Feature ID: 370-correcao-divergencia-lojas-saidas-ofx]
+**Contexto:** Correção de divergências artificiais nos cards de Saídas por filial em `get_daily_reconciliation_summary` (eliminação de dupla contagem e atribuição de contas corporativas pagas por filiais).
+**Regra aprendida:**
+1. **Fórmula Canônica Anti-Dupla Contagem de Saídas por Filial:** Em `get_daily_reconciliation_summary`, a soma direta `contas_loja_total + saidas_justificadas` gera dupla contagem grotesca quando saídas bancárias pagam contas da filial (ex: SISPAG em Santo André ou saques em Planalto). A fórmula contábil rigorosa é:
+   $$\text{contas\_conciliadas} = \min(\text{ofx\_saidas\_total}, \text{contas\_loja\_total}) + \min(\text{saidas\_justificadas}, \max(0, \text{ofx\_saidas\_total} - \text{contas\_loja\_total}))$$
+   $$\text{dif\_saidas} = \text{ofx\_saidas\_total} - \text{contas\_conciliadas}$$
+2. **Atribuição de Contas Corporativas (`store_id IS NULL`) à Filial Pagadora:** Contas matriz/holding pagas pela conta bancária de uma filial devem ser vinculadas via `matched_ofx_id` / `matched_bill_id` e agrupadas na respectiva filial na CTE `bills_store_agg` (`COALESCE(b.store_id, ot.store_id)`).
+**Risco identificado / Anti-pattern:** Somar cegamente contas previstas com transações bancárias justificadas sem deduzir a cobertura, gerando diferenças negativas falsas no fechamento das filiais.
