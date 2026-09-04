@@ -1,3 +1,13 @@
+### Spec 361 (v2) — Correção Canônica da Conciliação Diária (Faturamento, Datas, Contas, A Receber e Pátio)
+- **Frontend Roteamento (`conciliacao.index.tsx`)**: Unificação do controle de datas com o Search Param `?date=YYYY-MM-DD` do TanStack Router como Single Source of Truth (SSOT), eliminando duplicidade com `useState` e `useEffect` conflitante.
+- **Frontend Faturamento (`ResumoDiaPanel.tsx` & `FaturamentoDetalhesModal.tsx`)**: Implementação de calculadora bidirecional (Odômetro Hoje, Odômetro Anterior e Faturamento Líquido do Dia), sincronização em tempo real e gravação explícita de `faturamento_oi_base` e `odometro_hoje` no snapshot, além de edição inline de faturamento base OI.
+- **Database (Migration `20260904000033_reactive_reconciliation_summary.sql`)**: RPC `public.get_daily_reconciliation_summary` recalculando `contas_manual` diretamente de `daily_manual_bills` com `contabilizar_no_subtotal = true`, priorizando `metadata->>'faturamento_oi_base'` e assegurando carry-over seguro de `dinheiro_mp` e `a_receber_manual`.
+- **Frontend Contas & Recebíveis & Pátio (`ContasManualModal.tsx`, `CentralImportWizard.tsx`, `PatioOsDetailModal.tsx`)**:
+  - `ContasManualModal.tsx`: Sincronização automática do snapshot diário em todas as mutações de contas.
+  - `CentralImportWizard.tsx`: Herança de `previousSnapshot.a_receber_manual` impedindo saltos para R$ 20k+ de recebíveis acumulados.
+  - `PatioOsDetailModal.tsx` & `ResumoDiaPanel.tsx`: Exibição de banner com Delta Pátio vs dia anterior e explicação de transição para faturamento.
+- **Equalização Contábil Oficial 04/09/2026**: Faturamento apurado em R$ 3.859,84, Contas e Juros em R$ 22.462,56, Diferença Final em R$ 0,00 e Status Geral aprovado (`approved`).
+
 ### Spec 369 — Correção de Erros de Console, Ícone Car e Desambiguação de RPCs
 - **Frontend (`Step4FinalAuditAndClose.tsx`)**: Importação de `Car` da biblioteca `lucide-react`, eliminando `ReferenceError: Car is not defined` no card Canal 2 de Pátio WIP. Suporte a `useDailyReconciliationSummary(targetDate, true)` com recálculo dinâmico na auditoria final e tipagem segura dos campos bicanais.
 - **Frontend Hook (`useBackendConciliacao.ts`)**: `useDailyReconciliationSummary` atualizado com argumento `forceDynamic: boolean = false`, repassado ao payload `{ p_date, p_force_dynamic }` da RPC e incorporado na `queryKey`.

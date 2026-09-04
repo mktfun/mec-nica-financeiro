@@ -1,3 +1,19 @@
+## [2026-09-04] — [Feature ID: 361-correcao-conciliacao-faturamento-datas-contas]
+
+**Contexto:** Atualização da RPC `public.get_daily_reconciliation_summary` via migration `20260904000033_reactive_reconciliation_summary.sql` para garantir dinamismo no cálculo de `contas_manual` a partir de `daily_manual_bills`, priorização de `metadata->>'faturamento_oi_base'` e carry-over seguro de ativos transitórios.
+
+**Regra aprendida:**
+1. **Dinamismo em Despesas e Evitamento de Snapshots Obsoletos:**
+   - A RPC NUNCA deve confiar exclusivamente no campo estático `metadata->>'subtotal_contas'` quando houver registros em `daily_manual_bills` com `contabilizar_no_subtotal = true`. Ela agora calcula `SELECT COALESCE(SUM(amount), 0) INTO v_contas_manual FROM daily_manual_bills WHERE date = p_date AND COALESCE(contabilizar_no_subtotal, true) = true`, garantindo que despesas lançadas após a criação do snapshot inicial reflitam no subtotal e na diferença final sem forçar refações de fechamento.
+2. **Priorização de `faturamento_oi_base`:**
+   - Se `v_snapshot.metadata->>'faturamento_oi_base'` existir e for maior que zero, a RPC utiliza esse valor diretamente como `v_faturamento_oi_base`, evitando que a lógica genérica de odômetro subtraia indevidamente odômetro de hoje de faturamentos de dias anteriores não encadeados.
+3. **Carry-over Seguro de Ativos Transitórios (`dinheiro_mp` e `a_receber_manual`):**
+   - Caso o snapshot atual não possua valores preenchidos para `dinheiro_mp` ou `a_receber_manual`, a RPC busca automaticamente no snapshot anterior (`v_prev_snapshot`), assegurando continuidade contábil entre os dias.
+
+**Risco identificado / Anti-pattern:** Travar `subtotal_contas` com leitura de snapshot pré-existente sem verificar se novas linhas foram inseridas em `daily_manual_bills`.
+
+---
+
 ## [2026-09-03] — [Feature ID: 366-fix-match-stage2-rede-os-record-55000]
 
 **Contexto:** Resolução do erro PostgreSQL SQLSTATE `55000` (`record "v_chosen_os" is not assigned yet` / `The tuple structure of a not-yet-assigned record is indeterminate.`) na execução da RPC `match_stage2_rede_os` via migration `20260903000030_fix_match_stage2_rede_os_v_chosen_os_record.sql`.

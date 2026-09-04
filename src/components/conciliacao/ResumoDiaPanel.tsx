@@ -83,43 +83,93 @@ export function ResumoDiaPanel({
 
   // Estados locais para edição dos campos manuais
   const [faturamentoInput, setFaturamentoInput] = useState<number>(0);
+  const [faturamentoDiaInput, setFaturamentoDiaInput] = useState<number>(0);
+  const [faturamentoAnteriorInput, setFaturamentoAnteriorInput] = useState<number>(0);
   const [dinheiroMpInput, setDinheiroMpInput] = useState<number>(0);
   const [aReceberInput, setAReceberInput] = useState<number>(0);
   const [contasInput, setContasInput] = useState<number>(0);
 
   // Faturamento Anterior (Ant) vem do snapshot anterior ou metadados de Marco Zero
-  const faturamentoAnteriorGlobal = summary?.faturamento_anterior 
-    ?? previousSnapshot?.faturamento 
+  const faturamentoAnteriorGlobal = Number(
+    summary?.faturamento_anterior 
     ?? (currentSnapshot?.metadata as any)?.faturamento_anterior 
-    ?? 0;
+    ?? previousSnapshot?.faturamento 
+    ?? (previousSnapshot?.metadata as any)?.odometro_hoje 
+    ?? 0
+  );
 
   // Caixa Anterior vem do fechamento anterior ou do metadata do snapshot atual (Marco Zero)
-  const caixaAnteriorGlobal = summary?.caixa_anterior 
-    ?? previousSnapshot?.caixa_atual 
+  const caixaAnteriorGlobal = Number(
+    summary?.caixa_anterior 
     ?? (currentSnapshot?.metadata as any)?.caixa_anterior 
-    ?? 0;
+    ?? previousSnapshot?.caixa_atual 
+    ?? 0
+  );
 
   // Sincroniza estados locais apenas quando não estiver no meio de uma edição ativa
   useEffect(() => {
     if (!isEditing) {
-      const initialFaturamento = currentSnapshot?.faturamento 
-        ?? (summary?.faturamento_anterior && summary?.faturamento_ofx ? (summary.faturamento_anterior + summary.faturamento_ofx) : (summary?.faturamento_ofx || 0));
-      setFaturamentoInput(Number(initialFaturamento) || 0);
-      setDinheiroMpInput(Number(currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? 0));
-      setAReceberInput(Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber ?? 0));
+      const snapMeta = (currentSnapshot?.metadata as any) || {};
+      const ant = faturamentoAnteriorGlobal;
+      setFaturamentoAnteriorInput(ant);
+
+      const oiBase = Number(snapMeta.faturamento_oi_base ?? summary?.faturamento_oi_base ?? 0);
+      const odoHoje = Number(snapMeta.odometro_hoje ?? currentSnapshot?.faturamento ?? 0);
+
+      if (oiBase > 0) {
+        setFaturamentoDiaInput(oiBase);
+        setFaturamentoInput(odoHoje > 0 ? odoHoje : (ant + oiBase));
+      } else if (odoHoje > 0 && ant > 0 && odoHoje >= ant) {
+        setFaturamentoInput(odoHoje);
+        setFaturamentoDiaInput(Number((odoHoje - ant).toFixed(2)));
+      } else if (odoHoje > 0) {
+        setFaturamentoInput(odoHoje);
+        setFaturamentoDiaInput(odoHoje);
+      } else {
+        const defaultDia = Number(summary?.faturamento_ofx ?? 0);
+        setFaturamentoDiaInput(defaultDia);
+        setFaturamentoInput(ant + defaultDia);
+      }
+
+      setDinheiroMpInput(Number(currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? previousSnapshot?.dinheiro_mp ?? 0));
+      setAReceberInput(Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber_manual ?? summary?.a_receber ?? previousSnapshot?.a_receber_manual ?? 0));
       
-      const overrideVal = (currentSnapshot?.metadata as any)?.contas_manual_override ?? summary?.contas_override;
+      const overrideVal = snapMeta.contas_manual_override ?? summary?.contas_override;
       const initialContas = (overrideVal !== null && overrideVal !== undefined && Number(overrideVal) > 0)
         ? (Number(overrideVal) - Number(summary?.contas_extras || 0))
         : Number(summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0);
       setContasInput(initialContas);
     }
-  }, [currentSnapshot, summary, isEditing]);
+  }, [currentSnapshot, summary, previousSnapshot, isEditing, faturamentoAnteriorGlobal]);
+
+  // Handlers para cálculo bidirecional (Odômetro Hoje <-> Líquido Dia)
+  const handleOdometroHojeChange = (val: number) => {
+    setFaturamentoInput(val);
+    const ant = faturamentoAnteriorInput;
+    if (ant > 0 && val >= ant) {
+      setFaturamentoDiaInput(Number((val - ant).toFixed(2)));
+    } else {
+      setFaturamentoDiaInput(val);
+    }
+  };
+
+  const handleOdometroAntChange = (val: number) => {
+    setFaturamentoAnteriorInput(val);
+    if (faturamentoInput > 0 && val > 0 && faturamentoInput >= val) {
+      setFaturamentoDiaInput(Number((faturamentoInput - val).toFixed(2)));
+    }
+  };
+
+  const handleFaturamentoDiaChange = (val: number) => {
+    setFaturamentoDiaInput(val);
+    const ant = faturamentoAnteriorInput;
+    setFaturamentoInput(Number((ant + val).toFixed(2)));
+  };
 
   // Valores ativos baseados no modo de edição (isEditing ? input local : snapshot persistido / summary)
   const faturamentoAcumuladoHoje = isEditing ? faturamentoInput : (currentSnapshot?.faturamento ?? faturamentoInput);
-  const dinheiroMpValor = isEditing ? dinheiroMpInput : (currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? 0);
-  const aReceberValor = isEditing ? aReceberInput : (currentSnapshot?.a_receber_manual ?? summary?.a_receber ?? 0);
+  const dinheiroMpValor = isEditing ? dinheiroMpInput : Number(currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? previousSnapshot?.dinheiro_mp ?? 0);
+  const aReceberValor = isEditing ? aReceberInput : Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber_manual ?? summary?.a_receber ?? previousSnapshot?.a_receber_manual ?? 0);
   const contasManualValor = isEditing 
     ? (contasInput + (summary?.contas_extras || 0)) 
     : ((summary?.contas_manual && summary.contas_manual > 0) 
@@ -139,15 +189,10 @@ export function ResumoDiaPanel({
     ? totalJustificadosDia 
     : Number(currentSnapshot?.faturamento_outros_valor ?? summary?.faturamento_outros ?? 0);
 
-  // Cálculo Odômetro do Faturamento Mapa de Metas do Dia
-  // Se o usuário digitou um valor maior que o faturamento anterior, é o odômetro acumulado: calcula a diferença.
-  // Se o usuário digitou um valor menor que o faturamento anterior (mas > 0) e não é marco zero, é o próprio faturamento líquido do dia!
-  let faturamentoLiquidoDia = 0;
-  if (faturamentoAnteriorGlobal > 0 && faturamentoAcumuladoHoje > faturamentoAnteriorGlobal) {
-    faturamentoLiquidoDia = faturamentoAcumuladoHoje - faturamentoAnteriorGlobal;
-  } else if (faturamentoAcumuladoHoje > 0) {
-    faturamentoLiquidoDia = faturamentoAcumuladoHoje;
-  }
+  // Faturamento Líquido do Dia (OI Base)
+  const faturamentoLiquidoDia = isEditing 
+    ? faturamentoDiaInput 
+    : Number(summary?.faturamento_oi_base ?? (currentSnapshot?.metadata as any)?.faturamento_oi_base ?? faturamentoDiaInput);
     
   // Faturamento Atual = Mapa de Metas + Transações Justificadas + Ajustes Manuais (Aportes/Estornos)
   const faturamentoAjustesValor = summary?.faturamento_ajustes ?? 0;
@@ -262,10 +307,9 @@ export function ResumoDiaPanel({
         await Promise.all(promises);
       }
 
-      const effectiveAccumulatedFaturamento = 
-        (faturamentoAnteriorGlobal > 0 && faturamentoAcumuladoHoje > 0 && faturamentoAcumuladoHoje < faturamentoAnteriorGlobal)
-          ? (faturamentoAnteriorGlobal + faturamentoAcumuladoHoje)
-          : faturamentoAcumuladoHoje;
+      const effectiveAccumulatedFaturamento = faturamentoAcumuladoHoje > 0 
+        ? faturamentoAcumuladoHoje 
+        : (faturamentoAnteriorInput + faturamentoLiquidoDia);
 
       const hasManualOverride = isEditing
         ? (contasInput !== (summary?.contas_base ?? 0))
@@ -300,7 +344,8 @@ export function ResumoDiaPanel({
           ...(currentSnapshot?.metadata || {}),
           caixa_anterior: caixaAnteriorGlobal,
           fluxo_caixa: fluxoCaixaCalculado,
-          faturamento_anterior: faturamentoAnteriorGlobal,
+          faturamento_anterior: faturamentoAnteriorInput,
+          odometro_hoje: effectiveAccumulatedFaturamento,
           faturamento_oi_base: faturamentoLiquidoDia,
           faturamento_ajustes: faturamentoAjustesValor,
           faturamento_periodo: faturamentoTotalComAjustes,
@@ -679,12 +724,12 @@ export function ResumoDiaPanel({
           <div 
             onClick={() => setIsPatioModalOpen(true)}
             className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] flex flex-col justify-between cursor-pointer hover:border-amber-500/50 hover:bg-[var(--bg-surface-hover)] transition-all group shadow-sm"
-            title="Clique para ver a lista detalhada de OSs no pátio e editar valores"
+            title="Clique para ver a lista detalhada de OSs no pátio e comparativo com o dia anterior"
           >
             <div>
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-amber-400 transition-colors">NA LOJA OS</span>
+                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-amber-400 transition-colors">NA LOJA OS (PÁTIO)</span>
                   <WhisperDot dot={insights?.dots.na_loja_os} />
                 </div>
                 <span className="text-[9px] font-semibold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded group-hover:bg-amber-500/20 transition-all flex items-center gap-1">
@@ -695,8 +740,13 @@ export function ResumoDiaPanel({
                 <AnimatedNumber value={naLojaValor} format="currency" />
               </p>
             </div>
-            <div className="pt-2 mt-2 border-t border-[var(--border-subtle)] text-[10px] text-[var(--text-tertiary)]">
-              <span className="font-semibold text-amber-400">OSs do Pátio pendentes</span>
+            <div className="pt-2 mt-2 border-t border-[var(--border-subtle)] text-[10px] text-[var(--text-tertiary)] flex items-center justify-between font-mono">
+              <span className="font-semibold text-amber-400 font-sans">OSs do Pátio</span>
+              {previousSnapshot?.total_patio !== undefined && (
+                <span className="text-[9px] text-[var(--text-tertiary)]">
+                  Ant: {formatCurrency(Number(previousSnapshot.total_patio))}
+                </span>
+              )}
             </div>
           </div>
 
@@ -770,22 +820,46 @@ export function ResumoDiaPanel({
                   )}
                 </div>
                 {isEditing ? (
-                  <div>
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={faturamentoInput || ''}
-                      onChange={(e) => setFaturamentoInput(Number(e.target.value))}
-                      placeholder="Faturamento OI"
-                      className="w-full bg-[var(--bg-surface)] border border-[var(--color-primary)]/40 rounded py-1 px-2 text-sm font-bold font-mono text-[var(--text-primary)] mt-1"
-                    />
-                    <div className="text-[10px] text-emerald-400 mt-1 font-mono font-medium flex items-center justify-between">
-                      <span>Dia: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoLiquidoDia)}</span>
-                      {faturamentoAnteriorGlobal > 0 && (
-                        <span className="text-[var(--text-tertiary)]">
-                          Ant: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoAnteriorGlobal)}
-                        </span>
-                      )}
+                  <div className="space-y-2 mt-1">
+                    <div>
+                      <div className="flex justify-between text-[9px] text-[var(--text-tertiary)] uppercase font-semibold">
+                        <span>Odômetro Hoje</span>
+                        <span className="text-zinc-500">Acumulado OI</span>
+                      </div>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={faturamentoInput || ''}
+                        onChange={(e) => handleOdometroHojeChange(Number(e.target.value))}
+                        placeholder="0,00"
+                        className="w-full bg-[var(--bg-surface)] border border-[var(--color-primary)]/40 rounded py-1 px-2 text-xs font-bold font-mono text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary)] mt-0.5"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 pt-1 border-t border-[var(--border-subtle)]">
+                      <div>
+                        <span className="text-[9px] text-[var(--text-tertiary)] uppercase font-semibold block">(-) Ant.</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          value={faturamentoAnteriorInput || ''}
+                          onChange={(e) => handleOdometroAntChange(Number(e.target.value))}
+                          placeholder="0,00"
+                          className="w-full bg-[var(--bg-surface)] border border-zinc-700/60 rounded py-0.5 px-1.5 text-xs font-mono text-zinc-300 mt-0.5"
+                          title="Odômetro anterior (ajustável se houver descompasso)"
+                        />
+                      </div>
+                      <div>
+                        <span className="text-[9px] text-emerald-400 uppercase font-semibold block">(=) Faturamento Dia</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          value={faturamentoDiaInput || ''}
+                          onChange={(e) => handleFaturamentoDiaChange(Number(e.target.value))}
+                          placeholder="0,00"
+                          className="w-full bg-[var(--bg-surface)] border border-emerald-500/40 rounded py-0.5 px-1.5 text-xs font-bold font-mono text-emerald-400 focus:outline-none focus:border-emerald-500 mt-0.5"
+                          title="Faturamento líquido do dia (digite diretamente se preferir)"
+                        />
+                      </div>
                     </div>
                   </div>
                 ) : (

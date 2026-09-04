@@ -283,14 +283,16 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           }
         }
 
-        if (snap && snap.a_receber_manual) {
+        if (snap && snap.a_receber_manual !== null && snap.a_receber_manual !== undefined && Number(snap.a_receber_manual) > 0) {
           setManualAReceber(Number(snap.a_receber_manual));
+        } else if (previousSnapshot?.a_receber_manual !== undefined && previousSnapshot?.a_receber_manual !== null && Number(previousSnapshot.a_receber_manual) > 0) {
+          setManualAReceber(Number(previousSnapshot.a_receber_manual));
         } else {
-          // Se a_receber_manual for 0, busca soma dos recebíveis pendentes cadastrados
+          // Se não houver snapshot anterior nem atual, busca soma dos recebíveis pendentes cadastrados para a data específica
           const { data: recs } = await supabase
             .from('receivables')
             .select('value')
-            .lte('date', targetDate)
+            .eq('date', targetDate)
             .eq('status', 'pendente');
 
           if (recs && recs.length > 0) {

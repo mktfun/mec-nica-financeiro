@@ -11,7 +11,10 @@ import {
   DollarSign,
   Receipt,
   Sparkles,
-  ArrowUpRight
+  ArrowUpRight,
+  Pencil,
+  Check,
+  X
 } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
@@ -37,6 +40,8 @@ export function FaturamentoDetalhesModal({
   const [description, setDescription] = useState('');
   const [type, setType] = useState('aporte');
   const [amount, setAmount] = useState('');
+  const [isEditingBase, setIsEditingBase] = useState(false);
+  const [customBaseInput, setCustomBaseInput] = useState('');
 
   // 1. Busca os ajustes cadastrados no banco
   const { data: adjustments = [], isLoading } = useQuery({
@@ -51,6 +56,66 @@ export function FaturamentoDetalhesModal({
       return data || [];
     },
     enabled: isOpen
+  });
+
+  const totalAdjustments = adjustments.reduce((acc, a) => acc + Number(a.amount || 0), 0);
+
+  // 0. Busca metadados do snapshot para odômetro e base
+  const { data: snapshotData } = useQuery({
+    queryKey: ['daily-snapshot-faturamento-modal', targetDate],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('daily_snapshots')
+        .select('id, faturamento, metadata')
+        .eq('date', targetDate)
+        .maybeSingle();
+      return data;
+    },
+    enabled: isOpen && !!targetDate
+  });
+
+  const snapMeta = (snapshotData?.metadata as any) || {};
+  const odometroHoje = Number(snapMeta.odometro_hoje ?? snapshotData?.faturamento ?? 0);
+  const odometroAnt = Number(snapMeta.faturamento_anterior ?? 0);
+
+  // Mutação para ajustar faturamento base diretamente no snapshot
+  const updateBaseRevenueMutation = useMutation({
+    mutationFn: async () => {
+      const numBase = parseFloat(customBaseInput.replace(/\./g, '').replace(',', '.'));
+      if (isNaN(numBase) || numBase < 0) {
+        throw new Error('Informe um valor de faturamento válido.');
+      }
+      if (!snapshotData?.id) {
+        throw new Error('Snapshot não encontrado para esta data.');
+      }
+
+      const updatedMeta = {
+        ...snapMeta,
+        faturamento_oi_base: numBase,
+        faturamento_periodo: numBase + totalAdjustments,
+        faturamento_liquido: numBase + totalAdjustments
+      };
+
+      const { error } = await supabase
+        .from('daily_snapshots')
+        .update({
+          metadata: updatedMeta
+        })
+        .eq('id', snapshotData.id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success('Faturamento base do OI atualizado com sucesso!');
+      setIsEditingBase(false);
+      queryClient.invalidateQueries({ queryKey: ['daily-snapshot-faturamento-modal', targetDate] });
+      queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
+      queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
+    },
+    onError: (err: any) => {
+      toast.error(err.message || 'Erro ao atualizar faturamento base.');
+    }
   });
 
   // 2. Mutação para adicionar novo ajuste
@@ -106,7 +171,6 @@ export function FaturamentoDetalhesModal({
     }
   });
 
-  const totalAdjustments = adjustments.reduce((acc, a) => acc + Number(a.amount || 0), 0);
   const effectiveConsolidated = faturamentoOiBase + totalAdjustments;
 
   const getTypeLabel = (t: string) => {
@@ -138,14 +202,67 @@ export function FaturamentoDetalhesModal({
         {/* Header Cards: Faturamento Base OI vs Total Consolidado */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-[var(--bg-canvas)] border border-[var(--border-subtle)] rounded-xl p-4 space-y-1">
-            <div className="flex items-center gap-2 text-[var(--text-tertiary)] text-xs font-semibold uppercase tracking-wider">
-              <Building2 className="w-4 h-4 text-blue-400" />
-              Oficina Inteligente (Dia)
+            <div className="flex items-center justify-between text-[var(--text-tertiary)] text-xs font-semibold uppercase tracking-wider">
+              <span className="flex items-center gap-1.5">
+                <Building2 className="w-4 h-4 text-blue-400" />
+                Oficina Inteligente (Dia)
+              </span>
+              {!isEditingBase ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCustomBaseInput(String(faturamentoOiBase || ''));
+                    setIsEditingBase(true);
+                  }}
+                  className="text-zinc-500 hover:text-blue-400 transition-colors p-1"
+                  title="Editar Faturamento Base OI"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setIsEditingBase(false)}
+                  className="text-zinc-500 hover:text-zinc-300 transition-colors p-1"
+                  title="Cancelar"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
             </div>
-            <div className="text-xl font-bold font-sans tabular-nums text-[var(--text-primary)]">
-              {formatCurrency(faturamentoOiBase)}
-            </div>
-            <div className="text-[11px] text-[var(--text-tertiary)]">Apuração do sistema OI</div>
+
+            {isEditingBase ? (
+              <div className="flex items-center gap-2 pt-1">
+                <input
+                  type="text"
+                  value={customBaseInput}
+                  onChange={e => setCustomBaseInput(e.target.value)}
+                  placeholder="0,00"
+                  className="w-full bg-[var(--bg-surface-elevated)] border border-blue-500/50 rounded px-2 py-1 text-sm font-mono text-[var(--text-primary)] focus:outline-none"
+                />
+                <Button
+                  size="sm"
+                  onClick={() => updateBaseRevenueMutation.mutate()}
+                  disabled={updateBaseRevenueMutation.isPending}
+                  className="h-8 px-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs gap-1"
+                >
+                  <Check className="w-3.5 h-3.5" />
+                </Button>
+              </div>
+            ) : (
+              <div className="text-xl font-bold font-sans tabular-nums text-[var(--text-primary)]">
+                {formatCurrency(faturamentoOiBase)}
+              </div>
+            )}
+
+            {odometroHoje > 0 ? (
+              <div className="text-[10px] text-[var(--text-tertiary)] font-mono flex items-center justify-between pt-1 border-t border-[var(--border-subtle)]">
+                <span>Odômetro: {formatCurrency(odometroHoje)}</span>
+                {odometroAnt > 0 && <span>- Ant: {formatCurrency(odometroAnt)}</span>}
+              </div>
+            ) : (
+              <div className="text-[11px] text-[var(--text-tertiary)]">Apuração do sistema OI</div>
+            )}
           </div>
 
           <div className="bg-[var(--bg-canvas)] border border-amber-500/30 rounded-xl p-4 space-y-1">

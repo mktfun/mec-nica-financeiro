@@ -1,3 +1,16 @@
+### Feature 361: Correção Canônica da Conciliação Diária (Faturamento, Datas, Contas, A Receber e Pátio)
+- **Status:** COMPLETED & ARCHIVED
+- **Data:** 2026-09-04
+- **Arquivos Criados/Modificados:**
+  - `src/routes/conciliacao.index.tsx` (Unificação do controle de datas via Search Param `?date=` como SSOT, eliminando `useEffect` conflitante)
+  - `supabase/migrations/20260904000033_reactive_reconciliation_summary.sql` (RPC `get_daily_reconciliation_summary` dinâmica com cálculo direto de `daily_manual_bills`, priorização de `metadata->>'faturamento_oi_base'` e herança de ativos)
+  - `src/components/conciliacao/ResumoDiaPanel.tsx` (Calculadora bidirecional de faturamento, persistência de odômetro/base, rodapé com saldo anterior do pátio)
+  - `src/components/conciliacao/FaturamentoDetalhesModal.tsx` (Transparência de odômetro, edição inline de base OI e invalidação de queries)
+  - `src/components/conciliacao/ContasManualModal.tsx` (Sincronização atômica de snapshot diário com `daily_manual_bills` em todas as mutações)
+  - `src/components/importacoes/CentralImportWizard.tsx` (Fallback canônico prioritário de `previousSnapshot.a_receber_manual` e eliminação de busca cumulativa ampla)
+  - `src/components/conciliacao/PatioOsDetailModal.tsx` (Banner de Dinâmica do Pátio com Delta Pátio vs dia anterior e explicação visual de entregas)
+- **Descrição:** Correção dos 6 problemas de integridade na tela de Conciliação Diária: navegação de datas destravada, odômetro de faturamento com cálculo bidirecional sem falsas divergências, contas a pagar manuais somando dinamicamente no subtotal, proteção contra saltos indevidos em recebíveis e transparência no desbalanceamento temporal do pátio com equalização oficial de 04/09/2026 para R$ 0,00 de diferença final.
+
 ### Feature 367: Restauração do CentralImportWizard no Modo Manual (Importação em Massa)
 - **Status:** COMPLETED & ARCHIVED
 - **Data:** 2026-09-03

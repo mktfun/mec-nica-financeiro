@@ -31,47 +31,46 @@ export const Route = createFileRoute('/conciliacao/')({
 
 function ConciliacaoPage() {
   const { date: searchDate } = Route.useSearch();
-  const [selectedDate, setSelectedDate] = useState(searchDate || '');
-  const [breakdownStore, setBreakdownStore] = useState<{ id: string; name: string } | null>(null);
   const navigate = Route.useNavigate();
   const queryClient = useQueryClient();
   const { canImport } = useUserPermissions();
-
+  const [breakdownStore, setBreakdownStore] = useState<{ id: string; name: string } | null>(null);
 
   const { data: availableDates = [], isLoading: loadingDates } = useAvailableConciliacaoDates();
   const { data: stores = [], isLoading: loadingStores } = useStores();
+
+  // SSOT: A data ativa é sempre searchDate da URL; fallback para a última data disponível ou hoje
+  const selectedDate = searchDate || (availableDates.length > 0 ? availableDates[availableDates.length - 1] : (!loadingDates ? new Date().toISOString().substring(0, 10) : ''));
+
   const { data: summary, isLoading: loadingSummary } = useDailyReconciliationSummary(selectedDate);
   const { data: justifiedData } = useJustifiedTransactions(selectedDate);
 
-  useEffect(() => {
-    if (searchDate && searchDate !== selectedDate) {
-      setSelectedDate(searchDate);
-    } else if (!selectedDate && availableDates.length > 0) {
-      setSelectedDate(availableDates[availableDates.length - 1]);
-    } else if (!selectedDate && !loadingDates) {
-      setSelectedDate(new Date().toISOString().substring(0, 10));
-    }
-  }, [availableDates, loadingDates, selectedDate, searchDate]);
-
-  const isLoading = loadingStores || loadingSummary || loadingDates || !selectedDate;
-
-  const storesList = summary?.stores || [];
-  const isApproved = summary?.status_geral === 'approved';
+  const handleDateSelect = (newDate: string) => {
+    if (!newDate || newDate === selectedDate) return;
+    navigate({
+      search: (prev: Record<string, unknown>) => ({ ...prev, date: newDate }),
+      replace: true,
+    });
+  };
 
   const handleDayChange = (offset: number) => {
     if (availableDates.length === 0) return;
     
     const currentIndex = availableDates.indexOf(selectedDate);
     if (currentIndex === -1) {
-      setSelectedDate(availableDates[availableDates.length - 1]);
+      handleDateSelect(availableDates[availableDates.length - 1]);
       return;
     }
     
     const newIndex = currentIndex + offset;
     if (newIndex >= 0 && newIndex < availableDates.length) {
-      setSelectedDate(availableDates[newIndex]);
+      handleDateSelect(availableDates[newIndex]);
     }
   };
+
+  const isLoading = loadingStores || loadingSummary || loadingDates || !selectedDate;
+  const storesList = summary?.stores || [];
+  const isApproved = summary?.status_geral === 'approved';
 
   const totalSistema = storesList.reduce((acc, log) => acc + (log.previsto_ofx || 0), 0);
   const totalBancarioIn = summary?.total_entradas_ofx ?? summary?.faturamento_ofx ?? 0;
@@ -148,7 +147,7 @@ function ConciliacaoPage() {
             <ResumoDiaPanel 
               selectedDate={selectedDate}
               onDayChange={handleDayChange}
-              onDateSelect={setSelectedDate}
+              onDateSelect={handleDateSelect}
               divergenciaGlobal={divergenciaGlobal}
               isApproved={isApproved}
               detalhesCount={storesList.length}

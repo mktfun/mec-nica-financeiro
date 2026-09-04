@@ -1,3 +1,22 @@
+## [2026-09-04] — [Feature ID: 361-correcao-conciliacao-faturamento-datas-contas]
+
+**Contexto:** Resolução dos 6 problemas de integridade na tela de Conciliação Diária (`/conciliacao`): navegação de datas travada por duplicação de estado, distorção do odômetro de faturamento gerando falsa divergência de R$ 49k, estagnação do subtotal de contas manuais que ignorava novos lançamentos, salto descontrolado de boletos a receber para mais de R$ 20k, e falta de transparência na variação legítima do saldo de pátio (R$ 28k para R$ 11k).
+
+**Regra aprendida:**
+1. **Calculadora Bidirecional de Faturamento:**
+   - O faturamento no fechamento pode ser alimentado tanto pelo odômetro contínuo do ERP Oficina Inteligente ($\Delta = \text{Odômetro Hoje} - \text{Odômetro Anterior}$) quanto diretamente pelo faturamento líquido diário real quando dias anteriores tiverem sido preenchidos manualmente de forma não encadeada.
+   - O snapshot grava explicitamente `metadata.faturamento_oi_base`, `metadata.odometro_hoje` e `metadata.faturamento_anterior`. A RPC `get_daily_reconciliation_summary` prioriza `faturamento_oi_base` para impedir subtrações anômalas.
+2. **Reatividade Dinâmica de Contas a Pagar (`daily_manual_bills`):**
+   - A soma de despesas do dia nunca deve ficar engessada em `metadata->>'subtotal_contas'`. Sempre que houver itens em `daily_manual_bills`, o backend calcula dinamicamente a soma real dos registros onde `contabilizar_no_subtotal = true`, sincronizando imediatamente qualquer inclusão, edição ou exclusão de contas.
+3. **Herança Canônica de Títulos A Receber:**
+   - O saldo de boletos a receber em carteira deve herdar compulsoriamente `previousSnapshot.a_receber_manual` caso o snapshot atual não o declare, prevenindo queries cumulativas históricas que somam títulos de meses passados.
+4. **Transparência do Delta Pátio:**
+   - Reduções drásticas no saldo do Pátio (ex: de R$ 28k para R$ 11k) são legítimas quando veículos têm suas OSs finalizadas e baixadas, migrando seu valor para faturamento e recebimentos em caixa. A interface deve sempre exibir o comparativo com o dia anterior e a indicação de OSs finalizadas.
+
+**Risco identificado / Anti-pattern:** Subtrair o odômetro acumulado de hoje de um snapshot anterior que armazenou faturamento líquido do dia em vez de odômetro cumulativo. Isso infla artificialmente o faturamento e explode a divergência final.
+
+---
+
 ## [2026-09-03] — [Feature ID: 367-restore-central-import-wizard-for-manual-mode]
 
 **Contexto:** Unificação operacional da rotina de fechamento diário manual com restauração do `CentralImportWizard` para ingestão em lote único de arquivos das 10 filiais.

@@ -95,6 +95,47 @@ export function ContasManualModal({
     enabled: isOpen
   });
 
+  // Sincroniza snapshot com as contas manuais ativas
+  const syncSnapshotBills = async () => {
+    try {
+      const { data: currentBills } = await supabase
+        .from('daily_manual_bills')
+        .select('amount, contabilizar_no_subtotal')
+        .eq('date', targetDate);
+
+      const totalContas = (currentBills || [])
+        .filter(b => b.contabilizar_no_subtotal !== false)
+        .reduce((sum, b) => sum + Number(b.amount || 0), 0);
+
+      const { data: snap } = await supabase
+        .from('daily_snapshots')
+        .select('id, metadata, juros_rede')
+        .eq('date', targetDate)
+        .maybeSingle();
+
+      if (snap) {
+        const juros = Number(snap.juros_rede || 0);
+        const subtotal = totalContas + juros;
+        const meta = (snap.metadata as any) || {};
+        const updatedMeta = {
+          ...meta,
+          contas_base: totalContas,
+          contas_manual: totalContas,
+          subtotal_contas: subtotal
+        };
+        await supabase
+          .from('daily_snapshots')
+          .update({
+            contas_a_pagar: totalContas,
+            metadata: updatedMeta
+          })
+          .eq('id', snap.id);
+      }
+    } catch (err) {
+      console.warn('Silent sync error on snapshot bills:', err);
+    }
+  };
+
   // 3. Mutação para adicionar nova conta avulsa
   const addBillMutation = useMutation({
     mutationFn: async () => {
@@ -117,6 +158,7 @@ export function ContasManualModal({
         contabilizar_no_subtotal: contabilizarSubtotal
       });
       if (error) throw error;
+      await syncSnapshotBills();
     },
     onSuccess: () => {
       toast.success('Despesa adicionada com sucesso!');
@@ -166,6 +208,7 @@ export function ContasManualModal({
         p_contabilizar_no_subtotal: contabilizarSubtotal
       });
       if (error) throw error;
+      await syncSnapshotBills();
       return data;
     },
     onSuccess: () => {
@@ -207,6 +250,7 @@ export function ContasManualModal({
         .update({ contabilizar_no_subtotal: !currentState })
         .eq('id', id);
       if (error) throw error;
+      await syncSnapshotBills();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['daily-manual-bills', targetDate] });
@@ -244,6 +288,7 @@ export function ContasManualModal({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from('daily_manual_bills').delete().eq('id', id);
       if (error) throw error;
+      await syncSnapshotBills();
     },
     onSuccess: () => {
       toast.success('Conta removida com sucesso!');

@@ -1,3 +1,19 @@
+## [2026-09-04] — [Feature ID: 361-correcao-conciliacao-faturamento-datas-contas]
+
+**Contexto:** Unificação do controle de datas em `src/routes/conciliacao.index.tsx` via Search Params (SSOT), implementação da calculadora bidirecional de faturamento em `ResumoDiaPanel.tsx` e criação do componente de Delta Pátio com comparativo vs dia anterior em `PatioOsDetailModal.tsx`.
+
+**Regra aprendida:**
+1. **Navegação de Rota como Single Source of Truth (SSOT):**
+   - Ao sincronizar o estado da data selecionada na conciliação com os parâmetros da URL (`?date=YYYY-MM-DD`), NUNCA manter um `useState` local concorrente com `useEffect` de espelhamento que reatribua a data anterior. A rota deve ser a SSOT absoluta, com eventos de clique disparando diretamente `navigate({ search: { date: newDate }, replace: true })`.
+2. **Calculadora Bidirecional de Faturamento:**
+   - Em telas de fechamento, quando o operador pode tanto ler o odômetro físico quanto saber o faturamento líquido diário, os campos de entrada devem ser bidirecionais: alterar o odômetro de hoje recalcula o líquido ($\text{Hoje} - \text{Ant} = \text{Líquido}$), enquanto alterar o líquido recalcula o odômetro ($\text{Ant} + \text{Líquido} = \text{Hoje}$).
+3. **Padrão de UX para Variação de Ativos em Trânsito (Delta Pátio):**
+   - Ativos de pátio oscilam com entregas de serviços. A interface deve fornecer um banner com contexto comparativo (`Pátio Anterior` vs `Pátio Atual` e `Delta`) e explicação clara de que baixas representam conversão em faturamento/caixa, reduzindo a ansiedade do usuário com relação a quedas nominais de saldo.
+
+**Risco identificado / Anti-pattern:** Usar `useEffect` para sincronizar search params com estado local do React quando a rota já provê re-render reativo na alteração da URL.
+
+---
+
 ## [2026-09-03] — [Feature ID: 367-restore-central-import-wizard-for-manual-mode]
 
 **Contexto:** Restauração do `CentralImportWizard` clássico como componente oficial ao selecionar o "Modo Manual" na Central de Fechamento Diário (`/importacoes?tab=diario`), mantendo o dropzone universal em lote para todas as 10 filiais e arquivos (.xlsx, .ofx, .csv) de uma só vez, acompanhado de barra de navegação superior para alternância rápida entre modo manual e o workspace IA (Hydra).

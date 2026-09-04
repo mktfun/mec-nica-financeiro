@@ -117,6 +117,22 @@ export function PatioOsDetailModal({
     enabled: isOpen && !!targetDate
   });
 
+  // Buscar snapshot anterior para comparativo de dinâmica do pátio (Delta Pátio)
+  const { data: prevSnapshot } = useQuery({
+    queryKey: ['prev-snapshot-patio', targetDate],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('daily_snapshots')
+        .select('date, total_patio')
+        .lt('date', targetDate)
+        .order('date', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      return data;
+    },
+    enabled: isOpen && !!targetDate
+  });
+
   // Mutação para atualizar OS no banco
   const updateOsMutation = useMutation({
     mutationFn: async ({ id, total_value, paid_value, status }: { id: string; total_value: number; paid_value: number; status: string }) => {
@@ -268,6 +284,42 @@ export function PatioOsDetailModal({
       size="2xl"
     >
       <div className="space-y-6">
+        {/* Banner de Conciliação e Variação de Pátio (Delta Pátio) */}
+        {prevSnapshot && (
+          <div className="bg-[var(--bg-surface-elevated)] border border-amber-500/20 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400">
+                <Car className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="font-semibold text-[var(--text-primary)] flex items-center gap-2">
+                  <span>Dinâmica do Pátio vs Dia Anterior ({prevSnapshot.date.split('-').reverse().join('/')})</span>
+                  <Badge variant={deltaPatio <= 0 ? 'info' : 'warning'} className="text-[10px]">
+                    {deltaPatio < 0 ? 'Redução / Entregas' : deltaPatio > 0 ? 'Entrada de Veículos' : 'Estável'}
+                  </Badge>
+                </div>
+                <div className="text-[11px] text-[var(--text-tertiary)] mt-0.5">
+                  {deltaPatio < 0 
+                    ? 'A redução do saldo indica que OSs foram finalizadas/entregues e seus valores transitaram para faturamento e caixa do dia.'
+                    : 'Aumento de veículos com serviços em andamento aguardando finalização.'}
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 font-mono">
+              <div className="text-right">
+                <span className="text-[10px] text-[var(--text-tertiary)] uppercase block">Pátio Anterior</span>
+                <span className="text-[var(--text-secondary)] font-medium">{formatCurrency(previousPatioTotal)}</span>
+              </div>
+              <div className="text-right">
+                <span className="text-[10px] text-[var(--text-tertiary)] uppercase block">Variação (Delta)</span>
+                <span className={`font-bold ${deltaPatio < 0 ? 'text-blue-400' : deltaPatio > 0 ? 'text-amber-400' : 'text-zinc-400'}`}>
+                  {deltaPatio > 0 ? '+' : ''}{formatCurrency(deltaPatio)}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* 4 Summary Cards Canônicos (border-l-4) — Padrão Pátio */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Card 1: Total Restante no Pátio */}
