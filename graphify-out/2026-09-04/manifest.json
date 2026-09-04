@@ -415,8 +415,8 @@
     "semantic_hash": "6b6e0037087e02fa13aece702ccd933b"
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1788469335.7424896,
-    "ast_hash": "a5040a324d9e07170f8c391ffd19faa2",
+    "mtime": 1788468397.7178855,
+    "ast_hash": "56a1b7d22bd52d65b0c5731c63be571a",
     "semantic_hash": ""
   },
   "src/components/importacoes/DiagnosticPanel.tsx": {
@@ -470,8 +470,8 @@
     "semantic_hash": "f012dcd0e8966e1128673401bd508c61"
   },
   "src/components/importacoes/wizard/Step4FinalAuditAndClose.tsx": {
-    "mtime": 1788525329.593578,
-    "ast_hash": "a55261db2941a435c98ab5ac8c6fe1da",
+    "mtime": 1788437582.8931634,
+    "ast_hash": "1780142f338593eea5a6a8031b8159d7",
     "semantic_hash": ""
   },
   "src/components/importacoes/wizard/types.ts": {
@@ -655,8 +655,8 @@
     "semantic_hash": "43d7881346dbd48b48bea308ff8f45d5"
   },
   "src/hooks/useBackendConciliacao.ts": {
-    "mtime": 1788525300.1908379,
-    "ast_hash": "2351772208c6965907d5a87cbf207d33",
+    "mtime": 1788437618.6361845,
+    "ast_hash": "cff1f99df85937549b662d29c107467d",
     "semantic_hash": ""
   },
   "src/hooks/useBackendDashboard.ts": {
@@ -1085,8 +1085,8 @@
     "semantic_hash": "575eb3da339eaa3d4bd53b4628acbd94"
   },
   "src/routes/conciliacao.index.tsx": {
-    "mtime": 1788522992.6008565,
-    "ast_hash": "4189a148947b99f3ebefe421e12d6b7e",
+    "mtime": 1788441034.133118,
+    "ast_hash": "45cb9f63aeca371bb8986076cf013d29",
     "semantic_hash": ""
   },
   "src/routes/configuracoes.tsx": {
@@ -3455,8 +3455,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1788468702.3126118,
-    "ast_hash": "3038de3eae67361dce78f77120561e06",
+    "mtime": 1788443188.885045,
+    "ast_hash": "11ec9ef66f391ce4e8b247bdbabe84f9",
     "semantic_hash": ""
   },
   "specs/global/features_clean.md": {
@@ -4014,24 +4014,19 @@
     "ast_hash": "3bb9cb5f05ccec55ed5207f16a8a4fc8",
     "semantic_hash": ""
   },
-  "supabase/migrations/20260904000032_unify_reconciliation_summary_and_fix_auto_match.sql": {
-    "mtime": 1788525241.118456,
-    "ast_hash": "b1272aa41b4da68ea7d8fce81dad4655",
+  "specs/368-fix-ofx-sgml-parsing-and-auto-store-mapping-persistence/design.md": {
+    "mtime": 1788468153.8840523,
+    "ast_hash": "dbb43849c66b9ecd047a079db65904a7",
     "semantic_hash": ""
   },
-  "specs/369-fix-car-icon-reference-error-and-rpc-ambiguity/design.md": {
-    "mtime": 1788524810.058592,
-    "ast_hash": "b67af9f8b0b8932098b835e5241128cd",
+  "specs/368-fix-ofx-sgml-parsing-and-auto-store-mapping-persistence/proposal.md": {
+    "mtime": 1788468144.0699272,
+    "ast_hash": "1402793310d148c2ee44687dc39725b9",
     "semantic_hash": ""
   },
-  "specs/369-fix-car-icon-reference-error-and-rpc-ambiguity/proposal.md": {
-    "mtime": 1788524798.735698,
-    "ast_hash": "a330ce4ea25d967479294a2de4c2a472",
-    "semantic_hash": ""
-  },
-  "specs/369-fix-car-icon-reference-error-and-rpc-ambiguity/spec-plan.md": {
-    "mtime": 1788525386.543317,
-    "ast_hash": "a6e282eecb676880f341b312ff9d1d1c",
+  "specs/368-fix-ofx-sgml-parsing-and-auto-store-mapping-persistence/spec-plan.md": {
+    "mtime": 1788468481.6132114,
+    "ast_hash": "c58bb730c411740987aa9cefbdd1ab5c",
     "semantic_hash": ""
   }
 }

@@ -577,3 +577,11 @@ Nao fazer: Nunca fazer fallbacks automaticos para zero em dados criticos contabe
 3. **Tradução Amigável de Erros Supabase:** Banners de erro (`ExecutionErrorBanner`) devem traduzir códigos técnicos do PostgreSQL/PostgREST para diagnósticos em português legíveis, preservando o stack trace e payload JSON em gavetas colapsáveis.
 4. **Preservação de Contexto no Botão de Retry:** Ao tentar novamente após um erro de gravação, garanta que o callback invoque `handleConfirm(true)` para que o operador avance normalmente para o Wizard sem perda de estado.
 
+## [2026-09-04] — [Feature ID: 369-fix-car-icon-and-rpc-ambiguity]
+**Contexto:** Erro `ReferenceError: Car is not defined` no Step 4 de Auditoria Final (`Step4FinalAuditAndClose.tsx`).
+**Regra aprendida:**
+1. **Auditoria Prévia de Imports de Ícones:** Todo ícone JSX instanciado no template (ex: `<Car size={15} />`) DEVE estar expressamente desestruturado na cláusula `import { ... } from 'lucide-react'`. Não assumir que o bundler ou auto-import global injetará componentes de ícones.
+2. **Tipagem Direta vs `(summary as any)`:** A interface `DailyReconciliationSummary` deve espelhar integralmente as propriedades retornadas pela RPC consolidada (`caixa_tesouraria`, `status_tesouraria`, `patio_wip`, `variacao_patio_delta_p4`, `fast_path_eligible`), eliminando asserções `(summary as any)` no JSX que mascaram ausências de propriedades e erros de compilação.
+3. **Auditoria Dinâmica com `forceDynamic`:** No Step 4 de fechamento de importação, a chamada a `useDailyReconciliationSummary(targetDate, true)` garante que novos dados inseridos no dia sejam calculados on-the-fly, prevenindo exibição de valores congelados em snapshots anteriores.
+**Risco identificado / Anti-pattern:** Utilizar asserções `(objeto as any)` em cascata no JSX, o que esconde referências nulas e variáveis não importadas que só explodem em runtime no navegador do cliente.
+

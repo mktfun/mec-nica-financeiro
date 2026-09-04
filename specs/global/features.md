@@ -1,3 +1,11 @@
+### Spec 369 — Correção de Erros de Console, Ícone Car e Desambiguação de RPCs
+- **Frontend (`Step4FinalAuditAndClose.tsx`)**: Importação de `Car` da biblioteca `lucide-react`, eliminando `ReferenceError: Car is not defined` no card Canal 2 de Pátio WIP. Suporte a `useDailyReconciliationSummary(targetDate, true)` com recálculo dinâmico na auditoria final e tipagem segura dos campos bicanais.
+- **Frontend Hook (`useBackendConciliacao.ts`)**: `useDailyReconciliationSummary` atualizado com argumento `forceDynamic: boolean = false`, repassado ao payload `{ p_date, p_force_dynamic }` da RPC e incorporado na `queryKey`.
+- **Database (Migration `20260904000032_unify_reconciliation_summary_and_fix_auto_match.sql`)**:
+  - Expurgo via `DROP FUNCTION IF EXISTS` das sobrecargas conflitantes de `get_daily_reconciliation_summary` (`text`, `(text, boolean)`, `date`), mantendo a assinatura canônica única `(p_date text, p_force_dynamic boolean DEFAULT false)`. Eliminação do erro PostgreSQL `42725 (function is not unique)`.
+  - Atualização de `run_autonomous_reconciliation_loop` com chamada explícita de 2 parâmetros `get_daily_reconciliation_summary(p_date, false)`, eliminando falha HTTP 400.
+  - Correção estrutural em `auto_match_daily_transactions` utilizando `SELECT * INTO v_os_record FROM public.patio_os ...` em todas as 6 queries que alimentam a variável `v_os_record public.patio_os%ROWTYPE`, eliminando os erros `22P02` (tentativa de converter nome de cliente para coluna numérica) e `55000`.
+
 ### Spec 361 — Bifurcação Inicial da Central de Fechamento: Modo Manual Passo a Passo (Sem IA) vs Modo Conversacional Hydra (Com IA)
 - **Limpeza Visual Mandatória**: Excluído o banner supérfluo *"Virada de Mês / OCR e Carro"* de `CentralImportWizard.tsx`.
 - **Seletor de Modalidade Inicial (`FechamentoModeSelector.tsx`)**: Chaveamento explícito e deliberado logo na entrada da aba Fechamento Diário (`/importacoes?tab=diario`), com Date Picker corporativo e dois cards de escolha: Modo Manual Passo a Passo (Sem IA) vs Modo Conversacional Hydra (Com IA).

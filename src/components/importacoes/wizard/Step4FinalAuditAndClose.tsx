@@ -22,6 +22,7 @@ import {
   Calculator,
   ArrowRight,
   Zap,
+  Car,
 } from 'lucide-react';
 
 export interface MissingPatioOsEdit {
@@ -68,7 +69,7 @@ export function Step4FinalAuditAndClose({
   onFinish,
   onBack,
 }: Step4FinalAuditAndCloseProps) {
-  const { data: summary, refetch, isLoading, isRefetching } = useDailyReconciliationSummary(targetDate);
+  const { data: summary, refetch, isLoading, isRefetching } = useDailyReconciliationSummary(targetDate, true);
   const { data: previousSnapshot } = usePreviousDaySnapshot(targetDate);
   const { data: aiSettings } = useAiSettings();
 
@@ -398,7 +399,7 @@ export function Step4FinalAuditAndClose({
           </div>
           <div className="flex items-baseline justify-between pt-1">
             <span className="text-2xl font-mono font-bold text-emerald-400">
-              R$ {Number((summary as any)?.caixa_tesouraria ?? (totalSaldoBanco + dinheiroMp - saldoNegativoItau)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              R$ {Number(summary?.caixa_tesouraria ?? (totalSaldoBanco + dinheiroMp - saldoNegativoItau)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </span>
             <span className="text-xs text-zinc-400">
               Bancos OFX + Cofre - Cheque Especial (Sem Pátio)
@@ -421,10 +422,10 @@ export function Step4FinalAuditAndClose({
           </div>
           <div className="flex items-baseline justify-between pt-1">
             <span className="text-2xl font-mono font-bold text-amber-400">
-              R$ {Number((summary as any)?.patio_wip ?? naLojaOs).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              R$ {Number(summary?.patio_wip ?? naLojaOs).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </span>
             <span className="text-xs text-zinc-400">
-              Variação ΔP4: R$ {Number((summary as any)?.variacao_patio_delta_p4 ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              Variação ΔP4: R$ {Number(summary?.variacao_patio_delta_p4 ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </span>
           </div>
           <p className="text-[11px] text-zinc-500">
@@ -434,7 +435,7 @@ export function Step4FinalAuditAndClose({
       </div>
 
       {/* Fast-Path Gatekeeper de 1-Clique (Se Todas as Condições Atendidas) */}
-      {Boolean((summary as any)?.fast_path_eligible ?? isOk) && (
+      {Boolean(summary?.fast_path_eligible ?? isOk) && (
         <div className="p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/40 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl shadow-emerald-950/20">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400">

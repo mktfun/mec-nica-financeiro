@@ -877,3 +877,13 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
 **Regra aprendida:**
 1. **Garantia de Formas de Pagamento e Saldo de Pátio:** Ao criar ou vincular a OS, o valor deve ser somado especificamente na coluna da forma de pagamento (`pix_transfer_value`, `credit_value` ou `debit_value`), somado em `paid_value` e o saldo em aberto recalculado para garantir precisão contábil no Pilar 4 (Na Loja OS).
 2. **Prevenção de Duplicidade de Faturamento:** A transação vinculada a uma OS não deve ser somada aos ajustes de receita do DRE, evitando dupla contagem com o Odômetro do ERP.
+
+## [2026-09-04] — [Feature ID: 369-fix-car-icon-and-rpc-ambiguity]
+**Contexto:** Desambiguação de apuração pericial no motor de conciliação diária e auto-healing autônomo.
+**Regra aprendida:**
+1. **SSOT Bicanal Consolidada:** A apuração diária da saúde contábil opera sob dois canais independentes:
+   - **Canal 1 (Tesouraria Líquida Real):** Saldo Bancário + Cofre + Mercado Pago - Cheque Especial. Tolerância R$ 0,00.
+   - **Canal 2 (Balanço de Produção WIP):** Pátio ativo com neutralização temporal ($\Delta P_4$). Não contamina o caixa imediato.
+2. **Priorização de Dados Dinâmicos vs Snapshot Congelado:** Quando o usuário avança pelo Wizard de Importação (`p_force_dynamic = true`), o sistema recalcula em tempo real todas as movimentações recém-submetidas, desconsiderando metadados congelados de snapshots anteriores para `status_geral` e `diferenca_final`.
+3. **Resiliência no Auto-Healing Pericial:** O loop autônomo (`run_autonomous_reconciliation_loop`) executa até 3 iterações para absorver cofres em trânsito e aportes de sócios antes de emitir relatório forense. A chamada ao resumo diário deve ser 100% determinística para não interromper a transação com erros 400.
+**Risco identificado / Anti-pattern:** Exibir status "approved" de snapshot antigo enquanto novos dados de importação do dia revelam desvios no fluxo financeiro.

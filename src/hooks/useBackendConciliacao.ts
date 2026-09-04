@@ -217,14 +217,15 @@ export interface DailyReconciliationSummary {
   maquininhas_detalhe?: PosTripleReconciliationResult;
 }
 
-export function useDailyReconciliationSummary(date: string) {
+export function useDailyReconciliationSummary(date: string, forceDynamic: boolean = false) {
   return useQuery({
-    queryKey: ['daily-reconciliation-summary', date],
+    queryKey: ['daily-reconciliation-summary', date, forceDynamic],
     queryFn: async (): Promise<DailyReconciliationSummary | null> => {
       if (!date) return null;
 
       const { data, error } = await supabase.rpc('get_daily_reconciliation_summary', {
-        p_date: date
+        p_date: date,
+        p_force_dynamic: forceDynamic,
       });
 
       if (error) {
