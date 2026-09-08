@@ -621,3 +621,15 @@ Nao fazer: Nunca fazer fallbacks automaticos para zero em dados criticos contabe
 2. **Persistência Explícita de Vínculos Fuzzy:** Algoritmos em memória de pareamento de contas a pagar (`matchExpenseWithOfxDebit`) devem oferecer um botão de confirmação e gravação em lote (`Confirmar X Vínculo(s) no Banco`) no cabeçalho do extrato, gravando `matched_bill_id` em `ofx_transactions` e `matched_ofx_id` em `daily_manual_bills`.
 3. **Reconhecimento com Confiança Máxima:** Quando `tx.matched_bill_id` já estiver presente no banco, `StoreExtratoBancarioView` deve considerá-lo com `confidence = 1.0`, renderizando o badge "Conta: <Favorecido>" imediatamente.
 **Risco identificado / Anti-pattern:** Deixar correspondências fuzzy existirem apenas na memória volátil do navegador, fazendo com que o banco de dados e os cards gerais continuem exibindo divergências por falta de vínculo persistido.
+
+## [2026-09-08] — [Feature ID: 325-correcao-erros-terminal-sourcemaps-e-loop-use-session]
+
+**Contexto:** Re-renders e flickering em rotas principais (`/` e `/conciliacao`) decorrentes de recriação de referências voláteis em destructuring default de hooks assíncronos.
+
+**Regra aprendida:**
+- **Estabilidade Referencial de Fallbacks:** Ao desestruturar dados assíncronos de hooks (`useQuery`) com valores padrão (ex: `const { data = [] } = useHook()`), NUNCA use arrays ou objetos literais inline (`= []` ou `= {}`) se a variável desestruturada estiver no array de dependências de um `useEffect`. Declare constantes imutáveis fora do componente no escopo de módulo (ex: `const EMPTY_DATES: string[] = [];`) e use `data = EMPTY_DATES`. Isso preserva a igualdade referencial `===` e previne cascata de re-renders desnecessários.
+
+**Risco identificado:** A cada render intermediário de loading, `[]` inline gera um novo ponteiro em memória, re-disparando efeitos colaterais e recalculando estados derivados.
+
+**Não fazer:** Nunca use `const { data = [] }` em componentes onde `data` é dependência de `useEffect`.
+

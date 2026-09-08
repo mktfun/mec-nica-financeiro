@@ -9,12 +9,14 @@ import { ExecutiveFivePillarsBar } from '@/components/dashboard/ExecutiveFivePil
 import { ExecutiveStoreMatrix } from '@/components/dashboard/ExecutiveStoreMatrix';
 import { ExecutiveMacroCharts } from '@/components/dashboard/ExecutiveMacroCharts';
 
+const EMPTY_DATES: string[] = [];
+
 export const Route = createFileRoute('/')({
   component: DashboardPage,
 });
 
 function DashboardPage() {
-  const { data: availableDates = [], isLoading: loadingDates } = useAvailableConciliacaoDates();
+  const { data: availableDates = EMPTY_DATES, isLoading: loadingDates } = useAvailableConciliacaoDates();
   const [selectedDate, setSelectedDate] = useState<string>('');
 
   useEffect(() => {

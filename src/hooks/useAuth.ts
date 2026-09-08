@@ -1,45 +1,49 @@
-﻿import { useEffect, useState, useCallback } from 'react';
+import { useSyncExternalStore, useState, useCallback } from 'react';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 
-// ─── Session Hook ────────────────────────────────────────────────────────────
+// ─── Session Hook (React Standard: useSyncExternalStore) ─────────────────────
 
-// Cache global para evitar flickering na mudança de rotas (remontagem do AppShell)
+// Cache global para sincronização reativa e sem flickering entre rotas
 let globalSession: Session | null | undefined = undefined;
 let isInitializing = false;
-const listeners = new Set<(s: Session | null | undefined) => void>();
+const listeners = new Set<() => void>();
 
-export function useSession() {
-  const [session, setSession] = useState<Session | null | undefined>(globalSession);
+function notify() {
+  listeners.forEach((callback) => callback());
+}
 
-  useEffect(() => {
-    const listener = (s: Session | null | undefined) => setSession(s);
-    listeners.add(listener);
+function subscribe(callback: () => void) {
+  listeners.add(callback);
 
-    if (globalSession === undefined && !isInitializing) {
-      isInitializing = true;
-      supabase.auth.getSession().then(({ data }) => {
-        globalSession = data.session;
-        listeners.forEach(l => l(globalSession));
-      });
+  if (globalSession === undefined && !isInitializing) {
+    isInitializing = true;
+    supabase.auth.getSession().then(({ data }) => {
+      globalSession = data.session;
+      notify();
+    });
 
-      supabase.auth.onAuthStateChange((_event, session) => {
-        globalSession = session;
-        listeners.forEach(l => l(globalSession));
-      });
-    }
+    supabase.auth.onAuthStateChange((_event, session) => {
+      globalSession = session;
+      notify();
+    });
+  }
 
-    // Define valor inicial caso a sessão global tenha sido atualizada antes do useEffect
-    if (session !== globalSession) {
-      setSession(globalSession);
-    }
+  return () => {
+    listeners.delete(callback);
+  };
+}
 
-    return () => {
-      listeners.delete(listener);
-    };
-  }, [session]);
+function getSnapshot(): Session | null | undefined {
+  return globalSession;
+}
 
-  return session;
+function getServerSnapshot(): Session | null | undefined {
+  return undefined;
+}
+
+export function useSession(): Session | null | undefined {
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
 // ─── Login Hook ──────────────────────────────────────────────────────────────

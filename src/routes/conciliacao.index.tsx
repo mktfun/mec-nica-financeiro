@@ -20,6 +20,9 @@ import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
+const EMPTY_DATES: string[] = [];
+const EMPTY_STORES: any[] = [];
+
 export const Route = createFileRoute('/conciliacao/')({
   validateSearch: (search: Record<string, unknown>) => {
     return {
@@ -36,8 +39,8 @@ function ConciliacaoPage() {
   const { canImport } = useUserPermissions();
   const [breakdownStore, setBreakdownStore] = useState<{ id: string; name: string } | null>(null);
 
-  const { data: availableDates = [], isLoading: loadingDates } = useAvailableConciliacaoDates();
-  const { data: stores = [], isLoading: loadingStores } = useStores();
+  const { data: availableDates = EMPTY_DATES, isLoading: loadingDates } = useAvailableConciliacaoDates();
+  const { data: stores = EMPTY_STORES, isLoading: loadingStores } = useStores();
 
   // SSOT: A data ativa é sempre searchDate da URL; fallback para a última data disponível ou hoje
   const selectedDate = searchDate || (availableDates.length > 0 ? availableDates[availableDates.length - 1] : (!loadingDates ? new Date().toISOString().substring(0, 10) : ''));
