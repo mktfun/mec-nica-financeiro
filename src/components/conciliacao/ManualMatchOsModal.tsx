@@ -91,7 +91,7 @@ export function ManualMatchOsModal({
   }, [transaction, storeId, isRede]);
 
   const { data: osCandidates = [], isLoading } = useAvailableStoreOs(createStoreId || storeId, targetDate, matchType);
-  const { linkTransactionToOs, createAndLinkOs, loading: linking } = useManualMatch();
+  const { linkTransactionToOs, createAndLinkOs, settleOsWithCash, loading: linking } = useManualMatch();
 
   const sortedAndDeduplicatedCandidates = useMemo(() => {
     if (!transaction) return [];
@@ -147,6 +147,14 @@ export function ManualMatchOsModal({
       if (scoreA !== scoreB) {
         return scoreB - scoreA;
       }
+
+      // Prioriza OSs que possuem saldo devedor em aberto para liquidação
+      const hasOpenA = ((a.open_balance > 0.05) || ((a.total_value - a.paid_value) > 0.05));
+      const hasOpenB = ((b.open_balance > 0.05) || ((b.total_value - b.paid_value) > 0.05));
+      if (hasOpenA !== hasOpenB) {
+        return hasOpenA ? -1 : 1;
+      }
+
       return diffA - diffB;
     });
   }, [osCandidates, search, transaction, isRede, txAmount]);
@@ -166,6 +174,27 @@ export function ManualMatchOsModal({
       }
     } catch (err: any) {
       toast.error('Erro ao vincular: ' + (err.message || err));
+    }
+  };
+
+  const handleSettleCash = async (os: StoreOsCandidate) => {
+    try {
+      const openVal = Math.max(0, os.open_balance || (os.total_value - os.paid_value));
+      const payVal = Math.min(openVal, txAmount > 0 ? txAmount : openVal);
+      if (payVal <= 0) {
+        toast.info(`A OS #${os.os_number} já está totalmente quitada.`);
+        return;
+      }
+      const res = await settleOsWithCash(createStoreId || storeId, os.os_number, payVal, targetDate);
+      if (res.success) {
+        toast.success(`OS #${os.os_number} liquidada em dinheiro físico no balcão (R$ ${payVal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })})!`);
+        if (onSuccess) onSuccess();
+        onClose();
+      } else {
+        toast.error('Falha ao registrar dinheiro: ' + res.error);
+      }
+    } catch (err: any) {
+      toast.error('Erro ao registrar recebimento em dinheiro: ' + (err.message || err));
     }
   };
 
@@ -326,20 +355,27 @@ export function ManualMatchOsModal({
                       <th className='py-2.5 px-3 text-left'>OS #</th>
                       <th className='py-2.5 px-3 text-left'>Cliente / Placa</th>
                       <th className='py-2.5 px-3 text-left'>Pagamento</th>
-                      <th className='py-2.5 px-3 text-right'>Valor / Saldo</th>
+                      <th className='py-2.5 px-3 text-right'>Total OS</th>
+                      <th className='py-2.5 px-3 text-right'>Saldo Aberto</th>
                       <th className='py-2.5 px-3 text-center'>Match</th>
-                      <th className='py-2.5 px-3 text-right'>Ação</th>
+                      <th className='py-2.5 px-3 text-right'>Ações</th>
                     </tr>
                   </thead>
                   <tbody className='divide-y divide-zinc-800/60 font-sans'>
                     {sortedAndDeduplicatedCandidates.map((os) => {
+                      const totalVal = os.total_value || 0;
+                      const paidVal = os.paid_value || 0;
+                      const saldoAberto = Math.max(0, os.open_balance ?? (totalVal - paidVal));
+                      const novoSaldoAposVinculo = Math.max(0, saldoAberto - txAmount);
+                      const isQuitaTotal = novoSaldoAposVinculo <= 0.05 && saldoAberto > 0.05;
+
                       let osVal = 0;
                       if (isRede) {
-                        osVal = (os.credit_value || 0) > 0 ? (os.credit_value || 0) : ((os.debit_value || 0) > 0 ? (os.debit_value || 0) : Math.max(0, os.total_value - os.paid_value));
+                        osVal = (os.credit_value || 0) > 0 ? (os.credit_value || 0) : ((os.debit_value || 0) > 0 ? (os.debit_value || 0) : saldoAberto);
                       } else {
-                        osVal = os.pix_transfer_value > 0 ? os.pix_transfer_value : Math.max(0, os.total_value - os.paid_value);
+                        osVal = os.pix_transfer_value > 0 ? os.pix_transfer_value : saldoAberto;
                       }
-                      if (osVal === 0) osVal = os.total_value;
+                      if (osVal === 0) osVal = totalVal;
 
                       const diff = Math.abs(osVal - txAmount);
                       const isExact = diff < 0.05;
@@ -380,8 +416,20 @@ export function ManualMatchOsModal({
                               {os.payment_method || (isRede ? 'CARTAO' : 'PIX')}
                             </span>
                           </td>
-                          <td className='py-2.5 px-3 text-right font-mono font-bold text-zinc-100'>
-                            R$ {osVal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          <td className='py-2.5 px-3 text-right font-mono text-zinc-300'>
+                            R$ {totalVal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </td>
+                          <td className='py-2.5 px-3 text-right font-mono font-bold'>
+                            <div className='flex flex-col items-end'>
+                              <span className={saldoAberto > 0.05 ? 'text-amber-400' : 'text-zinc-400'}>
+                                R$ {saldoAberto.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                              </span>
+                              {saldoAberto > 0.05 && (
+                                <span className='text-[10px] text-zinc-500 font-normal'>
+                                  Restante: R$ {novoSaldoAposVinculo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                </span>
+                              )}
+                            </div>
                           </td>
                           <td className='py-2.5 px-3 text-center font-mono'>
                             {nameMatch.isNameMatch && isExact ? (
@@ -403,21 +451,39 @@ export function ManualMatchOsModal({
                             )}
                           </td>
                           <td className='py-2.5 px-3 text-right'>
-                            <Button
-                              size='sm'
-                              disabled={linking}
-                              onClick={() => handleLink(os)}
-                              className={`h-7 px-3 text-xs font-semibold gap-1 shrink-0 cursor-pointer ${
-                                isHighPriority
-                                  ? 'bg-emerald-500 hover:bg-emerald-400 text-zinc-950 shadow-md shadow-emerald-500/20 font-bold'
-                                  : isExact
-                                  ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-md shadow-blue-600/20'
-                                  : 'border-zinc-700 text-zinc-200 hover:bg-zinc-800'
-                              }`}
-                            >
-                              <Link2 size={12} />
-                              Vincular
-                            </Button>
+                            <div className='flex items-center justify-end gap-1.5'>
+                              <Button
+                                size='sm'
+                                variant='outline'
+                                disabled={linking}
+                                onClick={() => handleLink(os)}
+                                className={`h-7 px-3 text-xs font-semibold gap-1 shrink-0 cursor-pointer transition-all ${
+                                  isHighPriority || isQuitaTotal
+                                    ? 'bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold border-emerald-400 shadow-sm shadow-emerald-950/40'
+                                    : isExact
+                                    ? 'bg-blue-600 hover:bg-blue-500 text-white font-semibold border-blue-500 shadow-sm shadow-blue-950/40'
+                                    : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border-zinc-700 hover:border-zinc-600'
+                                }`}
+                                title={isQuitaTotal ? 'Vincular este crédito e quitar totalmente a OS' : 'Vincular este crédito à OS'}
+                              >
+                                <Link2 size={12} className={isHighPriority || isQuitaTotal ? 'text-zinc-950 stroke-[2.5]' : 'text-zinc-300'} />
+                                {isQuitaTotal ? 'Vincular & Quitar' : 'Vincular'}
+                              </Button>
+
+                              {saldoAberto > 0.05 && (
+                                <Button
+                                  size='sm'
+                                  variant='ghost'
+                                  disabled={linking}
+                                  onClick={() => handleSettleCash(os)}
+                                  className='h-7 px-2 text-[11px] font-medium text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 border border-amber-500/20 rounded-lg cursor-pointer'
+                                  title='Liquidar em dinheiro físico na oficina (cofre loja)'
+                                >
+                                  <Banknote size={12} className='mr-1' />
+                                  Dinheiro
+                                </Button>
+                              )}
+                            </div>
                           </td>
                         </tr>
                       );

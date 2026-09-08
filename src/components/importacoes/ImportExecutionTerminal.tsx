@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Terminal, Copy, Check, Filter, AlertTriangle, CheckCircle2, Info, XCircle } from 'lucide-react';
+import { Terminal, Copy, Check, Filter, AlertTriangle, CheckCircle2, Info, XCircle, Download, FileText, FileCode } from 'lucide-react';
 import { toast } from 'sonner';
 
 export interface ImportLogErrorDetails {
@@ -29,6 +29,8 @@ export interface ImportExecutionTerminalProps {
   onRetry?: () => void;
   title?: string;
   targetDate?: string;
+  autoAdvance?: boolean;
+  onToggleAutoAdvance?: (val: boolean) => void;
 }
 
 export const ImportExecutionTerminal: React.FC<ImportExecutionTerminalProps> = ({
@@ -39,6 +41,8 @@ export const ImportExecutionTerminal: React.FC<ImportExecutionTerminalProps> = (
   onRetry,
   title = 'Console de Execução & Conciliação',
   targetDate,
+  autoAdvance = false,
+  onToggleAutoAdvance,
 }) => {
   const [filterType, setFilterType] = useState<'all' | 'error' | 'warning' | 'success' | 'info'>('all');
   const [copied, setCopied] = useState(false);
@@ -74,6 +78,52 @@ export const ImportExecutionTerminal: React.FC<ImportExecutionTerminalProps> = (
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleDownloadTxt = () => {
+    if (logs.length === 0) {
+      toast.info('Nenhum log para baixar.');
+      return;
+    }
+    const textLogs = logs.map(l => {
+      let line = `[${l.timestamp}] [${l.type.toUpperCase()}] ${l.message}`;
+      if (l.error) {
+        if (l.error.code) line += ` | Código: ${l.error.code}`;
+        if (l.error.details) line += ` | Detalhes: ${l.error.details}`;
+        if (l.error.hint) line += ` | Dica: ${l.error.hint}`;
+        if (l.error.stack) line += `\nStack:\n${l.error.stack}`;
+      }
+      return line;
+    }).join('\n');
+
+    const blob = new Blob([textLogs], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `logs-conciliacao-${targetDate || new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    toast.success('Download dos logs (.txt) concluído!');
+  };
+
+  const handleDownloadJson = () => {
+    if (logs.length === 0) {
+      toast.info('Nenhum log para baixar.');
+      return;
+    }
+    const jsonStr = JSON.stringify(logs, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `auditoria-logs-${targetDate || new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    toast.success('Download da auditoria (.json) concluído!');
+  };
+
   const getLogTypeBadge = (type: ImportLogEntry['type']) => {
     switch (type) {
       case 'error':
@@ -90,7 +140,7 @@ export const ImportExecutionTerminal: React.FC<ImportExecutionTerminalProps> = (
   return (
     <div className="w-full bg-zinc-950 rounded-2xl border border-zinc-800/80 shadow-2xl overflow-hidden flex flex-col font-mono text-xs">
       {/* Header com estilo macOS / Terminal Linux */}
-      <div className="bg-zinc-900/90 px-4 py-3 border-b border-zinc-800 flex items-center justify-between gap-3">
+      <div className="bg-zinc-900/90 px-4 py-3 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-full bg-rose-500/80 inline-block"></span>
@@ -109,7 +159,7 @@ export const ImportExecutionTerminal: React.FC<ImportExecutionTerminalProps> = (
         </div>
 
         {/* Filtros e Ações */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center bg-zinc-950 p-0.5 rounded-lg border border-zinc-800 text-[11px]">
             <button
               type="button"
@@ -155,15 +205,37 @@ export const ImportExecutionTerminal: React.FC<ImportExecutionTerminalProps> = (
             )}
           </div>
 
-          <button
-            type="button"
-            onClick={handleCopyLogs}
-            className="px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[11px] rounded-lg border border-zinc-700 flex items-center gap-1.5 transition-colors cursor-pointer"
-            title="Copiar todos os logs"
-          >
-            {copied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
-            {copied ? 'Copiado!' : 'Copiar'}
-          </button>
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={handleCopyLogs}
+              className="px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[11px] rounded-lg border border-zinc-700 flex items-center gap-1.5 transition-colors cursor-pointer"
+              title="Copiar todos os logs para a área de transferência"
+            >
+              {copied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+              {copied ? 'Copiado!' : 'Copiar'}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleDownloadTxt}
+              className="px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[11px] rounded-lg border border-zinc-700 flex items-center gap-1.5 transition-colors cursor-pointer"
+              title="Baixar logs formatados em arquivo de texto (.txt)"
+            >
+              <FileText size={12} className="text-zinc-400" />
+              <span>.txt</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleDownloadJson}
+              className="px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[11px] rounded-lg border border-zinc-700 flex items-center gap-1.5 transition-colors cursor-pointer"
+              title="Baixar trilha de auditoria completa em JSON (.json)"
+            >
+              <Download size={12} className="text-emerald-400" />
+              <span>.json</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -226,15 +298,29 @@ export const ImportExecutionTerminal: React.FC<ImportExecutionTerminalProps> = (
           </span>
         </div>
 
-        {hasError && onRetry && (
-          <button
-            type="button"
-            onClick={onRetry}
-            className="px-2.5 py-1 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 font-bold rounded border border-rose-500/40 transition-all cursor-pointer"
-          >
-            Tentar Novamente
-          </button>
-        )}
+        <div className="flex items-center gap-3">
+          {onToggleAutoAdvance && (
+            <label className="flex items-center gap-1.5 cursor-pointer select-none text-[11px] text-zinc-400 hover:text-zinc-200 bg-zinc-950/80 px-2 py-1 rounded border border-zinc-800">
+              <input
+                type="checkbox"
+                checked={autoAdvance}
+                onChange={(e) => onToggleAutoAdvance(e.target.checked)}
+                className="rounded border-zinc-700 bg-zinc-900 text-emerald-500 focus:ring-0 focus:ring-offset-0 cursor-pointer w-3.5 h-3.5"
+              />
+              <span>Avançar automaticamente</span>
+            </label>
+          )}
+
+          {hasError && onRetry && (
+            <button
+              type="button"
+              onClick={onRetry}
+              className="px-2.5 py-1 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 font-bold rounded border border-rose-500/40 transition-all cursor-pointer"
+            >
+              Tentar Novamente
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

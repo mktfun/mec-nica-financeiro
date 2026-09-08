@@ -934,6 +934,14 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
 3. **Contas Corporativas / Holding Pagas por Filiais:** Se uma conta com `store_id IS NULL` foi paga pela conta bancária de uma filial, o sistema deve atribuir essa conta à respectiva filial, preservando a coerência visual entre a tela de extrato e o card geral.
 **Risco identificado / Anti-pattern:** Criar divergência negativa cobrando contas a pagar E transferências de caixa concomitantemente.
 
+## [2026-09-08] — [Feature ID: 326-controle-logs-motor-e-vinculo-os-manual-transacoes-orfas]
+**Contexto:** Ao importar/atualizar OSs manuais no Step 2.5, operadores preenchiam o "Total Pago" manualmente, causando descasamento com os recebimentos reais de cartão (Rede) e PIX, gerando falsas divergências contábeis e quebrando os 5 Pilares de Conciliação.
+**Regra aprendida:**
+1. **Blindagem do "Total Pago" em OSs Manuais:** O campo `total_value` (Total da OS) pode ser editado pelo operador, mas o `paid_value` (Total Pago) DEVE ser protegido/desabilitado para digitação manual direta. A baixa e quitação de uma OS deve sempre ter lastro financeiro real (transações de Cartão Rede ou depósitos bancários PIX amarrados no Step 4) ou recebimento físico em espécie (Dinheiro no Balcão).
+2. **Mesa de Vínculo de Órfãos com Priorização de Saldo Aberto:** No Step 4 de Pagamentos sem Lançamento (`Step1UnregisteredPayments` / `ManualMatchOsModal`), a listagem de OSs candidatas da filial deve priorizar OSs com saldo em aberto (`open_balance > 0.05`), exibindo o Total da OS, Saldo Aberto e Saldo Projetado pós-amortização (`Restante: R$ X,XX`).
+3. **Quitação em Espécie com Lastro em Caixa:** Quando uma OS é quitada em dinheiro físico no balcão sem trânsito bancário prévio, o registro deve ser efetuado via `settleOsWithCash` atualizando `cash_value`, `paid_value` e recalculando o saldo sem gerar duplicidade no DRE ou no odômetro de faturamento.
+**Risco identificado / Anti-pattern:** Permitir digitação arbitrária de "Total Pago" em OSs manuais antes de rodar a conciliação de maquininhas e extratos bancários, o que mascara transações órfãs e gera divergências insolúveis entre faturamento e recebimentos.
+
 ## [2026-09-04] — [Feature ID: 372-simulacao-real-import-0409-equalizacao-saldos] Equalização de Saldos Bancários, Cofre Acumulado e Anti-Dupla Contagem de Cartões
 **Contexto:** Saneamento pericial do fechamento contábil com eliminação de dupla contagem da Rede (R$ 290k inflado para R$ 315k) e recuperação do dinheiro em trânsito com o gestor (Cofre R$ 9.113,90).
 **Regra aprendida:**

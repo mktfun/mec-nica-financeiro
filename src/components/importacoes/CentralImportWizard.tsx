@@ -604,6 +604,20 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const [importStages, setImportStages] = useState<AgentStage[]>(INITIAL_STAGES);
   const [auditTrailUrl, setAuditTrailUrl] = useState<string | null>(null);
   const [saveFinished, setSaveFinished] = useState(false);
+  const [autoAdvanceToStep4, setAutoAdvanceToStep4] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('ciw_auto_advance_step4') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const handleToggleAutoAdvance = (val: boolean) => {
+    setAutoAdvanceToStep4(val);
+    try {
+      localStorage.setItem('ciw_auto_advance_step4', String(val));
+    } catch {}
+  };
   const logsEndRef = useRef<HTMLDivElement>(null);
   const { canImport } = useUserPermissions();
 
@@ -1936,12 +1950,15 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         ]);
         const realUnmatched = await fetchRealUnmatchedTransactions(targetDate);
         setUnmatchedTransactions(realUnmatched);
+        setSaveFinished(true);
         if (realUnmatched.length > 0) {
           toast.info(`Automações e IA concluídas! ${realUnmatched.length} transação(ões) pendentes para revisão manual.`);
         } else {
           toast.success('🎉 100% das transações e OSs foram conciliadas automaticamente pelo motor e IA!');
         }
-        setStep(4);
+        if (autoAdvanceToStep4) {
+          setStep(4);
+        }
       } else {
         setSaveFinished(true);
       }
@@ -3207,8 +3224,11 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             targetDate={targetDate}
             stores={stores}
             resolvedMatches={resolvedMatches}
+            onLinkToOs={(txId) => {
+              setUnmatchedTransactions(prev => prev.filter(t => t.id !== txId));
+            }}
             onNext={() => setStep(5)}
-            onBack={() => setStep(3)}
+            onBack={() => setStep(saveFinished ? 8 : 3)}
           />
         </motion.div>
       )}
@@ -3375,7 +3395,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                     variant="outline"
                     className="w-full sm:w-auto text-xs py-2.5 px-4 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 font-semibold"
                   >
-                    Revisar Órfãos & Diferença (Wizard) →
+                    Revisar Pagamentos sem OS (Passo 4) →
                   </Button>
 
                   <Button
@@ -3450,6 +3470,8 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                 hasError={importLogs.some(l => l.type === 'error')}
                 onRetry={() => handleConfirm(true)}
                 targetDate={targetDate}
+                autoAdvance={autoAdvanceToStep4}
+                onToggleAutoAdvance={handleToggleAutoAdvance}
               />
             )}
 

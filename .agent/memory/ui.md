@@ -622,6 +622,18 @@ Nao fazer: Nunca fazer fallbacks automaticos para zero em dados criticos contabe
 3. **Reconhecimento com Confiança Máxima:** Quando `tx.matched_bill_id` já estiver presente no banco, `StoreExtratoBancarioView` deve considerá-lo com `confidence = 1.0`, renderizando o badge "Conta: <Favorecido>" imediatamente.
 **Risco identificado / Anti-pattern:** Deixar correspondências fuzzy existirem apenas na memória volátil do navegador, fazendo com que o banco de dados e os cards gerais continuem exibindo divergências por falta de vínculo persistido.
 
+## [2026-09-08] — [Feature ID: 326-controle-logs-motor-e-vinculo-os-manual-transacoes-orfas]
+**Contexto:**
+1. Operador não conseguia inspecionar, copiar ou baixar os logs de execução do motor no Step 8 porque o wizard saltava automaticamente de tela ao término.
+2. Botão de vincular OS no modal de vínculo manual (`ManualMatchOsModal.tsx`) herdava o `variant="primary"` default com fundo claro `--btn-primary-bg`, resultando em botão branco com texto invisível contra o tema Dark UI Zinc-950.
+
+**Regra aprendida:**
+1. **Controle Consciente de Avanço no Terminal de Importação:** Processos críticos como o motor de conciliação diária não devem disparar navegação automática intrusiva. Disponibilizar toggle explícito de `"Avançar automaticamente após conclusão"` (persistido em `localStorage`) e botões de alta produtividade para Copiar Logs, Baixar `.txt` e Baixar `.json`.
+2. **Navegação Bidirecional Pós-Gravação:** Quando a gravação for concluída (`saveFinished === true`), o botão de retorno de etapas subsequentes (ex: Step 4) deve permitir voltar ao Step 8 (`setStep(8)`) sem reexecutar o motor, viabilizando auditoria a qualquer momento.
+3. **Padrão de Variantes do Componente `Button`:** O componente universal `Button` define por padrão `variant="primary"` com `bg-[var(--btn-primary-bg)]` (fundo branco). Sempre que um botão demandar estilização personalizada via Tailwind (`bg-zinc-800`, `bg-emerald-500`, etc.), DEVE-SE passar explicitamente `variant="outline"` ou neutralizar a variável CSS, prevenindo background branco acidental.
+4. **Contraste de Botões de Ação Dinâmica:** Em tabelas do Dark UI Zinc-950, botões de ação com alta prioridade ou quitação devem usar `bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold border-emerald-400`, botões de match exato `bg-blue-600 hover:bg-blue-500 text-white font-semibold`, e botões neutros `bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border-zinc-700`.
+**Risco identificado / Anti-pattern:** Omitir `variant` ao aplicar classes de cor de fundo em botões `Button`, o que causa sobreposição com o CSS de `--btn-primary-bg` e destrói o contraste em Dark Mode.
+
 ## [2026-09-08] — [Feature ID: 325-correcao-erros-terminal-sourcemaps-e-loop-use-session]
 
 **Contexto:** Re-renders e flickering em rotas principais (`/` e `/conciliacao`) decorrentes de recriação de referências voláteis em destructuring default de hooks assíncronos.

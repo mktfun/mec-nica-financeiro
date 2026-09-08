@@ -237,7 +237,7 @@ export const MissingPatioOsEditor: React.FC<MissingPatioOsEditorProps> = ({
                   <th className="py-2.5 px-3">Loja</th>
                   <th className="py-2.5 px-3">OS / Placa</th>
                   <th className="py-2.5 px-3 text-right">Valor Total (R$)</th>
-                  <th className="py-2.5 px-3 text-right">Valor Pago (R$)</th>
+                  <th className="py-2.5 px-3 text-right">Valor Pago (Passo 4)</th>
                   <th className="py-2.5 px-3 text-right">Saldo Restante</th>
                   <th className="py-2.5 px-3 text-center">Status / Ação</th>
                 </tr>
@@ -279,14 +279,17 @@ export const MissingPatioOsEditor: React.FC<MissingPatioOsEditorProps> = ({
                           />
                         </td>
                         <td className="py-2 px-3 text-right">
-                          <input
-                            type="number"
-                            step="0.01"
-                            disabled={isBaixada}
-                            value={item.paid_value}
-                            onChange={(e) => handleUpdateItem(item.id, { paid_value: Number(e.target.value) || 0 })}
-                            className="w-24 bg-zinc-950 border border-zinc-700 rounded px-2 py-1 text-right font-mono text-xs text-emerald-400 focus:outline-none focus:border-emerald-400 disabled:opacity-50"
-                          />
+                          <div className="relative group inline-block">
+                            <span 
+                              className="inline-block w-24 bg-zinc-950/70 border border-zinc-800 rounded px-2 py-1 text-right font-mono text-xs text-zinc-400 cursor-not-allowed select-none"
+                              title="O valor pago é amortizado automaticamente vinculando transações de Cartão (Rede), PIX ou Dinheiro no Passo 4."
+                            >
+                              {formatCurrency(item.paid_value)}
+                            </span>
+                            <div className="hidden group-hover:block absolute bottom-full mb-1 right-0 bg-zinc-900 border border-zinc-700 text-zinc-300 text-[10px] p-2 rounded-lg shadow-xl z-20 w-52 text-left pointer-events-none">
+                              🔒 <strong className="text-zinc-100">Valor Pago Protegido:</strong> É liquidado associando transações reais de Cartão (Rede), PIX ou Dinheiro no Passo 4.
+                            </div>
+                          </div>
                         </td>
                         <td className="py-2 px-3 text-right font-mono font-bold">
                           <span className={saldoRestante > 0 ? 'text-amber-400' : 'text-zinc-500'}>

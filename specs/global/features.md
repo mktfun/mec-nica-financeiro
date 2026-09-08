@@ -1,3 +1,19 @@
+### Spec 326 — Controle de Logs do Motor de Conciliação e Vínculo de OS Manual com Transações Órfãs
+- **Terminal de Execução do Motor (`ImportExecutionTerminal.tsx` & `CentralImportWizard.tsx`)**:
+  - Eliminação da troca abrupta de tela ao concluir a gravação no Step 8: operador permanece no terminal para auditar a execução.
+  - Implementadas ações de download de logs nos formatos `.txt` e `.json`, além do botão de cópia de logs para área de transferência.
+  - Adicionado toggle persistido em `localStorage` de *"Avançar automaticamente após conclusão"* e botão primário no Hero Banner para prosseguir ao Step 4 quando desejado.
+  - Botão "Voltar" do Step 4 configurado para retornar ao Step 8 (`setStep(8)`) quando a gravação já foi finalizada, permitindo reler os logs a qualquer momento.
+- **Blindagem de OSs Manuais (`MissingPatioOsEditor.tsx`)**:
+  - Campo `total_value` (Total da OS) mantido como editável para ajustes cadastrais.
+  - Campo `paid_value` (Total Pago) bloqueado contra digitação manual (`disabled / readOnly`), com tooltip e cabeçalho claro indicando que a quitação deve ocorrer com lastro financeiro real no Step 4 (Cartão Rede, PIX ou Dinheiro em balcão).
+- **Mesa de Vínculo de Órfãos & Quitação em Dinheiro (`ManualMatchOsModal.tsx` & `useManualMatch.ts`)**:
+  - Ordenação com priorização automática de OSs da filial com saldo em aberto (`open_balance > 0.05`).
+  - Exibição de colunas transparentes: `Total OS`, `Saldo Aberto` e `Restante: R$ X,XX` projetando o saldo remanescente após o vínculo.
+  - Disponibilizado fluxo e botão de ação para **Quitação em Dinheiro** no balcão da loja via `settleOsWithCash` atualizando `cash_value`, `paid_value` e recalculando status.
+  - Remoção em tempo real das transações vinculadas da memória do Wizard via prop `onLinkToOs` em `Step1UnregisteredPayments.tsx`.
+  - Correção visual no botão de vinculação garantindo `variant="outline"` e temas consistentes com Dark UI Zinc-950.
+
 ### Spec 372 — Simulação Real de Importação (04/09/2026), Equalização de Saldos e Saneamento Contábil
 - **Database (Migration `20260904000036_fix_reconciliation_exact_balances_0409.sql`)**:
   - Eliminação definitiva da dupla contagem de cartões da adquirente Rede na RPC `get_daily_reconciliation_summary`: o campo `cartoes_a_compensar` agora filtra estritamente `settlement_status IN ('nao_entrou', 'a_compensar')`. Se as vendas em cartão (R$ 24.547,32) já foram creditadas no extrato bancário de D+1 (04/09), o residual a compensar é R$ 0,00, mantendo o saldo de bancos positivo puro em R$ 290.994,62 (ao invés de R$ 315.541,94).

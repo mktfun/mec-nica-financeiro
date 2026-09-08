@@ -284,5 +284,63 @@ export function useManualMatch() {
     }
   };
 
-  return { linkTransactionToOs, createAndLinkOs, unlinkTransaction, loading, error };
+  const settleOsWithCash = async (
+    storeId: string,
+    osNumber: string,
+    amount: number,
+    date?: string
+  ) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data: osRows, error: fetchErr } = await supabase
+        .from('patio_os')
+        .select('*')
+        .eq('store_id', storeId)
+        .eq('os_number', osNumber)
+        .limit(1);
+
+      if (fetchErr) throw fetchErr;
+      if (!osRows || osRows.length === 0) {
+        throw new Error(`Ordem de Serviço #${osNumber} não encontrada na filial.`);
+      }
+
+      const os = osRows[0];
+      const targetDate = date || new Date().toISOString().split('T')[0];
+      const newCash = (Number(os.cash_value) || 0) + amount;
+      const newPaid = Math.min(Number(os.total_value), (Number(os.paid_value) || 0) + amount);
+      const isSettled = newPaid >= (Number(os.total_value) - 0.05);
+      const newStatus = isSettled ? 'finalizada' : 'pago_parcial';
+
+      const { error: updateErr } = await supabase
+        .from('patio_os')
+        .update({
+          cash_value: newCash,
+          paid_value: newPaid,
+          status: newStatus,
+          closed_at: isSettled ? targetDate : os.closed_at,
+          last_payment_date: targetDate,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', os.id);
+
+      if (updateErr) throw updateErr;
+
+      await queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] });
+      await queryClient.invalidateQueries({ queryKey: ['available_store_os'] });
+      await queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+      await queryClient.invalidateQueries({ queryKey: ['patio_os'] });
+      await queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
+
+      return { success: true };
+    } catch (err: any) {
+      console.error('Erro ao liquidar OS via dinheiro:', err);
+      setError(err.message || 'Erro ao liquidar OS via dinheiro');
+      return { success: false, error: err.message };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { linkTransactionToOs, createAndLinkOs, unlinkTransaction, settleOsWithCash, loading, error };
 }
