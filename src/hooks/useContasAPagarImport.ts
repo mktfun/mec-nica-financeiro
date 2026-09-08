@@ -116,13 +116,23 @@ export function useContasAPagarImport() {
           .eq('date', targetDate);
       }
 
+      // 5. Executar o batimento automático estrito de Saídas OFX x Contas a Pagar
+      try {
+        await (supabase as any).rpc('auto_match_saidas', { p_date: targetDate });
+      } catch (matchErr) {
+        console.warn('Aviso ao executar auto_match_saidas pós-importação de contas:', matchErr);
+      }
+
       return {
         totalBills: parseResult.totalBills,
         totalAmount: parseResult.totalAmount,
       };
     },
     onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.invalidateQueries({ queryKey: ['ofx_transactions'] });
       queryClient.invalidateQueries({ queryKey: ['daily-manual-bills'] });
+      queryClient.invalidateQueries({ queryKey: ['daily_manual_bills'] });
       queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
       queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
       queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });

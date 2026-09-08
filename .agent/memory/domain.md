@@ -959,3 +959,31 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
    Para 04/09/2026: R$ 290.994,62 (Extrato Positivo) + R$ 9.113,90 (Cofre) = R$ 300.108,52. Cheque Especial devedor (LIS -R$ 1.653,79) é deduzido no Caixa Atual final.
 **Risco identificado / Anti-pattern:** Filtrar `store_cash_vault` com `WHERE entry_date = target_date`, fazendo dinheiro em trânsito de dias anteriores sumir no dia seguinte sem ter sido baixado.
 
+## [2026-09-08] — [Feature ID: 374-correcao-import-mapa-metas-e-desduplicacao-step3]
+**Contexto:** Correção do parser tabular do PDF do Mapa de Metas para extrair o faturamento acumulado oficial e desduplicação do editor de OSs pendentes no Step 3.
+**Regra aprendida:**
+1. **Parser de Relatórios em PDF do Mapa de Metas:**
+   - O faturamento consolidado oficial deve ser extraído agrupando posições $Y$ e buscando as colunas de "Total", "Vendas", "Previsão" e "Mês Anterior".
+   - O total consolidado oficial (coluna Total no rodapé) preenche o Odômetro OI do Step 3 e sincroniza com os acumulados por loja.
+2. **Segregação Estrita de Responsabilidade de Steps no Wizard:**
+   - A gestão e saneamento de OSs ausentes/manuais pertence **exclusivamente à Etapa 2.5 (`Step2MissingPatioOs`)**.
+   - O Step 3 (`Step3ManualInputs`) deve focar estritamente em faturamento, despesas manuais e dinheiro MP, sem renderizar tabelas de edição de OSs que induzem o operador a retrabalho ou confusão.
+**Risco identificado / Anti-pattern:** Renderizar o `<MissingPatioOsEditor />` repetidamente em múltiplos steps do wizard, criando loops de conferência manual redundantes.
+
+## [2026-09-08] — [Feature ID: 375-diagnostico-e-reducao-saidas-entradas-orfas-0809]
+**Contexto:** Diagnóstico forense e eliminação de 16 falsos órfãos (12 saídas e 4 entradas) decorrentes de SISPAG salários 1-para-N, transferências intercompany espelhadas, estornos PIX e saques em dinheiro (ATM).
+**Regra aprendida:**
+1. **Batimento 1-para-N de Lotes SISPAG (Folha de Pagamento):**
+   - O Itaú consolida os pagamentos de salário via SISPAG em 1 débito único por filial no extrato bancário, enquanto o ERP gera 1 título de contas a pagar por funcionário.
+   - O motor de matching (tanto em TypeScript quanto no PostgreSQL) deve agrupar títulos da mesma filial classificados como `retirada_socios` ou com descrição contendo `SALARIO`.
+   - Se a soma dos títulos equivaler ao débito do lote bancário (tolerância R$ 0,10), todos os títulos são vinculados a esse débito e marcados como `matched_batch`.
+2. **Auto-Pareamento de Transferências Intercompany (Entre Lojas):**
+   - Transferências espelhadas entre contas de filiais do grupo (ex.: saída de R$ 6.000 de Piraporinha para Brasicar e entrada de R$ 6.000 em Planalto da Empório do Óleo) devem ser auto-conciliadas internamente sob a categoria `Transferência Entre Lojas [Apenas Conciliar]`.
+   - Ambas as pontas deixam de ser órfãs e não duplicam faturamento nem despesas.
+3. **Auto-Cancelamento de Estornos PIX (Bloqueio / Desbloqueio):**
+   - Débito de `BLOQUEIO PIX` e crédito de `DESBLOQUEIO PIX` de mesmo valor na mesma conta representam retenção temporária e devolução pelo banco (efeito líquido zero). Ambos devem ser auto-conciliados.
+4. **Blindagem de Saques em Dinheiro (ATM / Sangria):**
+   - Débitos de `SAQUE DIN ATM CART001008` são retiradas em espécie / sangrias para caixa local.
+   - Devem ser marcados como `Retirada de Sócios / Sangria / Saque em Dinheiro` com `adicionaNoContas: false`, evitando a criação indevida de contas a pagar duplicadas no DRE.
+**Risco identificado / Anti-pattern:** Forçar matching 1:1 estrito para débitos de SISPAG e tratar transferências entre contas bancárias de filiais do mesmo grupo como saídas de fornecedores ou receitas de clientes.
+

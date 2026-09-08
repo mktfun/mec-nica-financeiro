@@ -1,0 +1,913 @@
+{
+  "orfanIns": [
+    {
+      "store_id": "st-01",
+      "counterpart_name": "RECEBIMENTO REDE MAST AT0071854878 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 3712.92,
+      "fitid": "20260902001",
+      "store_name": "Dom Pedro - DP"
+    },
+    {
+      "store_id": "st-01",
+      "counterpart_name": "PIX RECEBIDO MARCELO02/09 MARCELO MOTTOLA DOS SANTOS 215.368.338-60",
+      "amount": 743,
+      "fitid": "20260902005",
+      "store_name": "Dom Pedro - DP"
+    },
+    {
+      "store_id": "st-01",
+      "counterpart_name": "RECEBIMENTO REDE MAST AT0071854878 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 2430.89,
+      "fitid": "20260903001",
+      "store_name": "Dom Pedro - DP"
+    },
+    {
+      "store_id": "st-03",
+      "counterpart_name": "RECEBIMENTO REDE VISA DB0063034336 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 1885.18,
+      "fitid": "20260902001",
+      "store_name": "Jorge Beretta - DHJV"
+    },
+    {
+      "store_id": "st-03",
+      "counterpart_name": "RECEBIMENTO REDE MAST DB0063034336 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 382,
+      "fitid": "20260903001",
+      "store_name": "Jorge Beretta - DHJV"
+    },
+    {
+      "store_id": "3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f",
+      "counterpart_name": "RECEBIMENTO REDE VISA AT0101423446 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 796.32,
+      "fitid": "20260902001",
+      "store_name": "Maua - MHE"
+    },
+    {
+      "store_id": "st-04",
+      "counterpart_name": "RECEBIMENTO REDE MAST AT0047712201 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 1174.4,
+      "fitid": "20260903001",
+      "store_name": "Kennedy - MP"
+    },
+    {
+      "store_id": "st-04",
+      "counterpart_name": "RECEBIMENTO REDE VISA AT0047712201 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 3177.43,
+      "fitid": "20260903002",
+      "store_name": "Kennedy - MP"
+    },
+    {
+      "store_id": "st-06",
+      "counterpart_name": "RECEBIMENTO REDE MAST DB0063304449 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 2112.99,
+      "fitid": "20260902001",
+      "store_name": "Planalto - BRASICAR"
+    },
+    {
+      "store_id": "st-06",
+      "counterpart_name": "RECEBIMENTO REDE MAST AT0063304449 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 5198.75,
+      "fitid": "20260902002",
+      "store_name": "Planalto - BRASICAR"
+    },
+    {
+      "store_id": "st-06",
+      "counterpart_name": "RECEBIMENTOS MP JABAQUARA SERVICOS AUTOMOTIVOS LTDA 63.102.080/0001-06",
+      "amount": 6000,
+      "fitid": "20260902007",
+      "store_name": "Planalto - BRASICAR"
+    },
+    {
+      "store_id": "st-06",
+      "counterpart_name": "RECEBIMENTOS CAP CENTRO AUTOMOTIVO PRIME LTDA 23.289.587/0001-04",
+      "amount": 5000,
+      "fitid": "20260902008",
+      "store_name": "Planalto - BRASICAR"
+    },
+    {
+      "store_id": "st-06",
+      "counterpart_name": "RECEBIMENTOS MP AUTO MECANICA POPULAR LTDA. 29.954.349/0001-44",
+      "amount": 5000,
+      "fitid": "20260902009",
+      "store_name": "Planalto - BRASICAR"
+    },
+    {
+      "store_id": "st-09",
+      "counterpart_name": "RECEBIMENTO REDE MAST AT0076347036 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 1879.07,
+      "fitid": "20260902001",
+      "store_name": "Rei do Módulo - MP"
+    },
+    {
+      "store_id": "st-07",
+      "counterpart_name": "RECEBIMENTO REDE VISA AT0104112840 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 636.62,
+      "fitid": "20260902001",
+      "store_name": "Rudge Ramos - CAP"
+    },
+    {
+      "store_id": "st-07",
+      "counterpart_name": "PIX RECEBIDO RS LAMI02/09 RS LAMINADOS COMERCIO DE PLASTICOS LTDA 63.209.850/0001-14",
+      "amount": 2000,
+      "fitid": "20260902004",
+      "store_name": "Rudge Ramos - CAP"
+    },
+    {
+      "store_id": "st-07",
+      "counterpart_name": "PIX RECEBIDO ROGERIO02/09 ROGERIO TADEU RUIZ 345.979.428-31",
+      "amount": 500,
+      "fitid": "20260902005",
+      "store_name": "Rudge Ramos - CAP"
+    },
+    {
+      "store_id": "st-07",
+      "counterpart_name": "PIX RECEBIDO DANIEL 02/09 DANIEL ANTONELI DE SA 275.141.438-90",
+      "amount": 2600,
+      "fitid": "20260902006",
+      "store_name": "Rudge Ramos - CAP"
+    },
+    {
+      "store_id": "st-07",
+      "counterpart_name": "RECEBIMENTO REDE VISA AT0104112840 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 4201.67,
+      "fitid": "20260903001",
+      "store_name": "Rudge Ramos - CAP"
+    },
+    {
+      "store_id": "st-05",
+      "counterpart_name": "RECEBIMENTO REDE MAST DB0102553424 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 1984.4,
+      "fitid": "20260902001",
+      "store_name": "Piraporinha - EMPORIO"
+    },
+    {
+      "store_id": "st-05",
+      "counterpart_name": "RECEBIMENTO REDE MAST AT0102553424 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 3695.27,
+      "fitid": "20260902002",
+      "store_name": "Piraporinha - EMPORIO"
+    },
+    {
+      "store_id": "st-05",
+      "counterpart_name": "RECEBIMENTO REDE ELO DB0102553424 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 314.94,
+      "fitid": "20260903001",
+      "store_name": "Piraporinha - EMPORIO"
+    },
+    {
+      "store_id": "st-05",
+      "counterpart_name": "RECEBIMENTO REDE MAST AT0102553424 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 2395.38,
+      "fitid": "20260903002",
+      "store_name": "Piraporinha - EMPORIO"
+    },
+    {
+      "store_id": "st-08",
+      "counterpart_name": "PIX RECEBIDO EMERSON02/09 EMERSON CARVALHO DE LIMA 326.932.488-09",
+      "amount": 900,
+      "fitid": "20260902001",
+      "store_name": "Santo André - HD"
+    },
+    {
+      "store_id": "st-08",
+      "counterpart_name": "RECEBIMENTO REDE MAST AT0101423667 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 2663.62,
+      "fitid": "20260902002",
+      "store_name": "Santo André - HD"
+    },
+    {
+      "store_id": "st-08",
+      "counterpart_name": "RECEBIMENTO REDE VISA AT0101423667 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 1816.4,
+      "fitid": "20260902003",
+      "store_name": "Santo André - HD"
+    },
+    {
+      "store_id": "st-08",
+      "counterpart_name": "RECEBIMENTO REDE MAST AT0101423667 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 3669.13,
+      "fitid": "20260903001",
+      "store_name": "Santo André - HD"
+    },
+    {
+      "store_id": "st-02",
+      "counterpart_name": "RECEBIMENTO REDE VISA DB0101422997 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 346.87,
+      "fitid": "20260902001",
+      "store_name": "Jabaquara - JAB"
+    },
+    {
+      "store_id": "st-02",
+      "counterpart_name": "PIX QR CODE RECEBIDO IGOR DE SOU02/09 IGOR DE SOUSA FERREIRA 358.565.378-23",
+      "amount": 1764.84,
+      "fitid": "20260902002",
+      "store_name": "Jabaquara - JAB"
+    },
+    {
+      "store_id": "st-02",
+      "counterpart_name": "RECEBIMENTO REDE VISA AT0101422997 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 2090.82,
+      "fitid": "20260902003",
+      "store_name": "Jabaquara - JAB"
+    },
+    {
+      "store_id": "st-02",
+      "counterpart_name": "PIX QR CODE RECEBIDO ALEXSANDER 02/09 ALEXSANDER BOMBONATO MOLINA 391.325.918-02",
+      "amount": 2000,
+      "fitid": "20260902004",
+      "store_name": "Jabaquara - JAB"
+    },
+    {
+      "store_id": "st-02",
+      "counterpart_name": "RECEBIMENTOS RR PRIME SOLUTIONS LTDA 36.589.926/0001-01",
+      "amount": 500,
+      "fitid": "20260902005",
+      "store_name": "Jabaquara - JAB"
+    },
+    {
+      "store_id": "st-02",
+      "counterpart_name": "PIX QR CODE RECEBIDO ALEXSANDER 02/09 ALEXSANDER BOMBONATO MOLINA 391.325.918-02",
+      "amount": 1000,
+      "fitid": "20260902006",
+      "store_name": "Jabaquara - JAB"
+    },
+    {
+      "store_id": "st-02",
+      "counterpart_name": "RECEBIMENTO REDE MAST AT0101422997 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 4844.41,
+      "fitid": "20260903001",
+      "store_name": "Jabaquara - JAB"
+    },
+    {
+      "store_id": "st-02",
+      "counterpart_name": "RECEBIMENTO REDE VISA AT0101422997 REDECARD INSTITUICAO DE PAGAMENTO S.A. 01.425.787/0001-04",
+      "amount": 2452.14,
+      "fitid": "20260903002",
+      "store_name": "Jabaquara - JAB"
+    },
+    {
+      "store_id": "st-01",
+      "counterpart_name": "REND PAGO APLIC AUT APR",
+      "amount": 0.03,
+      "fitid": "20260902008",
+      "store_name": "Dom Pedro - DP"
+    },
+    {
+      "store_id": "st-04",
+      "counterpart_name": "REND PAGO APLIC AUT APR",
+      "amount": 0.01,
+      "fitid": "20260902004",
+      "store_name": "Kennedy - MP"
+    },
+    {
+      "store_id": "st-09",
+      "counterpart_name": "REND PAGO APLIC AUT APR",
+      "amount": 0.01,
+      "fitid": "20260902005",
+      "store_name": "Rei do Módulo - MP"
+    }
+  ],
+  "orfanOuts": [
+    {
+      "store_id": "st-01",
+      "counterpart_name": "PAGAMENTOS BRASICAR CENTRO AUTOMOTIVO AUTO MECANICA LTDA. 05.737.938/0001-02",
+      "amount": -5000,
+      "fitid": "20260902006",
+      "store_name": "Dom Pedro - DP"
+    },
+    {
+      "store_id": "st-01",
+      "counterpart_name": "IOF",
+      "amount": -19.91,
+      "fitid": "20260902007",
+      "store_name": "Dom Pedro - DP"
+    },
+    {
+      "store_id": "st-01",
+      "counterpart_name": "TAR PIX QR LIQ ESTATICO",
+      "amount": -0.42,
+      "fitid": "20260902010",
+      "store_name": "Dom Pedro - DP"
+    },
+    {
+      "store_id": "st-03",
+      "counterpart_name": "IOF",
+      "amount": -19.88,
+      "fitid": "20260902004",
+      "store_name": "Jorge Beretta - DHJV"
+    },
+    {
+      "store_id": "st-03",
+      "counterpart_name": "TAR PIXQR LIQ MAQUININHA",
+      "amount": -4.41,
+      "fitid": "20260902005",
+      "store_name": "Jorge Beretta - DHJV"
+    },
+    {
+      "store_id": "st-04",
+      "counterpart_name": "TAR PIXQR LIQ MAQUININHA",
+      "amount": -4.41,
+      "fitid": "20260902005",
+      "store_name": "Kennedy - MP"
+    },
+    {
+      "store_id": "st-04",
+      "counterpart_name": "TAR PIX QR LIQ ESTATICO",
+      "amount": -0.42,
+      "fitid": "20260902006",
+      "store_name": "Kennedy - MP"
+    },
+    {
+      "store_id": "st-06",
+      "counterpart_name": "PAGAMENTOS DANIEL ANTONELI DE SA 275.141.438-90",
+      "amount": -10000,
+      "fitid": "20260902005",
+      "store_name": "Planalto - BRASICAR"
+    },
+    {
+      "store_id": "st-06",
+      "counterpart_name": "IOF",
+      "amount": -331.77,
+      "fitid": "20260902010",
+      "store_name": "Planalto - BRASICAR"
+    },
+    {
+      "store_id": "st-06",
+      "counterpart_name": "TAR PIXQR LIQ MAQUININHA",
+      "amount": -6.37,
+      "fitid": "20260902011",
+      "store_name": "Planalto - BRASICAR"
+    },
+    {
+      "store_id": "st-06",
+      "counterpart_name": "TAR PIX QR LIQ ESTATICO",
+      "amount": -0.42,
+      "fitid": "20260902012",
+      "store_name": "Planalto - BRASICAR"
+    },
+    {
+      "store_id": "st-09",
+      "counterpart_name": "PAGAMENTOS BRASICAR CENTRO AUTOMOTIVO AUTO MECANICA LTDA. 05.737.938/0001-02",
+      "amount": -5000,
+      "fitid": "20260902003",
+      "store_name": "Rei do Módulo - MP"
+    },
+    {
+      "store_id": "st-09",
+      "counterpart_name": "IOF",
+      "amount": -28.9,
+      "fitid": "20260902004",
+      "store_name": "Rei do Módulo - MP"
+    },
+    {
+      "store_id": "st-07",
+      "counterpart_name": "IOF",
+      "amount": -17.96,
+      "fitid": "20260902010",
+      "store_name": "Rudge Ramos - CAP"
+    },
+    {
+      "store_id": "st-05",
+      "counterpart_name": "IOF",
+      "amount": -42.45,
+      "fitid": "20260902004",
+      "store_name": "Piraporinha - EMPORIO"
+    },
+    {
+      "store_id": "st-08",
+      "counterpart_name": "IOF",
+      "amount": -7.62,
+      "fitid": "20260902005",
+      "store_name": "Santo André - HD"
+    },
+    {
+      "store_id": "st-02",
+      "counterpart_name": "IOF",
+      "amount": -116.4,
+      "fitid": "20260902007",
+      "store_name": "Jabaquara - JAB"
+    },
+    {
+      "store_id": "st-02",
+      "counterpart_name": "SISPAG FORNECEDORES PIX QR-CODE",
+      "amount": -800,
+      "fitid": "20260902011",
+      "store_name": "Jabaquara - JAB"
+    },
+    {
+      "store_id": "st-01",
+      "counterpart_name": "PAGAMENTOS FLASH APP 32.223.020/0001-18",
+      "amount": -500,
+      "fitid": "20260902004",
+      "store_name": "Dom Pedro - DP"
+    },
+    {
+      "store_id": "st-03",
+      "counterpart_name": "PAGAMENTOS FLASH APP 32.223.020/0001-18",
+      "amount": -500,
+      "fitid": "20260902003",
+      "store_name": "Jorge Beretta - DHJV"
+    },
+    {
+      "store_id": "3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f",
+      "counterpart_name": "PAGAMENTOS FLASH APP 32.223.020/0001-18",
+      "amount": -500,
+      "fitid": "20260902003",
+      "store_name": "Maua - MHE"
+    },
+    {
+      "store_id": "st-06",
+      "counterpart_name": "PIX ENVIADO LUIS HENRIQUE ALVES DA SILVA 380.130.958-43",
+      "amount": -500,
+      "fitid": "20260902004",
+      "store_name": "Planalto - BRASICAR"
+    },
+    {
+      "store_id": "st-06",
+      "counterpart_name": "PAGAMENTOS FLASH APP 32.223.020/0001-18",
+      "amount": -200,
+      "fitid": "20260902006",
+      "store_name": "Planalto - BRASICAR"
+    },
+    {
+      "store_id": "st-06",
+      "counterpart_name": "PIX ENVIADO VANDERLEI CORREA DOS SANTOS JUNIOR 511.595.728-01",
+      "amount": -200,
+      "fitid": "20260902003",
+      "store_name": "Planalto - BRASICAR"
+    },
+    {
+      "store_id": "st-07",
+      "counterpart_name": "TAR PIXQR LIQ MAQUININHA",
+      "amount": -3.43,
+      "fitid": "20260902011",
+      "store_name": "Rudge Ramos - CAP"
+    },
+    {
+      "store_id": "st-01",
+      "counterpart_name": "TAR PIXQR LIQ MAQUININHA",
+      "amount": -3.43,
+      "fitid": "20260902009",
+      "store_name": "Dom Pedro - DP"
+    },
+    {
+      "store_id": "st-01",
+      "counterpart_name": "PIX ENVIADO LUIS HENRIQUE ALVES DA SILVA 380.130.958-43",
+      "amount": -600,
+      "fitid": "20260902003",
+      "store_name": "Dom Pedro - DP"
+    },
+    {
+      "store_id": "st-07",
+      "counterpart_name": "PIX ENVIADO BRASICAR CENTRO AUTOMOTIVO 05.737.938/0001-02",
+      "amount": -6000,
+      "fitid": "20260902008",
+      "store_name": "Rudge Ramos - CAP"
+    },
+    {
+      "store_id": "st-01",
+      "counterpart_name": "PIX ENVIADO RADIADORES ZANI CARIJOS LTDA 47.220.243/0001-07",
+      "amount": -1800,
+      "fitid": "20260902002",
+      "store_name": "Dom Pedro - DP"
+    },
+    {
+      "store_id": "st-07",
+      "counterpart_name": "PAGAMENTOS FLASH APP 32.223.020/0001-18",
+      "amount": -800,
+      "fitid": "20260902007",
+      "store_name": "Rudge Ramos - CAP"
+    },
+    {
+      "store_id": "st-03",
+      "counterpart_name": "BOLETO PAGO P A P COM IN P A P COM INJET ESPEC LTDA ME 05.960.650/0001-00",
+      "amount": -720,
+      "fitid": "20260902002",
+      "store_name": "Jorge Beretta - DHJV"
+    },
+    {
+      "store_id": "st-07",
+      "counterpart_name": "BOLETO PAGO FORTA TECH C FORTA TECH C E A LTDA 28.368.061/0001-25",
+      "amount": -340.31,
+      "fitid": "20260902003",
+      "store_name": "Rudge Ramos - CAP"
+    },
+    {
+      "store_id": "st-07",
+      "counterpart_name": "BOLETO PAGO CHAVES SERVI CHAVES SERVICOS DE SOLDA EM GERAL LTDA E 00.640.147/0001-46",
+      "amount": -295,
+      "fitid": "20260902002",
+      "store_name": "Rudge Ramos - CAP"
+    },
+    {
+      "store_id": "st-08",
+      "counterpart_name": "PIX ENVIADO GIULIANO BAPTISTINI 223.930.558-43",
+      "amount": -280,
+      "fitid": "20260902004",
+      "store_name": "Santo André - HD"
+    },
+    {
+      "store_id": "st-04",
+      "counterpart_name": "PAGAMENTOS FLASH APP 32.223.020/0001-18",
+      "amount": -200,
+      "fitid": "20260902003",
+      "store_name": "Kennedy - MP"
+    },
+    {
+      "store_id": "st-04",
+      "counterpart_name": "PAGAMENTOS SABESP 43.776.517/0001-80",
+      "amount": -163.96,
+      "fitid": "20260902001",
+      "store_name": "Kennedy - MP"
+    },
+    {
+      "store_id": "st-07",
+      "counterpart_name": "BOLETO PAGO P A P COM IN P A P COM INJET ESPEC LTDA ME 05.960.650/0001-00",
+      "amount": -160,
+      "fitid": "20260902009",
+      "store_name": "Rudge Ramos - CAP"
+    },
+    {
+      "store_id": "3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f",
+      "counterpart_name": "BOLETO PAGO ACCIOLY ACCIOLY 60.892.858/0001-30",
+      "amount": -107.5,
+      "fitid": "20260902002",
+      "store_name": "Maua - MHE"
+    },
+    {
+      "store_id": "st-02",
+      "counterpart_name": "SISPAG FORNECEDORES",
+      "amount": -70,
+      "fitid": "20260902010",
+      "store_name": "Jabaquara - JAB"
+    },
+    {
+      "store_id": "st-04",
+      "counterpart_name": "PIX ENVIADO ROGERIO TADEU RUIZ 345.979.428-31",
+      "amount": -50,
+      "fitid": "20260902002",
+      "store_name": "Kennedy - MP"
+    },
+    {
+      "store_id": "st-02",
+      "counterpart_name": "TAR PIXQR LIQ MAQUININHA",
+      "amount": -8.33,
+      "fitid": "20260902008",
+      "store_name": "Jabaquara - JAB"
+    },
+    {
+      "store_id": "st-09",
+      "counterpart_name": "TAR PIXQR LIQ MAQUININHA",
+      "amount": -3.92,
+      "fitid": "20260902006",
+      "store_name": "Rei do Módulo - MP"
+    },
+    {
+      "store_id": "st-05",
+      "counterpart_name": "TAR PIXQR LIQ MAQUININHA",
+      "amount": -3.43,
+      "fitid": "20260902005",
+      "store_name": "Piraporinha - EMPORIO"
+    },
+    {
+      "store_id": "3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f",
+      "counterpart_name": "TAR PIXQR LIQ MAQUININHA",
+      "amount": -1.96,
+      "fitid": "20260902004",
+      "store_name": "Maua - MHE"
+    },
+    {
+      "store_id": "st-08",
+      "counterpart_name": "TAR PIXQR LIQ MAQUININHA",
+      "amount": -1.47,
+      "fitid": "20260902006",
+      "store_name": "Santo André - HD"
+    },
+    {
+      "store_id": "st-02",
+      "counterpart_name": "TAR PIX QR LIQ ESTATICO",
+      "amount": -0.49,
+      "fitid": "20260902009",
+      "store_name": "Jabaquara - JAB"
+    },
+    {
+      "store_id": "3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f",
+      "counterpart_name": "TAR PIX QR LIQ ESTATICO",
+      "amount": -0.25,
+      "fitid": "20260902005",
+      "store_name": "Maua - MHE"
+    },
+    {
+      "store_id": "st-09",
+      "counterpart_name": "PAGAMENTOS FLASH APP 32.223.020/0001-18",
+      "amount": -500,
+      "fitid": "20260902002",
+      "store_name": "Rei do Módulo - MP"
+    },
+    {
+      "store_id": "st-05",
+      "counterpart_name": "PAGAMENTOS FLASH APP 32.223.020/0001-18",
+      "amount": -500,
+      "fitid": "20260902003",
+      "store_name": "Piraporinha - EMPORIO"
+    }
+  ],
+  "openOss": [
+    {
+      "store_id": "3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f",
+      "store_name": "Maua - MHE",
+      "os_number": "22596",
+      "client_name": "ALESSANDRA DA SILVA MELO",
+      "plate": "FMR6D37",
+      "total_value": 385,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f",
+      "store_name": "Maua - MHE",
+      "os_number": "22595",
+      "client_name": "ANDRÉ MELO FERREIRA",
+      "plate": "EBX8211",
+      "total_value": 190,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f",
+      "store_name": "Maua - MHE",
+      "os_number": "22594",
+      "client_name": "SAMUEL PROCOPIO OLIVERA",
+      "plate": "FLY9H03",
+      "total_value": 190,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-01",
+      "store_name": "Dom Pedro - DP",
+      "os_number": "601",
+      "client_name": "EDSON DA SILVA MELO",
+      "plate": "GFV3134",
+      "total_value": 2637.5,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-01",
+      "store_name": "Dom Pedro - DP",
+      "os_number": "596",
+      "client_name": "Cliente",
+      "plate": "PATIO",
+      "total_value": 1378,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-02",
+      "store_name": "Jabaquara - JAB",
+      "os_number": "403",
+      "client_name": "YARA CAROLINA FERNANDES DE SOUZA",
+      "plate": "EQC8527",
+      "total_value": 4488,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-02",
+      "store_name": "Jabaquara - JAB",
+      "os_number": "368",
+      "client_name": "Cliente",
+      "plate": "PATIO",
+      "total_value": 211.2,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-02",
+      "store_name": "Jabaquara - JAB",
+      "os_number": "401",
+      "client_name": "LUANA MARIA ESTEVES CARVALHO CAMARGO",
+      "plate": "DZB3378",
+      "total_value": 1500,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-03",
+      "store_name": "Jorge Beretta - DHJV",
+      "os_number": "1104",
+      "client_name": "AIRTON CAMPANELLI",
+      "plate": "EGQ2922",
+      "total_value": 385,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-05",
+      "store_name": "Piraporinha - EMPORIO",
+      "os_number": "40342",
+      "client_name": "YAN DE MARÃES TOMAZ",
+      "plate": "FUF2B18",
+      "total_value": 2045.1,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-05",
+      "store_name": "Piraporinha - EMPORIO",
+      "os_number": "40337",
+      "client_name": "THIAGO DE FREITAS ALBINO",
+      "plate": "ENV1098",
+      "total_value": 3966.7,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-06",
+      "store_name": "Planalto - BRASICAR",
+      "os_number": "18461",
+      "client_name": "VÍCTOR MORAL MARTINS",
+      "plate": "JGOR001",
+      "total_value": 190,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-07",
+      "store_name": "Rudge Ramos - CAP",
+      "os_number": "8762",
+      "client_name": "JOSE ANTONIO DA SILVEIRA",
+      "plate": "MUJ3062",
+      "total_value": 1585,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-07",
+      "store_name": "Rudge Ramos - CAP",
+      "os_number": "8768",
+      "client_name": "WALISSON DOUGLAS TRISTAO SOBRAL",
+      "plate": "FXT6149",
+      "total_value": 520,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-07",
+      "store_name": "Rudge Ramos - CAP",
+      "os_number": "8769",
+      "client_name": "CRISTINA ARAKAKI",
+      "plate": "DWT8353",
+      "total_value": 4461,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-07",
+      "store_name": "Rudge Ramos - CAP",
+      "os_number": "8659",
+      "client_name": "Cliente",
+      "plate": "PATIO",
+      "total_value": 1200,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-07",
+      "store_name": "Rudge Ramos - CAP",
+      "os_number": "8689",
+      "client_name": "LUIS FELIPE DA CASA",
+      "plate": "FNE4866",
+      "total_value": 6140,
+      "paid_value": 2000,
+      "status": "pago_parcial",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-07",
+      "store_name": "Rudge Ramos - CAP",
+      "os_number": "8763",
+      "client_name": "DOUGLAS JOSÉ MOREIRA DE SOUZA",
+      "plate": "QUO0F41",
+      "total_value": 4236.4,
+      "paid_value": 2265.24,
+      "status": "pago_parcial",
+      "payment_method": "PIX"
+    },
+    {
+      "store_id": "st-07",
+      "store_name": "Rudge Ramos - CAP",
+      "os_number": "8766",
+      "client_name": "MARCELO MOTTA DOS SANTOS",
+      "plate": "DKC3J57",
+      "total_value": 790,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-08",
+      "store_name": "Santo André - HD",
+      "os_number": "2405",
+      "client_name": "ANTONIO FELICIANO OLIVEIRA FILHO",
+      "plate": "ERB2666",
+      "total_value": 2336.4,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-08",
+      "store_name": "Santo André - HD",
+      "os_number": "2414",
+      "client_name": "SCARLETH SOUZA SILVA PIRES",
+      "plate": "RUH5G22",
+      "total_value": 3984.8,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-08",
+      "store_name": "Santo André - HD",
+      "os_number": "2415",
+      "client_name": "ALEXANDER BOMBONATO MOLINA",
+      "plate": "DUG7333",
+      "total_value": 4332.38,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-08",
+      "store_name": "Santo André - HD",
+      "os_number": "2416",
+      "client_name": "MAURICIO DE FREITAS MORAES",
+      "plate": "FZK6F47",
+      "total_value": 385,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-09",
+      "store_name": "Rei do Módulo - MP",
+      "os_number": "1818",
+      "client_name": "WESLEY CORREA DE CASTRO",
+      "plate": "ECGSPORT",
+      "total_value": 5200,
+      "paid_value": 2400,
+      "status": "pago_parcial",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-09",
+      "store_name": "Rei do Módulo - MP",
+      "os_number": "1856",
+      "client_name": "RAPHAEL DA SILVA TEREZAM FILHO",
+      "plate": "FUSCANOVO",
+      "total_value": 4000,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    },
+    {
+      "store_id": "st-09",
+      "store_name": "Rei do Módulo - MP",
+      "os_number": "1858",
+      "client_name": "Cliente",
+      "plate": "PATIO",
+      "total_value": 4140,
+      "paid_value": 0,
+      "status": "em_aberto",
+      "payment_method": "A Combinar"
+    }
+  ],
+  "pilares": {
+    "saldoPositivo": 291269.73,
+    "saldoNegativo": 396.08,
+    "dinheiroMp": 24955,
+    "totalRecebiveis": 27835.32,
+    "totalPatio": 54212.24,
+    "caixaAtual": 397876.20999999996,
+    "caixaAnterior": 341123.41,
+    "fluxoCaixa": 56752.79999999999
+  }
+}

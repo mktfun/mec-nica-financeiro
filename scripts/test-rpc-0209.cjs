@@ -1,0 +1,12 @@
+const { createClient } = require('@supabase/supabase-js');
+require('dotenv').config();
+
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+async function testRpc() {
+  const { data, error } = await supabase.rpc('get_daily_reconciliation_summary', { p_date: '2026-09-02' });
+  console.log('Data:', data ? 'OK' : null);
+  console.log('Error:', error);
+}
+
+testRpc();

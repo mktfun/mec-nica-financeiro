@@ -1,3 +1,22 @@
+### Feature 375: Diagnóstico Forense e Resolução de Saídas e Entradas Órfãs (08/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Data:** 2026-09-08
+- **Arquivos Criados/Modificados:**
+  - `src/lib/parsers/contasPagarParser.ts` (Conversão robusta de inteiros seriais do Excel via `XLSX.SSF.parse_date_code`)
+  - `src/lib/expenseMatcher.ts` (Motor 1-para-N SISPAG folha de pagamento, pareamento intercompany de lojas, cancelamento de estorno PIX e blindagem de saques ATM)
+  - `supabase/migrations/20260908000035_batch_sispag_and_intercompany_matching.sql` (RPC `public.auto_match_saidas` com agregação de lotes SISPAG, intercompany e ATM)
+  - `src/components/importacoes/wizard/Step2NonRevenueJustifications.tsx` (Exclusão visual de falsos órfãos `matched_batch`, `intercompany_paired`, `auto_cancelled` e auto-classificação de sangria ATM)
+- **Descrição:** Redução de saídas órfãs de 20 para 8 e de entradas órfãs de 6 para 2 no dia 08/09/2026 através de batimento 1-para-N de folha de pagamento SISPAG (8 débitos consolidados casando com 23 funcionários), pareamento intercompany e blindagem de sangria de caixa.
+
+### Feature 374: Correção de Ingestão do Mapa de Metas (PDF) e Desduplicação de OSs no Step 3
+- **Status:** COMPLETED & ARCHIVED
+- **Data:** 2026-09-08
+- **Arquivos Criados/Modificados:**
+  - `src/lib/parsers/mapaMetasParser.ts` (Parser tabular estruturado de PDF com extração de faturamento consolidado oficial de R$ 170.092,47 e dados de 11 filiais)
+  - `src/components/importacoes/CentralImportWizard.tsx` (Desduplicação do editor de OSs pendentes no Step 3 e auto-preenchimento reativo do Odômetro OI)
+  - `src/hooks/useCentralImport.ts` (Tipagem exportada de `MapaMetasResult` e `MapaMetasStore`)
+- **Descrição:** Extração automatizada e precisa de dados do relatório PDF do Mapa de Metas, preenchimento transparente do Odômetro OI com badge de origem e eliminação da duplicação de OSs manuais no Step 3.
+
 ### Feature 326: Controle de Logs do Motor de Conciliação e Vínculo de OS Manual com Transações Órfãs
 - **Status:** COMPLETED & ARCHIVED
 - **Data:** 2026-09-08
@@ -8,6 +27,7 @@
   - `src/components/conciliacao/ManualMatchOsModal.tsx` (Priorização de OSs com saldo em aberto, colunas transparentes de amortização, suporte a quitação em dinheiro no balcão e correção de contraste no botão com `variant="outline"`)
   - `src/hooks/useManualMatch.ts` (Função `settleOsWithCash` para quitação direta em dinheiro na loja)
 - **Descrição:** Eliminação da troca abrupta de tela no Step 8 do motor com suporte a download e cópia de logs, blindagem contra preenchimento arbitrário de total pago em OS manual e mesa assistida de vínculo com transações órfãs e quitação em balcão.
+
 
 ### Feature 361: Correção Canônica da Conciliação Diária (Faturamento, Datas, Contas, A Receber e Pátio)
 - **Status:** COMPLETED & ARCHIVED

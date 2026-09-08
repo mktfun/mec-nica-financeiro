@@ -1,3 +1,29 @@
+### Spec 375 — Diagnóstico Forense e Resolução Automática de Saídas e Entradas Órfãs (08/09/2026)
+- **Database (Migration `20260908000035_batch_sispag_and_intercompany_matching.sql`)**:
+  - Atualização da RPC `public.auto_match_saidas(text)` com suporte nativo a lotes 1-para-N de folha de pagamento SISPAG (agrupamento de salários da filial vinculados ao débito Itaú consolidado).
+  - Auto-pareamento de transferências intercompany espelhadas entre filiais sob a categoria `Transferência Entre Lojas [Apenas Conciliar]`.
+  - Auto-cancelamento de estorno PIX (`BLOQUEIO PIX` e `DESBLOQUEIO PIX` de mesmo valor na mesma conta).
+- **Core de Conciliação em Memória (`expenseMatcher.ts`)**:
+  - `STORE_KEYWORDS_MAP` mapeando nomes de lojas e filiais do grupo para identificação imediata de movimentações entre contas.
+  - Implementação de algoritmo 1-para-N SISPAG, cruzamento de transferências de filiais e cancelamento de estorno.
+  - Detecção de saques ATM com flag `adicionaNoContas: false` e categoria `Retirada de Sócios / Sangria / Saque em Dinheiro`.
+- **Parser de Contas a Pagar (`contasPagarParser.ts`)**:
+  - Conversão nativa de inteiros seriais do Excel (`46269` $\rightarrow$ `2026-09-04`) via `XLSX.SSF.parse_date_code`, eliminando corrupção de datas em planilhas do ERP.
+- **Frontend Step 2 de Justificativas (`Step2NonRevenueJustifications.tsx`)**:
+  - Exclusão estrita de transações com `matched`, `matched_batch`, `intercompany_paired` e `auto_cancelled`.
+  - Pré-classificação de saques ATM com switch de contas desabilitado para prevenir duplicações no DRE.
+  - Redução de saídas órfãs de 20 para 8 e de entradas órfãs de 6 para 2 no fechamento de 08/09/2026.
+
+### Spec 374 — Correção de Ingestão do Mapa de Metas (PDF) e Desduplicação de OSs no Step 3
+- **Parser de Mapa de Metas (`mapaMetasParser.ts`)**:
+  - Substituição de stub simplista por parser tabular completo de PDF agrupando linhas por coordenada vertical $Y$.
+  - Extração do total acumulado consolidado oficial (R$ 170.092,47), faturamento das 11 filiais e metadados de previsão e mês anterior.
+- **Wizard Central de Importações (`CentralImportWizard.tsx`)**:
+  - Preenchimento reativo do Odômetro OI (Acumulado) e Mês Anterior a partir do PDF com badge de origem `✨ Auto: Mapa de Metas (PDF)`.
+  - Remoção da tabela duplicada `<MissingPatioOsEditor />` no rodapé do Step 3, mantendo a conferência de OSs pendentes centralizada na Etapa 2.5.
+- **Tipagem (`useCentralImport.ts`)**:
+  - Exportação de `MapaMetasResult` e `MapaMetasStore` garantindo contratos consistentes.
+
 ### Spec 326 — Controle de Logs do Motor de Conciliação e Vínculo de OS Manual com Transações Órfãs
 - **Terminal de Execução do Motor (`ImportExecutionTerminal.tsx` & `CentralImportWizard.tsx`)**:
   - Eliminação da troca abrupta de tela ao concluir a gravação no Step 8: operador permanece no terminal para auditar a execução.
@@ -13,6 +39,7 @@
   - Disponibilizado fluxo e botão de ação para **Quitação em Dinheiro** no balcão da loja via `settleOsWithCash` atualizando `cash_value`, `paid_value` e recalculando status.
   - Remoção em tempo real das transações vinculadas da memória do Wizard via prop `onLinkToOs` em `Step1UnregisteredPayments.tsx`.
   - Correção visual no botão de vinculação garantindo `variant="outline"` e temas consistentes com Dark UI Zinc-950.
+
 
 ### Spec 372 — Simulação Real de Importação (04/09/2026), Equalização de Saldos e Saneamento Contábil
 - **Database (Migration `20260904000036_fix_reconciliation_exact_balances_0409.sql`)**:

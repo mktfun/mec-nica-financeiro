@@ -1,0 +1,1679 @@
+{
+  "Captura de tela 2026-09-02 155709.png": {
+    "empresa_loja": "MPdompedro1",
+    "os_number": "508",
+    "client_name": "JOSE APARECIDO FERREIRA",
+    "client_cpf": "699.749.938-49",
+    "plate": "FOB7313",
+    "vehicle": "CCROLLA",
+    "total_value": 3649.7,
+    "paid_value": 2000,
+    "open_value": 1649.7,
+    "opened_at": "2026-08-28",
+    "closed_at": null,
+    "status": "pago_parcial",
+    "raw_status": "EM DIAGNOSTICO",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-09-01",
+        "method": "Debito",
+        "amount": 2000
+      }
+    ],
+    "debit_value": 2000,
+    "credit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 155729.png": {
+    "empresa_loja": "MPdompedro1",
+    "os_number": "597",
+    "client_name": "EDILSON ANDRADE GIUPATTO",
+    "client_cpf": "147.719.088-00",
+    "plate": "EQY8818",
+    "vehicle": "FIT",
+    "total_value": 1700,
+    "paid_value": 0,
+    "open_value": 1700,
+    "opened_at": "2026-08-29",
+    "closed_at": null,
+    "status": "em_aberto",
+    "raw_status": "AGUARDANDO RETIRADA",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-10-01",
+        "method": "Credito",
+        "amount": 566.67
+      },
+      {
+        "installment": 2,
+        "due_date": "2026-11-02",
+        "method": "Credito",
+        "amount": 566.67
+      },
+      {
+        "installment": 3,
+        "due_date": "2026-11-30",
+        "method": "Credito",
+        "amount": 566.66
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 1700,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 155750.png": {
+    "empresa_loja": "MPdempdro",
+    "os_number": "598",
+    "client_name": "LEONARDO BENICIO DE OLIVEIRA",
+    "client_cpf": "481.852.418-07",
+    "plate": "ENS870",
+    "vehicle": "CERATO",
+    "total_value": 3180,
+    "paid_value": 3000,
+    "open_value": 180,
+    "opened_at": "2026-08-29",
+    "closed_at": null,
+    "status": "pago_parcial",
+    "raw_status": "AGUARDANDO PEÇA",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-08-31",
+        "method": "Pix",
+        "amount": 3000
+      },
+      {
+        "installment": 2,
+        "due_date": "2026-10-01",
+        "method": "Credito",
+        "amount": 180
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 180,
+    "pix_transfer_value": 3000,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 155811.png": {
+    "empresa_loja": "MPOficpedro1",
+    "os_number": "0000Faturamento",
+    "client_name": "RAFAEL ALVES DE ARAUJO",
+    "client_cpf": "314.484.278-03",
+    "plate": "PFP2H78",
+    "vehicle": "Veículo 2008",
+    "total_value": 2000,
+    "paid_value": 0,
+    "open_value": 2000,
+    "opened_at": "2026-08-31",
+    "closed_at": null,
+    "status": "em_aberto",
+    "raw_status": "EM DIAGNOSTICO",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-10-01",
+        "method": "Credito",
+        "amount": 500
+      },
+      {
+        "installment": 2,
+        "due_date": "2026-11-02",
+        "method": "Credito",
+        "amount": 500
+      },
+      {
+        "installment": 3,
+        "due_date": "2026-11-30",
+        "method": "Credito",
+        "amount": 500
+      },
+      {
+        "installment": 4,
+        "due_date": "2026-12-30",
+        "method": "Credito",
+        "amount": 500
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 2000,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 155828.png": {
+    "empresa_loja": "MPdompedro1",
+    "os_number": "601",
+    "client_name": "EDSON DA SILVA MELO",
+    "client_cpf": "083.535.388-94",
+    "plate": "GFV3134",
+    "vehicle": "TERITORY",
+    "total_value": 2637.5,
+    "paid_value": 0,
+    "open_value": 2637.5,
+    "opened_at": "2026-08-27",
+    "closed_at": null,
+    "status": "em_aberto",
+    "raw_status": "EM DIAGNÓSTICO",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-10-02",
+        "method": "Credito",
+        "amount": 263.75
+      },
+      {
+        "installment": 2,
+        "due_date": "2026-11-01",
+        "method": "Credito",
+        "amount": 263.75
+      },
+      {
+        "installment": 3,
+        "due_date": "2026-12-01",
+        "method": "Credito",
+        "amount": 263.75
+      },
+      {
+        "installment": 4,
+        "due_date": "2027-01-31",
+        "method": "Credito",
+        "amount": 263.75
+      },
+      {
+        "installment": 5,
+        "due_date": "2027-02-01",
+        "method": "Credito",
+        "amount": 263.75
+      },
+      {
+        "installment": 6,
+        "due_date": "2027-03-01",
+        "method": "Credito",
+        "amount": 263.75
+      },
+      {
+        "installment": 7,
+        "due_date": "2027-03-31",
+        "method": "Credito",
+        "amount": 263.75
+      },
+      {
+        "installment": 8,
+        "due_date": "2027-04-30",
+        "method": "Credito",
+        "amount": 263.75
+      },
+      {
+        "installment": 9,
+        "due_date": "2027-05-31",
+        "method": "Credito",
+        "amount": 263.75
+      },
+      {
+        "installment": 10,
+        "due_date": "2027-06-29",
+        "method": "Credito",
+        "amount": 263.75
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 2637.5,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 155906.png": {
+    "empresa_loja": "MPJaquara",
+    "os_number": "388",
+    "client_name": "VANESSA FAVRETTO GONCALVES",
+    "client_cpf": "309.008.348-83",
+    "plate": "GGS3G88",
+    "vehicle": "TCROSS",
+    "total_value": 211.2,
+    "paid_value": 0,
+    "open_value": 211.2,
+    "opened_at": "2026-01-08",
+    "closed_at": null,
+    "status": "em_aberto",
+    "raw_status": "Selecionar...",
+    "payments": [],
+    "debit_value": 0,
+    "credit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 155951.png": {
+    "empresa_loja": "MPFORCEBERETA",
+    "os_number": "1103",
+    "client_name": "LUCAS JOSE FELISBINO",
+    "client_cpf": "383.045.548-42",
+    "plate": "ERI5496",
+    "vehicle": "Veículo 307",
+    "total_value": 865,
+    "paid_value": 0,
+    "open_value": 865,
+    "opened_at": "2026-08-31",
+    "closed_at": null,
+    "status": "em_aberto",
+    "raw_status": "AGUARDANDO RETIRADA",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-10-10",
+        "method": "Credito",
+        "amount": 108.12
+      },
+      {
+        "installment": 2,
+        "due_date": "2026-11-02",
+        "method": "Credito",
+        "amount": 108.12
+      },
+      {
+        "installment": 3,
+        "due_date": "2026-11-30",
+        "method": "Credito",
+        "amount": 108.12
+      },
+      {
+        "installment": 4,
+        "due_date": "2026-12-30",
+        "method": "Credito",
+        "amount": 108.12
+      },
+      {
+        "installment": 5,
+        "due_date": "2027-01-29",
+        "method": "Credito",
+        "amount": 108.12
+      },
+      {
+        "installment": 6,
+        "due_date": "2027-02-01",
+        "method": "Credito",
+        "amount": 108.12
+      },
+      {
+        "installment": 7,
+        "due_date": "2027-03-30",
+        "method": "Credito",
+        "amount": 108.12
+      },
+      {
+        "installment": 8,
+        "due_date": "2027-04-29",
+        "method": "Credito",
+        "amount": 108.16
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 865,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 160055.png": {
+    "empresa_loja": "HPkennedy",
+    "os_number": "4418",
+    "client_name": "ANDERSON PEREIRA DA COSTA",
+    "client_cpf": "245.795.528-90",
+    "plate": "OQP3C80",
+    "vehicle": "SANDERO",
+    "total_value": 1933.8,
+    "paid_value": 1933.8,
+    "open_value": 0,
+    "opened_at": "2026-08-31",
+    "closed_at": null,
+    "status": "finalizada",
+    "raw_status": "VEÍCULO EM EXECUÇÃO",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-10-01",
+        "method": "Credito",
+        "amount": 1933.8
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 1933.8,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 160109.png": {
+    "empresa_loja": "MKpneus",
+    "os_number": "4418",
+    "client_name": "ANDERSON PEREIRA DA COSTA",
+    "client_cpf": "245.765.828-90",
+    "plate": "OQP3C00",
+    "vehicle": "SANDERO",
+    "total_value": 1933.8,
+    "paid_value": 0,
+    "open_value": 1933.8,
+    "opened_at": "2026-08-31",
+    "closed_at": null,
+    "status": "em_aberto",
+    "raw_status": "VEÍCULO EM EXECUÇÃO",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-10-01",
+        "method": "Credito",
+        "amount": 1933.8
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 1933.8,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 160214.png": {
+    "empresa_loja": "RedDoOrdemPlus",
+    "os_number": "22559",
+    "client_name": "APOLONIO VITAL BARBOSA",
+    "client_cpf": "91122420000123",
+    "plate": "EDA1E69",
+    "vehicle": "CLASSIC LIFE",
+    "total_value": 16922.04,
+    "paid_value": 385,
+    "open_value": 16537.04,
+    "opened_at": "2020-08-08",
+    "closed_at": null,
+    "status": "pago_parcial",
+    "raw_status": "AGUARDANDO RETIRADA",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2020-08-10",
+        "method": "Debito",
+        "amount": 385
+      },
+      {
+        "installment": 2,
+        "due_date": "2020-08-13",
+        "method": "Pix",
+        "amount": 700
+      },
+      {
+        "installment": 3,
+        "due_date": "2020-08-31",
+        "method": "Credito",
+        "amount": 307.61
+      },
+      {
+        "installment": 4,
+        "due_date": "2020-09-01",
+        "method": "Credito",
+        "amount": 307.61
+      },
+      {
+        "installment": 5,
+        "due_date": "2020-09-30",
+        "method": "Credito",
+        "amount": 307.61
+      },
+      {
+        "installment": 6,
+        "due_date": "2020-10-31",
+        "method": "Credito",
+        "amount": 307.61
+      },
+      {
+        "installment": 7,
+        "due_date": "2020-11-30",
+        "method": "Credito",
+        "amount": 307.61
+      },
+      {
+        "installment": 8,
+        "due_date": "2020-12-30",
+        "method": "Credito",
+        "amount": 307.61
+      },
+      {
+        "installment": 9,
+        "due_date": "2021-01-29",
+        "method": "Credito",
+        "amount": 307.61
+      },
+      {
+        "installment": 10,
+        "due_date": "2021-02-28",
+        "method": "Credito",
+        "amount": 307.61
+      },
+      {
+        "installment": 11,
+        "due_date": "2021-03-30",
+        "method": "Credito",
+        "amount": 307.61
+      },
+      {
+        "installment": 12,
+        "due_date": "2021-04-30",
+        "method": "Credito",
+        "amount": 307.61
+      },
+      {
+        "installment": 13,
+        "due_date": "2021-05-31",
+        "method": "Credito",
+        "amount": 307.61
+      },
+      {
+        "installment": 14,
+        "due_date": "2021-06-28",
+        "method": "Credito",
+        "amount": 307.61
+      },
+      {
+        "installment": 15,
+        "due_date": "2021-07-30",
+        "method": "Credito",
+        "amount": 307.61
+      },
+      {
+        "installment": 16,
+        "due_date": "2021-08-31",
+        "method": "Credito",
+        "amount": 307.61
+      },
+      {
+        "installment": 17,
+        "due_date": "2021-09-30",
+        "method": "Credito",
+        "amount": 307.61
+      },
+      {
+        "installment": 18,
+        "due_date": "2021-10-29",
+        "method": "Credito",
+        "amount": 307.61
+      },
+      {
+        "installment": 19,
+        "due_date": "2021-11-30",
+        "method": "Credito",
+        "amount": 307.61
+      },
+      {
+        "installment": 20,
+        "due_date": "2021-12-31",
+        "method": "Credito",
+        "amount": 307.61
+      },
+      {
+        "installment": 21,
+        "due_date": "2022-01-31",
+        "method": "Credito",
+        "amount": 299.43
+      }
+    ],
+    "debit_value": 385,
+    "credit_value": 6152.41,
+    "pix_transfer_value": 700,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 160235.png": {
+    "empresa_loja": "ResidOleoMaus",
+    "os_number": "22592",
+    "client_name": "MARCELO RIBEIRO",
+    "client_cpf": "041.881.920-05",
+    "plate": "ERK8F28",
+    "vehicle": "CITY",
+    "total_value": 365.75,
+    "paid_value": 365.75,
+    "open_value": 0,
+    "opened_at": "2026-08-31",
+    "closed_at": "2026-09-01",
+    "status": "finalizada",
+    "raw_status": "Selecionado",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-09-01",
+        "method": "Pix",
+        "amount": 365.75
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 0,
+    "pix_transfer_value": 365.75,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 160252.png": {
+    "empresa_loja": "ReiDoOleoMaua",
+    "os_number": "22563",
+    "client_name": "EGIDIO AMARO DA SILVA",
+    "client_cpf": "787.568.168-72",
+    "plate": "EUE4550",
+    "vehicle": "VERA CRUZ",
+    "total_value": 2620,
+    "paid_value": 2620,
+    "open_value": 0,
+    "opened_at": "2026-08-31",
+    "closed_at": "2026-09-01",
+    "status": "finalizada",
+    "raw_status": "Selecionar",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-09-01",
+        "method": "Debito",
+        "amount": 720
+      },
+      {
+        "installment": 2,
+        "due_date": "2026-09-01",
+        "method": "Debito",
+        "amount": 1900
+      }
+    ],
+    "debit_value": 2620,
+    "credit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 160328.png": {
+    "empresa_loja": "Hipermagazine",
+    "os_number": "40337",
+    "client_name": "THIAGO DE FREITAS ALBINO",
+    "client_cpf": "221.883.388-39",
+    "plate": "ENV1098",
+    "vehicle": "VOYAGE",
+    "total_value": 9266.7,
+    "paid_value": 5300,
+    "open_value": 3966.7,
+    "opened_at": "2026-08-29",
+    "closed_at": null,
+    "status": "pago_parcial",
+    "raw_status": "VEÍCULO EM EXECUÇÃO",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-09-01",
+        "method": "Pix",
+        "amount": 5300
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 0,
+    "pix_transfer_value": 5300,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 160350.png": {
+    "empresa_loja": "HPparagonfaturamento",
+    "os_number": "40340/faturamento",
+    "client_name": "MICAELE VIEIRA DA SILVA",
+    "client_cpf": "232945Ano2006",
+    "plate": "HGR4845",
+    "vehicle": "CELTA",
+    "total_value": 850,
+    "paid_value": 850,
+    "open_value": 0,
+    "opened_at": "2026-08-31",
+    "closed_at": "2026-09-01",
+    "status": "finalizada",
+    "raw_status": "AGUARDANDO RETIRADA",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-09-01",
+        "method": "Pix",
+        "amount": 850
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 0,
+    "pix_transfer_value": 850,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 160418.png": {
+    "empresa_loja": "MPlaneto",
+    "os_number": "18461",
+    "client_name": "VÍCTOR MORAL MARTINS",
+    "client_cpf": "343.441.098-08",
+    "plate": "JGOR001",
+    "vehicle": "SANDERO",
+    "total_value": 190,
+    "paid_value": 0,
+    "open_value": 190,
+    "opened_at": "2026-08-29",
+    "closed_at": null,
+    "status": "em_aberto",
+    "raw_status": "EM DIAGNÓSTICO",
+    "payments": [],
+    "debit_value": 0,
+    "credit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 160437.png": {
+    "empresa_loja": "Pajero",
+    "os_number": "18462",
+    "client_name": "ADRIANA SANTOS SILVA",
+    "client_cpf": "225.806.238-17",
+    "plate": "ECU8118",
+    "vehicle": "PAJERO",
+    "total_value": 5476,
+    "paid_value": 1812,
+    "open_value": 3664,
+    "opened_at": "2026-09-01",
+    "closed_at": null,
+    "status": "pago_parcial",
+    "raw_status": "AGUARDANDO RETIRADA",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-09-29",
+        "method": "Pix",
+        "amount": 1812
+      },
+      {
+        "installment": 2,
+        "due_date": "2026-10-01",
+        "method": "Credito",
+        "amount": 366.4
+      },
+      {
+        "installment": 3,
+        "due_date": "2026-11-02",
+        "method": "Credito",
+        "amount": 366.4
+      },
+      {
+        "installment": 4,
+        "due_date": "2026-12-01",
+        "method": "Credito",
+        "amount": 366.4
+      },
+      {
+        "installment": 5,
+        "due_date": "2027-01-30",
+        "method": "Credito",
+        "amount": 366.4
+      },
+      {
+        "installment": 6,
+        "due_date": "2027-02-01",
+        "method": "Credito",
+        "amount": 366.4
+      },
+      {
+        "installment": 7,
+        "due_date": "2027-03-01",
+        "method": "Credito",
+        "amount": 366.4
+      },
+      {
+        "installment": 8,
+        "due_date": "2027-04-02",
+        "method": "Credito",
+        "amount": 366.4
+      },
+      {
+        "installment": 9,
+        "due_date": "2027-05-02",
+        "method": "Credito",
+        "amount": 366.4
+      },
+      {
+        "installment": 10,
+        "due_date": "2027-06-01",
+        "method": "Credito",
+        "amount": 366.4
+      },
+      {
+        "installment": 11,
+        "due_date": "2027-07-02",
+        "method": "Credito",
+        "amount": 366.4
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 4029.4,
+    "pix_transfer_value": 1812,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 160458.png": {
+    "empresa_loja": "MPSautomotivo",
+    "os_number": "18463",
+    "client_name": "MARCELO GONÇALVES SIQUEIRA",
+    "client_cpf": "289.729.868-52",
+    "plate": "DUO9G38",
+    "vehicle": "Veículo: FOX",
+    "total_value": 1972.5,
+    "paid_value": 0,
+    "open_value": 1972.5,
+    "opened_at": "2026-08-31",
+    "closed_at": null,
+    "status": "em_aberto",
+    "raw_status": "VEÍCULO EM EXECUÇÃO",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-10-01",
+        "method": "Credito",
+        "amount": 493.12
+      },
+      {
+        "installment": 2,
+        "due_date": "2026-11-02",
+        "method": "Credito",
+        "amount": 493.12
+      },
+      {
+        "installment": 3,
+        "due_date": "2026-11-30",
+        "method": "Credito",
+        "amount": 493.12
+      },
+      {
+        "installment": 4,
+        "due_date": "2026-12-30",
+        "method": "Credito",
+        "amount": 493.14
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 1972.5,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 160524.png": {
+    "empresa_loja": "HYUNDAI",
+    "os_number": "18464",
+    "client_name": "RENELIO RUSSO",
+    "client_cpf": "252.414.289-95",
+    "plate": "EUO3055",
+    "vehicle": "FRONTIER",
+    "total_value": 2129.6,
+    "paid_value": 1129.6,
+    "open_value": 1000,
+    "opened_at": "2026-03-08",
+    "closed_at": null,
+    "status": "pago_parcial",
+    "raw_status": "VEÍCULO EM EXECUÇÃO",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-03-09",
+        "method": "Debito",
+        "amount": 1129.6
+      },
+      {
+        "installment": 2,
+        "due_date": "2026-03-09",
+        "method": "Debito",
+        "amount": 1000
+      }
+    ],
+    "debit_value": 2129.6,
+    "credit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 160550.png": {
+    "empresa_loja": "RepsoldModulo",
+    "os_number": "1818Faturamento",
+    "client_name": "WESLEY CORREA DE CASTRO",
+    "client_cpf": "411.411.898-52",
+    "plate": "ECGSPORT",
+    "vehicle": "VEÍCULO: ECOSPORT",
+    "total_value": 5200,
+    "paid_value": 2400,
+    "open_value": 2800,
+    "opened_at": "2026-06-08",
+    "closed_at": null,
+    "status": "em_aberto",
+    "raw_status": "Seleção...",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-07-09",
+        "method": "Credito",
+        "amount": 240
+      },
+      {
+        "installment": 2,
+        "due_date": "2026-08-05",
+        "method": "Credito",
+        "amount": 240
+      },
+      {
+        "installment": 3,
+        "due_date": "2026-09-04",
+        "method": "Credito",
+        "amount": 240
+      },
+      {
+        "installment": 4,
+        "due_date": "2026-10-02",
+        "method": "Credito",
+        "amount": 240
+      },
+      {
+        "installment": 5,
+        "due_date": "2027-01-04",
+        "method": "Credito",
+        "amount": 240
+      },
+      {
+        "installment": 6,
+        "due_date": "2027-02-02",
+        "method": "Credito",
+        "amount": 240
+      },
+      {
+        "installment": 7,
+        "due_date": "2027-03-04",
+        "method": "Credito",
+        "amount": 240
+      },
+      {
+        "installment": 8,
+        "due_date": "2027-04-05",
+        "method": "Credito",
+        "amount": 240
+      },
+      {
+        "installment": 9,
+        "due_date": "2027-05-03",
+        "method": "Credito",
+        "amount": 240
+      },
+      {
+        "installment": 10,
+        "due_date": "2027-06-02",
+        "method": "Credito",
+        "amount": 240
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 2400,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 160616.png": {
+    "empresa_loja": "ReoModulo",
+    "os_number": "1846/2026",
+    "client_name": "ERISON TADEU DO NASCIMENTO",
+    "client_cpf": "273.199.428-28",
+    "plate": "FRU4331",
+    "vehicle": "VEÍCULO CRUZE",
+    "total_value": 8000,
+    "paid_value": 30,
+    "open_value": 8000,
+    "opened_at": "2026-08-18",
+    "closed_at": null,
+    "status": "em_aberto",
+    "raw_status": "Selecionar",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-09-18",
+        "method": "Credito",
+        "amount": 400
+      },
+      {
+        "installment": 2,
+        "due_date": "2026-10-19",
+        "method": "Credito",
+        "amount": 400
+      },
+      {
+        "installment": 3,
+        "due_date": "2026-11-17",
+        "method": "Credito",
+        "amount": 400
+      },
+      {
+        "installment": 4,
+        "due_date": "2026-12-18",
+        "method": "Credito",
+        "amount": 400
+      },
+      {
+        "installment": 5,
+        "due_date": "2027-01-18",
+        "method": "Credito",
+        "amount": 400
+      },
+      {
+        "installment": 6,
+        "due_date": "2027-02-15",
+        "method": "Credito",
+        "amount": 400
+      },
+      {
+        "installment": 7,
+        "due_date": "2027-03-17",
+        "method": "Credito",
+        "amount": 400
+      },
+      {
+        "installment": 8,
+        "due_date": "2027-04-16",
+        "method": "Credito",
+        "amount": 400
+      },
+      {
+        "installment": 9,
+        "due_date": "2027-05-17",
+        "method": "Credito",
+        "amount": 400
+      },
+      {
+        "installment": 10,
+        "due_date": "2027-06-15",
+        "method": "Credito",
+        "amount": 400
+      },
+      {
+        "installment": 11,
+        "due_date": "2026-10-01",
+        "method": "Credito",
+        "amount": 200
+      },
+      {
+        "installment": 12,
+        "due_date": "2026-11-02",
+        "method": "Credito",
+        "amount": 200
+      },
+      {
+        "installment": 13,
+        "due_date": "2026-12-03",
+        "method": "Credito",
+        "amount": 200
+      },
+      {
+        "installment": 14,
+        "due_date": "2027-01-30",
+        "method": "Credito",
+        "amount": 200
+      },
+      {
+        "installment": 15,
+        "due_date": "2027-02-28",
+        "method": "Credito",
+        "amount": 200
+      },
+      {
+        "installment": 16,
+        "due_date": "2027-03-01",
+        "method": "Credito",
+        "amount": 200
+      },
+      {
+        "installment": 17,
+        "due_date": "2027-04-30",
+        "method": "Credito",
+        "amount": 200
+      },
+      {
+        "installment": 18,
+        "due_date": "2027-05-29",
+        "method": "Credito",
+        "amount": 200
+      },
+      {
+        "installment": 19,
+        "due_date": "2027-06-30",
+        "method": "Credito",
+        "amount": 200
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 8000,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 160640.png": {
+    "empresa_loja": "1847 Taturamento",
+    "os_number": "GIO01H97",
+    "client_name": "REGIS GILARDI",
+    "client_cpf": "78658420200",
+    "plate": "GIO1H97",
+    "vehicle": "VEÍCULO TRACKER",
+    "total_value": 13799,
+    "paid_value": 13799,
+    "open_value": 0,
+    "opened_at": "2020-08-08",
+    "closed_at": "2020-08-08",
+    "status": "finalizada",
+    "raw_status": "Selecionar...",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-09-23",
+        "method": "Credito",
+        "amount": 1290
+      },
+      {
+        "installment": 2,
+        "due_date": "2026-10-23",
+        "method": "Credito",
+        "amount": 1290
+      },
+      {
+        "installment": 3,
+        "due_date": "2026-11-23",
+        "method": "Credito",
+        "amount": 1290
+      },
+      {
+        "installment": 4,
+        "due_date": "2026-12-22",
+        "method": "Credito",
+        "amount": 1290
+      },
+      {
+        "installment": 5,
+        "due_date": "2027-01-21",
+        "method": "Credito",
+        "amount": 1290
+      },
+      {
+        "installment": 6,
+        "due_date": "2027-02-21",
+        "method": "Credito",
+        "amount": 1290
+      },
+      {
+        "installment": 7,
+        "due_date": "2027-03-21",
+        "method": "Credito",
+        "amount": 1290
+      },
+      {
+        "installment": 8,
+        "due_date": "2027-04-21",
+        "method": "Credito",
+        "amount": 1290
+      },
+      {
+        "installment": 9,
+        "due_date": "2027-05-21",
+        "method": "Credito",
+        "amount": 1290
+      },
+      {
+        "installment": 10,
+        "due_date": "2027-06-21",
+        "method": "Credito",
+        "amount": 1290
+      },
+      {
+        "installment": 11,
+        "due_date": "2027-07-10",
+        "method": "Credito",
+        "amount": 179.8
+      },
+      {
+        "installment": 12,
+        "due_date": "2026-09-02",
+        "method": "Credito",
+        "amount": 179.8
+      },
+      {
+        "installment": 13,
+        "due_date": "2026-10-02",
+        "method": "Credito",
+        "amount": 179.8
+      },
+      {
+        "installment": 14,
+        "due_date": "2026-11-30",
+        "method": "Credito",
+        "amount": 179.8
+      },
+      {
+        "installment": 15,
+        "due_date": "2027-01-29",
+        "method": "Credito",
+        "amount": 179.8
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 13799,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 160658.png": {
+    "empresa_loja": "RenatoDubai",
+    "os_number": "1855",
+    "client_name": "EMERSON LIMA",
+    "client_cpf": "042.083.918-05",
+    "plate": "Veículo 306",
+    "vehicle": "Veículo",
+    "total_value": 900,
+    "paid_value": 0,
+    "open_value": 900,
+    "opened_at": "2026-08-28",
+    "closed_at": null,
+    "status": "em_aberto",
+    "raw_status": "Seleção...",
+    "payments": [],
+    "debit_value": 0,
+    "credit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 160721.png": {
+    "empresa_loja": "LUTUM MOTORS",
+    "os_number": "1856",
+    "client_name": "RAPHAEL DA SILVA TEREZAM FILHO",
+    "client_cpf": "030.836.841/0001-02",
+    "plate": "FUSCA NOVO",
+    "vehicle": "FUSCÃO",
+    "total_value": 4000,
+    "paid_value": 0,
+    "open_value": 4000,
+    "opened_at": "2018-03-07",
+    "closed_at": null,
+    "status": "em_aberto",
+    "raw_status": "ATIVA",
+    "payments": [],
+    "debit_value": 0,
+    "credit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 160938.png": {
+    "empresa_loja": "MPRudge",
+    "os_number": "8689",
+    "client_name": "LUIS FELIPE DA CASA",
+    "client_cpf": "377.296.266-88",
+    "plate": "FNE4866",
+    "vehicle": "Veículo: CAL",
+    "total_value": 6140,
+    "paid_value": 2000,
+    "open_value": 4140,
+    "opened_at": "2026-01-08",
+    "closed_at": null,
+    "status": "pago_parcial",
+    "raw_status": "AGUARDANDO RETIRADA",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-02-20",
+        "method": "Pix",
+        "amount": 2000
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 0,
+    "pix_transfer_value": 2000,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 160959.png": {
+    "empresa_loja": "M1nus",
+    "os_number": "8756",
+    "client_name": "MICHAEL SEEGER",
+    "client_cpf": "280.388.378-35",
+    "plate": "FAM8958",
+    "vehicle": "VERSÁ",
+    "total_value": 6099.5,
+    "paid_value": 6099.5,
+    "open_value": 0,
+    "opened_at": "2026-08-26",
+    "closed_at": "2026-09-01",
+    "status": "finalizada",
+    "raw_status": "VEÍCULO EM EXECUÇÃO",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-08-28",
+        "method": "Credito",
+        "amount": 685.18
+      },
+      {
+        "installment": 2,
+        "due_date": "2026-09-27",
+        "method": "Credito",
+        "amount": 685.18
+      },
+      {
+        "installment": 3,
+        "due_date": "2026-11-26",
+        "method": "Credito",
+        "amount": 685.18
+      },
+      {
+        "installment": 4,
+        "due_date": "2026-12-28",
+        "method": "Credito",
+        "amount": 685.18
+      },
+      {
+        "installment": 5,
+        "due_date": "2027-01-09",
+        "method": "Credito",
+        "amount": 685.16
+      },
+      {
+        "installment": 6,
+        "due_date": "2026-09-01",
+        "method": "Credito",
+        "amount": 258.36
+      },
+      {
+        "installment": 7,
+        "due_date": "2026-10-01",
+        "method": "Credito",
+        "amount": 258.36
+      },
+      {
+        "installment": 8,
+        "due_date": "2026-11-30",
+        "method": "Credito",
+        "amount": 258.36
+      },
+      {
+        "installment": 9,
+        "due_date": "2026-12-30",
+        "method": "Credito",
+        "amount": 258.36
+      },
+      {
+        "installment": 10,
+        "due_date": "2027-01-29",
+        "method": "Credito",
+        "amount": 258.36
+      },
+      {
+        "installment": 11,
+        "due_date": "2027-02-01",
+        "method": "Credito",
+        "amount": 258.36
+      },
+      {
+        "installment": 12,
+        "due_date": "2027-03-01",
+        "method": "Credito",
+        "amount": 258.36
+      },
+      {
+        "installment": 13,
+        "due_date": "2027-04-29",
+        "method": "Credito",
+        "amount": 258.36
+      },
+      {
+        "installment": 14,
+        "due_date": "2027-05-31",
+        "method": "Credito",
+        "amount": 258.36
+      },
+      {
+        "installment": 15,
+        "due_date": "2027-06-28",
+        "method": "Credito",
+        "amount": 258.36
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 6099.5,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 161018.png": {
+    "empresa_loja": "MPTruge",
+    "os_number": "8762",
+    "client_name": "JOSE ANTONIO DA SILVEIRA",
+    "client_cpf": "082.584.024-47",
+    "plate": "MUJ3062",
+    "vehicle": "SENTRA",
+    "total_value": 1585,
+    "paid_value": 0,
+    "open_value": 1585,
+    "opened_at": "2026-08-28",
+    "closed_at": null,
+    "status": "em_aberto",
+    "raw_status": "SERVIÇO TERCEIRIZADO",
+    "payments": [],
+    "debit_value": 0,
+    "credit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 161042.png": {
+    "empresa_loja": "Mhrude",
+    "os_number": "8763",
+    "client_name": "DOUGLAS JOSÉ MOREIRA DE SOUZA",
+    "client_cpf": "663.203.446-79",
+    "plate": "QUO0F41",
+    "vehicle": "VEÍCULO: ECOSPORT",
+    "total_value": 4236.4,
+    "paid_value": 2265.24,
+    "open_value": 1971.16,
+    "opened_at": "2026-08-29",
+    "closed_at": null,
+    "status": "pago_parcial",
+    "raw_status": "VEÍCULO EM EXECUÇÃO",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-09-01",
+        "method": "Pix",
+        "amount": 2265.24
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 0,
+    "pix_transfer_value": 2265.24,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 161125.png": {
+    "empresa_loja": "MPRUSA",
+    "os_number": "876474674674674",
+    "client_name": "GILBERTO JOSÉ RIBEIRO DA SILVA",
+    "client_cpf": "102.931.201-21",
+    "plate": "EUJ00623",
+    "vehicle": "C3",
+    "total_value": 1688.24,
+    "paid_value": 1688.24,
+    "open_value": 0,
+    "opened_at": "2026-01-09",
+    "closed_at": "2026-01-09",
+    "status": "finalizada",
+    "raw_status": "EM TESTE",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-01-09",
+        "method": "Pix",
+        "amount": 1688.24
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 0,
+    "pix_transfer_value": 1688.24,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 161219.png": {
+    "empresa_loja": "MILHÕES FATURAMENTO",
+    "os_number": "6765",
+    "client_name": "JOSE NACIO LIMA",
+    "client_cpf": "10557340201",
+    "plate": "ELT5C95",
+    "vehicle": "VEICULO: VECTRA",
+    "total_value": 1450,
+    "paid_value": 0,
+    "open_value": 1450,
+    "opened_at": "2026-08-31",
+    "closed_at": null,
+    "status": "em_aberto",
+    "raw_status": "Selecionar",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-11-01",
+        "method": "Credito",
+        "amount": 290
+      },
+      {
+        "installment": 2,
+        "due_date": "2026-12-01",
+        "method": "Credito",
+        "amount": 290
+      },
+      {
+        "installment": 3,
+        "due_date": "2027-01-30",
+        "method": "Credito",
+        "amount": 290
+      },
+      {
+        "installment": 4,
+        "due_date": "2027-02-30",
+        "method": "Credito",
+        "amount": 290
+      },
+      {
+        "installment": 5,
+        "due_date": "2027-03-01",
+        "method": "Credito",
+        "amount": 290
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 1450,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 161339.png": {
+    "empresa_loja": "PRUDÊNCIA",
+    "os_number": "8765faturamento",
+    "client_name": "JOSE NACIO LIMA",
+    "client_cpf": "080.050.808-40",
+    "plate": "ELT5C65",
+    "vehicle": "VEÍCULO: VECTRA",
+    "total_value": 1450,
+    "paid_value": 0,
+    "open_value": 1450,
+    "opened_at": "2026-08-31",
+    "closed_at": null,
+    "status": "em_aberto",
+    "raw_status": "Selecionar",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-01-10",
+        "method": "Credito",
+        "amount": 290
+      },
+      {
+        "installment": 2,
+        "due_date": "2026-02-11",
+        "method": "Credito",
+        "amount": 290
+      },
+      {
+        "installment": 3,
+        "due_date": "2026-03-11",
+        "method": "Credito",
+        "amount": 290
+      },
+      {
+        "installment": 4,
+        "due_date": "2026-04-11",
+        "method": "Credito",
+        "amount": 290
+      },
+      {
+        "installment": 5,
+        "due_date": "2027-02-01",
+        "method": "Credito",
+        "amount": 290
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 1450,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 161359.png": {
+    "empresa_loja": "PRUDÊNCIA",
+    "os_number": "8766faturamento",
+    "client_name": "MARCELO MOTTA DOS SANTOS",
+    "client_cpf": "216.368.538-60",
+    "plate": "DKC3J57",
+    "vehicle": "Veículo FIORINO",
+    "total_value": 743,
+    "paid_value": 0,
+    "open_value": 743,
+    "opened_at": "2026-08-31",
+    "closed_at": null,
+    "status": "em_aberto",
+    "raw_status": "O.S. fechada e bloqueada, clique em Mais Opções... para desbloquear",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-09-02",
+        "method": "Pix",
+        "amount": 743
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 0,
+    "pix_transfer_value": 743,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 161530.png": {
+    "empresa_loja": "HP5antandro",
+    "os_number": "24027faturamento",
+    "client_name": "APARECIDO DONISETE PEREIRA GABRIEL",
+    "client_cpf": "140.177.018-50",
+    "plate": "DYH5485",
+    "vehicle": "Veículo KA",
+    "total_value": 5755.4,
+    "paid_value": 0,
+    "open_value": 5755.4,
+    "opened_at": "2026-08-28",
+    "closed_at": null,
+    "status": "em_aberto",
+    "raw_status": "AGUARDANDO RETIRADA",
+    "payments": [
+      {
+        "installment": 1,
+        "due_date": "2026-09-28",
+        "method": "Credito",
+        "amount": 345.32
+      },
+      {
+        "installment": 2,
+        "due_date": "2026-10-28",
+        "method": "Credito",
+        "amount": 345.32
+      },
+      {
+        "installment": 3,
+        "due_date": "2026-11-28",
+        "method": "Credito",
+        "amount": 345.32
+      },
+      {
+        "installment": 4,
+        "due_date": "2026-12-28",
+        "method": "Credito",
+        "amount": 345.32
+      },
+      {
+        "installment": 5,
+        "due_date": "2027-01-28",
+        "method": "Credito",
+        "amount": 345.32
+      },
+      {
+        "installment": 6,
+        "due_date": "2027-02-28",
+        "method": "Credito",
+        "amount": 345.32
+      },
+      {
+        "installment": 7,
+        "due_date": "2027-03-28",
+        "method": "Credito",
+        "amount": 345.32
+      },
+      {
+        "installment": 8,
+        "due_date": "2027-04-28",
+        "method": "Credito",
+        "amount": 345.32
+      },
+      {
+        "installment": 9,
+        "due_date": "2027-05-28",
+        "method": "Credito",
+        "amount": 345.32
+      },
+      {
+        "installment": 10,
+        "due_date": "2027-06-28",
+        "method": "Credito",
+        "amount": 345.36
+      },
+      {
+        "installment": 11,
+        "due_date": "2026-10-01",
+        "method": "Credito",
+        "amount": 230.22
+      },
+      {
+        "installment": 12,
+        "due_date": "2026-11-01",
+        "method": "Credito",
+        "amount": 230.22
+      },
+      {
+        "installment": 13,
+        "due_date": "2026-12-01",
+        "method": "Credito",
+        "amount": 230.22
+      },
+      {
+        "installment": 14,
+        "due_date": "2027-01-01",
+        "method": "Credito",
+        "amount": 230.22
+      },
+      {
+        "installment": 15,
+        "due_date": "2027-02-01",
+        "method": "Credito",
+        "amount": 230.22
+      },
+      {
+        "installment": 16,
+        "due_date": "2027-03-01",
+        "method": "Credito",
+        "amount": 230.22
+      },
+      {
+        "installment": 17,
+        "due_date": "2027-04-01",
+        "method": "Credito",
+        "amount": 230.22
+      },
+      {
+        "installment": 18,
+        "due_date": "2027-05-01",
+        "method": "Credito",
+        "amount": 230.22
+      },
+      {
+        "installment": 19,
+        "due_date": "2027-06-01",
+        "method": "Credito",
+        "amount": 230.22
+      }
+    ],
+    "debit_value": 0,
+    "credit_value": 5755.4,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  },
+  "Captura de tela 2026-09-02 161622.png": {
+    "empresa_loja": "PantanalAndra",
+    "os_number": "2405Faturando",
+    "client_name": "ANTONIO FELICIANO OLIVEIRA FILHO",
+    "client_cpf": "253.404.798-11",
+    "plate": "ERB2666",
+    "vehicle": "VEÍCULO: SOUL EX",
+    "total_value": 3200,
+    "paid_value": 0,
+    "open_value": 3200,
+    "opened_at": "2026-08-28",
+    "closed_at": null,
+    "status": "em_aberto",
+    "raw_status": "AGUARDANDO RETIRADA",
+    "payments": [],
+    "debit_value": 0,
+    "credit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0
+  }
+}

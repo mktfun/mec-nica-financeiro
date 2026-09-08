@@ -1097,3 +1097,18 @@ Nao fazer: Nunca permita que excecoes estruturais sejam traduzidas em status con
 4. **Duplo Nome de Propriedades para Compatibilidade:** A RPC deve retornar tanto `dinheiro_lojas` quanto `dinheiro_em_lojas`, e tanto `saldo_bancos_positivo` quanto `saldo_bancos_ofx_positivo`, garantindo compatibilidade universal com todos os componentes legados e novos do frontend.
 **Risco identificado / Anti-pattern:** Usar `entry_date = target_date` para entidades de custódia transitória (cofre), o que faz ativos físicos desaparecerem da apuração contábil no dia seguinte.
 
+## [2026-09-08] — [Feature ID: 375-diagnostico-e-reducao-saidas-entradas-orfas-0809]
+**Contexto:** Atualização da RPC `public.auto_match_saidas(p_target_date text)` (Migration `20260908000035_batch_sispag_and_intercompany_matching.sql`) para suporte a pareamento em lote 1-para-N de SISPAG, pareamento intercompany e cancelamento de estorno PIX.
+**Regra aprendida:**
+1. **Lotes SISPAG 1-para-N no PostgreSQL:**
+   - Em PL/pgSQL, para vincular múltiplos títulos de contas a pagar (`daily_manual_bills`) a uma única saída bancária consolidada (`ofx_transactions`), agrupa-se a soma dos títulos abertos de salário por filial e compara-se com o valor absoluto do débito (`ABS(t.amount)`).
+   - Se a soma casar (com tolerância de R$ 0,10), faz-se o `UPDATE daily_manual_bills SET matched_ofx_id = t.id, match_status = 'matched_batch'` para todos os títulos do grupo.
+   - Atualiza-se a saída no extrato com `matched_bill_id = (SELECT id FROM daily_manual_bills ... LIMIT 1)` e `match_status = 'matched_batch'`. (Atenção: `min(uuid)` não existe nativamente no PostgreSQL, usar subquery com `LIMIT 1`).
+2. **Pareamento Intercompany no Banco de Dados:**
+   - Detectar débitos e créditos de mesmo valor no mesmo dia cujas descrições indiquem transferências entre lojas do grupo.
+   - Atualizar ambos com `match_status = 'intercompany_paired'` e `manual_category = 'Transferência Entre Lojas [Apenas Conciliar]'`, desonerando a contagem de órfãos sem duplicar receita nem despesa.
+3. **Auto-Cancelamento de PIX (Bloqueio / Desbloqueio):**
+   - Transações de débito `BLOQUEIO PIX` e crédito `DESBLOQUEIO PIX` de mesmo valor na mesma conta recebem `match_status = 'auto_cancelled'`, limpando ambos os lados da conciliação.
+**Risco identificado / Anti-pattern:** Usar funções agregadas inexistentes como `min(uuid)` no PostgreSQL para obter um ID de linha arbitrário.
+
+

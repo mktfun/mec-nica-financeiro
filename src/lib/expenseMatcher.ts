@@ -115,6 +115,25 @@ export interface InMemExpenseMatchingResult {
   }>;
 }
 
+const STORE_KEYWORDS_MAP: Record<string, string[]> = {
+  'st-01': ['DOM PEDRO', 'DOMPEDRO', 'DP'],
+  'st-02': ['JABAQUARA', 'JAB'],
+  'st-03': ['JORGE BERETTA', 'DHJV', 'JB'],
+  'st-04': ['KENNEDY', 'POPULAR', 'MP AUTO', 'AUTO MECANICA POPULAR'],
+  'st-05': ['PIRAPORINHA', 'EMPORIO', 'EMPORIO DO OLEO'],
+  'st-06': ['PLANALTO', 'BRASICAR', 'CENTRO AUTOMOTIVO AUTO MECANICA LTDA'],
+  'st-07': ['RUDGE', 'CAP', 'PRIME', 'CENTRO AUTOMOTIVO PRIME'],
+  'st-08': ['SANTO ANDRE', 'HD', 'HD CENTRO'],
+  'st-09': ['REI DO MODULO', 'MODULO'],
+  '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f': ['MAUA', 'MHE', 'REI DO OLEO'],
+};
+
+function isSalaryBill(b: any): boolean {
+  if (b.category === 'retirada_socios') return true;
+  const txt = `${b.title || ''} ${b.description || ''} ${b.recipient_name || ''}`.toUpperCase();
+  return /SALARIO|SALÁRIO|RESCISAO|RESCISÃO|FERIAS|FÉRIAS|PREMIO|PRÊMIO|VALE/i.test(txt);
+}
+
 export function executeExpenseAutoMatching(
   ofxResults: any[],
   contasPagarResults: any[],
@@ -136,110 +155,350 @@ export function executeExpenseAutoMatching(
   const storeMap = new Map<string, string>();
   (stores || []).forEach(s => storeMap.set(s.id, s.name));
 
+  // 1. Descompactar todas as transações com contexto de filial
+  const allDebits: any[] = [];
+  const allCredits: any[] = [];
+
   (ofxResults || []).forEach(ofx => {
     const storeId = mapping[ofx.alias] || '';
     const storeName = storeMap.get(storeId) || ofx.alias || 'Loja';
 
-    (ofx.transactions || [])
-      .filter((tx: any) => tx.type === 'out' || Number(tx.amount || 0) < 0)
-      .forEach((tx: any, txIdx: number) => {
-        const txAmount = Math.abs(Number(tx.amount || 0));
-        const txDesc = `${tx.title || ''} ${tx.counterpart_name || ''}`.trim();
-        const normTx = normalizeText(txDesc);
-        const txFitid = tx.fitid || `ofx-out-${txAmount}-${txIdx}`;
+    (ofx.transactions || []).forEach((tx: any, txIdx: number) => {
+      const txAmount = Math.abs(Number(tx.amount || 0));
+      const txDesc = `${tx.title || ''} ${tx.counterpart_name || ''}`.trim();
+      const txFitid = tx.fitid || `ofx-${tx.type}-${txAmount}-${txIdx}`;
+      const enriched = {
+        ...tx,
+        storeId,
+        storeName,
+        txAmount,
+        txDesc,
+        txFitid,
+        rawTx: tx,
+      };
 
-        if (/IRRF|IOF|ESTORNO\s+TARIFA/i.test(normTx)) return;
+      if (tx.type === 'out' || Number(tx.amount || 0) < 0) {
+        allDebits.push(enriched);
+      } else {
+        allCredits.push(enriched);
+      }
+    });
+  });
 
-        let matchedBill: any = null;
-        let matchConfidence = 0;
-        let layer = 0;
+  const usedDebitKeys = new Set<string>();
+  const usedCreditKeys = new Set<string>();
 
-        // CAMADA 1: Match por External Code / FITID exato
-        if (tx.fitid) {
-          const found = allBills.find(b =>
-            !matchedBillKeys.has(b._key) &&
-            b.external_code &&
-            (tx.fitid.includes(b.external_code) || b.external_code.includes(tx.fitid)) &&
-            Math.abs(Number(b.amount || 0) - txAmount) <= TOLERANCE
-          );
-          if (found) {
-            matchedBill = found;
-            matchConfidence = 1.0;
-            layer = 1;
-          }
-        }
+  // ──────────────────────────────────────────────────────────────────────────
+  // FASE A: AUTO-CANCELAMENTO DE BLOQUEIO / DESBLOQUEIO PIX (Efeito Nulo)
+  // ──────────────────────────────────────────────────────────────────────────
+  allDebits.forEach(d => {
+    if (usedDebitKeys.has(d.txFitid)) return;
+    const norm = normalizeText(d.txDesc);
+    if (/bloqueio pix/i.test(norm)) {
+      const matchCredit = allCredits.find(c =>
+        !usedCreditKeys.has(c.txFitid) &&
+        c.storeId === d.storeId &&
+        Math.abs(c.txAmount - d.txAmount) <= TOLERANCE &&
+        /desbloqueio pix/i.test(normalizeText(c.txDesc))
+      );
+      if (matchCredit) {
+        usedDebitKeys.add(d.txFitid);
+        usedCreditKeys.add(matchCredit.txFitid);
+        d.rawTx.match_status = 'auto_cancelled';
+        d.rawTx.manual_category = 'Estorno / Ajuste [Apenas Conciliar]';
+        d.rawTx.manual_justification = 'Bloqueio e Desbloqueio PIX simultâneo (Efeito Nulo)';
+        matchCredit.rawTx.match_status = 'auto_cancelled';
+        matchCredit.rawTx.manual_category = 'Estorno / Ajuste [Apenas Conciliar]';
+        matchCredit.rawTx.manual_justification = 'Bloqueio e Desbloqueio PIX simultâneo (Efeito Nulo)';
+      }
+    }
+  });
 
-        // CAMADA 2: Match de Valor Exato + Mesma Loja + Token de Favorecido
-        if (!matchedBill && storeId) {
-          const storeBills = allBills.filter(b => !matchedBillKeys.has(b._key) && b.store_id === storeId && Math.abs(Number(b.amount || 0) - txAmount) <= TOLERANCE);
-          for (const b of storeBills) {
-            const normRecip = normalizeText(b.recipient_name);
-            const firstToken = normRecip.split(' ')[0];
-            if (firstToken && firstToken.length >= 3 && normTx.includes(firstToken)) {
-              matchedBill = b;
-              matchConfidence = 0.95;
-              layer = 2;
-              break;
-            }
-          }
-        }
+  // ──────────────────────────────────────────────────────────────────────────
+  // FASE B: PAREAMENTO DETERMINÍSTICO INTERCOMPANY (Transferências Entre Lojas)
+  // ──────────────────────────────────────────────────────────────────────────
+  allDebits.forEach(d => {
+    if (usedDebitKeys.has(d.txFitid)) return;
+    const norm = normalizeText(d.txDesc);
+    if (/irrf|iof|estorno tarifa/i.test(norm)) return;
 
-        // CAMADA 3: Match de Valor Único na Loja
-        if (!matchedBill && storeId) {
-          const storeBills = allBills.filter(b => !matchedBillKeys.has(b._key) && b.store_id === storeId && Math.abs(Number(b.amount || 0) - txAmount) <= TOLERANCE);
-          if (storeBills.length === 1) {
-            matchedBill = storeBills[0];
-            matchConfidence = 0.90;
-            layer = 3;
-          }
-        }
+    for (const [targetStoreId, keywords] of Object.entries(STORE_KEYWORDS_MAP)) {
+      if (targetStoreId === d.storeId) continue;
+      const mentionsTarget = keywords.some(k => norm.includes(normalizeText(k)));
+      if (mentionsTarget) {
+        const matchCredit = allCredits.find(c =>
+          !usedCreditKeys.has(c.txFitid) &&
+          c.storeId === targetStoreId &&
+          Math.abs(c.txAmount - d.txAmount) <= TOLERANCE
+        );
+        if (matchCredit) {
+          usedDebitKeys.add(d.txFitid);
+          usedCreditKeys.add(matchCredit.txFitid);
+          const targetStoreName = storeMap.get(targetStoreId) || targetStoreId;
+          const originStoreName = d.storeName;
 
-        // CAMADA 4: Match Global Intercompany (Matriz pagando conta de filial ou Favorecido idêntico)
-        if (!matchedBill) {
-          const candidateBills = allBills.filter(b => !matchedBillKeys.has(b._key) && Math.abs(Number(b.amount || 0) - txAmount) <= TOLERANCE);
-          if (candidateBills.length === 1) {
-            matchedBill = candidateBills[0];
-            matchConfidence = 0.85;
-            layer = 4;
-          } else if (candidateBills.length > 1) {
-            for (const b of candidateBills) {
-              const normRecip = normalizeText(b.recipient_name);
-              const firstToken = normRecip.split(' ')[0];
-              if (firstToken && firstToken.length >= 3 && normTx.includes(firstToken)) {
-                matchedBill = b;
-                matchConfidence = 0.80;
-                layer = 4;
-                break;
-              }
-            }
-          }
-        }
+          d.rawTx.match_status = 'intercompany_paired';
+          d.rawTx.manual_category = 'Transferência Entre Lojas [Apenas Conciliar]';
+          d.rawTx.manual_justification = `Transferência Intercompany de ${originStoreName} para ${targetStoreName}`;
+          d.rawTx.contabilizar_no_subtotal = false;
 
-        if (matchedBill) {
-          matchedBillKeys.add(matchedBill._key);
-          tx.matched_bill_id = matchedBill._key;
-          tx.match_status = 'matched';
+          matchCredit.rawTx.match_status = 'intercompany_paired';
+          matchCredit.rawTx.manual_category = 'Transferência Entre Lojas [Apenas Conciliar]';
+          matchCredit.rawTx.manual_justification = `Transferência Intercompany recebida de ${originStoreName} em ${targetStoreName}`;
+          matchCredit.rawTx.contabilizar_no_subtotal = false;
+          matchCredit.rawTx.impacts_revenue = false;
+
           matchedPairs.push({
-            ofxFitid: txFitid,
-            billExternalCode: matchedBill.external_code,
-            recipientName: matchedBill.recipient_name || matchedBill.title || '',
-            amount: txAmount,
-            storeId: storeId || matchedBill.store_id || '',
-            confidence: matchConfidence,
-            layer
+            ofxFitid: d.txFitid,
+            recipientName: `Transferência: ${originStoreName} -> ${targetStoreName}`,
+            amount: d.txAmount,
+            storeId: d.storeId,
+            confidence: 0.99,
+            layer: 99,
           });
-        } else {
-          orphanOutflows.push({
-            id: tx.id || txFitid,
-            fitid: txFitid,
-            storeId,
-            storeName,
-            amount: txAmount,
-            description: txDesc || 'Débito Bancário',
-            date: tx.date || new Date().toISOString().slice(0, 10),
-          });
+          break;
         }
+      }
+    }
+  });
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // FASE C: IDENTIFICAÇÃO E BLINDAGEM DE SAQUES EM DINHEIRO / ATM
+  // ──────────────────────────────────────────────────────────────────────────
+  allDebits.forEach(d => {
+    if (usedDebitKeys.has(d.txFitid)) return;
+    const norm = normalizeText(d.txDesc);
+    const isAtm = /saque din|saque atm|cart00/i.test(norm);
+    if (isAtm) {
+      d.isAtm = true;
+      d.rawTx.is_atm_withdrawal = true;
+      d.rawTx.manual_category = 'Retirada de Sócios / Sangria / Saque em Dinheiro';
+      d.rawTx.contabilizar_no_subtotal = false;
+    }
+  });
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // FASE D: MOTOR DE BATIMENTO 1-PARA-N DE LOTES SISPAG SALÁRIOS
+  // ──────────────────────────────────────────────────────────────────────────
+  allDebits.forEach(d => {
+    if (usedDebitKeys.has(d.txFitid) || d.isAtm) return;
+    const norm = normalizeText(d.txDesc);
+    if (/sispag|salario/i.test(norm)) {
+      const storeSalaryBills = allBills.filter(b => !matchedBillKeys.has(b._key) && b.store_id === d.storeId && isSalaryBill(b));
+      const storeSum = storeSalaryBills.reduce((acc, b) => acc + b.amount, 0);
+
+      // D1: Todos os salários em aberto da loja somam exatamente o débito SISPAG
+      if (Math.abs(storeSum - d.txAmount) <= 0.10 && storeSalaryBills.length > 0) {
+        storeSalaryBills.forEach(b => matchedBillKeys.add(b._key));
+        usedDebitKeys.add(d.txFitid);
+        d.rawTx.matched_bill_id = 'BATCH_SISPAG';
+        d.rawTx.match_status = 'matched_batch';
+        matchedPairs.push({
+          ofxFitid: d.txFitid,
+          recipientName: `Folha SISPAG (${storeSalaryBills.length} colaboradores)`,
+          amount: d.txAmount,
+          storeId: d.storeId,
+          confidence: 0.99,
+          layer: 10,
+        });
+        return;
+      }
+
+      // D2: Subconjuntos de 1 salário na mesma loja
+      for (let i = 0; i < storeSalaryBills.length; i++) {
+        if (Math.abs(storeSalaryBills[i].amount - d.txAmount) <= TOLERANCE) {
+          matchedBillKeys.add(storeSalaryBills[i]._key);
+          usedDebitKeys.add(d.txFitid);
+          d.rawTx.matched_bill_id = storeSalaryBills[i]._key;
+          d.rawTx.match_status = 'matched';
+          matchedPairs.push({
+            ofxFitid: d.txFitid,
+            billExternalCode: storeSalaryBills[i].external_code,
+            recipientName: storeSalaryBills[i].recipient_name,
+            amount: d.txAmount,
+            storeId: d.storeId,
+            confidence: 0.95,
+            layer: 11,
+          });
+          return;
+        }
+      }
+
+      // D3: Salários da loja + Colaboradores da Matriz/Holding rateados
+      const masterSalaryBills = allBills.filter(b => !matchedBillKeys.has(b._key) && b.store_id === 'master' && isSalaryBill(b));
+      const needed = d.txAmount - storeSum;
+      if (needed > 0 && storeSalaryBills.length > 0) {
+        for (let i = 0; i < masterSalaryBills.length; i++) {
+          if (Math.abs(masterSalaryBills[i].amount - needed) <= TOLERANCE) {
+            const matchedList = [...storeSalaryBills, masterSalaryBills[i]];
+            matchedList.forEach(b => matchedBillKeys.add(b._key));
+            usedDebitKeys.add(d.txFitid);
+            d.rawTx.matched_bill_id = 'BATCH_SISPAG';
+            d.rawTx.match_status = 'matched_batch';
+            matchedPairs.push({
+              ofxFitid: d.txFitid,
+              recipientName: `Folha SISPAG (${matchedList.length} colaboradores)`,
+              amount: d.txAmount,
+              storeId: d.storeId,
+              confidence: 0.98,
+              layer: 12,
+            });
+            return;
+          }
+          for (let j = i + 1; j < masterSalaryBills.length; j++) {
+            if (Math.abs(masterSalaryBills[i].amount + masterSalaryBills[j].amount - needed) <= TOLERANCE) {
+              const matchedList = [...storeSalaryBills, masterSalaryBills[i], masterSalaryBills[j]];
+              matchedList.forEach(b => matchedBillKeys.add(b._key));
+              usedDebitKeys.add(d.txFitid);
+              d.rawTx.matched_bill_id = 'BATCH_SISPAG';
+              d.rawTx.match_status = 'matched_batch';
+              matchedPairs.push({
+                ofxFitid: d.txFitid,
+                recipientName: `Folha SISPAG (${matchedList.length} colaboradores)`,
+                amount: d.txAmount,
+                storeId: d.storeId,
+                confidence: 0.98,
+                layer: 12,
+              });
+              return;
+            }
+          }
+        }
+      }
+
+      // D4: Colaborador com valor único em qualquer loja (ex: Dom Pedro pagando título de outra filial)
+      const anySalary = allBills.find(b => !matchedBillKeys.has(b._key) && isSalaryBill(b) && Math.abs(b.amount - d.txAmount) <= TOLERANCE);
+      if (anySalary) {
+        matchedBillKeys.add(anySalary._key);
+        usedDebitKeys.add(d.txFitid);
+        d.rawTx.matched_bill_id = anySalary._key;
+        d.rawTx.match_status = 'matched';
+        matchedPairs.push({
+          ofxFitid: d.txFitid,
+          billExternalCode: anySalary.external_code,
+          recipientName: anySalary.recipient_name,
+          amount: d.txAmount,
+          storeId: d.storeId,
+          confidence: 0.90,
+          layer: 13,
+        });
+        return;
+      }
+    }
+  });
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // FASE E: MATCHING 1-PARA-1 PADRÃO (CAMADAS 1 A 4)
+  // ──────────────────────────────────────────────────────────────────────────
+  allDebits.forEach(d => {
+    if (usedDebitKeys.has(d.txFitid)) return;
+    const normTx = normalizeText(d.txDesc);
+    if (/irrf|iof|estorno tarifa/i.test(normTx)) return;
+
+    // Saques ATM não casam com contas de fornecedores
+    if (d.isAtm) {
+      orphanOutflows.push({
+        id: d.id || d.txFitid,
+        fitid: d.txFitid,
+        storeId: d.storeId,
+        storeName: d.storeName,
+        amount: d.txAmount,
+        description: d.txDesc || 'Saque em Dinheiro ATM',
+        date: d.date || new Date().toISOString().slice(0, 10),
       });
+      return;
+    }
+
+    let matchedBill: any = null;
+    let matchConfidence = 0;
+    let layer = 0;
+
+    // Camada 1: FITID / External code
+    if (d.fitid) {
+      const found = allBills.find(b =>
+        !matchedBillKeys.has(b._key) &&
+        b.external_code &&
+        (d.fitid.includes(b.external_code) || b.external_code.includes(d.fitid)) &&
+        Math.abs(Number(b.amount || 0) - d.txAmount) <= TOLERANCE
+      );
+      if (found) {
+        matchedBill = found;
+        matchConfidence = 1.0;
+        layer = 1;
+      }
+    }
+
+    // Camada 2: Valor exato + Mesma Loja + Token Favorecido
+    if (!matchedBill && d.storeId) {
+      const storeBills = allBills.filter(b => !matchedBillKeys.has(b._key) && b.store_id === d.storeId && Math.abs(Number(b.amount || 0) - d.txAmount) <= TOLERANCE);
+      for (const b of storeBills) {
+        const normRecip = normalizeText(b.recipient_name);
+        const firstToken = normRecip.split(' ')[0];
+        if (firstToken && firstToken.length >= 3 && normTx.includes(firstToken)) {
+          matchedBill = b;
+          matchConfidence = 0.95;
+          layer = 2;
+          break;
+        }
+      }
+    }
+
+    // Camada 3: Valor único na loja
+    if (!matchedBill && d.storeId) {
+      const storeBills = allBills.filter(b => !matchedBillKeys.has(b._key) && b.store_id === d.storeId && Math.abs(Number(b.amount || 0) - d.txAmount) <= TOLERANCE);
+      if (storeBills.length === 1) {
+        matchedBill = storeBills[0];
+        matchConfidence = 0.90;
+        layer = 3;
+      }
+    }
+
+    // Camada 4: Global / Matriz
+    if (!matchedBill) {
+      const candidateBills = allBills.filter(b => !matchedBillKeys.has(b._key) && Math.abs(Number(b.amount || 0) - d.txAmount) <= TOLERANCE);
+      if (candidateBills.length === 1) {
+        matchedBill = candidateBills[0];
+        matchConfidence = 0.85;
+        layer = 4;
+      } else if (candidateBills.length > 1) {
+        for (const b of candidateBills) {
+          const normRecip = normalizeText(b.recipient_name);
+          const firstToken = normRecip.split(' ')[0];
+          if (firstToken && firstToken.length >= 3 && normTx.includes(firstToken)) {
+            matchedBill = b;
+            matchConfidence = 0.80;
+            layer = 4;
+            break;
+          }
+        }
+      }
+    }
+
+    if (matchedBill) {
+      matchedBillKeys.add(matchedBill._key);
+      usedDebitKeys.add(d.txFitid);
+      d.rawTx.matched_bill_id = matchedBill._key;
+      d.rawTx.match_status = 'matched';
+      matchedPairs.push({
+        ofxFitid: d.txFitid,
+        billExternalCode: matchedBill.external_code,
+        recipientName: matchedBill.recipient_name || matchedBill.title || '',
+        amount: d.txAmount,
+        storeId: d.storeId || matchedBill.store_id || '',
+        confidence: matchConfidence,
+        layer
+      });
+    } else {
+      orphanOutflows.push({
+        id: d.id || d.txFitid,
+        fitid: d.txFitid,
+        storeId: d.storeId,
+        storeName: d.storeName,
+        amount: d.txAmount,
+        description: d.txDesc || 'Débito Bancário',
+        date: d.date || new Date().toISOString().slice(0, 10),
+      });
+    }
   });
 
   return {

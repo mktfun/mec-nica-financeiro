@@ -55,3 +55,12 @@
 3. **Normalização e Extração de Agência e Conta:** Verificar `<BRANCHID>` além de `<ACCTID>`. Se a conta tiver menos de 8 dígitos, compor `{agencia}{conta}`. Efetuar fallback inteligente via regex no nome do arquivo: `Extrato_(\d{4})_(\d{5,8})`.
 4. **Mapeamento Persistente no PostgreSQL:** Todos os aliases canônicos (`{agencia}{conta}`, `{agencia}_{conta}`, `{conta}`, `Extrato_{agencia}_{conta}`, `ITAU - {agencia}{conta}`) DEVEM estar persistidos na tabela `public.store_file_mappings` via migration SQL e sincronizados automaticamente na primeira importação.
 **Risco identificado / Anti-pattern:** Exigir tag de fechamento XML em padrões bancários SGML legados e manter mapeamentos de lojas voláteis apenas em memória transitória ou localStorage.
+
+## [2026-09-08] — [Feature ID: 375-diagnostico-e-reducao-saidas-entradas-orfas-0809]
+**Contexto:** Correção de falhas no parser de planilhas de contas a pagar (`contasPagarParser.ts`) causadas por datas codificadas como inteiros seriais do Excel (ex: `46269` correspondente a `2026-09-04`).
+**Regra aprendida:**
+1. **Conversão de Datas Seriais do Excel:**
+   - Células formatadas como data em planilhas `.xls` / `.xlsx` geradas por ERPs legados são lidas pela biblioteca `xlsx` frequentemente como valores numéricos inteiros (`typeof val === 'number'`).
+   - O helper `parseDate` DEVE utilizar `XLSX.SSF.parse_date_code(val)` para extrair `{ y, m, d }` e montar a string `YYYY-MM-DD` com padding de zeros (`padStart(2, '0')`).
+   - Tratar números seriais do Excel como strings ou tentar `new Date(val)` direto gera datas corrompidas (ex: ano 1970) ou strings inválidas.
+**Risco identificado / Anti-pattern:** Assumir que datas em planilhas Excel sempre vêm como strings (`"DD/MM/YYYY"`).

@@ -161,9 +161,12 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
   }, [enrichedTransactions]);
 
   const handlePersistAutoMatches = async () => {
-    if (unpersistedMatches.length === 0) return;
     setPersistingMatches(true);
     try {
+      // 1. Executa batimento atômico canônico no banco de dados para a data
+      await (supabase as any).rpc('auto_match_saidas', { p_date: date });
+
+      // 2. Persiste quaisquer vínculos intra-loja detectados em memória
       for (const tx of unpersistedMatches) {
         const bill = tx.expenseMatch?.matchedBill;
         if (!bill) continue;
@@ -172,7 +175,7 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
           .from('ofx_transactions')
           .update({
             matched_bill_id: bill.id,
-            manual_category: 'Conta / Despesa Filial',
+            manual_category: bill.category || 'Conta ERP',
             manual_justification: bill.recipient_name || bill.title,
             contabilizar_no_subtotal: true,
           })

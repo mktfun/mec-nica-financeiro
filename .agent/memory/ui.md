@@ -645,3 +645,20 @@ Nao fazer: Nunca fazer fallbacks automaticos para zero em dados criticos contabe
 
 **Não fazer:** Nunca use `const { data = [] }` em componentes onde `data` é dependência de `useEffect`.
 
+## [2026-09-08] — [Feature ID: 374-correcao-import-mapa-metas-e-desduplicacao-step3]
+**Contexto:** Desduplicação do editor de OSs pendentes no Step 3 e auto-preenchimento com feedback visual do Odômetro OI pelo PDF do Mapa de Metas.
+**Regra aprendida:**
+1. **Unicidade de Telas de Edição no Wizard:** O componente `<MissingPatioOsEditor />` deve ser renderizado exclusivamente na etapa dedicada (Step 2.5). Nunca duplicá-lo no rodapé do Step 3 (Inputs Manuais), mantendo apenas um botão de atalho no cabeçalho caso o usuário queira revisitar.
+2. **Badges de Origem e Preenchimento Automático:** Quando campos numéricos do Step 3 (como Odômetro OI) forem alimentados por parsers automatizados (ex: Mapa de Metas PDF), exibir badges informativos claros (`✨ Auto: Mapa de Metas (PDF)`) para dar total transparência ao operador.
+**Risco identificado / Anti-pattern:** Duplicar formulários ou editores de entidades em etapas adjacentes do mesmo fluxo, forçando o usuário a interagir duas vezes com os mesmos dados.
+
+## [2026-09-08] — [Feature ID: 375-diagnostico-e-reducao-saidas-entradas-orfas-0809]
+**Contexto:** Saneamento visual das abas de Saídas e Entradas Órfãs no Step 2 (`Step2NonRevenueJustifications.tsx`).
+**Regra aprendida:**
+1. **Filtragem de Transações Conciliadas em Memória e no Banco:**
+   - As listas de Saídas e Entradas a justificar devem excluir categoricamente itens cujo `match_status` seja `'matched'`, `'matched_batch'`, `'intercompany_paired'` ou `'auto_cancelled'`.
+   - No preview em memória antes de salvar, consumir diretamente o resultado do motor de conciliação (`matchDailyExpensesBatch`), garantindo que o número exibido nas abas corresponda rigorosamente à quantidade real de órfãos pendentes.
+2. **Auto-Classificação de Saques em Espécie (ATM):**
+   - Transações com descrição contendo `SAQUE DIN ATM` ou `CART00` devem ser pré-classificadas automaticamente na interface com a categoria `Retirada de Sócios / Sangria / Saque em Dinheiro` e com o switch `adicionaNoContas: false`.
+**Risco identificado / Anti-pattern:** Calcular contadores de abas de justificativas (`Saídas Órfãs (N)`) utilizando listas brutas sem deduzir lotes casados pelo motor ou transferências pareadas entre lojas.
+

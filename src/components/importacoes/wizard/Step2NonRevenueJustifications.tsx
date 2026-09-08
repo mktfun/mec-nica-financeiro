@@ -128,6 +128,9 @@ function inferInflowCategory(desc: string): { category: string; impactsRevenue: 
 }
 
 function inferOutflowCategory(desc: string): { category: string; adicionaNoContas: boolean } {
+  if (/SAQUE\s+DIN|SAQUE\s+ATM|CART00/i.test(desc)) {
+    return { category: 'Retirada de Sócios / Sangria / Saque em Dinheiro', adicionaNoContas: false };
+  }
   if (NON_REVENUE_PATTERNS.TRANSFERENCIA_ENTRE_LOJAS.test(desc)) {
     return { category: 'Transferência Entre Lojas', adicionaNoContas: false };
   }
@@ -157,7 +160,7 @@ export function Step2NonRevenueJustifications({
     queryFn: async () => {
       const { data, error } = await supabase
         .from('ofx_transactions')
-        .select('id, store_id, bank_name, type, amount, occurred_at, fitid, counterpart_name, matched_bill_id, manual_category, manual_justification, target_date, contabilizar_no_subtotal')
+        .select('id, store_id, bank_name, type, amount, occurred_at, fitid, counterpart_name, matched_bill_id, manual_category, manual_justification, target_date, contabilizar_no_subtotal, match_status')
         .eq('target_date', targetDate)
         .eq('type', 'out')
         .is('matched_bill_id', null);
@@ -172,7 +175,7 @@ export function Step2NonRevenueJustifications({
     queryFn: async () => {
       const { data, error } = await supabase
         .from('ofx_transactions')
-        .select('id, store_id, bank_name, type, amount, occurred_at, fitid, counterpart_name, matched_os_number, manual_category, manual_justification, target_date')
+        .select('id, store_id, bank_name, type, amount, occurred_at, fitid, counterpart_name, matched_os_number, manual_category, manual_justification, target_date, match_status')
         .eq('target_date', targetDate)
         .eq('type', 'in')
         .is('matched_os_number', null);
@@ -181,11 +184,26 @@ export function Step2NonRevenueJustifications({
     }
   });
 
+  // 3. Pré-matching determinístico em memória para modo preview
+  const inMemMatchResult = useMemo(() => {
+    if (results.ofxResults && results.ofxResults.length > 0) {
+      return executeExpenseAutoMatching(
+        results.ofxResults,
+        results.contasPagarResults || [],
+        mapping,
+        stores
+      );
+    }
+    return null;
+  }, [results.ofxResults, results.contasPagarResults, mapping, stores]);
+
   const nonRevenueInflowEntries = useMemo<OFXEntry[]>(() => {
-    // 1. Se houver dados no banco, usa os dados do banco (filtrando os que estão com matched_os_number nulo)
+    // 1. Se houver dados no banco, usa os dados do banco (filtrando os que estão com matched_os_number nulo e não auto-pareados)
     if (dbInflows && dbInflows.length > 0) {
       return dbInflows
         .filter((tx: any) => {
+          if (tx.match_status === 'matched' || tx.match_status === 'matched_batch' || tx.match_status === 'intercompany_paired' || tx.match_status === 'auto_cancelled') return false;
+          if (tx.manual_category && tx.manual_category.includes('[Apenas Conciliar]')) return false;
           const fullDesc = `${tx.title || ''} ${tx.counterpart_name || ''} ${tx.bank_name || ''}`.trim();
           if (EXCLUDE_ACQUIRER_REGEX.test(fullDesc)) return false;
           if (EXCLUDE_BANK_EARNINGS_REGEX.test(fullDesc)) return false;
@@ -218,7 +236,7 @@ export function Step2NonRevenueJustifications({
 
       (ofxResult.transactions || []).forEach((tx: any) => {
         if (tx.type !== 'in' && Number(tx.amount || 0) <= 0) return;
-        if (tx.matched_os_number || tx.matchedOsNumber || tx.match_status === 'matched') return;
+        if (tx.matched_os_number || tx.matchedOsNumber || tx.match_status === 'matched' || tx.match_status === 'intercompany_paired' || tx.match_status === 'auto_cancelled') return;
 
         const fullDesc = `${tx.title || ''} ${tx.counterpart_name || ''}`.trim();
         if (EXCLUDE_ACQUIRER_REGEX.test(fullDesc)) return;
@@ -250,10 +268,12 @@ export function Step2NonRevenueJustifications({
   }, [dbInflows, results.ofxResults, mapping, stores, targetDate]);
 
   const nonRevenueOutflowEntries = useMemo<OFXEntry[]>(() => {
-    // 1. Se houver dados no banco, usa os dados do banco (filtrando os que estão com matched_bill_id nulo)
+    // 1. Se houver dados no banco, usa os dados do banco (filtrando os que estão com matched_bill_id nulo e não auto-pareados)
     if (dbOutflows && dbOutflows.length > 0) {
       return dbOutflows
         .filter((tx: any) => {
+          if (tx.match_status === 'matched' || tx.match_status === 'matched_batch' || tx.match_status === 'intercompany_paired' || tx.match_status === 'auto_cancelled') return false;
+          if (tx.manual_category && tx.manual_category.includes('[Apenas Conciliar]')) return false;
           const fullDesc = `${tx.title || ''} ${tx.counterpart_name || ''} ${tx.bank_name || ''}`.trim();
           if (EXCLUDE_BANK_EARNINGS_REGEX.test(fullDesc)) return false;
           if (/saldo\s+anterior|saldo\s+total/i.test(fullDesc)) return false;

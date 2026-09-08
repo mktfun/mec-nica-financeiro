@@ -1,0 +1,556 @@
+{
+  "Captura de tela 2026-09-03 093300.png": {
+    "store_raw": "MP Jabaquara",
+    "os_number": "403",
+    "client_name": "VARA CAROLINA FERNANDES DE SOUZA",
+    "plate": "EQQ8527",
+    "vehicle": "VEÍCULO CRV",
+    "total_value": 4488,
+    "paid_value": 0,
+    "open_value": 4488,
+    "credit_value": 4488,
+    "debit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0,
+    "payments": [],
+    "opened_at": "2026-01-09",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 093333.png": {
+    "store_raw": "MP Jabaquara",
+    "os_number": "2007",
+    "client_name": "LUANA MARIA ESTEVES CARVALHO CAMARGO",
+    "plate": "DZB3378",
+    "vehicle": "VEÍCULO PALIO",
+    "total_value": 1500,
+    "paid_value": 0,
+    "open_value": 1500,
+    "credit_value": 1500,
+    "debit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0,
+    "payments": [],
+    "opened_at": "2026-01-09",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 093353.png": {
+    "store_raw": "MP Jabaquara",
+    "os_number": "368",
+    "client_name": "VANESSA FAVRETTO GONCALVES",
+    "plate": "GOD3J08",
+    "vehicle": "TCROSS",
+    "total_value": 211.2,
+    "paid_value": 211.2,
+    "open_value": 0,
+    "credit_value": 0,
+    "debit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0,
+    "payments": [
+      {
+        "method": "Dinheiro",
+        "amount": 211.2,
+        "date": "2026-08-02",
+        "status": "pago"
+      }
+    ],
+    "opened_at": "2026-08-01",
+    "closed_at": "2026-08-02"
+  },
+  "Captura de tela 2026-09-03 093429.png": {
+    "store_raw": "MP Santamontano",
+    "os_number": "2415",
+    "client_name": "ALEXANDRE BOMBONATO MOLINA",
+    "plate": "DUG7333",
+    "vehicle": "VEÍCULO EM EXECUÇÃO",
+    "total_value": 4332.38,
+    "paid_value": 3000,
+    "open_value": 1332.38,
+    "credit_value": 0,
+    "debit_value": 0,
+    "pix_transfer_value": 1000,
+    "cash_value": 0,
+    "payments": [
+      {
+        "method": "Cheque",
+        "amount": 2000,
+        "date": "2026-02-09",
+        "status": "pago"
+      },
+      {
+        "method": "PIX",
+        "amount": 1000,
+        "date": "2026-02-09",
+        "status": "pago"
+      }
+    ],
+    "opened_at": "2026-02-09",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 093444.png": {
+    "store_raw": "MP Santo André",
+    "os_number": "2414",
+    "client_name": "SCARLETH SOUZA SILVA PIRES",
+    "plate": "RUH5G22",
+    "vehicle": "VEÍCULO EM EXECUÇÃO",
+    "total_value": 3984.8,
+    "paid_value": 0,
+    "open_value": 3984.8,
+    "credit_value": 3984.8,
+    "debit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0,
+    "payments": [],
+    "opened_at": "2020-09-02",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 093504.png": {
+    "store_raw": "MP Santo André",
+    "os_number": "2416",
+    "client_name": "MAURÍCIO DE FREITAS MORAES",
+    "plate": "FZK6F47",
+    "vehicle": "SAVEIRO G6",
+    "total_value": 385,
+    "paid_value": 0,
+    "open_value": 385,
+    "credit_value": 0,
+    "debit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0,
+    "payments": [],
+    "opened_at": "2026-02-02",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 093523.png": {
+    "store_raw": "MPS Paturaturu",
+    "os_number": "24056",
+    "client_name": "ANTONIO FELICIANO OLIVEIRA FILHO",
+    "plate": "ERB2666",
+    "vehicle": "SOUL EX",
+    "total_value": 3200,
+    "paid_value": 0,
+    "open_value": 3200,
+    "credit_value": 2700,
+    "debit_value": 0,
+    "pix_transfer_value": 500,
+    "cash_value": 0,
+    "payments": [],
+    "opened_at": "2026-08-28",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 093553.png": {
+    "store_raw": "MP Rudge",
+    "os_number": "8769",
+    "client_name": "CRISTINA ARAKAKI",
+    "plate": "DWT8353",
+    "vehicle": "VEÍCULO FIT",
+    "total_value": 4461,
+    "paid_value": 2676.6,
+    "open_value": 1784.4,
+    "credit_value": 1784.4,
+    "debit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0,
+    "payments": [
+      {
+        "method": "Cartão de Crédito",
+        "amount": 267.66,
+        "date": "2026-02-09",
+        "status": "pago"
+      },
+      {
+        "method": "Cartão de Crédito",
+        "amount": 267.66,
+        "date": "2026-02-11",
+        "status": "pendente"
+      },
+      {
+        "method": "Cartão de Crédito",
+        "amount": 267.66,
+        "date": "2026-01-27",
+        "status": "pendente"
+      },
+      {
+        "method": "Cartão de Crédito",
+        "amount": 267.66,
+        "date": "2026-01-31",
+        "status": "pendente"
+      },
+      {
+        "method": "Cartão de Crédito",
+        "amount": 267.66,
+        "date": "2027-01-03",
+        "status": "pendente"
+      },
+      {
+        "method": "Cartão de Crédito",
+        "amount": 267.66,
+        "date": "2027-01-01",
+        "status": "pendente"
+      },
+      {
+        "method": "Cartão de Crédito",
+        "amount": 267.66,
+        "date": "2027-01-30",
+        "status": "pendente"
+      },
+      {
+        "method": "Cartão de Crédito",
+        "amount": 267.66,
+        "date": "2027-03-01",
+        "status": "pendente"
+      },
+      {
+        "method": "Cartão de Crédito",
+        "amount": 267.66,
+        "date": "2027-03-31",
+        "status": "pendente"
+      },
+      {
+        "method": "Cartão de Crédito",
+        "amount": 267.66,
+        "date": "2027-05-31",
+        "status": "pendente"
+      },
+      {
+        "method": "Cartão de Crédito",
+        "amount": 267.66,
+        "date": "2027-05-29",
+        "status": "pendente"
+      }
+    ],
+    "opened_at": "2026-02-09",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 093610.png": {
+    "store_raw": "MP Rudge",
+    "os_number": "8768",
+    "client_name": "WALLISSON DOUGLAS TRISTÃO SOBRAL",
+    "plate": "FXT6149",
+    "vehicle": "Veículo RENEGADE",
+    "total_value": 520,
+    "paid_value": 0,
+    "open_value": 520,
+    "credit_value": 0,
+    "debit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0,
+    "payments": [],
+    "opened_at": "2026-09-01",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 093625.png": {
+    "store_raw": "MP Rudge",
+    "os_number": "8689",
+    "client_name": "LUIS FELIPE DA CASA",
+    "plate": "FNE4866",
+    "vehicle": "Veículo C/ Chassi",
+    "total_value": 4140,
+    "paid_value": 2000,
+    "open_value": 2140,
+    "credit_value": 0,
+    "debit_value": 0,
+    "pix_transfer_value": 2000,
+    "cash_value": 0,
+    "payments": [
+      {
+        "method": "PIX",
+        "amount": 2000,
+        "date": "2020-07-20",
+        "status": "pago"
+      }
+    ],
+    "opened_at": "2026-07-14",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 093638.png": {
+    "store_raw": "MPRudg",
+    "os_number": "8763",
+    "client_name": "DOUGLAS JOSÉ MOREIRA DE SOUZA",
+    "plate": "QUODF41",
+    "vehicle": "ECOSPORT",
+    "total_value": 4236.4,
+    "paid_value": 2265.24,
+    "open_value": 1971.16,
+    "credit_value": 0,
+    "debit_value": 0,
+    "pix_transfer_value": 2265.24,
+    "cash_value": 0,
+    "payments": [
+      {
+        "method": "PIX",
+        "amount": 2265.24,
+        "date": "2026-01-09",
+        "status": "pago"
+      }
+    ],
+    "opened_at": "2026-01-09",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 093655.png": {
+    "store_raw": "Central de Atendimento",
+    "os_number": "8762",
+    "client_name": "JOSE ANTONIO DA SILVEIRA",
+    "plate": "MJ03062",
+    "vehicle": "Veículo: SENTRA",
+    "total_value": 1585,
+    "paid_value": 0,
+    "open_value": 1585,
+    "credit_value": 0,
+    "debit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0,
+    "payments": [],
+    "opened_at": "2026-09-01",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 093727.png": {
+    "store_raw": "MP Jabaquara",
+    "os_number": "8766",
+    "client_name": "MARCELO MOTTAOLA DOS SANTOS",
+    "plate": "DKS3157",
+    "vehicle": "FIORDINO",
+    "total_value": 743,
+    "paid_value": 743,
+    "open_value": 0,
+    "credit_value": 0,
+    "debit_value": 0,
+    "pix_transfer_value": 743,
+    "cash_value": 0,
+    "payments": [
+      {
+        "method": "PIX",
+        "amount": 743,
+        "date": "2026-09-02",
+        "status": "pago"
+      }
+    ],
+    "opened_at": "2026-08-31",
+    "closed_at": "2026-09-02"
+  },
+  "Captura de tela 2026-09-03 093754.png": {
+    "store_raw": "Rei do Óleo",
+    "os_number": "1858",
+    "client_name": "UIRSES GABRIEL JABRA DE OLIVEIRA",
+    "plate": "NWC2C82",
+    "vehicle": "IDEAL ELX",
+    "total_value": 4040,
+    "paid_value": 0,
+    "open_value": 4040,
+    "credit_value": 4040,
+    "debit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0,
+    "payments": [],
+    "opened_at": "2026-01-08",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 093808.png": {
+    "store_raw": "ReiDoModulo",
+    "os_number": "1856",
+    "client_name": "LUTUM MOTORS",
+    "plate": "FUSCA NOVO",
+    "vehicle": "FUSCA",
+    "total_value": 4000,
+    "paid_value": 0,
+    "open_value": 4000,
+    "credit_value": 0,
+    "debit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0,
+    "payments": [],
+    "opened_at": "2018-07-03",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 093823.png": {
+    "store_raw": "ReiDoModulo",
+    "os_number": "1818",
+    "client_name": "WESLEY CORREA DE CASTRO",
+    "plate": "ECOSPORT",
+    "vehicle": "VEÍCULO: ECOSPORT",
+    "total_value": 5200,
+    "paid_value": 2400,
+    "open_value": 2800,
+    "credit_value": 2800,
+    "debit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0,
+    "payments": [],
+    "opened_at": "2026-01-09",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 093849.png": {
+    "store_raw": "Hipoparorinha",
+    "os_number": "40342",
+    "client_name": "YAN DE MORAES TOMAZ",
+    "plate": "FUF2B18",
+    "vehicle": "FUSION",
+    "total_value": 2045.1,
+    "paid_value": 0,
+    "open_value": 2045.1,
+    "credit_value": 0,
+    "debit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0,
+    "payments": [],
+    "opened_at": "2020-09-02",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 093904.png": {
+    "store_raw": "MP Jabaquara",
+    "os_number": "40337",
+    "client_name": "THIAGO DE FREITAS ALBINO",
+    "plate": "EIV1098",
+    "vehicle": "VOYAGE",
+    "total_value": 9306.7,
+    "paid_value": 5300,
+    "open_value": 4006.7,
+    "credit_value": 0,
+    "debit_value": 0,
+    "pix_transfer_value": 5300,
+    "cash_value": 0,
+    "payments": [
+      {
+        "method": "PIX",
+        "amount": 5300,
+        "date": "2026-09-01",
+        "status": "pago"
+      }
+    ],
+    "opened_at": "2026-08-29",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 093924.png": {
+    "store_raw": "MPSofisticado",
+    "os_number": "60148",
+    "client_name": "EDSON DA SILVA MELO",
+    "plate": "GFV3334",
+    "vehicle": "TERITORY",
+    "total_value": 2637.5,
+    "paid_value": 0,
+    "open_value": 2637.5,
+    "credit_value": 2637.5,
+    "debit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0,
+    "payments": [],
+    "opened_at": "2026-08-27",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 093940.png": {
+    "store_raw": "HP Comproro",
+    "os_number": "956",
+    "client_name": "JOSÉ APARECIDO FERREIRA",
+    "plate": "FOB7313",
+    "vehicle": "VEÍCULO: COROLLA",
+    "total_value": 3649.7,
+    "paid_value": 2000,
+    "open_value": 1649.7,
+    "credit_value": 0,
+    "debit_value": 2000,
+    "pix_transfer_value": 0,
+    "cash_value": 0,
+    "payments": [
+      {
+        "method": "Cartão de Débito",
+        "amount": 2000,
+        "date": "2026-01-09",
+        "status": "pago"
+      }
+    ],
+    "opened_at": "2026-08-28",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 094011.png": {
+    "store_raw": "Rei do Óleo Mauá",
+    "os_number": "22596",
+    "client_name": "ALESSANDRA DA SILVA MELO",
+    "plate": "FRM6D37",
+    "vehicle": "Honda HR-V 1.8 2016",
+    "total_value": 385,
+    "paid_value": 300,
+    "open_value": 85,
+    "credit_value": 0,
+    "debit_value": 300,
+    "pix_transfer_value": 0,
+    "cash_value": 0,
+    "payments": [
+      {
+        "method": "Débito",
+        "amount": 300,
+        "date": "2026-02-09",
+        "status": "pago"
+      }
+    ],
+    "opened_at": "2026-02-09",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 094029.png": {
+    "store_raw": "Rei do Oleo",
+    "os_number": "22595",
+    "client_name": "ANDRE MELLO FERREIRA",
+    "plate": "EBX8211",
+    "vehicle": "FOX",
+    "total_value": 190,
+    "paid_value": 0,
+    "open_value": 190,
+    "credit_value": 0,
+    "debit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0,
+    "payments": [],
+    "opened_at": "2026-02-09",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 094054.png": {
+    "store_raw": "Rei do Óleo Mauá",
+    "os_number": "22594",
+    "client_name": "SAUEL PROCÓPIO OLIVEIRA",
+    "plate": "FLYSH03",
+    "vehicle": "VELOSTER",
+    "total_value": 190,
+    "paid_value": 0,
+    "open_value": 190,
+    "credit_value": 0,
+    "debit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0,
+    "payments": [],
+    "opened_at": "2026-02-09",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 094114.png": {
+    "store_raw": "W104Faturamento",
+    "os_number": "1104",
+    "client_name": "AIRTON CAMPANELLI",
+    "plate": "EGO2922",
+    "vehicle": "Veículo: C4",
+    "total_value": 385,
+    "paid_value": 0,
+    "open_value": 385,
+    "credit_value": 0,
+    "debit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0,
+    "payments": [],
+    "opened_at": "2020-09-02",
+    "closed_at": null
+  },
+  "Captura de tela 2026-09-03 094136.png": {
+    "store_raw": "MP Jabaquara",
+    "os_number": "18461",
+    "client_name": "VÍCTOR MORAL MARTÍN",
+    "plate": "JGQ9D01",
+    "vehicle": "SANCERO",
+    "total_value": 190,
+    "paid_value": 0,
+    "open_value": 190,
+    "credit_value": 0,
+    "debit_value": 0,
+    "pix_transfer_value": 0,
+    "cash_value": 0,
+    "payments": [],
+    "opened_at": "2026-08-29",
+    "closed_at": null
+  }
+}

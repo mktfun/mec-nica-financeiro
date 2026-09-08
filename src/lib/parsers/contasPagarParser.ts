@@ -173,21 +173,35 @@ export async function parseContasAPagarFile(file: File | ArrayBuffer, fileName: 
       const store = mapEmpToStore(empRaw);
       const classification = classifyExpense(fornRaw, descRaw);
 
-      let dtPgto = String(row[dtPgtoIdx] || '').trim();
-      let dtVecto = String(row[dtVectoIdx] || '').trim();
+      const rawDtPgto = row[dtPgtoIdx];
+      const rawDtVecto = row[dtVectoIdx];
 
-      const parseDate = (dStr: string) => {
-        if (!dStr) return undefined;
+      const parseDate = (val: any): string | undefined => {
+        if (val === null || val === undefined || val === '') return undefined;
+        // 1. Suporte a número serial do Excel (ex: 46269 ou "46269")
+        const numVal = typeof val === 'number' ? val : (typeof val === 'string' && /^\d{5}$/.test(val.trim()) ? Number(val.trim()) : NaN);
+        if (!isNaN(numVal) && numVal > 25000 && numVal < 70000) {
+          try {
+            const dateObj = XLSX.SSF.parse_date_code(numVal);
+            if (dateObj && dateObj.y && dateObj.m && dateObj.d) {
+              return `${dateObj.y}-${String(dateObj.m).padStart(2, '0')}-${String(dateObj.d).padStart(2, '0')}`;
+            }
+          } catch {
+            // fallback para string parsing
+          }
+        }
+        const dStr = String(val).trim();
         if (dStr.match(/^\d{4}-\d{2}-\d{2}/)) return dStr.substring(0, 10);
         const parts = dStr.split(/[\/\-\.]/);
         if (parts.length === 3) {
           if (parts[2].length === 4) return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+          if (parts[0].length === 4) return `${parts[0]}-${parts[1].padStart(2, '0')}-${parts[2].padStart(2, '0')}`;
         }
         return undefined;
       };
 
-      const normalizedPgtoDate = parseDate(dtPgto);
-      const normalizedVectoDate = parseDate(dtVecto) || targetDate;
+      const normalizedPgtoDate = parseDate(rawDtPgto);
+      const normalizedVectoDate = parseDate(rawDtVecto) || targetDate;
       
       if (normalizedPgtoDate) {
         targetDate = normalizedPgtoDate;

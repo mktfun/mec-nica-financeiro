@@ -623,11 +623,25 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
   // Manual inputs extras com trava
   const [odometroHoje, setOdometroHoje] = useState<number>(0);
+  const [isOdometroUserEdited, setIsOdometroUserEdited] = useState<boolean>(false);
   const [contasManual, setContasManual] = useState<number>(0);
   const [totalRevenueAdjustments, setTotalRevenueAdjustments] = useState<number>(0);
   const [isManualLocked, setIsManualLocked] = useState<boolean>(true);
   const [copiedJson, setCopiedJson] = useState(false);
   const [autoHealingData, setAutoHealingData] = useState<any>(null);
+
+  // Auto-popula Odômetro OI e Faturamento do Mês Anterior quando o Mapa de Metas (PDF) for importado
+  useEffect(() => {
+    const mapaRes = results.mapaMetasResults?.[0];
+    if (mapaRes && mapaRes.success && mapaRes.totalFaturamento > 0) {
+      if (!isOdometroUserEdited) {
+        setOdometroHoje(Number(mapaRes.totalFaturamento.toFixed(2)));
+      }
+      if (mapaRes.totalMesAnterior && mapaRes.totalMesAnterior > 0) {
+        setManualFaturamentoMesAnterior(prev => prev > 0 ? prev : Number(mapaRes.totalMesAnterior!.toFixed(2)));
+      }
+    }
+  }, [results.mapaMetasResults, isOdometroUserEdited]);
 
   const deltaFaturamentoCalculado = useMemo(() => {
     if (!odometroHoje) return 0;
@@ -840,10 +854,11 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     const parsedResults = await processFiles(acceptedFiles, { sessionId: newSessionId });
     
     if (parsedResults) {
-      // Auto-Detecção: Se não há planilha de OSs (virada de pátio), avança direto para o Step 1.5 (OCR)
+      // Auto-Detecção: Se não há planilha de OSs (virada de pátio) nem Mapa de Metas, avança para o Step 1.5 (OCR)
       const hasOsFiles = parsedResults.osFiles && parsedResults.osFiles.filter(r => r.success).length > 0;
+      const hasMapaMetas = parsedResults.mapaMetasResults && parsedResults.mapaMetasResults.some(r => r.success && r.totalFaturamento > 0);
       
-      if (!hasOsFiles) {
+      if (!hasOsFiles && !hasMapaMetas) {
         toast.info('Nenhuma planilha .xls de OS detectada (Virada de Pátio). Avançando automaticamente para Ingestão OCR...', { duration: 4000 });
         setStep(1.5);
         return;
@@ -855,6 +870,12 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       parsedResults.ofxResults.forEach(o => aliases.add(o.alias));
       parsedResults.redeResults.filter(r => r.success).forEach(r => {
         r.transactions.forEach(t => aliases.add(t.storeName));
+      });
+      parsedResults.mapaMetasResults.filter(m => m.success).forEach(m => {
+        m.stores.forEach(s => {
+          if (s.storeSigla) aliases.add(s.storeSigla);
+          if (s.storeName) aliases.add(s.storeName);
+        });
       });
 
       if (aliases.size > 0) {
@@ -1672,6 +1693,17 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             addLog(`⚠️ Falha ao salvar contas a pagar: ${cErr.message}`, "warning", { source: 'contas', error: cErr });
           }
         }
+
+        // Executar batimento determinístico de Saídas OFX x Contas a Pagar por loja
+        try {
+          addLog("⚡ Executando batimento estrito de Saídas OFX x Contas (loja a loja)...", "info", { source: 'contas' });
+          const { data: matchSaidasRes, error: matchSaidasErr } = await supabase.rpc('auto_match_saidas', { p_date: targetDate });
+          if (!matchSaidasErr && matchSaidasRes?.success) {
+            addLog(`🔗 Batimento concluído: ${matchSaidasRes.matched_count} saída(s) vinculada(s) a contas da mesma loja! (${matchSaidasRes.orphan_outflows_count} débitos órfãos para conferência)`, "success", { source: 'contas' });
+          }
+        } catch (mErr: any) {
+          console.warn("Erro ao rodar auto_match_saidas pós-contas:", mErr);
+        }
       }
 
       const totalRecebiveis = manualDinheiroMp + manualAReceber;
@@ -2176,6 +2208,9 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                 <span className="px-2.5 py-1 rounded-lg bg-sky-500/10 border border-sky-500/30 text-[11px] font-mono text-sky-300 font-semibold">
                   Extratos (.ofx)
                 </span>
+                <span className="px-2.5 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-[11px] font-mono text-indigo-300 font-semibold">
+                  Mapa de Metas (.pdf)
+                </span>
                 <span className="px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-[11px] font-mono text-amber-300 font-semibold">
                   Ordens de Serviço (.xls)
                 </span>
@@ -2665,10 +2700,20 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                       ← Voltar para OS
                     </Button>
                     <Button 
-                      onClick={() => setStep(needsFallback ? 3.5 : 2.5)}
+                      onClick={() => {
+                        if (needsFallback) {
+                          setStep(3.5);
+                        } else if (missingOsList.length > 0) {
+                          setStep(2.5);
+                        } else {
+                          setStep(3);
+                        }
+                      }}
                       className="bg-emerald-500 text-zinc-950 hover:bg-emerald-400 font-bold text-xs"
                     >
-                      Avançar para OSs do Pátio (Ausentes) →
+                      {missingOsList.length > 0 
+                        ? "Avançar para OSs do Pátio (Ausentes) →" 
+                        : "Avançar para Valores do Dia (Step 3) →"}
                     </Button>
                   </div>
                 </div>
@@ -3003,11 +3048,20 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                             step="0.01"
                             disabled={isManualLocked}
                             value={odometroHoje || ''} 
-                            onChange={e => setOdometroHoje(Number(e.target.value))}
+                            onChange={e => {
+                              setOdometroHoje(Number(e.target.value));
+                              setIsOdometroUserEdited(true);
+                            }}
                             placeholder="0,00"
                             className="w-full bg-zinc-900 border border-zinc-700/80 disabled:opacity-60 rounded-lg p-2.5 text-sm focus:outline-none focus:border-emerald-500 font-bold text-zinc-100 tabular-nums"
                           />
                         </div>
+
+                        {results.mapaMetasResults?.[0]?.totalFaturamento ? (
+                          <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1 w-fit">
+                            ✨ Auto: Mapa de Metas (PDF)
+                          </span>
+                        ) : null}
 
                         {odometroHoje > 0 && previousOdometro > 0 && (
                           <p className="text-[11px] font-mono text-emerald-400 pt-0.5">
@@ -3103,16 +3157,6 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
               );
             })()}
             {/* Fim: Valores Manuais Globais */}
-
-            {/* Bloco: OSs Ausentes / Carryover do Pátio */}
-            {missingOsList.length > 0 && (
-              <div className="pt-2">
-                <MissingPatioOsEditor
-                  missingList={missingOsList}
-                  onChangeList={setMissingOsList}
-                />
-              </div>
-            )}
 
             {/* Inspetor JSON de Conciliação */}
             <div className="pt-4 border-t border-zinc-800">

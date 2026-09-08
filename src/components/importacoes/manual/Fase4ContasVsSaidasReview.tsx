@@ -18,6 +18,8 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { RevenueAdjustmentsCard } from '@/components/importacoes/wizard/RevenueAdjustmentsCard';
+import { OrphanCategorizationModal } from '@/components/conciliacao/OrphanCategorizationModal';
+import { useCategorizeOrphan } from '@/hooks/useCategorizeOrphan';
 import { useStores } from '@/hooks/useStores';
 import { useStoreFileMappings } from '@/hooks/useStoreFileMappings';
 import { supabase } from '@/lib/supabase';
@@ -52,11 +54,15 @@ export function Fase4ContasVsSaidasReview({
 
   const [isLoading, setIsLoading] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [isMatching, setIsMatching] = useState(false);
   const [outflows, setOutflows] = useState<OutflowItem[]>([]);
   const [summary, setSummary] = useState<any>(null);
   const [revenueAdjustmentsTotal, setRevenueAdjustmentsTotal] = useState(0);
   const [viewMode, setViewMode] = useState<'drop' | 'review'>('drop');
   const [hasInitialLoaded, setHasInitialLoaded] = useState(false);
+  const [categorizingTx, setCategorizingTx] = useState<OutflowItem | null>(null);
+
+  const { categorize } = useCategorizeOrphan();
 
   // 1. Carregar débitos bancários (OFX type = 'out') e resumo dos 5 Pilares
   const loadData = useCallback(async () => {
@@ -216,6 +222,66 @@ export function Fase4ContasVsSaidasReview({
       toast.error(`Não foi possível selar o fechamento: ${err.message}`);
     } finally {
       setIsClosing(false);
+    }
+  };
+
+  const handleRerunAutoMatch = async () => {
+    setIsMatching(true);
+    try {
+      const { data, error } = await (supabase as any).rpc('auto_match_saidas', { p_date: targetDate });
+      if (error) throw error;
+      toast.success(`Batimento concluído: ${data?.matched_count || 0} contas vinculadas! (${data?.orphan_outflows_count || 0} débitos órfãos)`);
+      await loadData();
+    } catch (err: any) {
+      toast.error(`Erro ao executar batimento: ${err.message}`);
+    } finally {
+      setIsMatching(false);
+    }
+  };
+
+  const handleQuickResolveExtra = async (item: OutflowItem) => {
+    try {
+      const res = await categorize(
+        item.id,
+        'Despesa Extra da Loja',
+        item.description || 'Despesa Extra não provisionada',
+        true,
+        item.amount,
+        targetDate,
+        'out',
+        item.store_id
+      );
+      if (res.success) {
+        toast.success(`Débito lançado como despesa extra da loja!`);
+        await loadData();
+      } else {
+        toast.error(`Erro ao salvar despesa: ${res.error}`);
+      }
+    } catch (err: any) {
+      toast.error(`Erro: ${err.message}`);
+    }
+  };
+
+  const handleQuickResolveHolding = async (item: OutflowItem) => {
+    try {
+      const res = await categorize(
+        item.id,
+        'Tarifas / Holding',
+        item.description || 'Movimentação não operacional / Holding',
+        false,
+        item.amount,
+        targetDate,
+        'out',
+        item.store_id
+      );
+      if (res.success) {
+        toast.success(`Débito justificado como não operacional / holding!`);
+        await loadData();
+      } else {
+        toast.error(`Erro ao justificar: ${res.error}`);
+      }
+    } catch (err: any) {
+      toast.error(`Erro: ${err.message}`);
     }
   };
 
@@ -454,9 +520,23 @@ export function Fase4ContasVsSaidasReview({
                   Débitos sem Provisão no ERP ({unmatchedOutflows.length})
                 </h4>
               </div>
-              <span className="text-xs font-mono font-bold text-amber-400">
-                {formatBrl(unmatchedOutflows.reduce((a, b) => a + b.amount, 0))}
-              </span>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleRerunAutoMatch}
+                  disabled={isMatching}
+                  className="h-7 px-2 text-[11px] border-zinc-700 text-zinc-300 hover:bg-zinc-800 rounded-lg flex items-center gap-1"
+                  title="Re-executar batimento determinístico com as contas importadas"
+                >
+                  <RefreshCw size={12} className={isMatching ? 'animate-spin text-emerald-400' : 'text-emerald-400'} />
+                  {isMatching ? 'Batendo...' : 'Re-bater'}
+                </Button>
+                <span className="text-xs font-mono font-bold text-amber-400">
+                  {formatBrl(unmatchedOutflows.reduce((a, b) => a + b.amount, 0))}
+                </span>
+              </div>
             </div>
 
             {unmatchedOutflows.length === 0 ? (
@@ -464,25 +544,61 @@ export function Fase4ContasVsSaidasReview({
                 Zero saídas órfãs! Todos os pagamentos bancários foram provisionados.
               </div>
             ) : (
-              <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+              <div className="space-y-2.5 max-h-[340px] overflow-y-auto pr-1">
                 {unmatchedOutflows.map(item => (
                   <div 
                     key={item.id}
-                    className="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80 flex items-center justify-between text-xs font-mono"
+                    className="p-3 rounded-xl bg-zinc-950/70 border border-zinc-800/80 flex flex-col gap-2 text-xs font-mono"
                   >
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-zinc-200">{item.store_name}</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 font-bold">
-                          Débito não Provisionado
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-zinc-200">{item.store_name}</span>
+                          <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 font-bold">
+                            Órfão (Sem Conta)
+                          </span>
+                        </div>
+                        <span className="text-[11px] text-zinc-400 truncate max-w-[240px] block mt-0.5">
+                          {item.description}
                         </span>
                       </div>
-                      <span className="text-[11px] text-zinc-400 truncate max-w-[220px] block">
-                        {item.description}
-                      </span>
+                      <div className="text-right">
+                        <span className="font-bold text-amber-300 block text-sm">{formatBrl(item.amount)}</span>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <span className="font-bold text-amber-300 block">{formatBrl(item.amount)}</span>
+
+                    <div className="flex items-center justify-end gap-1.5 pt-1 border-t border-zinc-800/50">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleQuickResolveExtra(item)}
+                        className="h-6 px-2 text-[10px] text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 rounded"
+                        title="Adiciona ao Contas a Pagar da filial como despesa extra não provisionada"
+                      >
+                        + Despesa Extra
+                      </Button>
+
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleQuickResolveHolding(item)}
+                        className="h-6 px-2 text-[10px] text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 rounded"
+                        title="Justifica como movimentação holding/tarifa sem inflar despesa da loja"
+                      >
+                        Tarifa/Holding
+                      </Button>
+
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCategorizingTx(item)}
+                        className="h-6 px-2 text-[10px] border-zinc-700 text-zinc-300 hover:bg-zinc-800 rounded"
+                      >
+                        Justificar...
+                      </Button>
                     </div>
                   </div>
                 ))}
@@ -530,6 +646,26 @@ export function Fase4ContasVsSaidasReview({
           </Button>
         </div>
       </Card>
+
+      {categorizingTx && (
+        <OrphanCategorizationModal
+          transactionId={categorizingTx.id}
+          transactionTitle={categorizingTx.description}
+          transactionAmount={categorizingTx.amount}
+          transactionType="out"
+          storeId={categorizingTx.store_id}
+          targetDate={targetDate}
+          onClose={() => setCategorizingTx(null)}
+          onSuccess={async () => {
+            setCategorizingTx(null);
+            toast.success('Débito justificado e conciliado com sucesso!');
+            await loadData();
+          }}
+          categorizeOrphan={(id, cat, just, impacts) =>
+            categorize(id, cat, just, impacts, categorizingTx.amount, targetDate, 'out', categorizingTx.store_id)
+          }
+        />
+      )}
     </div>
   );
 }

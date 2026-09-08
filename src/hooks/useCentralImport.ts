@@ -13,6 +13,7 @@ import type { MapaMetasResult } from '@/lib/parsers/mapaMetasParser';
 import type { ContasAPagarParseResult } from '@/types/contasPagar';
 
 export type { MaquininhaItem, NormalizedOfxResult };
+export type { MapaMetasResult, MapaMetasStore } from '@/lib/parsers/mapaMetasParser';
 export { processMaquininha };
 
 export type UnifiedImportResult = CentralImportResults;
