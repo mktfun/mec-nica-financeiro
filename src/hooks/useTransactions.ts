@@ -284,8 +284,8 @@ export function useHistoricalReconciledTransactions(storeId?: string) {
     queryFn: async () => {
       try {
         let query = supabase
-          .from('transactions')
-          .select('id, fitid, store_id, target_date, occurred_at, manual_category, manual_justification, os_number, matched_os_number, status, title, amount')
+          .from('ofx_transactions')
+          .select('id, fitid, store_id, target_date, occurred_at, manual_category, manual_justification, matched_os_number, match_status, title, amount')
           .order('occurred_at', { ascending: false })
           .limit(200);
         

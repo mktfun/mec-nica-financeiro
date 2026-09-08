@@ -1,3 +1,22 @@
+## [2026-09-08] — [Feature ID: 376-correcao-canonica-conciliado-vs-ofx-lojas]
+
+**Contexto:** Saneamento e anti-hijacking de transações de adquirentes no banco de dados, motor de matching combinatório (Subset Sum) de lotes SISPAG no PostgreSQL e apuração linear canônica em `get_daily_reconciliation_summary` via migration `20260908000036_fix_store_canonical_matching_and_anti_hijack.sql`.
+
+**Regra aprendida:**
+1. **Descontaminação Retroativa de Adquirentes:**
+   - Transações bancárias da Rede (`counterpart_name ILIKE '%REDE%' OR counterpart_name ILIKE '%CARD%'`) não podem carregar `matched_os_number`. A migration força `UPDATE ofx_transactions SET matched_os_number = NULL` para desfazer falsas apropriações causadas por buscas de PIX.
+2. **Blindagem Anti-Hijack em `auto_match_daily_transactions`:**
+   - A query de busca de créditos PIX no extrato bloqueia terminantemente transações onde `counterpart_name` contenha termos de maquininhas/adquirentes.
+3. **Motor Combinatório Subset Sum em `auto_match_saidas`:**
+   - Débitos com descrição contendo `SISPAG` ou `SALARIOS` que não possuem pareamento 1-para-1 são submetidos a busca combinatória de subconjunto de títulos de folha (`category = 'retirada_socios'` e termos de salário) daquela filial para vinculação automática de lotes compostos.
+4. **Linearidade em `get_daily_reconciliation_summary`:**
+   - `saidas_conciliadas` = soma de débitos com `matched_bill_id IS NOT NULL OR manual_category IS NOT NULL OR match_status IN ('matched', 'matched_batch', 'intercompany_paired')`.
+   - `dif_saidas` = `ofx_saidas_total - saidas_conciliadas`.
+   - `dif_entradas` = `ofx_entradas_total - entradas_conciliadas`.
+   - Zero débitos órfãos mascarados e status `approved` atribuído com precisão.
+
+---
+
 ## [2026-09-04] — [Feature ID: 371-correcao-divergencia-entradas-ofx-lojas]
 
 **Contexto:** Correção da apuração de créditos órfãos e da equação linear de entradas por filial na RPC `get_daily_reconciliation_summary` via migration `20260904000035_fix_store_entradas_orfas.sql`. A CTE anterior classificava indevidamente todos os depósitos de cartão de adquirentes (Rede, Cielo, Stone) como órfãos por não terem OS de balcão e nem justificativa manual, gerando falsas divergências de milhares de reais em todas as lojas monitoradas.

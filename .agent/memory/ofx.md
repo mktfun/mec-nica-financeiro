@@ -1,3 +1,14 @@
+## [2026-09-08] — [Feature ID: 377-formato-ofx-tabela-entradas-saidas-orfas]
+
+**Contexto:** Preservação integral e transporte de metadados ricos do extrato bancário OFX durante as fases de preview e justificativas no Wizard de Importações (`Step2NonRevenueJustifications.tsx`).
+
+**Regra aprendida:**
+1. **Preservação Contínua de Metadados Bancários:** As interfaces e estruturas intermediárias em memória (`OFXEntry`) não devem resumir transações a apenas `id`, `amount`, `date` e `description`. É mandatório transportar `bankName`, `counterpartName`, `fitid`, `title` e `subtitle`. Isso permite que o operador financeiro audite de qual conta/banco a movimentação se originou e identifique pagamentos homônimos através do FITID e favorecido real.
+
+**Risco identificado / Anti-pattern:** Descartar FITIDs e dados de instituição financeira durante a conversão para objetos de estado do React, dificultando a auditoria manual de transações de mesmo valor.
+
+---
+
 ## [2026-09-01] — [Feature ID: 314-auditoria-saldo-deduplicacao-ofx-rede]
 
 **Contexto:** Correcao da ingestao de extratos OFX multi-dias no CentralImportWizard.tsx e useTransactions.ts.

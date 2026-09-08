@@ -128,13 +128,19 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
       const hasCategory = !!effectiveCategory;
 
       // Fuzzy auto-match para saídas (débitos)
+      const isBatchMatched = tx.match_status === 'matched_batch' || tx.match_status === 'intercompany_paired' || tx.match_status === 'auto_cancelled';
       const linkedBill = tx.matched_bill_id ? dailyBills.find((b: any) => b.id === tx.matched_bill_id) : null;
       const expenseMatch = tx.type === 'out' 
-        ? (linkedBill ? { isMatched: true, matchedBill: linkedBill, confidence: 1.0 } : matchExpenseWithOfxDebit(tx, dailyBills)) 
+        ? (linkedBill 
+            ? { isMatched: true, matchedBill: linkedBill, confidence: 1.0 } 
+            : isBatchMatched
+            ? { isMatched: true, matchedBill: { title: tx.manual_category || 'Lote Conciliado', recipient_name: tx.manual_justification || tx.counterpart_name || 'Lote Conciliado', description: 'Conciliado via Lote', amount: Math.abs(tx.amount) } as any, confidence: 1.0 }
+            : matchExpenseWithOfxDebit(tx, dailyBills)
+          ) 
         : { isMatched: false, confidence: 0 };
-      const isMatchedExpense = expenseMatch.isMatched;
+      const isMatchedExpense = expenseMatch.isMatched || isBatchMatched;
 
-      const isPending = !isRede && !osNum && !hasCategory && !isMatchedExpense && !isLockedFromOtherDate;
+      const isPending = !isRede && !osNum && !hasCategory && !isMatchedExpense && !isLockedFromOtherDate && !isBatchMatched;
 
       return {
         ...tx,
@@ -156,7 +162,7 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
 
   const unpersistedMatches = useMemo(() => {
     return enrichedTransactions.filter(
-      t => t.type === 'out' && t.isMatchedExpense && !t.matched_bill_id && t.expenseMatch?.matchedBill
+      t => t.type === 'out' && t.isMatchedExpense && !t.matched_bill_id && t.match_status !== 'matched_batch' && t.match_status !== 'intercompany_paired' && t.expenseMatch?.matchedBill?.id
     );
   }, [enrichedTransactions]);
 

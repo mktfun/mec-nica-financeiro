@@ -1,3 +1,23 @@
+### Spec 377 — Formato OFX em Tabela Canônica para Entradas e Saídas Órfãs na Importação (08/09/2026)
+- **Frontend Step 2 de Justificativas (`Step2NonRevenueJustifications.tsx`)**:
+  - Reformulação visual e funcional: substituição dos cards verticais volumosos por tabela `<table>` canônica em Dark UI Zinc-950 de alta densidade inspirada no extrato bancário (`StoreExtratoBancarioView.tsx`).
+  - Colunas completas: `Filial`, `Data`, `Descrição / Histórico Bancário`, `Favorecido / Documento / FITID`, `Valor (+/- R$)` (mono rose/emerald), `Status / Destinação`, `Ações`.
+  - Painel expansível de classificação inline (`<tr><td colSpan={7}>`) acionado por botão de ação na linha, com chips rápidos de categoria, vínculo com contas em aberto e switch de impacto contábil (`adicionaNoContas`).
+  - Barra superior de controles reativos com totalizadores de topo (Total Débitos R$ e Total Créditos R$), busca instantânea por texto, dropdown de filial e filtro por status (`Todas`, `⚠️ Pendentes`, `✅ Salvas`).
+  - Preservação e transporte de metadados OFX ricos (`bankName`, `counterpartName`, `fitid`, `title`, `subtitle`).
+
+### Spec 376 — Correção Canônica de Conciliado vs OFX por Filial e Desreversão de Lotes SISPAG (08/09/2026)
+- **Database (Migration `20260908000036_fix_store_canonical_matching_and_anti_hijack.sql`)**:
+  - Descontaminação retroativa e bloqueio de depósitos de adquirentes (`REDE`, `CARD`) como falsos PIX de balcão (`matched_os_number = NULL`).
+  - Motor combinatório (Subset Sum) em PL/pgSQL na RPC `auto_match_saidas` para agrupar títulos de salários de funcionários que fecham o débito SISPAG Itaú ao centavo.
+  - Linearidade matemática estrita em `get_daily_reconciliation_summary`: `saidas_conciliadas` computando vínculos a contas a pagar, justificativas e lotes; `dif_saidas = ofx_saidas_total - saidas_conciliadas`.
+- **Motor de Matching em Memória (`expenseMatcher.ts`)**:
+  - Algoritmo Subset Sum combinatório para encontrar o conjunto exato de contas de folha que igualam o débito bancário SISPAG.
+- **Parser de Contas a Pagar (`contasPagarParser.ts`)**:
+  - Reconhecimento automático de despesas de folha (`SALARIO`, `SALÁRIO`, `FOLHA`, `FERIAS`, `RESCISAO`) atribuindo `category = 'retirada_socios'`.
+- **Frontend Conciliação (`StoreExtratoBancarioView.tsx` & `ConciliacaoLojasView.tsx`)**:
+  - Sincronização e apresentação fiel do status de conciliação bancária por loja, eliminando falsas divergências e débitos órfãos em filiais como Jabaquara e Dom Pedro.
+
 ### Spec 375 — Diagnóstico Forense e Resolução Automática de Saídas e Entradas Órfãs (08/09/2026)
 - **Database (Migration `20260908000035_batch_sispag_and_intercompany_matching.sql`)**:
   - Atualização da RPC `public.auto_match_saidas(text)` com suporte nativo a lotes 1-para-N de folha de pagamento SISPAG (agrupamento de salários da filial vinculados ao débito Itaú consolidado).

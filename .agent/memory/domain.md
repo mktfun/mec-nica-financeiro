@@ -1,3 +1,31 @@
+## [2026-09-08] — [Feature ID: 377-formato-ofx-tabela-entradas-saidas-orfas]
+
+**Contexto:** Destinação contábil e impacto no DRE de movimentações bancárias órfãs justificadas na Central de Importações.
+
+**Regra aprendida:**
+1. **Bifurcação de Destinação Contábil de Órfãos:**
+   - Lançamentos bancários classificados no Step 2 possuem dois destinos contábeis distintos:
+     a) **Apenas Conciliar (`adicionaNoContas = false`):** Movimentações de fluxo financeiro interno (saques ATM, transferências entre contas do grupo, aportes) que NÃO representam nova despesa operacional e, portanto, não devem inflar o contas a pagar nem distorcer o DRE.
+     b) **Adicionar Despesa (`adicionaNoContas = true`):** Pagamentos de boletos não cadastrados previamente ou despesas operacionais da loja que exigem criação de título correspondente em `daily_manual_bills`.
+
+---
+
+## [2026-09-08] — [Feature ID: 376-correcao-canonica-conciliado-vs-ofx-lojas]
+
+**Contexto:** Correção da apuração de Saídas e Entradas Conciliadas x OFX nas filiais em `public.get_daily_reconciliation_summary`, motor combinatório (Subset Sum) para desreversão de lotes de salários SISPAG e bloqueio de adquirentes como falsos PIX de balcão.
+
+**Regra aprendida:**
+1. **Lotes de Débito SISPAG vs Títulos de Folha:**
+   - O Itaú consolida pagamentos de salários em um único débito por conta/filial (ex: `SISPAG SALARIOS - R$ 4.477,44`). No ERP de contas a pagar, os funcionários constam individualmente (ex: R$ 2.668,54 + R$ 1.808,90).
+   - O motor de matching (`expenseMatcher.ts` e `auto_match_saidas`) deve empregar algoritmo combinatório de soma de subconjuntos (Subset Sum) restrito aos títulos de salários daquela filial no mesmo dia para fechar o débito bancário exato ao centavo.
+2. **Anti-Hijacking de Cartões da Rede em Balcão:**
+   - Depósitos bancários de maquininhas (`REDE`, `CARD`) nunca podem ser sequestrados pelo auto-match de OSs de balcão como se fossem PIX. Crédito de cartão liquida faturamento D+1 via `ofx_maquininhas`.
+3. **Equação Canônica Linear de Saídas:**
+   $$\text{OFX Saídas} - \text{Saídas Conciliadas (Boletos + Categorizadas + Lotes)} = \text{Dif. a Justificar (Débito Órfão)}$$
+   - Quando todos os débitos do extrato estiverem vinculados a contas a pagar ou justificados, `dif_saidas` é compulsoriamente R$ 0,00 e o status da filial é `approved`.
+
+---
+
 ## [2026-09-04] — [Feature ID: 371-correcao-divergencia-entradas-ofx-lojas]
 
 **Contexto:** Saneamento contábil dos cards de fechamento por filial em `/conciliacao`. Eliminação da classificação de liquidações bancárias de cartão da Rede como créditos órfãos, restaurando a coerência visual e matemática de 100% Conciliado nas 10 lojas monitoradas.

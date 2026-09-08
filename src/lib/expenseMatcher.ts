@@ -134,6 +134,49 @@ function isSalaryBill(b: any): boolean {
   return /SALARIO|SALÁRIO|RESCISAO|RESCISÃO|FERIAS|FÉRIAS|PREMIO|PRÊMIO|VALE/i.test(txt);
 }
 
+/**
+ * Busca combinatória exata (Subset Sum) para encontrar subconjunto de 1 até maxK itens
+ * cuja soma bata com targetAmount com a tolerância especificada.
+ */
+function findSubsetSumCombination(
+  items: any[],
+  targetAmount: number,
+  tolerance = 0.05,
+  maxK = 6
+): any[] | null {
+  if (!items || items.length === 0 || targetAmount <= 0) return null;
+
+  const maxLen = Math.min(maxK, items.length);
+
+  function backtrack(startIdx: number, current: any[], currentSum: number, k: number): any[] | null {
+    if (current.length === k) {
+      if (Math.abs(currentSum - targetAmount) <= tolerance) {
+        return current;
+      }
+      return null;
+    }
+
+    for (let i = startIdx; i < items.length; i++) {
+      const item = items[i];
+      const val = Math.abs(Number(item.amount || 0));
+      const nextSum = currentSum + val;
+      const res = backtrack(i + 1, [...current, item], nextSum, k);
+      if (res) return res;
+    }
+    return null;
+  }
+
+  // Ordena decrescente para testar valores maiores primeiro
+  const sorted = [...items].sort((a, b) => Math.abs(Number(b.amount || 0)) - Math.abs(Number(a.amount || 0)));
+
+  for (let k = 1; k <= maxLen; k++) {
+    const found = backtrack(0, [], 0, k);
+    if (found) return found;
+  }
+
+  return null;
+}
+
 export function executeExpenseAutoMatching(
   ofxResults: any[],
   contasPagarResults: any[],
@@ -304,66 +347,56 @@ export function executeExpenseAutoMatching(
         return;
       }
 
-      // D2: Subconjuntos de 1 salário na mesma loja
-      for (let i = 0; i < storeSalaryBills.length; i++) {
-        if (Math.abs(storeSalaryBills[i].amount - d.txAmount) <= TOLERANCE) {
-          matchedBillKeys.add(storeSalaryBills[i]._key);
-          usedDebitKeys.add(d.txFitid);
-          d.rawTx.matched_bill_id = storeSalaryBills[i]._key;
+      // D2: Subconjunto combinatório (1 a 6 salários) na mesma loja
+      const subsetMatch = findSubsetSumCombination(storeSalaryBills, d.txAmount, TOLERANCE, 6);
+      if (subsetMatch && subsetMatch.length > 0) {
+        subsetMatch.forEach(b => matchedBillKeys.add(b._key));
+        usedDebitKeys.add(d.txFitid);
+        if (subsetMatch.length === 1) {
+          d.rawTx.matched_bill_id = subsetMatch[0]._key;
           d.rawTx.match_status = 'matched';
           matchedPairs.push({
             ofxFitid: d.txFitid,
-            billExternalCode: storeSalaryBills[i].external_code,
-            recipientName: storeSalaryBills[i].recipient_name,
+            billExternalCode: subsetMatch[0].external_code,
+            recipientName: subsetMatch[0].recipient_name,
             amount: d.txAmount,
             storeId: d.storeId,
             confidence: 0.95,
             layer: 11,
           });
-          return;
+        } else {
+          d.rawTx.matched_bill_id = 'BATCH_SISPAG';
+          d.rawTx.match_status = 'matched_batch';
+          matchedPairs.push({
+            ofxFitid: d.txFitid,
+            recipientName: `Folha SISPAG (${subsetMatch.length} colaboradores)`,
+            amount: d.txAmount,
+            storeId: d.storeId,
+            confidence: 0.99,
+            layer: 11,
+          });
         }
+        return;
       }
 
-      // D3: Salários da loja + Colaboradores da Matriz/Holding rateados
+      // D3: Salários da loja + Colaboradores da Matriz/Holding rateados via Subset Sum
       const masterSalaryBills = allBills.filter(b => !matchedBillKeys.has(b._key) && b.store_id === 'master' && isSalaryBill(b));
-      const needed = d.txAmount - storeSum;
-      if (needed > 0 && storeSalaryBills.length > 0) {
-        for (let i = 0; i < masterSalaryBills.length; i++) {
-          if (Math.abs(masterSalaryBills[i].amount - needed) <= TOLERANCE) {
-            const matchedList = [...storeSalaryBills, masterSalaryBills[i]];
-            matchedList.forEach(b => matchedBillKeys.add(b._key));
-            usedDebitKeys.add(d.txFitid);
-            d.rawTx.matched_bill_id = 'BATCH_SISPAG';
-            d.rawTx.match_status = 'matched_batch';
-            matchedPairs.push({
-              ofxFitid: d.txFitid,
-              recipientName: `Folha SISPAG (${matchedList.length} colaboradores)`,
-              amount: d.txAmount,
-              storeId: d.storeId,
-              confidence: 0.98,
-              layer: 12,
-            });
-            return;
-          }
-          for (let j = i + 1; j < masterSalaryBills.length; j++) {
-            if (Math.abs(masterSalaryBills[i].amount + masterSalaryBills[j].amount - needed) <= TOLERANCE) {
-              const matchedList = [...storeSalaryBills, masterSalaryBills[i], masterSalaryBills[j]];
-              matchedList.forEach(b => matchedBillKeys.add(b._key));
-              usedDebitKeys.add(d.txFitid);
-              d.rawTx.matched_bill_id = 'BATCH_SISPAG';
-              d.rawTx.match_status = 'matched_batch';
-              matchedPairs.push({
-                ofxFitid: d.txFitid,
-                recipientName: `Folha SISPAG (${matchedList.length} colaboradores)`,
-                amount: d.txAmount,
-                storeId: d.storeId,
-                confidence: 0.98,
-                layer: 12,
-              });
-              return;
-            }
-          }
-        }
+      const poolStoreAndMaster = [...storeSalaryBills, ...masterSalaryBills];
+      const masterSubsetMatch = findSubsetSumCombination(poolStoreAndMaster, d.txAmount, TOLERANCE, 6);
+      if (masterSubsetMatch && masterSubsetMatch.length > 0) {
+        masterSubsetMatch.forEach(b => matchedBillKeys.add(b._key));
+        usedDebitKeys.add(d.txFitid);
+        d.rawTx.matched_bill_id = 'BATCH_SISPAG';
+        d.rawTx.match_status = 'matched_batch';
+        matchedPairs.push({
+          ofxFitid: d.txFitid,
+          recipientName: `Folha SISPAG Loja+Holding (${masterSubsetMatch.length} colaboradores)`,
+          amount: d.txAmount,
+          storeId: d.storeId,
+          confidence: 0.98,
+          layer: 12,
+        });
+        return;
       }
 
       // D4: Colaborador com valor único em qualquer loja (ex: Dom Pedro pagando título de outra filial)

@@ -460,9 +460,9 @@
     "semantic_hash": "2c508c4ed860a99b2e46546dbeed5db2"
   },
   "src/components/importacoes/wizard/Step2NonRevenueJustifications.tsx": {
-    "mtime": 1788293266.201941,
-    "ast_hash": "a489ebe3d026fbd1e1293d041e810c48",
-    "semantic_hash": "a489ebe3d026fbd1e1293d041e810c48"
+    "mtime": 1788879828.5189538,
+    "ast_hash": "39c56d9d9bbf92a574de8c7d956351ce",
+    "semantic_hash": ""
   },
   "src/components/importacoes/wizard/Step3CashVaultDaniel.tsx": {
     "mtime": 1788292217.8526049,
@@ -900,9 +900,9 @@
     "semantic_hash": "8da0ddd7569bac2676b9a5c8edff8a36"
   },
   "src/lib/expenseMatcher.ts": {
-    "mtime": 1788205243.1367054,
-    "ast_hash": "c394637b4bfbb46d9a39f498e8a85941",
-    "semantic_hash": "c394637b4bfbb46d9a39f498e8a85941"
+    "mtime": 1788879588.0223956,
+    "ast_hash": "03241a481565e946f68cc3370d3a2186",
+    "semantic_hash": ""
   },
   "src/lib/format.ts": {
     "mtime": 1785428874.0,
@@ -975,9 +975,9 @@
     "semantic_hash": "3289eb1da89c706489cc397a3d63b41e"
   },
   "src/lib/parsers/contasPagarParser.ts": {
-    "mtime": 1788356194.2978854,
-    "ast_hash": "f41234f861ce519ed10cafd9705085bc",
-    "semantic_hash": "f41234f861ce519ed10cafd9705085bc"
+    "mtime": 1788879450.371166,
+    "ast_hash": "279eada14ec8dc4a381b77ccd1f540e2",
+    "semantic_hash": ""
   },
   "src/lib/parsers/hashUtils.ts": {
     "mtime": 1786977431.5592644,
@@ -3455,7 +3455,7 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1788872707.575464,
+    "mtime": 1788878770.6714993,
     "ast_hash": "941f222e7d804e92b03d68076c678c2a",
     "semantic_hash": ""
   },
@@ -4347,6 +4347,26 @@
   "specs/374-correcao-import-mapa-metas-e-desduplicacao-step3/spec-plan.md": {
     "mtime": 1788878388.005608,
     "ast_hash": "9e64148554d0ce68b00d8a3f6c89244d",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260908000035_batch_sispag_and_intercompany_matching.sql": {
+    "mtime": 1788879671.8084111,
+    "ast_hash": "f3aaa95aca0b4cb743abc7c2127888dd",
+    "semantic_hash": ""
+  },
+  "specs/375-diagnostico-e-reducao-saidas-entradas-orfas-0809/design.md": {
+    "mtime": 1788879316.4703746,
+    "ast_hash": "c5993123df14089bfffd98fcf4d64d11",
+    "semantic_hash": ""
+  },
+  "specs/375-diagnostico-e-reducao-saidas-entradas-orfas-0809/proposal.md": {
+    "mtime": 1788879301.5728385,
+    "ast_hash": "0c8868691157be39e82027f339d40fdf",
+    "semantic_hash": ""
+  },
+  "specs/375-diagnostico-e-reducao-saidas-entradas-orfas-0809/spec-plan.md": {
+    "mtime": 1788879910.3306835,
+    "ast_hash": "f58962fd0139b2f1ae50c09f5b52a483",
     "semantic_hash": ""
   }
 }

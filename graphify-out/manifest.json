@@ -255,8 +255,8 @@
     "semantic_hash": "62bf4be7b0e41945dd09d240a314b7a8"
   },
   "src/components/conciliacao/StoreExtratoBancarioView.tsx": {
-    "mtime": 1788874708.1068773,
-    "ast_hash": "cb209cb20c8dc8b028c2a68cada8b470",
+    "mtime": 1788886073.8292236,
+    "ast_hash": "40070509b3e0f97ec78bee8004fd3f64",
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreOrdensServicoView.tsx": {
@@ -460,8 +460,8 @@
     "semantic_hash": "2c508c4ed860a99b2e46546dbeed5db2"
   },
   "src/components/importacoes/wizard/Step2NonRevenueJustifications.tsx": {
-    "mtime": 1788879828.5189538,
-    "ast_hash": "39c56d9d9bbf92a574de8c7d956351ce",
+    "mtime": 1788889361.6527538,
+    "ast_hash": "37c130d3a7c60cf5974e90f36631b204",
     "semantic_hash": ""
   },
   "src/components/importacoes/wizard/Step3CashVaultDaniel.tsx": {
@@ -825,9 +825,9 @@
     "semantic_hash": "92a22d193c252267ba0a5b25068f2047"
   },
   "src/hooks/useTransactions.ts": {
-    "mtime": 1788869469.0146577,
-    "ast_hash": "b15df5f99f4ee02c62641f5631e955e9",
-    "semantic_hash": "b15df5f99f4ee02c62641f5631e955e9"
+    "mtime": 1788886252.514414,
+    "ast_hash": "35e7c9ff62a0258e38614d437369064a",
+    "semantic_hash": ""
   },
   "src/hooks/useTripleMatch.ts": {
     "mtime": 1786977431.5291219,
@@ -900,8 +900,8 @@
     "semantic_hash": "8da0ddd7569bac2676b9a5c8edff8a36"
   },
   "src/lib/expenseMatcher.ts": {
-    "mtime": 1788879588.0223956,
-    "ast_hash": "03241a481565e946f68cc3370d3a2186",
+    "mtime": 1788885787.1169097,
+    "ast_hash": "cd5903592f4fe0c11bb11db48ac04c60",
     "semantic_hash": ""
   },
   "src/lib/format.ts": {
@@ -975,8 +975,8 @@
     "semantic_hash": "3289eb1da89c706489cc397a3d63b41e"
   },
   "src/lib/parsers/contasPagarParser.ts": {
-    "mtime": 1788879450.371166,
-    "ast_hash": "279eada14ec8dc4a381b77ccd1f540e2",
+    "mtime": 1788885763.5279672,
+    "ast_hash": "d50f9a3ee6d2ae7d745edc57daa3d60b",
     "semantic_hash": ""
   },
   "src/lib/parsers/hashUtils.ts": {
@@ -2210,8 +2210,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1788872719.791818,
-    "ast_hash": "80b96e324b517b809aab14ccc7b064e6",
+    "mtime": 1788880377.675896,
+    "ast_hash": "22ba9256860f80c14f6e1412bd6f22b5",
     "semantic_hash": ""
   },
   "spec/global/overview.md": {
@@ -3455,8 +3455,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1788878770.6714993,
-    "ast_hash": "941f222e7d804e92b03d68076c678c2a",
+    "mtime": 1788880389.6134355,
+    "ast_hash": "0290b7f4ff60fbd358a4029e4e362914",
     "semantic_hash": ""
   },
   "specs/global/features_clean.md": {
@@ -4334,39 +4334,44 @@
     "ast_hash": "a6624412ffb7b41704a2437a192c0abe",
     "semantic_hash": ""
   },
-  "specs/374-correcao-import-mapa-metas-e-desduplicacao-step3/design.md": {
-    "mtime": 1788877858.7726426,
-    "ast_hash": "a87454ce82b80f14b9634029e978a029",
-    "semantic_hash": ""
-  },
-  "specs/374-correcao-import-mapa-metas-e-desduplicacao-step3/proposal.md": {
-    "mtime": 1788877839.3051898,
-    "ast_hash": "51d7ad88c987af063dcc67d5ea1c41e1",
-    "semantic_hash": ""
-  },
-  "specs/374-correcao-import-mapa-metas-e-desduplicacao-step3/spec-plan.md": {
-    "mtime": 1788878388.005608,
-    "ast_hash": "9e64148554d0ce68b00d8a3f6c89244d",
-    "semantic_hash": ""
-  },
   "supabase/migrations/20260908000035_batch_sispag_and_intercompany_matching.sql": {
     "mtime": 1788879671.8084111,
     "ast_hash": "f3aaa95aca0b4cb743abc7c2127888dd",
     "semantic_hash": ""
   },
-  "specs/375-diagnostico-e-reducao-saidas-entradas-orfas-0809/design.md": {
-    "mtime": 1788879316.4703746,
-    "ast_hash": "c5993123df14089bfffd98fcf4d64d11",
+  "supabase/migrations/20260908000036_fix_store_canonical_matching_and_anti_hijack.sql": {
+    "mtime": 1788886001.323204,
+    "ast_hash": "e1113f42fe2d274a4db113182e00b4ca",
     "semantic_hash": ""
   },
-  "specs/375-diagnostico-e-reducao-saidas-entradas-orfas-0809/proposal.md": {
-    "mtime": 1788879301.5728385,
-    "ast_hash": "0c8868691157be39e82027f339d40fdf",
+  "specs/376-correcao-canonica-conciliado-vs-ofx-lojas/design.md": {
+    "mtime": 1788881050.3423142,
+    "ast_hash": "15034d2ea97cbfbe70b867e107a79495",
     "semantic_hash": ""
   },
-  "specs/375-diagnostico-e-reducao-saidas-entradas-orfas-0809/spec-plan.md": {
-    "mtime": 1788879910.3306835,
-    "ast_hash": "f58962fd0139b2f1ae50c09f5b52a483",
+  "specs/376-correcao-canonica-conciliado-vs-ofx-lojas/proposal.md": {
+    "mtime": 1788881035.9646332,
+    "ast_hash": "62fbac31397eb0d0408ceb5280951dca",
+    "semantic_hash": ""
+  },
+  "specs/376-correcao-canonica-conciliado-vs-ofx-lojas/spec-plan.md": {
+    "mtime": 1788886201.939514,
+    "ast_hash": "db7cc10dcf918382d1da6891366daaeb",
+    "semantic_hash": ""
+  },
+  "specs/377-formato-ofx-tabela-entradas-saidas-orfas/design.md": {
+    "mtime": 1788887099.1803179,
+    "ast_hash": "aecb44fb9e800ea07cfb2e0b31152cc3",
+    "semantic_hash": ""
+  },
+  "specs/377-formato-ofx-tabela-entradas-saidas-orfas/proposal.md": {
+    "mtime": 1788887088.273944,
+    "ast_hash": "b39494a1d4389a014483a153a83783ed",
+    "semantic_hash": ""
+  },
+  "specs/377-formato-ofx-tabela-entradas-saidas-orfas/spec-plan.md": {
+    "mtime": 1788887592.9651237,
+    "ast_hash": "f02be53bfbdac46c0e402a0220f13769",
     "semantic_hash": ""
   }
 }

@@ -1,3 +1,18 @@
+## [2026-09-08] — [Feature ID: 377-formato-ofx-tabela-entradas-saidas-orfas]
+
+**Contexto:** Reformulação visual e de UX do Step 2 de Justificativas e Órfãos no Wizard Central de Importações (`Step2NonRevenueJustifications.tsx`), substituindo cartões verticais volumosos por uma tabela de dados canônica em Dark UI Zinc-950 de alta densidade inspirada no extrato bancário do sistema (`StoreExtratoBancarioView.tsx`).
+
+**Regra aprendida:**
+1. **Tabela de Dados Canônica com Accordion Inline:**
+   - Em fluxos de conferência financeira com dezenas de movimentações bancárias órfãs, cards verticais empilhados provocam fadiga de rolagem e perda de contexto.
+   - O padrão ouro de UX é uma `<table>` tabular compacta (`Filial`, `Data`, `Descrição / Histórico Bancário`, `Favorecido / Documento / FITID`, `Valor (+/-)`, `Status / Destinação`, `Ações`) acoplada a gavetas expansíveis inline (`<tr><td colSpan={7}>`) para formulários de classificação, permitindo editar sem sair da visualização geral da grade.
+2. **Controles Globais Reativos e Totalizadores:**
+   - Toda grade densa de pendências deve contar com totalizadores de topo destacados (Total Débitos Órfãos e Total Créditos Órfãos), seletor dropdown de filial, campo de pesquisa instantânea por texto e filtros por pílula de status (`Todas`, `⚠️ Pendentes`, `✅ Salvas`).
+
+**Risco identificado / Anti-pattern:** Usar listas de cartões verticais longos para exibir grandes volumes de transações bancárias, ocultando metadados chave como FITID e banco de origem.
+
+---
+
 ## [2026-09-04] — [Feature ID: 371-correcao-divergencia-entradas-ofx-lojas]
 
 **Contexto:** Blindagem defensiva no componente `ConciliacaoLojasView.tsx` e exibição de coerência matemática linear nos cards de filiais (`StoreCardModulo1.tsx`).

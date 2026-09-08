@@ -63,6 +63,21 @@ export function classifyExpense(fornecedor: string, descricao: string): { catego
     return { category: 'retirada_socios', isIntercompany: true };
   }
 
+  // 2.1 Folha de Pagamento / Salários / Rescisão / Férias
+  if (
+    fullText.includes('SALARIO') || 
+    fullText.includes('SALÁRIO') || 
+    fullText.includes('FOLHA') || 
+    fullText.includes('RESCISAO') || 
+    fullText.includes('RESCISÃO') || 
+    fullText.includes('FERIAS') || 
+    fullText.includes('FÉRIAS') || 
+    fullText.includes('ADIANTAMENTO') || 
+    fullText.includes('VALE')
+  ) {
+    return { category: 'retirada_socios', isIntercompany: false };
+  }
+
   // 3. Gestão, Cartão Corporativo e Tech
   if (
     fullText.includes('CARTAO DANIEL') || 
