@@ -7,6 +7,7 @@
     "bot:server": "ts-node src/server.ts",
     "bot:oi": "ts-node src/runner.ts --target oficina",
     "bot:rede": "ts-node src/runner.ts --target rede",
+    "run:itau": "ts-node src/itau-runner.ts",
     "bot:install-browsers": "npx playwright install chromium"
   },
   "dependencies": {
@@ -16,7 +17,8 @@
     "cors": "^2.8.6",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",

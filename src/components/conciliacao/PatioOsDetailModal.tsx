@@ -249,6 +249,10 @@ export function PatioOsDetailModal({
     return filteredOsList.reduce((acc, os) => acc + (os.total_value - os.paid_value), 0);
   }, [filteredOsList]);
 
+  // Variação de Pátio vs Dia Anterior (Delta Pátio)
+  const previousPatioTotal = Number(prevSnapshot?.total_patio || 0);
+  const deltaPatio = totalPatioGlobal - previousPatioTotal;
+
   // Iniciar edição
   const handleStartEdit = (os: PatioOsItem) => {
     setEditingId(os.id);

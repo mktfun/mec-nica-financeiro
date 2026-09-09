@@ -1,3 +1,17 @@
+## [2026-09-09] — [Feature ID: 380-equalizacao-conciliacao-0809-caixa-patio-banco]
+
+**Contexto:** Saneamento de integridade dos snapshots de fechamento (`daily_snapshots`), tabela de apuração por filial (`reconciliations`) e ordens de serviço (`patio_os`) para equalização exata de 08/09/2026 conforme planilha oficial `CONCILIAÇÃO 0809.xlsx`.
+
+**Regra aprendida:**
+1. **Preservação de `caixa_atual` em Snapshots Fechados:**
+   - A coluna `caixa_atual` na tabela `daily_snapshots` de uma data fechada (`2026-09-04`) não pode sofrer mutação por recálculos acidentais, pois ela serve como `caixa_anterior` para a conciliação do dia subsequente (`2026-09-08`). O valor oficial de 04/09 é R$ 357.262,70.
+2. **Encadeamento de Odômetro em `daily_snapshots`:**
+   - Para que o dia subsequente consiga calcular o faturamento real sem distorção, `metadata.odometro_hoje` e `faturamento` do fechamento anterior devem conter o odômetro acumulado real (R$ 98.867,73) e não o faturamento diário isolado (R$ 34.605,94).
+3. **Equalização das 10 Filiais em `reconciliations`:**
+   - Os campos `bank_total` e `na_loja_os` na tabela `reconciliations` devem refletir com precisão os saldos bancários e o montante de veículos em pátio de cada uma das 10 filiais, sem omissão de cheque especial negativo (Mauá: -R$ 2.812,86).
+
+---
+
 ## [2026-09-08] — [Feature ID: 376-correcao-canonica-conciliado-vs-ofx-lojas]
 
 **Contexto:** Saneamento e anti-hijacking de transações de adquirentes no banco de dados, motor de matching combinatório (Subset Sum) de lotes SISPAG no PostgreSQL e apuração linear canônica em `get_daily_reconciliation_summary` via migration `20260908000036_fix_store_canonical_matching_and_anti_hijack.sql`.

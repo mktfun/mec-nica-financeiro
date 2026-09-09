@@ -1,3 +1,20 @@
+## [2026-09-09] — [Feature ID: 380-equalizacao-conciliacao-0809-caixa-patio-banco]
+
+**Contexto:** Equalização e auditoria pericial da conciliação do dia 08/09/2026 com base na planilha oficial `CONCILIAÇÃO 0809.xlsx`. Resolução da discrepância no Caixa Anterior (gerada por `caixa_atual` indevidamente recalculado em 04/09), equalização do Odômetro Acumulado Anterior (R$ 98.867,73 em vez do faturamento manual diário de R$ 34.605,94), alinhamento dos saldos bancários das 10 filiais (incluindo cheque especial de Mauá de -R$ 2.812,86) e saneamento dos carros em pátio (R$ 45.292,10 apurados pelas OSs em aberto).
+
+**Regra aprendida:**
+1. **Encadeamento de Odômetro Anterior vs Faturamento Diário:**
+   - O faturamento diário da conciliação ($\Delta$) decorre de $\text{Odômetro Hoje} - \text{Odômetro Anterior}$.
+   - O Odômetro Anterior DEVE SEMPRE refletir o faturamento acumulado total do mês até o dia imediatamente anterior (ex: R$ 98.867,73 até 04/09), e NUNCA o faturamento do próprio dia anterior (ex: R$ 34.605,94).
+   - Quando o snapshot anterior armazena apenas o faturamento do dia no campo `faturamento`, a subtração sobre o odômetro consolidado do mês gera distorções catastróficas (ex: R$ 135k em vez de R$ 71k).
+2. **Imutabilidade e Congelamento de Caixa Anterior:**
+   - O `caixa_atual` de um snapshot fechado (`is_closed = true`) é o lastro patrimonial do dia seguinte (`caixa_anterior`). Qualquer recálculo dinâmico retroativo que altere esse valor quebra a cadeia de fluxo de caixa subsequente.
+3. **Auditabilidade de Cartões Não Entrados e Pátio OS:**
+   - Valores de cartões a compensar (`Não Entrou`) compõem o Pilar 1 de saldos para preservação do ativo patrimonial.
+   - O saldo de OSs no pátio deve refletir estritamente as ordens com pendência financeira real não baixadas no dia.
+
+---
+
 ## [2026-09-08] — [Feature ID: 377-formato-ofx-tabela-entradas-saidas-orfas]
 
 **Contexto:** Destinação contábil e impacto no DRE de movimentações bancárias órfãs justificadas na Central de Importações.

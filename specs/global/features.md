@@ -1,3 +1,10 @@
+### Spec 380 — Equalização de Fechamento 08/09, Caixa Anterior e Sincronização Oficial de Pátio e Bancos (09/09/2026)
+- **Database (`daily_snapshots`, `reconciliations`, `patio_os`)**:
+  - Correção da causa-raiz do Caixa Anterior e Faturamento Anterior em `daily_snapshots` para `2026-09-04`: ajuste de `caixa_atual` para R$ 357.262,70 (valor oficial consolidado da planilha) e `faturamento` para R$ 98.867,73 (odômetro acumulado no mês até o fechamento anterior).
+  - Sincronização canônica das 10 filiais em `reconciliations` para a data `2026-09-08` com base na planilha oficial `CONCILIAÇÃO 0809.xlsx`: saldos bancários e pátio por loja equalizados ao centavo.
+  - Carga completa de 26 Ordens de Serviço em aberto (`patio_os`) totalizando R$ 45.292,10 em pátio real.
+  - Fechamento canônico de 08/09 aprovado com diferença de -R$ 0,81 (dentro da margem de tolerância contábil).
+
 ### Spec 377 — Formato OFX em Tabela Canônica para Entradas e Saídas Órfãs na Importação (08/09/2026)
 - **Frontend Step 2 de Justificativas (`Step2NonRevenueJustifications.tsx`)**:
   - Reformulação visual e funcional: substituição dos cards verticais volumosos por tabela `<table>` canônica em Dark UI Zinc-950 de alta densidade inspirada no extrato bancário (`StoreExtratoBancarioView.tsx`).

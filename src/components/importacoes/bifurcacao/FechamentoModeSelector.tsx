@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { BotDownloadedFilesCard } from '../BotDownloadedFilesCard';
 
 export type FechamentoMode = 'manual' | 'ai';
 
@@ -24,6 +25,7 @@ export interface FechamentoModeSelectorProps {
   selectedDate: string;
   onDateChange: (date: string) => void;
   onSelectMode: (mode: FechamentoMode) => void;
+  onSelectOfxFile?: (file: File) => void;
   isDayClosed?: boolean;
   deltaCurrent?: number;
   className?: string;
@@ -33,6 +35,7 @@ export function FechamentoModeSelector({
   selectedDate,
   onDateChange,
   onSelectMode,
+  onSelectOfxFile,
   isDayClosed = false,
   deltaCurrent,
   className = ''
@@ -134,7 +137,19 @@ export function FechamentoModeSelector({
         </div>
       </Card>
 
-      {/* 2. HEADER DA ESCOLHA DE MODALIDADE */}
+      {/* 2. BUFFER DE EXTRATOS DO ROBÔ (ÚLTIMAS 48H) */}
+      <BotDownloadedFilesCard
+        selectedDate={selectedDate}
+        onSelectOfxFile={(file) => {
+          if (onSelectOfxFile) {
+            onSelectOfxFile(file);
+          } else {
+            onSelectMode('manual');
+          }
+        }}
+      />
+
+      {/* 3. HEADER DA ESCOLHA DE MODALIDADE */}
       <div className="px-1">
         <h2 className="text-xl font-bold text-zinc-100">
           Como deseja realizar a conciliação deste dia?

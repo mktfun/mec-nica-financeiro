@@ -20,6 +20,7 @@ import {
 import { getBotCredentials } from './sync/supabaseUploader';
 import { loadSession, saveSession } from './session/sessionManager';
 import { resolveEmpresa } from './config/empresas';
+import { runItauScraperTask } from './itau-runner';
 
 const app = express();
 app.use(cors());
@@ -86,6 +87,53 @@ app.post('/api/sync/rede', async (req: Request, res: Response) => {
     res.json({ success: true, result });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// POST /api/sync/itau — Extração de extrato OFX do Itaú Empresas PJ
+app.post('/api/sync/itau', async (req: Request, res: Response) => {
+  try {
+    const { store, from, to, account, agency, headless = true, timeout = 10 } = req.body || {};
+
+    if (!store) {
+      res.status(400).json({ success: false, error: 'Parâmetro "store" é obrigatório (ex: "matriz", "st-01").' });
+      return;
+    }
+    if (!from || !to) {
+      res.status(400).json({ success: false, error: 'Parâmetros "from" e "to" são obrigatórios (formato YYYY-MM-DD).' });
+      return;
+    }
+
+    console.log(`[API] POST /api/sync/itau — loja: ${store}, período: ${from} até ${to}, headless: ${headless}`);
+
+    const result = await runItauScraperTask({
+      store,
+      from,
+      to,
+      account,
+      agency,
+      headless: Boolean(headless),
+      timeout: Number(timeout),
+      uploadToBuffer: true,
+    });
+
+    res.json({
+      success: true,
+      message: 'Extrato OFX extraído e salvo no buffer com sucesso!',
+      file: {
+        id: result.bufferRecordId,
+        fileName: result.fileName,
+        fileSizeBytes: result.fileSizeBytes,
+        sha256: result.sha256,
+        expiresAt: result.expiresAt,
+      },
+    });
+  } catch (error: any) {
+    console.error('[API] Erro ao executar extração do Itaú:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || String(error),
+    });
   }
 });
 

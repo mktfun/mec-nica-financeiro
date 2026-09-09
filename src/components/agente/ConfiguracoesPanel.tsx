@@ -14,6 +14,7 @@ import { Bot, Eye, EyeOff, CheckCircle2, XCircle, Clock, ExternalLink, Terminal,
 import { useAiSettings, useSaveAiSettings } from '@/hooks/useAiSettings';
 import { UserManagementPanel } from '@/components/configuracoes/UserManagementPanel';
 import { DailyAuditLogsView } from '@/components/configuracoes/DailyAuditLogsView';
+import { BankBotCredentialsPanel } from '@/components/configuracoes/BankBotCredentialsPanel';
 
 export function ConfiguracoesPanel() {
   const [activeTab, setActiveTab] = useState<'usuarios' | 'logs' | 'motor'>('usuarios');
@@ -307,9 +308,9 @@ export function ConfiguracoesPanel() {
             </div>
           )}
         </Card>
-
-
-
+        
+        {/* Credenciais Bancárias dos Bots de Automação */}
+        <BankBotCredentialsPanel />
 
         {/* IA */}
         <Card variant="glass" className="p-6">
