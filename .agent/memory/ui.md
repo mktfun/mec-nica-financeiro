@@ -1,3 +1,43 @@
+## [2026-09-09] — [Feature ID: 389-revolut-transaction-detail-modal-and-row-cleanup]
+
+**Contexto:** Resolução definitiva da deformação e quebra visual no extrato bancário da filial (`StoreExtratoBancarioView.tsx`), substituindo botões de ação inline que disputavam espaço na coluna direita por uma linha de transação 100% limpa e uma Janela de Detalhes da Transação dedicada (`TransactionDetailModal.tsx`) inspirada no padrão Revolut Card Details / Activity.
+
+**Regra aprendida:**
+1. **Zero Botões Soltos em Listas Financeiras (Clean Row Contract):**
+   - Linhas de extratos e listagens financeiras NUNCA devem conter múltiplos botões soltos (`[Mover]`, `[Vincular OS]`, `[Editar]`, `[Justificar]`) alinhados ao lado do valor numérico. Em larguras de tela comuns (1366px ou menor), esses botões quebram linha, comprimem a razão social e deformam o layout da tabela.
+   - Cada linha deve conter estritamente: Squircle Avatar semântico à esquerda, Razão Social limpa + Linha única de metadados no centro, Valor em alto contraste à direita e micro-ícone `ChevronRight` sutil.
+2. **Padrão Revolut Card Details (Janela Modal / Sheet de Detalhes):**
+   - A linha inteira deve ser clicável (`cursor-pointer hover:bg-zinc-800/40 active:scale-[0.99]`).
+   - Ao clicar, abre-se uma janela modal nobre (`TransactionDetailModal`) que abriga a ficha fiduciária completa (FITID com cópia, CNPJ, categoria, justificativa, conta vinculada) e o painel de ações de 1-clique (`[Mover p/ Hoje]`, `[Vincular OS]`, `[Desvincular OS]`, `[Editar / Justificar]`).
+
+**Risco identificado / Anti-pattern:** Renderizar botões de ação inline com texto extenso diretamente na linha da listagem ao lado de colunas de valores monetários.
+
+---
+
+## [2026-09-09] — [Mandato de Design Universal: Revolut Analytics & Cards UX]
+
+**Contexto:** O usuário exigiu explicitamente que toda a interface, tipografia, cartões e animações sigam como padrão de excelência visual o design da Revolut:
+- Referência 1: https://dribbble.com/shots/14830139-Revolut-Analytics-2-0
+- Referência 2: https://dribbble.com/shots/26151879-Revolut-cards-list-Card-details
+
+**Regras Invioláveis de Design Revolut (Fintech High-Craft):**
+1. **Zero Redundância em Listas Financeiras:**
+   - NUNCA repetir o mesmo texto em colunas separadas (ex: repetir a razão social em "Descrição" e novamente em "Favorecido" e novamente em "Identificação").
+   - Unificar em um bloco principal elegante:
+     - **Ícone de Categoria / Meio**: badge circular ou squircle sutil (`bg-zinc-800/80 border border-zinc-700/50 p-2.5 rounded-xl`) com cor temática (Cartão/Rede = azul, Boleto/Despesa = teal, PIX Recebido = verde, Saque = rose, Banco = roxo).
+     - **Título Principal**: Nome limpo do favorecido/estabelecimento (em `font-medium text-zinc-100 text-sm`).
+     - **Metadados em Subtítulo Único**: Linha secundária discreta (`text-xs text-zinc-400 font-mono`) com natureza contábil, CNPJ/CPF formatado ou FITID quando aplicável.
+     - **Tag / Badge Inline**: Pills arredondadas (`rounded-full py-0.5 px-2.5 text-[11px]`) sem ruído visual.
+2. **Agrupamento Temporal por Dias com Accordion Interativo:**
+   - Extratos e listas de lançamentos com múltiplos dias DEVEM ser agrupados por data em seções sanfona (Accordions).
+   - Cabeçalho de Dia clicável: Exibe data formatada por extenso (`08 de Setembro, Terça`), contador de itens, subtotal líquido do dia e chevron animado (`ChevronDown` / `ChevronUp`).
+   - Clicar no cabeçalho colapsa/expande as transações do dia com animação suave via Framer Motion.
+3. **Cards de KPIs sem Engessamento:**
+   - Evitar espremer 5 cards apertados com bordas pesadas e siglas indecifráveis em fontes gigantes.
+   - Usar espaçamento nobre, contraste tipográfico refinado, micro-ícones nos cantos superiores, indicadores de variação limpos e alinhamento visual harmônico com o grid da página.
+
+---
+
 ## [2026-09-08] — [Feature ID: 377-formato-ofx-tabela-entradas-saidas-orfas]
 
 **Contexto:** Reformulação visual e de UX do Step 2 de Justificativas e Órfãos no Wizard Central de Importações (`Step2NonRevenueJustifications.tsx`), substituindo cartões verticais volumosos por uma tabela de dados canônica em Dark UI Zinc-950 de alta densidade inspirada no extrato bancário do sistema (`StoreExtratoBancarioView.tsx`).

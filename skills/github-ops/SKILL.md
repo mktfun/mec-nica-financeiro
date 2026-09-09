@@ -27,7 +27,7 @@ export GH_TOKEN=$(grep '^GH_TOKEN=' .env | cut -d '=' -f2)
 
 Required `.env` entry:
 ```env
-GH_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+GH_TOKEN=ghp_YOUR_TOKEN_HERE
 ```
 *Permissions required*: `repo`, `workflow`, `read:org`.
 

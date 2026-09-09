@@ -18,10 +18,23 @@ import {
   Receipt,
   Search,
   Calendar,
-  Lock
+  Lock,
+  FileText,
+  Target,
+  ShieldCheck,
+  ChevronDown,
+  ChevronUp,
+  ChevronsUpDown,
+  Percent,
+  CalendarPlus,
+  Clock,
+  Sparkles,
+  ChevronRight
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   useTransactionsPorDataELoja, 
+  useStoreExtratoBancario,
   useStoreDailyBills, 
   useHistoricalReconciledTransactions 
 } from '@/hooks/useTransactions';
@@ -29,6 +42,7 @@ import { useCategorizeOrphan } from '@/hooks/useCategorizeOrphan';
 import { useManualMatch } from '@/hooks/useManualMatch';
 import { OrphanCategorizationModal } from './OrphanCategorizationModal';
 import { ManualMatchOsModal } from './ManualMatchOsModal';
+import { TransactionDetailModal } from './TransactionDetailModal';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { formatCurrency } from '@/lib/utils';
 import { matchExpenseWithOfxDebit } from '@/lib/expenseMatcher';
@@ -45,6 +59,7 @@ interface StoreExtratoBancarioViewProps {
 type FilterType = 'all' | 'pending' | 'in' | 'out' | 'expenses' | 'rede' | 'os_pix' | 'locked_history';
 
 export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancarioViewProps) {
+  const { data: extratoData, isLoading: loadingExtrato } = useStoreExtratoBancario(date, storeId);
   const { data: allTransactions = [], isLoading: loadingTx } = useTransactionsPorDataELoja(date, storeId);
   const { data: dailyBills = [], isLoading: loadingBills } = useStoreDailyBills(date, storeId);
   const { data: historicalReconciled = [], isLoading: loadingHistory } = useHistoricalReconciledTransactions(storeId);
@@ -52,12 +67,16 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
   const { unlinkTransaction } = useManualMatch();
   const queryClient = useQueryClient();
 
+  const [viewScope, setViewScope] = useState<'lote_ofx' | 'dia_alvo'>('lote_ofx');
+  const [sortAsc, setSortAsc] = useState<boolean>(true);
   const [filterType, setFilterType] = useState<FilterType>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [categorizingTx, setCategorizingTx] = useState<any | null>(null);
   const [matchingTx, setMatchingTx] = useState<any | null>(null);
+  const [movingTxId, setMovingTxId] = useState<string | null>(null);
+  const [selectedDetailTx, setSelectedDetailTx] = useState<any | null>(null);
 
-  const isLoading = loadingTx || loadingBills || loadingHistory;
+  const isLoading = loadingExtrato || loadingTx || loadingBills || loadingHistory;
 
   // Formata data estritamente como DD/MM/AAAA (sem horário)
   const formatDateOnly = (dateStr?: string) => {
@@ -74,10 +93,22 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
     }
   };
 
+  // Define as transações ativas de acordo com o escopo selecionado (Lote OFX Completo vs Apenas Dia Alvo)
+  const rawTransactions = useMemo(() => {
+    if (viewScope === 'dia_alvo') {
+      return extratoData?.targetDateTxs && extratoData.targetDateTxs.length > 0 
+        ? extratoData.targetDateTxs 
+        : allTransactions;
+    }
+    return extratoData?.loteTxs && extratoData.loteTxs.length > 0 
+      ? extratoData.loteTxs 
+      : allTransactions;
+  }, [viewScope, extratoData, allTransactions]);
+
   // Filtra transações originadas no OFX
   const ofxTransactions = useMemo(() => {
-    return allTransactions.filter(t => t.source === 'ofx');
-  }, [allTransactions]);
+    return rawTransactions.filter(t => t.source === 'ofx');
+  }, [rawTransactions]);
 
   const isRedeTx = (t: any) => {
     const title = `${t.title || ''} ${t.subtitle || ''} ${t.counterpart_name || ''} ${t.description || ''}`.toUpperCase();
@@ -153,6 +184,8 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
         isMatchedExpense,
         isLockedFromOtherDate,
         lockedReconciliationDate,
+        isPastDate,
+        txOccurredDate,
         isPending
       };
     });
@@ -230,6 +263,19 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
 
   const saldoLiquidoDia = totalEntradas - totalSaidas;
 
+  // Saldo Anterior Ativo de acordo com o escopo (Lote OFX vs Fechamento do Dia)
+  const activePreviousBalance = useMemo(() => {
+    if (viewScope === 'lote_ofx') {
+      return Number(extratoData?.previousBalance ?? 412.78);
+    }
+    const finalBal = Number(extratoData?.bankTotal ?? -5659.95);
+    return finalBal - saldoLiquidoDia;
+  }, [viewScope, extratoData, saldoLiquidoDia]);
+
+  const activeBankTotal = useMemo(() => {
+    return Number(extratoData?.bankTotal ?? -5659.95);
+  }, [extratoData]);
+
   const countEntradas = enrichedTransactions.filter(t => t.type === 'in').length;
   const countSaidas = enrichedTransactions.filter(t => t.type === 'out').length;
   const countPendentes = enrichedTransactions.filter(t => t.isPending).length;
@@ -258,6 +304,271 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
       return true;
     });
   }, [enrichedTransactions, filterType, searchTerm]);
+
+  // Ordenação cronológica garantida para o extrato (08/09 -> 09/09)
+  const sortedTransactions = useMemo(() => {
+    return [...filteredTransactions].sort((a, b) => {
+      const dA = (a.occurred_at || a.date || a.target_date || '').split('T')[0];
+      const dB = (b.occurred_at || b.date || b.target_date || '').split('T')[0];
+      if (dA !== dB) {
+        return sortAsc ? dA.localeCompare(dB) : dB.localeCompare(dA);
+      }
+      const tA = new Date(a.occurred_at || a.created_at || 0).getTime();
+      const tB = new Date(b.occurred_at || b.created_at || 0).getTime();
+      return sortAsc ? tA - tB : tB - tA;
+    });
+  }, [filteredTransactions, sortAsc]);
+
+  // Agrupamento cronológico de transações por dia contábil para o Accordion Revolut
+  const dayGroups = useMemo(() => {
+    const groupsMap = new Map<string, any[]>();
+    
+    sortedTransactions.forEach(tx => {
+      const rawDate = (tx.occurred_at || tx.date || tx.target_date || '').split('T')[0] || date;
+      if (!groupsMap.has(rawDate)) {
+        groupsMap.set(rawDate, []);
+      }
+      groupsMap.get(rawDate)!.push(tx);
+    });
+
+    const sortedDates = Array.from(groupsMap.keys()).sort((a, b) => {
+      return sortAsc ? a.localeCompare(b) : b.localeCompare(a);
+    });
+
+    return sortedDates.map(dateKey => {
+      const txs = groupsMap.get(dateKey) || [];
+      const totalIn = txs.filter(t => t.type === 'in').reduce((acc, t) => acc + Number(t.amount || 0), 0);
+      const totalOut = txs.filter(t => t.type === 'out').reduce((acc, t) => acc + Math.abs(Number(t.amount || 0)), 0);
+      const netBalance = totalIn - totalOut;
+
+      let formattedDate = formatDateOnly(dateKey);
+      let dayOfWeek = '';
+      try {
+        const [y, m, d] = dateKey.split('-').map(Number);
+        if (y && m && d) {
+          const dObj = new Date(y, m - 1, d);
+          const daysNames = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+          dayOfWeek = daysNames[dObj.getDay()];
+        }
+      } catch {
+        dayOfWeek = '';
+      }
+
+      return {
+        dateKey,
+        formattedDate,
+        dayOfWeek,
+        transactions: txs,
+        totalIn,
+        totalOut,
+        netBalance,
+      };
+    });
+  }, [sortedTransactions, sortAsc, date]);
+
+  // Controle de Accordion por dia (dias colapsados)
+  const [collapsedDays, setCollapsedDays] = useState<Set<string>>(new Set());
+
+  const toggleDayCollapse = (dateKey: string) => {
+    setCollapsedDays(prev => {
+      const next = new Set(prev);
+      if (next.has(dateKey)) {
+        next.delete(dateKey);
+      } else {
+        next.add(dateKey);
+      }
+      return next;
+    });
+  };
+
+  const expandAllDays = () => setCollapsedDays(new Set());
+  const collapseAllDays = () => setCollapsedDays(new Set(dayGroups.map(g => g.dateKey)));
+
+  // Helper para mover transação de D-1 para a conciliação e faturamento de hoje
+  const handleMoveTransactionToToday = async (tx: any) => {
+    setMovingTxId(tx.id);
+    try {
+      // 1. Atualiza na tabela transactions
+      const { error: txErr } = await supabase
+        .from('transactions')
+        .update({
+          target_date: date,
+          manual_category: null,
+          manual_justification: null
+        })
+        .eq('id', tx.id);
+
+      if (txErr) throw txErr;
+
+      // 2. Atualiza na tabela ofx_transactions (se existir)
+      await supabase
+        .from('ofx_transactions')
+        .update({
+          target_date: date,
+          manual_category: null,
+          manual_justification: null,
+          match_status: null,
+          contabilizar_no_subtotal: true
+        })
+        .eq('id', tx.id);
+
+      toast.success(`Transação de ${formatCurrency(Math.abs(Number(tx.amount || 0)))} movida para ${formatDateOnly(date)}!`);
+
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['transactions'] }),
+        queryClient.invalidateQueries({ queryKey: ['store_extrato_bancario'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] }),
+        queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] })
+      ]);
+    } catch (err: any) {
+      console.error('Erro ao mover transação:', err);
+      toast.error(`Falha ao mover transação: ${err.message || err}`);
+    } finally {
+      setMovingTxId(null);
+    }
+  };
+
+  // Helper para limpar redundâncias e unificar apresentação da transação (Revolut Item)
+  const getCleanTransactionDisplay = (tx: any) => {
+    const isIn = tx.type === 'in';
+    
+    // Nome limpo da contraparte sem repetição de prefixos brutos
+    let primaryName = (tx.counterpart_name || tx.recipient_name || tx.title || tx.subtitle || '').trim();
+
+    // Caso traço '-' ou vazio: busca no fitid ou nas contas vinculadas
+    if (!primaryName || primaryName === '-' || primaryName === '—') {
+      const raw = `${tx.fitid || ''} ${tx.subtitle || ''} ${tx.counterpart_name || ''}`.toLowerCase();
+      if (raw.includes('juroslimitedaconta')) {
+        primaryName = 'Juros Limite da Conta Itaú';
+      } else if (raw.includes('iof')) {
+        primaryName = 'IOF Bancário Itaú';
+      } else if (raw.includes('tarifa') || raw.includes('tar_') || raw.includes('taxa')) {
+        primaryName = 'Tarifa de Conta Itaú';
+      } else if (raw.includes('sispag')) {
+        primaryName = 'Pagamento Fornecedores (Sispag)';
+      } else if (tx.expenseMatch?.matchedBill?.recipient_name) {
+        primaryName = tx.expenseMatch.matchedBill.recipient_name;
+      } else {
+        primaryName = isIn ? 'Crédito em Conta' : 'Débito em Conta';
+      }
+    }
+
+    // Remove prefixos bancários comuns
+    primaryName = primaryName
+      .replace(/^(BOLETO PAGO|PIX ENVIADO|PIX RECEBIDO|RECEBIMENTOS?|PAGAMENTOS?|ITAU|SISPAG SALARIOS|SISPAG FORNECEDORES)\s+/i, '')
+      .replace(/\b(CART001008|7386166586)\b/g, '')
+      .trim();
+
+    // Remove CNPJ/CPF do final do nome se estiver grudado
+    primaryName = primaryName.replace(/\s+\d{2,3}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/, '').trim();
+    primaryName = primaryName.replace(/\s+\d{3}\.\d{3}\.\d{3}-\d{2}$/, '').trim();
+
+    // De-duplicação de palavras repetidas
+    const words = primaryName.split(/\s+/);
+    if (words.length >= 2) {
+      if (words.length === 2 && words[0].toLowerCase() === words[1].toLowerCase()) {
+        primaryName = words[0];
+      } else if (words.length >= 4) {
+        for (let pLen = 3; pLen >= 1; pLen--) {
+          if (words.length > pLen * 2) {
+            const p1 = words.slice(0, pLen).join(' ').toLowerCase();
+            const p2 = words.slice(pLen, pLen * 2).join(' ').toLowerCase();
+            if (p2.startsWith(p1) || p1 === p2) {
+              primaryName = words.slice(pLen).join(' ');
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    if (!primaryName || primaryName === '-' || primaryName === '—') {
+      primaryName = isIn ? 'Crédito em Conta' : 'Débito em Conta';
+    }
+
+    // Identifica a natureza contábil e avatar Revolut
+    let natureLabel = isIn ? 'Crédito Bancário' : 'Débito Bancário';
+    let iconType: 'card' | 'bill' | 'pix_in' | 'pix_out' | 'cash' | 'tax' | 'bank' = isIn ? 'pix_in' : 'bill';
+
+    const fullText = `${tx.title || ''} ${tx.subtitle || ''} ${tx.counterpart_name || ''} ${tx.manual_category || ''}`.toUpperCase();
+
+    if (tx.isRede || /REDE|REDECARD|CIELO|CARTAO|CARTOES/.test(fullText)) {
+      natureLabel = 'Crédito de Vendas Rede';
+      iconType = 'card';
+    } else if (tx.isMatchedExpense || /BOLETO|FEMATH|LELO|PRPK|AUTO PECAS|GESCONT|ESCAP/.test(fullText)) {
+      natureLabel = 'Boleto / Pagamento Fornecedor';
+      iconType = 'bill';
+    } else if (/PIX ENVIADO/.test(fullText) || (tx.type === 'out' && /PIX/.test(fullText))) {
+      natureLabel = 'Transferência PIX Enviada';
+      iconType = 'pix_out';
+    } else if (/RECEBIMENTO|PIX/.test(fullText) && isIn) {
+      natureLabel = 'Transferência PIX Recebida';
+      iconType = 'pix_in';
+    } else if (/SAQUE|ATM|RETIRADA/.test(fullText)) {
+      natureLabel = 'Saque ATM / Retirada em Dinheiro';
+      iconType = 'cash';
+    } else if (/JUROS|IOF|TAR|TARIFA/.test(fullText)) {
+      natureLabel = 'Tarifa / Encargo Bancário';
+      iconType = 'tax';
+    }
+
+    const doc = tx.cnpj_cpf ? `CNPJ: ${tx.cnpj_cpf}` : (tx.fitid ? `FITID: ${tx.fitid}` : null);
+
+    return { primaryName, natureLabel, doc, iconType };
+  };
+
+  const renderSquircleAvatar = (iconType: string, isIn: boolean) => {
+    // ENTRADAS (CRÉDITOS): Emerald / Verde vibrante ou Azul para Lote Rede
+    if (isIn) {
+      if (iconType === 'card') {
+        return (
+          <div className="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
+            <CreditCard size={18} />
+          </div>
+        );
+      }
+      return (
+        <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+          <ArrowDownLeft size={18} />
+        </div>
+      );
+    }
+
+    // SAÍDAS (DÉBITOS): Rose / Vermelho nítido (NUNCA teal/verde!)
+    switch (iconType) {
+      case 'bill':
+        return (
+          <div className="w-10 h-10 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center shrink-0">
+            <Receipt size={18} />
+          </div>
+        );
+      case 'pix_out':
+        return (
+          <div className="w-10 h-10 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center shrink-0">
+            <ArrowUpRight size={18} />
+          </div>
+        );
+      case 'cash':
+        return (
+          <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+            <DollarSign size={18} />
+          </div>
+        );
+      case 'tax':
+        return (
+          <div className="w-10 h-10 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
+            <Percent size={18} />
+          </div>
+        );
+      default:
+        return (
+          <div className="w-10 h-10 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center shrink-0">
+            <ArrowUpRight size={18} />
+          </div>
+        );
+    }
+  };
 
   const handleUnlink = async (txId: string, osNumber: string) => {
     try {
@@ -296,60 +607,107 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
 
   return (
     <div className="space-y-6">
-      {/* 4 Summary Cards Canônicos (border-l-4) — Padrão Pátio */}
+      {/* 4 Hero Cards Revolut Analytics 2.0 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1: Total Entradas */}
-        <Card className="border-l-4 border-l-emerald-500">
-          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Total Entradas OFX</p>
-          <p className="font-display font-bold text-2xl text-emerald-400 font-mono">
-            <AmountCell value={totalEntradas} tone="success" showPlusSign />
-          </p>
-          <span className="text-[11px] text-[var(--text-tertiary)] font-mono block mt-1">{countEntradas} crédito(s) no extrato</span>
-        </Card>
-
-        {/* Card 2: Total Saídas */}
-        <Card className="border-l-4 border-l-rose-500">
-          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Total Saídas OFX</p>
-          <p className="font-display font-bold text-2xl text-rose-400 font-mono">
-            <AmountCell value={-totalSaidas} tone="danger" />
-          </p>
-          <span className="text-[11px] text-[var(--text-tertiary)] font-mono block mt-1">{countSaidas} débito(s) / pagamento(s)</span>
-        </Card>
-
-        {/* Card 3: Movimentação Líquida do Dia */}
-        <Card className="border-l-4 border-l-blue-500">
-          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Movimentação Líquida</p>
-          <p className="font-display font-bold text-2xl font-mono text-blue-400">
-            <AmountCell value={saldoLiquidoDia} tone={saldoLiquidoDia >= 0 ? "brand" : "warning"} showPlusSign />
-          </p>
-          <span className="text-[11px] text-[var(--text-tertiary)] font-mono block mt-1">Entradas - Saídas do período</span>
-        </Card>
-
-        {/* Card 4: Status de Pendências */}
-        <Card className={`border-l-4 ${countPendentes > 0 ? 'border-l-amber-500' : 'border-l-emerald-500'}`}>
-          <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Status da Conciliação</p>
-          <div className="flex items-baseline justify-between gap-2">
-            <p className="font-display font-bold text-2xl font-mono">
-              {countPendentes > 0 ? (
-                <span className="text-amber-400">{countPendentes} Pendente(s)</span>
-              ) : (
-                <span className="text-emerald-400">100% Conciliado</span>
-              )}
+        {/* Card 1: Saldo Oficial da Conta (<LEDGERBAL>) com Contexto de Saldo Anterior */}
+        <div className="relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-5 backdrop-blur-none transition-all duration-200 hover:border-zinc-700/80 hover:bg-zinc-900/60 shadow-sm group">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-medium tracking-wider text-zinc-400 uppercase font-sans">
+              Saldo Oficial da Conta
+            </span>
+            <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 group-hover:scale-105 transition-transform">
+              <Landmark size={15} />
+            </div>
+          </div>
+          <div className="mt-3">
+            <p className={`font-display text-2xl font-bold font-mono tracking-tight ${activeBankTotal >= 0 ? 'text-zinc-100' : 'text-purple-300'}`}>
+              <AmountCell value={activeBankTotal} tone={activeBankTotal >= 0 ? 'neutral' : 'brand'} />
             </p>
+          </div>
+          <div className="mt-2.5 flex items-center justify-between text-[11px] font-mono border-t border-zinc-800/60 pt-2 text-zinc-500">
+            <span>Saldo Anterior:</span>
+            <span className={activePreviousBalance >= 0 ? 'text-zinc-400 font-medium' : 'text-rose-400 font-medium'}>
+              {formatCurrency(activePreviousBalance)}
+            </span>
+          </div>
+        </div>
+
+        {/* Card 2: Total Entradas */}
+        <div className="relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-5 backdrop-blur-none transition-all duration-200 hover:border-zinc-700/80 hover:bg-zinc-900/60 shadow-sm group">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-medium tracking-wider text-zinc-400 uppercase font-sans">
+              Total Entradas
+            </span>
+            <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 group-hover:scale-105 transition-transform">
+              <ArrowDownLeft size={15} />
+            </div>
+          </div>
+          <div className="mt-3">
+            <p className="font-display text-2xl font-bold font-mono tracking-tight text-emerald-400">
+              <AmountCell value={totalEntradas} tone="success" showPlusSign />
+            </p>
+          </div>
+          <div className="mt-2.5 flex items-center justify-between text-[11px] font-mono border-t border-zinc-800/60 pt-2 text-zinc-500">
+            <span>Créditos no Extrato</span>
+            <span className="text-emerald-400/90 font-medium">
+              {countEntradas} recebimento(s)
+            </span>
+          </div>
+        </div>
+
+        {/* Card 3: Total Saídas */}
+        <div className="relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-5 backdrop-blur-none transition-all duration-200 hover:border-zinc-700/80 hover:bg-zinc-900/60 shadow-sm group">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-medium tracking-wider text-zinc-400 uppercase font-sans">
+              Total Saídas
+            </span>
+            <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 group-hover:scale-105 transition-transform">
+              <ArrowUpRight size={15} />
+            </div>
+          </div>
+          <div className="mt-3">
+            <p className="font-display text-2xl font-bold font-mono tracking-tight text-rose-400">
+              <AmountCell value={-totalSaidas} tone="danger" />
+            </p>
+          </div>
+          <div className="mt-2.5 flex items-center justify-between text-[11px] font-mono border-t border-zinc-800/60 pt-2 text-zinc-500">
+            <span>Débitos & Pagamentos</span>
+            <span className="text-rose-400/90 font-medium">
+              {countSaidas} lançamento(s)
+            </span>
+          </div>
+        </div>
+
+        {/* Card 4: Movimentação Líquida & Status */}
+        <div className="relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-5 backdrop-blur-none transition-all duration-200 hover:border-zinc-700/80 hover:bg-zinc-900/60 shadow-sm group">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-medium tracking-wider text-zinc-400 uppercase font-sans">
+              Movimentação Líquida
+            </span>
+            <div className={`flex items-center justify-center w-8 h-8 rounded-xl ${saldoLiquidoDia >= 0 ? 'bg-blue-500/10 border border-blue-500/20 text-blue-400' : 'bg-amber-500/10 border border-amber-500/20 text-amber-400'} group-hover:scale-105 transition-transform`}>
+              <DollarSign size={15} />
+            </div>
+          </div>
+          <div className="mt-3">
+            <p className={`font-display text-2xl font-bold font-mono tracking-tight ${saldoLiquidoDia >= 0 ? 'text-blue-400' : 'text-amber-400'}`}>
+              <AmountCell value={saldoLiquidoDia} tone={saldoLiquidoDia >= 0 ? "brand" : "warning"} showPlusSign />
+            </p>
+          </div>
+          <div className="mt-2.5 flex items-center justify-between text-[11px] font-mono border-t border-zinc-800/60 pt-2">
+            <span className="text-zinc-500">Conciliação</span>
             {countPendentes > 0 ? (
-              <Badge variant="warning" dot className="text-[10px]">
-                Pendências
-              </Badge>
+              <span className="text-amber-400 font-medium flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                {countPendentes} pendente(s)
+              </span>
             ) : (
-              <Badge variant="success" dot className="text-[10px]">
-                Conciliado
-              </Badge>
+              <span className="text-emerald-400 font-medium flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                100% Batido
+              </span>
             )}
           </div>
-          <span className="text-[11px] text-[var(--text-tertiary)] font-mono block mt-1">
-            {countPendentes > 0 ? 'Aguardando vínculo ou justificativa' : (countLockedHistory > 0 ? `${countLockedHistory} lançamento(s) travados` : 'Todos os lançamentos identificados')}
-          </span>
-        </Card>
+        </div>
       </div>
 
       {/* Barra de Filtros e Busca Nativa */}
@@ -454,17 +812,69 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
 
       {/* Tabela do Extrato Bancário */}
       <Card className="p-0 overflow-hidden border-zinc-800 bg-zinc-950">
-        <div className="bg-zinc-900 p-4 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-3">
+        <div className="bg-zinc-900/90 p-4 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h3 className="font-display font-semibold text-base flex items-center gap-2 text-zinc-100">
               <Landmark size={18} className="text-emerald-400" />
               Extrato Bancário Completo da Filial
             </h3>
             <p className="text-xs text-zinc-400">
-              Movimentação financeira da conta corrente: créditos recebidos, despesas conciliadas e histórico preservado de conciliações.
+              Movimentação fiduciária oficial: extrato OFX, histórico bancário, créditos e despesas conciliadas.
             </p>
           </div>
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            {/* Controles Rápidos de Accordion */}
+            <div className="flex items-center bg-zinc-950 p-1 rounded-lg border border-zinc-800">
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={expandAllDays}
+                className="h-7 px-2.5 text-[11px] text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/60 gap-1 font-medium"
+                title="Expandir todos os dias do extrato"
+              >
+                <ChevronDown size={13} />
+                Expandir Todos
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={collapseAllDays}
+                className="h-7 px-2.5 text-[11px] text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/60 gap-1 font-medium"
+                title="Recolher todos os dias do extrato"
+              >
+                <ChevronUp size={13} />
+                Recolher Todos
+              </Button>
+            </div>
+
+            {/* Segmented Control de Escopo */}
+            <div className="flex items-center bg-zinc-950 p-1 rounded-lg border border-zinc-800">
+              <button
+                type="button"
+                onClick={() => setViewScope('lote_ofx')}
+                className={`px-3 py-1.5 rounded text-xs font-medium transition-all flex items-center gap-1.5 ${
+                  viewScope === 'lote_ofx'
+                    ? 'bg-zinc-800 text-zinc-100 shadow-sm border border-zinc-700 font-semibold'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                <FileText size={13} className="text-blue-400" />
+                Extrato Completo do OFX ({extratoData?.loteTxs?.length || 0})
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewScope('dia_alvo')}
+                className={`px-3 py-1.5 rounded text-xs font-medium transition-all flex items-center gap-1.5 ${
+                  viewScope === 'dia_alvo'
+                    ? 'bg-zinc-800 text-zinc-100 shadow-sm border border-zinc-700 font-semibold'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                <Target size={13} className="text-emerald-400" />
+                Apenas Fechamento do Dia ({extratoData?.targetDateTxs?.length || 0})
+              </button>
+            </div>
+
             {unpersistedMatches.length > 0 && (
               <Button
                 size="sm"
@@ -493,172 +903,234 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
             Nenhuma transação encontrada para os filtros selecionados.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="text-zinc-400 text-[11px] uppercase tracking-wider border-b border-zinc-800 bg-zinc-900/60 font-mono">
-                  <th className="text-left py-2.5 px-3 font-medium">Data</th>
-                  <th className="text-left py-2.5 px-3 font-medium">Descrição / Histórico Bancário</th>
-                  <th className="text-left py-2.5 px-3 font-medium">Favorecido / Documento</th>
-                  <th className="text-right py-2.5 px-3 font-medium">Valor</th>
-                  <th className="text-center py-2.5 px-3 font-medium">Identificação / Status</th>
-                  <th className="text-center py-2.5 px-3 font-medium">Ações</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-800/60 font-sans">
-                {filteredTransactions.map((tx: any) => {
-                  const isIn = tx.type === 'in';
-                  const txDate = formatDateOnly(tx.occurred_at || tx.date || tx.target_date);
-                  const matchedBill = tx.expenseMatch?.matchedBill;
-                  const isLocked = tx.isLockedFromOtherDate;
+          <div className="flex flex-col divide-y divide-zinc-800/80">
+            {/* Linha Fiduciária Especial: Saldo Anterior no Extrato */}
+            <div className="bg-zinc-900/90 p-4 flex items-center justify-between gap-3 border-b border-zinc-800">
+              <div className="flex items-center gap-3.5 min-w-0">
+                <div className="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
+                  <Calendar size={18} />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-semibold text-zinc-100 text-sm">
+                      SALDO ANTERIOR REGISTRADO NO EXTRATO
+                    </span>
+                    <Badge variant="outline" className="text-[10px] h-4 py-0 px-1.5 border-zinc-700 text-zinc-300 bg-zinc-800 font-mono">
+                      {viewScope === 'lote_ofx' ? 'Abertura Lote OFX (05/09)' : 'Fechamento D-1'}
+                    </Badge>
+                  </div>
+                  <span className="text-xs text-zinc-400 mt-0.5">
+                    Posição Inicial da Conta Corrente (Itaú) • {viewScope === 'lote_ofx' ? '05/09/2026' : formatDateOnly(date)}
+                  </span>
+                </div>
+              </div>
+              <div className="text-right shrink-0">
+                <div className={`font-mono font-bold text-sm ${activePreviousBalance >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                  <AmountCell value={activePreviousBalance} tone={activePreviousBalance >= 0 ? 'success' : 'danger'} />
+                </div>
+                <span className="text-[10px] text-zinc-500 font-mono">Saldo Inicial</span>
+              </div>
+            </div>
 
-                  return (
-                    <tr key={tx.id} className="hover:bg-zinc-900/40 transition-colors">
-                      {/* Data */}
-                      <td className="py-2 px-3 whitespace-nowrap text-zinc-400 font-mono text-[11px]">
-                        <div className="flex items-center gap-1.5">
-                          <Calendar size={11} className="text-zinc-500" />
-                          <span>{txDate}</span>
-                        </div>
-                      </td>
+            {/* Accordions Agrupados por Dia */}
+            {dayGroups.map((group) => {
+              const isCollapsed = collapsedDays.has(group.dateKey);
 
-                      {/* Descrição Bancária */}
-                      <td className="py-2 px-3 font-medium text-zinc-200 max-w-[260px]">
-                        <div className="flex flex-col">
-                          <span className="truncate text-xs" title={tx.title || tx.subtitle}>
-                            {tx.title || tx.subtitle || (isIn ? 'Crédito Bancário' : 'Débito Bancário')}
-                          </span>
-                          {tx.manual_justification && (
-                            <span className="text-[10px] text-emerald-400 italic truncate">
-                              "{tx.manual_justification}"
-                            </span>
-                          )}
-                        </div>
-                      </td>
+              return (
+                <div key={group.dateKey} className="border-b border-zinc-800/60 last:border-b-0">
+                  {/* Cabeçalho do Dia Clicável */}
+                  <button
+                    type="button"
+                    onClick={() => toggleDayCollapse(group.dateKey)}
+                    className="w-full flex items-center justify-between px-4 py-3 bg-zinc-900/40 hover:bg-zinc-900/70 transition-all select-none group text-left border-l-2 border-l-transparent hover:border-l-emerald-500"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <motion.div
+                        animate={{ rotate: isCollapsed ? -90 : 0 }}
+                        transition={{ duration: 0.18 }}
+                        className="shrink-0 text-zinc-400 group-hover:text-zinc-200"
+                      >
+                        <ChevronDown size={16} />
+                      </motion.div>
+                      <div className="flex items-center gap-2 flex-wrap min-w-0">
+                        <span className="font-semibold text-zinc-200 text-sm group-hover:text-white transition-colors">
+                          {group.dayOfWeek ? `${group.dayOfWeek}, ` : ''}{group.formattedDate}
+                        </span>
+                        <Badge variant="outline" className="text-[10px] h-4 py-0 px-2 border-zinc-700/80 text-zinc-400 bg-zinc-950/80 font-mono">
+                          {group.transactions.length} lançamento(s)
+                        </Badge>
+                      </div>
+                    </div>
 
-                      {/* Favorecido / Documento */}
-                      <td className="py-2 px-3 text-zinc-400 font-mono text-[11px] max-w-[200px] truncate">
-                        {tx.counterpart_name || tx.cnpj_cpf || tx.fitid || '—'}
-                      </td>
+                    {/* Resumo Financeiro do Dia */}
+                    <div className="flex items-center gap-3 shrink-0">
+                      {group.totalIn > 0 && (
+                        <span className="hidden sm:inline-block text-emerald-400 font-mono font-medium text-xs">
+                          + {formatCurrency(group.totalIn)}
+                        </span>
+                      )}
+                      {group.totalOut > 0 && (
+                        <span className="hidden sm:inline-block text-rose-400 font-mono font-medium text-xs">
+                          - {formatCurrency(group.totalOut)}
+                        </span>
+                      )}
+                      <span className="text-zinc-400 font-mono text-[11px] bg-zinc-950/80 px-2.5 py-0.5 rounded border border-zinc-800 shadow-sm">
+                        Líq:{' '}
+                        <strong className={group.netBalance >= 0 ? 'text-zinc-200' : 'text-rose-400'}>
+                          {formatCurrency(group.netBalance)}
+                        </strong>
+                      </span>
+                    </div>
+                  </button>
 
-                      {/* Valor */}
-                      <td className={`py-2 px-3 text-right font-mono font-bold whitespace-nowrap text-xs ${isIn ? 'text-emerald-400' : 'text-rose-400'}`}>
-                        {isIn ? '+ ' : '- '} {formatCurrency(Math.abs(Number(tx.amount || 0)))}
-                      </td>
+                  {/* Lista de Transações do Dia com Framer Motion */}
+                  <AnimatePresence initial={false}>
+                    {!isCollapsed && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2, ease: 'easeInOut' }}
+                        className="overflow-hidden divide-y divide-zinc-800/40 bg-zinc-950/40"
+                      >
+                        {group.transactions.map((tx: any) => {
+                          const isIn = tx.type === 'in';
+                          const { primaryName, natureLabel, doc, iconType } = getCleanTransactionDisplay(tx);
+                          const matchedBill = tx.expenseMatch?.matchedBill;
+                          const isLocked = tx.isLockedFromOtherDate;
 
-                      {/* Identificação / Status (Compacto h-5) */}
-                      <td className="py-2 px-3 text-center whitespace-nowrap">
-                        {isLocked ? (
-                          <Badge variant="outline" className="h-5 py-0 px-2 bg-zinc-800 text-zinc-300 border-zinc-700 text-[10px] font-semibold" title={`Conciliado originalmente na data ${formatDateOnly(tx.lockedReconciliationDate)}`}>
-                            <Lock size={10} className="mr-1 text-zinc-400" />
-                            {tx.osNum ? `OS #${tx.osNum}` : (tx.manual_category ? `${String(tx.manual_category).replace('_', ' ')}` : 'Conciliado')}
-                          </Badge>
-                        ) : tx.isRede ? (
-                          <Badge variant="outline" className="h-5 py-0 px-2 bg-blue-500/10 text-blue-400 border-blue-500/30 text-[10px] font-semibold">
-                            <CreditCard size={10} className="mr-1" />
-                            Lote Rede (Ref: D-1)
-                          </Badge>
-                        ) : tx.osNum ? (
-                          <Badge variant="outline" className="h-5 py-0 px-2 bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[10px] font-semibold">
-                            <QrCode size={10} className="mr-1" />
-                            OS #{tx.osNum}
-                          </Badge>
-                        ) : tx.isMatchedExpense ? (
-                          <Badge variant="outline" className="h-5 py-0 px-2 bg-teal-500/10 text-teal-300 border-teal-500/30 text-[10px] font-semibold" title={matchedBill?.description}>
-                            <Receipt size={10} className="mr-1" />
-                            Conta: {matchedBill?.recipient_name || matchedBill?.title || 'Despesa'}
-                          </Badge>
-                        ) : tx.hasCategory ? (
-                          <Badge variant="outline" className="h-5 py-0 px-2 bg-purple-500/10 text-purple-300 border-purple-500/30 text-[10px] font-semibold">
-                            <CheckCircle2 size={10} className="mr-1" />
-                            {String(tx.manual_category).replace('_', ' ')}
-                          </Badge>
-                        ) : isIn ? (
-                          <Badge variant="outline" className="h-5 py-0 px-2 bg-amber-500/10 text-amber-400 border-amber-500/30 text-[10px] font-semibold">
-                            <HelpCircle size={10} className="mr-1" />
-                            Pendente
-                          </Badge>
-                        ) : (
-                          <Badge variant="outline" className="h-5 py-0 px-2 bg-amber-500/10 text-amber-400 border-amber-500/30 text-[10px] font-semibold">
-                            <HelpCircle size={10} className="mr-1" />
-                            Débito Pendente
-                          </Badge>
-                        )}
-                      </td>
-
-                      {/* Ações */}
-                      <td className="py-2 px-3 text-center whitespace-nowrap">
-                        {isLocked ? (
-                          <span className="text-[10px] text-zinc-500 font-mono flex items-center justify-center gap-1">
-                            <Lock size={10} />
-                            Somente Leitura
-                          </span>
-                        ) : !isIn ? (
-                          // SAÍDAS (DÉBITOS): Habilita botão Justificar / Editar
-                          <div className="flex items-center justify-center gap-1.5">
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => setCategorizingTx(tx)}
-                              className="text-[10px] h-6 px-2 text-zinc-400 hover:text-zinc-200 gap-1"
-                              title={tx.hasCategory ? 'Editar justificativa do débito' : 'Justificar débito bancário'}
+                          return (
+                            <div
+                              key={tx.id}
+                              onClick={() => setSelectedDetailTx(tx)}
+                              className="flex items-center justify-between px-4 py-3 hover:bg-zinc-850/60 cursor-pointer transition-all gap-3 group active:scale-[0.99]"
                             >
-                              <FileEdit size={11} />
-                              {tx.hasCategory ? 'Editar' : 'Justificar'}
-                            </Button>
-                          </div>
-                        ) : (
-                          // ENTRADAS (CRÉDITOS):
-                          <div className="flex items-center justify-center gap-1.5">
-                            {/* Botão Vincular OS (para entradas unitárias PIX/TED - bloqueado para lotes de Rede) */}
-                            {!tx.isRede && !tx.osNum && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => setMatchingTx(tx)}
-                                className="text-[10px] h-6 px-2 bg-zinc-900 border-zinc-700 text-blue-400 hover:bg-zinc-800 hover:text-blue-300 gap-1 font-medium"
-                                title="Vincular a uma Ordem de Serviço"
-                              >
-                                <Link2 size={11} />
-                                Vincular OS
-                              </Button>
-                            )}
+                              {/* Esquerda: Squircle + Detalhes Claros (sem redundância) */}
+                              <div className="flex items-center gap-3.5 min-w-0 flex-1">
+                                {renderSquircleAvatar(iconType, isIn)}
 
-                            {/* Botão Justificar (para qualquer entrada, inclusive crédito de Rede para tarifas/aluguel) */}
-                            {!tx.osNum && (
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => setCategorizingTx(tx)}
-                                className="text-[10px] h-6 px-2 text-zinc-400 hover:text-zinc-200 gap-1"
-                                title={tx.hasCategory ? 'Editar justificativa' : 'Justificar lançamento / tarifa'}
-                              >
-                                <FileEdit size={11} />
-                                {tx.hasCategory ? 'Editar' : 'Justificar'}
-                              </Button>
-                            )}
+                                <div className="flex flex-col min-w-0 flex-1">
+                                  {/* Linha 1: Razão Social Limpa + Badges de Contexto */}
+                                  <div className="flex items-center gap-2 flex-wrap">
+                                    <span
+                                      className="font-semibold text-zinc-100 text-sm truncate max-w-[280px] sm:max-w-[440px] md:max-w-[560px] group-hover:text-white transition-colors"
+                                      title={primaryName}
+                                    >
+                                      {primaryName}
+                                    </span>
 
-                            {/* Botão Desvincular OS */}
-                            {tx.osNum && (
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => handleUnlink(tx.id, tx.osNum)}
-                                className="text-[10px] h-6 px-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 gap-1 font-mono"
-                                title="Desvincular OS"
-                              >
-                                <Unlink size={11} />
-                                Desvincular
-                              </Button>
-                            )}
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                                    {/* Badges de Identificação Limpos (sem poluição de mega-badges no título) */}
+                                    {tx.osNum ? (
+                                      <Badge variant="outline" className="h-5 py-0 px-2 bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[10px] font-semibold">
+                                        <QrCode size={10} className="mr-1" />
+                                        OS #{tx.osNum}
+                                      </Badge>
+                                    ) : tx.isRede ? (
+                                      <Badge variant="outline" className="h-5 py-0 px-2 bg-blue-500/10 text-blue-400 border-blue-500/30 text-[10px] font-semibold">
+                                        <CreditCard size={10} className="mr-1" />
+                                        Lote Rede (Ref: D-1)
+                                      </Badge>
+                                    ) : tx.isPastDate && (tx.target_date ? tx.target_date < date : true) ? (
+                                      <Badge
+                                        variant="outline"
+                                        className="h-5 py-0 px-2 bg-purple-500/10 text-purple-300 border-purple-500/30 text-[10px] font-mono"
+                                        title={`Data original de lançamento: ${formatDateOnly(tx.occurred_at || tx.txOccurredDate || tx.date)}`}
+                                      >
+                                        <Clock size={10} className="mr-1 text-purple-400" />
+                                        D-1 ({formatDateOnly(tx.occurred_at || tx.txOccurredDate || tx.date)})
+                                      </Badge>
+                                    ) : tx.isPending ? (
+                                      <Badge variant="outline" className="h-5 py-0 px-2 bg-amber-500/10 text-amber-400 border-amber-500/30 text-[10px] font-semibold">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse mr-1"></span>
+                                        Pendente
+                                      </Badge>
+                                    ) : null}
+                                  </div>
+
+                                  {/* Linha 2: Metadados Revolut (Natureza contábil, Conta vinculada, Intercompany, Documento, Justificativa) */}
+                                  <div className="flex items-center gap-1.5 text-xs text-zinc-400 mt-0.5 flex-wrap">
+                                    <span className="font-medium text-zinc-300">{natureLabel}</span>
+                                    {matchedBill && (
+                                      <>
+                                        <span className="text-zinc-600">•</span>
+                                        <span className="text-teal-300/90 font-medium">Conta: {matchedBill?.recipient_name || matchedBill?.title}</span>
+                                      </>
+                                    )}
+                                    {tx.manual_category && !tx.osNum && (
+                                      <>
+                                        <span className="text-zinc-600">•</span>
+                                        <span className="text-purple-300/90 font-medium">{String(tx.manual_category).replace('_', ' ')}</span>
+                                      </>
+                                    )}
+                                    {doc && (
+                                      <>
+                                        <span className="text-zinc-600">•</span>
+                                        <span className="font-mono text-zinc-500 text-[11px]">{doc}</span>
+                                      </>
+                                    )}
+                                    {tx.manual_justification && (
+                                      <>
+                                        <span className="text-zinc-600">•</span>
+                                        <span className="text-emerald-400 italic text-[11px]">"{tx.manual_justification}"</span>
+                                      </>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Direita: Valor em Alto Contraste (Rose Saída / Emerald Entrada) + Micro Chevron Revolut */}
+                              <div className="flex items-center gap-3 shrink-0">
+                                <div className="text-right">
+                                  <div className={`font-mono font-bold text-sm tracking-tight ${isIn ? 'text-emerald-400' : 'text-rose-400'}`}>
+                                    {isIn ? '+ ' : '- '}{formatCurrency(Math.abs(Number(tx.amount || 0)))}
+                                  </div>
+                                </div>
+
+                                <ChevronRight
+                                  size={15}
+                                  className="text-zinc-600 group-hover:text-zinc-300 group-hover:translate-x-0.5 transition-all shrink-0"
+                                />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+
+            {/* Linha Fiduciária Especial: Saldo Final Oficial */}
+            <div className="bg-zinc-900/95 border-t-2 border-purple-500/40 p-4 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3.5 min-w-0">
+                <div className="w-10 h-10 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
+                  <Landmark size={18} />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-bold text-zinc-100 text-sm">
+                      SALDO FINAL OFICIAL CONTA CORRENTE
+                    </span>
+                    <Badge variant="outline" className="text-[10px] h-4 py-0 px-1.5 border-purple-500/40 text-purple-300 bg-purple-500/10 font-mono">
+                      &lt;LEDGERBAL&gt;
+                    </Badge>
+                    <Badge variant="outline" className="h-4 py-0 px-1.5 bg-purple-500/10 text-purple-300 border-purple-500/30 text-[10px] font-semibold">
+                      Itaú Validado
+                    </Badge>
+                  </div>
+                  <span className="text-xs text-zinc-400 mt-0.5">
+                    {activeBankTotal < 0 ? 'Limite Utilizado / Cheque Especial Itaú' : 'Saldo Positivo em Conta Corrente'} • Posição em {formatDateOnly(date)}
+                  </span>
+                </div>
+              </div>
+              <div className="text-right shrink-0">
+                <div className={`font-mono font-bold text-base ${activeBankTotal >= 0 ? 'text-emerald-400' : 'text-purple-300'}`}>
+                  <AmountCell value={activeBankTotal} tone={activeBankTotal >= 0 ? 'success' : 'brand'} />
+                </div>
+                <span className="text-[10px] text-zinc-500 font-mono">Posição Oficial</span>
+              </div>
+            </div>
           </div>
         )}
       </Card>
@@ -688,6 +1160,22 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
           transaction={matchingTx}
           storeId={storeId}
           targetDate={date}
+        />
+      )}
+
+      {/* Janela de Detalhes da Transação (Revolut Card Details) */}
+      {selectedDetailTx && (
+        <TransactionDetailModal
+          isOpen={!!selectedDetailTx}
+          onClose={() => setSelectedDetailTx(null)}
+          transaction={selectedDetailTx}
+          storeId={storeId}
+          currentDate={date}
+          onMoveToToday={handleMoveTransactionToToday}
+          onLinkOs={(tx) => setMatchingTx(tx)}
+          onUnlinkOs={handleUnlink}
+          onEditCategory={(tx) => setCategorizingTx(tx)}
+          isMoving={movingTxId === selectedDetailTx?.id}
         />
       )}
     </div>

@@ -26,16 +26,25 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ── API Key Middleware ─────────────────────────────────────────────────────
-const BOT_API_KEY = process.env.BOT_API_KEY || 'conciliamec-bot-key-change-me';
+// ── API Key Middleware (AppSec Hardening) ──────────────────────────────────
+const BOT_API_KEY = process.env.BOT_API_KEY;
+if (!BOT_API_KEY || BOT_API_KEY === 'conciliamec-bot-key-change-me') {
+  if (process.env.NODE_ENV === 'production') {
+    console.error('❌ [Security] ERRO FATAL: BOT_API_KEY obrigatória não configurada ou usando valor padrão em produção.');
+    process.exit(1);
+  } else {
+    console.warn('⚠️ [Security] AVISO: BOT_API_KEY ausente ou padrão. Defina uma chave forte em produção.');
+  }
+}
+const ACTIVE_BOT_API_KEY = BOT_API_KEY || 'conciliamec-bot-key-change-me';
 
 function requireApiKey(req: Request, res: Response, next: NextFunction): void {
   const key =
-    req.headers['x-api-key'] as string ||
+    (req.headers['x-api-key'] as string) ||
     req.headers['authorization']?.replace('Bearer ', '') ||
     (req.query.apiKey as string);
 
-  if (!key || key !== BOT_API_KEY) {
+  if (!key || key !== ACTIVE_BOT_API_KEY) {
     res.status(401).json({ success: false, error: 'Unauthorized: API key inválida ou ausente.' });
     return;
   }
@@ -366,9 +375,11 @@ app.get('/api/config/formas-pagamento', async (req: Request, res: Response) => {
 });
 
 const PORT = Number(process.env.BOT_PORT || process.env.PORT || 3001);
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n🚀 ConciliaMec Bot API — Oficina System Connector rodando em http://0.0.0.0:${PORT}`);
-  console.log(`   🔑 API Key configurada: ${BOT_API_KEY.substring(0, 8)}...`);
+const HOST = process.env.BOT_HOST || '127.0.0.1';
+
+app.listen(PORT, HOST, () => {
+  console.log(`\n🚀 ConciliaMec Bot API — Oficina System Connector rodando em http://${HOST}:${PORT}`);
+  console.log(`   🔑 API Key configurada: ${ACTIVE_BOT_API_KEY.substring(0, 4)}****`);
   console.log(`   📡 Endpoints:`);
   console.log(`      GET  /health                        (público)`);
   console.log(`      POST /api/sync                      (requer X-Api-Key)`);

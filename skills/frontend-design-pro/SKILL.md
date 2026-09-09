@@ -1,129 +1,112 @@
 ---
 name: frontend-design-pro
-description: Guia de design e implementação de UI premium — padrões visuais, componentes, acessibilidade e micro-animações para o stack React + Tailwind do projeto.
+description: Hub central de Design Engineering e eliminação de AI Slop — padrões de Dark UI Zinc-950, restrições negativas, protocolo /audit -> /polish, 48 guidelines do Rauno Freiberg e integração com Shoogle.
 ---
 
-# Frontend Design Pro — Guia Operacional para IA
+# Frontend Design Pro — Hub de Design Engineering & Anti-Slop
 
-## Identidade Visual do Projeto
+Guia operacional definitivo de **Design Engineering** para agentes de IA. Elimina o visual genérico de "AI Slop", impondo restrições determinísticas, consistência de superfícies em Dark Mode e rigor ergonômico em aplicações Next.js, React e Tailwind CSS.
 
-**Leia `memory/ui.md` antes de qualquer implementação de componente.**
+---
 
-### Paleta de Cores (Dark UI Obrigatório)
-```css
-/* Backgrounds */
---bg-base: #050711;          /* Zinc-950 — fundo principal */
---bg-surface: #0f1117;       /* Cards, modais */
---bg-elevated: #1a1d27;      /* Hover states, dropdowns */
+## 1. O Padrão `DESIGN.md` (Design System Lock)
 
-/* Texto */
---text-primary: #f4f4f5;     /* Zinc-100 */
---text-secondary: #a1a1aa;   /* Zinc-400 */
---text-muted: #52525b;       /* Zinc-600 */
+> [!IMPORTANT]
+> **Antes de gerar ou editar qualquer componente de UI, procure por `DESIGN.md` na raiz do projeto.**
+> - Se existir, adira **estritamente** aos seus tokens de cores, escala tipográfica e raio de borda.
+> - Se não existir no projeto, utilize os tokens canônicos do template em `templates/DESIGN.md.template`.
+> - É terminantemente **PROIBIDO** inventar cores hexadecimais arbitrárias (ex.: `bg-[#1e1b4b]`) ou classes fora da especificação.
 
-/* Accent */
---accent-primary: #6366f1;   /* Indigo-500 */
---accent-hover: #4f46e5;     /* Indigo-600 */
-```
+---
 
-**❌ PROIBIDO:** glassmorphism (`backdrop-filter: blur`), gradientes excessivos, backgrounds claros
+## 2. Protocolo de Auditoria e Refinamento: `/audit` → `/polish`
 
-### Tipografia
-```css
-font-family: 'Inter', 'Outfit', system-ui, sans-serif;
-```
-Importar sempre via Google Fonts no `layout.tsx` ou global CSS.
+NUNCA execute ou proponha um "redesign completo" de uma tela funcional. O fluxo deve seguir o roteiro em `references/audit-polish-flow.md`:
 
-## Regras de Componentes React
+1. **Passo 1: `/audit` (Diagnóstico Visual Estrito)**:
+   - Inspecione a interface quanto a: contraste WCAG (mínimo 4.5:1), escala tipográfica, ritmo de espaçamento (4px/8px), estados interativos e presença de AI Slop.
+   - Emita o diagnóstico sem alterar código.
+2. **Passo 2: `/polish` (Micro-Calibração Cirúrgica)**:
+   - Aplique ajustes atômicos de padding, border-radius concêntrico, tracking de fonte e contraste de borda.
+   - Comandos direcionais auxiliares: `/bolder` (mais peso e presença), `/quieter` (reduzir ruído visual), `/distill` (focar na essência).
 
-### 1. Estrutura de Arquivo
-```typescript
-// Sempre: named export + tipagem explícita
-interface MeuComponenteProps {
-  title: string
-  onAction?: () => void
-  className?: string
-}
+---
 
-export function MeuComponente({ title, onAction, className }: MeuComponenteProps) {
-  return (
-    <div className={cn('base-classes', className)}>
-      {/* conteúdo */}
-    </div>
-  )
-}
-```
+## 3. Catálogo de AI Slop & Regras Anti-Clichê
 
-### 2. Estados Obrigatórios em Componentes Interativos
-Todo botão, formulário ou elemento interativo deve ter:
-- **Default state**: aparência normal
-- **Hover state**: feedback visual claro (`transition-colors duration-200`)
-- **Loading state**: skeleton ou spinner quando dados estão carregando
-- **Error state**: mensagem de erro acessível e visível
-- **Empty state**: quando não há dados para mostrar
+Consulte a lista completa com os 67 anti-patterns detalhados em `references/ai-slop-catalog.md`. As 10 proibições mais críticas que o agente DEVE respeitar:
 
-### 3. Micro-animações (Tailwind)
-```tsx
-// Hover
-className="transition-all duration-200 hover:scale-[1.02] hover:shadow-lg"
+| ❌ Prática de AI Slop Proibida | ID da Regra | ✅ Comportamento Correto |
+|---|---|---|
+| Gradientes roxo-para-azul em botões/títulos | `purple-violet-gradient` | Usar cores sólidas ancoradas na marca (`bg-indigo-600`). |
+| Cards aninhados dentro de cards (Cardocalypse) | `cardocalypse` | Achatar superfícies; usar divisores sutis ou espaçamento. |
+| Ícone em quadradinho colorido flutuante acima do H2 | `icon-tile-stack` | Ícone inline alinhado ao texto ou sem container decorativo. |
+| Headings com palavras forçadas em itálico serifado | `italic-serif-display` | Tipografia coesa e autêntica à marca sem itálicos clichês. |
+| Kickers repetitivos acima de títulos ("FEATURES") | `kicker-above-heading` | Eliminar kickers redundantes; incorporar contexto no título. |
+| Alterar `font-weight` (ex.: 400→600) no hover | `font-weight-hover-shift` | Transição de cor ou ring de foco; nunca causar Layout Shift. |
+| Emojis (🚀, 🔥, ⚡) como ícones de botões | `emoji-as-icon` | Usar ícones SVG padronizados da biblioteca `lucide-react`. |
+| Fundo preto absoluto `#000000` sem profundidade | `pure-black-canvas` | Usar Zinc-950 (`#09090b`) com modelo de elevação de superfícies. |
+| Inputs com fonte < 16px no mobile | `ios-zoom-on-input-focus` | Fonte mínima de 16px no mobile (`text-base md:text-sm`). |
+| Animações e transições demoradas (> 200ms) | `slow-interaction-duration`| Micro-interações devem durar **no máximo 150ms a 200ms**. |
 
-// Entrada de elemento
-className="animate-in fade-in slide-in-from-bottom-2 duration-300"
+---
 
-// Loading skeleton
-className="animate-pulse bg-zinc-800 rounded"
-```
+## 4. Web Interface Guidelines (Rauno Freiberg)
 
-### 4. Responsividade
-- Mobile-first sempre: comece com classes base (mobile) e adicione `md:` e `lg:`
-- Breakpoints: `sm:640px` / `md:768px` / `lg:1024px` / `xl:1280px`
+Consulte o compêndio completo das 48 regras em `references/interface-guidelines.md`. Princípios não-negociáveis de craft:
 
-## Padrões de Layout
+- **Feedback de Proximidade (Regra 3)**: Feedback visual deve ocorrer colado ao elemento disparador (ex.: checkmark inline ao lado de botão "Copiar"), nunca dependendo exclusivamente de toasts genéricos.
+- **Anéis de Foco via Box-Shadow (Regra 32)**: Anéis de acessibilidade de teclado devem usar `box-shadow` / `ring-2`, respeitando o `border-radius` do elemento.
+- **Labels Clicáveis (Regra 22)**: O clique no `<label>` DEVE focar o campo correspondente via `htmlFor` + `id`.
+- **Mínimo de 44x44px em Telas Touch (Regra 45)**: Todo elemento interativo móvel deve ter área de toque mínima de 44x44px.
+- **Isolamento de Hover em Telas Touch**: Estilos de hover nunca devem grudar em smartphones. Envolva regras em `@media (hover: hover)` ou variantes equivalentes.
+- **Gradientes Radiais CSS em Vez de Divs Borradas (Regra 39)**: Proibido usar divs com `blur(100px)` para iluminação ambiente; use `radial-gradient` nativo do CSS.
 
-### Card Padrão do Projeto
-```tsx
-<div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 
-                transition-all duration-200 hover:border-zinc-700">
-  {/* conteúdo */}
-</div>
-```
+---
 
-### Modal/Dialog
-```tsx
-// Usar Radix Dialog ou shadcn/ui Dialog
-// Fundo: bg-zinc-950/80 backdrop-blur-sm (o blur é no overlay, não no card)
-// Card do modal: bg-zinc-900 border border-zinc-800
-```
+## 5. Modelo de Profundidade Dark UI (dark.design)
 
-### Botão Primário
-```tsx
-<button className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 
-                   px-4 py-2 text-sm font-medium text-white 
-                   transition-colors hover:bg-indigo-500 
-                   focus-visible:outline focus-visible:outline-2 
-                   focus-visible:outline-indigo-500
-                   disabled:opacity-50 disabled:cursor-not-allowed">
-  {/* label */}
-</button>
-```
+Consulte as especificações completas em `references/dark-ui-depth.md`.
 
-## Anti-Patterns de UI
+- **Profundidade por Luminância**: Em modo escuro, sombras pretas projetadas são invisíveis. A elevação se dá pelo clareamento progressivo da superfície:
+  - `bg-zinc-950` (#09090b) -> Canvas base
+  - `bg-zinc-900` (#18181b) -> Cards primários e painéis
+  - `bg-zinc-900/80` -> Headers fixos elevados com `backdrop-blur-md`
+  - `bg-zinc-850 / bg-zinc-800` -> Menus flutuantes, modais e tooltips
+- **Micro-Bordas e Inner Bevel**:
+  - Delimitar cards com `border border-white/10` ou `border-zinc-800`.
+  - Aplicar o destaque interno superior de 1px: `shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]`.
+- **Hierarquia de Texto Confortável**:
+  - Títulos: `text-zinc-100` (#f4f4f5)
+  - Corpo / Labels: `text-zinc-300` (#d4d4d8)
+  - Secundário / Descrições: `text-zinc-400` (#a1a1aa)
+  - Muted / Placeholders: `text-zinc-500` (#71717a)
 
-| ❌ Proibido | ✅ Correto |
+---
+
+## 6. Fonte Primária de Blocos: Shoogle (`shoogle.dev`)
+
+- **NÃO crie componentes interativos complexos do zero**:
+  - Antes de codificar formulários multi-step, tabelas com filtros ou menus dropdown, consulte o **Shoogle** (`shoogle.dev`) — buscador unificado do ecossistema **shadcn/ui**.
+  - Utilize blocos testados em acessibilidade (Radix UI) e consistência técnica.
+- Adicione componentes oficiais via CLI:
+  ```bash
+  npx shadcn@latest add dialog dropdown-menu popover table sheet
+  ```
+
+---
+
+## 7. Roteamento de Referências
+
+| Necessidade / Domínio de UI | Arquivo de Referência |
 |---|---|
-| Glassmorphism no conteúdo principal | Usar no overlay/backdrop apenas |
-| Cores hardcoded inline (`style={{ color: '#fff' }}`) | Classes Tailwind ou CSS variables |
-| Componente sem estado de loading | Sempre implementar loading/skeleton |
-| `any` no TypeScript de props | Tipar explicitamente todas as props |
-| Importar ícones pesados inteiros | Tree-shaking: `import { X } from 'lucide-react'` |
-| Layout quebrando no mobile | Testar sempre no breakpoint `sm` |
-
-## Checklist Antes de Marcar UI como Concluída
-
-- [ ] Leia `memory/ui.md` — o componente já existe?
-- [ ] Dark mode respeitado (Zinc-950 base)
-- [ ] Estados de loading, error e empty implementados
-- [ ] Responsivo em mobile (sm) e desktop (lg)
-- [ ] TypeScript sem `any`
-- [ ] Micro-animação de hover presente
-- [ ] VLM QA com Playwright executado (ver vibe-apply Step 3)
+| **Catálogo de 67 Anti-Patterns** | `references/ai-slop-catalog.md` |
+| **48 Regras de Craft e UX (Rauno)** | `references/interface-guidelines.md` |
+| **Elevação de Superfícies Dark** | `references/dark-ui-depth.md` |
+| **Fluxo /audit -> /polish** | `references/audit-polish-flow.md` |
+| **Template de Design System** | `templates/DESIGN.md.template` |
+| **Layouts de Dashboard & App Shell**| `skills/ui-components/references/dashboard-layout.md` |
+| **Tabelas de Dados & Filtros** | `skills/ui-components/references/data-table.md` |
+| **Formulários & Wizards** | `skills/ui-components/references/forms.md` |
+| **Landing Pages Cinematográficas** | `skills/ui-components/references/cinematic-landing-page.md` |
+| **Micro-interações e Motion** | `skills/ui-motion/SKILL.md` |

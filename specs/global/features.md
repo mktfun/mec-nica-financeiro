@@ -1,3 +1,32 @@
+### Spec 389 — Janela de Detalhes da Transação (Revolut Card Details Modal) e Limpeza da Linha do Extrato (09/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Frontend (`StoreExtratoBancarioView.tsx`, `TransactionDetailModal.tsx`)**:
+  - Eliminação de botões soltos na linha da tabela do extrato, prevenindo quebra de layout e deformação visual.
+  - Componente modal dedicado `TransactionDetailModal.tsx` no padrão Revolut Card Details, exibindo ficha técnica fiduciária completa (FITID com cópia, CNPJ, categoria, justificativa, histórico bruto).
+  - Painel de ações fiduciárias de 1-clique: `[Mover p/ Hoje]`, `[Vincular OS]`, `[Desvincular OS]`, `[Editar / Justificar]`.
+  - Linhas de transações com clique integral, feedback tátil e micro-chevron `ChevronRight`.
+
+### Spec 388 — Refinamentos Revolut UX, Alto Contraste Cromático e Mecanismo de Desbloqueio D-1 (09/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Frontend (`StoreExtratoBancarioView.tsx`)**:
+  - Semântica de alto contraste estrito: saídas e débitos em Rose (`text-rose-400 font-mono font-bold - R$ X`) e entradas em Emerald (`text-emerald-400 font-mono font-bold + R$ X`).
+  - Desduplicação inteligente de prefixos brutos do banco Itaú e tradução de traços `-` para nomes contábeis.
+  - Transferência de mega-badges poluídos para a linha de metadados fiduciários.
+  - Mecanismo de desbloqueio com botão `[Mover p/ Hoje]` para transações de D-1 pós-fechamento.
+
+### Spec 387 — Redesign Revolut Fintech UX do Extrato Bancário e Accordion por Dias (09/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Frontend (`StoreExtratoBancarioView.tsx`, `.agent/memory/ui.md`)**:
+  - Adoção universal do padrão Revolut Analytics 2.0 e Revolut Cards List.
+  - 4 Hero KPI Cards nobres em grid 4x1 com saldo anterior embutido.
+  - Agrupamento temporal em Accordion por dia contábil com controles `[Expandir Todos]` e `[Recolher Todos]`.
+  - Barras fiduciárias especiais de abertura e fechamento oficial `<LEDGERBAL>` com selo Itaú Validado.
+
+### Spec 386 — Extrato Bancário Fiduciário da Filial, Histórico OFX e Saldos Oficiais (09/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Frontend & Hooks (`StoreExtratoBancarioView.tsx`, `useStoreExtratoBancario`)**:
+  - Visualização unificada do extrato bancário oficial da loja, exibindo abertura, créditos, saídas e saldo final.
+
 ### Spec 385 — Fix de Âncora Temporal de Saldos OFX, Blindagem de Reconciliations e Sincronização Tríplice (09/09/2026)
 - **Status:** COMPLETED & ARCHIVED
 - **Database (Migration `20260909000042_fix_ofx_date_anchor_and_reconciliation_zeroed.sql`)**:

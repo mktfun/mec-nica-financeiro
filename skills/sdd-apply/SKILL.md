@@ -15,15 +15,18 @@ Executa o checklist de `specs/<id>/spec-plan.md` diretamente com um único agent
 - <rule type="execution">Execução direta por UM ÚNICO AGENTE. Não lance subagentes por tarefa (zero invoke_subagent).</rule>
 - <rule type="mandatory">A spec é a lei. Implemente estritamente o que foi acordado no proposal.md e design.md.</rule>
 - <rule type="save_state">Atualize o spec-plan.md: [- [/] In Progress] ao iniciar e [- [x] Completed] ao finalizar cada task.</rule>
+- <rule type="budgets">Limites operacionais rígidos: max_auto_healing_attempts = 3; max_tool_calls_per_task = 15; max_total_retries = 5. Se o budget for atingido, documente a justificativa técnica, interrompa a execução e consulte o usuário.</rule>
+- <rule type="loop_prevention">Loop Scorer: Se a mesma ação, patch ou ferramenta falhar 2 vezes de forma idêntica sem mudança de estado, aborte a repetição imediatamente como [LOOP_DETECTED].</rule>
+- <rule type="safe_rollback">NUNCA execute 'git reset --hard' automaticamente sem autorização humana. Crie backup em .tmp/ antes de qualquer reversão.</rule>
 - <rule type="circuit_breaker">PARADA OBRIGATÓRIA (HARD STOP) no final. Proibido auto-arquivar, commitar ou mover specs.</rule>
 </guardrails>
 
 <workflow_steps>
 <step number="0" name="Leitura da Spec e Carregamento de Ambiente">
 Leia rapidamente a spec em `specs/<id>/`:
-1. `proposal.md` (problema, contratos de dados)
-2. `design.md` (interfaces TypeScript e arquitetura)
-3. `spec-plan.md` (lista de tasks pendentes)
+1. `proposal.md` (problema, contratos de dados, arquivos afetados, plano de rollback)
+2. `design.md` (interfaces TypeScript, happy path, edge cases, critérios de aceitação)
+3. `spec-plan.md` (lista de tasks atômicas pendentes)
 
 Carregue variáveis do `.env` silenciosamente no terminal:
 ```powershell
@@ -59,24 +62,53 @@ Se envolver Telas / Componentes React:
 Após concluir cada task, marque imediatamente no `spec-plan.md` como `- [x] Completed`.
 </step>
 
-<step number="2" name="Auto-Healing & Validação Rápida">
-Se ocorrer erro de compilação ou teste:
-- Tentativa 1: Correção direta na causa raiz revisando o `design.md`.
-- Tentativa 2: Abordagem alternativa documentada.
-- Tentativa 3: Se persistir, execute `git reset --hard HEAD`, pare e alerte o usuário. **Nunca tente uma 4ª vez.**
+<step number="2" name="Auto-Healing, Loop Detection & Safe Rollback">
+Se ocorrer erro de compilação ou teste durante a task:
+- **Loop Check:** Ação repetida idêntica sem evolução de erro? Se SIM, PARE imediatamente: emita `[LOOP_DETECTED]` e consulte o usuário.
+- **Tentativa 1 (Budget 1/3):** Correção direta na causa raiz revisando o `design.md` e logs do erro.
+- **Tentativa 2 (Budget 2/3):** Abordagem alternativa documentada com hipótese técnica explícita.
+- **Tentativa 3 (Budget 3/3):** Tentativa final isolada. Se falhar:
+  - **PROIBIDO:** `git reset --hard` automático desassistido.
+  - **Safe Rollback Protocol:**
+    1. Execute `git status --short` e grave o diff em `.tmp/rollback_backup_<timestamp>/changes.patch`.
+    2. Registre o log forense do erro em `.tmp/rollback_backup_<timestamp>/error_log.txt`.
+    3. Notifique o usuário com a causa do bloqueio, o caminho do backup criado e solicite autorização explícita antes de descartar modificações.
 </step>
 
 <step number="3" name="Visual QA & Quality Gate de Build">
-1. **Se tocou em UI:** Execute `npx playwright screenshot <url-local> screenshot.png` e verifique contraste, alinhamento e ausência de vazamento de estilos.
+1. **Verificação de UI (Visual QA Graceful Fallback):**
+   - Se tocou em UI: verifique se o servidor local / Playwright está acessível.
+   - **Cenário Nominal:** Se acessível, execute `npx playwright screenshot <url-local> screenshot.png` e valide contraste, alinhamento e ausência de overflow.
+   - **Anti-Slop Linter (Impeccable):** Se tocou em frontend, execute `npx impeccable detect <caminho-dos-arquivos-editados>` ou audite manualmente contra `skills/frontend-design-pro/references/ai-slop-catalog.md` para garantir zero AI slop.
+   - **Fallback Graceful (Servidor/Playwright Offline):**
+     - Emita log explícito: `[VISUAL_QA_OFFLINE]: Playwright ou servidor local inacessível. Executando Quality Gate estático e sinalizando pendência de revisão visual humana.`
+     - **PROIBIDO:** Declarar falsamente que o Visual QA passou lendo apenas arquivos HTML/CSS estáticos.
+     - Marque a verificação de UI no relatório como `[HUMAN_REVIEW_PENDING]`.
 2. **Build Gate obrigatório:**
    ```bash
    cmd.exe /c "npm run build"
    ```
    Garanta zero erros de TypeScript e zero falhas de bundling.
+
+3. **Security Gate (Pre-Commit Secrets Blocker & Cadência de Auditoria):**
+   - **Bloqueador Rígido de Segredos:** Inspecione os arquivos modificados. Se encontrar chaves reais (OpenAI `sk-`, Stripe `sk_live_`, Supabase `service_role`, AWS keys), **BLOQUEIE IMEDIATAMENTE**:
+     `[SECURITY_BLOCKER]: Segredo detectado em <arquivo>. Remova credenciais e use variáveis de ambiente antes de continuar.`
+   - **Cadência Preventiva (a cada 5 a 10 applies):**
+     Emita no resumo final o alerta:
+     ```text
+     ================================================================================
+      🛡️ [SECURITY HEALTH CHECK REMINDER]
+      Múltiplas implementações foram concluídas neste repositório.
+      Recomendado rodar uma auditoria preventiva de segurança:
+        👉 /secrets-audit     -> Verificar se nenhuma chave vazou
+        👉 /dependency-audit  -> Checar CVEs em dependências
+        👉 /security-review   -> Auditar IDOR e autorização (AuthZ)
+     ================================================================================
+     ```
 </step>
 
 <step number="4" name="Conclusão e Hard Stop Obrigatório">
-Apresente o resumo das tasks concluídas e o status do build.
+Apresente o resumo das tasks concluídas, status do build gate e estado do Visual QA.
 
 <hard_stop>
 <directive>

@@ -169,6 +169,7 @@ Workers (Level 2 — .agent/agents/workers/):
 - auditor-worker.md: Auditoria de final de ciclo (7 dimensoes).
 - validator-worker.md: Revisao independente de specs antes do apply.
 - bug-investigator.md: Investigacao de falhas com hipoteses bayesianas.
+- security-worker.md: Especialista em AppSec, Taint Analysis, CVEs, Secrets e pentest adversarial.
 </specialized_agents>
 
 <skill_catalog>
@@ -180,6 +181,7 @@ Consulte sempre skills/INDEX.md para o roteamento de contexto:
 - auth: Autenticacao segura SSR Supabase JWT.
 - backend-patterns: Server Actions tipadas ActionResult<T>.
 - deploy-production: Prontidao para producao e Core Web Vitals.
+- security: Hub de Cybersecurity, Taint Analysis (Sentry), Pentest (Cloudflare), OWASP Top 10 e Secrets.
 - obsidian: Gestao da memoria modular persistente do projeto.
 - council-debate: Conselho multi-agente para stress-test de decisoes arquiteturais.
 - agy-bridge: Integracao com agy CLI como worker headless.

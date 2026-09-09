@@ -3,12 +3,23 @@
  * Algoritmo AES-GCM idêntico ao do frontend (src/lib/credentialCrypto.ts).
  */
 
-const SECRET_SEED = 'conciliamec-bank-vault-secret-key-2026';
 const PREFIX = 'enc:v1:';
+
+function getVaultSecret(): string {
+  const key = process.env.BANK_VAULT_SECRET_KEY || process.env.BOT_SECRET_KEY || process.env.VITE_BANK_VAULT_PUBLIC_SALT;
+  if (!key) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('[bot/credentialCrypto] BANK_VAULT_SECRET_KEY ausente no ambiente de produção. Operação abortada por segurança.');
+    }
+    console.warn('[bot/credentialCrypto] ⚠️ AVISO: Usando seed de fallback em desenvolvimento. Defina BANK_VAULT_SECRET_KEY no .env.');
+    return 'conciliamec-bank-vault-secret-key-2026';
+  }
+  return key;
+}
 
 async function getCryptoKey(): Promise<CryptoKey> {
   const enc = new TextEncoder();
-  const rawKey = enc.encode(SECRET_SEED);
+  const rawKey = enc.encode(getVaultSecret());
   const hash = await globalThis.crypto.subtle.digest('SHA-256', rawKey);
 
   return globalThis.crypto.subtle.importKey(

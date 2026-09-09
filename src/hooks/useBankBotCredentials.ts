@@ -120,7 +120,20 @@ export function useBankBotCredentials() {
       const { data, error } = await supabase
         .from('bank_bot_credentials')
         .select(`
-          *,
+          id,
+          store_id,
+          bank_code,
+          bank_name,
+          agency,
+          account_number,
+          operator_cpf,
+          access_type,
+          is_active,
+          last_sync_at,
+          last_status,
+          last_error,
+          created_at,
+          updated_at,
           stores:store_id (
             id,
             name

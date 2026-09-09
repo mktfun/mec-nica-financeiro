@@ -40,8 +40,8 @@
     "semantic_hash": "55ac3f9de2a97969097d11a01deb4b2b"
   },
   "bot/src/server.ts": {
-    "mtime": 1788897993.0725646,
-    "ast_hash": "e5c5efe4fb22df922ea7f9a33526c9e7",
+    "mtime": 1788987534.410871,
+    "ast_hash": "6cce3b0a4b9a6bf196b69e23a64265e3",
     "semantic_hash": ""
   },
   "bot/src/session/sessionManager.ts": {
@@ -80,9 +80,9 @@
     "semantic_hash": "345bdd57e188e0e4525edcd00e5003f5"
   },
   "package.json": {
-    "mtime": 1788283424.7366347,
-    "ast_hash": "fd5f581f278a383ca529f40e5745bb07",
-    "semantic_hash": "fd5f581f278a383ca529f40e5745bb07"
+    "mtime": 1788987542.3316104,
+    "ast_hash": "0de1d1cfd95046d452f7a0fec4a8eaf8",
+    "semantic_hash": ""
   },
   "src/__mocks__/importFiles.ts": {
     "mtime": 1786977431.331309,
@@ -255,8 +255,8 @@
     "semantic_hash": "62bf4be7b0e41945dd09d240a314b7a8"
   },
   "src/components/conciliacao/StoreExtratoBancarioView.tsx": {
-    "mtime": 1788886073.8292236,
-    "ast_hash": "40070509b3e0f97ec78bee8004fd3f64",
+    "mtime": 1788987347.8053377,
+    "ast_hash": "12f57486de03102081d86b9862396c01",
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreOrdensServicoView.tsx": {
@@ -825,8 +825,8 @@
     "semantic_hash": "92a22d193c252267ba0a5b25068f2047"
   },
   "src/hooks/useTransactions.ts": {
-    "mtime": 1788972450.05464,
-    "ast_hash": "199ea6812047adec8a4bbdc90f0e75b4",
+    "mtime": 1788980836.9347963,
+    "ast_hash": "5cf83b2c0f16501aa5ea5bf3b1d0f8d6",
     "semantic_hash": ""
   },
   "src/hooks/useTripleMatch.ts": {
@@ -1960,8 +1960,8 @@
     "semantic_hash": ""
   },
   ".agent/rules/ia.md": {
-    "mtime": 1788966057.0815823,
-    "ast_hash": "c912e3ad7505ad9d7186e0a558b2fc6b",
+    "mtime": 1788985563.5024521,
+    "ast_hash": "99c6995feb5f22685a39598e786f2a64",
     "semantic_hash": ""
   },
   ".agents/ORIGINAL_REQUEST.md": {
@@ -3425,8 +3425,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1788979826.515911,
-    "ast_hash": "2f1511254137b6b8ee8a3504d35d855a",
+    "mtime": 1788987890.598364,
+    "ast_hash": "d307fd40342ae8a9db7cfc6b25ab92cd",
     "semantic_hash": ""
   },
   "specs/global/features_clean.md": {
@@ -3960,13 +3960,13 @@
     "semantic_hash": "01daa1f2b5dd57276972e4e1c075ccd5"
   },
   "GEMINI.md": {
-    "mtime": 1788966057.0815823,
-    "ast_hash": "c912e3ad7505ad9d7186e0a558b2fc6b",
+    "mtime": 1788985563.5024521,
+    "ast_hash": "99c6995feb5f22685a39598e786f2a64",
     "semantic_hash": ""
   },
   "skills/INDEX.md": {
-    "mtime": 1788528556.742298,
-    "ast_hash": "f8e0afb2162ace9f3b929e90857b183b",
+    "mtime": 1788985553.4841425,
+    "ast_hash": "6ea675ca030425d5efc6ed4b9443eb39",
     "semantic_hash": ""
   },
   "skills/WORKFLOW.md": {
@@ -4075,18 +4075,18 @@
     "semantic_hash": ""
   },
   "skills/frontend-design-3/SKILL.md": {
-    "mtime": 1786130534.412735,
-    "ast_hash": "2bb8996c70908fb5a8d20f102476495a",
+    "mtime": 1788984311.9267395,
+    "ast_hash": "91a8a30c5ed431a65a411f0b42040c65",
     "semantic_hash": ""
   },
   "skills/frontend-design-pro/SKILL.md": {
-    "mtime": 1786130508.6496882,
-    "ast_hash": "4d72ff2876b52233454f018f92f3c5ad",
+    "mtime": 1788984302.4626563,
+    "ast_hash": "222cca7211646c48b101d27103d083d4",
     "semantic_hash": ""
   },
   "skills/github-ops/SKILL.md": {
-    "mtime": 1788272138.5880394,
-    "ast_hash": "88d8ff382ea2ed37e5520ca7368358e3",
+    "mtime": 1788985877.0948792,
+    "ast_hash": "66f25f2f65760dc058960a02ce0bd8a6",
     "semantic_hash": ""
   },
   "skills/github/SKILL.md": {
@@ -4140,13 +4140,13 @@
     "semantic_hash": ""
   },
   "skills/sdd-apply/SKILL.md": {
-    "mtime": 1788528493.9710293,
-    "ast_hash": "ecc4e8881cce5bf26a743ff412448e23",
+    "mtime": 1788985526.5806284,
+    "ast_hash": "c818b217f5de811a11835c99cc300707",
     "semantic_hash": ""
   },
   "skills/sdd-archive/SKILL.md": {
-    "mtime": 1788467196.1467707,
-    "ast_hash": "a5b7ae63ed97c900e540f6fe35a3a0d7",
+    "mtime": 1788985541.0649855,
+    "ast_hash": "d4cbe73cb2d1478ae4d325c3e37f2521",
     "semantic_hash": ""
   },
   "skills/sdd-debug/SKILL.md": {
@@ -4155,8 +4155,8 @@
     "semantic_hash": ""
   },
   "skills/sdd-proposal/SKILL.md": {
-    "mtime": 1788528875.6889782,
-    "ast_hash": "8ecf42539b4fa431ffee17ded59e6405",
+    "mtime": 1788875900.331291,
+    "ast_hash": "1988c0e90019ce95b4f55614aca55458",
     "semantic_hash": ""
   },
   "skills/sdd-proposal/references/inference-rules.md": {
@@ -4175,8 +4175,8 @@
     "semantic_hash": ""
   },
   "skills/ui-components/SKILL.md": {
-    "mtime": 1788466209.5519118,
-    "ast_hash": "d6e17f198bc79ed1954ff7b1141a66d7",
+    "mtime": 1788984319.9187157,
+    "ast_hash": "e727264b175a20e341e69a2e18aab5ad",
     "semantic_hash": ""
   },
   "skills/ui-components/references/cinematic-landing-page.md": {
@@ -4205,8 +4205,8 @@
     "semantic_hash": ""
   },
   "skills/ui-motion/SKILL.md": {
-    "mtime": 1788272291.1027956,
-    "ast_hash": "a8eacc07fc966fbdf30858a3a883cefb",
+    "mtime": 1788984331.8291953,
+    "ast_hash": "87ef76b83ab2f843411324db6d5e02f2",
     "semantic_hash": ""
   },
   "supabase/migrations/20260905000033_strict_store_by_store_auto_match_saidas.sql": {
@@ -4260,8 +4260,8 @@
     "semantic_hash": ""
   },
   "bot/src/lib/credentialCrypto.ts": {
-    "mtime": 1788896759.9541228,
-    "ast_hash": "fd896569c057d63445925fdf14f516ae",
+    "mtime": 1788987511.4324076,
+    "ast_hash": "afb4d8a9a45316b0c373dac015ed18c9",
     "semantic_hash": ""
   },
   "bot/src/lib/ofx-validator.ts": {
@@ -4300,8 +4300,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useBankBotCredentials.ts": {
-    "mtime": 1788898467.0554967,
-    "ast_hash": "f261c0933c213e25be9c85d86f752f5d",
+    "mtime": 1788987464.2569647,
+    "ast_hash": "e27f2b50edf8bad699ba67d6349fc3a5",
     "semantic_hash": ""
   },
   "src/hooks/useBotDownloadedFiles.ts": {
@@ -4310,8 +4310,8 @@
     "semantic_hash": ""
   },
   "src/lib/credentialCrypto.ts": {
-    "mtime": 1788896441.6064365,
-    "ast_hash": "058223130346661ceec2b2d7dc566a5e",
+    "mtime": 1788987500.2304766,
+    "ast_hash": "85568a9db33f69e57d19aaf585a459e9",
     "semantic_hash": ""
   },
   "supabase/migrations/20260908000037_bank_bot_credentials.sql": {
@@ -4400,8 +4400,8 @@
     "semantic_hash": ""
   },
   ".agent/agents/leads/quality-lead.md": {
-    "mtime": 1788965591.4592786,
-    "ast_hash": "94c3edb85658ab3dab34d49276a8bf55",
+    "mtime": 1788985516.3939075,
+    "ast_hash": "0ec3c0bb0a63e80ebd1cca4ba80732e3",
     "semantic_hash": ""
   },
   ".agent/agents/leads/research-lead.md": {
@@ -4455,8 +4455,158 @@
     "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1788966057.0815823,
-    "ast_hash": "c912e3ad7505ad9d7186e0a558b2fc6b",
+    "mtime": 1788985563.5024521,
+    "ast_hash": "99c6995feb5f22685a39598e786f2a64",
+    "semantic_hash": ""
+  },
+  "src/components/conciliacao/TransactionDetailModal.tsx": {
+    "mtime": 1788987437.3828297,
+    "ast_hash": "949ee68cbe7256a877949e4fa2cd9b16",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260909000043_harden_rls_financial_tables.sql": {
+    "mtime": 1788987416.138739,
+    "ast_hash": "e772cab691b8db8521e2e2709e13fbdc",
+    "semantic_hash": ""
+  },
+  ".agent/agents/workers/security-worker.md": {
+    "mtime": 1788985503.338019,
+    "ast_hash": "ad1ebc16bcdc12aad1205951ffebb382",
+    "semantic_hash": ""
+  },
+  "DESIGN.md": {
+    "mtime": 1788984292.3832097,
+    "ast_hash": "5ac4390f4a871f5342a8c0bedb7621cf",
+    "semantic_hash": ""
+  },
+  "skills/agy-bridge/SKILL.md": {
+    "mtime": 1788965843.8676422,
+    "ast_hash": "544eddf469884f2f4a667b75bc25aa38",
+    "semantic_hash": ""
+  },
+  "skills/frontend-design-pro/references/ai-slop-catalog.md": {
+    "mtime": 1788984246.6642962,
+    "ast_hash": "1defebd3a7906f952eb2591c9cdda9fb",
+    "semantic_hash": ""
+  },
+  "skills/frontend-design-pro/references/audit-polish-flow.md": {
+    "mtime": 1788984283.0927544,
+    "ast_hash": "9b52e405983c701e72be46ba67713893",
+    "semantic_hash": ""
+  },
+  "skills/frontend-design-pro/references/dark-ui-depth.md": {
+    "mtime": 1788984273.242381,
+    "ast_hash": "baa4b66c60af1ba9dd07fe4fa1b84447",
+    "semantic_hash": ""
+  },
+  "skills/frontend-design-pro/references/interface-guidelines.md": {
+    "mtime": 1788984262.9146304,
+    "ast_hash": "5a96919e71a359fde58e4d652c1cc729",
+    "semantic_hash": ""
+  },
+  "skills/security/SKILL.md": {
+    "mtime": 1788985491.5367925,
+    "ast_hash": "d4f88d90241706bdceda414e0340dfa6",
+    "semantic_hash": ""
+  },
+  "skills/security/references/cloudflare-adversarial.md": {
+    "mtime": 1788985457.2172067,
+    "ast_hash": "74b2721c7e240be941d20061a055ad13",
+    "semantic_hash": ""
+  },
+  "skills/security/references/dependency-scanner.md": {
+    "mtime": 1788985474.2313626,
+    "ast_hash": "fa49a770d4946d1f3d8c98e26dc18571",
+    "semantic_hash": ""
+  },
+  "skills/security/references/owasp-top-10.md": {
+    "mtime": 1788985467.5532339,
+    "ast_hash": "639e5c15771bc118817940c0ef2f1369",
+    "semantic_hash": ""
+  },
+  "skills/security/references/secrets-patterns.md": {
+    "mtime": 1788985482.2062497,
+    "ast_hash": "f485cc737de8d7b584a9bd13697d016c",
+    "semantic_hash": ""
+  },
+  "skills/security/references/sentry-taint-analysis.md": {
+    "mtime": 1788985446.43498,
+    "ast_hash": "b2ed3e7535c1eab1c757add5b6e62142",
+    "semantic_hash": ""
+  },
+  "specs/386-extrato-bancario-fiduciario-loja-ofx-transacoes-e-saldos/design.md": {
+    "mtime": 1788980642.4792604,
+    "ast_hash": "398a4bcec70ca72b400a5d750f1b5f1f",
+    "semantic_hash": ""
+  },
+  "specs/386-extrato-bancario-fiduciario-loja-ofx-transacoes-e-saldos/proposal.md": {
+    "mtime": 1788980630.1750655,
+    "ast_hash": "b0af19955dc069d4d1e7109f05fb61e0",
+    "semantic_hash": ""
+  },
+  "specs/386-extrato-bancario-fiduciario-loja-ofx-transacoes-e-saldos/spec-plan.md": {
+    "mtime": 1788981280.141811,
+    "ast_hash": "ce5aaf45bd8781c6f42f18a9977ffb5b",
+    "semantic_hash": ""
+  },
+  "specs/387-revolut-ux-extrato-bancario-accordion-dias/design.md": {
+    "mtime": 1788982306.9132607,
+    "ast_hash": "7f665691e5092f02fc5b2d782957ca22",
+    "semantic_hash": ""
+  },
+  "specs/387-revolut-ux-extrato-bancario-accordion-dias/proposal.md": {
+    "mtime": 1788982306.9108737,
+    "ast_hash": "31552f3a8fbe7b4c8019bb0d96de7aa5",
+    "semantic_hash": ""
+  },
+  "specs/387-revolut-ux-extrato-bancario-accordion-dias/spec-plan.md": {
+    "mtime": 1788982826.083928,
+    "ast_hash": "62823d15be87029719c35c4221bb7fdd",
+    "semantic_hash": ""
+  },
+  "specs/388-revolut-ux-refinements-and-unlock-mechanism/design.md": {
+    "mtime": 1788983884.8668308,
+    "ast_hash": "1f330b4d1b44c2cd42a633ef5ff55b2c",
+    "semantic_hash": ""
+  },
+  "specs/388-revolut-ux-refinements-and-unlock-mechanism/proposal.md": {
+    "mtime": 1788983884.8654194,
+    "ast_hash": "04c6aee82db4c78d4186f97077dfe712",
+    "semantic_hash": ""
+  },
+  "specs/388-revolut-ux-refinements-and-unlock-mechanism/spec-plan.md": {
+    "mtime": 1788985319.2077527,
+    "ast_hash": "9808e53b1db2e4a6c852bc6bfc6bf2dc",
+    "semantic_hash": ""
+  },
+  "specs/389-revolut-transaction-detail-modal-and-row-cleanup/design.md": {
+    "mtime": 1788986545.8433547,
+    "ast_hash": "5b6948efc7a66505c0585156e15447f5",
+    "semantic_hash": ""
+  },
+  "specs/389-revolut-transaction-detail-modal-and-row-cleanup/proposal.md": {
+    "mtime": 1788986545.8423378,
+    "ast_hash": "666a7520faab6aa0a01841c83e4232a0",
+    "semantic_hash": ""
+  },
+  "specs/389-revolut-transaction-detail-modal-and-row-cleanup/spec-plan.md": {
+    "mtime": 1788987519.7167938,
+    "ast_hash": "839903e2e6e15b4c614df4a3ee4d3aca",
+    "semantic_hash": ""
+  },
+  "specs/390-appsec-remediation-bank-vault-rls-bot-hardening/design.md": {
+    "mtime": 1788987225.7975938,
+    "ast_hash": "d8149669e2f8ab313c515a8d6201f7a5",
+    "semantic_hash": ""
+  },
+  "specs/390-appsec-remediation-bank-vault-rls-bot-hardening/proposal.md": {
+    "mtime": 1788987217.715645,
+    "ast_hash": "3998c1a8e495b51a8ae28ab5471f552e",
+    "semantic_hash": ""
+  },
+  "specs/390-appsec-remediation-bank-vault-rls-bot-hardening/spec-plan.md": {
+    "mtime": 1788987625.3523135,
+    "ast_hash": "77794e7c42bc1356cd152356dd2cb19c",
     "semantic_hash": ""
   }
 }

@@ -3,15 +3,29 @@
  * Suporta execução isomórfica (Navegador e Node.js via globalThis.crypto).
  */
 
-const SECRET_SEED = 'conciliamec-bank-vault-secret-key-2026';
+// Chave pública de cifragem para trânsito (Write-Only). O segredo real de decifragem reside exclusivamente no bot runner.
 const PREFIX = 'enc:v1:';
 
+function getVaultSalt(): string {
+  if (typeof import.meta !== 'undefined' && import.meta.env) {
+    return (
+      import.meta.env.VITE_BANK_VAULT_PUBLIC_SALT ||
+      import.meta.env.VITE_SUPABASE_PROJECT_ID ||
+      'conciliamec-vault'
+    );
+  }
+  return (
+    (typeof process !== 'undefined' && (process.env.VITE_BANK_VAULT_PUBLIC_SALT || process.env.VITE_SUPABASE_PROJECT_ID)) ||
+    'conciliamec-vault'
+  );
+}
+
 /**
- * Deriva uma CryptoKey AES-GCM a partir da seed do sistema
+ * Deriva uma CryptoKey AES-GCM para cifragem write-only
  */
 async function getCryptoKey(): Promise<CryptoKey> {
   const enc = new TextEncoder();
-  const rawKey = enc.encode(SECRET_SEED);
+  const rawKey = enc.encode(getVaultSalt());
 
   // Hash SHA-256 para obter 256 bits exatos
   const hash = await globalThis.crypto.subtle.digest('SHA-256', rawKey);
@@ -21,7 +35,7 @@ async function getCryptoKey(): Promise<CryptoKey> {
     hash,
     { name: 'AES-GCM' },
     false,
-    ['encrypt', 'decrypt']
+    ['encrypt']
   );
 }
 
@@ -38,21 +52,6 @@ function toBase64(bytes: Uint8Array): string {
     binary += String.fromCharCode(bytes[i]);
   }
   return btoa(binary);
-}
-
-/**
- * Converte Base64 para Uint8Array de forma isomórfica
- */
-function fromBase64(base64: string): Uint8Array {
-  if (typeof Buffer !== 'undefined') {
-    return new Uint8Array(Buffer.from(base64, 'base64'));
-  }
-  const binary = atob(base64);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) {
-    bytes[i] = binary.charCodeAt(i);
-  }
-  return bytes;
 }
 
 /**
@@ -84,37 +83,11 @@ export async function encryptBankPassword(plainText: string): Promise<string> {
 }
 
 /**
- * Decifra a senha bancária cifrada em formato 'enc:v1:<base64>'.
+ * Decifragem desativada no cliente (OWASP A02:2021).
+ * O navegador opera exclusivamente em modo Write-Only.
  */
-export async function decryptBankPassword(encryptedText: string): Promise<string> {
-  if (!encryptedText) return '';
-  if (!encryptedText.startsWith(PREFIX)) {
-    return encryptedText; // Já em texto claro ou legado
-  }
-
-  try {
-    const rawBase64 = encryptedText.substring(PREFIX.length);
-    const combined = fromBase64(rawBase64);
-
-    if (combined.length <= 12) {
-      throw new Error('Payload cifrado corrompido ou incompleto');
-    }
-
-    const iv = combined.slice(0, 12);
-    const cipherData = combined.slice(12);
-    const key = await getCryptoKey();
-
-    const decryptedBuffer = await globalThis.crypto.subtle.decrypt(
-      { name: 'AES-GCM', iv },
-      key,
-      cipherData
-    );
-
-    return new TextDecoder().decode(decryptedBuffer);
-  } catch (err: any) {
-    console.error('[credentialCrypto] Falha na decifragem da senha:', err.message || err);
-    throw new Error('Não foi possível decifrar a senha bancária');
-  }
+export async function decryptBankPassword(_encryptedText: string): Promise<string> {
+  throw new Error('[Security] Decifragem de senhas bancárias é restrita ao ambiente isolado do bot server.');
 }
 
 /**

@@ -257,6 +257,99 @@ export function useTransactionsPorDataELoja(date: string, storeId: string) {
   });
 }
 
+export interface StoreExtratoBancarioData {
+  previousBalance: number;
+  bankTotal: number;
+  targetDateTxs: any[];
+  loteTxs: any[];
+  batchId: string | null;
+  recon: any | null;
+}
+
+export function useStoreExtratoBancario(date: string, storeId: string) {
+  return useQuery({
+    queryKey: ['store_extrato_bancario', storeId, date],
+    queryFn: async (): Promise<StoreExtratoBancarioData> => {
+      // 1. Busca dados de reconciliação para a loja e data
+      const { data: recon } = await supabase
+        .from('reconciliations')
+        .select('id, store_id, date, bank_total, previous_balance, status, bank_divergence')
+        .eq('store_id', storeId)
+        .eq('date', date)
+        .maybeSingle();
+
+      let previousBalance = Number(recon?.previous_balance ?? 0);
+      let bankTotal = Number(recon?.bank_total ?? 0);
+
+      // Fallback inteligente para previous_balance caso zerado ou nulo
+      if (!previousBalance && date) {
+        const { data: prevRecon } = await supabase
+          .from('reconciliations')
+          .select('bank_total')
+          .eq('store_id', storeId)
+          .lt('date', date)
+          .order('date', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (prevRecon?.bank_total != null) {
+          previousBalance = Number(prevRecon.bank_total);
+        }
+      }
+
+      // 2. Busca transações da data alvo
+      const { data: targetDateTxs, error: tErr } = await supabase
+        .from('transactions')
+        .select('*')
+        .eq('store_id', storeId)
+        .eq('target_date', date)
+        .order('occurred_at', { ascending: true });
+
+      if (tErr) throw tErr;
+
+      // 3. Localiza o import_batch_id das transações OFX da data alvo
+      const ofxTxInTargetDate = (targetDateTxs || []).find((t: any) => t.source === 'ofx' && t.import_batch_id);
+      const batchId = ofxTxInTargetDate ? ofxTxInTargetDate.import_batch_id : null;
+
+      let loteTxs: any[] = [];
+      if (batchId) {
+        const { data: bTxs } = await supabase
+          .from('transactions')
+          .select('*')
+          .eq('store_id', storeId)
+          .eq('import_batch_id', batchId)
+          .order('occurred_at', { ascending: true });
+        loteTxs = bTxs || [];
+      }
+
+      // Se não encontrou lote específico, resgata janela contínua dos últimos 7 dias até a data
+      if (loteTxs.length === 0 && date) {
+        const dObj = new Date(date + 'T12:00:00Z');
+        dObj.setDate(dObj.getDate() - 7);
+        const startDate = dObj.toISOString().split('T')[0];
+
+        const { data: winTxs } = await supabase
+          .from('transactions')
+          .select('*')
+          .eq('store_id', storeId)
+          .gte('target_date', startDate)
+          .lte('target_date', date)
+          .order('occurred_at', { ascending: true });
+        loteTxs = winTxs || [];
+      }
+
+      return {
+        previousBalance,
+        bankTotal,
+        targetDateTxs: targetDateTxs || [],
+        loteTxs: loteTxs.length > 0 ? loteTxs : (targetDateTxs || []),
+        batchId,
+        recon
+      };
+    },
+    enabled: !!storeId && !!date,
+  });
+}
+
 export function useStoreDailyBills(date: string, storeId?: string) {
   return useQuery({
     queryKey: ['daily_manual_bills', 'store', storeId, 'date', date],

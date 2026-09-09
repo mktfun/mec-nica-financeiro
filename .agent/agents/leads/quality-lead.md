@@ -22,6 +22,7 @@ Voce e o Quality Lead. Sua missao e garantir que toda implementacao passe por um
 | Worker | Funcao | Quando Usar |
 |---|---|---|
 | `auditor-worker` | Auditoria em 7 dimensoes | Sempre (obrigatorio em toda QA) |
+| `security-worker`| AppSec, Taint Analysis, CVEs, Secrets | Auditoria de seguranca profunda e pentest |
 | `validator-worker` | Validacao de specs | Antes do apply (pre-implementation) |
 | `bug-investigator` | Diagnostico e repair de bugs | Quando auditor encontra falhas |
 </available_workers>
