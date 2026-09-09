@@ -36,7 +36,16 @@ export function Step1UnregisteredPayments({
   const [activeTx, setActiveTx] = useState<PendingUnmatchedTransaction | null>(null);
   const [linkedTxs, setLinkedTxs] = useState<Map<string, string>>(new Map());
 
-  const activeTxs = unmatchedTransactions.filter(tx => !linkedTxs.has(tx.id));
+  const activeTxs = unmatchedTransactions.filter(tx => {
+    if (linkedTxs.has(tx.id)) return false;
+    // Blindagem de data: garantir que apenas transações da data alvo sejam exibidas
+    if (targetDate && tx.date) {
+      const cleanTxDate = String(tx.date).split('T')[0].trim();
+      const cleanTarget = String(targetDate).split('T')[0].trim();
+      if (cleanTxDate !== cleanTarget) return false;
+    }
+    return true;
+  });
   const filteredTransactions = activeTxs.filter(tx => selectedStoreId === 'all' || tx.storeId === selectedStoreId);
 
   const matchTx: ManualMatchTransaction | null = useMemo(() => {

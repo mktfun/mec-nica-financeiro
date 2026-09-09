@@ -75,3 +75,17 @@
    - O helper `parseDate` DEVE utilizar `XLSX.SSF.parse_date_code(val)` para extrair `{ y, m, d }` e montar a string `YYYY-MM-DD` com padding de zeros (`padStart(2, '0')`).
    - Tratar números seriais do Excel como strings ou tentar `new Date(val)` direto gera datas corrompidas (ex: ano 1970) ou strings inválidas.
 **Risco identificado / Anti-pattern:** Assumir que datas em planilhas Excel sempre vêm como strings (`"DD/MM/YYYY"`).
+
+## [2026-09-09] — [Feature ID: 385-fix-ofx-zeroed-balances-and-triple-reconciliation-excel]
+**Contexto:** Diagnóstico tríplice pericial (Sistema x OFX x Excel) e resolução de saldos bancários zerados (R$ 0,00) nas 4 filiais sem movimentação no dia (Rudge Ramos, Santo André, Jabaquara, Kennedy) e desmistificação da discrepância de R$ 2.000 em Planalto.
+**Regra aprendida:**
+1. **Âncora Temporal Estrita do Saldo Bancário (`<LEDGERBAL>`):**
+   - O saldo bancário extraído de um extrato OFX representa a foto da conta corrente na data da conciliação (`targetDate` ou `<DTASOF>`).
+   - NUNCA ancorar o saldo da conta na data da última transação encontrada (`txs[0].target_date` ou `t.target_date`). Se a filial não movimentou a conta no dia corrente, suas transações são de D-1 (ou D-n), mas o saldo da conta continua sendo do dia D!
+   - Em `useTransactions.ts`, `storeBankBalances` DEVE ser sempre indexado na `targetDate` explícita da importação.
+2. **Blindagem Contra Sobrescrita Nula no Upsert de Pátio:**
+   - Em `CentralImportWizard.tsx`, ao gravar o pátio de OSs em `reconciliations`, SEMPRE preservar o `bank_total` existente da loja no payload. Se um upsert passar apenas `na_loja_os`, o Postgres cria uma linha com `bank_total = NULL` para aquela data, zerando indevidamente a visualização do Raio-X.
+3. **Imutabilidade e Verdade do OFX vs Ilusão do Excel:**
+   - O extrato bancário oficial emitido pelo banco (`.ofx`) é imutável e juridicamente perfeito. O saldo de Planalto (-R$ 5.659,95) comprovado na tag `<LEDGERBAL>` era a verdade absoluta, enquanto o Excel possuía um erro humano de digitação estática de R$ 2.000,00 na célula E6 (-R$ 7.659,95).
+   - Além disso, no Excel o operador frequentemente mistura saldo de conta com recebíveis de cartão previstos, contaminando o saldo bancário. O sistema DEVE manter a segregação estrita dos 5 Pilares Contábeis.
+**Risco identificado / Anti-pattern:** Usar a data de transações individuais para gravar o saldo da conta (`storeDates.set(sId, t.target_date)`) e rodar upsert em `reconciliations` sem injetar `bank_total`.

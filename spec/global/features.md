@@ -1,3 +1,13 @@
+### Feature 385: Fix de Âncora Temporal de Saldos OFX, Blindagem de Reconciliations e Sincronização Tríplice (09/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Data:** 2026-09-09
+- **Arquivos Criados/Modificados:**
+  - `src/hooks/useTransactions.ts` (Mutação `useImportOFX` ancorando `storeBankBalances` na `targetDate` explícita da conciliação)
+  - `src/components/importacoes/CentralImportWizard.tsx` (Preservação de `bank_total` no upsert de pátio em `reconciliationsToUpsert`)
+  - `src/components/importacoes/wizard/PostMotorDiagnosticCockpit.tsx` (Proteção contra runtime error em `cockpitData?.resumo?.status_geral`)
+  - `supabase/migrations/20260909000042_fix_ofx_date_anchor_and_reconciliation_zeroed.sql` (Fallback defensivo na RPC `get_daily_reconciliation_summary` e backfill dos 10 saldos reais de 09/09/2026)
+- **Descrição:** Correção pericial do descompasso temporal de contas correntes sem transações no dia (Rudge Ramos, Santo André, Jabaquara, Kennedy) que zeravam o saldo bancário no Raio-X, blindagem contra sobrescrita com NULL no upsert de pátio e comprovação matemática de erro de digitação estática de R$ 2.000 no Excel de Planalto (-R$ 5.659,95 oficial no OFX vs -R$ 7.659,95 manual).
+
 ### Feature 375: Diagnóstico Forense e Resolução de Saídas e Entradas Órfãs (08/09/2026)
 - **Status:** COMPLETED & ARCHIVED
 - **Data:** 2026-09-08

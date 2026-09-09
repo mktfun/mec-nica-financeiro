@@ -1,3 +1,15 @@
+## [2026-09-09] — [Feature ID: 385-fix-ofx-zeroed-balances-and-triple-reconciliation-excel]
+
+**Contexto:** Correção da âncora temporal dos saldos OFX, blindagem de upsert em `reconciliations` e backfill dos saldos bancários das 10 filiais para 09/09/2026 via migration `20260909000042_fix_ofx_date_anchor_and_reconciliation_zeroed.sql`.
+
+**Regra aprendida:**
+1. **Fallback de Saldo Bancário em Filiais Ativas na RPC `get_daily_reconciliation_summary`:**
+   - Se `reconciliations.bank_total` for nulo ou ausente em uma filial ativa para a `target_date`, a consulta deve resgatar como fallback defensivo o último saldo bancário conhecido de dia útil anterior (`r_prev.bank_total`), evitando falsos zerados (`R$ 0,00`) quando não houver nova importação no dia.
+2. **Backfill Canônico de Saldos Reais das 10 Filiais:**
+   - Saldos equalizados ao centavo com base nos extratos oficiais Itaú `<LEDGERBAL>` de 09/09/2026: Planalto (-R$ 5.659,95), Dom Pedro (R$ 67.892,75), Jorge Beretta (R$ 80.957,80), Mauá (-R$ 2.457,48), Rudge Ramos (R$ 2.913,76), Santo André (R$ 2.171,16), Jabaquara (-R$ 4.252,96), Kennedy (R$ 47.512,52), Rei do Módulo (R$ 130.404,89), D6 (R$ 45.922,65).
+
+---
+
 ## [2026-09-09] — [Feature ID: 380-equalizacao-conciliacao-0809-caixa-patio-banco]
 
 **Contexto:** Saneamento de integridade dos snapshots de fechamento (`daily_snapshots`), tabela de apuração por filial (`reconciliations`) e ordens de serviço (`patio_os`) para equalização exata de 08/09/2026 conforme planilha oficial `CONCILIAÇÃO 0809.xlsx`.

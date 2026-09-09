@@ -493,23 +493,29 @@ export function useBulkInsertTransactions() {
         
       if (error) throw error;
       
-      // 2. Se houver saldo(s) bancário(s) e houver transações (para pegar a loja e a data)
-      if (storeBankBalances && Object.keys(storeBankBalances).length > 0 && txs.length > 0) {
-        // Pega os stores únicos 
+      // 2. Se houver saldo(s) bancário(s)
+      if (storeBankBalances && Object.keys(storeBankBalances).length > 0) {
+        const explicitTargetDate = !Array.isArray(payload) ? (payload.targetDate || payload.target_date) : undefined;
+        const defaultDate = explicitTargetDate || (txs.length > 0 ? txs[0].target_date : undefined) || new Date().toISOString().split('T')[0];
+
         const storeDates = new Map<string, string>();
-        txs.forEach(t => {
-          if (t.target_date) {
-            const sId = t.store_id || 'global_account';
-            storeDates.set(sId, t.target_date);
-          }
-        });
         
-        // Adiciona as chaves de storeBankBalances que não vieram nas transações (ex: OFX sem lançamentos na data)
+        // Se foi informada targetDate explícita da conciliação, ancorar TODOS os saldos nela
         Object.keys(storeBankBalances).forEach(k => {
-           if (!storeDates.has(k)) {
-             storeDates.set(k, txs[0].target_date);
-           }
+          storeDates.set(k, explicitTargetDate || defaultDate);
         });
+
+        // Caso não haja targetDate explícita, usar a data das transações
+        if (!explicitTargetDate && txs.length > 0) {
+          txs.forEach(t => {
+            if (t.target_date) {
+              const sId = t.store_id || 'global_account';
+              if (!storeDates.has(sId)) {
+                storeDates.set(sId, t.target_date);
+              }
+            }
+          });
+        }
         
         // Fazer upsert para cada store+date com o saldo real do extrato DAQUELA LOJA ESPECIFICA
         for (const [storeKey, targetDate] of storeDates.entries()) {

@@ -181,7 +181,8 @@ export function executeExpenseAutoMatching(
   ofxResults: any[],
   contasPagarResults: any[],
   mapping: Record<string, string>,
-  stores: { id: string; name: string }[]
+  stores: { id: string; name: string }[],
+  targetDate?: string
 ): InMemExpenseMatchingResult {
   const TOLERANCE = 0.05;
   const matchedBillKeys = new Set<string>();
@@ -207,6 +208,13 @@ export function executeExpenseAutoMatching(
     const storeName = storeMap.get(storeId) || ofx.alias || 'Loja';
 
     (ofx.transactions || []).forEach((tx: any, txIdx: number) => {
+      // Guardrail Estrito de Data: Apenas movimentações da data alvo participam do matching e orfãos do dia
+      if (targetDate && tx.date) {
+        const cleanTx = String(tx.date).split('T')[0].trim();
+        const cleanTarget = String(targetDate).split('T')[0].trim();
+        if (cleanTx !== cleanTarget) return;
+      }
+
       const txAmount = Math.abs(Number(tx.amount || 0));
       const txDesc = `${tx.title || ''} ${tx.counterpart_name || ''}`.trim();
       const txFitid = tx.fitid || `ofx-${tx.type}-${txAmount}-${txIdx}`;

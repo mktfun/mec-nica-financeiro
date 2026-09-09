@@ -22,6 +22,7 @@ import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { parseCentralImports } from '@/lib/parsers/centralImportManager';
 import { generateDeterministicHash } from '@/lib/parsers/hashUtils';
+import { KNOWN_POS_RENTAL_FEES } from '@/lib/matchers/autoMatchingEngine';
 
 export interface Fase3OfxReconciliationProps {
   targetDate: string;
@@ -102,13 +103,18 @@ export function Fase3OfxReconciliation({
       // 2. Apurar liquidação da Rede por loja (Rede apurado vs OFX entrou)
       const { data: posData } = await supabase
         .from('pos_transactions')
-        .select('store_id, net_amount')
-        .eq('target_date', targetDate);
+        .select('store_id, net_amount, settled_date, settlement_status, occurred_at')
+        .or(`target_date.eq.${targetDate},settled_date.eq.${targetDate}`);
 
       const posByStore: Record<string, number> = {};
+      const posSettledByStore: Record<string, number> = {};
       (posData || []).forEach((p: any) => {
         if (p.store_id) {
-          posByStore[p.store_id] = (posByStore[p.store_id] || 0) + Number(p.net_amount || 0);
+          const net = Number(p.net_amount || 0);
+          posByStore[p.store_id] = (posByStore[p.store_id] || 0) + net;
+          if (p.settlement_status === 'liquidado' || p.settlement_status === 'entrou') {
+            posSettledByStore[p.store_id] = (posSettledByStore[p.store_id] || 0) + net;
+          }
         }
       });
 
@@ -123,10 +129,16 @@ export function Fase3OfxReconciliation({
       const settlementRows = stores.map(st => {
         const redeApurado = posByStore[st.id] || 0;
         const ofxEntrou = ofxRedeByStore[st.id] || 0;
-        const aCompensar = Math.max(0, redeApurado - ofxEntrou);
+        const diff = redeApurado - ofxEntrou;
+        const isRentalFee = KNOWN_POS_RENTAL_FEES.some(fee => Math.abs(diff - fee) <= 0.10);
+        const isMatched = Math.abs(diff) <= 0.10 || (redeApurado > 0 && isRentalFee) || (redeApurado > 0 && posSettledByStore[st.id] === redeApurado);
+
+        const aCompensar = isMatched ? 0 : Math.max(0, diff);
 
         let status: 'liquidado' | 'a_compensar' | 'divergente' = 'liquidado';
-        if (aCompensar > 0.05) {
+        if (isMatched) {
+          status = 'liquidado';
+        } else if (aCompensar > 0.05) {
           status = 'a_compensar';
         }
 

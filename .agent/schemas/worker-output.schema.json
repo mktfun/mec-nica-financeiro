@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Worker Output Contract",
+  "description": "Contrato padronizado de output para TODOS os workers (nativos Antigravity e agy CLI). Todo worker DEVE retornar JSON conforme este schema.",
+  "type": "object",
+  "required": ["status", "worker", "summary"],
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["DONE", "FAILED", "TIMEOUT", "PARTIAL"],
+      "description": "Status final da execução do worker."
+    },
+    "worker": {
+      "type": "string",
+      "description": "Nome do worker que executou a task (ex: frontend-worker, auditor-worker)."
+    },
+    "skill_used": {
+      "type": "string",
+      "description": "Skill principal consultada pelo worker (ex: ui-components, database)."
+    },
+    "lead": {
+      "type": "string",
+      "description": "Lead que delegou a task (ex: implementation-lead, quality-lead)."
+    },
+    "execution_mode": {
+      "type": "string",
+      "enum": ["agy-cli", "native-subagent"],
+      "description": "Se o worker rodou via agy CLI ou como subagente nativo do Antigravity 2.0."
+    },
+    "files_modified": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Array de paths de arquivos modificados."
+    },
+    "files_created": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Array de paths de arquivos criados."
+    },
+    "summary": {
+      "type": "string",
+      "description": "Resumo do que foi feito pelo worker."
+    },
+    "errors": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Array de erros encontrados durante execução."
+    },
+    "duration_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Duração da execução em milissegundos."
+    },
+    "fallback_triggered": {
+      "type": "boolean",
+      "description": "true se o worker agy falhou e o fallback nativo foi acionado."
+    }
+  },
+  "additionalProperties": false
+}

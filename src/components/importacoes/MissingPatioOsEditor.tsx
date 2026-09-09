@@ -121,7 +121,7 @@ export const MissingPatioOsEditor: React.FC<MissingPatioOsEditorProps> = ({
       return {
         ...item,
         status: status,
-        paid_value: status === 'finalizada' ? item.total_value : item.paid_value
+        paid_value: status === 'finalizada' ? item.total_value : item.original_paid_value
       };
     });
     onChangeList(updated);
@@ -236,9 +236,9 @@ export const MissingPatioOsEditor: React.FC<MissingPatioOsEditorProps> = ({
                 <tr>
                   <th className="py-2.5 px-3">Loja</th>
                   <th className="py-2.5 px-3">OS / Placa</th>
-                  <th className="py-2.5 px-3 text-right">Valor Total (R$)</th>
-                  <th className="py-2.5 px-3 text-right">Valor Pago (Passo 4)</th>
-                  <th className="py-2.5 px-3 text-right">Saldo Restante</th>
+                  <th className="py-2.5 px-3 text-right">Valor Total da OS</th>
+                  <th className="py-2.5 px-3 text-right">Valor Pago</th>
+                  <th className="py-2.5 px-3 text-right">Saldo Devedor (Na Loja)</th>
                   <th className="py-2.5 px-3 text-center">Status / Ação</th>
                 </tr>
               </thead>

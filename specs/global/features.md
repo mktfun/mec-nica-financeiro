@@ -1,3 +1,43 @@
+### Spec 385 — Fix de Âncora Temporal de Saldos OFX, Blindagem de Reconciliations e Sincronização Tríplice (09/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Database (Migration `20260909000042_fix_ofx_date_anchor_and_reconciliation_zeroed.sql`)**:
+  - Correção na RPC `get_daily_reconciliation_summary` para resgatar `r_prev.bank_total` caso `reconciliations.bank_total` venha nulo em filial ativa.
+  - Backfill dos saldos reais para 09/09/2026 comprovados pelos extratos oficiais OFX do Itaú (`<LEDGERBAL>`) para as 10 filiais, saneando as 4 lojas sem transações no dia (Rudge Ramos R$ 2.913,76, Santo André R$ 2.171,16, Jabaquara -R$ 4.252,96, Kennedy R$ 47.512,52).
+- **Core de Ingestão e Frontend (`useTransactions.ts`, `CentralImportWizard.tsx`, `PostMotorDiagnosticCockpit.tsx`)**:
+  - Mutação `useImportOFX` alterada para indexar `storeBankBalances` estritamente na `targetDate` da conciliação e não na data da última transação bancária.
+  - Salvamento de pátio em `reconciliationsToUpsert` blindado para repassar `bank_total` e não sobrescrever o saldo bancário com NULL.
+  - Correção de runtime `TypeError: Cannot read properties of undefined (reading 'status_geral')` em `PostMotorDiagnosticCockpit.tsx`.
+- **Diagnóstico Tríplice (Sistema x OFX x Excel)**:
+  - Comprovado erro humano de digitação de R$ 2.000,00 na célula E6 do Excel de Planalto (-R$ 7.659,95 vs -R$ 5.659,95 oficial no OFX `brasicar.ofx`).
+
+### Spec 384 — Cockpit de Diagnóstico 360° Pós-Motor (Loja x Valor Líquido x Bandeira) (09/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Database (Migration `20260909000041_cockpit_pos_triple_reconciliation_brand.sql`)**:
+  - Adicionadas colunas `brand`, `expected_credit_date`, `nsu`, `authorization_code` em `pos_transactions` com backfill inteligente.
+  - RPC `get_store_pos_triple_reconciliation` com agregação por bandeira (Visa, Mastercard, Elo, etc.), status de liquidação (`entrou`, `nao_entrou`, `a_compensar`, `divergente`) e KPIs estruturados.
+- **Frontend (`PostMotorDiagnosticCockpit.tsx`, `DiagnosticActionCards.tsx`, `StoreDiagnosticRow.tsx`, `cockpit360.ts`)**:
+  - Cockpit de auditoria pós-motor acoplado no Step 8 do `CentralImportWizard.tsx` com 4 Action Cards de 1-clique, micro-chips de bandeiras, accordion inline de detalhes e foco direto por filial em `MaquininhasDetailModal.tsx`.
+
+### Spec 383 — Correção de Total da OS vs Saldo Devedor no Pátio e Sincronização com Excel 09/09 (09/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Database & Scripts (`sync-patio-os-0909.cjs`, `patio_os`)**:
+  - Sincronização de 60 OSs em `patio_os` para 09/09/2026 equalizando o saldo devedor em aberto ao centavo: R$ 70.204,89.
+- **Frontend (`MissingPatioOsEditor.tsx`, `CentralImportWizard.tsx`)**:
+  - Segregação visual e lógica entre Valor Total da OS (`total_value`) e Saldo Devedor no Pátio (`total_value - paid_value`).
+
+### Spec 382 — Motores de Match Decoupling, Baixa de Lote e Sanidade Contábil "Entrou vs Não Entrou" (09/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Parsers & Engines (`redeParser.ts`, `autoMatchingEngine.ts`, `useConciliacao.ts`)**:
+  - Extração de `creditDate`, `lote` e `prazo` com calendário oficial de feriados bancários `BRAZILIAN_BANK_HOLIDAYS_2026`.
+  - Desacoplamento da Fase 1 (OS x Rede com janela D-3 a D) e Fase 2 (Rede x OFX com Hash Grouping O(n) por lote e baixa automática).
+  - Reconhecimento de retenções de aluguel de POS na fonte via `KNOWN_POS_RENTAL_FEES`.
+
+### Spec 381 — Fix Raio-X de Saldos Bancários e Isolamento Estrito de Data Alvo (09/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Database (Migrations `20260909000040_fix_raiox_restore_dinheiro_rede.sql`, `20260909000040_sanitize_transactions_target_date.sql`)**:
+  - Restauração das CTEs `rede_agg` e `vault_agg` em `get_daily_reconciliation_summary` com retorno estruturado de `saldo_banco_ofx`, `nao_entrou_valor`, `entrou_valor` e `vault_entries`.
+  - Guardrail de data alvo em `autoMatchingEngine.ts`, `expenseMatcher.ts` e componentes de interface.
+
 ### Spec 380 — Equalização de Fechamento 08/09, Caixa Anterior e Sincronização Oficial de Pátio e Bancos (09/09/2026)
 - **Database (`daily_snapshots`, `reconciliations`, `patio_os`)**:
   - Correção da causa-raiz do Caixa Anterior e Faturamento Anterior em `daily_snapshots` para `2026-09-04`: ajuste de `caixa_atual` para R$ 357.262,70 (valor oficial consolidado da planilha) e `faturamento` para R$ 98.867,73 (odômetro acumulado no mês até o fechamento anterior).

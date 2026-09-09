@@ -247,6 +247,12 @@ export function Step2NonRevenueJustifications({
       return dbInflows
         .filter((tx: any) => {
           if (tx.match_status === 'matched' || tx.match_status === 'matched_batch' || tx.match_status === 'intercompany_paired' || tx.match_status === 'auto_cancelled') return false;
+          
+          // Guardrail de data alvo: apenas entradas pertencentes à data da conciliação
+          const txTargetDate = tx.target_date ? String(tx.target_date).slice(0, 10) : '';
+          const txOccurredDate = tx.occurred_at ? String(tx.occurred_at).slice(0, 10) : '';
+          if (txTargetDate !== targetDate && txOccurredDate !== targetDate) return false;
+
           const fullDesc = `${tx.title || ''} ${tx.counterpart_name || ''} ${tx.bank_name || ''}`.trim();
           if (EXCLUDE_ACQUIRER_REGEX.test(fullDesc)) return false;
           if (EXCLUDE_BANK_EARNINGS_REGEX.test(fullDesc)) return false;
@@ -287,6 +293,10 @@ export function Step2NonRevenueJustifications({
         if (tx.type !== 'in' && Number(tx.amount || 0) <= 0) return;
         if (tx.matched_os_number || tx.matchedOsNumber || tx.match_status === 'matched' || tx.match_status === 'intercompany_paired' || tx.match_status === 'auto_cancelled') return;
 
+        // Guardrail de data alvo: apenas transações da data alvo
+        const cleanTxDate = tx.date ? String(tx.date).slice(0, 10) : (tx.target_date ? String(tx.target_date).slice(0, 10) : '');
+        if (cleanTxDate && cleanTxDate !== targetDate) return;
+
         const fullDesc = `${tx.title || ''} ${tx.counterpart_name || ''}`.trim();
         if (EXCLUDE_ACQUIRER_REGEX.test(fullDesc)) return;
         if (EXCLUDE_BANK_EARNINGS_REGEX.test(fullDesc)) return;
@@ -326,6 +336,12 @@ export function Step2NonRevenueJustifications({
       return dbOutflows
         .filter((tx: any) => {
           if (tx.match_status === 'matched' || tx.match_status === 'matched_batch' || tx.match_status === 'intercompany_paired' || tx.match_status === 'auto_cancelled') return false;
+          
+          // Guardrail de data alvo: apenas saídas pertencentes à data da conciliação
+          const txTargetDate = tx.target_date ? String(tx.target_date).slice(0, 10) : '';
+          const txOccurredDate = tx.occurred_at ? String(tx.occurred_at).slice(0, 10) : '';
+          if (txTargetDate !== targetDate && txOccurredDate !== targetDate) return false;
+
           const fullDesc = `${tx.title || ''} ${tx.counterpart_name || ''} ${tx.bank_name || ''}`.trim();
           if (EXCLUDE_BANK_EARNINGS_REGEX.test(fullDesc)) return false;
           if (/saldo\s+anterior|saldo\s+total/i.test(fullDesc)) return false;
@@ -361,11 +377,16 @@ export function Step2NonRevenueJustifications({
         results.ofxResults,
         results.contasPagarResults || [],
         mapping,
-        stores
+        stores,
+        targetDate
       );
 
       return matchRes.orphanOutflows
         .filter(tx => {
+          // Guardrail de data alvo
+          const cleanTxDate = tx.date ? String(tx.date).slice(0, 10) : '';
+          if (cleanTxDate && cleanTxDate !== targetDate) return false;
+
           const desc = tx.description || '';
           if (EXCLUDE_BANK_EARNINGS_REGEX.test(desc)) return false;
           if (/saldo\s+anterior|saldo\s+total/i.test(desc)) return false;
@@ -490,7 +511,7 @@ export function Step2NonRevenueJustifications({
           .from('daily_revenue_adjustments')
           .upsert({
             id: entry.id,
-            date: entry.date || targetDate,
+            date: entry.date ? String(entry.date).slice(0, 10) : targetDate,
             title: cleanCategory || 'Receita Avulsa OFX',
             description: cleanJustification || entry.description || 'Justificado no Wizard',
             type: 'venda_avulsa',

@@ -6,6 +6,7 @@ import { parseMapaMetasPDF, MapaMetasResult } from '@/lib/parsers/mapaMetasParse
 import { parseContasAPagarFile } from '@/lib/parsers/contasPagarParser';
 import { ContasAPagarParseResult } from '@/types/contasPagar';
 import { extractNumber } from '@/lib/parsers/numberUtils';
+import { parseConciliacaoExcel, isConciliacaoExcel } from '@/lib/parsers/conciliacaoExcelParser';
 
 export type NormalizedOfxResult = OfxParseResult & {
   success: boolean;
@@ -203,8 +204,22 @@ export async function parseCentralImports(
       // Não é Rede
     }
 
-    // C) Testa se é OS
-    const isOsName = file.name.toLowerCase().includes('conferencia') || file.name.toLowerCase().includes('os');
+    // B.2) Testa se é Planilha Consolidada de CONCILIAÇÃO (com aba 'OS' das 10 lojas)
+    const isConciliacao = isConciliacaoExcel(file);
+    if (isConciliacao) {
+      try {
+        const concRes = await parseConciliacaoExcel(file, file.name);
+        if (concRes && concRes.length > 0) {
+          results.osFiles.push(...concRes);
+          continue;
+        }
+      } catch (e: any) {
+        console.warn(`Tentativa de parse de conciliação em ${file.name} falhou:`, e);
+      }
+    }
+
+    // C) Testa se é OS individual/Conferência
+    const isOsName = isConciliacao || file.name.toLowerCase().includes('conferencia') || file.name.toLowerCase().includes('os');
     let osErrorDetail = '';
 
     try {
@@ -217,6 +232,19 @@ export async function parseCentralImports(
       }
     } catch (e: any) {
       osErrorDetail = e.message || String(e);
+    }
+
+    // C.2) Fallback para Conciliação se não foi pego pelo nome mas contém aba 'OS'
+    if (!isConciliacao) {
+      try {
+        const concFallback = await parseConciliacaoExcel(file, file.name);
+        if (concFallback && concFallback.length > 0) {
+          results.osFiles.push(...concFallback);
+          continue;
+        }
+      } catch {
+        // Não é conciliação consolidada
+      }
     }
 
     // D) Fallback para Contas a Pagar caso o nome não contivesse "contas"/"pagar"

@@ -22,6 +22,7 @@ interface MaquininhasDetailModalProps {
   targetDate: string;
   data?: PosTripleReconciliationResult | null;
   isLoading?: boolean;
+  initialStoreId?: string | null;
 }
 
 export function MaquininhasDetailModal({
@@ -29,7 +30,8 @@ export function MaquininhasDetailModal({
   onClose,
   targetDate,
   data,
-  isLoading
+  isLoading,
+  initialStoreId
 }: MaquininhasDetailModalProps) {
   if (!isOpen) return null;
 
@@ -175,13 +177,25 @@ export function MaquininhasDetailModal({
                 ) : (
                   data.stores.map((st: StorePosDetail) => {
                     const hasNaoEntrou = st.nao_entrou_valor > 0;
+                    const isSelectedStore = Boolean(initialStoreId && st.store_id === initialStoreId);
                     return (
                       <tr
                         key={st.store_id}
-                        className="hover:bg-zinc-900/60 transition-colors"
+                        className={`transition-colors ${
+                          isSelectedStore 
+                            ? 'bg-blue-950/40 ring-1 ring-blue-500/50 hover:bg-blue-950/60' 
+                            : 'hover:bg-zinc-900/60'
+                        }`}
                       >
                         <td className="py-3.5 px-4 font-sans font-semibold text-zinc-100 text-sm">
-                          {st.store_name}
+                          <div className="flex items-center gap-2">
+                            {st.store_name}
+                            {isSelectedStore && (
+                              <span className="px-1.5 py-0.5 text-[9px] font-bold uppercase rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                                Foco
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td className="py-3.5 px-4 text-right text-sm">
                           <span className="text-zinc-200 font-bold block">{formatCurrency(st.rede_liquido)}</span>

@@ -54,6 +54,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { ImportExecutionTerminal, ImportLogEntry } from './ImportExecutionTerminal';
 import { ExecutionErrorBanner } from './ExecutionErrorBanner';
 import { MissingPatioOsEditor, MissingPatioOsEdit } from './MissingPatioOsEditor';
+import { PostMotorDiagnosticCockpit } from './wizard/PostMotorDiagnosticCockpit';
 export type { MissingPatioOsEdit };
 
 const INITIAL_STAGES: AgentStage[] = [
@@ -208,10 +209,10 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           plate: dbOs.plate || '-',
           store_id: dbOs.store_id,
           store_name: dbOs.store_name || stores.find(s => s.id === dbOs.store_id)?.name || 'Loja',
-          original_total_value: Number(dbOs.total_value) || 0,
+          original_total_value: Math.max(Number(dbOs.total_value) || 0, Number(dbOs.paid_value) || 0),
           original_paid_value: Number(dbOs.paid_value) || 0,
           original_status: dbOs.status || 'em_aberto',
-          total_value: Number(dbOs.total_value) || 0,
+          total_value: Math.max(Number(dbOs.total_value) || 0, Number(dbOs.paid_value) || 0),
           paid_value: Number(dbOs.paid_value) || 0,
           status: normalizeStatus(dbOs.status),
           opened_at: dbOs.opened_at,
@@ -694,9 +695,9 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   // Executa pré-matching em memória de saídas bancárias com contas a pagar
   useEffect(() => {
     if (results.ofxResults?.length > 0 && results.contasPagarResults?.length > 0) {
-      executeExpenseAutoMatching(results.ofxResults, results.contasPagarResults, mapping, stores);
+      executeExpenseAutoMatching(results.ofxResults, results.contasPagarResults, mapping, stores, targetDate);
     }
-  }, [results.ofxResults, results.contasPagarResults, mapping, stores]);
+  }, [results.ofxResults, results.contasPagarResults, mapping, stores, targetDate]);
 
   // Helper para resolver a loja correta por mapping direto, conta bancária ou prefixo do arquivo
   const resolveStoreForOfx = useCallback((ofx: { alias: string; fileName?: string }): string => {
@@ -941,6 +942,11 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       if (ofxErr) console.warn('Erro ao consultar ofx_transactions pendentes:', ofxErr);
 
       (ofxTxs || []).forEach((t: any) => {
+        // Validação defensiva: garantir que a ocorrência real é da data alvo
+        if (t.occurred_at && String(t.occurred_at).slice(0, 10) !== tDate) {
+          return;
+        }
+
         // Se já possui categoria corporativa (Empréstimo, Seguros, Transferência, Rendimento), vai para o Step 2
         if (t.manual_category && t.manual_category !== 'PIX / Recebimento OS') {
           return;
@@ -974,6 +980,11 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       if (posErr) console.warn('Erro ao consultar pos_transactions pendentes:', posErr);
 
       (posTxs || []).forEach((t: any) => {
+        // Validação defensiva: garantir que a ocorrência real é da data alvo
+        if (t.occurred_at && String(t.occurred_at).slice(0, 10) !== tDate) {
+          return;
+        }
+
         const sid = t.store_id || '';
         unmatched.push({
           id: t.id,
@@ -1206,6 +1217,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             ? `nsu_${item.nsu}_${item.authorization || ''}`
             : (item.authorization ? `auth_${item.authorization}` : (item.tid ? `tid_${item.tid}` : `${item.method || 'rede'}_${item.grossAmount || 0}_${idx}`));
           
+          const effectivePosDate = item.date ? String(item.date).split('T')[0] : targetDate;
           txsToInsert.push({
             id: crypto.randomUUID(),
             store_id: targetSid,
@@ -1217,10 +1229,10 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             fee_amount: item.interest || 0,
             type: 'in',
             occurred_at: item.date || `${targetDate}T12:00:00Z`,
-            target_date: targetDate,
+            target_date: effectivePosDate,
             icon_type: 'card',
             source: 'rede',
-            dedup_hash: generateDeterministicHash(item.date || targetDate, item.netAmount || 0, `${sid}_${uniqueId}`, 'pos')
+            dedup_hash: generateDeterministicHash(effectivePosDate, item.netAmount || 0, `${sid}_${uniqueId}`, 'pos')
           });
         });
       });
@@ -1293,7 +1305,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           
           const txId = crypto.randomUUID();
           const isPix = tx.title?.toUpperCase().includes('PIX') ? 'pix' : null;
-          const realTxDate = targetDate; // Força a data alvo da conciliação
+          const effectiveOfxDate = tx.date ? String(tx.date).split('T')[0] : targetDate;
           txsToInsert.push({
             id: txId,
             store_id: matched_store_id,
@@ -1303,8 +1315,8 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             amount: Math.abs(tx.amount || 0),
             type: (tx.type === 'in' || tx.type === 'income' || tx.amount > 0) ? 'in' : 'out',
             occurred_at: tx.date || targetDate || new Date().toISOString(),
-            date: tx.date || targetDate,
-            target_date: realTxDate,
+            date: effectiveOfxDate,
+            target_date: effectiveOfxDate,
             icon_type: 'bank',
             source: 'ofx',
             os_number: matched_os_number,
@@ -1317,7 +1329,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           if (matched_os_number && matched_store_id) {
             matchesToInsert.push({
               store_id: matched_store_id,
-              target_date: realTxDate,
+              target_date: effectiveOfxDate,
               system_os_number: matched_os_number,
               ofx_transaction_id: txId,
               _fitid: tx.fitid || null,
@@ -1333,7 +1345,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       addLog(`⚙️ Gravando batch de ${txsToInsert.length} transações no banco...`, "info", { source: 'database' });
       const batch = await createImportBatch({ target_date: targetDate });
       
-      await saveTransactions({ transactions: txsToInsert, storeBankBalances, storePreviousBalances, import_batch_id: batch.id } as any);
+      await saveTransactions({ transactions: txsToInsert, storeBankBalances, storePreviousBalances, import_batch_id: batch.id, targetDate } as any);
       addLog("✅ Transações do extrato e adquirente salvas com sucesso!", "success", { source: 'database' });
 
       if (matchesToInsert.length > 0) {
@@ -1639,17 +1651,43 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         
         veiculosPatioValor += storePatioValor;
         if (sId !== 'GLOBAL') {
-          reconciliationsToUpsert.push({
+          const storeBankTotal = storeBankBalances[sId];
+          const recItem: any = {
             store_id: sId,
             date: targetDate,
             na_loja_os: storePatioValor,
             status: 'validated'
-          });
+          };
+          if (storeBankTotal !== undefined) {
+            recItem.bank_total = storeBankTotal;
+          }
+          reconciliationsToUpsert.push(recItem);
         }
       });
 
+      // Garante que todas as filiais com saldo bancário tenham seu bank_total preservado
+      if (storeBankBalances) {
+        Object.entries(storeBankBalances).forEach(([sId, bal]) => {
+          if (sId !== 'GLOBAL' && sId !== 'global_account') {
+            const existing = reconciliationsToUpsert.find(r => r.store_id === sId);
+            if (existing) {
+              if (existing.bank_total === undefined) {
+                existing.bank_total = bal;
+              }
+            } else {
+              reconciliationsToUpsert.push({
+                store_id: sId,
+                date: targetDate,
+                bank_total: bal,
+                status: 'validated'
+              });
+            }
+          }
+        });
+      }
+
       if (reconciliationsToUpsert.length > 0) {
-        addLog("Gravando valores de patio (reconciliations)...", "info");
+        addLog("Gravando valores de patio e saldos bancarios (reconciliations)...", "info");
         await supabase.from('reconciliations').upsert(reconciliationsToUpsert, { onConflict: 'store_id,date' });
       }
 
@@ -1853,12 +1891,12 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
             if (reconResult.salesStatus && reconResult.salesStatus.length > 0) {
               const entrouItems = reconResult.salesStatus.filter(s => s.status === 'entrou');
-              if (entrouItems.length > 0) {
+              const matchedPosIds = entrouItems.map(i => i.sale?.id || (i as any).id).filter(Boolean);
+              if (matchedPosIds.length > 0) {
                 await supabase
                   .from('pos_transactions')
                   .update({ settlement_status: 'entrou', settled_date: targetDate })
-                  .eq('store_id', sId)
-                  .eq('target_date', targetDate);
+                  .in('id', matchedPosIds);
               }
             }
 
@@ -3493,6 +3531,16 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                     <AgentStageItem key={stage.id} stage={stage} />
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* NOVO COCKPIT DE DIAGNÓSTICO 360° PÓS-MOTOR (SPEC 384) */}
+            {saveFinished && (
+              <div className="pt-2">
+                <PostMotorDiagnosticCockpit
+                  targetDate={targetDate}
+                  onRefreshParent={() => queryClient.invalidateQueries()}
+                />
               </div>
             )}
 

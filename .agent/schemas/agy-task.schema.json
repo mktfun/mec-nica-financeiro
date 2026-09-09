@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "agy Task Input Contract",
+  "description": "Schema de input para tasks enviadas ao agy CLI como worker headless. O spawn-agy-worker.ps1 monta o comando a partir deste contrato.",
+  "type": "object",
+  "required": ["task_id", "prompt", "worker_agent", "model"],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_-]+$",
+      "description": "Identificador unico da task (ex: impl-frontend-001)."
+    },
+    "prompt": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Prompt completo a ser enviado ao agy --print."
+    },
+    "worker_agent": {
+      "type": "string",
+      "description": "Nome do agent definition a usar (ex: frontend-worker). Corresponde ao --agent flag."
+    },
+    "model": {
+      "type": "string",
+      "default": "gemini-3.1-pro-high",
+      "description": "Modelo a usar no agy CLI."
+    },
+    "timeout_seconds": {
+      "type": "integer",
+      "default": 300,
+      "minimum": 30,
+      "maximum": 600,
+      "description": "Timeout maximo em segundos antes de matar o processo agy."
+    },
+    "add_dirs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Diretorios adicionais a injetar no workspace do agy via --add-dir."
+    },
+    "output_schema": {
+      "type": "string",
+      "description": "Path para o JSON schema de output esperado (default: schemas/worker-output.schema.json)."
+    },
+    "sandbox": {
+      "type": "boolean",
+      "default": false,
+      "description": "Se true, roda agy com --sandbox para isolamento de terminal."
+    },
+    "skip_permissions": {
+      "type": "boolean",
+      "default": true,
+      "description": "Se true, usa --dangerously-skip-permissions para execucao headless."
+    },
+    "fallback_to_native": {
+      "type": "boolean",
+      "default": true,
+      "description": "Se true, falha no agy aciona automaticamente invoke_subagent nativo."
+    },
+    "injected_context": {
+      "type": "object",
+      "description": "Contexto adicional injetado no prompt (memoria Obsidian, spec, etc).",
+      "properties": {
+        "memory_files": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Paths de arquivos de memoria .agent/memory/ a incluir."
+        },
+        "spec_files": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Paths de specs (proposal.md, design.md, spec-plan.md)."
+        },
+        "skill_files": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Paths de SKILL.md que o worker deve consultar."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

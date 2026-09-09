@@ -233,7 +233,84 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
         throw error;
       }
 
-      return data as unknown as DailyReconciliationSummary;
+      if (!data) return null;
+
+      const rawSummary = data as any;
+
+      // Blindagem Defensiva: Garante que saldo_banco_ofx, dinheiro_loja acumulado em trânsito e nao_entrou_valor estejam sempre presentes
+      // 1. Busca store_cash_vault para considerar dinheiro em trânsito acumulado até a data
+      let extraVaultEntries: any[] = [];
+      let totalVaultInTransit = 0;
+      try {
+        const { data: vaultData } = await supabase
+          .from('store_cash_vault')
+          .select('id, store_id, amount, status, entry_date, description, os_number_ref')
+          .in('status', ['em_transito', 'pending'])
+          .lte('entry_date', date);
+
+        if (vaultData && vaultData.length > 0) {
+          extraVaultEntries = vaultData;
+          totalVaultInTransit = vaultData.reduce((sum, v) => sum + Number(v.amount || 0), 0);
+        }
+      } catch (err) {
+        console.warn('Erro ao enriquecer vault:', err);
+      }
+
+      // 2. Busca pos_transactions pendentes se cartoes_a_compensar não veio preenchido
+      let extraPosEntries: any[] = [];
+      let totalPosUnsettled = 0;
+      try {
+        const { data: posData } = await supabase
+          .from('pos_transactions')
+          .select('id, store_id, net_amount, settlement_status')
+          .eq('target_date', date)
+          .in('settlement_status', ['nao_entrou', 'a_compensar']);
+
+        if (posData && posData.length > 0) {
+          extraPosEntries = posData;
+          totalPosUnsettled = posData.reduce((sum, p) => sum + Number(p.net_amount || 0), 0);
+        }
+      } catch (err) {
+        console.warn('Erro ao enriquecer pos_transactions:', err);
+      }
+
+      const enrichedStores = (rawSummary.stores || []).map((s: any) => {
+        const saldo_banco_ofx = Number(s.saldo_banco_ofx ?? s.saldo_banco_itau ?? s.saldo_banco ?? 0);
+        
+        const storeVault = extraVaultEntries.filter(v => v.store_id === s.store_id);
+        const vaultSum = storeVault.reduce((sum, v) => sum + Number(v.amount || 0), 0);
+        const dinheiro_loja = Number(s.dinheiro_loja || vaultSum || 0);
+
+        const storePos = extraPosEntries.filter(p => p.store_id === s.store_id);
+        const posSum = storePos.reduce((sum, p) => sum + Number(p.net_amount || 0), 0);
+        const nao_entrou_valor = Number(s.nao_entrou_valor ?? posSum ?? 0);
+
+        const vault_entries = Array.isArray(s.vault_entries) && s.vault_entries.length > 0 
+          ? s.vault_entries 
+          : storeVault;
+
+        return {
+          ...s,
+          saldo_banco_ofx,
+          saldo_banco_itau: s.saldo_banco_itau ?? saldo_banco_ofx,
+          dinheiro_loja,
+          nao_entrou_valor,
+          vault_entries,
+          status_compensacao: s.status_compensacao || (nao_entrou_valor > 0 ? 'nao_entrou' : 'entrou')
+        };
+      });
+
+      const finalDinheiroLojas = rawSummary.dinheiro_lojas || rawSummary.dinheiro_em_lojas || totalVaultInTransit;
+      const finalCartoesACompensar = rawSummary.cartoes_a_compensar || totalPosUnsettled;
+
+      return {
+        ...rawSummary,
+        dinheiro_lojas: finalDinheiroLojas,
+        dinheiro_em_lojas: finalDinheiroLojas,
+        cartoes_a_compensar: finalCartoesACompensar,
+        stores: enrichedStores,
+        stores_detail: enrichedStores
+      } as DailyReconciliationSummary;
     },
     enabled: !!date,
     staleTime: 1000 * 30, // 30s cache

@@ -48,15 +48,15 @@ export function SaldoBancosDetailModal({
 
   const effectiveStores = stores.length > 0 ? stores : (fallbackSummary?.stores || []);
 
-  // Consome 100% os dados calculados diretamente no Postgres/RPC
+  // Consome os dados calculados com fallbacks defensivos contra omissões da RPC
   const rows = useMemo(() => {
     return effectiveStores.map((s: any) => {
-      const saldoOfxPuro = Number(s.saldo_banco_ofx ?? 0);
+      const saldoOfxPuro = Number(s.saldo_banco_ofx ?? s.saldo_banco_itau ?? s.saldo_banco ?? 0);
       const dinheiroLoja = Number(s.dinheiro_loja ?? 0);
       const maquininhaNaoEntrou = Number(s.nao_entrou_valor ?? 0);
-      const saldoConsolidado = Number(s.saldo_banco ?? (saldoOfxPuro + dinheiroLoja + maquininhaNaoEntrou));
+      const saldoConsolidado = Number(saldoOfxPuro + dinheiroLoja + maquininhaNaoEntrou);
       const vaultEntries = Array.isArray(s.vault_entries) ? s.vault_entries : [];
-      const activeVaultEntry = vaultEntries.find((v: any) => v && v.status === 'em_transito');
+      const activeVaultEntry = vaultEntries.find((v: any) => v && (v.status === 'em_transito' || v.status === 'pending'));
 
       return {
         storeId: s.store_id,
@@ -66,7 +66,7 @@ export function SaldoBancosDetailModal({
         activeVaultEntry,
         maquininhaNaoEntrou,
         saldoConsolidado,
-        statusCompensacao: s.status_compensacao || 'entrou'
+        statusCompensacao: s.status_compensacao || (maquininhaNaoEntrou > 0 ? 'nao_entrou' : 'entrou')
       };
     });
   }, [effectiveStores]);

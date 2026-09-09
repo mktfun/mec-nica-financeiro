@@ -5,16 +5,57 @@ import { traceLog } from '../logger';
 
 export interface RedeTransaction {
   storeName: string;
+  establishment?: string;
   method: 'Cartão Crédito' | 'Cartão Débito' | 'PIX' | 'Outros';
   grossAmount: number;
   netAmount: number;
   interest: number;
   date: string;
+  creditDate?: string;
+  batchNumber?: string;
+  prazoDays?: number;
   transactionType?: 'venda' | 'devolucao';
   nsu?: string;
   authorization?: string;
   tid?: string;
   time?: string;
+}
+
+export const BRAZILIAN_BANK_HOLIDAYS_2026 = new Set([
+  '2026-01-01', // Confraternização Universal
+  '2026-02-16', '2026-02-17', // Carnaval
+  '2026-04-03', // Paixão de Cristo
+  '2026-04-21', // Tiradentes
+  '2026-05-01', // Dia do Trabalho
+  '2026-06-04', // Corpus Christi
+  '2026-09-07', // Independência do Brasil
+  '2026-10-12', // N. Sra. Aparecida
+  '2026-11-02', // Finados
+  '2026-11-15', // Proclamação da República
+  '2026-11-20', // Consciência Negra
+  '2026-12-25', // Natal
+]);
+
+export function calculateExpectedCreditDate(saleDateStr: string, businessDays: number = 1): string {
+  if (!saleDateStr) return saleDateStr;
+  const cleanDate = saleDateStr.split('T')[0].trim();
+  const parts = cleanDate.split('-').map(Number);
+  if (parts.length !== 3 || isNaN(parts[0]) || isNaN(parts[1]) || isNaN(parts[2])) {
+    return cleanDate;
+  }
+  const [year, month, day] = parts;
+  const date = new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
+  let added = 0;
+  const targetDays = Math.max(1, businessDays);
+  while (added < targetDays) {
+    date.setUTCDate(date.getUTCDate() + 1);
+    const dayOfWeek = date.getUTCDay(); // 0 = Dom, 6 = Sáb
+    const isoDate = date.toISOString().split('T')[0];
+    if (dayOfWeek !== 0 && dayOfWeek !== 6 && !BRAZILIAN_BANK_HOLIDAYS_2026.has(isoDate)) {
+      added++;
+    }
+  }
+  return date.toISOString().split('T')[0];
 }
 
 export interface RedeResult {
@@ -99,11 +140,19 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
     if (storeIdx === -1) storeIdx = headers.findIndex((h: string) => h.includes('nome do estabelecimento'));
     if (storeIdx === -1) storeIdx = headers.findIndex((h: string) => h.includes('estabelecimento') && !h.includes('número') && !h.includes('numero'));
 
+    let estabNumIdx = headers.findIndex((h: string) => h.includes('número do estabelecimento') || h.includes('numero do estabelecimento'));
+
     // Colunas de identificadores únicos
     let nsuIdx = headers.findIndex((h: string) => h.includes('nsu') || h.includes('cv'));
     let autoIdx = headers.findIndex((h: string) => h.includes('autorização') || h.includes('autorizacao') || h.includes('auto'));
     let tidIdx = headers.findIndex((h: string) => h.includes('tid') || h.includes('id transação') || h.includes('id transacao'));
     let timeIdx = headers.findIndex((h: string) => h.includes('hora da venda') || h.includes('hora'));
+
+    // Colunas essenciais para conciliação temporal e por lote
+    let batchIdx = headers.findIndex((h: string) => h.includes('lote') || h.includes('resumo de vendas'));
+    let prazoIdx = headers.findIndex((h: string) => h.includes('prazo de recebimento') || h.includes('prazo'));
+    let creditDateIdx = headers.findIndex((h: string) => h.includes('data do crédito') || h.includes('data credito') || h.includes('data prevista'));
+    let saleDateIdx = headers.findIndex((h: string) => h === 'data da venda' || h.includes('data da venda') || h.includes('data venda'));
 
     // Colunas de taxas e descontos explícitos
     let totalFeeIdx = headers.findIndex((h: string) => h.includes('valor total das taxas') || h.includes('total das taxas'));
@@ -146,9 +195,17 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
       const transactionType: 'venda' | 'devolucao' = isDevolucao ? 'devolucao' : 'venda';
 
       let method: 'Cartão Crédito' | 'Cartão Débito' | 'PIX' | 'Outros' = 'Outros';
-      if (methodRaw.includes('crédito') || methodRaw.includes('credito')) method = 'Cartão Crédito';
-      else if (methodRaw.includes('débito') || methodRaw.includes('debito')) method = 'Cartão Débito';
-      else if (methodRaw.includes('pix')) method = 'PIX';
+      const cell0 = String(row[0] || '').toLowerCase();
+      const cell1 = String(row[1] || '').toLowerCase();
+      const candidateMethodText = `${methodRaw} ${cell0} ${cell1}`.toLowerCase();
+
+      if (candidateMethodText.includes('débito') || candidateMethodText.includes('debito')) {
+        method = 'Cartão Débito';
+      } else if (candidateMethodText.includes('crédito') || candidateMethodText.includes('credito')) {
+        method = 'Cartão Crédito';
+      } else if (candidateMethodText.includes('pix')) {
+        method = 'PIX';
+      }
 
       let interest = 0;
       // 1. Prioridade: coluna monetária explícita "valor total das taxas descontadas"
@@ -174,16 +231,50 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
         totalInterest = roundCurrency(totalInterest + interest);
       }
 
-      // Tenta achar a data na linha (formato DD/MM/YYYY ou similar)
+      // 1. Data da realização da venda (occurred_at)
       let rowDate = targetDate;
-      for (const cell of row) {
-        if (typeof cell === 'string') {
-          const m = cell.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-          if (m) {
-             rowDate = `${m[3]}-${m[2]}-${m[1]}`;
-             break;
+      if (saleDateIdx !== -1 && row[saleDateIdx]) {
+        const str = String(row[saleDateIdx]);
+        const m = str.match(/(\d{2})[/-](\d{2})[/-](\d{4})/);
+        if (m) {
+          rowDate = `${m[3]}-${m[2]}-${m[1]}`;
+        }
+      }
+      if (rowDate === targetDate) {
+        for (const cell of row) {
+          if (typeof cell === 'string') {
+            const m = cell.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+            if (m) {
+               rowDate = `${m[3]}-${m[2]}-${m[1]}`;
+               break;
+            }
           }
         }
+      }
+
+      // 2. Prazo e Lote / Resumo de Vendas
+      const rawBatch = batchIdx !== -1 && row[batchIdx] ? String(row[batchIdx]).trim() : undefined;
+      const batchNumber = rawBatch && rawBatch !== '-' ? rawBatch : undefined;
+
+      let prazoDays = method === 'Cartão Débito' ? 1 : (method === 'Cartão Crédito' ? 30 : 1);
+      if (prazoIdx !== -1 && row[prazoIdx]) {
+        const parsedPrazo = parseInt(String(row[prazoIdx]).replace(/\D/g, ''), 10);
+        if (!isNaN(parsedPrazo) && parsedPrazo > 0) {
+          prazoDays = parsedPrazo;
+        }
+      }
+
+      // 3. Data prevista de liquidação bancária (creditDate)
+      let creditDate: string | undefined = undefined;
+      if (creditDateIdx !== -1 && row[creditDateIdx]) {
+        const str = String(row[creditDateIdx]);
+        const m = str.match(/(\d{2})[/-](\d{2})[/-](\d{4})/);
+        if (m) {
+          creditDate = `${m[3]}-${m[2]}-${m[1]}`;
+        }
+      }
+      if (!creditDate) {
+        creditDate = calculateExpectedCreditDate(rowDate, prazoDays);
       }
 
       const nsu = nsuIdx !== -1 && row[nsuIdx] ? String(row[nsuIdx]).trim() : undefined;
@@ -193,11 +284,15 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
 
       transactions.push({
         storeName,
+        establishment: estabNumIdx !== -1 && row[estabNumIdx] && String(row[estabNumIdx]).trim() !== '-' ? String(row[estabNumIdx]).trim() : undefined,
         method,
         grossAmount,
         netAmount,
         interest,
         date: rowDate,
+        creditDate,
+        batchNumber,
+        prazoDays,
         transactionType,
         nsu: nsu && nsu !== '-' ? nsu : undefined,
         authorization: authorization && authorization !== '-' ? authorization : undefined,

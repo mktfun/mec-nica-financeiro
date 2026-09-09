@@ -1,6 +1,32 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { StoreSaldoState } from '@/lib/modulo1Calculations';
+import { matchClientTokens, KNOWN_POS_RENTAL_FEES } from '@/lib/matchers/autoMatchingEngine';
+
+export const isClientPix = (t: any) => {
+  const txt = `${t.title || ''} ${t.subtitle || ''} ${t.counterpart_name || ''} ${t.description || ''}`.toUpperCase();
+  if (
+    txt.includes('SISPAG') ||
+    txt.includes('REND PAGO') ||
+    txt.includes('APLIC') ||
+    txt.includes('RESGATE') ||
+    txt.includes('APORTE') ||
+    txt.includes('TAR BANC') ||
+    txt.includes('TARIFA') ||
+    txt.includes('BOLETO') ||
+    txt.includes('SALARIOS') ||
+    txt.includes('TRIB MUNICIPAL') ||
+    txt.includes('FORNECEDOR')
+  ) {
+    return false;
+  }
+  return txt.includes('PIX') || txt.includes('TED') || txt.includes('DOC') || txt.includes('DEP');
+};
+
+export const isAcquirerDeposit = (t: any) => {
+  const txt = `${t.title || ''} ${t.subtitle || ''} ${t.counterpart_name || ''} ${t.description || ''}`.toUpperCase();
+  return txt.includes('REDE') || txt.includes('REDEMULTI') || txt.includes('CARTAO') || txt.includes('CARTÃO') || txt.includes('VISA') || txt.includes('MAST') || txt.includes('CIELO') || txt.includes('STONE') || txt.includes('GETNET');
+};
 
 const isValidUuid = (str?: string | null) => {
   if (!str) return false;
@@ -321,7 +347,25 @@ export function useReconciliationViews(storeId: string, date: string) {
 
       // 2. redeVsOfx: Maquininha Líquida -> Entradas OFX de Adquirente
       const depositGroups = adquirenteOfx.map(ofxTx => {
-        const matchedRedeTxs = redeTxs.filter(r => r.matched_ofx_id === ofxTx.id || redeTxs.length === 1);
+        let matchedRedeTxs = redeTxs.filter(r => {
+          if (r.matched_ofx_id && r.matched_ofx_id === ofxTx.id) return true;
+          if (r.batch_number && (ofxTx.title?.includes(r.batch_number) || (ofxTx as any).description?.includes(r.batch_number))) return true;
+          return false;
+        });
+
+        // Fallback determinístico: se não vinculado por ID/lote, verifica correspondência exata ou com dedução de aluguel POS
+        if (matchedRedeTxs.length === 0) {
+          const unlinkedRede = redeTxs.filter(r => !r.matched_ofx_id);
+          const unlinkedTotal = unlinkedRede.reduce((sum, r) => sum + Number(r.amount || 0), 0);
+          const ofxAmt = Number(ofxTx.amount || 0);
+          const diff = unlinkedTotal - ofxAmt;
+          const isExact = Math.abs(diff) <= 0.10;
+          const isRentalFee = KNOWN_POS_RENTAL_FEES.some(fee => Math.abs(diff - fee) <= 0.10);
+          if (isExact || isRentalFee) {
+            matchedRedeTxs = unlinkedRede;
+          }
+        }
+
         const totalChildAmount = matchedRedeTxs.reduce((sum, r) => sum + Number(r.amount || 0), 0);
 
         return {
@@ -339,7 +383,7 @@ export function useReconciliationViews(storeId: string, date: string) {
             target_date: t.target_date 
           })),
           totalChildAmount: totalChildAmount > 0 ? totalChildAmount : Number(ofxTx.amount || 0),
-          isMatched: true,
+          isMatched: matchedRedeTxs.length > 0 || isRedeBankSettled,
           groupDelta: Number(ofxTx.amount || 0) - totalChildAmount,
           matchType: 'Entrou no Banco',
           layer: 'CAMADA_1'
@@ -358,26 +402,6 @@ export function useReconciliationViews(storeId: string, date: string) {
       };
 
       // 3. pixVsOfx: PIX (OS -> Banco OFX)
-      const isClientPix = (t: any) => {
-        const txt = `${t.title || ''} ${t.subtitle || ''} ${t.counterpart_name || ''} ${t.description || ''}`.toUpperCase();
-        if (
-          txt.includes('SISPAG') ||
-          txt.includes('REND PAGO') ||
-          txt.includes('APLIC') ||
-          txt.includes('RESGATE') ||
-          txt.includes('APORTE') ||
-          txt.includes('TAR BANC') ||
-          txt.includes('TARIFA') ||
-          txt.includes('BOLETO') ||
-          txt.includes('SALARIOS') ||
-          txt.includes('TRIB MUNICIPAL') ||
-          txt.includes('FORNECEDOR')
-        ) {
-          return false;
-        }
-        return txt.includes('PIX') || txt.includes('TED') || txt.includes('DOC') || txt.includes('DEP');
-      };
-
       const osPixList = (patioOs || []).filter(o => {
         const val = Number(o.pix_transfer_value || 0);
         const method = String(o.payment_method || '').toLowerCase();
@@ -397,7 +421,6 @@ export function useReconciliationViews(storeId: string, date: string) {
         return isClientPix(t) && !adquirenteOfx.some(a => a.id === t.id);
       });
 
-
       const matchedOfxIds = new Set<string>();
 
       // 1. Registra vínculos explícitos gravados em banco
@@ -415,12 +438,16 @@ export function useReconciliationViews(storeId: string, date: string) {
           ((ofx as any).matched_os_number && String((ofx as any).matched_os_number) === String(osPix.os_number))
         );
 
-        // B) Se não houver vínculo explícito, busca por valor exato com regra de unicidade (OFX-Centric)
+        // B) Se não houver vínculo explícito, busca por valor exato com confirmação de tokens ou unicidade
         if (!matchedOfx) {
           matchedOfx = ofxPixList.find(ofx => {
             if (matchedOfxIds.has(ofx.id)) return false;
             const amtDiff = Math.abs(Number(ofx.amount) - Number(osPix.amount));
             if (amtDiff < 0.05) {
+              const fullOfxText = `${ofx.title || ''} ${ofx.counterpart_name || ''} ${ofx.description || ''}`;
+              if (matchClientTokens(osPix.client_name, fullOfxText)) {
+                return true;
+              }
               // Regra de Unicidade Estrita: auto-match apenas se não houver ambiguidade
               const sameValCount = osPixList.filter(o => Math.abs(Number(o.amount) - Number(osPix.amount)) < 0.05).length;
               return sameValCount === 1;
@@ -527,9 +554,21 @@ export function useModulo1StoresData(date: string) {
           ? Number(storeRecon.bank_total)
           : 0;
 
-        const cartaoEntrou = storeTxs
-          .filter(t => t.source === 'rede' && t.type === 'in')
-          .reduce((acc, t) => acc + Number(t.amount || 0), 0);
+        // Entradas bancárias da Adquirente (REDE / Cartão) no OFX
+        const storeOfxAcquirerTxs = storeTxs.filter(t => t.source === 'ofx' && t.type === 'in' && isAcquirerDeposit(t));
+        const totalOfxAcquirer = storeOfxAcquirerTxs.reduce((acc, t) => acc + Number(t.amount || 0), 0);
+
+        // Vendas passadas na maquininha
+        const storeRedeTxs = storeTxs.filter(t => (t.source === 'rede' || t.source === 'maquininha') && t.type === 'in');
+        const totalRedeNet = storeRedeTxs.reduce((acc, t) => acc + Number(t.amount || 0), 0);
+
+        // Se há depósito de adquirente no OFX, o cartão que entrou é o valor creditado no banco
+        const cartaoEntrou = totalOfxAcquirer > 0 ? totalOfxAcquirer : 0;
+
+        // Cartão não entrou (recebíveis em trânsito D+1 / pendentes):
+        // Se ainda não caiu no banco, o total da maquininha fica a compensar.
+        // Se já caiu, cartao_nao_entrou é o saldo residual (se houver vendas a liquidar futuramente).
+        const cartaoNaoEntrou = Math.max(0, totalRedeNet - totalOfxAcquirer);
 
         // Saldo em aberto real das OSs ativas (total_value - paid_value)
         // Se houver snapshot histórico em reconciliations.na_loja_os, usar ele!
@@ -546,41 +585,71 @@ export function useModulo1StoresData(date: string) {
                 return acc + Math.max(0, Number(o.total_value || 0) - Number(o.paid_value || 0));
               }, 0);
 
-
-
         // 1. Extrair transações de entrada do OFX genuínas de PIX/depósito de cliente
-        const ofxPixTxs = storeTxs.filter(t => t.source === 'ofx' && t.type === 'in' && isClientPix(t));
+        const ofxPixTxs = storeTxs.filter(t => t.source === 'ofx' && t.type === 'in' && isClientPix(t) && !isAcquirerDeposit(t));
 
-        // 2. Extrair valores declarados como PIX nas OSs
-        const osPixList = storeOs.map(os => {
-           const totalVal = os.paid_value !== undefined && os.paid_value !== null ? os.paid_value : (os.total_value || 0);
-           const realPixVal = (os as any).pix_transfer_value !== undefined && (os as any).pix_transfer_value !== null ? (os as any).pix_transfer_value : ((os as any).parsed_pix_transfer || 0);
-           const pixRatio = realPixVal / (totalVal || 1);
-           const isPixMethod = (os.payment_method || '').toLowerCase().includes('pix') || (os.payment_method || '').toLowerCase().includes('transf');
-           
-           if (realPixVal > 0 || isPixMethod || pixRatio > 0) {
-              return realPixVal > 0 ? realPixVal : (pixRatio > 0 ? totalVal * pixRatio : totalVal);
-           }
-           return 0;
-        }).filter(v => v > 0);
+        // 2. Extrair itens das OSs com valor PIX
+        const osPixItems = storeOs.map(os => {
+          const totalVal = os.paid_value !== undefined && os.paid_value !== null ? Number(os.paid_value) : Number(os.total_value || 0);
+          const realPixVal = (os as any).pix_transfer_value !== undefined && (os as any).pix_transfer_value !== null 
+            ? Number((os as any).pix_transfer_value) 
+            : Number((os as any).parsed_pix_transfer || 0);
+          const pixRatio = realPixVal / (totalVal || 1);
+          const isPixMethod = (os.payment_method || '').toLowerCase().includes('pix') || (os.payment_method || '').toLowerCase().includes('transf');
+          
+          let amt = 0;
+          if (realPixVal > 0 || isPixMethod || pixRatio > 0) {
+            amt = realPixVal > 0 ? realPixVal : (pixRatio > 0 ? totalVal * pixRatio : totalVal);
+          }
+          return {
+            id: os.id,
+            os_number: String(os.os_number || ''),
+            client_name: String(os.client_name || ''),
+            amount: amt,
+            status: String(os.status || '')
+          };
+        }).filter(item => item.amount > 0);
 
-        // 3. Cruzar OFX com OS (Match)
+        const pixOsExpected = osPixItems.reduce((acc, item) => acc + item.amount, 0);
+
+        // 3. Cruzar OFX com OS com validação de tokens e unicidade (sem splice cego)
         let pixOsMatched = 0;
-        let pixOsExpected = 0;
-        
-        const originalOsPixList = [...osPixList];
-        
+        const matchedOsIds = new Set<string>();
+
         ofxPixTxs.forEach(ofxPix => {
-           const amt = Number(ofxPix.amount || 0);
-           const matchIdx = osPixList.findIndex(osVal => Math.abs(osVal - amt) < 0.05);
-           if (matchIdx !== -1) {
-              pixOsMatched += amt;
-              // Remove para não dar match duplo
-              osPixList.splice(matchIdx, 1);
-           }
+          const amt = Number(ofxPix.amount || 0);
+          const ofxText = `${ofxPix.title || ''} ${ofxPix.subtitle || ''} ${ofxPix.counterpart_name || ''}`;
+
+          // Prioridade A: Vínculo explícito por os_number
+          let matchedOs = osPixItems.find(os => 
+            !matchedOsIds.has(os.id) &&
+            (ofxPix.os_number && String(ofxPix.os_number) === os.os_number)
+          );
+
+          // Prioridade B: Match por valor com confirmação de token de cliente
+          if (!matchedOs) {
+            matchedOs = osPixItems.find(os => {
+              if (matchedOsIds.has(os.id)) return false;
+              if (Math.abs(os.amount - amt) < 0.05) {
+                return matchClientTokens(os.client_name, ofxText);
+              }
+              return false;
+            });
+          }
+
+          // Prioridade C: Unicidade de valor na filial
+          if (!matchedOs) {
+            const candidates = osPixItems.filter(os => !matchedOsIds.has(os.id) && Math.abs(os.amount - amt) < 0.05);
+            if (candidates.length === 1) {
+              matchedOs = candidates[0];
+            }
+          }
+
+          if (matchedOs) {
+            pixOsMatched += amt;
+            matchedOsIds.add(matchedOs.id);
+          }
         });
-        
-        pixOsExpected = originalOsPixList.reduce((acc, val) => acc + val, 0);
 
         const storeMatches = matches?.filter(m => m.store_id === store.id) || [];
         const linkedOfxIds = new Set(storeMatches.map(m => m.ofx_transaction_id).filter(Boolean));
@@ -601,7 +670,7 @@ export function useModulo1StoresData(date: string) {
           saldo_banco_itau: saldoBancoItau,
           limite_credito: (store as any).credit_limit || 0,
           cartao_entrou: cartaoEntrou,
-          cartao_nao_entrou: 0,
+          cartao_nao_entrou: cartaoNaoEntrou,
           dinheiro_loja: 0,
           a_receber: aReceber,
           na_loja_os: naLojaOs,
