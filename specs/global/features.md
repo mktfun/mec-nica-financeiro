@@ -1,3 +1,31 @@
+### Spec 392 — Justificativa de OFX Contas a Pagar, Fix de Coluna 'title' e Reatividade de Extrato (10/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Backend & Hooks (`useTransactions.ts`, `useCategorizeOrphan.ts`)**:
+  - Eliminação de erro HTTP 400 Bad Request (`code: 42703`) ao remover campo inexistente `title` da query REST de `ofx_transactions`, mapeando em memória `title: t.counterpart_name || t.bank_name || ''`.
+  - Sincronização fiduciária da tabela `transactions` com `manual_category` e `manual_justification` ao executar justificativa de débito órfão com "Somar ao Contas a Pagar".
+  - Recálculo dinâmico de contas e sincronização em `daily_snapshots` e unificação de queryKeys de invalidação (`daily_manual_bills`, `daily-manual-bills`, `daily_reconciliation_summary`, `store_extrato_bancario`, `historical_reconciled`).
+- **Frontend (`StoreExtratoBancarioView.tsx`)**:
+  - Busca bidirecional de título vinculado (`tx.matched_bill_id === b.id` ou `b.matched_ofx_id === tx.id`).
+  - Blindagem do status `isPending`: transações com conta vinculada ou categoria manual atribuída deixam de exibir badge de pendente.
+  - Badges contextuais elegantes: Teal para título quitado (`Conta: X`) e Purple para categoria manual atribuída.
+
+### Spec 391 — Correção Canônica do Faturamento Input e Re-ancoragem de Saídas/Entradas OFX (10/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Database (Migration `20260910000045_fix_faturamento_input_and_ofx_target_date.sql`)**:
+  - Remoção da subtração arbitrária `faturamento - anterior` na RPC `get_daily_reconciliation_summary`, respeitando o faturamento líquido inputado pelo usuário no motor de importação/fechamento.
+  - Backfill corretivo de `target_date = '2026-09-10'` nas transações OFX e auto-match diário, eliminando movimentações zeradas nas 10 lojas e sanando a divergência grotesca de R$ 207 mil.
+  - Sincronização do snapshot de 10/09/2026 com o faturamento soberano.
+- **Frontend (`CentralImportWizard.tsx`, `ResumoDiaPanel.tsx`)**:
+  - Gravação de `target_date = targetDate` nas transações OFX importadas no lote diário.
+  - Correção de runtime `ReferenceError: Cannot access 'faturamentoLiquidoDia' before initialization` em `ResumoDiaPanel.tsx`.
+
+### Spec 390 — Equalização Dinheiro em Cofre/MP e Correção da RPC de Resumo Diário (10/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Database (Migration `20260910000043_fix_summary_rpc_cash_vault_and_excel_alignment.sql`)**:
+  - Ajuste na RPC `get_daily_reconciliation_summary` para consolidar o dinheiro em cofre físico e custódia Mercado Pago (`dinheiro_lojas + dinheiro_mp`).
+  - Equalização fiduciária do snapshot de 09/09/2026 conforme planilha oficial `CONCILIAÇÃO 0909.xlsx` (Caixa Atual R$ 357.012,80, Dinheiro MP R$ 30.920,00, Dinheiro Lojas R$ 3.720,00, Contas R$ 57.408,52, Diferença R$ 258,02).
+  - Encadeamento contábil do caixa anterior de 10/09/2026 herdando os R$ 357.012,80.
+
 ### Spec 389 — Janela de Detalhes da Transação (Revolut Card Details Modal) e Limpeza da Linha do Extrato (09/09/2026)
 - **Status:** COMPLETED & ARCHIVED
 - **Frontend (`StoreExtratoBancarioView.tsx`, `TransactionDetailModal.tsx`)**:

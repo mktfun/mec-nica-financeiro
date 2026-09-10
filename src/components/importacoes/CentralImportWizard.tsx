@@ -1229,7 +1229,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             fee_amount: item.interest || 0,
             type: 'in',
             occurred_at: item.date || `${targetDate}T12:00:00Z`,
-            target_date: effectivePosDate,
+            target_date: targetDate,
             icon_type: 'card',
             source: 'rede',
             dedup_hash: generateDeterministicHash(effectivePosDate, item.netAmount || 0, `${sid}_${uniqueId}`, 'pos')
@@ -1314,9 +1314,9 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             subtitle: tx.counterpart_name || ofx.alias,
             amount: Math.abs(tx.amount || 0),
             type: (tx.type === 'in' || tx.type === 'income' || tx.amount > 0) ? 'in' : 'out',
-            occurred_at: tx.date || targetDate || new Date().toISOString(),
+            occurred_at: tx.date || `${targetDate}T12:00:00Z`,
             date: effectiveOfxDate,
-            target_date: effectiveOfxDate,
+            target_date: targetDate,
             icon_type: 'bank',
             source: 'ofx',
             os_number: matched_os_number,
@@ -1750,8 +1750,6 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       addLog("Auto-salvando Fechamento do Dia...", "info");
       const totalImportedContas = results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || 0;
       const finalContasManual = contasManual > 0 ? contasManual : (totalImportedContas > 0 ? totalImportedContas : totalOfxOut);
-      const finalFaturamento = odometroHoje > 0 ? odometroHoje : faturamentoAtual;
-
       // Puxa snapshot anterior para compor DRE completa
       const { data: prevSnap } = await supabase
         .from('daily_snapshots')
@@ -1765,22 +1763,27 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       const mapaMetasVal = results.mapaMetasResults?.[0]?.totalFaturamento || 0;
 
       const caixaAnt = Number(prevSnap?.caixa_atual || 0);
-      const fatAnt = Number(prevSnap?.faturamento || (prevSnap?.metadata as any)?.odometro_hoje || 0);
+      // Odômetro acumulado anterior real (prioriza metadata.odometro_hoje para não misturar com faturamento líquido)
+      const fatAnt = Number((prevSnap?.metadata as any)?.odometro_hoje ?? (prevSnap?.metadata as any)?.faturamento_anterior ?? prevSnap?.faturamento ?? 0);
       
       let fatOiBase = 0;
-      if (!isNoOsMode) {
-        fatOiBase = (odometroHoje > 0 && fatAnt > 0 && odometroHoje > fatAnt) ? (odometroHoje - fatAnt) : (odometroHoje > 0 ? odometroHoje : faturamentoAtual);
+      if (faturamentoAtual > 0 && !isNoOsMode) {
+        // Se OSs foram carregadas com sucesso, o somatório de pagamentos (faturamentoAtual) é soberano
+        fatOiBase = faturamentoAtual;
+      } else if (odometroHoje > 0 && fatAnt > 0 && odometroHoje >= fatAnt) {
+        fatOiBase = odometroHoje - fatAnt;
+      } else if (mapaMetasVal > 0 && fatAnt > 0 && mapaMetasVal >= fatAnt) {
+        fatOiBase = mapaMetasVal - fatAnt;
+      } else if (mapaMetasVal > 0) {
+        fatOiBase = mapaMetasVal;
+      } else if (odometroHoje > 0) {
+        fatOiBase = odometroHoje;
       } else {
-        if (mapaMetasVal > 0) {
-          fatOiBase = mapaMetasVal;
-        } else if (odometroHoje > 0 && fatAnt > 0 && odometroHoje > fatAnt) {
-          fatOiBase = odometroHoje - fatAnt;
-        } else {
-          fatOiBase = odometroHoje > 0 ? odometroHoje : faturamentoAtual;
-        }
+        fatOiBase = faturamentoAtual;
       }
 
       const fatTotalComAjustes = fatOiBase + totalRevenueAdjustments;
+      const finalFaturamento = fatTotalComAjustes;
       const fluxoCalculado = caixaAtualCalculado - caixaAnt;
       const valorDispCalculado = fatTotalComAjustes - fluxoCalculado;
       const subtotalContasCalculado = finalContasManual + jurosRedeTotal;
@@ -1790,7 +1793,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         const payload = {
           date: targetDate,
           caixa_atual: caixaAtualCalculado,
-          faturamento: finalFaturamento + totalRevenueAdjustments,
+          faturamento: finalFaturamento,
           dinheiro_mp: manualDinheiroMp,
           total_recebiveis: totalRecebiveis,
           total_patio: veiculosPatioValor,
@@ -1813,7 +1816,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             faturamento_mes_anterior: manualFaturamentoMesAnterior,
             faturamento_oi_base: fatOiBase,
             faturamento_ajustes: totalRevenueAdjustments,
-            odometro_hoje: odometroHoje,
+            odometro_hoje: odometroHoje > 0 ? odometroHoje : (fatAnt + fatOiBase),
             faturamento_periodo: fatTotalComAjustes,
             source_mode: isNoOsMode ? 'mapa_metas' : 'odometro_os',
             has_os_files: !isNoOsMode,
@@ -1934,8 +1937,8 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             fluxo_caixa: fluxoCalculado,
             faturamento_anterior: fatAnt,
             faturamento_oi_base: fatOiBase,
-            odometro_hoje: odometroHoje,
-            faturamento_periodo: fatOiBase,
+            odometro_hoje: odometroHoje > 0 ? odometroHoje : (fatAnt + fatOiBase),
+            faturamento_periodo: fatTotalComAjustes,
             valor_disp_contas: valorDispCalculado,
             subtotal_contas: subtotalContasCalculado,
             diferenca_final: diferencaCalculada,

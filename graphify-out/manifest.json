@@ -240,9 +240,9 @@
     "semantic_hash": "5657d3d33d13441c1ffdd63784683ee9"
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1788869468.9545805,
-    "ast_hash": "7b53ab58c7d22e35bc42f5e6c2b46e3a",
-    "semantic_hash": "7b53ab58c7d22e35bc42f5e6c2b46e3a"
+    "mtime": 1789045608.472057,
+    "ast_hash": "4484dfd67473ea62d380cc1fa0dba9ad",
+    "semantic_hash": ""
   },
   "src/components/conciliacao/SaldoBancosDetailModal.tsx": {
     "mtime": 1788960142.052509,
@@ -255,8 +255,8 @@
     "semantic_hash": "62bf4be7b0e41945dd09d240a314b7a8"
   },
   "src/components/conciliacao/StoreExtratoBancarioView.tsx": {
-    "mtime": 1788987347.8053377,
-    "ast_hash": "12f57486de03102081d86b9862396c01",
+    "mtime": 1789047510.5589056,
+    "ast_hash": "533679f2173296abeb35b0089cf808ef",
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreOrdensServicoView.tsx": {
@@ -415,8 +415,8 @@
     "semantic_hash": "94cd9e2d37f2296c4606ca17ed361202"
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1788972479.793639,
-    "ast_hash": "c3f89d347e0826deb9b0d385d99c8db9",
+    "mtime": 1789045328.8081584,
+    "ast_hash": "1e380a3711d97a141e4d82a43c63ce36",
     "semantic_hash": ""
   },
   "src/components/importacoes/DiagnosticPanel.tsx": {
@@ -655,8 +655,8 @@
     "semantic_hash": "43d7881346dbd48b48bea308ff8f45d5"
   },
   "src/hooks/useBackendConciliacao.ts": {
-    "mtime": 1788959791.2222888,
-    "ast_hash": "1e44ce4dd59e035305b88dabdf701f67",
+    "mtime": 1789042884.8848376,
+    "ast_hash": "5673542e78ccc863cdebbd2fa738a588",
     "semantic_hash": ""
   },
   "src/hooks/useBackendDashboard.ts": {
@@ -685,9 +685,9 @@
     "semantic_hash": "5d30c370897450ba6da850a0e5316a00"
   },
   "src/hooks/useCategorizeOrphan.ts": {
-    "mtime": 1788287964.4224243,
-    "ast_hash": "ee9814c3de1b6e06b2ea74dd148b22f7",
-    "semantic_hash": "ee9814c3de1b6e06b2ea74dd148b22f7"
+    "mtime": 1789047567.2661078,
+    "ast_hash": "76ed175bd5625f6bb6193af50a627272",
+    "semantic_hash": ""
   },
   "src/hooks/useCentralImport.ts": {
     "mtime": 1788878090.0736008,
@@ -825,8 +825,8 @@
     "semantic_hash": "92a22d193c252267ba0a5b25068f2047"
   },
   "src/hooks/useTransactions.ts": {
-    "mtime": 1788980836.9347963,
-    "ast_hash": "5cf83b2c0f16501aa5ea5bf3b1d0f8d6",
+    "mtime": 1789047388.255396,
+    "ast_hash": "2ca07f1eeb79a7803cb43c0f409ce3f8",
     "semantic_hash": ""
   },
   "src/hooks/useTripleMatch.ts": {
@@ -3425,8 +3425,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1788987890.598364,
-    "ast_hash": "d307fd40342ae8a9db7cfc6b25ab92cd",
+    "mtime": 1789062045.7215657,
+    "ast_hash": "8e802118f20f9fef79db966459de2440",
     "semantic_hash": ""
   },
   "specs/global/features_clean.md": {
@@ -4534,66 +4534,6 @@
     "ast_hash": "b2ed3e7535c1eab1c757add5b6e62142",
     "semantic_hash": ""
   },
-  "specs/386-extrato-bancario-fiduciario-loja-ofx-transacoes-e-saldos/design.md": {
-    "mtime": 1788980642.4792604,
-    "ast_hash": "398a4bcec70ca72b400a5d750f1b5f1f",
-    "semantic_hash": ""
-  },
-  "specs/386-extrato-bancario-fiduciario-loja-ofx-transacoes-e-saldos/proposal.md": {
-    "mtime": 1788980630.1750655,
-    "ast_hash": "b0af19955dc069d4d1e7109f05fb61e0",
-    "semantic_hash": ""
-  },
-  "specs/386-extrato-bancario-fiduciario-loja-ofx-transacoes-e-saldos/spec-plan.md": {
-    "mtime": 1788981280.141811,
-    "ast_hash": "ce5aaf45bd8781c6f42f18a9977ffb5b",
-    "semantic_hash": ""
-  },
-  "specs/387-revolut-ux-extrato-bancario-accordion-dias/design.md": {
-    "mtime": 1788982306.9132607,
-    "ast_hash": "7f665691e5092f02fc5b2d782957ca22",
-    "semantic_hash": ""
-  },
-  "specs/387-revolut-ux-extrato-bancario-accordion-dias/proposal.md": {
-    "mtime": 1788982306.9108737,
-    "ast_hash": "31552f3a8fbe7b4c8019bb0d96de7aa5",
-    "semantic_hash": ""
-  },
-  "specs/387-revolut-ux-extrato-bancario-accordion-dias/spec-plan.md": {
-    "mtime": 1788982826.083928,
-    "ast_hash": "62823d15be87029719c35c4221bb7fdd",
-    "semantic_hash": ""
-  },
-  "specs/388-revolut-ux-refinements-and-unlock-mechanism/design.md": {
-    "mtime": 1788983884.8668308,
-    "ast_hash": "1f330b4d1b44c2cd42a633ef5ff55b2c",
-    "semantic_hash": ""
-  },
-  "specs/388-revolut-ux-refinements-and-unlock-mechanism/proposal.md": {
-    "mtime": 1788983884.8654194,
-    "ast_hash": "04c6aee82db4c78d4186f97077dfe712",
-    "semantic_hash": ""
-  },
-  "specs/388-revolut-ux-refinements-and-unlock-mechanism/spec-plan.md": {
-    "mtime": 1788985319.2077527,
-    "ast_hash": "9808e53b1db2e4a6c852bc6bfc6bf2dc",
-    "semantic_hash": ""
-  },
-  "specs/389-revolut-transaction-detail-modal-and-row-cleanup/design.md": {
-    "mtime": 1788986545.8433547,
-    "ast_hash": "5b6948efc7a66505c0585156e15447f5",
-    "semantic_hash": ""
-  },
-  "specs/389-revolut-transaction-detail-modal-and-row-cleanup/proposal.md": {
-    "mtime": 1788986545.8423378,
-    "ast_hash": "666a7520faab6aa0a01841c83e4232a0",
-    "semantic_hash": ""
-  },
-  "specs/389-revolut-transaction-detail-modal-and-row-cleanup/spec-plan.md": {
-    "mtime": 1788987519.7167938,
-    "ast_hash": "839903e2e6e15b4c614df4a3ee4d3aca",
-    "semantic_hash": ""
-  },
   "specs/390-appsec-remediation-bank-vault-rls-bot-hardening/design.md": {
     "mtime": 1788987225.7975938,
     "ast_hash": "d8149669e2f8ab313c515a8d6201f7a5",
@@ -4607,6 +4547,16 @@
   "specs/390-appsec-remediation-bank-vault-rls-bot-hardening/spec-plan.md": {
     "mtime": 1788987625.3523135,
     "ast_hash": "77794e7c42bc1356cd152356dd2cb19c",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260910000043_fix_summary_rpc_cash_vault_and_excel_alignment.sql": {
+    "mtime": 1789042903.6953433,
+    "ast_hash": "324892fd413cc55b8618d1f4ea732a36",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260910000045_fix_faturamento_input_and_ofx_target_date.sql": {
+    "mtime": 1789044704.1818988,
+    "ast_hash": "cbd850784bc79c745e8290b9012c7e1f",
     "semantic_hash": ""
   }
 }

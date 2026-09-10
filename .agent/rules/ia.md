@@ -62,22 +62,22 @@ Arquivos temporarios e dumps de dados residem exclusivamente em .tmp/ e NUNCA sa
 </core_principles>
 
 <anti_hallucination>
-<directive>ANTES de criar qualquer codigo, pesquise o codigo legado, consulte a memoria e execute o grafo topologico.</directive>
+<directive>ANTES de criar qualquer codigo, pesquise o codigo legado, consulte a memoria e execute o grafo topologico. Aplique CARREGAMENTO LAZY (sob demanda): carregue APENAS o skill do dominio estritamente afetado pela tarefa (maximo 1-2 skills por vez).</directive>
 
 <domain_checks>
-<check domain="Frontend">
+<check domain="Frontend" condition="SE a tarefa alterar UI, componentes ou telas">
 Leia .agent/memory/ui.md e consulte spec/global/features.md.
-Carregue: skills/ui-components/SKILL.md e skills/ui-motion/SKILL.md (se houver animacoes).
+Carregue sob demanda: skills/ui-components/SKILL.md (e skills/ui-motion/SKILL.md apenas se houver animacoes).
 </check>
 
-<check domain="Backend">
+<check domain="Backend" condition="SE a tarefa alterar Server Actions, rotas ou Auth">
 Leia .agent/memory/supabase.md e memory/auth.md.
-Carregue: skills/backend-patterns/SKILL.md e skills/auth/SKILL.md.
+Carregue sob demanda: skills/backend-patterns/SKILL.md (e skills/auth/SKILL.md se envolver sessao).
 </check>
 
-<check domain="Database">
+<check domain="Database" condition="SE a tarefa alterar tabelas, colunas ou RLS">
 Inspecione o schema real via SQL antes de propor tabelas ou colunas.
-Carregue: skills/database/SKILL.md e skills/database/references/rls-patterns.md.
+Carregue sob demanda: skills/database/SKILL.md (references/rls-patterns.md apenas se editar policies).
 </check>
 
 <check domain="Graphify">

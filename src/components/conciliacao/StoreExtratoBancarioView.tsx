@@ -154,13 +154,16 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
       const effectiveCategory = tx.manual_category || historicalMatch?.manual_category;
       const effectiveJustification = tx.manual_justification || historicalMatch?.manual_justification;
 
+      const linkedBill = tx.matched_bill_id 
+        ? dailyBills.find((b: any) => b.id === tx.matched_bill_id) 
+        : dailyBills.find((b: any) => b.matched_ofx_id === tx.id || (tx.fitid && b.matched_ofx_id === tx.fitid));
+
       const isRede = isRedeTx(tx);
       const osNum = effectiveOsNum;
-      const hasCategory = !!effectiveCategory;
+      const hasCategory = !!effectiveCategory || !!effectiveJustification || !!linkedBill;
 
       // Fuzzy auto-match para saídas (débitos)
       const isBatchMatched = tx.match_status === 'matched_batch' || tx.match_status === 'intercompany_paired' || tx.match_status === 'auto_cancelled';
-      const linkedBill = tx.matched_bill_id ? dailyBills.find((b: any) => b.id === tx.matched_bill_id) : null;
       const expenseMatch = tx.type === 'out' 
         ? (linkedBill 
             ? { isMatched: true, matchedBill: linkedBill, confidence: 1.0 } 
@@ -171,7 +174,7 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
         : { isMatched: false, confidence: 0 };
       const isMatchedExpense = expenseMatch.isMatched || isBatchMatched;
 
-      const isPending = !isRede && !osNum && !hasCategory && !isMatchedExpense && !isLockedFromOtherDate && !isBatchMatched;
+      const isPending = !isRede && !osNum && !hasCategory && !isMatchedExpense && !isLockedFromOtherDate && !isBatchMatched && !linkedBill;
 
       return {
         ...tx,
@@ -594,10 +597,16 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
     setCategorizingTx(null);
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ['transactions'] }),
+      queryClient.invalidateQueries({ queryKey: ['ofx_transactions'] }),
+      queryClient.invalidateQueries({ queryKey: ['daily_manual_bills'] }),
+      queryClient.invalidateQueries({ queryKey: ['daily-manual-bills'] }),
       queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] }),
+      queryClient.invalidateQueries({ queryKey: ['daily_reconciliation_summary'] }),
       queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
       queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] }),
-      queryClient.invalidateQueries({ queryKey: ['justified_transactions'] })
+      queryClient.invalidateQueries({ queryKey: ['justified_transactions'] }),
+      queryClient.invalidateQueries({ queryKey: ['store_extrato_bancario'] }),
+      queryClient.invalidateQueries({ queryKey: ['transactions', 'store', storeId, 'historical_reconciled'] })
     ]);
   };
 
@@ -1029,6 +1038,16 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
                                       <Badge variant="outline" className="h-5 py-0 px-2 bg-blue-500/10 text-blue-400 border-blue-500/30 text-[10px] font-semibold">
                                         <CreditCard size={10} className="mr-1" />
                                         Lote Rede (Ref: D-1)
+                                      </Badge>
+                                    ) : matchedBill ? (
+                                      <Badge variant="outline" className="h-5 py-0 px-2 bg-teal-500/10 text-teal-300 border-teal-500/30 text-[10px] font-semibold">
+                                        <Receipt size={10} className="mr-1 text-teal-400" />
+                                        Conta: {matchedBill.recipient_name || matchedBill.title}
+                                      </Badge>
+                                    ) : tx.manual_category ? (
+                                      <Badge variant="outline" className="h-5 py-0 px-2 bg-purple-500/10 text-purple-300 border-purple-500/30 text-[10px] font-semibold">
+                                        <CheckCircle2 size={10} className="mr-1 text-purple-400" />
+                                        {String(tx.manual_category).replace('_', ' ')}
                                       </Badge>
                                     ) : tx.isPastDate && (tx.target_date ? tx.target_date < date : true) ? (
                                       <Badge

@@ -1,3 +1,26 @@
+## [2026-09-10] — [Feature ID: 392-justificativa-ofx-contas-e-fix-coluna-title]
+
+**Contexto:** Exibição imediata de badges informativos e eliminação do falso badge "• PENDENTE" no extrato bancário fiduciário (`StoreExtratoBancarioView.tsx`) para transações justificadas como "Somar ao Contas a Pagar".
+
+**Regra aprendida:**
+1. **Badges Fiduciários Contextuais e Claros:**
+   - Transações bancárias com conta vinculada devem exibir badge sutil em tom Teal (`bg-teal-500/10 text-teal-400 border border-teal-500/20`) contendo o nome do favorecido (`Conta: X`), permitindo ao operador identificar instantaneamente o título quitado.
+   - Transações categorizadas manualmente devem exibir badge em tom Roxo (`bg-purple-500/10 text-purple-400 border border-purple-500/20`) contendo a categoria contábil.
+2. **Reatividade Instantânea sem Recarregar a Página:**
+   - Ao concluir a justificativa no modal, as query keys do React Query (`['daily_manual_bills']`, `['daily_reconciliation_summary']`, `['store_extrato_bancario']`, `['transactions']`) devem ser invalidadas em bloco para que tanto a lista do extrato quanto os cards de fechamento e totalizadores reflitam os novos valores em milissegundos.
+
+---
+
+## [2026-09-10] — [Feature ID: 391-correcao-canonica-faturamento-input-e-ofx-saidas-lojas]
+
+**Contexto:** Correção de odômetro anterior e renderização de faturamento no painel de resumo diário (`ResumoDiaPanel.tsx`).
+
+**Regra aprendida:**
+1. **Ordem de Declaração de Hooks e Variáveis no React:**
+   - Garantir que variáveis computadas a partir do estado ou queries (`faturamentoLiquidoDia`, `faturamentoBrutoDia`) estejam declaradas antes de qualquer uso em sub-blocos ou renders condicionais, prevenindo `ReferenceError: Cannot access 'X' before initialization`.
+
+---
+
 ## [2026-09-09] — [Feature ID: 389-revolut-transaction-detail-modal-and-row-cleanup]
 
 **Contexto:** Resolução definitiva da deformação e quebra visual no extrato bancário da filial (`StoreExtratoBancarioView.tsx`), substituindo botões de ação inline que disputavam espaço na coluna direita por uma linha de transação 100% limpa e uma Janela de Detalhes da Transação dedicada (`TransactionDetailModal.tsx`) inspirada no padrão Revolut Card Details / Activity.

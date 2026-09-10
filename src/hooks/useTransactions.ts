@@ -378,7 +378,7 @@ export function useHistoricalReconciledTransactions(storeId?: string) {
       try {
         let query = supabase
           .from('ofx_transactions')
-          .select('id, fitid, store_id, target_date, occurred_at, manual_category, manual_justification, matched_os_number, match_status, title, amount')
+          .select('id, fitid, store_id, target_date, occurred_at, manual_category, manual_justification, matched_os_number, match_status, counterpart_name, bank_name, amount')
           .order('occurred_at', { ascending: false })
           .limit(200);
         
@@ -392,8 +392,13 @@ export function useHistoricalReconciledTransactions(storeId?: string) {
           return [];
         }
         
-        // Filtra em memória para máxima confiabilidade
-        return (data || []).filter((t: any) => t.manual_category || t.os_number || t.matched_os_number);
+        // Mapeia título seguro para manter compatibilidade com consumidores em memória e filtra
+        return (data || [])
+          .map((t: any) => ({
+            ...t,
+            title: t.counterpart_name || t.bank_name || ''
+          }))
+          .filter((t: any) => t.manual_category || t.os_number || t.matched_os_number);
       } catch (err) {
         console.warn('Exceção ao consultar histórico de conciliações:', err);
         return [];

@@ -60,6 +60,57 @@ export function useCategorizeOrphan() {
               manual_justification: finalJustification
             })
             .eq('id', transactionId);
+        } else {
+          // Sincroniza a tabela transactions para manter paridade absoluta com ofx_transactions
+          await supabase
+            .from('transactions')
+            .update({
+              manual_category: finalCategory,
+              manual_justification: finalJustification
+            })
+            .eq('id', transactionId);
+        }
+
+        // Se houver snapshot registrado para a data, sincroniza o subtotal de contas com as contas vigentes
+        try {
+          const { data: snap } = await supabase
+            .from('daily_snapshots')
+            .select('contas_a_pagar, metadata')
+            .eq('date', finalDate)
+            .maybeSingle();
+
+          if (snap) {
+            const { data: bills } = await supabase
+              .from('daily_manual_bills')
+              .select('amount, contabilizar_no_subtotal')
+              .eq('date', finalDate);
+
+            let totalBills = 0;
+            bills?.forEach((b: any) => {
+              if (b.contabilizar_no_subtotal !== false) {
+                totalBills += Number(b.amount || 0);
+              }
+            });
+
+            const juros = Number(snap.metadata?.juros_rede || 0);
+            const newSubtotal = totalBills + juros;
+
+            await supabase
+              .from('daily_snapshots')
+              .update({
+                contas_a_pagar: newSubtotal,
+                metadata: {
+                  ...snap.metadata,
+                  contas_base: totalBills,
+                  contas_manual: totalBills,
+                  subtotal_contas: newSubtotal
+                },
+                updated_at: new Date().toISOString()
+              })
+              .eq('date', finalDate);
+          }
+        } catch (snapErr) {
+          console.warn('Aviso ao sincronizar snapshot após justificativa de saída:', snapErr);
         }
       } else {
         // Fluxo de Entrada: Atualiza tabelas e sincroniza daily_revenue_adjustments
@@ -143,9 +194,12 @@ export function useCategorizeOrphan() {
         queryClient.invalidateQueries({ queryKey: ['transactions'] }),
         queryClient.invalidateQueries({ queryKey: ['ofx_transactions'] }),
         queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily_manual_bills'] }),
         queryClient.invalidateQueries({ queryKey: ['daily-manual-bills'] }),
         queryClient.invalidateQueries({ queryKey: ['open-bills-for-step2'] }),
-        queryClient.invalidateQueries({ queryKey: ['extrato'] })
+        queryClient.invalidateQueries({ queryKey: ['extrato'] }),
+        queryClient.invalidateQueries({ queryKey: ['store_extrato_bancario'] }),
+        queryClient.invalidateQueries({ queryKey: ['historical_reconciled'] })
       ]);
 
       return { 

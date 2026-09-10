@@ -1,3 +1,38 @@
+## [2026-09-10] — [Feature ID: 392-justificativa-ofx-contas-e-fix-coluna-title]
+
+**Contexto:** Correção de chamadas REST do PostgREST ao Supabase que incluíam a coluna `title` em `ofx_transactions`, resultando em erro `42703 (column ofx_transactions.title does not exist)`. Sincronização entre `transactions` e `ofx_transactions` e invalidações de queries SQL no frontend.
+
+**Regra aprendida:**
+1. **Schema da tabela `ofx_transactions` vs `transactions`:**
+   - `ofx_transactions` possui `counterpart_name`, `bank_name`, `fitid`, `amount`, `occurred_at`, `store_id`, `target_date`, `manual_category`, `manual_justification`, `matched_bill_id`, `matched_os_number`, `match_status`.
+   - NUNCA referenciar `title` em `select` direto para `ofx_transactions`.
+2. **Atualização em Duas Tabelas para Compatibilidade:**
+   - Para que o extrato bancário (que lê `transactions`) e a conciliação (que lê `ofx_transactions`) permaneçam 100% síncronos, o backend/hooks devem atualizar ambas as entidades ao justificar débitos/créditos órfãos.
+
+---
+
+## [2026-09-10] — [Feature ID: 391-correcao-canonica-faturamento-input-e-ofx-saidas-lojas]
+
+**Contexto:** Migration `20260910000045_fix_faturamento_input_and_ofx_target_date.sql` saneando a RPC `get_daily_reconciliation_summary` e eliminando a subtração arbitrária de faturamento, além de re-ancorar `target_date` em `ofx_transactions`.
+
+**Regra aprendida:**
+1. **Soberania do `snapshot.faturamento`:**
+   - A RPC `get_daily_reconciliation_summary` deve ler diretamente o faturamento consolidado ou inputado, sem subtrair `faturamento_anterior`, evitando inflar ou distorcer a equação contábil da conciliação do dia.
+2. **Filtragem por `target_date` em `ofx_transactions`:**
+   - As CTEs de agregação de débitos e créditos por filial em `get_daily_reconciliation_summary` agrupam transações por `store_id` onde `target_date = p_date`. Se o importador gravar a data de transação do banco em vez de `targetDate`, as filiais aparecem com movimentação zerada no dia da conciliação.
+
+---
+
+## [2026-09-10] — [Feature ID: 390-equalizacao-dinheiro-e-correcao-rpc-diferenca-excel]
+
+**Contexto:** Migration `20260910000043_fix_summary_rpc_cash_vault_and_excel_alignment.sql` agregando dinheiro físico em lojas e cofre Mercado Pago na RPC `get_daily_reconciliation_summary`.
+
+**Regra aprendida:**
+1. **Composição Integral do Dinheiro:**
+   - O pilar de Dinheiro no fechamento é composto por `COALESCE(s.dinheiro_lojas, 0) + COALESCE(s.dinheiro_mp, 0)`. Ignorar o dinheiro do Mercado Pago causava distorção na conciliação de 09/09/2026 de mais de R$ 30 mil.
+
+---
+
 ## [2026-09-09] — [Feature ID: 385-fix-ofx-zeroed-balances-and-triple-reconciliation-excel]
 
 **Contexto:** Correção da âncora temporal dos saldos OFX, blindagem de upsert em `reconciliations` e backfill dos saldos bancários das 10 filiais para 09/09/2026 via migration `20260909000042_fix_ofx_date_anchor_and_reconciliation_zeroed.sql`.

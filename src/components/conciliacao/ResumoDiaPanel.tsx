@@ -94,8 +94,8 @@ export function ResumoDiaPanel({
   const faturamentoAnteriorGlobal = Number(
     summary?.faturamento_anterior 
     ?? (currentSnapshot?.metadata as any)?.faturamento_anterior 
-    ?? previousSnapshot?.faturamento 
     ?? (previousSnapshot?.metadata as any)?.odometro_hoje 
+    ?? previousSnapshot?.faturamento 
     ?? 0
   );
 
@@ -167,8 +167,15 @@ export function ResumoDiaPanel({
     setFaturamentoInput(Number((ant + val).toFixed(2)));
   };
 
+  // Faturamento Líquido do Dia (OI Base)
+  const faturamentoLiquidoDia = isEditing 
+    ? faturamentoDiaInput 
+    : Number(summary?.faturamento_oi_base ?? (currentSnapshot?.metadata as any)?.faturamento_oi_base ?? faturamentoDiaInput);
+
   // Valores ativos baseados no modo de edição (isEditing ? input local : snapshot persistido / summary)
-  const faturamentoAcumuladoHoje = isEditing ? faturamentoInput : (currentSnapshot?.faturamento ?? faturamentoInput);
+  const faturamentoAcumuladoHoje = isEditing 
+    ? faturamentoInput 
+    : Number((currentSnapshot?.metadata as any)?.odometro_hoje ?? (faturamentoAnteriorInput + faturamentoLiquidoDia) ?? faturamentoInput);
   const dinheiroMpValor = isEditing ? dinheiroMpInput : Number(currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? previousSnapshot?.dinheiro_mp ?? 0);
   const aReceberValor = isEditing ? aReceberInput : Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber_manual ?? summary?.a_receber ?? previousSnapshot?.a_receber_manual ?? 0);
   const contasManualValor = isEditing 
@@ -189,11 +196,6 @@ export function ResumoDiaPanel({
   const faturamentoOutrosValor = totalJustificadosDia > 0 
     ? totalJustificadosDia 
     : Number(currentSnapshot?.faturamento_outros_valor ?? summary?.faturamento_outros ?? 0);
-
-  // Faturamento Líquido do Dia (OI Base)
-  const faturamentoLiquidoDia = isEditing 
-    ? faturamentoDiaInput 
-    : Number(summary?.faturamento_oi_base ?? (currentSnapshot?.metadata as any)?.faturamento_oi_base ?? faturamentoDiaInput);
     
   // Faturamento Atual = Mapa de Metas + Transações Justificadas + Ajustes Manuais (Aportes/Estornos)
   const faturamentoAjustesValor = summary?.faturamento_ajustes ?? 0;
@@ -333,7 +335,7 @@ export function ResumoDiaPanel({
         total_recebiveis: dinheiroMpValor + aReceberValor,
         total_patio: naLojaValor,
         caixa_atual: caixaAtualCalculado,
-        faturamento: effectiveAccumulatedFaturamento,
+        faturamento: faturamentoTotalComAjustes,
         faturamento_outros_valor: faturamentoOutrosValor,
         faturamento_outros_desc: 'Transações Justificadas (Ajustes)',
         contas_a_pagar: isEditing ? (effectiveContasOverride ?? contasInput) : (summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0),

@@ -1,3 +1,41 @@
+## [2026-09-10] — [Feature ID: 392-justificativa-ofx-contas-e-fix-coluna-title]
+
+**Contexto:** Correção de erro 400 Bad Request ao consultar histórico de `ofx_transactions` (coluna `title` inexistente), sincronização fiduciária entre tabelas `transactions` e `ofx_transactions` ao justificar saídas com "Somar ao Contas a Pagar", blindagem de status pendente e reatividade imediata no extrato bancário e fechamento da loja.
+
+**Regra aprendida:**
+1. **Inexistência de Coluna `title` em `ofx_transactions`:**
+   - A tabela `ofx_transactions` armazena o descritivo bancário em `counterpart_name` e `bank_name`. Consultas REST que incluam `title` geram erro SQL `42703`. Mapeamento de `title` deve ocorrer em memória via adapter.
+2. **Sincronização Contábil Bidirecional de Débitos Órfãos:**
+   - A visualização do extrato bancário consome `transactions`, enquanto a conciliação e justificativas operam sobre `ofx_transactions`. Qualquer mutação em `ofx_transactions` (`manual_category`, `manual_justification`) deve ser espelhada em `transactions` para garantir consistência fiduciária instantânea.
+3. **Detecção Simétrica de Vínculo de Contas a Pagar:**
+   - O pareamento de um débito bancário com título em `daily_manual_bills` deve ser checado nos dois sentidos: `tx.matched_bill_id === bill.id` OU `bill.matched_ofx_id === tx.id`. Transações com conta vinculada ou categoria manual atribuída nunca podem carregar badge de pendente.
+
+---
+
+## [2026-09-10] — [Feature ID: 391-correcao-canonica-faturamento-input-e-ofx-saidas-lojas]
+
+**Contexto:** Resolução de divergência massiva de R$ 207 mil na conciliação de 10/09/2026 provocada por subtração arbitrária no cálculo de faturamento na RPC `get_daily_reconciliation_summary` e saídas/entradas bancárias das 10 lojas zeradas por descolamento de `target_date` em transações OFX.
+
+**Regra aprendida:**
+1. **Faturamento como INPUT Canônico:**
+   - O faturamento líquido informado no motor de importação/fechamento é um INPUT soberano. A RPC nunca deve recalcular faturamento como `atual - anterior` se o valor já foi faturado e auditado para o dia.
+2. **Âncora Temporal Estrita de Transações OFX:**
+   - Ao importar extratos bancários na conciliação diária, as transações OFX devem ser gravadas com `target_date = targetDate` do lote, permitindo que a RPC e as visões por loja agreguem débitos e créditos fiduciários da data em conciliação.
+
+---
+
+## [2026-09-10] — [Feature ID: 390-equalizacao-dinheiro-e-correcao-rpc-diferenca-excel]
+
+**Contexto:** Equalização matemática dos 5 pilares contábeis e do fechamento do dia 09/09/2026 em estrita conformidade com a planilha `CONCILIAÇÃO 0909.xlsx`, incluindo computação de dinheiro em cofre/Mercado Pago na RPC e encadeamento de caixa anterior para 10/09/2026.
+
+**Regra aprendida:**
+1. **Pilar de Dinheiro com Cofre Ativo:**
+   - A soma do dinheiro em espécie na RPC deve consolidar `dinheiro_lojas + dinheiro_mp` (cofre físico e custódia Mercado Pago).
+2. **Consistência do Saldo de Abertura:**
+   - O `caixa_anterior` do dia 10/09/2026 DEVE herdar compulsoriamente os R$ 357.012,80 apurados no fechamento oficial de 09/09/2026.
+
+---
+
 ## [2026-09-09] — [Feature ID: 380-equalizacao-conciliacao-0809-caixa-patio-banco]
 
 **Contexto:** Equalização e auditoria pericial da conciliação do dia 08/09/2026 com base na planilha oficial `CONCILIAÇÃO 0809.xlsx`. Resolução da discrepância no Caixa Anterior (gerada por `caixa_atual` indevidamente recalculado em 04/09), equalização do Odômetro Acumulado Anterior (R$ 98.867,73 em vez do faturamento manual diário de R$ 34.605,94), alinhamento dos saldos bancários das 10 filiais (incluindo cheque especial de Mauá de -R$ 2.812,86) e saneamento dos carros em pátio (R$ 45.292,10 apurados pelas OSs em aberto).

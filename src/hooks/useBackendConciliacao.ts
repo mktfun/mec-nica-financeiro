@@ -300,14 +300,22 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
         };
       });
 
-      const finalDinheiroLojas = rawSummary.dinheiro_lojas || rawSummary.dinheiro_em_lojas || totalVaultInTransit;
-      const finalCartoesACompensar = rawSummary.cartoes_a_compensar || totalPosUnsettled;
+      const finalDinheiroLojas = Number(rawSummary.dinheiro_lojas || rawSummary.dinheiro_em_lojas || totalVaultInTransit || 0);
+      const finalCartoesACompensar = Number(rawSummary.cartoes_a_compensar || totalPosUnsettled || 0);
+
+      const baseBancoPositivo = Number(rawSummary.saldo_bancos_positivo ?? rawSummary.saldo_bancos_ofx_positivo ?? 0);
+      const baseBancoTotal = Number(rawSummary.saldo_bancos_ofx ?? rawSummary.total_saldo_banco ?? 0);
+
+      const finalTotalSaldoBancoPositivo = baseBancoPositivo + finalDinheiroLojas + finalCartoesACompensar;
+      const finalTotalSaldoBanco = baseBancoTotal + finalDinheiroLojas + finalCartoesACompensar;
 
       return {
         ...rawSummary,
         dinheiro_lojas: finalDinheiroLojas,
         dinheiro_em_lojas: finalDinheiroLojas,
         cartoes_a_compensar: finalCartoesACompensar,
+        total_saldo_banco_positivo: finalTotalSaldoBancoPositivo > 0 ? finalTotalSaldoBancoPositivo : rawSummary.total_saldo_banco_positivo,
+        total_saldo_banco: finalTotalSaldoBanco !== 0 ? finalTotalSaldoBanco : rawSummary.total_saldo_banco,
         stores: enrichedStores,
         stores_detail: enrichedStores
       } as DailyReconciliationSummary;
