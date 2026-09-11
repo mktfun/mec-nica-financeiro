@@ -51,10 +51,10 @@ export function SaldoBancosDetailModal({
   // Consome 100% os dados calculados diretamente no Postgres/RPC
   const rows = useMemo(() => {
     return effectiveStores.map((s: any) => {
-      const saldoOfxPuro = Number(s.saldo_banco_ofx ?? 0);
-      const dinheiroLoja = Number(s.dinheiro_loja ?? 0);
-      const maquininhaNaoEntrou = Number(s.nao_entrou_valor ?? 0);
-      const saldoConsolidado = Number(s.saldo_banco ?? (saldoOfxPuro + dinheiroLoja + maquininhaNaoEntrou));
+      const saldoOfxPuro = Number(s.saldo_banco_ofx ?? s.saldo_banco ?? s.saldo_bancos ?? s.saldo_banco_itau ?? s.saldo_total ?? 0);
+      const dinheiroLoja = Number(s.dinheiro_loja ?? s.dinheiro_lojas ?? s.cofre_total ?? s.saldo_cofre ?? 0);
+      const maquininhaNaoEntrou = Number(s.nao_entrou_valor ?? s.cartoes_a_compensar ?? 0);
+      const saldoConsolidado = Number(s.saldo_consolidado ?? (saldoOfxPuro + dinheiroLoja + maquininhaNaoEntrou));
       const vaultEntries = Array.isArray(s.vault_entries) ? s.vault_entries : [];
       const activeVaultEntry = vaultEntries.find((v: any) => v && v.status === 'em_transito');
 

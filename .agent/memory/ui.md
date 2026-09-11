@@ -1,3 +1,19 @@
+## [2026-09-11] — [Feature ID: 384-correcao-mapeamento-saldo-ofx-raio-x-modal]
+
+**Contexto:** Correção do mapeamento de propriedades e blindagem multi-alias no modal de detalhamento por filial `SaldoBancosDetailModal.tsx` ("Raio-X de Saldos Bancários & Dinheiro por Filial"). A tela exibia R$ 0,00 na coluna de Extrato OFX (Itaú) e no rodapé consolidado devido a incompatibilidade de chave (`saldo_banco_ofx` esperado pelo frontend versus `saldo_banco` / `saldo_bancos` emitido pela RPC `get_daily_reconciliation_summary`).
+
+**Regra aprendida:**
+1. **Fallback Multi-Alias Defensivo em Modais de Drill-Down:**
+   - Em modais que decompõem agregados de banco (`SaldoBancosDetailModal.tsx`), a leitura de cada filial deve tolerar qualquer variação de payload sem cair silenciosamente para `0`:
+     `saldoOfxPuro = Number(s.saldo_banco_ofx ?? s.saldo_banco ?? s.saldo_bancos ?? s.saldo_banco_itau ?? s.saldo_total ?? 0)`.
+   - O mesmo princípio se aplica ao cofre (`dinheiro_loja ?? dinheiro_lojas ?? saldo_cofre`) e adquirentes pendentes (`nao_entrou_valor ?? cartoes_a_compensar`).
+2. **Coerência Estrutural entre Tabela e Cards de Topo:**
+   - O saldo consolidado de cada loja deve ser a soma canônica vetorial `(saldoOfxPuro + dinheiroLoja + maquininhaNaoEntrou)`, garantindo que o rodapé da tabela e os cards de topo (Bancos Positivos, Cheque Especial e Líquido Holding) expressem rigorosamente a mesma contabilidade matemática.
+
+**Risco identificado / Anti-pattern:** Confiar em um único nome de chave para campos bancários calculados em SQL dinâmico sem encadear aliases históricos utilizados por outras views (`ConciliacaoLojasView.tsx`).
+
+---
+
 ## [2026-09-11] — [Feature ID: 383-pente-fino-limpeza-wizard-e-unificacao-diferenca]
 
 **Contexto:** Pente fino e higienização visual completa na Central de Importações (`CentralImportWizard.tsx` e `Step4FinalAuditAndClose.tsx`). Remoção de cards ruidosos pré-conferência no Step 1, eliminação de acordeão de payload JSON de depuração, remoção de cartões de métricas do lote e banners alarmantes com deltas na tela de gravação concluída (`saveFinished`), e reestruturação do Step 4 (Auditoria e Fechamento) em espelhamento 1:1 com o painel canônico de `/conciliacao` (`ResumoDiaPanel.tsx`).

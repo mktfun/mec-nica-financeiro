@@ -84,13 +84,22 @@ export interface StoreReconciliationSummary {
   color?: string;
   saldo_banco: number; // Saldo Consolidado (OFX + Não Entrou)
   saldo_banco_ofx?: number; // Saldo puro do extrato OFX
+  saldo_banco_itau?: number; // Saldo da conta Itaú
+  saldo_bancos?: number; // Saldo consolidado das contas da loja
+  saldo_total?: number; // Total bancário
+  saldo_banco_positivo?: number; // Saldo positivo
+  saldo_negativo_itau?: number; // Cheque especial devedor
   saldo_devedor_real?: number; // Cheque Especial Líquido (se saldo_banco < 0 => |saldo_banco|, senão 0)
   saldo_positivo_real?: number; // Ativo Superavitário (se saldo_banco > 0 => saldo_banco, senão 0)
   dinheiro_loja?: number;
+  dinheiro_lojas?: number; // Plural emitido pela RPC
+  saldo_cofre?: number;
   vault_entries?: Array<{ id: string; amount: number; status: string; entry_date: string; description?: string }>;
   nao_entrou_valor?: number; // Vendas de maquininha a compensar (Não Entrou)
+  cartoes_a_compensar?: number;
   rede_bruto?: number;
   rede_liquido?: number; // Total líquido das vendas na maquininha
+  rede_total?: number;
   rede_devolucoes?: number; // Devoluções/estornos da maquininha
   ofx_maquininhas?: number;
   status_compensacao?: 'entrou' | 'parcial' | 'nao_entrou' | 'sem_movimento' | string;

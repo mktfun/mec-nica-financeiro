@@ -1,3 +1,12 @@
+### Spec 384 — Correção de Mapeamento de Saldo Bancário OFX no Modal Raio-X por Filial (11/09/2026)
+- **Frontend Modal Raio-X de Bancos (`SaldoBancosDetailModal.tsx`)**:
+  - Implementação de fallback multi-alias defensivo para cada filial (`saldo_banco_ofx`, `saldo_banco`, `saldo_bancos`, `saldo_banco_itau`, `saldo_total`), eliminando o bug de extrato bancário zerado (`R$ 0,00`).
+  - Totalizadores de rodapé e cards alinhados: coluna Extrato OFX (Itaú) e coluna Saldo Consolidado exibem com precisão o montante real das 10 filiais (R$ 135.706,55).
+- **Tipagens & Contratos TypeScript (`useBackendConciliacao.ts`)**:
+  - Enriquecimento da interface `StoreReconciliationSummary` com os aliases de compatibilidade.
+- **Database & RPC (`20260911000042_add_store_balance_aliases_to_rpc.sql`)**:
+  - Emissão explícita de `'saldo_banco_ofx'`, `'saldo_banco_itau'`, `'dinheiro_loja'` no `jsonb_build_object` da função canônica `get_daily_reconciliation_summary`.
+
 ### Spec 383 — Pente Fino, Limpeza Visual do Wizard e Unificação da Diferença Contábil (11/09/2026)
 - **Frontend Central de Importação (`CentralImportWizard.tsx`)**:
   - Remoção dos 3 cards de resumo no topo (*Total OS*, *Maquininha*, *Saldo Total Bancário*) de dentro de `step === 3`, mantendo foco 100% nos inputs manuais do dia.

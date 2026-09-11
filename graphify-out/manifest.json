@@ -245,9 +245,9 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/SaldoBancosDetailModal.tsx": {
-    "mtime": 1788264214.0459242,
-    "ast_hash": "7e6a578d66e5b13fb0194a4bae85c2ec",
-    "semantic_hash": "7e6a578d66e5b13fb0194a4bae85c2ec"
+    "mtime": 1789151496.0686605,
+    "ast_hash": "6d95b0587cfe18ca92cf22cb4df50a67",
+    "semantic_hash": ""
   },
   "src/components/conciliacao/StoreCartaoMaquininhaView.tsx": {
     "mtime": 1788128883.7151368,
@@ -655,8 +655,8 @@
     "semantic_hash": "43d7881346dbd48b48bea308ff8f45d5"
   },
   "src/hooks/useBackendConciliacao.ts": {
-    "mtime": 1788525300.1908379,
-    "ast_hash": "2351772208c6965907d5a87cbf207d33",
+    "mtime": 1789151480.3317585,
+    "ast_hash": "070f7cf9262a0086df29ff89d51de7db",
     "semantic_hash": ""
   },
   "src/hooks/useBackendDashboard.ts": {
@@ -4429,49 +4429,29 @@
     "ast_hash": "8beb058baef329ecc5da8a9767ea643c",
     "semantic_hash": ""
   },
-  "specs/381-correcao-encadeamento-odometro-faturamento-anterior/design.md": {
-    "mtime": 1789137246.793012,
-    "ast_hash": "805449f02ae8229d520bcee6c3006d27",
+  ".agent/sync.json": {
+    "mtime": 1789149999.514491,
+    "ast_hash": "8aea6bba5ead7b0bbdc304031006d8da",
     "semantic_hash": ""
   },
-  "specs/381-correcao-encadeamento-odometro-faturamento-anterior/proposal.md": {
-    "mtime": 1789137237.1366103,
-    "ast_hash": "7f4a06e21d5e5f8008da9c099e33f0e1",
+  "supabase/migrations/20260911000042_add_store_balance_aliases_to_rpc.sql": {
+    "mtime": 1789151525.2053134,
+    "ast_hash": "2e7526324eee36e8919ba1b3f0f0eddf",
     "semantic_hash": ""
   },
-  "specs/381-correcao-encadeamento-odometro-faturamento-anterior/spec-plan.md": {
-    "mtime": 1789137857.7249978,
-    "ast_hash": "60b75764e204cf517c446025a8333ef9",
+  "specs/384-correcao-mapeamento-saldo-ofx-raio-x-modal/design.md": {
+    "mtime": 1789151456.3180907,
+    "ast_hash": "8655b586669d87476f3d00e22983d545",
     "semantic_hash": ""
   },
-  "specs/382-correcao-justificativas-orfas-faturamento-e-contas/design.md": {
-    "mtime": 1789138936.3306653,
-    "ast_hash": "76d7f9d3e213094a8fec8c6d93f2ed6c",
+  "specs/384-correcao-mapeamento-saldo-ofx-raio-x-modal/proposal.md": {
+    "mtime": 1789151447.3605535,
+    "ast_hash": "560db0c104b406e17bc12e8fd76497cd",
     "semantic_hash": ""
   },
-  "specs/382-correcao-justificativas-orfas-faturamento-e-contas/proposal.md": {
-    "mtime": 1789138925.3566718,
-    "ast_hash": "1e74f9356ce3b85287c8c9a8e0f6092d",
-    "semantic_hash": ""
-  },
-  "specs/382-correcao-justificativas-orfas-faturamento-e-contas/spec-plan.md": {
-    "mtime": 1789140096.5520358,
-    "ast_hash": "a8e18298ed9acbc60525531d2d8bcfd9",
-    "semantic_hash": ""
-  },
-  "specs/383-pente-fino-limpeza-wizard-e-unificacao-diferenca/design.md": {
-    "mtime": 1789140869.6402278,
-    "ast_hash": "761926b2b8ddf01da6c7724c2c026513",
-    "semantic_hash": ""
-  },
-  "specs/383-pente-fino-limpeza-wizard-e-unificacao-diferenca/proposal.md": {
-    "mtime": 1789140869.6397083,
-    "ast_hash": "f57ebe53819d2f34c249cde5cf879ebf",
-    "semantic_hash": ""
-  },
-  "specs/383-pente-fino-limpeza-wizard-e-unificacao-diferenca/spec-plan.md": {
-    "mtime": 1789147999.7263594,
-    "ast_hash": "570db13ad8a42fadb49957892964efa7",
+  "specs/384-correcao-mapeamento-saldo-ofx-raio-x-modal/spec-plan.md": {
+    "mtime": 1789151744.610991,
+    "ast_hash": "6bab69de6c1ddd2e8568bb0e321d6ff8",
     "semantic_hash": ""
   }
 }

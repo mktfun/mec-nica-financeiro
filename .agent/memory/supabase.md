@@ -1,3 +1,16 @@
+## [2026-09-11] — [Feature ID: 384-correcao-mapeamento-saldo-ofx-raio-x-modal]
+
+**Contexto:** Enriquecimento do contrato JSON da RPC canônica `get_daily_reconciliation_summary` via migration `20260911000042_add_store_balance_aliases_to_rpc.sql`, adicionando explicitamente os aliases `'saldo_banco_ofx'`, `'saldo_banco_itau'` e `'dinheiro_loja'` no `jsonb_build_object` de cada filial em `v_stores_detail`.
+
+**Regra aprendida:**
+1. **Canonicidade e Retrocompatibilidade de Propriedades na RPC:**
+   - O objeto `v_stores_detail` (`stores` no retorno da RPC) deve emitir cumulativamente tanto os nomes genéricos de banco (`saldo_banco`, `saldo_bancos`) quanto os nomes específicos de extrato (`saldo_banco_ofx`, `saldo_banco_itau`) e cofre (`dinheiro_loja`, `dinheiro_lojas`).
+   - Essa redundância semântica em nível de banco blinda o sistema contra dessincronia de consumidores legados e novos modais.
+
+**Risco identificado / Anti-pattern:** Alterar o nome de propriedades no `jsonb_build_object` da RPC quebrando contratos de componentes existentes que esperavam o nome anterior.
+
+---
+
 ## [2026-09-09] — [Feature ID: 380-equalizacao-conciliacao-0809-caixa-patio-banco]
 
 **Contexto:** Saneamento de integridade dos snapshots de fechamento (`daily_snapshots`), tabela de apuração por filial (`reconciliations`) e ordens de serviço (`patio_os`) para equalização exata de 08/09/2026 conforme planilha oficial `CONCILIAÇÃO 0809.xlsx`.
