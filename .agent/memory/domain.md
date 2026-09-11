@@ -1,3 +1,25 @@
+## [2026-09-11] — [Feature ID: 383-pente-fino-limpeza-wizard-e-unificacao-diferenca]
+
+**Contexto:** Unificação contábil definitiva da apuração da Diferença Final entre o Step 4 do Wizard de Importação (`Step4FinalAuditAndClose.tsx`) e a tela oficial de conciliação diária (`/conciliacao` / `ResumoDiaPanel.tsx` / `get_daily_reconciliation_summary`). Eliminação total de conceitos conceituais esotéricos (Canal 1 vs Canal 2 / WIP ΔP4).
+
+**Regra aprendida:**
+1. **Fórmula Canônica Unificada da Diferença Final:**
+   - A apuração final do fechamento diário é unívoca em todo o sistema e segue rigorosamente a equação:
+     $$\text{Diferença Final} = \text{Valor Disponível para Contas} - \text{Subtotal de Contas a Cobrir}$$
+     onde:
+     $$\text{Fluxo de Caixa} = \text{Caixa Atual} - \text{Caixa Anterior}$$
+     $$\text{Valor Disponível para Contas} = \text{Faturamento do Dia} - \text{Fluxo de Caixa}$$
+     $$\text{Subtotal de Contas a Cobrir} = \text{summary.subtotal\_contas} \ (\text{ou } \text{itemsSum})$$
+   - NUNCA recomputar a diferença no frontend com fórmulas alternativas (como subtrair despesas de Canais isolados ou ignorar o subtotal de contas consolidado pela RPC do Supabase). Ambas as telas (`/conciliacao` e Step 4 do Wizard) agora refletem exatamente o mesmo centavo.
+2. **Ajustes de Faturamento por Órfãos Justificados:**
+   - Movimentações de crédito órfãs justificadas com a marcação `adicionaNoFaturamento = true` (ex: PIX/entradas identificadas no extrato sem OS) compõem o `faturamento_liquido` do dia, integrando a apuração de `faturamentoDia` e impactando de forma transparente o Valor Disponível para Contas.
+3. **Descarte de Metáforas de Canal Duplo:**
+   - Os operadores e analistas financeiros rejeitam divisões em "Canal 1" e "Canal 2". O modelo mental canônico e aceito é a equação dos 5 pilares de caixa e a conciliação patrimonial entre variação de disponibilidades e resultado operacional.
+
+**Risco identificado / Anti-pattern:** Manter cálculos concorrentes de diferença final no Step 4 do Wizard e no painel de `/conciliacao`, fazendo com que o operador veja um valor de diferença na Central de Importações e outro valor diferente ao abrir o painel do dia.
+
+---
+
 ## [2026-09-09] — [Feature ID: 380-equalizacao-conciliacao-0809-caixa-patio-banco]
 
 **Contexto:** Equalização e auditoria pericial da conciliação do dia 08/09/2026 com base na planilha oficial `CONCILIAÇÃO 0809.xlsx`. Resolução da discrepância no Caixa Anterior (gerada por `caixa_atual` indevidamente recalculado em 04/09), equalização do Odômetro Acumulado Anterior (R$ 98.867,73 em vez do faturamento manual diário de R$ 34.605,94), alinhamento dos saldos bancários das 10 filiais (incluindo cheque especial de Mauá de -R$ 2.812,86) e saneamento dos carros em pátio (R$ 45.292,10 apurados pelas OSs em aberto).

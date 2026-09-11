@@ -22,7 +22,6 @@ import {
   Calculator,
   ArrowRight,
   Zap,
-  Car,
 } from 'lucide-react';
 
 export interface MissingPatioOsEdit {
@@ -93,6 +92,7 @@ export function Step4FinalAuditAndClose({
     naLojaOs,
     faturamentoDia,
     fatAnterior,
+    odometroHoje,
     faturamentoPeriodo,
     caixaAtual,
     caixaAnterior,
@@ -106,8 +106,27 @@ export function Step4FinalAuditAndClose({
     isWarning,
   } = useMemo(() => {
     if (summary && summary.caixa_atual !== undefined && summary.caixa_atual !== null) {
-      const dif = Number(summary.diferenca_final || 0);
+      // 1. Faturamento canônico: Base + Ajustes de receitas órfãs justificadas
+      const fatAjustes = Number(summary.faturamento_ajustes || 0);
+      const fatBase = Number(summary.faturamento_oi_base || 0);
+      const fatPeriodoCalculado = fatBase + fatAjustes;
+      const finalFatPeriodo = Number(summary.faturamento_periodo ?? (fatPeriodoCalculado > 0 ? fatPeriodoCalculado : 0));
+
+      // 2. Fluxo e Valor Disponível
+      const cAtual = Number(summary.caixa_atual ?? 0);
+      const cAnterior = Number(summary.caixa_anterior ?? 0);
+      const flx = Number(summary.fluxo_caixa ?? (cAtual - cAnterior));
+      const vDisp = Number(summary.valor_disp_contas ?? (finalFatPeriodo - flx));
+
+      // 3. Contas canônico:
+      const juros = Number(summary.juros_rede ?? 0);
+      const contasFinal = Number(summary.contas_manual ?? ((summary.contas_base ?? 0) + (summary.contas_extras ?? 0)));
+      const subtotalContas = Number(summary.subtotal_contas ?? (contasFinal + juros));
+
+      // 4. Diferença Final Apurada
+      const dif = Number(summary.diferenca_final ?? (vDisp - subtotalContas));
       const absDif = Math.abs(dif);
+
       return {
         totalSaldoBanco: Number(summary.total_saldo_banco_positivo ?? summary.total_saldo_banco ?? 0),
         saldoBancosPositivo: Number(summary.total_saldo_banco_positivo ?? summary.saldo_bancos_positivo ?? summary.total_saldo_banco ?? 0),
@@ -115,16 +134,27 @@ export function Step4FinalAuditAndClose({
         dinheiroMp: Number(summary.dinheiro_mp ?? manualInputs.manualDinheiroMp ?? 0),
         aReceber: Number(summary.a_receber ?? manualInputs.manualAReceber ?? 0),
         naLojaOs: Number(summary.na_loja_os ?? 0),
-        faturamentoDia: Number(summary.faturamento_periodo ?? summary.faturamento_oi_base ?? 0),
-        fatAnterior: Number(summary.faturamento_anterior ?? 0),
-        faturamentoPeriodo: Number(summary.faturamento_periodo ?? 0),
-        caixaAtual: Number(summary.caixa_atual ?? 0),
-        caixaAnterior: Number(summary.caixa_anterior ?? 0),
-        fluxoCaixa: Number(summary.fluxo_caixa ?? 0),
-        valorDispContas: Number(summary.valor_disp_contas ?? 0),
-        jurosRede: Number(summary.juros_rede ?? 0),
-        contasFinal: Number(summary.contas_manual ?? 0),
-        subtotalContas: Number(summary.subtotal_contas ?? 0),
+        faturamentoDia: fatBase > 0 ? fatBase : finalFatPeriodo,
+        fatAnterior: Number(
+          summary.faturamento_anterior ?? 
+          (previousSnapshot?.metadata as any)?.odometro_hoje ??
+          (previousSnapshot?.metadata as any)?.faturamento_anterior ??
+          previousSnapshot?.faturamento ??
+          0
+        ),
+        odometroHoje: Number(
+          (summary as any)?.odometro_hoje ??
+          manualInputs.odometroHoje ??
+          0
+        ),
+        faturamentoPeriodo: finalFatPeriodo,
+        caixaAtual: cAtual,
+        caixaAnterior: cAnterior,
+        fluxoCaixa: flx,
+        valorDispContas: vDisp,
+        jurosRede: juros,
+        contasFinal: contasFinal,
+        subtotalContas: subtotalContas,
         diferencaFinal: dif,
         isOk: absDif <= 50.0,
         isWarning: absDif > 50.0 && absDif <= 200.0,
@@ -245,6 +275,7 @@ export function Step4FinalAuditAndClose({
       naLojaOs: finalPatio,
       faturamentoDia: fatBase,
       fatAnterior: fatAnteriorVal,
+      odometroHoje: manualInputs.odometroHoje > 0 ? manualInputs.odometroHoje : (fatAnteriorVal > 0 && fatBase > 0 ? fatAnteriorVal + fatBase : 0),
       faturamentoPeriodo: fatPeriodo,
       caixaAtual: cAtual,
       caixaAnterior: cAnterior,
@@ -385,55 +416,6 @@ export function Step4FinalAuditAndClose({
         </div>
       </Card>
 
-      {/* Painel Bicanal: Canal 1 (Tesouraria Real) vs Canal 2 (Balanço WIP Pátio) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Canal 1: Tesouraria Líquida Real */}
-        <div className="p-4 rounded-xl bg-zinc-900/80 border border-emerald-500/30 space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-              <ShieldCheck size={15} /> CANAL 1: TESOURARIA LÍQUIDA REAL (CAIXA DISPONÍVEL)
-            </span>
-            <Badge variant="success" className="text-[10px]">
-              Tolerância R$ 0,00
-            </Badge>
-          </div>
-          <div className="flex items-baseline justify-between pt-1">
-            <span className="text-2xl font-mono font-bold text-emerald-400">
-              R$ {Number(summary?.caixa_tesouraria ?? (totalSaldoBanco + dinheiroMp - saldoNegativoItau)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-            </span>
-            <span className="text-xs text-zinc-400">
-              Bancos OFX + Cofre - Cheque Especial (Sem Pátio)
-            </span>
-          </div>
-          <p className="text-[11px] text-zinc-500">
-            Mede o saldo líquido real em conta e cofre para cobertura de contas imediatas.
-          </p>
-        </div>
-
-        {/* Canal 2: Balanço de Produção & Pátio WIP */}
-        <div className="p-4 rounded-xl bg-zinc-900/80 border border-amber-500/30 space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
-              <Car size={15} /> CANAL 2: BALANÇO DE PRODUÇÃO &amp; WIP (PÁTIO ΔP4)
-            </span>
-            <Badge variant="warning" className="text-[10px]">
-              Neutralização Temporal
-            </Badge>
-          </div>
-          <div className="flex items-baseline justify-between pt-1">
-            <span className="text-2xl font-mono font-bold text-amber-400">
-              R$ {Number(summary?.patio_wip ?? naLojaOs).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-            </span>
-            <span className="text-xs text-zinc-400">
-              Variação ΔP4: R$ {Number(summary?.variacao_patio_delta_p4 ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-            </span>
-          </div>
-          <p className="text-[11px] text-zinc-500">
-            Estoque de serviços em andamento isolado da tesouraria para evitar falsas divergências.
-          </p>
-        </div>
-      </div>
-
       {/* Fast-Path Gatekeeper de 1-Clique (Se Todas as Condições Atendidas) */}
       {Boolean(summary?.fast_path_eligible ?? isOk) && (
         <div className="p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/40 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl shadow-emerald-950/20">
@@ -470,147 +452,200 @@ export function Step4FinalAuditAndClose({
         </div>
       )}
 
-      {/* Cards dos 5 pilares */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
+      {/* 4 Ativos de Caixa (Patrimônio que compõe o Caixa Atual) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="p-4 bg-zinc-900/60 border-l-4 border-l-cyan-500 border-zinc-800 rounded-xl">
-          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block font-sans">
-            1. Saldo Bancos + Cofre
-          </span>
-          <p className="text-lg font-bold font-mono text-cyan-400 mt-1 tabular-nums">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block font-sans">
+              1. Saldo Bancos + Cartões
+            </span>
+            <span className="text-[9px] text-zinc-500 font-mono">OFX</span>
+          </div>
+          <p className="text-xl font-bold font-mono text-cyan-400 mt-1 tabular-nums">
             <AmountCell value={totalSaldoBanco} />
           </p>
+          {saldoNegativoItau > 0 && (
+            <span className="text-[10px] text-rose-400 font-mono block mt-1">
+              (-) Cheque Esp: R$ {saldoNegativoItau.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            </span>
+          )}
         </Card>
 
         <Card className="p-4 bg-zinc-900/60 border-l-4 border-l-emerald-500 border-zinc-800 rounded-xl">
           <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block font-sans">
             2. Dinheiro MP
           </span>
-          <p className="text-lg font-bold font-mono text-emerald-400 mt-1 tabular-nums">
+          <p className="text-xl font-bold font-mono text-emerald-400 mt-1 tabular-nums">
             <AmountCell value={dinheiroMp} />
           </p>
+          <span className="text-[10px] text-zinc-500 block mt-1">
+            Conferência física
+          </span>
         </Card>
 
         <Card className="p-4 bg-zinc-900/60 border-l-4 border-l-blue-500 border-zinc-800 rounded-xl">
           <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block font-sans">
             3. A Receber
           </span>
-          <p className="text-lg font-bold font-mono text-blue-400 mt-1 tabular-nums">
+          <p className="text-xl font-bold font-mono text-blue-400 mt-1 tabular-nums">
             <AmountCell value={aReceber} />
           </p>
+          <span className="text-[10px] text-zinc-500 block mt-1">
+            Títulos e boletos
+          </span>
         </Card>
 
         <Card className="p-4 bg-zinc-900/60 border-l-4 border-l-amber-500 border-zinc-800 rounded-xl">
           <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block font-sans">
             4. Na Loja OS (Pátio)
           </span>
-          <p className="text-lg font-bold font-mono text-amber-400 mt-1 tabular-nums">
+          <p className="text-xl font-bold font-mono text-amber-400 mt-1 tabular-nums">
             <AmountCell value={naLojaOs} />
           </p>
-        </Card>
-
-        <Card className="p-4 bg-zinc-900/60 border-l-4 border-l-purple-500 border-zinc-800 rounded-xl col-span-2 md:col-span-1">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block font-sans">
-              5. Faturamento do Dia
-            </span>
-            {fatAnterior > 0 && (
-              <span className="text-[9px] font-mono text-zinc-400">
-                Ant: {fatAnterior.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-              </span>
-            )}
-          </div>
-          <p className="text-lg font-bold font-mono text-purple-400 mt-1 tabular-nums">
-            <AmountCell value={faturamentoDia} />
-          </p>
-          {manualInputs.odometroHoje > 0 && fatAnterior > 0 && (
-            <span className="text-[10px] text-zinc-400 block mt-0.5 font-mono">
-              Hoje: {manualInputs.odometroHoje.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-            </span>
-          )}
+          <span className="text-[10px] text-zinc-500 block mt-1">
+            Estoque de OSs em aberto
+          </span>
         </Card>
       </div>
 
-      {/* Semáforo & Conferência Central */}
-      <Card
-        className={`p-6 border-2 transition-all rounded-2xl ${
-          isOk
-            ? 'border-emerald-500/40 bg-emerald-500/5 shadow-lg shadow-emerald-950/20'
-            : isWarning
-            ? 'border-amber-500/40 bg-amber-500/5 shadow-lg shadow-amber-950/20'
-            : 'border-rose-500/40 bg-rose-500/5 shadow-lg shadow-rose-950/20'
-        }`}
-      >
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-3 flex-1">
-            <div className="flex items-center gap-2 flex-wrap">
-              {isOk ? (
-                <CheckCircle2 size={20} className="text-emerald-400" />
-              ) : isWarning ? (
-                <AlertTriangle size={20} className="text-amber-400" />
-              ) : (
-                <AlertTriangle size={20} className="text-rose-400" />
-              )}
-              <span
-                className={`text-sm font-bold uppercase tracking-wider ${
-                  isOk ? 'text-emerald-400' : isWarning ? 'text-amber-400' : 'text-rose-400'
-                }`}
-              >
-                {isOk
-                  ? '✓ Fechamento Equilibrado (Conformidade Contábil)'
-                  : isWarning
-                  ? '⚠ Divergência Residual Pequena (Dentro de Limites Aceitáveis)'
-                  : '⚠ Divergência Significativa (Verifique Vínculos e Justificativas)'}
-              </span>
-              <Badge
-                variant="outline"
-                className="text-[10px] font-mono bg-zinc-950 border-zinc-800 text-zinc-400"
-              >
-                Tolerância ± R$ 50,00
-              </Badge>
+      {/* Dashboard de Consolidação & Diferença (Harmonizado com ResumoDiaPanel) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Painel da Consolidação do Dia - 2 Colunas */}
+        <div className="lg:col-span-2 bg-zinc-900/60 border border-zinc-800 rounded-2xl p-5 shadow-sm space-y-4">
+          <div className="flex items-center justify-between pb-1 border-b border-zinc-800/60">
+            <div>
+              <h3 className="font-semibold text-zinc-100 uppercase text-xs tracking-wider flex items-center gap-2">
+                <Calculator size={15} className="text-emerald-400" />
+                Consolidação do Dia &amp; Fluxo Contábil
+              </h3>
+              <p className="text-[11px] text-zinc-400 mt-0.5">Apuração integrada dos Ativos, Faturamento e Contas</p>
             </div>
-
-            {/* Demonstração da Equação Contábil */}
-            <div className="p-4 bg-zinc-950/90 rounded-xl border border-zinc-800 text-xs font-mono text-zinc-300 space-y-1.5">
-              <div className="flex items-center justify-between text-zinc-400">
-                <span className="font-sans font-medium">(+) Faturamento do Dia:</span>
-                <span className="text-purple-400 font-bold tabular-nums">R$ {faturamentoPeriodo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-              </div>
-              <div className="flex items-center justify-between text-zinc-400">
-                <span className="font-sans font-medium">(-) Fluxo de Caixa (Caixa Hoje - Caixa Ontem):</span>
-                <span className="text-cyan-400 font-bold tabular-nums">R$ {fluxoCaixa.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-              </div>
-              <div className="flex items-center justify-between text-zinc-200 border-t border-zinc-800 pt-1.5 font-bold">
-                <span className="font-sans">(=) Valor Disponível para Contas:</span>
-                <span className="text-emerald-400 tabular-nums">R$ {valorDispContas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-              </div>
-              <div className="flex items-center justify-between text-zinc-400">
-                <span className="font-sans font-medium">(-) Subtotal de Contas a Cobrir (Contas + Juros):</span>
-                <span className="text-rose-400 font-bold tabular-nums">R$ {subtotalContas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-              </div>
-            </div>
-
-            {!isOk && (
-              <p className="text-xs text-amber-400 font-semibold mt-1">
-                💡 Dica: Se necessário, clique em "Voltar" para justificar despesas extras no Passo 4 ou ajustar vínculos de OS no Passo 3.
-              </p>
-            )}
+            <Badge variant="outline" className="text-[10px] font-mono bg-zinc-950 border-zinc-800 text-zinc-400">
+              Tolerância ± R$ 50,00
+            </Badge>
           </div>
 
-          <div className="text-right shrink-0 bg-zinc-950/90 p-5 rounded-2xl border border-zinc-800 min-w-[220px]">
-            <span className="text-[10px] text-zinc-400 uppercase font-bold block tracking-wider font-sans">Diferença Final Apurada</span>
-            <p
-              className={`text-3xl font-mono font-bold mt-1 tabular-nums ${
-                isOk ? 'text-emerald-400' : isWarning ? 'text-amber-400' : 'text-rose-400'
-              }`}
-            >
-              R$ {diferencaFinal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </p>
-            <span className="text-[11px] text-zinc-500 font-mono mt-1 block">
-              {isOk ? 'Diferença Zero / Na Margem' : diferencaFinal > 0 ? 'Sobra de Caixa' : 'Falta de Caixa / A Cobrir'}
-            </span>
+          {/* Linha 1: Caixa Atual, Caixa Anterior, Fluxo de Caixa */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800/80">
+              <span className="text-[10px] text-zinc-400 uppercase font-semibold">Caixa Atual</span>
+              <p className="text-xl font-bold text-zinc-100 font-mono mt-0.5 tabular-nums">
+                R$ {caixaAtual.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </p>
+              <span className="text-[10px] text-zinc-500 truncate block">
+                {saldoNegativoItau > 0 ? `Ativos - R$ ${saldoNegativoItau.toFixed(2)}` : 'Patrimônio disponível'}
+              </span>
+            </div>
+
+            <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800/80">
+              <span className="text-[10px] text-zinc-400 uppercase font-semibold">Caixa Anterior</span>
+              <p className="text-xl font-bold text-zinc-400 font-mono mt-0.5 tabular-nums">
+                R$ {caixaAnterior.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </p>
+              <span className="text-[10px] text-zinc-500">Fechamento dia anterior</span>
+            </div>
+
+            <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800/80">
+              <span className="text-[10px] text-zinc-400 uppercase font-semibold">Fluxo de Caixa</span>
+              <p className={`text-xl font-bold font-mono mt-0.5 tabular-nums ${fluxoCaixa >= 0 ? 'text-teal-400' : 'text-rose-400'}`}>
+                {fluxoCaixa >= 0 ? '+' : ''}R$ {fluxoCaixa.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </p>
+              <span className="text-[10px] text-zinc-500">Caixa Atual - Caixa Ant.</span>
+            </div>
+          </div>
+
+          {/* Linha 2: Faturamento do Dia, Valor Disp. Contas, Contas (Manual) */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800/80">
+              <span className="text-[10px] text-zinc-400 uppercase font-semibold">Faturamento do Dia</span>
+              <p className="text-xl font-bold text-purple-400 font-mono mt-0.5 tabular-nums">
+                R$ {faturamentoPeriodo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </p>
+              <div className="text-[10px] text-zinc-500 mt-0.5">
+                <span>OI: R$ {faturamentoDia.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                {(summary?.faturamento_ajustes || 0) > 0 && (
+                  <span className="text-emerald-400 ml-1 font-semibold">
+                    + Ajustes: R$ {Number(summary?.faturamento_ajustes || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800/80">
+              <span className="text-[10px] text-zinc-400 uppercase font-semibold">Valor Disp. Contas</span>
+              <p className="text-xl font-bold text-emerald-400 font-mono mt-0.5 tabular-nums">
+                R$ {valorDispContas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </p>
+              <span className="text-[10px] text-zinc-500">Faturamento - Fluxo Caixa</span>
+            </div>
+
+            <div className="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800/80">
+              <span className="text-[10px] text-zinc-400 uppercase font-semibold">Contas (Manual)</span>
+              <p className="text-xl font-bold text-rose-400 font-mono mt-0.5 tabular-nums">
+                R$ {contasFinal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </p>
+              <div className="text-[10px] text-zinc-500 flex flex-col gap-0.5 mt-0.5">
+                <span>Juros Rede: R$ {jurosRede.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Subtotal Barra Inferior */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pt-3 border-t border-zinc-800 text-xs text-zinc-400 gap-2">
+            <div>
+              <span className="font-semibold text-zinc-200">Subtotal: Total de Contas a Cobrir</span>
+              <span className="text-[10px] block text-zinc-500">Contas (Manual) + Juros (REDE)</span>
+            </div>
+            <div className="font-mono text-sm font-bold text-amber-400 tabular-nums">
+              R$ {subtotalContas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            </div>
           </div>
         </div>
-      </Card>
+
+        {/* Card Lateral - Diferença Final (Destaque Centralizado e Harmonioso com ResumoDiaPanel) */}
+        <div className={`rounded-2xl border p-6 flex flex-col items-center justify-center text-center shadow-lg transition-all relative overflow-hidden backdrop-blur-md ${
+          isOk
+            ? 'bg-gradient-to-b from-emerald-500/10 to-emerald-950/20 border-emerald-500/30 text-emerald-400'
+            : isWarning
+            ? 'bg-gradient-to-b from-amber-500/10 to-amber-950/20 border-amber-500/30 text-amber-400'
+            : 'bg-gradient-to-b from-rose-500/10 to-rose-950/20 border-rose-500/30 text-rose-400'
+        }`}>
+          <div className="flex items-center gap-1.5 mb-2">
+            {isOk ? (
+              <CheckCircle2 size={18} className="text-emerald-400" />
+            ) : isWarning ? (
+              <AlertTriangle size={18} className="text-amber-400" />
+            ) : (
+              <AlertTriangle size={18} className="text-rose-400" />
+            )}
+            <span className="text-xs uppercase font-bold tracking-widest text-zinc-300">
+              Diferença Final Apurada
+            </span>
+          </div>
+
+          <div className="my-2">
+            <p className={`text-4xl font-mono font-bold tracking-tight tabular-nums ${
+              isOk ? 'text-emerald-400' : isWarning ? 'text-amber-400' : 'text-rose-400'
+            }`}>
+              R$ {diferencaFinal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </p>
+          </div>
+
+          <span className="text-xs font-medium font-sans px-3 py-1 rounded-full bg-zinc-950/80 border border-zinc-800/80 text-zinc-300 mt-1">
+            {isOk ? '✓ Fechamento Equilibrado' : diferencaFinal > 0 ? 'Sobra de Caixa' : 'Falta de Caixa / A Cobrir'}
+          </span>
+
+          <span className="text-[11px] text-zinc-500 font-mono mt-3 block">
+            Valor Disp. Contas - Subtotal Contas
+          </span>
+
+          {!isOk && (
+            <p className="text-[11px] text-amber-300/90 font-medium mt-3 px-2 leading-relaxed">
+              💡 Dica: Se necessário, clique em "Voltar para Ajustar" para revisar vínculos ou justificativas.
+            </p>
+          )}
+        </div>
+      </div>
 
       {/* Navegação de Rodapé */}
       <div className="flex items-center justify-between pt-4 border-t border-zinc-800">

@@ -285,7 +285,7 @@ export function useHistoricalReconciledTransactions(storeId?: string) {
       try {
         let query = supabase
           .from('ofx_transactions')
-          .select('id, fitid, store_id, target_date, occurred_at, manual_category, manual_justification, matched_os_number, match_status, title, amount')
+          .select('id, fitid, store_id, target_date, occurred_at, manual_category, manual_justification, matched_os_number, match_status, bank_name, counterpart_name, amount')
           .order('occurred_at', { ascending: false })
           .limit(200);
         

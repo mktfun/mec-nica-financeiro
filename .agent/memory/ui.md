@@ -1,3 +1,24 @@
+## [2026-09-11] — [Feature ID: 383-pente-fino-limpeza-wizard-e-unificacao-diferenca]
+
+**Contexto:** Pente fino e higienização visual completa na Central de Importações (`CentralImportWizard.tsx` e `Step4FinalAuditAndClose.tsx`). Remoção de cards ruidosos pré-conferência no Step 1, eliminação de acordeão de payload JSON de depuração, remoção de cartões de métricas do lote e banners alarmantes com deltas na tela de gravação concluída (`saveFinished`), e reestruturação do Step 4 (Auditoria e Fechamento) em espelhamento 1:1 com o painel canônico de `/conciliacao` (`ResumoDiaPanel.tsx`).
+
+**Regra aprendida:**
+1. **Eliminação de Cards Ruidosos Pré-Conferência (Step 1):**
+   - No início do fechamento (Step 1), exibir cards como "Total OS", "Maquininha" ou "Saldo Bancário" com valores zerados (R$ 0,00) ou pré-computados antes de conferir orfãs e ajustes gera insegurança e confusão no operador. O Step 1 deve manter foco estrito nos inputs manuais do dia (Dinheiro, Boletos, Odômetros).
+2. **Remoção de Elementos de Depuração Técnica:**
+   - Acordeões de payloads JSON técnicos ("Inspetor de Conciliação") ou botões de cópia de payload nunca devem poluir telas operacionais de produção. Depuração deve residir em logs ou ferramentas administrativas.
+3. **Higienização do Estado Pós-Gravação (`saveFinished`):**
+   - Ao finalizar a gravação no banco, o operador necessita apenas de confirmação clara e objetiva de sucesso (Checkmark verde, data, botões de ação). Banners com termos como "Auditoria Pericial & Auto-Healing" ou deltas residuais numéricos alarmam desnecessariamente o usuário após o fechamento já ter sido consolidado.
+4. **Espelhamento Visual 1:1 entre Telas de Fechamento (`Step4` vs `/conciliacao`):**
+   - O Step 4 da Central de Importação deve adotar rigorosamente a mesma linguagem visual, agrupamentos e terminologia de `ResumoDiaPanel.tsx`:
+     - Grid dos 4 Ativos de Caixa: *Saldo Bancos + Cartões*, *Dinheiro MP*, *A Receber*, *Na Loja OS (Pátio)*.
+     - Consolidação do Dia & Fluxo Contábil: *Caixa Atual*, *Caixa Anterior*, *Fluxo de Caixa*, *Faturamento do Dia*, *Valor Disp. Contas*, *Contas (Manual)* e *Subtotal de Contas a Cobrir*.
+     - Placar Hero da Diferença Final Apurada com badge de status e badge de DRE/Faturamento.
+
+**Risco identificado / Anti-pattern:** Exibir jargões teóricos ("Canal 1 - Tesouraria Líquida Real", "Canal 2 - Balanço de Produção WIP ΔP4") ou fórmulas divergentes da tela principal de conciliação diária.
+
+---
+
 ## [2026-09-08] — [Feature ID: 377-formato-ofx-tabela-entradas-saidas-orfas]
 
 **Contexto:** Reformulação visual e de UX do Step 2 de Justificativas e Órfãos no Wizard Central de Importações (`Step2NonRevenueJustifications.tsx`), substituindo cartões verticais volumosos por uma tabela de dados canônica em Dark UI Zinc-950 de alta densidade inspirada no extrato bancário do sistema (`StoreExtratoBancarioView.tsx`).

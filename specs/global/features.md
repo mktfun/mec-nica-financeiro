@@ -1,3 +1,29 @@
+### Spec 383 — Pente Fino, Limpeza Visual do Wizard e Unificação da Diferença Contábil (11/09/2026)
+- **Frontend Central de Importação (`CentralImportWizard.tsx`)**:
+  - Remoção dos 3 cards de resumo no topo (*Total OS*, *Maquininha*, *Saldo Total Bancário*) de dentro de `step === 3`, mantendo foco 100% nos inputs manuais do dia.
+  - Remoção de card prematuro `RevenueAdjustmentsCard` do Step 1 (ajustes ocorrem nas justificativas de órfãs).
+  - Remoção de acordeão técnico de depuração (*Inspetor de Conciliação - Payload JSON*) e botão de cópia.
+  - Higienização da view de sucesso pós-gravação (`saveFinished`): remoção dos 4 cards de métricas do lote e eliminação de banner alarmante de *Auditoria Pericial & Auto-Healing* com deltas residuais.
+- **Frontend Auditoria e Fechamento (`Step4FinalAuditAndClose.tsx`)**:
+  - Eliminação total dos blocos conceituais esotéricos *Canal 1 (Tesouraria Líquida Real)* e *Canal 2 (Balanço de Produção WIP ΔP4)*.
+  - Reestruturação em espelhamento 1:1 com `ResumoDiaPanel.tsx`: Grid de Ativos de Caixa (Bancos + Cartões, Dinheiro MP, A Receber, Na Loja OS), Painel de Consolidação do Dia & Fluxo Contábil, e Placar Hero da Diferença Final Apurada.
+  - Unificação matemática exata da apuração de Diferença Final (`diferencaFinal = valorDispContas - subtotalContas`), alinhando Step 4 ao painel de `/conciliacao` e à RPC `get_daily_reconciliation_summary`.
+
+### Spec 382 — Correção das Justificativas de Transações Órfãs (Faturamento e Contas a Pagar) (11/09/2026)
+- **Frontend Step 2 de Justificativas (`Step2NonRevenueJustifications.tsx`)**:
+  - Remoção de colunas inexistentes `title` e `subtitle` das queries React Query.
+  - Correção do salvamento de crédito órfão como faturamento (`daily_revenue_adjustments` com `date`, `store_id`, `category`, `notes`).
+  - Tratamento fail-fast eliminando falsos toasts de sucesso.
+- **Database & Backend (`20260911000041_fix_contas_extras_and_revenue_adjustments.sql`)**:
+  - Sincronização e cômputo dinâmico de `daily_revenue_adjustments` em `faturamento_outros_valor` e despesas extras em `daily_manual_bills`.
+
+### Spec 381 — Correção do Encadeamento do Odômetro e Faturamento Anterior (11/09/2026)
+- **Database (`20260911000040_fix_odometro_faturamento_anterior_chain.sql`)**:
+  - Correção na RPC `get_daily_reconciliation_summary` e `close_daily_snapshot` garantindo preservação do odômetro acumulado no fechamento.
+  - Saneamento de registros de setembro de 2026 em `daily_snapshots`.
+- **Frontend (`CentralImportWizard.tsx` & `ResumoDiaPanel.tsx`)**:
+  - Correção da precedência de busca do odômetro anterior eliminando curto-circuito indesejado.
+
 ### Spec 380 — Equalização de Fechamento 08/09, Caixa Anterior e Sincronização Oficial de Pátio e Bancos (09/09/2026)
 - **Database (`daily_snapshots`, `reconciliations`, `patio_os`)**:
   - Correção da causa-raiz do Caixa Anterior e Faturamento Anterior em `daily_snapshots` para `2026-09-04`: ajuste de `caixa_atual` para R$ 357.262,70 (valor oficial consolidado da planilha) e `faturamento` para R$ 98.867,73 (odômetro acumulado no mês até o fechamento anterior).

@@ -200,7 +200,7 @@ export function Step2NonRevenueJustifications({
     queryFn: async () => {
       const { data, error } = await supabase
         .from('ofx_transactions')
-        .select('id, store_id, bank_name, type, amount, occurred_at, fitid, counterpart_name, title, subtitle, matched_bill_id, manual_category, manual_justification, target_date, contabilizar_no_subtotal, match_status')
+        .select('id, store_id, bank_name, type, amount, occurred_at, fitid, counterpart_name, matched_bill_id, manual_category, manual_justification, target_date, contabilizar_no_subtotal, match_status')
         .eq('target_date', targetDate)
         .eq('type', 'out')
         .is('matched_bill_id', null);
@@ -219,7 +219,7 @@ export function Step2NonRevenueJustifications({
     queryFn: async () => {
       const { data, error } = await supabase
         .from('ofx_transactions')
-        .select('id, store_id, bank_name, type, amount, occurred_at, fitid, counterpart_name, title, subtitle, matched_os_number, manual_category, manual_justification, target_date, match_status')
+        .select('id, store_id, bank_name, type, amount, occurred_at, fitid, counterpart_name, matched_os_number, manual_category, manual_justification, target_date, match_status')
         .eq('target_date', targetDate)
         .eq('type', 'in')
         .is('matched_os_number', null);
@@ -247,7 +247,7 @@ export function Step2NonRevenueJustifications({
       return dbInflows
         .filter((tx: any) => {
           if (tx.match_status === 'matched' || tx.match_status === 'matched_batch' || tx.match_status === 'intercompany_paired' || tx.match_status === 'auto_cancelled') return false;
-          const fullDesc = `${tx.title || ''} ${tx.counterpart_name || ''} ${tx.bank_name || ''}`.trim();
+          const fullDesc = `${tx.counterpart_name || ''} ${tx.bank_name || ''}`.trim();
           if (EXCLUDE_ACQUIRER_REGEX.test(fullDesc)) return false;
           if (EXCLUDE_BANK_EARNINGS_REGEX.test(fullDesc)) return false;
           if (/saldo\s+anterior|saldo\s+total/i.test(fullDesc)) return false;
@@ -256,7 +256,7 @@ export function Step2NonRevenueJustifications({
         .map((tx: any) => {
           const storeObj = stores.find(s => s.id === tx.store_id);
           const storeName = storeObj?.name || tx.store_id || 'Loja';
-          const description = tx.title || tx.counterpart_name || tx.bank_name || 'Movimentação Bancária';
+          const description = tx.counterpart_name || tx.bank_name || 'Movimentação Bancária';
           return {
             id: tx.id,
             storeId: tx.store_id || '',
@@ -268,8 +268,8 @@ export function Step2NonRevenueJustifications({
             type: 'in' as const,
             bankName: tx.bank_name,
             counterpartName: tx.counterpart_name,
-            title: tx.title,
-            subtitle: tx.subtitle,
+            title: tx.bank_name,
+            subtitle: tx.counterpart_name,
             matchedOsNumber: tx.matched_os_number || undefined,
             manualCategory: tx.manual_category || undefined,
             manualJustification: tx.manual_justification || undefined,
@@ -326,7 +326,7 @@ export function Step2NonRevenueJustifications({
       return dbOutflows
         .filter((tx: any) => {
           if (tx.match_status === 'matched' || tx.match_status === 'matched_batch' || tx.match_status === 'intercompany_paired' || tx.match_status === 'auto_cancelled') return false;
-          const fullDesc = `${tx.title || ''} ${tx.counterpart_name || ''} ${tx.bank_name || ''}`.trim();
+          const fullDesc = `${tx.counterpart_name || ''} ${tx.bank_name || ''}`.trim();
           if (EXCLUDE_BANK_EARNINGS_REGEX.test(fullDesc)) return false;
           if (/saldo\s+anterior|saldo\s+total/i.test(fullDesc)) return false;
           return true;
@@ -334,7 +334,7 @@ export function Step2NonRevenueJustifications({
         .map((tx: any) => {
           const storeObj = stores.find(s => s.id === tx.store_id);
           const storeName = storeObj?.name || tx.store_id || 'Loja';
-          const description = tx.title || tx.counterpart_name || tx.bank_name || 'Débito Bancário';
+          const description = tx.counterpart_name || tx.bank_name || 'Débito Bancário';
           return {
             id: tx.id,
             storeId: tx.store_id || '',
@@ -346,8 +346,8 @@ export function Step2NonRevenueJustifications({
             type: 'out' as const,
             bankName: tx.bank_name,
             counterpartName: tx.counterpart_name,
-            title: tx.title,
-            subtitle: tx.subtitle,
+            title: tx.bank_name,
+            subtitle: tx.counterpart_name,
             matchedBillId: tx.matched_bill_id || undefined,
             manualCategory: tx.manual_category || undefined,
             manualJustification: tx.manual_justification || undefined,
@@ -479,6 +479,7 @@ export function Step2NonRevenueJustifications({
         .update({
           manual_category: finalCategory,
           manual_justification: finalJustification,
+          contabilizar_no_subtotal: state.impactsRevenue,
         })
         .eq('id', entry.id);
 
@@ -490,19 +491,21 @@ export function Step2NonRevenueJustifications({
           .from('daily_revenue_adjustments')
           .upsert({
             id: entry.id,
-            date: entry.date || targetDate,
+            date: targetDate, // SEMPRE targetDate da conciliação contábil do fechamento
+            store_id: entry.storeId || null,
             title: cleanCategory || 'Receita Avulsa OFX',
             description: cleanJustification || entry.description || 'Justificado no Wizard',
             type: 'venda_avulsa',
             amount: entry.amount
           }, { onConflict: 'id' });
 
-        if (adjErr) console.warn('Erro ao atualizar daily_revenue_adjustments:', adjErr);
+        if (adjErr) throw adjErr;
       } else {
-        await supabase
+        const { error: delErr } = await supabase
           .from('daily_revenue_adjustments')
           .delete()
           .eq('id', entry.id);
+        if (delErr) throw delErr;
       }
 
       updateInflowState(entry.id, { saving: false, saved: true }, entry);
@@ -528,7 +531,7 @@ export function Step2NonRevenueJustifications({
     const state = getOutflowState(entry);
     updateOutflowState(entry.id, { saving: true }, entry);
     try {
-      const { error } = await supabase.rpc('resolve_orphan_saida_ofx', {
+      const { data: rpcRes, error } = await supabase.rpc('resolve_orphan_saida_ofx', {
         p_ofx_id: entry.id,
         p_category: state.category,
         p_justification: state.observacao || entry.description,
@@ -540,6 +543,9 @@ export function Step2NonRevenueJustifications({
       });
 
       if (error) throw error;
+      if (rpcRes && (rpcRes as any).success === false) {
+        throw new Error((rpcRes as any).message || 'Falha ao classificar saída no banco');
+      }
 
       updateOutflowState(entry.id, { saving: false, saved: true }, entry);
       setEditingId(null);

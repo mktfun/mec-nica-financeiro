@@ -1712,7 +1712,6 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       addLog("Auto-salvando Fechamento do Dia...", "info");
       const totalImportedContas = results.contasPagarResults?.reduce((acc, c) => acc + c.totalAmount, 0) || 0;
       const finalContasManual = contasManual > 0 ? contasManual : (totalImportedContas > 0 ? totalImportedContas : totalOfxOut);
-      const finalFaturamento = odometroHoje > 0 ? odometroHoje : faturamentoAtual;
 
       // Puxa snapshot anterior para compor DRE completa
       const { data: prevSnap } = await supabase
@@ -1727,20 +1726,32 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       const mapaMetasVal = results.mapaMetasResults?.[0]?.totalFaturamento || 0;
 
       const caixaAnt = Number(prevSnap?.caixa_atual || 0);
-      const fatAnt = Number(prevSnap?.faturamento || (prevSnap?.metadata as any)?.odometro_hoje || 0);
+      const fatAnt = previousOdometro > 0
+        ? previousOdometro
+        : Number(
+            (prevSnap?.metadata as any)?.odometro_hoje ??
+            (prevSnap?.metadata as any)?.faturamento_anterior ??
+            (prevSnap?.metadata as any)?.odometro_anterior ??
+            prevSnap?.faturamento ??
+            0
+          );
       
       let fatOiBase = 0;
       if (!isNoOsMode) {
-        fatOiBase = (odometroHoje > 0 && fatAnt > 0 && odometroHoje > fatAnt) ? (odometroHoje - fatAnt) : (odometroHoje > 0 ? odometroHoje : faturamentoAtual);
+        fatOiBase = (odometroHoje > 0 && fatAnt > 0 && odometroHoje >= fatAnt) ? (odometroHoje - fatAnt) : (odometroHoje > 0 ? odometroHoje : faturamentoAtual);
       } else {
         if (mapaMetasVal > 0) {
           fatOiBase = mapaMetasVal;
-        } else if (odometroHoje > 0 && fatAnt > 0 && odometroHoje > fatAnt) {
+        } else if (odometroHoje > 0 && fatAnt > 0 && odometroHoje >= fatAnt) {
           fatOiBase = odometroHoje - fatAnt;
         } else {
           fatOiBase = odometroHoje > 0 ? odometroHoje : faturamentoAtual;
         }
       }
+
+      const finalFaturamento = odometroHoje > 0 
+        ? odometroHoje 
+        : (fatAnt > 0 && fatOiBase > 0 ? fatAnt + fatOiBase : (faturamentoAtual > 0 ? fatAnt + faturamentoAtual : 0));
 
       const fatTotalComAjustes = fatOiBase + totalRevenueAdjustments;
       const fluxoCalculado = caixaAtualCalculado - caixaAnt;
@@ -1752,7 +1763,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         const payload = {
           date: targetDate,
           caixa_atual: caixaAtualCalculado,
-          faturamento: finalFaturamento + totalRevenueAdjustments,
+          faturamento: finalFaturamento > 0 ? finalFaturamento : fatTotalComAjustes,
           dinheiro_mp: manualDinheiroMp,
           total_recebiveis: totalRecebiveis,
           total_patio: veiculosPatioValor,
@@ -1764,8 +1775,8 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           provisao: 0,
           saldo_negativo_itau: saldoNegativoItau,
           juros_rede: jurosRedeTotal,
-          is_closed: true,
-          closed_at: new Date().toISOString(),
+          is_closed: advanceToWizard ? false : true,
+          closed_at: advanceToWizard ? null : new Date().toISOString(),
           notes: isNoOsMode ? 'Fechamento Assistido via Mapa de Metas (Sem Arquivo de OS)' : 'Valores calculados via Importacao Centralizada',
           metadata: {
             caixa_atual: caixaAtualCalculado,
@@ -1775,7 +1786,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             faturamento_mes_anterior: manualFaturamentoMesAnterior,
             faturamento_oi_base: fatOiBase,
             faturamento_ajustes: totalRevenueAdjustments,
-            odometro_hoje: odometroHoje,
+            odometro_hoje: odometroHoje > 0 ? odometroHoje : finalFaturamento,
             faturamento_periodo: fatTotalComAjustes,
             source_mode: isNoOsMode ? 'mapa_metas' : 'odometro_os',
             has_os_files: !isNoOsMode,
@@ -1790,7 +1801,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             a_receber_manual: manualAReceber,
             total_patio: veiculosPatioValor,
             status_geral: Math.abs(diferencaCalculada) <= 50 ? 'approved' : 'divergent',
-            is_closed: true,
+            is_closed: advanceToWizard ? false : true,
           }
         };
         await saveSnapshot.mutateAsync(payload);
@@ -1882,7 +1893,8 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           total_patio: veiculosPatioValor,
           saldo_bancario: saldoBancosLiquido,
           a_receber_manual: manualAReceber,
-          faturamento_outros_valor: 0,
+          faturamento_outros_valor: totalRevenueAdjustments,
+          faturamento_outros_desc: totalRevenueAdjustments > 0 ? 'Receitas Extras e Ajustes DRE' : null,
           contas_a_pagar: finalContasManual,
           provisao: 0,
           saldo_negativo_itau: saldoNegativoItau,
@@ -1896,8 +1908,9 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             fluxo_caixa: fluxoCalculado,
             faturamento_anterior: fatAnt,
             faturamento_oi_base: fatOiBase,
-            odometro_hoje: odometroHoje,
-            faturamento_periodo: fatOiBase,
+            faturamento_ajustes: totalRevenueAdjustments,
+            odometro_hoje: odometroHoje > 0 ? odometroHoje : finalFaturamento,
+            faturamento_periodo: fatTotalComAjustes,
             valor_disp_contas: valorDispCalculado,
             subtotal_contas: subtotalContasCalculado,
             diferenca_final: diferencaCalculada,
@@ -2007,17 +2020,44 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     setIsSaving(true);
     try {
       addLog("🔒 Homologando e selando fechamento definitivo do dia...", "info");
+
+      // 1. Busca ajustes reais de receita e contas a pagar do banco para blindar o fechamento
+      const [{ data: revAdjs }, { data: activeBills }] = await Promise.all([
+        supabase.from('daily_revenue_adjustments').select('amount').eq('date', targetDate),
+        supabase.from('daily_manual_bills').select('amount, is_extra, contabilizar_no_subtotal').eq('date', targetDate)
+      ]);
+
+      const faturamentoAjustesTotal = (revAdjs || []).reduce((acc, r) => acc + (Number(r.amount) || 0), 0);
+      const validBills = (activeBills || []).filter(b => b.contabilizar_no_subtotal !== false);
+      const contasManualTotal = validBills.reduce((acc, b) => acc + (Number(b.amount) || 0), 0);
+      const contasExtrasTotal = validBills.filter(b => b.is_extra).reduce((acc, b) => acc + (Number(b.amount) || 0), 0);
+      const contasBaseTotal = contasManualTotal - contasExtrasTotal;
+
       const { data, error } = await supabase.rpc('close_daily_snapshot', {
         p_date: targetDate,
         p_notes: 'Fechamento homologado via Central de Conciliação',
         p_metadata: {
-          odometro_hoje: odometroHoje || 0,
+          odometro_hoje: odometroHoje > 0 
+            ? odometroHoje 
+            : (previousOdometro > 0 && deltaFaturamentoCalculado > 0 ? previousOdometro + deltaFaturamentoCalculado : (odometroHoje || 0)),
+          faturamento_anterior: previousOdometro || 0,
+          faturamento_ajustes: faturamentoAjustesTotal,
           manual_dinheiro_mp: manualDinheiroMp || 0,
           manual_a_receber: manualAReceber || 0,
+          contas_base: contasBaseTotal > 0 ? contasBaseTotal : undefined,
+          contas_extras: contasExtrasTotal,
+          contas_manual: contasManualTotal > 0 ? contasManualTotal : undefined,
         }
       });
 
       if (error) throw error;
+
+      // 2. Garante persistência física estrita de faturamento_outros_valor e contas_a_pagar
+      await supabase.from('daily_snapshots').update({
+        faturamento_outros_valor: faturamentoAjustesTotal,
+        faturamento_outros_desc: faturamentoAjustesTotal > 0 ? 'Transações Justificadas (Ajustes)' : null,
+        ...(contasManualTotal > 0 ? { contas_a_pagar: contasManualTotal } : {})
+      }).eq('date', targetDate);
 
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] }),
@@ -2823,49 +2863,6 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
         {step === 3 && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-          {/* Header de Resumo */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="p-5 bg-zinc-900/60 border border-zinc-800 border-l-4 border-l-emerald-500">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Total OS (Recebimentos do Dia)</span>
-                <FileText size={18} className="text-emerald-400" />
-              </div>
-              <p className="text-2xl font-bold font-mono text-zinc-100 tabular-nums">
-                <AnimatedNumber value={totalOs} format="currency" />
-              </p>
-              <div className="flex flex-col gap-0.5 mt-1 text-xs text-zinc-400">
-                <span>{filteredOsCount} novos pagamentos no dia</span>
-                {totalPatioEstoqueGlobal > 0 && (
-                  <span className="text-[11px] font-mono font-medium text-emerald-400 tabular-nums">
-                    Estoque em Pátio: {totalPatioEstoqueGlobal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} ({allOsCount} OSs)
-                  </span>
-                )}
-              </div>
-            </Card>
-
-            <Card className="p-5 bg-zinc-900/60 border border-zinc-800 border-l-4 border-l-teal-500">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Maquininha (Rede Líquido)</span>
-                <CreditCard size={18} className="text-teal-400" />
-              </div>
-              <p className="text-2xl font-bold font-mono text-zinc-100 tabular-nums">
-                <AnimatedNumber value={totalMaq} format="currency" />
-              </p>
-              <p className="text-xs text-zinc-400 mt-1">{redeFiltered.length} transações de cartão</p>
-            </Card>
-
-            <Card className="p-5 bg-zinc-900/60 border border-zinc-800 border-l-4 border-l-sky-500">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Saldo Total Bancário (OFX)</span>
-                <Database size={18} className="text-sky-400" />
-              </div>
-              <p className="text-2xl font-bold font-mono text-zinc-100 tabular-nums">
-                <AnimatedNumber value={totalOfxIn} format="currency" />
-              </p>
-              <p className="text-xs text-zinc-400 mt-1">{allOfxTx.length} lançamentos no total dos extratos</p>
-            </Card>
-          </div>
-
           <Card className="p-6 bg-zinc-900/60 border border-zinc-800 space-y-6">
             {/* Início: Valores Manuais Globais */}
             {(() => {
@@ -3143,82 +3140,10 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                       </div>
                     </div>
                   )}
-
-                  {/* Bloco Unificado: Receitas Extras e Ajustes DRE */}
-                  <div className="pt-3">
-                    <RevenueAdjustmentsCard
-                      targetDate={targetDate}
-                      stores={stores}
-                      isLocked={isManualLocked}
-                      onTotalChange={(total) => setTotalRevenueAdjustments(total)}
-                    />
-                  </div>
                 </div>
               );
             })()}
             {/* Fim: Valores Manuais Globais */}
-
-            {/* Inspetor JSON de Conciliação */}
-            <div className="pt-4 border-t border-zinc-800">
-              <details className="group p-4 bg-zinc-950 rounded-xl border border-zinc-800">
-                <summary className="cursor-pointer flex items-center justify-between text-xs font-mono text-zinc-300 select-none hover:text-zinc-100">
-                  <span className="flex items-center gap-2">
-                    <Code2 size={16} className="text-emerald-400" />
-                    Inspetor de Conciliação (Payload JSON que será enviado ao Backend)
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigator.clipboard.writeText(JSON.stringify({
-                          target_date: targetDate,
-                          manual_inputs: {
-                            odometro_hoje: odometroHoje,
-                            dinheiro_mp: manualDinheiroMp,
-                            a_receber: manualAReceber,
-                            contas_manual: contasManual
-                          },
-                          file_mappings: mapping,
-                          orphan_os_modifications: missingOsList.filter(
-                            os => os.total_value !== os.original_total_value || os.paid_value !== os.original_paid_value || os.status !== os.original_status
-                          ),
-                          ofx_results_count: results.ofxResults.length,
-                          os_files_count: results.osFiles.length,
-                          rede_results_count: results.redeResults.length
-                        }, null, 2));
-                        setCopiedJson(true);
-                        toast.success('JSON de conciliação copiado!');
-                        setTimeout(() => setCopiedJson(false), 2000);
-                      }}
-                      className="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] font-mono rounded flex items-center gap-1 cursor-pointer"
-                    >
-                      {copiedJson ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
-                      {copiedJson ? 'Copiado!' : 'Copiar JSON'}
-                    </button>
-                    <span className="text-[10px] text-zinc-500 group-open:rotate-180 transition-transform">▼</span>
-                  </div>
-                </summary>
-                <div className="mt-3 p-3 bg-zinc-950 border-t border-zinc-800 font-mono text-[11px] text-emerald-400 overflow-x-auto max-h-60">
-                  <pre>{JSON.stringify({
-                    target_date: targetDate,
-                    manual_inputs: {
-                      odometro_hoje: odometroHoje,
-                      dinheiro_mp: manualDinheiroMp,
-                      a_receber: manualAReceber,
-                      contas_manual: contasManual
-                    },
-                    file_mappings: mapping,
-                    orphan_os_modifications: missingOsList.filter(
-                      os => os.total_value !== os.original_total_value || os.paid_value !== os.original_paid_value || os.status !== os.original_status
-                    ),
-                    ofx_results_count: results.ofxResults.length,
-                    os_files_count: results.osFiles.length,
-                    rede_results_count: results.redeResults.length
-                  }, null, 2)}</pre>
-                </div>
-              </details>
-            </div>
 
             {/* Rodapé com Navegação */}
             <div className="pt-4 border-t border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -3365,72 +3290,6 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
                     Os arquivos foram auditados, as OSs e transações foram persistidas no banco e os saldos consolidados para {formattedTargetDate}.
                   </p>
                 </div>
-
-                {/* 4 Cards de Métricas do Lote */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto pt-1">
-                  <div className="bg-zinc-950/60 border border-zinc-800 rounded-xl p-3 text-left">
-                    <span className="text-[10px] font-mono uppercase text-zinc-500 block font-sans">OSs Gravadas</span>
-                    <p className="text-lg font-bold font-mono text-zinc-100 mt-0.5 tabular-nums">{totalOsCount}</p>
-                    <span className="text-[10px] text-zinc-500">{results.osFiles.length} arquivos</span>
-                  </div>
-
-                  <div className="bg-zinc-950/60 border border-zinc-800 rounded-xl p-3 text-left">
-                    <span className="text-[10px] font-mono uppercase text-zinc-500 block font-sans">Vendas Rede</span>
-                    <p className="text-lg font-bold font-mono text-zinc-100 mt-0.5 tabular-nums">{totalRedeCount}</p>
-                    <span className="text-[10px] text-zinc-500">{results.redeResults.length} relatórios</span>
-                  </div>
-
-                  <div className="bg-zinc-950/60 border border-zinc-800 rounded-xl p-3 text-left">
-                    <span className="text-[10px] font-mono uppercase text-zinc-500 block font-sans">Extratos OFX</span>
-                    <p className="text-lg font-bold font-mono text-zinc-100 mt-0.5 tabular-nums">{totalOfxCount}</p>
-                    <span className="text-[10px] text-zinc-500">{results.ofxResults.length} contas</span>
-                  </div>
-
-                  <div className="bg-zinc-950/60 border border-zinc-800 rounded-xl p-3 text-left">
-                    <span className="text-[10px] font-mono uppercase text-zinc-500 block font-sans">Data Base</span>
-                    <p className="text-lg font-bold font-mono text-zinc-100 mt-0.5 tabular-nums">{formattedTargetDate}</p>
-                    <span className="text-[10px] text-emerald-400 font-medium">Consolidado</span>
-                  </div>
-                </div>
-
-                {/* Banner de Auditoria Pericial & Auto-Healing */}
-                {autoHealingData && (
-                  <div className={`p-4 rounded-xl border text-left max-w-2xl mx-auto ${
-                    autoHealingData.is_conforme 
-                      ? 'bg-emerald-500/10 border-emerald-500/30' 
-                      : 'bg-amber-500/10 border-amber-500/30'
-                  }`}>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <Sparkles size={16} className={autoHealingData.is_conforme ? 'text-emerald-400' : 'text-amber-400'} />
-                        <span className="text-xs font-bold uppercase tracking-wider text-zinc-100">
-                          Auditoria Pericial & Auto-Healing
-                        </span>
-                      </div>
-                      <Badge variant={autoHealingData.is_conforme ? 'default' : 'outline'} className={`text-[10px] ${autoHealingData.is_conforme ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-amber-500/20 text-amber-300 border-amber-500/40'}`}>
-                        {autoHealingData.is_conforme ? 'Fechamento Conforme ✅' : 'Divergência Residual'}
-                      </Badge>
-                    </div>
-
-                    <div className="flex items-center gap-4 text-xs font-mono text-zinc-400 mb-2">
-                      <span>Delta Inicial: <b className="text-zinc-100">R$ {Number(autoHealingData.initial_delta).toFixed(2)}</b></span>
-                      <span>➔</span>
-                      <span>Delta Final: <b className={autoHealingData.is_conforme ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'}>R$ {Number(autoHealingData.final_delta).toFixed(2)}</b></span>
-                      <span className="text-[10px] text-zinc-500">({autoHealingData.iterations_count} {autoHealingData.iterations_count === 1 ? 'iteração' : 'iterações'})</span>
-                    </div>
-
-                    {autoHealingData.steps_executed && autoHealingData.steps_executed.length > 0 && (
-                      <div className="space-y-1.5 pt-2 border-t border-zinc-800 text-[11px]">
-                        {autoHealingData.steps_executed.map((st: any, idx: number) => (
-                          <div key={idx} className="flex items-start gap-2 text-zinc-400">
-                            <span className="text-emerald-400 font-bold">✓</span>
-                            <span>{st.details}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
 
                 {/* Botões de Ação Final */}
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 max-w-lg mx-auto">

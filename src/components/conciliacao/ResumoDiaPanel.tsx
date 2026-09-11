@@ -90,12 +90,13 @@ export function ResumoDiaPanel({
   const [aReceberInput, setAReceberInput] = useState<number>(0);
   const [contasInput, setContasInput] = useState<number>(0);
 
-  // Faturamento Anterior (Ant) vem do snapshot anterior ou metadados de Marco Zero
+  // Faturamento Anterior (Ant) vem do snapshot anterior ou metadados de Marco Zero com precedência canônica do odômetro
   const faturamentoAnteriorGlobal = Number(
     summary?.faturamento_anterior 
+    ?? (previousSnapshot?.metadata as any)?.odometro_hoje 
+    ?? (previousSnapshot?.metadata as any)?.faturamento_anterior 
     ?? (currentSnapshot?.metadata as any)?.faturamento_anterior 
     ?? previousSnapshot?.faturamento 
-    ?? (previousSnapshot?.metadata as any)?.odometro_hoje 
     ?? 0
   );
 
