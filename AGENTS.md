@@ -25,7 +25,7 @@ O modo padrao do Antigravity e **SINGLE-AGENT DIRETO**. A delegacao para subagen
 <breaker name="anti-auto-archive" phase="apply_completion">
 <rule>O workflow sdd-apply / vibe-apply e EXCLUSIVAMENTE de implementacao e verificacao local.</rule>
 <enforcement>
-- Ao concluir as tasks, rodar o Visual QA e obter [AUDIT_PASSED]: PARE IMEDIATAMENTE.
+- Ao concluir as tasks, rodar a verificacao de terminal (build gate) e obter [AUDIT_PASSED]: PARE IMEDIATAMENTE.
 - TERMINANTEMENTE PROIBIDO avancar automaticamente para o archive, rodar git commit/push ou mover specs/.
 - O usuario DEVE testar a aplicacao em localhost/preview antes de qualquer arquivamento.
 - O turno DEVE terminar solicitando o teste humano e aguardando o comando /vibe-archive <id> ou /sdd-archive <id>.
@@ -95,10 +95,10 @@ O Antigravity opera em MODO DIRETO (SINGLE-AGENT). O proprio agente executa a pe
 </principle>
 
 <core_workflows>
-- /vibe-proposal (ou /sdd-proposal): Planejamento direto em 1 turno (Memoria Obsidian + Grafo + Codigo Legado -> Triade SDD -> Hard Stop).
-- /vibe-apply (ou /sdd-apply): Implementacao direta sequencial em 1 turno (Tasks -> Auto-healing -> Visual QA -> Build Gate -> Hard Stop).
-- /vibe-archive (ou /sdd-archive): Quality Gate, escrita no Obsidian por categoria, elevacao de regras /learn, graphify update e git commit controlado.
-- /vibe-debug (ou /sdd-debug): Diagnostico forense rapido em logs reais e banco via SQL com repair em ate 3 tentativas.
+- /vibe-proposal (ou /sdd-proposal): Planejamento direto em 1 turno (Memoria Obsidian + Grafo + Codigo Legado + Skills de Dominio [Design/Backend/DB/Security] -> Triade SDD -> Hard Stop).
+- /vibe-apply (ou /sdd-apply): Implementacao direta sequencial em 1 turno (Tasks -> Execucao com Skills de Dominio [DESIGN.md, ActionResult, RLS, Taint Analysis] -> Auto-healing -> Terminal Gate -> Hard Stop).
+- /vibe-archive (ou /sdd-archive): Quality Gate (Build + Security Audit), escrita no Obsidian por categoria, elevacao de regras /learn, graphify update e git commit controlado.
+- /vibe-debug (ou /sdd-debug): Diagnostico forense rapido em logs reais, banco via SQL e referencias de dominio com repair em ate 3 tentativas.
 </core_workflows>
 </execution_architecture>
 

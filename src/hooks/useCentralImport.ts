@@ -30,6 +30,12 @@ export function useCentralImport() {
     contasAPagarResults: [],
     validData: [],
     errors: [],
+    alerts: {
+      duplicatedOfx: [],
+      duplicatedOs: [],
+      ignoredEmptyRede: [],
+      duplicatedRede: [],
+    },
   });
 
   const processFiles = useCallback(async (files: File[], options?: { sessionId?: string }): Promise<CentralImportResults> => {
@@ -44,6 +50,12 @@ export function useCentralImport() {
       contasAPagarResults: [],
       validData: [],
       errors: [],
+      alerts: {
+        duplicatedOfx: [],
+        duplicatedOs: [],
+        ignoredEmptyRede: [],
+        duplicatedRede: [],
+      },
     };
 
     try {

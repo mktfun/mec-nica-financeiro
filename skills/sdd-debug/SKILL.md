@@ -28,6 +28,12 @@ Consulte o grafo para entender quais componentes dependem desse módulo:
 ```bash
 graphify explain "<modulo-com-bug>"
 ```
+
+Consulte a referência especializada conforme o domínio do bug:
+- **UI / Frontend:** `skills/frontend-design-pro/references/ai-slop-catalog.md` e `interface-guidelines.md` (Rauno).
+- **Backend / Server Actions:** `skills/backend-patterns/references/server-action-templates.md` e `skills/auth/references/auth-patterns.md`.
+- **Banco / Supabase / RLS:** `skills/database/references/rls-patterns.md` e `schema-patterns.md`.
+- **Segurança / Injeção / IDOR:** `skills/security/references/sentry-taint-analysis.md` e `owasp-top-10.md`.
 </step>
 
 <step number="2" name="Pesquisa de Logs em Ordem de Prioridade">

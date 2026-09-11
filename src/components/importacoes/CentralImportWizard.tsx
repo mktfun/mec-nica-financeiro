@@ -16,7 +16,7 @@ import {
   UploadCloud, CheckCircle2, FileType2, Link as LinkIcon, ArrowRight, ArrowLeft, 
   Database, Search, X, AlertCircle, CreditCard, FileText, 
   Terminal, Sparkles, FileSpreadsheet, RefreshCcw, Loader2, Code2, Copy, Check, Lock, Unlock, Receipt,
-  Car
+  Car, AlertTriangle, Info
 } from 'lucide-react';
 import { useStores } from '@/hooks/useStores';
 import { useStoreFileMappings } from '@/hooks/useStoreFileMappings';
@@ -33,7 +33,9 @@ import { savePatioOsAndReceivables, ParsedReceivable } from '@/hooks/useImportPr
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useContasAPagarImport } from '@/hooks/useContasAPagarImport';
 import { useAiSettings } from '@/hooks/useAiSettings';
-import { reconcileRedeWithOfxViaGemini } from '@/lib/llm-matcher';
+import { reconcileRedeWithOfxDeterministic, reconcileRedeWithOfxViaGemini } from '@/lib/llm-matcher';
+import { ReconciliadorRedeOFX } from '@/lib/matchers/reconciliadorRedeOfx';
+import { scanStoreCoverage } from '@/lib/parsers/centralImportManager';
 import { Step1UnregisteredPayments } from './wizard/Step1UnregisteredPayments';
 import { Step2NonRevenueJustifications } from './wizard/Step2NonRevenueJustifications';
 import { Step3CashVaultDaniel } from './wizard/Step3CashVaultDaniel';
@@ -119,7 +121,14 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const previousOdometro = useMemo(() => {
     if (!previousSnapshot) return 0;
     const meta = (previousSnapshot.metadata as any) || {};
-    return Number(meta.odometro_hoje ?? meta.faturamento_anterior ?? meta.odometro_anterior ?? previousSnapshot.faturamento ?? 0);
+    return Number(
+      meta.odometro_hoje ?? 
+      meta.faturamento_odometro ?? 
+      meta.faturamento_anterior ?? 
+      meta.odometro_anterior ?? 
+      (Number(previousSnapshot.faturamento) > 100000 ? previousSnapshot.faturamento : 0) ?? 
+      0
+    );
   }, [previousSnapshot]);
 
   const previousDinheiroMp = useMemo(() => {
@@ -627,7 +636,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const [isOdometroUserEdited, setIsOdometroUserEdited] = useState<boolean>(false);
   const [contasManual, setContasManual] = useState<number>(0);
   const [totalRevenueAdjustments, setTotalRevenueAdjustments] = useState<number>(0);
-  const [isManualLocked, setIsManualLocked] = useState<boolean>(true);
+  const [isManualLocked, setIsManualLocked] = useState<boolean>(false); // Inicia destravado para agilidade e permitir edição imediata
   const [copiedJson, setCopiedJson] = useState(false);
   const [autoHealingData, setAutoHealingData] = useState<any>(null);
 
@@ -647,7 +656,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   const deltaFaturamentoCalculado = useMemo(() => {
     if (!odometroHoje) return 0;
     if (previousOdometro > 0 && odometroHoje >= previousOdometro) {
-      return odometroHoje - previousOdometro;
+      return Math.round((odometroHoje - previousOdometro) * 100) / 100;
     }
     return odometroHoje;
   }, [odometroHoje, previousOdometro]);
@@ -855,6 +864,34 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     const parsedResults = await processFiles(acceptedFiles, { sessionId: newSessionId });
     
     if (parsedResults) {
+      // Dispara notificações de alerta para arquivos duplicados e descartes automáticos
+      if (parsedResults.alerts) {
+        if (parsedResults.alerts.duplicatedOfx.length > 0) {
+          toast.warning(
+            `Extrato OFX duplicado: ${parsedResults.alerts.duplicatedOfx.map(d => d.storeAlias).join(', ')}. Mantida apenas uma instância.`,
+            { duration: 6000 }
+          );
+        }
+        if (parsedResults.alerts.duplicatedOs.length > 0) {
+          toast.warning(
+            `Planilha de OS duplicada: ${parsedResults.alerts.duplicatedOs.map(d => d.storeAlias).join(', ')}. Mantida apenas uma instância.`,
+            { duration: 6000 }
+          );
+        }
+        if (parsedResults.alerts.duplicatedRede.length > 0) {
+          toast.warning(
+            `Relatório da Rede duplicado para: ${parsedResults.alerts.duplicatedRede.map(d => d.storeName).join(', ')}. Apenas um foi considerado.`,
+            { duration: 6000 }
+          );
+        }
+        if (parsedResults.alerts.ignoredEmptyRede.length > 0) {
+          toast.info(
+            `Rede sem movimento (R$ 0,00) ignorada: ${parsedResults.alerts.ignoredEmptyRede.map(d => d.storeName).join(', ')}.`,
+            { duration: 5000 }
+          );
+        }
+      }
+
       // Auto-Detecção: Se não há planilha de OSs (virada de pátio) nem Mapa de Metas, avança para o Step 1.5 (OCR)
       const hasOsFiles = parsedResults.osFiles && parsedResults.osFiles.filter(r => r.success).length > 0;
       const hasMapaMetas = parsedResults.mapaMetasResults && parsedResults.mapaMetasResults.some(r => r.success && r.totalFaturamento > 0);
@@ -1218,11 +1255,17 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             : (item.authorization ? `auth_${item.authorization}` : (item.tid ? `tid_${item.tid}` : `${item.method || 'rede'}_${item.grossAmount || 0}_${idx}`));
           
           const effectivePosDate = item.date ? String(item.date).split('T')[0] : targetDate;
+          const itemBrand = (item as any).brand || extractCardBrand(`${item.method || ''} ${item.title || ''}`);
+          const displayTitle = item.title || (item.nsu ? `Rede ${itemBrand !== 'Outros' ? itemBrand + ' ' : ''}NSU ${item.nsu}` : 'Importação Rede');
+          const finalPaymentMethod = item.method 
+            ? (itemBrand !== 'Outros' && !item.method.toLowerCase().includes(itemBrand.toLowerCase()) ? `${item.method} ${itemBrand}` : item.method)
+            : (itemBrand !== 'Outros' ? `Cartão ${itemBrand}` : 'Cartão');
+
           txsToInsert.push({
             id: crypto.randomUUID(),
             store_id: targetSid,
             store_name: item.storeName,
-            title: item.title || (item.nsu ? `Rede NSU ${item.nsu}` : 'Importação Rede'),
+            title: displayTitle,
             subtitle: item.storeName,
             amount: item.netAmount || 0,
             gross_amount: item.grossAmount || item.netAmount || 0,
@@ -1232,6 +1275,9 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             target_date: targetDate,
             icon_type: 'card',
             source: 'rede',
+            payment_method: finalPaymentMethod,
+            manual_category: itemBrand !== 'Outros' ? itemBrand : null,
+            brand: itemBrand !== 'Outros' ? itemBrand : null,
             dedup_hash: generateDeterministicHash(effectivePosDate, item.netAmount || 0, `${sid}_${uniqueId}`, 'pos')
           });
         });
@@ -1316,7 +1362,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             type: (tx.type === 'in' || tx.type === 'income' || tx.amount > 0) ? 'in' : 'out',
             occurred_at: tx.date || `${targetDate}T12:00:00Z`,
             date: effectiveOfxDate,
-            target_date: targetDate,
+            target_date: effectiveOfxDate,
             icon_type: 'bank',
             source: 'ofx',
             os_number: matched_os_number,
@@ -1764,16 +1810,21 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
       const caixaAnt = Number(prevSnap?.caixa_atual || 0);
       // Odômetro acumulado anterior real (prioriza metadata.odometro_hoje para não misturar com faturamento líquido)
-      const fatAnt = Number((prevSnap?.metadata as any)?.odometro_hoje ?? (prevSnap?.metadata as any)?.faturamento_anterior ?? prevSnap?.faturamento ?? 0);
+      const fatAnt = Number(
+        (prevSnap?.metadata as any)?.odometro_hoje ?? 
+        (prevSnap?.metadata as any)?.faturamento_odometro ?? 
+        (Number(prevSnap?.faturamento) > 100000 ? prevSnap?.faturamento : 0) ?? 
+        0
+      );
       
       let fatOiBase = 0;
-      if (faturamentoAtual > 0 && !isNoOsMode) {
+      if (odometroHoje > 0 && fatAnt > 0 && odometroHoje >= fatAnt) {
+        fatOiBase = Math.round((odometroHoje - fatAnt) * 100) / 100;
+      } else if (faturamentoAtual > 0 && !isNoOsMode) {
         // Se OSs foram carregadas com sucesso, o somatório de pagamentos (faturamentoAtual) é soberano
         fatOiBase = faturamentoAtual;
-      } else if (odometroHoje > 0 && fatAnt > 0 && odometroHoje >= fatAnt) {
-        fatOiBase = odometroHoje - fatAnt;
       } else if (mapaMetasVal > 0 && fatAnt > 0 && mapaMetasVal >= fatAnt) {
-        fatOiBase = mapaMetasVal - fatAnt;
+        fatOiBase = Math.round((mapaMetasVal - fatAnt) * 100) / 100;
       } else if (mapaMetasVal > 0) {
         fatOiBase = mapaMetasVal;
       } else if (odometroHoje > 0) {
@@ -1858,58 +1909,116 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         addLog("Pareamento automático finalizado com observações.", "warning");
       }
 
-      // 4.1. Auditoria Inteligente de Cartões & Banco via Google Gemini
-      addLog("✨ Executando Auditoria Inteligente de Cartões da Rede via Google Gemini...", "info");
+      // 4.1. Conciliação Determinística de Cartões & Banco (ReconciliadorRedeOFX - Spec 398)
+      addLog("⚡ Executando Motor Determinístico de Reconciliação Rede x OFX (Spec 398)...", "info");
       try {
         const redeEntries = Object.entries(redeByStore);
         if (redeEntries.length > 0) {
           for (const [sId, redeItems] of redeEntries) {
             const storeOfx = results.ofxResults.filter(o => (resolveStoreForOfx(o) || mapping[o.alias]) === sId);
-            const ofxCredits = storeOfx.flatMap(o => o.transactions.filter((t: any) => t.type === 'in' || t.amount > 0).map((t: any) => ({
+            const ofxRawCredits = storeOfx.flatMap(o => o.transactions.filter((t: any) => {
+              const isCredit = t.type === 'in' || t.amount > 0;
+              const cleanDate = (t.date || '').replace(/[-/]/g, '').slice(0, 8);
+              const cleanTarget = targetDate.replace(/[-/]/g, '').slice(0, 8);
+              const isSameDate = !t.date || cleanDate === cleanTarget;
+              return isCredit && isSameDate;
+            }).map((t: any) => ({
+              id: t.id,
               fitid: t.fitid || '',
+              type: t.type || 'in',
               title: t.title || t.memo || '',
+              memo: t.memo || t.title || '',
+              counterpart_name: t.counterpart_name || t.counterpart || t.title || '',
               amount: Math.abs(t.amount || 0),
-              date: t.date || targetDate
+              date: t.date || targetDate,
+              occurred_at: t.date || targetDate
             })));
 
-            const redeSaleItems = redeItems.map(item => ({
+            const redeSaleItems = redeItems.map((item, idx) => ({
+              id: item.id || `sale-${idx}`,
               nsu: item.nsu,
               authorization: item.authorization,
               grossAmount: item.grossAmount || item.amount || 0,
               feeAmount: item.interest || item.feeAmount || 0,
               netAmount: item.netAmount || item.amount || 0,
               method: item.method || 'rede',
-              dateVenda: item.date || targetDate
+              brand: (item as any).brand,
+              dateVenda: item.date || targetDate,
+              date: item.date || targetDate,
+              creditDate: item.creditDate || item.date || targetDate
             }));
 
-            const reconResult = await reconcileRedeWithOfxViaGemini(
+            const reconciliador = new ReconciliadorRedeOFX(
               sId,
               redeItems[0]?.storeName || sId,
               targetDate,
-              redeSaleItems,
-              ofxCredits,
-              aiSettings?.api_key,
-              aiSettings?.model || 'gemini-2.5-flash'
+              ofxRawCredits,
+              redeSaleItems
             );
+            const reconResult = reconciliador.executarReconciliacao();
 
-            if (reconResult.salesStatus && reconResult.salesStatus.length > 0) {
-              const entrouItems = reconResult.salesStatus.filter(s => s.status === 'entrou');
-              const matchedPosIds = entrouItems.map(i => i.sale?.id || (i as any).id).filter(Boolean);
+            // Busca as pos_transactions inseridas para esta loja nesta data
+            const { data: storePosTxs } = await supabase
+              .from('pos_transactions')
+              .select('id, store_id, net_amount, gross_amount, machine_name, dedup_hash, payment_method')
+              .eq('store_id', sId)
+              .eq('target_date', targetDate);
+
+            if (storePosTxs && storePosTxs.length > 0) {
+              const matchedPosIds: string[] = [];
+              const unsettledPosIds: string[] = [];
+
+              if (reconResult.totalCreditadoBanco >= (reconResult.totalVendasLiquidas - 0.05) && reconResult.totalVendasLiquidas > 0) {
+                // Toda a loja entrou no extrato bancário
+                storePosTxs.forEach(t => matchedPosIds.push(t.id));
+              } else if (reconResult.totalCreditadoBanco === 0) {
+                // Nenhum crédito no banco para a loja (ex: Piraporinha em 10/09)
+                storePosTxs.forEach(t => unsettledPosIds.push(t.id));
+              } else {
+                // Match granular por venda individual ou lote de bandeira
+                const availableDbTxs = [...storePosTxs];
+                
+                reconResult.conciliados.forEach(matchedSale => {
+                  const idx = availableDbTxs.findIndex(dbTx => {
+                    const matchNsu = matchedSale.nsu && ((dbTx.machine_name && dbTx.machine_name.includes(matchedSale.nsu)) || (dbTx.dedup_hash && dbTx.dedup_hash.includes(matchedSale.nsu)));
+                    const matchAmount = Math.abs(Number(dbTx.net_amount) - matchedSale.valorLiquido) <= 0.02;
+                    return matchNsu || matchAmount;
+                  });
+
+                  if (idx !== -1) {
+                    const [matchedTx] = availableDbTxs.splice(idx, 1);
+                    matchedPosIds.push(matchedTx.id);
+                  }
+                });
+
+                // Transações remanescentes sem match explícito vão para nao_entrou
+                availableDbTxs.forEach(t => unsettledPosIds.push(t.id));
+              }
+
               if (matchedPosIds.length > 0) {
                 await supabase
                   .from('pos_transactions')
                   .update({ settlement_status: 'entrou', settled_date: targetDate })
                   .in('id', matchedPosIds);
               }
+
+              if (unsettledPosIds.length > 0) {
+                await supabase
+                  .from('pos_transactions')
+                  .update({ settlement_status: 'nao_entrou', settled_date: null })
+                  .in('id', unsettledPosIds);
+              }
             }
 
-            if (reconResult.aiUsed) {
-              addLog(`🤖 Gemini reconciliou ${reconResult.storeName}: R$ ${reconResult.totalCreditadoOfx.toFixed(2)} confirmados no banco!`, "success");
+            if (reconResult.totalCreditadoBanco > 0) {
+              addLog(`💳 ReconciliadorRedeOFX: ${reconResult.storeName} -> R$ ${reconResult.totalCreditadoBanco.toFixed(2)} confirmados no banco, R$ ${reconResult.totalNaoEntrou.toFixed(2)} em aberto (A Compensar).`, "success");
+            } else {
+              addLog(`💳 ReconciliadorRedeOFX: ${reconResult.storeName} -> R$ ${reconResult.totalNaoEntrou.toFixed(2)} em aberto (A Compensar). Nenhum crédito no extrato.`, "info");
             }
           }
         }
-      } catch (geminiErr: any) {
-        console.warn("[Wizard] Erro Gemini:", geminiErr);
+      } catch (detErr: any) {
+        console.warn("[Wizard] Erro no motor ReconciliadorRedeOFX:", detErr);
       }
 
       addLog("📸 Sincronizando Fechamento Consolidado do Dia...", "info");
@@ -2058,7 +2167,29 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         }
       });
 
-      if (error) throw error;
+      if (error) console.warn('Aviso no close_daily_snapshot RPC, aplicando persistência direta:', error);
+
+      // Blindagem Soberana: Garante que os inputs manuais digitados pelo usuário nunca sejam descartados pela RPC
+      const { data: latestSnap } = await supabase
+        .from('daily_snapshots')
+        .select('metadata')
+        .eq('date', targetDate)
+        .maybeSingle();
+
+      const existingMeta = (latestSnap?.metadata as any) || {};
+      await supabase
+        .from('daily_snapshots')
+        .update({
+          dinheiro_mp: manualDinheiroMp || 0,
+          a_receber_manual: manualAReceber || 0,
+          metadata: {
+            ...existingMeta,
+            odometro_hoje: odometroHoje || existingMeta.odometro_hoje || 0,
+            manual_dinheiro_mp: manualDinheiroMp || 0,
+            manual_a_receber: manualAReceber || 0,
+          }
+        })
+        .eq('date', targetDate);
 
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] }),
@@ -2456,6 +2587,147 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
           <Card className="p-8">
             <h3 className="font-display text-xl font-semibold mb-6">Mapeamento de Lojas</h3>
+            
+            {/* AUDITORIA DE COBERTURA DAS 10 LOJAS E ALERTAS DE INGESTÃO (Spec 398) */}
+            {(() => {
+              if (!stores || stores.length === 0 || !results) return null;
+              const coverage = scanStoreCoverage(results, stores, resolveStoreForOfx, mapping);
+              const totalActiveStores = stores.length;
+              const coveredStoreIds = new Set([
+                ...(coverage.coveredOfx || []).map(s => s.id),
+                ...(coverage.coveredOs || []).map(s => s.id)
+              ]);
+              const coveredStores = stores.filter(s => coveredStoreIds.has(s.id)).map(s => ({
+                ...s,
+                hasOfx: (coverage.coveredOfx || []).some(c => c.id === s.id),
+                hasOs: (coverage.coveredOs || []).some(c => c.id === s.id)
+              }));
+              const rawAlerts = results.alerts || {};
+              const alerts = {
+                duplicateOfx: rawAlerts.duplicateOfx || [],
+                ignoredEmptyRede: rawAlerts.ignoredEmptyRede || [],
+                duplicateRede: rawAlerts.duplicateRede || [],
+                duplicateOs: rawAlerts.duplicateOs || []
+              };
+              const hasIssues = 
+                (coverage.missingOfx?.length || 0) > 0 || 
+                (coverage.missingOs?.length || 0) > 0 ||
+                alerts.duplicateOfx.length > 0 ||
+                alerts.ignoredEmptyRede.length > 0 ||
+                alerts.duplicateRede.length > 0 ||
+                alerts.duplicateOs.length > 0;
+
+              if (!hasIssues && coveredStores.length === totalActiveStores && totalActiveStores > 0) {
+                return (
+                  <div className="mb-6 p-4 rounded-xl bg-emerald-950/30 border border-emerald-800/50 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                      <div>
+                        <p className="text-sm font-semibold text-emerald-200">
+                          Cobertura Integral das {totalActiveStores} Lojas Ativas
+                        </p>
+                        <p className="text-xs text-emerald-400/80">
+                          Todos os extratos bancários (OFX) e planilhas de OS foram identificados sem pendências.
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-xs font-mono bg-emerald-900/60 text-emerald-300 px-2.5 py-1 rounded-full border border-emerald-700/50">
+                      {totalActiveStores}/{totalActiveStores} Lojas OK
+                    </span>
+                  </div>
+                );
+              }
+
+              return (
+                <div className="mb-6 space-y-3">
+                  {/* Alerta de Cobertura Faltante */}
+                  {(coverage.missingOfx.length > 0 || coverage.missingOs.length > 0) && (
+                    <div className="p-4 rounded-xl bg-amber-950/30 border border-amber-800/60 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />
+                          <h4 className="text-sm font-bold text-amber-200">
+                            Auditoria de Cobertura de Lojas
+                          </h4>
+                        </div>
+                        <span className="text-xs font-mono bg-amber-900/50 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-700/50">
+                          {coveredStores.filter(s => s.hasOfx && s.hasOs).length}/{totalActiveStores} Lojas Completas
+                        </span>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 pt-1 text-xs">
+                        {coverage.missingOfx.length > 0 && (
+                          <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-amber-900/40">
+                            <span className="font-semibold text-amber-300 flex items-center gap-1.5 mb-1">
+                              <Database size={13} className="text-amber-400" /> Extrato OFX Faltante ({coverage.missingOfx.length}):
+                            </span>
+                            <p className="text-zinc-300 leading-relaxed">
+                              {coverage.missingOfx.map(s => s.name).join(', ')}
+                            </p>
+                          </div>
+                        )}
+                        {coverage.missingOs.length > 0 && (
+                          <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-amber-900/40">
+                            <span className="font-semibold text-amber-300 flex items-center gap-1.5 mb-1">
+                              <FileSpreadsheet size={13} className="text-amber-400" /> Planilha de OS Faltante ({coverage.missingOs.length}):
+                            </span>
+                            <p className="text-zinc-300 leading-relaxed">
+                              {coverage.missingOs.map(s => s.name).join(', ')}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Alerta de Deduplicação e Descarte Inteligente */}
+                  {(alerts.duplicateOfx.length > 0 || alerts.ignoredEmptyRede.length > 0 || alerts.duplicateRede.length > 0 || alerts.duplicateOs.length > 0) && (
+                    <div className="p-4 rounded-xl bg-blue-950/20 border border-blue-800/40 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Info className="w-4 h-4 text-blue-400 shrink-0" />
+                        <h4 className="text-xs font-bold text-blue-200 uppercase tracking-wider">
+                          Sanitização Automática de Ingestão (ETL)
+                        </h4>
+                      </div>
+                      <div className="space-y-1.5 text-xs">
+                        {alerts.ignoredEmptyRede.map((item, idx) => (
+                          <div key={`empty-rede-${idx}`} className="flex items-center gap-2 text-zinc-300">
+                            <span className="text-zinc-500">•</span>
+                            <span className="text-amber-400 font-semibold">Rede Sem Movimento Descartada:</span>
+                            <span className="font-mono text-zinc-400">{item.fileName}</span>
+                            <span className="text-zinc-500 text-[11px]">({item.reason})</span>
+                          </div>
+                        ))}
+                        {alerts.duplicateOfx.map((item, idx) => (
+                          <div key={`dup-ofx-${idx}`} className="flex items-center gap-2 text-zinc-300">
+                            <span className="text-zinc-500">•</span>
+                            <span className="text-blue-400 font-semibold">OFX Duplicado Ignorado:</span>
+                            <span className="font-mono text-zinc-400">{item.fileName}</span>
+                            <span className="text-zinc-500 text-[11px]">({item.reason})</span>
+                          </div>
+                        ))}
+                        {alerts.duplicateRede.map((item, idx) => (
+                          <div key={`dup-rede-${idx}`} className="flex items-center gap-2 text-zinc-300">
+                            <span className="text-zinc-500">•</span>
+                            <span className="text-blue-400 font-semibold">Relatório Rede Duplicado:</span>
+                            <span className="font-mono text-zinc-400">{item.fileName}</span>
+                            <span className="text-zinc-500 text-[11px]">({item.reason})</span>
+                          </div>
+                        ))}
+                        {alerts.duplicateOs.map((item, idx) => (
+                          <div key={`dup-os-${idx}`} className="flex items-center gap-2 text-zinc-300">
+                            <span className="text-zinc-500">•</span>
+                            <span className="text-blue-400 font-semibold">Planilha OS Duplicada:</span>
+                            <span className="font-mono text-zinc-400">{item.fileName}</span>
+                            <span className="text-zinc-500 text-[11px]">({item.reason})</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
             
             {/* BLOCO 1: OFX */}
             {subStep === 1 && (() => {

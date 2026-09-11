@@ -173,8 +173,10 @@ export interface DailyReconciliationSummary {
   total_ativos_positivos?: number;
   saldo_bancos_ofx: number;
   saldo_bancos_positivo?: number;
+  saldo_bancos_ofx_positivo?: number;
   saldo_negativo_itau?: number;
   dinheiro_em_lojas?: number;
+  dinheiro_lojas?: number;
   cartoes_a_compensar: number;
   dinheiro_mp: number;
   a_receber: number;
@@ -259,6 +261,7 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
       // 2. Busca pos_transactions pendentes se cartoes_a_compensar não veio preenchido
       let extraPosEntries: any[] = [];
       let totalPosUnsettled = 0;
+      let posQuerySuccess = false;
       try {
         const { data: posData } = await supabase
           .from('pos_transactions')
@@ -269,6 +272,7 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
         if (posData && posData.length > 0) {
           extraPosEntries = posData;
           totalPosUnsettled = posData.reduce((sum, p) => sum + Number(p.net_amount || 0), 0);
+          posQuerySuccess = true;
         }
       } catch (err) {
         console.warn('Erro ao enriquecer pos_transactions:', err);
@@ -279,11 +283,12 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
         
         const storeVault = extraVaultEntries.filter(v => v.store_id === s.store_id);
         const vaultSum = storeVault.reduce((sum, v) => sum + Number(v.amount || 0), 0);
-        const dinheiro_loja = Number(s.dinheiro_loja || vaultSum || 0);
+        const dinheiro_loja = Number(vaultSum > 0 ? vaultSum : (s.dinheiro_loja || 0));
 
         const storePos = extraPosEntries.filter(p => p.store_id === s.store_id);
         const posSum = storePos.reduce((sum, p) => sum + Number(p.net_amount || 0), 0);
-        const nao_entrou_valor = Number(s.nao_entrou_valor ?? posSum ?? 0);
+        // Se a consulta a pos_transactions pendentes rodou com sucesso, posSum reflete a verdade de pendência
+        let nao_entrou_valor = posQuerySuccess ? posSum : Number(s.nao_entrou_valor ?? 0);
 
         const vault_entries = Array.isArray(s.vault_entries) && s.vault_entries.length > 0 
           ? s.vault_entries 
@@ -296,24 +301,45 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
           dinheiro_loja,
           nao_entrou_valor,
           vault_entries,
-          status_compensacao: s.status_compensacao || (nao_entrou_valor > 0 ? 'nao_entrou' : 'entrou')
+          status_compensacao: nao_entrou_valor <= 0.05 ? 'entrou' : (s.status_compensacao || 'nao_entrou')
         };
       });
 
-      const finalDinheiroLojas = Number(rawSummary.dinheiro_lojas || rawSummary.dinheiro_em_lojas || totalVaultInTransit || 0);
-      const finalCartoesACompensar = Number(rawSummary.cartoes_a_compensar || totalPosUnsettled || 0);
+      const totalVaultStores = enrichedStores.reduce((sum: number, s: any) => sum + Number(s.dinheiro_loja || 0), 0);
+      const finalDinheiroLojas = totalVaultStores > 0 ? totalVaultStores : Number(totalVaultInTransit || rawSummary.dinheiro_lojas || rawSummary.dinheiro_em_lojas || 0);
+      const totalNaoEntrouStores = enrichedStores.reduce((sum: number, s: any) => sum + Number(s.nao_entrou_valor || 0), 0);
+      const finalCartoesACompensar = totalNaoEntrouStores > 0 ? totalNaoEntrouStores : (posQuerySuccess ? totalPosUnsettled : Number(rawSummary.cartoes_a_compensar || totalPosUnsettled || 0));
 
-      const baseBancoPositivo = Number(rawSummary.saldo_bancos_positivo ?? rawSummary.saldo_bancos_ofx_positivo ?? 0);
-      const baseBancoTotal = Number(rawSummary.saldo_bancos_ofx ?? rawSummary.total_saldo_banco ?? 0);
+      // Agrega saldos bancários positivos e negativos a partir de enrichedStores
+      const storesPositiveOfx = enrichedStores.reduce((sum: number, s: any) => 
+        sum + (Number(s.saldo_banco_ofx || 0) > 0 ? Number(s.saldo_banco_ofx) : 0), 0
+      );
+      const storesNegativeOfx = enrichedStores.reduce((sum: number, s: any) => 
+        sum + (Number(s.saldo_banco_ofx || 0) < 0 ? Math.abs(Number(s.saldo_banco_ofx)) : 0), 0
+      );
 
-      const finalTotalSaldoBancoPositivo = baseBancoPositivo + finalDinheiroLojas + finalCartoesACompensar;
-      const finalTotalSaldoBanco = baseBancoTotal + finalDinheiroLojas + finalCartoesACompensar;
+      const baseBancoPositivo = storesPositiveOfx > 0 
+        ? Number(storesPositiveOfx.toFixed(2)) 
+        : Number(rawSummary.saldo_bancos_positivo ?? rawSummary.saldo_bancos_ofx_positivo ?? 0);
+      const baseBancoNegativo = storesNegativeOfx > 0 
+        ? Number(storesNegativeOfx.toFixed(2)) 
+        : Number(rawSummary.saldo_negativo_itau ?? 0);
+      const baseBancoTotal = storesPositiveOfx > 0 
+        ? Number((storesPositiveOfx - baseBancoNegativo).toFixed(2)) 
+        : Number(rawSummary.saldo_bancos_ofx ?? rawSummary.total_saldo_banco ?? 0);
+
+      const finalTotalSaldoBancoPositivo = Number((baseBancoPositivo + finalDinheiroLojas + finalCartoesACompensar).toFixed(2));
+      const finalTotalSaldoBanco = Number((baseBancoTotal + finalDinheiroLojas + finalCartoesACompensar).toFixed(2));
 
       return {
         ...rawSummary,
         dinheiro_lojas: finalDinheiroLojas,
         dinheiro_em_lojas: finalDinheiroLojas,
         cartoes_a_compensar: finalCartoesACompensar,
+        saldo_bancos_ofx_positivo: baseBancoPositivo,
+        saldo_bancos_positivo: baseBancoPositivo,
+        saldo_negativo_itau: baseBancoNegativo,
+        saldo_bancos_ofx: baseBancoTotal,
         total_saldo_banco_positivo: finalTotalSaldoBancoPositivo > 0 ? finalTotalSaldoBancoPositivo : rawSummary.total_saldo_banco_positivo,
         total_saldo_banco: finalTotalSaldoBanco !== 0 ? finalTotalSaldoBanco : rawSummary.total_saldo_banco,
         stores: enrichedStores,

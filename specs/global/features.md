@@ -1,3 +1,52 @@
+### Spec 399 — Conciliação Rede x OFX por Soma de Líquido por Bandeira (11/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Engine (`reconciliadorRedeOfx.ts`)**:
+  - Implementação do Estágio 2 de conciliação por agrupamento e soma de líquido por bandeira ($\sum \text{Vendas Líquidas}_{\text{brand}} \iff \sum \text{Créditos OFX}_{\text{brand}}$), eliminando falsos positivos de "Não Entrou" quando adquirente/banco agrupam depósitos por bandeira (ex: Dom Pedro 10/09).
+  - Extração de bandeira resiliente de `brand`, `manualCategory` ou regex em descrições.
+- **Frontend & Ingestão (`CentralImportWizard.tsx`, `Step4FinalAuditAndClose.tsx`)**:
+  - Propagação de bandeira (`brand`, `manual_category`, `payment_method`) nas transações de maquininha e mapeamento de `counterpart_name` em créditos OFX.
+- **Database (Migration `20260911000048_add_brand_to_pos_transactions.sql`)**:
+  - Coluna `brand TEXT` e índice `idx_pos_transactions_store_date_brand ON pos_transactions(store_id, target_date, brand)`.
+  - Saneamento das 5 transações de Dom Pedro em 10/09 eliminando R$ 20.450,67 duplicados no saldo consolidado.
+
+### Spec 398 — Motor de Reconciliação Rede x OFX, Deduplicação e Alertas de Ingestão (11/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Engine (`reconciliadorRedeOfx.ts`)**:
+  - Classe canônica `ReconciliadorRedeOFX` com casamento Greedy 1:1, tolerância MDR e 3 vetores fiduciários de saída (`conciliados`, `divergenciasMdr`, `naoEntrou`).
+- **ETL (`centralImportManager.ts`)**:
+  - Deduplicação de arquivos OFX (FITID), OS (número de OS) e Rede (NSU).
+  - Descarte automático de relatórios da Rede zerados (`totalNet <= 0`).
+  - Scanner de cobertura das 10 filiais ativas alertando faltas de extrato bancário e planilhas de OS.
+- **UI (`CentralImportWizard.tsx`, `Step4FinalAuditAndClose.tsx`)**:
+  - Painel de telemetria e badges de arquivos ignorados/duplicados e filiais faltantes.
+
+### Spec 397 — Correção Card Saldo Bancos — SSOT com Modal Raio-X (11/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Backend & Hooks (`useBackendConciliacao.ts`)**:
+  - Correção de escopo de `posQuerySuccess` assegurando disponibilidade das vendas de maquininha no cálculo de saldos.
+- **Frontend (`ResumoDiaPanel.tsx`)**:
+  - Vinculação estrita de `saldoBancosValor` e sub-chips com `derivedBankTotals.totalPositivoConsolidado` sem fallbacks escalares que inflavam valores.
+
+### Spec 396 — Sincronização Card Saldo Bancos com Modal Raio-X (11/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Frontend (`ResumoDiaPanel.tsx`, `SaldoBancosDetailModal.tsx`)**:
+  - Equalização das fórmulas de total bancário consolidado e eliminação de disparidades entre o card do dashboard e a visão detalhada do modal.
+
+### Spec 395 — Correção Cartões Não Entrou, Edição Dinheiro e Faturamento Anterior (10/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Frontend & Hooks**:
+  - Ajuste na computação de cartões a compensar e encadeamento fiduciário do faturamento do dia anterior.
+
+### Spec 394 — Equalização Cartões Rede Dom Pedro e Jorge Beretta 10/09 (10/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Frontend & Data**:
+  - Equalização dos depósitos da Rede nas unidades Dom Pedro e Jorge Beretta em 10/09/2026.
+
+### Spec 393 — Baixa Dinheiro Saldo Banco e Sincronização Cofre (10/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Frontend & Database (`BaixaDinheiroModal.tsx`)**:
+  - Modal para registro de depósitos em dinheiro físico originados do cofre para crédito bancário.
+
 ### Spec 392 — Justificativa de OFX Contas a Pagar, Fix de Coluna 'title' e Reatividade de Extrato (10/09/2026)
 - **Status:** COMPLETED & ARCHIVED
 - **Backend & Hooks (`useTransactions.ts`, `useCategorizeOrphan.ts`)**:

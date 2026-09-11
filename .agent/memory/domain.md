@@ -1,3 +1,34 @@
+## [2026-09-11] — [Feature ID: 399-conciliacao-rede-ofx-soma-liquido-por-bandeira]
+
+**Contexto:** Resolução de falso-positivo de "Cartões Não Entrados / A Compensar" na conciliação de maquininhas da Rede x OFX (ex: Dom Pedro em 10/09/2026 com R$ 20.450,67 duplicados indevidamente no saldo consolidado da filial). O extrato bancário continha 2 créditos consolidados por adquirente e bandeira (+R$ 10.911,47 Mastercard e +R$ 9.539,20 Visa), enquanto as vendas da Rede continham 5 lançamentos individuais (3 Mastercard e 2 Visa).
+
+**Regra aprendida:**
+1. **Algoritmo de Match em Dois Estágios (Greedy 1:1 + Soma por Bandeira):**
+   - No Estágio 1, busca-se o casamento exato 1:1 entre venda da Rede e crédito OFX (ou dentro da tolerância MDR de R$ 0,05).
+   - No Estágio 2, para vendas e créditos remanescentes não pareados, agrupa-se por filial e bandeira (`Mastercard`, `Visa`, `Elo`, etc.). Se a soma das vendas líquidas da bandeira bater com a soma dos créditos bancários daquela mesma bandeira (com tolerância de até R$ 0,05 ou MDR proporcional), todas as vendas daquele lote de bandeira são marcadas com status `entrou` e vinculadas aos créditos correspondentes.
+2. **Preservação Contínua da Bandeira no Pipeline ETL:**
+   - A bandeira do cartão DEVE ser persistida de ponta a ponta: do parser da Rede (`redeParser.ts`) aos campos `brand`, `manual_category` e `payment_method` de `pos_transactions`, e repassada nas chamadas do motor em `CentralImportWizard` e `Step4FinalAuditAndClose`.
+3. **Extração Resiliente de Bandeira em Créditos OFX:**
+   - O extrato bancário registra a bandeira no campo `<MEMO>` (repassado via `counterpart_name`), como `RECEBIMENTO REDE MAST` ou `REDE VISA`. A ingestão deve preservar `counterpart_name` em `ofxRawCredits` para permitir a identificação imediata via regex.
+
+**Risco identificado / Anti-pattern:** Tratar créditos bancários agrupados por bandeira como depósitos avulsos não pareáveis. Quando vendas líquidas que caíram no banco não são reconhecidas pelo motor, elas permanecem em `a_compensar`, inflando artificialmente o saldo patrimonial da empresa no dia.
+
+---
+
+## [2026-09-11] — [Feature ID: 398-motor-reconciliacao-rede-ofx-deduplicacao-e-alertas-ingestao]
+
+**Contexto:** Criação do motor canônico unificado `ReconciliadorRedeOFX`, deduplicação inteligente de arquivos na Central de Importações (OFX, OS e Rede) e scanner de cobertura das 10 filiais ativas.
+
+**Regra aprendida:**
+1. **Deduplicação de Arquivos na Ingestão:**
+   - Arquivos OFX são deduplicados por hash de transações e FITID; planilhas de OS são deduplicadas por número de OS e loja; arquivos da Rede são deduplicados por NSU e filial. Arquivos repetidos geram aviso no wizard e são ignorados.
+2. **Descarte de Arquivos Rede Zerados:**
+   - Relatórios da Rede gerados com `totalNet <= 0` (sem faturamento no dia) devem ser descartados silenciosamente com alerta informativo, evitando sobrecarga no banco e falsos erros de conciliação.
+3. **Scanner de Cobertura das 10 Lojas:**
+   - Antes de fechar o lote diário, o importador alerta explicitamente quais filiais ainda não possuem extrato bancário ou relatório de vendas carregados, prevenindo fechamentos parciais com saldos zerados.
+
+---
+
 ## [2026-09-10] — [Feature ID: 392-justificativa-ofx-contas-e-fix-coluna-title]
 
 **Contexto:** Correção de erro 400 Bad Request ao consultar histórico de `ofx_transactions` (coluna `title` inexistente), sincronização fiduciária entre tabelas `transactions` e `ofx_transactions` ao justificar saídas com "Somar ao Contas a Pagar", blindagem de status pendente e reatividade imediata no extrato bancário e fechamento da loja.

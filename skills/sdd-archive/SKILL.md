@@ -21,12 +21,20 @@ Conclui o fluxo da Spec garantindo que a entrega não quebrou o build, registran
 </guardrails>
 
 <steps>
-<step number="1" name="Quality Gate & Auditor Verification">
-Execute o build completo da aplicação:
-```bash
-cmd.exe /c "npm run build"
-```
-Se o build falhar, pare a execução imediatamente. O archive é proibido em código com erro de TypeScript ou compilação.
+<step number="1" name="Quality Gate & Pre-Archive Audits (Build & Segurança)">
+1. **Build Gate:**
+   Execute o build completo da aplicação para garantir compilação limpa e zero erros de TypeScript:
+   ```bash
+   cmd.exe /c "npm run build"
+   ```
+   Se o build falhar, pare a execução imediatamente. O archive é proibido em código com erro de compilação.
+
+2. **Pre-Commit Security & Secrets Audit:**
+   Execute a varredura rápida de credenciais nos arquivos modificados:
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File scripts/security-audit.ps1
+   ```
+   Se qualquer segredo for detectado, o commit é BLOQUEADO.
 </step>
 
 <step number="2" name="Escrita na Memória Modular Obsidian">

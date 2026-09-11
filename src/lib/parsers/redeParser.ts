@@ -19,6 +19,7 @@ export interface RedeTransaction {
   authorization?: string;
   tid?: string;
   time?: string;
+  brand?: string;
 }
 
 export const BRAZILIAN_BANK_HOLIDAYS_2026 = new Set([
@@ -126,6 +127,8 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
     // Mapeamento dinâmico inteligente para todas as variações de colunas da REDE
     let methodIdx = headers.findIndex((h: string) => h.includes('meio de pagamento') || h.includes('bandeira') || h.includes('modalidade') || h.includes('produto'));
     if (methodIdx === -1) methodIdx = 0;
+
+    let brandIdx = headers.findIndex((h: string) => h === 'bandeira' || h.includes('bandeira'));
 
     let grossIdx = headers.findIndex((h: string) => h === 'valor da venda atualizado');
     if (grossIdx === -1) grossIdx = headers.findIndex((h: string) => h === 'valor da venda original');
@@ -282,10 +285,25 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
       const tid = tidIdx !== -1 && row[tidIdx] ? String(row[tidIdx]).trim() : undefined;
       const time = timeIdx !== -1 && row[timeIdx] ? String(row[timeIdx]).trim() : undefined;
 
+      let brand: string | undefined = undefined;
+      if (brandIdx !== -1 && row[brandIdx]) {
+        brand = String(row[brandIdx]).trim();
+      }
+      if (!brand) {
+        const brandKeywords = ['mastercard', 'master', 'visa', 'elo', 'hipercard', 'amex', 'diners', 'pix'];
+        for (const kw of brandKeywords) {
+          if (candidateMethodText.includes(kw)) {
+            brand = kw.toUpperCase();
+            break;
+          }
+        }
+      }
+
       transactions.push({
         storeName,
         establishment: estabNumIdx !== -1 && row[estabNumIdx] && String(row[estabNumIdx]).trim() !== '-' ? String(row[estabNumIdx]).trim() : undefined,
         method,
+        brand,
         grossAmount,
         netAmount,
         interest,

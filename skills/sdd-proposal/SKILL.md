@@ -26,6 +26,12 @@ Execute diretamente no seu contexto em menos de 1 minuto:
 2. **Grafo / Dependências:** Execute `graphify explain "<modulo-central>"` para saber quem depende do arquivo que você vai mexer (ou use `grep_search` para rastrear imports).
 3. **Código Legado (AST Skeleton):** Abra os arquivos legados existentes com `view_file` e copie as interfaces TypeScript reais e tipos de retorno. **Proibido inventar tipos de cabeça.**
 4. **Anti-Duplicação:** Se a tabela, componente ou função já existe no projeto, **REUTILIZE**. Não crie stubs duplicados.
+5. **Roteamento de Skills Especializadas (Carregamento Sob Demanda):**
+   Consulte as skills canônicas do domínio afetado ANTES de redigir a especificação:
+   - **Se envolver UI / Telas / Componentes:** Consulte `DESIGN.md` e `skills/frontend-design-pro/SKILL.md`. A spec DEVE exigir tokens do design system (Zinc-950), superfícies por luminância (dark.design), conformidade com os 48 princípios de Rauno Freiberg e bloqueio de anti-patterns do catálogo de AI Slop.
+   - **Se envolver Backend / Server Actions / APIs:** Consulte `skills/backend-patterns/SKILL.md`. A spec DEVE exigir Server Actions tipadas com `ActionResult<T>`, validação com Zod e mutações CRUD com revalidação de cache.
+   - **Se envolver Banco de Dados / Migrations:** Consulte `skills/database/SKILL.md`. A spec DEVE exigir migrations idempotentes (`IF NOT EXISTS`), políticas de RLS multi-tenant (`tenant_id`) e índices de query.
+   - **Se envolver Autenticação / Sessão / Permissões:** Consulte `skills/auth/SKILL.md` e `skills/security/SKILL.md`. A spec DEVE exigir `getUser()` no servidor (zero `getSession()`), Taint Analysis de entradas e salvaguardas OWASP Top 10.
 </step>
 
 <step number="2" name="Geração Rápida da Tríade SDD">
@@ -34,23 +40,25 @@ Crie os 3 arquivos essenciais em `specs/<id>/`:
 1. `specs/<id>/proposal.md`:
    - **Problema:** O que está quebrando ou faltando.
    - **Solução Proposta:** O que será feito e escopo técnico.
+   - **Skills Especializadas Aplicadas:** Liste quais skills de domínio foram consultadas (`frontend-design-pro`, `backend-patterns`, `database`, `security`, `auth`).
    - **Contratos de Dados:** Tabelas, colunas, RPCs ou tipos de API.
    - **Arquivos Afetados:** Lista explícita separando [Arquivos Existentes Reutilizados/Modificados] de [Arquivos Novos].
    - **Plano de Rollback:** Estratégia clara para reverter as alterações sem perda de dados caso a implementação falhe ou seja cancelada.
    - **Risco Principal:** O que pode quebrar e estratégia de mitigação.
 
 2. `specs/<id>/design.md`:
-   - **Arquitetura de Fluxo:** Caminho ponta a ponta dos dados.
-   - **Interfaces TypeScript Reais:** Interfaces exatas sem `any`.
+   - **Arquitetura de Fluxo:** Caminho ponta a ponta dos dados (Source -> Sanitizer/Zod -> Server Action -> Database/RLS -> UI).
+   - **Design System & UI Standards (se houver frontend):** Tokens exatos de `DESIGN.md`, componentes base do `skills/ui-components/SKILL.md`, micro-interações ≤200ms de `skills/ui-motion/SKILL.md` e zero AI Slop.
+   - **Interfaces TypeScript Reais:** Interfaces exatas sem `any`, tipos de Server Action `ActionResult<T>` e schemas Zod.
    - **Cenários Obrigatórios:**
      - **Happy Path:** Fluxo nominal completo esperado com sucesso.
      - **Edge Case:** Pelo menos 1 cenário de falha, dados ausentes (Empty States), timeout ou concorrência.
-   - **Critérios de Aceitação Verificáveis:** Condições claras e testáveis (ex: "Build passa sem erros de TS", "Query retorna 200 com payload X", "Botão desabilita durante loading").
+   - **Critérios de Aceitação Verificáveis:** Condições claras e testáveis (ex: "Build passa sem erros de TS", "Query retorna 200 com payload X", "Botão desabilita durante loading", "Zero segredos no código").
    - **2 Cenários de Teste:** [SCAN -> INFER -> VERIFY -> FIX] aplicando as regras de bom senso de `references/inference-rules.md` (Empty States, feedback visual, skeletons de loading e confirmação de exclusão).
 
 3. `specs/<id>/spec-plan.md`:
-   - Lista enxuta de tasks atômicas marcadas estritamente como `- [ ] Pending` (ex: `[DB]`, `[BACKEND]`, `[FRONTEND]`, `[TEST]`).
-   - Cada task deve ter um critério de verificação atrelado.
+   - Lista enxuta de tasks atômicas marcadas estritamente como `- [ ] Pending` agrupadas por domínio (ex: `[DB]`, `[BACKEND]`, `[FRONTEND]`, `[SECURITY/TEST]`).
+   - Cada task deve ter a skill canônica de referência e o critério de verificação via terminal atrelado.
 </step>
 
 <step number="3" name="Apresentação e Hard Stop Obrigatório">

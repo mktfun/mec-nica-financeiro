@@ -5,7 +5,8 @@ import { Badge } from '@/components/ui/Badge';
 import { AmountCell } from '@/components/finance/AmountCell';
 import { CentralImportResults } from '@/lib/parsers/centralImportManager';
 import { useAiSettings } from '@/hooks/useAiSettings';
-import { reconcileRedeWithOfxViaGemini } from '@/lib/llm-matcher';
+import { reconcileRedeWithOfxDeterministic, reconcileRedeWithOfxViaGemini } from '@/lib/llm-matcher';
+import { ReconciliadorRedeOFX } from '@/lib/matchers/reconciliadorRedeOfx';
 import { useDailyReconciliationSummary } from '@/hooks/useBackendConciliacao';
 import { usePreviousDaySnapshot } from '@/hooks/useDailySnapshot';
 import { supabase } from '@/lib/supabase';
@@ -23,6 +24,7 @@ import {
   ArrowRight,
   Zap,
   Car,
+  CreditCard,
 } from 'lucide-react';
 
 export interface MissingPatioOsEdit {
@@ -186,9 +188,8 @@ export function Step4FinalAuditAndClose({
     // 5. Pilar 5: Faturamento
     const fatAnteriorVal = Number(
       (previousSnapshot?.metadata as any)?.odometro_hoje ??
-      (previousSnapshot?.metadata as any)?.faturamento_anterior ??
-      (previousSnapshot?.metadata as any)?.odometro_anterior ??
-      previousSnapshot?.faturamento ??
+      (previousSnapshot?.metadata as any)?.faturamento_odometro ??
+      (Number(previousSnapshot?.faturamento) > 100000 ? previousSnapshot?.faturamento : 0) ??
       0
     );
     let fatBase = 0;
@@ -268,71 +269,90 @@ export function Step4FinalAuditAndClose({
     }
   };
 
-  // Dispara matcher IA usando gemini-3.5-flash-lite
+  // Dispara reconciliação determinística de cartões por bandeira (Sem IA)
   const handleRunAiMatcher = async () => {
     setRunningAi(true);
     try {
-      toast.info('Iniciando reconciliador com Gemini 3.5 Flash Lite...');
+      toast.info('Iniciando reconciliação determinística de cartões por bandeira...');
 
       const summaryStores = (summary as any)?.stores || [];
       let totalResolved = 0;
 
       for (const store of summaryStores) {
-        if (store.status !== 'approved' && store.diferenca !== 0) {
-          const { data: posTx } = await supabase
-            .from('pos_transactions')
-            .select('*')
-            .eq('store_id', store.store_id)
-            .eq('target_date', targetDate);
+        const { data: posTx } = await supabase
+          .from('pos_transactions')
+          .select('*')
+          .eq('store_id', store.store_id)
+          .eq('target_date', targetDate);
 
-          const { data: ofxTx } = await supabase
-            .from('ofx_transactions')
-            .select('*')
-            .eq('store_id', store.store_id)
-            .eq('date', targetDate);
+        const { data: ofxTx } = await supabase
+          .from('ofx_transactions')
+          .select('*')
+          .eq('store_id', store.store_id)
+          .eq('target_date', targetDate);
 
-          if (posTx && posTx.length > 0 && ofxTx && ofxTx.length > 0) {
-            const redeSales = posTx.map((p: any) => ({
-              id: p.id,
-              grossAmount: Number(p.gross_amount || p.amount || 0),
-              feeAmount: Number(p.fee_amount || 0),
-              netAmount: Number(p.net_amount || p.amount || 0),
-              method: p.brand || p.method || 'rede',
-              dateVenda: p.sale_date || targetDate,
-            }));
+        if (posTx && posTx.length > 0) {
+          const redeSales = posTx.map((p: any) => ({
+            id: p.id,
+            grossAmount: Number(p.gross_amount || p.amount || 0),
+            feeAmount: Number(p.fee_amount || 0),
+            netAmount: Number(p.net_amount || p.amount || 0),
+            method: p.payment_method || 'Cartão',
+            brand: p.brand || p.manual_category || undefined,
+            manualCategory: p.manual_category || undefined,
+            machineName: p.machine_name || undefined,
+            dateVenda: p.occurred_at ? p.occurred_at.split('T')[0] : targetDate,
+            date: p.occurred_at ? p.occurred_at.split('T')[0] : targetDate,
+          }));
 
-            const ofxCredits = ofxTx.map((o: any) => ({
+          const rawOfxCredits = (ofxTx || [])
+            .map((o: any) => ({
               id: o.id,
-              fitid: o.fitid,
-              title: o.counterpart_name || o.title || 'Crédito',
-              amount: Number(o.amount || 0),
-              date: o.date,
+              fitid: o.fitid || o.id,
+              title: o.counterpart_name || o.bank_name || o.manual_category || o.description || 'Crédito',
+              memo: o.counterpart_name || o.memo || o.description || '',
+              counterpart_name: o.counterpart_name || '',
+              type: o.type || 'in',
+              amount: Math.abs(Number(o.amount || 0)),
+              date: o.occurred_at ? o.occurred_at.split('T')[0] : targetDate,
+              occurred_at: o.occurred_at || targetDate
             }));
 
-            const res = await reconcileRedeWithOfxViaGemini(
-              store.store_id,
-              store.store_name,
-              targetDate,
-              redeSales,
-              ofxCredits,
-              aiSettings?.api_key,
-              'gemini-3.5-flash-lite'
-            );
+          const reconciliador = new ReconciliadorRedeOFX(
+            store.store_id,
+            store.store_name,
+            targetDate,
+            rawOfxCredits,
+            redeSales
+          );
+          const reconResult = reconciliador.executarReconciliacao();
 
-            if (res.salesStatus && res.salesStatus.length > 0) {
-              totalResolved += res.salesStatus.filter((s) => s.status === 'entrou').length;
-            }
+          const matchedIds = reconResult.conciliados.map((i) => i.saleId).filter(Boolean);
+          const unsettledIds = reconResult.naoEntrou.map((i) => i.saleId).filter(Boolean);
+
+          if (matchedIds.length > 0) {
+            await supabase
+              .from('pos_transactions')
+              .update({ settlement_status: 'entrou', settled_date: targetDate })
+              .in('id', matchedIds);
           }
+          if (unsettledIds.length > 0) {
+            await supabase
+              .from('pos_transactions')
+              .update({ settlement_status: 'nao_entrou', settled_date: null })
+              .in('id', unsettledIds);
+          }
+          totalResolved += matchedIds.length;
         }
       }
 
       await refetch();
       toast.success(
-        `Matcher IA concluído! ${totalResolved} vendas sincronizadas via Gemini 3.5 Flash Lite.`
+        `Conciliação Determinística concluída! ${totalResolved} vendas de cartão equalizadas.`
       );
     } catch (err: any) {
-      console.error('Erro no matcher IA:', err);
-      toast.error(`Falha no matcher IA: ${err.message}`);
+      console.error('Erro no motor determinístico:', err);
+      toast.error(`Falha na conciliação determinística: ${err.message}`);
     } finally {
       setRunningAi(false);
     }
@@ -369,16 +389,16 @@ export function Step4FinalAuditAndClose({
               size="sm"
               disabled={runningAi}
               onClick={handleRunAiMatcher}
-              className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs font-semibold cursor-pointer shrink-0 rounded-xl px-3.5 py-1.5"
+              className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-semibold cursor-pointer shrink-0 rounded-xl px-3.5 py-1.5"
             >
-              <Sparkles size={14} className="mr-1.5 text-purple-400" />
+              <CreditCard size={14} className="mr-1.5 text-emerald-400" />
               {runningAi ? (
                 <>
                   <Loader2 size={12} className="animate-spin mr-1" />
-                  Processando Gemini...
+                  Equalizando por Bandeira...
                 </>
               ) : (
-                'Analisar com IA'
+                'Conciliar Cartões (Determinístico)'
               )}
             </Button>
           </div>

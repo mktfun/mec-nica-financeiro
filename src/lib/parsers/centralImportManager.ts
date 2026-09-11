@@ -23,6 +23,13 @@ export interface MaquininhaItem {
   dateCredito?: string;
 }
 
+export interface IngestionAlerts {
+  duplicatedOfx: Array<{ fileName: string; storeAlias: string; reason: string }>;
+  duplicatedOs: Array<{ fileName: string; storeAlias: string }>;
+  ignoredEmptyRede: Array<{ fileName: string; storeName: string; reason?: string }>;
+  duplicatedRede: Array<{ fileName: string; storeName: string; keptFile: string }>;
+}
+
 export interface CentralImportResults {
   osFiles: OsImportResult[];
   redeResults: RedeResult[];
@@ -33,6 +40,7 @@ export interface CentralImportResults {
   mapaMetasResults: MapaMetasResult[];
   validData: any[];
   errors: string[];
+  alerts: IngestionAlerts;
 }
 
 export async function processMaquininha(file: File, options?: { sessionId?: string }): Promise<MaquininhaItem[]> {
@@ -107,6 +115,12 @@ export async function parseCentralImports(
     mapaMetasResults: [],
     validData: [],
     errors: [],
+    alerts: {
+      duplicatedOfx: [],
+      duplicatedOs: [],
+      ignoredEmptyRede: [],
+      duplicatedRede: [],
+    },
   };
 
   const excelFiles = fileList.filter(f => 
@@ -122,7 +136,7 @@ export async function parseCentralImports(
     f.name.toLowerCase().endsWith('.pdf')
   );
 
-  // 1. Processa OFX / RET de forma assíncrona
+  // 1. Processa OFX / RET de forma assíncrona com deduplicação
   for (const file of ofxFiles) {
     try {
       const result = await parseOFXFile(file, { sessionId: options?.sessionId });
@@ -132,6 +146,26 @@ export async function parseCentralImports(
         storeAlias: result.alias,
         accountKey: result.alias,
       };
+
+      // Deduplicação inteligente de OFX por conta / alias
+      const existingOfxIdx = results.ofxResults.findIndex(o => 
+        (normalized.accountKey && o.accountKey === normalized.accountKey) ||
+        (normalized.alias && o.alias === normalized.alias)
+      );
+
+      if (existingOfxIdx !== -1) {
+        const existing = results.ofxResults[existingOfxIdx];
+        results.alerts.duplicatedOfx.push({
+          fileName: file.name,
+          storeAlias: normalized.alias,
+          reason: `Extrato bancário da mesma conta (${normalized.alias}) já importado pelo arquivo "${existing.fileName}". Mantida apenas uma instância.`
+        });
+        if ((normalized.transactions?.length || 0) > (existing.transactions?.length || 0)) {
+          results.ofxResults[existingOfxIdx] = normalized;
+        }
+        continue;
+      }
+
       results.ofxResults.push(normalized);
     } catch (err: any) {
       console.error(`Erro ao processar OFX ${file.name}:`, err);
@@ -196,7 +230,39 @@ export async function parseCentralImports(
     // B) Testa se é Rede
     try {
       const redeRes = await parseRedeFile(file, { sessionId: options?.sessionId });
-      if (redeRes.success && redeRes.transactions && redeRes.transactions.length > 0) {
+      if (redeRes.success && redeRes.transactions) {
+        const storeName = redeRes.transactions[0]?.storeName || file.name;
+        const totalNet = Number((redeRes.totalNet ?? redeRes.transactions.reduce((acc, t) => acc + Number(t.netAmount || 0), 0)).toFixed(2));
+
+        // 1. Regra do usuário: Rede sem movimento não é importada
+        if (redeRes.transactions.length === 0 || totalNet <= 0) {
+          results.alerts.ignoredEmptyRede.push({
+            fileName: file.name,
+            storeName,
+            reason: 'Arquivo sem movimentação financeira (R$ 0,00) ignorado.'
+          });
+          continue;
+        }
+
+        // 2. Regra do usuário: se tiver duplicado, notificar e considerar apenas um
+        const existingRedeIdx = results.redeResults.findIndex(r => {
+          const rStore = r.transactions[0]?.storeName;
+          return rStore && storeName && rStore.toUpperCase() === storeName.toUpperCase();
+        });
+
+        if (existingRedeIdx !== -1) {
+          const existing = results.redeResults[existingRedeIdx];
+          results.alerts.duplicatedRede.push({
+            fileName: file.name,
+            storeName,
+            keptFile: existing.fileName || 'arquivo anterior'
+          });
+          if ((redeRes.transactions?.length || 0) > (existing.transactions?.length || 0)) {
+            results.redeResults[existingRedeIdx] = redeRes;
+          }
+          continue;
+        }
+
         results.redeResults.push(redeRes);
         continue;
       }
@@ -218,14 +284,31 @@ export async function parseCentralImports(
       }
     }
 
-    // C) Testa se é OS individual/Conferência
+    // C) Testa se é OS individual/Conferência com deduplicação
     const isOsName = isConciliacao || file.name.toLowerCase().includes('conferencia') || file.name.toLowerCase().includes('os');
     let osErrorDetail = '';
 
     try {
       const osRes = await processOsFiles([file], { sessionId: options?.sessionId });
       if (osRes && osRes[0] && osRes[0].success && osRes[0].osArray && osRes[0].osArray.length > 0) {
-        results.osFiles.push(osRes[0]);
+        const osItem = osRes[0];
+        const existingOsIdx = results.osFiles.findIndex(o => 
+          o.storeAlias && osItem.storeAlias && o.storeAlias.toUpperCase() === osItem.storeAlias.toUpperCase()
+        );
+
+        if (existingOsIdx !== -1) {
+          const existing = results.osFiles[existingOsIdx];
+          results.alerts.duplicatedOs.push({
+            fileName: file.name,
+            storeAlias: osItem.storeAlias
+          });
+          if ((osItem.osArray?.length || 0) > (existing.osArray?.length || 0)) {
+            results.osFiles[existingOsIdx] = osItem;
+          }
+          continue;
+        }
+
+        results.osFiles.push(osItem);
         continue;
       } else if (osRes && osRes[0] && !osRes[0].success && osRes[0].error) {
         osErrorDetail = osRes[0].error;
@@ -281,4 +364,41 @@ export async function parseCentralImports(
   }
 
   return results;
+}
+
+/**
+ * Escaneia a cobertura das 10 lojas ativas identificando extratos OFX e planilhas de OS faltantes
+ */
+export function scanStoreCoverage(
+  results: CentralImportResults,
+  activeStores: Array<{ id: string; name: string; aliases?: string[] }>,
+  resolveStoreForOfx?: (ofx: any) => string,
+  mapping: Record<string, string> = {}
+) {
+  const missingOfx: Array<{ id: string; name: string }> = [];
+  const missingOs: Array<{ id: string; name: string }> = [];
+  const coveredOfx: Array<{ id: string; name: string }> = [];
+  const coveredOs: Array<{ id: string; name: string }> = [];
+
+  for (const store of activeStores) {
+    // 1. Verifica OFX
+    const hasOfx = (results.ofxResults || []).some(o => {
+      const mappedStoreId = (resolveStoreForOfx ? resolveStoreForOfx(o) : '') || mapping[o.alias] || mapping[o.accountKey || ''] || '';
+      return mappedStoreId === store.id || (o.storeAlias && store.name.toLowerCase().includes(o.storeAlias.toLowerCase()));
+    });
+
+    if (hasOfx) coveredOfx.push(store);
+    else missingOfx.push(store);
+
+    // 2. Verifica OS
+    const hasOs = (results.osFiles || []).some(os => {
+      const mappedStoreId = mapping[os.storeAlias] || '';
+      return mappedStoreId === store.id || store.name.toLowerCase().includes(os.storeAlias.toLowerCase());
+    });
+
+    if (hasOs) coveredOs.push(store);
+    else missingOs.push(store);
+  }
+
+  return { missingOfx, missingOs, coveredOfx, coveredOs };
 }

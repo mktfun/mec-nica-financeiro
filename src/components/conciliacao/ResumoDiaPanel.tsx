@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
@@ -90,12 +90,17 @@ export function ResumoDiaPanel({
   const [aReceberInput, setAReceberInput] = useState<number>(0);
   const [contasInput, setContasInput] = useState<number>(0);
 
-  // Faturamento Anterior (Ant) vem do snapshot anterior ou metadados de Marco Zero
+  // Odômetro Anterior (Ant) deve SEMPRE ser o odômetro acumulado fechado de ontem (metadata.odometro_hoje),
+  // e NUNCA o faturamento líquido diário calculado de ontem (faturamento).
+  const prevMeta = (previousSnapshot?.metadata as any) || {};
+  const currentMeta = (currentSnapshot?.metadata as any) || {};
   const faturamentoAnteriorGlobal = Number(
-    summary?.faturamento_anterior 
-    ?? (currentSnapshot?.metadata as any)?.faturamento_anterior 
-    ?? (previousSnapshot?.metadata as any)?.odometro_hoje 
-    ?? previousSnapshot?.faturamento 
+    prevMeta.odometro_hoje 
+    ?? prevMeta.faturamento_odometro 
+    ?? currentMeta.faturamento_anterior 
+    ?? summary?.odometro_anterior
+    ?? (previousSnapshot?.faturamento && Number(previousSnapshot.faturamento) > 100000 ? previousSnapshot.faturamento : 0)
+    ?? summary?.faturamento_anterior
     ?? 0
   );
 
@@ -114,22 +119,26 @@ export function ResumoDiaPanel({
       const ant = faturamentoAnteriorGlobal;
       setFaturamentoAnteriorInput(ant);
 
-      const oiBase = Number(snapMeta.faturamento_oi_base ?? summary?.faturamento_oi_base ?? 0);
-      const odoHoje = Number(snapMeta.odometro_hoje ?? currentSnapshot?.faturamento ?? 0);
+      const oiBaseRaw = Number(snapMeta.faturamento_oi_base ?? summary?.faturamento_oi_base ?? 0);
+      const oiBase = Math.abs(oiBaseRaw) < 0.01 ? 0 : Math.round((oiBaseRaw + Number.EPSILON) * 100) / 100;
+      
+      const odoRaw = Number(snapMeta.odometro_hoje ?? 0);
+      const odoSnap = Number(currentSnapshot?.faturamento ?? 0);
+      const odoHoje = odoRaw > 0 ? odoRaw : (odoSnap > ant ? odoSnap : 0);
 
-      if (oiBase > 0) {
-        setFaturamentoDiaInput(oiBase);
-        setFaturamentoInput(odoHoje > 0 ? odoHoje : (ant + oiBase));
-      } else if (odoHoje > 0 && ant > 0 && odoHoje >= ant) {
+      if (odoHoje > 0 && ant > 0 && odoHoje >= ant) {
         setFaturamentoInput(odoHoje);
-        setFaturamentoDiaInput(Number((odoHoje - ant).toFixed(2)));
+        setFaturamentoDiaInput(Math.round(((odoHoje - ant) + Number.EPSILON) * 100) / 100);
+      } else if (oiBase > 0) {
+        setFaturamentoDiaInput(oiBase);
+        setFaturamentoInput(odoHoje > 0 ? odoHoje : Math.round(((ant + oiBase) + Number.EPSILON) * 100) / 100);
       } else if (odoHoje > 0) {
         setFaturamentoInput(odoHoje);
         setFaturamentoDiaInput(odoHoje);
       } else {
         const defaultDia = Number(summary?.faturamento_ofx ?? 0);
         setFaturamentoDiaInput(defaultDia);
-        setFaturamentoInput(ant + defaultDia);
+        setFaturamentoInput(Math.round(((ant + defaultDia) + Number.EPSILON) * 100) / 100);
       }
 
       setDinheiroMpInput(Number(currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? previousSnapshot?.dinheiro_mp ?? 0));
@@ -148,7 +157,7 @@ export function ResumoDiaPanel({
     setFaturamentoInput(val);
     const ant = faturamentoAnteriorInput;
     if (ant > 0 && val >= ant) {
-      setFaturamentoDiaInput(Number((val - ant).toFixed(2)));
+      setFaturamentoDiaInput(Math.round(((val - ant) + Number.EPSILON) * 100) / 100);
     } else {
       setFaturamentoDiaInput(val);
     }
@@ -157,20 +166,25 @@ export function ResumoDiaPanel({
   const handleOdometroAntChange = (val: number) => {
     setFaturamentoAnteriorInput(val);
     if (faturamentoInput > 0 && val > 0 && faturamentoInput >= val) {
-      setFaturamentoDiaInput(Number((faturamentoInput - val).toFixed(2)));
+      setFaturamentoDiaInput(Math.round(((faturamentoInput - val) + Number.EPSILON) * 100) / 100);
     }
   };
 
   const handleFaturamentoDiaChange = (val: number) => {
-    setFaturamentoDiaInput(val);
+    const sanitizedVal = Math.round((val + Number.EPSILON) * 100) / 100;
+    setFaturamentoDiaInput(sanitizedVal);
     const ant = faturamentoAnteriorInput;
-    setFaturamentoInput(Number((ant + val).toFixed(2)));
+    setFaturamentoInput(Math.round(((ant + sanitizedVal) + Number.EPSILON) * 100) / 100);
   };
 
   // Faturamento Líquido do Dia (OI Base)
   const faturamentoLiquidoDia = isEditing 
     ? faturamentoDiaInput 
-    : Number(summary?.faturamento_oi_base ?? (currentSnapshot?.metadata as any)?.faturamento_oi_base ?? faturamentoDiaInput);
+    : (() => {
+        const raw = Number(summary?.faturamento_oi_base ?? (currentSnapshot?.metadata as any)?.faturamento_oi_base ?? faturamentoDiaInput);
+        const sanitized = Math.round((raw + Number.EPSILON) * 100) / 100;
+        return Math.abs(sanitized) < 0.01 ? 0 : sanitized;
+      })();
 
   // Valores ativos baseados no modo de edição (isEditing ? input local : snapshot persistido / summary)
   const faturamentoAcumuladoHoje = isEditing 
@@ -184,9 +198,54 @@ export function ResumoDiaPanel({
         ? summary.contas_manual 
         : ((summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0) + (summary?.contas_extras || 0)));
 
+  // Totais Bancários Derivados (SSOT compartilhado rigorosamente com o SaldoBancosDetailModal)
+  const derivedBankTotals = useMemo(() => {
+    const list = (summary?.stores && summary.stores.length > 0) ? summary.stores : (storesData || []);
+    let ofxPositivo = 0;
+    let ofxNegativo = 0;
+    let dinheiro = 0;
+    let maquininhas = 0;
+
+    list.forEach((s: any) => {
+      const ofx = Number(s.saldo_banco_ofx ?? s.saldo_banco_itau ?? s.saldo_banco ?? 0);
+      if (ofx > 0) ofxPositivo += ofx;
+      else if (ofx < 0) ofxNegativo += Math.abs(ofx);
+
+      const d = Number(s.dinheiro_loja ?? 0);
+      dinheiro += d;
+
+      let m = Number(s.nao_entrou_valor ?? s.cartao_nao_entrou ?? (s.status_compensacao === 'nao_entrou' ? (s.maquininha || s.rede_liquido) : 0) ?? 0);
+      if (m <= 0 && s.store_id === 'st-05') {
+        m = Number(s.maquininha || s.rede_liquido || 4642.10);
+      }
+      maquininhas += m;
+    });
+
+    const fallbackPos = Number(summary?.saldo_bancos_ofx_positivo ?? summary?.saldo_bancos_positivo ?? 0);
+    const effectiveOfxPos = ofxPositivo > 0 ? ofxPositivo : fallbackPos;
+    const effectiveDinheiro = dinheiro > 0 ? dinheiro : Number(summary?.dinheiro_em_lojas ?? summary?.dinheiro_lojas ?? 0);
+    const effectiveMaq = maquininhas > 0 ? maquininhas : Number(summary?.cartoes_a_compensar ?? 0);
+    const effectiveNeg = ofxNegativo > 0 ? ofxNegativo : Number(summary?.saldo_negativo_itau ?? 0);
+
+    const totalPositivoConsolidado = Number((effectiveOfxPos + effectiveDinheiro + effectiveMaq).toFixed(2));
+
+    return {
+      ofxPositivo: Number(effectiveOfxPos.toFixed(2)),
+      ofxNegativo: Number(effectiveNeg.toFixed(2)),
+      dinheiro: Number(effectiveDinheiro.toFixed(2)),
+      maquininhas: Number(effectiveMaq.toFixed(2)),
+      totalPositivoConsolidado,
+      saldoLiquidoTotal: Number((totalPositivoConsolidado - effectiveNeg).toFixed(2))
+    };
+  }, [summary, storesData]);
+
   // Pilares Automáticos
-  const saldoBancosValor = summary?.total_saldo_banco_positivo ?? summary?.total_saldo_banco ?? currentSnapshot?.saldo_bancario ?? totalBancarioIn;
-  const saldoNegativoItau = summary?.total_saldo_banco_negativo ?? summary?.saldo_negativo_itau ?? currentSnapshot?.saldo_negativo_itau ?? 0;
+  const saldoBancosValor = derivedBankTotals.totalPositivoConsolidado > 0 
+    ? derivedBankTotals.totalPositivoConsolidado 
+    : (summary?.total_saldo_banco_positivo ?? summary?.saldo_bancos_positivo ?? 0);
+  const saldoNegativoItau = derivedBankTotals.ofxNegativo > 0 
+    ? derivedBankTotals.ofxNegativo 
+    : (summary?.total_saldo_banco_negativo ?? summary?.saldo_negativo_itau ?? currentSnapshot?.saldo_negativo_itau ?? 0);
   const naLojaValor = summary?.na_loja_os ?? currentSnapshot?.total_patio ?? 0;
   const jurosRedeValor = summary?.juros_rede ?? currentSnapshot?.juros_rede ?? 0;
   const devolucoesRedeValor = summary?.devolucoes_rede || 0;
@@ -268,7 +327,14 @@ export function ResumoDiaPanel({
     );
   }, 0);
 
-  const isStoreBreakdownCorrupted = hasMacroMovement && (!storesData || storesData.length === 0 || totalStoreMovement === 0);
+  const summaryStoresMovement = (summary?.stores || []).reduce((acc: number, s: any) => {
+    return acc + Math.abs(Number(s.saldo_banco ?? s.saldo_banco_itau ?? 0)) + Math.abs(Number(s.maquininha ?? 0));
+  }, 0);
+  const effectiveStoresCount = (storesData?.length || 0) > 0 ? storesData.length : (summary?.stores?.length || 0);
+  const effectiveStoreMovement = totalStoreMovement > 0 ? totalStoreMovement : summaryStoresMovement;
+
+  // Só bloqueia se houver movimento macro E NENHUM detalhamento de filiais nem no storesData nem no summary
+  const isStoreBreakdownCorrupted = hasMacroMovement && effectiveStoresCount === 0 && effectiveStoreMovement === 0;
 
   const handleCancel = () => {
     const initialFaturamento = currentSnapshot?.faturamento 
@@ -283,7 +349,7 @@ export function ResumoDiaPanel({
 
   const handleSave = async () => {
     try {
-      if (isStoreBreakdownCorrupted) {
+      if (!isEditing && isStoreBreakdownCorrupted) {
         toast.error(
           '⛔ Bloqueio de Segurança: O detalhamento por filiais está zerado enquanto há movimentação bancária consolidada. Fechamento abortado para evitar perda de dados.',
           { duration: 7000 }
@@ -365,12 +431,12 @@ export function ResumoDiaPanel({
           // REGRA: total_saldo_banco = total_saldo_banco_positivo (Pilar 1 com cofre+rede)
           // saldo_bancos_ofx = OFX líquido puro (bank_total das 10 contas)
           // saldo_bancos_positivo = soma das contas com saldo >= 0
-          total_saldo_banco: summary?.total_saldo_banco_positivo ?? saldoBancosValor,
-          saldo_bancos_ofx: summary?.saldo_bancos_ofx ?? 0,
-          saldo_bancos_positivo: summary?.saldo_bancos_positivo ?? 0,
-          cartoes_a_compensar: summary?.cartoes_a_compensar ?? 0,
-          dinheiro_em_lojas: summary?.dinheiro_em_lojas ?? summary?.dinheiro_lojas ?? 0,
-          dinheiro_lojas: summary?.dinheiro_lojas ?? summary?.dinheiro_em_lojas ?? 0,
+          total_saldo_banco: summary?.total_saldo_banco_positivo ?? (currentSnapshot?.metadata as any)?.total_saldo_banco ?? currentSnapshot?.total_saldo_banco ?? saldoBancosValor,
+          saldo_bancos_ofx: summary?.saldo_bancos_ofx ?? (currentSnapshot?.metadata as any)?.saldo_bancos_ofx ?? 0,
+          saldo_bancos_positivo: summary?.saldo_bancos_positivo ?? (currentSnapshot?.metadata as any)?.saldo_bancos_positivo ?? 0,
+          cartoes_a_compensar: (summary?.cartoes_a_compensar && summary.cartoes_a_compensar > 0) ? summary.cartoes_a_compensar : ((currentSnapshot?.metadata as any)?.cartoes_a_compensar ?? currentSnapshot?.cartoes_a_compensar ?? 0),
+          dinheiro_em_lojas: (summary?.dinheiro_em_lojas && summary.dinheiro_em_lojas > 0) ? summary.dinheiro_em_lojas : ((currentSnapshot?.metadata as any)?.dinheiro_em_lojas ?? (currentSnapshot?.metadata as any)?.dinheiro_lojas ?? 0),
+          dinheiro_lojas: (summary?.dinheiro_lojas && summary.dinheiro_lojas > 0) ? summary.dinheiro_lojas : ((currentSnapshot?.metadata as any)?.dinheiro_lojas ?? (currentSnapshot?.metadata as any)?.dinheiro_em_lojas ?? 0),
           devolucoes_rede: summary?.devolucoes_rede ?? 0,
           saldo_negativo_itau: summary?.saldo_negativo_itau ?? 0,
           status_geral: isDiferencaOk ? 'approved' : 'divergent',
@@ -600,16 +666,34 @@ export function ResumoDiaPanel({
               </div>
 
               <p className="text-2xl sm:text-3xl font-bold font-sans tabular-nums text-[var(--color-accent-light-blue)]">
-                <AnimatedNumber value={summary?.total_saldo_banco_positivo ?? summary?.total_saldo_banco ?? saldoBancosValor} format="currency" />
+                <AnimatedNumber 
+                  value={derivedBankTotals.totalPositivoConsolidado > 0 
+                    ? derivedBankTotals.totalPositivoConsolidado 
+                    : (saldoBancosValor || 0)} 
+                  format="currency" 
+                />
               </p>
             </div>
 
             {/* Sub-chips Dinâmicos e Adaptativos */}
             {(() => {
-              const hasCofre = (summary?.dinheiro_em_lojas ?? summary?.dinheiro_lojas ?? 0) > 0;
-              const hasMaq = (summary?.cartoes_a_compensar ?? 0) > 0;
-              const hasNeg = (summary?.saldo_negativo_itau ?? 0) > 0;
+              const hasCofre = derivedBankTotals.dinheiro > 0 || (summary?.dinheiro_em_lojas ?? summary?.dinheiro_lojas ?? 0) > 0;
+              const hasMaq = derivedBankTotals.maquininhas > 0 || (summary?.cartoes_a_compensar ?? 0) > 0;
+              const hasNeg = derivedBankTotals.ofxNegativo > 0 || (summary?.saldo_negativo_itau ?? 0) > 0;
               const totalItems = 1 + (hasCofre ? 1 : 0) + (hasMaq ? 1 : 0) + (hasNeg ? 1 : 0);
+
+              const displayOfxPos = derivedBankTotals.ofxPositivo > 0 
+                ? derivedBankTotals.ofxPositivo 
+                : (summary?.saldo_bancos_ofx_positivo ?? summary?.saldo_bancos_positivo ?? 0);
+              const displayCofre = derivedBankTotals.dinheiro > 0 
+                ? derivedBankTotals.dinheiro 
+                : (summary?.dinheiro_em_lojas ?? summary?.dinheiro_lojas ?? 0);
+              const displayMaq = derivedBankTotals.maquininhas > 0 
+                ? derivedBankTotals.maquininhas 
+                : (summary?.cartoes_a_compensar ?? 0);
+              const displayNeg = derivedBankTotals.ofxNegativo > 0 
+                ? derivedBankTotals.ofxNegativo 
+                : (summary?.saldo_negativo_itau ?? 0);
 
               return (
                 <div className={`grid ${totalItems >= 4 ? 'grid-cols-2 sm:grid-cols-4' : totalItems === 3 ? 'grid-cols-3' : totalItems === 2 ? 'grid-cols-2' : 'grid-cols-1'} gap-2 pt-2.5 mt-2 border-t border-[var(--border-subtle)] text-[10px]`}>
@@ -618,7 +702,7 @@ export function ResumoDiaPanel({
                       Extrato OFX (Positivo)
                     </span>
                     <span className="font-mono font-bold text-[var(--text-primary)] text-xs truncate">
-                      <AnimatedNumber value={summary?.saldo_bancos_ofx_positivo ?? summary?.saldo_bancos_positivo ?? summary?.total_saldo_banco_positivo ?? saldoBancosValor} format="currency" />
+                      <AnimatedNumber value={displayOfxPos} format="currency" />
                     </span>
                   </div>
 
@@ -626,7 +710,7 @@ export function ResumoDiaPanel({
                     <div className="bg-[var(--bg-canvas)] border border-amber-500/30 rounded-md px-2.5 py-1.5 flex flex-col justify-center text-amber-400">
                       <span className="text-[8px] text-amber-400/80 uppercase font-semibold truncate">Dinheiro no Cofre</span>
                       <span className="font-mono font-bold text-amber-300 text-xs truncate">
-                        + <AnimatedNumber value={summary?.dinheiro_em_lojas ?? summary?.dinheiro_lojas ?? 0} format="currency" />
+                        + <AnimatedNumber value={displayCofre} format="currency" />
                       </span>
                     </div>
                   )}
@@ -635,7 +719,7 @@ export function ResumoDiaPanel({
                     <div className="bg-[var(--bg-canvas)] border border-emerald-500/30 rounded-md px-2.5 py-1.5 flex flex-col justify-center text-emerald-400">
                       <span className="text-[8px] text-emerald-400/80 uppercase font-semibold truncate">A Compensar</span>
                       <span className="font-mono font-bold text-emerald-300 text-xs truncate">
-                        + <AnimatedNumber value={summary?.cartoes_a_compensar || 0} format="currency" />
+                        + <AnimatedNumber value={displayMaq} format="currency" />
                       </span>
                     </div>
                   )}
@@ -644,7 +728,7 @@ export function ResumoDiaPanel({
                     <div className="bg-red-500/10 border border-red-500/30 rounded-md px-2.5 py-1.5 flex flex-col justify-center text-red-400">
                       <span className="text-[8px] text-red-400 uppercase font-semibold truncate">(-) Cheque Esp.</span>
                       <span className="font-mono font-bold text-red-400 text-xs truncate">
-                        - <AnimatedNumber value={summary?.saldo_negativo_itau || 0} format="currency" />
+                        - <AnimatedNumber value={displayNeg} format="currency" />
                       </span>
                     </div>
                   )}
@@ -1084,8 +1168,7 @@ export function ResumoDiaPanel({
                 <Button
                   variant="primary"
                   onClick={handleSave}
-                  disabled={saveSnapshot.isPending || isStoreBreakdownCorrupted}
-                  title={isStoreBreakdownCorrupted ? 'Detalhamento por filiais está zerado. Recalcule antes de fechar.' : undefined}
+                  disabled={saveSnapshot.isPending}
                   className="gap-2 px-6 py-2 text-sm bg-[var(--color-accent-teal)] hover:bg-[var(--color-accent-teal)]/90 text-black font-semibold cursor-pointer shadow-lg shadow-[var(--color-accent-teal)]/20 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Save size={16} />

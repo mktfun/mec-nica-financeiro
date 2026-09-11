@@ -200,7 +200,7 @@ export function Step2NonRevenueJustifications({
     queryFn: async () => {
       const { data, error } = await supabase
         .from('ofx_transactions')
-        .select('id, store_id, bank_name, type, amount, occurred_at, fitid, counterpart_name, title, subtitle, matched_bill_id, manual_category, manual_justification, target_date, contabilizar_no_subtotal, match_status')
+        .select('id, store_id, bank_name, type, amount, occurred_at, fitid, counterpart_name, matched_bill_id, manual_category, manual_justification, target_date, contabilizar_no_subtotal, match_status')
         .eq('target_date', targetDate)
         .eq('type', 'out')
         .is('matched_bill_id', null);
@@ -219,7 +219,7 @@ export function Step2NonRevenueJustifications({
     queryFn: async () => {
       const { data, error } = await supabase
         .from('ofx_transactions')
-        .select('id, store_id, bank_name, type, amount, occurred_at, fitid, counterpart_name, title, subtitle, matched_os_number, manual_category, manual_justification, target_date, match_status')
+        .select('id, store_id, bank_name, type, amount, occurred_at, fitid, counterpart_name, matched_os_number, manual_category, manual_justification, target_date, match_status')
         .eq('target_date', targetDate)
         .eq('type', 'in')
         .is('matched_os_number', null);
@@ -262,7 +262,7 @@ export function Step2NonRevenueJustifications({
         .map((tx: any) => {
           const storeObj = stores.find(s => s.id === tx.store_id);
           const storeName = storeObj?.name || tx.store_id || 'Loja';
-          const description = tx.title || tx.counterpart_name || tx.bank_name || 'Movimentação Bancária';
+          const description = tx.counterpart_name || tx.bank_name || 'Movimentação Bancária';
           return {
             id: tx.id,
             storeId: tx.store_id || '',
@@ -274,8 +274,8 @@ export function Step2NonRevenueJustifications({
             type: 'in' as const,
             bankName: tx.bank_name,
             counterpartName: tx.counterpart_name,
-            title: tx.title,
-            subtitle: tx.subtitle,
+            title: tx.counterpart_name || 'Entrada OFX',
+            subtitle: tx.counterpart_name || '',
             matchedOsNumber: tx.matched_os_number || undefined,
             manualCategory: tx.manual_category || undefined,
             manualJustification: tx.manual_justification || undefined,
@@ -350,7 +350,7 @@ export function Step2NonRevenueJustifications({
         .map((tx: any) => {
           const storeObj = stores.find(s => s.id === tx.store_id);
           const storeName = storeObj?.name || tx.store_id || 'Loja';
-          const description = tx.title || tx.counterpart_name || tx.bank_name || 'Débito Bancário';
+          const description = tx.counterpart_name || tx.bank_name || 'Débito Bancário';
           return {
             id: tx.id,
             storeId: tx.store_id || '',
@@ -362,8 +362,8 @@ export function Step2NonRevenueJustifications({
             type: 'out' as const,
             bankName: tx.bank_name,
             counterpartName: tx.counterpart_name,
-            title: tx.title,
-            subtitle: tx.subtitle,
+            title: tx.counterpart_name || 'Débito OFX',
+            subtitle: tx.counterpart_name || '',
             matchedBillId: tx.matched_bill_id || undefined,
             manualCategory: tx.manual_category || undefined,
             manualJustification: tx.manual_justification || undefined,

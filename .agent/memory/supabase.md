@@ -1,3 +1,15 @@
+## [2026-09-11] — [Feature ID: 399-conciliacao-rede-ofx-soma-liquido-por-bandeira]
+
+**Contexto:** Migration `20260911000048_add_brand_to_pos_transactions.sql` adicionando a coluna `brand TEXT` e índice `idx_pos_transactions_store_date_brand ON pos_transactions(store_id, target_date, brand)`, além de atualização no trigger `insert_into_transactions_view` para suportar `brand`.
+
+**Regra aprendida:**
+1. **Identificação de Bandeira em `pos_transactions`:**
+   - A tabela `pos_transactions` armazena as vendas individuais capturadas de maquininhas/adquirentes. Para suportar conciliações avançadas com extratos bancários que agrupam depósitos por adquirente e bandeira, a coluna `brand` (`Mastercard`, `Visa`, `Elo`, etc.) é obrigatória e deve ser indexada junto com `(store_id, target_date)`.
+2. **Fallback Resiliente de Ingestão via REST:**
+   - Durante períodos em que a migration DDL ainda não foi executada via CLI remota ou o schema cache do PostgREST não foi re-notificado (`NOTIFY pgrst, 'reload schema'`), o payload de ingestão em `CentralImportWizard` deve preencher concorrentemente `manual_category` com o nome da bandeira e `payment_method` com `Cartão Crédito <Bandeira>`. Isso garante persistência e recuperação determinística da bandeira independentemente do estado do schema cache.
+
+---
+
 ## [2026-09-10] — [Feature ID: 392-justificativa-ofx-contas-e-fix-coluna-title]
 
 **Contexto:** Correção de chamadas REST do PostgREST ao Supabase que incluíam a coluna `title` em `ofx_transactions`, resultando em erro `42703 (column ofx_transactions.title does not exist)`. Sincronização entre `transactions` e `ofx_transactions` e invalidações de queries SQL no frontend.

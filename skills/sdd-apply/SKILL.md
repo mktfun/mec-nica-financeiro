@@ -1,6 +1,6 @@
 ---
 name: sdd-apply
-description: "Implementação técnica determinística rápida e direta para Antigravity 2.0. Um único agente executa as tasks sequencialmente, com save-state contínuo no spec-plan.md, auto-healing em até 3 tentativas, Visual QA, build gate e Hard Stop final (sem subagentes)."
+description: "Implementação técnica determinística rápida e direta para Antigravity 2.0. Um único agente executa as tasks sequencialmente, com save-state contínuo no spec-plan.md, auto-healing em até 3 tentativas, verificação rápida via terminal (build/typecheck/segurança) e Hard Stop final (sem browser/subagentes)."
 triggers: [apply, implementar spec, executar spec, codificar spec, sdd-apply, vibe-apply]
 ---
 
@@ -8,7 +8,7 @@ triggers: [apply, implementar spec, executar spec, codificar spec, sdd-apply, vi
 
 <skill>
 <overview>
-Executa o checklist de `specs/<id>/spec-plan.md` diretamente com um único agente (sem latência ou overhead de múltiplos subagentes). Implementa as tasks de forma sequencial e atômica, valida o build, inspeciona UI via Visual QA e finaliza com Hard Stop obrigatório.
+Executa o checklist de `specs/<id>/spec-plan.md` diretamente com um único agente (sem latência ou overhead de múltiplos subagentes). Implementa as tasks de forma sequencial e atômica, valida 100% via terminal rápido (build gate, typecheck e segurança, sem testes de frontend/browser) e finaliza com Hard Stop obrigatório.
 </overview>
 
 <guardrails>
@@ -41,22 +41,26 @@ Para cada task `- [ ] Pending` no `spec-plan.md`, atualize para `- [/] In Progre
 
 <domain type="Database">
 Se envolver Banco/Supabase:
-- Carregue: `skills/database/SKILL.md`
+- Carregue: `skills/database/SKILL.md` (e `references/rls-patterns.md` se criar/editar policies).
 - Inspecione as colunas existentes via SQL antes de criar novas.
 - Escreva e aplique a migration em `supabase/migrations/<timestamp>_<nome>.sql`.
+- Toda tabela DEVE ter RLS habilitado (`ALTER TABLE ... ENABLE ROW LEVEL SECURITY`) e policy multi-tenant.
 </domain>
 
 <domain type="Backend">
 Se envolver Server Actions / APIs / Auth:
 - Carregue: `skills/backend-patterns/SKILL.md` (e `skills/auth/SKILL.md` se envolver sessão).
-- Implemente Server Actions tipadas com retorno `ActionResult<T>`.
+- Implemente Server Actions tipadas com retorno `ActionResult<T>` e schemas de validação Zod.
 - Use `getUser()` no server (nunca `getSession()` para segurança).
+- Aplique Taint Analysis defensiva (`skills/security/references/sentry-taint-analysis.md`): sanitize inputs de formulários antes de passar para queries ou mutações.
 </domain>
 
 <domain type="Frontend">
 Se envolver Telas / Componentes React:
-- Carregue: `skills/ui-components/SKILL.md` (e `skills/ui-motion/SKILL.md` se houver animação).
-- Respeite Dark UI sólida (Zinc-950), tipografia Inter/Outfit e `'use client'` apenas nas folhas interativas.
+- Carregue: `skills/frontend-design-pro/SKILL.md` e `skills/ui-components/SKILL.md` (e `skills/ui-motion/SKILL.md` se houver animação).
+- Respeite estritamente `DESIGN.md`: Dark UI sólida (Zinc-950), superfícies por luminância (dark.design), tipografia Inter/Outfit e `'use client'` apenas nas folhas interativas.
+- Bloqueio ativo de AI Slop: proibido gradientes borrados com blur(100px), icon tile stacks repetitivos ou animações > 200ms.
+- Siga os princípios de Rauno Freiberg (`skills/frontend-design-pro/references/interface-guidelines.md`) para inputs, dados e micro-interações.
 </domain>
 
 Após concluir cada task, marque imediatamente no `spec-plan.md` como `- [x] Completed`.
@@ -75,21 +79,19 @@ Se ocorrer erro de compilação ou teste durante a task:
     3. Notifique o usuário com a causa do bloqueio, o caminho do backup criado e solicite autorização explícita antes de descartar modificações.
 </step>
 
-<step number="3" name="Visual QA & Quality Gate de Build">
-1. **Verificação de UI (Visual QA Graceful Fallback):**
-   - Se tocou em UI: verifique se o servidor local / Playwright está acessível.
-   - **Cenário Nominal:** Se acessível, execute `npx playwright screenshot <url-local> screenshot.png` e valide contraste, alinhamento e ausência de overflow.
-   - **Anti-Slop Linter (Impeccable):** Se tocou em frontend, execute `npx impeccable detect <caminho-dos-arquivos-editados>` ou audite manualmente contra `skills/frontend-design-pro/references/ai-slop-catalog.md` para garantir zero AI slop.
-   - **Fallback Graceful (Servidor/Playwright Offline):**
-     - Emita log explícito: `[VISUAL_QA_OFFLINE]: Playwright ou servidor local inacessível. Executando Quality Gate estático e sinalizando pendência de revisão visual humana.`
-     - **PROIBIDO:** Declarar falsamente que o Visual QA passou lendo apenas arquivos HTML/CSS estáticos.
-     - Marque a verificação de UI no relatório como `[HUMAN_REVIEW_PENDING]`.
-2. **Build Gate obrigatório:**
+<step number="3" name="Quality Gate Rápido via Terminal (Build, Testes & Segurança)">
+1. **Verificação 100% Headless via Terminal (Zero Overhead de Frontend/Browser):**
+   - **PROIBIDO:** Abrir navegadores, rodar Playwright, tirar screenshots ou inicializar dev servers para inspeção de tela no apply. Isso elimina latência, lentidão desnecessária e alucinações de renderização.
+   - O agente opera em modo 100% headless:
+     `[VISUAL_QA_OFFLINE]: Testes de UI via browser/Playwright desativados por design. Verificação 100% focada em gates rápidos de terminal (build, typecheck, lint).`
+   - **PROIBIDO:** Declarar falsamente que o Visual QA passou lendo apenas arquivos HTML/CSS estáticos.
+   - A avaliação visual de telas pertence exclusivamente ao desenvolvedor humano no navegador em localhost antes de aprovar com `/vibe-archive`: marque como `[HUMAN_REVIEW_PENDING]`.
+2. **Build & Typecheck Gate (Terminal Rápido):**
+   Execute a compilação no terminal para garantir zero erros de TypeScript e zero quebras de bundling:
    ```bash
    cmd.exe /c "npm run build"
    ```
-   Garanta zero erros de TypeScript e zero falhas de bundling.
-
+   (Se o projeto possuir testes unitários rápidos de backend/lógica, execute-os opcionalmente via terminal: `npm test -- --passWithNoTests`).
 3. **Security Gate (Pre-Commit Secrets Blocker & Cadência de Auditoria):**
    - **Bloqueador Rígido de Segredos:** Inspecione os arquivos modificados. Se encontrar chaves reais (OpenAI `sk-`, Stripe `sk_live_`, Supabase `service_role`, AWS keys), **BLOQUEIE IMEDIATAMENTE**:
      `[SECURITY_BLOCKER]: Segredo detectado em <arquivo>. Remova credenciais e use variáveis de ambiente antes de continuar.`
@@ -108,7 +110,7 @@ Se ocorrer erro de compilação ou teste durante a task:
 </step>
 
 <step number="4" name="Conclusão e Hard Stop Obrigatório">
-Apresente o resumo das tasks concluídas, status do build gate e estado do Visual QA.
+Apresente o resumo das tasks concluídas, o status do build gate no terminal e a aprovação técnica [AUDIT_PASSED].
 
 <hard_stop>
 <directive>
@@ -117,7 +119,7 @@ PARE IMEDIATAMENTE AQUI.
 - NÃO execute git commit ou git push.
 - NÃO mova pastas de specs/ para specs/archive/.
 - Finalize sua resposta exclusivamente informando:
-  "Implementação concluída e verificada com sucesso! Teste a aplicação no seu ambiente. Quando estiver pronto para arquivar e commitar, envie: /vibe-archive <id> (ou /sdd-archive <id>)."
+  "Implementação concluída e verificada via terminal com sucesso! Teste a aplicação no seu navegador em localhost. Quando estiver pronto para arquivar e commitar, envie: /vibe-archive <id> (ou /sdd-archive <id>)."
 </directive>
 </hard_stop>
 </step>

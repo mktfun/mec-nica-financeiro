@@ -442,7 +442,13 @@ export function executeAutoMatchingEngine(
     const fileStoreId = mapping[ofx.alias] || mapping[ofx.accountKey || ''] || mapping[ofx.storeAlias || ''] || Object.values(mapping)[0];
 
     (ofx.transactions || [])
-      .filter(tx => tx.type === 'in' && Number(tx.amount || 0) > 0)
+      .filter(tx => {
+        const isCredit = tx.type === 'in' && Number(tx.amount || 0) > 0;
+        const txDate = (tx.date || '').replace(/[-/]/g, '').slice(0, 8);
+        const targetD = targetDate.replace(/[-/]/g, '').slice(0, 8);
+        const matchesDate = !tx.date || txDate === targetD;
+        return isCredit && matchesDate;
+      })
       .forEach(tx => {
         const fullOfxText = `${tx.title || ''} ${tx.counterpart_name || ''}`.trim();
         const upperText = fullOfxText.toUpperCase();
