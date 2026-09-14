@@ -85,9 +85,6 @@ export function SaldoBancosDetailModal({
         maquininhaNaoEntrou = rawCartaoNaoEntrou;
       } else if (s.status_compensacao === 'nao_entrou' && Number(s.maquininha || s.rede_liquido || 0) > 0) {
         maquininhaNaoEntrou = Number(s.maquininha || s.rede_liquido || 0);
-      } else if (s.store_id === 'st-05') {
-        // Piraporinha: Vendas Visa de 10/09 não entraram no banco (planilha oficial R$ 4.642,10)
-        maquininhaNaoEntrou = Number(s.maquininha || s.rede_liquido || 4642.10);
       }
 
       const saldoConsolidado = Number((saldoOfxPuro + dinheiroLoja + maquininhaNaoEntrou).toFixed(2));

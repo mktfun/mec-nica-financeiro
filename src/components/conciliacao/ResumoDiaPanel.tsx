@@ -181,7 +181,13 @@ export function ResumoDiaPanel({
   const faturamentoLiquidoDia = isEditing 
     ? faturamentoDiaInput 
     : (() => {
-        const raw = Number(summary?.faturamento_oi_base ?? (currentSnapshot?.metadata as any)?.faturamento_oi_base ?? faturamentoDiaInput);
+        const snapMeta = (currentSnapshot?.metadata as any) || {};
+        const raw = Number(
+          snapMeta.faturamento_oi_base 
+          ?? (currentSnapshot?.faturamento && Number(currentSnapshot.faturamento) < 100000 ? currentSnapshot.faturamento : null)
+          ?? summary?.faturamento_oi_base 
+          ?? faturamentoDiaInput
+        );
         const sanitized = Math.round((raw + Number.EPSILON) * 100) / 100;
         return Math.abs(sanitized) < 0.01 ? 0 : sanitized;
       })();
@@ -215,9 +221,6 @@ export function ResumoDiaPanel({
       dinheiro += d;
 
       let m = Number(s.nao_entrou_valor ?? s.cartao_nao_entrou ?? (s.status_compensacao === 'nao_entrou' ? (s.maquininha || s.rede_liquido) : 0) ?? 0);
-      if (m <= 0 && s.store_id === 'st-05') {
-        m = Number(s.maquininha || s.rede_liquido || 4642.10);
-      }
       maquininhas += m;
     });
 
@@ -260,7 +263,7 @@ export function ResumoDiaPanel({
   const faturamentoAjustesValor = summary?.faturamento_ajustes ?? 0;
   const faturamentoTotalComAjustes = isEditing 
     ? (faturamentoLiquidoDia + faturamentoOutrosValor + faturamentoAjustesValor)
-    : (summary?.faturamento_periodo ?? (faturamentoLiquidoDia + faturamentoOutrosValor + faturamentoAjustesValor));
+    : Number((currentSnapshot?.metadata as any)?.faturamento_periodo ?? (faturamentoLiquidoDia + faturamentoOutrosValor + faturamentoAjustesValor));
 
   // Matemática Consolidada — CANÔNICA: Caixa Atual = Ativos - Cheque Especial
   const caixaAtualCalculado = isEditing 
@@ -271,17 +274,13 @@ export function ResumoDiaPanel({
     ? (caixaAtualCalculado - caixaAnteriorGlobal)
     : (summary?.fluxo_caixa ?? (caixaAtualCalculado - caixaAnteriorGlobal));
 
-  const valorDispContasCalculado = isEditing 
-    ? (faturamentoTotalComAjustes - fluxoCaixaCalculado)
-    : (summary?.valor_disp_contas ?? (faturamentoTotalComAjustes - fluxoCaixaCalculado));
+  const valorDispContasCalculado = Math.round(((faturamentoTotalComAjustes - fluxoCaixaCalculado) + Number.EPSILON) * 100) / 100;
 
   const subtotalContasCalculado = isEditing 
     ? (jurosRedeValor + contasManualValor)
     : (summary?.subtotal_contas ?? (jurosRedeValor + contasManualValor));
 
-  const diferencaFinalCalculada = isEditing 
-    ? (valorDispContasCalculado - subtotalContasCalculado)
-    : (summary?.diferenca_final ?? (valorDispContasCalculado - subtotalContasCalculado));
+  const diferencaFinalCalculada = Math.round(((valorDispContasCalculado - subtotalContasCalculado) + Number.EPSILON) * 100) / 100;
 
   const diferencaAbs = Math.abs(diferencaFinalCalculada);
   const isDiferencaOk = diferencaAbs <= 50;
@@ -953,12 +952,12 @@ export function ResumoDiaPanel({
                 ) : (
                   <div>
                     <p className="text-xl font-bold text-[var(--text-primary)] font-mono mt-0.5 group-hover:text-emerald-400 transition-colors">
-                      <AnimatedNumber value={summary?.faturamento_periodo ?? faturamentoTotalComAjustes} format="currency" />
+                      <AnimatedNumber value={faturamentoTotalComAjustes} format="currency" />
                     </p>
                     <div className="text-[10px] text-[var(--text-tertiary)] mt-0.5">
-                      <span>OI: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary?.faturamento_oi_base ?? faturamentoLiquidoDia)}</span>
-                      {(summary?.faturamento_ajustes || 0) > 0 && (
-                        <span className="text-emerald-400 ml-1 font-semibold">+ Ajustes: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary?.faturamento_ajustes || 0)}</span>
+                      <span>OI: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoLiquidoDia)}</span>
+                      {faturamentoAjustesValor > 0 && (
+                        <span className="text-emerald-400 ml-1 font-semibold">+ Ajustes: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(faturamentoAjustesValor)}</span>
                       )}
                     </div>
                   </div>

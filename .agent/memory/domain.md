@@ -1099,5 +1099,17 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
 4. **Blindagem de Saques em Dinheiro (ATM / Sangria):**
    - Débitos de `SAQUE DIN ATM CART001008` são retiradas em espécie / sangrias para caixa local.
    - Devem ser marcados como `Retirada de Sócios / Sangria / Saque em Dinheiro` com `adicionaNoContas: false`, evitando a criação indevida de contas a pagar duplicadas no DRE.
-**Risco identificado / Anti-pattern:** Forçar matching 1:1 estrito para débitos de SISPAG e tratar transferências entre contas bancárias de filiais do mesmo grupo como saídas de fornecedores ou receitas de clientes.
+## [2026-09-14] — [Feature ID: 391-fix-odometro-encadeamento-e-faturamento-dia] Paridade Absoluta no Resumo Diário e Encadeamento de Odômetro
+**Contexto:** Ao alternar do Modo de Edição para o Modo Normal no `ResumoDiaPanel.tsx`, os valores de faturamento e diferença final divergiam violentamente (Faturamento R$ 82.523,16 -> R$ 45.554,62 e Diferença -R$ 5.647,26 -> -R$ 42.615,80). O motivo residia na RPC `get_daily_reconciliation_summary` que executava `v_faturamento - v_faturamento_anterior` onde ambos já eram os faturamentos líquidos diários (R$ 82.523,16 - R$ 36.968,54 = R$ 45.554,62), além de um descompasso no frontend entre variáveis calculadas localmente vs atributos do summary da RPC.
+**Regra aprendida:**
+1. **Odômetro vs Faturamento do Dia:**
+   - O "Odômetro Hoje" é o odômetro acumulado no mês (`metadata.odometro_hoje`).
+   - O "Odômetro Anterior" é o odômetro acumulado do dia útil anterior (`previousSnapshot.metadata.odometro_hoje`).
+   - O "Faturamento Líquido do Dia" (OI Base) é a variação: $\text{Odômetro Hoje} - \text{Odômetro Anterior}$.
+   - Nunca subtrair faturamento diário de faturamento diário! Se o valor persistido em `faturamento` já for o faturamento do dia (< 100k), ele NÃO deve sofrer nova subtração.
+2. **Paridade Canônica entre Modo Edição e Modo Normal:**
+   - Em `ResumoDiaPanel.tsx`, as equações de `faturamentoTotalComAjustes`, `valorDispContasCalculado` ($\text{Faturamento} - \text{Fluxo de Caixa}$) e `diferencaFinalCalculada` ($\text{Valor Disp} - \text{Subtotal Contas}$) devem ser derivadas de forma idêntica e usar as mesmas fórmulas contábeis em ambos os modos.
+3. **Enriquecimento Defensivo do Hook de Backend:**
+   - Em `useDailyReconciliationSummary` (`useBackendConciliacao.ts`), consultar `daily_snapshots` diretamente e sobrescrever campos da RPC com os metadados canônicos salvos no snapshot (`faturamento_oi_base`, `odometro_hoje`, `faturamento_anterior`, `valor_disp_contas`, `diferenca_final`), garantindo robustez contra falhas ou divergências de versão na RPC PostgreSQL.
+**Risco identificado / Anti-pattern:** Usar `summary.faturamento_periodo`, `summary.valor_disp_contas` ou `summary.diferenca_final` no modo normal enquanto o modo de edição usa variáveis locais derivadas de `faturamentoLiquidoDia`, criando descompassos entre visualização e persistência.
 

@@ -1,3 +1,18 @@
+### Spec 391 — Correção da Divergência Edit vs Normal no Faturamento e Encadeamento do Odômetro (14/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Frontend (`ResumoDiaPanel.tsx`)**:
+  - Unificação matemática estrita entre Modo Edição e Modo Normal para os campos Faturamento do Dia, Valor Disponível para Contas e Diferença Final.
+  - Eliminação da dependência direta de campos calculados com subtração incorreta da RPC. Priorização dos metadados persistidos no snapshot (`metadata.faturamento_oi_base`, `metadata.odometro_hoje`, `metadata.faturamento_anterior`).
+- **Backend & Hooks (`useBackendConciliacao.ts`)**:
+  - Enriquecimento defensivo de `useDailyReconciliationSummary`: consulta assíncrona a `daily_snapshots` para blindar `faturamento_oi_base`, `faturamento_periodo`, `odometro_hoje`, `faturamento_anterior`, `valor_disp_contas` e `diferenca_final`.
+  - Adição de tipagem tipada com `odometro_hoje` e `odometro_anterior` em `DailyReconciliationSummary`.
+- **Importação (`CentralImportWizard.tsx`)**:
+  - Remoção de código obsoleto que subtraía faturamento diário do odômetro (`previousMonthClosing = previousSnapshot?.faturamento`), preservando a integridade das futuras importações.
+- **Auditoria de Paridade (14/09/2026)**:
+  - Faturamento: R$ 82.523,16 (Modo Edição e Modo Normal 100% idênticos).
+  - Valor Disp. Contas: R$ 26.561,98 (Modo Edição e Modo Normal 100% idênticos).
+  - Diferença Final: -R$ 5.647,26 (Modo Edição e Modo Normal 100% idênticos).
+
 ### Spec 399 — Conciliação Rede x OFX por Soma de Líquido por Bandeira (11/09/2026)
 - **Status:** COMPLETED & ARCHIVED
 - **Engine (`reconciliadorRedeOfx.ts`)**:

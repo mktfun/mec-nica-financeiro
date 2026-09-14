@@ -1,3 +1,12 @@
+### Feature 391: Correção da Divergência Edit vs Normal no Faturamento e Encadeamento do Odômetro (14/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Data:** 2026-09-14
+- **Arquivos Criados/Modificados:**
+  - `src/components/conciliacao/ResumoDiaPanel.tsx` (Unificação estrita das fórmulas de faturamento, valor disponível para contas e diferença final entre os modos de edição e normal)
+  - `src/hooks/useBackendConciliacao.ts` (Enriquecimento defensivo de `useDailyReconciliationSummary` com dados persistidos de `daily_snapshots`)
+  - `src/components/importacoes/CentralImportWizard.tsx` (Higienização de código removendo subtração indevida de faturamento diário do odômetro)
+- **Descrição:** Eliminação da divergência onde o modo de edição exibia Faturamento R$ 82.523,16 e Diferença -R$ 5.647,26 enquanto o modo normal exibia Faturamento R$ 45.554,62 e Diferença -R$ 42.615,80 em virtude de subtração incorreta da RPC. Paridade absoluta restabelecida em ambos os modos.
+
 ### Feature 385: Fix de Âncora Temporal de Saldos OFX, Blindagem de Reconciliations e Sincronização Tríplice (09/09/2026)
 - **Status:** COMPLETED & ARCHIVED
 - **Data:** 2026-09-09

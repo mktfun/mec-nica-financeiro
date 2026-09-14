@@ -197,6 +197,8 @@ export interface DailyReconciliationSummary {
   fluxo_caixa: number;
   faturamento_ofx?: number;
   faturamento_anterior?: number;
+  odometro_anterior?: number;
+  odometro_hoje?: number;
   faturamento_oi_base?: number;
   faturamento_ajustes?: number;
   faturamento_periodo: number;
@@ -258,24 +260,38 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
         console.warn('Erro ao enriquecer vault:', err);
       }
 
-      // 2. Busca pos_transactions pendentes se cartoes_a_compensar não veio preenchido
+      // 2. Busca pos_transactions pendentes (A Compensar / Não Entrou)
       let extraPosEntries: any[] = [];
       let totalPosUnsettled = 0;
       let posQuerySuccess = false;
       try {
-        const { data: posData } = await supabase
+        const { data: posData, error: posErr } = await supabase
           .from('pos_transactions')
           .select('id, store_id, net_amount, settlement_status')
-          .eq('target_date', date)
-          .in('settlement_status', ['nao_entrou', 'a_compensar']);
+          .eq('target_date', date);
 
-        if (posData && posData.length > 0) {
-          extraPosEntries = posData;
-          totalPosUnsettled = posData.reduce((sum, p) => sum + Number(p.net_amount || 0), 0);
+        if (!posErr && posData) {
+          extraPosEntries = posData.filter((p: any) => p.settlement_status === 'nao_entrou' || p.settlement_status === 'a_compensar');
+          totalPosUnsettled = extraPosEntries.reduce((sum, p) => sum + Number(p.net_amount || 0), 0);
           posQuerySuccess = true;
         }
       } catch (err) {
         console.warn('Erro ao enriquecer pos_transactions:', err);
+      }
+
+      // 3. Busca daily_snapshots para proteger faturamento, odômetro e cálculos contra falha/subtração da RPC
+      let snapshotData: any = null;
+      try {
+        const { data: snap } = await supabase
+          .from('daily_snapshots')
+          .select('faturamento, metadata')
+          .eq('date', date)
+          .maybeSingle();
+        if (snap) {
+          snapshotData = snap;
+        }
+      } catch (err) {
+        console.warn('Erro ao buscar daily_snapshots para resumo:', err);
       }
 
       const enrichedStores = (rawSummary.stores || []).map((s: any) => {
@@ -308,7 +324,7 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
       const totalVaultStores = enrichedStores.reduce((sum: number, s: any) => sum + Number(s.dinheiro_loja || 0), 0);
       const finalDinheiroLojas = totalVaultStores > 0 ? totalVaultStores : Number(totalVaultInTransit || rawSummary.dinheiro_lojas || rawSummary.dinheiro_em_lojas || 0);
       const totalNaoEntrouStores = enrichedStores.reduce((sum: number, s: any) => sum + Number(s.nao_entrou_valor || 0), 0);
-      const finalCartoesACompensar = totalNaoEntrouStores > 0 ? totalNaoEntrouStores : (posQuerySuccess ? totalPosUnsettled : Number(rawSummary.cartoes_a_compensar || totalPosUnsettled || 0));
+      const finalCartoesACompensar = posQuerySuccess ? totalPosUnsettled : (totalNaoEntrouStores > 0 ? totalNaoEntrouStores : Number(rawSummary.cartoes_a_compensar || 0));
 
       // Agrega saldos bancários positivos e negativos a partir de enrichedStores
       const storesPositiveOfx = enrichedStores.reduce((sum: number, s: any) => 
@@ -331,6 +347,34 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
       const finalTotalSaldoBancoPositivo = Number((baseBancoPositivo + finalDinheiroLojas + finalCartoesACompensar).toFixed(2));
       const finalTotalSaldoBanco = Number((baseBancoTotal + finalDinheiroLojas + finalCartoesACompensar).toFixed(2));
 
+      // Protege faturamento e odômetro contra a subtração indevida da RPC get_daily_reconciliation_summary
+      const snapMeta = (snapshotData?.metadata as any) || {};
+      const finalFatOiBase = Number(
+        snapMeta.faturamento_oi_base ?? 
+        (snapshotData?.faturamento && Number(snapshotData.faturamento) < 100000 ? snapshotData.faturamento : null) ?? 
+        rawSummary.faturamento_oi_base ?? 
+        0
+      );
+      const finalFatPeriodo = Number(
+        snapMeta.faturamento_periodo ?? 
+        (finalFatOiBase > 0 ? (finalFatOiBase + Number(rawSummary.faturamento_ajustes || 0)) : rawSummary.faturamento_periodo) ?? 
+        0
+      );
+      const finalOdometroHoje = Number(snapMeta.odometro_hoje ?? rawSummary.odometro_hoje ?? 0);
+      const finalFatAnterior = Number(snapMeta.faturamento_anterior ?? rawSummary.faturamento_anterior ?? 0);
+      const finalFluxoCaixa = Number(rawSummary.fluxo_caixa ?? 0);
+      const finalSubtotalContas = Number(rawSummary.subtotal_contas ?? 0);
+      const finalValorDisp = Number(
+        snapMeta.valor_disp_contas ?? 
+        (finalFatPeriodo > 0 ? Number((finalFatPeriodo - finalFluxoCaixa).toFixed(2)) : rawSummary.valor_disp_contas) ?? 
+        0
+      );
+      const finalDiferenca = Number(
+        snapMeta.diferenca_final ?? 
+        (finalValorDisp !== 0 ? Number((finalValorDisp - finalSubtotalContas).toFixed(2)) : rawSummary.diferenca_final) ?? 
+        0
+      );
+
       return {
         ...rawSummary,
         dinheiro_lojas: finalDinheiroLojas,
@@ -342,6 +386,12 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
         saldo_bancos_ofx: baseBancoTotal,
         total_saldo_banco_positivo: finalTotalSaldoBancoPositivo > 0 ? finalTotalSaldoBancoPositivo : rawSummary.total_saldo_banco_positivo,
         total_saldo_banco: finalTotalSaldoBanco !== 0 ? finalTotalSaldoBanco : rawSummary.total_saldo_banco,
+        faturamento_oi_base: finalFatOiBase > 0 ? finalFatOiBase : rawSummary.faturamento_oi_base,
+        faturamento_periodo: finalFatPeriodo > 0 ? finalFatPeriodo : rawSummary.faturamento_periodo,
+        odometro_hoje: finalOdometroHoje > 0 ? finalOdometroHoje : rawSummary.odometro_hoje,
+        faturamento_anterior: finalFatAnterior > 0 ? finalFatAnterior : rawSummary.faturamento_anterior,
+        valor_disp_contas: finalValorDisp,
+        diferenca_final: finalDiferenca,
         stores: enrichedStores,
         stores_detail: enrichedStores
       } as DailyReconciliationSummary;

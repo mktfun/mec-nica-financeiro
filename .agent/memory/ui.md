@@ -738,5 +738,10 @@ Nao fazer: Nunca fazer fallbacks automaticos para zero em dados criticos contabe
    - No preview em memória antes de salvar, consumir diretamente o resultado do motor de conciliação (`matchDailyExpensesBatch`), garantindo que o número exibido nas abas corresponda rigorosamente à quantidade real de órfãos pendentes.
 2. **Auto-Classificação de Saques em Espécie (ATM):**
    - Transações com descrição contendo `SAQUE DIN ATM` ou `CART00` devem ser pré-classificadas automaticamente na interface com a categoria `Retirada de Sócios / Sangria / Saque em Dinheiro` e com o switch `adicionaNoContas: false`.
-**Risco identificado / Anti-pattern:** Calcular contadores de abas de justificativas (`Saídas Órfãs (N)`) utilizando listas brutas sem deduzir lotes casados pelo motor ou transferências pareadas entre lojas.
+## [2026-09-14] — [Feature ID: 391-fix-odometro-encadeamento-e-faturamento-dia] Unificação de Estados de Visualização (Modo Edição vs Modo Normal)
+**Contexto:** Divergência entre valores exibidos durante a edição e após salvar no painel de resumo diário (`ResumoDiaPanel.tsx`). O modo de edição calculava a matemática contábil localmente com base nas entradas reativas, enquanto o modo normal exibia diretamente atributos do `summary` retornado pela RPC do backend, que continham subtrações defeituosas.
+**Regra aprendida:**
+1. **Consistência de Fórmulas em Painéis com Alternância de Modo:** Componentes que possuem Modo Edição e Modo Normal DEVEM derivar variáveis de exibição e cálculo intermediário (`faturamentoTotalComAjustes`, `valorDispContasCalculado`, `diferencaFinalCalculada`) através da MESMA fórmula contábil em ambos os modos.
+2. **Prioridade de Metadados Canônicos:** Quando houver possibilidade de a RPC do backend desatualizada retornar cálculos inconsistentes, a interface deve priorizar os metadados canônicos persistidos (`currentSnapshot.metadata.faturamento_oi_base`, `currentSnapshot.metadata.faturamento_periodo`) antes de recorrer a campos brutos da RPC.
+**Risco identificado / Anti-pattern:** Usar uma fonte de dados para desenhar o componente em modo de leitura (ex.: `summary.faturamento_periodo`) e uma fórmula diferente em modo de edição (ex.: `faturamentoDiaInput + ajustes`), gerando efeito de "salto" ou distorção de números na UI ao alternar ou salvar.
 

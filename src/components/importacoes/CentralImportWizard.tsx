@@ -732,20 +732,20 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     const acctMatch = ofx.alias.match(/(\d{8,12})/);
     if (acctMatch && mapping[acctMatch[1]]) return mapping[acctMatch[1]];
 
-    // 4. Mnemônicos no nome do arquivo
-    if (ofx.fileName) {
-      const upper = ofx.fileName.toUpperCase();
-      if (upper.includes('_DP') || upper.includes('DOM PEDRO') || upper.includes('DOM_PEDRO')) return 'st-01';
-      if (upper.includes('_JAB') || upper.includes('JABAQUARA')) return 'st-02';
-      if (upper.includes('_JB') || upper.includes('JORGE') || upper.includes('BERETTA')) return 'st-03';
-      if (upper.includes('_MP') || upper.includes('KENNEDY')) return 'st-04';
-      if (upper.includes('_EMP') || upper.includes('PIRAPORINHA') || upper.includes('EMPORIO')) return 'st-05';
-      if (upper.includes('_BRA') || upper.includes('PLANALTO') || upper.includes('BRASICAR')) return 'st-06';
-      if (upper.includes('_CAP') || upper.includes('RUDGE') || upper.includes('CAPAO')) return 'st-07';
-      if (upper.includes('_HD') || upper.includes('SANTO ANDRE') || upper.includes('SANTO_ANDRE')) return 'st-08';
-      if (upper.includes('_RM') || upper.includes('REI DO MODULO') || upper.includes('MODULO')) return 'st-09';
-      if (upper.includes('_MHE') || upper.includes('MAUA') || upper.includes('REI DO OLEO') || upper.includes('REI_DO_OLEO')) return '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f';
-    }
+    // 4. Mnemônicos e nomes no arquivo OFX
+    const upperSourceStr = sourceStr.toUpperCase();
+    const baseName = (ofx.fileName || '').toUpperCase().replace(/\.OFX$/, '').trim();
+
+    if (baseName === 'MP' || upperSourceStr.includes('_MP') || upperSourceStr.includes('KENNEDY') || upperSourceStr.includes('WASHINGTON')) return 'st-04';
+    if (baseName === 'MHE' || upperSourceStr.includes('_MHE') || upperSourceStr.includes('MAUA') || upperSourceStr.includes('ORION') || upperSourceStr.includes('REI DO OLEO') || upperSourceStr.includes('REI_DO_OLEO')) return '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f';
+    if (baseName === 'DHJV' || upperSourceStr.includes('_JB') || upperSourceStr.includes('JORGE') || upperSourceStr.includes('BERETTA') || upperSourceStr.includes('DHJV')) return 'st-03';
+    if (baseName === 'HD' || upperSourceStr.includes('_HD') || upperSourceStr.includes('SANTO ANDRE') || upperSourceStr.includes('SANTO_ANDRE') || upperSourceStr.includes('VIVALDI')) return 'st-08';
+    if (baseName === 'CAP' || upperSourceStr.includes('_CAP') || upperSourceStr.includes('RUDGE') || upperSourceStr.includes('CAPAO')) return 'st-07';
+    if (baseName === 'BRASICAR' || upperSourceStr.includes('_BRA') || upperSourceStr.includes('PLANALTO') || upperSourceStr.includes('BRASICAR')) return 'st-06';
+    if (baseName === 'EMPORIO' || upperSourceStr.includes('_EMP') || upperSourceStr.includes('PIRAPORINHA') || upperSourceStr.includes('EMPORIO')) return 'st-05';
+    if (baseName === 'MODULO' || upperSourceStr.includes('_RM') || upperSourceStr.includes('REI DO MODULO') || upperSourceStr.includes('MODULO') || upperSourceStr.includes('OSORIO')) return 'st-09';
+    if (baseName === 'DP' || upperSourceStr.includes('_DP') || upperSourceStr.includes('DOM PEDRO') || upperSourceStr.includes('DOM_PEDRO') || upperSourceStr.includes('984633') || upperSourceStr.includes('98463-3')) return 'st-01';
+    if (baseName === 'JAB' || upperSourceStr.includes('_JAB') || upperSourceStr.includes('JABAQUARA') || upperSourceStr.includes('SBC') || upperSourceStr.includes('984112') || upperSourceStr.includes('98411-2')) return 'st-02';
     return '';
   }, [mapping]);
 
@@ -1128,6 +1128,19 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       results.redeResults.filter(r => r.success).forEach(r => {
         r.transactions.forEach(t => {
           let sid: string = mapping[t.storeName] || 'GLOBAL';
+          if (sid === 'GLOBAL') {
+            const norm = `${t.storeName || ''} ${(t as any).terminalNumber || ''}`.toLowerCase();
+            if (norm.includes('kennedy') || norm.includes('76347036') || norm.includes('washington')) sid = 'st-04';
+            else if (norm.includes('maua') || norm.includes('mhe') || norm.includes('63034336') || norm.includes('orion')) sid = '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f';
+            else if (norm.includes('jorge') || norm.includes('beretta') || norm.includes('101423446') || norm.includes('dhjv')) sid = 'st-03';
+            else if (norm.includes('vivaldi') || norm.includes('hd') || norm.includes('101422997')) sid = 'st-08';
+            else if (norm.includes('cap') || norm.includes('rudge') || norm.includes('71854878')) sid = 'st-07';
+            else if (norm.includes('brasicar') || norm.includes('planalto') || norm.includes('63304449')) sid = 'st-06';
+            else if (norm.includes('piraporinha') || norm.includes('emporio') || norm.includes('47712201')) sid = 'st-05';
+            else if (norm.includes('modulo') || norm.includes('módulo') || norm.includes('101423667') || norm.includes('osorio')) sid = 'st-09';
+            else if (norm.includes('dom pedro') || norm.includes('dp') || norm.includes('102553424')) sid = 'st-01';
+            else if (norm.includes('jabaquara') || norm.includes('jab') || norm.includes('104112840') || norm.includes('sbc')) sid = 'st-02';
+          }
           if (!redeByStore[sid]) redeByStore[sid] = [];
           redeByStore[sid].push(t);
         });
@@ -3184,12 +3197,6 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             {(() => {
               const hasNoOsFiles = results.osFiles.filter(r => r.success && r.osArray.length > 0).length === 0;
               const mapaMetasFaturamentoTotal = results.mapaMetasResults?.[0]?.totalFaturamento || 0;
-              const previousMonthClosing = previousSnapshot?.faturamento ? Number(previousSnapshot.faturamento) : 0;
-
-              const baseMesAnterior = Math.max(0, previousOdometro - previousMonthClosing);
-              const suggestedRevenue = (baseMesAnterior + mapaMetasFaturamentoTotal > 0)
-                ? (baseMesAnterior + mapaMetasFaturamentoTotal)
-                : (previousOdometro + mapaMetasFaturamentoTotal);
 
               return (
                 <div className="space-y-4">
