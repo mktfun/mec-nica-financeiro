@@ -261,9 +261,7 @@ export function ResumoDiaPanel({
     
   // Faturamento Atual = Mapa de Metas + Transações Justificadas + Ajustes Manuais (Aportes/Estornos)
   const faturamentoAjustesValor = summary?.faturamento_ajustes ?? 0;
-  const faturamentoTotalComAjustes = isEditing 
-    ? (faturamentoLiquidoDia + faturamentoOutrosValor + faturamentoAjustesValor)
-    : Number((currentSnapshot?.metadata as any)?.faturamento_periodo ?? (faturamentoLiquidoDia + faturamentoOutrosValor + faturamentoAjustesValor));
+  const faturamentoTotalComAjustes = Math.round(((faturamentoLiquidoDia + faturamentoOutrosValor + faturamentoAjustesValor) + Number.EPSILON) * 100) / 100;
 
   // Matemática Consolidada — CANÔNICA: Caixa Atual = Ativos - Cheque Especial
   const caixaAtualCalculado = isEditing 

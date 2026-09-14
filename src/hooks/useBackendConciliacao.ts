@@ -356,24 +356,17 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
         0
       );
       const finalFatPeriodo = Number(
-        snapMeta.faturamento_periodo ?? 
-        (finalFatOiBase > 0 ? (finalFatOiBase + Number(rawSummary.faturamento_ajustes || 0)) : rawSummary.faturamento_periodo) ?? 
-        0
+        (finalFatOiBase > 0 
+          ? (finalFatOiBase + Number(rawSummary.faturamento_ajustes || 0)) 
+          : (rawSummary.faturamento_periodo ?? snapMeta.faturamento_periodo ?? 0)
+        ).toFixed(2)
       );
       const finalOdometroHoje = Number(snapMeta.odometro_hoje ?? rawSummary.odometro_hoje ?? 0);
       const finalFatAnterior = Number(snapMeta.faturamento_anterior ?? rawSummary.faturamento_anterior ?? 0);
       const finalFluxoCaixa = Number(rawSummary.fluxo_caixa ?? 0);
       const finalSubtotalContas = Number(rawSummary.subtotal_contas ?? 0);
-      const finalValorDisp = Number(
-        snapMeta.valor_disp_contas ?? 
-        (finalFatPeriodo > 0 ? Number((finalFatPeriodo - finalFluxoCaixa).toFixed(2)) : rawSummary.valor_disp_contas) ?? 
-        0
-      );
-      const finalDiferenca = Number(
-        snapMeta.diferenca_final ?? 
-        (finalValorDisp !== 0 ? Number((finalValorDisp - finalSubtotalContas).toFixed(2)) : rawSummary.diferenca_final) ?? 
-        0
-      );
+      const finalValorDisp = Number((finalFatPeriodo - finalFluxoCaixa).toFixed(2));
+      const finalDiferenca = Number((finalValorDisp - finalSubtotalContas).toFixed(2));
 
       return {
         ...rawSummary,
