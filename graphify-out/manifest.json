@@ -240,8 +240,8 @@
     "semantic_hash": "5657d3d33d13441c1ffdd63784683ee9"
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1789391995.986552,
-    "ast_hash": "aa847b75d0cd51da032553a68ef8bce5",
+    "mtime": 1789392750.3446026,
+    "ast_hash": "98dc443802145f6464a15123fe220aa3",
     "semantic_hash": ""
   },
   "src/components/conciliacao/SaldoBancosDetailModal.tsx": {
@@ -655,8 +655,8 @@
     "semantic_hash": "43d7881346dbd48b48bea308ff8f45d5"
   },
   "src/hooks/useBackendConciliacao.ts": {
-    "mtime": 1789392149.7135036,
-    "ast_hash": "c29d0bcfe8f882fa18d79ce1fd66f53b",
+    "mtime": 1789392763.156771,
+    "ast_hash": "07ee133df45410cb63f8c7a0e59ebb18",
     "semantic_hash": ""
   },
   "src/hooks/useBackendDashboard.ts": {
@@ -4587,21 +4587,6 @@
   "skills/ui-motion/references/recipes.md": {
     "mtime": 1789062129.1484442,
     "ast_hash": "61b4eab7d11fb15f060b9449489268a8",
-    "semantic_hash": ""
-  },
-  "specs/391-fix-odometro-encadeamento-e-faturamento-dia/design.md": {
-    "mtime": 1789391889.9311776,
-    "ast_hash": "b9d33f32455d4fdeea32a86645e1fda4",
-    "semantic_hash": ""
-  },
-  "specs/391-fix-odometro-encadeamento-e-faturamento-dia/proposal.md": {
-    "mtime": 1789391876.8750854,
-    "ast_hash": "6470664925352d61e92f9d22c54a7163",
-    "semantic_hash": ""
-  },
-  "specs/391-fix-odometro-encadeamento-e-faturamento-dia/spec-plan.md": {
-    "mtime": 1789392275.6392372,
-    "ast_hash": "e0d55d7c99efcac64dbcf97096fd7784",
     "semantic_hash": ""
   }
 }

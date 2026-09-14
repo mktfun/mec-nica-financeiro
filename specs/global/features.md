@@ -8,10 +8,10 @@
   - Adição de tipagem tipada com `odometro_hoje` e `odometro_anterior` em `DailyReconciliationSummary`.
 - **Importação (`CentralImportWizard.tsx`)**:
   - Remoção de código obsoleto que subtraía faturamento diário do odômetro (`previousMonthClosing = previousSnapshot?.faturamento`), preservando a integridade das futuras importações.
-- **Auditoria de Paridade (14/09/2026)**:
-  - Faturamento: R$ 82.523,16 (Modo Edição e Modo Normal 100% idênticos).
-  - Valor Disp. Contas: R$ 26.561,98 (Modo Edição e Modo Normal 100% idênticos).
-  - Diferença Final: -R$ 5.647,26 (Modo Edição e Modo Normal 100% idênticos).
+- **Auditoria de Paridade e Reatividade Dinâmica (14/09/2026)**:
+  - Faturamento Base OI: R$ 82.523,16 + Ajustes: R$ 1.000,00 = R$ 83.523,16 (Modo Edição e Modo Normal 100% idênticos).
+  - Valor Disp. Contas: R$ 27.561,98 (Modo Edição e Modo Normal 100% idênticos).
+  - Diferença Final: -R$ 4.647,26 (Modo Edição e Modo Normal 100% idênticos).
 
 ### Spec 399 — Conciliação Rede x OFX por Soma de Líquido por Bandeira (11/09/2026)
 - **Status:** COMPLETED & ARCHIVED
