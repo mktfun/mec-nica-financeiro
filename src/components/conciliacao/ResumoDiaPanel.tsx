@@ -195,7 +195,7 @@ export function ResumoDiaPanel({
   // Valores ativos baseados no modo de edição (isEditing ? input local : snapshot persistido / summary)
   const faturamentoAcumuladoHoje = isEditing 
     ? faturamentoInput 
-    : Number((currentSnapshot?.metadata as any)?.odometro_hoje ?? (faturamentoAnteriorInput + faturamentoLiquidoDia) ?? faturamentoInput);
+    : Number((currentSnapshot?.metadata as any)?.odometro_hoje ?? (faturamentoAnteriorInput + faturamentoLiquidoDia || faturamentoInput));
   const dinheiroMpValor = isEditing ? dinheiroMpInput : Number(currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? previousSnapshot?.dinheiro_mp ?? 0);
   const aReceberValor = isEditing ? aReceberInput : Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber_manual ?? summary?.a_receber ?? previousSnapshot?.a_receber_manual ?? 0);
   const contasManualValor = isEditing 
@@ -226,7 +226,9 @@ export function ResumoDiaPanel({
 
     const fallbackPos = Number(summary?.saldo_bancos_ofx_positivo ?? summary?.saldo_bancos_positivo ?? 0);
     const effectiveOfxPos = ofxPositivo > 0 ? ofxPositivo : fallbackPos;
-    const effectiveDinheiro = dinheiro > 0 ? dinheiro : Number(summary?.dinheiro_em_lojas ?? summary?.dinheiro_lojas ?? 0);
+    const effectiveDinheiro = summary?.dinheiro_lojas !== undefined && summary?.dinheiro_lojas !== null
+      ? Number(summary.dinheiro_lojas)
+      : (dinheiro > 0 ? dinheiro : Number(summary?.dinheiro_em_lojas ?? 0));
     const effectiveMaq = maquininhas > 0 ? maquininhas : Number(summary?.cartoes_a_compensar ?? 0);
     const effectiveNeg = ofxNegativo > 0 ? ofxNegativo : Number(summary?.saldo_negativo_itau ?? 0);
 
@@ -263,20 +265,14 @@ export function ResumoDiaPanel({
   const faturamentoAjustesValor = summary?.faturamento_ajustes ?? 0;
   const faturamentoTotalComAjustes = Math.round(((faturamentoLiquidoDia + faturamentoOutrosValor + faturamentoAjustesValor) + Number.EPSILON) * 100) / 100;
 
-  // Matemática Consolidada — CANÔNICA: Caixa Atual = Ativos - Cheque Especial
-  const caixaAtualCalculado = isEditing 
-    ? (saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor - saldoNegativoItau)
-    : (summary?.caixa_atual ?? (saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor - saldoNegativoItau));
+  // Matemática Consolidada — CANÔNICA E 100% REATIVA: Caixa Atual = Ativos - Cheque Especial
+  const caixaAtualCalculado = Math.round(((saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor - saldoNegativoItau) + Number.EPSILON) * 100) / 100;
 
-  const fluxoCaixaCalculado = isEditing 
-    ? (caixaAtualCalculado - caixaAnteriorGlobal)
-    : (summary?.fluxo_caixa ?? (caixaAtualCalculado - caixaAnteriorGlobal));
+  const fluxoCaixaCalculado = Math.round(((caixaAtualCalculado - caixaAnteriorGlobal) + Number.EPSILON) * 100) / 100;
 
   const valorDispContasCalculado = Math.round(((faturamentoTotalComAjustes - fluxoCaixaCalculado) + Number.EPSILON) * 100) / 100;
 
-  const subtotalContasCalculado = isEditing 
-    ? (jurosRedeValor + contasManualValor)
-    : (summary?.subtotal_contas ?? (jurosRedeValor + contasManualValor));
+  const subtotalContasCalculado = Math.round(((jurosRedeValor + contasManualValor) + Number.EPSILON) * 100) / 100;
 
   const diferencaFinalCalculada = Math.round(((valorDispContasCalculado - subtotalContasCalculado) + Number.EPSILON) * 100) / 100;
 
@@ -674,7 +670,10 @@ export function ResumoDiaPanel({
 
             {/* Sub-chips Dinâmicos e Adaptativos */}
             {(() => {
-              const hasCofre = derivedBankTotals.dinheiro > 0 || (summary?.dinheiro_em_lojas ?? summary?.dinheiro_lojas ?? 0) > 0;
+              const displayCofre = summary?.dinheiro_lojas !== undefined && summary?.dinheiro_lojas !== null
+                ? Number(summary.dinheiro_lojas)
+                : (derivedBankTotals.dinheiro > 0 ? derivedBankTotals.dinheiro : Number(summary?.dinheiro_em_lojas ?? 0));
+              const hasCofre = displayCofre > 0;
               const hasMaq = derivedBankTotals.maquininhas > 0 || (summary?.cartoes_a_compensar ?? 0) > 0;
               const hasNeg = derivedBankTotals.ofxNegativo > 0 || (summary?.saldo_negativo_itau ?? 0) > 0;
               const totalItems = 1 + (hasCofre ? 1 : 0) + (hasMaq ? 1 : 0) + (hasNeg ? 1 : 0);
@@ -682,9 +681,6 @@ export function ResumoDiaPanel({
               const displayOfxPos = derivedBankTotals.ofxPositivo > 0 
                 ? derivedBankTotals.ofxPositivo 
                 : (summary?.saldo_bancos_ofx_positivo ?? summary?.saldo_bancos_positivo ?? 0);
-              const displayCofre = derivedBankTotals.dinheiro > 0 
-                ? derivedBankTotals.dinheiro 
-                : (summary?.dinheiro_em_lojas ?? summary?.dinheiro_lojas ?? 0);
               const displayMaq = derivedBankTotals.maquininhas > 0 
                 ? derivedBankTotals.maquininhas 
                 : (summary?.cartoes_a_compensar ?? 0);

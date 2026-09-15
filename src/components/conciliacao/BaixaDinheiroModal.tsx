@@ -144,21 +144,29 @@ export function BaixaDinheiroModal({
       for (const id of selectedIds) {
         const amountToDeposit = selectedItems[id];
         
-        await supabase.rpc('dar_baixa_dinheiro', {
+        const { data: rpcRes, error: rpcErr } = await supabase.rpc('dar_baixa_dinheiro', {
           p_vault_id: id,
           p_amount_to_deposit: amountToDeposit,
           p_deposit_date: targetDate
         });
+        if (rpcErr) throw rpcErr;
+        if (rpcRes && (rpcRes as any).success === false) {
+          throw new Error((rpcRes as any).error || 'Falha ao baixar item do cofre');
+        }
       }
 
       // 2. Processa baixa manual avulsa por OS se preenchida
       if (customOsNumber.trim() && customAmount > 0) {
-        await supabase.rpc('dar_baixa_dinheiro', {
+        const { data: rpcRes, error: rpcErr } = await supabase.rpc('dar_baixa_dinheiro', {
           p_store_id: storeId,
           p_os_number: customOsNumber.trim(),
           p_amount_to_deposit: customAmount,
           p_deposit_date: targetDate
         });
+        if (rpcErr) throw rpcErr;
+        if (rpcRes && (rpcRes as any).success === false) {
+          throw new Error((rpcRes as any).error || 'Falha ao baixar valor avulso do cofre');
+        }
       }
 
       // 3. Efetivação Fiduciária: Credita o valor depositado no saldo bancário da filial na data
@@ -193,8 +201,18 @@ export function BaixaDinheiroModal({
 
             snapMeta.dinheiro_lojas = novoCofre;
             snapMeta.dinheiro_em_lojas = novoCofre;
+            snapMeta.saldo_dinheiro_cofre = novoCofre;
             snapMeta.saldo_bancos_ofx = novoSaldoBanco;
             snapMeta.saldo_bancos_positivo = Number(snapMeta.saldo_bancos_positivo || 0) + totalBaixado;
+
+            if (Array.isArray(snapMeta.stores)) {
+              snapMeta.stores = snapMeta.stores.map((s: any) => {
+                if (s.store_id === storeId || s.id === storeId) {
+                  return { ...s, dinheiro_loja: Math.max(0, Number(s.dinheiro_loja || 0) - totalBaixado) };
+                }
+                return s;
+              });
+            }
 
             await supabase
               .from('daily_snapshots')
@@ -219,7 +237,8 @@ export function BaixaDinheiroModal({
         queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] }),
         queryClient.invalidateQueries({ queryKey: ['store-cash-vault-pending'] }),
         queryClient.invalidateQueries({ queryKey: ['reconciliations'] }),
-        queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] })
+        queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] }),
+        queryClient.invalidateQueries({ queryKey: ['useBackendConciliacao'] })
       ]);
 
       if (onSuccess) onSuccess();

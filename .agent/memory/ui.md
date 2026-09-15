@@ -1,3 +1,15 @@
+## [2026-09-15] — [Feature ID: 402-fix-reatividade-caixa-e-baixa-cofre]
+
+**Contexto:** Eliminação de salto visual entre o modo de visualização e o modo de edição no painel de resumo diário (`ResumoDiaPanel.tsx`), e sincronização contínua do chip "Dinheiro no Cofre" no card de Saldo Bancos.
+
+**Regra aprendida:**
+1. **SSOT Reativo Contínuo entre Cards e Esteira:**
+   - Cards de resumo contábil nunca devem bifurcar a lógica de cálculo por estado de UI (como `isEditing`). Ao clicar em "Editar Fechamento", nenhum valor deve saltar ou sofrer sobressaltos a menos que o operador altere um input.
+2. **Priorização de Dados Dinâmicos Enriquecidos sobre Metadados Congelados:**
+   - Em sub-chips adaptativos (como Extrato OFX, Cofre, Maquininhas), consumir prioritariamente as propriedades computadas dinamicamente (`summary?.dinheiro_lojas`), caindo para fallbacks estáticos somente se os dados dinâmicos forem estritamente nulos/indefinidos.
+
+---
+
 ## [2026-09-10] — [Feature ID: 392-justificativa-ofx-contas-e-fix-coluna-title]
 
 **Contexto:** Exibição imediata de badges informativos e eliminação do falso badge "• PENDENTE" no extrato bancário fiduciário (`StoreExtratoBancarioView.tsx`) para transações justificadas como "Somar ao Contas a Pagar".

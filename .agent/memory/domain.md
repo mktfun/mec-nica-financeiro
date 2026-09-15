@@ -1,3 +1,18 @@
+## [2026-09-15] — [Feature ID: 402-fix-reatividade-caixa-e-baixa-cofre]
+
+**Contexto:** Eliminação do "Frankenstein" de cálculo híbrido na tela de fechamento diário (`ResumoDiaPanel.tsx`) e dessincronização do chip "Dinheiro no Cofre". Ao atualizar os carros em pátio ou saldos bancários, os cards do topo atualizavam, mas a esteira de consolidação contábil (Caixa Atual, Fluxo de Caixa, Valor Disp. Contas e Diferença Final) permanecia 100% congelada nos valores estáticos do snapshot anterior devido a uma bifurcação ternária (`isEditing ? dinamico : snapshot`). Além disso, baixas fiduciárias já realizadas em `store_cash_vault` não eram deduzidas do chip do cofre porque o frontend consumia o metadata congelado do snapshot.
+
+**Regra aprendida:**
+1. **Unificação Canônica Reativa (Zero Bifurcação isEditing):**
+   - Os 5 pilares do fechamento (`saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor - saldoNegativoItau`) e as grandezas derivadas (`caixaAtualCalculado`, `fluxoCaixaCalculado`, `valorDispContasCalculado` e `diferencaFinalCalculada`) devem ser SEMPRE calculados de maneira estritamente reativa a partir dos dados atuais, tanto em modo normal quanto em modo de edição. O snapshot congelado serve para auditoria e histórico, mas a tela ativa deve reagir instantaneamente a qualquer alteração de pátio ou saldo bancário.
+2. **Sincronização Atômica de Baixas no Cofre (`store_cash_vault`):**
+   - O chip "Dinheiro no Cofre" e o hook `useBackendConciliacao` devem computar dinamicamente o saldo a partir dos lançamentos com `status IN ('em_transito', 'pending')` na tabela `store_cash_vault`.
+   - Ao executar a baixa via modal (`BaixaDinheiroModal`), a mutação deve atualizar atomicamente o metadata global (`snapMeta.dinheiro_lojas`) E a lista por filial (`snapMeta.stores[i].dinheiro_loja`), invalidando todo o conjunto de queryKeys do React Query.
+
+**Risco identificado / Anti-pattern:** Usar operadores ternários `isEditing ? dinamico : snapshot.campo` para métricas que dependem de componentes dinâmicos do topo. Isso cria telas bipolares onde o topo mostra um número e a esteira contábil calcula sobre outro número.
+
+---
+
 ## [2026-09-11] — [Feature ID: 399-conciliacao-rede-ofx-soma-liquido-por-bandeira]
 
 **Contexto:** Resolução de falso-positivo de "Cartões Não Entrados / A Compensar" na conciliação de maquininhas da Rede x OFX (ex: Dom Pedro em 10/09/2026 com R$ 20.450,67 duplicados indevidamente no saldo consolidado da filial). O extrato bancário continha 2 créditos consolidados por adquirente e bandeira (+R$ 10.911,47 Mastercard e +R$ 9.539,20 Visa), enquanto as vendas da Rede continham 5 lançamentos individuais (3 Mastercard e 2 Visa).

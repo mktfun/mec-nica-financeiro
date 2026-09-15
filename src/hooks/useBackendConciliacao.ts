@@ -245,16 +245,18 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
       // 1. Busca store_cash_vault para considerar dinheiro em trânsito acumulado até a data
       let extraVaultEntries: any[] = [];
       let totalVaultInTransit = 0;
+      let vaultQuerySuccess = false;
       try {
-        const { data: vaultData } = await supabase
+        const { data: vaultData, error: vaultErr } = await supabase
           .from('store_cash_vault')
           .select('id, store_id, amount, status, entry_date, description, os_number_ref')
           .in('status', ['em_transito', 'pending'])
           .lte('entry_date', date);
 
-        if (vaultData && vaultData.length > 0) {
+        if (!vaultErr && vaultData) {
           extraVaultEntries = vaultData;
           totalVaultInTransit = vaultData.reduce((sum, v) => sum + Number(v.amount || 0), 0);
+          vaultQuerySuccess = true;
         }
       } catch (err) {
         console.warn('Erro ao enriquecer vault:', err);
@@ -284,7 +286,7 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
       try {
         const { data: snap } = await supabase
           .from('daily_snapshots')
-          .select('faturamento, metadata')
+          .select('faturamento, total_patio, caixa_atual, contas_a_pagar, saldo_negativo_itau, metadata')
           .eq('date', date)
           .maybeSingle();
         if (snap) {
@@ -299,7 +301,7 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
         
         const storeVault = extraVaultEntries.filter(v => v.store_id === s.store_id);
         const vaultSum = storeVault.reduce((sum, v) => sum + Number(v.amount || 0), 0);
-        const dinheiro_loja = Number(vaultSum > 0 ? vaultSum : (s.dinheiro_loja || 0));
+        const dinheiro_loja = vaultQuerySuccess ? vaultSum : Number(vaultSum > 0 ? vaultSum : (s.dinheiro_loja || 0));
 
         const storePos = extraPosEntries.filter(p => p.store_id === s.store_id);
         const posSum = storePos.reduce((sum, p) => sum + Number(p.net_amount || 0), 0);
@@ -322,7 +324,7 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
       });
 
       const totalVaultStores = enrichedStores.reduce((sum: number, s: any) => sum + Number(s.dinheiro_loja || 0), 0);
-      const finalDinheiroLojas = totalVaultStores > 0 ? totalVaultStores : Number(totalVaultInTransit || rawSummary.dinheiro_lojas || rawSummary.dinheiro_em_lojas || 0);
+      const finalDinheiroLojas = vaultQuerySuccess ? totalVaultInTransit : (totalVaultStores > 0 ? totalVaultStores : Number(rawSummary.dinheiro_lojas || rawSummary.dinheiro_em_lojas || 0));
       const totalNaoEntrouStores = enrichedStores.reduce((sum: number, s: any) => sum + Number(s.nao_entrou_valor || 0), 0);
       const finalCartoesACompensar = posQuerySuccess ? totalPosUnsettled : (totalNaoEntrouStores > 0 ? totalNaoEntrouStores : Number(rawSummary.cartoes_a_compensar || 0));
 
@@ -363,8 +365,17 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
       );
       const finalOdometroHoje = Number(snapMeta.odometro_hoje ?? rawSummary.odometro_hoje ?? 0);
       const finalFatAnterior = Number(snapMeta.faturamento_anterior ?? rawSummary.faturamento_anterior ?? 0);
-      const finalFluxoCaixa = Number(rawSummary.fluxo_caixa ?? 0);
-      const finalSubtotalContas = Number(rawSummary.subtotal_contas ?? 0);
+
+      // 1. Caixa Atual e Fluxo de Caixa Reativos Canônicos
+      const finalDinheiroMp = Number(snapMeta.dinheiro_mp ?? rawSummary.dinheiro_mp ?? 0);
+      const finalAReceber = Number(snapMeta.a_receber ?? rawSummary.a_receber ?? 0);
+      const finalNaLojaOs = Number(snapshotData?.total_patio ?? snapMeta.total_patio ?? snapMeta.na_loja_os ?? rawSummary.na_loja_os ?? 0);
+
+      const finalCaixaAtual = Number((finalTotalSaldoBancoPositivo + finalDinheiroMp + finalAReceber + finalNaLojaOs - baseBancoNegativo).toFixed(2));
+      const finalCaixaAnterior = Number(snapMeta.caixa_anterior ?? rawSummary.caixa_anterior ?? 0);
+      const finalFluxoCaixa = Number((finalCaixaAtual - finalCaixaAnterior).toFixed(2));
+
+      const finalSubtotalContas = Number(rawSummary.subtotal_contas ?? snapMeta.subtotal_contas ?? 0);
       const finalValorDisp = Number((finalFatPeriodo - finalFluxoCaixa).toFixed(2));
       const finalDiferenca = Number((finalValorDisp - finalSubtotalContas).toFixed(2));
 
@@ -383,6 +394,8 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
         faturamento_periodo: finalFatPeriodo > 0 ? finalFatPeriodo : rawSummary.faturamento_periodo,
         odometro_hoje: finalOdometroHoje > 0 ? finalOdometroHoje : rawSummary.odometro_hoje,
         faturamento_anterior: finalFatAnterior > 0 ? finalFatAnterior : rawSummary.faturamento_anterior,
+        caixa_atual: finalCaixaAtual,
+        fluxo_caixa: finalFluxoCaixa,
         valor_disp_contas: finalValorDisp,
         diferenca_final: finalDiferenca,
         stores: enrichedStores,

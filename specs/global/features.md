@@ -1,3 +1,19 @@
+### Spec 402 — Eliminação do "Frankenstein" Matemático & Reatividade Total do Caixa (15/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Frontend (`ResumoDiaPanel.tsx`)**:
+  - Eliminação da bifurcação ternária `isEditing ? dinamico : snapshot`.
+  - Unificação do cálculo de `caixaAtualCalculado`, `fluxoCaixaCalculado`, `valorDispContasCalculado`, `subtotalContasCalculado` e `diferencaFinalCalculada` em fórmulas canônicas 100% reativas.
+  - Sincronização do chip "Dinheiro no Cofre" e `derivedBankTotals.dinheiro` para consumir prioritariamente o saldo dinâmico de pendências de `summary.dinheiro_lojas`.
+- **Backend & Hooks (`useBackendConciliacao.ts`)**:
+  - Cálculo reativo canônico de `caixa_atual`, `fluxo_caixa`, `valor_disp_contas` e `diferenca_final` a partir dos 5 pilares enriquecidos, desvinculando de valores congelados da RPC.
+  - Sincronização de `dinheiro_lojas` com a consulta de registros `em_transito` / `pending` de `store_cash_vault`.
+- **Mutações & Cofre (`BaixaDinheiroModal.tsx`)**:
+  - Verificação defensiva de `rpcData.success` no retorno de `dar_baixa_dinheiro`.
+  - Atualização atômica de `metadata.dinheiro_lojas`, `metadata.saldo_dinheiro_cofre` e de cada filial em `metadata.stores` ao executar baixas.
+- **Auditoria de Banco & Snapshot 14/09/2026**:
+  - `store_cash_vault`: R$ 3.640,00 baixados e R$ 3.380,00 em trânsito (Mauá R$ 380, Jabaquara R$ 500, Piraporinha R$ 2.500).
+  - `daily_snapshots`: Sincronizado para refletir Pátio OS R$ 75.385,62 e Dinheiro Lojas R$ 3.380,00.
+
 ### Spec 391 — Correção da Divergência Edit vs Normal no Faturamento e Encadeamento do Odômetro (14/09/2026)
 - **Status:** COMPLETED & ARCHIVED
 - **Frontend (`ResumoDiaPanel.tsx`)**:
