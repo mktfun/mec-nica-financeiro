@@ -1,3 +1,15 @@
+### Spec 403 — Suporte Transparente a Importação de Extrato Bancário em PDF (Itaú) (15/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Parsers & Ingestão (`itauPdfParser.ts`, `centralImportManager.ts`, `ofxParser.ts`)**:
+  - Auto-detecção no pipeline central de PDFs discriminando extratos bancários Itaú vs Mapa de Metas sem intervenção do usuário.
+  - Extração colunar via coordenadas X (`Data`, `Lançamentos`, `Razão Social`, `CNPJ/CPF`, `Valor (R$)`, `Saldo (R$)`) com particionamento vertical por ponto médio entre datas consecutivas para reconstruir lançamentos multi-line.
+  - Extração de metadados da conta (Razão Social, CNPJ, Agência, Conta), Saldos (Anterior, Final, Limite) e geração de FITID determinístico.
+  - Deduplicação inteligente entre arquivos `.pdf` e `.ofx` por chave contínua de dígitos da conta bancária.
+- **Frontend & Wizards (`CentralImportWizard.tsx`, `WizardImportacao.tsx`)**:
+  - Aceite unificado e transparente de `.ofx` e `.pdf` no dropzone sem necessidade de alternar abas ou seleções manuais.
+  - Atualização do helper de resolução de lojas (`resolveStoreForOfx`) para identificar mnemônicos e razões sociais (`MECANICA POPULAR` $\rightarrow$ Kennedy, `BRASICAR ATACADAO` $\rightarrow$ Mauá, `REI DO MODULO` $\rightarrow$ Rei do Módulo).
+  - Atualização de badges e textos descritivos para "Extratos (.ofx / .pdf)".
+
 ### Spec 402 — Eliminação do "Frankenstein" Matemático & Reatividade Total do Caixa (15/09/2026)
 - **Status:** COMPLETED & ARCHIVED
 - **Frontend (`ResumoDiaPanel.tsx`)**:

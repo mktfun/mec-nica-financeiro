@@ -40,6 +40,11 @@ function extractDocument(memo: string): { doc: string | undefined; name: string 
 }
 
 export async function parseOFXFile(file: File, options?: { sessionId?: string }): Promise<OfxParseResult> {
+  if (file.name.toLowerCase().endsWith('.pdf')) {
+    const { parseItauBankStatementPDF } = await import('./itauPdfParser');
+    return parseItauBankStatementPDF(file, options);
+  }
+
   let text = '';
   try {
     const buffer = await file.arrayBuffer();

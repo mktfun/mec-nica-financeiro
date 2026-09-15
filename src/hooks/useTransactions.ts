@@ -244,6 +244,25 @@ export function useTransactionsPorDataELoja(date: string, storeId: string) {
   return useQuery({
     queryKey: ['transactions', 'store', storeId, 'date', date],
     queryFn: async () => {
+      // 1. Busca primeiro em ofx_transactions (SSOT moderna)
+      const { data: ofxData } = await supabase
+        .from('ofx_transactions')
+        .select('*')
+        .eq('store_id', storeId)
+        .eq('target_date', date)
+        .order('occurred_at', { ascending: false });
+
+      if (ofxData && ofxData.length > 0) {
+        return ofxData.map((t: any) => ({
+          ...t,
+          source: 'ofx',
+          title: t.bank_name || 'Extrato Bancário',
+          subtitle: t.counterpart_name || '',
+          description: t.counterpart_name || t.bank_name || '',
+        }));
+      }
+
+      // Fallback para transactions se ofx_transactions estiver vazio
       const { data, error } = await supabase
         .from('transactions')
         .select('*')
@@ -296,9 +315,17 @@ export function useStoreExtratoBancario(date: string, storeId: string) {
         }
       }
 
-      // 2. Busca transações da data alvo
-      const { data: targetDateTxs, error: tErr } = await supabase
-        .from('transactions')
+      const mapOfx = (t: any) => ({
+        ...t,
+        source: 'ofx',
+        title: t.bank_name || 'Extrato Bancário',
+        subtitle: t.counterpart_name || '',
+        description: t.counterpart_name || t.bank_name || '',
+      });
+
+      // 2. Busca transações da data alvo em ofx_transactions (SSOT moderna)
+      const { data: targetOfx, error: tErr } = await supabase
+        .from('ofx_transactions')
         .select('*')
         .eq('store_id', storeId)
         .eq('target_date', date)
@@ -306,19 +333,45 @@ export function useStoreExtratoBancario(date: string, storeId: string) {
 
       if (tErr) throw tErr;
 
+      let targetDateTxs: any[] = (targetOfx || []).map(mapOfx);
+
+      // Fallback legado para transactions
+      if (targetDateTxs.length === 0) {
+        const { data: legacyTxs } = await supabase
+          .from('transactions')
+          .select('*')
+          .eq('store_id', storeId)
+          .eq('target_date', date)
+          .order('occurred_at', { ascending: true });
+        if (legacyTxs && legacyTxs.length > 0) {
+          targetDateTxs = legacyTxs;
+        }
+      }
+
       // 3. Localiza o import_batch_id das transações OFX da data alvo
-      const ofxTxInTargetDate = (targetDateTxs || []).find((t: any) => t.source === 'ofx' && t.import_batch_id);
+      const ofxTxInTargetDate = targetDateTxs.find((t: any) => (t.source === 'ofx' || t.fitid) && t.import_batch_id);
       const batchId = ofxTxInTargetDate ? ofxTxInTargetDate.import_batch_id : null;
 
       let loteTxs: any[] = [];
       if (batchId) {
-        const { data: bTxs } = await supabase
-          .from('transactions')
+        const { data: bOfx } = await supabase
+          .from('ofx_transactions')
           .select('*')
           .eq('store_id', storeId)
           .eq('import_batch_id', batchId)
           .order('occurred_at', { ascending: true });
-        loteTxs = bTxs || [];
+
+        if (bOfx && bOfx.length > 0) {
+          loteTxs = bOfx.map(mapOfx);
+        } else {
+          const { data: bTxs } = await supabase
+            .from('transactions')
+            .select('*')
+            .eq('store_id', storeId)
+            .eq('import_batch_id', batchId)
+            .order('occurred_at', { ascending: true });
+          loteTxs = bTxs || [];
+        }
       }
 
       // Se não encontrou lote específico, resgata janela contínua dos últimos 7 dias até a data
@@ -327,14 +380,26 @@ export function useStoreExtratoBancario(date: string, storeId: string) {
         dObj.setDate(dObj.getDate() - 7);
         const startDate = dObj.toISOString().split('T')[0];
 
-        const { data: winTxs } = await supabase
-          .from('transactions')
+        const { data: winOfx } = await supabase
+          .from('ofx_transactions')
           .select('*')
           .eq('store_id', storeId)
           .gte('target_date', startDate)
           .lte('target_date', date)
           .order('occurred_at', { ascending: true });
-        loteTxs = winTxs || [];
+
+        if (winOfx && winOfx.length > 0) {
+          loteTxs = winOfx.map(mapOfx);
+        } else {
+          const { data: winTxs } = await supabase
+            .from('transactions')
+            .select('*')
+            .eq('store_id', storeId)
+            .gte('target_date', startDate)
+            .lte('target_date', date)
+            .order('occurred_at', { ascending: true });
+          loteTxs = winTxs || [];
+        }
       }
 
       return {

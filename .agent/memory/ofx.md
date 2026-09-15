@@ -89,3 +89,23 @@
    - O extrato bancário oficial emitido pelo banco (`.ofx`) é imutável e juridicamente perfeito. O saldo de Planalto (-R$ 5.659,95) comprovado na tag `<LEDGERBAL>` era a verdade absoluta, enquanto o Excel possuía um erro humano de digitação estática de R$ 2.000,00 na célula E6 (-R$ 7.659,95).
    - Além disso, no Excel o operador frequentemente mistura saldo de conta com recebíveis de cartão previstos, contaminando o saldo bancário. O sistema DEVE manter a segregação estrita dos 5 Pilares Contábeis.
 **Risco identificado / Anti-pattern:** Usar a data de transações individuais para gravar o saldo da conta (`storeDates.set(sId, t.target_date)`) e rodar upsert em `reconciliations` sem injetar `bank_total`.
+
+## [2026-09-15] — [Feature ID: 403-suporte-extrato-bancario-pdf-itau-transparente]
+**Contexto:** Implementação de suporte transparente e automático para importação de extratos bancários Itaú em PDF (`.pdf`), eliminando a necessidade de conversão prévia para OFX ou seleção manual de tipo de arquivo pelo usuário.
+**Regra aprendida:**
+1. **Auto-detecção Transparente no Pipeline de PDFs:**
+   - No `centralImportManager.ts`, nem todo `.pdf` é Mapa de Metas. O loop de PDFs deve inspecionar previamente o cabeçalho do arquivo (`isItauBankStatementPDF`).
+   - Identificadores determinísticos de Extrato Bancário Itaú: presença de `Agência`, `Conta` e marcadores de extrato (`Saldo total`, `Lançamentos do período`, `SALDO ANTERIOR`, `SALDO EM CONTA CORRENTE` ou `Extrato`).
+   - Se er extrato bancário, converte diretamente para `NormalizedOfxResult` e insere em `results.ofxResults`, caindo 100% no fluxo contábil existente (`ofx_transactions`).
+2. **Layout Colunar por Coordenadas X do Extrato Itaú:**
+   - Data contábil: `x ~ 25..75` (formato `DD/MM/YYYY`, âncora principal da linha).
+   - Lançamentos / Histórico: `x ~ 75..220`.
+   - Razão Social / Contraparte: `x ~ 220..360`.
+   - CNPJ / CPF: `x ~ 360..460`.
+   - Valor (R$): `x ~ 460..515` (positivo = `in`, negativo = `out`).
+   - Saldo (R$): `x >= 515`.
+3. **Particionamento Vertical de Linhas Multi-line por Ponto Médio:**
+   - Como células com textos longos (ex: contraparte ou histórico) ocupam múltiplas linhas verticais centralizadas em torno da data, cada linha é delimitada pelo ponto médio entre a data anterior e a próxima (`(prevAnchor.y + anchor.y) / 2` até `(anchor.y + nextAnchor.y) / 2`), com teto no cabeçalho da tabela.
+4. **Deduplicação Contínua por Dígitos da Conta:**
+   - A deduplicação entre `.ofx` e `.pdf` deve checar não apenas strings exatas de alias, mas também a sequência contínua de dígitos (`cleanDigits.length >= 8`) para garantir que `ITAU - 7386_00175298` e `ITAU - 738600175298` colidam e mantenham a instância mais completa sem duplicar transações no banco.
+**Risco identificado / Anti-pattern:** Encaminhar cegamente todo arquivo `.pdf` para o parser de Mapa de Metas ou exigir que o usuário escolha entre "Modo PDF" e "Modo OFX".

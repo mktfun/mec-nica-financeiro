@@ -145,8 +145,8 @@
     "semantic_hash": "c31f98561148527ba8411689ec6cb924"
   },
   "src/components/conciliacao/BaixaDinheiroModal.tsx": {
-    "mtime": 1789063583.5288517,
-    "ast_hash": "a5b78d98880baeeea9753490260c4bf0",
+    "mtime": 1789414653.9587815,
+    "ast_hash": "d47909c8876763e5a8f9c14d7a18c6d1",
     "semantic_hash": ""
   },
   "src/components/conciliacao/BreakdownModal.tsx": {
@@ -240,13 +240,13 @@
     "semantic_hash": "5657d3d33d13441c1ffdd63784683ee9"
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1789392750.3446026,
-    "ast_hash": "98dc443802145f6464a15123fe220aa3",
+    "mtime": 1789414855.6664262,
+    "ast_hash": "b514c8ca1310494398d1a7b8e71fa5d6",
     "semantic_hash": ""
   },
   "src/components/conciliacao/SaldoBancosDetailModal.tsx": {
-    "mtime": 1789390820.9891086,
-    "ast_hash": "8fa076f0948f67bee9687c0cc4d5d88e",
+    "mtime": 1789394124.106927,
+    "ast_hash": "b90dd243b14d521c54b26f6024aae794",
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreCartaoMaquininhaView.tsx": {
@@ -415,7 +415,7 @@
     "semantic_hash": "94cd9e2d37f2296c4606ca17ed361202"
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1789392156.4982593,
+    "mtime": 1789394124.1162012,
     "ast_hash": "477de0097cd700b8237e04941426d6ce",
     "semantic_hash": ""
   },
@@ -460,8 +460,8 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/wizard/Step2NonRevenueJustifications.tsx": {
-    "mtime": 1789068202.0959098,
-    "ast_hash": "fc6eb52b6af03929d2832bc38e72c8f6",
+    "mtime": 1789394124.1197767,
+    "ast_hash": "2898bcedb114b2c45310cfbf52725713",
     "semantic_hash": ""
   },
   "src/components/importacoes/wizard/Step3CashVaultDaniel.tsx": {
@@ -470,7 +470,7 @@
     "semantic_hash": "f012dcd0e8966e1128673401bd508c61"
   },
   "src/components/importacoes/wizard/Step4FinalAuditAndClose.tsx": {
-    "mtime": 1789135281.101507,
+    "mtime": 1789394124.1295693,
     "ast_hash": "4b23d2dcde3b872862b0ad901349a8ca",
     "semantic_hash": ""
   },
@@ -655,8 +655,8 @@
     "semantic_hash": "43d7881346dbd48b48bea308ff8f45d5"
   },
   "src/hooks/useBackendConciliacao.ts": {
-    "mtime": 1789392763.156771,
-    "ast_hash": "07ee133df45410cb63f8c7a0e59ebb18",
+    "mtime": 1789414458.5095246,
+    "ast_hash": "330f5e412bae1303ad074944f33deba3",
     "semantic_hash": ""
   },
   "src/hooks/useBackendDashboard.ts": {
@@ -825,7 +825,7 @@
     "semantic_hash": "92a22d193c252267ba0a5b25068f2047"
   },
   "src/hooks/useTransactions.ts": {
-    "mtime": 1789047388.255396,
+    "mtime": 1789394124.1389868,
     "ast_hash": "2ca07f1eeb79a7803cb43c0f409ce3f8",
     "semantic_hash": ""
   },
@@ -2180,8 +2180,8 @@
     "semantic_hash": ""
   },
   "spec/global/features.md": {
-    "mtime": 1789392395.1819725,
-    "ast_hash": "a621f67976d6a27e1e5d54c0a0bb269c",
+    "mtime": 1789393405.7365322,
+    "ast_hash": "466d1c7ceea2a5e09ecfa88349fa4d0b",
     "semantic_hash": ""
   },
   "spec/global/overview.md": {
@@ -3425,8 +3425,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1789392376.076545,
-    "ast_hash": "aa8ca146ebfc1d1f991d632588a72d8a",
+    "mtime": 1789471379.3349075,
+    "ast_hash": "a791f0e767d24bd612011e157cdb0c82",
     "semantic_hash": ""
   },
   "specs/global/features_clean.md": {
@@ -4587,6 +4587,26 @@
   "skills/ui-motion/references/recipes.md": {
     "mtime": 1789062129.1484442,
     "ast_hash": "61b4eab7d11fb15f060b9449489268a8",
+    "semantic_hash": ""
+  },
+  "specs/401-fix-dar-baixa-dupla-efetivacao/proposal.md": {
+    "mtime": 1789403101.4765968,
+    "ast_hash": "f277c4afc193be04592aaeca7f84cd52",
+    "semantic_hash": ""
+  },
+  "specs/402-fix-reatividade-caixa-e-baixa-cofre/design.md": {
+    "mtime": 1789413243.3170536,
+    "ast_hash": "c2ebbf2267d994d3cc028d97c98a0470",
+    "semantic_hash": ""
+  },
+  "specs/402-fix-reatividade-caixa-e-baixa-cofre/proposal.md": {
+    "mtime": 1789413214.5802362,
+    "ast_hash": "e8472ac14a3317d233005cc7e0773d83",
+    "semantic_hash": ""
+  },
+  "specs/402-fix-reatividade-caixa-e-baixa-cofre/spec-plan.md": {
+    "mtime": 1789414771.942464,
+    "ast_hash": "092c1cdae4f486b439265addcda4ad1a",
     "semantic_hash": ""
   }
 }

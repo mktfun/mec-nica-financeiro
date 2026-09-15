@@ -1,5 +1,6 @@
 import * as XLSX from 'xlsx';
 import { parseOFXFile, OfxParseResult } from '@/lib/parsers/ofxParser';
+import { isItauBankStatementPDF, parseItauBankStatementPDF } from '@/lib/parsers/itauPdfParser';
 import { processOsFiles, OsImportResult } from '@/hooks/useOsImportProcessor';
 import { parseRedeFile, RedeResult } from '@/lib/parsers/redeParser';
 import { parseMapaMetasPDF, MapaMetasResult } from '@/lib/parsers/mapaMetasParser';
@@ -150,7 +151,8 @@ export async function parseCentralImports(
       // Deduplicação inteligente de OFX por conta / alias
       const existingOfxIdx = results.ofxResults.findIndex(o => 
         (normalized.accountKey && o.accountKey === normalized.accountKey) ||
-        (normalized.alias && o.alias === normalized.alias)
+        (normalized.alias && o.alias === normalized.alias) ||
+        (normalized.alias && o.alias && normalized.alias.replace(/\D/g, '') === o.alias.replace(/\D/g, '') && normalized.alias.replace(/\D/g, '').length >= 8)
       );
 
       if (existingOfxIdx !== -1) {
@@ -184,9 +186,45 @@ export async function parseCentralImports(
     await new Promise(r => setTimeout(r, 0));
   }
 
-  // 2. Processa PDF (Mapa de Metas)
+  // 2. Processa PDF (Extrato Bancário Itaú OU Mapa de Metas)
   for (const file of pdfFiles) {
     try {
+      // Auto-detecção: verifica se o PDF é um Extrato Bancário Itaú
+      const isBankStatement = await isItauBankStatementPDF(file);
+      if (isBankStatement) {
+        const result = await parseItauBankStatementPDF(file, { sessionId: options?.sessionId });
+        const normalized: NormalizedOfxResult = {
+          ...result,
+          success: true,
+          storeAlias: result.alias,
+          accountKey: result.alias,
+        };
+
+        // Deduplicação inteligente com outros extratos (OFX ou PDF da mesma conta)
+        const existingOfxIdx = results.ofxResults.findIndex(o => 
+          (normalized.accountKey && o.accountKey === normalized.accountKey) ||
+          (normalized.alias && o.alias === normalized.alias) ||
+          (normalized.alias && o.alias && normalized.alias.replace(/\D/g, '') === o.alias.replace(/\D/g, '') && normalized.alias.replace(/\D/g, '').length >= 8)
+        );
+
+        if (existingOfxIdx !== -1) {
+          const existing = results.ofxResults[existingOfxIdx];
+          results.alerts.duplicatedOfx.push({
+            fileName: file.name,
+            storeAlias: normalized.alias,
+            reason: `Extrato bancário da mesma conta (${normalized.alias}) já importado pelo arquivo "${existing.fileName}". Mantida apenas uma instância.`
+          });
+          if ((normalized.transactions?.length || 0) > (existing.transactions?.length || 0)) {
+            results.ofxResults[existingOfxIdx] = normalized;
+          }
+          continue;
+        }
+
+        results.ofxResults.push(normalized);
+        continue;
+      }
+
+      // Se não for extrato bancário, processa como Mapa de Metas
       const result = await parseMapaMetasPDF(file);
       results.mapaMetasResults.push(result);
       if (!result.success && result.error) {

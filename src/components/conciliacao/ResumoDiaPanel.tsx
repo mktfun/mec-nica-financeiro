@@ -15,7 +15,6 @@ import { useReconciliationInsights } from '@/hooks/useReconciliationInsights';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useAiSettings } from '@/hooks/useAiSettings';
 import { diagnoseReconciliationDiscrepancy } from '@/lib/aiReconciliationService';
-import { FaturamentoAtualBreakdownModal } from '@/components/conciliacao/FaturamentoAtualBreakdownModal';
 import { MaquininhasDetailModal } from '@/components/conciliacao/MaquininhasDetailModal';
 import { PatioOsDetailModal } from '@/components/conciliacao/PatioOsDetailModal';
 import { SaldoBancosDetailModal } from '@/components/conciliacao/SaldoBancosDetailModal';
@@ -63,7 +62,6 @@ export function ResumoDiaPanel({
 }: ResumoDiaPanelProps) {
   const [isSaved, setIsSaved] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [isBreakdownModalOpen, setIsBreakdownModalOpen] = useState(false);
   const [isMaquininhasModalOpen, setIsMaquininhasModalOpen] = useState(false);
   const [isPatioModalOpen, setIsPatioModalOpen] = useState(false);
   const [isSaldoBancosModalOpen, setIsSaldoBancosModalOpen] = useState(false);
@@ -244,16 +242,30 @@ export function ResumoDiaPanel({
     };
   }, [summary, storesData]);
 
-  // Pilares Automáticos
-  const saldoBancosValor = derivedBankTotals.totalPositivoConsolidado > 0 
-    ? derivedBankTotals.totalPositivoConsolidado 
-    : (summary?.total_saldo_banco_positivo ?? summary?.saldo_bancos_positivo ?? 0);
-  const saldoNegativoItau = derivedBankTotals.ofxNegativo > 0 
-    ? derivedBankTotals.ofxNegativo 
-    : (summary?.total_saldo_banco_negativo ?? summary?.saldo_negativo_itau ?? currentSnapshot?.saldo_negativo_itau ?? 0);
-  const naLojaValor = summary?.na_loja_os ?? currentSnapshot?.total_patio ?? 0;
-  const jurosRedeValor = summary?.juros_rede ?? currentSnapshot?.juros_rede ?? 0;
-  const devolucoesRedeValor = summary?.devolucoes_rede || 0;
+  // Pilares Automáticos Canônicos (SSOT da RPC quando fora de edição; reativo no modo de edição)
+  const saldoBancosValor = isEditing
+    ? (derivedBankTotals.totalPositivoConsolidado > 0 
+        ? derivedBankTotals.totalPositivoConsolidado 
+        : (summary?.total_saldo_banco_positivo ?? summary?.saldo_bancos_positivo ?? 0))
+    : Number(summary?.total_saldo_banco_positivo ?? derivedBankTotals.totalPositivoConsolidado ?? 0);
+
+  const saldoNegativoItau = isEditing
+    ? (derivedBankTotals.ofxNegativo > 0 
+        ? derivedBankTotals.ofxNegativo 
+        : (summary?.total_saldo_banco_negativo ?? summary?.saldo_negativo_itau ?? currentSnapshot?.saldo_negativo_itau ?? 0))
+    : Number(summary?.saldo_negativo_itau ?? derivedBankTotals.ofxNegativo ?? 0);
+
+  const naLojaValor = isEditing
+    ? (summary?.na_loja_os ?? currentSnapshot?.total_patio ?? 0)
+    : Number(summary?.na_loja_os ?? currentSnapshot?.total_patio ?? 0);
+
+  const jurosRedeValor = isEditing
+    ? (summary?.juros_rede ?? currentSnapshot?.juros_rede ?? 0)
+    : Number(summary?.juros_rede ?? 0);
+
+  const devolucoesRedeValor = isEditing
+    ? (summary?.devolucoes_rede || 0)
+    : Number(summary?.devolucoes_rede || 0);
   
   // Total de justificativas do dia (subindo para o Faturamento Atual)
   const totalJustificadosDia = justifiedData?.totalGlobal || 0;
@@ -263,18 +275,30 @@ export function ResumoDiaPanel({
     
   // Faturamento Atual = Mapa de Metas + Transações Justificadas + Ajustes Manuais (Aportes/Estornos)
   const faturamentoAjustesValor = summary?.faturamento_ajustes ?? 0;
-  const faturamentoTotalComAjustes = Math.round(((faturamentoLiquidoDia + faturamentoOutrosValor + faturamentoAjustesValor) + Number.EPSILON) * 100) / 100;
+  const faturamentoTotalComAjustes = isEditing
+    ? Math.round(((faturamentoLiquidoDia + faturamentoOutrosValor + faturamentoAjustesValor) + Number.EPSILON) * 100) / 100
+    : Number(summary?.faturamento_periodo ?? (faturamentoLiquidoDia + faturamentoOutrosValor + faturamentoAjustesValor));
 
-  // Matemática Consolidada — CANÔNICA E 100% REATIVA: Caixa Atual = Ativos - Cheque Especial
-  const caixaAtualCalculado = Math.round(((saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor - saldoNegativoItau) + Number.EPSILON) * 100) / 100;
+  // Matemática Consolidada — Canônica via RPC quando !isEditing; reativa quando isEditing
+  const caixaAtualCalculado = isEditing
+    ? Math.round(((saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor - saldoNegativoItau) + Number.EPSILON) * 100) / 100
+    : Number(summary?.caixa_atual ?? Math.round(((saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor - saldoNegativoItau) + Number.EPSILON) * 100) / 100);
 
-  const fluxoCaixaCalculado = Math.round(((caixaAtualCalculado - caixaAnteriorGlobal) + Number.EPSILON) * 100) / 100;
+  const fluxoCaixaCalculado = isEditing
+    ? Math.round(((caixaAtualCalculado - caixaAnteriorGlobal) + Number.EPSILON) * 100) / 100
+    : Number(summary?.fluxo_caixa ?? Math.round(((caixaAtualCalculado - caixaAnteriorGlobal) + Number.EPSILON) * 100) / 100);
 
-  const valorDispContasCalculado = Math.round(((faturamentoTotalComAjustes - fluxoCaixaCalculado) + Number.EPSILON) * 100) / 100;
+  const valorDispContasCalculado = isEditing
+    ? Math.round(((faturamentoTotalComAjustes - fluxoCaixaCalculado) + Number.EPSILON) * 100) / 100
+    : Number(summary?.valor_disp_contas ?? Math.round(((faturamentoTotalComAjustes - fluxoCaixaCalculado) + Number.EPSILON) * 100) / 100);
 
-  const subtotalContasCalculado = Math.round(((jurosRedeValor + contasManualValor) + Number.EPSILON) * 100) / 100;
+  const subtotalContasCalculado = isEditing
+    ? Math.round(((jurosRedeValor + contasManualValor) + Number.EPSILON) * 100) / 100
+    : Number(summary?.subtotal_contas ?? Math.round(((jurosRedeValor + contasManualValor) + Number.EPSILON) * 100) / 100);
 
-  const diferencaFinalCalculada = Math.round(((valorDispContasCalculado - subtotalContasCalculado) + Number.EPSILON) * 100) / 100;
+  const diferencaFinalCalculada = isEditing
+    ? Math.round(((valorDispContasCalculado - subtotalContasCalculado) + Number.EPSILON) * 100) / 100
+    : Number(summary?.diferenca_final ?? Math.round(((valorDispContasCalculado - subtotalContasCalculado) + Number.EPSILON) * 100) / 100);
 
   const diferencaAbs = Math.abs(diferencaFinalCalculada);
   const isDiferencaOk = diferencaAbs <= 50;
@@ -303,30 +327,26 @@ export function ResumoDiaPanel({
   }, [selectedDate, saldoBancosValor, faturamentoLiquidoDia, fluxoCaixaCalculado, valorDispContasCalculado, contasManualValor, jurosRedeValor, devolucoesRedeValor, diferencaFinalCalculada, aiSettings?.api_key]);
 
   // Guarda de Integridade: Detecta se há movimento macro consolidado mas as filiais estão zeradas
+  const storesList = summary?.stores || [];
   const hasMacroMovement =
     Number(summary?.faturamento_periodo ?? 0) > 0 ||
     Number(summary?.total_entradas_ofx ?? 0) > 0 ||
     Number(summary?.total_saldo_banco_positivo ?? 0) > 0 ||
     Number(saldoBancosValor ?? 0) > 0;
 
-  const totalStoreMovement = (storesData || []).reduce((acc, s) => {
+  const effectiveStoresCount = storesList.length;
+  const effectiveStoreMovement = storesList.reduce((acc: number, s: any) => {
     return (
       acc +
-      Math.abs(Number(s.saldo_banco_itau ?? (s as any).saldo_banco ?? 0)) +
-      Math.abs(Number(s.cartao_entrou ?? (s as any).maquininha ?? (s as any).rede_liquido ?? 0)) +
-      Math.abs(Number(s.pix_os ?? (s as any).pix ?? 0)) +
+      Math.abs(Number(s.saldo_banco_ofx ?? s.saldo_banco ?? 0)) +
+      Math.abs(Number(s.maquininha ?? s.rede_liquido ?? 0)) +
+      Math.abs(Number(s.pix ?? 0)) +
       Math.abs(Number(s.na_loja_os ?? 0)) +
-      Math.abs(Number(s.faturamento_atual ?? (s as any).previsto_ofx ?? (s as any).rede_bruto ?? 0))
+      Math.abs(Number(s.ofx_entradas_total ?? s.previsto_ofx ?? 0))
     );
   }, 0);
 
-  const summaryStoresMovement = (summary?.stores || []).reduce((acc: number, s: any) => {
-    return acc + Math.abs(Number(s.saldo_banco ?? s.saldo_banco_itau ?? 0)) + Math.abs(Number(s.maquininha ?? 0));
-  }, 0);
-  const effectiveStoresCount = (storesData?.length || 0) > 0 ? storesData.length : (summary?.stores?.length || 0);
-  const effectiveStoreMovement = totalStoreMovement > 0 ? totalStoreMovement : summaryStoresMovement;
-
-  // Só bloqueia se houver movimento macro E NENHUM detalhamento de filiais nem no storesData nem no summary
+  // Só bloqueia se houver movimento macro E NENHUM detalhamento de filiais retornado pela RPC
   const isStoreBreakdownCorrupted = hasMacroMovement && effectiveStoresCount === 0 && effectiveStoreMovement === 0;
 
   const handleCancel = () => {
@@ -1172,17 +1192,6 @@ export function ResumoDiaPanel({
           </div>
         </div>
       </div>
-
-      {/* Modal de Composição do Faturamento Atual */}
-      <FaturamentoAtualBreakdownModal
-        isOpen={isBreakdownModalOpen}
-        onClose={() => setIsBreakdownModalOpen(false)}
-        selectedDate={selectedDate}
-        mapaMetasAmount={faturamentoLiquidoDia}
-        justifiedTransactions={justifiedData?.transactions || []}
-        totalJustified={totalJustificadosDia}
-        totalFaturamentoAtual={faturamentoTotalComAjustes}
-      />
 
       {/* Modal de Detalhamento Triplo de Maquininhas & Batimento OFX */}
       <MaquininhasDetailModal

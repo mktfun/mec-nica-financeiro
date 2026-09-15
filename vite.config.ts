@@ -35,7 +35,7 @@ export default defineConfig({
     customLogger,
     server: {
       port: 8080,
-      host: "localhost",
+      host: "0.0.0.0",
     },
     resolve: {
       alias: [

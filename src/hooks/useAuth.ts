@@ -19,7 +19,11 @@ function subscribe(callback: () => void) {
   if (globalSession === undefined && !isInitializing) {
     isInitializing = true;
     supabase.auth.getSession().then(({ data }) => {
-      globalSession = data.session;
+      globalSession = data?.session ?? null;
+      notify();
+    }).catch((err) => {
+      console.warn('Session verification fallback:', err);
+      globalSession = null;
       notify();
     });
 

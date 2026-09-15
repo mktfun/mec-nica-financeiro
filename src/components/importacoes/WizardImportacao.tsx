@@ -152,7 +152,11 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
   };
 
   const getAcceptedFormats = (): Record<string, string[]> => {
-    if (category === 'OFX') return { 'application/x-ofx': ['.ofx'], 'text/plain': ['.ofx'] };
+    if (category === 'OFX') return { 
+      'application/x-ofx': ['.ofx'], 
+      'text/plain': ['.ofx'],
+      'application/pdf': ['.pdf']
+    };
     return {
       'application/vnd.ms-excel': ['.xls'],
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx']
@@ -161,7 +165,7 @@ export function WizardImportacao({ category, onCancel, onSuccess }: WizardImport
 
   const getTitle = () => {
     switch (category) {
-      case 'OFX': return 'Importar Extrato (OFX)';
+      case 'OFX': return 'Importar Extrato (OFX ou PDF)';
       case 'MAQUININHA': return 'Importar Maquininha';
       case 'DESPESAS': return 'Importar Despesas';
       case 'JUROS': return 'Importar Juros Rede';

@@ -732,12 +732,12 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     const acctMatch = ofx.alias.match(/(\d{8,12})/);
     if (acctMatch && mapping[acctMatch[1]]) return mapping[acctMatch[1]];
 
-    // 4. Mnemônicos e nomes no arquivo OFX
+    // 4. Mnemônicos e nomes no arquivo OFX / PDF
     const upperSourceStr = sourceStr.toUpperCase();
-    const baseName = (ofx.fileName || '').toUpperCase().replace(/\.OFX$/, '').trim();
+    const baseName = (ofx.fileName || '').toUpperCase().replace(/\.(OFX|PDF|RET)$/i, '').trim();
 
-    if (baseName === 'MP' || upperSourceStr.includes('_MP') || upperSourceStr.includes('KENNEDY') || upperSourceStr.includes('WASHINGTON')) return 'st-04';
-    if (baseName === 'MHE' || upperSourceStr.includes('_MHE') || upperSourceStr.includes('MAUA') || upperSourceStr.includes('ORION') || upperSourceStr.includes('REI DO OLEO') || upperSourceStr.includes('REI_DO_OLEO')) return '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f';
+    if (baseName === 'MP' || upperSourceStr.includes('_MP') || upperSourceStr.includes('KENNEDY') || upperSourceStr.includes('WASHINGTON') || upperSourceStr.includes('MECANICA POPULAR')) return 'st-04';
+    if (baseName === 'MHE' || upperSourceStr.includes('_MHE') || upperSourceStr.includes('MAUA') || upperSourceStr.includes('ORION') || upperSourceStr.includes('REI DO OLEO') || upperSourceStr.includes('REI_DO_OLEO') || upperSourceStr.includes('BRASICAR ATACADAO') || upperSourceStr.includes('ATACADAO DO OLEO')) return '3a3dd7ce-fa8c-4aee-bac4-42f30fa6899f';
     if (baseName === 'DHJV' || upperSourceStr.includes('_JB') || upperSourceStr.includes('JORGE') || upperSourceStr.includes('BERETTA') || upperSourceStr.includes('DHJV')) return 'st-03';
     if (baseName === 'HD' || upperSourceStr.includes('_HD') || upperSourceStr.includes('SANTO ANDRE') || upperSourceStr.includes('SANTO_ANDRE') || upperSourceStr.includes('VIVALDI')) return 'st-08';
     if (baseName === 'CAP' || upperSourceStr.includes('_CAP') || upperSourceStr.includes('RUDGE') || upperSourceStr.includes('CAPAO')) return 'st-07';
@@ -2391,7 +2391,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
 
               <div className="flex flex-wrap items-center justify-center gap-2">
                 <span className="px-2.5 py-1 rounded-lg bg-sky-500/10 border border-sky-500/30 text-[11px] font-mono text-sky-300 font-semibold">
-                  Extratos (.ofx)
+                  Extratos (.ofx / .pdf)
                 </span>
                 <span className="px-2.5 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-[11px] font-mono text-indigo-300 font-semibold">
                   Mapa de Metas (.pdf)

@@ -233,173 +233,76 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
       });
 
       if (error) {
-        console.error("Erro ao carregar resumo consolidado do backend:", error);
+        console.error("Erro ao carregar resumo consolidado do backend via get_daily_reconciliation_summary:", error);
         throw error;
       }
 
       if (!data) return null;
 
-      const rawSummary = data as any;
-
-      // Blindagem Defensiva: Garante que saldo_banco_ofx, dinheiro_loja acumulado em trânsito e nao_entrou_valor estejam sempre presentes
-      // 1. Busca store_cash_vault para considerar dinheiro em trânsito acumulado até a data
-      let extraVaultEntries: any[] = [];
-      let totalVaultInTransit = 0;
-      let vaultQuerySuccess = false;
-      try {
-        const { data: vaultData, error: vaultErr } = await supabase
-          .from('store_cash_vault')
-          .select('id, store_id, amount, status, entry_date, description, os_number_ref')
-          .in('status', ['em_transito', 'pending'])
-          .lte('entry_date', date);
-
-        if (!vaultErr && vaultData) {
-          extraVaultEntries = vaultData;
-          totalVaultInTransit = vaultData.reduce((sum, v) => sum + Number(v.amount || 0), 0);
-          vaultQuerySuccess = true;
-        }
-      } catch (err) {
-        console.warn('Erro ao enriquecer vault:', err);
-      }
-
-      // 2. Busca pos_transactions pendentes (A Compensar / Não Entrou)
-      let extraPosEntries: any[] = [];
-      let totalPosUnsettled = 0;
-      let posQuerySuccess = false;
-      try {
-        const { data: posData, error: posErr } = await supabase
-          .from('pos_transactions')
-          .select('id, store_id, net_amount, settlement_status')
-          .eq('target_date', date);
-
-        if (!posErr && posData) {
-          extraPosEntries = posData.filter((p: any) => p.settlement_status === 'nao_entrou' || p.settlement_status === 'a_compensar');
-          totalPosUnsettled = extraPosEntries.reduce((sum, p) => sum + Number(p.net_amount || 0), 0);
-          posQuerySuccess = true;
-        }
-      } catch (err) {
-        console.warn('Erro ao enriquecer pos_transactions:', err);
-      }
-
-      // 3. Busca daily_snapshots para proteger faturamento, odômetro e cálculos contra falha/subtração da RPC
-      let snapshotData: any = null;
-      try {
-        const { data: snap } = await supabase
-          .from('daily_snapshots')
-          .select('faturamento, total_patio, caixa_atual, contas_a_pagar, saldo_negativo_itau, metadata')
-          .eq('date', date)
-          .maybeSingle();
-        if (snap) {
-          snapshotData = snap;
-        }
-      } catch (err) {
-        console.warn('Erro ao buscar daily_snapshots para resumo:', err);
-      }
-
-      const enrichedStores = (rawSummary.stores || []).map((s: any) => {
-        const saldo_banco_ofx = Number(s.saldo_banco_ofx ?? s.saldo_banco_itau ?? s.saldo_banco ?? 0);
-        
-        const storeVault = extraVaultEntries.filter(v => v.store_id === s.store_id);
-        const vaultSum = storeVault.reduce((sum, v) => sum + Number(v.amount || 0), 0);
-        const dinheiro_loja = vaultQuerySuccess ? vaultSum : Number(vaultSum > 0 ? vaultSum : (s.dinheiro_loja || 0));
-
-        const storePos = extraPosEntries.filter(p => p.store_id === s.store_id);
-        const posSum = storePos.reduce((sum, p) => sum + Number(p.net_amount || 0), 0);
-        // Se a consulta a pos_transactions pendentes rodou com sucesso, posSum reflete a verdade de pendência
-        let nao_entrou_valor = posQuerySuccess ? posSum : Number(s.nao_entrou_valor ?? 0);
-
-        const vault_entries = Array.isArray(s.vault_entries) && s.vault_entries.length > 0 
-          ? s.vault_entries 
-          : storeVault;
-
-        return {
-          ...s,
-          saldo_banco_ofx,
-          saldo_banco_itau: s.saldo_banco_itau ?? saldo_banco_ofx,
-          dinheiro_loja,
-          nao_entrou_valor,
-          vault_entries,
-          status_compensacao: nao_entrou_valor <= 0.05 ? 'entrou' : (s.status_compensacao || 'nao_entrou')
-        };
-      });
-
-      const totalVaultStores = enrichedStores.reduce((sum: number, s: any) => sum + Number(s.dinheiro_loja || 0), 0);
-      const finalDinheiroLojas = vaultQuerySuccess ? totalVaultInTransit : (totalVaultStores > 0 ? totalVaultStores : Number(rawSummary.dinheiro_lojas || rawSummary.dinheiro_em_lojas || 0));
-      const totalNaoEntrouStores = enrichedStores.reduce((sum: number, s: any) => sum + Number(s.nao_entrou_valor || 0), 0);
-      const finalCartoesACompensar = posQuerySuccess ? totalPosUnsettled : (totalNaoEntrouStores > 0 ? totalNaoEntrouStores : Number(rawSummary.cartoes_a_compensar || 0));
-
-      // Agrega saldos bancários positivos e negativos a partir de enrichedStores
-      const storesPositiveOfx = enrichedStores.reduce((sum: number, s: any) => 
-        sum + (Number(s.saldo_banco_ofx || 0) > 0 ? Number(s.saldo_banco_ofx) : 0), 0
-      );
-      const storesNegativeOfx = enrichedStores.reduce((sum: number, s: any) => 
-        sum + (Number(s.saldo_banco_ofx || 0) < 0 ? Math.abs(Number(s.saldo_banco_ofx)) : 0), 0
-      );
-
-      const baseBancoPositivo = storesPositiveOfx > 0 
-        ? Number(storesPositiveOfx.toFixed(2)) 
-        : Number(rawSummary.saldo_bancos_positivo ?? rawSummary.saldo_bancos_ofx_positivo ?? 0);
-      const baseBancoNegativo = storesNegativeOfx > 0 
-        ? Number(storesNegativeOfx.toFixed(2)) 
-        : Number(rawSummary.saldo_negativo_itau ?? 0);
-      const baseBancoTotal = storesPositiveOfx > 0 
-        ? Number((storesPositiveOfx - baseBancoNegativo).toFixed(2)) 
-        : Number(rawSummary.saldo_bancos_ofx ?? rawSummary.total_saldo_banco ?? 0);
-
-      const finalTotalSaldoBancoPositivo = Number((baseBancoPositivo + finalDinheiroLojas + finalCartoesACompensar).toFixed(2));
-      const finalTotalSaldoBanco = Number((baseBancoTotal + finalDinheiroLojas + finalCartoesACompensar).toFixed(2));
-
-      // Protege faturamento e odômetro contra a subtração indevida da RPC get_daily_reconciliation_summary
-      const snapMeta = (snapshotData?.metadata as any) || {};
-      const finalFatOiBase = Number(
-        snapMeta.faturamento_oi_base ?? 
-        (snapshotData?.faturamento && Number(snapshotData.faturamento) < 100000 ? snapshotData.faturamento : null) ?? 
-        rawSummary.faturamento_oi_base ?? 
-        0
-      );
-      const finalFatPeriodo = Number(
-        (finalFatOiBase > 0 
-          ? (finalFatOiBase + Number(rawSummary.faturamento_ajustes || 0)) 
-          : (rawSummary.faturamento_periodo ?? snapMeta.faturamento_periodo ?? 0)
-        ).toFixed(2)
-      );
-      const finalOdometroHoje = Number(snapMeta.odometro_hoje ?? rawSummary.odometro_hoje ?? 0);
-      const finalFatAnterior = Number(snapMeta.faturamento_anterior ?? rawSummary.faturamento_anterior ?? 0);
-
-      // 1. Caixa Atual e Fluxo de Caixa Reativos Canônicos
-      const finalDinheiroMp = Number(snapMeta.dinheiro_mp ?? rawSummary.dinheiro_mp ?? 0);
-      const finalAReceber = Number(snapMeta.a_receber ?? rawSummary.a_receber ?? 0);
-      const finalNaLojaOs = Number(snapshotData?.total_patio ?? snapMeta.total_patio ?? snapMeta.na_loja_os ?? rawSummary.na_loja_os ?? 0);
-
-      const finalCaixaAtual = Number((finalTotalSaldoBancoPositivo + finalDinheiroMp + finalAReceber + finalNaLojaOs - baseBancoNegativo).toFixed(2));
-      const finalCaixaAnterior = Number(snapMeta.caixa_anterior ?? rawSummary.caixa_anterior ?? 0);
-      const finalFluxoCaixa = Number((finalCaixaAtual - finalCaixaAnterior).toFixed(2));
-
-      const finalSubtotalContas = Number(rawSummary.subtotal_contas ?? snapMeta.subtotal_contas ?? 0);
-      const finalValorDisp = Number((finalFatPeriodo - finalFluxoCaixa).toFixed(2));
-      const finalDiferenca = Number((finalValorDisp - finalSubtotalContas).toFixed(2));
+      const raw = data as any;
+      const storesList: StoreReconciliationSummary[] = (raw.stores || raw.stores_detail || []).map((s: any) => ({
+        store_id: s.store_id,
+        store_name: s.store_name,
+        color: s.color,
+        saldo_banco: Number(s.saldo_banco ?? s.saldo_banco_ofx ?? 0),
+        saldo_banco_ofx: Number(s.saldo_banco_ofx ?? s.saldo_banco ?? 0),
+        saldo_devedor_real: Number(s.saldo_devedor_real ?? (Number(s.saldo_banco || 0) < 0 ? Math.abs(Number(s.saldo_banco)) : 0)),
+        saldo_positivo_real: Number(s.saldo_positivo_real ?? (Number(s.saldo_banco || 0) > 0 ? Number(s.saldo_banco) : 0)),
+        dinheiro_loja: Number(s.dinheiro_loja ?? 0),
+        vault_entries: s.vault_entries || [],
+        nao_entrou_valor: Number(s.nao_entrou_valor ?? s.cartao_nao_entrou ?? 0),
+        rede_bruto: Number(s.rede_bruto ?? 0),
+        rede_liquido: Number(s.rede_liquido ?? s.maquininha ?? 0),
+        rede_devolucoes: Number(s.rede_devolucoes ?? s.devolucoes_rede ?? 0),
+        ofx_maquininhas: Number(s.ofx_maquininhas ?? 0),
+        status_compensacao: s.status_compensacao || (Number(s.nao_entrou_valor ?? 0) <= 0.05 ? 'entrou' : 'nao_entrou'),
+        status_banco: s.status_banco || 'credor',
+        maquininha: Number(s.maquininha ?? s.rede_liquido ?? 0),
+        pix: Number(s.pix ?? s.pix_total ?? 0),
+        na_loja_os: Number(s.na_loja_os ?? s.patio_os ?? 0),
+        patio_os: Number(s.patio_os ?? s.na_loja_os ?? 0),
+        previsto_ofx: Number(s.previsto_ofx ?? s.entradas_conciliadas ?? 0),
+        diferenca: Number(s.diferenca ?? s.diferenca_total ?? 0),
+        status: (s.status || (Math.abs(Number(s.diferenca || 0)) <= 0.05 ? 'approved' : 'divergence')) as 'approved' | 'divergence',
+        entradas_realizadas: Number(s.ofx_entradas_total ?? s.entradas_realizadas ?? 0),
+        entradas_previsto: Number(s.entradas_conciliadas ?? s.entradas_previsto ?? 0),
+        diferenca_entradas: Number(s.dif_entradas ?? s.diferenca_entradas ?? 0),
+        saidas_ofx: Number(s.ofx_saidas_total ?? s.saidas_ofx ?? 0),
+        contas_loja: Number(s.contas_loja_total ?? s.contas_conciliadas ?? 0),
+        diferenca_saidas: Number(s.dif_saidas ?? s.diferenca_saidas ?? 0),
+      }));
 
       return {
-        ...rawSummary,
-        dinheiro_lojas: finalDinheiroLojas,
-        dinheiro_em_lojas: finalDinheiroLojas,
-        cartoes_a_compensar: finalCartoesACompensar,
-        saldo_bancos_ofx_positivo: baseBancoPositivo,
-        saldo_bancos_positivo: baseBancoPositivo,
-        saldo_negativo_itau: baseBancoNegativo,
-        saldo_bancos_ofx: baseBancoTotal,
-        total_saldo_banco_positivo: finalTotalSaldoBancoPositivo > 0 ? finalTotalSaldoBancoPositivo : rawSummary.total_saldo_banco_positivo,
-        total_saldo_banco: finalTotalSaldoBanco !== 0 ? finalTotalSaldoBanco : rawSummary.total_saldo_banco,
-        faturamento_oi_base: finalFatOiBase > 0 ? finalFatOiBase : rawSummary.faturamento_oi_base,
-        faturamento_periodo: finalFatPeriodo > 0 ? finalFatPeriodo : rawSummary.faturamento_periodo,
-        odometro_hoje: finalOdometroHoje > 0 ? finalOdometroHoje : rawSummary.odometro_hoje,
-        faturamento_anterior: finalFatAnterior > 0 ? finalFatAnterior : rawSummary.faturamento_anterior,
-        caixa_atual: finalCaixaAtual,
-        fluxo_caixa: finalFluxoCaixa,
-        valor_disp_contas: finalValorDisp,
-        diferenca_final: finalDiferenca,
-        stores: enrichedStores,
-        stores_detail: enrichedStores
+        ...raw,
+        stores: storesList,
+        stores_detail: storesList,
+        saldo_bancos_ofx: Number(raw.saldo_bancos_ofx ?? raw.total_saldo_banco ?? 0),
+        saldo_bancos_positivo: Number(raw.saldo_bancos_positivo ?? raw.total_saldo_banco_positivo ?? 0),
+        saldo_negativo_itau: Number(raw.saldo_negativo_itau ?? 0),
+        dinheiro_lojas: Number(raw.dinheiro_lojas ?? raw.dinheiro_em_lojas ?? 0),
+        dinheiro_em_lojas: Number(raw.dinheiro_em_lojas ?? raw.dinheiro_lojas ?? 0),
+        cartoes_a_compensar: Number(raw.cartoes_a_compensar ?? 0),
+        devolucoes_rede: Number(raw.devolucoes_rede ?? 0),
+        total_saldo_banco_positivo: Number(raw.total_saldo_banco_positivo ?? raw.saldo_bancos_positivo ?? 0),
+        total_saldo_banco: Number(raw.total_saldo_banco ?? raw.saldo_bancos_ofx ?? 0),
+        dinheiro_mp: Number(raw.dinheiro_mp ?? 0),
+        a_receber: Number(raw.a_receber ?? raw.a_receber_manual ?? 0),
+        na_loja_os: Number(raw.na_loja_os ?? raw.total_patio ?? 0),
+        caixa_atual: Number(raw.caixa_atual ?? 0),
+        caixa_anterior: Number(raw.caixa_anterior ?? 0),
+        fluxo_caixa: Number(raw.fluxo_caixa ?? 0),
+        faturamento_periodo: Number(raw.faturamento_periodo ?? raw.faturamento ?? 0),
+        faturamento_oi_base: Number(raw.faturamento_oi_base ?? 0),
+        faturamento_anterior: Number(raw.faturamento_anterior ?? 0),
+        faturamento_ajustes: Number(raw.faturamento_ajustes ?? 0),
+        valor_disp_contas: Number(raw.valor_disp_contas ?? 0),
+        contas_base: Number(raw.contas_base ?? 0),
+        contas_extras: Number(raw.contas_extras ?? 0),
+        contas_manual: Number(raw.contas_manual ?? 0),
+        juros_rede: Number(raw.juros_rede ?? 0),
+        subtotal_contas: Number(raw.subtotal_contas ?? raw.contas_a_pagar ?? 0),
+        diferenca_final: Number(raw.diferenca_final ?? 0),
+        status_geral: (raw.status_geral === 'approved' || Math.abs(Number(raw.diferenca_final || 0)) <= 50) ? 'approved' : 'divergence',
       } as DailyReconciliationSummary;
     },
     enabled: !!date,

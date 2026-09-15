@@ -107,7 +107,7 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
 
   // Filtra transações originadas no OFX
   const ofxTransactions = useMemo(() => {
-    return rawTransactions.filter(t => t.source === 'ofx');
+    return rawTransactions.filter(t => t.source === 'ofx' || !!t.fitid || !!t.bank_name);
   }, [rawTransactions]);
 
   const isRedeTx = (t: any) => {
@@ -235,6 +235,8 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
 
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['transactions'] }),
+        queryClient.invalidateQueries({ queryKey: ['ofx_transactions'] }),
+        queryClient.invalidateQueries({ queryKey: ['store_extrato_bancario'] }),
         queryClient.invalidateQueries({ queryKey: ['daily_manual_bills'] }),
         queryClient.invalidateQueries({ queryKey: ['daily-manual-bills'] }),
         queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
@@ -391,20 +393,8 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
   const handleMoveTransactionToToday = async (tx: any) => {
     setMovingTxId(tx.id);
     try {
-      // 1. Atualiza na tabela transactions
-      const { error: txErr } = await supabase
-        .from('transactions')
-        .update({
-          target_date: date,
-          manual_category: null,
-          manual_justification: null
-        })
-        .eq('id', tx.id);
-
-      if (txErr) throw txErr;
-
-      // 2. Atualiza na tabela ofx_transactions (se existir)
-      await supabase
+      // 1. Atualiza na tabela ofx_transactions (SSOT canônica)
+      const { error: ofxErr } = await supabase
         .from('ofx_transactions')
         .update({
           target_date: date,
@@ -415,12 +405,26 @@ export function StoreExtratoBancarioView({ storeId, date }: StoreExtratoBancario
         })
         .eq('id', tx.id);
 
+      if (ofxErr) console.warn('Aviso ao mover em ofx_transactions:', ofxErr);
+
+      // 2. Sincroniza tabela transactions (se existir registro espelho)
+      await supabase
+        .from('transactions')
+        .update({
+          target_date: date,
+          manual_category: null,
+          manual_justification: null
+        })
+        .eq('id', tx.id);
+
       toast.success(`Transação de ${formatCurrency(Math.abs(Number(tx.amount || 0)))} movida para ${formatDateOnly(date)}!`);
 
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['transactions'] }),
+        queryClient.invalidateQueries({ queryKey: ['ofx_transactions'] }),
         queryClient.invalidateQueries({ queryKey: ['store_extrato_bancario'] }),
         queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['daily_reconciliation_summary'] }),
         queryClient.invalidateQueries({ queryKey: ['reconciliation_views'] }),
         queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] })
       ]);

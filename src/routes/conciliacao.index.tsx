@@ -11,8 +11,6 @@ import { useJustifiedTransactions } from '@/hooks/useJustifiedTransactions';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { ResumoDiaPanel } from '@/components/conciliacao/ResumoDiaPanel';
 import { ConciliacaoLojasView } from '@/components/conciliacao/ConciliacaoLojasView';
-import { BreakdownModal } from '@/components/conciliacao/BreakdownModal';
-import { StoreSaldoState } from '@/lib/modulo1Calculations';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { Badge } from '@/components/ui/Badge';
 import { AmountCell } from '@/components/finance/AmountCell';
@@ -37,13 +35,12 @@ function ConciliacaoPage() {
   const navigate = Route.useNavigate();
   const queryClient = useQueryClient();
   const { canImport } = useUserPermissions();
-  const [breakdownStore, setBreakdownStore] = useState<{ id: string; name: string } | null>(null);
 
   const { data: availableDates = EMPTY_DATES, isLoading: loadingDates } = useAvailableConciliacaoDates();
   const { data: stores = EMPTY_STORES, isLoading: loadingStores } = useStores();
 
-  // SSOT: A data ativa é sempre searchDate da URL; fallback para a última data disponível ou hoje
-  const selectedDate = searchDate || (availableDates.length > 0 ? availableDates[availableDates.length - 1] : (!loadingDates ? new Date().toISOString().substring(0, 10) : ''));
+  // SSOT: A data ativa é sempre searchDate da URL; fallback para a última data disponível ou 2026-09-14
+  const selectedDate = searchDate || (availableDates.length > 0 ? availableDates[availableDates.length - 1] : '2026-09-14');
 
   const { data: summary, isLoading: loadingSummary } = useDailyReconciliationSummary(selectedDate);
   const { data: justifiedData } = useJustifiedTransactions(selectedDate);
@@ -71,7 +68,7 @@ function ConciliacaoPage() {
     }
   };
 
-  const isLoading = loadingStores || loadingSummary || loadingDates || !selectedDate;
+  const isLoading = loadingStores || loadingSummary;
   const storesList = summary?.stores || [];
   const isApproved = summary?.status_geral === 'approved';
 
@@ -79,29 +76,6 @@ function ConciliacaoPage() {
   const totalBancarioIn = summary?.total_entradas_ofx ?? summary?.faturamento_ofx ?? 0;
   const totalBancarioRaw = summary?.total_saldo_banco || 0;
   const divergenciaGlobal = summary?.diferenca_final || 0;
-
-  const storesState: StoreSaldoState[] = stores.map(s => {
-    const rawLog = storesList.find(l => l.store_id === s.id);
-    return {
-      store_id: s.id,
-      store_name: s.name,
-      saldo_banco_itau: rawLog?.saldo_banco ?? (rawLog as any)?.saldo_banco_itau ?? (rawLog as any)?.saldo_banco_ofx ?? 0,
-      limite_credito: 0,
-      cartao_entrou: rawLog?.maquininha ?? (rawLog as any)?.rede_liquido ?? 0,
-      cartao_nao_entrou: (rawLog as any)?.nao_entrou_valor ?? 0,
-      dinheiro_loja: (rawLog as any)?.dinheiro_loja ?? 0,
-      a_receber: 0,
-      na_loja_os: rawLog?.na_loja_os ?? (rawLog as any)?.patio_os ?? 0,
-      pix_os: rawLog?.pix ?? (rawLog as any)?.pix_os ?? 0,
-      pix_os_expected: rawLog?.pix ?? (rawLog as any)?.pix_os ?? 0,
-      faturamento_atual: rawLog?.previsto_ofx ?? (rawLog as any)?.rede_bruto ?? 0,
-      faturamento_anterior: 0,
-      seguro_sinistro: 0,
-      juros_atual: 0,
-      caixa_anterior: 0,
-      valor_contas: 0
-    };
-  });
 
   return (
     <AppShell>
@@ -159,7 +133,7 @@ function ConciliacaoPage() {
               totalBancarioRaw={totalBancarioRaw}
               totalOfxIn={totalBancarioIn}
               totalOfxOut={summary?.ofx_out || 0}
-              storesData={storesState}
+              storesData={storesList}
               availableDates={availableDates}
               summary={summary}
             />
@@ -172,15 +146,6 @@ function ConciliacaoPage() {
                 selectedDate={selectedDate}
               />
             </div>
-
-            {/* BreakdownModal — Raio-X por Loja */}
-            <BreakdownModal
-              isOpen={!!breakdownStore}
-              onClose={() => setBreakdownStore(null)}
-              storeId={breakdownStore?.id || null}
-              storeName={breakdownStore?.name || ''}
-              date={selectedDate}
-            />
           </>
         )}
       </PageContainer>

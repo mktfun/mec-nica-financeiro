@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/lib/supabase';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { CheckCircle2, AlertTriangle, Info, ExternalLink, CreditCard, Percent, Landmark, ArrowRight } from 'lucide-react';
-import { useReconciliationViews } from '@/hooks/useConciliacao';
 import { usePosTripleReconciliation } from '@/hooks/useBackendConciliacao';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { OsDetailModal } from './OsDetailModal';
@@ -16,23 +17,106 @@ interface StoreCartaoMaquininhaViewProps {
 }
 
 export function StoreCartaoMaquininhaView({ storeId, date }: StoreCartaoMaquininhaViewProps) {
-  const { data, isLoading } = useReconciliationViews(storeId, date);
   const { data: tripleReconData } = usePosTripleReconciliation(date);
   const [selectedOsData, setSelectedOsData] = useState<any | null>(null);
+
+  // Consulta direta na tabela pos_transactions para a filial e data
+  const { data: posRows = [], isLoading } = useQuery({
+    queryKey: ['store_pos_transactions', storeId, date],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('pos_transactions')
+        .select('*')
+        .eq('store_id', storeId)
+        .or(`target_date.eq.${date},occurred_at.gte.${date}T00:00:00,occurred_at.lte.${date}T23:59:59`)
+        .order('occurred_at', { ascending: false });
+
+      if (error) {
+        console.error('Erro ao buscar pos_transactions:', error);
+        throw error;
+      }
+      return data || [];
+    },
+    enabled: !!storeId && !!date,
+  });
+
+  // Busca OSs do pátio para enriquecimento das informações de cliente e veículo
+  const { data: patioOsList = [] } = useQuery({
+    queryKey: ['patio_os_for_store', storeId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('patio_os')
+        .select('id, os_number, client_name, plate, total_value, paid_value, status, payment_method, credit_value, debit_value')
+        .eq('store_id', storeId);
+      if (error) {
+        console.warn('Aviso ao buscar patio_os:', error);
+        return [];
+      }
+      return data || [];
+    },
+    enabled: !!storeId,
+    staleTime: 1000 * 60,
+  });
+
+  const rows = useMemo(() => {
+    return posRows.map((pos: any) => {
+      const rawOsNum = pos.matched_os_number;
+      let osData: any = null;
+      if (rawOsNum) {
+        osData = patioOsList.find((o: any) => String(o.os_number) === String(rawOsNum)) || null;
+      }
+
+      const gross = Number(pos.gross_amount || 0);
+      const fee = Number(pos.fee_amount || 0);
+      const net = Number(pos.net_amount || (gross - fee));
+      const feePercent = gross > 0 ? (fee / gross) * 100 : 0;
+
+      const pmStr = String(pos.payment_method || pos.machine_name || 'Cartão');
+      let brand = 'Rede';
+      const pmLower = pmStr.toLowerCase();
+      if (pmLower.includes('visa')) brand = 'Visa';
+      else if (pmLower.includes('mast')) brand = 'Mastercard';
+      else if (pmLower.includes('elo')) brand = 'Elo';
+      else if (pmLower.includes('hiper')) brand = 'Hipercard';
+      else if (pmLower.includes('amex')) brand = 'Amex';
+      else if (pmLower.includes('pix')) brand = 'PIX';
+
+      const isSettledInBank = pos.settlement_status === 'entrou';
+
+      return {
+        id: pos.id,
+        bandeira: brand,
+        payment_method: pmStr,
+        rede_bruto: gross,
+        taxa_brl: fee,
+        taxa_percent: feePercent,
+        rede_liquido: net,
+        os_number: rawOsNum ? `OS #${rawOsNum}` : 'Lote REDE Consolidado',
+        has_os: !!rawOsNum,
+        raw_os_number: rawOsNum,
+        os_data: osData ? {
+          ...osData,
+          client_name: osData.client_name || '',
+          vehicle: osData.plate || '',
+        } : null,
+        settlement_status: pos.settlement_status,
+        is_settled: isSettledInBank,
+      };
+    });
+  }, [posRows, patioOsList]);
 
   if (isLoading) {
     return <div className="p-12 flex justify-center"><LoadingSpinner text="Carregando conciliação de cartões..." /></div>;
   }
 
-  const rows = data?.osVsRede || [];
-  const storePos = tripleReconData?.stores?.find(s => s.store_id === storeId);
+  const storePos = tripleReconData?.stores?.find((s: any) => s.store_id === storeId);
 
   const totalRedeBruto = rows.reduce((acc: number, r: any) => acc + Number(r.rede_bruto || 0), 0);
   const totalTaxas = rows.reduce((acc: number, r: any) => acc + Number(r.taxa_brl || 0), 0);
   const totalRedeLiquido = rows.reduce((acc: number, r: any) => acc + Number(r.rede_liquido || 0), 0);
-  const totalCreditadoBanco = storePos?.ofx_maquininhas || (data?.redeVsOfx?.totalAdquirenteOfx ?? 0);
-  const valorACompensar = storePos?.nao_entrou_valor || 0;
-  const isSettled = storePos?.status_compensacao === 'entrou' || totalCreditadoBanco >= totalRedeLiquido;
+  const totalCreditadoBanco = storePos?.ofx_maquininhas ?? 0;
+  const valorACompensar = storePos?.nao_entrou_valor ?? rows.filter((r: any) => !r.is_settled).reduce((acc: number, r: any) => acc + r.rede_liquido, 0);
+  const isSettled = storePos?.status_compensacao === 'entrou' || (totalCreditadoBanco >= totalRedeLiquido && totalRedeLiquido > 0);
 
   const getBrandBadgeColor = (brand: string) => {
     const b = (brand || '').toLowerCase();
@@ -195,7 +279,7 @@ export function StoreCartaoMaquininhaView({ storeId, date }: StoreCartaoMaquinin
 
                       {/* Status no Banco */}
                       <td className="py-3 px-4 text-center">
-                        {isSettled ? (
+                        {(row.is_settled || isSettled) ? (
                           <Badge variant="success" dot className="text-[10px]">
                             LIQUIDADO NO BANCO
                           </Badge>

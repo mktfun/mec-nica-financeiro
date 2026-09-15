@@ -86,62 +86,58 @@ export function useAvailableConciliacaoDates() {
     queryFn: async () => {
       const dates = new Set<string>();
 
-      // 1. Busca datas de daily_snapshots
-      const { data: snapshotsData } = await supabase
-        .from('daily_snapshots')
-        .select('date');
-      snapshotsData?.forEach(row => {
-        if (row.date) dates.add(String(row.date));
-      });
+      // Executa queries em paralelo para carregamento instantâneo
+      const [snapshotsRes, reconRes, ofxRes, posRes, patioRes, batchesRes] = await Promise.allSettled([
+        supabase.from('daily_snapshots').select('date'),
+        supabase.from('reconciliations').select('date'),
+        supabase.from('ofx_transactions').select('target_date').not('target_date', 'is', null).limit(1000),
+        supabase.from('pos_transactions').select('target_date').not('target_date', 'is', null).limit(1000),
+        supabase.from('patio_os').select('opened_at').not('opened_at', 'is', null).limit(1000),
+        supabase.from('import_batches').select('target_date'),
+      ]);
 
-      // 2. Busca datas de reconciliations
-      const { data: reconData } = await supabase
-        .from('reconciliations')
-        .select('date');
-      reconData?.forEach(row => {
-        if (row.date) dates.add(String(row.date));
-      });
+      if (snapshotsRes.status === 'fulfilled' && snapshotsRes.value.data) {
+        snapshotsRes.value.data.forEach(row => {
+          if (row.date) dates.add(String(row.date));
+        });
+      }
 
-      // 3. Busca datas de ofx_transactions
-      const { data: ofxData } = await supabase
-        .from('ofx_transactions')
-        .select('target_date')
-        .not('target_date', 'is', null);
-      ofxData?.forEach(row => {
-        if (row.target_date) dates.add(String(row.target_date));
-      });
+      if (reconRes.status === 'fulfilled' && reconRes.value.data) {
+        reconRes.value.data.forEach(row => {
+          if (row.date) dates.add(String(row.date));
+        });
+      }
 
-      // 4. Busca datas de pos_transactions
-      const { data: posData } = await supabase
-        .from('pos_transactions')
-        .select('target_date')
-        .not('target_date', 'is', null);
-      posData?.forEach(row => {
-        if (row.target_date) dates.add(String(row.target_date));
-      });
+      if (batchesRes.status === 'fulfilled' && batchesRes.value.data) {
+        batchesRes.value.data.forEach(row => {
+          if (row.target_date) dates.add(String(row.target_date));
+        });
+      }
 
-      // 5. Busca datas de patio_os
-      const { data: patioData } = await supabase
-        .from('patio_os')
-        .select('opened_at')
-        .not('opened_at', 'is', null);
-      patioData?.forEach(row => {
-        if (row.opened_at) {
-          const dStr = String(row.opened_at).substring(0, 10);
-          if (dStr && /^\d{4}-\d{2}-\d{2}$/.test(dStr)) dates.add(dStr);
-        }
-      });
+      if (ofxRes.status === 'fulfilled' && ofxRes.value.data) {
+        ofxRes.value.data.forEach(row => {
+          if (row.target_date) dates.add(String(row.target_date));
+        });
+      }
 
-      // 6. Busca datas de import_batches
-      const { data: batchesData } = await supabase
-        .from('import_batches')
-        .select('target_date');
-      batchesData?.forEach(row => {
-        if (row.target_date) dates.add(String(row.target_date));
-      });
+      if (posRes.status === 'fulfilled' && posRes.value.data) {
+        posRes.value.data.forEach(row => {
+          if (row.target_date) dates.add(String(row.target_date));
+        });
+      }
+
+      if (patioRes.status === 'fulfilled' && patioRes.value.data) {
+        patioRes.value.data.forEach(row => {
+          if (row.opened_at) {
+            const dStr = String(row.opened_at).substring(0, 10);
+            if (dStr && /^\d{4}-\d{2}-\d{2}$/.test(dStr)) dates.add(dStr);
+          }
+        });
+      }
 
       // Retorna array ordenado de forma ascendente
       return Array.from(dates).filter(Boolean).sort();
-    }
+    },
+    staleTime: 5 * 60 * 1000,
   });
 }
