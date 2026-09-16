@@ -1,3 +1,15 @@
+### Spec 411 — Fechamento Contábil Estrito 16/09, Gestão Rastreável de Dinheiro em Cofre & Sugestão Inteligente de Contas não-OFX (16/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Componentes (`CashVaultCompositionModal.tsx`, `ResumoDiaPanel.tsx`, `SaldoBancosDetailModal.tsx`)**:
+  - Modal de Gestão e Rastreabilidade de Dinheiro em Cofre com 3 abas: Frações de OS, 💡 Sugestões de Saídas de Contas sem Débito no OFX e Histórico de Despesas pagas em dinheiro.
+  - Gatilho visual direto no card "SALDO BANCOS + DINHEIRO" com botão `Cofre ↗` e chip adaptativo clicável "Dinheiro no Cofre".
+  - Saneamento do cofre no Raio-X por filial (`SaldoBancosDetailModal.tsx`) segregando dinheiro depositado (R$ 19.660,00) de dinheiro físico em trânsito (R$ 3.918,50).
+- **Backend & Hooks (`useBackendConciliacao.ts`)**:
+  - Carregamento de `vault_entries` analíticas por filial e cálculo estrito de `baseBancoPositivo` a partir do extrato puro OFX (R$ 129.709,49), eliminando duplicação de cofre e cartões a compensar.
+  - Persistência imutável de `cash_vault_snapshot` em `daily_snapshots.metadata`.
+- **Database (Migration `20260916000001_enhance_store_cash_vault_and_rpc.sql`)**:
+  - Suporte a saídas em `store_cash_vault` (`entry_type`, `expense_category`, `paid_to`, `bill_id`), link com `daily_manual_bills` (`matched_cash_vault_id`), índices de performance e atualização canônica da RPC `get_daily_reconciliation_summary` com isolamento de histórico.
+
 ### Spec 403 — Suporte Transparente a Importação de Extrato Bancário em PDF (Itaú) (15/09/2026)
 - **Status:** COMPLETED & ARCHIVED
 - **Parsers & Ingestão (`itauPdfParser.ts`, `centralImportManager.ts`, `ofxParser.ts`)**:

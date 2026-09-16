@@ -167,6 +167,7 @@ export async function savePatioOsAndReceivables(
           .select('id, status, amount')
           .eq('store_id', storeId)
           .eq('os_number_ref', osNumRef)
+          .eq('entry_date', entryDate)
           .maybeSingle();
 
         if (!existingVault) {
@@ -183,6 +184,9 @@ export async function savePatioOsAndReceivables(
           await supabase.from('store_cash_vault').update({
             amount: cashAmount
           }).eq('id', existingVault.id);
+        } else if (existingVault.status === 'depositado') {
+          // Idempotência estrita: se a OS já teve baixa efetuada para o banco, preserva o status e histórico
+          console.log(`[useImportProcessor] OS #${osNumRef} (${storeName}) já possui baixa efetuada (depositado). Preservando status.`);
         }
       }
     }

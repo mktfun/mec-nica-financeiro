@@ -1,3 +1,14 @@
+### Feature 411: Fechamento Contábil Estrito 16/09, Gestão Rastreável de Dinheiro em Cofre & Sugestão Inteligente de Contas não-OFX (16/09/2026)
+- **Status:** COMPLETED & ARCHIVED
+- **Data:** 2026-09-16
+- **Arquivos Criados/Modificados:**
+  - `src/components/conciliacao/CashVaultCompositionModal.tsx` (Novo modal Dark UI com frações por OS, sugestões de saídas de contas não-OFX e histórico de saídas)
+  - `src/components/conciliacao/ResumoDiaPanel.tsx` (Botão Cofre ↗, chip interativo Dinheiro no Cofre e persistência imutável de cash_vault_snapshot)
+  - `src/components/conciliacao/SaldoBancosDetailModal.tsx` (Card de cofre interativo e segregação de dinheiro depositado vs em trânsito)
+  - `src/hooks/useBackendConciliacao.ts` (Carregamento de vault_entries analíticas e cálculo estrito de baseBancoPositivo sem duplicidade de cofre/rede)
+  - `supabase/migrations/20260916000001_enhance_store_cash_vault_and_rpc.sql` (Migration de suporte a despesas em store_cash_vault, link com contas e RPC canônica com isolamento)
+- **Descrição:** Fechamento rigoroso de 16/09/2026 sem manipulação arbitrária, confronto 1:1 com os 31 arquivos físicos, segregação de R$ 19.660,00 depositados de R$ 3.918,50 em trânsito, motor de recomendação de 7 contas sem débito no OFX (R$ 4.854,68) para baixa consciente em dinheiro e gravação congelada no snapshot.
+
 ### Feature 391: Correção da Divergência Edit vs Normal no Faturamento e Encadeamento do Odômetro (14/09/2026)
 - **Status:** COMPLETED & ARCHIVED
 - **Data:** 2026-09-14

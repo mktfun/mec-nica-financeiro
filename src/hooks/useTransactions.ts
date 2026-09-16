@@ -642,7 +642,8 @@ export function useBulkInsertTransactions() {
               `${t.store_id}_${t.payment_method || ''}_${t.nsu || t.tid || ''}`, 
               'pos'
             ),
-            transaction_type: isDevolucao ? 'devolucao' : (t.transaction_type || 'venda')
+            transaction_type: isDevolucao ? 'devolucao' : (t.transaction_type || 'venda'),
+            settlement_status: t.settlement_status || 'a_compensar'
           };
         });
         

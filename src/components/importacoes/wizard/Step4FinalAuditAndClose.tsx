@@ -183,7 +183,10 @@ export function Step4FinalAuditAndClose({
       }
     });
 
-    const finalPatio = patioSum > 0 ? patioSum : Number((summary as any)?.na_loja_os || 0);
+    // Prioriza o pátio consolidado canônico da RPC/backend (todas as lojas e OSs em aberto).
+    // Se summary.na_loja_os estiver disponível, ele é a fonte única da verdade (SSOT).
+    const summaryPatio = Number((summary as any)?.na_loja_os || (summary as any)?.total_patio || 0);
+    const finalPatio = summaryPatio > 0 ? summaryPatio : (patioSum > 0 ? patioSum : 0);
 
     // 5. Pilar 5: Faturamento
     const fatAnteriorVal = Number(

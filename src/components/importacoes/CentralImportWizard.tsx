@@ -1375,7 +1375,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             type: (tx.type === 'in' || tx.type === 'income' || tx.amount > 0) ? 'in' : 'out',
             occurred_at: tx.date || `${targetDate}T12:00:00Z`,
             date: effectiveOfxDate,
-            target_date: effectiveOfxDate,
+            target_date: targetDate,
             icon_type: 'bank',
             source: 'ofx',
             os_number: matched_os_number,
@@ -1388,7 +1388,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           if (matched_os_number && matched_store_id) {
             matchesToInsert.push({
               store_id: matched_store_id,
-              target_date: effectiveOfxDate,
+              target_date: targetDate,
               system_os_number: matched_os_number,
               ofx_transaction_id: txId,
               _fitid: tx.fitid || null,
@@ -1745,32 +1745,61 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         });
       }
 
+      // Garante que lojas sem extrato no dia (ex: Jabaquara) mantenham seu saldo bancário anterior
+      for (const s of stores) {
+        const existing = reconciliationsToUpsert.find(r => r.store_id === s.id);
+        if (!existing || existing.bank_total === undefined) {
+          try {
+            const { data: prevRec } = await supabase
+              .from('reconciliations')
+              .select('bank_total')
+              .eq('store_id', s.id)
+              .lt('date', targetDate)
+              .order('date', { ascending: false })
+              .limit(1)
+              .maybeSingle();
+            if (prevRec && prevRec.bank_total !== null) {
+              if (existing) {
+                existing.bank_total = prevRec.bank_total;
+              } else {
+                reconciliationsToUpsert.push({
+                  store_id: s.id,
+                  date: targetDate,
+                  bank_total: prevRec.bank_total,
+                  status: 'validated'
+                });
+              }
+            }
+          } catch (e) {
+            console.warn('Erro ao carregar saldo anterior para loja:', s.name, e);
+          }
+        }
+      }
+
       if (reconciliationsToUpsert.length > 0) {
         addLog("Gravando valores de patio e saldos bancarios (reconciliations)...", "info");
         await supabase.from('reconciliations').upsert(reconciliationsToUpsert, { onConflict: 'store_id,date' });
       }
 
-      // Calcula o Pátio Global Real incluindo o passivo/histórico de OSs ativas em aberto no banco apenas como fallback se veiculosPatioValor estiver zerado
+      // Calcula o Pátio Global Real a partir do somatório físico de todas as OSs ativas em aberto em patio_os
       try {
-        if (veiculosPatioValor === 0) {
-          const { data: allActiveOs } = await supabase
-            .from('patio_os')
-            .select('store_id, total_value, paid_value, status')
-            .lte('opened_at', `${targetDate}T23:59:59`)
-            .gte('opened_at', `${new Date(new Date(targetDate).getTime() - 90 * 86400000).toISOString().split('T')[0]}`)
-            .not('os_number', 'ilike', '%faturamento%')
-            .not('os_number', 'ilike', '%fat%');
-          if (allActiveOs && allActiveOs.length > 0) {
-            const activeList = allActiveOs.filter(os => {
-              const isClosed = ['finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado'].includes(String(os.status).toLowerCase());
-              const saldo = Number(os.total_value || 0) - Number(os.paid_value || 0);
-              return !isClosed && saldo > 0.05 && Number(os.total_value || 0) < 100000;
-            });
-            if (activeList.length > 0) {
-              const totalPatioReal = activeList.reduce((acc, os) => acc + (Number(os.total_value || 0) - Number(os.paid_value || 0)), 0);
-              if (totalPatioReal > 0) {
-                veiculosPatioValor = totalPatioReal;
-              }
+        const { data: allActiveOs } = await supabase
+          .from('patio_os')
+          .select('store_id, total_value, paid_value, status')
+          .lte('opened_at', `${targetDate}T23:59:59`)
+          .gte('opened_at', `${new Date(new Date(targetDate).getTime() - 90 * 86400000).toISOString().split('T')[0]}`)
+          .not('os_number', 'ilike', '%faturamento%')
+          .not('os_number', 'ilike', '%fat%');
+        if (allActiveOs && allActiveOs.length > 0) {
+          const activeList = allActiveOs.filter(os => {
+            const isClosed = ['finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado'].includes(String(os.status).toLowerCase());
+            const saldo = Number(os.total_value || 0) - Number(os.paid_value || 0);
+            return !isClosed && saldo > 0.05 && Number(os.total_value || 0) < 100000;
+          });
+          if (activeList.length > 0) {
+            const totalPatioReal = activeList.reduce((acc, os) => acc + (Number(os.total_value || 0) - Number(os.paid_value || 0)), 0);
+            if (totalPatioReal > 0) {
+              veiculosPatioValor = totalPatioReal;
             }
           }
         }

@@ -168,6 +168,8 @@ export const parseMarcoZeroPlanilha = async (file: File): Promise<MarcoZeroResul
                 cleanLabel === 'JUROS ATUAL' || 
                 cleanLabel === 'CONTAS' || 
                 cleanLabel === 'SALDO' ||
+                cleanLabel === 'NA LOJA' ||
+                cleanLabel.includes('NA LOJA') ||
                 cleanLabel.includes('PROLABORE DANIEL') || 
                 cleanLabel.includes('PROLABORE HENRIQUE');
 
@@ -194,7 +196,9 @@ export const parseMarcoZeroPlanilha = async (file: File): Promise<MarcoZeroResul
                 } else if (cleanLabel === 'A RECEBER') {
                   globalData.aReceber = valColG;
                 } else if (cleanLabel.includes('NEGATIVO')) {
-                  globalData.negativo = Math.abs(valColG);
+                  if (Math.abs(valColG) > globalData.negativo) {
+                    globalData.negativo = Math.abs(valColG);
+                  }
                 } else if (cleanLabel === 'CAIXA ANTERIOR') {
                   globalData.caixaAnterior = valColG;
                 } else if (cleanLabel === 'CAIXA ATUAL') {
@@ -215,6 +219,8 @@ export const parseMarcoZeroPlanilha = async (file: File): Promise<MarcoZeroResul
                   globalData.contas = valColG;
                 } else if (cleanLabel === 'SALDO' && globalData.saldoBancos === 0 && valColG > 1000) {
                   globalData.saldoBancos = valColG;
+                } else if ((cleanLabel === 'NA LOJA' || cleanLabel.includes('NA LOJA')) && valColG > 0 && globalData.totalPatio === 0) {
+                  globalData.totalPatio = valColG;
                 } else if (cleanLabel.includes('PROLABORE DANIEL')) {
                   globalData.prolaboreDaniel = valColG;
                 } else if (cleanLabel.includes('PROLABORE HENRIQUE')) {
@@ -239,14 +245,15 @@ export const parseMarcoZeroPlanilha = async (file: File): Promise<MarcoZeroResul
           const rowText = row.map(c => String(c || '')).join(' ').toLowerCase();
           if (currentStoreContext && (rowText.includes('saldo banco') || rowText.includes('saldo itaú') || rowText.includes('saldo itau'))) {
             let saldoDaLoja = 0;
+            const isNegativo = rowText.includes('negativo');
             for (let c = 0; c < row.length; c++) {
               const val = cleanNumber(row[c]);
               if (val > 0 && c !== 0) {
-                saldoDaLoja = val;
+                saldoDaLoja = isNegativo ? -val : val;
                 break;
               }
             }
-            if (saldoDaLoja > 0 && currentStoreContext.saldoLoja === 0) {
+            if (currentStoreContext.saldoLoja === 0 && saldoDaLoja !== 0) {
               currentStoreContext.saldoLoja = saldoDaLoja;
             }
           }
@@ -269,7 +276,8 @@ export const parseMarcoZeroPlanilha = async (file: File): Promise<MarcoZeroResul
           const storeB = isKnownStore(cellB);
           
           const foundStore = storeB || storeA;
-          if (foundStore && !cellA.toLowerCase().includes('os') && !cellB.toLowerCase().includes('os')) {
+          const isOsHeader = cellA.toLowerCase() === 'os:' || cellA.toLowerCase() === 'os' || cellB.toLowerCase() === 'os:' || cellB.toLowerCase() === 'os';
+          if (foundStore && !isOsHeader) {
             activeStoreOS = getOrCreateStore(foundStore);
             continue;
           }
@@ -299,13 +307,19 @@ export const parseMarcoZeroPlanilha = async (file: File): Promise<MarcoZeroResul
                   data_os: osDataStr || new Date().toISOString(),
                   valor_os: osValor
                 });
-                globalData.totalPatio += osValor;
               }
             }
           }
         }
       }
     });
+
+    // Se totalPatio não veio explícito da aba SALDO (NA LOJA), calcula da soma das OSs
+    if (globalData.totalPatio === 0) {
+      globalData.totalPatio = roundCurrency(
+        Object.values(storesMap).reduce((acc, s) => acc + s.osPendentes.reduce((a, o) => a + o.valor_os, 0), 0)
+      );
+    }
 
     // Se saldoBancos não veio explícito, calcula da soma das lojas
     const sumLojaBancos = Object.values(storesMap).reduce((acc, curr) => acc + curr.saldoLoja, 0);

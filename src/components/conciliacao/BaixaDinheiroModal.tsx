@@ -169,65 +169,7 @@ export function BaixaDinheiroModal({
         }
       }
 
-      // 3. Efetivação Fiduciária: Credita o valor depositado no saldo bancário da filial na data
       const totalBaixado = totalToDeposit + (customAmount || 0);
-      if (totalBaixado > 0 && storeId) {
-        try {
-          const { data: currentRecon } = await supabase
-            .from('reconciliations')
-            .select('bank_total')
-            .eq('store_id', storeId)
-            .eq('date', targetDate)
-            .maybeSingle();
-
-          const currentBankTotal = Number(currentRecon?.bank_total || 0);
-          await supabase
-            .from('reconciliations')
-            .update({ bank_total: currentBankTotal + totalBaixado })
-            .eq('store_id', storeId)
-            .eq('date', targetDate);
-
-          // Atualiza também o snapshot se existente para manter coerência patrimonial do Caixa Atual
-          const { data: currentSnap } = await supabase
-            .from('daily_snapshots')
-            .select('saldo_bancario, metadata')
-            .eq('date', targetDate)
-            .maybeSingle();
-
-          if (currentSnap) {
-            const snapMeta = (currentSnap.metadata as any) || {};
-            const novoSaldoBanco = Number(currentSnap.saldo_bancario || 0) + totalBaixado;
-            const novoCofre = Math.max(0, Number(snapMeta.dinheiro_lojas || snapMeta.dinheiro_em_lojas || 0) - totalBaixado);
-
-            snapMeta.dinheiro_lojas = novoCofre;
-            snapMeta.dinheiro_em_lojas = novoCofre;
-            snapMeta.saldo_dinheiro_cofre = novoCofre;
-            snapMeta.saldo_bancos_ofx = novoSaldoBanco;
-            snapMeta.saldo_bancos_positivo = Number(snapMeta.saldo_bancos_positivo || 0) + totalBaixado;
-
-            if (Array.isArray(snapMeta.stores)) {
-              snapMeta.stores = snapMeta.stores.map((s: any) => {
-                if (s.store_id === storeId || s.id === storeId) {
-                  return { ...s, dinheiro_loja: Math.max(0, Number(s.dinheiro_loja || 0) - totalBaixado) };
-                }
-                return s;
-              });
-            }
-
-            await supabase
-              .from('daily_snapshots')
-              .update({
-                saldo_bancario: novoSaldoBanco,
-                metadata: snapMeta,
-                updated_at: new Date().toISOString()
-              })
-              .eq('date', targetDate);
-          }
-        } catch (syncErr) {
-          console.warn('Aviso ao sincronizar saldo bancário pós-baixa:', syncErr);
-        }
-      }
-
       toast.success(`Baixa de ${formatCurrency(totalBaixado)} realizada com sucesso!`);
 
       await Promise.all([

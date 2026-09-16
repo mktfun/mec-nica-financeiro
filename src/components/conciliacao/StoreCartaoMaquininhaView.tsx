@@ -116,7 +116,7 @@ export function StoreCartaoMaquininhaView({ storeId, date }: StoreCartaoMaquinin
   const totalRedeLiquido = rows.reduce((acc: number, r: any) => acc + Number(r.rede_liquido || 0), 0);
   const totalCreditadoBanco = storePos?.ofx_maquininhas ?? 0;
   const valorACompensar = storePos?.nao_entrou_valor ?? rows.filter((r: any) => !r.is_settled).reduce((acc: number, r: any) => acc + r.rede_liquido, 0);
-  const isSettled = storePos?.status_compensacao === 'entrou' || (totalCreditadoBanco >= totalRedeLiquido && totalRedeLiquido > 0);
+  const isSettled = totalCreditadoBanco > 0 && (storePos?.status_compensacao === 'entrou' || totalCreditadoBanco >= totalRedeLiquido);
 
   const getBrandBadgeColor = (brand: string) => {
     const b = (brand || '').toLowerCase();
@@ -279,7 +279,7 @@ export function StoreCartaoMaquininhaView({ storeId, date }: StoreCartaoMaquinin
 
                       {/* Status no Banco */}
                       <td className="py-3 px-4 text-center">
-                        {(row.is_settled || isSettled) ? (
+                        {(totalCreditadoBanco > 0 && (row.is_settled || isSettled)) ? (
                           <Badge variant="success" dot className="text-[10px]">
                             LIQUIDADO NO BANCO
                           </Badge>

@@ -263,8 +263,7 @@ export function Fase2RedeVsOsReview({
       const { error: updErr } = await supabase
         .from('pos_transactions')
         .update({
-          matched_os_number: chosenCandidate.osNumber,
-          settlement_status: 'entrou'
+          matched_os_number: chosenCandidate.osNumber
         })
         .eq('id', collisionId);
 

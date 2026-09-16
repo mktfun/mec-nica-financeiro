@@ -1,3 +1,21 @@
+## [2026-09-16] — [Feature ID: 411-fechamento-estrito-1609-e-gestao-dinheiro-cofre]
+
+**Contexto:** Criação do modal de gestão e rastreabilidade fiduciária de dinheiro em cofre (`CashVaultCompositionModal.tsx`), com abas analíticas por fração de OS e motor de sugestões de saídas de contas sem débito no OFX, além de gatilhos visuais dedicados no painel de conciliação.
+
+**Regra aprendida:**
+1. **Design de Rastreabilidade Fração a Fração (`CashVaultCompositionModal.tsx`):**
+   - Seguir rigorosamente o padrão Dark UI Zinc-950 com cards de alto contraste fiduciário:
+     * **Aba 1 (Entradas e Frações):** Apresenta cada parcela recebida com Badge de status semântico (`em_transito` em Amber vs `depositado` em Emerald), busca instantânea multifilial, e botão de 1 clique para transitar status com recálculo imediato.
+     * **Aba 2 (💡 Sugestões de Saídas não-OFX):** Apresenta as contas de ERP importadas sem saída bancária, destacando categoria, valor e favorecido, com fluxo de confirmação em 1 clique ("Dar Baixa como Saída em Dinheiro") que debita o cofre da filial escolhida.
+     * **Aba 3 (Histórico de Saídas e Despesas):** Histórico transparente de despesas pagas em espécie com recibo, favorecido e categoria.
+2. **Gatilhos Visuais Transparentes e Acessíveis (`ResumoDiaPanel.tsx` e `SaldoBancosDetailModal.tsx`):**
+   - O card "SALDO BANCOS + DINHEIRO" abriga o botão direto `Cofre ↗` em tom Amber (`bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 border-amber-500/30`), e o sub-chip "Dinheiro no Cofre" ganha hover interativo com micro-indicador `Abrir ↗`.
+   - Propagação de eventos interceptada (`e.stopPropagation()`) para garantir que o clique no cofre abra a composição analítica sem disparar o modal global de bancos.
+
+**Risco identificado / Anti-pattern:** Omitir ou esconder a composição física do dinheiro dentro de cards colapsados. O dinheiro em espécie é o ativo mais vulnerável a erros contábeis e requer visibilidade fração por fração ao alcance de 1 clique.
+
+---
+
 ## [2026-09-15] — [Feature ID: 402-fix-reatividade-caixa-e-baixa-cofre]
 
 **Contexto:** Eliminação de salto visual entre o modo de visualização e o modo de edição no painel de resumo diário (`ResumoDiaPanel.tsx`), e sincronização contínua do chip "Dinheiro no Cofre" no card de Saldo Bancos.

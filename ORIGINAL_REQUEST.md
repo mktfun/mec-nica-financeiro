@@ -93,3 +93,56 @@ Produzir um documento técnico completo em Markdown (`C:\Users\admin\.gemini\ant
 - [ ] Nenhuma migration SQL deve ser criada ou aplicada — apenas proposta como pseudocódigo/diff comentado
 - [ ] Nenhum código de produção deve ser modificado — somente leitura e documentação
 - [ ] Nenhuma dependência nova deve ser instalada para fins da auditoria
+
+## 2026-09-16T18:42:41Z
+
+This is a single self-contained fix; keep it small and focused.
+
+Garantir o fechamento contábil rigoroso da data 16/09 utilizando estritamente os 31 arquivos físicos fornecidos (extratos bancários OFX, planilhas de conferência de OS, relatórios de vendas Rede a compensar e contas a pagar), preservando as OSs manuais acordadas, implementando a rastreabilidade total do dinheiro físico em cofre com visualização detalhada de cada fração, persistência imutável no snapshot diário e um motor de recomendação inteligente (não-automático) que pré-disponibiliza contas do contas a pagar sem débito bancário no OFX para baixa rápida como saídas em dinheiro físico.
+
+Working directory: c:/Users/admin/.gemini/antigravity/scratch/financeiro
+Integrity mode: development
+
+## Requirements
+
+### R1. Fechamento Estrito Baseado nos Arquivos Físicos (Sem Manipulações Arbitrárias)
+- Os saldos bancários positivos (R$ 129.709,49) e cheque especial (-R$ 23.994,58) devem refletir 100% os 10 arquivos OFX físicos sem edições forçadas.
+- As vendas da Rede (R$ 29.198,28 líquido / R$ 2.332,92 taxas) devem ser mantidas 100% a compensar, refletindo a foto das 19h.
+- As contas a pagar devem bater 100% com BuscaContasAPagar.xls (R$ 40.118,13) + Juros da Rede (R$ 2.332,92) = R$ 42.451,05.
+- O Pátio de Carros deve conter as 30 OSs físicas apuradas (R$ 66.359,76) somadas exclusivamente às 3 OSs manuais legítimas mantidas pelo usuário (#596 em Dom Pedro: R$ 8.822,46; #1856 em Rei do Módulo: R$ 4.000,00; #1818 em Rei do Módulo: R$ 4.241,30), totalizando R$ 83.423,57.
+
+### R2. Módulo de Rastreabilidade e Composição do Dinheiro em Cofre (CashVaultCompositionModal.tsx)
+- Criar interface acessível pelo card de "Dinheiro em Lojas / Cofre" que exiba a composição detalhada de cada fração de dinheiro:
+  - Loja de origem, número da OS vinculada, cliente/placa, data de recebimento e valor.
+  - Status individual de cada fração: em_transito (no cofre da loja) ou depositado.
+- Permitir registrar pagamentos e saídas em dinheiro vivo da loja com categoria, loja e descrição, abatendo automaticamente do saldo em cofre.
+- Atualização em tempo real dos valores de dinheiro no card de fechamento e no Caixa Atual ao registrar baixas ou saídas.
+
+### R3. Sugestão Inteligente de Baixas de Contas em Dinheiro (Contas sem Saída no OFX)
+- O modal de Dinheiro em Cofre deve pré-listar de forma clara as contas a pagar da data (daily_manual_bills) que não possuem débito correspondente no extrato bancário OFX (match_status = 'unmatched').
+- Ação não-automática em 1 clique: o usuário pode revisar cada conta não-bancária sugerida e decidir:
+  - "Dar Baixa como Saída em Dinheiro": debita o valor do saldo em cofre da loja selecionada, vinculando a conta e sanando a despesa.
+  - "Ignorar / Manter Aberto": se for um lançamento pendente para outro dia ou erro do sistema.
+
+### R4. Blindagem e Isolamento Temporal do Snapshot Diário
+- O snapshot diário (daily_snapshots) deve armazenar no campo metadata.cash_vault_snapshot o estado exato de todas as frações de dinheiro e movimentações daquela data no momento do fechamento.
+- Ao navegar para datas passadas que já foram fechadas (is_closed: true), a aplicação deve ler o estado congelado do snapshot, sem recalcular dinamicamente ou permitir que movimentações de dias posteriores alterem o histórico já conciliado.
+- Descongelamento controlado: quando o usuário estiver trabalhando no dia ativo (ainda aberto), qualquer baixa de dinheiro ou edição de OS manual deve refletir imediatamente na RPC e na tela sem ser bloqueada por flags de snapshot fechado.
+
+## Acceptance Criteria
+
+### Integridade dos Dados Físicos
+- [ ] O confronto de cada uma das 30 OSs físicas com o banco de dados apresenta 0 divergências de valores totais, pagos e restantes.
+- [ ] Os 10 extratos OFX conferem ao centavo com os saldos registrados no sistema (R$ 105.714,91 líquido).
+- [ ] Os arquivos de vendas Rede conferem ao centavo com os cartões a compensar (R$ 29.198,28) e juros (R$ 2.332,92).
+- [ ] As 3 OSs manuais (#596, #1856, #1818) estão visíveis e editáveis na tela de ordens de serviço.
+
+### Rastreabilidade e Sugestão de Baixas em Dinheiro
+- [ ] Ao clicar no card de dinheiro em loja, abre o modal de composição exibindo cada fração com loja, OS, data e status.
+- [ ] O modal exibe a seção "Contas Importadas sem Débito no OFX" com opção de dar baixa manual como saída de dinheiro em 1 clique.
+- [ ] Ao dar baixa em uma conta sugerida, é gerada uma saída em store_cash_vault e o saldo em cofre é recalculado na hora.
+
+### Persistência e Isolamento Histórico
+- [ ] Ao fechar a conciliação do dia, a composição detalhada do dinheiro é gravada em daily_snapshots.metadata.
+- [ ] Ao reabrir um dia passado fechado, a tela exibe rigorosamente a foto histórica congelada daquele dia.
+

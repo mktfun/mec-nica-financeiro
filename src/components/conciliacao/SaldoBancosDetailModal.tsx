@@ -18,6 +18,7 @@ import { supabase } from '@/lib/supabase';
 import { StoreReconciliationSummary } from '@/hooks/useBackendConciliacao';
 import { toast } from 'sonner';
 import { BaixaDinheiroModal } from './BaixaDinheiroModal';
+import { CashVaultCompositionModal } from './CashVaultCompositionModal';
 
 interface SaldoBancosDetailModalProps {
   isOpen: boolean;
@@ -34,6 +35,7 @@ export function SaldoBancosDetailModal({
 }: SaldoBancosDetailModalProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [baixaModalStore, setBaixaModalStore] = useState<{ storeId: string; storeName: string; amount: number } | null>(null);
+  const [isCashVaultModalOpen, setIsCashVaultModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
   // Fallback via RPC se stores vier vazio
@@ -72,19 +74,21 @@ export function SaldoBancosDetailModal({
       const storeVaultItems = (vaultEntriesData || []).filter(v => v.store_id === s.store_id);
       const storeVaultSum = storeVaultItems.reduce((acc, v) => acc + Number(v.amount || 0), 0);
       const rawDinheiro = Number(s.dinheiro_loja ?? 0);
-      const dinheiroLoja = rawDinheiro > 0 ? rawDinheiro : storeVaultSum;
+      const dinheiroLoja = (vaultEntriesData && vaultEntriesData.length > 0) ? storeVaultSum : (rawDinheiro > 0 ? rawDinheiro : storeVaultSum);
 
       // Fallback robusto para Cartões / Rede que NÃO ENTROU
       const rawNaoEntrou = s.nao_entrou_valor !== undefined && s.nao_entrou_valor !== null ? Number(s.nao_entrou_valor) : undefined;
       const rawCartaoNaoEntrou = s.cartao_nao_entrou !== undefined && s.cartao_nao_entrou !== null ? Number(s.cartao_nao_entrou) : undefined;
+      const redeLiquidoVal = Number(s.maquininha || s.rede_liquido || 0);
+      const ofxMaqVal = Number(s.ofx_maquininhas || 0);
       
       let maquininhaNaoEntrou = 0;
       if (rawNaoEntrou !== undefined && rawNaoEntrou > 0) {
         maquininhaNaoEntrou = rawNaoEntrou;
       } else if (rawCartaoNaoEntrou !== undefined && rawCartaoNaoEntrou > 0) {
         maquininhaNaoEntrou = rawCartaoNaoEntrou;
-      } else if (s.status_compensacao === 'nao_entrou' && Number(s.maquininha || s.rede_liquido || 0) > 0) {
-        maquininhaNaoEntrou = Number(s.maquininha || s.rede_liquido || 0);
+      } else if ((s.status_compensacao === 'nao_entrou' || s.status_compensacao === 'a_compensar' || ofxMaqVal === 0) && redeLiquidoVal > 0) {
+        maquininhaNaoEntrou = redeLiquidoVal;
       }
 
       const saldoConsolidado = Number((saldoOfxPuro + dinheiroLoja + maquininhaNaoEntrou).toFixed(2));
@@ -113,17 +117,18 @@ export function SaldoBancosDetailModal({
   // Totais Gerais Segregados
   const totals = useMemo(() => {
     return rows.reduce(
-      (acc, curr) => {
-        const isPositivo = curr.saldoConsolidado >= 0;
+      (acc, r) => {
+        const positivo = r.saldoOfxPuro > 0 ? r.saldoOfxPuro : 0;
+        const devedor = r.saldoOfxPuro < 0 ? Math.abs(r.saldoOfxPuro) : 0;
         return {
-          positivosReal: acc.positivosReal + (isPositivo ? curr.saldoConsolidado : 0),
-          devedorReal: acc.devedorReal + (!isPositivo ? Math.abs(curr.saldoConsolidado) : 0),
-          ofxPositivo: acc.ofxPositivo + (curr.saldoOfxPuro > 0 ? curr.saldoOfxPuro : 0),
-          ofxNegativo: acc.ofxNegativo + (curr.saldoOfxPuro < 0 ? Math.abs(curr.saldoOfxPuro) : 0),
-          ofxTotal: acc.ofxTotal + curr.saldoOfxPuro,
-          dinheiro: acc.dinheiro + curr.dinheiroLoja,
-          maquininhas: acc.maquininhas + curr.maquininhaNaoEntrou,
-          total: acc.total + curr.saldoConsolidado
+          positivosReal: acc.positivosReal + positivo,
+          devedorReal: acc.devedorReal + devedor,
+          ofxPositivo: acc.ofxPositivo + positivo,
+          ofxNegativo: acc.ofxNegativo + devedor,
+          ofxTotal: acc.ofxTotal + r.saldoOfxPuro,
+          dinheiro: acc.dinheiro + r.dinheiroLoja,
+          maquininhas: acc.maquininhas + r.maquininhaNaoEntrou,
+          total: acc.total + r.saldoConsolidado
         };
       },
       { positivosReal: 0, devedorReal: 0, ofxPositivo: 0, ofxNegativo: 0, ofxTotal: 0, dinheiro: 0, maquininhas: 0, total: 0 }
@@ -172,10 +177,17 @@ export function SaldoBancosDetailModal({
             </div>
           )}
 
-          <div className="bg-[var(--bg-canvas)] border border-amber-500/30 rounded-xl p-3.5 space-y-1">
-            <div className="flex items-center gap-1.5 text-amber-400 text-xs font-semibold uppercase tracking-wider">
-              <Banknote className="w-3.5 h-3.5 text-amber-400" />
-              Dinheiro no Cofre
+          <div 
+            onClick={() => setIsCashVaultModalOpen(true)}
+            className="bg-[var(--bg-canvas)] border border-amber-500/30 rounded-xl p-3.5 space-y-1 hover:border-amber-400 hover:bg-amber-500/10 cursor-pointer transition-all group/cofre shadow-sm"
+            title="Clique para abrir a Composição Completa do Dinheiro em Cofre e Sugestões de Saídas"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 text-amber-400 text-xs font-semibold uppercase tracking-wider">
+                <Banknote className="w-3.5 h-3.5 text-amber-400" />
+                Dinheiro no Cofre
+              </div>
+              <span className="text-[9px] text-amber-300 underline opacity-70 group-hover/cofre:opacity-100">Ver Frações ↗</span>
             </div>
             <div className="text-lg sm:text-xl font-bold font-sans tabular-nums text-amber-300">
               + {formatCurrency(totals.dinheiro)}
@@ -338,6 +350,22 @@ export function SaldoBancosDetailModal({
           }}
         />
       )}
+
+      {/* Modal de Composição e Rastreabilidade Completa do Dinheiro */}
+      <CashVaultCompositionModal
+        isOpen={isCashVaultModalOpen}
+        onClose={() => setIsCashVaultModalOpen(false)}
+        targetDate={targetDate}
+        onSuccess={() => {
+          queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+          queryClient.invalidateQueries({ queryKey: ['daily_reconciliation_summary'] });
+          queryClient.invalidateQueries({ queryKey: ['saldo-bancos-modal-summary'] });
+          queryClient.invalidateQueries({ queryKey: ['store-cash-vault-pending'] });
+          queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
+          queryClient.invalidateQueries({ queryKey: ['reconciliations'] });
+          queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
+        }}
+      />
     </Modal>
   );
 }

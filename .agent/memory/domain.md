@@ -1,3 +1,23 @@
+## [2026-09-16] — [Feature ID: 411-fechamento-estrito-1609-e-gestao-dinheiro-cofre]
+
+**Contexto:** Fechamento contábil rigoroso de 16/09/2026 utilizando exclusivamente os 31 arquivos físicos fornecidos pelo usuário, saneamento da duplicidade de dinheiro depositado vs em trânsito no cofre das lojas, motor não-automático de sugestões de saídas em dinheiro para contas sem débito no extrato bancário OFX e blindagem do snapshot congelado.
+
+**Regra aprendida:**
+1. **Segregação Estrita de Dinheiro em Cofre (`em_transito` vs `depositado`):**
+   - O dinheiro físico recebido pelas filiais originado das OSs (R$ 23.578,50 em 16/09) não pode ser somado indiscriminadamente aos ativos da empresa.
+   - Frações com `status = 'depositado'` (R$ 19.660,00) já entraram na conta corrente bancária e integram o saldo dos extratos OFX (R$ 129.709,49). Somá-las novamente ao cofre causa dupla contagem e infla artificialmente o Caixa Atual em ~R$ 19.660,00.
+   - Apenas o dinheiro com `status = 'em_transito'` ou `pending` (R$ 3.918,50 em 16/09: Planalto R$ 1.750,00, Rudge R$ 168,50, Santo André R$ 2.000,00) constitui ativo extraconta no Pilar 1.
+2. **Motor de Sugestão de Contas sem Débito no OFX (`daily_manual_bills`):**
+   - Contas a pagar importadas (`BuscaContasAPagar.xls`) que não possuem correspondência bancária nos débitos OFX (`match_status = 'unmatched'`) representam frequentemente adiantamentos a sócios ou despesas locais pagas em dinheiro vivo (somando R$ 4.854,68 em 16/09).
+   - O sistema NUNCA deve forçar baixas automáticas arbitrárias: o motor pré-lista essas contas com contexto claro e disponibiliza um fluxo em 1 clique ("Dar Baixa como Saída em Dinheiro") que debita o cofre da filial correspondente e encerra o título em `paid_cash`.
+3. **Preservação de Pátio com OSs Manuais e Vendas Rede 100% a Compensar:**
+   - As vendas de cartões da Rede (R$ 29.198,28 líquido / R$ 2.332,92 taxas) representam a foto das 19h e pernoitam 100% a compensar para liquidação no dia seguinte.
+   - Ordens de serviço manuais mantidas no pátio (#596 em Dom Pedro: R$ 8.822,46; #1856 e #1818 em Rei do Módulo: R$ 4.000,00 e R$ 4.241,30) somam-se legitimamente às 30 OSs físicas (R$ 66.359,76), totalizando R$ 83.423,57 no pátio.
+
+**Risco identificado / Anti-pattern:** Somar a tabela `store_cash_vault` sem filtrar por `status IN ('em_transito', 'pending')`. Fazer isso cria um excedente fantasma no caixa e desalinha o fechamento com o extrato bancário.
+
+---
+
 ## [2026-09-15] — [Feature ID: 402-fix-reatividade-caixa-e-baixa-cofre]
 
 **Contexto:** Eliminação do "Frankenstein" de cálculo híbrido na tela de fechamento diário (`ResumoDiaPanel.tsx`) e dessincronização do chip "Dinheiro no Cofre". Ao atualizar os carros em pátio ou saldos bancários, os cards do topo atualizavam, mas a esteira de consolidação contábil (Caixa Atual, Fluxo de Caixa, Valor Disp. Contas e Diferença Final) permanecia 100% congelada nos valores estáticos do snapshot anterior devido a uma bifurcação ternária (`isEditing ? dinamico : snapshot`). Além disso, baixas fiduciárias já realizadas em `store_cash_vault` não eram deduzidas do chip do cofre porque o frontend consumia o metadata congelado do snapshot.

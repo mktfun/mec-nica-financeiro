@@ -73,7 +73,9 @@ function ConciliacaoPage() {
   const isApproved = summary?.status_geral === 'approved';
 
   const totalSistema = storesList.reduce((acc, log) => acc + (log.previsto_ofx || 0), 0);
-  const totalBancarioIn = summary?.total_entradas_ofx ?? summary?.faturamento_ofx ?? 0;
+  const totalBancarioIn = (summary?.total_entradas_ofx && summary.total_entradas_ofx > 0) 
+    ? summary.total_entradas_ofx 
+    : storesList.reduce((acc, s) => acc + (s.entradas_realizadas || 0), 0);
   const totalBancarioRaw = summary?.total_saldo_banco || 0;
   const divergenciaGlobal = summary?.diferenca_final || 0;
 

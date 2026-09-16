@@ -7,7 +7,8 @@ import { Badge } from '@/components/ui/Badge';
 import { formatCurrency } from '@/lib/utils';
 import {
   Save, AlertTriangle, CheckCircle2,
-  CalendarDays, ChevronRight, Landmark, Wallet, Receipt, ShoppingBag, Edit2, Database, ShieldCheck, X, Lock
+  CalendarDays, ChevronRight, Landmark, Wallet, Receipt, ShoppingBag, Edit2, Database, ShieldCheck, X, Lock,
+  Banknote
 } from 'lucide-react';
 import { useDailySnapshot, usePreviousDaySnapshot, useSaveDailySnapshot } from '@/hooks/useDailySnapshot';
 import { useJustifiedTransactions } from '@/hooks/useJustifiedTransactions';
@@ -20,6 +21,7 @@ import { PatioOsDetailModal } from '@/components/conciliacao/PatioOsDetailModal'
 import { SaldoBancosDetailModal } from '@/components/conciliacao/SaldoBancosDetailModal';
 import { ContasManualModal } from '@/components/conciliacao/ContasManualModal';
 import { FaturamentoDetalhesModal } from '@/components/conciliacao/FaturamentoDetalhesModal';
+import { CashVaultCompositionModal } from '@/components/conciliacao/CashVaultCompositionModal';
 import { WhisperDot } from '@/components/conciliacao/WhisperDot';
 import { AuditTrailBar } from '@/components/conciliacao/AuditTrailBar';
 import { supabase } from '@/lib/supabase';
@@ -65,6 +67,7 @@ export function ResumoDiaPanel({
   const [isMaquininhasModalOpen, setIsMaquininhasModalOpen] = useState(false);
   const [isPatioModalOpen, setIsPatioModalOpen] = useState(false);
   const [isSaldoBancosModalOpen, setIsSaldoBancosModalOpen] = useState(false);
+  const [isCashVaultModalOpen, setIsCashVaultModalOpen] = useState(false);
   const [isContasModalOpen, setIsContasModalOpen] = useState(false);
   const [isFaturamentoModalOpen, setIsFaturamentoModalOpen] = useState(false);
   const queryClient = useQueryClient();
@@ -143,9 +146,17 @@ export function ResumoDiaPanel({
       setAReceberInput(Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber_manual ?? summary?.a_receber ?? previousSnapshot?.a_receber_manual ?? 0));
       
       const overrideVal = snapMeta.contas_manual_override ?? summary?.contas_override;
+      const jurosRedeSummary = Number(summary?.juros_rede ?? currentSnapshot?.juros_rede ?? 0);
+      const rawBase = Number(summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0);
+      const snapContas = Number(currentSnapshot?.contas_a_pagar || 0);
+      // Se summary.contas_base já inclui juros_rede (ex: 42.451,05 = 40.118,13 contas + 2.332,92 juros), deduz para não duplicar na soma do subtotal
+      const sanitizedBase = (summary?.contas_base !== undefined && jurosRedeSummary > 0 && rawBase > jurosRedeSummary && snapContas > 0 && Math.abs(rawBase - (snapContas + jurosRedeSummary)) < 0.1)
+        ? (rawBase - jurosRedeSummary)
+        : (rawBase > 0 ? rawBase : snapContas);
+
       const initialContas = (overrideVal !== null && overrideVal !== undefined && Number(overrideVal) > 0)
         ? (Number(overrideVal) - Number(summary?.contas_extras || 0))
-        : Number(summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0);
+        : sanitizedBase;
       setContasInput(initialContas);
     }
   }, [currentSnapshot, summary, previousSnapshot, isEditing, faturamentoAnteriorGlobal]);
@@ -198,9 +209,9 @@ export function ResumoDiaPanel({
   const aReceberValor = isEditing ? aReceberInput : Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber_manual ?? summary?.a_receber ?? previousSnapshot?.a_receber_manual ?? 0);
   const contasManualValor = isEditing 
     ? (contasInput + (summary?.contas_extras || 0)) 
-    : ((summary?.contas_manual && summary.contas_manual > 0) 
-        ? summary.contas_manual 
-        : ((summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0) + (summary?.contas_extras || 0)));
+    : (contasInput > 0 
+        ? (contasInput + (summary?.contas_extras || 0))
+        : (Number(summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0) + (summary?.contas_extras || 0)));
 
   // Totais Bancários Derivados (SSOT compartilhado rigorosamente com o SaldoBancosDetailModal)
   const derivedBankTotals = useMemo(() => {
@@ -218,7 +229,8 @@ export function ResumoDiaPanel({
       const d = Number(s.dinheiro_loja ?? 0);
       dinheiro += d;
 
-      let m = Number(s.nao_entrou_valor ?? s.cartao_nao_entrou ?? (s.status_compensacao === 'nao_entrou' ? (s.maquininha || s.rede_liquido) : 0) ?? 0);
+      // Somar estritamente o valor de maquininha que NÃO entrou na conta bancária (a compensar)
+      let m = Number(s.nao_entrou_valor ?? s.cartao_nao_entrou ?? 0);
       maquininhas += m;
     });
 
@@ -230,7 +242,10 @@ export function ResumoDiaPanel({
     const effectiveMaq = maquininhas > 0 ? maquininhas : Number(summary?.cartoes_a_compensar ?? 0);
     const effectiveNeg = ofxNegativo > 0 ? ofxNegativo : Number(summary?.saldo_negativo_itau ?? 0);
 
-    const totalPositivoConsolidado = Number((effectiveOfxPos + effectiveDinheiro + effectiveMaq).toFixed(2));
+    // Dinheiro no Cofre das Lojas (em trânsito) é um ativo real das filiais que compõe o Saldo Bancos + Dinheiro
+    const cashToConsolidate = effectiveDinheiro;
+
+    const totalPositivoConsolidado = Number((effectiveOfxPos + cashToConsolidate + effectiveMaq).toFixed(2));
 
     return {
       ofxPositivo: Number(effectiveOfxPos.toFixed(2)),
@@ -242,63 +257,39 @@ export function ResumoDiaPanel({
     };
   }, [summary, storesData]);
 
-  // Pilares Automáticos Canônicos (SSOT da RPC quando fora de edição; reativo no modo de edição)
-  const saldoBancosValor = isEditing
-    ? (derivedBankTotals.totalPositivoConsolidado > 0 
-        ? derivedBankTotals.totalPositivoConsolidado 
-        : (summary?.total_saldo_banco_positivo ?? summary?.saldo_bancos_positivo ?? 0))
-    : Number(summary?.total_saldo_banco_positivo ?? derivedBankTotals.totalPositivoConsolidado ?? 0);
+  // Pilares Automáticos Canônicos (100% Reativos e Unificados)
+  const saldoBancosValor = derivedBankTotals.totalPositivoConsolidado > 0 
+    ? derivedBankTotals.totalPositivoConsolidado 
+    : Number(summary?.total_saldo_banco_positivo ?? summary?.saldo_bancos_positivo ?? 0);
 
-  const saldoNegativoItau = isEditing
-    ? (derivedBankTotals.ofxNegativo > 0 
-        ? derivedBankTotals.ofxNegativo 
-        : (summary?.total_saldo_banco_negativo ?? summary?.saldo_negativo_itau ?? currentSnapshot?.saldo_negativo_itau ?? 0))
-    : Number(summary?.saldo_negativo_itau ?? derivedBankTotals.ofxNegativo ?? 0);
+  const saldoNegativoItau = derivedBankTotals.ofxNegativo > 0 
+    ? derivedBankTotals.ofxNegativo 
+    : Number(summary?.total_saldo_banco_negativo ?? summary?.saldo_negativo_itau ?? currentSnapshot?.saldo_negativo_itau ?? 0);
 
-  const naLojaValor = isEditing
-    ? (summary?.na_loja_os ?? currentSnapshot?.total_patio ?? 0)
-    : Number(summary?.na_loja_os ?? currentSnapshot?.total_patio ?? 0);
+  const naLojaValor = Number(summary?.na_loja_os ?? currentSnapshot?.total_patio ?? 0);
+  const jurosRedeValor = Number(summary?.juros_rede ?? currentSnapshot?.juros_rede ?? 0);
+  const devolucoesRedeValor = Number(summary?.devolucoes_rede || 0);
 
-  const jurosRedeValor = isEditing
-    ? (summary?.juros_rede ?? currentSnapshot?.juros_rede ?? 0)
-    : Number(summary?.juros_rede ?? 0);
-
-  const devolucoesRedeValor = isEditing
-    ? (summary?.devolucoes_rede || 0)
-    : Number(summary?.devolucoes_rede || 0);
-  
   // Total de justificativas do dia (subindo para o Faturamento Atual)
   const totalJustificadosDia = justifiedData?.totalGlobal || 0;
   const faturamentoOutrosValor = totalJustificadosDia > 0 
     ? totalJustificadosDia 
     : Number(currentSnapshot?.faturamento_outros_valor ?? summary?.faturamento_outros ?? 0);
     
-  // Faturamento Atual = Mapa de Metas + Transações Justificadas + Ajustes Manuais (Aportes/Estornos)
-  const faturamentoAjustesValor = summary?.faturamento_ajustes ?? 0;
-  const faturamentoTotalComAjustes = isEditing
-    ? Math.round(((faturamentoLiquidoDia + faturamentoOutrosValor + faturamentoAjustesValor) + Number.EPSILON) * 100) / 100
-    : Number(summary?.faturamento_periodo ?? (faturamentoLiquidoDia + faturamentoOutrosValor + faturamentoAjustesValor));
+  // Faturamento Atual = Mapa de Metas + Transações Justificadas + Ajustes Manuais
+  const faturamentoAjustesValor = Number(summary?.faturamento_ajustes ?? 0);
+  const faturamentoTotalComAjustes = Math.round(((faturamentoLiquidoDia + faturamentoOutrosValor + faturamentoAjustesValor) + Number.EPSILON) * 100) / 100;
 
-  // Matemática Consolidada — Canônica via RPC quando !isEditing; reativa quando isEditing
-  const caixaAtualCalculado = isEditing
-    ? Math.round(((saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor - saldoNegativoItau) + Number.EPSILON) * 100) / 100
-    : Number(summary?.caixa_atual ?? Math.round(((saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor - saldoNegativoItau) + Number.EPSILON) * 100) / 100);
+  // Matemática Consolidada — 100% CANÔNICA, REATIVA E IDÊNTICA EM MODO NORMAL E MODO EDIÇÃO
+  const caixaAtualCalculado = Math.round(((saldoBancosValor + dinheiroMpValor + aReceberValor + naLojaValor - saldoNegativoItau) + Number.EPSILON) * 100) / 100;
 
-  const fluxoCaixaCalculado = isEditing
-    ? Math.round(((caixaAtualCalculado - caixaAnteriorGlobal) + Number.EPSILON) * 100) / 100
-    : Number(summary?.fluxo_caixa ?? Math.round(((caixaAtualCalculado - caixaAnteriorGlobal) + Number.EPSILON) * 100) / 100);
+  const fluxoCaixaCalculado = Math.round(((caixaAtualCalculado - caixaAnteriorGlobal) + Number.EPSILON) * 100) / 100;
 
-  const valorDispContasCalculado = isEditing
-    ? Math.round(((faturamentoTotalComAjustes - fluxoCaixaCalculado) + Number.EPSILON) * 100) / 100
-    : Number(summary?.valor_disp_contas ?? Math.round(((faturamentoTotalComAjustes - fluxoCaixaCalculado) + Number.EPSILON) * 100) / 100);
+  const valorDispContasCalculado = Math.round(((faturamentoTotalComAjustes - fluxoCaixaCalculado) + Number.EPSILON) * 100) / 100;
 
-  const subtotalContasCalculado = isEditing
-    ? Math.round(((jurosRedeValor + contasManualValor) + Number.EPSILON) * 100) / 100
-    : Number(summary?.subtotal_contas ?? Math.round(((jurosRedeValor + contasManualValor) + Number.EPSILON) * 100) / 100);
+  const subtotalContasCalculado = Math.round(((jurosRedeValor + contasManualValor) + Number.EPSILON) * 100) / 100;
 
-  const diferencaFinalCalculada = isEditing
-    ? Math.round(((valorDispContasCalculado - subtotalContasCalculado) + Number.EPSILON) * 100) / 100
-    : Number(summary?.diferenca_final ?? Math.round(((valorDispContasCalculado - subtotalContasCalculado) + Number.EPSILON) * 100) / 100);
+  const diferencaFinalCalculada = Math.round(((valorDispContasCalculado - subtotalContasCalculado) + Number.EPSILON) * 100) / 100;
 
   const diferencaAbs = Math.abs(diferencaFinalCalculada);
   const isDiferencaOk = diferencaAbs <= 50;
@@ -401,6 +392,33 @@ export function ResumoDiaPanel({
         ? (isEditing ? contasManualValor : (summary?.contas_override ?? (currentSnapshot?.metadata as any)?.contas_manual_override ?? contasManualValor))
         : null;
 
+      // Captura frações de store_cash_vault para gravação imutável no snapshot
+      let cashVaultSnapshotData: any = null;
+      try {
+        const { data: vaultItems } = await supabase
+          .from('store_cash_vault')
+          .select('id, store_id, amount, status, entry_date, description, os_number_ref, notes')
+          .lte('entry_date', selectedDate);
+        
+        if (vaultItems) {
+          const emTransito = vaultItems.filter(v => v.status === 'em_transito' || v.status === 'pending');
+          const depositados = vaultItems.filter(v => v.status === 'depositado');
+          const totalEmTransito = emTransito.reduce((acc, v) => acc + Number(v.amount || 0), 0);
+          const totalDepositado = depositados.reduce((acc, v) => acc + Number(v.amount || 0), 0);
+          
+          cashVaultSnapshotData = {
+            total_em_transito: totalEmTransito,
+            total_depositado: totalDepositado,
+            total_geral: totalEmTransito + totalDepositado,
+            frozen_at: new Date().toISOString(),
+            fractions: vaultItems,
+            entries: vaultItems
+          };
+        }
+      } catch (e) {
+        console.warn('Erro ao montar cash_vault_snapshot:', e);
+      }
+
       await saveSnapshot.mutateAsync({
         date: selectedDate,
         is_closed: true,
@@ -450,6 +468,7 @@ export function ResumoDiaPanel({
           cartoes_a_compensar: (summary?.cartoes_a_compensar && summary.cartoes_a_compensar > 0) ? summary.cartoes_a_compensar : ((currentSnapshot?.metadata as any)?.cartoes_a_compensar ?? currentSnapshot?.cartoes_a_compensar ?? 0),
           dinheiro_em_lojas: (summary?.dinheiro_em_lojas && summary.dinheiro_em_lojas > 0) ? summary.dinheiro_em_lojas : ((currentSnapshot?.metadata as any)?.dinheiro_em_lojas ?? (currentSnapshot?.metadata as any)?.dinheiro_lojas ?? 0),
           dinheiro_lojas: (summary?.dinheiro_lojas && summary.dinheiro_lojas > 0) ? summary.dinheiro_lojas : ((currentSnapshot?.metadata as any)?.dinheiro_lojas ?? (currentSnapshot?.metadata as any)?.dinheiro_em_lojas ?? 0),
+          cash_vault_snapshot: cashVaultSnapshotData || (currentSnapshot?.metadata as any)?.cash_vault_snapshot || null,
           devolucoes_rede: summary?.devolucoes_rede ?? 0,
           saldo_negativo_itau: summary?.saldo_negativo_itau ?? 0,
           status_geral: isDiferencaOk ? 'approved' : 'divergent',
@@ -672,9 +691,23 @@ export function ResumoDiaPanel({
                   </span>
                   <WhisperDot dot={insights?.dots.saldo_banco} />
                 </div>
-                <div className="flex items-center gap-1 text-[11px] text-[var(--color-primary)] group-hover:underline">
-                  <Landmark size={13} />
-                  <span className="text-[9px] font-semibold bg-[var(--color-primary)]/10 px-1.5 py-0.5 rounded">Ver Lojas ↗</span>
+                <div className="flex items-center gap-1.5 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsCashVaultModalOpen(true);
+                    }}
+                    className="flex items-center gap-1 text-[9px] font-semibold bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 border border-amber-500/30 px-2 py-0.5 rounded transition-all cursor-pointer shadow-sm"
+                    title="Abrir Raio-X e Composição do Dinheiro em Cofre"
+                  >
+                    <Banknote size={11} />
+                    <span>Cofre ↗</span>
+                  </button>
+                  <div className="flex items-center gap-1 text-[var(--color-primary)] group-hover:underline">
+                    <Landmark size={13} />
+                    <span className="text-[9px] font-semibold bg-[var(--color-primary)]/10 px-1.5 py-0.5 rounded">Ver Lojas ↗</span>
+                  </div>
                 </div>
               </div>
 
@@ -720,8 +753,18 @@ export function ResumoDiaPanel({
                   </div>
 
                   {hasCofre && (
-                    <div className="bg-[var(--bg-canvas)] border border-amber-500/30 rounded-md px-2.5 py-1.5 flex flex-col justify-center text-amber-400">
-                      <span className="text-[8px] text-amber-400/80 uppercase font-semibold truncate">Dinheiro no Cofre</span>
+                    <div 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsCashVaultModalOpen(true);
+                      }}
+                      className="bg-[var(--bg-canvas)] border border-amber-500/30 rounded-md px-2.5 py-1.5 flex flex-col justify-center text-amber-400 hover:border-amber-400 hover:bg-amber-500/10 cursor-pointer transition-all group/cofre"
+                      title="Clique para ver a composição fração a fração do dinheiro e sugestões de saídas"
+                    >
+                      <span className="text-[8px] text-amber-400/80 uppercase font-semibold truncate flex items-center justify-between">
+                        <span>Dinheiro no Cofre</span>
+                        <span className="text-[7px] text-amber-300 underline opacity-80 group-hover/cofre:opacity-100">Abrir ↗</span>
+                      </span>
                       <span className="font-mono font-bold text-amber-300 text-xs truncate">
                         + <AnimatedNumber value={displayCofre} format="currency" />
                       </span>
@@ -1215,6 +1258,22 @@ export function ResumoDiaPanel({
         onClose={() => setIsSaldoBancosModalOpen(false)}
         targetDate={selectedDate}
         stores={summary?.stores || []}
+      />
+
+      {/* Modal de Gestão e Composição Rastreável de Dinheiro em Cofre */}
+      <CashVaultCompositionModal
+        isOpen={isCashVaultModalOpen}
+        onClose={() => setIsCashVaultModalOpen(false)}
+        targetDate={selectedDate}
+        isClosed={currentSnapshot?.is_closed ?? false}
+        isEditing={isEditing}
+        onSuccess={() => {
+          queryClient.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+          queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
+          queryClient.invalidateQueries({ queryKey: ['store-cash-vault-composition'] });
+          queryClient.invalidateQueries({ queryKey: ['store-cash-vault-pending'] });
+          queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
+        }}
       />
 
       {/* Modal de Lançamento de Contas a Pagar Item a Item */}

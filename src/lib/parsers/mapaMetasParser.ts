@@ -96,16 +96,20 @@ export function parseMapaMetasLines(lines: string[], fileName: string = 'MapaDeM
         let totalVendas: number | undefined;
         let storeTotal = 0;
 
-        if (tokens.length >= 9) {
-          percentualMeta = parsePtBrNumber(tokens[tokens.length - 1]);
-          meta = parsePtBrNumber(tokens[tokens.length - 2]);
-          anoAnterior = parsePtBrNumber(tokens[tokens.length - 3]);
-          mesAnterior = parsePtBrNumber(tokens[tokens.length - 4]);
-          previsao = parsePtBrNumber(tokens[tokens.length - 5]);
-          serv = parsePtBrNumber(tokens[tokens.length - 6]);
-          tk = parsePtBrNumber(tokens[tokens.length - 7]);
-          totalVendas = parsePtBrNumber(tokens[tokens.length - 8]);
-          storeTotal = parsePtBrNumber(tokens[tokens.length - 9]);
+        const lastTokenVal = parsePtBrNumber(tokens[tokens.length - 1]);
+        const hasPct = lastTokenVal < 200 && !tokens[tokens.length - 1].includes('.');
+        const offset = hasPct ? 1 : 0;
+
+        if (tokens.length >= 8 + offset) {
+          if (hasPct) percentualMeta = parsePtBrNumber(tokens[tokens.length - 1]);
+          meta = parsePtBrNumber(tokens[tokens.length - 1 - offset]);
+          anoAnterior = parsePtBrNumber(tokens[tokens.length - 2 - offset]);
+          mesAnterior = parsePtBrNumber(tokens[tokens.length - 3 - offset]);
+          previsao = parsePtBrNumber(tokens[tokens.length - 4 - offset]);
+          serv = parsePtBrNumber(tokens[tokens.length - 5 - offset]);
+          tk = parsePtBrNumber(tokens[tokens.length - 6 - offset]);
+          totalVendas = parsePtBrNumber(tokens[tokens.length - 7 - offset]);
+          storeTotal = parsePtBrNumber(tokens[tokens.length - 8 - offset]);
         } else {
           // Fallback para tokens menores
           storeTotal = parsePtBrNumber(tokens[tokens.length - 1]);
@@ -132,32 +136,26 @@ export function parseMapaMetasLines(lines: string[], fileName: string = 'MapaDeM
     }
 
     // 3. Linha de Rodapé / Total Consolidado
-    // Ex: "30.238,09 13 46.774,72 21 15.768,18 14 00,00 00 00,00 00 170.092,47 80 737.067,37 1.003.745,55 814.603,43 1.238.100,00 -4"
-    // Ou linhas contendo "Total" seguido de valores monetários
     const isSummaryRow = 
       (trimmed.toLowerCase().includes('total') && /[\d\.,]{4,}/.test(trimmed)) ||
       (!trimmed.match(/^\d{2,5}\s+[A-Za-z]/) && trimmed.includes(',') && tokensCount(trimmed) >= 8);
 
     if (isSummaryRow && summaryTotalFaturamento === 0) {
       const tokens = trimmed.split(/\s+/).filter(t => t.length > 0);
-      if (tokens.length >= 7) {
-        // Tokens da direita para a esquerda:
-        // [-1] %M (-4)
-        // [-2] Meta (1.238.100,00)
-        // [-3] AnoAnterior (814.603,43)
-        // [-4] MêsAnterior (1.003.745,55)
-        // [-5] Previsão (737.067,37)
-        // [-6] Vendas (80)
-        // [-7] Total (170.092,47)
-        const possibleTotal = parsePtBrNumber(tokens[tokens.length - 7]);
+      const lastSumVal = parsePtBrNumber(tokens[tokens.length - 1]);
+      const sumHasPct = lastSumVal < 200 && !tokens[tokens.length - 1].includes('.');
+      const sumOffset = sumHasPct ? 1 : 0;
+
+      if (tokens.length >= 6 + sumOffset) {
+        if (sumHasPct) summaryPercentualMeta = parsePtBrNumber(tokens[tokens.length - 1]);
+        summaryTotalMeta = parsePtBrNumber(tokens[tokens.length - 1 - sumOffset]);
+        summaryTotalAnoAnterior = parsePtBrNumber(tokens[tokens.length - 2 - sumOffset]);
+        summaryTotalMesAnterior = parsePtBrNumber(tokens[tokens.length - 3 - sumOffset]);
+        summaryTotalPrevisao = parsePtBrNumber(tokens[tokens.length - 4 - sumOffset]);
+        summaryTotalVendas = parsePtBrNumber(tokens[tokens.length - 5 - sumOffset]);
+        const possibleTotal = parsePtBrNumber(tokens[tokens.length - 6 - sumOffset]);
         if (possibleTotal > 0) {
           summaryTotalFaturamento = possibleTotal;
-          summaryTotalVendas = parsePtBrNumber(tokens[tokens.length - 6]);
-          summaryTotalPrevisao = parsePtBrNumber(tokens[tokens.length - 5]);
-          summaryTotalMesAnterior = parsePtBrNumber(tokens[tokens.length - 4]);
-          summaryTotalAnoAnterior = parsePtBrNumber(tokens[tokens.length - 3]);
-          summaryTotalMeta = parsePtBrNumber(tokens[tokens.length - 2]);
-          summaryPercentualMeta = parsePtBrNumber(tokens[tokens.length - 1]);
         }
       }
     }

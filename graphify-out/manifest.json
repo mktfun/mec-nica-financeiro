@@ -145,8 +145,8 @@
     "semantic_hash": "c31f98561148527ba8411689ec6cb924"
   },
   "src/components/conciliacao/BaixaDinheiroModal.tsx": {
-    "mtime": 1789414653.9587815,
-    "ast_hash": "d47909c8876763e5a8f9c14d7a18c6d1",
+    "mtime": 1789561299.3811116,
+    "ast_hash": "52eb1b596099dea2383c41fc842b93e6",
     "semantic_hash": ""
   },
   "src/components/conciliacao/ContasManualModal.tsx": {
@@ -200,18 +200,18 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1789477773.513314,
-    "ast_hash": "16c4414971ed3b34214798ddc1b55a46",
+    "mtime": 1789593727.5900867,
+    "ast_hash": "7bc5551ee32f812aace2cedddf693de7",
     "semantic_hash": ""
   },
   "src/components/conciliacao/SaldoBancosDetailModal.tsx": {
-    "mtime": 1789394124.106927,
-    "ast_hash": "b90dd243b14d521c54b26f6024aae794",
+    "mtime": 1789593534.247264,
+    "ast_hash": "32c948dd6101c1e74c924d03cd83f3c0",
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreCartaoMaquininhaView.tsx": {
-    "mtime": 1789478718.8864088,
-    "ast_hash": "0c57a7ed19baad36b4f8b65debf2a8cf",
+    "mtime": 1789562727.4378169,
+    "ast_hash": "cc6654f08e252e8d2b438d2e309bc160",
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreExtratoBancarioView.tsx": {
@@ -370,8 +370,8 @@
     "semantic_hash": "94cd9e2d37f2296c4606ca17ed361202"
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1789481384.4755,
-    "ast_hash": "8b972057f6147dd568f47de40fb5552a",
+    "mtime": 1789564233.1895213,
+    "ast_hash": "4744f04ff8b267b7737599c8c7ed3e1a",
     "semantic_hash": ""
   },
   "src/components/importacoes/DiagnosticPanel.tsx": {
@@ -425,8 +425,8 @@
     "semantic_hash": "f012dcd0e8966e1128673401bd508c61"
   },
   "src/components/importacoes/wizard/Step4FinalAuditAndClose.tsx": {
-    "mtime": 1789394124.1295693,
-    "ast_hash": "4b23d2dcde3b872862b0ad901349a8ca",
+    "mtime": 1789564206.7020762,
+    "ast_hash": "51a936b51e9114a486be9c9d3d937ced",
     "semantic_hash": ""
   },
   "src/components/importacoes/wizard/types.ts": {
@@ -610,8 +610,8 @@
     "semantic_hash": "43d7881346dbd48b48bea308ff8f45d5"
   },
   "src/hooks/useBackendConciliacao.ts": {
-    "mtime": 1789477604.1096127,
-    "ast_hash": "c5cf16d661297d358c03e684c4c14827",
+    "mtime": 1789593736.6180716,
+    "ast_hash": "d2a743826ecb262f27390bc4d1b5d024",
     "semantic_hash": ""
   },
   "src/hooks/useBackendDashboard.ts": {
@@ -700,9 +700,9 @@
     "semantic_hash": "30b9cec238dda1506c4100fcec42146f"
   },
   "src/hooks/useImportProcessor.ts": {
-    "mtime": 1787835201.1656168,
-    "ast_hash": "803cf0e94da3a3878a8ee068591e583b",
-    "semantic_hash": "803cf0e94da3a3878a8ee068591e583b"
+    "mtime": 1789561336.8500092,
+    "ast_hash": "e2e265725c5c8062d23cbc44f4566394",
+    "semantic_hash": ""
   },
   "src/hooks/useIntercompanyEntities.ts": {
     "mtime": 1787327031.0698783,
@@ -710,9 +710,9 @@
     "semantic_hash": "5c6a16c317826b4701de2d73a955b3d0"
   },
   "src/hooks/useJustifiedTransactions.ts": {
-    "mtime": 1787000363.488408,
-    "ast_hash": "3adfe01451c8b2df369c268b7aa3272e",
-    "semantic_hash": "3adfe01451c8b2df369c268b7aa3272e"
+    "mtime": 1789561189.8827424,
+    "ast_hash": "7bbb615e2a8b4fdca61fc125ed6ee6e8",
+    "semantic_hash": ""
   },
   "src/hooks/useManualMatch.ts": {
     "mtime": 1788871936.7879162,
@@ -780,8 +780,8 @@
     "semantic_hash": "92a22d193c252267ba0a5b25068f2047"
   },
   "src/hooks/useTransactions.ts": {
-    "mtime": 1789478912.2384925,
-    "ast_hash": "9a13f501ad8a04d3c756a3daf3e5f5e6",
+    "mtime": 1789562669.3747456,
+    "ast_hash": "a5457737de5584431fa185ec1dc76f1d",
     "semantic_hash": ""
   },
   "src/hooks/useTripleMatch.ts": {
@@ -945,14 +945,14 @@
     "semantic_hash": "74ea88cab9c0e91a9142d41be54e58af"
   },
   "src/lib/parsers/mapaMetasParser.ts": {
-    "mtime": 1788878035.9389281,
-    "ast_hash": "a26f6dc7865965551dd1cc12ac575523",
+    "mtime": 1789506660.5878253,
+    "ast_hash": "95e899d34bffe215599b3bc8cba39a20",
     "semantic_hash": ""
   },
   "src/lib/parsers/marcoZeroParser.ts": {
-    "mtime": 1787141603.3839903,
-    "ast_hash": "8b7a440a5a50843e76f9d69c743a9fd6",
-    "semantic_hash": "8b7a440a5a50843e76f9d69c743a9fd6"
+    "mtime": 1789558588.5702963,
+    "ast_hash": "fee44c050a4c7bd2a712bb5f60c46ca2",
+    "semantic_hash": ""
   },
   "src/lib/parsers/numberUtils.ts": {
     "mtime": 1786977431.5871222,
@@ -1035,8 +1035,8 @@
     "semantic_hash": "03d7de3776d1a6943e5e5d8f7093a0aa"
   },
   "src/routes/conciliacao.index.tsx": {
-    "mtime": 1789477678.092188,
-    "ast_hash": "5c894537e4b4fe2aa546446891c9c4cb",
+    "mtime": 1789507061.4619634,
+    "ast_hash": "6203720005bcc91f9b3bfea487e77c4f",
     "semantic_hash": ""
   },
   "src/routes/configuracoes.tsx": {
@@ -1915,8 +1915,8 @@
     "semantic_hash": ""
   },
   ".agents/ORIGINAL_REQUEST.md": {
-    "mtime": 1787605121.386216,
-    "ast_hash": "adedbaed866a2b139783002897487683",
+    "mtime": 1789584433.3838117,
+    "ast_hash": "6a1044db96856452909377f00f2736ca",
     "semantic_hash": ""
   },
   ".agents/explorer_bug1/BRIEFING.md": {
@@ -1995,8 +1995,8 @@
     "semantic_hash": ""
   },
   ".agents/sentinel/BRIEFING.md": {
-    "mtime": 1787605115.882474,
-    "ast_hash": "55455133c60f4a60a1cbaadc7cbb11d3",
+    "mtime": 1789584685.4177246,
+    "ast_hash": "be09d31ee4d9c75c928b74819bb9cec1",
     "semantic_hash": ""
   },
   ".agents/workflows/apply.md": {
@@ -2060,8 +2060,8 @@
     "semantic_hash": ""
   },
   "ORIGINAL_REQUEST.md": {
-    "mtime": 1787605099.4759314,
-    "ast_hash": "5252bf5d2ecbf1a9bf055da96cd3620e",
+    "mtime": 1789584492.028501,
+    "ast_hash": "0d1d417b1a0402865db660cd6529b535",
     "semantic_hash": ""
   },
   "PROJECT_CONTEXT.md": {
@@ -3805,9 +3805,9 @@
     "semantic_hash": "45efb6e7237cd757d0cc89de36f22192"
   },
   "src/components/importacoes/manual/Fase2RedeVsOsReview.tsx": {
-    "mtime": 1788869468.9787216,
-    "ast_hash": "c12eda1c221d1b423897d53a75546a85",
-    "semantic_hash": "c12eda1c221d1b423897d53a75546a85"
+    "mtime": 1789562690.90542,
+    "ast_hash": "7b15da346c3930e195a9e72a40ae495c",
+    "semantic_hash": ""
   },
   "src/components/importacoes/manual/Fase3OfxReconciliation.tsx": {
     "mtime": 1788962443.0088391,
@@ -4539,29 +4539,179 @@
     "ast_hash": "61b4eab7d11fb15f060b9449489268a8",
     "semantic_hash": ""
   },
-  "specs/401-fix-dar-baixa-dupla-efetivacao/proposal.md": {
-    "mtime": 1789403101.4765968,
-    "ast_hash": "f277c4afc193be04592aaeca7f84cd52",
-    "semantic_hash": ""
-  },
   "src/lib/parsers/itauPdfParser.ts": {
     "mtime": 1789481131.0579653,
     "ast_hash": "5c341b8c265b75290ea36cc368070486",
     "semantic_hash": ""
   },
-  "specs/402-saneamento-conciliacao-frankenstein-e-unificacao-ssot/design.md": {
-    "mtime": 1789473608.0434043,
-    "ast_hash": "3f47f44b7211d26abcb035ea5571881a",
+  "src/components/conciliacao/CashVaultCompositionModal.tsx": {
+    "mtime": 1789593746.1371615,
+    "ast_hash": "f831ba0cd90bfbacad4aa39453bdd314",
     "semantic_hash": ""
   },
-  "specs/402-saneamento-conciliacao-frankenstein-e-unificacao-ssot/proposal.md": {
-    "mtime": 1789473581.6316721,
-    "ast_hash": "b2f11d4ca9d14c4ee066d8dcf6fe275d",
+  "supabase/migrations/20260915000050_fix_rpc_summary_card_settlement_and_vault_status.sql": {
+    "mtime": 1789500610.422918,
+    "ast_hash": "f00adb0170ed36532fad145d33599226",
     "semantic_hash": ""
   },
-  "specs/402-saneamento-conciliacao-frankenstein-e-unificacao-ssot/spec-plan.md": {
-    "mtime": 1789479309.2837212,
-    "ast_hash": "208bdf5a51cefdfdf526c2e53f46d15a",
+  "supabase/migrations/20260916000001_enhance_store_cash_vault_and_rpc.sql": {
+    "mtime": 1789593286.600043,
+    "ast_hash": "9673a1d4c268e381733557bf52ec2c63",
+    "semantic_hash": ""
+  },
+  ".agents/sentinel/handoff.md": {
+    "mtime": 1789584712.3471723,
+    "ast_hash": "4eb1a19fc778c1ca2adcff3a45d8f3bc",
+    "semantic_hash": ""
+  },
+  ".agents/swe_1/BRIEFING.md": {
+    "mtime": 1789592544.4269748,
+    "ast_hash": "d6a23ff73121fa185ff6660fa054e463",
+    "semantic_hash": ""
+  },
+  ".agents/swe_1/DISPATCH.md": {
+    "mtime": 1789584708.6925402,
+    "ast_hash": "848fcb8a4b356a2f5f7196ccbc5f542c",
+    "semantic_hash": ""
+  },
+  ".agents/swe_1/plan.md": {
+    "mtime": 1789584761.479948,
+    "ast_hash": "fa0f961a0e95a37928eb72ee3abfbefb",
+    "semantic_hash": ""
+  },
+  ".agents/swe_1/progress.md": {
+    "mtime": 1789593630.1403282,
+    "ast_hash": "6b5dc53b63d0f9c8334e7b442f8562d7",
+    "semantic_hash": ""
+  },
+  ".agents/teamwork_preview_implementer_1/handoff.md": {
+    "mtime": 1789593850.525876,
+    "ast_hash": "3ba37bdba58174d854714127ff55aabe",
+    "semantic_hash": ""
+  },
+  ".agents/teamwork_preview_implementer_1/progress.md": {
+    "mtime": 1789593842.0445762,
+    "ast_hash": "815c07dc6a11a9245e07146434ef6ab8",
+    "semantic_hash": ""
+  },
+  "specs/404-fix-incongruencia-edicao-fechamento-e-salto-caixa/design.md": {
+    "mtime": 1789499847.5979617,
+    "ast_hash": "8bd96eb34ee78fc864d89abcb24f3f03",
+    "semantic_hash": ""
+  },
+  "specs/404-fix-incongruencia-edicao-fechamento-e-salto-caixa/proposal.md": {
+    "mtime": 1789499821.310079,
+    "ast_hash": "23e567201a285ed2d160006eea82799f",
+    "semantic_hash": ""
+  },
+  "specs/404-fix-incongruencia-edicao-fechamento-e-salto-caixa/spec-plan.md": {
+    "mtime": 1789501478.0066345,
+    "ast_hash": "e1656119f3b0ee2b56dcd8a3e44f196c",
+    "semantic_hash": ""
+  },
+  "specs/405-fix-conciliacao-faturamento-e-baixa-dinheiro/design.md": {
+    "mtime": 1789561059.056274,
+    "ast_hash": "374fb90f758b097b26e53bdc30c43573",
+    "semantic_hash": ""
+  },
+  "specs/405-fix-conciliacao-faturamento-e-baixa-dinheiro/proposal.md": {
+    "mtime": 1789561050.153368,
+    "ast_hash": "5a3febe9068f0a1d46b5225adf8b2bbb",
+    "semantic_hash": ""
+  },
+  "specs/405-fix-conciliacao-faturamento-e-baixa-dinheiro/spec-plan.md": {
+    "mtime": 1789561814.466794,
+    "ast_hash": "c3cc3e521e9ffe63b7a5d0da37614afa",
+    "semantic_hash": ""
+  },
+  "specs/406-equalizacao-diferenca-1609-e-rede-a-compensar/design.md": {
+    "mtime": 1789562433.3884966,
+    "ast_hash": "e497d2f26c62220e8ba85511f03597bc",
+    "semantic_hash": ""
+  },
+  "specs/406-equalizacao-diferenca-1609-e-rede-a-compensar/proposal.md": {
+    "mtime": 1789562423.9353735,
+    "ast_hash": "e2dc7461600e2fb45ed3f11815e23268",
+    "semantic_hash": ""
+  },
+  "specs/406-equalizacao-diferenca-1609-e-rede-a-compensar/spec-plan.md": {
+    "mtime": 1789562961.246634,
+    "ast_hash": "cfc7767cc900de688a82b8f0fcb3d959",
+    "semantic_hash": ""
+  },
+  "specs/407-unificacao-patio-os-ssot-e-diferenca-1609/design.md": {
+    "mtime": 1789563914.5084462,
+    "ast_hash": "2ef278a27606fdd21861a1670755581e",
+    "semantic_hash": ""
+  },
+  "specs/407-unificacao-patio-os-ssot-e-diferenca-1609/proposal.md": {
+    "mtime": 1789563902.1292114,
+    "ast_hash": "93fd695a39f3b682bec29e0340c29865",
+    "semantic_hash": ""
+  },
+  "specs/407-unificacao-patio-os-ssot-e-diferenca-1609/spec-plan.md": {
+    "mtime": 1789564361.744795,
+    "ast_hash": "18784573f9a0fdc6cfc3a6d1a8ef9bc4",
+    "semantic_hash": ""
+  },
+  "specs/408-investigacao-11k-diferenca-rpc-e-caixa/design.md": {
+    "mtime": 1789566440.0809643,
+    "ast_hash": "f86e04452fc8687b3526307efa4a5160",
+    "semantic_hash": ""
+  },
+  "specs/408-investigacao-11k-diferenca-rpc-e-caixa/proposal.md": {
+    "mtime": 1789566415.6965973,
+    "ast_hash": "a80e75b5461e198663ed825c1e58dae1",
+    "semantic_hash": ""
+  },
+  "specs/408-investigacao-11k-diferenca-rpc-e-caixa/spec-plan.md": {
+    "mtime": 1789567035.6204047,
+    "ast_hash": "81fbc2d9404f5b50bffd7fbf3f8a606e",
+    "semantic_hash": ""
+  },
+  "specs/409-saneamento-patio-os-st09-st01-e-sincronizacao-fechamento/design.md": {
+    "mtime": 1789568408.3643072,
+    "ast_hash": "baf2b36501b5811b9f552d82c790c10a",
+    "semantic_hash": ""
+  },
+  "specs/409-saneamento-patio-os-st09-st01-e-sincronizacao-fechamento/proposal.md": {
+    "mtime": 1789568402.1923473,
+    "ast_hash": "78b6721f59152ebf7e40ac9a30499908",
+    "semantic_hash": ""
+  },
+  "specs/409-saneamento-patio-os-st09-st01-e-sincronizacao-fechamento/spec-plan.md": {
+    "mtime": 1789569052.4261992,
+    "ast_hash": "d18033f46181106437167e41b8cfb1d3",
+    "semantic_hash": ""
+  },
+  "specs/410-investigacao-caixa-e-patio-vs-fechamento-ana/design.md": {
+    "mtime": 1789570288.249787,
+    "ast_hash": "63b66121dde46680c87d9340cf6c6fb3",
+    "semantic_hash": ""
+  },
+  "specs/410-investigacao-caixa-e-patio-vs-fechamento-ana/proposal.md": {
+    "mtime": 1789570248.0345588,
+    "ast_hash": "c63c6e6a128b90f01b4484e174981192",
+    "semantic_hash": ""
+  },
+  "specs/410-investigacao-caixa-e-patio-vs-fechamento-ana/spec-plan.md": {
+    "mtime": 1789570306.8814979,
+    "ast_hash": "eb227c15f7faa5f12309181dd479ee36",
+    "semantic_hash": ""
+  },
+  "specs/411-fechamento-estrito-1609-e-gestao-dinheiro-cofre/design.md": {
+    "mtime": 1789579573.4618921,
+    "ast_hash": "98fab81cffd82abc627c1b75a559b7b5",
+    "semantic_hash": ""
+  },
+  "specs/411-fechamento-estrito-1609-e-gestao-dinheiro-cofre/proposal.md": {
+    "mtime": 1789579536.9669585,
+    "ast_hash": "a273fd622ddab1dae02735a646566836",
+    "semantic_hash": ""
+  },
+  "specs/411-fechamento-estrito-1609-e-gestao-dinheiro-cofre/spec-plan.md": {
+    "mtime": 1789593655.3625436,
+    "ast_hash": "32b5237700d54fcf31d36c1550e05106",
     "semantic_hash": ""
   }
 }

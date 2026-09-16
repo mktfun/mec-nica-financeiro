@@ -1,3 +1,20 @@
+## [2026-09-16] — [Feature ID: 411-fechamento-estrito-1609-e-gestao-dinheiro-cofre]
+
+**Contexto:** Migration `20260916000001_enhance_store_cash_vault_and_rpc.sql` estendendo `store_cash_vault` com suporte a saídas e despesas (`entry_type`, `expense_category`, `paid_to`, `bill_id`), vínculo em `daily_manual_bills` (`matched_cash_vault_id`), índices de performance e atualização canônica da RPC `get_daily_reconciliation_summary` com blindagem imutável de snapshots.
+
+**Regra aprendida:**
+1. **Modelagem de Saídas de Caixa sem Quebra de Constraints:**
+   - A tabela `store_cash_vault` possui `CHECK (amount > 0)` e `CHECK (status IN ('em_transito', 'depositado', 'cancelado'))`.
+   - Saídas e despesas pagas em dinheiro físico da loja devem ser registradas com `entry_type = 'saida'`, `status = 'depositado'` (liquidado fora do cofre em trânsito) e metadados estruturados em `notes` no formato `[SAIDA_DESPESA] {"type":"saida_despesa", "bill_id": "...", "title": "..."}`.
+   - Isso garante 100% de compatibilidade retroativa com as constraints existentes no banco.
+2. **Isolamento de Snapshots Fechados (`cash_vault_snapshot`):**
+   - Ao fechar o dia (`is_closed = true`), o payload gravado em `daily_snapshots.metadata.cash_vault_snapshot` congela todas as frações físicas de cofre da data.
+   - Ao consultar a data histórica congelada, o sistema prioriza o snapshot imutável, impedindo que mutações em dias futuros retroajam e alterem a foto contábil do fechamento já aprovado.
+3. **Agregação Fiduciária de Cofre na RPC:**
+   - Na RPC `get_daily_reconciliation_summary`, a CTE ou query de dinheiro deve filtrar estritamente `status IN ('em_transito', 'pending')` para não somar frações já liquidadas no banco.
+
+---
+
 ## [2026-09-11] — [Feature ID: 399-conciliacao-rede-ofx-soma-liquido-por-bandeira]
 
 **Contexto:** Migration `20260911000048_add_brand_to_pos_transactions.sql` adicionando a coluna `brand TEXT` e índice `idx_pos_transactions_store_date_brand ON pos_transactions(store_id, target_date, brand)`, além de atualização no trigger `insert_into_transactions_view` para suportar `brand`.

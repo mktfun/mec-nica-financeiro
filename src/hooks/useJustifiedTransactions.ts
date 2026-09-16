@@ -43,16 +43,28 @@ export function useJustifiedTransactions(date?: string) {
 
       const getStoreLabel = (storeId: string) => storeNameMap[storeId] || storeId || 'Loja Geral';
 
-      const checkImpactsRevenue = (cat?: string, just?: string) => {
+      const checkImpactsRevenue = (cat?: string, just?: string, isCredit: boolean = true) => {
+        // Se for débito/saída (pagamentos, salários, despesas, tarifas, contas), NUNCA impacta faturamento
+        if (!isCredit) return false;
+
         const c = String(cat || '').toLowerCase();
         const j = String(just || '').toLowerCase();
+
+        // Bloqueios explícitos de conciliação / transferência / patrimonial
         if (c.includes('[apenas conciliar]') || c.includes('apenas conciliar') || j.includes('[não somar]') || j.includes('[nao somar]')) {
           return false;
         }
-        if (c.includes('rendimento') || c.includes('marco zero') || c.includes('transferência') || c.includes('transferencia') || c.includes('aporte') || c.includes('tarifa')) {
+        if (c.includes('rendimento') || c.includes('marco zero') || c.includes('transferência') || c.includes('transferencia') || c.includes('aporte') || c.includes('tarifa') || c.includes('salário') || c.includes('salario') || c.includes('folha') || c.includes('sispag') || c.includes('fornecedor') || c.includes('boleto')) {
           return false;
         }
-        return true;
+
+        // Modelo estritamente opt-in: só soma ao Faturamento se for explicitamente Receita Extra / Venda Não Registrada
+        if (c.includes('receita extra') || j.includes('[receita extra]') || c.includes('venda avulsa') || c.includes('receita avulsa') || j.includes('[receita]')) {
+          return true;
+        }
+
+        // Por padrão, justificativas de conciliação de tesouraria NÃO inflam o Faturamento da empresa
+        return false;
       };
 
       // 1. Busca na tabela unificada `transactions`
@@ -67,12 +79,13 @@ export function useJustifiedTransactions(date?: string) {
             // Se já for vinculada a uma OS, NÃO conta como justificativa avulsa (evita duplicar no faturamento)
             if (row.os_number || row.status === 'MATCHED') return;
 
-
             const hasCat = row.manual_category && String(row.manual_category).trim() !== '';
             const hasJust = row.manual_justification && String(row.manual_justification).trim() !== '';
             if (hasCat || hasJust) {
-              const amt = Math.abs(Number(row.amount || 0));
-              const impacts = checkImpactsRevenue(row.manual_category, row.manual_justification);
+              const rawAmt = Number(row.amount || 0);
+              const isCredit = rawAmt > 0;
+              const amt = Math.abs(rawAmt);
+              const impacts = checkImpactsRevenue(row.manual_category, row.manual_justification, isCredit);
               itemsMap.set(row.id, {
                 id: row.id,
                 store_id: row.store_id || 'st-01',
@@ -96,7 +109,7 @@ export function useJustifiedTransactions(date?: string) {
       try {
         const { data: ofxData, error: ofxErr } = await supabase
           .from('ofx_transactions')
-          .select('id, store_id, bank_name, counterpart_name, amount, occurred_at, target_date, manual_category, manual_justification, matched_os_number')
+          .select('id, store_id, bank_name, counterpart_name, amount, type, occurred_at, target_date, manual_category, manual_justification, matched_os_number')
           .eq('target_date', targetDate);
 
         if (!ofxErr && ofxData) {
@@ -107,9 +120,11 @@ export function useJustifiedTransactions(date?: string) {
             const hasCat = row.manual_category && String(row.manual_category).trim() !== '';
             const hasJust = row.manual_justification && String(row.manual_justification).trim() !== '';
             if (hasCat || hasJust) {
-              const amt = Math.abs(Number(row.amount || 0));
+              const rawAmt = Number(row.amount || 0);
+              const isCredit = row.type === 'in' || rawAmt > 0;
+              const amt = Math.abs(rawAmt);
               const title = row.bank_name || row.counterpart_name || 'Extrato Itaú OFX';
-              const impacts = checkImpactsRevenue(row.manual_category, row.manual_justification);
+              const impacts = checkImpactsRevenue(row.manual_category, row.manual_justification, isCredit);
               itemsMap.set(row.id, {
                 id: row.id,
                 store_id: row.store_id || 'st-01',
@@ -141,9 +156,11 @@ export function useJustifiedTransactions(date?: string) {
             const hasCat = row.manual_category && String(row.manual_category).trim() !== '';
             const hasJust = row.manual_justification && String(row.manual_justification).trim() !== '';
             if (hasCat || hasJust) {
-              const amt = Math.abs(Number(row.gross_amount || 0));
+              const rawAmt = Number(row.gross_amount || 0);
+              const isCredit = rawAmt > 0;
+              const amt = Math.abs(rawAmt);
               const title = `${row.machine_name || 'Rede'} - ${row.payment_method || 'Cartão'}`;
-              const impacts = checkImpactsRevenue(row.manual_category, row.manual_justification);
+              const impacts = checkImpactsRevenue(row.manual_category, row.manual_justification, isCredit);
               itemsMap.set(row.id, {
                 id: row.id,
                 store_id: row.store_id || 'st-01',
