@@ -2121,7 +2121,6 @@ export type Database = {
         Args: { p_os_records: Json; p_store_id: string; p_target_date: string }
         Returns: Json
       }
-      calculate_daily_conciliation: { Args: { p_date: string }; Returns: Json }
       categorize_orphan_transaction: {
         Args: { p_category: string; p_justification: string; p_tx_id: string }
         Returns: Json
