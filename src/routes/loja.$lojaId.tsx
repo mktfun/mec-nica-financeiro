@@ -145,10 +145,10 @@ function LojaDashboardPage() {
     try {
       setIsProcessing(true);
       const { error } = await supabase
-        .from('transactions')
+        .from('ofx_transactions')
         .delete()
         .eq('store_id', store!.id)
-        .eq('subtitle', 'Ajuste de Saldo Inicial');
+        .or('counterpart_name.eq.Ajuste de Saldo Inicial,title.eq.Ajuste de Saldo em Conta');
         
       if (error) throw error;
       

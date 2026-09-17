@@ -2063,54 +2063,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         console.warn("[Wizard] Erro no motor ReconciliadorRedeOFX:", detErr);
       }
 
-      addLog("📸 Sincronizando Fechamento Consolidado do Dia...", "info");
-      try {
-        const payload = {
-          date: targetDate,
-          caixa_atual: caixaAtualCalculado,
-          faturamento: finalFaturamento,
-          dinheiro_mp: manualDinheiroMp,
-          total_recebiveis: totalRecebiveis,
-          total_patio: veiculosPatioValor,
-          saldo_bancario: saldoBancosLiquido,
-          a_receber_manual: manualAReceber,
-          faturamento_outros_valor: 0,
-          contas_a_pagar: finalContasManual,
-          provisao: 0,
-          saldo_negativo_itau: saldoNegativoItau,
-          juros_rede: jurosRedeTotal,
-          is_closed: advanceToWizard ? false : true,
-          closed_at: advanceToWizard ? null : new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          metadata: {
-            caixa_atual: caixaAtualCalculado,
-            caixa_anterior: caixaAnt,
-            fluxo_caixa: fluxoCalculado,
-            faturamento_anterior: fatAnt,
-            faturamento_oi_base: fatOiBase,
-            odometro_hoje: odometroHoje > 0 ? odometroHoje : (fatAnt + fatOiBase),
-            faturamento_periodo: fatTotalComAjustes,
-            valor_disp_contas: valorDispCalculado,
-            subtotal_contas: subtotalContasCalculado,
-            diferenca_final: diferencaCalculada,
-            total_saldo_banco: saldoBancosPositivo,
-            saldo_bancos_ofx: saldoBancosLiquido,
-            saldo_bancos_positivo: saldoBancosPositivo,
-            saldo_negativo_itau: saldoNegativoItau,
-            dinheiro_mp: manualDinheiroMp,
-            a_receber_manual: manualAReceber,
-            total_patio: veiculosPatioValor,
-            status_geral: Math.abs(diferencaCalculada) <= 50 ? 'approved' : 'divergent',
-            is_closed: advanceToWizard ? false : true,
-          }
-        };
-        await supabase.from('daily_snapshots').upsert(payload, { onConflict: 'date' });
-        addLog("✅ Histórico de conciliação atualizado automaticamente!", "success");
-      } catch (metricsErr) {
-        console.warn("Erro ao gerar snapshot automático", metricsErr);
-      }
-
-      // 5. Motor Autônomo de Auditoria Pericial & Auto-Healing
+      // 5. Motor Autônomo de Auditoria Pericial & Auto-Healing (Executa ANTES do fechamento)
       addLog("🤖 Acionando Motor Pericial de Auto-Healing...", "info");
       updateStage(4, 'running', 'Auditando fechamento e verificando contrapartidas...');
       try {
@@ -2131,6 +2084,24 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       } catch (autoErr: any) {
         console.warn("Aviso na auditoria pericial:", autoErr);
         updateStage(4, 'warning', 'Auditoria pericial concluída com observações.');
+      }
+
+      // 6. Fechamento Consolidado Canônico via Backend RPC fechar_dia
+      if (!advanceToWizard) {
+        addLog("📸 Consolidando Fechamento do Dia no Banco via fechar_dia...", "info");
+        try {
+          const { error: fecharErr } = await supabase.rpc('fechar_dia', {
+            p_date: targetDate,
+            p_force_reopen: true
+          });
+          if (fecharErr) {
+            console.warn("Aviso ao fechar dia via RPC:", fecharErr);
+          } else {
+            addLog("✅ Histórico de conciliação consolidado via SSOT no banco!", "success");
+          }
+        } catch (metricsErr) {
+          console.warn("Erro ao gerar fechamento automático:", metricsErr);
+        }
       }
 
       addLog("✅ TODAS AS ETAPAS FORAM CONCLUÍDAS COM SUCESSO!", "success");
