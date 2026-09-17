@@ -15,6 +15,18 @@ export type OsImportResult = {
   error?: string;
 };
 
+export function cleanCustomerName(rawName: string | null | undefined): string {
+  if (!rawName) return '';
+  return rawName
+    .replace(/[-–—]\s*(?:LTDA|ME|EPP|EIRELI|S\/A|SA)\b/gi, '')
+    .replace(/\b(?:LTDA|ME|EPP|EIRELI|S\/A|SA)\b/gi, '')
+    .replace(/\bDE VEICULOS\b/gi, '')
+    .replace(/\bCOMERCIO DE\b/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toUpperCase();
+}
+
 export async function processOsFiles(files: File[], options?: { sessionId?: string }): Promise<OsImportResult[]> {
   const results: OsImportResult[] = [];
 
@@ -307,11 +319,13 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
                   : installmentVal;
 
                 const dueDate = calculateDueDate(opened_at, 'Boleto', inst, numInstallments);
+                const cleanClient = cleanCustomerName(client_name);
+                const clientPart = cleanClient ? `${cleanClient} ` : '';
                 receivablesArray.push({
                   store_name: storeAlias,
                   os_number: osNumber,
                   installment: `${inst}/${numInstallments}`,
-                  description: `OS #${osNumber} - Boleto (${inst}/${numInstallments})`,
+                  description: `BOLETO ${clientPart}OS ${osNumber} ${inst}/${numInstallments}`,
                   type: 'Boleto',
                   value: instAmount,
                   date: opened_at,
@@ -329,11 +343,13 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
 
             if (transfBaseValue > 0) {
               const dueDate = calculateDueDate(opened_at, 'Transferência'); // D+1 dia útil
+              const cleanClient = cleanCustomerName(client_name);
+              const clientPart = cleanClient ? `${cleanClient} ` : '';
               receivablesArray.push({
                 store_name: storeAlias,
                 os_number: osNumber,
                 installment: '1/1',
-                description: `OS #${osNumber} - Transferência Bancária / Débito em Conta`,
+                description: `TRANSFERÊNCIA ${clientPart}OS ${osNumber} 1/1`,
                 type: 'Transferência',
                 value: transfBaseValue,
                 date: opened_at,
@@ -350,11 +366,13 @@ export async function processOsFiles(files: File[], options?: { sessionId?: stri
 
             if (chequeBaseValue > 0) {
               const dueDate = calculateDueDate(opened_at, 'Cheque', 1, 1, 30);
+              const cleanClient = cleanCustomerName(client_name);
+              const clientPart = cleanClient ? `${cleanClient} ` : '';
               receivablesArray.push({
                 store_name: storeAlias,
                 os_number: osNumber,
                 installment: '1/1',
-                description: `OS #${osNumber} - Cheque`,
+                description: `CHEQUE ${clientPart}OS ${osNumber} 1/1`,
                 type: 'Cheque',
                 value: chequeBaseValue,
                 date: opened_at,

@@ -1158,3 +1158,31 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
 **Regra aprendida:** Matematicamente, num DRE de fluxo de caixa, a conta j· paga em dinheiro reduz o saldo fÌsico (Caixa Atual), aumentando virtualmente o Valor DisponÌvel. Se ela n„o for debitada em "Contas Manuais", o sistema acusa excesso de dinheiro. A conta paga em dinheiro **deve obrigatoriamente ser debitada no fechamento**.
 **Risco identificado:** A RPC get_daily_reconciliation_summary N√O pode ser confiada cegamente como SSOT para "Contas" no Frontend.
 **N„o fazer:** Nunca inicializar estados baseando-se em snapshot persistido de contas sem aplicar o overlap em daily_manual_bills.
+
+## [2026-09-17] ó [Feature ID: ssot-conciliacao]
+
+**Contexto:** UnificaÁ„o definitiva da calculadora no Postgres (get_daily_reconciliation_summary), remoÁ„o de calculate_daily_conciliation, criaÁ„o da RPC fechar_dia e eliminaÁ„o de rec·lculos de fechamento no navegador.
+**Regra aprendida:** Nenhum n˙mero financeiro de fechamento deve ser calculado no front-end. A persistÍncia do snapshot di·rio deve sempre ser executada apÛs os motores de pareamento transacional via RPC fechar_dia com advisory lock.
+**Risco identificado:** MutaÁıes no cliente tentando persistir c·lculos em tabelas ou views intermedi·rias (ex: transactions) geram descompasso com a verdade fÌsica.
+**N„o fazer:** Nunca montar objetos manuais de snapshot no React para enviar via upsert direto na daily_snapshots.
+
+
+## [2026-09-17] ‚Äî [Feature ID: 417-radar-recebiveis-os-patio-boleto-transferencia]
+
+**Contexto:** Gera√ß√£o 100% autom√°tica de t√≠tulos a receber (Boleto, Transfer√™ncia, Faturado, Cheque) a partir da ingest√£o de OSs (*_ConferenciaOSxFinanceiro.xls), sem requerer cliques manuais do operador em modais, com enriquecimento do nome limpo do cliente e n√∫mero da OS, e expurgo definitivo de vendas de cart√£o inseridas indevidamente na tabela receivables.
+**Regra aprendida:**
+1. **Idempot√™ncia Estrita por Loja e OS (store_id + os_number):** Se a OS j√° possui registros na tabela receivables (inclusive desmembramentos manuais em 1/3, 2/3, 3/3 j√° realizados pelo operador), o sistema PRESERVA integralmente o banco e n√£o cria duplicatas nem sobrescreve valores. Se n√£o possui, insere diretamente com status pendente.
+2. **Separa√ß√£o Can√¥nica entre Cart√£o e Receb√≠veis de OS:** Vendas de cart√µes (Rede e maquininhas) pertencem exclusivamente a transactions e pos_transactions. Nunca devem gerar linhas com os_number: null em receivables.
+**Risco identificado:** Sobrescrever parcelamentos manuais de clientes se o matcher de idempot√™ncia verificar apenas os_number + installment = '1/1'.
+**N√£o fazer:** Nunca chamar savePatioOsAndReceivables passando arrays de cart√µes em receivablesArray.
+
+## [2026-09-17] ‚Äî [Feature ID: 418-sandbox-testes-refatoracao-match-pix-os]
+
+**Contexto:** O algoritmo legado de concilia√ß√£o gerava falsos positivos graves ao parear PIX com OSs baseado em tokens frouxos de nomes/sobrenomes comuns (Silva, Souza, Santos, Lima, etc.), permitindo matches entre valores completamente divergentes (ex: PIX de R$ 50 vinculado a OS de R$ 1.250). Foi criada uma rota de sandbox 100% in-memory (/teste/import) e refatorado o algoritmo puro (matchTransactionsV2) com Heur√≠stica de Funil.
+**Regra aprendida:**
+1. **Heur√≠stica de Funil em 2 Passos:**
+   - **Step 1 (Hard Match ‚Äî Valor e Data):** Filtro estrito por valor exato (abs(ofx.amount) == os.parsed_pix_transfer ou total_value ou paid_value com toler√¢ncia de R$ 0,05) e janela temporal (D-1 a D+1). Se o valor divergir, o match √© BLOQUEADO imediatamente, mesmo que o nome do cliente seja id√™ntico.
+   - **Step 2 (Tie-breaker Decisivo):** Apenas se o Step 1 retornar mais de uma OS candidata (colis√£o de mesmo valor na mesma data), aciona desempate por similaridade de strings (Levenshtein e tokens com penaliza√ß√£o de sobrenomes comuns isolados).
+2. **Ambiente de Testes In-Memory:** Sandboxes e rotas de experimenta√ß√£o devem rodar 100% desacopladas do Supabase, permitindo auditoria visual r√°pida e segura sem efeitos colaterais no banco de dados.
+**Risco identificado:** Usar similaridade de nome antes do valor num√©rico ou dar match parcial quando o cliente apenas possui o mesmo sobrenome de outro titular.
+**N√£o fazer:** Nunca vincular uma transa√ß√£o financeira a uma OS sem valida√ß√£o matem√°tica rigorosa do valor, independentemente do score textual.

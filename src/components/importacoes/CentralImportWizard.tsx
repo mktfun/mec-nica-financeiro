@@ -29,7 +29,7 @@ import { useBulkInsertTransactions, useCreateImportBatch, useBulkInsertConciliat
 import { useSaveDailySnapshot, usePreviousDaySnapshot } from '@/hooks/useDailySnapshot';
 import { supabase } from '@/lib/supabase';
 import { useNavigate } from '@tanstack/react-router';
-import { savePatioOsAndReceivables, ParsedReceivable } from '@/hooks/useImportProcessor';
+import { savePatioOsAndReceivables } from '@/hooks/useImportProcessor';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useContasAPagarImport } from '@/hooks/useContasAPagarImport';
 import { useAiSettings } from '@/hooks/useAiSettings';
@@ -1100,27 +1100,15 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         return savePatioOsAndReceivables(store_id, osResult.storeAlias, osResult.osArray, osResult.receivablesArray || [], targetDate);
       });
 
-      // Maquininha (fallback)
+      // Maquininha (agrupamento para transactions)
       const maqByStore: Record<string, any[]> = {};
       results.maquininhaItems.forEach(item => {
         let sid: string = mapping[item.storeName] || 'GLOBAL';
         if (!maqByStore[sid]) maqByStore[sid] = [];
         maqByStore[sid].push(item);
       });
-      const maqPromises = Object.entries(maqByStore).map(([sid, items]) => {
-        const storeName = items[0].storeName;
-        const targetSid = sid === 'GLOBAL' ? null : sid;
-        const parsedRecs: ParsedReceivable[] = items.map(item => ({
-          type: 'Cartão Crédito',
-          value: item.amount,
-          date: item.dateVenda || targetDate,
-          due_date: item.dateCredito || targetDate,
-          status: 'recebido'
-        }));
-        return savePatioOsAndReceivables(targetSid, storeName, [], parsedRecs, targetDate);
-      });
 
-      // Rede
+      // Rede (agrupamento para transactions)
       const redeCount = results.redeResults.filter(r => r.success).reduce((acc, curr) => acc + curr.transactions.length, 0);
       updateStage(1, 'running', `Processando Rede (${redeCount} transações)...`);
 
@@ -1145,20 +1133,8 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           redeByStore[sid].push(t);
         });
       });
-      const redePromises = Object.entries(redeByStore).map(([sid, items]) => {
-        const storeName = items[0].storeName;
-        const targetSid = sid === 'GLOBAL' ? null : sid;
-        const parsedRecs: ParsedReceivable[] = items.map(item => ({
-          type: item.method,
-          value: item.netAmount,
-          date: item.date || targetDate,
-          due_date: item.date || targetDate,
-          status: 'recebido'
-        }));
-        return savePatioOsAndReceivables(targetSid, storeName, [], parsedRecs, targetDate);
-      });
 
-      await Promise.all([...osPromises, ...maqPromises, ...redePromises]);
+      await Promise.all(osPromises);
       updateStage(0, 'success', 'OSs e Recebíveis salvos!');
       updateStage(1, 'success', 'Maquininhas processadas!');
       
@@ -1364,7 +1340,10 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           
           const txId = crypto.randomUUID();
           const isPix = tx.title?.toUpperCase().includes('PIX') ? 'pix' : null;
-          const effectiveOfxDate = tx.date ? String(tx.date).split('T')[0] : targetDate;
+          const parsedTxDate = tx.date ? String(tx.date).split('T')[0] : targetDate;
+          const diffMs = Math.abs(new Date(targetDate + 'T12:00:00Z').getTime() - new Date(parsedTxDate + 'T12:00:00Z').getTime());
+          const isRecentClosingTx = !tx.date || diffMs <= 86400000;
+          const effectiveOfxDate = isRecentClosingTx ? targetDate : parsedTxDate;
           txsToInsert.push({
             id: txId,
             store_id: matched_store_id,
@@ -1375,7 +1354,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             type: (tx.type === 'in' || tx.type === 'income' || tx.amount > 0) ? 'in' : 'out',
             occurred_at: tx.date || `${targetDate}T12:00:00Z`,
             date: effectiveOfxDate,
-            target_date: targetDate,
+            target_date: effectiveOfxDate,
             icon_type: 'bank',
             source: 'ofx',
             os_number: matched_os_number,
@@ -1388,7 +1367,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           if (matched_os_number && matched_store_id) {
             matchesToInsert.push({
               store_id: matched_store_id,
-              target_date: targetDate,
+              target_date: effectiveOfxDate,
               system_os_number: matched_os_number,
               ofx_transaction_id: txId,
               _fitid: tx.fitid || null,
@@ -1781,7 +1760,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         await supabase.from('reconciliations').upsert(reconciliationsToUpsert, { onConflict: 'store_id,date' });
       }
 
-      // Calcula o Pátio Global Real a partir do somatório físico de todas as OSs ativas em aberto em patio_os
+      // Calcula o Pátio Global e por Filial a partir do somatório físico de todas as OSs ativas em aberto em patio_os
       try {
         const { data: allActiveOs } = await supabase
           .from('patio_os')
@@ -1800,6 +1779,25 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             const totalPatioReal = activeList.reduce((acc, os) => acc + (Number(os.total_value || 0) - Number(os.paid_value || 0)), 0);
             if (totalPatioReal > 0) {
               veiculosPatioValor = totalPatioReal;
+              
+              // Sincroniza cada filial em reconciliations com seu pátio físico real apurado
+              const storePatioMap: Record<string, number> = {};
+              activeList.forEach(os => {
+                if (os.store_id) {
+                  const s = Number(os.total_value || 0) - Number(os.paid_value || 0);
+                  storePatioMap[os.store_id] = (storePatioMap[os.store_id] || 0) + s;
+                }
+              });
+
+              const recUpdates = Object.entries(storePatioMap).map(([sId, val]) => ({
+                store_id: sId,
+                date: targetDate,
+                na_loja_os: val,
+                status: 'validated'
+              }));
+              if (recUpdates.length > 0) {
+                await supabase.from('reconciliations').upsert(recUpdates, { onConflict: 'store_id,date' });
+              }
             }
           }
         }

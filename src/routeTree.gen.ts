@@ -29,6 +29,7 @@ import { Route as ConciliacaoLojaIdRouteImport } from './routes/conciliacao.$loj
 import { Route as LogsAgenteRouteImport } from './routes/logs.agente'
 import { Route as LogsMotorRouteImport } from './routes/logs.motor'
 import { Route as LojaLojaIdRouteImport } from './routes/loja.$lojaId'
+import { Route as TesteImportRouteImport } from './routes/teste.import'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -130,6 +131,11 @@ const LojaLojaIdRoute = LojaLojaIdRouteImport.update({
   path: '/loja/$lojaId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TesteImportRoute = TesteImportRouteImport.update({
+  id: '/teste/import',
+  path: '/teste/import',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -151,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/logs/agente': typeof LogsAgenteRoute
   '/logs/motor': typeof LogsMotorRoute
   '/loja/$lojaId': typeof LojaLojaIdRoute
+  '/teste/import': typeof TesteImportRoute
   '/conciliacao/': typeof ConciliacaoIndexRoute
 }
 export interface FileRoutesByTo {
@@ -173,6 +180,7 @@ export interface FileRoutesByTo {
   '/logs/agente': typeof LogsAgenteRoute
   '/logs/motor': typeof LogsMotorRoute
   '/loja/$lojaId': typeof LojaLojaIdRoute
+  '/teste/import': typeof TesteImportRoute
   '/conciliacao': typeof ConciliacaoIndexRoute
 }
 export interface FileRoutesById {
@@ -196,6 +204,7 @@ export interface FileRoutesById {
   '/logs/agente': typeof LogsAgenteRoute
   '/logs/motor': typeof LogsMotorRoute
   '/loja/$lojaId': typeof LojaLojaIdRoute
+  '/teste/import': typeof TesteImportRoute
   '/conciliacao/': typeof ConciliacaoIndexRoute
 }
 export interface FileRouteTypes {
@@ -220,6 +229,7 @@ export interface FileRouteTypes {
     | '/logs/agente'
     | '/logs/motor'
     | '/loja/$lojaId'
+    | '/teste/import'
     | '/conciliacao/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -242,6 +252,7 @@ export interface FileRouteTypes {
     | '/logs/agente'
     | '/logs/motor'
     | '/loja/$lojaId'
+    | '/teste/import'
     | '/conciliacao'
   id:
     | '__root__'
@@ -264,6 +275,7 @@ export interface FileRouteTypes {
     | '/logs/agente'
     | '/logs/motor'
     | '/loja/$lojaId'
+    | '/teste/import'
     | '/conciliacao/'
   fileRoutesById: FileRoutesById
 }
@@ -287,6 +299,7 @@ export interface RootRouteChildren {
   LogsAgenteRoute: typeof LogsAgenteRoute
   LogsMotorRoute: typeof LogsMotorRoute
   LojaLojaIdRoute: typeof LojaLojaIdRoute
+  TesteImportRoute: typeof TesteImportRoute
   ConciliacaoIndexRoute: typeof ConciliacaoIndexRoute
 }
 
@@ -432,6 +445,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LojaLojaIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/teste/import': {
+      id: '/teste/import'
+      path: '/teste/import'
+      fullPath: '/teste/import'
+      preLoaderRoute: typeof TesteImportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -455,6 +475,7 @@ const rootRouteChildren: RootRouteChildren = {
   LogsAgenteRoute: LogsAgenteRoute,
   LogsMotorRoute: LogsMotorRoute,
   LojaLojaIdRoute: LojaLojaIdRoute,
+  TesteImportRoute: TesteImportRoute,
   ConciliacaoIndexRoute: ConciliacaoIndexRoute,
 }
 export const routeTree = rootRouteImport

@@ -208,6 +208,17 @@ export async function savePatioOsAndReceivables(
       if (localSeen.has(key)) continue;
       localSeen.add(key);
 
+      // Idempotência estrita: se a OS já possui recebível(is) cadastrado(s) para esta loja,
+      // PRESERVA integralmente o que já existe no banco (não sobrescreve, não duplica, preserva desmembramento manual).
+      if (rec.os_number) {
+        const osAlreadyInDb = existingRecs?.some(
+          er => er.os_number && String(er.os_number).trim() === String(rec.os_number).trim()
+        );
+        if (osAlreadyInDb) {
+          continue;
+        }
+      }
+
       const existingMatch = existingRecs?.find((er) => {
         if (rec.os_number && er.os_number) {
           return er.os_number === rec.os_number && (er.installment || '1/1') === (rec.installment || '1/1');
