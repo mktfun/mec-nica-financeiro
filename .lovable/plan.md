@@ -102,3 +102,45 @@ Os outros fluxos deixam de gravar fechamento: viram ferramentas de apoio que só
 - Arquivos-chave: `src/hooks/useBackendConciliacao.ts` (41-52, 226-240 e todo o bloco de enriquecimento posterior), `src/components/importacoes/CentralImportWizard.tsx` (~1400-1960), `src/routes/loja.$lojaId.tsx:148`, `src/components/importacoes/wizard/Step2NonRevenueJustifications.tsx`, `src/components/conciliacao/CashVaultCompositionModal.tsx`, `src/hooks/useTransactions.ts`, `src/hooks/useConciliacao.ts`.
 - Migração consolidada: versão final única de `get_daily_reconciliation_summary`, nova `fechar_dia(p_date)` transacional e idempotente, `DROP` de `calculate_daily_conciliation`, `CHECK` + backfill de `ofx_transactions.match_status`, `pos_transactions.settlement_status` e `daily_manual_bills.match_status`.
 - Nenhum dado financeiro é apagado: apenas normalização de status e recálculo dos dias ainda abertos.
+
+---
+
+# Etapa 7 — OS do import alimentando Faturamento do mês e Recebíveis (com baixa automática)
+
+## Provas do que está errado hoje
+
+1. **Recebíveis praticamente vazio.** A tabela tem só 32 linhas: 27 de cartão de crédito, 4 de débito e **1 boleto**. Nenhuma transferência. `paid_value` é **zero em 100%** das linhas e **nenhuma** tem vínculo com o extrato bancário. Ou seja: baixa automática não existe hoje, e o que aparece na tela é só o valor manual — exatamente como você descreveu.
+2. **A OS não guarda a forma de pagamento de forma utilizável.** O campo vem como texto solto, com o valor embutido: `"Credito: 980.00; 980"`, `"PIX: 1000.00; 1000"`, `"Credito: 600.00; Debito: 496.20; Dinheiro: 220.00; 1316.2"`. E **34 OS estão com forma de pagamento vazia**, somando R$ 43.724,24. Sem campo estruturado, é impossível saber com segurança o que é boleto/transferência a receber.
+3. **A separação boleto/transferência é feita por expressão regular no navegador**, dentro do processador de OS. Se o texto vier em outra grafia, o recebível simplesmente não nasce — e ninguém percebe, porque "não passa pela nossa mão".
+4. **Valores pagos maiores que o total da OS.** No grupo de auto-match, R$ 52.299,80 pagos contra R$ 40.974,41 de total. Isso infla o faturamento/pátio e é parte da diferença que você vê (80 mil esperado x 75 mil no sistema).
+5. **Faturamento do mês não é acumulado por regra.** Ele sai da soma dos fechamentos diários existentes: só existem 3 dias gravados em setembro. Mês sem todos os dias fechados = mês sempre menor que o real.
+
+## Como eu faria, sem conflito e sem quebrar
+
+**7.1 — Estruturar a forma de pagamento da OS na ingestão (backend)**
+- A quebra do texto de pagamento passa a ser feita no banco, não no navegador, gravando colunas separadas por natureza: dinheiro, débito, crédito, pix, boleto, transferência, "em aberto".
+- A soma das naturezas tem que fechar com o valor pago da OS. Não fechando, a OS entra numa fila de revisão em vez de gravar número errado.
+- As 34 OS sem forma de pagamento vão para essa mesma fila de revisão, com o valor à vista.
+
+**7.2 — Recebível como consequência automática da OS**
+- Toda parcela de boleto e todo valor de transferência/depósito ainda não recebido nasce como recebível vinculado à OS, com loja, número da OS, valor, vencimento e parcela.
+- Reimportar a mesma OS **atualiza** o recebível existente (por OS + parcela) em vez de duplicar. Se a OS deixou de ter aquele valor a receber, o recebível é cancelado com registro do motivo — nada é apagado silenciosamente.
+- Sem regra nova de negócio no navegador: o import só entrega os dados, o banco decide o que é recebível.
+
+**7.3 — Baixa automática pelo extrato, com parcial**
+- Ao importar o extrato, cada entrada de transferência/boleto é confrontada com os recebíveis abertos da mesma loja: primeiro por número de OS no histórico, depois por valor exato, depois por valor aproximado dentro da janela de vencimento.
+- Baixa parcial suportada: caiu R$ 2.000 de um recebível de R$ 3.000 → grava R$ 2.000 recebidos, mantém R$ 1.000 aberto e registra o vínculo com a linha do extrato. É exatamente o caso que você citou.
+- O que não casar com confiança fica numa lista curta de "confirmar baixa", com o candidato sugerido — em vez de virar órfão invisível.
+- Reprocessar o mesmo extrato não dá baixa duas vezes (vínculo único por linha de extrato).
+
+**7.4 — Faturamento do mês com regra própria**
+- Passa a ser calculado por período direto das OS e ajustes do mês, não pela soma dos dias fechados. Dia não fechado ainda entra no acumulado do mês.
+- A tela mostra a composição: OS do mês + ajustes manuais + o que ficou em revisão. Assim, quando der 75 e você esperava 80, o próprio sistema mostra onde estão os 5 que faltam.
+
+**7.5 — Consertar o passado**
+- Recriar os recebíveis de boleto/transferência das OS já importadas, aplicar as baixas que o extrato já comprova e listar o que sobrar para conferência manual.
+
+## Verificação desta etapa
+- Uma OS com boleto + transferência gera exatamente os recebíveis esperados; reimportar não duplica.
+- Uma entrada de R$ 2.000 no extrato baixa parcialmente um recebível de R$ 3.000 e deixa R$ 1.000 aberto.
+- Faturamento do mês fecha com a soma das OS + ajustes, e a diferença contra o esperado é sempre explicável na tela.
