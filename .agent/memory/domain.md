@@ -1151,3 +1151,10 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
    - O Valor Dispon√≠vel para Contas ($\text{Faturamento Total} - \text{Fluxo de Caixa}$) e a Diferen√ßa Final ($\text{Valor Disp.} - \text{Subtotal Contas}$) devem ser SEMPRE calculados dinamicamente e nunca congelados com valores est√°ticos do snapshot salvo via fallback `??`, garantindo que adi√ß√µes ou exclus√µes posteriores de ajustes reflitam instantaneamente.
 **Risco identificado / Anti-pattern:** Usar `currentSnapshot.metadata.faturamento_periodo ?? ...` no modo normal, o que congela os totais em valores antigos e impede que novos ajustes de faturamento (como transfer√™ncias em dinheiro) atualizem o Faturamento Total e o Valor Dispon√≠vel para Contas.
 
+
+## [2026-09-17] ó [Feature ID: fix-contas-mismatch]
+
+**Contexto:** O painel de conciliaÁ„o apresentava diferenÁas matem·ticas falsas porque a RPC do Supabase exclui contas com match_status = 'paid_cash' do resumo do dia, sob a premissa de que elas "j· est„o pagas". 
+**Regra aprendida:** Matematicamente, num DRE de fluxo de caixa, a conta j· paga em dinheiro reduz o saldo fÌsico (Caixa Atual), aumentando virtualmente o Valor DisponÌvel. Se ela n„o for debitada em "Contas Manuais", o sistema acusa excesso de dinheiro. A conta paga em dinheiro **deve obrigatoriamente ser debitada no fechamento**.
+**Risco identificado:** A RPC get_daily_reconciliation_summary N√O pode ser confiada cegamente como SSOT para "Contas" no Frontend.
+**N„o fazer:** Nunca inicializar estados baseando-se em snapshot persistido de contas sem aplicar o overlap em daily_manual_bills.

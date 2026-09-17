@@ -147,7 +147,7 @@ export function ResumoDiaPanel({
       
       const overrideVal = snapMeta.contas_manual_override ?? summary?.contas_override;
       const jurosRedeSummary = Number(summary?.juros_rede ?? currentSnapshot?.juros_rede ?? 0);
-      const rawBase = Number(summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0);
+      const rawBase = Number(currentSnapshot?.contas_a_pagar || summary?.contas_base || 0);
       const snapContas = Number(currentSnapshot?.contas_a_pagar || 0);
       // Se summary.contas_base já inclui juros_rede (ex: 42.451,05 = 40.118,13 contas + 2.332,92 juros), deduz para não duplicar na soma do subtotal
       const sanitizedBase = (summary?.contas_base !== undefined && jurosRedeSummary > 0 && rawBase > jurosRedeSummary && snapContas > 0 && Math.abs(rawBase - (snapContas + jurosRedeSummary)) < 0.1)
@@ -211,7 +211,7 @@ export function ResumoDiaPanel({
     ? (contasInput + (summary?.contas_extras || 0)) 
     : (contasInput > 0 
         ? (contasInput + (summary?.contas_extras || 0))
-        : (Number(summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0) + (summary?.contas_extras || 0)));
+        : (Number(summary?.contas_manual || currentSnapshot?.contas_a_pagar || summary?.contas_base || 0) + (summary?.contas_extras || 0)));
 
   // Totais Bancários Derivados (SSOT compartilhado rigorosamente com o SaldoBancosDetailModal)
   const derivedBankTotals = useMemo(() => {
@@ -346,7 +346,7 @@ export function ResumoDiaPanel({
     setFaturamentoInput(Number(initialFaturamento) || 0);
     setDinheiroMpInput(Number(currentSnapshot?.dinheiro_mp ?? summary?.dinheiro_mp ?? 0));
     setAReceberInput(Number(currentSnapshot?.a_receber_manual ?? summary?.a_receber ?? 0));
-    setContasInput(Number(summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0));
+    setContasInput(Number(currentSnapshot?.contas_a_pagar || summary?.contas_base || 0));
     setIsEditing(false);
     toast.info('Edição cancelada. Valores restaurados.');
   };
@@ -385,11 +385,11 @@ export function ResumoDiaPanel({
         : (faturamentoAnteriorInput + faturamentoLiquidoDia);
 
       const hasManualOverride = isEditing
-        ? (contasInput !== (summary?.contas_base ?? 0))
-        : (summary?.has_contas_override || (currentSnapshot?.metadata as any)?.has_contas_override || false);
+        ? (contasInput !== (currentSnapshot?.contas_a_pagar || summary?.contas_base || 0))
+        : ((currentSnapshot?.metadata as any)?.has_contas_override || summary?.has_contas_override || false);
 
       const effectiveContasOverride = hasManualOverride
-        ? (isEditing ? contasManualValor : (summary?.contas_override ?? (currentSnapshot?.metadata as any)?.contas_manual_override ?? contasManualValor))
+        ? (isEditing ? contasManualValor : ((currentSnapshot?.metadata as any)?.contas_manual_override ?? summary?.contas_override ?? contasManualValor))
         : null;
 
       // Captura frações de store_cash_vault para gravação imutável no snapshot
@@ -435,7 +435,20 @@ export function ResumoDiaPanel({
         faturamento: faturamentoTotalComAjustes,
         faturamento_outros_valor: faturamentoOutrosValor,
         faturamento_outros_desc: 'Transações Justificadas (Ajustes)',
-        contas_a_pagar: isEditing ? (effectiveContasOverride ?? contasInput) : (summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0),
+        // REGRA CRÍTICA: contas_a_pagar deve sempre preservar o valor consolidado do snapshot (gravado pelo ContasManualModal).
+        // Quando em edição, só sobrescreve se o usuário explicitamente mudou o campo (contasInput !== valor do snapshot).
+        // Isso evita que um Save no painel desfaça os lançamentos feitos no modal de contas.
+        contas_a_pagar: (() => {
+          const snapContas = currentSnapshot?.contas_a_pagar || 0;
+          const summaryContas = summary?.contas_base || 0;
+          if (isEditing) {
+            // Se o usuário mudou o campo manualmente (override), usa contasInput. Caso contrário, preserva o snapshot.
+            const baseForComparison = snapContas > 0 ? snapContas : summaryContas;
+            const userChangedField = Math.abs(contasInput - baseForComparison) > 0.01;
+            return userChangedField ? contasInput : (snapContas || summaryContas || contasInput);
+          }
+          return snapContas || summaryContas || 0;
+        })(),
         provisao: currentSnapshot?.provisao || 0,
         saldo_negativo_itau: summary?.saldo_negativo_itau ?? currentSnapshot?.saldo_negativo_itau ?? 0,
         juros_rede: jurosRedeValor,
@@ -451,7 +464,16 @@ export function ResumoDiaPanel({
           faturamento_periodo: faturamentoTotalComAjustes,
           faturamento_liquido: faturamentoTotalComAjustes,
           valor_disp_contas: valorDispContasCalculado,
-          contas_base: isEditing ? contasInput : (summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0),
+          contas_base: (() => {
+            const snapContas = currentSnapshot?.contas_a_pagar || 0;
+            const summaryContas = summary?.contas_base || 0;
+            if (isEditing) {
+              const baseForComparison = snapContas > 0 ? snapContas : summaryContas;
+              const userChangedField = Math.abs(contasInput - baseForComparison) > 0.01;
+              return userChangedField ? contasInput : (snapContas || summaryContas || contasInput);
+            }
+            return snapContas || summaryContas || 0;
+          })(),
           contas_extras: summary?.contas_extras ?? 0,
           contas_manual: contasManualValor,
           contas_manual_override: effectiveContasOverride,
@@ -465,9 +487,9 @@ export function ResumoDiaPanel({
           total_saldo_banco: summary?.total_saldo_banco_positivo ?? (currentSnapshot?.metadata as any)?.total_saldo_banco ?? currentSnapshot?.total_saldo_banco ?? saldoBancosValor,
           saldo_bancos_ofx: summary?.saldo_bancos_ofx ?? (currentSnapshot?.metadata as any)?.saldo_bancos_ofx ?? 0,
           saldo_bancos_positivo: summary?.saldo_bancos_positivo ?? (currentSnapshot?.metadata as any)?.saldo_bancos_positivo ?? 0,
-          cartoes_a_compensar: (summary?.cartoes_a_compensar && summary.cartoes_a_compensar > 0) ? summary.cartoes_a_compensar : ((currentSnapshot?.metadata as any)?.cartoes_a_compensar ?? currentSnapshot?.cartoes_a_compensar ?? 0),
-          dinheiro_em_lojas: (summary?.dinheiro_em_lojas && summary.dinheiro_em_lojas > 0) ? summary.dinheiro_em_lojas : ((currentSnapshot?.metadata as any)?.dinheiro_em_lojas ?? (currentSnapshot?.metadata as any)?.dinheiro_lojas ?? 0),
-          dinheiro_lojas: (summary?.dinheiro_lojas && summary.dinheiro_lojas > 0) ? summary.dinheiro_lojas : ((currentSnapshot?.metadata as any)?.dinheiro_lojas ?? (currentSnapshot?.metadata as any)?.dinheiro_em_lojas ?? 0),
+          cartoes_a_compensar: summary?.cartoes_a_compensar ?? ((currentSnapshot?.metadata as any)?.cartoes_a_compensar ?? currentSnapshot?.cartoes_a_compensar ?? 0),
+          dinheiro_em_lojas: cashVaultSnapshotData ? cashVaultSnapshotData.total_em_transito : ((currentSnapshot?.metadata as any)?.dinheiro_em_lojas ?? summary?.dinheiro_em_lojas ?? 0),
+          dinheiro_lojas: cashVaultSnapshotData ? cashVaultSnapshotData.total_em_transito : ((currentSnapshot?.metadata as any)?.dinheiro_lojas ?? summary?.dinheiro_lojas ?? 0),
           cash_vault_snapshot: cashVaultSnapshotData || (currentSnapshot?.metadata as any)?.cash_vault_snapshot || null,
           devolucoes_rede: summary?.devolucoes_rede ?? 0,
           saldo_negativo_itau: summary?.saldo_negativo_itau ?? 0,
@@ -754,16 +776,11 @@ export function ResumoDiaPanel({
 
                   {hasCofre && (
                     <div 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsCashVaultModalOpen(true);
-                      }}
-                      className="bg-[var(--bg-canvas)] border border-amber-500/30 rounded-md px-2.5 py-1.5 flex flex-col justify-center text-amber-400 hover:border-amber-400 hover:bg-amber-500/10 cursor-pointer transition-all group/cofre"
-                      title="Clique para ver a composição fração a fração do dinheiro e sugestões de saídas"
+                      className="bg-[var(--bg-canvas)] border border-amber-500/30 rounded-md px-2.5 py-1.5 flex flex-col justify-center text-amber-400"
+                      title="Fração em espécie guardada nos cofres das filiais"
                     >
                       <span className="text-[8px] text-amber-400/80 uppercase font-semibold truncate flex items-center justify-between">
                         <span>Dinheiro no Cofre</span>
-                        <span className="text-[7px] text-amber-300 underline opacity-80 group-hover/cofre:opacity-100">Abrir ↗</span>
                       </span>
                       <span className="font-mono font-bold text-amber-300 text-xs truncate">
                         + <AnimatedNumber value={displayCofre} format="currency" />
@@ -794,14 +811,26 @@ export function ResumoDiaPanel({
           </div>
 
           {/* 2. Dinheiro MP */}
-          <div className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] flex flex-col justify-between shadow-sm">
+          <div 
+            onClick={() => !isEditing && setIsCashVaultModalOpen(true)}
+            className={`p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] flex flex-col justify-between shadow-sm transition-all ${
+              !isEditing ? 'cursor-pointer hover:border-teal-500/50 hover:bg-[var(--bg-surface-hover)] group' : ''
+            }`}
+          >
             <div>
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">DINHEIRO MP</span>
+                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-teal-400 transition-colors">DINHEIRO MP</span>
                   <WhisperDot dot={insights?.dots.dinheiro_mp} />
                 </div>
-                <Wallet size={15} className="text-[var(--color-accent-teal)]" />
+                <div className="flex items-center gap-2">
+                  {!isEditing && (
+                    <span className="text-[9px] font-semibold text-teal-400 bg-teal-500/10 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                      Gerenciar ↗
+                    </span>
+                  )}
+                  <Wallet size={15} className="text-[var(--color-accent-teal)]" />
+                </div>
               </div>
               {isEditing ? (
                 <div className="relative mt-1">
@@ -1070,7 +1099,7 @@ export function ResumoDiaPanel({
                     </p>
                     <div className="text-[10px] text-[var(--text-tertiary)] flex flex-col gap-0.5 mt-0.5">
                       <span>
-                        Base Planilha: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary?.contas_base ?? currentSnapshot?.contas_a_pagar ?? 0)}
+                        Base Planilha: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(currentSnapshot?.contas_a_pagar || summary?.contas_base || 0)}
                         {(summary?.contas_extras || 0) > 0 && (
                           <span className="text-amber-400 font-semibold ml-1">
                             + Extras: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary?.contas_extras || 0)}
@@ -1190,6 +1219,12 @@ export function ResumoDiaPanel({
                       toast.error('Você não tem permissão para editar dados.');
                       return;
                     }
+                    // Re-sincroniza contasInput do snapshot ao vivo antes de entrar em edição
+                    // Isso garante que o valor atual do ContasManualModal seja preservado
+                    const liveContasValue = Number(currentSnapshot?.contas_a_pagar || summary?.contas_base || 0);
+                    if (liveContasValue > 0) {
+                      setContasInput(liveContasValue);
+                    }
                     setIsEditing(true);
                   }}
                   title={!canEditData ? 'Apenas usuários com permissão de edição podem alterar o fechamento.' : 'Editar valores do dia'}
@@ -1282,6 +1317,7 @@ export function ResumoDiaPanel({
         onClose={() => setIsContasModalOpen(false)}
         targetDate={selectedDate}
         fallbackTotal={contasManualValor}
+        jurosRedeValor={jurosRedeValor}
       />
 
       {/* Modal de Composição & Ajustes de Faturamento do Dia */}

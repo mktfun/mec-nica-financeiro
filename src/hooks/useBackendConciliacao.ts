@@ -296,6 +296,22 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
         console.warn('Erro ao enriquecer store_cash_vault:', err);
       }
 
+      // 2.5 Busca contas manuais dinamicamente para sobrepor a RPC que exclui paid_cash
+      let totalManualBills = Number(raw.contas_manual ?? 0);
+      try {
+        const { data: billsData, error: billsErr } = await supabase
+          .from('daily_manual_bills')
+          .select('amount, status')
+          .eq('date', date)
+          .neq('status', 'ignored');
+          
+        if (!billsErr && billsData) {
+          totalManualBills = billsData.reduce((acc, b) => acc + Number(b.amount || 0), 0);
+        }
+      } catch (err) {
+        console.warn('Erro ao carregar daily_manual_bills:', err);
+      }
+
       // 3. Busca snapshot persistido para blindar metadados canônicos (odômetro, faturamento, pátio)
       let snapshotData: any = null;
       try {
@@ -449,12 +465,7 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
       const finalCaixaAnterior = Number(snapMeta.caixa_anterior ?? raw.caixa_anterior ?? 0);
       const finalFluxoCaixa = Number((finalCaixaAtual - finalCaixaAnterior).toFixed(2));
 
-      const finalSubtotalContas = Number(
-        snapMeta.subtotal_contas ?? 
-        snapshotData?.contas_a_pagar ?? 
-        raw.subtotal_contas ?? 
-        (Number(raw.contas_manual || raw.contas_base || 0) + Number(raw.juros_rede || 0))
-      );
+      const finalSubtotalContas = Number(totalManualBills + Number(raw.juros_rede || 0));
       const finalValorDisp = Number((finalFatPeriodo - finalFluxoCaixa).toFixed(2));
       const finalDiferenca = Number(
         (snapMeta.is_marco_zero && snapMeta.diferenca_final !== undefined)
@@ -496,9 +507,9 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
         odometro_hoje: finalOdometroHoje > 0 ? finalOdometroHoje : raw.odometro_hoje,
         faturamento_ajustes: Number(raw.faturamento_ajustes ?? 0),
         valor_disp_contas: finalValorDisp,
-        contas_base: Number(raw.contas_base ?? 0),
+        contas_base: totalManualBills,
         contas_extras: Number(raw.contas_extras ?? 0),
-        contas_manual: Number(raw.contas_manual ?? 0),
+        contas_manual: totalManualBills,
         juros_rede: Number(raw.juros_rede ?? 0),
         is_closed: Boolean(snapshotData?.is_closed ?? raw.is_closed),
         is_marco_zero: Boolean(snapMeta.is_marco_zero),
