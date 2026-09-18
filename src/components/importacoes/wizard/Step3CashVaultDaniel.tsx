@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { AmountCell } from '@/components/finance/AmountCell';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
-import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
   Banknote,
@@ -30,6 +30,7 @@ interface Props {
 }
 
 export function Step3CashVaultDaniel({ targetDate, onNext, onBack }: Props) {
+  const queryClient = useQueryClient();
   const [hadPickup, setHadPickup] = useState<boolean | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [confirming, setConfirming] = useState(false);
@@ -93,6 +94,12 @@ export function Step3CashVaultDaniel({ targetDate, onNext, onBack }: Props) {
         .in('id', Array.from(selectedIds));
 
       if (error) throw error;
+
+      await queryClient.invalidateQueries({ queryKey: ['store-cash-vault-em-transito'] });
+      await queryClient.invalidateQueries({ queryKey: ['store_cash_vault'] });
+      await queryClient.invalidateQueries({ queryKey: ['backend-conciliacao'] });
+      await queryClient.invalidateQueries({ queryKey: ['daily_snapshots'] });
+      setSelectedIds(new Set());
 
       toast.success(`${selectedIds.size} registro(s) marcado(s) como depositado!`);
       setConfirmed(true);

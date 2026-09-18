@@ -159,18 +159,30 @@ export async function savePatioOsAndReceivables(
     if (cashOsList.length > 0) {
       for (const cashOs of cashOsList) {
         const cashAmount = cashOs.parsed_cash || cashOs.cash_value || 0;
-        const entryDate = targetDate || (cashOs.closed_at ? String(cashOs.closed_at).split('T')[0] : new Date().toISOString().split('T')[0]);
-        const osNumRef = String(cashOs.os_number);
+        const osClosedDate = cashOs.closed_at ? String(cashOs.closed_at).split('T')[0] : null;
+        const entryDate = osClosedDate || targetDate || new Date().toISOString().split('T')[0];
+        const osNumRef = String(cashOs.os_number).trim();
         
-        const { data: existingVault } = await supabase
+        // Idempotência estrita global: busca registro existente por loja e número de OS (sem restrição de data)
+        const { data: existingVaultList } = await supabase
           .from('store_cash_vault')
-          .select('id, status, amount')
+          .select('id, status, amount, entry_date')
           .eq('store_id', storeId)
-          .eq('os_number_ref', osNumRef)
-          .eq('entry_date', entryDate)
-          .maybeSingle();
+          .eq('os_number_ref', osNumRef);
 
-        if (!existingVault) {
+        const hasDeposited = existingVaultList?.some(v => v.status === 'depositado');
+        const inTransitVault = existingVaultList?.find(v => v.status === 'em_transito');
+
+        if (hasDeposited) {
+          // Idempotência estrita: se a OS já teve baixa efetuada (em qualquer data), preserva o status e histórico
+          console.log(`[useImportProcessor] OS #${osNumRef} (${storeName}) já possui baixa efetuada (depositado). Ignorando reinserção.`);
+        } else if (inTransitVault) {
+          if (inTransitVault.amount !== cashAmount) {
+            await supabase.from('store_cash_vault').update({
+              amount: cashAmount
+            }).eq('id', inTransitVault.id);
+          }
+        } else if (!existingVaultList || existingVaultList.length === 0) {
           await supabase.from('store_cash_vault').insert({
             store_id: storeId,
             os_number_ref: osNumRef,
@@ -180,13 +192,6 @@ export async function savePatioOsAndReceivables(
             status: 'em_transito',
             notes: 'Importado automaticamente via ConferenciaOSxFinanceiro'
           });
-        } else if (existingVault.status === 'em_transito' && existingVault.amount !== cashAmount) {
-          await supabase.from('store_cash_vault').update({
-            amount: cashAmount
-          }).eq('id', existingVault.id);
-        } else if (existingVault.status === 'depositado') {
-          // Idempotência estrita: se a OS já teve baixa efetuada para o banco, preserva o status e histórico
-          console.log(`[useImportProcessor] OS #${osNumRef} (${storeName}) já possui baixa efetuada (depositado). Preservando status.`);
         }
       }
     }

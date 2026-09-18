@@ -271,9 +271,10 @@ export async function parseCentralImports(
       if (redeRes.success && redeRes.transactions) {
         const storeName = redeRes.transactions[0]?.storeName || file.name;
         const totalNet = Number((redeRes.totalNet ?? redeRes.transactions.reduce((acc, t) => acc + Number(t.netAmount || 0), 0)).toFixed(2));
+        const totalGross = Number((redeRes.totalGross ?? redeRes.transactions.reduce((acc, t) => acc + Number(t.grossAmount || 0), 0)).toFixed(2));
 
         // 1. Regra do usuário: Rede sem movimento não é importada
-        if (redeRes.transactions.length === 0 || totalNet <= 0) {
+        if (redeRes.transactions.length === 0 || (totalNet <= 0 && totalGross <= 0)) {
           results.alerts.ignoredEmptyRede.push({
             fileName: file.name,
             storeName,

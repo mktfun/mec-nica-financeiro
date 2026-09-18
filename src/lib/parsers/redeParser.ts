@@ -194,7 +194,7 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
       const isDevolucao = rawGrossNum < 0 || rawNetNum < 0 || /devolu|estorn|cancel|chargeback|reversal/.test(rowText);
 
       const grossAmount = Math.abs(rawGrossNum);
-      const netAmount = Math.abs(rawNetNum);
+      let netAmount = Math.abs(rawNetNum);
       const transactionType: 'venda' | 'devolucao' = isDevolucao ? 'devolucao' : 'venda';
 
       let method: 'Cartão Crédito' | 'Cartão Débito' | 'PIX' | 'Outros' = 'Outros';
@@ -224,6 +224,12 @@ export async function parseRedeFile(file: File, options?: { sessionId?: string }
       // 3. Prioridade: diferença contábil real entre valor bruto vendido e líquido creditado
       if (interest === 0 && grossAmount > 0 && netAmount > 0 && grossAmount >= netAmount) {
         interest = roundCurrency(grossAmount - netAmount);
+      }
+
+      // Fallback essencial: se a adquirente emitir relatório recente de vendas com líquido "-",
+      // derivamos o líquido real a partir do bruto deduzido das taxas conhecidas
+      if (netAmount === 0 && grossAmount > 0) {
+        netAmount = roundCurrency(Math.max(0, grossAmount - interest));
       }
       
       if (isDevolucao) {

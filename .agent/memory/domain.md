@@ -1186,3 +1186,22 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
 2. **Ambiente de Testes In-Memory:** Sandboxes e rotas de experimentação devem rodar 100% desacopladas do Supabase, permitindo auditoria visual rápida e segura sem efeitos colaterais no banco de dados.
 **Risco identificado:** Usar similaridade de nome antes do valor numérico ou dar match parcial quando o cliente apenas possui o mesmo sobrenome de outro titular.
 **Não fazer:** Nunca vincular uma transação financeira a uma OS sem validação matemática rigorosa do valor, independentemente do score textual.
+
+
+## [2026-09-18] - [Feature ID: 419-rede-parser-descarte-sem-movimentacao]
+
+**Contexto:** O parser de comprovantes da Rede descartava indevidamente arquivos de vendas validos com log "Arquivo sem movimentacao financeira (R$ 0,00) ignorado". O motivo era que a Rede exporta traco "-" na coluna "Valor liquido (R$)" em certas transacoes, resultando em netAmount = 0, fazendo totalNet ser 0 e disparando o descarte no centralImportManager.ts.
+**Regra aprendida:**
+1. **Fallback de Valor Liquido no Parser Rede:** Quando "Valor liquido (R$)" for "-", vazio ou zero, o parser deve utilizar o grossAmount (valor bruto) ou calcular grossAmount - discountAmount em vez de zerar o valor liquido.
+2. **Criterio de Descarte de Arquivo sem Movimentacao:** Um relatorio de cartao so deve ser descartado como sem movimentacao se TANTO totalNet <= 0 QUANTO totalGross <= 0. Se houver qualquer valor bruto positivo, o arquivo deve ser processado normalmente.
+**Risco identificado:** Tratar traco ou campo vazio de taxa em relatorios de adquirente como ausencia de transacao financeira.
+**Nao fazer:** Nunca descartar arquivos de adquirente verificando apenas totalNet <= 0 sem checar totalGross.
+
+## [2026-09-18] - [Feature ID: 420-idempotencia-dinheiro-os-baixa-cofre]
+
+**Contexto:** Ao importar arquivos de OS em uma nova data (ex: 18/09), os relatorios de OS carregam OSs de dias anteriores. A verificacao de duplicidade em store_cash_vault filtrava por entry_date = entryDate, causando a reinsercao como em_transito de 16 OSs que ja haviam sido recolhidas e baixadas como depositado no dia 17/09. Alem disso, a tela de conferencia de cofre do Daniel (Step3CashVaultDaniel) nao invalidava a query do React Query apos dar baixa, mantendo os itens na tela e gerando a impressao de nao ter salvo.
+**Regra aprendida:**
+1. **Idempotencia Global de Dinheiro de OS (store_cash_vault):** A checagem de existencia no cofre DEVE ser global por store_id e os_number_ref (NUNCA restrita a entry_date). Se uma OS em dinheiro ja foi baixada com status = 'depositado', ela NUNCA deve ser reinserida nem reaberta como em_transito.
+2. **Invalidacao Reativa Obrigatoria apos Baixas:** Ao realizar mutacao de status em store_cash_vault no wizard de importacao, SEMPRE invalidar store-cash-vault-em-transito, store_cash_vault, backend-conciliacao e daily_snapshots via React Query e resetar selecoes locais.
+**Risco identificado:** Restringir consultas de idempotencia de registros de OS por data do arquivo, gerando duplicatas em massa a cada nova importacao de fechamento de caixa.
+**Nao fazer:** Nunca filtrar por entry_date ao verificar se uma OS ja gerou lancamento de cofre/dinheiro no banco de dados.
