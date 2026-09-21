@@ -144,3 +144,38 @@ Os outros fluxos deixam de gravar fechamento: viram ferramentas de apoio que só
 - Uma OS com boleto + transferência gera exatamente os recebíveis esperados; reimportar não duplica.
 - Uma entrada de R$ 2.000 no extrato baixa parcialmente um recebível de R$ 3.000 e deixa R$ 1.000 aberto.
 - Faturamento do mês fecha com a soma das OS + ajustes, e a diferença contra o esperado é sempre explicável na tela.
+
+---
+
+# Etapa 8 — Diagnóstico do dia 21/09: por que "não rodou" nada
+
+## Provas colhidas agora no banco
+
+1. **Não existe nenhum dado de hoje no banco.** Para 21/09: **0** linhas de extrato, **0** de maquininha, **0** contas a pagar. Mas existem **2 lotes de importação registrados** para essa data. Ou seja: a importação abriu o lote, registrou que rodou, e **nenhuma linha foi gravada**. Nada para pareamento significa "matchs não rodaram" — não tem o que casar.
+2. **As contas que você vê na tela são de outro dia.** As contas existem só em 16, 17 e 18/09. Exemplo: Dom Pedro tem R$ 3.066,07 (16/09), R$ 440,00 (17/09) e R$ 3.581,84 (18/09) — soma R$ 4.656,48… o **exatamente** o número que aparece no card de hoje. Já o extrato é filtrado estritamente por data e vem zerado. Daí o retrato: "contas conciliadas" com "saídas OFX zeradas" e divergência em todas as lojas. **A tela compara janelas de tempo diferentes.**
+3. **A consulta de contas está quebrada (erro 400).** O app pede as colunas `amount, status` e filtra `status <> ignored` em contas a pagar. **Essa tabela não tem coluna `status`** — o status ali se chama `match_status`. Toda requisição dessas falha, e a tela mostra zero em vez de erro. Vale para 14/09 e 21/09 nos logs que você mandou.
+4. **O código que faz essa chamada está fora de sincronia com o banco.** O erro vem de uma cópia local do projeto (pasta `financeiro` na sua máquina), pedindo uma coluna que não existe aqui. Há duas versões do mesmo app divergindo.
+5. **A escrita de contas está espalhada em 16 lugares diferentes** do código, cada um com regra própria de data, status e valor. É a razão de "arrumo um, quebra outro".
+6. **O extrato do dia aparece zerado inclusive no detalhe da loja**, coerente com o item 1: saldo oficial R$ 22.701,11 herdado do dia anterior, 0 entradas e 0 saídas.
+
+## O que corrigir aqui, além do que já está no plano
+
+**8.1 — Nunca mais falhar em silêncio**
+- Toda consulta que erra tem que aparecer na tela como erro, não como zero. Hoje o zero mente.
+- A consulta quebrada de contas é corrigida para o nome real do campo, e o vocabulário de status entra na lista fechada da Etapa 4.
+
+**8.2 — Janela de data única para o dia inteiro**
+- O dia passa a ter uma definição só, calculada no backend: extrato, maquininha, contas, OS e cofre respondem à mesma janela.
+- Conta de dia anterior ainda em aberto aparece em bloco separado e rotulado ("pendências de dias anteriores"), nunca somada como se fosse do dia.
+
+**8.3 — Importação que não mente**
+- O lote de importação só é considerado concluído se gravou linhas. Gravou zero → o lote é marcado como falho, com o motivo, e a tela mostra isso.
+- Fim do lote fantasma: 2 lotes de hoje com zero linhas não podem existir sem aviso.
+
+**8.4 — Uma versão só do app**
+- Consolidar as duas cópias divergentes em uma. Enquanto houver duas, qualquer correção aqui continua sendo desfeita lá.
+
+## Verificação
+- Importar hoje novamente: o número de linhas gravadas por arquivo aparece na tela e bate com o banco; se gravar zero, aparece erro.
+- Card da loja: contas do dia e saídas do extrato cobrem a mesma janela; pendências antigas aparecem separadas.
+- Nenhuma consulta da tela retorna erro 400.
