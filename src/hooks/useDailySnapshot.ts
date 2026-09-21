@@ -50,6 +50,7 @@ export function usePreviousDaySnapshot(date: string) {
         .from('daily_snapshots')
         .select('*')
         .lt('date', date)
+        .eq('is_closed', true)
         .order('date', { ascending: false })
         .limit(1)
         .maybeSingle();
@@ -86,19 +87,18 @@ export function useAvailableConciliacaoDates() {
     queryFn: async () => {
       const dates = new Set<string>();
 
-      // Executa queries em paralelo para carregamento instantâneo
-      const [snapshotsRes, reconRes, ofxRes, posRes, patioRes, batchesRes] = await Promise.allSettled([
-        supabase.from('daily_snapshots').select('date'),
-        supabase.from('reconciliations').select('date'),
-        supabase.from('ofx_transactions').select('target_date').not('target_date', 'is', null).limit(1000),
-        supabase.from('pos_transactions').select('target_date').not('target_date', 'is', null).limit(1000),
-        supabase.from('patio_os').select('opened_at').not('opened_at', 'is', null).limit(1000),
+      // Executa queries em paralelo considerando apenas datas com ações contábeis efetivas
+      const [snapshotsRes, reconRes, batchesRes] = await Promise.allSettled([
+        supabase.from('daily_snapshots').select('date, is_closed, caixa_atual'),
+        supabase.from('reconciliations').select('date').or('ofx_imported.eq.true,bank_total.gt.0'),
         supabase.from('import_batches').select('target_date'),
       ]);
 
       if (snapshotsRes.status === 'fulfilled' && snapshotsRes.value.data) {
         snapshotsRes.value.data.forEach(row => {
-          if (row.date) dates.add(String(row.date));
+          if (row.date && (row.is_closed || Number(row.caixa_atual || 0) > 0)) {
+            dates.add(String(row.date));
+          }
         });
       }
 
@@ -114,30 +114,9 @@ export function useAvailableConciliacaoDates() {
         });
       }
 
-      if (ofxRes.status === 'fulfilled' && ofxRes.value.data) {
-        ofxRes.value.data.forEach(row => {
-          if (row.target_date) dates.add(String(row.target_date));
-        });
-      }
-
-      if (posRes.status === 'fulfilled' && posRes.value.data) {
-        posRes.value.data.forEach(row => {
-          if (row.target_date) dates.add(String(row.target_date));
-        });
-      }
-
-      if (patioRes.status === 'fulfilled' && patioRes.value.data) {
-        patioRes.value.data.forEach(row => {
-          if (row.opened_at) {
-            const dStr = String(row.opened_at).substring(0, 10);
-            if (dStr && /^\d{4}-\d{2}-\d{2}$/.test(dStr)) dates.add(dStr);
-          }
-        });
-      }
-
       // Retorna array ordenado de forma ascendente
       return Array.from(dates).filter(Boolean).sort();
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 60 * 1000,
   });
 }

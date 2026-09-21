@@ -1205,3 +1205,22 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
 2. **Invalidacao Reativa Obrigatoria apos Baixas:** Ao realizar mutacao de status em store_cash_vault no wizard de importacao, SEMPRE invalidar store-cash-vault-em-transito, store_cash_vault, backend-conciliacao e daily_snapshots via React Query e resetar selecoes locais.
 **Risco identificado:** Restringir consultas de idempotencia de registros de OS por data do arquivo, gerando duplicatas em massa a cada nova importacao de fechamento de caixa.
 **Nao fazer:** Nunca filtrar por entry_date ao verificar se uma OS ja gerou lancamento de cofre/dinheiro no banco de dados.
+
+## [2026-09-21] — [Feature ID: 423-incidente-2109-reparo-e-blindagem-ofx]
+
+**Contexto:** No lote de importação de 21/09 (segunda-feira), 81 extratos bancários de 18/09 (sexta-feira) foram gravados com target_date = '2026-09-18' em razão do threshold de 24h (diffMs <= 86400000) em CentralImportWizard.tsx, deixando 21/09 com zero OFX, quebrando as RPCs de matching de saídas/PIX e fazendo o reconciliador da Rede descartar os créditos bancários por incompatibilidade de datas.
+**Regra aprendida:**
+1. **Janela Contábil de Fechamento OFX:** O cálculo de data efetiva de transações OFX de fechamento deve cobrir uma janela de até 4 dias retroativos (diffDays <= 4) para abraçar fins de semana e feriados bancários (sexta a segunda). O target_date contábil deve ser atribuído como targetDate do lote, preservando occurred_at com o timestamp real do extrato.
+2. **Reconciliador Rede x OFX:** O filtro de créditos do extrato em CentralImportWizard.tsx e em ReconciliadorRedeOFX deve aceitar créditos ocorridos dentro da janela de até 4 dias da competência de fechamento.
+**Risco identificado:** Assumir que extratos bancários de segunda-feira contêm apenas transações de 24h atrás, partindo lotes em duas competências contábeis.
+**Não fazer:** Nunca limitar a janela de atribuição de target_date de extratos de fechamento a 86400000 ms (1 dia).
+
+## [2026-09-21] — [Feature ID: 424-restauracao-1809-expurgo-19a21-e-filtro-datas-efetivas]
+
+**Contexto:** O snapshot consolidado de 18/09 foi sobrescrito durante limpezas manuais, corrompendo carros em pátio (R$ 64.685,02) e caixa (R$ 201.948,92). Além disso, datas de fim de semana (19/09 e 20/09) apareciam no seletor de conciliações porque useAvailableConciliacaoDates consultava patio_os.opened_at, e o caixa anterior de 21/09 pegava valores distorcidos porque usePreviousDaySnapshot e CentralImportWizard não exigiam is_closed = true.
+**Regra aprendida:**
+1. **Filtro Estrito de Datas de Conciliação Efetiva:** useAvailableConciliacaoDates NUNCA deve consultar patio_os.opened_at ou transações brutas de adquirente. Deve listar estritamente datas onde houve conciliação/fechamento efetivo (daily_snapshots com is_closed = true ou caixa_atual > 0, import_batches com target_date, e reconciliations com movimento).
+2. **Precedência de Fechamento Consolidado no Caixa Anterior (D-1):** A consulta do snapshot imediatamente anterior (em usePreviousDaySnapshot e na finalização do CentralImportWizard) DEVE obrigatoriamente filtrar por .eq('is_closed', true). Rascunhos abertos ou dias intermediários fantasmas nunca devem servir como baseline.
+3. **Pátio Físico Acumulado (90 dias):** O valor de Carros em Pátio (total_patio) é um estoque acumulado de veículos físicos em oficina (R$ 64.685,02 em 18/09) e jamais deve ser calculado apenas pelas poucas OSs contidas na planilha importada do dia.
+**Risco identificado:** Abertura de ordens de serviço em oficinas no sábado/domingo poluindo o calendário financeiro com dias não trabalhados e descalibrando o caixa anterior do fechamento de segunda-feira.
+**Não fazer:** Nunca montar o seletor de conciliações a partir de eventos operacionais de pátio e nunca buscar previousSnapshot sem .eq('is_closed', true).

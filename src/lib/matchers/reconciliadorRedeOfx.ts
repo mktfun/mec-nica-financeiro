@@ -119,10 +119,13 @@ export class ReconciliadorRedeOFX {
         return;
       }
 
-      // Validação da data do extrato (D0 da conciliação)
+      // Validação da data do extrato (D0 da conciliação ou janela de fim de semana/feriado de até 4 dias)
       const rawDate = tx.occurred_at || tx.date || this.targetDate;
       const cleanTxDate = String(rawDate).replace(/[-/]/g, '').slice(0, 8);
-      if (cleanTxDate !== cleanTargetDate) {
+      const txParsed = String(rawDate).split('T')[0];
+      const diffDays = Math.round(Math.abs(new Date(this.targetDate + 'T12:00:00Z').getTime() - new Date(txParsed + 'T12:00:00Z').getTime()) / 86400000);
+      const isMatchWindow = cleanTxDate === cleanTargetDate || diffDays <= 4;
+      if (!isMatchWindow) {
         return;
       }
 

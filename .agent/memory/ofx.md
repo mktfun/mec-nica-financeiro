@@ -109,3 +109,23 @@
 4. **Deduplicação Contínua por Dígitos da Conta:**
    - A deduplicação entre `.ofx` e `.pdf` deve checar não apenas strings exatas de alias, mas também a sequência contínua de dígitos (`cleanDigits.length >= 8`) para garantir que `ITAU - 7386_00175298` e `ITAU - 738600175298` colidam e mantenham a instância mais completa sem duplicar transações no banco.
 **Risco identificado / Anti-pattern:** Encaminhar cegamente todo arquivo `.pdf` para o parser de Mapa de Metas ou exigir que o usuário escolha entre "Modo PDF" e "Modo OFX".
+
+## [2026-09-17] — [Feature ID: 415-blindagem-vazamento-datas-anteriores-ofx]
+**Contexto:** Eliminação definitiva de vazamento de transações bancárias de dias anteriores (14/09 e 15/09) que foram indevidamente agrupadas na conciliação de 17/09 na filial Piraporinha (st-05), causando divergência fantasma de R$ 14.387,06.
+**Regra aprendida:**
+1. **Isolamento Estrito de Extratos Multi-Dias:**
+   - Arquivos OFX emitidos por bancos cobrem frequentemente períodos de 3, 7 ou 15 dias. Transações ocorridas em dias anteriores a D-1 (D-2, D-3, etc.) NUNCA devem ser coagidas para o `targetDate` do fechamento. Elas devem manter sua competência contábil original (`target_date = parsedTxDate`).
+   - Apenas lançamentos do fechamento imediato (mesmo dia ou D-1, até 24h) são associados ao `targetDate` da conciliação.
+2. **Proibição de Bypass por Batch Cego na RPC:**
+   - A RPC SSOT `get_daily_reconciliation_summary` JAMAIS pode usar cláusula `OR import_batch_id IN (...)` sem filtro de data. Isso faz com que todo o histórico contido no lote vaze para a data corrente. A regra de agregação deve ser estritamente `t.target_date = v_target_date::date`.
+3. **Eliminação de Duplicidade entre Contas Manuais e Saídas OFX:**
+   - Ao apurar `contas_loja`, quando uma saída bancária do OFX é vinculada a uma conta manual (`daily_manual_bills`), somar `bst.contas_loja_total + sofx.saidas_justificadas` gera contagem dupla. A agregação deve usar `GREATEST` ou priorizar a conta manual, evitando diferenças falsas de saída.
+4. **Isolamento de Escopo no Extrato (`dia_alvo` vs `lote_ofx`):**
+   - Na visualização do Extrato Bancário (`StoreExtratoBancarioView`), quando em `dia_alvo`, `rawTransactions` e o loop de accordions (`dayGroups`) devem ser estritamente filtrados por `target_date === date`. Transações de outros dias só podem ser visualizadas se o usuário alternar para `Extrato Completo do OFX`.
+**Risco identificado / Não fazer:** Usar janelas temporais largas (`Math.abs(...) <= 3 * 86400000`) no wizard de ingestão para "capturar" transações, e criar pontes irrestritas por lote em consultas SQL.
+
+## [2026-09-21] — [Janela Contábil de Fechamento de Fim de Semana (Spec 423 / Spec 424)]
+
+1. **Atribuição de Competência em Segundas-Feiras:** Em fechamentos de segunda-feira (ex: 21/09), transações bancárias ocorridas na sexta-feira anterior (ex: 18/09) e ao longo do fim de semana devem receber target_date = targetDate (competência do fechamento), com occurred_at preservando o timestamp real. A janela contábil canônica é diffDays <= 4.
+2. **Filtro de Créditos Rede x OFX:** ReconciliadorRedeOFX e CentralImportWizard devem validar se os créditos bancários estão dentro da janela contábil de fechamento (diffDays <= 4), impedindo o descarte espúrio de depósitos de cartão ocorridos na sexta-feira.
+3. **Blindagem do Caixa Anterior:** Ao importar uma segunda-feira, a busca pelo snapshot anterior (prevSnap) deve filtrar por is_closed = true, ignorando sábados e domingos sem conciliação e puxando o caixa fechado de sexta-feira.

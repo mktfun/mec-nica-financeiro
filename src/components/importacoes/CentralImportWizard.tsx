@@ -57,6 +57,14 @@ import { ImportExecutionTerminal, ImportLogEntry } from './ImportExecutionTermin
 import { ExecutionErrorBanner } from './ExecutionErrorBanner';
 import { MissingPatioOsEditor, MissingPatioOsEdit } from './MissingPatioOsEditor';
 import { PostMotorDiagnosticCockpit } from './wizard/PostMotorDiagnosticCockpit';
+import { buildSimulatedDailySummary } from '@/lib/sandbox/sandboxCalculator';
+import { 
+  saveSandboxSession, 
+  SandboxReconciliationSession, 
+  SandboxFileMetadata, 
+  SandboxCashVaultItem, 
+  SandboxReceivableItem 
+} from '@/lib/sandbox/sandboxStorage';
 export type { MissingPatioOsEdit };
 
 const INITIAL_STAGES: AgentStage[] = [
@@ -67,7 +75,17 @@ const INITIAL_STAGES: AgentStage[] = [
   { id: 'auto_healing', title: 'Auditoria Pericial & Auto-Cura',   status: 'pending', subSteps: [] },
 ];
 
-export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () => void, initialDate?: string }) {
+export function CentralImportWizard({ 
+  onCancel, 
+  initialDate,
+  isSandbox = false,
+  onSandboxComplete
+}: { 
+  onCancel: () => void; 
+  initialDate?: string;
+  isSandbox?: boolean;
+  onSandboxComplete?: (session: SandboxReconciliationSession) => void;
+}) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: stores = [] } = useStores();
@@ -247,6 +265,11 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
       os => os.total_value !== os.original_total_value || os.paid_value !== os.original_paid_value || os.status !== os.original_status
     );
     if (modified.length > 0) {
+      if (isSandbox) {
+        toast.success(`[SANDBOX] ${modified.length} OSs do pátio atualizadas localmente!`);
+        setStep(3);
+        return;
+      }
       setIsSavingMissingOs(true);
       try {
         for (const item of modified) {
@@ -1049,7 +1072,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
   };
 
   const handleConfirm = async (advanceToWizard: boolean = false) => {
-    if (!canImport) {
+    if (!canImport && !isSandbox) {
       toast.error('Você não possui permissão para importar e gravar dados.');
       return;
     }
@@ -1058,6 +1081,211 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
     setImportStages(JSON.parse(JSON.stringify(INITIAL_STAGES)));
     setAuditTrailUrl(null);
     setSaveFinished(false);
+
+    if (isSandbox) {
+      try {
+        updateStage(0, 'running', '[SANDBOX] Processando simulação local...');
+        addLog('🧪 MODO SANDBOX: Processamento 100% em Local Storage (Zero DB)', 'info');
+        await new Promise(r => setTimeout(r, 200));
+
+        // 1. Motor de match em memória
+        const memoryMatch = executeAutoMatchingEngine(results, mapping, stores, targetDate);
+        addLog(`🧪 [SANDBOX] Motor executado: ${memoryMatch.matchedCount} pares vinculados, ${memoryMatch.unmatchedTransactions.length} órfãos.`, 'info');
+
+        // 2. Extrair cofre em memória
+        const cashVaultEntries: SandboxCashVaultItem[] = [];
+        results.osFiles.forEach(osFile => {
+          const storeId = mapping[osFile.storeAlias] || osFile.storeAlias;
+          osFile.osArray.forEach(os => {
+            let cashAmt = Number((os as any).parsed_cash ?? (os as any).cash_value ?? 0);
+            if (cashAmt <= 0 && os.formOfPayment && String(os.formOfPayment).toLowerCase().includes('dinheiro')) {
+              cashAmt = Number((os as any).paidValue || (os as any).totalValue || (os as any).valor_total || 0);
+            }
+            if (cashAmt > 0) {
+              cashVaultEntries.push({
+                id: `sandbox-cash-${os.os_number}`,
+                store_id: storeId,
+                store_name: osFile.storeAlias,
+                os_number_ref: String(os.os_number),
+                amount: cashAmt,
+                entry_date: targetDate,
+                status: 'em_transito'
+              });
+            }
+          });
+        });
+
+        // 3. Extrair recebíveis em memória
+        const receivables: SandboxReceivableItem[] = [];
+        results.osFiles.forEach(osFile => {
+          const storeId = mapping[osFile.storeAlias] || osFile.storeAlias;
+          (osFile.receivablesArray || []).forEach(rec => {
+            receivables.push({
+              id: `sandbox-rec-${rec.os_number}-${rec.installment || '1'}`,
+              store_id: storeId,
+              store_name: osFile.storeAlias,
+              os_number: String(rec.os_number),
+              client_name: rec.client_name || 'Cliente',
+              payment_method: rec.payment_method || 'BOLETO',
+              amount: Number(rec.amount || 0),
+              due_date: rec.due_date || targetDate,
+              status: 'pendente'
+            });
+          });
+        });
+
+        // 4. Carregar snapshot anterior (D-1) como baseline read-only do banco
+        const { data: previousSnap } = await supabase
+          .from('daily_snapshots')
+          .select('*')
+          .lt('date', targetDate)
+          .eq('is_closed', true)
+          .order('date', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        // 4b. Carregar Pátio Real (Passivo Acumulado Físico) por loja do banco (100% read-only)
+        const { data: realPatioRows } = await supabase
+          .from('patio_os')
+          .select('store_id, total_value, paid_value, status, opened_at')
+          .lte('opened_at', `${targetDate}T23:59:59`);
+
+        const storePatioMap: Record<string, number> = {};
+        let totalPatioReal = 0;
+
+        if (realPatioRows && realPatioRows.length > 0) {
+          realPatioRows.forEach((os: any) => {
+            const statusStr = String(os.status || '').toLowerCase();
+            const isClosed = ['finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado'].includes(statusStr);
+            const saldo = Number(os.total_value || 0) - Number(os.paid_value || 0);
+            if (!isClosed && saldo > 0 && os.store_id) {
+              storePatioMap[os.store_id] = Math.round(((storePatioMap[os.store_id] || 0) + saldo + Number.EPSILON) * 100) / 100;
+              totalPatioReal = Math.round((totalPatioReal + saldo + Number.EPSILON) * 100) / 100;
+            }
+          });
+        }
+
+        // Fallback em reconciliations se patio_os não retornar valores
+        if (totalPatioReal === 0) {
+          const { data: reconRows } = await supabase
+            .from('reconciliations')
+            .select('store_id, na_loja_os')
+            .eq('date', targetDate);
+          if (reconRows && reconRows.length > 0) {
+            reconRows.forEach((r: any) => {
+              if (r.store_id && Number(r.na_loja_os || 0) > 0) {
+                storePatioMap[r.store_id] = Number(r.na_loja_os);
+                totalPatioReal = Math.round((totalPatioReal + Number(r.na_loja_os) + Number.EPSILON) * 100) / 100;
+              }
+            });
+          }
+        }
+
+        // 4c. Se contas a pagar não foram enviadas na sessão, carregar base do dia (read-only)
+        if (!results.contasPagarResults || results.contasPagarResults.length === 0) {
+          const { data: dbBills } = await supabase
+            .from('daily_manual_bills')
+            .select('*')
+            .eq('date', targetDate);
+          if (dbBills && dbBills.length > 0) {
+            results.contasPagarResults = [{
+              success: true,
+              fileName: 'Contas a Pagar (Base do Dia)',
+              targetDate,
+              totalBills: dbBills.length,
+              totalAmount: dbBills.reduce((acc: number, b: any) => acc + Number(b.amount || 0), 0),
+              bills: dbBills.map((b: any) => ({
+                id: b.id,
+                external_code: b.external_code || '',
+                installment: b.installment || '1/1',
+                store_id: b.store_id || '',
+                store_name: b.store_id || '',
+                recipient_name: b.recipient_name || b.title || '',
+                description: b.description || '',
+                category: b.category || 'outros',
+                due_date: b.due_date || targetDate,
+                payment_date: b.payment_date || targetDate,
+                amount: Number(b.amount || 0),
+                status: 'PAG',
+                is_intercompany: !!b.is_intercompany
+              })),
+              storeTotals: {},
+              categoryTotals: {}
+            }];
+          }
+        }
+
+        // 4d. Executar pareamento automático de despesas no sandbox
+        if (results.ofxResults?.length > 0 && results.contasPagarResults?.length > 0) {
+          executeExpenseAutoMatching(results.ofxResults, results.contasPagarResults, mapping, stores, targetDate);
+        }
+
+        // 5. Calcular DailyReconciliationSummary simulado com baseline D-1
+        const summary = buildSimulatedDailySummary({
+          results,
+          matchingResult: memoryMatch,
+          mapping,
+          stores,
+          targetDate,
+          previousSnapshot: previousSnap,
+          storePatioMap,
+          totalPatioReal,
+          manualOverrides: {
+            odometroHoje: odometroHoje || undefined,
+            dinheiroMp: manualDinheiroMp || undefined,
+            aReceber: manualAReceber || undefined,
+            contasManual: contasManual || undefined
+          }
+        });
+
+        // 5. Montar metadados dos arquivos
+        const filesProcessed: SandboxFileMetadata[] = [];
+        results.ofxResults.forEach(f => filesProcessed.push({ fileName: f.fileName, fileType: 'ofx', sizeBytes: 0, recordsCount: f.transactions?.length || 0 }));
+        results.redeResults.forEach(f => filesProcessed.push({ fileName: f.fileName, fileType: 'rede', sizeBytes: 0, recordsCount: f.transactions?.length || 0 }));
+        results.osFiles.forEach(f => filesProcessed.push({ fileName: f.fileName, fileType: 'os', sizeBytes: 0, recordsCount: f.osArray?.length || 0 }));
+        (results.contasPagarResults || []).forEach(f => filesProcessed.push({ fileName: f.fileName || 'Contas a Pagar', fileType: 'bills', sizeBytes: 0, recordsCount: f.totalBills || 0 }));
+
+        const session: SandboxReconciliationSession = {
+          sessionId: sessionId || generateSessionId(),
+          targetDate,
+          createdAt: new Date().toISOString(),
+          filesProcessed,
+          summary,
+          matchingResult: memoryMatch,
+          cashVaultEntries,
+          receivables,
+          rawResults: results,
+          traceLogs: importLogs.map(l => ({
+            timestamp: l.timestamp,
+            stage: 'INGESTAO',
+            level: l.type === 'error' ? 'error' : (l.type === 'success' ? 'success' : (l.type === 'warning' ? 'warn' : 'info')),
+            message: l.message,
+            details: l.details
+          }))
+        };
+
+        saveSandboxSession(session);
+
+        updateStage(0, 'success', 'Simulação de OSs concluída');
+        updateStage(1, 'success', 'Simulação de Maquininha concluída');
+        updateStage(2, 'success', 'Simulação de OFX concluída');
+        updateStage(3, 'success', 'Fechamento simulado em Local Storage (Zero DB)');
+        updateStage(4, 'success', 'Auditoria pericial simulada concluída');
+        setSaveFinished(true);
+        setIsSaving(false);
+
+        toast.success('Simulação de Fechamento gravada 100% em Local Storage (Zero DB)!');
+        if (onSandboxComplete) {
+          onSandboxComplete(session);
+        }
+        return;
+      } catch (err: any) {
+        console.error('[SANDBOX] Erro no fechamento simulado:', err);
+        toast.error(`Erro na simulação sandbox: ${err.message}`);
+        setIsSaving(false);
+        return;
+      }
+    }
 
     try {
       updateStage(0, 'running', 'Iniciando gravação...');
@@ -1341,8 +1569,8 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
           const txId = crypto.randomUUID();
           const isPix = tx.title?.toUpperCase().includes('PIX') ? 'pix' : null;
           const parsedTxDate = tx.date ? String(tx.date).split('T')[0] : targetDate;
-          const diffMs = Math.abs(new Date(targetDate + 'T12:00:00Z').getTime() - new Date(parsedTxDate + 'T12:00:00Z').getTime());
-          const isRecentClosingTx = !tx.date || diffMs <= 86400000;
+          const diffDays = Math.round(Math.abs(new Date(targetDate + 'T12:00:00Z').getTime() - new Date(parsedTxDate + 'T12:00:00Z').getTime()) / 86400000);
+          const isRecentClosingTx = !tx.date || diffDays <= 4;
           const effectiveOfxDate = isRecentClosingTx ? targetDate : parsedTxDate;
           txsToInsert.push({
             id: txId,
@@ -1841,6 +2069,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
         .from('daily_snapshots')
         .select('*')
         .lt('date', targetDate)
+        .eq('is_closed', true)
         .order('date', { ascending: false })
         .limit(1)
         .maybeSingle();
@@ -1960,8 +2189,10 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
               const isCredit = t.type === 'in' || t.amount > 0;
               const cleanDate = (t.date || '').replace(/[-/]/g, '').slice(0, 8);
               const cleanTarget = targetDate.replace(/[-/]/g, '').slice(0, 8);
-              const isSameDate = !t.date || cleanDate === cleanTarget;
-              return isCredit && isSameDate;
+              const txParsed = t.date ? String(t.date).split('T')[0] : targetDate;
+              const diffDays = Math.round(Math.abs(new Date(targetDate + 'T12:00:00Z').getTime() - new Date(txParsed + 'T12:00:00Z').getTime()) / 86400000);
+              const isMatchWindow = cleanDate === cleanTarget || diffDays <= 4;
+              return isCredit && isMatchWindow;
             }).map((t: any) => ({
               id: t.id,
               fitid: t.fitid || '',
@@ -1970,7 +2201,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
               memo: t.memo || t.title || '',
               counterpart_name: t.counterpart_name || t.counterpart || t.title || '',
               amount: Math.abs(t.amount || 0),
-              date: t.date || targetDate,
+              date: targetDate,
               occurred_at: t.date || targetDate
             })));
 
@@ -3616,6 +3847,7 @@ export function CentralImportWizard({ onCancel, initialDate }: { onCancel: () =>
             targetDate={targetDate}
             onNext={() => setStep(7)}
             onBack={() => setStep(5)}
+            isSandbox={isSandbox}
           />
         </motion.div>
       )}
