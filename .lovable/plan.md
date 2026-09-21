@@ -147,35 +147,65 @@ Os outros fluxos deixam de gravar fechamento: viram ferramentas de apoio que só
 
 ---
 
-# Etapa 8 — Diagnóstico do dia 21/09: por que "não rodou" nada
+# Etapa 8 — Incidente de 21/09: causa comprovada e reparo sem perder dados
 
-## Provas colhidas agora no banco
+## Diagnóstico comprovado no banco e no código
 
-1. **Não existe nenhum dado de hoje no banco.** Para 21/09: **0** linhas de extrato, **0** de maquininha, **0** contas a pagar. Mas existem **2 lotes de importação registrados** para essa data. Ou seja: a importação abriu o lote, registrou que rodou, e **nenhuma linha foi gravada**. Nada para pareamento significa "matchs não rodaram" — não tem o que casar.
-2. **As contas que você vê na tela são de outro dia.** As contas existem só em 16, 17 e 18/09. Exemplo: Dom Pedro tem R$ 3.066,07 (16/09), R$ 440,00 (17/09) e R$ 3.581,84 (18/09) — soma R$ 4.656,48… o **exatamente** o número que aparece no card de hoje. Já o extrato é filtrado estritamente por data e vem zerado. Daí o retrato: "contas conciliadas" com "saídas OFX zeradas" e divergência em todas as lojas. **A tela compara janelas de tempo diferentes.**
-3. **A consulta de contas está quebrada (erro 400).** O app pede as colunas `amount, status` e filtra `status <> ignored` em contas a pagar. **Essa tabela não tem coluna `status`** — o status ali se chama `match_status`. Toda requisição dessas falha, e a tela mostra zero em vez de erro. Vale para 14/09 e 21/09 nos logs que você mandou.
-4. **O código que faz essa chamada está fora de sincronia com o banco.** O erro vem de uma cópia local do projeto (pasta `financeiro` na sua máquina), pedindo uma coluna que não existe aqui. Há duas versões do mesmo app divergindo.
-5. **A escrita de contas está espalhada em 16 lugares diferentes** do código, cada um com regra própria de data, status e valor. É a razão de "arrumo um, quebra outro".
-6. **O extrato do dia aparece zerado inclusive no detalhe da loja**, coerente com o item 1: saldo oficial R$ 22.701,11 herdado do dia anterior, 0 entradas e 0 saídas.
+1. **Os arquivos foram lidos e os dados foram gravados, mas em datas incompatíveis.** O log das 09:43 informa 81 lançamentos OFX e 115 transações no lote. O banco confirma no lote `a083037a-82a6-43fe-b634-361ec00f8954`: **81 OFX + 34 vendas de maquininha**.
+2. **Todos os 81 OFX do lote de 21/09 foram classificados como 18/09.** Eles têm `occurred_at = 18/09`, `target_date = 18/09`, totalizando **R$ 49.304,69 de entradas** e **R$ 82.309,39 de saídas**. Para `target_date = 21/09`, há **zero OFX**.
+3. **As contas estão corretamente em 21/09.** Foram gravadas **56 contas**, total de **R$ 73.509,19**, distribuídas entre as lojas. As 34 vendas de maquininha também estão em 21/09, total bruto de **R$ 53.773,95**.
+4. **Os motores não falharam tecnicamente; receberam uma data sem OFX.** `auto_match_saidas('2026-09-21')` e `auto_match_daily_transactions('2026-09-21')` filtram estritamente `target_date = 21/09`. Como os 81 OFX ficaram em 18/09, o resultado legítimo foi 0 matches. O log chamou isso incorretamente de “sucesso”.
+5. **A causa está na regra de data da importação.** O import lê a data interna da transação e só a move para a data selecionada quando a diferença é de até 1 dia. Como 18/09 → 21/09 são 3 dias (fim de semana), mantém 18/09. Contas e maquininha usam diretamente a data selecionada, 21/09. Assim, um único lote é partido em duas competências.
+6. **A tela de extrato não perdeu os lançamentos.** Ela consulta `target_date = 21/09`, por isso mostra 0. Os 81 lançamentos existem em 18/09 e o saldo oficial de cada loja foi carregado em `reconciliations` de 21/09. Isso produz exatamente a imagem observada: saldo bancário presente, mas entradas/saídas zeradas.
+7. **O fechamento foi gravado antes do pareamento e com dados incompatíveis.** Em 21/09 foi criado um fechamento `is_closed = true`, com contas de R$ 73.509,19, faturamento de R$ 69.064,82 e diferença de R$ 18.069,08, embora não houvesse OFX naquela competência. Depois disso os motores rodaram e retornaram zero.
+8. **O erro 400 é um segundo defeito confirmado.** `useBackendConciliacao` consulta `daily_manual_bills.select('amount, status').neq('status', 'ignored')`, mas a tabela possui `match_status`, não `status`. A consulta falha e o código mantém um valor alternativo, escondendo o erro como se fosse resultado válido.
+9. **O aviso do TanStack não causou os zeros.** É apenas aviso de otimização porque `TesteImportPage` está exportado por um arquivo de rota. Deve ser limpo, mas não participa da importação nem dos matches.
+10. **Há três lotes registrados para 21/09.** Um contém 81 OFX datados em 18/09 e 34 vendas em 21/09; outro não tem linhas; o terceiro ficou associado a apenas um OFX posteriormente reatribuído ao lote principal pelo `upsert`. O vínculo de lote também não é imutável hoje.
 
-## O que corrigir aqui, além do que já está no plano
+## Reparo imediato do incidente, preservando o histórico
 
-**8.1 — Nunca mais falhar em silêncio**
-- Toda consulta que erra tem que aparecer na tela como erro, não como zero. Hoje o zero mente.
-- A consulta quebrada de contas é corrigida para o nome real do campo, e o vocabulário de status entra na lista fechada da Etapa 4.
+**8.1 — Não alterar 18/09 automaticamente**
+- Não mover os 81 OFX para 21/09 sem validação, pois a data bancária real registrada é 18/09. O sistema deve distinguir **data do movimento bancário** de **data operacional da conciliação**.
+- Preservar `occurred_at = 18/09` como prova do extrato e associar o lote a uma competência operacional explícita (`reconciliation_date = 21/09`).
 
-**8.2 — Janela de data única para o dia inteiro**
-- O dia passa a ter uma definição só, calculada no backend: extrato, maquininha, contas, OS e cofre respondem à mesma janela.
-- Conta de dia anterior ainda em aberto aparece em bloco separado e rotulado ("pendências de dias anteriores"), nunca somada como se fosse do dia.
+**8.2 — Tornar a competência do lote única**
+- A importação recebe uma data operacional única e todos os registros do lote carregam essa associação, sem sobrescrever a data real do banco.
+- Contas, maquininha, OS e OFX são pareados pela competência do lote; a tela de extrato pode alternar “movimento bancário” e “fechamento operacional” sem misturar os conceitos.
+- A regra cobre fim de semana e feriado: arquivo bancário de sexta usado no fechamento de segunda continua com data bancária de sexta, mas participa explicitamente do lote de segunda.
 
-**8.3 — Importação que não mente**
-- O lote de importação só é considerado concluído se gravou linhas. Gravou zero → o lote é marcado como falho, com o motivo, e a tela mostra isso.
-- Fim do lote fantasma: 2 lotes de hoje com zero linhas não podem existir sem aviso.
+**8.3 — Reprocessar 21/09 em transação controlada**
+- Marcar o fechamento atual de 21/09 como necessitando recálculo, sem apagar snapshot, contas, OFX ou vendas.
+- Associar os 81 OFX já existentes à competência operacional de 21/09.
+- Rodar, nesta ordem: match de saídas x contas → match de entradas x OS/recebíveis → Rede x OFX → recálculo por loja → novo snapshot → auditoria comparando antes/depois.
+- Só substituir o fechamento oficial depois que as invariantes passarem. Se qualquer etapa falhar, reverter o reprocessamento inteiro e manter o fechamento anterior auditável.
 
-**8.4 — Uma versão só do app**
-- Consolidar as duas cópias divergentes em uma. Enquanto houver duas, qualquer correção aqui continua sendo desfeita lá.
+**8.4 — Corrigir o falso sucesso**
+- Cada etapa registra contagem de entrada, gravada, rejeitada, duplicada e pareada por tipo e loja.
+- “Sucesso” exige: contagem esperada = gravada + duplicada justificada; e o motor recebeu registros elegíveis. Zero elegíveis com arquivo contendo 81 OFX vira bloqueio, não sucesso.
+- O lote vazio fica como falho/incompleto e não pode fechar o dia.
 
-## Verificação
-- Importar hoje novamente: o número de linhas gravadas por arquivo aparece na tela e bate com o banco; se gravar zero, aparece erro.
-- Card da loja: contas do dia e saídas do extrato cobrem a mesma janela; pendências antigas aparecem separadas.
-- Nenhuma consulta da tela retorna erro 400.
+**8.5 — Corrigir a consulta 400 e a apresentação de erro**
+- Trocar `status` por `match_status` na leitura de contas e usar o vocabulário padronizado da Etapa 4.
+- Remover o fallback silencioso: falha de consulta mostra “dados indisponíveis” com opção de tentar novamente; nunca R$ 0,00.
+
+**8.6 — Estabilizar o vínculo de importação**
+- O `upsert` por loja + FITID não pode trocar silenciosamente o `import_batch_id` de uma transação já existente. Reimportação registra a ocorrência como duplicada no lote novo, preservando o lote original.
+- Criar resumo auditável por lote e arquivo: nome, período bancário, competência operacional, quantidade lida, nova, duplicada, rejeitada e motivo.
+
+## Verificação obrigatória de 21/09
+
+- Os 81 OFX permanecem com movimento bancário em 18/09 e participam da conciliação operacional de 21/09.
+- Extrato de 21/09, no modo operacional, mostra exatamente 81 lançamentos: R$ 49.304,69 em entradas e R$ 82.309,39 em saídas.
+- As 56 contas de R$ 73.509,19 entram no mesmo ciclo dos 81 OFX; o relatório informa quantas casaram e lista cada órfã real.
+- Os 34 registros de maquininha de R$ 53.773,95 entram no mesmo ciclo e o Rede x OFX deixa de concluir com “nenhum crédito” sem explicar a janela usada.
+- O total global é igual à soma das lojas; nenhum lançamento aparece em duas competências operacionais; reprocessar o lote não duplica nem muda o lote original.
+- Nenhuma requisição de contas retorna 400; erro real nunca é renderizado como zero.
+- O snapshot final só fica fechado depois dos matches e contém as contagens e o identificador da auditoria que o produziu.
+
+## Ordem de implementação desta correção
+
+1. Criar a competência operacional e o relatório imutável do lote.
+2. Corrigir a leitura de contas e remover zeros silenciosos.
+3. Alterar os motores para receber a competência/lote validado, não inferir tudo por `target_date`.
+4. Reprocessar 21/09 com os registros existentes e auditar antes/depois.
+5. Integrar definitivamente esta regra à rotina única `fechar_dia` das Etapas 1–6.
