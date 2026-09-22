@@ -17,7 +17,8 @@ import {
   ExternalLink,
   Search,
   DollarSign,
-  AlertCircle
+  AlertCircle,
+  CreditCard
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -25,6 +26,8 @@ import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { formatCurrency } from '@/lib/utils';
 import { toast } from 'sonner';
 import { OsDetailModal } from './OsDetailModal';
+import { CadastrarTransferenciaOsModal } from './CadastrarTransferenciaOsModal';
+import { useStores } from '@/hooks/useStores';
 
 interface StoreOrdensServicoViewProps {
   storeId: string;
@@ -53,8 +56,14 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
   const [editTotal, setEditTotal] = useState<number>(0);
   const [editPaid, setEditPaid] = useState<number>(0);
   const [editStatus, setEditStatus] = useState<string>('em_aberto');
+  const [editMethod, setEditMethod] = useState<string>('PIX');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedOsData, setSelectedOsData] = useState<any | null>(null);
+  const [transferModalData, setTransferModalData] = useState<{
+    osNumber: string;
+    clientName?: string;
+    totalAmount: number;
+  } | null>(null);
 
   // Form para nova OS manual
   const [newOsNumber, setNewOsNumber] = useState('');
@@ -96,15 +105,43 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
     enabled: !!storeId && !!date,
   });
 
+  const { data: stores = [] } = useStores();
+  const currentStore = stores.find(s => s.id === storeId);
+  const storeName = currentStore?.name || storeId;
+
+  // Busca recebíveis da loja para identificar transferências já cadastradas ou pendentes
+  const { data: storeReceivables = [] } = useQuery({
+    queryKey: ['store-receivables', storeId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('receivables')
+        .select('id, os_number, installment, value, status, type, due_date')
+        .eq('store_id', storeId);
+      if (error) return [];
+      return data || [];
+    },
+    enabled: !!storeId,
+  });
+
+  const transferAlerts = useMemo(() => {
+    return rawOsList.filter(os => {
+      const isTransfer = (os.payment_method || '').toLowerCase().includes('transf');
+      if (!isTransfer) return false;
+      const recs = storeReceivables.filter((r: any) => String(r.os_number).trim() === String(os.os_number).trim());
+      return recs.length === 0;
+    });
+  }, [rawOsList, storeReceivables]);
+
   // Mutação para salvar edição
   const updateOsMutation = useMutation({
-    mutationFn: async ({ id, total_value, paid_value, status }: { id: string; total_value: number; paid_value: number; status: string }) => {
+    mutationFn: async ({ id, total_value, paid_value, status, payment_method }: { id: string; total_value: number; paid_value: number; status: string; payment_method?: string }) => {
       const { data: updated, error } = await supabase
         .from('patio_os')
         .update({
           total_value,
           paid_value,
           status,
+          ...(payment_method ? { payment_method } : {}),
           updated_at: new Date().toISOString()
         })
         .eq('id', id)
@@ -238,6 +275,16 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
 
       toast.success(`OS #${newOsNumber} cadastrada com sucesso!`);
       setIsAddModalOpen(false);
+
+      if (newMethod === 'Transferência') {
+        const remaining = Math.max(0, newTotal - newPaid);
+        setTransferModalData({
+          osNumber: newOsNumber.trim(),
+          clientName: newClient.trim() || 'Cliente Manual',
+          totalAmount: remaining > 0 ? remaining : newTotal
+        });
+      }
+
       setNewOsNumber('');
       setNewPlate('');
       setNewClient('');
@@ -303,15 +350,27 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
     setEditTotal(os.total_value);
     setEditPaid(os.paid_value);
     setEditStatus(os.status);
+    setEditMethod(os.payment_method || 'PIX');
   };
 
   const handleSaveEdit = (id: string) => {
+    const currentOs = rawOsList.find(o => o.id === id);
     updateOsMutation.mutate({
       id,
       total_value: editTotal,
       paid_value: editPaid,
-      status: editStatus
+      status: editStatus,
+      payment_method: editMethod
     });
+
+    if (editMethod === 'Transferência' && currentOs) {
+      const remaining = Math.max(0, editTotal - editPaid);
+      setTransferModalData({
+        osNumber: currentOs.os_number,
+        clientName: currentOs.client_name,
+        totalAmount: remaining > 0 ? remaining : editTotal
+      });
+    }
   };
 
   if (isLoading) {
@@ -371,6 +430,45 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
           </Button>
         </Card>
       </div>
+
+      {/* Alerta de Transferências em Aberto / Pendentes de Desdobramento */}
+      {transferAlerts.length > 0 && (
+        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2.5">
+            <AlertCircle className="text-amber-400 shrink-0" size={18} />
+            <div>
+              <span className="font-semibold text-amber-300">
+                {transferAlerts.length} Ordem(ns) de Serviço com pagamento em Transferência Bancária sem parcelas cadastradas:
+              </span>
+              <span className="text-zinc-300 font-mono block sm:inline sm:ml-2">
+                {transferAlerts.map(os => `#${os.os_number}`).join(', ')}
+              </span>
+              <p className="text-[11px] text-zinc-400 mt-0.5">
+                Desdobre os vencimentos para que a baixa seja realizada automaticamente quando cair no extrato bancário (OFX).
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                const first = transferAlerts[0];
+                const rem = Math.max(0, first.total_value - first.paid_value);
+                setTransferModalData({
+                  osNumber: first.os_number,
+                  clientName: first.client_name,
+                  totalAmount: rem > 0 ? rem : first.total_value
+                });
+              }}
+              className="text-xs h-7 border-amber-500/40 text-amber-300 hover:bg-amber-500/20 gap-1.5"
+            >
+              <CreditCard size={12} />
+              Desdobrar OS #{transferAlerts[0].os_number}
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Tabela de Ordens de Serviço */}
       <Card className="p-0 overflow-hidden border-zinc-800 bg-zinc-950">
@@ -446,19 +544,54 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
                   const isEditing = editingId === os.id;
                   const saldoRestante = os.total_value - os.paid_value;
                   const isClosed = ['finalizada', 'finalizado', 'paga', 'pago', 'cancelada', 'cancelado'].includes(os.status.toLowerCase());
+                  const isTransfer = (os.payment_method || '').toLowerCase().includes('transf');
+                  const osRecs = storeReceivables.filter((r: any) => String(r.os_number).trim() === String(os.os_number).trim());
+                  const paidRecs = osRecs.filter((r: any) => r.status === 'recebido');
 
                   return (
                     <tr key={os.id} className="hover:bg-zinc-900/40 transition-colors">
                       {/* Nº OS */}
                       <td className="py-3 px-4 font-mono font-bold text-blue-400 whitespace-nowrap">
-                        <button
-                          onClick={() => setSelectedOsData(os)}
-                          className="hover:underline flex items-center gap-1"
-                          title="Ver detalhes da OS"
-                        >
-                          #{os.os_number}
-                          <ExternalLink size={11} />
-                        </button>
+                        <div className="flex flex-col gap-1">
+                          <button
+                            onClick={() => setSelectedOsData(os)}
+                            className="hover:underline flex items-center gap-1"
+                            title="Ver detalhes da OS"
+                          >
+                            #{os.os_number}
+                            <ExternalLink size={11} />
+                          </button>
+                          {isTransfer && osRecs.length === 0 && (
+                            <button
+                              type="button"
+                              onClick={() => setTransferModalData({
+                                osNumber: os.os_number,
+                                clientName: os.client_name,
+                                totalAmount: saldoRestante > 0 ? saldoRestante : os.total_value
+                              })}
+                              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30 hover:bg-amber-500/25 transition-colors cursor-pointer w-fit"
+                              title="Transferência em conta pendente de parcelas. Clique para desdobrar."
+                            >
+                              <AlertCircle size={10} className="text-amber-400" />
+                              Transf. Pendente
+                            </button>
+                          )}
+                          {isTransfer && osRecs.length > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => setTransferModalData({
+                                osNumber: os.os_number,
+                                clientName: os.client_name,
+                                totalAmount: saldoRestante > 0 ? saldoRestante : os.total_value
+                              })}
+                              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/25 transition-colors cursor-pointer w-fit"
+                              title={`Transferência: ${paidRecs.length}/${osRecs.length} baixadas no extrato. Clique para ver/editar.`}
+                            >
+                              <CreditCard size={10} className="text-indigo-400" />
+                              Transf. ({paidRecs.length}/{osRecs.length})
+                            </button>
+                          )}
+                        </div>
                       </td>
 
                       {/* Placa */}
@@ -513,16 +646,29 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
                       {/* Status */}
                       <td className="py-3 px-4 text-center">
                         {isEditing ? (
-                          <select
-                            value={editStatus}
-                            onChange={(e) => setEditStatus(e.target.value)}
-                            className="bg-zinc-900 border border-emerald-500 rounded px-1.5 py-0.5 text-xs text-zinc-100 focus:outline-none"
-                          >
-                            <option value="em_aberto">Em Aberto</option>
-                            <option value="pago_parcial">Pago Parcial</option>
-                            <option value="finalizado">Finalizado / Pago</option>
-                            <option value="cancelado">Cancelado</option>
-                          </select>
+                          <div className="space-y-1">
+                            <select
+                              value={editStatus}
+                              onChange={(e) => setEditStatus(e.target.value)}
+                              className="bg-zinc-900 border border-emerald-500 rounded px-1.5 py-0.5 text-xs text-zinc-100 focus:outline-none w-full"
+                            >
+                              <option value="em_aberto">Em Aberto</option>
+                              <option value="pago_parcial">Pago Parcial</option>
+                              <option value="finalizado">Finalizado / Pago</option>
+                              <option value="cancelado">Cancelado</option>
+                            </select>
+                            <select
+                              value={editMethod}
+                              onChange={(e) => setEditMethod(e.target.value)}
+                              className="bg-zinc-900 border border-indigo-500 rounded px-1.5 py-0.5 text-[10px] text-zinc-100 focus:outline-none w-full"
+                            >
+                              <option value="PIX">PIX</option>
+                              <option value="Cartão">Cartão (Rede)</option>
+                              <option value="Dinheiro">Dinheiro</option>
+                              <option value="Transferência">Transferência em Conta</option>
+                              <option value="Boleto">Boleto / A Receber</option>
+                            </select>
+                          </div>
                         ) : isClosed ? (
                           <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
                             Finalizado
@@ -558,16 +704,30 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
                             </button>
                           </div>
                         ) : (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleStartEdit(os)}
-                            className="text-[11px] h-7 px-2 text-zinc-400 hover:text-zinc-200 gap-1"
-                            title="Editar valores e status"
-                          >
-                            <Edit2 size={11} />
-                            Editar
-                          </Button>
+                          <div className="flex items-center justify-center gap-1">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleStartEdit(os)}
+                              className="text-[11px] h-7 px-2 text-zinc-400 hover:text-zinc-200 gap-1"
+                              title="Editar valores e status"
+                            >
+                              <Edit2 size={11} />
+                              Editar
+                            </Button>
+                            <button
+                              type="button"
+                              onClick={() => setTransferModalData({
+                                osNumber: os.os_number,
+                                clientName: os.client_name,
+                                totalAmount: saldoRestante > 0 ? saldoRestante : os.total_value
+                              })}
+                              className="p-1.5 rounded bg-zinc-800/80 hover:bg-indigo-600/30 text-indigo-400 hover:text-indigo-200 border border-zinc-700/50 hover:border-indigo-500/40 transition-colors"
+                              title="Desdobrar Transferência em Conta (Recebíveis)"
+                            >
+                              <CreditCard size={12} />
+                            </button>
+                          </div>
                         )}
                       </td>
                     </tr>
@@ -716,6 +876,7 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
                   <option value="PIX">PIX</option>
                   <option value="Cartão">Cartão (Rede)</option>
                   <option value="Dinheiro">Dinheiro</option>
+                  <option value="Transferência">Transferência em Conta</option>
                   <option value="Boleto">Boleto / A Receber</option>
                 </select>
               </div>
@@ -753,6 +914,26 @@ export function StoreOrdensServicoView({ storeId, date }: StoreOrdensServicoView
           onClose={() => setSelectedOsData(null)}
           os={selectedOsData}
           storeId={storeId}
+        />
+      )}
+
+      {/* Modal Desdobrar Transferência em Conta */}
+      {transferModalData && (
+        <CadastrarTransferenciaOsModal
+          isOpen={!!transferModalData}
+          onClose={() => setTransferModalData(null)}
+          storeId={storeId}
+          storeName={storeName}
+          osNumber={transferModalData.osNumber}
+          clientName={transferModalData.clientName}
+          totalAmount={transferModalData.totalAmount}
+          targetDate={date}
+          onSuccess={async () => {
+            await refetch();
+            await queryClient.invalidateQueries({ queryKey: ['store-receivables', storeId] });
+            await queryClient.invalidateQueries({ queryKey: ['receivables'] });
+            await queryClient.invalidateQueries({ queryKey: ['receivables-by-date'] });
+          }}
         />
       )}
     </div>

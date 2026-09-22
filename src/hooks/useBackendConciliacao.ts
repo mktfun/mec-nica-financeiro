@@ -262,15 +262,18 @@ export function useDailyReconciliationSummary(date: string, forceDynamic: boolea
           .select('store_id, net_amount, settlement_status')
           .eq('target_date', date);
 
-        if (!posErr && posData) {
-          posData
-            .filter(p => p.settlement_status !== 'entrou' && p.settlement_status !== 'liquidado')
-            .forEach(p => {
-              const sid = String(p.store_id || '').trim();
+        if (!posErr && posData && posData.length > 0) {
+          posData.forEach(p => {
+            const sid = String(p.store_id || '').trim();
+            if (posUnsettledByStore[sid] === undefined) {
+              posUnsettledByStore[sid] = 0;
+            }
+            if (p.settlement_status !== 'entrou' && p.settlement_status !== 'liquidado') {
               const val = Number(p.net_amount || 0);
-              posUnsettledByStore[sid] = (posUnsettledByStore[sid] || 0) + val;
+              posUnsettledByStore[sid] += val;
               totalPosUnsettled += val;
-            });
+            }
+          });
           posQuerySuccess = true;
         }
       } catch (err) {

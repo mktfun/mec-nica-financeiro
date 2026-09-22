@@ -332,3 +332,57 @@ export function useAutoMatchReceivables() {
     },
   });
 }
+
+export interface OsTransferParcelaInput {
+  installmentNumber: number;
+  totalInstallments: number;
+  installmentLabel: string;
+  value: number;
+  dueDate: string;
+}
+
+export function useCreateBatchReceivables() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: {
+      storeId: string;
+      storeName: string;
+      osNumber: string;
+      clientName?: string;
+      date: string;
+      installments: OsTransferParcelaInput[];
+    }) => {
+      if (!payload.installments || payload.installments.length === 0) return [];
+
+      const rows = payload.installments.map(inst => ({
+        store_id: payload.storeId,
+        store_name: payload.storeName,
+        os_number: payload.osNumber,
+        installment: inst.installmentLabel,
+        description: `OS #${payload.osNumber} - ${payload.clientName || 'Cliente'} (${inst.installmentLabel})`,
+        type: 'Transferência',
+        payment_method: 'Transferência',
+        value: inst.value,
+        status: 'pendente',
+        date: payload.date,
+        due_date: inst.dueDate
+      }));
+
+      const { data, error } = await supabase
+        .from('receivables')
+        .insert(rows)
+        .select();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['receivables'] });
+      qc.invalidateQueries({ queryKey: ['receivables-by-date'] });
+      qc.invalidateQueries({ queryKey: ['receivables_summary'] });
+      qc.invalidateQueries({ queryKey: ['daily-reconciliation-summary'] });
+      qc.invalidateQueries({ queryKey: ['store-ordens-servico'] });
+    }
+  });
+}
+

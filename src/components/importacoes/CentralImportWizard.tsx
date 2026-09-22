@@ -520,6 +520,7 @@ export function CentralImportWizard({
       // 3. Dispara auto-pareamento bancário pós-ingestão em background
       try {
         await supabase.rpc('auto_match_daily_transactions', { p_date: targetDate });
+        await supabase.rpc('auto_match_receivables', { p_date: targetDate });
       } catch (matchErr) {
         console.warn('Auto match pós OCR:', matchErr);
       }
@@ -598,6 +599,7 @@ export function CentralImportWizard({
 
         try {
           await supabase.rpc('auto_match_daily_transactions', { p_date: targetDate });
+          await supabase.rpc('auto_match_receivables', { p_date: targetDate });
         } catch (matchErr) {
           console.warn('Auto match pós pátio manual:', matchErr);
         }
@@ -2242,6 +2244,20 @@ export function CentralImportWizard({
         addLog("Pareamento automático finalizado com observações.", "warning");
       }
 
+      // 4.0. Auto-match de Transferências Bancárias e Recebíveis (Spec 434)
+      addLog("⚡ Executando Baixa Automática de Transferências em Conta (Spec 434)...", "info");
+      try {
+        const { data: recMatchData, error: recMatchErr } = await supabase.rpc('auto_match_receivables', { p_date: targetDate });
+        if (!recMatchErr) {
+          const matchedRecCount = (recMatchData as any)?.matched_count || 0;
+          if (matchedRecCount > 0) {
+            addLog(`⚡ Auto-match Recebíveis: ${matchedRecCount} parcela(s) de transferência liquidada(s) automaticamente via OFX!`, "success");
+          }
+        }
+      } catch (recErr) {
+        console.warn("Aviso ao executar auto_match_receivables:", recErr);
+      }
+
       // 4.1. Conciliação Determinística de Cartões & Banco (Spec 426 - 100% A Compensar)
       addLog("⚡ Executando Blindagem de Cartões REDE (Spec 426 - 100% A Compensar)...", "info");
       try {
@@ -2299,14 +2315,15 @@ export function CentralImportWizard({
               .eq('store_id', sId)
               .eq('target_date', targetDate);
 
-            // Atualiza status baseado na reconciliação real entre Rede e OFX
+            // Atualiza status baseado na reconciliação real entre Rede e OFX (Spec 435: Zero canetada de saldo)
             if (storePosTxs && storePosTxs.length > 0) {
               const enteredPosIds: string[] = [];
               const pendingPosIds: string[] = [];
 
               storePosTxs.forEach((t: any) => {
+                const net = Number(t.net_amount || 0);
                 const isMatched = reconResult.conciliados.some(c => 
-                  Math.abs(c.valorLiquido - Number(t.net_amount || 0)) <= 0.01 ||
+                  Math.abs(c.valorLiquido - net) <= 0.01 ||
                   (t.dedup_hash && c.saleId && t.dedup_hash.includes(c.saleId))
                 );
                 if (isMatched) {

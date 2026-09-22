@@ -330,15 +330,16 @@ export function Step4FinalAuditAndClose({
           );
           const reconResult = reconciliador.executarReconciliacao();
 
-          // Atualiza status baseado na reconciliação real entre Rede e OFX
+          // Atualiza status baseado na reconciliação real entre Rede e OFX (Spec 435: Zero canetada de saldo)
           if (redeSales && redeSales.length > 0) {
             const enteredIds: string[] = [];
             const pendingIds: string[] = [];
 
             redeSales.forEach((s: any) => {
+              const net = Number(s.net_amount || s.netAmount || 0);
               const isMatched = reconResult.conciliados.some(c =>
                 c.saleId === s.id ||
-                Math.abs(c.valorLiquido - Number(s.net_amount || s.netAmount || 0)) <= 0.01
+                Math.abs(c.valorLiquido - net) <= 0.01
               );
               if (isMatched && s.id) {
                 enteredIds.push(s.id);

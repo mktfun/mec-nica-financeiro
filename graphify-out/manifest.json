@@ -80,8 +80,8 @@
     "semantic_hash": "345bdd57e188e0e4525edcd00e5003f5"
   },
   "package.json": {
-    "mtime": 1788987542.3316104,
-    "ast_hash": "0de1d1cfd95046d452f7a0fec4a8eaf8",
+    "mtime": 1789998735.6528397,
+    "ast_hash": "6e19d7eaaa49f58c7b62dc28939e816f",
     "semantic_hash": ""
   },
   "src/__mocks__/importFiles.ts": {
@@ -145,12 +145,12 @@
     "semantic_hash": "c31f98561148527ba8411689ec6cb924"
   },
   "src/components/conciliacao/BaixaDinheiroModal.tsx": {
-    "mtime": 1789759267.7433703,
+    "mtime": 1789998750.393567,
     "ast_hash": "3f0bf5ad54af87593fb0f62dfb157f33",
     "semantic_hash": ""
   },
   "src/components/conciliacao/ContasManualModal.tsx": {
-    "mtime": 1789678763.7892785,
+    "mtime": 1789998750.5507412,
     "ast_hash": "c19d8ceca7e84c270ad3cb5c9bc87162",
     "semantic_hash": ""
   },
@@ -190,9 +190,9 @@
     "semantic_hash": "afbb77f19654207603d67a779f46bd48"
   },
   "src/components/conciliacao/OsDetailModal.tsx": {
-    "mtime": 1787258027.4867642,
-    "ast_hash": "e1458d4fc3358cac2ee4a75c063276f0",
-    "semantic_hash": "e1458d4fc3358cac2ee4a75c063276f0"
+    "mtime": 1790105350.9804623,
+    "ast_hash": "e8a5def71c1b4929354d7f12fe10749a",
+    "semantic_hash": ""
   },
   "src/components/conciliacao/PatioOsDetailModal.tsx": {
     "mtime": 1788897271.5305955,
@@ -200,13 +200,13 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/ResumoDiaPanel.tsx": {
-    "mtime": 1789767287.6713548,
+    "mtime": 1789998750.5717764,
     "ast_hash": "687703a32b9832d9cabbc1a17f93e572",
     "semantic_hash": ""
   },
   "src/components/conciliacao/SaldoBancosDetailModal.tsx": {
-    "mtime": 1789760090.9720576,
-    "ast_hash": "ae9a27e98a2ff8f9fac5026a3d1f34ff",
+    "mtime": 1790109367.4016464,
+    "ast_hash": "45ca1bd54d65259dfe74ecdefaf92d6d",
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreCartaoMaquininhaView.tsx": {
@@ -215,14 +215,14 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreExtratoBancarioView.tsx": {
-    "mtime": 1789678763.801796,
-    "ast_hash": "87a7a553e478b940a0dd2aa96d3d82df",
+    "mtime": 1790080640.3032534,
+    "ast_hash": "aefa79914264165744127008fc13d966",
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreOrdensServicoView.tsx": {
-    "mtime": 1788185177.5393002,
-    "ast_hash": "635aa25e6d3d4f60af811a5a13f721ab",
-    "semantic_hash": "635aa25e6d3d4f60af811a5a13f721ab"
+    "mtime": 1790105288.3232718,
+    "ast_hash": "99858271a29310be5dc4d5f1f6c395ca",
+    "semantic_hash": ""
   },
   "src/components/conciliacao/WhisperDot.tsx": {
     "mtime": 1787062809.3165278,
@@ -370,8 +370,8 @@
     "semantic_hash": "94cd9e2d37f2296c4606ca17ed361202"
   },
   "src/components/importacoes/CentralImportWizard.tsx": {
-    "mtime": 1789997329.4718442,
-    "ast_hash": "0f9ffebccb15a62f31eb7ae84054323e",
+    "mtime": 1790109063.6317272,
+    "ast_hash": "616107a493fc3254c6515d1e96fdf5b9",
     "semantic_hash": ""
   },
   "src/components/importacoes/DiagnosticPanel.tsx": {
@@ -420,13 +420,13 @@
     "semantic_hash": ""
   },
   "src/components/importacoes/wizard/Step3CashVaultDaniel.tsx": {
-    "mtime": 1789735784.6833215,
+    "mtime": 1789998750.8984542,
     "ast_hash": "d89b7dddab2dd15da67b3aad4dfe717e",
     "semantic_hash": ""
   },
   "src/components/importacoes/wizard/Step4FinalAuditAndClose.tsx": {
-    "mtime": 1789564206.7020762,
-    "ast_hash": "51a936b51e9114a486be9c9d3d937ced",
+    "mtime": 1790109113.2871745,
+    "ast_hash": "41642eee8a22eb31dc908bbf532665d6",
     "semantic_hash": ""
   },
   "src/components/importacoes/wizard/types.ts": {
@@ -530,7 +530,7 @@
     "semantic_hash": "9de2b7bcff6b540490863ab113746c44"
   },
   "src/components/ui/Modal.tsx": {
-    "mtime": 1789760062.2767534,
+    "mtime": 1789998751.0198338,
     "ast_hash": "d7f992521f35118c72a889a7a36f744a",
     "semantic_hash": ""
   },
@@ -610,8 +610,8 @@
     "semantic_hash": "43d7881346dbd48b48bea308ff8f45d5"
   },
   "src/hooks/useBackendConciliacao.ts": {
-    "mtime": 1789691258.2983902,
-    "ast_hash": "7c411a887138b5f5ce9dc399266c9f6a",
+    "mtime": 1790109273.6864269,
+    "ast_hash": "5ee5dd0739cbc304115d5b2d36b81722",
     "semantic_hash": ""
   },
   "src/hooks/useBackendDashboard.ts": {
@@ -665,7 +665,7 @@
     "semantic_hash": ""
   },
   "src/hooks/useDailySnapshot.ts": {
-    "mtime": 1789997287.3548863,
+    "mtime": 1789998737.546032,
     "ast_hash": "5304e24604cb96084abe4db407324d38",
     "semantic_hash": ""
   },
@@ -755,9 +755,9 @@
     "semantic_hash": "1207524d70ce7c1d70fc2ae6efb8aab6"
   },
   "src/hooks/useRecebiveis.ts": {
-    "mtime": 1787682492.5214386,
-    "ast_hash": "4b6cf2be98ce451bfbf1beb57ded5225",
-    "semantic_hash": "4b6cf2be98ce451bfbf1beb57ded5225"
+    "mtime": 1790105018.5709412,
+    "ast_hash": "26a700b2824d33a678ff49ccc635fed3",
+    "semantic_hash": ""
   },
   "src/hooks/useReconciliationInsights.ts": {
     "mtime": 1787084150.432938,
@@ -780,7 +780,7 @@
     "semantic_hash": "92a22d193c252267ba0a5b25068f2047"
   },
   "src/hooks/useTransactions.ts": {
-    "mtime": 1789678763.8274834,
+    "mtime": 1789998751.1344435,
     "ast_hash": "e0bab26683e00f6842ad2571b2b4221f",
     "semantic_hash": ""
   },
@@ -855,8 +855,8 @@
     "semantic_hash": "8da0ddd7569bac2676b9a5c8edff8a36"
   },
   "src/lib/expenseMatcher.ts": {
-    "mtime": 1788958198.5311196,
-    "ast_hash": "c5cdab5da17baf44001ab7df128ae173",
+    "mtime": 1790080293.6585548,
+    "ast_hash": "c94f838ac03c8a1c8e7f020266dd8c56",
     "semantic_hash": ""
   },
   "src/lib/format.ts": {
@@ -880,8 +880,8 @@
     "semantic_hash": "77f2c842f4e8cc225e9275341979a922"
   },
   "src/lib/llm-matcher.ts": {
-    "mtime": 1789127050.248951,
-    "ast_hash": "b9dda14a6fac590cb1e36fe5434c6ddf",
+    "mtime": 1790102785.342357,
+    "ast_hash": "19eff69120c6f390ac4fd2dd0c975172",
     "semantic_hash": ""
   },
   "src/lib/logger.ts": {
@@ -890,7 +890,7 @@
     "semantic_hash": "365b1814e81dfcb1e0e78f4a3891d306"
   },
   "src/lib/matchers/autoMatchingEngine.ts": {
-    "mtime": 1789678763.8419607,
+    "mtime": 1789998751.157905,
     "ast_hash": "8680e06d2e1a932fce33596f5693667b",
     "semantic_hash": ""
   },
@@ -960,8 +960,8 @@
     "semantic_hash": "c1ea70a3fb7a73ae5bc7190ba9162796"
   },
   "src/lib/parsers/ofxParser.ts": {
-    "mtime": 1789481171.645123,
-    "ast_hash": "bf41bb19f6026ea777fdc493115dc846",
+    "mtime": 1790109353.2325263,
+    "ast_hash": "4434c45d88dd45f478e5e7056758fba1",
     "semantic_hash": ""
   },
   "src/lib/parsers/recebiveisParser.ts": {
@@ -1110,7 +1110,7 @@
     "semantic_hash": "dcaa91229687feaa3ec91544f1f6e293"
   },
   "src/routes/recebiveis.tsx": {
-    "mtime": 1789678763.8531551,
+    "mtime": 1789998751.1798859,
     "ast_hash": "776cdcb33c63e9c4a2f37e1537762042",
     "semantic_hash": ""
   },
@@ -1890,14 +1890,14 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/ConciliacaoLojasView.tsx": {
-    "mtime": 1789678763.7744617,
-    "ast_hash": "918b06b219adea8e26a9c155dcc860ec",
+    "mtime": 1790081881.89249,
+    "ast_hash": "4478f85ba8540e323bfbdea29dd69af0",
     "semantic_hash": ""
   },
   "src/components/conciliacao/StoreCardModulo1.tsx": {
-    "mtime": 1788288039.0864289,
-    "ast_hash": "e6954d57bcec9bd924d44071aadb5d8c",
-    "semantic_hash": "e6954d57bcec9bd924d44071aadb5d8c"
+    "mtime": 1790099479.8899918,
+    "ast_hash": "c104b260e2cc894a2e6e43212bbb87b6",
+    "semantic_hash": ""
   },
   "supabase/migrations/20260901000003_fix_store_breakdown_metrics_and_differences.sql": {
     "mtime": 1788283409.7413175,
@@ -1910,8 +1910,8 @@
     "semantic_hash": ""
   },
   ".agent/rules/ia.md": {
-    "mtime": 1789678763.5538783,
-    "ast_hash": "a816a9f597fa3a44bd5b8523fa99a71d",
+    "mtime": 1790099127.4017239,
+    "ast_hash": "2cef85136cf070fcf9aef7ab91987a83",
     "semantic_hash": ""
   },
   ".antigravity/rules.md": {
@@ -1925,7 +1925,7 @@
     "semantic_hash": ""
   },
   "ORIGINAL_REQUEST.md": {
-    "mtime": 1789678763.5794277,
+    "mtime": 1789998750.1073208,
     "ast_hash": "6efb2df51a279f64d9d46fd81ac507c4",
     "semantic_hash": ""
   },
@@ -3240,8 +3240,8 @@
     "semantic_hash": ""
   },
   "specs/global/features.md": {
-    "mtime": 1789733250.8560276,
-    "ast_hash": "bca220cea08e9909607c042e452bca90",
+    "mtime": 1790099395.6080124,
+    "ast_hash": "027481ae28fa041cd1eb89048e41b862",
     "semantic_hash": ""
   },
   "specs/global/features_clean.md": {
@@ -3770,12 +3770,12 @@
     "semantic_hash": "01daa1f2b5dd57276972e4e1c075ccd5"
   },
   "GEMINI.md": {
-    "mtime": 1789678763.5691056,
-    "ast_hash": "a816a9f597fa3a44bd5b8523fa99a71d",
+    "mtime": 1790099127.4017239,
+    "ast_hash": "2cef85136cf070fcf9aef7ab91987a83",
     "semantic_hash": ""
   },
   "skills/INDEX.md": {
-    "mtime": 1789678763.6783192,
+    "mtime": 1789664136.7130277,
     "ast_hash": "d1b446e87938745c10f2595076464c30",
     "semantic_hash": ""
   },
@@ -3810,43 +3810,43 @@
     "semantic_hash": ""
   },
   "skills/council-debate/SKILL.md": {
-    "mtime": 1789678605.6822288,
+    "mtime": 1789664064.2349565,
     "ast_hash": "70e4e64e60c7dce38f25a48403495a09",
     "semantic_hash": ""
   },
   "skills/council-debate/agents/analyst.md": {
-    "mtime": 1789678605.6842275,
+    "mtime": 1789664064.2357228,
     "ast_hash": "e6d80be0d45f57d55d822bb5594b5378",
     "semantic_hash": ""
   },
   "skills/council-debate/agents/architect.md": {
-    "mtime": 1789678605.6858046,
+    "mtime": 1789664064.236714,
     "ast_hash": "6b0185f2ea5ced812707a56fec0d9084",
     "semantic_hash": ""
   },
   "skills/council-debate/agents/contrarian.md": {
-    "mtime": 1789678605.686801,
+    "mtime": 1789664064.236714,
     "ast_hash": "94195ff691bf6bab03b3709ab87561bc",
     "semantic_hash": ""
   },
   "skills/council-debate/agents/engineer.md": {
-    "mtime": 1789678605.6877985,
+    "mtime": 1789664064.2381673,
     "ast_hash": "cdfd5289fea93dd9b6194f91ad2b51f1",
     "semantic_hash": ""
   },
   "skills/council-debate/agents/synthesizer.md": {
-    "mtime": 1789678605.6891434,
+    "mtime": 1789664064.2389956,
     "ast_hash": "f3c61f745902b8b419c226c9e0969248",
     "semantic_hash": ""
   },
   "skills/council-debate/references/debate-rules.md": {
-    "mtime": 1789678605.6914866,
+    "mtime": 1789664064.240615,
     "ast_hash": "6192182b1974b386d83f4edb4557f298",
     "semantic_hash": ""
   },
   "skills/database/SKILL.md": {
-    "mtime": 1788271950.1377473,
-    "ast_hash": "24b327ecdfa66dcff5d2e8fd82e24ed6",
+    "mtime": 1790099170.0913131,
+    "ast_hash": "239688ba26f42ed47b2be7255b728838",
     "semantic_hash": ""
   },
   "skills/database/references/rls-patterns.md": {
@@ -3860,8 +3860,8 @@
     "semantic_hash": ""
   },
   "skills/deploy-production/SKILL.md": {
-    "mtime": 1788272101.172544,
-    "ast_hash": "8c2773d4b5232492db50d3addbc00c69",
+    "mtime": 1790099186.2084475,
+    "ast_hash": "b3fb5b5d2d7baa904f3f17fdfb7e9ae2",
     "semantic_hash": ""
   },
   "skills/deploy-production/references/checklist-launch.md": {
@@ -3870,12 +3870,12 @@
     "semantic_hash": ""
   },
   "skills/frontend-design-pro/SKILL.md": {
-    "mtime": 1788984302.4626563,
-    "ast_hash": "222cca7211646c48b101d27103d083d4",
+    "mtime": 1790099152.6690073,
+    "ast_hash": "307aa7c41ff4a9116d0c8bf9c5436538",
     "semantic_hash": ""
   },
   "skills/github-ops/SKILL.md": {
-    "mtime": 1789678763.6937997,
+    "mtime": 1789666430.4241393,
     "ast_hash": "6daa423ff56c7b1f9e51894800efd502",
     "semantic_hash": ""
   },
@@ -3890,7 +3890,7 @@
     "semantic_hash": ""
   },
   "skills/sdd-archive/SKILL.md": {
-    "mtime": 1789678763.7095654,
+    "mtime": 1789664703.532526,
     "ast_hash": "0f9c93155e9861f0b94fb1b18e169bbe",
     "semantic_hash": ""
   },
@@ -3900,8 +3900,8 @@
     "semantic_hash": ""
   },
   "skills/sdd-proposal/SKILL.md": {
-    "mtime": 1789069419.8123927,
-    "ast_hash": "c90228b3a97bcb1166e1d49e54564d97",
+    "mtime": 1790099322.1945598,
+    "ast_hash": "62509165c0b7592821021eb010e8b592",
     "semantic_hash": ""
   },
   "skills/sdd-proposal/references/inference-rules.md": {
@@ -3950,7 +3950,7 @@
     "semantic_hash": ""
   },
   "skills/ui-motion/SKILL.md": {
-    "mtime": 1789678763.7250268,
+    "mtime": 1789666448.0792768,
     "ast_hash": "5cedaa7818a0a8322dc8c5a366ea7009",
     "semantic_hash": ""
   },
@@ -4140,8 +4140,8 @@
     "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1789678763.5562994,
-    "ast_hash": "a816a9f597fa3a44bd5b8523fa99a71d",
+    "mtime": 1790099127.4017239,
+    "ast_hash": "2cef85136cf070fcf9aef7ab91987a83",
     "semantic_hash": ""
   },
   "src/components/conciliacao/TransactionDetailModal.tsx": {
@@ -4155,7 +4155,7 @@
     "semantic_hash": ""
   },
   "DESIGN.md": {
-    "mtime": 1789678763.5678816,
+    "mtime": 1789660096.0413563,
     "ast_hash": "57d1436646f42df8e24760fc47bdbdfd",
     "semantic_hash": ""
   },
@@ -4240,8 +4240,8 @@
     "semantic_hash": ""
   },
   "src/lib/matchers/reconciliadorRedeOfx.ts": {
-    "mtime": 1789995926.216689,
-    "ast_hash": "c4247bf66841ac59a61dab53b2608297",
+    "mtime": 1790109045.0073833,
+    "ast_hash": "adb2d479f2f4e4493fef0be99888119e",
     "semantic_hash": ""
   },
   "supabase/migrations/20260910000046_fix_cash_vault_deposit_and_summary_alignment.sql": {
@@ -4275,8 +4275,8 @@
     "semantic_hash": ""
   },
   "src/components/conciliacao/CashVaultCompositionModal.tsx": {
-    "mtime": 1789678763.7594125,
-    "ast_hash": "77e0248be443c69f5c42ce90c7479edb",
+    "mtime": 1790023370.2600157,
+    "ast_hash": "5f112931e574e8c9773b1ad9bd3c7877",
     "semantic_hash": ""
   },
   "supabase/migrations/20260915000050_fix_rpc_summary_card_settlement_and_vault_status.sql": {
@@ -4290,8 +4290,8 @@
     "semantic_hash": ""
   },
   "rpc_dump.sql": {
-    "mtime": 1789678764.3483293,
-    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "mtime": 1790081644.7060995,
+    "ast_hash": "b939441fcad89d984180c2e331a85323",
     "semantic_hash": ""
   },
   "src/hooks/useDailyReconciliationSummary.ts": {
@@ -4310,7 +4310,7 @@
     "semantic_hash": ""
   },
   "src/routes/teste.import.tsx": {
-    "mtime": 1789767298.0392902,
+    "mtime": 1789998751.202699,
     "ast_hash": "66836740d3c0d8e2de1986858baa1fd6",
     "semantic_hash": ""
   },
@@ -4480,7 +4480,7 @@
     "semantic_hash": ""
   },
   ".github/PULL_REQUEST_TEMPLATE.md": {
-    "mtime": 1789678764.2565877,
+    "mtime": 1789666409.6768982,
     "ast_hash": "d2c1239c88686a44c4b2933dfc61c1f6",
     "semantic_hash": ""
   },
@@ -4495,7 +4495,7 @@
     "semantic_hash": ""
   },
   "docs/manual-operacao-antigravity.md": {
-    "mtime": 1789678764.307799,
+    "mtime": 1789666467.7474992,
     "ast_hash": "d0e787bd8dc315a68f5fe30facb48ef6",
     "semantic_hash": ""
   },
@@ -4680,8 +4680,8 @@
     "semantic_hash": ""
   },
   "src/lib/sandbox/sandboxCalculator.ts": {
-    "mtime": 1789758104.4968722,
-    "ast_hash": "65f885c09f332010c3208941a30d8547",
+    "mtime": 1790001899.6178195,
+    "ast_hash": "e3574eda7375dfee934d8c4fb4310bb5",
     "semantic_hash": ""
   },
   "src/lib/sandbox/sandboxStorage.ts": {
@@ -4719,34 +4719,199 @@
     "ast_hash": "48f6ad9c122aa21434db50d2516355da",
     "semantic_hash": ""
   },
-  "specs/423-incidente-2109-reparo-e-blindagem-ofx/design.md": {
-    "mtime": 1789995422.0983808,
-    "ast_hash": "1fd0ba760be7116592ce242f6f4b692f",
+  "src/components/conciliacao/CadastrarTransferenciaOsModal.tsx": {
+    "mtime": 1790105050.6085927,
+    "ast_hash": "7e09f67304e9f64ee4df286384ac3d86",
     "semantic_hash": ""
   },
-  "specs/423-incidente-2109-reparo-e-blindagem-ofx/proposal.md": {
-    "mtime": 1789995404.2890677,
-    "ast_hash": "4b666b4623881b1c99be8bae5dd8fb64",
+  "supabase/migrations/20260922000001_harden_auto_match_saidas_and_intercompany.sql": {
+    "mtime": 1790080382.569075,
+    "ast_hash": "f6cce0502507d12c707cba91ee6e873c",
     "semantic_hash": ""
   },
-  "specs/423-incidente-2109-reparo-e-blindagem-ofx/spec-plan.md": {
-    "mtime": 1789995611.5874603,
-    "ast_hash": "827277d9d25cb55dcc81ea6875a3c703",
+  "supabase/migrations/20260922000002_fix_resolve_orphan_saida_ofx.sql": {
+    "mtime": 1790080568.075433,
+    "ast_hash": "2d3a324f4c7360bc968e51896b83a58e",
     "semantic_hash": ""
   },
-  "specs/424-restauracao-1809-expurgo-19a21-e-filtro-datas-efetivas/design.md": {
-    "mtime": 1789996537.11671,
-    "ast_hash": "cb163e3dd5199220111bcf306b63b933",
+  "supabase/migrations/20260922000003_equalize_c6_centralized_expenses.sql": {
+    "mtime": 1790080993.725996,
+    "ast_hash": "fe11fbc741c36c096a67cf7442bc63e4",
     "semantic_hash": ""
   },
-  "specs/424-restauracao-1809-expurgo-19a21-e-filtro-datas-efetivas/proposal.md": {
-    "mtime": 1789996522.927541,
-    "ast_hash": "9a974db42272ea564cd1acb0fcbe9bac",
+  "supabase/migrations/20260922000004_equalize_summary_rpc_centralized_saidas.sql": {
+    "mtime": 1790081789.96973,
+    "ast_hash": "30003df816e93cb234ca38ae325a8717",
     "semantic_hash": ""
   },
-  "specs/424-restauracao-1809-expurgo-19a21-e-filtro-datas-efetivas/spec-plan.md": {
-    "mtime": 1789997629.3550217,
-    "ast_hash": "1ab12cd1610de005cca0aaff80cb3a4b",
+  "skills/browser-qa/SKILL.md": {
+    "mtime": 1790099380.3681345,
+    "ast_hash": "ba480c528f902d8accccbbda7e9842f2",
+    "semantic_hash": ""
+  },
+  "specs/425-reset-base-ate-1809-e-reversao-patio-os-dia-17/design.md": {
+    "mtime": 1790000177.053898,
+    "ast_hash": "42ea885de3dfc162b37c887264395639",
+    "semantic_hash": ""
+  },
+  "specs/425-reset-base-ate-1809-e-reversao-patio-os-dia-17/proposal.md": {
+    "mtime": 1790000020.8038871,
+    "ast_hash": "04b63b8062e120578d286d1fa680a2ec",
+    "semantic_hash": ""
+  },
+  "specs/425-reset-base-ate-1809-e-reversao-patio-os-dia-17/spec-plan.md": {
+    "mtime": 1790000964.023664,
+    "ast_hash": "d7d04ef081c7d0d290e7d7f553e90765",
+    "semantic_hash": ""
+  },
+  "specs/426-blindagem-rede-100-porcento-a-compensar/design.md": {
+    "mtime": 1790001650.5101068,
+    "ast_hash": "4b1e1facf71935c5b5e98820c1730b8b",
+    "semantic_hash": ""
+  },
+  "specs/426-blindagem-rede-100-porcento-a-compensar/proposal.md": {
+    "mtime": 1790001638.293476,
+    "ast_hash": "0f718febade17379b0feea060f35c196",
+    "semantic_hash": ""
+  },
+  "specs/426-blindagem-rede-100-porcento-a-compensar/spec-plan.md": {
+    "mtime": 1790002118.3181417,
+    "ast_hash": "36768ea618f996fbde252852063b6997",
+    "semantic_hash": ""
+  },
+  "specs/427-correcao-caixa-atual-auto-save-cartoes-e-cofre/design.md": {
+    "mtime": 1790020761.1565292,
+    "ast_hash": "89b43b2dd40459c96a60e1e178157459",
+    "semantic_hash": ""
+  },
+  "specs/427-correcao-caixa-atual-auto-save-cartoes-e-cofre/proposal.md": {
+    "mtime": 1790020750.7488337,
+    "ast_hash": "dd2bcbf8a62fbf34359d7b1e2c65f82d",
+    "semantic_hash": ""
+  },
+  "specs/427-correcao-caixa-atual-auto-save-cartoes-e-cofre/spec-plan.md": {
+    "mtime": 1790021482.2079594,
+    "ast_hash": "1d0fe0bc377c5a3b9cecf9f1f94f8746",
+    "semantic_hash": ""
+  },
+  "specs/428-redesign-gestao-dinheiro-cofre-modal/design.md": {
+    "mtime": 1790022568.92554,
+    "ast_hash": "3df69bd27898ff1d3f95b94844ed5f2c",
+    "semantic_hash": ""
+  },
+  "specs/428-redesign-gestao-dinheiro-cofre-modal/proposal.md": {
+    "mtime": 1790022554.1679628,
+    "ast_hash": "fc10c0b414ad4b9f74fa832ac4c3a699",
+    "semantic_hash": ""
+  },
+  "specs/428-redesign-gestao-dinheiro-cofre-modal/spec-plan.md": {
+    "mtime": 1790023557.3258057,
+    "ast_hash": "424783f88b0c681e8bd4e9e7f5f8a26d",
+    "semantic_hash": ""
+  },
+  "specs/429-auditoria-eliminatoria-conciliacao-2109/design.md": {
+    "mtime": 1790024869.337459,
+    "ast_hash": "cbcdf19dd2a895236bc79ffe365a96a7",
+    "semantic_hash": ""
+  },
+  "specs/429-auditoria-eliminatoria-conciliacao-2109/proposal.md": {
+    "mtime": 1790024858.5186093,
+    "ast_hash": "8c6797fc173aa12c24037ac94b4d359a",
+    "semantic_hash": ""
+  },
+  "specs/429-auditoria-eliminatoria-conciliacao-2109/spec-plan.md": {
+    "mtime": 1790024878.2515125,
+    "ast_hash": "6b58bd0e9fbb06bc77c94e5acd29151e",
+    "semantic_hash": ""
+  },
+  "specs/430-calibracao-matcher-saidas-e-saneamento-contas-2209/design.md": {
+    "mtime": 1790079298.5907066,
+    "ast_hash": "79a4825b111e00760fab6d2e942a1d8b",
+    "semantic_hash": ""
+  },
+  "specs/430-calibracao-matcher-saidas-e-saneamento-contas-2209/proposal.md": {
+    "mtime": 1790079286.9799094,
+    "ast_hash": "6abc04d79653ad47a6285f62f198ce5e",
+    "semantic_hash": ""
+  },
+  "specs/430-calibracao-matcher-saidas-e-saneamento-contas-2209/spec-plan.md": {
+    "mtime": 1790082031.1042318,
+    "ast_hash": "4a44c676f03d7d78cf2e213dd4a3c8ec",
+    "semantic_hash": ""
+  },
+  "specs/431-saneamento-caixa-atual-patio-e-reconciliacao-macro/design.md": {
+    "mtime": 1790086668.0789342,
+    "ast_hash": "b8a167e58d5d72dee7791d537ce7d577",
+    "semantic_hash": ""
+  },
+  "specs/431-saneamento-caixa-atual-patio-e-reconciliacao-macro/proposal.md": {
+    "mtime": 1790087084.4882975,
+    "ast_hash": "86a0615d62309ddda11a27dcd9d0e729",
+    "semantic_hash": ""
+  },
+  "specs/431-saneamento-caixa-atual-patio-e-reconciliacao-macro/spec-plan.md": {
+    "mtime": 1790087443.061094,
+    "ast_hash": "4c00b53785063e70310eb03a43fc47a6",
+    "semantic_hash": ""
+  },
+  "specs/432-auditoria-saldos-ofx-rede-e-compensacao/design.md": {
+    "mtime": 1790098606.1832016,
+    "ast_hash": "8584fb018a570829becd5e386dfa0b58",
+    "semantic_hash": ""
+  },
+  "specs/432-auditoria-saldos-ofx-rede-e-compensacao/proposal.md": {
+    "mtime": 1790098409.0271375,
+    "ast_hash": "a23fec88f30b3ddb195e5bff35fa088e",
+    "semantic_hash": ""
+  },
+  "specs/432-auditoria-saldos-ofx-rede-e-compensacao/spec-plan.md": {
+    "mtime": 1790099727.8336873,
+    "ast_hash": "b459b5508bbb5ad1f3e641b481ed19d7",
+    "semantic_hash": ""
+  },
+  "specs/433-match-rede-ofx-deduplicacao-saldo/design.md": {
+    "mtime": 1790102443.3157907,
+    "ast_hash": "ab5da432e3496b37bb28c0888756db20",
+    "semantic_hash": ""
+  },
+  "specs/433-match-rede-ofx-deduplicacao-saldo/proposal.md": {
+    "mtime": 1790102443.314456,
+    "ast_hash": "873eb708acfada863e7140e1a0d0a110",
+    "semantic_hash": ""
+  },
+  "specs/433-match-rede-ofx-deduplicacao-saldo/spec-plan.md": {
+    "mtime": 1790103050.6793392,
+    "ast_hash": "ad34f0c8a292ef1f46f4d796046b52e2",
+    "semantic_hash": ""
+  },
+  "specs/434-os-transferencia-em-conta-recebiveis-automatch/design.md": {
+    "mtime": 1790103777.7607458,
+    "ast_hash": "7c36edd6f9efefa4eb1dc3adb0c06d18",
+    "semantic_hash": ""
+  },
+  "specs/434-os-transferencia-em-conta-recebiveis-automatch/proposal.md": {
+    "mtime": 1790103777.7607458,
+    "ast_hash": "d6f37a99c1a286814cb3ecb4e59593aa",
+    "semantic_hash": ""
+  },
+  "specs/434-os-transferencia-em-conta-recebiveis-automatch/spec-plan.md": {
+    "mtime": 1790105595.1591752,
+    "ast_hash": "986ff6bbde395a3a32876e7c96904845",
+    "semantic_hash": ""
+  },
+  "specs/435-fix-matcher-rede-ofx-saldos-filiais/design.md": {
+    "mtime": 1790108914.5831425,
+    "ast_hash": "f80936d7d939534abf9d20ef7b94e346",
+    "semantic_hash": ""
+  },
+  "specs/435-fix-matcher-rede-ofx-saldos-filiais/proposal.md": {
+    "mtime": 1790108914.5831425,
+    "ast_hash": "9f2eecc5433b56bf52fe16be8d299484",
+    "semantic_hash": ""
+  },
+  "specs/435-fix-matcher-rede-ofx-saldos-filiais/spec-plan.md": {
+    "mtime": 1790109626.9025218,
+    "ast_hash": "51328b7f8a659034f928ae02a6ecc92b",
     "semantic_hash": ""
   }
 }

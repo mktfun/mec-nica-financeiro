@@ -215,11 +215,21 @@ export class ReconciliadorRedeOFX {
     for (const sale of salesList) {
       if (sale.statusMatch) continue;
 
-      const matchIdx = bancoCreditos.findIndex(c => 
-        !c.statusMatch &&
-        c.remainingAmount > 0 &&
-        Math.abs(c.remainingAmount - sale.valorLiquido) <= 0.01
-      );
+      const saleIsDebit = (sale.method || '').toLowerCase().includes('deb') || (sale.method || '').toLowerCase().includes('déb');
+      const saleIsCredit = (sale.method || '').toLowerCase().includes('cred') || (sale.method || '').toLowerCase().includes('créd');
+
+      const matchIdx = bancoCreditos.findIndex(c => {
+        if (c.statusMatch || c.remainingAmount <= 0) return false;
+        if (Math.abs(c.remainingAmount - sale.valorLiquido) > 0.05) return false;
+
+        // Se ambos especificarem tipo (debito vs credito), respeitar
+        const creditIsDebit = /[\s\b](db|deb|débito|debito)[\s\b\d]/i.test(c.memo);
+        const creditIsCredit = /[\s\b](at|cr|crédito|credito)[\s\b\d]/i.test(c.memo);
+        if (saleIsDebit && creditIsCredit && !creditIsDebit) return false;
+        if (saleIsCredit && creditIsDebit && !creditIsCredit) return false;
+
+        return true;
+      });
 
       if (matchIdx !== -1) {
         const credit = bancoCreditos[matchIdx];
@@ -235,86 +245,63 @@ export class ReconciliadorRedeOFX {
     }
 
     // =========================================================================
-    // ESTÁGIO 2: Match por Soma Líquida do Lote de Bandeira (Spec 399)
-    // Agrupa todas as vendas da bandeira e cruza com a soma dos créditos daquela bandeira no extrato
+    // ESTÁGIO 2: Match por Soma Líquida do Lote de Bandeira e Modalidade (Spec 399 / Spec 435)
+    // Agrupa as vendas da bandeira/modalidade e cruza com a soma dos créditos correspondentes no extrato
     // =========================================================================
     const brands: CardBrand[] = ['Mastercard', 'Visa', 'Elo', 'Hipercard', 'Outros'];
+    const modalities: Array<'debito' | 'credito' | 'todos'> = ['debito', 'credito', 'todos'];
+
     for (const brand of brands) {
-      const pendingBrandSales = salesList.filter(s => !s.statusMatch && s.brand === brand);
-      const availableBrandCredits = bancoCreditos.filter(c => c.brand === brand && c.remainingAmount > 0);
+      for (const mod of modalities) {
+        const pendingBrandSales = salesList.filter(s => {
+          if (s.statusMatch || s.brand !== brand) return false;
+          if (mod === 'todos') return true;
+          const sIsDeb = (s.method || '').toLowerCase().includes('deb') || (s.method || '').toLowerCase().includes('déb');
+          return mod === 'debito' ? sIsDeb : !sIsDeb;
+        });
 
-      const sumSales = Number(pendingBrandSales.reduce((acc, s) => acc + s.valorLiquido, 0).toFixed(2));
-      const sumCredits = Number(availableBrandCredits.reduce((acc, c) => acc + c.remainingAmount, 0).toFixed(2));
+        const availableBrandCredits = bancoCreditos.filter(c => {
+          if (c.brand !== brand || c.remainingAmount <= 0) return false;
+          if (mod === 'todos') return true;
+          const cIsDeb = /[\s\b](db|deb|débito|debito)[\s\b\d]/i.test(c.memo);
+          const cIsCred = /[\s\b](at|cr|crédito|credito)[\s\b\d]/i.test(c.memo);
+          if (mod === 'debito') return cIsDeb;
+          return cIsCred;
+        });
 
-      if (sumSales > 0 && sumCredits > 0) {
-        const diff = Math.abs(sumCredits - sumSales);
-        // Bate se a diferença for até R$ 0.05 ou pequena variação por desconto MDR
-        const isMatch = diff <= 0.05 || (diff <= Math.max(0.05, sumSales * 0.03) && sumCredits <= sumSales);
+        const sumSales = Number(pendingBrandSales.reduce((acc, s) => acc + s.valorLiquido, 0).toFixed(2));
+        const sumCredits = Number(availableBrandCredits.reduce((acc, c) => acc + c.remainingAmount, 0).toFixed(2));
 
-        if (isMatch) {
-          pendingBrandSales.forEach(s => {
-            s.statusMatch = true;
-            s.fitidBancoVinculado = availableBrandCredits[0]?.fitid;
-            s.valorBancoVinculado = s.valorLiquido;
-            s.reasoning = `Lote da bandeira ${brand} liquidado integralmente no OFX (Vendas: R$ ${sumSales.toFixed(2)}, Banco: R$ ${sumCredits.toFixed(2)})`;
-          });
+        if (sumSales > 0 && sumCredits > 0) {
+          const diff = Math.abs(sumCredits - sumSales);
+          // Bate se a diferença for até R$ 0.05 ou pequena variação por desconto MDR
+          const isMatch = diff <= 0.05 || (diff <= Math.max(0.05, sumSales * 0.03) && sumCredits <= sumSales);
 
-          let remainingToDeduct = sumSales;
-          for (const c of availableBrandCredits) {
-            const deduct = Math.min(c.remainingAmount, remainingToDeduct);
-            c.remainingAmount = Number((c.remainingAmount - deduct).toFixed(2));
-            remainingToDeduct = Number((remainingToDeduct - deduct).toFixed(2));
-            c.statusMatch = true;
-            pendingBrandSales.forEach(s => c.vinculadoSaleIds.push(s.saleId));
-            if (remainingToDeduct <= 0) break;
+          if (isMatch) {
+            pendingBrandSales.forEach(s => {
+              s.statusMatch = true;
+              s.fitidBancoVinculado = availableBrandCredits[0]?.fitid;
+              s.valorBancoVinculado = s.valorLiquido;
+              s.reasoning = `Lote da bandeira ${brand} (${mod}) liquidado no OFX (Vendas: R$ ${sumSales.toFixed(2)}, Banco: R$ ${sumCredits.toFixed(2)})`;
+            });
+
+            let remainingToDeduct = sumSales;
+            for (const c of availableBrandCredits) {
+              const deduct = Math.min(c.remainingAmount, remainingToDeduct);
+              c.remainingAmount = Number((c.remainingAmount - deduct).toFixed(2));
+              remainingToDeduct = Number((remainingToDeduct - deduct).toFixed(2));
+              c.statusMatch = true;
+              pendingBrandSales.forEach(s => c.vinculadoSaleIds.push(s.saleId));
+              if (remainingToDeduct <= 0) break;
+            }
           }
         }
       }
     }
 
     // =========================================================================
-    // ESTÁGIO 3: Lote Consolidado Loja (quando o banco recebe depósito integral)
-    // =========================================================================
-    const remainingPendingSales = salesList.filter(s => !s.statusMatch);
-    const sumPending = Number(remainingPendingSales.reduce((acc, s) => acc + s.valorLiquido, 0).toFixed(2));
-    let totalRemainingCredit = Number(bancoCreditos.reduce((acc, c) => acc + c.remainingAmount, 0).toFixed(2));
-
-    if (sumPending > 0 && totalRemainingCredit >= sumPending - 0.05) {
-      remainingPendingSales.forEach(s => {
-        s.statusMatch = true;
-        s.fitidBancoVinculado = bancoCreditos[0]?.fitid;
-        s.valorBancoVinculado = s.valorLiquido;
-        s.reasoning = `Lote consolidado da loja creditado no OFX (R$ ${totalCreditadoBanco.toFixed(2)})`;
-      });
-
-      let remainingToDeduct = sumPending;
-      for (const c of bancoCreditos) {
-        if (c.remainingAmount <= 0) continue;
-        const deduct = Math.min(c.remainingAmount, remainingToDeduct);
-        c.remainingAmount = Number((c.remainingAmount - deduct).toFixed(2));
-        remainingToDeduct = Number((remainingToDeduct - deduct).toFixed(2));
-        c.statusMatch = true;
-        if (remainingToDeduct <= 0) break;
-      }
-    } else if (totalRemainingCredit > 0 && remainingPendingSales.length > 0) {
-      // Cobertura parcial gulosa: maiores vendas primeiro
-      const sorted = [...remainingPendingSales].sort((a, b) => b.valorLiquido - a.valorLiquido);
-      for (const s of sorted) {
-        const availableCredit = bancoCreditos.find(c => c.remainingAmount >= s.valorLiquido - 0.05);
-        if (availableCredit) {
-          s.statusMatch = true;
-          s.fitidBancoVinculado = availableCredit.fitid;
-          s.valorBancoVinculado = s.valorLiquido;
-          s.reasoning = `Coberto por crédito parcial da adquirente no OFX (${availableCredit.fitid})`;
-          availableCredit.remainingAmount = Number((availableCredit.remainingAmount - s.valorLiquido).toFixed(2));
-          availableCredit.statusMatch = true;
-          availableCredit.vinculadoSaleIds.push(s.saleId);
-        }
-      }
-    }
-
-    // =========================================================================
-    // SEGREGAÇÃO NOS 3 VETORES DE SAÍDA
+    // SEGREGAÇÃO NOS 3 VETORES DE SAÍDA (Spec 435: Zero absorção cega no Estágio 3)
+    // As vendas que não tiveram correspondência bancária fiduciária permanecem como 'naoEntrou' (A Compensar).
     // =========================================================================
     const conciliados = salesList.filter(s => s.statusMatch);
     const naoEntrou = salesList.filter(s => !s.statusMatch);

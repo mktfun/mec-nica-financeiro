@@ -100,13 +100,22 @@ export function reconcileRedeWithOfxDeterministic(
   redeSales: RedeSaleItem[],
   ofxCredits: OfxCreditItem[]
 ): RedeReconciliationResult {
-  // Filtra estritamente os créditos da adquirente ocorridos na data de conciliação (D0),
-  // prevenindo que créditos de dias anteriores no OFX casem indevidamente com vendas de ontem.
+  // Filtra os créditos da adquirente ocorridos na data de conciliação (D0) ou no dia útil seguinte (D+1),
+  // permitindo o casamento de liquidações matinais de débito e antecipação sem vazar para períodos distantes.
   const targetCredits = ofxCredits.filter(c => {
     if (!c.date) return true;
     const cleanDate = c.date.replace(/[-/]/g, '').slice(0, 8);
     const cleanTarget = targetDate.replace(/[-/]/g, '').slice(0, 8);
-    return cleanDate === cleanTarget;
+    if (cleanDate === cleanTarget) return true;
+
+    try {
+      const d1 = new Date(c.date.slice(0, 10));
+      const d2 = new Date(targetDate.slice(0, 10));
+      const diffDays = Math.round(Math.abs((d1.getTime() - d2.getTime()) / 86400000));
+      return diffDays <= 1;
+    } catch {
+      return false;
+    }
   });
 
   const totalCreditadoOfx = Number(targetCredits.reduce((acc, o) => acc + Number(o.amount || 0), 0).toFixed(2));

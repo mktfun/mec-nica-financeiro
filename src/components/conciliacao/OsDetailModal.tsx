@@ -22,10 +22,13 @@ export interface OsDetailModalProps {
     parsed_pix_transfer?: number;
     status?: string;
   } | null;
+  os?: any;
+  storeId?: string;
 }
 
-export function OsDetailModal({ isOpen, onClose, osData }: OsDetailModalProps) {
+export function OsDetailModal({ isOpen, onClose, osData: propOsData, ...props }: OsDetailModalProps) {
   const updateOsStatus = useUpdateOsStatus();
+  const osData = propOsData || props.os;
 
   if (!osData) return null;
 

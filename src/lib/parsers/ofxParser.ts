@@ -192,6 +192,9 @@ export async function parseOFXFile(file: File, options?: { sessionId?: string })
       rawMemo.toUpperCase().includes('DISPONÍVEL DIA') ||
       rawMemo.toUpperCase().includes('DISPONIVEL DIA') ||
       rawMemo.toUpperCase().includes('SALDO DO DIA') ||
+      rawMemo.toUpperCase().includes('SDO FDO DIA') ||
+      rawMemo.toUpperCase().includes('SDO FIM DIA') ||
+      rawMemo.toUpperCase().includes('SDO FINAL') ||
       rawMemo.toUpperCase().includes('SALDO FINAL')
     );
 

@@ -1,3 +1,21 @@
+## [2026-09-22] — [Feature ID: 435-fix-matcher-rede-ofx-saldos-filiais]
+
+**Contexto:** Correção de falha crítica de matching entre vendas de maquininhas Rede e créditos bancários do extrato OFX que causava o desaparecimento do "A Compensar" nas filiais (Jorge Beretta, Piraporinha, Jabaquara) e duplicações/divergências em Mauá e Jorge Beretta.
+
+**Regra aprendida:**
+1. **Eliminação de Casamento Guloso com Créditos Residuais Antigos (Anti-Pattern do Estágio 3):**
+   - Vendas de cartão do dia corrente NUNCA podem ser absorvidas por créditos bancários no OFX baseadas em saldo acumulado (`totalRemainingCredit >= sumPending`). Créditos no extrato bancário de dias anteriores pertencem a lotes passados e não quitam as vendas de cartão do dia atual.
+   - O batimento deve ser estritamente determinístico: Match 1:1 por valor/tolerância MDR (R$ 0,05) ou soma líquida exata por bandeira e modalidade (Débito com Débito D+1; Crédito com Crédito).
+2. **Proibição de Dedução Arbitrária de Saldo no Wizard (`remainingLedgerCredit`):**
+   - O pipeline de importação e auditoria final não deve forçar liquidações (`settlement_status = 'entrou'`) com base na diferença entre saldos de extrato para bater números. O status deve ser 100% fiel ao motor pericial.
+3. **Consolidação Fiduciária de Saldos Bancários e Recebíveis:**
+   - O valor de maquininhas pendentes (`a_compensar`) deve ser exibido explicitamente para todas as lojas na coluna de recebíveis, sem sumir com `-`.
+   - Vendas que já foram creditadas no extrato bancário do dia já integram o saldo da conta corrente e não podem ser somadas novamente sobre o saldo consolidado, evitando duplicação patrimonial.
+
+**Risco identificado / Anti-pattern:** Usar a soma de créditos residuais de adquirente para dar baixa cega em vendas novas de cartões.
+
+---
+
 ## [2026-09-16] — [Feature ID: 411-fechamento-estrito-1609-e-gestao-dinheiro-cofre]
 
 **Contexto:** Fechamento contábil rigoroso de 16/09/2026 utilizando exclusivamente os 31 arquivos físicos fornecidos pelo usuário, saneamento da duplicidade de dinheiro depositado vs em trânsito no cofre das lojas, motor não-automático de sugestões de saídas em dinheiro para contas sem débito no extrato bancário OFX e blindagem do snapshot congelado.
@@ -1152,19 +1170,19 @@ eceivables, import_logs, import_batches, cash_registers, 	ransactions, oficina_c
 **Risco identificado / Anti-pattern:** Usar `currentSnapshot.metadata.faturamento_periodo ?? ...` no modo normal, o que congela os totais em valores antigos e impede que novos ajustes de faturamento (como transferências em dinheiro) atualizem o Faturamento Total e o Valor Disponível para Contas.
 
 
-## [2026-09-17] � [Feature ID: fix-contas-mismatch]
+## [2026-09-17] � [Feature ID: fix-contas-mismatch]
 
-**Contexto:** O painel de concilia��o apresentava diferen�as matem�ticas falsas porque a RPC do Supabase exclui contas com match_status = 'paid_cash' do resumo do dia, sob a premissa de que elas "j� est�o pagas". 
-**Regra aprendida:** Matematicamente, num DRE de fluxo de caixa, a conta j� paga em dinheiro reduz o saldo f�sico (Caixa Atual), aumentando virtualmente o Valor Dispon�vel. Se ela n�o for debitada em "Contas Manuais", o sistema acusa excesso de dinheiro. A conta paga em dinheiro **deve obrigatoriamente ser debitada no fechamento**.
-**Risco identificado:** A RPC get_daily_reconciliation_summary N�O pode ser confiada cegamente como SSOT para "Contas" no Frontend.
-**N�o fazer:** Nunca inicializar estados baseando-se em snapshot persistido de contas sem aplicar o overlap em daily_manual_bills.
+**Contexto:** O painel de concilia��o apresentava diferen�as matem�ticas falsas porque a RPC do Supabase exclui contas com match_status = 'paid_cash' do resumo do dia, sob a premissa de que elas "j� est�o pagas". 
+**Regra aprendida:** Matematicamente, num DRE de fluxo de caixa, a conta j� paga em dinheiro reduz o saldo f�sico (Caixa Atual), aumentando virtualmente o Valor Dispon�vel. Se ela n�o for debitada em "Contas Manuais", o sistema acusa excesso de dinheiro. A conta paga em dinheiro **deve obrigatoriamente ser debitada no fechamento**.
+**Risco identificado:** A RPC get_daily_reconciliation_summary N�O pode ser confiada cegamente como SSOT para "Contas" no Frontend.
+**N�o fazer:** Nunca inicializar estados baseando-se em snapshot persistido de contas sem aplicar o overlap em daily_manual_bills.
 
-## [2026-09-17] � [Feature ID: ssot-conciliacao]
+## [2026-09-17] � [Feature ID: ssot-conciliacao]
 
-**Contexto:** Unifica��o definitiva da calculadora no Postgres (get_daily_reconciliation_summary), remo��o de calculate_daily_conciliation, cria��o da RPC fechar_dia e elimina��o de rec�lculos de fechamento no navegador.
-**Regra aprendida:** Nenhum n�mero financeiro de fechamento deve ser calculado no front-end. A persist�ncia do snapshot di�rio deve sempre ser executada ap�s os motores de pareamento transacional via RPC fechar_dia com advisory lock.
-**Risco identificado:** Muta��es no cliente tentando persistir c�lculos em tabelas ou views intermedi�rias (ex: transactions) geram descompasso com a verdade f�sica.
-**N�o fazer:** Nunca montar objetos manuais de snapshot no React para enviar via upsert direto na daily_snapshots.
+**Contexto:** Unifica��o definitiva da calculadora no Postgres (get_daily_reconciliation_summary), remo��o de calculate_daily_conciliation, cria��o da RPC fechar_dia e elimina��o de rec�lculos de fechamento no navegador.
+**Regra aprendida:** Nenhum n�mero financeiro de fechamento deve ser calculado no front-end. A persist�ncia do snapshot di�rio deve sempre ser executada ap�s os motores de pareamento transacional via RPC fechar_dia com advisory lock.
+**Risco identificado:** Muta��es no cliente tentando persistir c�lculos em tabelas ou views intermedi�rias (ex: transactions) geram descompasso com a verdade f�sica.
+**N�o fazer:** Nunca montar objetos manuais de snapshot no React para enviar via upsert direto na daily_snapshots.
 
 
 ## [2026-09-17] — [Feature ID: 417-radar-recebiveis-os-patio-boleto-transferencia]

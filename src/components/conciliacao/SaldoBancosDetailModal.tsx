@@ -87,13 +87,13 @@ export function SaldoBancosDetailModal({
       const ofxMaqVal = Number(s.ofx_maquininhas || 0);
       
       let maquininhaNaoEntrou = 0;
-      if (rawNaoEntrou !== undefined && rawNaoEntrou > 0) {
-        maquininhaNaoEntrou = rawNaoEntrou;
-      } else if (rawCartaoNaoEntrou !== undefined && rawCartaoNaoEntrou > 0) {
-        maquininhaNaoEntrou = rawCartaoNaoEntrou;
+      if (rawNaoEntrou !== undefined) {
+        maquininhaNaoEntrou = Math.max(0, rawNaoEntrou);
+      } else if (rawCartaoNaoEntrou !== undefined) {
+        maquininhaNaoEntrou = Math.max(0, rawCartaoNaoEntrou);
       } else if (redeLiquidoVal > 0) {
-        // Spec 426: Vendas de cartão do dia ficam 100% a compensar
-        maquininhaNaoEntrou = redeLiquidoVal;
+        // Fallback: se houver créditos de adquirente já no extrato OFX, subtrai para não duplicar patrimônio
+        maquininhaNaoEntrou = ofxMaqVal > 0 ? Math.max(0, Number((redeLiquidoVal - ofxMaqVal).toFixed(2))) : redeLiquidoVal;
       }
 
       const saldoConsolidado = Number((saldoOfxPuro + dinheiroLoja + maquininhaNaoEntrou).toFixed(2));
